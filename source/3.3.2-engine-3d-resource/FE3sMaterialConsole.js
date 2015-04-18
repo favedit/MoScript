@@ -45,15 +45,19 @@ function FE3sMaterialConsole_find(p){
 // <T>反序列化一个材质。</T>
 //
 // @method
-// @param p:input:FByteStream 输入流
+// @param input:FByteStream 输入流
 // @return FE3sMaterial 材质
 //==========================================================
-function FE3sMaterialConsole_unserialize(p){
+function FE3sMaterialConsole_unserialize(input){
    var o = this;
    // 创建材质组
    var material = RClass.create(FE3sMaterial);
-   material.unserialize(p);
+   material.unserialize(input);
    // 存储材质组
-   o._materials.set(material.guid(), material);
+   var materialGuid = material.guid();
+   if(o._materials.contains(materialGuid)){
+      throw new TError(o, 'Material is already exists.');
+   }
+   o._materials.set(materialGuid, material);
    return material;
 }

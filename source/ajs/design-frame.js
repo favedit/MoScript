@@ -1,3 +1,52 @@
+function FDsCommonAnimationPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible         = false;
+   o._activeSpace     = null;
+   o._activeAnimation = null;
+   o._controlGuid     = null;
+   o._controlCode     = null;
+   o._controlLabel    = null;
+   o.onBuilded        = FDsCommonAnimationPropertyFrame_onBuilded;
+   o.onDataChanged    = FDsCommonAnimationPropertyFrame_onDataChanged;
+   o.construct        = FDsCommonAnimationPropertyFrame_construct;
+   o.loadObject       = FDsCommonAnimationPropertyFrame_loadObject;
+   o.dispose          = FDsCommonAnimationPropertyFrame_dispose;
+   return o;
+}
+function FDsCommonAnimationPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonAnimationPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlPlayRate.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonAnimationPropertyFrame_onDataChanged(p){
+   var o = this;
+   var animation = o._activeAnimation;
+   var resource = animation.resource();
+   resource.setCode(o._controlCode.get());
+   resource.setLabel(o._controlLabel.get());
+   resource._playRate = o._controlPlayRate.get();
+   animation.reloadResource();
+}
+function FDsCommonAnimationPropertyFrame_loadObject(space, animation){
+   var o = this;
+   var resource = animation.resource();
+   o._activeSpace = space;
+   o._activeAnimation = animation;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+   o._controlPlayRate.set(resource.playRate());
+}
+function FDsCommonAnimationPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsCommonCameraPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._workspace        = null;
@@ -359,31 +408,31 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    var o = this;
    o._activeSpace = space;
    o._activeMaterial = material;
-   var mr = material.resource();
-   var mi = mr.info();
-   o._controlOptionDouble.set(mi.optionDouble);
-   o._controlEffectCode.set(mi.effectCode);
-   o._controlOptionAlpha.set(mi.optionAlpha);
-   o._controlAlphaBase.set(mi.alphaBase);
-   o._controlAlphaRate.set(mi.alphaRate);
-   o._controlOptionColor.set(mi.optionColor);
-   o._controlColorMin.set(mi.colorMin);
-   o._controlColorMax.set(mi.colorMax);
-   o._controlColorRate.set(mi.colorRate);
-   o._controlColorMerge.set(mi.colorMerge);
-   o._controlOptionAmbient.set(mi.optionAmbient);
-   o._controlAmbientColor.set(mi.ambientColor);
-   o._controlOptionDiffuse.set(mi.optionDiffuse);
-   o._controlDiffuseColor.set(mi.diffuseColor);
-   o._controlOptionSpecular.set(mi.optionSpecular);
-   o._controlSpecularColor.set(mi.specularColor);
-   o._controlSpecularBase.set(mi.specularBase);
-   o._controlSpecularLevel.set(mi.specularLevel);
-   o._controlOptionReflect.set(mi.optionReflect);
-   o._controlReflectColor.set(mi.reflectColor);
-   o._controlReflectMerge.set(mi.reflectMerge);
-   o._controlOptionEmissive.set(mi.optionEmissive);
-   o._controlEmissiveColor.set(mi.emissiveColor);
+   var resource = material.resource();
+   var infoResource = resource.info();
+   o._controlOptionDouble.set(infoResource.optionDouble);
+   o._controlEffectCode.set(infoResource.effectCode);
+   o._controlOptionAlpha.set(infoResource.optionAlpha);
+   o._controlAlphaBase.set(infoResource.alphaBase);
+   o._controlAlphaRate.set(infoResource.alphaRate);
+   o._controlOptionColor.set(infoResource.optionColor);
+   o._controlColorMin.set(infoResource.colorMin);
+   o._controlColorMax.set(infoResource.colorMax);
+   o._controlColorRate.set(infoResource.colorRate);
+   o._controlColorMerge.set(infoResource.colorMerge);
+   o._controlOptionAmbient.set(infoResource.optionAmbient);
+   o._controlAmbientColor.set(infoResource.ambientColor);
+   o._controlOptionDiffuse.set(infoResource.optionDiffuse);
+   o._controlDiffuseColor.set(infoResource.diffuseColor);
+   o._controlOptionSpecular.set(infoResource.optionSpecular);
+   o._controlSpecularColor.set(infoResource.specularColor);
+   o._controlSpecularBase.set(infoResource.specularBase);
+   o._controlSpecularLevel.set(infoResource.specularLevel);
+   o._controlOptionReflect.set(infoResource.optionReflect);
+   o._controlReflectColor.set(infoResource.reflectColor);
+   o._controlReflectMerge.set(infoResource.reflectMerge);
+   o._controlOptionEmissive.set(infoResource.optionEmissive);
+   o._controlEmissiveColor.set(infoResource.emissiveColor);
 }
 function FDsCommonMaterial1Frame_dispose(){
    var o = this;
@@ -559,6 +608,114 @@ function FDsCommonRegionPropertyFrame_loadObject(space, region){
    o._controlBackgroundColor.set(resource.backgroundColor());
 }
 function FDsCommonRegionPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonRenderableFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._activeScene      = null;
+   o._activeRenderable = null;
+   o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
+   o.onDataChanged     = FDsCommonRenderableFrame_onDataChanged;
+   o.onEffectClick     = FDsCommonRenderableFrame_onEffectClick;
+   o.construct         = FDsCommonRenderableFrame_construct;
+   o.loadObject        = FDsCommonRenderableFrame_loadObject;
+   o.dispose           = FDsCommonRenderableFrame_dispose;
+   return o;
+}
+function FDsCommonRenderableFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
+   o._controlEffects.addClickListener(o, o.onEffectClick);
+}
+function FDsCommonRenderableFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeRenderable;
+   var m = r.matrix();
+   var v = o._controlTranslate.get();
+   m.setTranslate(v.x, v.y, v.z);
+   var v = o._controlRotation.get();
+   m.setRotation(v.x, v.y, v.z);
+   var v = o._controlScale.get();
+   m.setScale(v.x, v.y, v.z);
+   m.update();
+}
+function FDsCommonRenderableFrame_onEffectClick(ps, pi){
+   var o = this;
+   var e = pi.tag();
+   var p = e._program;
+   var s = p._vertexShader;
+   alert(s._source);
+   var s = p._fragmentShader;
+   alert(s._source);
+}
+function FDsCommonRenderableFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonRenderableFrame_loadObject(s, r){
+   var o = this;
+   o._activeScene = s;
+   o._activeRenderable = r;
+   var m = r.matrix();
+   o._controlTranslate.set(m.tx, m.ty, m.tz);
+   o._controlRotation.set(m.rx, m.ry, m.rz);
+   o._controlScale.set(m.sx, m.sy, m.sz);
+   var ces = o._controlEffects;
+   ces.clear();
+   var es = r.infos();
+   var c = es.count();
+   for(var i = 0; i < c; i++){
+      var e = es.value(i).effect;
+      if(e){
+         var l = ces.createItem(null, e.code());
+         l.setTag(e);
+         ces.push(l);
+      }
+   }
+}
+function FDsCommonRenderableFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonRenderablePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible          = false;
+   o._workspace        = null;
+   o._activeRenderable = null;
+   o._activeMaterial   = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._frameRenderable  = null;
+   o._frameMaterial1   = null;
+   o._frameMaterial2   = null;
+   o.construct         = FDsCommonRenderablePropertyFrame_construct;
+   o.loadObject        = FDsCommonRenderablePropertyFrame_loadObject;
+   o.dispose           = FDsCommonRenderablePropertyFrame_dispose;
+   return o;
+}
+function FDsCommonRenderablePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonRenderablePropertyFrame_loadObject(s, r){
+   var o = this;
+   var m = r.materialReference();
+   var s = r.renderable().resource();
+   o._activeRenderable = r;
+   o._activeMaterial = m;
+   o._controlGuid.set(s.guid());
+   o._controlCode.set(s.code());
+   o._controlLabel.set(s.label());
+   o._frameRenderable.loadObject(s, r);
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
+}
+function FDsCommonRenderablePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }

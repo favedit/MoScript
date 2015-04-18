@@ -12,7 +12,7 @@ function FE3dTemplateConsole(o){
    o._scopeCd       = EScope.Local;
    // @attribute
    o._loadTemplates = null;
-   o._templates     = null;
+   o._pools         = null;
    // @attribute
    o._thread        = null;
    o._interval      = 200;
@@ -38,12 +38,12 @@ function FE3dTemplateConsole(o){
 //==========================================================
 function FE3dTemplateConsole_onProcess(){
    var o = this;
-   var s = o._loadTemplates;
-   s.record();
-   while(s.next()){
-      var t = s.current();
-      if(t.processLoad()){
-         s.removeCurrent();
+   var looper = o._loadTemplates;
+   looper.record();
+   while(looper.next()){
+      var template = looper.current();
+      if(template.processLoad()){
+         looper.removeCurrent();
       }
    }
 }
@@ -57,7 +57,7 @@ function FE3dTemplateConsole_construct(){
    var o = this;
    // 设置属性
    o._loadTemplates = new TLooper();
-   o._templates = new TDictionary();
+   o._pools = RClass.create(FObjectPools);
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
@@ -69,31 +69,27 @@ function FE3dTemplateConsole_construct(){
 // <T>收集一个渲染模板。</T>
 //
 // @method
-// @param c:content:FRenderContent 渲染环境
-// @param n:name:String 名称
+// @param context:FGraphicContext 渲染环境
+// @param guid:String 唯一编号
 // @return FE3dTemplate 渲染模板
 //==========================================================
-function FE3dTemplateConsole_allocByGuid(c, n){
+function FE3dTemplateConsole_allocByGuid(context, guid){
    var o = this;
    // 尝试从缓冲池中取出
-   var ts = o._templates.get(n);
-   if(ts){
-      if(!ts.isEmpty()){
-         return ts.pop();
-      }
+   var template = o._pools.alloc(guid);
+   if(template){
+      return template;
    }
    // 获得模板资源
-   var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.loadByGuid(n);
+   var resource = RConsole.find(FE3sTemplateConsole).loadByGuid(guid);
    // 创建模板
-   var t = RClass.create(FE3dTemplate);
-   t.linkGraphicContext(c);
-   t.setCode(n);
-   t._resourceGuid = n;
-   t.setResource(r);
+   template = RClass.create(FE3dTemplate);
+   template.linkGraphicContext(context);
+   template.setResource(resource);
+   template._poolCode = guid;
    // 加载处理
-   o._loadTemplates.push(t);
-   return t;
+   o._loadTemplates.push(template);
+   return template;
 }
 
 //==========================================================
@@ -175,18 +171,11 @@ function FE3dTemplateConsole_loadByCode(t, p){
 // <T>释放一个渲染模板。</T>
 //
 // @method
-// @param p:template:FE3dTemplate 渲染模板
+// @param template:FE3dTemplate 渲染模板
 //==========================================================
-function FE3dTemplateConsole_free(p){
+function FE3dTemplateConsole_free(template){
    var o = this;
-   // 脱离父对象
-   p.remove();
    // 放到缓冲池
-   var n = p._resourceGuid;
-   var s = o._templates.get(n);
-   if(!s){
-      s = new TObjects();
-      o._templates.set(n, s);
-   }
-   s.push(p);
+   var code = template._poolCode;
+   o._pools.free(code, template);
 }

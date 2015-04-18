@@ -96,13 +96,13 @@
          // 获得输入坐标
          vec4 inputPosition = vec4(va_position, 1.0);
          // 计算骨骼坐标
-         vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 position = vec4(0.0, 0.0, 0.0, 0.0);
          position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
          // 计算模型坐标
-         vec4 modelPosition = position * vc_model_matrix;
+         vec4 modelPosition = vec4(position.xyz, 1.0) * vc_model_matrix;
          // 计算最终坐标
          gl_Position = modelPosition * vc_vp_matrix;
          v_model_position = modelPosition;

@@ -16,19 +16,19 @@ function FE3rMeshAnimation(o){
 // <T>更新处理。</T>
 //
 // @method
-// @param p:track:FE3rTrack 跟踪器
+// @param track:FE3rTrack 跟踪器
 //==========================================================
-function FE3rMeshAnimation_process(p){
+function FE3rMeshAnimation_process(track){
    var o = this;
    // 获得间隔
-   var ct = o._currentTick;
+   var tick = o._currentTick;
    // 计算间隔
-   var r = p._resource;
-   var pi = o._playInfo;
-   r.calculate(pi, ct);
-   pi.update();
+   var resource = track._resource;
+   var playInfo = o._playInfo;
+   resource.calculate(playInfo, tick);
+   playInfo.update();
    // 更新跟踪
-   var m = p._matrix;
-   m.assign(r.matrixInvert());
-   m.append(pi.matrix);
+   var matrix = track._matrix;
+   matrix.assign(resource.matrixInvert());
+   matrix.append(playInfo.matrix);
 }

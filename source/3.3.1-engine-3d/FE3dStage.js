@@ -45,60 +45,60 @@ function FE3dStage(o){
 //==========================================================
 function FE3dStage_onProcess(){
    var o = this;
-   var r = o._region;
-   if(!r){
+   var region = o._region;
+   if(!region){
       return;
    }
-   var t = o._technique;
-   if(!t){
+   var technique = o._technique;
+   if(!technique){
       return;
    }
-   var g = t._graphicContext;
+   var g = technique._graphicContext;
    // 统计处理
-   var ss = r._statistics = o._statistics;
+   var ss = region._statistics = o._statistics;
    ss.resetFrame();
    ss._frame.begin();
    //..........................................................
    ss._frameProcess.begin();
    // 更新区域（更新光源相机等特殊处理）
    g.prepare();
-   t.updateRegion(r);
+   technique.updateRegion(region);
    // 清空区域
-   r.prepare();
-   r.change();
+   region.prepare();
+   region.change();
    // 处理所有层
-   var ls = o._layers;
-   var lc = ls.count();
-   for(var i = 0; i < lc; i++){
-      var l = ls.valueAt(i);
+   var layers = o._layers;
+   var layerCount = layers.count();
+   for(var i = 0; i < layerCount; i++){
+      var layer = layers.at(i);
       // 过滤单个层渲染信息
-      r.reset();
-      l.process(r);
-      l.filterRenderables(r);
-      r.update();
+      region.reset();
+      layer.process(region);
+      layer.filterRenderables(region);
+      region.update();
    }
    // 处理所有渲染集合
-   RConsole.find(FE3dStageConsole).process(r);
+   RConsole.find(FE3dStageConsole).process(region);
    ss._frameProcess.end();
    //..........................................................
    ss._frameDraw.begin();
    // 处理所有层
-   if(r.isChanged()){
-      t.clear(r.backgroundColor());
-      for(var i = 0; i < lc; i++){
-         var l = ls.valueAt(i);
+   if(region.isChanged()){
+      technique.clear(region.backgroundColor());
+      for(var i = 0; i < layerCount; i++){
+         var layer = layers.at(i);
          // 选用技术
-         var lt = l.technique();
-         if(!lt){
-            lt = t;
+         var layerTechnique = layer.technique();
+         if(!layerTechnique){
+            layerTechnique = technique;
          }
          // 渲染单个层
-         r.reset();
-         r.renderables().assign(l.visibleRenderables());
-         lt.drawRegion(r);
+         region.reset();
+         region.renderables().assign(layer.visibleRenderables());
+         layerTechnique.drawRegion(region);
       }
       // 绘制处理
-      t.present(r);
+      technique.present(region);
    }
    ss._frameDraw.end();
    //..........................................................

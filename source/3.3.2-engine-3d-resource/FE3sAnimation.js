@@ -43,14 +43,14 @@ function FE3sAnimation_skeletonGuid(){
 //==========================================================
 function FE3sAnimation_skeleton(){
    var o = this;
-   var r = o._skeleton;
-   if(!r){
-      var g = o._skeletonGuid;
-      if(g){
-         r = o._skeleton = RConsole.find(FE3sModelConsole).findSkeleton(g);
+   var skeleton = o._skeleton;
+   if(!skeleton){
+      var guid = o._skeletonGuid;
+      if(guid){
+         skeleton = o._skeleton = RConsole.find(FE3sModelConsole).findSkeleton(guid);
       }
    }
-   return r;
+   return skeleton;
 }
 
 //==========================================================

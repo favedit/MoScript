@@ -219,14 +219,14 @@ function FE3sAnimation_skeletonGuid(){
 }
 function FE3sAnimation_skeleton(){
    var o = this;
-   var r = o._skeleton;
-   if(!r){
-      var g = o._skeletonGuid;
-      if(g){
-         r = o._skeleton = RConsole.find(FE3sModelConsole).findSkeleton(g);
+   var skeleton = o._skeleton;
+   if(!skeleton){
+      var guid = o._skeletonGuid;
+      if(guid){
+         skeleton = o._skeleton = RConsole.find(FE3sModelConsole).findSkeleton(guid);
       }
    }
-   return r;
+   return skeleton;
 }
 function FE3sAnimation_tracks(){
    return this._tracks;
@@ -624,8 +624,12 @@ function FE3sGeometry_construct(){
 function FE3sGeometry_unserialize(input){
    var o = this;
    o.__base.FE3sDrawable.unserialize.call(o, input);
-   o._outline.unserialize(input);
-   o._outline.update();
+   var outline = o._outline;
+   outline.unserialize(input);
+   if(outline.isEmpty()){
+      throw new TError('Outline is empty.');
+   }
+   outline.update();
    var streamCount = input.readInt8();
    if(streamCount > 0){
       var streams = o._streams = new TObjects();
@@ -830,11 +834,15 @@ function FE3sMaterialConsole_construct(){
 function FE3sMaterialConsole_find(p){
    return this._materials.get(p);
 }
-function FE3sMaterialConsole_unserialize(p){
+function FE3sMaterialConsole_unserialize(input){
    var o = this;
    var material = RClass.create(FE3sMaterial);
-   material.unserialize(p);
-   o._materials.set(material.guid(), material);
+   material.unserialize(input);
+   var materialGuid = material.guid();
+   if(o._materials.contains(materialGuid)){
+      throw new TError(o, 'Material is already exists.');
+   }
+   o._materials.set(materialGuid, material);
    return material;
 }
 function FE3sMesh(o){
@@ -1626,7 +1634,7 @@ function FE3sScene_saveConfig(p){
 }
 function FE3sSceneAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._playRate   = null;
+   o._playRate   = 1;
    o.construct   = FE3sSceneAnimation_construct;
    o.playRate    = FE3sSceneAnimation_playRate;
    o.setPlayRate = FE3sSceneAnimation_setPlayRate;
@@ -1641,8 +1649,8 @@ function FE3sSceneAnimation_construct(){
 function FE3sSceneAnimation_playRate(){
    return this._playRate;
 }
-function FE3sSceneAnimation_setPlayRate(p){
-   this._playRate = p;
+function FE3sSceneAnimation_setPlayRate(playRate){
+   this._playRate = playRate;
 }
 function FE3sSceneAnimation_unserialize(p){
    var o = this;
@@ -1739,27 +1747,27 @@ function FE3sSceneDisplay_templateGuid(){
 function FE3sSceneDisplay_matrix(){
    return this._matrix;
 }
-function FE3sSceneDisplay_findAnimation(p){
+function FE3sSceneDisplay_findAnimation(guid){
    var o = this;
-   var s = o._animations;
-   if(s){
-      return s.get(p);
+   var animations = o._animations;
+   if(animations){
+      return animations.get(guid);
    }
    return null;
 }
-function FE3sSceneDisplay_syncAnimation(p){
+function FE3sSceneDisplay_syncAnimation(guid){
    var o = this;
-   var s = o._animations;
-   if(!s){
-      s = o._animations = new TDictionary();
+   var animations = o._animations;
+   if(!animations){
+      animations = o._animations = new TDictionary();
    }
-   var a = s.get(p);
-   if(!a){
-      a = RClass.create(FE3sSceneAnimation);
-      a._guid = p;
-      s.set(p, a);
+   var animation = animations.get(guid);
+   if(!animation){
+      animation = RClass.create(FE3sSceneAnimation);
+      animation._guid = guid;
+      animations.set(guid, animation);
    }
-   return a;
+   return animation;
 }
 function FE3sSceneDisplay_animations(){
    return this._animations;
@@ -2044,26 +2052,26 @@ function FE3sSkeletonSkin_streams(){
 function FE3sSkeletonSkin_boneRefers(){
    return this._boneRefers;
 }
-function FE3sSkeletonSkin_unserialize(p){
+function FE3sSkeletonSkin_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p)
-   o._meshGuid = p.readString();
-   var c = p.readUint8();
-   if(c > 0){
-      var s = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FE3sStream);
-         t.unserialize(p);
-         s.push(t);
+   o.__base.FE3sObject.unserialize.call(o, input)
+   o._meshGuid = input.readString();
+   var streamCount = input.readUint8();
+   if(streamCount > 0){
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(input);
+         streams.push(stream);
       }
    }
-   var c = p.readUint8();
-   if(c > 0){
-      var s = o._boneRefers = new TObjects();
-      for(var i = 0; i < c; i++){
-         var b = RClass.create(FE3sBoneRefer);
-         b.unserialize(p);
-         s.push(b);
+   var boneReferCount = input.readUint8();
+   if(boneReferCount > 0){
+      var boneRefers = o._boneRefers = new TObjects();
+      for(var i = 0; i < boneReferCount; i++){
+         var boneRefer = RClass.create(FE3sBoneRefer);
+         boneRefer.unserialize(input);
+         boneRefers.push(boneRefer);
       }
    }
 }
@@ -2647,21 +2655,21 @@ function FE3sThemeConsole_select(p){
 }
 function FE3sTrack(o){
    o = RClass.inherits(this, o, FObject);
-   o._meshCode        = null;
-   o._boneIndex       = 0;
-   o._frameTick       = 0;
-   o._matrix          = null;
-   o._matrixInvert    = null;
-   o._frameCount      = null;
-   o._frames          = null;
-   o.construct        = FE3sTrack_construct;
-   o.boneIndex        = FE3sTrack_boneIndex;
-   o.frameTick        = FE3sTrack_frameTick;
-   o.matrix           = FE3sTrack_matrix;
-   o.matrixInvert     = FE3sTrack_matrixInvert;
-   o.frames           = FE3sTrack_frames;
-   o.calculate        = FE3sTrack_calculate;
-   o.unserialize      = FE3sTrack_unserialize;
+   o._meshCode     = null;
+   o._boneIndex    = 0;
+   o._frameTick    = 0;
+   o._matrix       = null;
+   o._matrixInvert = null;
+   o._frameCount   = null;
+   o._frames       = null;
+   o.construct     = FE3sTrack_construct;
+   o.boneIndex     = FE3sTrack_boneIndex;
+   o.frameTick     = FE3sTrack_frameTick;
+   o.matrix        = FE3sTrack_matrix;
+   o.matrixInvert  = FE3sTrack_matrixInvert;
+   o.frames        = FE3sTrack_frames;
+   o.calculate     = FE3sTrack_calculate;
+   o.unserialize   = FE3sTrack_unserialize;
    return o;
 }
 function FE3sTrack_construct(){
@@ -2685,47 +2693,47 @@ function FE3sTrack_matrixInvert(){
 function FE3sTrack_frames(){
    return this._frames;
 }
-function FE3sTrack_calculate(pi, pt){
+function FE3sTrack_calculate(info, tick){
    var o = this;
-   var fc = o._frameCount;
-   if(fc == 0){
+   var frameCount = o._frameCount;
+   if(frameCount == 0){
       return false;
    }
-   if(pt < 0){
-      pt = -pt;
+   if(tick < 0){
+      tick = -tick;
    }
-   var ft = o._frameTick;
-   var i = parseInt(pt / ft) % fc;
-   var fs = o.frames();
-   var cf = fs.get(i);
-   var nf = null;
-   if(i < fc -1){
-      nf = fs.get(i + 1);
+   var frameTick = o._frameTick;
+   var index = parseInt(tick / frameTick) % frameCount;
+   var frames = o._frames;
+   var currentFrame = frames.get(index);
+   var nextFrame = null;
+   if(index < frameCount - 1){
+      nextFrame = frames.get(index + 1);
    }else{
-      nf = fs.get(0);
+      nextFrame = frames.get(0);
    }
-   pi.tick = pt;
-   pi.rate = (pt % ft) / ft;
-   pi.currentFrame = cf;
-   pi.nextFrame = nf;
+   info.tick = tick;
+   info.rate = (tick % frameTick) / frameTick;
+   info.currentFrame = currentFrame;
+   info.nextFrame = nextFrame;
    return true;
 }
-function FE3sTrack_unserialize(p){
+function FE3sTrack_unserialize(input){
    var o = this;
-   o._meshCode = p.readString();
-   o._boneIndex = p.readUint8();
-   o._frameTick = p.readUint16();
-   o._matrix.unserialize(p);
+   o._meshCode = input.readString();
+   o._boneIndex = input.readUint8();
+   o._frameTick = input.readUint16();
+   o._matrix.unserialize(input);
    o._matrixInvert.assign(o._matrix);
    o._matrixInvert.invert();
-   var c = p.readInt16();
-   if(c > 0){
-      o._frameCount = c;
-      var fs = o._frames = new TObjects();
-      for(var i = 0; i < c; i++){
-         var f = RClass.create(FE3sFrame);
-         f.unserialize(p)
-         fs.push(f);
+   var count = input.readInt16();
+   if(count > 0){
+      o._frameCount = count;
+      var frames = o._frames = new TObjects();
+      for(var i = 0; i < count; i++){
+         var frame = RClass.create(FE3sFrame);
+         frame.unserialize(input)
+         frames.push(frame);
       }
    }
 }

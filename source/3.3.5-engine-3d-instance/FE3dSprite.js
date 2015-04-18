@@ -5,12 +5,11 @@
 // @history 150417
 //==========================================================
 function FE3dSprite(o){
-   o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject);
+   o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject, MLinkerResource);
    //..........................................................
    // @attribute
    o._dataReady       = false;
    o._ready           = false;
-   o._resource        = null;
    // @attribute
    o._shapes          = null;
    o._skeletons       = null;
@@ -31,8 +30,6 @@ function FE3dSprite(o){
    o.animations       = FE3dSprite_animations;
    o.pushAnimation    = FE3dSprite_pushAnimation;
    // @method
-   o.resource         = FE3dSprite_resource;
-   o.setResource      = FE3dSprite_setResource;
    o.loadSkeletons    = FE3dSprite_loadSkeletons;
    o.linkAnimation    = FE3dSprite_linkAnimation;
    o.loadAnimations   = FE3dSprite_loadAnimations;
@@ -141,12 +138,12 @@ function FE3dSprite_pushSkeleton(p){
 // <T>根据唯一编号查找一个渲染动画。</T>
 //
 // @method
-// @param p:guid:String 唯一编号
+// @param guid:String 唯一编号
 // @return FE3rAnimation 渲染动画
 //==========================================================
-function FE3dSprite_findAnimation(p){
-   var s = this._animations;
-   return s ? s.get(p) : null;
+function FE3dSprite_findAnimation(guid){
+   var animations = this._animations;
+   return animations ? animations.get(guid) : null;
 }
 
 //==========================================================
@@ -163,36 +160,16 @@ function FE3dSprite_animations(){
 // <T>增加一个渲染动画。</T>
 //
 // @method
-// @param p:animation:FE3rAnimation 渲染动画
+// @param animation:FE3rAnimation 渲染动画
 //==========================================================
-function FE3dSprite_pushAnimation(p){
+function FE3dSprite_pushAnimation(animation){
    var o = this;
-   var r = o._animations;
-   if(!r){
-      r = o._animations = new TDictionary();
+   var animations = o._animations;
+   if(!animations){
+      animations = o._animations = new TDictionary();
    }
-   var pr = p.resource();
-   r.set(pr.guid(), p);
-}
-
-//==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @param FE3sTemplate 资源
-//==========================================================
-function FE3dSprite_resource(p){
-   return this._resource;
-}
-
-//==========================================================
-// <T>设置资源模板。</T>
-//
-// @method
-// @param p:resource:FE3sTemplate 资源模板
-//==========================================================
-function FE3dSprite_setResource(p){
-   this._resource = p;
+   var animationResource = animation.resource();
+   animations.set(animationResource.guid(), animation);
 }
 
 //==========================================================
@@ -331,8 +308,9 @@ function FE3dSprite_load(){
 // <T>构造处理。</T>
 //
 // @method
+// @param region:FG3dRegion 区域
 //==========================================================
-function FE3dSprite_updateMatrix(){
+function FE3dSprite_updateMatrix(region){
    var o = this;
    // 加载动画集合
    var matrix = o._currentMatrix.identity();

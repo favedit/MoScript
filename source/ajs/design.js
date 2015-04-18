@@ -27,6 +27,7 @@ var EDsFrame = new function EDsFrame(){
    o.CommonMaterialPropertyFrame   = 'resource.common.property.MaterialFrame';
    o.CommonLayerPropertyFrame      = 'resource.common.property.LayerFrame';
    o.CommonDisplayPropertyFrame    = 'resource.common.property.DisplayFrame';
+   o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
    o.SolutionProjectPropertyFrame  = 'design3d.solution.property.ProjectFrame';
    o.ResourcePropertyFrame         = 'design3d.resource.property.SpaceFrame';
@@ -40,7 +41,6 @@ var EDsFrame = new function EDsFrame(){
    o.ModelRenderablePropertyFrame  = 'resource.model.property.RenderableFrame';
    o.SceneSpacePropertyFrame       = 'design3d.scene.property.SpaceFrame';
    o.SceneDisplayPropertyFrame     = 'design3d.scene.property.DisplayFrame';
-   o.SceneAnimationPropertyFrame   = 'design3d.scene.property.AnimationFrame';
    o.SceneMoviePropertyFrame       = 'design3d.scene.property.MovieFrame';
    o.SceneRenderablePropertyFrame  = 'design3d.scene.property.RenderableFrame';
    return o;
@@ -68,30 +68,30 @@ function MDsBoundBox(o){
 }
 function MDsBoundBox_boundBox(){
    var o = this;
-   var b = o._boundBox;
-   if(!b){
-      b = o._boundBox = RClass.create(FE3dBoundBox);
-      b.linkGraphicContext(o);
-      b.setup();
+   var boundBox = o._boundBox;
+   if(!boundBox){
+      boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+      boundBox.linkGraphicContext(o);
+      boundBox.setup();
    }
-   return b;
+   return boundBox;
 }
 function MDsBoundBox_showBoundBox(){
    var o = this;
-   var b = o.boundBox();
-   b.remove();
-   var r = o.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   b.outline().assign(rl);
-   b.upload();
-   o.pushDrawable(b);
+   var boundBox = o.boundBox();
+   boundBox.remove();
+   var resource = o.resource();
+   var meshResource = resource.mesh();
+   var outline = meshResource.outline();
+   boundBox.outline().assign(outline);
+   boundBox.upload();
+   o.pushDrawable(boundBox);
    o._boundVisible = true;
 }
 function MDsBoundBox_hideBoundBox(){
    var o = this;
-   var b = o._boundBox;
-   o.removeDrawable(b);
+   var boundBox = o._boundBox;
+   o.removeDrawable(boundBox);
    o._boundVisible = false;
 }
 function FDsApplication(o){

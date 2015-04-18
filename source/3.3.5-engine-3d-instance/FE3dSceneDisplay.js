@@ -12,7 +12,9 @@ function FE3dSceneDisplay(o){
    o._optionPlay       = false;
    o._optionMovie      = false;
    o._movieMatrix      = null;
+   // @attribute
    o._resource         = null;
+   // @attribute
    o._materials        = null;
    o._parentMaterials  = null;
    o._movies           = null;
@@ -21,9 +23,7 @@ function FE3dSceneDisplay(o){
    // @method
    o.construct         = FE3dSceneDisplay_construct;
    // @method
-   o.resourceScene     = FE3dSceneDisplay_resourceScene;
-   o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
-   o.loadAnimations    = FE3dSceneDisplay_loadAnimations;
+   o.meshRenderables   = FE3dSceneDisplay_meshRenderables;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
    o.processLoad       = FE3dSceneDisplay_processLoad;
@@ -41,14 +41,10 @@ function FE3dSceneDisplay_construct(){
    o._movieMatrix = new SMatrix3d();
 }
 
-//==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @return FE3sSceneDisplay 资源
-//==========================================================
-function FE3dSceneDisplay_resourceScene(){
-   return this._resource;
+function FE3dSceneDisplay_meshRenderables(){
+   var o = this;
+   var sprite = o._template.sprite();
+   return sprite.meshRenderables();
 }
 
 //==========================================================
@@ -57,7 +53,7 @@ function FE3dSceneDisplay_resourceScene(){
 // @method
 // @param resource:FE3sSceneSpace 空间资源
 //==========================================================
-function FE3dSceneDisplay_loadSceneResource(resource){
+function FE3dSceneDisplay_loadResource(resource){
    var o = this;
    var instanceConsole = RConsole.find(FE3dInstanceConsole);
    o._resource = resource;
@@ -96,68 +92,15 @@ function FE3dSceneDisplay_loadSceneResource(resource){
 }
 
 //==========================================================
-// <T>加载动画集合。</T>
-//
-// @method
-// @param p:animations:TObjects 动画集合
-//==========================================================
-function FE3dSceneDisplay_loadAnimations(p){
-   var o = this;
-   o.__base.FE3dSprite.loadAnimations.call(o, p);
-   // 设置动画和场景动画资源关联
-   var s = o._animations;
-   if(s){
-      var sr = o._resource;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var a = s.valueAt(i);
-         var ar = a.resource();
-         var sar = sr.findAnimation(ar.guid());
-         a._resource = sar;
-         if(sar){
-            a._playRate = sar._playRate;
-         }
-      }
-   }
-}
-
-//==========================================================
-// <T>加载资源。</T>
-//
-// @param p:resource:FE3sTemplate 资源
-//==========================================================
-function FE3dSceneDisplay_loadResource(p){
-   var o = this;
-   var cf = RConsole.find(FE3dSceneConsole).factory();
-   // 加载渲染集合
-   var ms = o._materials;
-   var rds = p.displays();
-   var c = rds.count();
-   if(c > 0){
-      for(var i = 0; i < c; i++){
-         var rd = rds.get(i);
-         // 创建显示对象
-         var r = cf.create(EE3dScene.Renderable);
-         r._display = o;
-         r.linkGraphicContext(o);
-         r.loadResource(rd);
-         o._meshRenderables.push(r);
-         o.pushRenderable(r);
-         // 加载材质
-         var rdm = rd.materials().first();
-         var m = ms.get(rdm.groupGuid());
-         r.loadMaterial(m);
-      }
-   }
-}
-
-//==========================================================
 // <T>加载模板。</T>
 //
 // @param template:FE3dTemplate 模板
 //==========================================================
 function FE3dSceneDisplay_loadTemplate(template){
    var o = this;
+   var resource = o._resource;
+   // 设置材质
+   var materials = o._materials;
    var parentMaterials = o._parentMaterials;
    var sprite = template.sprite();
    var renderables = sprite.renderables();
@@ -165,7 +108,6 @@ function FE3dSceneDisplay_loadTemplate(template){
    for(var n = 0; n < count; n++){
       // 增加渲染对象
       var renderable = renderables.at(n);
-      //o.pushRenderable(renderable);
       // 设置材质关联
       var material = renderable.material();
       var materialGuid = material.guid();
@@ -174,6 +116,31 @@ function FE3dSceneDisplay_loadTemplate(template){
       displayMaterial.reloadResource();
    }
    o.pushDisplay(sprite);
+   // 设置动画
+   var animations = sprite.animations();
+   if(animations){
+      var animationCount = animations.count();
+      for(var n = 0; n < animationCount; n++){
+         var animation = animations.at(n);
+         // 获得资源
+         var animationResource = animation.resource();
+         var animationGuid = animationResource.guid();
+         // 获得场景动画资源
+         var sceneAnimationResource = resource.findAnimation(animationGuid);
+         if(!sceneAnimationResource){
+            sceneAnimationResource = resource.syncAnimation(animationGuid);
+            sceneAnimationResource._guid = animationResource._guid;
+            sceneAnimationResource._code = animationResource._code;
+            sceneAnimationResource._label = animationResource._label;
+         }
+         // 创建场景动画
+         var sceneAnimation = RClass.create(FE3dSceneAnimation);
+         sceneAnimation.loadAnimation(animation);
+         sceneAnimation.loadSceneResource(sceneAnimationResource);
+         sceneAnimation.reloadResource();
+         o.pushAnimation(sceneAnimation);
+      }
+   }
 }
 
 //==========================================================

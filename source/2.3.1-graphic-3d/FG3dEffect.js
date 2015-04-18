@@ -164,42 +164,44 @@ function FG3dEffect_drawRenderables(pg, pr, pi, pc){
 // <T>绘制渲染集合。</T>
 //
 // @method
-// @param pg:region:MG3dRegion 渲染区域
+// @param region:MG3dRegion 渲染区域
 // @param pr:renderables:TObjects 渲染集合
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FG3dEffect_drawGroup(pg, pr, pi, pc){
-   this.drawRenderables(pg, pr, pi, pc);
+function FG3dEffect_drawGroup(region, pr, pi, pc){
+   this.drawRenderables(region, pr, pi, pc);
 }
 
 //==========================================================
 // <T>绘制渲染集合。</T>
 //
 // @method
-// @param pg:region:MG3dRegion 渲染区域
-// @param pi:offset:Integer 开始位置
-// @param pc:count:Integer 总数
+// @param region:MG3dRegion 渲染区域
+// @param offset:Integer 开始位置
+// @param count:Integer 总数
 //==========================================================
-function FG3dEffect_drawRegion(pg, pi, pc){
+function FG3dEffect_drawRegion(region, offset, count){
    var o = this;
    // 根据效果类型进行分组
-   var rs = pg.renderables();
-   for(var n = 0; n < pc; ){
+   var renderabels = region.renderables();
+   for(var n = 0; n < count; ){
       // 获得分组
-      var gb = n;
-      var ge = pc;
-      var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
-         var m = rs.getAt(pi + i)._materialReference;
-         if(gm != m){
-            ge = i;
+      var groupBegin = n;
+      var groupEnd = count;
+      var groupRenderable = renderabels.at(offset + groupBegin);
+      var groupMaterial = groupRenderable.materialReference();
+      for(var i = n; i < count; i++){
+         var renderable = renderabels.at(offset + i);
+         var material = renderable.materialReference();
+         if(groupMaterial != material){
+            groupEnd = i;
             break;
          }
          n++;
       }
       // 绘制当前渲染组
-      o.drawGroup(pg, rs, pi + gb, ge - gb);
+      o.drawGroup(region, renderabels, offset + groupBegin, groupEnd - groupBegin);
    }
 }
 

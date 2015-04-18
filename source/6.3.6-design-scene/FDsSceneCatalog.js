@@ -64,13 +64,13 @@ function FDsSceneCatalog_onBuild(p){
 // <T>显示对象加载完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FDsSceneCatalog_onLoadDisplay(p){
+function FDsSceneCatalog_onLoadDisplay(event){
    var o = this;
-   var n = p._linkNode;
+   var node = event._linkNode;
    // 创建渲染集合
-   o.buildRenderable(n, p);
+   o.buildRenderable(node, event);
 }
 
 //==========================================================
@@ -213,63 +213,63 @@ function FDsSceneCatalog_buildNodeView(pn, pv){
 // <T>建立显示目录。</T>
 //
 // @method
-// @param n:node:FTreeNode 父节点
-// @param p:display:FDisplay 显示对象
+// @param parentNode:FTreeNode 父节点
+// @param sprite:FDisplay 显示对象
 //==========================================================
-function FDsSceneCatalog_buildRenderable(n, p){
+function FDsSceneCatalog_buildRenderable(parentNode, sprite){
    var o = this;
    // 创建材质集合
-   var s = p.materials();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
+   var materials = sprite.materials();
+   if(materials){
+      var materialCount = materials.count();
+      for(var i = 0; i < materialCount; i++){
+         var material = materials.at(i);
+         var materialResource = material.resource();
          // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('material');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         o._materials.push(dn);
-         n.appendNode(dn);
+         var materialNode = o.createNode();
+         materialNode.setTypeCode('Material');
+         materialNode.setLabel(materialResource.code());
+         materialNode.setNote(materialResource.label());
+         materialNode.dataPropertySet('linker', material);
+         o.buildNodeView(materialNode, true);
+         parentNode.appendNode(materialNode);
+         o._materials.push(material);
       }
    }
    // 创建动画集合
-   var s = p.animations();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
+   var animations = sprite.animations();
+   if(animations){
+      var animationCount = animations.count();
+      for(var i = 0; i < animationCount; i++){
+         var animation = animations.at(i);
+         var animationResource = animation.resource();
          // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('animation');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         n.appendNode(dn);
+         var animationNode = o.createNode();
+         animationNode.setTypeCode('Animation');
+         animationNode.setLabel(animationResource.code());
+         animationNode.setNote(animationResource.label());
+         animationNode.dataPropertySet('linker', animation);
+         parentNode.appendNode(animationNode);
+         o.buildNodeView(animationNode, true);
       }
    }
    // 创建渲染集合
-   var s = p.meshRenderables();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.get(i);
-         var rr = r.resource();
-         var rd = rr.model();
-         var rm = rr.mesh();
+   var renderables = sprite.meshRenderables();
+   if(renderables){
+      var renderableCount = renderables.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderable = renderables.at(i);
+         var renderableResource = renderable.resource();
+         var modelResource = renderableResource.model();
+         var meshResource = renderableResource.mesh();
          // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(rm.code());
-         dn.setTypeCode('renderable');
-         dn.dataPropertySet('linker', r);
-         o.buildNodeView(dn, true);
-         o._renderables.push(dn);
-         n.appendNode(dn);
+         var renderableNode = o.createNode();
+         renderableNode.setTypeCode('Renderable');
+         renderableNode.setLabel(meshResource.code());
+         renderableNode.dataPropertySet('linker', renderable);
+         o.buildNodeView(renderableNode, true);
+         parentNode.appendNode(renderableNode);
+         o._renderables.push(renderableNode);
       }
    }
 }
@@ -278,30 +278,30 @@ function FDsSceneCatalog_buildRenderable(n, p){
 // <T>建立显示目录。</T>
 //
 // @method
-// @param n:node:FTreeNode 父节点
-// @param p:display:FDisplayContainer 显示容器
+// @param parentNode:FTreeNode 父节点
+// @param display:FDisplayContainer 显示容器
 //==========================================================
-function FDsSceneCatalog_buildDisplay(n, p){
+function FDsSceneCatalog_buildDisplay(parentNode, p){
    var o = this;
    // 创建显示集合
-   var s = p.displays();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         var dr = d.resourceScene();
+   var displays = p.displays();
+   if(displays){
+      var displayCount = displays.count();
+      for(var i = 0; i < displayCount; i++){
+         var display = displays.at(i);
+         var resource = display.resource();
          // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(dr.code());
-         dn.setNote(dr.label());
-         dn.setTypeCode('display');
-         dn.dataPropertySet('linker', d);
-         o.buildNodeView(dn, true);
-         o._displays.push(dn);
-         n.appendNode(dn);
+         var displayNode = o.createNode();
+         displayNode.setTypeCode('display');
+         displayNode.setLabel(resource.code());
+         displayNode.setNote(resource.label());
+         displayNode.dataPropertySet('linker', display);
+         o.buildNodeView(displayNode, true);
+         o._displays.push(displayNode);
+         parentNode.appendNode(displayNode);
          // 创建渲染集合
-         d.addLoadListener(o, o.onLoadDisplay);
-         d._linkNode = dn;
+         display.addLoadListener(o, o.onLoadDisplay);
+         display._linkNode = displayNode;
       }
    }
 }
@@ -310,37 +310,37 @@ function FDsSceneCatalog_buildDisplay(n, p){
 // <T>建立显示层目录。</T>
 //
 // @method
-// @param n:node:FTreeNode 父节点
-// @param p:stage:FStage 舞台对象
+// @param parentNode:FTreeNode 父节点
+// @param space:FE3dSpace 空间对象
 //==========================================================
-function FDsSceneCatalog_buildLayer(n, p){
+function FDsSceneCatalog_buildLayer(parentNode, space){
    var o = this;
    // 创建显示层集合节点
-   var ns = o.createNode();
-   ns.setLabel('Layers');
-   ns.setTypeCode('layers');
-   ns.dataPropertySet('linker', 'layers');
-   o.buildNodeView(ns, true);
-   n.appendNode(ns);
+   var layersNode = o.createNode();
+   layersNode.setTypeCode('Layers');
+   layersNode.setLabel('Layers');
+   layersNode.dataPropertySet('linker', 'layers');
+   o.buildNodeView(layersNode, true);
+   parentNode.appendNode(layersNode);
    // 创建显示层集合
-   var ds = p.layers();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var l = ds.value(i);
+   var layers = space.layers();
+   var layerCount = layers.count();
+   for(var i = 0; i < layerCount; i++){
+      var layer = layers.at(i);
       // 忽略界面层
-      if(RClass.isClass(l, FDisplayUiLayer)){
+      if(RClass.isClass(layer, FDisplayUiLayer)){
          continue;
       }
-      var lr = l.resource();
+      var layerResource = layer.resource();
       // 创建显示层节点
-      var nl = o.createNode();
-      nl.setLabel('Layer:' + lr.code());
-      nl.setTypeCode('layer');
-      nl.dataPropertySet('linker', l);
-      o.buildNodeView(nl, true);
-      ns.appendNode(nl);
+      var layerNode = o.createNode();
+      layerNode.setTypeCode('Layer');
+      layerNode.setLabel('Layer:' + layerResource.code());
+      layerNode.dataPropertySet('linker', layer);
+      o.buildNodeView(layerNode, true);
+      layersNode.appendNode(layerNode);
       // 创建显示集合
-      o.buildDisplay(nl, l)
+      o.buildDisplay(layerNode, layer)
    }
 }
 
@@ -348,38 +348,38 @@ function FDsSceneCatalog_buildLayer(n, p){
 // <T>建立场景目录。</T>
 //
 // @method
-// @param p:scene:FE3dScene 渲染场景
+// @param space:FE3dScene 渲染场景
 //==========================================================
-function FDsSceneCatalog_buildSpace(p){
+function FDsSceneCatalog_buildSpace(space){
    var o = this;
-   var r = p._resource;
+   var resource = space.resource();
    // 创建场景节点
-   var nr = o.createNode();
-   nr.setLabel(r.code());
-   nr.setNote(r.label());
-   nr.setTypeCode('scene');
-   nr.dataPropertySet('linker', p);
-   o.appendNode(nr);
+   var spaceNode = o.createNode();
+   spaceNode.setTypeCode('Scene');
+   spaceNode.setLabel(resource.code());
+   spaceNode.setNote(resource.label());
+   spaceNode.dataPropertySet('linker', space);
+   o.appendNode(spaceNode);
    // 创建技术节点
-   o.buildTechnique(nr, p.technique())
+   o.buildTechnique(spaceNode, space.technique())
    // 创建区域节点
-   o.buildRegion(nr, p.region());
+   o.buildRegion(spaceNode, space.region());
    // 创建显示层
-   o.buildLayer(nr, p);
+   o.buildLayer(spaceNode, space);
    // 选中根节点
-   nr.click();
+   spaceNode.click();
 }
 
 //==========================================================
 // <T>选中对象。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param item:Object 对象
 //==========================================================
-function FDsSceneCatalog_selectObject(p){
+function FDsSceneCatalog_selectObject(item){
    var o = this;
-   if(p != null){
-      o.processSelectedListener(p, true);
+   if(item){
+      o.processSelectedListener(item, true);
    }
 }
 
@@ -387,18 +387,18 @@ function FDsSceneCatalog_selectObject(p){
 // <T>选中对象。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param select:FObject 对象
 //==========================================================
-function FDsSceneCatalog_showObject(p){
+function FDsSceneCatalog_showObject(select){
    var o = this;
-   if(RClass.isClass(p, FDsSceneRenderable)){
-      var s = o._renderables;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var nr = s.getAt(i);
-         var r = nr.dataPropertyGet('linker');
-         if(r == p){
-            o.processSelectedListener(p, false);
+   if(RClass.isClass(select, FDsSceneRenderable)){
+      var renderables = o._renderables;
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         var r = renderable.dataPropertyGet('linker');
+         if(r == select){
+            o.processSelectedListener(select, false);
          }
       }
    }

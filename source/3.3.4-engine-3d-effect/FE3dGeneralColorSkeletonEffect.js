@@ -54,16 +54,16 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
    // 设置骨头集合
-   var bs = pr.bones();
-   if(bs){
-      var bc = pr._boneLimit;
-      var d = RTypeArray.findTemp(EDataType.Float32, 16 * bc);
-      for(var i = 0; i < bc; i++){
-         var b = bs.get(i);
-         var m = b.matrix();
-         m.writeData(d, 16 * i);
+   var bones = pr.bones();
+   if(bones){
+      var boneCount = pr._boneLimit;
+      var data = RTypeArray.findTemp(EDataType.Float32, 16 * boneCount);
+      for(var i = 0; i < boneCount; i++){
+         var bone = bones.get(i);
+         var boneMatrix = bone.matrix();
+         boneMatrix.writeData(data, 16 * i);
       }
-      p.setParameter('vc_bone_matrix', d);
+      p.setParameter('vc_bone_matrix', data);
    }
    // 绑定所有属性流
    o.bindAttributes(pr);

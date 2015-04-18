@@ -56,12 +56,11 @@ function FE3rMaterialConsole_load(context, guid){
    }
    // 获得路径
    var resource = RConsole.find(FE3sMaterialConsole).find(guid);
-   // 加载模型
+   // 创建材质
    material = RClass.create(FE3rMaterial);
    material.linkGraphicContext(context);
-   material.setGuid(guid);
-   material.setResource(resource);
-   material.calculate(resource);
+   material.loadResource(resource);
+   material.load();
    o._materials.set(guid, material);
    return material;
 }

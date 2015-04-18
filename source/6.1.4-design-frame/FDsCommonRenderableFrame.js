@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150216
 //==========================================================
-function FDsSceneRenderableFrame(o){
+function FDsCommonRenderableFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -12,16 +12,16 @@ function FDsSceneRenderableFrame(o){
    o._activeRenderable = null;
    //..........................................................
    // @event
-   o.onBuilded         = FDsSceneRenderableFrame_onBuilded;
-   o.onDataChanged     = FDsSceneRenderableFrame_onDataChanged;
-   o.onEffectClick     = FDsSceneRenderableFrame_onEffectClick;
+   o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
+   o.onDataChanged     = FDsCommonRenderableFrame_onDataChanged;
+   o.onEffectClick     = FDsCommonRenderableFrame_onEffectClick;
    //..........................................................
    // @method
-   o.construct         = FDsSceneRenderableFrame_construct;
+   o.construct         = FDsCommonRenderableFrame_construct;
    // @method
-   o.loadObject        = FDsSceneRenderableFrame_loadObject;
+   o.loadObject        = FDsCommonRenderableFrame_loadObject;
    // @method
-   o.dispose           = FDsSceneRenderableFrame_dispose;
+   o.dispose           = FDsCommonRenderableFrame_dispose;
    return o;
 }
 
@@ -31,7 +31,7 @@ function FDsSceneRenderableFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneRenderableFrame_onBuilded(p){
+function FDsCommonRenderableFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
@@ -48,7 +48,7 @@ function FDsSceneRenderableFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneRenderableFrame_onDataChanged(p){
+function FDsCommonRenderableFrame_onDataChanged(p){
    var o = this;
    var r = o._activeRenderable;
    var m = r.matrix();
@@ -71,7 +71,7 @@ function FDsSceneRenderableFrame_onDataChanged(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneRenderableFrame_onEffectClick(ps, pi){
+function FDsCommonRenderableFrame_onEffectClick(ps, pi){
    var o = this;
    var e = pi.tag();
    var p = e._program;
@@ -87,7 +87,7 @@ function FDsSceneRenderableFrame_onEffectClick(ps, pi){
 //
 // @method
 //==========================================================
-function FDsSceneRenderableFrame_construct(){
+function FDsCommonRenderableFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -100,7 +100,7 @@ function FDsSceneRenderableFrame_construct(){
 // @param s:scene:FE3dScene 场景
 // @param r:renderable:FE3dRenderable 渲染对象
 //==========================================================
-function FDsSceneRenderableFrame_loadObject(s, r){
+function FDsCommonRenderableFrame_loadObject(s, r){
    var o = this;
    o._activeScene = s;
    o._activeRenderable = r;
@@ -130,7 +130,7 @@ function FDsSceneRenderableFrame_loadObject(s, r){
 //
 // @method
 //==========================================================
-function FDsSceneRenderableFrame_dispose(){
+function FDsCommonRenderableFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

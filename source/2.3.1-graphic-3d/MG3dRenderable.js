@@ -13,7 +13,6 @@ function MG3dRenderable(o){
    o._currentMatrix = null;
    o._matrix        = null;
    // @attribute
-   o._materialName  = null;
    o._material      = null;
    // @attribute
    o._activeInfo    = null;
@@ -22,11 +21,11 @@ function MG3dRenderable(o){
    // @method
    o.construct      = MG3dRenderable_construct;
    // @method
-   o.createMaterial = MG3dRenderable_createMaterial;
-   // @method
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
+   // @method
    o.material       = MG3dRenderable_material;
+   o.setMaterial    = MG3dRenderable_setMaterial;
    // @method
    o.activeEffect   = MG3dRenderable_activeEffect;
    o.activeInfo     = MG3dRenderable_activeInfo;
@@ -36,9 +35,9 @@ function MG3dRenderable(o){
    o.selectInfo     = MG3dRenderable_selectInfo;
    o.resetInfos     = MG3dRenderable_resetInfos;
    // @method
-   o.testVisible    = RMethod.virtual(o, 'testVisible');
+   o.testVisible    = RMethod.emptyTrue;
    // @method
-   o.update         = MG3dRenderable_update;
+   o.update         = RMethod.empty;
    // @method
    o.dispose        = MG3dRenderable_dispose;
    return o;
@@ -53,17 +52,6 @@ function MG3dRenderable_construct(){
    var o = this;
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
-   o._material = o.createMaterial();
-}
-
-//==========================================================
-// <T>创建材质。</T>
-//
-// @method
-// @return FG3dMaterial 材质
-//==========================================================
-function MG3dRenderable_createMaterial(){
-   return RClass.create(FG3dMaterial);
 }
 
 //==========================================================
@@ -93,8 +81,8 @@ function MG3dRenderable_matrix(){
 // @return FG3dEffect 效果器
 //==========================================================
 function MG3dRenderable_activeEffect(){
-   var i = this._activeInfo;
-   return i ? i.effect : null;
+   var info = this._activeInfo;
+   return info ? info.effect : null;
 }
 
 //==========================================================
@@ -111,16 +99,16 @@ function MG3dRenderable_activeInfo(){
 // <T>根据名称查找效果器。</T>
 //
 // @method
-// @param p:name:String 名称
-// @return SG3dRenderableInfo 效果器
+// @param code:String 代码
+// @return FG3dEffect 效果器
 //==========================================================
-function MG3dRenderable_effectFind(p){
+function MG3dRenderable_effectFind(code){
    var o = this;
-   var s = o._infos;
-   if(s){
-      var i = s.get(p);
-      if(i){
-         return i.effect;
+   var infos = o._infos;
+   if(infos){
+      var info = infos.get(code);
+      if(info){
+         return info.effect;
       }
    }
    return null;
@@ -130,18 +118,18 @@ function MG3dRenderable_effectFind(p){
 // <T>设置一个效果器。</T>
 //
 // @method
-// @param n:name:String 名称
-// @param e:effect:FG3dEffect 效果器
+// @param code:String 代码
+// @param effect:FG3dEffect 效果器
 //==========================================================
-function MG3dRenderable_effectSet(n, e){
+function MG3dRenderable_effectSet(code, effect){
    var o = this;
-   var s = o.infos();
-   var i = s.get(n);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      es.set(n, i)
+   var infos = o.infos();
+   var info = infos.get(code);
+   if(!info){
+      info = new SG3dRenderableInfo();
+      infos.set(code, info)
    }
-   i.effect = e;
+   info.effect = effect;
 }
 
 //==========================================================
@@ -152,11 +140,11 @@ function MG3dRenderable_effectSet(n, e){
 //==========================================================
 function MG3dRenderable_infos(){
    var o = this;
-   var r = o._infos;
-   if(!r){
-      r = o._infos = new TDictionary();
+   var infos = o._infos;
+   if(!infos){
+      infos = o._infos = new TDictionary();
    }
-   return r;
+   return infos;
 }
 
 //==========================================================
@@ -168,14 +156,14 @@ function MG3dRenderable_infos(){
 //==========================================================
 function MG3dRenderable_selectInfo(p){
    var o = this;
-   var s = o.infos();
-   var i = s.get(p);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      s.set(p, i)
+   var infos = o.infos();
+   var info = infos.get(p);
+   if(!info){
+      info = new SG3dRenderableInfo();
+      infos.set(p, info)
    }
-   o._activeInfo = i;
-   return i;
+   o._activeInfo = info;
+   return info;
 }
 
 //==========================================================
@@ -185,10 +173,10 @@ function MG3dRenderable_selectInfo(p){
 //==========================================================
 function MG3dRenderable_resetInfos(){
    var o = this;
-   var s = o._infos;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.valueAt(i).reset();
+   var infos = o._infos;
+   if(infos){
+      for(var i = infos.count() - 1; i >= 0; i--){
+         infos.at(i).reset();
       }
    }
 }
@@ -197,19 +185,20 @@ function MG3dRenderable_resetInfos(){
 // <T>获得材质。</T>
 //
 // @method
-// @return 材质
+// @return FG3dMaterial 材质
 //==========================================================
 function MG3dRenderable_material(){
    return this._material;
 }
 
 //==========================================================
-// <T>更新处理。</T>
+// <T>获得材质。</T>
 //
 // @method
-// @param p:region:FG3dRegion 区域
+// @param material:FG3dMaterial 材质
 //==========================================================
-function MG3dRenderable_update(p){
+function MG3dRenderable_setMaterial(material){
+   this._material = material;
 }
 
 //==========================================================
@@ -223,5 +212,6 @@ function MG3dRenderable_dispose(){
    o._currentMatrix = RObject.dispose(o._currentMatrix);
    o._matrix = RObject.dispose(o._matrix);
    o._material = RObject.dispose(o._material);
+   o._activeInfo = null;
    o._infos = RObject.dispose(o._infos);
 }

@@ -39,8 +39,12 @@ function FE3sGeometry_unserialize(input){
    var o = this;
    o.__base.FE3sDrawable.unserialize.call(o, input);
    // 读取属性
-   o._outline.unserialize(input);
-   o._outline.update();
+   var outline = o._outline;
+   outline.unserialize(input);
+   if(outline.isEmpty()){
+      throw new TError('Outline is empty.');
+   }
+   outline.update();
    // 读取数据流集合
    var streamCount = input.readInt8();
    if(streamCount > 0){
@@ -51,6 +55,7 @@ function FE3sGeometry_unserialize(input){
          streams.push(stream);
       }
    }
+   // 
 }
 
 //==========================================================

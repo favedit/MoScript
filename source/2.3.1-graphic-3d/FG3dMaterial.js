@@ -35,6 +35,5 @@ function FG3dMaterial_textures(){
 // @return 纹理集合
 //==========================================================
 function FG3dMaterial_update(){
-   var o = this;
-   o._dirty = true;
+   this._dirty = true;
 }

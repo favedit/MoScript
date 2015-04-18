@@ -13,7 +13,7 @@ function FE3dSceneConsole(o){
    // @attribute
    o._loadDisplays = null;
    o._loadScenes   = null;
-   o._scenes       = null;
+   o._pools        = null;
    // @attribute
    o._thread       = null;
    o._interval     = 100;
@@ -72,7 +72,7 @@ function FE3dSceneConsole_construct(){
    // 设置属性
    o._loadDisplays = new TLooper();
    o._loadScenes = new TLooper();
-   o._scenes = new TDictionary();
+   o._pools = RClass.create(FObjectPools);
    // 创建线程
    var thread = o._thread = RClass.create(FThread);
    thread.setInterval(o._interval);
@@ -110,21 +110,21 @@ function FE3dSceneConsole_loadDisplay(display){
 //==========================================================
 function FE3dSceneConsole_allocByGuid(context, guid){
    var o = this;
+   // 尝试从缓冲池中取出
+   var scene = o._pools.alloc(guid);
+   if(scene){
+      return scene;
+   }
    // 加载渲染对象
    var resource = RConsole.find(FE3sSceneConsole).loadByGuid(guid);
    // 加载模型
-   var scene = RClass.create(FE3dScene);
+   scene = RClass.create(FE3dScene);
    scene.linkGraphicContext(context);
-   scene._guid = guid;
-   scene._resource = resource;
+   scene.setResource(resource);
+   scene._poolCode = guid;
    scene.setup();
-   // 测试是否已加载
-   if(resource.testReady()){
-      scene.load(resource);
-   }else{
-      // 增加加载中
-      o._loadScenes.push(scene);
-   }
+   // 增加加载中
+   o._loadScenes.push(scene);
    return scene;
 }
 
@@ -164,4 +164,8 @@ function FE3dSceneConsole_allocByCode(pc, pn){
 // @param scene:FE3dScene 场景
 //==========================================================
 function FE3dSceneConsole_free(scene){
+   var o = this;
+   // 放到缓冲池
+   var code = scene._poolCode;
+   o._pools.free(code, scene);
 }

@@ -9,7 +9,7 @@ function FE3sSceneAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute
-   o._playRate   = null;
+   o._playRate   = 1;
    //..........................................................
    // @method
    o.construct   = FE3sSceneAnimation_construct;
@@ -46,10 +46,10 @@ function FE3sSceneAnimation_playRate(){
 // <T>设置播放速率。</T>
 //
 // @method
-// @param p:playRate:Number 播放速率
+// @param playRate:Number 播放速率
 //==========================================================
-function FE3sSceneAnimation_setPlayRate(p){
-   this._playRate = p;
+function FE3sSceneAnimation_setPlayRate(playRate){
+   this._playRate = playRate;
 }
 
 //==========================================================

@@ -232,6 +232,8 @@ function FDsSceneCanvas_onDataLoaded(p){
    //s.registerLayer('ui', l);
    // 加载完成
    o.processLoadListener(o);
+   // 隐藏处理
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -287,18 +289,25 @@ function FDsSceneCanvas_construct(){
 // <T>选中渲染显示对象处理。</T>
 //
 // @method
-// @param p:display:FDisplay 显示对象
+// @param select:FDisplay 显示对象
 //==========================================================
-function FDsSceneCanvas_innerSelectDisplay(p){
+function FDsSceneCanvas_innerSelectDisplay(select){
    var o = this;
-   // 选中集合
-   var s = p.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.getAt(i);
-      if(RClass.isClass(r, FDsSceneRenderable)){
-         o._selectRenderables.push(r);
-         r.showBoundBox();
+   // 选中显示集合
+   var displays = select.displays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      o.innerSelectDisplay(display);
+   }
+   // 选中渲染集合
+   var renderables = select.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(RClass.isClass(renderable, FDsSceneRenderable)){
+         o._selectRenderables.push(renderable);
+         renderable.showBoundBox();
       }
    }
 }
@@ -307,16 +316,15 @@ function FDsSceneCanvas_innerSelectDisplay(p){
 // <T>选中渲染显示对象处理。</T>
 //
 // @method
-// @param p:display:FDisplay 显示对象
+// @param layer:FDisplayLayer 显示层
 //==========================================================
-function FDsSceneCanvas_innerSelectLayer(p){
+function FDsSceneCanvas_innerSelectLayer(layer){
    var o = this;
-   // 选中集合
-   var s = p.displays();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var d = s.getAt(i);
-      o.innerSelectDisplay(d)
+   var displays = layer.displays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      o.innerSelectDisplay(display)
    }
 }
 
@@ -329,11 +337,11 @@ function FDsSceneCanvas_selectNone(){
    var o = this;
    o._selectObject = null;
    // 取消所有选中对象
-   var s = o._selectRenderables;
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      r.hideBoundBox();
+   var renderables = o._selectRenderables;
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      renderable.hideBoundBox();
    }
    o._selectRenderables.clear();
 }
@@ -608,25 +616,30 @@ function FDsSceneCanvas_capture(){
 //==========================================================
 function FDsSceneCanvas_loadByGuid(guid){
    var o = this;
-   var context = o._graphicContext;
-   var space = o._activeSpace;
    // 设置实例工厂
    var sceneConsole = RConsole.find(FE3dInstanceConsole);
    sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
    sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
    sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
    sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
-   // 收集场景
+   // 释放场景
+   var space = o._activeSpace;
    var sceneConsole = RConsole.find(FE3dSceneConsole);
    if(space){
       RStage.unregister(space);
-      sceneConsole.free(o._activeSpace);
+      sceneConsole.free(space);
    }
-   // 监听加载完成
-   var space = sceneConsole.allocByGuid(context, guid);
-   space.addLoadListener(o, o.onDataLoaded);
-   o._activeSpace = space;
-   RStage.register('stage3d', space);
+   // 收集一个显示模板
+   space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
+   if(!space._linked){
+      // 显示加载进度
+      RConsole.find(FUiDesktopConsole).showLoading();
+      // 设置事件
+      space.addLoadListener(o, o.onDataLoaded);
+      space._linked = true;
+   }
+   // 启动舞台
+   RStage.register('space', space);
 }
 
 //==========================================================

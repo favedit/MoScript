@@ -30,10 +30,8 @@ function MGraphicObject_dispose(){
 }
 function MGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
-   o.process = MGraphicRenderable_process;
+   o.process = RMethod.empty;
    return o;
-}
-function MGraphicRenderable_process(){
 }
 function FFloatStream(o){
    o = RClass.inherits(this, o, FObject);

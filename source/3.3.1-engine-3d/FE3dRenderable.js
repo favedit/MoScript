@@ -5,42 +5,49 @@
 // @history 150207
 //==========================================================
 function FE3dRenderable(o){
-   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject);
+   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
    //..........................................................
    // @attribute
-   o._display         = null;
+   o._display           = null;
    // @attribute
-   o._outline         = null;
-   o._outlineVisible  = true;
-   o._calculateMatrix = null;
-   o._vertexCount     = 0;
-   o._vertexBuffers   = null;
-   o._indexBuffer     = null;
-   o._textures        = null;
+   o._outline           = null;
+   o._outlineVisible    = true;
+   // @attribute
+   o._calculateMatrix   = null;
+   // @attribute
+   o._vertexCount       = 0;
+   o._vertexBuffers     = null;
+   o._indexBuffer       = null;
+   // @attribute
+   o._materialReference = null;
+   o._textures          = null;
    //..........................................................
    // @method
-   o.construct        = FE3dRenderable_construct;
+   o.construct          = FE3dRenderable_construct;
    // @method
-   o.createMaterial   = FE3dRenderable_createMaterial;
+   o.setup              = RMethod.empty;
    // @method
-   o.setup            = RMethod.empty;
+   o.testReady          = RMethod.emptyTrue;
+   o.testVisible        = FE3dRenderable_testVisible;
    // @method
-   o.testReady        = RMethod.emptyTrue;
-   o.testVisible      = FE3dRenderable_testVisible;
-   o.display          = FE3dRenderable_display;
-   o.setDisplay       = FE3dRenderable_setDisplay;
-   o.vertexCount      = FE3dRenderable_vertexCount;
-   o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
-   o.vertexBuffers    = FE3dRenderable_vertexBuffers;
-   o.indexBuffer      = FE3dRenderable_indexBuffer;
-   o.findTexture      = FE3dRenderable_findTexture;
-   o.pushTexture      = FE3dRenderable_pushTexture;
-   o.textures         = FE3dRenderable_textures;
-   o.bones            = RMethod.empty;
+   o.display            = FE3dRenderable_display;
+   o.setDisplay         = FE3dRenderable_setDisplay;
    // @method
-   o.processDelay     = RMethod.empty;
-   o.update           = FE3dRenderable_update;
-   o.remove           = FE3dRenderable_remove;
+   o.vertexCount        = FE3dRenderable_vertexCount;
+   o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
+   o.vertexBuffers      = FE3dRenderable_vertexBuffers;
+   o.indexBuffer        = FE3dRenderable_indexBuffer;
+   // @method
+   o.materialReference  = FE3dRenderable_materialReference;
+   // @method
+   o.findTexture        = FE3dRenderable_findTexture;
+   o.pushTexture        = FE3dRenderable_pushTexture;
+   o.textures           = FE3dRenderable_textures;
+   o.bones              = RMethod.empty;
+   // @method
+   o.processDelay       = RMethod.empty;
+   o.update             = FE3dRenderable_update;
+   o.remove             = FE3dRenderable_remove;
    return o;
 }
 
@@ -57,16 +64,7 @@ function FE3dRenderable_construct(){
    o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
-}
-
-//==========================================================
-// <T>创建材质。</T>
-//
-// @method
-// @return FG3dMaterial 材质
-//==========================================================
-function FE3dRenderable_createMaterial(){
-   return RClass.create(FE3dMaterial);
+   o._materialReference = o;
 }
 
 //==========================================================
@@ -92,12 +90,12 @@ function FE3dRenderable_testVisible(){
       return false;
    }
    // 测试模式时候，可见性依赖材质
-   //if(RRuntime.isDebug()){
-   //   var material = o.material();
-   //   if(!material.testVisible()){
-   //      return false;
-   //   }
-   //}
+   var material = o._material;
+   if(material){
+      if(!material.testVisible()){
+         return false;
+      }
+   }
    return true;
 }
 
@@ -135,11 +133,11 @@ function FE3dRenderable_vertexCount(){
 // <T>根据代码查找顶点缓冲。</T>
 //
 // @method
-// @param p:code:String 代码
+// @param code:String 代码
 // @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
-function FE3dRenderable_findVertexBuffer(p){
-   return this._vertexBuffers.get(p);
+function FE3dRenderable_findVertexBuffer(code){
+   return this._vertexBuffers.get(code);
 }
 
 //==========================================================
@@ -150,6 +148,16 @@ function FE3dRenderable_findVertexBuffer(p){
 //==========================================================
 function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
+}
+
+//==========================================================
+// <T>获得材质引用。</T>
+//
+// @method
+// @return FObject 材质引用
+//==========================================================
+function FE3dRenderable_materialReference(){
+   return this._materialReference;
 }
 
 //==========================================================
@@ -174,21 +182,6 @@ function FE3dRenderable_findTexture(p){
 }
 
 //==========================================================
-// <T>增加一个纹理。</T>
-//
-// @method
-// @param p:texture:FG3dTexture 纹理
-//==========================================================
-function FE3dRenderable_pushTexture(p){
-   var o = this;
-   var s = o._textures;
-   if(!s){
-      s = o._textures = new TDictionary();
-   }
-   s.set(p._name, p);
-}
-
-//==========================================================
 // <T>获得纹理集合。</T>
 //
 // @method
@@ -199,30 +192,46 @@ function FE3dRenderable_textures(){
 }
 
 //==========================================================
+// <T>增加一个纹理。</T>
+//
+// @method
+// @param texture:FG3dTexture 纹理
+//==========================================================
+function FE3dRenderable_pushTexture(texture){
+   var o = this;
+   var textures = o._textures;
+   if(!textures){
+      textures = o._textures = new TDictionary();
+   }
+   var code = texture.code();
+   textures.set(code, texture);
+}
+
+//==========================================================
 // <T>更新处理。</T>
 //
 // @method
-// @param p:region:FG3dRegion 区域
+// @param region:FG3dRegion 区域
 //==========================================================
-function FE3dRenderable_update(p){
+function FE3dRenderable_update(region){
    var o = this;
    // 计算矩阵
-   var m = o._calculateMatrix;
-   m.assign(o._matrix);
+   var calculateMatrix = o._calculateMatrix;
+   calculateMatrix.assign(o._matrix);
    // 计算显示矩阵
-   var d = o._drawable;
-   if(d){
-      m.append(d.currentMatrix());
+   var drawable = o._drawable;
+   if(drawable){
+      calculateMatrix.append(drawable.currentMatrix());
    }
    // 计算显示矩阵
-   var d = o._display;
-   if(d){
-      m.append(d.currentMatrix());
+   var display = o._display;
+   if(display){
+      calculateMatrix.append(display.currentMatrix());
    }
    // 接收数据
-   var c = o._currentMatrix.attachData(m.data());
-   if(c && p){
-      p.change();
+   var changed = o._currentMatrix.attachData(calculateMatrix.data());
+   if(changed && region){
+      region.change();
    }
 }
 
@@ -233,9 +242,9 @@ function FE3dRenderable_update(p){
 //==========================================================
 function FE3dRenderable_remove(){
    var o = this;
-   var d = o._display;
-   if(d){
-      d.removeRenderable(o);
+   var display = o._display;
+   if(display){
+      display.removeRenderable(o);
       o._display = null;
    }
 }

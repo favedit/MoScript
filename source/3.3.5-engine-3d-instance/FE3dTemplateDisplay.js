@@ -114,35 +114,36 @@ function FE3dTemplateDisplay_skeletons(){
 // @method
 // @param p:skeleton:FE3rSkeleton 渲染骨骼
 //==========================================================
-function FE3dTemplateDisplay_pushSkeleton(p){
+function FE3dTemplateDisplay_pushSkeleton(skeleton){
    var o = this;
-   var r = o._skeletons;
-   if(!r){
-      r = o._skeletons = new TDictionary();
+   var resource = skeleton.resource();
+   var skeletonGuid = resource.guid();
+   var skeletons = o._skeletons;
+   if(!skeletons){
+      skeletons = o._skeletons = new TDictionary();
    }
    if(!o._activeSkeleton){
-      o._activeSkeleton = p;
+      o._activeSkeleton = skeleton;
    }
-   r.set(p._resource.guid(), p);
+   skeletons.set(skeletonGuid, skeleton);
 }
 
 //==========================================================
 // <T>加载骨骼集合。</T>
 //
 // @method
-// @param p:animations:TObjects 骨骼集合
+// @param skeletons:TObjects 骨骼集合
 //==========================================================
-function FE3dTemplateDisplay_loadSkeletons(p){
+function FE3dTemplateDisplay_loadSkeletons(skeletonResources){
    var o = this;
-   var c = p.count();
-   if(c > 0){
-      var ks = o.skeletons();
-      for(var i = 0; i < c; i++){
-         var r = p.getAt(i);
+   var count = skeletonResources.count();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var skeletonResource = skeletonResources.at(i);
          // 创建骨骼
-         var s = RClass.create(FE3rSkeleton);
-         s.loadResource(r);
-         o.pushSkeleton(s);
+         var skeleton = RClass.create(FE3rSkeleton);
+         skeleton.loadResource(skeletonResource);
+         o.pushSkeleton(skeleton);
       }
    }
 }
@@ -151,18 +152,18 @@ function FE3dTemplateDisplay_loadSkeletons(p){
 // <T>关联渲染动画。</T>
 //
 // @method
-// @param p:animation:FE3rAnimation 渲染动画
+// @param animation:FE3rAnimation 渲染动画
 //==========================================================
-function FE3dTemplateDisplay_linkAnimation(p){
+function FE3dTemplateDisplay_linkAnimation(animation){
    var o = this;
-   var ts = p.tracks();
-   var c = ts.count();
-   for(var i = 0; i < c; i++){
-      var t = ts.getAt(i);
-      var mc = t._resource._meshCode;
-      if(mc){
-         var m = o.findMeshByCode(mc);
-         m._activeTrack = t;
+   var tracks = animation.tracks();
+   var count = tracks.count();
+   for(var i = 0; i < count; i++){
+      var track = tracks.at(i);
+      var meshCode = track._resource._meshCode;
+      if(meshCode){
+         var mesh = o.findMeshByCode(meshCode);
+         mesh._activeTrack = track;
       }
    }
 }
@@ -171,30 +172,28 @@ function FE3dTemplateDisplay_linkAnimation(p){
 // <T>加载动画集合。</T>
 //
 // @method
-// @param p:animations:TObjects 动画集合
+// @param animations:TObjects 动画集合
 //==========================================================
-function FE3dTemplateDisplay_loadAnimations(p){
+function FE3dTemplateDisplay_loadAnimations(animationResources){
    var o = this;
-   var c = p.count();
-   if(c > 0){
-      for(var i = 0; i < c; i++){
-         var r = p.getAt(i);
-         // 查找是否存在
-         var a = o.findAnimation(r.guid());
-         if(a){
-            continue;
-         }
-         // 创建渲染动画
-         var a = null;
-         if(r.skeleton()){
-            a = RClass.create(FE3rSkeletonAnimation);
-         }else{
-            a = RClass.create(FE3rMeshAnimation);
-         }
-         a._display = o;
-         a.loadResource(r);
-         o.pushAnimation(a);
+   var animationCount = animationResources.count();
+   for(var i = 0; i < animationCount; i++){
+      var animationResource = animationResources.at(i);
+      // 查找是否存在
+      var guid = animationResource.guid();
+      var animation = o.findAnimation(guid);
+      if(animation){
+         continue;
       }
+      // 创建渲染动画
+      if(animationResource.skeleton()){
+         animation = RClass.create(FE3rSkeletonAnimation);
+      }else{
+         animation = RClass.create(FE3rMeshAnimation);
+      }
+      animation._display = o;
+      animation.loadResource(animationResource);
+      o.pushAnimation(animation);
    }
 }
 
@@ -212,11 +211,12 @@ function FE3dTemplateDisplay_loadResource(resource){
    o._matrix.assign(resource.matrix());
    // 加载资源渲染集合
    var renderableResources = resource.renderables();
-   var renderableCount = renderableResources.count();
-   if(renderableCount > 0){
+   if(renderableResources){
       var shapes = o._shapes;
+      var renderableCount = renderableResources.count();
       for(var i = 0; i < renderableCount; i++){
          var renderableResource = renderableResources.at(i);
+         // 创建渲染对象
          var renderable = instanceConsole.create(EE3dInstance.TemplateRenderable);
          renderable._display = o;
          renderable.linkGraphicContext(o);

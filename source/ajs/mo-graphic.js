@@ -30,10 +30,8 @@ function MGraphicObject_dispose(){
 }
 function MGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
-   o.process = MGraphicRenderable_process;
+   o.process = RMethod.empty;
    return o;
-}
-function MGraphicRenderable_process(){
 }
 function FFloatStream(o){
    o = RClass.inherits(this, o, FObject);
@@ -504,15 +502,14 @@ function MG3dRenderable(o){
    o._optionMerge   = false;
    o._currentMatrix = null;
    o._matrix        = null;
-   o._materialName  = null;
    o._material      = null;
    o._activeInfo    = null;
    o._infos         = null;
    o.construct      = MG3dRenderable_construct;
-   o.createMaterial = MG3dRenderable_createMaterial;
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
    o.material       = MG3dRenderable_material;
+   o.setMaterial    = MG3dRenderable_setMaterial;
    o.activeEffect   = MG3dRenderable_activeEffect;
    o.activeInfo     = MG3dRenderable_activeInfo;
    o.effectFind     = MG3dRenderable_effectFind;
@@ -520,8 +517,8 @@ function MG3dRenderable(o){
    o.infos          = MG3dRenderable_infos;
    o.selectInfo     = MG3dRenderable_selectInfo;
    o.resetInfos     = MG3dRenderable_resetInfos;
-   o.testVisible    = RMethod.virtual(o, 'testVisible');
-   o.update         = MG3dRenderable_update;
+   o.testVisible    = RMethod.emptyTrue;
+   o.update         = RMethod.empty;
    o.dispose        = MG3dRenderable_dispose;
    return o;
 }
@@ -529,10 +526,6 @@ function MG3dRenderable_construct(){
    var o = this;
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
-   o._material = o.createMaterial();
-}
-function MG3dRenderable_createMaterial(){
-   return RClass.create(FG3dMaterial);
 }
 function MG3dRenderable_currentMatrix(){
    return this._currentMatrix;
@@ -541,71 +534,73 @@ function MG3dRenderable_matrix(){
    return this._matrix;
 }
 function MG3dRenderable_activeEffect(){
-   var i = this._activeInfo;
-   return i ? i.effect : null;
+   var info = this._activeInfo;
+   return info ? info.effect : null;
 }
 function MG3dRenderable_activeInfo(){
    return this._activeInfo;
 }
-function MG3dRenderable_effectFind(p){
+function MG3dRenderable_effectFind(code){
    var o = this;
-   var s = o._infos;
-   if(s){
-      var i = s.get(p);
-      if(i){
-         return i.effect;
+   var infos = o._infos;
+   if(infos){
+      var info = infos.get(code);
+      if(info){
+         return info.effect;
       }
    }
    return null;
 }
-function MG3dRenderable_effectSet(n, e){
+function MG3dRenderable_effectSet(code, effect){
    var o = this;
-   var s = o.infos();
-   var i = s.get(n);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      es.set(n, i)
+   var infos = o.infos();
+   var info = infos.get(code);
+   if(!info){
+      info = new SG3dRenderableInfo();
+      infos.set(code, info)
    }
-   i.effect = e;
+   info.effect = effect;
 }
 function MG3dRenderable_infos(){
    var o = this;
-   var r = o._infos;
-   if(!r){
-      r = o._infos = new TDictionary();
+   var infos = o._infos;
+   if(!infos){
+      infos = o._infos = new TDictionary();
    }
-   return r;
+   return infos;
 }
 function MG3dRenderable_selectInfo(p){
    var o = this;
-   var s = o.infos();
-   var i = s.get(p);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      s.set(p, i)
+   var infos = o.infos();
+   var info = infos.get(p);
+   if(!info){
+      info = new SG3dRenderableInfo();
+      infos.set(p, info)
    }
-   o._activeInfo = i;
-   return i;
+   o._activeInfo = info;
+   return info;
 }
 function MG3dRenderable_resetInfos(){
    var o = this;
-   var s = o._infos;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.valueAt(i).reset();
+   var infos = o._infos;
+   if(infos){
+      for(var i = infos.count() - 1; i >= 0; i--){
+         infos.at(i).reset();
       }
    }
 }
 function MG3dRenderable_material(){
    return this._material;
 }
-function MG3dRenderable_update(p){
+function MG3dRenderable_setMaterial(material){
+   this._material = material;
 }
 function MG3dRenderable_dispose(){
    var o = this;
    o._currentMatrix = RObject.dispose(o._currentMatrix);
    o._matrix = RObject.dispose(o._matrix);
    o._material = RObject.dispose(o._material);
+   o._activeInfo = null;
    o._infos = RObject.dispose(o._infos);
 }
 function SG3dEffectInfo(){
@@ -1009,15 +1004,9 @@ function FG3dAnimation_dispose(){
 function FG3dBaseMaterial(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
-   o._visible    = true;
    o._info       = null;
-   o._reference  = null;
    o.construct   = FG3dBaseMaterial_construct;
-   o.visible     = FG3dBaseMaterial_visible;
-   o.setVisible  = FG3dBaseMaterial_setVisible;
    o.info        = FG3dBaseMaterial_info;
-   o.reference   = FG3dBaseMaterial_reference;
-   o.testVisible = FG3dBaseMaterial_testVisible;
    o.assignInfo  = FG3dBaseMaterial_assignInfo;
    o.assign      = FG3dBaseMaterial_assign;
    o.calculate   = FG3dBaseMaterial_calculate;
@@ -1028,38 +1017,19 @@ function FG3dBaseMaterial_construct(){
    o.__base.FObject.construct.call(o);
    o._info = new SG3dMaterialInfo();
 }
-function FG3dBaseMaterial_visible(){
-   return this._visible;
-}
-function FG3dBaseMaterial_setVisible(p){
-   this._visible = p;
-}
 function FG3dBaseMaterial_info(){
    return this._info;
 }
-function FG3dBaseMaterial_reference(){
-   return this._reference;
+function FG3dBaseMaterial_assignInfo(info){
+   this._info.assign(info);
 }
-function FG3dBaseMaterial_testVisible(){
+function FG3dBaseMaterial_assign(material){
    var o = this;
-   var r = o._visible;
-   if(r && o._reference){
-      r = o._reference.testVisible();
-   }
-   return r;
+   o._info.assign(material.info());
 }
-function FG3dBaseMaterial_assignInfo(p){
-   this._info.assign(p);
-}
-function FG3dBaseMaterial_assign(p){
+function FG3dBaseMaterial_calculate(material){
    var o = this;
-   o._reference = p;
-   o._info.assign(p.info());
-}
-function FG3dBaseMaterial_calculate(p){
-   var o = this;
-   o._reference = p;
-   o._info.calculate(p.info());
+   o._info.calculate(material.info());
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -1325,25 +1295,27 @@ function FG3dEffect_drawRenderables(pg, pr, pi, pc){
       o.drawRenderable(pg, pr.getAt(pi + i));
    }
 }
-function FG3dEffect_drawGroup(pg, pr, pi, pc){
-   this.drawRenderables(pg, pr, pi, pc);
+function FG3dEffect_drawGroup(region, pr, pi, pc){
+   this.drawRenderables(region, pr, pi, pc);
 }
-function FG3dEffect_drawRegion(pg, pi, pc){
+function FG3dEffect_drawRegion(region, offset, count){
    var o = this;
-   var rs = pg.renderables();
-   for(var n = 0; n < pc; ){
-      var gb = n;
-      var ge = pc;
-      var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
-         var m = rs.getAt(pi + i)._materialReference;
-         if(gm != m){
-            ge = i;
+   var renderabels = region.renderables();
+   for(var n = 0; n < count; ){
+      var groupBegin = n;
+      var groupEnd = count;
+      var groupRenderable = renderabels.at(offset + groupBegin);
+      var groupMaterial = groupRenderable.materialReference();
+      for(var i = n; i < count; i++){
+         var renderable = renderabels.at(offset + i);
+         var material = renderable.materialReference();
+         if(groupMaterial != material){
+            groupEnd = i;
             break;
          }
          n++;
       }
-      o.drawGroup(pg, rs, pi + gb, ge - gb);
+      o.drawGroup(region, renderabels, offset + groupBegin, groupEnd - groupBegin);
    }
 }
 function FG3dEffect_loadConfig(p){
@@ -1631,8 +1603,7 @@ function FG3dMaterial_textures(){
    return this._textures;
 }
 function FG3dMaterial_update(){
-   var o = this;
-   o._dirty = true;
+   this._dirty = true;
 }
 function FG3dMaterialMap(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);

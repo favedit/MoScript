@@ -26,14 +26,14 @@ function MDsBoundBox(o){
 //==========================================================
 function MDsBoundBox_boundBox(){
    var o = this;
-   var b = o._boundBox;
-   if(!b){
+   var boundBox = o._boundBox;
+   if(!boundBox){
       // 创建包围盒
-      b = o._boundBox = RClass.create(FE3dBoundBox);
-      b.linkGraphicContext(o);
-      b.setup();
+      boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+      boundBox.linkGraphicContext(o);
+      boundBox.setup();
    }
-   return b;
+   return boundBox;
 }
 
 //==========================================================
@@ -44,16 +44,16 @@ function MDsBoundBox_boundBox(){
 function MDsBoundBox_showBoundBox(){
    var o = this;
    // 隐藏包围盒
-   var b = o.boundBox();
-   b.remove();
+   var boundBox = o.boundBox();
+   boundBox.remove();
    // 显示包围盒
-   var r = o.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   b.outline().assign(rl);
-   b.upload();
+   var resource = o.resource();
+   var meshResource = resource.mesh();
+   var outline = meshResource.outline();
+   boundBox.outline().assign(outline);
+   boundBox.upload();
    // 放入绘制集合
-   o.pushDrawable(b);
+   o.pushDrawable(boundBox);
    o._boundVisible = true;
 }
 
@@ -64,8 +64,8 @@ function MDsBoundBox_showBoundBox(){
 //==========================================================
 function MDsBoundBox_hideBoundBox(){
    var o = this;
-   var b = o._boundBox;
+   var boundBox = o._boundBox;
    // 移除绘制集合
-   o.removeDrawable(b);
+   o.removeDrawable(boundBox);
    o._boundVisible = false;
 }

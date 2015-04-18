@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3dScene(o){
-   o = RClass.inherits(this, o, FE3dSpace, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dSpace, MLinkerResource, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady            = false;
@@ -159,7 +159,7 @@ function FE3dScene_loadDisplayResource(layer, resource){
    // 加载场景显示资源
    var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
    display.linkGraphicContext(o);
-   display.loadSceneResource(resource);
+   display.loadResource(resource);
    RConsole.find(FE3dSceneConsole).loadDisplay(display);
    // 放入集合
    layer.pushDisplay(display);

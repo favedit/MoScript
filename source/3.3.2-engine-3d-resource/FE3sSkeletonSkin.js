@@ -66,32 +66,31 @@ function FE3sSkeletonSkin_boneRefers(){
 // <T>从输入流里反序列化信息内容</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sSkeletonSkin_unserialize(p){
+function FE3sSkeletonSkin_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p)
+   o.__base.FE3sObject.unserialize.call(o, input)
    // 读取属性
-   o._meshGuid = p.readString();
+   o._meshGuid = input.readString();
    // 读取数据流集合
-   var c = p.readUint8();
-   if(c > 0){
-      //var s = o._streams = new TDictionary();
-      var s = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FE3sStream);
-         t.unserialize(p);
-         s.push(t);
+   var streamCount = input.readUint8();
+   if(streamCount > 0){
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(input);
+         streams.push(stream);
       }
    }
    // 读取骨头引用集合
-   var c = p.readUint8();
-   if(c > 0){
-      var s = o._boneRefers = new TObjects();
-      for(var i = 0; i < c; i++){
-         var b = RClass.create(FE3sBoneRefer);
-         b.unserialize(p);
-         s.push(b);
+   var boneReferCount = input.readUint8();
+   if(boneReferCount > 0){
+      var boneRefers = o._boneRefers = new TObjects();
+      for(var i = 0; i < boneReferCount; i++){
+         var boneRefer = RClass.create(FE3sBoneRefer);
+         boneRefer.unserialize(input);
+         boneRefers.push(boneRefer);
       }
    }
 }

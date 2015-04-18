@@ -5,30 +5,29 @@
 // @author maocy
 // @history 150316
 //==========================================================
-function FDsSceneAnimationPropertyFrame(o){
+function FDsCommonAnimationPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible       = false;
+   o._visible         = false;
    // @attribute
-   o._workspace     = null;
-   o._animation         = null;
-   o._animationResource = null;
+   o._activeSpace     = null;
+   o._activeAnimation = null;
    // @attribute
-   o._controlGuid   = null;
-   o._controlCode   = null;
-   o._controlLabel  = null;
+   o._controlGuid     = null;
+   o._controlCode     = null;
+   o._controlLabel    = null;
    // @event
    //..........................................................
-   o.onBuilded      = FDsSceneAnimationPropertyFrame_onBuilded;
-   o.onDataChanged  = FDsSceneAnimationPropertyFrame_onDataChanged;
+   o.onBuilded        = FDsCommonAnimationPropertyFrame_onBuilded;
+   o.onDataChanged    = FDsCommonAnimationPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct      = FDsSceneAnimationPropertyFrame_construct;
+   o.construct        = FDsCommonAnimationPropertyFrame_construct;
    // @method
-   o.loadObject     = FDsSceneAnimationPropertyFrame_loadObject;
+   o.loadObject       = FDsCommonAnimationPropertyFrame_loadObject;
    // @method
-   o.dispose        = FDsSceneAnimationPropertyFrame_dispose;
+   o.dispose          = FDsCommonAnimationPropertyFrame_dispose;
    return o;
 }
 
@@ -37,7 +36,7 @@ function FDsSceneAnimationPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneAnimationPropertyFrame_construct(){
+function FDsCommonAnimationPropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -49,7 +48,7 @@ function FDsSceneAnimationPropertyFrame_construct(){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneAnimationPropertyFrame_onBuilded(p){
+function FDsCommonAnimationPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
@@ -66,53 +65,40 @@ function FDsSceneAnimationPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneAnimationPropertyFrame_onDataChanged(p){
+function FDsCommonAnimationPropertyFrame_onDataChanged(p){
    var o = this;
-   var a = o._animation;
-   var r = a.resource();
-   var g = r.guid();
-   // 获得场景动画资源
-   var d = a._display;
-   var rd = d.resourceScene();
-   var ra = rd.findAnimation(g);
-   if(!ra){
-      ra = rd.syncAnimation(g);
-      ra.setCode(r.code());
-      ra.setLabel(r.label());
-   }
+   var animation = o._activeAnimation;
+   var resource = animation.resource();
    // 设置参数
-   r.setCode(o._controlCode.get());
-   r.setLabel(o._controlLabel.get());
-   // 设置参数
-   var pr = o._controlPlayRate.get();
-   ra.setPlayRate(pr);
-   a._playRate = pr;
+   resource.setCode(o._controlCode.get());
+   resource.setLabel(o._controlLabel.get());
+   resource._playRate = o._controlPlayRate.get();
+   // 重新加载数据
+   animation.reloadResource();
 }
 
 //==========================================================
 // <T>加载材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param a:animation:FE3rAnimation 动画对象
+// @param space:FE3dSpace 空间对象
+// @param animation:FE3rAnimation 动画对象
 //==========================================================
-function FDsSceneAnimationPropertyFrame_loadObject(s, a){
+function FDsCommonAnimationPropertyFrame_loadObject(space, animation){
    var o = this;
-   var r = a.resource();
-   // 设置属性
-   o._animation = a;
+   var resource = animation.resource();
+   o._activeSpace = space;
+   o._activeAnimation = animation;
    // 获得场景动画资源
-   var d = a._display;
-   var rd = d.resourceScene();
-   var ra = rd.findAnimation(r.guid());
+   //var display = animation._display;
+   //var displayResource = display.resourceScene();
+   //var animationResource = displayResource.findAnimation(resource.guid());
    // 设置参数
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r.label());
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
    // 设置参数
-   if(ra){
-      o._controlPlayRate.set(ra.playRate());
-   }
+   o._controlPlayRate.set(resource.playRate());
 }
 
 //==========================================================
@@ -120,7 +106,7 @@ function FDsSceneAnimationPropertyFrame_loadObject(s, a){
 //
 // @method
 //==========================================================
-function FDsSceneAnimationPropertyFrame_dispose(){
+function FDsCommonAnimationPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

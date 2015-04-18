@@ -190,39 +190,39 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    var o = this;
    o._activeSpace = space;
    o._activeMaterial = material;
-   var mr = material.resource();
-   var mi = mr.info();
+   var resource = material.resource();
+   var infoResource = resource.info();
    // 设置参数
-   o._controlOptionDouble.set(mi.optionDouble);
-   o._controlEffectCode.set(mi.effectCode);
+   o._controlOptionDouble.set(infoResource.optionDouble);
+   o._controlEffectCode.set(infoResource.effectCode);
    // 设置透明
-   o._controlOptionAlpha.set(mi.optionAlpha);
-   o._controlAlphaBase.set(mi.alphaBase);
-   o._controlAlphaRate.set(mi.alphaRate);
+   o._controlOptionAlpha.set(infoResource.optionAlpha);
+   o._controlAlphaBase.set(infoResource.alphaBase);
+   o._controlAlphaRate.set(infoResource.alphaRate);
    // 设置颜色
-   o._controlOptionColor.set(mi.optionColor);
-   o._controlColorMin.set(mi.colorMin);
-   o._controlColorMax.set(mi.colorMax);
-   o._controlColorRate.set(mi.colorRate);
-   o._controlColorMerge.set(mi.colorMerge);
+   o._controlOptionColor.set(infoResource.optionColor);
+   o._controlColorMin.set(infoResource.colorMin);
+   o._controlColorMax.set(infoResource.colorMax);
+   o._controlColorRate.set(infoResource.colorRate);
+   o._controlColorMerge.set(infoResource.colorMerge);
    // 设置环境
-   o._controlOptionAmbient.set(mi.optionAmbient);
-   o._controlAmbientColor.set(mi.ambientColor);
+   o._controlOptionAmbient.set(infoResource.optionAmbient);
+   o._controlAmbientColor.set(infoResource.ambientColor);
    // 设置散射
-   o._controlOptionDiffuse.set(mi.optionDiffuse);
-   o._controlDiffuseColor.set(mi.diffuseColor);
+   o._controlOptionDiffuse.set(infoResource.optionDiffuse);
+   o._controlDiffuseColor.set(infoResource.diffuseColor);
    // 设置高光
-   o._controlOptionSpecular.set(mi.optionSpecular);
-   o._controlSpecularColor.set(mi.specularColor);
-   o._controlSpecularBase.set(mi.specularBase);
-   o._controlSpecularLevel.set(mi.specularLevel);
+   o._controlOptionSpecular.set(infoResource.optionSpecular);
+   o._controlSpecularColor.set(infoResource.specularColor);
+   o._controlSpecularBase.set(infoResource.specularBase);
+   o._controlSpecularLevel.set(infoResource.specularLevel);
    // 设置反射
-   o._controlOptionReflect.set(mi.optionReflect);
-   o._controlReflectColor.set(mi.reflectColor);
-   o._controlReflectMerge.set(mi.reflectMerge);
+   o._controlOptionReflect.set(infoResource.optionReflect);
+   o._controlReflectColor.set(infoResource.reflectColor);
+   o._controlReflectMerge.set(infoResource.reflectMerge);
    // 设置发光
-   o._controlOptionEmissive.set(mi.optionEmissive);
-   o._controlEmissiveColor.set(mi.emissiveColor);
+   o._controlOptionEmissive.set(infoResource.optionEmissive);
+   o._controlEmissiveColor.set(infoResource.emissiveColor);
 }
 
 //==========================================================

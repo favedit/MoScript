@@ -42,6 +42,7 @@ function FE3rBitmapPack_construct(){
 //==========================================================
 // <T>获得纹理。</T>
 //
+// @method
 // @return 纹理
 //==========================================================
 function FE3rBitmapPack_texture(){
@@ -51,7 +52,8 @@ function FE3rBitmapPack_texture(){
 //==========================================================
 // <T>测试是否准备好。</T>
 //
-// @return 是否准备好
+// @method
+// @return Boolean 是否准备好
 //==========================================================
 function FE3rBitmapPack_testReady(){
    var o = this;

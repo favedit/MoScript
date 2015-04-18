@@ -30,7 +30,6 @@ function FE3dDisplayContainer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
    o._outline = new SOutline3();
-   o._materials = new TDictionary();
 }
 
 //==========================================================

@@ -71,19 +71,19 @@ function FE3rBone_loadResource(p){
 // <T>更新处理。</T>
 //
 // @method
-// @param pi:playInfo:SE3rPlayInfo 播放信息
-// @param pt:tick:Integer 时刻
+// @param info:SE3rPlayInfo 播放信息
+// @param tick:Integer 时刻
 //==========================================================
-function FE3rBone_update(pi, pt){
+function FE3rBone_update(info, tick){
    var o = this;
    // 计算帧信息
-   var t = o._trackResource;
-   t.calculate(pi, pt);
-   pi.update();
+   var resource = o._trackResource;
+   resource.calculate(info, tick);
+   info.update();
    // 计算矩阵
-   var m = o._matrix;
-   m.assign(t.matrixInvert());
-   m.append(pi.matrix);
+   var matrix = o._matrix;
+   matrix.assign(resource.matrixInvert());
+   matrix.append(info.matrix);
 }
 
 //==========================================================

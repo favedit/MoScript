@@ -8,26 +8,26 @@ function FE3sTrack(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._meshCode        = null;
-   o._boneIndex       = 0;
-   o._frameTick       = 0;
-   o._matrix          = null;
-   o._matrixInvert    = null;
-   o._frameCount      = null;
-   o._frames          = null;
+   o._meshCode     = null;
+   o._boneIndex    = 0;
+   o._frameTick    = 0;
+   o._matrix       = null;
+   o._matrixInvert = null;
+   o._frameCount   = null;
+   o._frames       = null;
    //..........................................................
    // @method
-   o.construct        = FE3sTrack_construct;
+   o.construct     = FE3sTrack_construct;
    // @method
-   o.boneIndex        = FE3sTrack_boneIndex;
-   o.frameTick        = FE3sTrack_frameTick;
-   o.matrix           = FE3sTrack_matrix;
-   o.matrixInvert     = FE3sTrack_matrixInvert;
-   o.frames           = FE3sTrack_frames;
+   o.boneIndex     = FE3sTrack_boneIndex;
+   o.frameTick     = FE3sTrack_frameTick;
+   o.matrix        = FE3sTrack_matrix;
+   o.matrixInvert  = FE3sTrack_matrixInvert;
+   o.frames        = FE3sTrack_frames;
    // @method
-   o.calculate        = FE3sTrack_calculate;
+   o.calculate     = FE3sTrack_calculate;
    // @method
-   o.unserialize      = FE3sTrack_unserialize;
+   o.unserialize   = FE3sTrack_unserialize;
    return o;
 }
 
@@ -97,36 +97,37 @@ function FE3sTrack_frames(){
 // <T>释放处理。</T>
 //
 // @method
-// @param p:tick:Integer 时刻
+// @param info:SE3rPlayInfo 信息
+// @param tick:Integer 时刻
 //==========================================================
-function FE3sTrack_calculate(pi, pt){
+function FE3sTrack_calculate(info, tick){
    var o = this;
    // 检查帧数
-   var fc = o._frameCount;
-   if(fc == 0){
+   var frameCount = o._frameCount;
+   if(frameCount == 0){
       return false;
    }
    // 去掉负数
-   if(pt < 0){
-      pt = -pt;
+   if(tick < 0){
+      tick = -tick;
    }
    // 计算间隔
-   var ft = o._frameTick;
-   var i = parseInt(pt / ft) % fc;
+   var frameTick = o._frameTick;
+   var index = parseInt(tick / frameTick) % frameCount;
    // 获得当前帧和下一帧
-   var fs = o.frames();
-   var cf = fs.get(i);
-   var nf = null;
-   if(i < fc -1){
-      nf = fs.get(i + 1);
+   var frames = o._frames;
+   var currentFrame = frames.get(index);
+   var nextFrame = null;
+   if(index < frameCount - 1){
+      nextFrame = frames.get(index + 1);
    }else{
-      nf = fs.get(0);
+      nextFrame = frames.get(0);
    }
    // 设置结果
-   pi.tick = pt;
-   pi.rate = (pt % ft) / ft;
-   pi.currentFrame = cf;
-   pi.nextFrame = nf;
+   info.tick = tick;
+   info.rate = (tick % frameTick) / frameTick;
+   info.currentFrame = currentFrame;
+   info.nextFrame = nextFrame;
    return true;
 }
 
@@ -134,27 +135,27 @@ function FE3sTrack_calculate(pi, pt){
 // <T>从输入流里反序列化信息内容</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sTrack_unserialize(p){
+function FE3sTrack_unserialize(input){
    var o = this;
    // 读取属性
-   o._meshCode = p.readString();
-   o._boneIndex = p.readUint8();
-   o._frameTick = p.readUint16();
-   o._matrix.unserialize(p);
+   o._meshCode = input.readString();
+   o._boneIndex = input.readUint8();
+   o._frameTick = input.readUint16();
+   o._matrix.unserialize(input);
    // 计算逆矩阵
    o._matrixInvert.assign(o._matrix);
    o._matrixInvert.invert();
    // 读取帧集合
-   var c = p.readInt16();
-   if(c > 0){
-      o._frameCount = c;
-      var fs = o._frames = new TObjects();
-      for(var i = 0; i < c; i++){
-         var f = RClass.create(FE3sFrame);
-         f.unserialize(p)
-         fs.push(f);
+   var count = input.readInt16();
+   if(count > 0){
+      o._frameCount = count;
+      var frames = o._frames = new TObjects();
+      for(var i = 0; i < count; i++){
+         var frame = RClass.create(FE3sFrame);
+         frame.unserialize(input)
+         frames.push(frame);
       }
    }
 }

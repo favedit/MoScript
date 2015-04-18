@@ -46,20 +46,16 @@ function FE3dTemplateRenderable_construct(){
 //==========================================================
 function FE3dTemplateRenderable_testReady(){
    var o = this;
-   if(!o._model.testReady()){
-      return false;
-   }
-   var ts = o._textures;
-   if(ts){
-      var c = ts.count();
-      for(var i = 0; i < c; i++){
-         var t = ts.value(i);
-         if(!t.testReady()){
-            return false;
-         }
+   if(!o._ready){
+      if(!o._model.testReady()){
+         return false;
       }
+      if(!o._material.testReady()){
+         return false;
+      }
+      o._ready = true;
    }
-   return true;
+   return o._ready;
 }
 
 //==========================================================
@@ -91,25 +87,12 @@ function FE3dTemplateRenderable_loadResource(resource){
    // 设置数据
    o._matrix.assign(resource.matrix());
    // 加载模型
-   o._model = RConsole.find(FE3rModelConsole).load(o, resource.modelGuid());
+   var modelGuid = resource.modelGuid();
+   o._model = RConsole.find(FE3rModelConsole).load(o, modelGuid);
    // 设置资源
-   o._material = RConsole.find(FE3rMaterialConsole).load(o, resource.materialGuid());
-   //............................................................
-   // 加载纹理集合
-   var materialResource = o._material.resource();
-   var materialGuid = materialResource.guid();
-   var bitmapResources = materialResource.bitmaps();
-   if(bitmapResources){
-      var count = bitmapResources.count();
-      var textures = o._textures = new TDictionary();
-      var bitmapConsole = RConsole.find(FE3rBitmapConsole)
-      for(var i = 0; i < count; i++){
-         var bitmapResource = bitmapResources.at(i);
-         var bitmapPackResource = bitmapResource.bitmapPack();
-         var bitmap = bitmapConsole.load(o, materialGuid, bitmapPackResource.code());
-         textures.set(bitmapResource.code(), bitmap);
-      }
-   }
+   var materialGuid = resource.materialGuid();
+   o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+   o._materialResource = o._material.resource();
 }
 
 //==========================================================
@@ -119,9 +102,9 @@ function FE3dTemplateRenderable_loadResource(resource){
 //==========================================================
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   var m = o._material;
-   m.calculate(o._materialResource);
-   m.update();
+   var material = o._material;
+   material.calculate(o._materialResource);
+   material.update();
 }
 
 //==========================================================
@@ -132,54 +115,68 @@ function FE3dTemplateRenderable_reloadResource(){
 //==========================================================
 function FE3dTemplateRenderable_load(){
    var o = this;
-   var d = o._display;
-   var r = o._resource;
-   var rd = r.model();
+   var display = o._display;
+   var resource = o._resource;
+   var modelResource = resource.model();
+   //..........................................................
+   // 加载材质
+   var bitmaps = o._material.bitmaps();
+   if(bitmaps){
+      var count = bitmaps.count();
+      for(var i = 0; i < count; i++){
+         var bitmap = bitmaps.at(i);
+         o.pushTexture(bitmap);
+      }
+   }
+   //..........................................................
    // 加载骨骼
-   var rds = rd.skeletons();
-   if(rds){
-      d.loadSkeletons(rds);
+   var skeletonResources = modelResource.skeletons();
+   if(skeletonResources){
+      display.loadSkeletons(skeletonResources);
    }
    // 加载动画
-   var rda = rd.animations();
-   if(rda){
-      d.loadAnimations(rda);
+   var animationResources = modelResource.animations();
+   if(animationResources){
+      display.loadAnimations(animationResources);
    }
+   //..........................................................
    // 设置网格
-   var rm = r.mesh();
-   var rd = o._renderable = RConsole.find(FE3rModelConsole).findMesh(r.meshGuid());
-   var vbs = rd._vertexBuffers;
-   var c = vbs.count();
-   for(var i = 0; i < c; i++){
-      var vb = vbs.at(i);
-      o._vertexBuffers.set(vb._name, vb);
+   var meshResource = resource.mesh();
+   var meshGuid = resource.meshGuid();
+   var renderable = o._renderable = RConsole.find(FE3rModelConsole).findMesh(meshGuid);
+   var vertexBuffers = renderable.vertexBuffers();
+   var vertexBufferCount = vertexBuffers.count();
+   for(var i = 0; i < vertexBufferCount; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      o._vertexBuffers.set(vertexBuffer._name, vertexBuffer);
    }
    // 设置蒙皮
-   var ss = rd.skins();
-   if(ss){
-      var dk = d._activeSkeleton;
+   var skins = renderable.skins();
+   if(skins){
+      var displaySkeleton = display._activeSkeleton;
       // 获得激活皮肤
-      var k = o._activeSkin = ss.first();
-      var ss = k.streams();
-      var c = ss.count();
-      for(var i = 0; i < c; i++){
-         var s = ss.at(i);
-         var vb = s.buffer();
-         o._vertexBuffers.set(vb._name, vb);
+      var skin = o._activeSkin = skins.first();
+      var streams = skin.streams();
+      var streamCount = streams.count();
+      for(var i = 0; i < streamCount; i++){
+         var stream = streams.at(i);
+         var buffer = stream.buffer();
+         o._vertexBuffers.set(buffer._name, buffer);
       }
       // 获得骨头集合
-      var kr = k.resource();
-      var brs = kr.boneRefers();
-      var c = brs.count();
+      var skinResource = skin.resource();
+      var boneReferResources = skinResource.boneRefers();
+      var c = boneReferResources.count();
       if(c > 0){
-         var bs = o._bones = new TObjects();
+         var bones = o._bones = new TObjects();
          for(var i = 0; i < c; i++){
-            var br = brs.at(i);
-            var b = dk.bones().get(br.index());
-            if(b == null){
+            var boneReferResource = boneReferResources.at(i);
+            var boneReferIndex = boneReferResource.index();
+            var bone = displaySkeleton.bones().get(boneReferIndex);
+            if(!bone){
                throw new TError(o, 'Bone is not exist.');
             }
-            bs.push(b);
+            bones.push(bone);
          }
       }
    }

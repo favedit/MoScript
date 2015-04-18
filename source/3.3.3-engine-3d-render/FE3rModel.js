@@ -89,24 +89,25 @@ function FE3rModel_testReady(){
 // <T>加载骨骼资源。</T>
 //
 // @method
-// @param p:resource:FE3sSkeleton 骨骼资源
+// @param resource:FE3sSkeleton 骨骼资源
 //==========================================================
-function FE3rModel_loadSkeletonResource(p){
+function FE3rModel_loadSkeletonResource(resource){
    var o = this;
-   var rmc = RConsole.find(FE3rModelConsole);
+   var modelConsole = RConsole.find(FE3rModelConsole);
    // 加载骨骼皮肤
-   var ss = p.skins();
-   if(ss){
-      var c = ss.count();
-      for(var i = 0; i < c; i++){
-         var s = ss.get(i);
+   var skinResources = resource.skins();
+   if(skinResources){
+      var skinCount = skinResources.count();
+      for(var i = 0; i < skinCount; i++){
+         var skinResource = skinResources.at(i);
          // 创建皮肤
-         var rs = RClass.create(FE3rSkin);
-         rs.linkGraphicContext(o);
-         rs.loadResource(s)
+         var skin = RClass.create(FE3rSkin);
+         skin.linkGraphicContext(o);
+         skin.loadResource(skinResource)
          // 放入网格
-         var m = rmc.findMesh(s.meshGuid());
-         m.pushSkin(rs);
+         var meshGuid = skinResource.meshGuid();
+         var mesh = modelConsole.findMesh(meshGuid);
+         mesh.pushSkin(skin);
       }
    }
 }

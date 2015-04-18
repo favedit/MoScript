@@ -52,6 +52,8 @@ function FE3dBoundBox(o){
 function FE3dBoundBox_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   // 设置属性
+   o._material = RClass.create(FE3dMaterial);
    o._outline = new SOutline3();
 }
 

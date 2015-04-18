@@ -16,6 +16,7 @@ var EDsFrame = new function EDsFrame(){
    o.CommonMaterialPropertyFrame   = 'resource.common.property.MaterialFrame';
    o.CommonLayerPropertyFrame      = 'resource.common.property.LayerFrame';
    o.CommonDisplayPropertyFrame    = 'resource.common.property.DisplayFrame';
+   o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
    // @member 模型属性页面
    o.SolutionProjectPropertyFrame  = 'design3d.solution.property.ProjectFrame';
@@ -34,7 +35,6 @@ var EDsFrame = new function EDsFrame(){
    // @member 场景属性页面
    o.SceneSpacePropertyFrame       = 'design3d.scene.property.SpaceFrame';
    o.SceneDisplayPropertyFrame     = 'design3d.scene.property.DisplayFrame';
-   o.SceneAnimationPropertyFrame   = 'design3d.scene.property.AnimationFrame';
    o.SceneMoviePropertyFrame       = 'design3d.scene.property.MovieFrame';
    o.SceneRenderablePropertyFrame  = 'design3d.scene.property.RenderableFrame';
    return o;

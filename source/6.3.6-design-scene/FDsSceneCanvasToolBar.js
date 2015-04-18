@@ -9,34 +9,34 @@ function FDsSceneCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'resource.scene.CanvasToolBar';
+   o._frameName         = 'resource.scene.CanvasToolBar';
    //..........................................................
    // @attribute
-   o._canvasModeCd    = EDsCanvasMode.Drop;
+   o._canvasModeCd      = EDsCanvasMode.Drop;
    // @attribute
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
+   o._controlModeDrop   = null;
+   o._controlModeSelect = null;
+   o._controlTranslate  = null;
+   o._controlRotation   = null;
+   o._controlScale      = null;
+   o._controlLookFront  = null;
+   o._controlLookUp     = null;
+   o._controlLookLeft   = null;
+   o._controlPlay       = null;
+   o._controlView       = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsSceneCanvasToolBar_onBuilded;
+   o.onBuilded         = FDsSceneCanvasToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsSceneCanvasToolBar_onModeClick;
-   o.onLookClick      = FDsSceneCanvasToolBar_onLookClick;
-   o.onPlayClick      = FDsSceneCanvasToolBar_onPlayClick;
-   o.onRotationClick  = FDsSceneCanvasToolBar_onRotationClick;
+   o.onModeClick       = FDsSceneCanvasToolBar_onModeClick;
+   o.onLookClick       = FDsSceneCanvasToolBar_onLookClick;
+   o.onPlayClick       = FDsSceneCanvasToolBar_onPlayClick;
+   o.onRotationClick   = FDsSceneCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
-   o.construct        = FDsSceneCanvasToolBar_construct;
+   o.construct         = FDsSceneCanvasToolBar_construct;
    // @method
-   o.dispose          = FDsSceneCanvasToolBar_dispose;
+   o.dispose           = FDsSceneCanvasToolBar_dispose;
    return o;
 }
 
@@ -51,53 +51,45 @@ function FDsSceneCanvasToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 建立拖拽按键
-   var b = o._dropButton = o.searchControl('dropButton');
-   b._canvasModeCd = EDsCanvasMode.Drop;
-   b.addClickListener(o, o.onModeClick);
-   b.check(true);
+   var button = o._controlModeDrop;
+   button._canvasModeCd = EDsCanvasMode.Drop;
+   button.addClickListener(o, o.onModeClick);
+   button.check(true);
    // 建立选择按键
-   var b = o._selectButton = o.searchControl('selectButton');
-   b._canvasModeCd = EDsCanvasMode.Select;
-   b.addClickListener(o, o.onModeClick);
+   var button = o._controlModeSelect;
+   button._canvasModeCd = EDsCanvasMode.Select;
+   button.addClickListener(o, o.onModeClick);
    //..........................................................
    // 建立移动按键
-   var b = o._translateButton = o.searchControl('translateButton');
-   b._canvasModeCd = EDsCanvasMode.Translate;
-   b.addClickListener(o, o.onModeClick);
+   var button = o._controlTranslate;
+   button._canvasModeCd = EDsCanvasMode.Translate;
+   button.addClickListener(o, o.onModeClick);
    // 建立旋转按键
-   var b = o._rotationButton = o.searchControl('rotationButton');
-   b._canvasModeCd = EDsCanvasMode.Rotation;
-   b.addClickListener(o, o.onModeClick);
+   var button = o._controlRotation;
+   button._canvasModeCd = EDsCanvasMode.Rotation;
+   button.addClickListener(o, o.onModeClick);
    // 建立缩放按键
-   var b = o._scaleButton = o.searchControl('scaleButton');
-   b._canvasModeCd = EDsCanvasMode.Scale;
-   b.addClickListener(o, o.onModeClick);
+   var button = o._controlScale;
+   button._canvasModeCd = EDsCanvasMode.Scale;
+   button.addClickListener(o, o.onModeClick);
    //..........................................................
-   // 建立前视角按键
-   var b = o._lookFrontButton = o.searchControl('lookFrontButton');
-   b.addClickListener(o, o.onLookClick);
-   // 建立上视角按键
-   var b = o._lookUpButton = o.searchControl('lookUpButton');
-   b.addClickListener(o, o.onLookClick);
-   // 建立左视角按键
-   var b = o._lookLeftButton = o.searchControl('lookLeftButton');
-   b.addClickListener(o, o.onLookClick);
+   // 关联视角事件
+   o._controlLookFront.addClickListener(o, o.onLookClick);
+   o._controlLookUp.addClickListener(o, o.onLookClick);
+   o._controlLookLeft.addClickListener(o, o.onLookClick);
    //..........................................................
-   // 建立按键
-   var b = o._playButton = o.searchControl('playButton');
-   b.addClickListener(o, o.onPlayClick);
-   // 建立按键
-   var b = o._viewButton = o.searchControl('viewButton');
-   b.addClickListener(o, o.onRotationClick);
+   // 关联事件
+   o._controlPlay.addClickListener(o, o.onPlayClick);
+   o._controlView.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
 // <T>模式选择。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsSceneCanvasToolBar_onModeClick(p){
+function FDsSceneCanvasToolBar_onModeClick(event){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
    o._frameSet._canvas.switchMode(p._canvasModeCd);
@@ -107,9 +99,9 @@ function FDsSceneCanvasToolBar_onModeClick(p){
 // <T>模式选择。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsSceneCanvasToolBar_onLookClick(p){
+function FDsSceneCanvasToolBar_onLookClick(event){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
 }
@@ -120,10 +112,10 @@ function FDsSceneCanvasToolBar_onLookClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneCanvasToolBar_onPlayClick(p, v){
+function FDsSceneCanvasToolBar_onPlayClick(event){
    var o = this;
-   var c = o._frameSet._canvas;
-   c.switchPlay(v);
+   var canvas = o._frameSet._canvas;
+   canvas.switchPlay(event.checked);
 }
 
 //==========================================================
@@ -132,10 +124,10 @@ function FDsSceneCanvasToolBar_onPlayClick(p, v){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneCanvasToolBar_onRotationClick(p, v){
+function FDsSceneCanvasToolBar_onRotationClick(event){
    var o = this;
-   var c = o._frameSet._canvas;
-   c.switchMovie(v);
+   var canvas = o._frameSet._canvas;
+   canvas.switchMovie(event.checked);
 }
 
 //==========================================================

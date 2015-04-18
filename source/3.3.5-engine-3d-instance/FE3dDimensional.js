@@ -42,6 +42,8 @@ function FE3dDimensional(o){
 function FE3dDimensional_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   // 设置属性
+   o._material = RClass.create(FE3dMaterial);
    o._cellSize = new SSize2();
    o._cellSize.set(1, 1);
    o._size = new SSize2();

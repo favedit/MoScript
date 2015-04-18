@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150216
 //==========================================================
-function FDsSceneRenderablePropertyFrame(o){
+function FDsCommonRenderablePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -24,11 +24,11 @@ function FDsSceneRenderablePropertyFrame(o){
    o._frameMaterial2   = null;
    //..........................................................
    // @method
-   o.construct         = FDsSceneRenderablePropertyFrame_construct;
+   o.construct         = FDsCommonRenderablePropertyFrame_construct;
    // @method
-   o.loadObject        = FDsSceneRenderablePropertyFrame_loadObject;
+   o.loadObject        = FDsCommonRenderablePropertyFrame_loadObject;
    // @method
-   o.dispose           = FDsSceneRenderablePropertyFrame_dispose;
+   o.dispose           = FDsCommonRenderablePropertyFrame_dispose;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FDsSceneRenderablePropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneRenderablePropertyFrame_construct(){
+function FDsCommonRenderablePropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -50,7 +50,7 @@ function FDsSceneRenderablePropertyFrame_construct(){
 // @param s:scene:FE3dScene 场景
 // @param r:renderable:FE3dSceneRenderable 渲染对象
 //==========================================================
-function FDsSceneRenderablePropertyFrame_loadObject(s, r){
+function FDsCommonRenderablePropertyFrame_loadObject(s, r){
    var o = this;
    // 获得材质
    var m = r.materialReference();
@@ -73,7 +73,7 @@ function FDsSceneRenderablePropertyFrame_loadObject(s, r){
 //
 // @method
 //==========================================================
-function FDsSceneRenderablePropertyFrame_dispose(){
+function FDsCommonRenderablePropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

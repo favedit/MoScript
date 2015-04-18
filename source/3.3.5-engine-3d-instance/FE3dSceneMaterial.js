@@ -49,7 +49,9 @@ function FE3dSceneMaterial_resource(p){
 function FE3dSceneMaterial_loadSceneResource(resource){
    var o = this;
    o._resource = resource;
-   o._info.assign(resource.info());
+   // 计算材质
+   o.calculate(resource);
+   o.update();
 }
 
 //==========================================================
@@ -60,6 +62,11 @@ function FE3dSceneMaterial_loadSceneResource(resource){
 function FE3dSceneMaterial_reloadResource(){
    var o = this;
    var resource = o._resource;
-   o.loadResource(resource);
-   o._parentMaterial.loadResource(resource);
+   // 计算材质
+   o.calculate(resource);
+   o.update();
+   // 更新父材质
+   var material = o._parentMaterial;
+   material.calculate(resource);
+   material.update();
 }

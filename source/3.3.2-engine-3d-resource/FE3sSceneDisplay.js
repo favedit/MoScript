@@ -72,14 +72,14 @@ function FE3sSceneDisplay_matrix(){
 // <T>根据唯一编号查找一个动画集合。</T>
 //
 // @method
-// @param p:guid:String 唯一编号
+// @param guid:String 唯一编号
 // @return FE3sAnimation 动画
 //==========================================================
-function FE3sSceneDisplay_findAnimation(p){
+function FE3sSceneDisplay_findAnimation(guid){
    var o = this;
-   var s = o._animations;
-   if(s){
-      return s.get(p);
+   var animations = o._animations;
+   if(animations){
+      return animations.get(guid);
    }
    return null;
 }
@@ -88,22 +88,22 @@ function FE3sSceneDisplay_findAnimation(p){
 // <T>根据唯一编号同步一个动画集合。</T>
 //
 // @method
-// @param p:guid:String 唯一编号
+// @param guid:String 唯一编号
 // @return FE3sAnimation 动画
 //==========================================================
-function FE3sSceneDisplay_syncAnimation(p){
+function FE3sSceneDisplay_syncAnimation(guid){
    var o = this;
-   var s = o._animations;
-   if(!s){
-      s = o._animations = new TDictionary();
+   var animations = o._animations;
+   if(!animations){
+      animations = o._animations = new TDictionary();
    }
-   var a = s.get(p);
-   if(!a){
-      a = RClass.create(FE3sSceneAnimation);
-      a._guid = p;
-      s.set(p, a);
+   var animation = animations.get(guid);
+   if(!animation){
+      animation = RClass.create(FE3sSceneAnimation);
+      animation._guid = guid;
+      animations.set(guid, animation);
    }
-   return a;
+   return animation;
 }
 
 //==========================================================

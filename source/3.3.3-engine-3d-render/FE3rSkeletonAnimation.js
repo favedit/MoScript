@@ -16,15 +16,17 @@ function FE3rSkeletonAnimation(o){
 // <T>更新处理。</T>
 //
 // @method
+// @param skeleton:FE3rSkeleton 骨骼
 //==========================================================
-function FE3rSkeletonAnimation_process(p){
+function FE3rSkeletonAnimation_process(skeleton){
    var o = this;
    // 获得间隔
-   var ct = o._currentTick;
+   var tick = o._currentTick;
    // 计算间隔
-   var s = p.bones();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      s.getAt(i).update(o._playInfo, ct);
+   var bones = skeleton.bones();
+   var count = bones.count();
+   for(var i = 0; i < count; i++){
+      var bone = bones.at(i);
+      bone.update(o._playInfo, tick);
    }
 }

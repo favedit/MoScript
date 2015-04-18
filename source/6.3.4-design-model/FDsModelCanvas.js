@@ -774,7 +774,7 @@ function FDsModelCanvas_loadByGuid(guid){
       RStage.unregister(space);
       modelConsole.free(space);
    }
-   // 收集一个显示模板
+   // 收集一个模型
    space = o._activeSpace = modelConsole.alloc(o, guid);
    if(!space._linked){
       // 显示加载进度

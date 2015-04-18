@@ -7,31 +7,17 @@
 function FE3dSceneDisplayRenderable(o){
    o = RClass.inherits(this, o, FE3dTemplateRenderable);
    //..........................................................
-   // @attribute
-   o._materialReference = null;
-   //..........................................................
    // @method
-   o.materialReference  = FE3dSceneDisplayRenderable_materialReference;
    o.loadMaterial       = FE3dSceneDisplayRenderable_loadMaterial;
    o.reloadResource     = FE3dSceneDisplayRenderable_reloadResource;
    return o;
 }
 
 //==========================================================
-// <T>获得材质引用。</T>
-//
-// @method
-// @return FE3dSceneMaterial 材质引用
-//==========================================================
-function FE3dSceneDisplayRenderable_materialReference(p){
-   return this._materialReference;
-}
-
-//==========================================================
 // <T>加载材质。</T>
 //
 // @method
-// @param p:resource:FE3sTemplateRenderable 资源
+// @param material:FE3sTemplateRenderable 资源
 //==========================================================
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
@@ -47,7 +33,7 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
 //==========================================================
 function FE3dSceneDisplayRenderable_reloadResource(){
    var o = this;
-   var m = o._material;
-   m.calculate(o._materialReference);
-   m.update();
+   var material = o._material;
+   material.calculate(o._materialReference);
+   material.update();
 }

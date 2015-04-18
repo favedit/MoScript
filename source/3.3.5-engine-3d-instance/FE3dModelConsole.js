@@ -92,7 +92,6 @@ function FE3dModelConsole_alloc(context, guid){
    // 加载模型
    var model = RClass.create(FE3dModel);
    model.linkGraphicContext(context);
-   model._name = guid;
    model._poolCode = guid;
    model._renderable = renderable;
    // 追加到加载队列
@@ -108,8 +107,6 @@ function FE3dModelConsole_alloc(context, guid){
 //==========================================================
 function FE3dModelConsole_free(model){
    var o = this;
-   // 脱离父对象
-   //model.remove();
    // 放到缓冲池
    var code = model._poolCode;
    o._pools.free(code, model);

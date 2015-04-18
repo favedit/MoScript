@@ -32,32 +32,32 @@ function SE3rPlayInfo(o){
 function SE3rPlayInfo_update(){
    var o = this;
    // 检查参数
-   var cf = o.currentFrame;
-   if(cf == null){
+   var currentFrame = o.currentFrame;
+   if(currentFrame == null){
       return false;
    }
-   var nf = o.nextFrame;
-   if(nf == null){
+   var nextFrame = o.nextFrame;
+   if(nextFrame == null){
       return false;
    }
    // 获得矩阵
-   var m = o.matrix;
-   var ct = cf.translation();
-   var cr = cf.quaternion();
-   var cs = cf.scale();
+   var matrix = o.matrix;
+   var currentTranslation = currentFrame.translation();
+   var currentQuaternion = currentFrame.quaternion();
+   var currentScale = currentFrame.scale();
    // 计算插值矩阵
-   var r = o.rate;
-   if((r > 0) && (r < 1)){
+   var rate = o.rate;
+   if((rate > 0) && (rate < 1)){
       // 计算中间矩阵
-      o.translation.slerp(ct, nf.translation(), r);
-      o.quaternion.slerp(cr, nf.quaternion(), r);
-      o.scale.slerp(cs, nf.scale(), r);
-      m.build(o.translation, o.quaternion, o.scale);
+      o.translation.slerp(currentTranslation, nextFrame.translation(), rate);
+      o.quaternion.slerp(currentQuaternion, nextFrame.quaternion(), rate);
+      o.scale.slerp(currentScale, nextFrame.scale(), rate);
+      matrix.build(o.translation, o.quaternion, o.scale);
       // 计算插值透明度
       //alpha = (next.alpha - current.alpha) * rate + current.alpha;
    }else{
       // 计算插值透明度
-      m.build(ct, cr, cs);
+      matrix.build(currentTranslation, currentQuaternion, currentScale);
       //alpha = currentPtr->Alpha();
    }
    return true;

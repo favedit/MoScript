@@ -1094,7 +1094,7 @@ function FDsModelFrameSet_dispose(){
 }
 function FDsModelMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'design3d.mesh.MenuBar';
+   o._frameName            = 'resource.model.MenuBar';
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    o.onBuilded             = FDsModelMenuBar_onBuilded;

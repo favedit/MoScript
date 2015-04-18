@@ -1,3 +1,25 @@
+function ME3dObject(o){
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._guid   = null;
+   o._code   = null;
+   o.guid    = ME3dObject_guid;
+   o.setGuid = ME3dObject_setGuid;
+   o.code    = ME3dObject_code;
+   o.setCode = ME3dObject_setCode;
+   return o;
+}
+function ME3dObject_guid(){
+   return this._guid;
+}
+function ME3dObject_setGuid(p){
+   this._guid = p;
+}
+function ME3dObject_code(){
+   return this._code;
+}
+function ME3dObject_setCode(p){
+   this._code = p;
+}
 function FE3dCanvas(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
    o._optionAlpha        = true;
@@ -117,7 +139,6 @@ function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
    o._outline = new SOutline3();
-   o._materials = new TDictionary();
 }
 function FE3dDisplay_materials(){
    return this._materials;
@@ -145,7 +166,6 @@ function FE3dDisplayContainer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
    o._outline = new SOutline3();
-   o._materials = new TDictionary();
 }
 function FE3dDisplayContainer_materials(){
    return this._materials;
@@ -170,33 +190,34 @@ function FE3dMaterial_loadResource(p){
    o._info.assign(p.info());
 }
 function FE3dRenderable(o){
-   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject);
-   o._display         = null;
-   o._outline         = null;
-   o._outlineVisible  = true;
-   o._calculateMatrix = null;
-   o._vertexCount     = 0;
-   o._vertexBuffers   = null;
-   o._indexBuffer     = null;
-   o._textures        = null;
-   o.construct        = FE3dRenderable_construct;
-   o.createMaterial   = FE3dRenderable_createMaterial;
-   o.setup            = RMethod.empty;
-   o.testReady        = RMethod.emptyTrue;
-   o.testVisible      = FE3dRenderable_testVisible;
-   o.display          = FE3dRenderable_display;
-   o.setDisplay       = FE3dRenderable_setDisplay;
-   o.vertexCount      = FE3dRenderable_vertexCount;
-   o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
-   o.vertexBuffers    = FE3dRenderable_vertexBuffers;
-   o.indexBuffer      = FE3dRenderable_indexBuffer;
-   o.findTexture      = FE3dRenderable_findTexture;
-   o.pushTexture      = FE3dRenderable_pushTexture;
-   o.textures         = FE3dRenderable_textures;
-   o.bones            = RMethod.empty;
-   o.processDelay     = RMethod.empty;
-   o.update           = FE3dRenderable_update;
-   o.remove           = FE3dRenderable_remove;
+   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
+   o._display           = null;
+   o._outline           = null;
+   o._outlineVisible    = true;
+   o._calculateMatrix   = null;
+   o._vertexCount       = 0;
+   o._vertexBuffers     = null;
+   o._indexBuffer       = null;
+   o._materialReference = null;
+   o._textures          = null;
+   o.construct          = FE3dRenderable_construct;
+   o.setup              = RMethod.empty;
+   o.testReady          = RMethod.emptyTrue;
+   o.testVisible        = FE3dRenderable_testVisible;
+   o.display            = FE3dRenderable_display;
+   o.setDisplay         = FE3dRenderable_setDisplay;
+   o.vertexCount        = FE3dRenderable_vertexCount;
+   o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
+   o.vertexBuffers      = FE3dRenderable_vertexBuffers;
+   o.indexBuffer        = FE3dRenderable_indexBuffer;
+   o.materialReference  = FE3dRenderable_materialReference;
+   o.findTexture        = FE3dRenderable_findTexture;
+   o.pushTexture        = FE3dRenderable_pushTexture;
+   o.textures           = FE3dRenderable_textures;
+   o.bones              = RMethod.empty;
+   o.processDelay       = RMethod.empty;
+   o.update             = FE3dRenderable_update;
+   o.remove             = FE3dRenderable_remove;
    return o;
 }
 function FE3dRenderable_construct(){
@@ -206,9 +227,7 @@ function FE3dRenderable_construct(){
    o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
-}
-function FE3dRenderable_createMaterial(){
-   return RClass.create(FE3dMaterial);
+   o._materialReference = o;
 }
 function FE3dRenderable_testVisible(){
    var o = this;
@@ -223,6 +242,12 @@ function FE3dRenderable_testVisible(){
    if(!o._outlineVisible){
       return false;
    }
+   var material = o._material;
+   if(material){
+      if(!material.testVisible()){
+         return false;
+      }
+   }
    return true;
 }
 function FE3dRenderable_display(){
@@ -234,11 +259,14 @@ function FE3dRenderable_setDisplay(p){
 function FE3dRenderable_vertexCount(){
    return this._vertexCount;
 }
-function FE3dRenderable_findVertexBuffer(p){
-   return this._vertexBuffers.get(p);
+function FE3dRenderable_findVertexBuffer(code){
+   return this._vertexBuffers.get(code);
 }
 function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
+}
+function FE3dRenderable_materialReference(){
+   return this._materialReference;
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
@@ -246,39 +274,40 @@ function FE3dRenderable_indexBuffer(){
 function FE3dRenderable_findTexture(p){
    return this._textures.get(p);
 }
-function FE3dRenderable_pushTexture(p){
-   var o = this;
-   var s = o._textures;
-   if(!s){
-      s = o._textures = new TDictionary();
-   }
-   s.set(p._name, p);
-}
 function FE3dRenderable_textures(){
    return this._textures;
 }
-function FE3dRenderable_update(p){
+function FE3dRenderable_pushTexture(texture){
    var o = this;
-   var m = o._calculateMatrix;
-   m.assign(o._matrix);
-   var d = o._drawable;
-   if(d){
-      m.append(d.currentMatrix());
+   var textures = o._textures;
+   if(!textures){
+      textures = o._textures = new TDictionary();
    }
-   var d = o._display;
-   if(d){
-      m.append(d.currentMatrix());
+   var code = texture.code();
+   textures.set(code, texture);
+}
+function FE3dRenderable_update(region){
+   var o = this;
+   var calculateMatrix = o._calculateMatrix;
+   calculateMatrix.assign(o._matrix);
+   var drawable = o._drawable;
+   if(drawable){
+      calculateMatrix.append(drawable.currentMatrix());
    }
-   var c = o._currentMatrix.attachData(m.data());
-   if(c && p){
-      p.change();
+   var display = o._display;
+   if(display){
+      calculateMatrix.append(display.currentMatrix());
+   }
+   var changed = o._currentMatrix.attachData(calculateMatrix.data());
+   if(changed && region){
+      region.change();
    }
 }
 function FE3dRenderable_remove(){
    var o = this;
-   var d = o._display;
-   if(d){
-      d.removeRenderable(o);
+   var display = o._display;
+   if(display){
+      display.removeRenderable(o);
       o._display = null;
    }
 }
@@ -369,48 +398,48 @@ function FE3dStage(o){
 }
 function FE3dStage_onProcess(){
    var o = this;
-   var r = o._region;
-   if(!r){
+   var region = o._region;
+   if(!region){
       return;
    }
-   var t = o._technique;
-   if(!t){
+   var technique = o._technique;
+   if(!technique){
       return;
    }
-   var g = t._graphicContext;
-   var ss = r._statistics = o._statistics;
+   var g = technique._graphicContext;
+   var ss = region._statistics = o._statistics;
    ss.resetFrame();
    ss._frame.begin();
    ss._frameProcess.begin();
    g.prepare();
-   t.updateRegion(r);
-   r.prepare();
-   r.change();
-   var ls = o._layers;
-   var lc = ls.count();
-   for(var i = 0; i < lc; i++){
-      var l = ls.valueAt(i);
-      r.reset();
-      l.process(r);
-      l.filterRenderables(r);
-      r.update();
+   technique.updateRegion(region);
+   region.prepare();
+   region.change();
+   var layers = o._layers;
+   var layerCount = layers.count();
+   for(var i = 0; i < layerCount; i++){
+      var layer = layers.at(i);
+      region.reset();
+      layer.process(region);
+      layer.filterRenderables(region);
+      region.update();
    }
-   RConsole.find(FE3dStageConsole).process(r);
+   RConsole.find(FE3dStageConsole).process(region);
    ss._frameProcess.end();
    ss._frameDraw.begin();
-   if(r.isChanged()){
-      t.clear(r.backgroundColor());
-      for(var i = 0; i < lc; i++){
-         var l = ls.valueAt(i);
-         var lt = l.technique();
-         if(!lt){
-            lt = t;
+   if(region.isChanged()){
+      technique.clear(region.backgroundColor());
+      for(var i = 0; i < layerCount; i++){
+         var layer = layers.at(i);
+         var layerTechnique = layer.technique();
+         if(!layerTechnique){
+            layerTechnique = technique;
          }
-         r.reset();
-         r.renderables().assign(l.visibleRenderables());
-         lt.drawRegion(r);
+         region.reset();
+         region.renderables().assign(layer.visibleRenderables());
+         layerTechnique.drawRegion(region);
       }
-      t.present(r);
+      technique.present(region);
    }
    ss._frameDraw.end();
    ss._frame.end();

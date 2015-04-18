@@ -156,7 +156,7 @@ function FDsTemplateCanvas_loadByGuid(guid){
       RStage.unregister(space);
       templateConsole.free(space);
    }
-   space = o._activeSpace = templateConsole.allocByGuid(o._graphicContext, guid);
+   space = o._activeSpace = templateConsole.allocByGuid(o, guid);
    if(!space._linked){
       RConsole.find(FUiDesktopConsole).showLoading();
       space.addLoadListener(o, o.onDataLoaded);

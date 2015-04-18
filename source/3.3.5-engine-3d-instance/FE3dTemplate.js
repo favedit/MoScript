@@ -293,7 +293,6 @@ function FE3dTemplate_loadResource(resource){
          display.linkGraphicContext(o);
          display.loadResource(displayResource);
          o._sprites.push(display);
-         //o.pushRenderable(r);
       }
    }
 }
@@ -352,13 +351,13 @@ function FE3dTemplate_processLoad(){
       }
    }
    // 关联动画
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         var a = as.value(i);
-         if(a.resource().skeleton() == null){
-            o.linkAnimation(a);
+   var animations = o._animations;
+   if(animations){
+      var animationCount = animations.count();
+      for(var i = 0; i < animationCount; i++){
+         var animation = animations.at(i);
+         if(animation.resource().skeleton() == null){
+            o.linkAnimation(animation);
          }
       }
    }

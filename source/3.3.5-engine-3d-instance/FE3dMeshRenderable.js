@@ -5,7 +5,7 @@
 // @history 150202
 //==========================================================
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FE3dRenderable, MLinkerResource);
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
    o._renderable      = null;
@@ -18,8 +18,6 @@ function FE3dMeshRenderable(o){
    o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
-   o.findTexture      = FE3dMeshRenderable_findTexture;
-   o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
    // @method
    o.reloadResource   = FE3dMeshRenderable_reloadResource;
@@ -62,27 +60,6 @@ function FE3dMeshRenderable_indexBuffer(){
 }
 
 //==========================================================
-// <T>根据名称查找纹理。</T>
-//
-// @method
-// @param p:name:String 名称
-// @return FRenderIndexBuffer 纹理
-//==========================================================
-function FE3dMeshRenderable_findTexture(p){
-   return this._textures.get(p);
-}
-
-//==========================================================
-// <T>获得纹理集合。</T>
-//
-// @method
-// @return TDictionary 纹理集合
-//==========================================================
-function FE3dMeshRenderable_textures(){
-   return this._textures;
-}
-
-//==========================================================
 // <T>获得骨头集合。</T>
 //
 // @method
@@ -111,12 +88,12 @@ function FE3dMeshRenderable_reloadResource(){
 function FE3dMeshRenderable_process(p){
    var o = this;
    o.__base.FE3dRenderable.process.call(o, p)
-   var t = o._activeTrack;
-   if(t){
+   var track = o._activeTrack;
+   if(track){
       if(o._display._optionPlay){
-         var a = t._animation;
-         if(a){
-            a.process(t);
+         var animation = track._animation;
+         if(animation){
+            animation.process(track);
          }
       }
    }
@@ -148,30 +125,30 @@ function FE3dMeshRenderable_processDelay(p){
 // <T>更新处理。</T>
 //
 // @method
-// @param p:region:FG3dRegion 区域
+// @param region:FG3dRegion 区域
 //==========================================================
-function FE3dMeshRenderable_update(p){
+function FE3dMeshRenderable_update(region){
    var o = this;
-   var d = o._display;
-   var mm = o._matrix;
-   var t = o._activeTrack;
+   var display = o._display;
+   var matrix = o._matrix;
+   var track = o._activeTrack;
    // 计算矩阵
-   var m = o._calculateMatrix;
-   if(t){
-      m.assign(t.matrix());
-      m.append(mm);
+   var calculateMatrix = o._calculateMatrix;
+   if(track){
+      calculateMatrix.assign(track.matrix());
+      calculateMatrix.append(matrix);
    }else{
-      m.assign(mm);
+      calculateMatrix.assign(matrix);
    }
    // 计算显示矩阵
-   if(d){
-      var dm = o._display.currentMatrix();
-      m.append(dm);
+   if(display){
+      var displayMatrix = o._display.currentMatrix();
+      calculateMatrix.append(displayMatrix);
    }
    // 接收数据
-   var c = o._currentMatrix.attachData(m.data());
-   if(c){
-      p.change();
+   var changed = o._currentMatrix.attachData(calculateMatrix.data());
+   if(changed){
+      region.change();
    }
 }
 

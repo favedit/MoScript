@@ -442,6 +442,7 @@ function FRenderable_drawables(){
 }
 function FRenderable_pushDrawable(drawable){
    var o = this;
+   drawable._drawable = o;
    drawable._parent = o;
    o.drawables().push(drawable);
 }

@@ -303,21 +303,22 @@ function FDsTemplateCanvas_capture(){
 //==========================================================
 function FDsTemplateCanvas_loadByGuid(guid){
    var o = this;
+   // 释放模板
    var space = o._activeSpace;
    var templateConsole = RConsole.find(FE3dTemplateConsole);
    if(space){
       RStage.unregister(space);
       templateConsole.free(space);
    }
-   // 收集一个显示模板
-   space = o._activeSpace = templateConsole.allocByGuid(o._graphicContext, guid);
+   // 收集一个模板
+   space = o._activeSpace = templateConsole.allocByGuid(o, guid);
    if(!space._linked){
       // 显示加载进度
       RConsole.find(FUiDesktopConsole).showLoading();
-      // 设置坐标系
+      // 设置事件
       space.addLoadListener(o, o.onDataLoaded);
       space._linked = true;
-   } 
+   }
    // 启动舞台
    RStage.register('space', space);
 }

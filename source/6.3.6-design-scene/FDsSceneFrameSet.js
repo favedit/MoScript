@@ -55,11 +55,11 @@ function FDsSceneFrameSet(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneFrameSet_onBuilded(p){
+function FDsSceneFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, p);
+   o.__base.FUiFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置目录区
    var f = o._frameCatalog = o.searchControl('catalogFrame');
@@ -89,7 +89,7 @@ function FDsSceneFrameSet_onBuilded(p){
    var catalog = o._catalog = RClass.create(FDsSceneCatalog);
    catalog._frameSet = o;
    catalog._workspace = o._worksapce;
-   catalog.build(p);
+   catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
    o._frameCatalog.push(catalog);
    //..........................................................
@@ -98,7 +98,7 @@ function FDsSceneFrameSet_onBuilded(p){
    var toolbar = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
    toolbar._frameSet = o;
    toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
+   toolbar.buildDefine(event);
    frame.push(toolbar);
    // 设置画板
    var frame = o._canvasFrame = o.searchControl('canvasFrame');
@@ -110,7 +110,7 @@ function FDsSceneFrameSet_onBuilded(p){
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
-   canvas.build(p);
+   canvas.build(event);
    frame.push(canvas);
 }
 
@@ -131,87 +131,89 @@ function FDsSceneFrameSet_onDataLoaded(p){
 // <T>目录对象选择处理。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param select:FObject 选中对象
+// @param flag:Boolean 处理标志
 //==========================================================
-function FDsSceneFrameSet_onCatalogSelected(p, pc){
+function FDsSceneFrameSet_onCatalogSelected(select, flag){
    var o = this;
-   var s = o._activeSpace;
+   var space = o._activeSpace;
+   var canvas = o._canvas;
    // 隐藏所有属性面板
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
    }
    // 显示选中属性面板
-   if(RClass.isClass(p, FE3dScene)){
-      var f = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(p == 'layers'){
+   if(RClass.isClass(select, FE3dScene)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dTechnique)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRegion)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dCamera)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(select == 'layers'){
       // 选中场景所有层
-      if(pc){
-         o._canvas.selectLayers(p);
+      if(flag){
+         canvas.selectLayers(select);
       }
-   }else if(RClass.isClass(p, FE3dSceneLayer)){
+   }else if(RClass.isClass(select, FE3dSceneLayer)){
       // 选中场景层
-      if(pc){
-         o._canvas.selectLayer(p);
+      if(flag){
+         canvas.selectLayer(select);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneDisplay)){
       // 选中显示对象
-      if(pc){
-         o._canvas.selectDisplay(p);
+      if(flag){
+         canvas.selectDisplay(select);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneMaterial)){
       // 选中材质
-      if(pc){
-         o._canvas.selectMaterial(p);
+      if(flag){
+         canvas.selectMaterial(select);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3rAnimation)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dAnimation)){
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dRenderable)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRenderable)){
       // 选中渲染对象
-      if(pc){
-         o._canvas.selectRenderable(p);
+      if(flag){
+         canvas.selectRenderable(select);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
-      f.show();
-      f.loadObject(s, p);
+      var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
    }else{
-      throw new TError('Unknown select object type. (value={1})', p);
+      throw new TError('Unknown select type. (select={1})', select);
    }
 }
 
