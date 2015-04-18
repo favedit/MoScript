@@ -19,6 +19,7 @@ function FE3dSceneDisplay(o){
    o._parentMaterials  = null;
    o._movies           = null;
    o._template         = null;
+   o._sprite           = null;
    //..........................................................
    // @method
    o.construct         = FE3dSceneDisplay_construct;
@@ -102,7 +103,7 @@ function FE3dSceneDisplay_loadTemplate(template){
    // 设置材质
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
-   var sprite = template.sprite();
+   var sprite = o._sprite = template.sprite();
    var renderables = sprite.renderables();
    var count = renderables.count();
    for(var n = 0; n < count; n++){

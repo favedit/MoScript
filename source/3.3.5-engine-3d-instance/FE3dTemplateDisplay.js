@@ -250,11 +250,24 @@ function FE3dTemplateDisplay_reloadResource(){
 //==========================================================
 function FE3dTemplateDisplay_load(){
    var o = this;
+   // 加载处理
    var shapes = o._shapes;
    if(shapes){
       var shapeCount = shapes.count();
       for(var i = 0; i < shapeCount; i++){
-         shapes.at(i).load();
+         var shape = shapes.at(i);
+         shape.load();
+      }
+   }
+   // 关联动画
+   var animations = o._animations;
+   if(animations){
+      var animationCount = animations.count();
+      for(var i = 0; i < animationCount; i++){
+         var animation = animations.at(i);
+         if(animation.resource().skeleton() == null){
+            o.linkAnimation(animation);
+         }
       }
    }
 }

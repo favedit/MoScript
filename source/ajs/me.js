@@ -13224,7 +13224,6 @@ function FImage_ohLoad(){
 function FImage_ohError(p){
    var o = this.__linker;
    var url = o._url;
-   debugger;
    RLogger.error(o, 'Load image failure. (url={1})', url);
 }
 function FImage_construct(){
@@ -28842,6 +28841,7 @@ function FE3dSceneDisplay(o){
    o._parentMaterials  = null;
    o._movies           = null;
    o._template         = null;
+   o._sprite           = null;
    o.construct         = FE3dSceneDisplay_construct;
    o.meshRenderables   = FE3dSceneDisplay_meshRenderables;
    o.loadResource      = FE3dSceneDisplay_loadResource;
@@ -28897,7 +28897,7 @@ function FE3dSceneDisplay_loadTemplate(template){
    var resource = o._resource;
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
-   var sprite = template.sprite();
+   var sprite = o._sprite = template.sprite();
    var renderables = sprite.renderables();
    var count = renderables.count();
    for(var n = 0; n < count; n++){
@@ -30358,7 +30358,18 @@ function FE3dTemplateDisplay_load(){
    if(shapes){
       var shapeCount = shapes.count();
       for(var i = 0; i < shapeCount; i++){
-         shapes.at(i).load();
+         var shape = shapes.at(i);
+         shape.load();
+      }
+   }
+   var animations = o._animations;
+   if(animations){
+      var animationCount = animations.count();
+      for(var i = 0; i < animationCount; i++){
+         var animation = animations.at(i);
+         if(animation.resource().skeleton() == null){
+            o.linkAnimation(animation);
+         }
       }
    }
 }

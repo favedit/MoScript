@@ -13224,7 +13224,6 @@ function FImage_ohLoad(){
 function FImage_ohError(p){
    var o = this.__linker;
    var url = o._url;
-   debugger;
    RLogger.error(o, 'Load image failure. (url={1})', url);
 }
 function FImage_construct(){
@@ -28842,6 +28841,7 @@ function FE3dSceneDisplay(o){
    o._parentMaterials  = null;
    o._movies           = null;
    o._template         = null;
+   o._sprite           = null;
    o.construct         = FE3dSceneDisplay_construct;
    o.meshRenderables   = FE3dSceneDisplay_meshRenderables;
    o.loadResource      = FE3dSceneDisplay_loadResource;
@@ -28897,7 +28897,7 @@ function FE3dSceneDisplay_loadTemplate(template){
    var resource = o._resource;
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
-   var sprite = template.sprite();
+   var sprite = o._sprite = template.sprite();
    var renderables = sprite.renderables();
    var count = renderables.count();
    for(var n = 0; n < count; n++){
@@ -30358,7 +30358,18 @@ function FE3dTemplateDisplay_load(){
    if(shapes){
       var shapeCount = shapes.count();
       for(var i = 0; i < shapeCount; i++){
-         shapes.at(i).load();
+         var shape = shapes.at(i);
+         shape.load();
+      }
+   }
+   var animations = o._animations;
+   if(animations){
+      var animationCount = animations.count();
+      for(var i = 0; i < animationCount; i++){
+         var animation = animations.at(i);
+         if(animation.resource().skeleton() == null){
+            o.linkAnimation(animation);
+         }
       }
    }
 }
@@ -66327,19 +66338,20 @@ function FDsSceneCanvas_selectDisplay(p){
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsSceneCanvas_selectMaterial(p){
+function FDsSceneCanvas_selectMaterial(material){
    var o = this;
    o.selectNone();
-   o._selectObject = p;
-   var d = p._display;
-   var s = d.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      if(r._materialReference == p){
-         o._selectRenderables.push(r);
-         r._optionSelected = true;
-         r.showBoundBox();
+   o._selectObject = material;
+   var display = material._display;
+   var sprite = display._sprite;
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable._materialReference == material._parentMaterial){
+         o._selectRenderables.push(renderable);
+         renderable._optionSelected = true;
+         renderable.showBoundBox();
       }
    }
 }
@@ -66443,27 +66455,33 @@ function FDsSceneCanvas_switchMode(p){
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsSceneCanvas_switchPlay(p){
+function FDsSceneCanvas_switchPlay(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         sprite._optionPlay = flag;
+         display._optionPlay = flag;
       }
    }
 }
-function FDsSceneCanvas_switchMovie(p, f){
+function FDsSceneCanvas_switchMovie(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionMovie = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionMovie = flag;
+         }
+         display._optionMovie = flag;
       }
    }
 }

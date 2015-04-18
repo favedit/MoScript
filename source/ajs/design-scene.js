@@ -240,19 +240,20 @@ function FDsSceneCanvas_selectDisplay(p){
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsSceneCanvas_selectMaterial(p){
+function FDsSceneCanvas_selectMaterial(material){
    var o = this;
    o.selectNone();
-   o._selectObject = p;
-   var d = p._display;
-   var s = d.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      if(r._materialReference == p){
-         o._selectRenderables.push(r);
-         r._optionSelected = true;
-         r.showBoundBox();
+   o._selectObject = material;
+   var display = material._display;
+   var sprite = display._sprite;
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable._materialReference == material._parentMaterial){
+         o._selectRenderables.push(renderable);
+         renderable._optionSelected = true;
+         renderable.showBoundBox();
       }
    }
 }
@@ -356,27 +357,33 @@ function FDsSceneCanvas_switchMode(p){
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsSceneCanvas_switchPlay(p){
+function FDsSceneCanvas_switchPlay(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         sprite._optionPlay = flag;
+         display._optionPlay = flag;
       }
    }
 }
-function FDsSceneCanvas_switchMovie(p, f){
+function FDsSceneCanvas_switchMovie(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionMovie = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionMovie = flag;
+         }
+         display._optionMovie = flag;
       }
    }
 }

@@ -399,24 +399,25 @@ function FDsSceneCanvas_selectDisplay(p){
 // <T>选中渲染材质处理。</T>
 //
 // @method
-// @param p:material:FG3dMaterial 渲染材质
+// @param material:FG3dMaterial 渲染材质
 //==========================================================
-function FDsSceneCanvas_selectMaterial(p){
+function FDsSceneCanvas_selectMaterial(material){
    var o = this;
    // 取消选中
    o.selectNone();
    // 选中对象
-   o._selectObject = p;
+   o._selectObject = material;
    // 选中材质
-   var d = p._display;
-   var s = d.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      if(r._materialReference == p){
-         o._selectRenderables.push(r);
-         r._optionSelected = true;
-         r.showBoundBox();
+   var display = material._display;
+   var sprite = display._sprite;
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable._materialReference == material._parentMaterial){
+         o._selectRenderables.push(renderable);
+         renderable._optionSelected = true;
+         renderable.showBoundBox();
       }
    }
 }
@@ -546,15 +547,17 @@ function FDsSceneCanvas_switchMode(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsSceneCanvas_switchPlay(p){
+function FDsSceneCanvas_switchPlay(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         sprite._optionPlay = flag;
+         display._optionPlay = flag;
       }
    }
 }
@@ -565,15 +568,19 @@ function FDsSceneCanvas_switchPlay(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsSceneCanvas_switchMovie(p, f){
+function FDsSceneCanvas_switchMovie(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionMovie = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionMovie = flag;
+         }
+         display._optionMovie = flag;
       }
    }
 }
