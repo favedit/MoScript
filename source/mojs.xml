@@ -29,41 +29,48 @@
      <PathMerger source='/3.3.5-engine-3d-instance' target='/ajs/engine-3d-instance.js'/>
      <PathMerger source='/3.3.6-engine-3d-server'   target='/ajs/engine-3d-server.js'/>
 
-     <PathMerger source='/4.1.1-control'            target='/ajs/control.js'/>
-     <PathMerger source='/4.1.2-control-core'       target='/ajs/control-core.js'/>
-     <PathMerger source='/4.2.1-control-form'       target='/ajs/control-form.js'/>
-     <PathMerger source='/4.2.2-control-table'      target='/ajs/control-table.js'/>
-     <PathMerger source='/4.3.1-control-menu'       target='/ajs/control-menu.js'/>
-     <PathMerger source='/4.3.2-control-tool'       target='/ajs/control-tool.js'/>
-     <PathMerger source='/4.3.3-control-tree'       target='/ajs/control-tree.js'/>
-     <PathMerger source='/4.3.4-control-page'       target='/ajs/control-page.js'/>
-     <PathMerger source='/4.3.5-control-frame'      target='/ajs/control-frame.js'/>
+     <PathMerger source='/4.1.1-game'               target='/ajs/game.js'/>
+     <PathMerger source='/4.2.1-game-2d'            target='/ajs/game-2d.js'/>
+     <PathMerger source='/4.2.2-game-3d'            target='/ajs/game-3d.js'/>
+     <PathMerger source='/4.3.1-game-3d-resource'   target='/ajs/game-3d-resource.js'/>
+     <PathMerger source='/4.3.2-game-3d-entity'     target='/ajs/game-3d-entity.js'/>
+     <PathMerger source='/4.3.2-game-3d-stage'      target='/ajs/game-3d-stage.js'/>
 
-     <PathMerger source='/5.1.1-data-control'       target='/ajs/data-control.js'/>
-     <PathMerger source='/5.1.2-data-core'          target='/ajs/data-core.js'/>
-     <PathMerger source='/5.2.1-data-form'          target='/ajs/data-form.js'/>
-     <PathMerger source='/5.2.2-data-table'         target='/ajs/data-table.js'/>
-     <PathMerger source='/5.2.3-data-tool'          target='/ajs/data-tool.js'/>
-     <PathMerger source='/5.2.4-data-tree'          target='/ajs/data-tree.js'/>
+     <PathMerger source='/5.1.1-control'            target='/ajs/control.js'/>
+     <PathMerger source='/5.1.2-control-core'       target='/ajs/control-core.js'/>
+     <PathMerger source='/5.2.1-control-form'       target='/ajs/control-form.js'/>
+     <PathMerger source='/5.2.2-control-table'      target='/ajs/control-table.js'/>
+     <PathMerger source='/5.3.1-control-menu'       target='/ajs/control-menu.js'/>
+     <PathMerger source='/5.3.2-control-tool'       target='/ajs/control-tool.js'/>
+     <PathMerger source='/5.3.3-control-tree'       target='/ajs/control-tree.js'/>
+     <PathMerger source='/5.3.4-control-page'       target='/ajs/control-page.js'/>
+     <PathMerger source='/5.3.5-control-frame'      target='/ajs/control-frame.js'/>
 
-     <PathMerger source='/6.1.1-design'             target='/ajs/design.js'/>
-     <PathMerger source='/6.1.2-design-resource'    target='/ajs/design-core-resource.js'/>
-     <PathMerger source='/6.1.3-design-core'        target='/ajs/design-core.js'/>
-     <PathMerger source='/6.1.4-design-frame'       target='/ajs/design-frame.js'/>
+     <PathMerger source='/6.1.1-data-control'       target='/ajs/data-control.js'/>
+     <PathMerger source='/6.1.2-data-core'          target='/ajs/data-core.js'/>
+     <PathMerger source='/6.2.1-data-form'          target='/ajs/data-form.js'/>
+     <PathMerger source='/6.2.2-data-table'         target='/ajs/data-table.js'/>
+     <PathMerger source='/6.2.3-data-tool'          target='/ajs/data-tool.js'/>
+     <PathMerger source='/6.2.4-data-tree'          target='/ajs/data-tree.js'/>
 
-     <PathMerger source='/6.2.1-design-solution'    target='/ajs/design-solution.js'/>
-     <PathMerger source='/6.2.2-design-project'     target='/ajs/design-project.js'/>
-     <PathMerger source='/6.2.3-design-resource'    target='/ajs/design-resource.js'/>
-     <PathMerger source='/6.2.4-design-publish'     target='/ajs/design-publish.js'/>
+     <PathMerger source='/7.1.1-design'             target='/ajs/design.js'/>
+     <PathMerger source='/7.1.2-design-resource'    target='/ajs/design-core-resource.js'/>
+     <PathMerger source='/7.1.3-design-core'        target='/ajs/design-core.js'/>
+     <PathMerger source='/7.1.4-design-frame'       target='/ajs/design-frame.js'/>
 
-     <PathMerger source='/6.3.1-design-bitmap'      target='/ajs/design-bitmap.js'/>
-     <PathMerger source='/6.3.2-design-material'    target='/ajs/design-material.js'/>
-     <PathMerger source='/6.3.3-design-mesh'        target='/ajs/design-mesh.js'/>
-     <PathMerger source='/6.3.4-design-model'       target='/ajs/design-model.js'/>
-     <PathMerger source='/6.3.5-design-template'    target='/ajs/design-template.js'/>
-     <PathMerger source='/6.3.6-design-scene'       target='/ajs/design-scene.js'/>
+     <PathMerger source='/7.2.1-design-solution'    target='/ajs/design-solution.js'/>
+     <PathMerger source='/7.2.2-design-project'     target='/ajs/design-project.js'/>
+     <PathMerger source='/7.2.3-design-resource'    target='/ajs/design-resource.js'/>
+     <PathMerger source='/7.2.4-design-publish'     target='/ajs/design-publish.js'/>
 
-     <PathMerger source='/7.1.1-demo'               target='/ajs/demo.js'/>
+     <PathMerger source='/7.3.1-design-bitmap'      target='/ajs/design-bitmap.js'/>
+     <PathMerger source='/7.3.2-design-material'    target='/ajs/design-material.js'/>
+     <PathMerger source='/7.3.3-design-mesh'        target='/ajs/design-mesh.js'/>
+     <PathMerger source='/7.3.4-design-model'       target='/ajs/design-model.js'/>
+     <PathMerger source='/7.3.5-design-template'    target='/ajs/design-template.js'/>
+     <PathMerger source='/7.3.6-design-scene'       target='/ajs/design-scene.js'/>
+
+     <PathMerger source='/8.1.1-demo'               target='/ajs/demo.js'/>
   </PathMergerCollection>
    <!-- 文件合并 -->
   <FileMergerCollection>
@@ -93,6 +100,14 @@
         <File source='/ajs/engine-3d-render.js'/>
         <File source='/ajs/engine-3d-effect.js'/>
         <File source='/ajs/engine-3d-instance.js'/>
+     </FileMerger>
+     <FileMerger target='/ajs/mo-game.js'>
+        <File source='/ajs/game.js'/>
+        <File source='/ajs/game-2d.js'/>
+        <File source='/ajs/game-3d.js'/>
+        <File source='/ajs/game-3d-resource.js'/>
+        <File source='/ajs/game-3d-entity.js'/>
+        <File source='/ajs/game-3d-stage.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-base-control.js'>
         <File source='/ajs/control.js'/>

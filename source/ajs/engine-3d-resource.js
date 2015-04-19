@@ -1697,21 +1697,21 @@ function FE3sSceneConsole_loadByGuid(guid){
 }
 function FE3sSceneConsole_loadByCode(code){
    var o = this;
-   var s = o._scenes;
-   var r = s.get(guid);
-   if(r){
-      return r;
+   var scenes = o._scenes;
+   var scene = scenes.get(code);
+   if(scene){
+      return scene;
    }
    var vendor = RConsole.find(FE3sVendorConsole).find(o._vendorCode);
-   vendor.set('guid', p);
+   vendor.set('code', code);
    var url = vendor.makeUrl();
    scene = RClass.create(FE3sScene);
-   scene.setGuid(guid);
+   scene.setCode(code);
    scene.setVendor(vendor);
    scene.setSourceUrl(url);
-   RConsole.find(FResourceConsole).load(r);
-   s.set(p, r);
-   return r;
+   RConsole.find(FResourceConsole).load(scene);
+   scenes.set(code, scene);
+   return scene;
 }
 function FE3sSceneDisplay(o){
    o = RClass.inherits(this, o, FE3sSprite);

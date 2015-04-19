@@ -1369,7 +1369,6 @@ function FDrTemplateConsole_update(config){
    var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
    return RConsole.find(FXmlConsole).sendAsync(url, config);
 }
-var temp = 0;
 function FDsCommonAnimationPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible         = false;
@@ -7442,7 +7441,6 @@ function FDsResourceWorkspace_dispose(){
    o._propertyFrames.dispose();
    o._propertyFrames = null;
 }
-var temp = 0;
 function FDsBitmapCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._activeGuid          = null;

@@ -13,6 +13,7 @@ var EE3dInstance = new function EE3dInstance(){
    o.SceneLayer         = 'scene.layer';
    o.SceneDisplay       = 'scene.display';
    o.SceneMaterial      = 'scene.material';
+   o.SceneMovie         = 'scene.movie';
    o.SceneRenderable    = 'scene.renderable';
    //..........................................................
    // @member

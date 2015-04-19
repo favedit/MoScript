@@ -22,6 +22,10 @@ var EStageKey = new function EStageKey(){
    o.RotationRight = EKeyCode.D;
    o.RotationUp    = EKeyCode.Z;
    o.RotationDown  = EKeyCode.X;
+   o.FocusForward  = EKeyCode.I;
+   o.FocusBack     = EKeyCode.K;
+   o.FocusLeft     = EKeyCode.J;
+   o.FocusRight    = EKeyCode.L;
    return o;
 }
 function MLinkerResource(o){
@@ -241,21 +245,21 @@ function FDisplayContainer(o){
    return o;
 }
 function FDisplayContainer_hasDisplay(){
-   var r = this._displays;
-   if(r){
-      return !r.isEmpty();
+   var displays = this._displays;
+   if(displays){
+      return !displays.isEmpty();
    }
    return false;
 }
-function FDisplayContainer_findDisplay(p){
+function FDisplayContainer_findDisplay(code){
    var o = this;
-   var s = o._displays;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var f = s.getAt(i);
-         if(f.isName(p)){
-            return f;
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         if(display.code() == code){
+            return display;
          }
       }
    }

@@ -38,6 +38,7 @@ function FE3dInstanceConsole_construct(){
    factory.register(EE3dInstance.SceneLayer, FE3dSceneLayer);
    factory.register(EE3dInstance.SceneDisplay, FE3dSceneDisplay);
    factory.register(EE3dInstance.SceneMaterial, FE3dSceneMaterial);
+   factory.register(EE3dInstance.SceneMovie, FE3dSceneDisplayMovie);
    factory.register(EE3dInstance.SceneRenderable, FE3dSceneDisplayRenderable);
 }
 

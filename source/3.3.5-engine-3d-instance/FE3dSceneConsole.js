@@ -132,29 +132,28 @@ function FE3dSceneConsole_allocByGuid(context, guid){
 // <T>收集一个场景。</T>
 //
 // @method
-// @param pc:content:FRenderContent 名称
-// @param pn:name:String 名称
+// @param context:FGraphicContext 渲染环境
+// @param context:String 代码
 // @return FE3dScene 渲染模型
 //==========================================================
-function FE3dSceneConsole_allocByCode(pc, pn){
+function FE3dSceneConsole_allocByCode(context, code){
    var o = this;
-   // 加载渲染对象
-   var rsc = RConsole.find(FE3sSceneConsole);
-   var rs = rsc.load(pn);
-   // 加载模型
-   var s = RClass.create(FE3dScene);
-   s.linkGraphicContext(pc);
-   s._name = pn;
-   s._resource = rs;
-   s.setup();
-   // 测试是否已加载
-   if(rs.testReady()){
-      s.load(rs);
-   }else{
-      // 增加加载中
-      o._loadScenes.push(s);
+   // 尝试从缓冲池中取出
+   var scene = o._pools.alloc(code);
+   if(scene){
+      return scene;
    }
-   return s;
+   // 加载渲染对象
+   var resource = RConsole.find(FE3sSceneConsole).loadByCode(code);
+   // 加载模型
+   scene = RClass.create(FE3dScene);
+   scene.linkGraphicContext(context);
+   scene.setResource(resource);
+   scene._poolCode = code;
+   scene.setup();
+   // 增加加载中
+   o._loadScenes.push(scene);
+   return scene;
 }
 
 //==========================================================

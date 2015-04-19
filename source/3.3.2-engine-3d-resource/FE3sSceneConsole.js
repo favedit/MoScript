@@ -60,28 +60,29 @@ function FE3sSceneConsole_loadByGuid(guid){
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>根据代码加载资源场景。</T>
 //
-// @param p:input:FByteStream 数据流
-// @return 处理结果
+// @param code:String 代码
+// @return 资源场景
 //==========================================================
 function FE3sSceneConsole_loadByCode(code){
    var o = this;
-   var s = o._scenes;
-   var r = s.get(guid);
-   if(r){
-      return r;
+   var scenes = o._scenes;
+   // 获得场景
+   var scene = scenes.get(code);
+   if(scene){
+      return scene;
    }
    // 生成地址
    var vendor = RConsole.find(FE3sVendorConsole).find(o._vendorCode);
-   vendor.set('guid', p);
+   vendor.set('code', code);
    var url = vendor.makeUrl();
    // 创建主题
    scene = RClass.create(FE3sScene);
-   scene.setGuid(guid);
+   scene.setCode(code);
    scene.setVendor(vendor);
    scene.setSourceUrl(url);
-   RConsole.find(FResourceConsole).load(r);
-   s.set(p, r);
-   return r;
+   RConsole.find(FResourceConsole).load(scene);
+   scenes.set(code, scene);
+   return scene;
 }

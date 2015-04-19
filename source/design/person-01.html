@@ -12,10 +12,49 @@
 <SCRIPT>
 var canvas = null;
 var playing = true;
+var space = null;
+var personDisplay = null;
 //------------------------------------------------------------
-function onSceneLoad(c, s){
-   canvas.switchPlay(playing);
-   canvas.switchMovie(playing);
+function onSpaceEnterFrame(event){
+   if(!personDisplay){
+      return;
+   }
+   var timer = space.timer();
+   var frameSpan = timer.spanSecond();
+   //..........................................................
+   var moveRate = frameSpan * 4;
+   var rotationRate = frameSpan * 2;
+   var matrix = personDisplay.matrix();
+   // 按键前后移动
+   var focusForward = RKeyboard.isPress(EStageKey.FocusForward);
+   var focusBack = RKeyboard.isPress(EStageKey.FocusBack);
+   if(focusForward && !focusBack){
+      //c.doWalk(d);
+      matrix.tx += moveRate;
+   }
+   if(!focusForward && focusBack){
+      //c.doWalk(-d);
+      matrix.tx -= moveRate;
+   }
+   // 按键左右旋转
+   var focusLeft = RKeyboard.isPress(EStageKey.FocusLeft);
+   var focusRight = RKeyboard.isPress(EStageKey.FocusRight);
+   if(focusLeft && !focusRight){
+      matrix.ry += rotationRate;
+   }
+   if(!focusLeft && focusRight){
+      matrix.ry -= rotationRate;
+   }
+   matrix.updateForce();
+}
+//------------------------------------------------------------
+function onSpaceLoaded(event){
+   space = event.space;
+   space.addEnterFrameListener(null, onSpaceEnterFrame);
+   var layer = space.layers().get('space');
+   var display = personDisplay = layer.findDisplay('pvw.show.skeleton.001');
+   //canvas.switchPlay(playing);
+   //canvas.switchMovie(playing);
 }
 //------------------------------------------------------------
 function onKeydown(p){
@@ -41,26 +80,16 @@ function onLoad(){
    RRuntime.setProcessCd(EProcess.Release);
    RApplication.initialize();
    RBrowser.setContentPath('..');
-   // 获得场景代码
-   var u = window.location.toString();
-   var i = u.indexOf('code=');
-   var code = null;
-   if(i != -1){
-      code = u.substring(i + 5);
-   }
-   if(RString.isEmpty(code)){
-      throw new TFatal(this, 'Scnee code is empty.');
-   }
    // 设置资源获取方式
    RConsole.find(FE3sVendorConsole).setup('net');
    // 创建场景画板
-   var w = canvas = RClass.create(FE3dSceneCanvas);
-   w._scaleRate = 1;
-   w._optionAlpha = false;
-   w.build(document);
-   w.setPanel(document.body);
-   w.loadByCode(code);
-   w.addLoadListener(null, onSceneLoad);
+   canvas = RClass.create(FE3dSceneCanvas);
+   canvas._scaleRate = 1;
+   canvas._optionAlpha = false;
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   canvas.loadByCode('pvw.show.skeleton.01');
+   canvas.addLoadListener(null, onSpaceLoaded);
 }
 </SCRIPT>
 </HEAD>

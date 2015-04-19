@@ -23,5 +23,10 @@ var EStageKey = new function EStageKey(){
    o.RotationUp    = EKeyCode.Z;
    // @attribute Integer 下转
    o.RotationDown  = EKeyCode.X;
+   // @attribute 焦点对象
+   o.FocusForward  = EKeyCode.I;
+   o.FocusBack     = EKeyCode.K;
+   o.FocusLeft     = EKeyCode.J;
+   o.FocusRight    = EKeyCode.L;
    return o;
 }

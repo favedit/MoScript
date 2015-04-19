@@ -42,6 +42,11 @@ function FE3dSceneDisplay_construct(){
    o._movieMatrix = new SMatrix3d();
 }
 
+//==========================================================
+// <T>获得网格渲染集合。</T>
+//
+// @method
+//==========================================================
 function FE3dSceneDisplay_meshRenderables(){
    var o = this;
    var sprite = o._template.sprite();
@@ -59,17 +64,19 @@ function FE3dSceneDisplay_loadResource(resource){
    var instanceConsole = RConsole.find(FE3dInstanceConsole);
    o._resource = resource;
    // 设置矩阵
+   o._code = resource.code();
    o._matrix.assign(resource.matrix());
    // 加载动画集合
-   var rms = resource.movies();
-   if(rms){
-      var c = rms.count();
-      var ms = o._movies = new TObjects();
-      for(var i = 0; i < c; i++){
-         var rm = rms.at(i);
-         var m = RClass.create(FE3dSceneDisplayMovie);
-         m.loadResource(rm);
-         ms.push(m);
+   var movieResources = resource.movies();
+   if(movieResources){
+      var movieCount = movieResources.count();
+      var movies = o._movies = new TObjects();
+      for(var i = 0; i < movieCount; i++){
+         var movieResource = movieResources.at(i);
+         // 创建场景动画
+         var movie = instanceConsole.create(EE3dInstance.SceneMovie);
+         movie.loadResource(movieResource);
+         movies.push(movie);
       }
    }
    // 设置材质集合
@@ -80,6 +87,7 @@ function FE3dSceneDisplay_loadResource(resource){
       var parentMaterials = o._parentMaterials = new TDictionary();
       for(var i = 0; i < materialCount; i++){
          var materialResource = materialResources.at(i);
+         // 创建场景资源
          var material = instanceConsole.create(EE3dInstance.SceneMaterial);
          material._display = o;
          material.loadSceneResource(materialResource);

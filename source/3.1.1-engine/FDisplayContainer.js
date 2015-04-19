@@ -34,29 +34,29 @@ function FDisplayContainer(o){
 // @return Boolean 是否含有
 //==========================================================
 function FDisplayContainer_hasDisplay(){
-   var r = this._displays;
-   if(r){
-      return !r.isEmpty();
+   var displays = this._displays;
+   if(displays){
+      return !displays.isEmpty();
    }
    return false;
 }
 
 //==========================================================
-// <T>根据名称查找子节点。</T>
+// <T>根据代码查找显示对象。</T>
 //
 // @method
-// @param p:name:String 名称
-// @return FDisplay 子节点
+// @param code:String 代码
+// @return FDisplay 显示对象
 //==========================================================
-function FDisplayContainer_findDisplay(p){
+function FDisplayContainer_findDisplay(code){
    var o = this;
-   var s = o._displays;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var f = s.getAt(i);
-         if(f.isName(p)){
-            return f;
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         if(display.code() == code){
+            return display;
          }
       }
    }
