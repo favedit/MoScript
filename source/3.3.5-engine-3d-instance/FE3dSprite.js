@@ -38,6 +38,7 @@ function FE3dSprite(o){
    o.load             = FE3dSprite_load;
    // @method
    o.updateMatrix     = FE3dSprite_updateMatrix;
+   o.selectClip       = FE3dSprite_selectClip;
    o.process          = FE3dSprite_process;
    // @method
    o.dispose          = FE3dSprite_dispose;
@@ -330,6 +331,24 @@ function FE3dSprite_updateMatrix(region){
    var parent = o._parent;
    if(parent){
       o._currentMatrix.append(parent._currentMatrix);
+   }
+}
+
+//==========================================================
+// <T>选中一个剪辑对象。</T>
+//
+// @method
+// @param code:String 代码
+//==========================================================
+function FE3dSprite_selectClip(code){
+   var o = this;
+   var animations = o._animations;
+   if(animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.selectClip(code);
+      }
    }
 }
 

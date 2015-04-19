@@ -1,19 +1,19 @@
 //==========================================================
-// <T>名称接口。</T>
+// <T>属性名称接口。</T>
 //
 // @face
 // @author maocy
 // @history 150411
 //==========================================================
-function MName(o){
+function MAttributeName(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
    o._name   = null;
    //..........................................................
    // @method
-   o.name    = MName_name;
-   o.setName = MName_setName;
+   o.name    = MAttributeName_name;
+   o.setName = MAttributeName_setName;
    return o;
 }
 
@@ -22,7 +22,7 @@ function MName(o){
 //
 // @return String 名称
 //==========================================================
-function MName_name(){
+function MAttributeName_name(){
    return this._name;
 }
 
@@ -31,6 +31,6 @@ function MName_name(){
 //
 // @param name:String 名称
 //==========================================================
-function MName_setName(name){
+function MAttributeName_setName(name){
    this._name = name;
 }

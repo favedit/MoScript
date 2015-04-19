@@ -210,6 +210,9 @@ function FE3sAnimation(o){
    o._tracks       = null;
    o.skeletonGuid  = FE3sAnimation_skeletonGuid;
    o.skeleton      = FE3sAnimation_skeleton;
+   o.frameCount    = FE3sAnimation_frameCount;
+   o.frameTick     = FE3sAnimation_frameTick;
+   o.frameSpan     = FE3sAnimation_frameSpan;
    o.tracks        = FE3sAnimation_tracks;
    o.unserialize   = FE3sAnimation_unserialize;
    return o;
@@ -228,39 +231,44 @@ function FE3sAnimation_skeleton(){
    }
    return skeleton;
 }
+function FE3sAnimation_frameCount(){
+   return this._frameCount;
+}
+function FE3sAnimation_frameTick(){
+   return this._frameTick;
+}
+function FE3sAnimation_frameSpan(){
+   return this._frameSpan;
+}
 function FE3sAnimation_tracks(){
    return this._tracks;
 }
-function FE3sAnimation_unserialize(p){
+function FE3sAnimation_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p)
-   o._skeletonGuid = p.readString();
-   o._frameCount = p.readUint16();
-   o._frameTick = p.readUint16();
-   o._frameSpan = p.readUint32();
-   var ts = null;
-   var c = p.readUint16();
-   if(c > 0){
-      ts = o._tracks = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FE3sTrack);
-         t.unserialize(p);
-         ts.push(t);
-         if(k){
-            var bi = t.boneIndex();
-            var b = k.findBone(bi);
-            b.setTrack(t);
-         }
+   o.__base.FE3sObject.unserialize.call(o, input)
+   o._skeletonGuid = input.readString();
+   o._frameCount = input.readUint16();
+   o._frameTick = input.readUint16();
+   o._frameSpan = input.readUint32();
+   var tracks = null;
+   var trackCount = input.readUint16();
+   if(trackCount > 0){
+      tracks = o._tracks = new TObjects();
+      for(var i = 0; i < trackCount; i++){
+         var track = RClass.create(FE3sTrack);
+         track.unserialize(input);
+         tracks.push(track);
       }
    }
-   if(ts && o._skeletonGuid){
-      var k = o.skeleton();
-      for(var i = 0; i < c; i++){
-         var t = ts.get(i);
-         var b = k.findBone(t.boneIndex());
-         b.setTrack(t);
+   if(tracks && o._skeletonGuid){
+      var skeleton = o.skeleton();
+      for(var i = 0; i < trackCount; i++){
+         var track = tracks.at(i);
+         var boneIndex = track.boneIndex();
+         var bone = skeleton.findBone(boneIndex);
+         bone.setTrack(track);
       }
-      k.pushAnimation(o);
+      skeleton.pushAnimation(o);
    }
 }
 function FE3sBone(o){
@@ -2695,22 +2703,20 @@ function FE3sTrack_frames(){
 }
 function FE3sTrack_calculate(info, tick){
    var o = this;
-   var frameCount = o._frameCount;
+   var frameCount = info.frameCount;
    if(frameCount == 0){
-      return false;
+      throw new TError('Frame count is invalid.');
    }
-   if(tick < 0){
-      tick = -tick;
-   }
+   var beginIndex = info.beginIndex;
    var frameTick = o._frameTick;
    var index = parseInt(tick / frameTick) % frameCount;
    var frames = o._frames;
-   var currentFrame = frames.get(index);
+   var currentFrame = frames.get(beginIndex + index);
    var nextFrame = null;
    if(index < frameCount - 1){
-      nextFrame = frames.get(index + 1);
+      nextFrame = frames.get(beginIndex + index + 1);
    }else{
-      nextFrame = frames.get(0);
+      nextFrame = frames.get(beginIndex);
    }
    info.tick = tick;
    info.rate = (tick % frameTick) / frameTick;

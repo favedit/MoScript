@@ -1599,18 +1599,44 @@ var EResult = new function EResult(){
    o.Cancel   = -2;
    return o;
 }
-function MGuid(o){
+function MAttributeCode(o){
    o = RClass.inherits(this, o);
-   o._guid   = null;
-   o.guid    = MGuid_guid;
-   o.setGuid = MGuid_setGuid;
+   o._code   = null;
+   o.code    = MAttributeCode_code;
+   o.setCode = MAttributeCode_setCode;
    return o;
 }
-function MGuid_guid(){
+function MAttributeCode_code(){
+   return this._code;
+}
+function MAttributeCode_setCode(code){
+   this._code = code;
+}
+function MAttributeGuid(o){
+   o = RClass.inherits(this, o);
+   o._guid   = null;
+   o.guid    = MAttributeGuid_guid;
+   o.setGuid = MAttributeGuid_setGuid;
+   return o;
+}
+function MAttributeGuid_guid(){
    return this._guid;
 }
-function MGuid_setGuid(guid){
+function MAttributeGuid_setGuid(guid){
    this._guid = guid;
+}
+function MAttributeName(o){
+   o = RClass.inherits(this, o);
+   o._name   = null;
+   o.name    = MAttributeName_name;
+   o.setName = MAttributeName_setName;
+   return o;
+}
+function MAttributeName_name(){
+   return this._name;
+}
+function MAttributeName_setName(name){
+   this._name = name;
 }
 function MInstance(o){
    o = RClass.inherits(this, o);
@@ -1625,19 +1651,6 @@ function MInvoke(o){
    o = RClass.inherits(this, o);
    o.invoke = RMethod.virtual(o, 'invoke');
    return o;
-}
-function MName(o){
-   o = RClass.inherits(this, o);
-   o._name   = null;
-   o.name    = MName_name;
-   o.setName = MName_setName;
-   return o;
-}
-function MName_name(){
-   return this._name;
-}
-function MName_setName(name){
-   this._name = name;
 }
 function SArguments(){
    var o = this;

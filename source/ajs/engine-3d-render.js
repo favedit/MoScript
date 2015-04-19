@@ -2,6 +2,9 @@ function SE3rPlayInfo(o){
    if(!o){o = this;}
    o.tick         = 0;
    o.playRate     = 1.0;
+   o.beginIndex   = 0;
+   o.endIndex     = 0;
+   o.frameCount   = 0;
    o.currentFrame = null;
    o.nextFrame    = null;
    o.rate         = 1.0;
@@ -16,11 +19,11 @@ function SE3rPlayInfo(o){
 function SE3rPlayInfo_update(){
    var o = this;
    var currentFrame = o.currentFrame;
-   if(currentFrame == null){
+   if(!currentFrame){
       return false;
    }
    var nextFrame = o.nextFrame;
-   if(nextFrame == null){
+   if(!nextFrame){
       return false;
    }
    var matrix = o.matrix;
@@ -40,6 +43,7 @@ function SE3rPlayInfo_update(){
 }
 function FE3rAnimation(o){
    o = RClass.inherits(this, o, FObject);
+   o._valid       = false;
    o._baseTick    = 0;
    o._currentTick = 0;
    o._lastTick    = 0;
@@ -60,7 +64,6 @@ function FE3rAnimation(o){
 function FE3rAnimation_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._tracks = new TObjects();
    o._playInfo = new SE3rPlayInfo();
 }
 function FE3rAnimation_findTrack(p){
@@ -81,17 +84,28 @@ function FE3rAnimation_tracks(){
 function FE3rAnimation_resource(){
    return this._resource;
 }
-function FE3rAnimation_loadResource(p){
+function FE3rAnimation_loadResource(resource){
    var o = this;
-   o._resource = p;
-   var rts = p.tracks();
-   var c = rts.count();
-   for(var i = 0; i < c; i++){
-      var rt = rts.get(i);
-      var t = RClass.create(FE3rTrack);
-      t._animation = o;
-      t.loadResource(rt);
-      o._tracks.push(t);
+   var frameCount = resource.frameCount();
+   o._resource = resource;
+   var trackResources = resource.tracks();
+   if(trackResources){
+      var tracks = o._tracks = new TObjects();
+      var count = trackResources.count();
+      for(var i = 0; i < count; i++){
+         var trackResource = trackResources.at(i);
+         var track = RClass.create(FE3rTrack);
+         track._animation = o;
+         track.loadResource(trackResource);
+         tracks.push(track);
+      }
+   }
+   if(frameCount > 0){
+      var info = o._playInfo;
+      info.beginIndex = 0;
+      info.endIndex = (frameCount > 0) ? frameCount - 1 : 0;
+      info.frameCount = frameCount;
+      o._valid = true;
    }
 }
 function FE3rAnimation_record(){
@@ -777,7 +791,7 @@ function FE3rInstanceMesh_mergeRenderable(p){
 function FE3rInstanceMesh_build(){
 }
 function FE3rMaterial(o){
-   o = RClass.inherits(this, o, FG3dMaterial, MGuid, MGraphicObject, MLinkerResource);
+   o = RClass.inherits(this, o, FG3dMaterial, MAttributeGuid, MGraphicObject, MLinkerResource);
    o._ready         = false;
    o._visible       = true;
    o._bitmaps       = null;
@@ -1062,7 +1076,10 @@ function FE3rMeshAnimation(o){
 }
 function FE3rMeshAnimation_process(track){
    var o = this;
-   var tick = o._currentTick;
+   if(!o._valid){
+      return;
+   }
+   var tick = Math.abs(o._currentTick);
    var resource = track._resource;
    var playInfo = o._playInfo;
    resource.calculate(playInfo, tick);
@@ -1576,7 +1593,10 @@ function FE3rSkeletonAnimation(o){
 }
 function FE3rSkeletonAnimation_process(skeleton){
    var o = this;
-   var tick = o._currentTick;
+   if(!o._valid){
+      return;
+   }
+   var tick = Math.abs(o._currentTick);
    var bones = skeleton.bones();
    var count = bones.count();
    for(var i = 0; i < count; i++){

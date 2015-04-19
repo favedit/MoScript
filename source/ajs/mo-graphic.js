@@ -2558,7 +2558,7 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject, MName);
+   o = RClass.inherits(this, o, FG3dObject, MAttributeName);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
 }

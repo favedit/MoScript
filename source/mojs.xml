@@ -30,11 +30,11 @@
      <PathMerger source='/3.3.6-engine-3d-server'   target='/ajs/engine-3d-server.js'/>
 
      <PathMerger source='/4.1.1-game'               target='/ajs/game.js'/>
-     <PathMerger source='/4.2.1-game-2d'            target='/ajs/game-2d.js'/>
-     <PathMerger source='/4.2.2-game-3d'            target='/ajs/game-3d.js'/>
-     <PathMerger source='/4.3.1-game-3d-resource'   target='/ajs/game-3d-resource.js'/>
-     <PathMerger source='/4.3.2-game-3d-entity'     target='/ajs/game-3d-entity.js'/>
-     <PathMerger source='/4.3.2-game-3d-stage'      target='/ajs/game-3d-stage.js'/>
+     <PathMerger source='/4.2.1-game-core'          target='/ajs/game-core.js'/>
+     <PathMerger source='/4.3.1-game-template'      target='/ajs/game-template.js'/>
+     <PathMerger source='/4.4.1-game-entity'        target='/ajs/game-entity.js'/>
+     <PathMerger source='/4.5.1-game-scene'         target='/ajs/game-scene.js'/>
+     <PathMerger source='/4.6.1-game-stage'         target='/ajs/game-stage.js'/>
 
      <PathMerger source='/5.1.1-control'            target='/ajs/control.js'/>
      <PathMerger source='/5.1.2-control-core'       target='/ajs/control-core.js'/>
@@ -103,11 +103,11 @@
      </FileMerger>
      <FileMerger target='/ajs/mo-game.js'>
         <File source='/ajs/game.js'/>
-        <File source='/ajs/game-2d.js'/>
-        <File source='/ajs/game-3d.js'/>
-        <File source='/ajs/game-3d-resource.js'/>
-        <File source='/ajs/game-3d-entity.js'/>
-        <File source='/ajs/game-3d-stage.js'/>
+        <File source='/ajs/game-core.js'/>
+        <File source='/ajs/game-template.js'/>
+        <File source='/ajs/game-entity.js'/>
+        <File source='/ajs/game-scene.js'/>
+        <File source='/ajs/game-stage.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-base-control.js'>
         <File source='/ajs/control.js'/>
@@ -153,6 +153,7 @@
         <File source='/ajs/core-window.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-engine.js'/>
+        <File source='/ajs/mo-game.js'/>
         <File source='/ajs/mo-control.js'/>
         <File source='/ajs/mo-design.js'/>
      </FileMerger>
@@ -161,6 +162,7 @@
         <File source='/ajs/core-window.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-engine.js'/>
+        <File source='/ajs/mo-game.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-engine-server.js'>
         <File source='/ajs/mo-core.js'/>

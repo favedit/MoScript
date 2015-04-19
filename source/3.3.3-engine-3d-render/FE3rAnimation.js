@@ -8,6 +8,7 @@ function FE3rAnimation(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
+   o._valid       = false;
    o._baseTick    = 0;
    o._currentTick = 0;
    o._lastTick    = 0;
@@ -40,7 +41,6 @@ function FE3rAnimation(o){
 function FE3rAnimation_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._tracks = new TObjects();
    o._playInfo = new SE3rPlayInfo();
 }
 
@@ -88,21 +88,33 @@ function FE3rAnimation_resource(){
 // <T>加载动画资源。</T>
 //
 // @method
-// @param p:resource:FE3sAnimation 动画资源
+// @param resource:FE3sAnimation 动画资源
 //==========================================================
-function FE3rAnimation_loadResource(p){
+function FE3rAnimation_loadResource(resource){
    var o = this;
+   var frameCount = resource.frameCount();
    // 设置属性
-   o._resource = p;
+   o._resource = resource;
    // 加载跟踪集合
-   var rts = p.tracks();
-   var c = rts.count();
-   for(var i = 0; i < c; i++){
-      var rt = rts.get(i);
-      var t = RClass.create(FE3rTrack);
-      t._animation = o;
-      t.loadResource(rt);
-      o._tracks.push(t);
+   var trackResources = resource.tracks();
+   if(trackResources){
+      var tracks = o._tracks = new TObjects();
+      var count = trackResources.count();
+      for(var i = 0; i < count; i++){
+         var trackResource = trackResources.at(i);
+         var track = RClass.create(FE3rTrack);
+         track._animation = o;
+         track.loadResource(trackResource);
+         tracks.push(track);
+      }
+   }
+   // 设置播放信息
+   if(frameCount > 0){
+      var info = o._playInfo;
+      info.beginIndex = 0;
+      info.endIndex = (frameCount > 0) ? frameCount - 1 : 0;
+      info.frameCount = frameCount;
+      o._valid = true;
    }
 }
 

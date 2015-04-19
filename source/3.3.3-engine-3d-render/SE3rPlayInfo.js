@@ -11,6 +11,9 @@ function SE3rPlayInfo(o){
    // @attribute
    o.tick         = 0;
    o.playRate     = 1.0;
+   o.beginIndex   = 0;
+   o.endIndex     = 0;
+   o.frameCount   = 0;
    o.currentFrame = null;
    o.nextFrame    = null;
    o.rate         = 1.0;
@@ -33,11 +36,11 @@ function SE3rPlayInfo_update(){
    var o = this;
    // 检查参数
    var currentFrame = o.currentFrame;
-   if(currentFrame == null){
+   if(!currentFrame){
       return false;
    }
    var nextFrame = o.nextFrame;
-   if(nextFrame == null){
+   if(!nextFrame){
       return false;
    }
    // 获得矩阵

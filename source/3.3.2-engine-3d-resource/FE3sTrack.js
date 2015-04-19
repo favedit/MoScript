@@ -103,25 +103,22 @@ function FE3sTrack_frames(){
 function FE3sTrack_calculate(info, tick){
    var o = this;
    // 检查帧数
-   var frameCount = o._frameCount;
+   var frameCount = info.frameCount;
    if(frameCount == 0){
-      return false;
+      throw new TError('Frame count is invalid.');
    }
-   // 去掉负数
-   if(tick < 0){
-      tick = -tick;
-   }
+   var beginIndex = info.beginIndex;
    // 计算间隔
    var frameTick = o._frameTick;
    var index = parseInt(tick / frameTick) % frameCount;
    // 获得当前帧和下一帧
    var frames = o._frames;
-   var currentFrame = frames.get(index);
+   var currentFrame = frames.get(beginIndex + index);
    var nextFrame = null;
    if(index < frameCount - 1){
-      nextFrame = frames.get(index + 1);
+      nextFrame = frames.get(beginIndex + index + 1);
    }else{
-      nextFrame = frames.get(0);
+      nextFrame = frames.get(beginIndex);
    }
    // 设置结果
    info.tick = tick;

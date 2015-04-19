@@ -20,8 +20,12 @@ function FE3rMeshAnimation(o){
 //==========================================================
 function FE3rMeshAnimation_process(track){
    var o = this;
+   // 检查有效性
+   if(!o._valid){
+      return;
+   }
    // 获得间隔
-   var tick = o._currentTick;
+   var tick = Math.abs(o._currentTick);
    // 计算间隔
    var resource = track._resource;
    var playInfo = o._playInfo;

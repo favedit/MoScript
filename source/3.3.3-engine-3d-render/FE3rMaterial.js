@@ -6,7 +6,7 @@
 // @history 150417
 //==========================================================
 function FE3rMaterial(o){
-   o = RClass.inherits(this, o, FG3dMaterial, MGuid, MGraphicObject, MLinkerResource);
+   o = RClass.inherits(this, o, FG3dMaterial, MAttributeGuid, MGraphicObject, MLinkerResource);
    //..........................................................
    // @method
    o._ready         = false;

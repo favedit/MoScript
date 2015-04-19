@@ -1,11 +1,3 @@
-function FGameObject(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
-}
-function FGmTemplateObject(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
-}
 var EGmEntityAction = new function EGmEntityAction(){
    var o = this;
    o.Unknown  = 0;
@@ -319,12 +311,4 @@ function FGmStillEntity_construct(){
 function FGmStillEntity_dispose(){
    var o = this;
    o.__base.FGmEntity.dispose.call(o);
-}
-function FGmSceneObject(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
-}
-function FGmStageObject(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
 }

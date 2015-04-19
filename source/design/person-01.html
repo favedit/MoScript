@@ -13,48 +13,73 @@
 var canvas = null;
 var playing = true;
 var space = null;
-var personDisplay = null;
+var playerEntity = null;
 //------------------------------------------------------------
 function onSpaceEnterFrame(event){
-   if(!personDisplay){
+   if(!playerEntity){
       return;
    }
+   var clipCode = 'idle';
    var timer = space.timer();
    var frameSpan = timer.spanSecond();
    //..........................................................
-   var moveRate = frameSpan * 4;
-   var rotationRate = frameSpan * 2;
-   var matrix = personDisplay.matrix();
+   var moveRate = frameSpan * 6;
+   var rotationRate = frameSpan * 3;
    // 按键前后移动
    var focusForward = RKeyboard.isPress(EStageKey.FocusForward);
    var focusBack = RKeyboard.isPress(EStageKey.FocusBack);
    if(focusForward && !focusBack){
-      //c.doWalk(d);
-      matrix.tx += moveRate;
+      clipCode = 'walk';
+      playerEntity.moveForward(moveRate);
    }
    if(!focusForward && focusBack){
-      //c.doWalk(-d);
-      matrix.tx -= moveRate;
+      clipCode = 'walk';
+      playerEntity.moveForward(-moveRate);
    }
    // 按键左右旋转
    var focusLeft = RKeyboard.isPress(EStageKey.FocusLeft);
    var focusRight = RKeyboard.isPress(EStageKey.FocusRight);
    if(focusLeft && !focusRight){
-      matrix.ry += rotationRate;
+      playerEntity.moveRotation(-rotationRate);
    }
    if(!focusLeft && focusRight){
-      matrix.ry -= rotationRate;
+      playerEntity.moveRotation(rotationRate);
    }
-   matrix.updateForce();
+   playerEntity.selectClip(clipCode);
+   playerEntity.update();
+}
+//------------------------------------------------------------
+function onDisplayLoaded(event){
+   var display = event;
+   // 创建动画信息
+   var animation = display.animations().first();
+   var idleClip = RClass.create(FE3dSceneAnimationClip);
+   idleClip.setCode('idle');
+   idleClip.setRange(0, 10);
+   idleClip.setPlayRate(1.5);
+   animation.pushClip(idleClip);
+   var walkClip = RClass.create(FE3dSceneAnimationClip);
+   walkClip.setCode('walk');
+   walkClip.setRange(11, 44);
+   walkClip.setPlayRate(4);
+   animation.pushClip(walkClip);
+   animation.selectClip('idle');
+   // 创建实体
+   var matrix = display.matrix();
+   playerEntity = RClass.create(FGmPlayerEntity);
+   playerEntity.location().set(matrix.tx, matrix.tz, matrix.ty);
+   playerEntity.scale().set(matrix.sx, matrix.sz, matrix.sy);
+   playerEntity.pushDisplay(display);
 }
 //------------------------------------------------------------
 function onSpaceLoaded(event){
    space = event.space;
-   space.addEnterFrameListener(null, onSpaceEnterFrame);
-   var layer = space.layers().get('space');
-   var display = personDisplay = layer.findDisplay('pvw.show.skeleton.001');
    //canvas.switchPlay(playing);
    //canvas.switchMovie(playing);
+   space.addEnterFrameListener(null, onSpaceEnterFrame);
+   var layer = space.layers().get('space');
+   var display = layer.findDisplay('pvw.show.skeleton.001');
+   display.addLoadListener(null, onDisplayLoaded);
 }
 //------------------------------------------------------------
 function onKeydown(p){

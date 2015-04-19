@@ -1381,12 +1381,41 @@ function FE3dScene_deactive(){
 function FE3dSceneAnimation(o){
    o = RClass.inherits(this, o, FE3dAnimation);
    o._animation        = null;
+   o._activeClip       = null;
+   o._clips            = null;
+   o.clips             = FE3dSceneAnimation_clips;
+   o.pushClip          = FE3dSceneAnimation_pushClip;
    o.record            = RMethod.empty;
    o.process           = RMethod.empty;
+   o.selectClip        = FE3dSceneAnimation_selectClip;
    o.loadAnimation     = FE3dSceneAnimation_loadAnimation;
    o.loadSceneResource = FE3dSceneAnimation_loadSceneResource;
    o.reloadResource    = FE3dSceneAnimation_reloadResource;
    return o;
+}
+function FE3dSceneAnimation_clips(){
+   return this._clips;
+}
+function FE3dSceneAnimation_pushClip(clip){
+   var o = this;
+   var clips = o._clips;
+   if(!clips){
+      clips = o._clips = new TDictionary();
+   }
+   clips.set(clip.code(), clip);
+}
+function FE3dSceneAnimation_selectClip(code){
+   var o = this;
+   var clip = o._clips.get(code);
+   if(o._activeClip == clip){
+      return;
+   }
+   var info = o._animation._playInfo;
+   info.beginIndex = clip.beginIndex();
+   info.endIndex = clip.endIndex();
+   info.frameCount = info.endIndex - info.beginIndex + 1;
+   o._animation._playRate = clip.playRate();
+   o._activeClip = clip;
 }
 function FE3dSceneAnimation_loadAnimation(animation){
    var o = this;
@@ -1401,6 +1430,36 @@ function FE3dSceneAnimation_reloadResource(){
    var resource = o._resource;
    var animation = o._animation;
    animation._playRate = resource._playRate;
+}
+function FE3dSceneAnimationClip(o){
+   o = RClass.inherits(this, o, FObject, MAttributeCode);
+   o._animation  = null;
+   o._beginIndex = 0;
+   o._endIndex   = 0;
+   o._playRate   = 1;
+   o.beginIndex  = FE3dSceneAnimationClip_beginIndex;
+   o.endIndex    = FE3dSceneAnimationClip_endIndex;
+   o.setRange    = FE3dSceneAnimationClip_setRange;
+   o.playRate    = FE3dSceneAnimationClip_playRate;
+   o.setPlayRate = FE3dSceneAnimationClip_setPlayRate;
+   return o;
+}
+function FE3dSceneAnimationClip_beginIndex(){
+   return this._beginIndex;
+}
+function FE3dSceneAnimationClip_endIndex(){
+   return this._endIndex;
+}
+function FE3dSceneAnimationClip_setRange(beginIndex, endIndex){
+   var o = this;
+   o._beginIndex = beginIndex;
+   o._endIndex = endIndex;
+}
+function FE3dSceneAnimationClip_playRate(){
+   return this._playRate;
+}
+function FE3dSceneAnimationClip_setPlayRate(rate){
+   this._playRate = rate;
 }
 function FE3dSceneCanvas(o){
    o = RClass.inherits(this, o, FE3dCanvas);
@@ -2482,6 +2541,7 @@ function FE3dSprite(o){
    o.reloadResource   = FE3dSprite_reloadResource;
    o.load             = FE3dSprite_load;
    o.updateMatrix     = FE3dSprite_updateMatrix;
+   o.selectClip       = FE3dSprite_selectClip;
    o.process          = FE3dSprite_process;
    o.dispose          = FE3dSprite_dispose;
    return o;
@@ -2653,6 +2713,17 @@ function FE3dSprite_updateMatrix(region){
    var parent = o._parent;
    if(parent){
       o._currentMatrix.append(parent._currentMatrix);
+   }
+}
+function FE3dSprite_selectClip(code){
+   var o = this;
+   var animations = o._animations;
+   if(animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.selectClip(code);
+      }
    }
 }
 function FE3dSprite_process(region){

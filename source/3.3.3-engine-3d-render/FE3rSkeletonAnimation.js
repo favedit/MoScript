@@ -20,8 +20,12 @@ function FE3rSkeletonAnimation(o){
 //==========================================================
 function FE3rSkeletonAnimation_process(skeleton){
    var o = this;
+   // 检查有效性
+   if(!o._valid){
+      return;
+   }
    // 获得间隔
-   var tick = o._currentTick;
+   var tick = Math.abs(o._currentTick);
    // 计算间隔
    var bones = skeleton.bones();
    var count = bones.count();

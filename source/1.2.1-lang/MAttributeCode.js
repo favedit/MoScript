@@ -1,36 +1,36 @@
 //==========================================================
-// <T>唯一编号接口。</T>
+// <T>属性代码接口。</T>
 //
 // @face
 // @author maocy
-// @history 150417
+// @history 150419
 //==========================================================
-function MGuid(o){
+function MAttributeCode(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
-   o._guid   = null;
+   o._code   = null;
    //..........................................................
    // @method
-   o.guid    = MGuid_guid;
-   o.setGuid = MGuid_setGuid;
+   o.code    = MAttributeCode_code;
+   o.setCode = MAttributeCode_setCode;
    return o;
 }
 
 //==========================================================
-// <T>获得唯一编号。</T>
+// <T>获得代码。</T>
 //
-// @return String 唯一编号
+// @return String 代码
 //==========================================================
-function MGuid_guid(){
-   return this._guid;
+function MAttributeCode_code(){
+   return this._code;
 }
 
 //==========================================================
-// <T>设置唯一编号。</T>
+// <T>设置代码。</T>
 //
-// @param guid:String 唯一编号
+// @param code:String 代码
 //==========================================================
-function MGuid_setGuid(guid){
-   this._guid = guid;
+function MAttributeCode_setCode(code){
+   this._code = code;
 }
