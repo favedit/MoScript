@@ -28,6 +28,8 @@ function FE3dSceneDisplay(o){
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
    o.processLoad       = FE3dSceneDisplay_processLoad;
+   // @method
+   o.clone             = FE3dSceneDisplay_clone;
    return o;
 }
 
@@ -172,4 +174,12 @@ function FE3dSceneDisplay_processLoad(){
    // 事件处理
    o.processLoadListener(o);
    return true;
+}
+
+//==========================================================
+// <T>复制加载处理。</T>
+//
+// @method
+//==========================================================
+function FE3dSceneDisplay_clone(){
 }

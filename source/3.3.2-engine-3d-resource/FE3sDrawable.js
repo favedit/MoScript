@@ -18,6 +18,7 @@ function FE3sDrawable(o){
    // @method
    o.unserialize = FE3sDrawable_unserialize;
    o.saveConfig  = FE3sDrawable_saveConfig;
+   o.clone       = FE3sDrawable_clone;
    return o;
 }
 
@@ -65,4 +66,18 @@ function FE3sDrawable_saveConfig(xconfig){
    o.__base.FE3sComponent.saveConfig.call(o, xconfig);
    // 存储属性
    o._matrix.saveConfig(xconfig.create('Matrix'));
+}
+
+//==========================================================
+// <T>克隆资源对象。</T>
+//
+// @method
+// @param instance:FE3sObject 实例对象
+// @return FE3sObject 资源对象
+//==========================================================
+function FE3sDrawable_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sComponent.clone.call(o, instance);
+   result._matrix.assign(o._matrix);
+   return result;
 }

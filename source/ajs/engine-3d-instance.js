@@ -1859,6 +1859,7 @@ function FE3dSceneDisplay(o){
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
    o.processLoad       = FE3dSceneDisplay_processLoad;
+   o.clone             = FE3dSceneDisplay_clone;
    return o;
 }
 function FE3dSceneDisplay_construct(){
@@ -1957,6 +1958,8 @@ function FE3dSceneDisplay_processLoad(){
    o._ready = true;
    o.processLoadListener(o);
    return true;
+}
+function FE3dSceneDisplay_clone(){
 }
 function FE3dSceneDisplayMovie(o){
    o = RClass.inherits(this, o, FObject);

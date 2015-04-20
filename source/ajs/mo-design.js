@@ -15206,14 +15206,24 @@ function FDsSceneCatalogToolBar_onCopyClick(event){
       return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
    }
    o._activeNodeGuid = node.guid();
+   var sprite = null;
    var linker = node.dataPropertyGet('linker');
    if(RClass.isClass(linker, FE3dSprite)){
+      sprite = linker;
       o._activeGuid = linker.resource().guid();
    }else{
       return alert('不能复制当前选中的节点.');
    }
-   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否复制当前节点？');
-   dialog.addResultListener(o, o.onCopyExecute);
+   var resource = sprite.resource();
+   var parentResource = resource.parent();
+   var displayResource = resource.clone();
+   parentResource.pushDisplay(displayResource);
+   var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+   display.linkGraphicContext(sprite);
+   display.loadResource(displayResource);
+   RConsole.find(FE3dSceneConsole).loadDisplay(display);
+   var parent = sprite.parent();
+   parent.pushDisplay(display);
 }
 function FDsSceneCatalogToolBar_onDeleteLoad(event){
    var o = this;

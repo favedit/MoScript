@@ -19,6 +19,7 @@ function FE3sDisplay(o){
    o.calculateOutline = FE3sDisplay_calculateOutline;
    // @method
    o.unserialize      = FE3sDisplay_unserialize;
+   o.clone            = FE3sDisplay_clone;
    return o;
 }
 
@@ -88,4 +89,19 @@ function FE3sDisplay_unserialize(input){
          renderables.push(renderable);
       }
    }
+}
+
+//==========================================================
+// <T>克隆资源对象。</T>
+//
+// @method
+// @param instance:FE3sObject 实例对象
+// @return FE3sObject 资源对象
+//==========================================================
+function FE3sDisplay_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sDrawable.clone.call(o, instance);
+   result._outline.assign(o._outline)
+   // o._renderables     = null;
+   return result;
 }

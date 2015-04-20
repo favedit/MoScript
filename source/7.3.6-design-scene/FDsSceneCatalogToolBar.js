@@ -224,15 +224,30 @@ function FDsSceneCatalogToolBar_onCopyClick(event){
    }
    o._activeNodeGuid = node.guid();
    // 检查对象
+   var sprite = null;
    var linker = node.dataPropertyGet('linker');
    if(RClass.isClass(linker, FE3dSprite)){
+      sprite = linker;
       o._activeGuid = linker.resource().guid();
    }else{
       return alert('不能复制当前选中的节点.');
    }
+   // 复制资源
+   var resource = sprite.resource();
+   var parentResource = resource.parent();
+   var displayResource = resource.clone();
+   parentResource.pushDisplay(displayResource);
+   // 加载场景显示资源
+   var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+   display.linkGraphicContext(sprite);
+   display.loadResource(displayResource);
+   RConsole.find(FE3dSceneConsole).loadDisplay(display);
+   // 放入集合
+   var parent = sprite.parent();
+   parent.pushDisplay(display);
    // 删除确认窗口
-   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否复制当前节点？');
-   dialog.addResultListener(o, o.onCopyExecute);
+   //var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否复制当前节点？');
+   //dialog.addResultListener(o, o.onCopyExecute);
 }
 
 //==========================================================

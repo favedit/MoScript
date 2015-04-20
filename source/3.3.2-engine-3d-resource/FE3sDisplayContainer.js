@@ -14,10 +14,13 @@ function FE3sDisplayContainer(o){
    o.construct        = FE3sDisplayContainer_construct;
    // @method
    o.displays         = FE3sDisplayContainer_displays;
+   o.pushDisplay      = FE3sDisplayContainer_pushDisplay;
+   // @method
    o.calculateOutline = FE3sDisplayContainer_calculateOutline;
    o.unserialize      = FE3sDisplayContainer_unserialize;
    // @method
    o.saveConfig       = FE3sDisplayContainer_saveConfig;
+   o.clone            = FE3sDisplayContainer_clone;
    return o;
 }
 
@@ -39,6 +42,22 @@ function FE3sDisplayContainer_construct(){
 //==========================================================
 function FE3sDisplayContainer_displays(){
    return this._displays;
+}
+
+//==========================================================
+// <T>获得显示集合。</T>
+//
+// @method
+// @return TObjects 显示集合
+//==========================================================
+function FE3sDisplayContainer_pushDisplay(display){
+   var o = this;
+   var displays = o._displays;
+   if(!displays){
+      displays = o._displays = new TObjects();
+   }
+   display.setParent(o);
+   displays.push(display);
 }
 
 //==========================================================
@@ -82,7 +101,7 @@ function FE3sDisplayContainer_unserialize(input){
       for(var i = 0; i < displayCount; i++){
          var display = RClass.create(FE3sSceneDisplay);
          display.unserialize(input);
-         displays.push(display);
+         o.pushDisplay(display);
       }
    }
 }
@@ -106,4 +125,18 @@ function FE3sDisplayContainer_saveConfig(xconfig){
          display.saveConfig(xdisplays.create('Display'));
       }
    }
+}
+
+//==========================================================
+// <T>克隆资源对象。</T>
+//
+// @method
+// @param instance:FE3sObject 实例对象
+// @return FE3sObject 资源对象
+//==========================================================
+function FE3sDisplayContainer_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sDisplay.clone.call(o, instance);
+   //o._displays        = null;
+   return result;
 }

@@ -114,160 +114,160 @@ function SG3dMaterialInfo(o){
 // <T>接收数据信息。</T>
 //
 // @method
-// @param p:info:SG3dMaterialInfo 材质信息
+// @param info:SG3dMaterialInfo 材质信息
 //==========================================================
-function SG3dMaterialInfo_assign(p){
+function SG3dMaterialInfo_assign(info){
    var o = this;
    // 设置属性
-   o.effectCode = p.effectCode;
-   o.transformName = p.transformName;
+   o.effectCode = info.effectCode;
+   o.transformName = info.transformName;
    // 设置配置
-   o.optionDepth = p.optionDepth;
-   o.optionDouble = p.optionDouble;
-   o.optionNormalInvert = p.optionNormalInvert;
-   o.optionShadow = p.optionShadow;
-   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionDepth = info.optionDepth;
+   o.optionDouble = info.optionDouble;
+   o.optionNormalInvert = info.optionNormalInvert;
+   o.optionShadow = info.optionShadow;
+   o.optionShadowSelf = info.optionShadowSelf;
    // 设置颜色
-   o.optionColor = p.optionColor;
-   o.colorMin = p.colorMin;
-   o.colorMax = p.colorMax;
-   o.colorRate = p.colorRate;
-   o.colorMerge = p.colorMerge;
+   o.optionColor = info.optionColor;
+   o.colorMin = info.colorMin;
+   o.colorMax = info.colorMax;
+   o.colorRate = info.colorRate;
+   o.colorMerge = info.colorMerge;
    // 设置透明
-   o.optionAlpha = p.optionAlpha;
-   o.alphaBase = p.alphaBase;
-   o.alphaRate = p.alphaRate;
-   o.alphaLevel = p.alphaLevel;
-   o.alphaMerge = p.alphaMerge;
+   o.optionAlpha = info.optionAlpha;
+   o.alphaBase = info.alphaBase;
+   o.alphaRate = info.alphaRate;
+   o.alphaLevel = info.alphaLevel;
+   o.alphaMerge = info.alphaMerge;
    // 设置环境
-   o.optionAmbient = p.optionAmbient;
-   o.ambientColor.assign(p.ambientColor);
-   o.ambientShadow = p.ambientShadow;
+   o.optionAmbient = info.optionAmbient;
+   o.ambientColor.assign(info.ambientColor);
+   o.ambientShadow = info.ambientShadow;
    // 设置散射
-   o.optionDiffuse = p.optionDiffuse;
-   o.diffuseColor.assign(p.diffuseColor);
-   o.diffuseShadow = p.diffuseShadow;
+   o.optionDiffuse = info.optionDiffuse;
+   o.diffuseColor.assign(info.diffuseColor);
+   o.diffuseShadow = info.diffuseShadow;
    // 设置散射视角
-   o.optionDiffuseView = p.optionDiffuseView;
-   o.diffuseViewColor.assign(p.diffuseViewColor);
-   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.optionDiffuseView = info.optionDiffuseView;
+   o.diffuseViewColor.assign(info.diffuseViewColor);
+   o.diffuseViewShadow = info.diffuseViewShadow;
    // 设置高光
-   o.optionSpecular = p.optionSpecular;
-   o.specularColor.assign(p.specularColor);
-   o.specularBase = p.specularBase;
-   o.specularLevel = p.specularLevel;
-   o.specularAverage = p.specularAverage;
-   o.specularShadow = p.specularShadow;
+   o.optionSpecular = info.optionSpecular;
+   o.specularColor.assign(info.specularColor);
+   o.specularBase = info.specularBase;
+   o.specularLevel = info.specularLevel;
+   o.specularAverage = info.specularAverage;
+   o.specularShadow = info.specularShadow;
    // 设置高光视角
-   o.optionSpecularView = p.optionSpecularView;
-   o.specularViewColor.assign(p.specularViewColor);
-   o.specularViewBase = p.specularViewBase;
-   o.specularViewRate = p.specularViewRate;
-   o.specularViewAverage = p.specularViewAverage;
-   o.specularViewShadow = p.specularViewShadow;
+   o.optionSpecularView = info.optionSpecularView;
+   o.specularViewColor.assign(info.specularViewColor);
+   o.specularViewBase = info.specularViewBase;
+   o.specularViewRate = info.specularViewRate;
+   o.specularViewAverage = info.specularViewAverage;
+   o.specularViewShadow = info.specularViewShadow;
    // 设置反射
-   o.optionReflect = p.optionReflect;
-   o.reflectColor.assign(p.reflectColor);
-   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
-   o.reflectShadow = p.reflectShadow;
+   o.optionReflect = info.optionReflect;
+   o.reflectColor.assign(info.reflectColor);
+   o.reflectMerge = RFloat.toRange(info.reflectMerge, 0, 2);
+   o.reflectShadow = info.reflectShadow;
    // 设置折射
-   o.optionRefract = p.optionRefract;
-   o.refractFrontColor.assign(p.refractFrontColor);
-   o.refractFrontMerge = p.refractFrontMerge;
-   o.refractFrontShadow = p.refractFrontShadow;
-   o.refractBackColor.assign(p.refractBackColor);
-   o.refractBackMerge = p.refractBackMerge;
-   o.refractBackShadow = p.refractBackShadow;
+   o.optionRefract = info.optionRefract;
+   o.refractFrontColor.assign(info.refractFrontColor);
+   o.refractFrontMerge = info.refractFrontMerge;
+   o.refractFrontShadow = info.refractFrontShadow;
+   o.refractBackColor.assign(info.refractBackColor);
+   o.refractBackMerge = info.refractBackMerge;
+   o.refractBackShadow = info.refractBackShadow;
    // 设置不透明
-   o.optionOpacity = p.optionOpacity;
-   o.opacityColor.assign(p.opacityColor);
-   o.opacityRate = p.opacityRate;
-   o.opacityAlpha = p.optionAlpha;
-   o.opacityDepth = p.optionDepth;
-   o.opacityTransmittance = p.optionTransmittance;
+   o.optionOpacity = info.optionOpacity;
+   o.opacityColor.assign(info.opacityColor);
+   o.opacityRate = info.opacityRate;
+   o.opacityAlpha = info.optionAlpha;
+   o.opacityDepth = info.optionDepth;
+   o.opacityTransmittance = info.optionTransmittance;
    // 设置发光
-   o.optionEmissive = p.optionEmissive;
-   o.emissiveColor.assign(p.emissiveColor);
+   o.optionEmissive = info.optionEmissive;
+   o.emissiveColor.assign(info.emissiveColor);
 }
 
 //==========================================================
 // <T>计算数据信息。</T>
 //
 // @method
-// @param p:info:SG3dMaterialInfo 材质信息
+// @param info:SG3dMaterialInfo 材质信息
 //==========================================================
-function SG3dMaterialInfo_calculate(p){
+function SG3dMaterialInfo_calculate(info){
    var o = this;
    // 设置属性
-   o.effectCode = p.effectCode;
-   o.transformName = p.transformName;
+   o.effectCode = info.effectCode;
+   o.transformName = info.transformName;
    // 设置配置
-   o.optionDepth = p.optionDepth;
-   o.optionDouble = p.optionDouble;
-   o.optionNormalInvert = p.optionNormalInvert;
-   o.optionShadow = p.optionShadow;
-   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionDepth = info.optionDepth;
+   o.optionDouble = info.optionDouble;
+   o.optionNormalInvert = info.optionNormalInvert;
+   o.optionShadow = info.optionShadow;
+   o.optionShadowSelf = info.optionShadowSelf;
    // 设置颜色
-   o.optionColor = p.optionColor;
-   o.colorMin = p.colorMin;
-   o.colorMax = p.colorMax;
-   o.colorRate = p.colorRate;
-   o.colorMerge = p.colorMerge;
+   o.optionColor = info.optionColor;
+   o.colorMin = info.colorMin;
+   o.colorMax = info.colorMax;
+   o.colorRate = info.colorRate;
+   o.colorMerge = info.colorMerge;
    // 设置透明
-   o.optionAlpha = p.optionAlpha;
-   o.alphaBase = p.alphaBase;
-   o.alphaRate = p.alphaRate;
-   o.alphaLevel = p.alphaLevel;
-   o.alphaMerge = p.alphaMerge;
+   o.optionAlpha = info.optionAlpha;
+   o.alphaBase = info.alphaBase;
+   o.alphaRate = info.alphaRate;
+   o.alphaLevel = info.alphaLevel;
+   o.alphaMerge = info.alphaMerge;
    // 设置环境
-   o.optionAmbient = p.optionAmbient;
-   o.ambientColor.assignPower(p.ambientColor);
-   o.ambientShadow = p.ambientShadow;
+   o.optionAmbient = info.optionAmbient;
+   o.ambientColor.assignPower(info.ambientColor);
+   o.ambientShadow = info.ambientShadow;
    // 设置散射
-   o.optionDiffuse = p.optionDiffuse;
-   o.diffuseColor.assignPower(p.diffuseColor);
-   o.diffuseShadow = p.diffuseShadow;
+   o.optionDiffuse = info.optionDiffuse;
+   o.diffuseColor.assignPower(info.diffuseColor);
+   o.diffuseShadow = info.diffuseShadow;
    // 设置散射视角
-   o.optionDiffuseView = p.optionDiffuseView;
-   o.diffuseViewColor.assignPower(p.diffuseViewColor);
-   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.optionDiffuseView = info.optionDiffuseView;
+   o.diffuseViewColor.assignPower(info.diffuseViewColor);
+   o.diffuseViewShadow = info.diffuseViewShadow;
    // 设置高光
-   o.optionSpecular = p.optionSpecular;
-   o.specularColor.assignPower(p.specularColor);
-   o.specularBase = p.specularBase;
-   o.specularLevel = p.specularLevel;
-   o.specularAverage = p.specularAverage;
-   o.specularShadow = p.specularShadow;
+   o.optionSpecular = info.optionSpecular;
+   o.specularColor.assignPower(info.specularColor);
+   o.specularBase = info.specularBase;
+   o.specularLevel = info.specularLevel;
+   o.specularAverage = info.specularAverage;
+   o.specularShadow = info.specularShadow;
    // 设置高光视角
-   o.optionSpecularView = p.optionSpecularView;
-   o.specularViewColor.assignPower(p.specularViewColor);
-   o.specularViewBase = p.specularViewBase;
-   o.specularViewRate = p.specularViewRate;
-   o.specularViewAverage = p.specularViewAverage;
-   o.specularViewShadow = p.specularViewShadow;
+   o.optionSpecularView = info.optionSpecularView;
+   o.specularViewColor.assignPower(info.specularViewColor);
+   o.specularViewBase = info.specularViewBase;
+   o.specularViewRate = info.specularViewRate;
+   o.specularViewAverage = info.specularViewAverage;
+   o.specularViewShadow = info.specularViewShadow;
    // 设置反射
-   o.optionReflect = p.optionReflect;
-   o.reflectColor.assignPower(p.reflectColor);
-   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
-   o.reflectShadow = p.reflectShadow;
+   o.optionReflect = info.optionReflect;
+   o.reflectColor.assignPower(info.reflectColor);
+   o.reflectMerge = RFloat.toRange(info.reflectMerge, 0, 2);
+   o.reflectShadow = info.reflectShadow;
    // 设置折射
-   o.optionRefract = p.optionRefract;
-   o.refractFrontColor.assignPower(p.refractFrontColor);
-   o.refractFrontMerge = p.refractFrontMerge;
-   o.refractFrontShadow = p.refractFrontShadow;
-   o.refractBackColor.assignPower(p.refractBackColor);
-   o.refractBackMerge = p.refractBackMerge;
-   o.refractBackShadow = p.refractBackShadow;
+   o.optionRefract = info.optionRefract;
+   o.refractFrontColor.assignPower(info.refractFrontColor);
+   o.refractFrontMerge = info.refractFrontMerge;
+   o.refractFrontShadow = info.refractFrontShadow;
+   o.refractBackColor.assignPower(info.refractBackColor);
+   o.refractBackMerge = info.refractBackMerge;
+   o.refractBackShadow = info.refractBackShadow;
    // 设置不透明
-   o.optionOpacity = p.optionOpacity;
-   o.opacityColor.assignPower(p.opacityColor);
-   o.opacityRate = p.opacityRate;
-   o.opacityAlpha = p.optionAlpha;
-   o.opacityDepth = p.optionDepth;
-   o.opacityTransmittance = p.optionTransmittance;
+   o.optionOpacity = info.optionOpacity;
+   o.opacityColor.assignPower(info.opacityColor);
+   o.opacityRate = info.opacityRate;
+   o.opacityAlpha = info.optionAlpha;
+   o.opacityDepth = info.optionDepth;
+   o.opacityTransmittance = info.optionTransmittance;
    // 设置发光
-   o.optionEmissive = p.optionEmissive;
-   o.emissiveColor.assignPower(p.emissiveColor);
+   o.optionEmissive = info.optionEmissive;
+   o.emissiveColor.assignPower(info.emissiveColor);
 }
 
 //==========================================================

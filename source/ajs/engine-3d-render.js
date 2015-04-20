@@ -1488,26 +1488,8 @@ function FE3rModelMesh_boneIds(p){
    return this._boneIds;
 }
 function FE3rObject(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o._guid = null;
-   o._code = null;
-   o.guid    = FE3rModel_guid;
-   o.setGuid = FE3rModel_setGuid;
-   o.code    = FE3rModel_code;
-   o.setCode = FE3rModel_setCode;
+   o = RClass.inherits(this, o, FObject, MAttributeGuid, MAttributeCode, MGraphicObject);
    return o;
-}
-function FE3rModel_guid(){
-   return this._guid;
-}
-function FE3rModel_setGuid(p){
-   this._guid = p;
-}
-function FE3rModel_code(){
-   return this._code;
-}
-function FE3rModel_setCode(p){
-   this._code = p;
 }
 function FE3rPipeline(o){
    o = RClass.inherits(this, o, FObject);

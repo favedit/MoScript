@@ -9,31 +9,24 @@ function FE3sSceneDisplay(o){
    //..........................................................
    // @attribute 属性
    o._templateGuid        = null;
-   // @attribute 配置
-   o._optionMergeVertex   = null;
-   o._optionMergeMaterial = null;
-   // @attribute 矩阵
-   o._matrix              = null;
    // @attribute 集合
    o._animations          = null;
    o._movies              = null;
-   o._materials           = null;
    o._renderables         = null;
    //..........................................................
    // @method
    o.construct            = FE3sSceneDisplay_construct;
    // @method
    o.templateGuid         = FE3sSceneDisplay_templateGuid;
-   o.matrix               = FE3sSceneDisplay_matrix;
    o.findAnimation        = FE3sSceneDisplay_findAnimation;
    o.syncAnimation        = FE3sSceneDisplay_syncAnimation;
    o.animations           = FE3sSceneDisplay_animations;
    o.movies               = FE3sSceneDisplay_movies;
-   o.materials            = FE3sSceneDisplay_materials;
    o.renderables          = FE3sSceneDisplay_renderables;
    // @method
    o.unserialize          = FE3sSceneDisplay_unserialize;
    o.saveConfig           = FE3sSceneDisplay_saveConfig;
+   o.clone                = FE3sSceneDisplay_clone;
    return o;
 }
 
@@ -45,7 +38,6 @@ function FE3sSceneDisplay(o){
 function FE3sSceneDisplay_construct(){
    var o = this;
    o.__base.FE3sSprite.construct.call(o);
-   o._matrix = new SMatrix3d();
 }
 
 //==========================================================
@@ -56,16 +48,6 @@ function FE3sSceneDisplay_construct(){
 //==========================================================
 function FE3sSceneDisplay_templateGuid(){
    return this._templateGuid;
-}
-
-//==========================================================
-// <T>获得矩阵。</T>
-//
-// @method
-// @return SMatrix3d 矩阵
-//==========================================================
-function FE3sSceneDisplay_matrix(){
-   return this._matrix;
 }
 
 //==========================================================
@@ -124,16 +106,6 @@ function FE3sSceneDisplay_animations(){
 //==========================================================
 function FE3sSceneDisplay_movies(){
    return this._movies;
-}
-
-//==========================================================
-// <T>获得材质集合。</T>
-//
-// @method
-// @return TObjects 材质集合
-//==========================================================
-function FE3sSceneDisplay_materials(){
-   return this._materials;
 }
 
 //==========================================================
@@ -197,13 +169,19 @@ function FE3sSceneDisplay_saveConfig(xconfig){
          animations.at(i).saveConfig(xanimations.create('Animation'));
       }
    }
-   // 存储材质集合
-   var materials = o._materials;
-   if(materials){
-      var count = materials.count();
-      var xmaterials = xconfig.create('MaterialCollection');
-      for(var i = 0; i < count; i++){
-         materials.at(i).saveConfig(xmaterials.create('Material'));
-      }
-   }
+}
+
+//==========================================================
+// <T>克隆资源对象。</T>
+//
+// @method
+// @param instance:FE3sObject 实例对象
+// @return FE3sObject 资源对象
+//==========================================================
+function FE3sSceneDisplay_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sSprite.clone.call(o, instance);
+   // 设置属性
+   result._templateGuid = o._templateGuid;
+   return result;
 }

@@ -36,6 +36,7 @@ function FE3sMaterial(o){
    // @method
    o.unserialize  = FE3sMaterial_unserialize;
    o.saveConfig   = FE3sMaterial_saveConfig;
+   o.clone        = FE3sMaterial_clone;
    return o;
 }
 
@@ -141,11 +142,29 @@ function FE3sMaterial_unserialize(input){
 // <T>保存数据信息到配置节点。</T>
 //
 // @method
-// @param p:config:TXmlNode 配置节点
+// @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FE3sMaterial_saveConfig(p){
+function FE3sMaterial_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
    // 存储材质
-   o._info.saveConfig(p);
+   xconfig.set('parent_guid', o._parentGuid);
+   o._info.saveConfig(xconfig);
+}
+
+//==========================================================
+// <T>克隆资源对象。</T>
+//
+// @method
+// @param instance:FE3sObject 实例对象
+// @return FE3sObject 资源对象
+//==========================================================
+function FE3sMaterial_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sObject.clone.call(o, instance);
+   // 设置属性，不能克隆唯一编号
+   // result._guid = null;
+   result._parentGuid = o._parentGuid;
+   result._info.assign(o._info);
+   return result;
 }

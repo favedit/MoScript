@@ -196,6 +196,19 @@ function MAttributeGuid_guid(){
 function MAttributeGuid_setGuid(guid){
    this._guid = guid;
 }
+function MAttributeLabel(o){
+   o = RClass.inherits(this, o);
+   o._label   = null;
+   o.label    = MAttributeLabel_label;
+   o.setLabel = MAttributeLabel_setLabel;
+   return o;
+}
+function MAttributeLabel_label(){
+   return this._label;
+}
+function MAttributeLabel_setLabel(label){
+   this._label = label;
+}
 function MAttributeName(o){
    o = RClass.inherits(this, o);
    o._name   = null;
