@@ -1256,6 +1256,7 @@ function FDsSolutionWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    o._frameName            = 'resource.solution.Workspace';
    o._storageCode          = o._frameName;
+   o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
@@ -1278,7 +1279,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    var o = this;
    o.__base.FUiWorkspace.onBuilded.call(o, p);
    var frame = o._frameToolBar = o.searchControl('toolbarFrame');
-   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   frame._hPanel.className = o.styleName('Menubar_Ground');
    var frame = o._frameBody = o.searchControl('bodyFrame');
    frame._hPanel.className = o.styleName('Body_Ground');
    var frame = o._frameStatusBar = o.searchControl('statusFrame');

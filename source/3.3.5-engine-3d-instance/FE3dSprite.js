@@ -22,6 +22,7 @@ function FE3dSprite(o){
    // @method
    o.testReady        = FE3dSprite_testReady;
    // @method
+   o.makeLabel        = FE3dSprite_makeLabel;
    o.findMeshByCode   = FE3dSprite_findMeshByCode;
    o.meshRenderables  = FE3dSprite_shapes;
    o.skeletons        = FE3dSprite_skeletons;
@@ -77,6 +78,23 @@ function FE3dSprite_testReady(){
       }
    }
    return true;
+}
+
+//==========================================================
+// <T>生成名称。</T>
+//
+// @method
+// @return String 名称
+//==========================================================
+function FE3dSprite_makeLabel(){
+   var o = this;
+   var resource = o.resource();
+   var code = resource.code();
+   var label = resource.label();
+   if(label){
+      return code + '[' + label + ']';
+   }
+   return code;
 }
 
 //==========================================================

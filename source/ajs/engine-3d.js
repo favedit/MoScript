@@ -359,20 +359,6 @@ function FE3dSimpleStage_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
 }
-function FE3dSprite(o){
-   o = RClass.inherits(this, o, FObject);
-   o._context    = null;
-   o._visible    = true;
-   o.linkContext = FE3dSprite_linkContext;
-   o.testVisible = FE3dSprite_testVisible;
-   return o;
-}
-function FE3dSprite_linkContext(p){
-   this._context = p;
-}
-function FE3dSprite_testVisible(p){
-   return this._visible;
-}
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;

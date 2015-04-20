@@ -33,6 +33,9 @@ function FE3dTemplate(o){
    o.animations       = FE3dTemplate_animations;
    o.pushAnimation    = FE3dTemplate_pushAnimation;
    // @method
+   o.visible          = FE3dTemplate_visible;
+   o.setVisible       = FE3dTemplate_setVisible;
+   // @method
    o.resource         = FE3dTemplate_resource;
    o.setResource      = FE3dTemplate_setResource;
    o.loadSkeletons    = FE3dTemplate_loadSkeletons;
@@ -175,6 +178,26 @@ function FE3dTemplate_pushAnimation(p){
    }
    var pr = p.resource();
    r.set(pr.guid(), p);
+}
+
+//==========================================================
+// <T>获得可见性。</T>
+//
+// @method
+// @return Boolean 可见性
+//==========================================================
+function FE3dTemplate_visible(){
+   return this.sprite().visible();
+}
+
+//==========================================================
+// <T>设置可见性。</T>
+//
+// @method
+// @param visible:Boolean 可见性
+//==========================================================
+function FE3dTemplate_setVisible(visible){
+   this.sprite().setVisible(visible);
 }
 
 //==========================================================

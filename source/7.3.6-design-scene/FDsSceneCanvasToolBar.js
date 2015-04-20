@@ -91,8 +91,10 @@ function FDsSceneCanvasToolBar_onBuilded(p){
 //==========================================================
 function FDsSceneCanvasToolBar_onModeClick(event){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._frameSet._canvas.switchMode(p._canvasModeCd);
+   var sender = event.sender;
+   var modeCd = sender._canvasModeCd;
+   o._canvasModeCd = modeCd;
+   o._frameSet._canvasContent.switchMode(modeCd);
 }
 
 //==========================================================
@@ -114,8 +116,7 @@ function FDsSceneCanvasToolBar_onLookClick(event){
 //==========================================================
 function FDsSceneCanvasToolBar_onPlayClick(event){
    var o = this;
-   var canvas = o._frameSet._canvas;
-   canvas.switchPlay(event.checked);
+   o._frameSet._canvasContent.switchPlay(event.checked);
 }
 
 //==========================================================
@@ -126,8 +127,7 @@ function FDsSceneCanvasToolBar_onPlayClick(event){
 //==========================================================
 function FDsSceneCanvasToolBar_onRotationClick(event){
    var o = this;
-   var canvas = o._frameSet._canvas;
-   canvas.switchMovie(event.checked);
+   o._frameSet._canvasContent.switchMovie(event.checked);
 }
 
 //==========================================================

@@ -700,8 +700,10 @@
 
 .FUiPageControl_SheetPanel{
    vertical-align: top;
-   border-left:1 solid #29bad5; border-right:1 solid #29bad5; border-bottom:1 solid #29bad5;
-   padding:6;
+   border-left: 1px solid #29BAD5;
+   border-right: 1px solid #29BAD5;
+   border-bottom: 1px solid #29BAD5;
+   padding: 6px;
 }
 
 .FUiPageControl_Sheets{
@@ -710,17 +712,17 @@
 }
 
 .FUiPageControl_RightP{
-   width:1px; border-top:1 solid #29bad5;
+   width:1px; border-top:1 solid #29BAD5;
    filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
 }
 }
 
 .FUiPageControl_SheetLeft{
-   width:1px; background-color:#29bad5;
+   width:1px; background-color:#29BAD5;
 }
 
 .FUiPageControl_SheetRight{
-   width:1px; background-color:#29bad5;
+   width:1px; background-color:#29BAD5;
 }
 
 /* ------------------------------------------------------ */
@@ -737,7 +739,7 @@
    padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
    background: -ms-linear-gradient(top, #EEEEEE, #999999);
    background: -moz-linear-gradient(top, #EEEEEE, #999999); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#999999)); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#BBBBBB), to(#CCCCCC)); 
    filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#EEEEEE, endcolorstr=#999999);
 }
 
@@ -756,7 +758,7 @@
    padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
    background: -ms-linear-gradient(top, #BBBBBB, #EEEEEE);
    background: -moz-linear-gradient(top, #BBBBBB, #EEEEEE); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#BBBBBB), to(#EEEEEE)); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EEEEEE)); 
    filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BBBBBB, endcolorstr=#EEEEEE);
 }
 
@@ -765,24 +767,23 @@
 }
 
 .FUiTabButton_Top{
-   height:1px;
-   background-color:#CCCCCC;
+   height: 2px;
+   background-color:#666666;
 }
 
 .FUiTabButton_TopSelect{
    height:1px;
-   background-color:#FFFFFF;
+   background-color:#999999;
 }
 
 .FUiTabButton_Left{
-   border-top:1 solid #666666;
    width: 1px;
-   background-color:#CCCCCC;
+   background-color:#999999;
 }
 
 .FUiTabButton_LeftSelect{
    width: 1px;
-   background-color:#FFFFFF;
+   background-color:#999999;
 }
 
 .FUiTabButton_Right{
@@ -792,7 +793,7 @@
 
 .FUiTabButton_RightSelect{
    width:1px;
-   background-color:#FFFFFF;
+   background-color:#CCCCCC;
 }
 
 .FUiTabButton_Bottom{
@@ -802,7 +803,7 @@
 
 .FUiTabButton_BottomSelect{
    height:1px;
-   background-color:#FFFFFF;
+   background-color:#EEEEEE;
 }
 
 /* ------------------------------------------------------ */

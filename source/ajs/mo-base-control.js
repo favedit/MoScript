@@ -10008,6 +10008,55 @@ function FUiLayout_dispose(){
    o._hContainer = null;
    o.__base.FUiContainer.dispose.call(o);
 }
+function FUiLayoutHorizontal(o){
+   o = RClass.inherits(this, o, FUiContainer);
+   o._hLine       = null;
+   o.onBuildPanel = FUiLayoutHorizontal_onBuildPanel;
+   o.onBuild      = FUiLayoutHorizontal_onBuild;
+   o.appendChild  = FUiLayoutHorizontal_appendChild;
+   o.dispose      = FUiLayoutHorizontal_dispose;
+   return o;
+}
+function FUiLayoutHorizontal_onBuildPanel(event){
+   var o = this;
+   o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
+}
+function FUiLayoutHorizontal_onBuildPanel(event){
+   var o = this;
+   o.__base.FUiContainer.onBuildPanel.call(o, event)
+   o._hLine = RBuilder.appendTableRow(o._hPanel);
+}
+function FUiLayoutHorizontal_appendChild(control){
+   var o = this;
+   var hCell = RBuilder.appendTableCell(o._hLine);
+   hCell.appendChild(control._hPanel);
+}
+function FUiLayoutHorizontal_dispose(){
+   var o = this;
+   o._hLine = RHtml.free(o._hLine);
+   o.__base.FUiContainer.dispose.call(o);
+}
+function FUiLayoutVertical(o){
+   o = RClass.inherits(this, o, FUiContainer);
+   o._hLine       = null;
+   o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
+   o.appendChild  = FUiLayoutVertical_appendChild;
+   o.dispose      = FUiLayoutVertical_dispose;
+   return o;
+}
+function FUiLayoutVertical_onBuildPanel(event){
+   var o = this;
+   o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
+}
+function FUiLayoutVertical_appendChild(control){
+   var o = this;
+   var hCell = RBuilder.appendTableRowCell(o._hPanel);
+   hCell.appendChild(control._hPanel);
+}
+function FUiLayoutVertical_dispose(){
+   var o = this;
+   o.__base.FUiContainer.dispose.call(o);
+}
 function FUiListBox(o){
    o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
    o._sizeCd      = EUiSize.Horizontal
@@ -11221,6 +11270,14 @@ function FUiPanel_onTitleClick(p){
    o._statusBody = s;
    o._hImage.src = RResource.iconPath(s ? o._imageMinus : o._imagePlus);
    RHtml.displaySet(o._hBody, s);
+}
+function FUiPanelHorizontal(o){
+   o = RClass.inherits(this, o, FUiLayoutHorizontal);
+   return o;
+}
+function FUiPanelVertical(o){
+   o = RClass.inherits(this, o, FUiLayoutVertical);
+   return o;
 }
 function FUiPicture(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescEdit);

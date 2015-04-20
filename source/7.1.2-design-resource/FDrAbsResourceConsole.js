@@ -9,20 +9,22 @@ function FDrAbsResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd     = EScope.Local;
+   o._scopeCd       = EScope.Local;
    // @attribute
-   o._serviceCode = null;
-   o._resources   = null;
+   o._serviceCode   = null;
+   o._resources     = null;
    //..........................................................
    // @method
-   o.construct    = FDrAbsResourceConsole_construct;
+   o.construct      = FDrAbsResourceConsole_construct;
    // @method
-   o.doList       = FDrAbsResourceConsole_doList;
-   o.doQuery      = FDrAbsResourceConsole_doQuery;
+   o.makeServiceUrl = FDrAbsResourceConsole_makeServiceUrl;
    // @method
-   o.doCreate     = FDrAbsResourceConsole_doCreate;
-   o.doUpdate     = FDrAbsResourceConsole_doUpdate;
-   o.doDelete     = FDrAbsResourceConsole_doDelete;
+   o.doList         = FDrAbsResourceConsole_doList;
+   o.doQuery        = FDrAbsResourceConsole_doQuery;
+   // @method
+   o.doCreate       = FDrAbsResourceConsole_doCreate;
+   o.doUpdate       = FDrAbsResourceConsole_doUpdate;
+   o.doDelete       = FDrAbsResourceConsole_doDelete;
    return o;
 }
 
@@ -36,6 +38,21 @@ function FDrAbsResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    // 初始化属性
    o._resources = new TDictionary();
+}
+
+//==========================================================
+// <T>生成网络地址。</T>
+//
+// @method
+// @return String 网络地址
+//==========================================================
+function FDrAbsResourceConsole_makeServiceUrl(action){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=' + action);
+   if(RRuntime.isDebug()){
+      url += '&date=' + RDate.format();
+   }
+   return url;
 }
 
 //==========================================================

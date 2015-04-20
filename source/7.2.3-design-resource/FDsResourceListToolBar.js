@@ -253,6 +253,10 @@ function FDsResourceListToolBar_doNavigator(page){
 }
 
 //==========================================================
+// <T>配置信息加载处理。</T>
+//
+// @method
+//==========================================================
 function FDsResourceListToolBar_storageLoad(){
    var o = this;
    o._controlTypeBitmap.check(o.storageGetBoolean('control_type_bitmap:check', true));
@@ -276,4 +280,3 @@ function FDsResourceListToolBar_dispose(){
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);
 }
-   

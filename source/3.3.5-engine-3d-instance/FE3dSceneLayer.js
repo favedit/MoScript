@@ -6,13 +6,10 @@
 // @history 150210
 //==========================================================
 function FE3dSceneLayer(o){
-   o = RClass.inherits(this, o, FDisplayLayer);
-   //..........................................................
-   // @attribute
-   o._resource    = null;
+   o = RClass.inherits(this, o, FDisplayLayer, MLinkerResource);
    //..........................................................
    // @method
-   o.resource     = FE3dSceneLayer_resource;
+   o.makeLabel    = FE3dSceneLayer_makeLabel;
    o.loadResource = FE3dSceneLayer_loadResource;
    // @method
    o.process      = FE3dSceneLayer_process;
@@ -20,13 +17,20 @@ function FE3dSceneLayer(o){
 }
 
 //==========================================================
-// <T>获得资源。</T>
+// <T>生成名称。</T>
 //
 // @method
-// @return FE3sSceneLayer 层资源
+// @return String 名称
 //==========================================================
-function FE3dSceneLayer_resource(){
-   return this._resource;
+function FE3dSceneLayer_makeLabel(){
+   var o = this;
+   var resource = o.resource();
+   var code = resource.code();
+   var label = resource.label();
+   if(label){
+      return code + '[' + label + ']';
+   }
+   return code;
 }
 
 //==========================================================

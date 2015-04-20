@@ -14,10 +14,10 @@ function FE3sDisplayContainer(o){
    o.construct        = FE3sDisplayContainer_construct;
    // @method
    o.displays         = FE3sDisplayContainer_displays;
-   // @method
    o.calculateOutline = FE3sDisplayContainer_calculateOutline;
-   // @method
    o.unserialize      = FE3sDisplayContainer_unserialize;
+   // @method
+   o.saveConfig       = FE3sDisplayContainer_saveConfig;
    return o;
 }
 
@@ -75,4 +75,35 @@ function FE3sDisplayContainer_calculateOutline(){
 function FE3sDisplayContainer_unserialize(input){
    var o = this;
    o.__base.FE3sDisplay.unserialize.call(o, input);
+   // 读取显示集合
+   var displayCount = input.readUint16();
+   if(displayCount > 0){
+      var displays = o._displays = new TObjects();
+      for(var i = 0; i < displayCount; i++){
+         var display = RClass.create(FE3sSceneDisplay);
+         display.unserialize(input);
+         displays.push(display);
+      }
+   }
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FE3sDisplayContainer_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDisplay.saveConfig.call(o, xconfig);
+   // 存储显示集合
+   var displays = o._displays;
+   if(displays){
+      var xdisplays = xconfig.create('DisplayCollection');
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         display.saveConfig(xdisplays.create('Display'));
+      }
+   }
 }

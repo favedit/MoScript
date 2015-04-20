@@ -1,20 +1,29 @@
 function FDrAbsResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd     = EScope.Local;
-   o._serviceCode = null;
-   o._resources   = null;
-   o.construct    = FDrAbsResourceConsole_construct;
-   o.doList       = FDrAbsResourceConsole_doList;
-   o.doQuery      = FDrAbsResourceConsole_doQuery;
-   o.doCreate     = FDrAbsResourceConsole_doCreate;
-   o.doUpdate     = FDrAbsResourceConsole_doUpdate;
-   o.doDelete     = FDrAbsResourceConsole_doDelete;
+   o._scopeCd       = EScope.Local;
+   o._serviceCode   = null;
+   o._resources     = null;
+   o.construct      = FDrAbsResourceConsole_construct;
+   o.makeServiceUrl = FDrAbsResourceConsole_makeServiceUrl;
+   o.doList         = FDrAbsResourceConsole_doList;
+   o.doQuery        = FDrAbsResourceConsole_doQuery;
+   o.doCreate       = FDrAbsResourceConsole_doCreate;
+   o.doUpdate       = FDrAbsResourceConsole_doUpdate;
+   o.doDelete       = FDrAbsResourceConsole_doDelete;
    return o;
 }
 function FDrAbsResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._resources = new TDictionary();
+}
+function FDrAbsResourceConsole_makeServiceUrl(action){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=' + action);
+   if(RRuntime.isDebug()){
+      url += '&date=' + RDate.format();
+   }
+   return url;
 }
 function FDrAbsResourceConsole_doList(search, order, pageSize, page){
    var o = this;
@@ -230,8 +239,38 @@ function FDrScene_saveConfig(xconfig){
 function FDrSceneConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    o._serviceCode = 'cloud.resource.scene';
+   o.createCamera = FDrSceneConsole_createCamera;
+   o.createLayer  = FDrSceneConsole_createLayer;
+   o.createSprite = FDrSceneConsole_createSprite;
+   o.copyNode     = FDrSceneConsole_copyNode;
+   o.deleteNode   = FDrSceneConsole_deleteNode;
    o.update       = FDrSceneConsole_update;
    return o;
+}
+function FDrSceneConsole_createCamera(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createCamera');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrSceneConsole_createLayer(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createLayer');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrSceneConsole_createSprite(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createSprite');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrSceneConsole_copyNode(sceneGuid, nodeGuid){
+   var o = this;
+   var url = o.makeServiceUrl('copyNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrSceneConsole_deleteNode(sceneGuid, nodeGuid){
+   var o = this;
+   var url = o.makeServiceUrl('deleteNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
 }
 function FDrSceneConsole_update(p){
    var o = this;

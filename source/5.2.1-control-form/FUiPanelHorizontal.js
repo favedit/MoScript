@@ -1,10 +1,11 @@
 //==========================================================
-// <T>资源场景显示层。</T>
+// <T>横向面板控件。</T>
 //
+// @class
 // @author maocy
-// @history 150115
+// @version 150420
 //==========================================================
-function FE3sSceneLayer(o){
-   o = RClass.inherits(this, o, FE3sDisplayLayer);
+function FUiPanelHorizontal(o){
+   o = RClass.inherits(this, o, FUiLayoutHorizontal);
    return o;
 }

@@ -43,33 +43,36 @@ function RFloat_isFloat(p){
 // <T>解析字符串为浮点数。</T>
 //
 // @method
-// @param p:value:String 内容
+// @param source:String 内容
 // @return Number 浮点数
 //===========================================================
-function RFloat_parse(p){
+function RFloat_parse(source){
    // 检查参数
-   if(p == null){
+   if(source == null){
       return 0;
    }
-   if(p == ''){
+   if(source == ''){
       return 0;
    }
    // 去掉开始0字符
-   var v = RString.trim(p.toString());
+   var value = RString.trim(source.toString());
+   if(value == null){
+      return 0;
+   }
    while(true){
-      if(v.charAt(0) != "0"){
+      if(value.charAt(0) != "0"){
          break;
       }
-      v = v.substr(1);
+      value = value.substr(1);
    }
    // 获得内容
-   var r = (v.length > 0) ? parseFloat(v) : 0;
+   var result = (value.length > 0) ? parseFloat(value) : 0;
    // 百分比处理
-   if(RString.findChars(v, '%') != -1){
-      r = r / 100;
+   if(RString.findChars(result, '%') != -1){
+      result = result / 100;
    }
    // 返回内容
-   return isNaN(r) ? 0 : r;
+   return isNaN(result) ? 0 : result;
 }
 
 //===========================================================

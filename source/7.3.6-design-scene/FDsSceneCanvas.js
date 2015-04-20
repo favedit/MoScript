@@ -66,17 +66,16 @@ function FDsSceneCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建界面控制器
-   var c = o._graphicContext;
-   var tc = RConsole.find(FE3dTemplateConsole);
-   //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
-   //t._optionFace = true;
-   //t.hide();
-   //var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
-   //t._optionFace = true;
-   //t.hide();
-   //var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
-   //t._optionFace = true;
-   //t.hide();
+   //var templateConsole = RConsole.find(FE3dTemplateConsole);
+   //var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
+   //templateTranslation._optionFace = true;
+   //templateTranslation.setVisible(false);
+   //var templateRotation = o._templateRotation = templateConsole.allocByCode(o, 'com.design.rotation');
+   //templateRotation._optionFace = true;
+   //templateRotation.setVisible(false);
+   //var templateScale = o._templateScale = templateConsole.allocByCode(o, 'com.design.scale');
+   //templateScale._optionFace = true;
+   //templateScale.setVisible(false);
 }
 
 //==========================================================
@@ -430,49 +429,48 @@ function FDsSceneCanvas_selectMaterial(material){
 //==========================================================
 function FDsSceneCanvas_selectRenderable(renderable){
    var o = this;
-   var sr = renderable;
-   if(sr){
-      var n = sr._renderable._resource._code;
+   if(renderable){
+      var n = renderable._renderable._resource._code;
       switch(n){
          case 'ms_translation_x':
             o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_translation_y':
             o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_translation_z':
             o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_rotation_x':
             o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_rotation_y':
             o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_rotation_z':
             o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_scale_x':
             o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_scale_y':
             o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_scale_z':
             o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          case 'ms_scale_all':
             o._canvasMoveCd = EDsCanvasDrag.All;
-            o._templateRenderable = sr;
+            o._templateRenderable = renderable;
             return;
          default:
             o._canvasMoveCd = EDsCanvasDrag.Unknown;
@@ -485,46 +483,47 @@ function FDsSceneCanvas_selectRenderable(renderable){
       renderable._optionSelected = true;
       renderable.showBoundBox();
       o._selectRenderables.push(renderable);
-      o._frameSet._catalog.showObject(renderable);
+      o._frameSet._catalogContent.showObject(renderable);
    }
+   return;
    // 设置变量
-   var t = o._templateTranslation;
-   var r = o._templateRotation;
-   var s = o._templateScale;
+   var templateTranslation = o._templateTranslation;
+   var templateRotation = o._templateRotation;
+   var templateScale = o._templateScale;
    // 模式判定
-   var mc = o._canvasModeCd;
-   switch(mc){
+   var modeCd = o._canvasModeCd;
+   switch(modeCd){
       case EDsCanvasMode.Drop:
          break;
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         t.setVisible(sr != null);
-         r.hide();
-         s.hide();
-         o._templateFace = t;
+         templateTranslation.setVisible(renderable != null);
+         templateRotation.setVisible(false);
+         templateScale.setVisible(false);
+         o._templateFace = templateTranslation;
          break;
       case EDsCanvasMode.Rotation:
-         t.hide();
-         r.setVisible(sr != null);
-         s.hide();
-         o._templateFace = r;
+         templateTranslation.setVisible(false);
+         templateRotation.setVisible(renderable != null);
+         templateScale.setVisible(false);
+         o._templateFace = templateScale;
          break;
       case EDsCanvasMode.Scale:
-         t.hide();
-         r.hide();
-         s.setVisible(sr != null);
-         o._templateFace = s;
+         templateTranslation.setVisible(false);
+         templateRotation.setVisible(false);
+         templateScale.setVisible(renderable != null);
+         o._templateFace = templateScale;
          break;
    }
    // 设置位置
-   var st = o._templateFace;
-   if(sr && st){
-      var d = sr.display();
-      var m = st.matrix();
-      m.assign(d.matrix());
-      m.setScaleAll(o._templateViewScale);
-      m.update();
+   var templateFace = o._templateFace;
+   if(renderable && templateFace){
+      var display = renderable.display();
+      var matrix = templateFace.matrix();
+      matrix.assign(display.matrix());
+      matrix.setScaleAll(o._templateViewScale);
+      matrix.update();
    }
 }
 

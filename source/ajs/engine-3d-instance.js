@@ -2012,15 +2012,21 @@ function FE3dSceneDisplayRenderable_reloadResource(){
    material.update();
 }
 function FE3dSceneLayer(o){
-   o = RClass.inherits(this, o, FDisplayLayer);
-   o._resource    = null;
-   o.resource     = FE3dSceneLayer_resource;
+   o = RClass.inherits(this, o, FDisplayLayer, MLinkerResource);
+   o.makeLabel    = FE3dSceneLayer_makeLabel;
    o.loadResource = FE3dSceneLayer_loadResource;
    o.process      = FE3dSceneLayer_process;
    return o;
 }
-function FE3dSceneLayer_resource(){
-   return this._resource;
+function FE3dSceneLayer_makeLabel(){
+   var o = this;
+   var resource = o.resource();
+   var code = resource.code();
+   var label = resource.label();
+   if(label){
+      return code + '[' + label + ']';
+   }
+   return code;
 }
 function FE3dSceneLayer_loadResource(p){
    var o = this;
@@ -2527,6 +2533,7 @@ function FE3dSprite(o){
    o._resource        = null;
    o.construct        = FE3dSprite_construct;
    o.testReady        = FE3dSprite_testReady;
+   o.makeLabel        = FE3dSprite_makeLabel;
    o.findMeshByCode   = FE3dSprite_findMeshByCode;
    o.meshRenderables  = FE3dSprite_shapes;
    o.skeletons        = FE3dSprite_skeletons;
@@ -2564,6 +2571,16 @@ function FE3dSprite_testReady(){
       }
    }
    return true;
+}
+function FE3dSprite_makeLabel(){
+   var o = this;
+   var resource = o.resource();
+   var code = resource.code();
+   var label = resource.label();
+   if(label){
+      return code + '[' + label + ']';
+   }
+   return code;
 }
 function FE3dSprite_findMeshByCode(p){
    var s = this._shapes;
@@ -2770,6 +2787,8 @@ function FE3dTemplate(o){
    o.findAnimation    = FE3dTemplate_findAnimation;
    o.animations       = FE3dTemplate_animations;
    o.pushAnimation    = FE3dTemplate_pushAnimation;
+   o.visible          = FE3dTemplate_visible;
+   o.setVisible       = FE3dTemplate_setVisible;
    o.resource         = FE3dTemplate_resource;
    o.setResource      = FE3dTemplate_setResource;
    o.loadSkeletons    = FE3dTemplate_loadSkeletons;
@@ -2837,6 +2856,12 @@ function FE3dTemplate_pushAnimation(p){
    }
    var pr = p.resource();
    r.set(pr.guid(), p);
+}
+function FE3dTemplate_visible(){
+   return this.sprite().visible();
+}
+function FE3dTemplate_setVisible(visible){
+   this.sprite().setVisible(visible);
 }
 function FE3dTemplate_resource(p){
    return this._resource;
@@ -3142,23 +3167,21 @@ function FE3dTemplateCanvas_dispose(){
 }
 function FE3dTemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd       = EScope.Local;
-   o._loadTemplates = null;
-   o._pools         = null;
-   o._thread        = null;
-   o._interval      = 200;
-   o.onProcess      = FE3dTemplateConsole_onProcess;
-   o.construct      = FE3dTemplateConsole_construct;
-   o.allocByGuid    = FE3dTemplateConsole_allocByGuid;
-   o.allocByCode    = FE3dTemplateConsole_allocByCode;
-   o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
-   o.loadByCode     = FE3dTemplateConsole_loadByCode;
-   o.free           = FE3dTemplateConsole_free;
+   o._scopeCd    = EScope.Local;
+   o._loadQueue  = null;
+   o._pools      = null;
+   o._thread     = null;
+   o._interval   = 200;
+   o.onProcess   = FE3dTemplateConsole_onProcess;
+   o.construct   = FE3dTemplateConsole_construct;
+   o.allocByGuid = FE3dTemplateConsole_allocByGuid;
+   o.allocByCode = FE3dTemplateConsole_allocByCode;
+   o.free        = FE3dTemplateConsole_free;
    return o;
 }
 function FE3dTemplateConsole_onProcess(){
    var o = this;
-   var looper = o._loadTemplates;
+   var looper = o._loadQueue;
    looper.record();
    while(looper.next()){
       var template = looper.current();
@@ -3169,7 +3192,7 @@ function FE3dTemplateConsole_onProcess(){
 }
 function FE3dTemplateConsole_construct(){
    var o = this;
-   o._loadTemplates = new TLooper();
+   o._loadQueue = new TLooper();
    o._pools = RClass.create(FObjectPools);
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
@@ -3187,46 +3210,22 @@ function FE3dTemplateConsole_allocByGuid(context, guid){
    template.linkGraphicContext(context);
    template.setResource(resource);
    template._poolCode = guid;
-   o._loadTemplates.push(template);
+   o._loadQueue.push(template);
    return template;
 }
-function FE3dTemplateConsole_allocByCode(c, n){
+function FE3dTemplateConsole_allocByCode(context, code){
    var o = this;
-   var ts = o._templates.get(n);
-   if(ts){
-      if(!ts.isEmpty()){
-         return ts.pop();
-      }
+   var template = o._pools.alloc(code);
+   if(template){
+      return template;
    }
-   var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.loadByCode(n);
-   var t = RClass.create(FE3dTemplate);
-   t.linkGraphicContext(c);
-   t.setCode(n);
-   t._resourceGuid = n;
-   t.setResource(r);
-   o._loadTemplates.push(t);
-   return t;
-}
-function FE3dTemplateConsole_loadByGuid(t, p){
-   var o = this;
-   var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.loadByGuid(p);
-   t._resourceGuid = p;
-   t.setCode(p);
-   t.setResource(r);
-   o._loadTemplates.push(t);
-   return t;
-}
-function FE3dTemplateConsole_loadByCode(t, p){
-   var o = this;
-   var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.loadByCode(g, p);
-   t._resourceGuid = g;
-   t.setCode(c);
-   t.setResource(r);
-   o._loadTemplates.push(t);
-   return t;
+   var resource = RConsole.find(FE3sTemplateConsole).loadByCode(code);
+   template = RClass.create(FE3dTemplate);
+   template.linkGraphicContext(context);
+   template.setResource(resource);
+   template._poolCode = code;
+   o._loadQueue.push(template);
+   return template;
 }
 function FE3dTemplateConsole_free(template){
    var o = this;

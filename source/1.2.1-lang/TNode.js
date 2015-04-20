@@ -5,11 +5,11 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TNode(){
+function TNode(name){
    var o = this;
    //..........................................................
    // @attribute
-   o._name        = 'Node';
+   o._name        = RString.nvl(name, 'Node');
    o._value       = null;
    o._attributes  = null;
    o._nodes       = null;

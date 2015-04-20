@@ -1015,9 +1015,9 @@ function TXmlDocument_dump(){
    o.root().dump(r);
    return r.flush();
 }
-function TXmlNode(){
+function TXmlNode(name){
    var o = this;
-   TNode.call(o);
+   TNode.call(o, name);
    o.create   = TXmlNode_create;
    o.innerXml = TXmlNode_innerXml;
    o.xml      = TXmlNode_xml;
@@ -1137,35 +1137,13 @@ function FClassFactory_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 function FComponent(o){
-   o = RClass.inherits(this, o, FObject);
-   o._parent   = null;
-   o._code     = null;
-   o.parent    = FComponent_parent;
-   o.setParent = FComponent_setParent;
-   o.isCode    = FComponent_isCode;
-   o.code      = FComponent_code;
-   o.setCode   = FComponent_setCode;
-   o.dispose   = FDisplay_dispose;
+   o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode);
+   o.dispose = FComponent_dispose;
    return o;
 }
-function FComponent_parent(){
-   return this._parent;
-}
-function FComponent_setParent(parent){
-   this._parent = parent;
-}
-function FComponent_isCode(code){
-   return this._code == code;
-}
-function FComponent_code(){
-   return this._code;
-}
-function FComponent_setCode(code){
-   this._code = code;
-}
-function FDisplay_dispose(){
+function FComponent_dispose(){
    var o = this;
-   o._parent   = null;
+   o.__base.MAttributeParent.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FDataStream(o){

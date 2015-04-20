@@ -100,7 +100,8 @@ function FDsSceneMenuBar_onCaptureClick(event){
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
    // 上传数据
-   var connection = o._frameSet._canvas.capture();
+   var canvasContent = o._frameSet._canvasContent;
+   var connection = canvasContent.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
 

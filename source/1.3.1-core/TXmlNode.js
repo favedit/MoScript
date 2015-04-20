@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150104
 //==========================================================
-function TXmlNode(){
+function TXmlNode(name){
    var o = this;
-   TNode.call(o);
+   TNode.call(o, name);
    //..........................................................
    // @method
    o.create   = TXmlNode_create;

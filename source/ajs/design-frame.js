@@ -761,6 +761,94 @@ function FDsCommonSpacePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonSpriteDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.SpriteDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonSpriteDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonSpriteDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonSpriteDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonSpriteDialog_onCancelClick;
+   o.construct             = FDsCommonSpriteDialog_construct;
+   o.setLayerLabel         = FDsCommonSpriteDialog_setLayerLabel;
+   o.setDisplayLabel       = FDsCommonSpriteDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonSpriteDialog_setContentCode;
+   o.setContentLabel       = FDsCommonSpriteDialog_setContentLabel;
+   o.dispose               = FDsCommonSpriteDialog_dispose;
+   return o;
+}
+function FDsCommonSpriteDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlLayerLabel.setEditAble(false);
+   o._controlDisplayLabel.setEditAble(false);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonSpriteDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+   var catalog = o._frameSet._catalogContent;
+   if(o._displayModeCd == EUiDataMode.Insert){
+      if(o._parentGuid){
+         var node = catalog.findByGuid(o._parentGuid);
+         catalog.loadNode(node);
+      }else{
+         catalog.loadService();
+      }
+   }else{
+      var label = o._controlLabel.get();
+      var node = catalog.focusNode();
+      node.setLabel(label);
+   }
+}
+function FDsCommonSpriteDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xsprite = xaction.create('Sprite');
+   xsprite.set('space_guid', o._spaceGuid);
+   xsprite.set('layer_guid', o._layerGuid);
+   xsprite.set('display_guid', o._displayGuid);
+   xsprite.set('code', o._controlCode.get());
+   xsprite.set('label', o._controlLabel.get());
+   xsprite.set('template_code', o._controlTemplateCode.get());
+   var console = RConsole.find(FDrSceneConsole);
+   var connection = null;
+   connection = console.createSprite(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonSpriteDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonSpriteDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonSpriteDialog_setLayerLabel(label){
+   this._controlLayerLabel.set(label);
+}
+function FDsCommonSpriteDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonSpriteDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonSpriteDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonSpriteDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible              = false;
@@ -852,48 +940,6 @@ function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
    o.onRefresh();
 }
 function FDsCommonTechniquePropertyFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
-function FDsSpacePropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible      = false;
-   o._workspace    = null;
-   o._activeSpace  = null;
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
-   o.onBuilded     = FDsSpacePropertyFrame_onBuilded;
-   o.onDataChanged = FDsSpacePropertyFrame_onDataChanged;
-   o.construct     = FDsSpacePropertyFrame_construct;
-   o.loadObject    = FDsSpacePropertyFrame_loadObject;
-   o.dispose       = FDsSpacePropertyFrame_dispose;
-   return o;
-}
-function FDsSpacePropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
-}
-function FDsSpacePropertyFrame_onDataChanged(p){
-   var o = this;
-   var space = o._activeSpace;
-   var resource = space.resource();
-   resource.setLabel(o._controlLabel.get());
-}
-function FDsSpacePropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsSpacePropertyFrame_loadObject(space){
-   var o = this;
-   var resource = space.resource();
-   o._activeSpace = space;
-   o._controlGuid.set(resource.guid());
-   o._controlCode.set(resource.code());
-   o._controlLabel.set(resource.label());
-}
-function FDsSpacePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }

@@ -1602,9 +1602,13 @@ var EResult = new function EResult(){
 function MAttributeCode(o){
    o = RClass.inherits(this, o);
    o._code   = null;
+   o.isCode  = MAttributeCode_isCode;
    o.code    = MAttributeCode_code;
    o.setCode = MAttributeCode_setCode;
    return o;
+}
+function MAttributeCode_isCode(code){
+   return this._code == code;
 }
 function MAttributeCode_code(){
    return this._code;
@@ -1637,6 +1641,38 @@ function MAttributeName_name(){
 }
 function MAttributeName_setName(name){
    this._name = name;
+}
+function MAttributeParent(o){
+   o = RClass.inherits(this, o);
+   o._parent    = null;
+   o.parent     = MAttributeParent_parent;
+   o.findParent = MAttributeParent_findParent;
+   o.setParent  = MAttributeParent_setParent;
+   o.dispose    = MAttributeParent_dispose;
+   return o;
+}
+function MAttributeParent_parent(){
+   return this._parent;
+}
+function MAttributeParent_findParent(clazz){
+   var find = this;
+   if(clazz){
+      while(RClass.isClass(find._parent, clazz)){
+         find = find._parent;
+      }
+   }else{
+      while(find._parent){
+         find = find._parent;
+      }
+   }
+   return find;
+}
+function MAttributeParent_setParent(parent){
+   this._parent = parent;
+}
+function MAttributeParent_dispose(){
+   var o = this;
+   o._parent = null;
 }
 function MInstance(o){
    o = RClass.inherits(this, o);
@@ -2652,9 +2688,9 @@ function TMessages_push(msg){
       this._items.push(msg);
    }
 }
-function TNode(){
+function TNode(name){
    var o = this;
-   o._name        = 'Node';
+   o._name        = RString.nvl(name, 'Node');
    o._value       = null;
    o._attributes  = null;
    o._nodes       = null;
@@ -4553,25 +4589,28 @@ var RFloat = new function RFloat(){
 function RFloat_isFloat(p){
    return RString.isPattern(p, 'n');
 }
-function RFloat_parse(p){
-   if(p == null){
+function RFloat_parse(source){
+   if(source == null){
       return 0;
    }
-   if(p == ''){
+   if(source == ''){
       return 0;
    }
-   var v = RString.trim(p.toString());
+   var value = RString.trim(source.toString());
+   if(value == null){
+      return 0;
+   }
    while(true){
-      if(v.charAt(0) != "0"){
+      if(value.charAt(0) != "0"){
          break;
       }
-      v = v.substr(1);
+      value = value.substr(1);
    }
-   var r = (v.length > 0) ? parseFloat(v) : 0;
-   if(RString.findChars(v, '%') != -1){
-      r = r / 100;
+   var result = (value.length > 0) ? parseFloat(value) : 0;
+   if(RString.findChars(result, '%') != -1){
+      result = result / 100;
    }
-   return isNaN(r) ? 0 : r;
+   return isNaN(result) ? 0 : result;
 }
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
@@ -9704,9 +9743,9 @@ function TXmlDocument_dump(){
    o.root().dump(r);
    return r.flush();
 }
-function TXmlNode(){
+function TXmlNode(name){
    var o = this;
-   TNode.call(o);
+   TNode.call(o, name);
    o.create   = TXmlNode_create;
    o.innerXml = TXmlNode_innerXml;
    o.xml      = TXmlNode_xml;
@@ -9826,35 +9865,13 @@ function FClassFactory_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 function FComponent(o){
-   o = RClass.inherits(this, o, FObject);
-   o._parent   = null;
-   o._code     = null;
-   o.parent    = FComponent_parent;
-   o.setParent = FComponent_setParent;
-   o.isCode    = FComponent_isCode;
-   o.code      = FComponent_code;
-   o.setCode   = FComponent_setCode;
-   o.dispose   = FDisplay_dispose;
+   o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode);
+   o.dispose = FComponent_dispose;
    return o;
 }
-function FComponent_parent(){
-   return this._parent;
-}
-function FComponent_setParent(parent){
-   this._parent = parent;
-}
-function FComponent_isCode(code){
-   return this._code == code;
-}
-function FComponent_code(){
-   return this._code;
-}
-function FComponent_setCode(code){
-   this._code = code;
-}
-function FDisplay_dispose(){
+function FComponent_dispose(){
    var o = this;
-   o._parent   = null;
+   o.__base.MAttributeParent.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FDataStream(o){

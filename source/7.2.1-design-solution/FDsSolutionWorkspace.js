@@ -12,6 +12,7 @@ function FDsSolutionWorkspace(o){
    o._storageCode          = o._frameName;
    //..........................................................
    // @style
+   o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
@@ -53,7 +54,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    //..........................................................
    // 设置工具区
    var frame = o._frameToolBar = o.searchControl('toolbarFrame');
-   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   frame._hPanel.className = o.styleName('Menubar_Ground');
    // 设置目录区
    var frame = o._frameBody = o.searchControl('bodyFrame');
    frame._hPanel.className = o.styleName('Body_Ground');

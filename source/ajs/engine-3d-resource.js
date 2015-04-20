@@ -442,6 +442,7 @@ function FE3sDisplayContainer(o){
    o.displays         = FE3sDisplayContainer_displays;
    o.calculateOutline = FE3sDisplayContainer_calculateOutline;
    o.unserialize      = FE3sDisplayContainer_unserialize;
+   o.saveConfig       = FE3sDisplayContainer_saveConfig;
    return o;
 }
 function FE3sDisplayContainer_construct(){
@@ -472,17 +473,37 @@ function FE3sDisplayContainer_calculateOutline(){
 function FE3sDisplayContainer_unserialize(input){
    var o = this;
    o.__base.FE3sDisplay.unserialize.call(o, input);
+   var displayCount = input.readUint16();
+   if(displayCount > 0){
+      var displays = o._displays = new TObjects();
+      for(var i = 0; i < displayCount; i++){
+         var display = RClass.create(FE3sSceneDisplay);
+         display.unserialize(input);
+         displays.push(display);
+      }
+   }
+}
+function FE3sDisplayContainer_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDisplay.saveConfig.call(o, xconfig);
+   var displays = o._displays;
+   if(displays){
+      var xdisplays = xconfig.create('DisplayCollection');
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         display.saveConfig(xdisplays.create('Display'));
+      }
+   }
 }
 function FE3sDisplayLayer(o){
-   o = RClass.inherits(this, o, FE3sObject);
+   o = RClass.inherits(this, o, FE3sDisplayContainer);
    o._typeCd        = null;
    o._transformCd   = null;
-   o._displays      = null;
    o.typeCd         = FE3sDisplayLayer_typeCd;
    o.setTypeCd      = FE3sDisplayLayer_setTypeCd;
    o.transformCd    = FE3sDisplayLayer_transformCd;
    o.setTransformCd = FE3sDisplayLayer_setTransformCd;
-   o.displays       = FE3sDisplayLayer_displays;
    o.unserialize    = FE3sDisplayLayer_unserialize;
    o.saveConfig     = FE3sDisplayLayer_saveConfig;
    return o;
@@ -499,37 +520,17 @@ function FE3sDisplayLayer_transformCd(){
 function FE3sDisplayLayer_setTransformCd(p){
    this._transformCd = p;
 }
-function FE3sDisplayLayer_displays(){
-   return this._displays;
-}
 function FE3sDisplayLayer_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, input);
+   o.__base.FE3sDisplayContainer.unserialize.call(o, input);
    o._typeCd = input.readString();
    o._transformCd = input.readString();
-   var displayCount = input.readUint16();
-   if(displayCount > 0){
-      var displays = o._displays = new TObjects();
-      for(var i = 0; i < displayCount; i++){
-         var display = RClass.create(FE3sSceneDisplay);
-         display.unserialize(input);
-         displays.push(display);
-      }
-   }
 }
 function FE3sDisplayLayer_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   o.__base.FE3sDisplayContainer.saveConfig.call(o, xconfig);
    xconfig.set('type_cd', o._typeCd);
    xconfig.set('transform_cd', o._transformCd);
-   var displays = o._displays;
-   if(displays){
-      var xdisplays = xconfig.create('DisplayCollection');
-      var count = displays.count();
-      for(var i = 0; i < count; i++){
-         displays.at(i).saveConfig(xdisplays.create('Display'));
-      }
-   }
 }
 function FE3sDisplayMaterial(o){
    o = RClass.inherits(this, o, FObject);
@@ -1834,62 +1835,8 @@ function FE3sSceneDisplay_saveConfig(xconfig){
    }
 }
 function FE3sSceneLayer(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._typeCd        = null;
-   o._transformCd   = null;
-   o._displays      = null;
-   o.typeCd         = FE3sSceneLayer_typeCd;
-   o.setTypeCd      = FE3sSceneLayer_setTypeCd;
-   o.transformCd    = FE3sSceneLayer_transformCd;
-   o.setTransformCd = FE3sSceneLayer_setTransformCd;
-   o.displays       = FE3sSceneLayer_displays;
-   o.unserialize    = FE3sSceneLayer_unserialize;
-   o.saveConfig     = FE3sSceneLayer_saveConfig;
+   o = RClass.inherits(this, o, FE3sDisplayLayer);
    return o;
-}
-function FE3sSceneLayer_typeCd(){
-   return this._typeCd;
-}
-function FE3sSceneLayer_setTypeCd(p){
-   this._typeCd = p;
-}
-function FE3sSceneLayer_transformCd(){
-   return this._transformCd;
-}
-function FE3sSceneLayer_setTransformCd(p){
-   this._transformCd = p;
-}
-function FE3sSceneLayer_displays(){
-   return this._displays;
-}
-function FE3sSceneLayer_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeCd = p.readString();
-   o._transformCd = p.readString();
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._displays = new TObjects();
-      for(var i = 0; i < c; i++){
-         var d = RClass.create(FE3sSceneDisplay);
-         d.unserialize(p);
-         s.push(d);
-      }
-   }
-}
-function FE3sSceneLayer_saveConfig(p){
-   var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('type_cd', o._typeCd);
-   p.set('transform_cd', o._transformCd);
-   var xds = p.create('DisplayCollection');
-   var s = o._displays;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xds.create('Display'));
-      }
-   }
 }
 function FE3sSceneRenderable(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -2354,22 +2301,23 @@ function FE3sTemplateConsole_unserialize(p){
    o._templates.set(r.guid(), r);
    return r;
 }
-function FE3sTemplateConsole_loadByGuid(p){
+function FE3sTemplateConsole_loadByGuid(guid){
    var o = this;
-   var s = o._templates;
-   var r = s.get(p);
-   if(!r){
-      var v = RConsole.find(FE3sVendorConsole).find('template');
-      v.set('guid', p);
-      var u = v.makeUrl();
-      r = RClass.create(FE3sTemplate);
-      r.setGuid(p);
-      r.setVendor(v);
-      r.setSourceUrl(u);
-      RConsole.find(FResourceConsole).load(r);
-      s.set(p, r);
+   var templates = o._templates;
+   var template = templates.get(guid);
+   if(template){
+      return template;
    }
-   return r;
+   var vendor = RConsole.find(FE3sVendorConsole).find('template');
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
+   template = RClass.create(FE3sTemplate);
+   template.setGuid(guid);
+   template.setVendor(vendor);
+   template.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(template);
+   templates.set(guid, template);
+   return template;
 }
 function FE3sTemplateConsole_loadByCode(code){
    var o = this;
@@ -2387,7 +2335,7 @@ function FE3sTemplateConsole_loadByCode(code){
    template.setSourceUrl(url);
    RConsole.find(FResourceConsole).load(template);
    templates.set(code, template);
-   return r;
+   return template;
 }
 function FE3sTemplateConsole_update(p){
    var o = this;
