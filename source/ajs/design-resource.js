@@ -498,12 +498,18 @@ function FDsResourceImportDialog_dispose(){
 }
 function FDsResourceListContent(o){
    o = RClass.inherits(this, o, FUiListView);
+   o._contentFlag      = null;
+   o._contentTypeCd    = EE3sResource.All;
+   o._contentSerach    = '';
+   o._contentOrder     = '';
+   o._contentPageSize  = 40;
+   o._contentPageCount = 0;
+   o._contentPage      = 0;
    o._activeItem       = null;
    o._activeGuid       = null;
    o._refreshButton    = null;
    o._saveButton       = null;
    o._runButton        = null;
-   o.onBuilded         = FDsResourceListContent_onBuilded;
    o.onServiceLoad     = FDsResourceListContent_onServiceLoad;
    o.construct         = FDsResourceListContent_construct;
    o.doClickItem       = FDsResourceListContent_doClickItem;
@@ -512,10 +518,6 @@ function FDsResourceListContent(o){
    o.serviceResearch   = FDsResourceListContent_serviceResearch;
    o.dispose           = FDsResourceListContent_dispose;
    return o;
-}
-function FDsResourceListContent_onBuilded(p){
-   var o = this;
-   o.__base.FUiListView.onBuilded.call(o, p);
 }
 function FDsResourceListContent_onServiceLoad(p){
    var o = this;
@@ -551,8 +553,6 @@ function FDsResourceListContent_construct(){
 function FDsResourceListContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
-   o._activeItem = control;
-   o._activeGuid = control._guid;
 }
 function FDsResourceListContent_doDoubleClickItem(control){
    var o = this;
@@ -562,34 +562,54 @@ function FDsResourceListContent_doDoubleClickItem(control){
    o._activeGuid = control._guid;
    var workspace = o._frameSet._workspace;
    var typeCd = control._typeCd;
-   if(typeCd == 'Bitmap'){
+   if(typeCd == EE3sResource.Bitmap){
       workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   }else if(typeCd == 'Material'){
+   }else if(typeCd == EE3sResource.Material){
       workspace.selectFrameSet(EDsFrameSet.MaterialFrameSet, guid);
-   }else if(typeCd == 'Model'){
+   }else if(typeCd == EE3sResource.Model){
       workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
-   }else if(typeCd == 'Template'){
+   }else if(typeCd == EE3sResource.Template){
       workspace.selectFrameSet(EDsFrameSet.TemplateFrameSet, guid);
-   }else if(typeCd == 'Scene'){
+   }else if(typeCd == EE3sResource.Scene){
       workspace.selectFrameSet(EDsFrameSet.SceneFrameSet, guid);
    }else{
-      throw new TError(o, 'Unsupport format.');
+      throw new TError(o, 'Unsupport resource format.');
    }
 }
 function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
    var o = this;
-   o._typeCd = typeCd;
-   o._search = search;
-   o._order = order;
-   o._pageSize = pageSize;
-   o._page = page;
+   if(typeCd == null){
+      typeCd = o._contentTypeCd;
+   }
+   if(search == null){
+      search = o._contentSerach;
+   }
+   if(order == null){
+      order = o._contentOrder;
+   }
+   if(pageSize == null){
+      pageSize = o._contentPageSize;
+   }
+   if(page == null){
+      page = o._contentPage;
+   }
+   var flag = typeCd + '|' + search + '|' + order + '|' + pageSize + '|' + page;
+   if(o._contentFlag == flag){
+      return;
+   }
+   o._contentFlag = flag;
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
+   o._contentOrder = order;
+   o._contentPageSize = pageSize;
+   o._contentPage = page;
    RConsole.find(FUiDesktopConsole).showLoading();
-   var connection = RConsole.find(FDrResourceConsole).doList(typeCd, search, order, pageSize, page);
+   var connection = RConsole.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 function FDsResourceListContent_serviceResearch(){
    var o = this;
-   o.serviceSearch(o._typeCd, o._search, o._order, o._pageSize, o._page);
+   o.serviceSearch(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
 }
 function FDsResourceListContent_dispose(){
    var o = this;
@@ -624,32 +644,28 @@ function FDsResourceListItem_refreshStyle(){
 }
 function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
-   o._frameName       = 'resource.resource.ListToolBar';
-   o._storageCode     = o._frameName;
-   o._pageCount       = 0;
-   o._page            = 0;
-   o._serach          = null;
-   o._resourceTypeCd  = null;
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
-   o.onBuilded        = FDsResourceListToolBar_onBuilded;
-   o.onSearchClick    = FDsResourceListToolBar_onSearchClick;
-   o.onNavigatorClick = FDsResourceListToolBar_onNavigatorClick;
-   o.onTypeClick      = FDsResourceListToolBar_onTypeClick;
-   o.construct        = FDsResourceListToolBar_construct;
-   o.makeTypeCd       = FDsResourceListToolBar_makeTypeCd;
-   o.setNavigator     = FDsResourceListToolBar_setNavigator;
-   o.doNavigator      = FDsResourceListToolBar_doNavigator;
-   o.storageLoad      = FDsResourceListToolBar_storageLoad;
-   o.dispose          = FDsResourceListToolBar_dispose;
+   o._frameName        = 'resource.resource.ListToolBar';
+   o._storageCode      = o._frameName;
+   o._dropButton       = null;
+   o._selectButton     = null;
+   o._translateButton  = null;
+   o._rotationButton   = null;
+   o._scaleButton      = null;
+   o._lookFrontButton  = null;
+   o._lookUpButton     = null;
+   o._lookLeftButton   = null;
+   o._playButton       = null;
+   o._viewButton       = null;
+   o.onBuilded         = FDsResourceListToolBar_onBuilded;
+   o.onSearchClick     = FDsResourceListToolBar_onSearchClick;
+   o.onNavigatorClick  = FDsResourceListToolBar_onNavigatorClick;
+   o.onTypeClick       = FDsResourceListToolBar_onTypeClick;
+   o.construct         = FDsResourceListToolBar_construct;
+   o.makeTypeCd        = FDsResourceListToolBar_makeTypeCd;
+   o.setNavigator      = FDsResourceListToolBar_setNavigator;
+   o.doNavigator       = FDsResourceListToolBar_doNavigator;
+   o.storageLoad       = FDsResourceListToolBar_storageLoad;
+   o.dispose           = FDsResourceListToolBar_dispose;
    return o;
 }
 function FDsResourceListToolBar_onBuilded(p){
@@ -680,7 +696,7 @@ function FDsResourceListToolBar_onNavigatorClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   var page = o._page;
+   var page = o._contentPage;
    switch(name){
       case 'firstButton':
          page = 0;
@@ -692,7 +708,7 @@ function FDsResourceListToolBar_onNavigatorClick(event){
          page++;
          break;
       case 'lastButton':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
    }
    o.doNavigator(page);
@@ -701,7 +717,7 @@ function FDsResourceListToolBar_onTypeClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   var page = o._page;
+   var page = o._contentPage;
    switch(name){
       case 'typeAll':
          o._controlTypeBitmap.check(true);
@@ -727,15 +743,15 @@ function FDsResourceListToolBar_onTypeClick(event){
          page++;
          break;
       case 'typeTemplate':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
       case 'typeScene':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
    }
    var typeCd = o.makeTypeCd();
    var search = o._controlSearchEdit.text();
-   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, 0)
+   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, 0)
    o.storageSet('resource_type_cd', typeCd);
    o.storageSet('control_type_bitmap:check', RBoolean.toString(o._controlTypeBitmap.isCheck()))
    o.storageSet('control_type_material:check', RBoolean.toString(o._controlTypeMaterial.isCheck()))
@@ -769,13 +785,16 @@ function FDsResourceListToolBar_makeTypeCd(){
    if(types != ''){
       types = types.substring(1);
    }
+   if(RString.isEmpty(types)){
+      types = 'All';
+   }
    return types;
 }
 function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
-   o._pageSize = pageSize;
-   o._pageCount = pageCount;
-   o._page = page;
+   o._contentPageSize = pageSize;
+   o._contentPageCount = pageCount;
+   o._contentPage = page;
    o._controlPageEdit.setText(page);
    if(page == 0){
    }
@@ -784,12 +803,12 @@ function FDsResourceListToolBar_doNavigator(page){
    var o = this;
    var typeCd = o.makeTypeCd();
    var search = o._controlSearchEdit.text();
-   page = RInteger.toRange(page, 0, o._pageCount);
-   if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
-      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, page)
+   page = RInteger.toRange(page, 0, o._contentPageCount);
+   if((o._contentTypeCd != typeCd) || (o._contentSerach != search) || (o._contentPage != page)){
+      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, page)
    }
-   o._resourceTypeCd = typeCd;
-   o._serach = search;
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
 }
 function FDsResourceListToolBar_storageLoad(){
    var o = this;
@@ -798,9 +817,10 @@ function FDsResourceListToolBar_storageLoad(){
    o._controlTypeModel.check(o.storageGetBoolean('control_type_model:check', true));
    o._controlTypeTemplate.check(o.storageGetBoolean('control_type_template:check', true));
    o._controlTypeScene.check(o.storageGetBoolean('control_type_scene:check', true));
+   var typeCd = o.makeTypeCd();
    var types = o.storageGet('resource_type_cd', 'All');
    var search = o._controlSearchEdit.text();
-   o._frameSet._listContent.serviceSearch(types, search, '', o._pageSize, 0)
+   o._frameSet._listContent.serviceSearch(types, search, '', o._contentPageSize, 0)
 }
 function FDsResourceListToolBar_dispose(){
    var o = this;

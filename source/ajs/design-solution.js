@@ -1339,6 +1339,14 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.MaterialFrameSet){
+         var menuBar = RClass.create(FDsMaterialMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsMaterialFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.MeshFrameSet){
          var menuBar = RClass.create(FDsMeshMenuBar);
          menuBar._workspace = o;
@@ -1398,6 +1406,9 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet.load();
          break;
       case EDsFrameSet.BitmapFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.MaterialFrameSet:
          frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.MeshFrameSet:

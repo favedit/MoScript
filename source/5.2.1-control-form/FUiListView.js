@@ -27,6 +27,7 @@ function FUiListView(o){
    o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @attribute
+   o._focusItem        = null;
    o._itemPool         = null;
    //..........................................................
    // @html

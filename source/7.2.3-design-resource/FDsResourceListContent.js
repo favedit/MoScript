@@ -8,6 +8,14 @@ function FDsResourceListContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
    // @attribute
+   o._contentFlag      = null;
+   o._contentTypeCd    = EE3sResource.All;
+   o._contentSerach    = '';
+   o._contentOrder     = '';
+   o._contentPageSize  = 40;
+   o._contentPageCount = 0;
+   o._contentPage      = 0;
+   // @attribute
    o._activeItem       = null;
    o._activeGuid       = null;
    // @attribute
@@ -15,8 +23,6 @@ function FDsResourceListContent(o){
    o._saveButton       = null;
    o._runButton        = null;
    //..........................................................
-   // @event
-   o.onBuilded         = FDsResourceListContent_onBuilded;
    // @event
    o.onServiceLoad     = FDsResourceListContent_onServiceLoad;
    //..........................................................
@@ -30,20 +36,6 @@ function FDsResourceListContent(o){
    // @method
    o.dispose           = FDsResourceListContent_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构建完成处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件处理
-//==========================================================
-function FDsResourceListContent_onBuilded(p){
-   var o = this;
-   o.__base.FUiListView.onBuilded.call(o, p);
-   //..........................................................
-   // 注册事件
-   //o._saveButton.addClickListener(o, o.onSaveClick);
 }
 
 //==========================================================
@@ -92,7 +84,6 @@ function FDsResourceListContent_construct(){
    var o = this;
    // 父处理
    o.__base.FUiListView.construct.call(o);
-   //o._frameSet.selectObject(control);
 }
 
 //==========================================================
@@ -104,9 +95,6 @@ function FDsResourceListContent_construct(){
 function FDsResourceListContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
-   // 设置属性
-   o._activeItem = control;
-   o._activeGuid = control._guid;
    // 选中项目
    //var frame = o._frameSet._previewContent;
    //frame._activeItem = p;
@@ -129,18 +117,18 @@ function FDsResourceListContent_doDoubleClickItem(control){
    // 画面切换
    var workspace = o._frameSet._workspace;
    var typeCd = control._typeCd;
-   if(typeCd == 'Bitmap'){
+   if(typeCd == EE3sResource.Bitmap){
       workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   }else if(typeCd == 'Material'){
+   }else if(typeCd == EE3sResource.Material){
       workspace.selectFrameSet(EDsFrameSet.MaterialFrameSet, guid);
-   }else if(typeCd == 'Model'){
+   }else if(typeCd == EE3sResource.Model){
       workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
-   }else if(typeCd == 'Template'){
+   }else if(typeCd == EE3sResource.Template){
       workspace.selectFrameSet(EDsFrameSet.TemplateFrameSet, guid);
-   }else if(typeCd == 'Scene'){
+   }else if(typeCd == EE3sResource.Scene){
       workspace.selectFrameSet(EDsFrameSet.SceneFrameSet, guid);
    }else{
-      throw new TError(o, 'Unsupport format.');
+      throw new TError(o, 'Unsupport resource format.');
    }
 }
 
@@ -153,15 +141,38 @@ function FDsResourceListContent_doDoubleClickItem(control){
 //==========================================================
 function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
    var o = this;
-   o._typeCd = typeCd;
-   o._search = search;
-   o._order = order;
-   o._pageSize = pageSize;
-   o._page = page;
+   // 检查参数
+   if(typeCd == null){
+      typeCd = o._contentTypeCd;
+   }
+   if(search == null){
+      search = o._contentSerach;
+   }
+   if(order == null){
+      order = o._contentOrder;
+   }
+   if(pageSize == null){
+      pageSize = o._contentPageSize;
+   }
+   if(page == null){
+      page = o._contentPage;
+   }
+   // 检查变更
+   var flag = typeCd + '|' + search + '|' + order + '|' + pageSize + '|' + page;
+   if(o._contentFlag == flag){
+      return;
+   }
+   o._contentFlag = flag;
+   // 设置参数
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
+   o._contentOrder = order;
+   o._contentPageSize = pageSize;
+   o._contentPage = page;
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
-   var connection = RConsole.find(FDrResourceConsole).doList(typeCd, search, order, pageSize, page);
+   var connection = RConsole.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 
@@ -174,7 +185,7 @@ function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, p
 //==========================================================
 function FDsResourceListContent_serviceResearch(){
    var o = this;
-   o.serviceSearch(o._typeCd, o._search, o._order, o._pageSize, o._page);
+   o.serviceSearch(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
 }
 
 //==========================================================

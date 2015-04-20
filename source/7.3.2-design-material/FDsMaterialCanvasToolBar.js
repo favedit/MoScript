@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150404
 //==========================================================
-function FDsBitmapPropertyToolBar(o){
+function FDsMaterialCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
+   o._frameName                 = 'resource.model.CanvasToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd              = EDsCanvasMode.Drop;
@@ -23,32 +23,32 @@ function FDsBitmapPropertyToolBar(o){
    o._controlSizeWidth          = null;
    o._controlSizeHeight         = null;
    // @attribute
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
+   o._controlDimensionalVisible = null;
+   o._controlDimensionalWidth   = null;
+   o._controlDimensionalHeight  = null;
+   o._controlDimensionalAuto    = null;
+   o._controlDimensionalFlipX   = null;
+   o._controlDimensionalFlipY   = null;
+   o._controlDimensionalFlipZ   = null;
+   o._controlDimensionalX       = null;
+   o._controlDimensionalY       = null;
+   o._controlDimensionalZ       = null;
    // @attribute
    o._controlRotation           = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsBitmapPropertyToolBar_onBuilded;
+   o.onBuilded                  = FDsMaterialCanvasToolBar_onBuilded;
    // @event
-   o.onModeClick                = FDsBitmapPropertyToolBar_onModeClick;
-   o.onSizeClick                = FDsBitmapPropertyToolBar_onSizeClick;
-   o.onRotationChange           = FDsBitmapPropertyToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsBitmapPropertyToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsBitmapPropertyToolBar_onRotationClick;
+   o.onModeClick                = FDsMaterialCanvasToolBar_onModeClick;
+   o.onSizeClick                = FDsMaterialCanvasToolBar_onSizeClick;
+   o.onDimensionalChange        = FDsMaterialCanvasToolBar_onDimensionalChange;
+   o.onDimensionalAutoClick     = FDsMaterialCanvasToolBar_onDimensionalAutoClick;
+   o.onRotationClick            = FDsMaterialCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
-   o.construct                  = FDsBitmapPropertyToolBar_construct;
+   o.construct                  = FDsMaterialCanvasToolBar_construct;
    // @method
-   o.dispose                    = FDsBitmapPropertyToolBar_dispose;
+   o.dispose                    = FDsMaterialCanvasToolBar_dispose;
    return o;
 }
 
@@ -58,36 +58,41 @@ function FDsBitmapPropertyToolBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsBitmapPropertyToolBar_onBuilded(p){
+function FDsMaterialCanvasToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 关联拖拽事件
-   //var control = o._controlDrop;
-   //control._canvasModeCd = EDsCanvasMode.Drop;
-   //control.addClickListener(o, o.onModeClick);
-   //control.check(true);
+   var control = o._controlDrop;
+   control._canvasModeCd = EDsCanvasMode.Drop;
+   control.addClickListener(o, o.onModeClick);
+   control.check(true);
    //..........................................................
    // 关联按键事件
-   //o._controlSize1.addClickListener(o, o.onSizeClick);
-   //o._controlSize2.addClickListener(o, o.onSizeClick);
-   //o._controlSize3.addClickListener(o, o.onSizeClick);
-   //o._controlSize4.addClickListener(o, o.onSizeClick);
-   //o._controlSizeWidth.setText('*');
-   //o._controlSizeHeight.setText('*');
+   o._controlSize1.addClickListener(o, o.onSizeClick);
+   o._controlSize2.addClickListener(o, o.onSizeClick);
+   o._controlSize3.addClickListener(o, o.onSizeClick);
+   o._controlSize4.addClickListener(o, o.onSizeClick);
+   o._controlSizeWidth.setText('*');
+   o._controlSizeHeight.setText('*');
    //..........................................................
    // 关联按键事件
-   //o._controlRotationVisible.addClickListener(o, o.onRotationChange);
-   //o._controlRotationVisible.check(true);
-   //o._controlRotationWidth.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationWidth.setText(1);
-   //o._controlRotationHeight.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationHeight.setText(1);
-   //o._controlRotationAuto.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipY.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationY.addClickListener(o, o.onRotationAutoClick);
+   o._controlDimensionalVisible.addClickListener(o, o.onDimensionalChange);
+   o._controlDimensionalVisible.check(true);
+   o._controlDimensionalWidth.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalWidth.setText(1);
+   o._controlDimensionalHeight.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalHeight.setText(1);
+   o._controlDimensionalAuto.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipZ.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalZ.addClickListener(o, o.onDimensionalAutoClick);
+   //..........................................................
+   // 关联按键事件
+   o._controlRotation.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
@@ -96,7 +101,7 @@ function FDsBitmapPropertyToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapPropertyToolBar_onModeClick(p){
+function FDsMaterialCanvasToolBar_onModeClick(p){
    var o = this;
    //o._canvasModeCd = p._canvasModeCd;
    //o._workspace._canvas.switchMode(p._canvasModeCd);
@@ -108,7 +113,7 @@ function FDsBitmapPropertyToolBar_onModeClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapPropertyToolBar_onSizeClick(event){
+function FDsMaterialCanvasToolBar_onSizeClick(event){
    var o = this;
    var button = event.sender;
    // 解析尺寸
@@ -133,13 +138,13 @@ function FDsBitmapPropertyToolBar_onSizeClick(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapPropertyToolBar_onRotationChange(event){
+function FDsMaterialCanvasToolBar_onDimensionalChange(event){
    var o = this;
    var canvas = o._frameSet._canvas;
-   var visible = o._controlRotationVisible.isCheck();
-   var width = RInteger.parse(o._controlRotationWidth.text());
-   var height = RInteger.parse(o._controlRotationHeight.text());
-   canvas.switchRotation(visible, width, height);
+   var visible = o._controlDimensionalVisible.isCheck();
+   var width = RInteger.parse(o._controlDimensionalWidth.text());
+   var height = RInteger.parse(o._controlDimensionalHeight.text());
+   canvas.switchDimensional(visible, width, height);
 }
 
 //==========================================================
@@ -148,7 +153,7 @@ function FDsBitmapPropertyToolBar_onRotationChange(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapPropertyToolBar_onRotationAutoClick(event){
+function FDsMaterialCanvasToolBar_onDimensionalAutoClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
@@ -191,7 +196,7 @@ function FDsBitmapPropertyToolBar_onRotationAutoClick(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapPropertyToolBar_onRotationClick(event, v){
+function FDsMaterialCanvasToolBar_onRotationClick(event, v){
    var o = this;
    var button = event.sender;
    var canvas = o._frameSet._canvas;
@@ -203,7 +208,7 @@ function FDsBitmapPropertyToolBar_onRotationClick(event, v){
 //
 // @method
 //==========================================================
-function FDsBitmapPropertyToolBar_construct(){
+function FDsMaterialCanvasToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
@@ -214,7 +219,7 @@ function FDsBitmapPropertyToolBar_construct(){
 //
 // @method
 //==========================================================
-function FDsBitmapPropertyToolBar_dispose(){
+function FDsMaterialCanvasToolBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);

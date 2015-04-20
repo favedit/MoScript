@@ -4,28 +4,28 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsBitmapMenuBar(o){
+function FDsMaterialMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName            = 'resource.bitmap.MenuBar';
+   o._frameName            = 'resource.model.MenuBar';
    //..........................................................
    // @attribute
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    //..........................................................
    // @event
-   o.onBuilded             = FDsBitmapMenuBar_onBuilded;
+   o.onBuilded             = FDsMaterialMenuBar_onBuilded;
    // @event
-   o.onSaveLoad            = FDsBitmapMenuBar_onSaveLoad;
-   o.onSaveClick           = FDsBitmapMenuBar_onSaveClick;
-   o.onCaptureLoad         = FDsBitmapMenuBar_onCaptureLoad;
-   o.onCaptureClick        = FDsBitmapMenuBar_onCaptureClick;
+   o.onSaveLoad            = FDsMaterialMenuBar_onSaveLoad;
+   o.onSaveClick           = FDsMaterialMenuBar_onSaveClick;
+   o.onCaptureLoad         = FDsMaterialMenuBar_onCaptureLoad;
+   o.onCaptureClick        = FDsMaterialMenuBar_onCaptureClick;
    //..........................................................
    // @method
-   o.construct             = FDsBitmapMenuBar_construct;
+   o.construct             = FDsMaterialMenuBar_construct;
    // @method
-   o.dispose               = FDsBitmapMenuBar_dispose;
+   o.dispose               = FDsMaterialMenuBar_dispose;
    return o;
 }
 
@@ -35,13 +35,13 @@ function FDsBitmapMenuBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsBitmapMenuBar_onBuilded(p){
+function FDsMaterialMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
    o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlImportButton.addClickListener(o, o.onCaptureClick);
+   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 
 //==========================================================
@@ -50,7 +50,7 @@ function FDsBitmapMenuBar_onBuilded(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onSaveLoad(event){
+function FDsMaterialMenuBar_onSaveLoad(event){
    // 解除画面锁定
    RConsole.find(FUiDesktopConsole).hide();
 }
@@ -61,7 +61,7 @@ function FDsBitmapMenuBar_onSaveLoad(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onSaveClick(p){
+function FDsMaterialMenuBar_onSaveClick(p){
    var o = this;
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
@@ -71,7 +71,7 @@ function FDsBitmapMenuBar_onSaveClick(p){
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    // 更新处理
-   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FDrModelConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 
@@ -81,7 +81,7 @@ function FDsBitmapMenuBar_onSaveClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onCaptureLoad(event){
+function FDsMaterialMenuBar_onCaptureLoad(event){
    // 解除画面锁定
    RConsole.find(FUiDesktopConsole).hide();
 }
@@ -92,7 +92,7 @@ function FDsBitmapMenuBar_onCaptureLoad(event){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onCaptureClick(event){
+function FDsMaterialMenuBar_onCaptureClick(event){
    var o = this;
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
@@ -106,7 +106,7 @@ function FDsBitmapMenuBar_onCaptureClick(event){
 //
 // @method
 //==========================================================
-function FDsBitmapMenuBar_construct(){
+function FDsMaterialMenuBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiMenuBar.construct.call(o);
@@ -117,7 +117,7 @@ function FDsBitmapMenuBar_construct(){
 //
 // @method
 //==========================================================
-function FDsBitmapMenuBar_dispose(){
+function FDsMaterialMenuBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiMenuBar.dispose.call(o);

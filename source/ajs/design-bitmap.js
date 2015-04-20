@@ -278,7 +278,7 @@ function FDsBitmapCanvasContent_dispose(){
 }
 function FDsBitmapCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'design2d.bitmap.CanvasToolBar';
+   o._frameName                 = 'resource.bitmap.CanvasToolBar';
    o._canvasModeCd              = EDsCanvasMode.Drop;
    o._controlDrop               = null;
    o._controlSize1              = null;
@@ -493,7 +493,7 @@ function FDsBitmapCatalogItem_refreshStyle(){
 }
 function FDsBitmapCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'design2d.bitmap.CatalogToolBar';
+   o._frameName                 = 'resource.bitmap.CatalogToolBar';
    o._canvasModeCd              = EDsCanvasMode.Drop;
    o._controlDrop               = null;
    o._controlSize1              = null;
@@ -606,7 +606,7 @@ function FDsBitmapCatalogToolBar_dispose(){
 }
 function FDsBitmapFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
-   o._frameName            = 'design2d.bitmap.FrameSet';
+   o._frameName            = 'resource.bitmap.FrameSet';
    o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -769,7 +769,7 @@ function FDsBitmapFrameSet_dispose(){
 }
 function FDsBitmapMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'design2d.bitmap.MenuBar';
+   o._frameName            = 'resource.bitmap.MenuBar';
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    o.onBuilded             = FDsBitmapMenuBar_onBuilded;
@@ -819,7 +819,7 @@ function FDsBitmapMenuBar_dispose(){
 }
 function FDsBitmapPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'design2d.bitmap.CatalogToolBar';
+   o._frameName                 = 'resource.bitmap.CatalogToolBar';
    o._canvasModeCd              = EDsCanvasMode.Drop;
    o._controlDrop               = null;
    o._controlSize1              = null;

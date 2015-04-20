@@ -9,7 +9,7 @@ function FDsBitmapCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName                 = 'design2d.bitmap.CanvasToolBar';
+   o._frameName                 = 'resource.bitmap.CanvasToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd              = EDsCanvasMode.Drop;

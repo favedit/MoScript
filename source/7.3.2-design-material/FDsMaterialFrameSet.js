@@ -4,14 +4,14 @@
 // @author maocy
 // @history 150121
 //==========================================================
-function FDsBitmapFrameSet(o){
+function FDsMaterialFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'resource.bitmap.FrameSet';
+   o._frameName            = 'resource.model.FrameSet';
    //..........................................................
    // @style
-   o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
@@ -35,19 +35,19 @@ function FDsBitmapFrameSet(o){
    o._propertyFrames       = null;
    //..........................................................
    // @process
-   o.onBuilded             = FDsBitmapFrameSet_onBuilded;
-   o.onMeshLoad            = FDsBitmapFrameSet_onMeshLoad;
-   o.onCatalogSelected     = FDsBitmapFrameSet_onCatalogSelected;
+   o.onBuilded             = FDsMaterialFrameSet_onBuilded;
+   o.onDataLoaded          = FDsMaterialFrameSet_onDataLoaded;
+   o.onCatalogSelected     = FDsMaterialFrameSet_onCatalogSelected;
    //..........................................................
    // @method
-   o.construct             = FDsBitmapFrameSet_construct;
+   o.construct             = FDsMaterialFrameSet_construct;
    // @method
-   o.findPropertyFrame     = FDsBitmapFrameSet_findPropertyFrame;
+   o.findPropertyFrame     = FDsMaterialFrameSet_findPropertyFrame;
    // @method
-   o.loadByGuid            = FDsBitmapFrameSet_loadByGuid;
-   o.loadByCode            = FDsBitmapFrameSet_loadByCode;
+   o.loadByGuid            = FDsMaterialFrameSet_loadByGuid;
+   o.loadByCode            = FDsMaterialFrameSet_loadByCode;
    // @method
-   o.dispose               = FDsBitmapFrameSet_dispose;
+   o.dispose               = FDsMaterialFrameSet_dispose;
    return o;
 }
 
@@ -57,7 +57,7 @@ function FDsBitmapFrameSet(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsBitmapFrameSet_onBuilded(p){
+function FDsMaterialFrameSet_onBuilded(p){
    var o = this;
    o.__base.FUiFrameSet.onBuilded.call(o, p);
    //..........................................................
@@ -79,64 +79,38 @@ function FDsBitmapFrameSet_onBuilded(p){
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
    //..........................................................
-   // 设置目录工具栏
-   var frame = o._catalogToolbarFrame = o.searchControl('catalogToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._catalogToolbar = RClass.create(FDsBitmapCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
+   // 设置工具栏
+   //var c = o._toolbar = RClass.create(FDsMaterialMenuBar);
+   //c._workspace = o;
+   //c.buildDefine(p);
+   //o._frameToolBar.push(c);
+   //..........................................................
    // 设置目录栏
-   var frame = o._catalogContentFrame = o.searchControl('catalogContentFrame');
-   var catalogContent = o._catalogContent = RClass.create(FDsBitmapCatalogContent);
-   catalogContent._frameSet = o;
-   catalogContent._workspace = o._worksapce;
-   catalogContent.build(p);
-   //catalogContent.addSelectedListener(o, o.onCatalogSelected);
-   frame.push(catalogContent);
+   var catalog = o._catalog = RClass.create(FDsMaterialCatalog);
+   catalog._frameSet = o;
+   catalog._workspace = o._worksapce;
+   catalog.build(p);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalog.push(catalog);
    //..........................................................
    // 设置画板工具栏
    var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._canvasToolbar = RClass.create(FDsBitmapCanvasToolBar);
+   var toolbar = o._canvasToolbar = RClass.create(FDsMaterialCanvasToolBar);
    toolbar._frameSet = o;
    toolbar._workspace = o._worksapce;
    toolbar.buildDefine(p);
    frame.push(toolbar);
    // 设置画板
-   var frame = o._canvasContentFrame = o.searchControl('canvasContentFrame');
-   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+   var frame = o._canvasFrame = o.searchControl('canvasFrame');
+   var canvas = o._canvas = RClass.create(FDsMaterialCanvas);
    canvas._frameSet = o;
-   canvas._workspace = o._workspace;
    canvas._toolbar = o._canvasToolbar;
-   //canvas.addLoadListener(o, o.onMeshLoad);
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(p);
    frame.push(canvas);
-   //..........................................................
-   // 设置画板工具栏
-   var frame = o._propertyToolbarFrame = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   // 设置画板
-   //var frame = o._propertyContentFrame = o.searchControl('propertyContentFrame');
-   //var canvas = o._canvas = RClass.create(FDsBitmapContenCanvas);
-   //canvas._frameSet = o;
-   //canvas._workspace = o._workspace;
-   //canvas._toolbar = o._canvasToolbar;
-   //canvas.addLoadListener(o, o.onMeshLoad);
-   //canvas._hParent = frame._hPanel;
-   //canvas._hParent.style.backgroundColor = '#333333';
-   //canvas._hParent.style.scroll = 'auto';
-   //canvas.build(p);
-   //frame.push(canvas);
 }
 
 //==========================================================
@@ -145,7 +119,7 @@ function FDsBitmapFrameSet_onBuilded(p){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsBitmapFrameSet_onMeshLoad(p){
+function FDsMaterialFrameSet_onDataLoaded(p){
    var o = this;
    o._activeSpace = p._activeSpace;
    // 加载完成
@@ -158,7 +132,7 @@ function FDsBitmapFrameSet_onMeshLoad(p){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsBitmapFrameSet_onCatalogSelected(p, pc){
+function FDsMaterialFrameSet_onCatalogSelected(p, pc){
    var o = this;
    var space = o._activeSpace;
    // 隐藏所有属性面板
@@ -169,36 +143,36 @@ function FDsBitmapFrameSet_onCatalogSelected(p, pc){
       f.hide();
    }
    // 显示选中属性面板
-   if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+   if(RClass.isClass(p, FE3dSpace)){
+      var f = o.findPropertyFrame(EDsFrame.ModelSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
       f.show();
       f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+   }else if(RClass.isClass(p, FE3dModelDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.ModelDisplayPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
       f.show();
       f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+   }else if(RClass.isClass(p, FE3dModelRenderable)){
+      var f = o.findPropertyFrame(EDsFrame.ModelRenderablePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else{
@@ -211,7 +185,7 @@ function FDsBitmapFrameSet_onCatalogSelected(p, pc){
 //
 // @method
 //==========================================================
-function FDsBitmapFrameSet_construct(){
+function FDsMaterialFrameSet_construct(){
    var o = this;
    // 父处理
    o.__base.FUiFrameSet.construct.call(o);
@@ -226,12 +200,12 @@ function FDsBitmapFrameSet_construct(){
 // @param code:String 代码
 // @return FUiFrame 页面
 //==========================================================
-function FDsBitmapFrameSet_findPropertyFrame(code){
+function FDsMaterialFrameSet_findPropertyFrame(code){
    var o = this;
    var frame = o._propertyFrames.get(code);
    if(!frame){
       frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
-      frame._workspace = o;
+      frame._frameSet = o;
       o._propertyFrames.set(code, frame);
    }
    return frame;
@@ -243,10 +217,10 @@ function FDsBitmapFrameSet_findPropertyFrame(code){
 // @method
 // @param guid:String 唯一编码
 //==========================================================
-function FDsBitmapFrameSet_loadByGuid(guid){
+function FDsMaterialFrameSet_loadByGuid(guid){
    var o = this;
-   o._activeGuid = guid;
-   o._catalogContent.serviceList(guid);
+   //o._meshGuid = guid;
+   //o._canvas.loadByGuid(guid);
 }
 
 //==========================================================
@@ -254,10 +228,10 @@ function FDsBitmapFrameSet_loadByGuid(guid){
 //
 // @method
 //==========================================================
-function FDsBitmapFrameSet_loadByCode(p){
+function FDsMaterialFrameSet_loadByCode(p){
    var o = this;
-   o._meshCode = p;
-   o._canvas.loadByCode(p);
+   //o._meshCode = p;
+   //o._canvas.loadByCode(p);
 }
 
 //==========================================================
@@ -265,7 +239,7 @@ function FDsBitmapFrameSet_loadByCode(p){
 //
 // @method
 //==========================================================
-function FDsBitmapFrameSet_dispose(){
+function FDsMaterialFrameSet_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiFrameSet.dispose.call(o);

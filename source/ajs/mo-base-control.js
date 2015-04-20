@@ -10156,6 +10156,7 @@ function FUiListView(o){
    o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
    o._sizeCd           = EUiSize.Horizontal
    o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._focusItem        = null;
    o._itemPool         = null;
    o._hForm            = null;
    o.onBuildPanel      = FUiListView_onBuildPanel;

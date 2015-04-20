@@ -20300,6 +20300,7 @@ var EE3sResource = new function EE3sResource(){
    o.Template = 'Template';
    o.Scene    = 'Scene';
    o.Project  = 'Project';
+   o.All      = 'All';
    return o;
 }
 function ME3sGeometry(o){

@@ -9,42 +9,37 @@ function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
    //..........................................................
    // @property
-   o._frameName       = 'resource.resource.ListToolBar';
-   o._storageCode     = o._frameName;
+   o._frameName        = 'resource.resource.ListToolBar';
+   o._storageCode      = o._frameName;
    //..........................................................
    // @attribute
-   o._pageCount       = 0;
-   o._page            = 0;
-   o._serach          = null;
-   o._resourceTypeCd  = null;
-   // @attribute
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
+   o._dropButton       = null;
+   o._selectButton     = null;
+   o._translateButton  = null;
+   o._rotationButton   = null;
+   o._scaleButton      = null;
+   o._lookFrontButton  = null;
+   o._lookUpButton     = null;
+   o._lookLeftButton   = null;
+   o._playButton       = null;
+   o._viewButton       = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsResourceListToolBar_onBuilded;
+   o.onBuilded         = FDsResourceListToolBar_onBuilded;
    // @event
-   o.onSearchClick    = FDsResourceListToolBar_onSearchClick;
-   o.onNavigatorClick = FDsResourceListToolBar_onNavigatorClick;
-   o.onTypeClick      = FDsResourceListToolBar_onTypeClick;
+   o.onSearchClick     = FDsResourceListToolBar_onSearchClick;
+   o.onNavigatorClick  = FDsResourceListToolBar_onNavigatorClick;
+   o.onTypeClick       = FDsResourceListToolBar_onTypeClick;
    //..........................................................
    // @method
-   o.construct        = FDsResourceListToolBar_construct;
+   o.construct         = FDsResourceListToolBar_construct;
    // @method
-   o.makeTypeCd       = FDsResourceListToolBar_makeTypeCd;
-   o.setNavigator     = FDsResourceListToolBar_setNavigator;
-   o.doNavigator      = FDsResourceListToolBar_doNavigator;
-   o.storageLoad      = FDsResourceListToolBar_storageLoad;
+   o.makeTypeCd        = FDsResourceListToolBar_makeTypeCd;
+   o.setNavigator      = FDsResourceListToolBar_setNavigator;
+   o.doNavigator       = FDsResourceListToolBar_doNavigator;
+   o.storageLoad       = FDsResourceListToolBar_storageLoad;
    // @method
-   o.dispose          = FDsResourceListToolBar_dispose;
+   o.dispose           = FDsResourceListToolBar_dispose;
    return o;
 }
 
@@ -101,7 +96,7 @@ function FDsResourceListToolBar_onNavigatorClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   var page = o._page;
+   var page = o._contentPage;
    switch(name){
       case 'firstButton':
          page = 0;
@@ -113,7 +108,7 @@ function FDsResourceListToolBar_onNavigatorClick(event){
          page++;
          break;
       case 'lastButton':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
    }
    o.doNavigator(page);
@@ -129,7 +124,7 @@ function FDsResourceListToolBar_onTypeClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   var page = o._page;
+   var page = o._contentPage;
    switch(name){
       case 'typeAll':
          o._controlTypeBitmap.check(true);
@@ -155,15 +150,15 @@ function FDsResourceListToolBar_onTypeClick(event){
          page++;
          break;
       case 'typeTemplate':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
       case 'typeScene':
-         page = o._pageCount - 1;
+         page = o._contentPageCount - 1;
          break;
    }
    var typeCd = o.makeTypeCd();
    var search = o._controlSearchEdit.text();
-   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, 0)
+   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, 0)
    //..........................................................
    // 存储选择内容
    o.storageSet('resource_type_cd', typeCd);
@@ -213,6 +208,9 @@ function FDsResourceListToolBar_makeTypeCd(){
    if(types != ''){
       types = types.substring(1);
    }
+   if(RString.isEmpty(types)){
+      types = 'All';
+   }
    return types;
 }
 
@@ -226,9 +224,9 @@ function FDsResourceListToolBar_makeTypeCd(){
 //==========================================================
 function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
-   o._pageSize = pageSize;
-   o._pageCount = pageCount;
-   o._page = page;
+   o._contentPageSize = pageSize;
+   o._contentPageCount = pageCount;
+   o._contentPage = page;
    o._controlPageEdit.setText(page);
    if(page == 0){
       //o._controlFirstButton.disable();
@@ -246,12 +244,12 @@ function FDsResourceListToolBar_doNavigator(page){
    var o = this;
    var typeCd = o.makeTypeCd();
    var search = o._controlSearchEdit.text();
-   page = RInteger.toRange(page, 0, o._pageCount);
-   if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
-      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, page)
+   page = RInteger.toRange(page, 0, o._contentPageCount);
+   if((o._contentTypeCd != typeCd) || (o._contentSerach != search) || (o._contentPage != page)){
+      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, page)
    }
-   o._resourceTypeCd = typeCd;
-   o._serach = search;
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
 }
 
 //==========================================================
@@ -262,9 +260,10 @@ function FDsResourceListToolBar_storageLoad(){
    o._controlTypeModel.check(o.storageGetBoolean('control_type_model:check', true));
    o._controlTypeTemplate.check(o.storageGetBoolean('control_type_template:check', true));
    o._controlTypeScene.check(o.storageGetBoolean('control_type_scene:check', true));
+   var typeCd = o.makeTypeCd();
    var types = o.storageGet('resource_type_cd', 'All');
    var search = o._controlSearchEdit.text();
-   o._frameSet._listContent.serviceSearch(types, search, '', o._pageSize, 0)
+   o._frameSet._listContent.serviceSearch(types, search, '', o._contentPageSize, 0)
 }
 
 //==========================================================
