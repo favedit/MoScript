@@ -149,6 +149,7 @@ function FDsSceneCanvas_onDataLoaded(p){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
+   o.reloadRegion()
    o.processLoadListener(o);
    RConsole.find(FUiDesktopConsole).hide();
 }

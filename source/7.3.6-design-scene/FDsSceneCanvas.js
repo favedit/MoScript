@@ -229,6 +229,7 @@ function FDsSceneCanvas_onDataLoaded(p){
    //l.pushDisplay(o._templateRotation);
    //l.pushDisplay(o._templateScale);
    //s.registerLayer('ui', l);
+   o.reloadRegion()
    // 加载完成
    o.processLoadListener(o);
    // 隐藏处理

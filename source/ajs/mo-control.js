@@ -16085,9 +16085,13 @@ function FUiToolButtonCheck_check(p){
       }
    }else{
       if(!RString.isEmpty(o._groupDefault)){
-         var cs = o._parent.components();
-         var c = cs.get(o._groupDefault);
-         c.innerCheck(true);
+         var components = o._parent.components();
+         var control = components.get(o._groupDefault);
+         if(control){
+            control.innerCheck(true);
+         }else{
+            RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+         }
       }
    }
 }

@@ -23518,6 +23518,7 @@ function FE3sSceneDisplay_unserialize(input){
 function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
    o.__base.FE3sSprite.saveConfig.call(o, xconfig);
+   xconfig.set('template_guid', o._templateGuid);
    var animations = o._animations;
    if(animations){
       var count = animations.count();
@@ -47053,9 +47054,13 @@ function FUiToolButtonCheck_check(p){
       }
    }else{
       if(!RString.isEmpty(o._groupDefault)){
-         var cs = o._parent.components();
-         var c = cs.get(o._groupDefault);
-         c.innerCheck(true);
+         var components = o._parent.components();
+         var control = components.get(o._groupDefault);
+         if(control){
+            control.innerCheck(true);
+         }else{
+            RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+         }
       }
    }
 }
@@ -53985,8 +53990,10 @@ function FDsCanvas_switchSize(width, height){
       projection.update();
    }
 }
-function FDsCanvas_reloadRegion(region){
+function FDsCanvas_reloadRegion(){
    var o = this;
+   var space = o._activeSpace;
+   var region = space.region();
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
    o._cameraKeyRotation = resource.rotationKeySpeed();
@@ -55586,7 +55593,8 @@ function FDsCommonRegionPropertyFrame_onDataChanged(p){
    resource.setRotationKeySpeed(o._controlRotationKeySpeed.get());
    resource.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    region.reloadResource();
-   o._frameSet._canvas.reloadRegion(region);
+   var canvasContent = o._frameSet._canvasContent;
+   canvasContent.reloadRegion(region);
 }
 function FDsCommonRegionPropertyFrame_construct(){
    var o = this;
@@ -68053,6 +68061,7 @@ function FDsSceneCanvas_onDataLoaded(p){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
+   o.reloadRegion()
    o.processLoadListener(o);
    RConsole.find(FUiDesktopConsole).hide();
 }

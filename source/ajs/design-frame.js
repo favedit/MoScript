@@ -590,7 +590,8 @@ function FDsCommonRegionPropertyFrame_onDataChanged(p){
    resource.setRotationKeySpeed(o._controlRotationKeySpeed.get());
    resource.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    region.reloadResource();
-   o._frameSet._canvas.reloadRegion(region);
+   var canvasContent = o._frameSet._canvasContent;
+   canvasContent.reloadRegion(region);
 }
 function FDsCommonRegionPropertyFrame_construct(){
    var o = this;

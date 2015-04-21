@@ -312,8 +312,10 @@ function FDsCanvas_switchSize(width, height){
 // @method
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsCanvas_reloadRegion(region){
+function FDsCanvas_reloadRegion(){
    var o = this;
+   var space = o._activeSpace;
+   var region = space.region();
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
    o._cameraKeyRotation = resource.rotationKeySpeed();

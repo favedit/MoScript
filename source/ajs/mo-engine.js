@@ -3532,6 +3532,7 @@ function FE3sSceneDisplay_unserialize(input){
 function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
    o.__base.FE3sSprite.saveConfig.call(o, xconfig);
+   xconfig.set('template_guid', o._templateGuid);
    var animations = o._animations;
    if(animations){
       var count = animations.count();
