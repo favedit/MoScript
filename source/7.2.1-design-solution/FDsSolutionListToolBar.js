@@ -9,7 +9,7 @@ function FDsSolutionListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'resource.solution.ListToolBar';
+   o._frameName       = 'resource.private.solution.ListToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;

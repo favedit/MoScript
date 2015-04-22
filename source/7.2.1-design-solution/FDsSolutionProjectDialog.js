@@ -8,7 +8,7 @@ function FDsSolutionProjectDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.solution.ProjectDialog';
+   o._frameName            = 'resource.private.solution.ProjectDialog';
    //..........................................................
    // @attribute
    o._resourceTypeCd       = 'private';

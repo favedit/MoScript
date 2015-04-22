@@ -8,8 +8,8 @@ function FDsSolutionCatalogContent(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @const
-   o._iconView             = 'design3d.mesh.view';
-   o._iconViewNot          = 'design3d.mesh.viewno';
+   o._iconView             = 'resource.solution.view';
+   o._iconViewNot          = 'resource.solution.viewno';
    //..........................................................
    // @attributes
    o._activeSpace          = null;

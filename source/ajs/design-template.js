@@ -573,29 +573,6 @@ function FDsTemplateFrameSet_onBuilded(event){
    var spliter = o._spliterProperty;
    spliter.setAlignCd(EUiAlign.Right);
    spliter.setSizeHtml(o._frameProperty._hPanel);
-   var toolbar = o._catalogToolbar = RClass.create(FDsTemplateCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsTemplateCatalog);
-   catalog._frameSet = o;
-   catalog.build(event);
-   catalog.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalogContent.push(catalog);
-   var toolbar = o._canvasToolbar = RClass.create(FDsTemplateCanvasToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(event);
-   o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsTemplateCanvas);
-   canvas._frameSet = o;
-   canvas._toolbar = o._canvasToolbar;
-   canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.addLoadListener(o, o.onDataLoaded);
-   canvas.build(event);
-   o._frameCanvasContent.push(canvas);
 }
 function FDsTemplateFrameSet_onDataLoaded(event){
    var o = this;
@@ -666,7 +643,6 @@ function FDsTemplateFrameSet_dispose(){
 }
 function FDsTemplateMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'resource.template.MenuBar';
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    o.onBuilded             = FDsTemplateMenuBar_onBuilded;

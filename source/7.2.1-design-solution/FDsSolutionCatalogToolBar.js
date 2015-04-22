@@ -9,7 +9,7 @@ function FDsSolutionCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'resource.solution.CatalogToolBar';
+   o._frameName       = 'resource.private.solution.CatalogToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd    = EDsCanvasMode.Drop;

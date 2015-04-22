@@ -5,45 +5,14 @@
 // @history 150121
 //==========================================================
 function FDsPrivateResourceFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FDsResourceFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'resource.share.resource.FrameSet';
-   //..........................................................
-   // @style
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-   //..........................................................
-   // @attribute
-   o._resourceTypeCd       = 'picture';
-   // @attribute
-   o._frameCatalog         = null;
-   o._frameCatalogToolbar  = null;
-   o._frameCatalogContent  = null;
-   o._frameSearch          = null;
-   o._frameSearchToolbar   = null;
-   o._frameSearchContent   = null;
-   o._framePreview         = null;
-   o._framePreviewToolbar  = null;
-   o._framePreviewContent  = null;
-   // @attribute
-   o._propertyFrames       = null;
+   o._frameName        = 'resource.share.resource.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded             = FDsPrivateResourceFrameSet_onBuilded;
-   o.onCatalogSelected     = FDsPrivateResourceFrameSet_onCatalogSelected;
-   //..........................................................
-   // @method
-   o.construct             = FDsPrivateResourceFrameSet_construct;
-   // @method
-   o.findPropertyFrame     = FDsPrivateResourceFrameSet_findPropertyFrame;
-   // @method
-   o.switchContent         = FDsPrivateResourceFrameSet_switchContent;
-   o.load                  = FDsPrivateResourceFrameSet_load;
-   // @method
-   o.dispose               = FDsPrivateResourceFrameSet_dispose;
+   o.onBuilded         = FDsPrivateResourceFrameSet_onBuilded;
+   o.onCatalogSelected = FDsPrivateResourceFrameSet_onCatalogSelected;
    return o;
 }
 
@@ -55,7 +24,7 @@ function FDsPrivateResourceFrameSet(o){
 //==========================================================
 function FDsPrivateResourceFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, event);
+   o.__base.FDsResourceFrameSet.onBuilded.call(o, event);
    // 设置样式
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
@@ -167,73 +136,4 @@ function FDsPrivateResourceFrameSet_onCatalogSelected(p, pc){
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FDsPrivateResourceFrameSet_construct(){
-   var o = this;
-   // 父处理
-   o.__base.FUiFrameSet.construct.call(o);
-   // 设置属性
-   o._propertyFrames = new TDictionary();
-}
-
-//==========================================================
-// <T>根据名称获得属性页面。</T>
-//
-// @method
-// @return FUiFrame 页面
-//==========================================================
-function FDsPrivateResourceFrameSet_findPropertyFrame(p){
-   var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreview._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
-   }
-   return f;
-}
-
-//==========================================================
-// <T>选择内容。</T>
-//
-// @method
-// @param typeCd:String 内容类型
-//==========================================================
-function FDsPrivateResourceFrameSet_switchContent(typeCd){
-   var o = this;
-   o._resourceTypeCd = typeCd;
-   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
-}
-
-//==========================================================
-// <T>加载处理。</T>
-//
-// @method
-//==========================================================
-function FDsPrivateResourceFrameSet_load(){
-   var o = this;
-   o._listToolBar.storageLoad();
-   //var typeCd = o._listToolBar.storageGet('resource_type_cd', 'All')
-   //o.switchContent(typeCd);
-}
-
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-function FDsPrivateResourceFrameSet_dispose(){
-   var o = this;
-   // 父处理
-   o.__base.FUiFrameSet.dispose.call(o);
-   // 设置属性
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
 }

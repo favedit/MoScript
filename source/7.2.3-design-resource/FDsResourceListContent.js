@@ -119,15 +119,15 @@ function FDsResourceListContent_doDoubleClickItem(control){
    var workspace = o._frameSet._workspace;
    var typeCd = control._typeCd;
    if(typeCd == EE3sResource.Bitmap){
-      workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
+      workspace.selectFrameSet(EDsFrameSet.PrivateBitmapFrameSet, guid);
    }else if(typeCd == EE3sResource.Material){
-      workspace.selectFrameSet(EDsFrameSet.MaterialFrameSet, guid);
+      workspace.selectFrameSet(EDsFrameSet.PrivateMaterialFrameSet, guid);
    }else if(typeCd == EE3sResource.Model){
-      workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
+      workspace.selectFrameSet(EDsFrameSet.PrivateModelFrameSet, guid);
    }else if(typeCd == EE3sResource.Template){
-      workspace.selectFrameSet(EDsFrameSet.TemplateFrameSet, guid);
+      workspace.selectFrameSet(EDsFrameSet.PrivateTemplateFrameSet, guid);
    }else if(typeCd == EE3sResource.Scene){
-      workspace.selectFrameSet(EDsFrameSet.SceneFrameSet, guid);
+      workspace.selectFrameSet(EDsFrameSet.PrivateSceneFrameSet, guid);
    }else{
       throw new TError(o, 'Unsupport resource format.');
    }

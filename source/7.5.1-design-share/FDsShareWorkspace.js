@@ -13,7 +13,6 @@ function FDsShareWorkspace(o){
    //..........................................................
    // @style
    o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    //..........................................................
@@ -26,7 +25,6 @@ function FDsShareWorkspace(o){
    // @attribute
    o._activeFrameSet       = null;
    o._frameSets            = null;
-   o._propertyFrames       = null;
    //..........................................................
    // @process
    o.onBuilded             = FDsShareWorkspace_onBuilded;
@@ -45,18 +43,18 @@ function FDsShareWorkspace(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsShareWorkspace_onBuilded(p){
+function FDsShareWorkspace_onBuilded(event){
    var o = this;
-   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   o.__base.FUiWorkspace.onBuilded.call(o, event);
    //..........................................................
    // 设置样式
    o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
    o._frameBody._hPanel.className = o.styleName('Body_Ground');
    o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
    //..........................................................
-   var hTable = RBuilder.createTable(p);
+   var hTable = RBuilder.createTable(event);
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
    // 设置工具栏
@@ -64,7 +62,7 @@ function FDsShareWorkspace_onBuilded(p){
    // 设置分页栏
    var control = o._tabBar = RClass.create(FDsShareTabBar);
    control._workspace = o;
-   control.buildDefine(p);
+   control.buildDefine(event);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '100px';
    hCell.align = 'right';
@@ -84,7 +82,6 @@ function FDsShareWorkspace_construct(){
    o.__base.FUiWorkspace.construct.call(o);
    // 设置属性
    o._frameSets = new TDictionary();
-   o._propertyFrames = new TDictionary();
 }
 
 //==========================================================
@@ -179,8 +176,7 @@ function FDsShareWorkspace_load(){
 function FDsShareWorkspace_dispose(){
    var o = this;
    // 设置属性
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
+   o._frameSets = RObject.dispose(o._frameSets);
    // 父处理
    o.__base.FUiWorkspace.dispose.call(o);
 }

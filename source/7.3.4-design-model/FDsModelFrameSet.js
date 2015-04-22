@@ -7,9 +7,6 @@
 function FDsModelFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.model.FrameSet';
-   //..........................................................
    // @style
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
@@ -68,34 +65,6 @@ function FDsModelFrameSet_onBuilded(event){
    var spliter = o._spliterProperty;
    spliter.setAlignCd(EUiAlign.Right);
    spliter.setSizeHtml(o._frameProperty._hPanel);
-   //..........................................................
-   // 设置目录工具栏
-   var toolbar = o._catalogToolbar = RClass.create(FDsModelCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._frameCatalogToolBar.push(toolbar);
-   // 设置目录栏
-   var catalog = o._catalogContent = RClass.create(FDsModelCatalog);
-   catalog._frameSet = o;
-   catalog.build(event);
-   catalog.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalogContent.push(catalog);
-   //..........................................................
-   // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsModelCanvasToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._frameCanvasToolBar.push(toolbar);
-   // 设置画板
-   var canvas = o._canvasContent = RClass.create(FDsModelCanvas);
-   canvas._frameSet = o;
-   canvas._toolbar = o._canvasToolbar;
-   canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.addLoadListener(o, o.onDataLoaded);
-   canvas.build(event);
-   o._frameCanvasContent.push(canvas);
 }
 
 //==========================================================

@@ -8,10 +8,6 @@
 function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
    //..........................................................
-   // @property
-   o._frameName        = 'resource.resource.ListToolBar';
-   o._storageCode      = o._frameName;
-   //..........................................................
    // @attribute
    o._dropButton       = null;
    o._selectButton     = null;

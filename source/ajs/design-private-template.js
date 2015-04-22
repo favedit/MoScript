@@ -98,62 +98,6 @@ function FDsPrivateTemplateMenuBar(o){
    o._frameName = 'resource.private.template.MenuBar';
    return o;
 }
-function FDsPrivateTemplateToolBar(o){
-   o = RClass.inherits(this, o, FUiToolBar);
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o.onBuild        = FDsPrivateTemplateToolBar_onBuild;
-   o.onRefreshClick = FDsPrivateTemplateToolBar_onRefreshClick;
-   o.onSaveClick    = FDsPrivateTemplateToolBar_onSaveClick;
-   o.construct      = FDsPrivateTemplateToolBar_construct;
-   o.dispose        = FDsPrivateTemplateToolBar_dispose;
-   return o;
-}
-function FDsPrivateTemplateToolBar_onBuild(p){
-   var o = this;
-   o.__base.FUiToolBar.onBuild.call(o, p);
-   var b = o._refreshButton  = RClass.create(FUiToolButton);
-   b.setLabel('刷新');
-   b.setIcon('design3d.tools.refresh');
-   b.build(p);
-   b.addClickListener(o, o.onRefreshClick);
-   o.push(b);
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('保存');
-   b.setIcon('design3d.tools.save');
-   b.build(p);
-   b.addClickListener(o, o.onSaveClick);
-   o.push(b);
-}
-function FDsPrivateTemplateToolBar_onRefreshClick(p){
-   var o = this;
-}
-function FDsPrivateTemplateToolBar_onSaveClick(p){
-   var o = this;
-   var t = o._workspace._activeTemplate;
-   var rt = t._resource;
-   var ts = rt.themes();
-   var tc = ts.count();
-   var xr = new TXmlNode();
-   for(var ti = 0; ti < tc; ti++){
-      var t = ts.get(ti);
-      var ms = t.materials();
-      var mc = ms.count();
-      for(var mi = 0; mi < mc; mi++){
-         var m = ms.value(mi);
-         m.saveConfig(xr.create('Material'));
-      }
-   }
-   RConsole.find(FE3sTemplateConsole).update(xr);
-}
-function FDsPrivateTemplateToolBar_construct(){
-   var o = this;
-   o.__base.FUiToolBar.construct.call(o);
-}
-function FDsPrivateTemplateToolBar_dispose(){
-   var o = this;
-   o.__base.FUiToolBar.dispose.call(o);
-}
 function FDsPrivateTemplateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));

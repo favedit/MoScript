@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FDsPrivateResourceMenuBar(o){
-   o = RClass.inherits(this, o, FUiMenuBar);
+   o = RClass.inherits(this, o, FDsResourceMenuBar);
    //..........................................................
    // @property
    o._frameName      = 'resource.private.resource.MenuBar';
@@ -28,10 +28,14 @@ function FDsPrivateResourceMenuBar(o){
 //==========================================================
 function FDsPrivateResourceMenuBar_onBuilded(p){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o.__base.FDsResourceMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+   o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
+   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlShareOpen.addClickListener(o, o.onShareClick);
+   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 
 //==========================================================

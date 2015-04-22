@@ -8,35 +8,15 @@ function FDsPrivateResourceCatalogToolBar(o){
    return o;
 }
 function FDsPrivateResourceFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
-   o._frameName            = 'resource.share.resource.FrameSet';
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-   o._resourceTypeCd       = 'picture';
-   o._frameCatalog         = null;
-   o._frameCatalogToolbar  = null;
-   o._frameCatalogContent  = null;
-   o._frameSearch          = null;
-   o._frameSearchToolbar   = null;
-   o._frameSearchContent   = null;
-   o._framePreview         = null;
-   o._framePreviewToolbar  = null;
-   o._framePreviewContent  = null;
-   o._propertyFrames       = null;
-   o.onBuilded             = FDsPrivateResourceFrameSet_onBuilded;
-   o.onCatalogSelected     = FDsPrivateResourceFrameSet_onCatalogSelected;
-   o.construct             = FDsPrivateResourceFrameSet_construct;
-   o.findPropertyFrame     = FDsPrivateResourceFrameSet_findPropertyFrame;
-   o.switchContent         = FDsPrivateResourceFrameSet_switchContent;
-   o.load                  = FDsPrivateResourceFrameSet_load;
-   o.dispose               = FDsPrivateResourceFrameSet_dispose;
+   o = RClass.inherits(this, o, FDsResourceFrameSet);
+   o._frameName        = 'resource.share.resource.FrameSet';
+   o.onBuilded         = FDsPrivateResourceFrameSet_onBuilded;
+   o.onCatalogSelected = FDsPrivateResourceFrameSet_onCatalogSelected;
    return o;
 }
 function FDsPrivateResourceFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, event);
+   o.__base.FDsResourceFrameSet.onBuilded.call(o, event);
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
    o._frameListToolBar._hPanel.className = o.styleName('Toolbar_Ground');
@@ -110,37 +90,6 @@ function FDsPrivateResourceFrameSet_onCatalogSelected(p, pc){
       throw new TError('Unknown select object type. (value={1})', p);
    }
 }
-function FDsPrivateResourceFrameSet_construct(){
-   var o = this;
-   o.__base.FUiFrameSet.construct.call(o);
-   o._propertyFrames = new TDictionary();
-}
-function FDsPrivateResourceFrameSet_findPropertyFrame(p){
-   var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreview._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
-   }
-   return f;
-}
-function FDsPrivateResourceFrameSet_switchContent(typeCd){
-   var o = this;
-   o._resourceTypeCd = typeCd;
-   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
-}
-function FDsPrivateResourceFrameSet_load(){
-   var o = this;
-   o._listToolBar.storageLoad();
-}
-function FDsPrivateResourceFrameSet_dispose(){
-   var o = this;
-   o.__base.FUiFrameSet.dispose.call(o);
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
-}
 function FDsPrivateResourceListContent(o){
    o = RClass.inherits(this, o, FDsResourceListContent);
    return o;
@@ -156,7 +105,7 @@ function FDsPrivateResourceListToolBar(o){
    return o;
 }
 function FDsPrivateResourceMenuBar(o){
-   o = RClass.inherits(this, o, FUiMenuBar);
+   o = RClass.inherits(this, o, FDsResourceMenuBar);
    o._frameName      = 'resource.private.resource.MenuBar';
    o._controlRefresh = null;
    o.onBuilded       = FDsPrivateResourceMenuBar_onBuilded;
@@ -165,8 +114,12 @@ function FDsPrivateResourceMenuBar(o){
 }
 function FDsPrivateResourceMenuBar_onBuilded(p){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+   o.__base.FDsResourceMenuBar.onBuilded.call(o, p);
+   o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
+   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlShareOpen.addClickListener(o, o.onShareClick);
+   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 function FDsPrivateResourceMenuBar_onRefreshClick(event){
 }

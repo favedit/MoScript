@@ -7,9 +7,6 @@
 function FDsTemplateMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.template.MenuBar';
-   //..........................................................
    // @attribute
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;

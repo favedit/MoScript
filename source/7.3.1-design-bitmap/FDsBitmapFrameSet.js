@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 function FDsBitmapFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FDsFrameSet);
    //..........................................................
    // @property
    o._frameName            = 'resource.bitmap.FrameSet';
@@ -59,7 +59,7 @@ function FDsBitmapFrameSet(o){
 //==========================================================
 function FDsBitmapFrameSet_onBuilded(p){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, p);
+   o.__base.FDsFrameSet.onBuilded.call(o, p);
    //..........................................................
    // 设置目录区
    var f = o._frameCatalog = o.searchControl('catalogFrame');
@@ -78,65 +78,6 @@ function FDsBitmapFrameSet_onBuilded(p){
    var f = o._propertySpliter = o.searchControl('propertySpliter');
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
-   //..........................................................
-   // 设置目录工具栏
-   var frame = o._catalogToolbarFrame = o.searchControl('catalogToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._catalogToolbar = RClass.create(FDsBitmapCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   // 设置目录栏
-   var frame = o._catalogContentFrame = o.searchControl('catalogContentFrame');
-   var catalogContent = o._catalogContent = RClass.create(FDsBitmapCatalogContent);
-   catalogContent._frameSet = o;
-   catalogContent._workspace = o._worksapce;
-   catalogContent.build(p);
-   //catalogContent.addSelectedListener(o, o.onCatalogSelected);
-   frame.push(catalogContent);
-   //..........................................................
-   // 设置画板工具栏
-   var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._canvasToolbar = RClass.create(FDsBitmapCanvasToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   // 设置画板
-   var frame = o._canvasContentFrame = o.searchControl('canvasContentFrame');
-   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
-   canvas._frameSet = o;
-   canvas._workspace = o._workspace;
-   canvas._toolbar = o._canvasToolbar;
-   //canvas.addLoadListener(o, o.onMeshLoad);
-   canvas._hParent = frame._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.build(p);
-   frame.push(canvas);
-   //..........................................................
-   // 设置画板工具栏
-   var frame = o._propertyToolbarFrame = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   // 设置画板
-   //var frame = o._propertyContentFrame = o.searchControl('propertyContentFrame');
-   //var canvas = o._canvas = RClass.create(FDsBitmapContenCanvas);
-   //canvas._frameSet = o;
-   //canvas._workspace = o._workspace;
-   //canvas._toolbar = o._canvasToolbar;
-   //canvas.addLoadListener(o, o.onMeshLoad);
-   //canvas._hParent = frame._hPanel;
-   //canvas._hParent.style.backgroundColor = '#333333';
-   //canvas._hParent.style.scroll = 'auto';
-   //canvas.build(p);
-   //frame.push(canvas);
 }
 
 //==========================================================
@@ -214,7 +155,7 @@ function FDsBitmapFrameSet_onCatalogSelected(p, pc){
 function FDsBitmapFrameSet_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiFrameSet.construct.call(o);
+   o.__base.FDsFrameSet.construct.call(o);
    // 设置属性
    o._propertyFrames = new TDictionary();
 }
@@ -268,7 +209,7 @@ function FDsBitmapFrameSet_loadByCode(p){
 function FDsBitmapFrameSet_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiFrameSet.dispose.call(o);
+   o.__base.FDsFrameSet.dispose.call(o);
    // 设置属性
    o._propertyFrames.dispose();
    o._propertyFrames = null;

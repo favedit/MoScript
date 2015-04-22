@@ -605,7 +605,7 @@ function FDsBitmapCatalogToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsBitmapFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FDsFrameSet);
    o._frameName            = 'resource.bitmap.FrameSet';
    o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -635,7 +635,7 @@ function FDsBitmapFrameSet(o){
 }
 function FDsBitmapFrameSet_onBuilded(p){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, p);
+   o.__base.FDsFrameSet.onBuilded.call(o, p);
    var f = o._frameCatalog = o.searchControl('catalogFrame');
    f._hPanel.className = o.styleName('Catalog_Ground');
    var f = o._frameWorkspace = o.searchControl('spaceFrame');
@@ -648,43 +648,6 @@ function FDsBitmapFrameSet_onBuilded(p){
    var f = o._propertySpliter = o.searchControl('propertySpliter');
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
-   var frame = o._catalogToolbarFrame = o.searchControl('catalogToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._catalogToolbar = RClass.create(FDsBitmapCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   var frame = o._catalogContentFrame = o.searchControl('catalogContentFrame');
-   var catalogContent = o._catalogContent = RClass.create(FDsBitmapCatalogContent);
-   catalogContent._frameSet = o;
-   catalogContent._workspace = o._worksapce;
-   catalogContent.build(p);
-   frame.push(catalogContent);
-   var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._canvasToolbar = RClass.create(FDsBitmapCanvasToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
-   var frame = o._canvasContentFrame = o.searchControl('canvasContentFrame');
-   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
-   canvas._frameSet = o;
-   canvas._workspace = o._workspace;
-   canvas._toolbar = o._canvasToolbar;
-   canvas._hParent = frame._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.build(p);
-   frame.push(canvas);
-   var frame = o._propertyToolbarFrame = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('ToolBar_Ground');
-   var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
-   toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
-   toolbar.buildDefine(p);
-   frame.push(toolbar);
 }
 function FDsBitmapFrameSet_onMeshLoad(p){
    var o = this;
@@ -738,7 +701,7 @@ function FDsBitmapFrameSet_onCatalogSelected(p, pc){
 }
 function FDsBitmapFrameSet_construct(){
    var o = this;
-   o.__base.FUiFrameSet.construct.call(o);
+   o.__base.FDsFrameSet.construct.call(o);
    o._propertyFrames = new TDictionary();
 }
 function FDsBitmapFrameSet_findPropertyFrame(code){
@@ -763,7 +726,7 @@ function FDsBitmapFrameSet_loadByCode(p){
 }
 function FDsBitmapFrameSet_dispose(){
    var o = this;
-   o.__base.FUiFrameSet.dispose.call(o);
+   o.__base.FDsFrameSet.dispose.call(o);
    o._propertyFrames.dispose();
    o._propertyFrames = null;
 }

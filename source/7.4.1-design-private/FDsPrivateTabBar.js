@@ -1,14 +1,14 @@
 //==========================================================
-// <T>共享分页栏。</T>
+// <T>主菜单。</T>
 //
 // @author maocy
-// @history 150422
+// @history 141231
 //==========================================================
 function FDsPrivateTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
    //..........................................................
    // @property
-   o._frameName            = 'resource.share.TabBar';
+   o._frameName            = 'resource.private.TabBar';
    //..........................................................
    // @attribute
    o._resourceTypeCd       = 'private';
@@ -40,7 +40,10 @@ function FDsPrivateTabBar_onBuilded(p){
    o.__base.FUiTabBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlResource.addClickListener(o, o.onButtonClick);
+   o._controlProjectButton.addClickListener(o, o.onButtonClick);
+   o._controlResourceButton.addClickListener(o, o.onButtonClick);
+   o._controlTeamButton.addClickListener(o, o.onButtonClick);
+   o._controlPublishButton.addClickListener(o, o.onButtonClick);
 }
 
 //==========================================================
@@ -53,8 +56,12 @@ function FDsPrivateTabBar_onButtonClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   if(name == 'resource'){
-      o._workspace.selectFrameSet(EDsFrameSet.ShareResourceFrameSet);
+   if(name == 'solution'){
+      o._workspace.selectFrameSet(EDsFrameSet.SolutionFrameSet);
+   }else if(name == 'project'){
+      o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
+   }else if(name == 'resource'){
+      o._workspace.selectFrameSet(EDsFrameSet.PrivateResourceFrameSet);
    }else{
       alert('功能未开启，请以后关注。');
    }

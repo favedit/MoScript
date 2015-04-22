@@ -1,19 +1,18 @@
 //==========================================================
-// <T>共享工作区。</T>
+// <T>模板工作区域。</T>
 //
 // @author maocy
-// @history 150422
+// @history 150121
 //==========================================================
 function FDsPrivateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    //..........................................................
    // @property
-   o._frameName            = 'resource.share.Workspace';
+   o._frameName            = 'resource.private.Workspace';
    o._storageCode          = o._frameName;
    //..........................................................
    // @style
    o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    //..........................................................
@@ -26,7 +25,6 @@ function FDsPrivateWorkspace(o){
    // @attribute
    o._activeFrameSet       = null;
    o._frameSets            = null;
-   o._propertyFrames       = null;
    //..........................................................
    // @process
    o.onBuilded             = FDsPrivateWorkspace_onBuilded;
@@ -45,18 +43,18 @@ function FDsPrivateWorkspace(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsPrivateWorkspace_onBuilded(p){
+function FDsPrivateWorkspace_onBuilded(event){
    var o = this;
-   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   o.__base.FUiWorkspace.onBuilded.call(o, event);
    //..........................................................
    // 设置样式
    o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
    o._frameBody._hPanel.className = o.styleName('Body_Ground');
    o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
    //..........................................................
-   var hTable = RBuilder.createTable(p);
+   var hTable = RBuilder.createTable(event);
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
    // 设置工具栏
@@ -64,7 +62,7 @@ function FDsPrivateWorkspace_onBuilded(p){
    // 设置分页栏
    var control = o._tabBar = RClass.create(FDsPrivateTabBar);
    control._workspace = o;
-   control.buildDefine(p);
+   control.buildDefine(event);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '100px';
    hCell.align = 'right';
@@ -84,7 +82,6 @@ function FDsPrivateWorkspace_construct(){
    o.__base.FUiWorkspace.construct.call(o);
    // 设置属性
    o._frameSets = new TDictionary();
-   o._propertyFrames = new TDictionary();
 }
 
 //==========================================================
@@ -98,7 +95,27 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
    // 获得框架
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
-      if(name == EDsFrameSet.ShareResourceFrameSet){
+      if(name == EDsFrameSet.SolutionFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsSolutionMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ProjectFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsProjectMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsProjectFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateResourceFrameSet){
          // 创建菜单
          var menuBar = RClass.create(FDsPrivateResourceMenuBar);
          menuBar._workspace = o;
@@ -108,7 +125,57 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.ShareSceneFrameSet){
+      }else if(name == EDsFrameSet.PrivateBitmapFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsPrivateBitmapMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateMaterialFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsPrivateMaterialMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateMeshFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsPrivateMeshMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateMeshFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateModelFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsPrivateModelMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.PrivateSceneFrameSet){
          // 创建菜单
          var menuBar = RClass.create(FDsPrivateSceneMenuBar);
          menuBar._workspace = o;
@@ -139,10 +206,31 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
    //..........................................................
    // 初始化操作
    switch(name){
-      case EDsFrameSet.ShareResourceFrameSet:
+      case EDsFrameSet.SolutionFrameSet:
          frameSet.load();
          break;
-      case EDsFrameSet.ShareSceneFrameSet:
+      case EDsFrameSet.ProjectFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateResourceFrameSet:
+         frameSet.load();
+         break;
+      case EDsFrameSet.PrivateBitmapFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateMaterialFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateMeshFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateModelFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateTemplateFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.PrivateSceneFrameSet:
          frameSet.loadByGuid(guid);
          break;
       default:
@@ -164,11 +252,44 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
 function FDsPrivateWorkspace_load(){
    var o = this;
    // 选择开始页面
-   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.ShareResourceFrameSet);
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.SolutionFrameSet);
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
    // 点击切换按键
-   var button = o._tabBar.findControl('resource');
-   button.doClick();
+   var button = null;
+   if(code == EDsFrameSet.SolutionFrameSet){
+      button = o._tabBar.findControl('solution');
+      button.doClick();
+   }else if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('solution');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.PrivateResourceFrameSet){
+      button = o._tabBar.findControl('resource');
+      button.doClick();
+   }else if(code == EDsFrameSet.PrivateBitmapFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.PrivateMeshFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.PrivateModelFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.PrivateTemplateFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.PrivateSceneFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else{
+      button = o._tabBar.findControl('solution');
+      button.doClick();
+   }
 }
 
 //==========================================================
@@ -179,8 +300,7 @@ function FDsPrivateWorkspace_load(){
 function FDsPrivateWorkspace_dispose(){
    var o = this;
    // 设置属性
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
+   o._frameSets = RObject.dispose(o._frameSets);
    // 父处理
    o.__base.FUiWorkspace.dispose.call(o);
 }

@@ -39,7 +39,6 @@ function FDsShareWorkspace(o){
    o._frameName            = 'resource.share.Workspace';
    o._storageCode          = o._frameName;
    o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._activeFrameSetCode   = null;
@@ -48,7 +47,6 @@ function FDsShareWorkspace(o){
    o._frameStatusBar       = null;
    o._activeFrameSet       = null;
    o._frameSets            = null;
-   o._propertyFrames       = null;
    o.onBuilded             = FDsShareWorkspace_onBuilded;
    o.construct             = FDsShareWorkspace_construct;
    o.selectFrameSet        = FDsShareWorkspace_selectFrameSet;
@@ -56,19 +54,19 @@ function FDsShareWorkspace(o){
    o.dispose               = FDsShareWorkspace_dispose;
    return o;
 }
-function FDsShareWorkspace_onBuilded(p){
+function FDsShareWorkspace_onBuilded(event){
    var o = this;
-   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   o.__base.FUiWorkspace.onBuilded.call(o, event);
    o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
    o._frameBody._hPanel.className = o.styleName('Body_Ground');
    o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
-   var hTable = RBuilder.createTable(p);
+   var hTable = RBuilder.createTable(event);
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
    o._hMenuPanel = RBuilder.appendTableCell(hRow);
    var control = o._tabBar = RClass.create(FDsShareTabBar);
    control._workspace = o;
-   control.buildDefine(p);
+   control.buildDefine(event);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '100px';
    hCell.align = 'right';
@@ -80,7 +78,6 @@ function FDsShareWorkspace_construct(){
    var o = this;
    o.__base.FUiWorkspace.construct.call(o);
    o._frameSets = new TDictionary();
-   o._propertyFrames = new TDictionary();
 }
 function FDsShareWorkspace_selectFrameSet(name, guid){
    var o = this;
@@ -142,7 +139,6 @@ function FDsShareWorkspace_load(){
 }
 function FDsShareWorkspace_dispose(){
    var o = this;
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
+   o._frameSets = RObject.dispose(o._frameSets);
    o.__base.FUiWorkspace.dispose.call(o);
 }

@@ -7,9 +7,6 @@
 function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.resource.MenuBar';
-   //..........................................................
    // @attribute
    o._controlImportPicture = null;
    o._controlImportMesh    = null;
@@ -17,8 +14,6 @@ function FDsResourceMenuBar(o){
    o._controlShareOpen     = null;
    o._controlShareClose    = null;
    //..........................................................
-   // @event
-   o.onBuilded             = FDsResourceMenuBar_onBuilded;
    // @event
    o.onImportPictureClick  = FDsResourceMenuBar_onImportPictureClick;
    o.onImportMeshClick     = FDsResourceMenuBar_onImportMeshClick;
@@ -33,24 +28,6 @@ function FDsResourceMenuBar(o){
    // @method
    o.dispose               = FDsResourceMenuBar_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构建完成处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件处理
-//==========================================================
-function FDsResourceMenuBar_onBuilded(p){
-   var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
-   //..........................................................
-   // 注册事件
-   o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
-   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
-   o._controlDelete.addClickListener(o, o.onDeleteClick);
-   o._controlShareOpen.addClickListener(o, o.onShareClick);
-   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 
 //==========================================================
