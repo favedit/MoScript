@@ -234,6 +234,7 @@ function FDsCanvas(o){
    o.oeResize             = FDsCanvas_oeResize;
    o.oeRefresh            = FDsCanvas_oeRefresh;
    o.construct            = FDsCanvas_construct;
+   o.activeSpace          = FDsCanvas_activeSpace;
    o.switchSize           = FDsCanvas_switchSize;
    o.reloadRegion         = FDsCanvas_reloadRegion;
    o.dispose              = FDsCanvas_dispose;
@@ -374,6 +375,9 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
+}
+function FDsCanvas_activeSpace(){
+   return this._activeSpace;
 }
 function FDsCanvas_switchSize(width, height){
    var o = this;
@@ -723,6 +727,58 @@ function FDsCatalog_dispose(){
    o._renderables = RObject.dispose(o._renderables);
    o._materials = RObject.dispose(o._materials);
    o.__base.FUiDataTreeView.dispose.call(o);
+}
+function FDsFrameSet(o){
+   o = RClass.inherits(this, o, FUiFrameSet);
+   o._activeGuid        = null;
+   o._activeCode        = null;
+   o._activeSpace       = null;
+   o._propertyFrames    = null;
+   o.construct          = FDsFrameSet_construct;
+   o.findPropertyFrame  = FDsFrameSet_findPropertyFrame;
+   o.propertyFrames     = FDsFrameSet_propertyFrames;
+   o.hidePropertyFrames = FDsFrameSet_hidePropertyFrames;
+   o.dispose            = FDsFrameSet_dispose;
+   return o;
+}
+function FDsFrameSet_construct(){
+   var o = this;
+   o.__base.FUiFrameSet.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsFrameSet_findPropertyFrame(code){
+   var o = this;
+   var frame = o._propertyFrames.get(code);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+      frame._frameSet = o;
+      o._propertyFrames.set(code, frame);
+   }
+   return frame;
+}
+function FDsFrameSet_propertyFrames(){
+   return this._propertyFrames;
+}
+function FDsFrameSet_hidePropertyFrames(){
+   var o = this;
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
+   }
+}
+function FDsFrameSet_dispose(){
+   var o = this;
+   o._activeSpace = null;
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.dispose();
+   }
+   o._propertyFrames = RObject.dispose(o._propertyFrames);
+   o.__base.FUiFrameSet.dispose.call(o);
 }
 function FDsMainCanvas(o){
    o = RClass.inherits(this, o, FCanvas);

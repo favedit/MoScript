@@ -176,21 +176,21 @@ function FDsTemplateCatalog_buildSpace(space){
    var resource = space.resource();
    o._activeSpace = space;
    // 新建模板节点
-   var node = o.createNode();
-   node.setTypeCode('Space');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', space);
-   o.appendNode(node);
+   var spaceNode = o.createNode();
+   spaceNode.setTypeCode('Space');
+   spaceNode.setLabel(resource.code());
+   spaceNode.setNote(resource.label());
+   spaceNode.dataPropertySet('linker', space);
+   o.appendNode(spaceNode);
    // 创建技术节点
-   o.buildTechnique(node, space.technique())
+   o.buildTechnique(spaceNode, space.technique())
    // 创建区域节点
-   o.buildRegion(node, space.region());
+   o.buildRegion(spaceNode, space.region());
    // 新建材质集合节点
    var materialsNode = o.createNode();
    materialsNode.setTypeCode('Region');
    materialsNode.setLabel('Materials');
-   node.appendNode(materialsNode);
+   spaceNode.appendNode(materialsNode);
    var materials = space.materials();
    var materialCount = materials.count();
    for(var i = 0; i < materialCount; i++){
@@ -201,13 +201,15 @@ function FDsTemplateCatalog_buildSpace(space){
    var displaysNode = o.createNode();
    displaysNode.setTypeCode('Region');
    displaysNode.setLabel('Displays');
-   node.appendNode(displaysNode);
+   spaceNode.appendNode(displaysNode);
    var displays = space._sprites;
    var displayCount = displays.count();
    for(var i = 0; i < displayCount; i++){
       var display = displays.at(i);
       o.buildDisplay(displaysNode, display);
    }
+   // 选中根节点
+   spaceNode.click();
 }
 
 //==========================================================

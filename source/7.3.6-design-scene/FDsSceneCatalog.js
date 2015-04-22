@@ -198,15 +198,15 @@ function FDsSceneCatalog_construct(){
 // <T>建立节点可见格子。</T>
 //
 // @method
-// @param pn:node:FTreeNode 节点
-// @param pv:view:Boolean 可见性
+// @param node:FTreeNode 节点
+// @param view:Boolean 可见性
 //==========================================================
-function FDsSceneCatalog_buildNodeView(pn, pv){
+function FDsSceneCatalog_buildNodeView(node, view){
    var o = this;
-   var c = pn.cell('view');
-   c.setIcon(o._iconView);
-   c.addClickListener(o, o.onNodeViewClick);
-   c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
+   var cell = node.cell('view');
+   cell.setIcon(o._iconView);
+   cell.setClickListener(o, o.onNodeViewClick);
+   cell.setDoubleClickListener(o, o.onNodeViewDoubleClick);
 }
 
 //==========================================================
@@ -352,6 +352,8 @@ function FDsSceneCatalog_buildLayer(parentNode, space){
 //==========================================================
 function FDsSceneCatalog_buildSpace(space){
    var o = this;
+   o.clearAllNodes();
+   // 获得资源
    var resource = space.resource();
    // 创建场景节点
    var spaceNode = o.createNode();
@@ -359,7 +361,7 @@ function FDsSceneCatalog_buildSpace(space){
    spaceNode.setLabel(resource.code());
    spaceNode.setNote(resource.label());
    spaceNode.dataPropertySet('linker', space);
-   o.appendNode(spaceNode);
+   o.push(spaceNode);
    // 创建技术节点
    o.buildTechnique(spaceNode, space.technique())
    // 创建区域节点

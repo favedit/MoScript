@@ -10,6 +10,7 @@ function MListenerDoubleClick(o){
    //..........................................................
    // @method
    o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
+   o.setDoubleClickListener     = MListenerDoubleClick_setDoubleClickListener;
    o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
    return o;
 }
@@ -18,11 +19,22 @@ function MListenerDoubleClick(o){
 // <T>注册一个双击监听器。</T>
 //
 // @method
-// @param w:owner:String 拥有者
-// @param m:method:Function 函数
+// @param owner:String 拥有者
+// @param method:Function 函数
 //==========================================================
-function MListenerDoubleClick_addDoubleClickListener(w, m){
-   return this.addListener(EEvent.DoubleClick, w, m);
+function MListenerDoubleClick_addDoubleClickListener(owner, method){
+   return this.addListener(EEvent.DoubleClick, owner, method);
+}
+
+//==========================================================
+// <T>设置一个双击监听器。</T>
+//
+// @method
+// @param owner:String 拥有者
+// @param method:Function 函数
+//==========================================================
+function MListenerDoubleClick_setDoubleClickListener(owner, method){
+   return this.setListener(EEvent.DoubleClick, owner, method);
 }
 
 //==========================================================

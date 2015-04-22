@@ -48,12 +48,16 @@
 7 - Design - Template - 创建材质功能
 7 - Design - Material - 编辑材质功能
 
+7 - Design - Share 可以在共享中看到
+7 - Design - Share - 审批 可以在首页分类中看到
+
 7 - Design - 导入模型(Model)
 7 - Design - 新建模板(Template)
+7 - Design - 模板-新建材质
+7 - Design - 模板-删除材质
 7 - Design - 新建材质(Material)
 7 - Design - 选择材质纹理(Material)
-7 - Design - 新建纹理(Texture)
-7 - Design - 选择纹理位图(Bitmap)
+7 - Design - 选择材质位图(Bitmap)
 
 7 - Design - 上传数据过程中，屏幕显示进度条。（临时进度条已经添加）
 7 - Design - 加载数据过程中，屏幕显示进度条。（临时进度条已经添加）

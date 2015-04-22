@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsCommonCameraPropertyFrame(o){
+function FDsCommonCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -16,11 +16,11 @@ function FDsCommonCameraPropertyFrame(o){
    o._controlDirection = null;
    //..........................................................
    // @method
-   o.construct         = FDsCommonCameraPropertyFrame_construct;
+   o.construct         = FDsCommonCameraFrame_construct;
    // @method
-   o.loadObject        = FDsCommonCameraPropertyFrame_loadObject;
+   o.loadObject        = FDsCommonCameraFrame_loadObject;
    // @method
-   o.dispose           = FDsCommonCameraPropertyFrame_dispose;
+   o.dispose           = FDsCommonCameraFrame_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ function FDsCommonCameraPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsCommonCameraPropertyFrame_construct(){
+function FDsCommonCameraFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -42,7 +42,7 @@ function FDsCommonCameraPropertyFrame_construct(){
 // @param s:scene:FE3dScene 场景
 // @param c:technique:FG3dTechnique 技术
 //==========================================================
-function FDsCommonCameraPropertyFrame_loadObject(s, c){
+function FDsCommonCameraFrame_loadObject(s, c){
    var o = this;
    var r = c._resource;
    // 设置属性
@@ -57,7 +57,7 @@ function FDsCommonCameraPropertyFrame_loadObject(s, c){
 //
 // @method
 //==========================================================
-function FDsCommonCameraPropertyFrame_dispose(){
+function FDsCommonCameraFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

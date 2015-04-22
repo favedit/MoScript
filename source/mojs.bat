@@ -2,6 +2,7 @@
 
 @SET JS_HOME=%cd%
 @SET PJ_HOME=%JS_HOME%\..\..
+@SET JAVA_HOME=C:\Program Files\Java\jdk1.7.0_67
 
 @SET JAVA_PATH=%JS_HOME%\..\library\jdom-2.0.5.jar;%JS_HOME%\..\library\mo-common.jar;%JS_HOME%\..\library\mo-utility.jar
 

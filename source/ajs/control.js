@@ -869,15 +869,19 @@ function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
 function MListenerClick(o){
    o = RClass.inherits(this, o, MListener);
    o.addClickListener     = MListenerClick_addClickListener;
+   o.setClickListener     = MListenerClick_setClickListener;
    o.removeClickListener  = MListenerClick_removeClickListener;
    o.processClickListener = MListenerClick_processClickListener;
    return o;
 }
-function MListenerClick_addClickListener(w, m){
-   return this.addListener(EEvent.Click, w, m);
+function MListenerClick_addClickListener(owner, method){
+   return this.addListener(EEvent.Click, owner, method);
 }
-function MListenerClick_removeClickListener(w, m){
-   return this.removeListener(EEvent.Click, w, m);
+function MListenerClick_setClickListener(owner, method){
+   return this.setListener(EEvent.Click, owner, method);
+}
+function MListenerClick_removeClickListener(owner, method){
+   return this.removeListener(EEvent.Click, owner, method);
 }
 function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
@@ -897,11 +901,15 @@ function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
 function MListenerDoubleClick(o){
    o = RClass.inherits(this, o, MListener);
    o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
+   o.setDoubleClickListener     = MListenerDoubleClick_setDoubleClickListener;
    o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
    return o;
 }
-function MListenerDoubleClick_addDoubleClickListener(w, m){
-   return this.addListener(EEvent.DoubleClick, w, m);
+function MListenerDoubleClick_addDoubleClickListener(owner, method){
+   return this.addListener(EEvent.DoubleClick, owner, method);
+}
+function MListenerDoubleClick_setDoubleClickListener(owner, method){
+   return this.setListener(EEvent.DoubleClick, owner, method);
 }
 function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
@@ -1095,14 +1103,14 @@ function MUiDescribeFrame(o){
    o.buildDefine = MUiDescribeFrame_buildDefine;
    return o;
 }
-function MUiDescribeFrame_buildDefine(h, n){
+function MUiDescribeFrame_buildDefine(hDocument, frameName){
    var o = this;
-   if(RString.isEmpty(n)){
-      n = o._frameName;
+   if(RString.isEmpty(frameName)){
+      frameName = o._frameName;
    }
-   var fc = RConsole.find(FUiDescribeFrameConsole);
-   var x = fc.load(n);
-   RUiControl.build(o, x, null, h);
+   var frameConsole = RConsole.find(FUiDescribeFrameConsole);
+   var xconfig = frameConsole.load(frameName);
+   RUiControl.build(o, xconfig, null, hDocument);
 }
 function MUiDesign(o){
    o = RClass.inherits(this, o);
@@ -3029,7 +3037,7 @@ function FUiContainer_remove(component){
    if(RClass.isClass(component, FUiControl)){
       var controls = o._controls;
       if(!controls.contains(component.name())){
-         throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
       }
       controls.removeValue(component);
       o.removeChild(component);

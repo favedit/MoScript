@@ -828,26 +828,28 @@ function FDsResourceListToolBar_dispose(){
 }
 function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName                  = 'resource.resource.MenuBar';
-   o._controlImportPictureButton = null;
-   o._controlImportMeshButton    = null;
-   o._controlDeleteButton        = null;
-   o.onBuilded                   = FDsResourceMenuBar_onBuilded;
-   o.onImportPictureClick        = FDsResourceMenuBar_onImportPictureClick;
-   o.onImportMeshClick           = FDsResourceMenuBar_onImportMeshClick;
-   o.onDeleteLoad                = FDsResourceMenuBar_onDeleteLoad;
-   o.onDeleteExecute             = FDsResourceMenuBar_onDeleteExecute;
-   o.onDeleteClick               = FDsResourceMenuBar_onDeleteClick;
-   o.construct                   = FDsResourceMenuBar_construct;
-   o.dispose                     = FDsResourceMenuBar_dispose;
+   o._frameName            = 'resource.resource.MenuBar';
+   o._controlImportPicture = null;
+   o._controlImportMesh    = null;
+   o._controlDelete        = null;
+   o._controlShareOpen     = null;
+   o._controlShareClose    = null;
+   o.onBuilded             = FDsResourceMenuBar_onBuilded;
+   o.onImportPictureClick  = FDsResourceMenuBar_onImportPictureClick;
+   o.onImportMeshClick     = FDsResourceMenuBar_onImportMeshClick;
+   o.onDeleteLoad          = FDsResourceMenuBar_onDeleteLoad;
+   o.onDeleteExecute       = FDsResourceMenuBar_onDeleteExecute;
+   o.onDeleteClick         = FDsResourceMenuBar_onDeleteClick;
+   o.construct             = FDsResourceMenuBar_construct;
+   o.dispose               = FDsResourceMenuBar_dispose;
    return o;
 }
 function FDsResourceMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
-   o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
-   o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
+   o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
+   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
    var o = this;

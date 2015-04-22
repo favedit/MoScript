@@ -358,7 +358,9 @@ function FDsModelCanvas_onDataLoaded(p){
    lc.lookAt(0, 0, 0);
    lc.update();
    // 加载完成
-   o.processLoadListener(o);
+   var event = new SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
    // 隐藏处理
    RConsole.find(FUiDesktopConsole).hide();
 }

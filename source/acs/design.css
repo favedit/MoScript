@@ -575,79 +575,35 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsModelFrameSet                                   */
+/* FDsModelFrameSet                                       */
 /* ------------------------------------------------------ */
 .FDsModelFrameSet_Toolbar_Ground{
-   background: #AEAEAE;
+   padding-left: 4px;
    padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #AEAEAE, #999999);
-   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#999999)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
-}
-
-.FDsModelFrameSet_Statusbar_Ground{
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
    background: #AEAEAE;
-   border-top: 1px solid #999999;
-   background: -ms-linear-gradient(top, #555555, #AEAEAE);
-   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#AEAEAE)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
-}
-
-.FDsModelFrameSet_Catalog_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
    background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
    background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsModelFrameSet_Catalog_Ground{
+.FDsModelFrameSet_Catalog_Content{
    background: #EEEEEE;
 }
 
-.FDsModelFrameSet_Search_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsModelFrameSet_Search_Ground{
+.FDsModelFrameSet_Canvas_Content{
    background: #EEEEEE;
 }
 
-.FDsModelFrameSet_Preview_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsModelFrameSet_Preview_Ground{
-   background: #EEEEEE;
-}
-
-.FDsModelFrameSet_Workspace_Ground{
-   background: #EEEEEE;
-}
-
-.FDsModelFrameSet_Property_Ground{;
+.FDsModelFrameSet_Property_Content;
    background: #777777;
 }
 
 /* ------------------------------------------------------ */
-/* FDsModelWorkspace                                       */
+/* FDsModelWorkspace                                      */
 /* ------------------------------------------------------ */
 .FDsModelWorkspace_Toolbar_Ground{
    background: #AEAEAE;
@@ -685,71 +641,27 @@
 /* FDsTemplateFrameSet                                    */
 /* ------------------------------------------------------ */
 .FDsTemplateFrameSet_Toolbar_Ground{
-   background: #AEAEAE;
+   padding-left: 4px;
    padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #AEAEAE, #999999);
-   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#999999)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
-}
-
-.FDsTemplateFrameSet_Statusbar_Ground{
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
    background: #AEAEAE;
-   border-top: 1px solid #999999;
-   background: -ms-linear-gradient(top, #555555, #AEAEAE);
-   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#AEAEAE)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
-}
-
-.FDsTemplateFrameSet_Catalog_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
    background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
    background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsTemplateFrameSet_Catalog_Ground{
+.FDsTemplateFrameSet_Catalog_Content{
    background: #EEEEEE;
 }
 
-.FDsTemplateFrameSet_Search_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsTemplateFrameSet_Search_Ground{
+.FDsTemplateFrameSet_Canvas_Content{
    background: #EEEEEE;
 }
 
-.FDsTemplateFrameSet_Preview_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsTemplateFrameSet_Preview_Ground{
-   background: #EEEEEE;
-}
-
-.FDsTemplateFrameSet_Workspace_Ground{
-   background: #EEEEEE;
-}
-
-.FDsTemplateFrameSet_Property_Ground{;
+.FDsTemplateFrameSet_Property_Content;
    background: #777777;
 }
 
@@ -808,12 +720,11 @@
    background: #EEEEEE;
 }
 
-
 .FDsSceneFrameSet_Canvas_Content{
    background: #EEEEEE;
 }
 
-.FDsSceneFrameSet_Property_Ground{;
+.FDsSceneFrameSet_Property_Content;
    background: #777777;
 }
 

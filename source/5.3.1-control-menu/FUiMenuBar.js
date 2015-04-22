@@ -52,19 +52,18 @@ function FUiMenuBar_onBuildPanel(p){
 // <T>追加一个子控件。</T>
 //
 // @method
-// @param p:control:FUiControl 子控件
+// @param control:FUiControl 子控件
 //==========================================================
-function FUiMenuBar_appendChild(p){
+function FUiMenuBar_appendChild(control){
    var o = this;
-   // 父处理
-   o.__base.FUiContainer.appendChild.call(o, p);
+   o.__base.FUiContainer.appendChild.call(o, control);
    // 按键处理
-   if(RClass.isClass(p, FUiMenuButton)){
-      var hl = o._hLine;
+   if(RClass.isClass(control, MUiMenuButton)){
+      var hLine = o._hLine;
       // 建立按键
-      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
-      hc._hParentLine = hl;
-      p.setPanel(hc);
+      var hCell = RBuilder.appendTableCell(hLine, o.styleName('ButtonPanel'));
+      hCell._hParentLine = hLine;
+      control.setPanel(hCell);
    }
 }
 

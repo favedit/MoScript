@@ -41,6 +41,8 @@ function FDsCanvas(o){
    // @method
    o.construct            = FDsCanvas_construct;
    // @method
+   o.activeSpace          = FDsCanvas_activeSpace;
+   // @method
    o.switchSize           = FDsCanvas_switchSize;
    o.reloadRegion         = FDsCanvas_reloadRegion;
    // @method
@@ -268,6 +270,16 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
+}
+
+//==========================================================
+// <T>获得激活的空间。</T>
+//
+// @method
+// @return FE3dSpace 空间
+//==========================================================
+function FDsCanvas_activeSpace(){
+   return this._activeSpace;
 }
 
 //==========================================================

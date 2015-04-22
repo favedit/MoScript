@@ -10,6 +10,7 @@ function MListenerClick(o){
    //..........................................................
    // @method
    o.addClickListener     = MListenerClick_addClickListener;
+   o.setClickListener     = MListenerClick_setClickListener;
    o.removeClickListener  = MListenerClick_removeClickListener;
    o.processClickListener = MListenerClick_processClickListener;
    return o;
@@ -19,22 +20,33 @@ function MListenerClick(o){
 // <T>增加一个单击监听器。</T>
 //
 // @method
-// @param w:owner:String 拥有者
-// @param m:method:Function 函数
+// @param owner:String 拥有者
+// @param method:Function 函数
 //==========================================================
-function MListenerClick_addClickListener(w, m){
-   return this.addListener(EEvent.Click, w, m);
+function MListenerClick_addClickListener(owner, method){
+   return this.addListener(EEvent.Click, owner, method);
+}
+
+//==========================================================
+// <T>设置一个单击监听器。</T>
+//
+// @method
+// @param owner:String 拥有者
+// @param method:Function 函数
+//==========================================================
+function MListenerClick_setClickListener(owner, method){
+   return this.setListener(EEvent.Click, owner, method);
 }
 
 //==========================================================
 // <T>移除一个单击监听器。</T>
 //
 // @method
-// @param w:owner:String 拥有者
-// @param m:method:Function 函数
+// @param owner:String 拥有者
+// @param method:Function 函数
 //==========================================================
-function MListenerClick_removeClickListener(w, m){
-   return this.removeListener(EEvent.Click, w, m);
+function MListenerClick_removeClickListener(owner, method){
+   return this.removeListener(EEvent.Click, owner, method);
 }
 
 //==========================================================

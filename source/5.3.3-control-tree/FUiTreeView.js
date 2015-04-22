@@ -101,6 +101,7 @@ function FUiTreeView(o){
    o.refresh            = FUiTreeView_refresh;
    o.filterNode         = FUiTreeView_filterNode;
    // @method
+   o.clearAllNodes      = FUiTreeView_clearAllNodes;
    o.clear              = FUiTreeView_clear;
    // @method
    o.dispose            = FUiTreeView_dispose;
@@ -439,35 +440,36 @@ function FUiTreeView_createNode(){
 // <P>如果父节点为空，则追加到跟节点下。</P>
 //
 // @method
-// @param n:node:FUiTreeNode 节点对象
-// @param p:parent:FUiTreeNode 父节点
+// @param node:FUiTreeNode 节点对象
+// @param parent:FUiTreeNode 父节点
 //==========================================================
-function FUiTreeView_appendNode(n, p){
+function FUiTreeView_appendNode(node, parent){
    var o = this;
-   if(!n._statusLinked){
-      var nh = n._hPanel;
-      if(p){
-         // 计算最后一个已经连接节点的位置
-         var nl = p.searchLast();
-         var nr = nl._hPanel.rowIndex;
-         // 关联节点
-         if(nh.parentElement){
-            if(nh.rowIndex > nr){
-               nr++;
-            }
-            RHtml.tableMoveRow(o._hNodeForm, nh.rowIndex, nr);
-         }else{
-            o._hNodeRows.appendChild(nh);
-            RHtml.tableMoveRow(o._hNodeForm, nh.rowIndex, nr+1);
-         }
-         // 设置层次
-         n.setLevel(p._level + 1);
-      }else{
-         o._hNodeRows.appendChild(nh);
-         n.setLevel(0);
-      }
-      n._statusLinked = true;
+   if(node._statusLinked){
+      return;
    }
+   var hPanel = node._hPanel;
+   if(parent){
+      // 计算最后一个已经连接节点的位置
+      var nl = parent.searchLast();
+      var nr = nl._hPanel.rowIndex;
+      // 关联节点
+      if(hPanel.parentElement){
+         if(hPanel.rowIndex > nr){
+            nr++;
+         }
+         RHtml.tableMoveRow(o._hNodeForm, hPanel.rowIndex, nr);
+      }else{
+         o._hNodeRows.appendChild(hPanel);
+         RHtml.tableMoveRow(o._hNodeForm, hPanel.rowIndex, nr+1);
+      }
+      // 设置层次
+      node.setLevel(parent._level + 1);
+   }else{
+      o._hNodeRows.appendChild(hPanel);
+      node.setLevel(0);
+   }
+   node._statusLinked = true;
 }
 
 //==========================================================
@@ -553,26 +555,28 @@ function FUiTreeView_selectNode(n, s){
 }
 
 //==========================================================
-// <T>追加控件到自己内部。</T>
+// <T>增加一个子控件。</T>
 //
 // @method
-// @param p:control:FControl 控件对象
-// @return Boolean
+// @param control:FControl 控件
 //==========================================================
-function FUiTreeView_push(p){
+function FUiTreeView_push(control){
    var o = this;
-   o.__base.FUiContainer.push.call(o, p);
+   o.__base.FUiContainer.push.call(o, control);
    // 增加节点
-   p._tree = o;
-   if(RClass.isClass(p, FUiTreeColumn)){
-      o._nodeColumns.set(p.name(), p);
-   }else if(RClass.isClass(p, FUiTreeLevel)){
-      o._nodeLevels.set(p.id(), p);
-   }else if(RClass.isClass(p, FUiTreeNodeType)){
-      o._nodeTypes.set(p.code(), p);
-   }else if(RClass.isClass(p, FUiTreeNode)){
-      o._nodes.push(p);
-      o._allNodes.push(p);
+   control._tree = o;
+   if(RClass.isClass(control, FUiTreeColumn)){
+      o._nodeColumns.set(control.name(), control);
+   }else if(RClass.isClass(control, FUiTreeLevel)){
+      o._nodeLevels.set(control.id(), control);
+   }else if(RClass.isClass(control, FUiTreeNodeType)){
+      o._nodeTypes.set(control.code(), control);
+   }else if(RClass.isClass(control, FUiTreeNode)){
+      // 追加节点
+      o._nodes.push(control);
+      o._allNodes.push(control);
+      // 追加节点显示
+      o.appendNode(control);
    }
 }
 
@@ -828,11 +832,11 @@ function FUiTreeView_filterNode(pl, pa){
 }
 
 //==========================================================
-// <T>清空处理。</T>
+// <T>清空所有节点。</T>
 //
 // @method
 //==========================================================
-function FUiTreeView_clear(){
+function FUiTreeView_clearAllNodes(){
    var o = this;
    var nodes = o._nodes;
    if(nodes){
@@ -843,6 +847,16 @@ function FUiTreeView_clear(){
       nodes.clear();
    }
    o._allNodes.clear();
+}
+
+//==========================================================
+// <T>清空处理。</T>
+//
+// @method
+//==========================================================
+function FUiTreeView_clear(){
+   var o = this;
+   o.clearAllNodes();
 }
 
 //==========================================================

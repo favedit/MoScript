@@ -8,26 +8,28 @@ function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName                  = 'resource.resource.MenuBar';
+   o._frameName            = 'resource.resource.MenuBar';
    //..........................................................
    // @attribute
-   o._controlImportPictureButton = null;
-   o._controlImportMeshButton    = null;
-   o._controlDeleteButton        = null;
+   o._controlImportPicture = null;
+   o._controlImportMesh    = null;
+   o._controlDelete        = null;
+   o._controlShareOpen     = null;
+   o._controlShareClose    = null;
    //..........................................................
    // @event
-   o.onBuilded                   = FDsResourceMenuBar_onBuilded;
+   o.onBuilded             = FDsResourceMenuBar_onBuilded;
    // @event
-   o.onImportPictureClick        = FDsResourceMenuBar_onImportPictureClick;
-   o.onImportMeshClick           = FDsResourceMenuBar_onImportMeshClick;
-   o.onDeleteLoad                = FDsResourceMenuBar_onDeleteLoad;
-   o.onDeleteExecute             = FDsResourceMenuBar_onDeleteExecute;
-   o.onDeleteClick               = FDsResourceMenuBar_onDeleteClick;
+   o.onImportPictureClick  = FDsResourceMenuBar_onImportPictureClick;
+   o.onImportMeshClick     = FDsResourceMenuBar_onImportMeshClick;
+   o.onDeleteLoad          = FDsResourceMenuBar_onDeleteLoad;
+   o.onDeleteExecute       = FDsResourceMenuBar_onDeleteExecute;
+   o.onDeleteClick         = FDsResourceMenuBar_onDeleteClick;
    //..........................................................
    // @method
-   o.construct                   = FDsResourceMenuBar_construct;
+   o.construct             = FDsResourceMenuBar_construct;
    // @method
-   o.dispose                     = FDsResourceMenuBar_dispose;
+   o.dispose               = FDsResourceMenuBar_dispose;
    return o;
 }
 
@@ -42,9 +44,9 @@ function FDsResourceMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
-   o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
-   o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
+   o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
+   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
 
 //==========================================================

@@ -243,7 +243,7 @@ function FUiContainer_remove(component){
       // 检查存在
       var controls = o._controls;
       if(!controls.contains(component.name())){
-         throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
       }
       // 移除处理
       controls.removeValue(component);

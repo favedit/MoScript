@@ -3765,45 +3765,45 @@ function RObject_copy(s, t){
       }
    }
 }
-function RObject_free(p){
-   if(p){
+function RObject_free(item){
+   if(item){
       if(RRuntime.isDebug()){
-         for(var n in p){
-            if((n == '__base') || (n == '__inherits') || (n == '__class')){
-               p[n] = null;
+         for(var name in item){
+            if((name == '__base') || (name == '__inherits') || (name == '__class')){
+               item[name] = null;
                continue;
             }
-            var v = p[n];
-            if(v != null){
-               if(!RClass.isBaseType(v.constructor)){
+            var value = item[name];
+            if(value != null){
+               if(!RClass.isBaseType(value.constructor)){
                   throw new TError(RObject, 'Free object is not base object.');
                }
-               p[n] = null;
+               item[name] = null;
             }
          }
       }else{
-         for(var n in p){
-            p[n] = null;
+         for(var name in item){
+            item[name] = null;
          }
       }
    }
 }
-function RObject_dispose(p){
-   if(p){
-      if(!p.__dispose){
-         p.dispose();
+function RObject_dispose(item){
+   if(item){
+      if(!item.__dispose){
+         item.dispose();
       }
    }
    return null;
 }
-function RObject_release(p){
-   if(p){
+function RObject_release(item){
+   if(item){
       for(var n in p){
-         var v = p[n];
-         if(typeof(v) == 'Object'){
-            RObject.release(v)
+         var value = item[n];
+         if(typeof(value) == 'Object'){
+            RObject.release(value)
          }
-         p[n] = null;
+         item[n] = null;
       }
    }
 }

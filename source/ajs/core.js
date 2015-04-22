@@ -628,61 +628,74 @@ function MDataView_setDouble(p, v){
 }
 function MListener(o){
    o = RClass.inherits(this, o);
-   o._listeners      = null;
+   o._listenerss      = null;
    o.addListener     = MListener_addListener;
+   o.setListener     = MListener_setListener;
    o.removeListener  = MListener_removeListener;
    o.clearListeners  = MListener_clearListeners;
    o.processListener = MListener_processListener;
    o.dispose         = MListener_dispose;
    return o;
 }
-function MListener_addListener(n, w, m){
+function MListener_addListener(name, owner, method){
    var o = this;
-   var lss = o._listeners;
-   if(!lss){
-      lss = o._listeners = new TDictionary();
+   var listenerss = o._listenerss;
+   if(!listenerss){
+      listenerss = o._listenerss = new TDictionary();
    }
-   var ls = lss.get(n);
-   if(!ls){
-      ls = new TListeners();
-      lss.set(n, ls);
+   var listeners = listenerss.get(name);
+   if(!listeners){
+      listeners = new TListeners();
+      listenerss.set(name, listeners);
    }
-   return ls.register(w, m);
+   return listeners.register(owner, method);
 }
-function MListener_removeListener(n, w, m){
+function MListener_setListener(name, owner, method){
    var o = this;
-   var lss = o._listeners;
-   var ls = lss.get(n);
-   return ls.unregister(w, m);
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var listeners = listenerss.get(name);
+      if(listeners){
+         listeners.clear();
+      }
+   }
+   return o.addListener(name, owner, method)
 }
-function MListener_clearListeners(n){
+function MListener_removeListener(name, owner, method){
    var o = this;
-   var lss = o._listeners;
-   if(lss){
-      var ls = lss.get(n);
-      if(ls){
-         ls.clear();
+   var listenerss = o._listenerss;
+   var listeners = listenerss.get(name);
+   return listeners.unregister(owner, method);
+}
+function MListener_clearListeners(name){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var listeners = listenerss.get(name);
+      if(listeners){
+         listeners.clear();
       }
    }
 }
-function MListener_processListener(n, p1, p2, p3, p4, p5){
+function MListener_processListener(name, p1, p2, p3, p4, p5){
    var o = this;
-   var lss = o._listeners;
-   if(lss){
-      var ls = lss.get(n);
-      if(ls){
-         ls.process(p1, p2, p3, p4, p5);
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var listeners = listenerss.get(name);
+      if(listeners){
+         listeners.process(p1, p2, p3, p4, p5);
       }
    }
 }
 function MListener_dispose(){
    var o = this;
-   var lss = o._listeners;
-   if(lss){
-      for(var i = lss.count() - 1; i >= 0; i--){
-         lss.valueAt(i).dispose();
+   var listenerss = o._listenerss;
+   if(listenerss){
+      for(var i = listenerss.count() - 1; i >= 0; i--){
+         var listeners = listenerss.at(i);
+         listeners.dispose();
       }
-      o._listeners = RObject.dispose(lss);
+      o._listenerss = RObject.dispose(listenerss);
    }
 }
 function MListenerLoad(o){

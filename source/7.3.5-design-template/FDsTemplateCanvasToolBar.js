@@ -7,17 +7,21 @@
 function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
+   // @property
+   o._frameName      = 'resource.template.CanvasToolBar';
+   //..........................................................
    // @attribute
    o._refreshButton  = null;
    o._saveButton     = null;
    o._canvasModeCd   = EDsCanvasMode.Drop;
    //..........................................................
    // @event
-   o.onBuild         = FDsTemplateCanvasToolBar_onBuild;
+   o.onBuilded       = FDsTemplateCanvasToolBar_onBuilded;
    // @event
    o.onModeClick     = FDsTemplateCanvasToolBar_onModeClick;
    o.onLookClick     = FDsTemplateCanvasToolBar_onLookClick;
-   o.onRotationClick = FDsTemplateCanvasToolBar_onRotationClick;
+   o.onPlayClick     = FDsTemplateCanvasToolBar_onPlayClick;
+   o.onViewClick     = FDsTemplateCanvasToolBar_onViewClick;
    //..........................................................
    // @method
    o.construct       = FDsTemplateCanvasToolBar_construct;
@@ -30,115 +34,22 @@ function FDsTemplateCanvasToolBar(o){
 // <T>建立当前控件的显示框架。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsTemplateCanvasToolBar_onBuild(p){
+function FDsTemplateCanvasToolBar_onBuilded(event){
    var o = this;
-   o.__base.FUiToolBar.onBuild.call(o, p);
-   //..........................................................
-   // 建立拖拽按键
-   var b = o._dropButton = RClass.create(FUiToolButtonCheck);
-   b.setName('dropButton');
-   b.setIcon('design3d.canvas.hand');
-   b.setGroupName('mode');
-   b.setGroupDefault('dropButton');
-   b.build(p);
-   b._canvasModeCd = EDsCanvasMode.Drop;
-   b.addClickListener(o, o.onModeClick);
-   b.check(true);
-   o.push(b);
-   // 建立选择按键
-   var b = o._selectButton = RClass.create(FUiToolButtonCheck);
-   b.setName('selectButton');
-   b.setIcon('design3d.canvas.pointer');
-   b.setGroupName('mode');
-   b.setGroupDefault('dropButton');
-   b.build(p);
-   b._canvasModeCd = EDsCanvasMode.Select;
-   b.addClickListener(o, o.onModeClick);
-   o.push(b);
-   // 建立分割
-   var b = RClass.create(FUiToolButtonSplit);
-   b.build(p);
-   o.push(b);
-   //..........................................................
-   // 建立按键
-   var b = o._translateButton  = RClass.create(FUiToolButtonCheck);
-   b.setName('translateButton');
-   b.setIcon('design3d.canvas.translate');
-   b.setGroupName('mode');
-   b.setGroupDefault('dropButton');
-   b.build(p);
-   b._canvasModeCd = EDsCanvasMode.Translate;
-   b.addClickListener(o, o.onModeClick);
-   o.push(b);
-   // 建立按键
-   var b = o._rotationButton  = RClass.create(FUiToolButtonCheck);
-   b.setName('rotationButton');
-   b.setIcon('design3d.canvas.rotation');
-   b.setGroupName('mode');
-   b.setGroupDefault('dropButton');
-   b.build(p);
-   b._canvasModeCd = EDsCanvasMode.Rotation;
-   b.addClickListener(o, o.onModeClick);
-   o.push(b);
-   // 建立按键
-   var b = o._scaleButton  = RClass.create(FUiToolButtonCheck);
-   b.setName('scaleButton');
-   b.setIcon('design3d.canvas.scale');
-   b.setGroupName('mode');
-   b.setGroupDefault('dropButton');
-   b.build(p);
-   b._canvasModeCd = EDsCanvasMode.Scale;
-   b.addClickListener(o, o.onModeClick);
-   o.push(b);
-   // 建立分割
-   var b = RClass.create(FUiToolButtonSplit);
-   b.build(p);
-   o.push(b);
-   //..........................................................
-   // 建立按键
-   var b = o._lookFrontButton = RClass.create(FUiToolButton);
-   b.setName('lookFrontButton');
-   b.setLabel('前');
-   b.build(p);
-   b.addClickListener(o, o.onLookClick);
-   o.push(b);
-   // 建立按键
-   var b = o._lookUpButton = RClass.create(FUiToolButton);
-   b.setName('lookUpButton');
-   b.setLabel('上');
-   b.build(p);
-   b.addClickListener(o, o.onLookClick);
-   o.push(b);
-   // 建立按键
-   var b = o._lookLeftButton = RClass.create(FUiToolButton);
-   b.setName('lookLeftButton');
-   b.setLabel('左');
-   b.build(p);
-   b.addClickListener(o, o.onLookClick);
-   o.push(b);
-   // 建立分割
-   var b = RClass.create(FUiToolButtonSplit);
-   b.build(p);
-   o.push(b);
-   //..........................................................
-   // 建立按键
-   var b = o._playButton  = RClass.create(FUiToolButtonCheck);
-   b.setName('_playButton');
-   b.setLabel('播放');
-   b.setIcon('design3d.tools.play');
-   b.build(p);
-   b.addClickListener(o, o.onRotationClick);
-   o.push(b);
-   // 建立按键
-   var b = o._viewButton  = RClass.create(FUiToolButtonCheck);
-   b.setName('_viewButton');
-   b.setLabel('旋转');
-   b.setIcon('design3d.tools.rotation');
-   b.build(p);
-   b.addClickListener(o, o.onRotationClick);
-   o.push(b);
+   o.__base.FUiToolBar.onBuilded.call(o, event);
+   // 设置按键事件
+   o._controlModeDrop.addClickListener(o, o.onModeClick);
+   o._controlModeSelect.addClickListener(o, o.onModeClick);
+   o._controlTranslate.addClickListener(o, o.onModeClick);
+   o._controlRotation.addClickListener(o, o.onModeClick);
+   o._controlScale.addClickListener(o, o.onModeClick);
+   o._controlLookFront.addClickListener(o, o.onLookClick);
+   o._controlLookUp.addClickListener(o, o.onLookClick);
+   o._controlLookLeft.addClickListener(o, o.onLookClick);
+   o._controlPlay.addClickListener(o, o.onPlayClick);
+   o._controlView.addClickListener(o, o.onViewClick);
 }
 
 //==========================================================
@@ -169,9 +80,21 @@ function FDsTemplateCanvasToolBar_onLookClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsTemplateCanvasToolBar_onRotationClick(p, v){
+function FDsTemplateCanvasToolBar_onPlayClick(p, v){
    var o = this;
-   var c = o._frameSet._canvas;
+   var c = o._frameSet._canvasContent;
+   c._rotationAble = v;
+}
+
+//==========================================================
+// <T>刷新按键处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateCanvasToolBar_onViewClick(p, v){
+   var o = this;
+   var c = o._frameSet._canvasContent;
    c._rotationAble = v;
 }
 

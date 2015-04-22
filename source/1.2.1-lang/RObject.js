@@ -102,31 +102,31 @@ function RObject_copy(s, t){
 // <P>不递归释放，只清空当前层属性。</P>
 //
 // @method
-// @param p:obejct:Object 对象
+// @param item:Object 对象
 //==========================================================
-function RObject_free(p){
-   if(p){
+function RObject_free(item){
+   if(item){
       if(RRuntime.isDebug()){
          // 调试模式
-         for(var n in p){
+         for(var name in item){
             // 基础类型
-            if((n == '__base') || (n == '__inherits') || (n == '__class')){
-               p[n] = null;
+            if((name == '__base') || (name == '__inherits') || (name == '__class')){
+               item[name] = null;
                continue;
             }
             // 检查类型
-            var v = p[n];
-            if(v != null){
-               if(!RClass.isBaseType(v.constructor)){
+            var value = item[name];
+            if(value != null){
+               if(!RClass.isBaseType(value.constructor)){
                   throw new TError(RObject, 'Free object is not base object.');
                }
-               p[n] = null;
+               item[name] = null;
             }
          }
       }else{
          // 运行模式
-         for(var n in p){
-            p[n] = null;
+         for(var name in item){
+            item[name] = null;
          }
       }
    }
@@ -136,12 +136,12 @@ function RObject_free(p){
 // <T>释放一个对象。</T>
 //
 // @method
-// @param p:obejct:Object 对象
+// @param item:Object 对象
 //==========================================================
-function RObject_dispose(p){
-   if(p){
-      if(!p.__dispose){
-         p.dispose();
+function RObject_dispose(item){
+   if(item){
+      if(!item.__dispose){
+         item.dispose();
       }
    }
    return null;
@@ -152,16 +152,16 @@ function RObject_dispose(p){
 // <P>递归释放所有对象。</P>
 //
 // @method
-// @param p:obejct:Object 对象
+// @param item:Object 对象
 //==========================================================
-function RObject_release(p){
-   if(p){
+function RObject_release(item){
+   if(item){
       for(var n in p){
-         var v = p[n];
-         if(typeof(v) == 'Object'){
-            RObject.release(v)
+         var value = item[n];
+         if(typeof(value) == 'Object'){
+            RObject.release(value)
          }
-         p[n] = null;
+         item[n] = null;
       }
    }
 }

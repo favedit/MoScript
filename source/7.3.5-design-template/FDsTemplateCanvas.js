@@ -204,7 +204,9 @@ function FDsTemplateCanvas_onDataLoaded(p){
    lc.update();
    //space._layers.at(0).pushRenderable(o._dimensional);
    // 加载完成
-   o.processLoadListener(o);
+   var event = new SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
    // 隐藏处理
    RConsole.find(FUiDesktopConsole).hide();
 }

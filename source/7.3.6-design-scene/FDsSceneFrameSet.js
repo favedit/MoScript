@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 function FDsSceneFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FDsFrameSet);
    //..........................................................
    // @property
    o._frameName            = 'resource.scene.FrameSet';
@@ -17,9 +17,6 @@ function FDsSceneFrameSet(o){
    o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
    //..........................................................
    // @attribute
-   o._activeSpace          = null;
-   o._activeMesh           = null;
-   // @attribute
    o._framesetMain         = null;
    o._framesetBody         = null;
    // @attribute
@@ -30,8 +27,6 @@ function FDsSceneFrameSet(o){
    o._frameCatalog         = null;
    o._frameWorkspace       = null;
    o._frameStatusBar       = null;
-   // @attribute
-   o._propertyFrames       = null;
    //..........................................................
    // @process
    o.onBuilded             = FDsSceneFrameSet_onBuilded;
@@ -40,8 +35,6 @@ function FDsSceneFrameSet(o){
    //..........................................................
    // @method
    o.construct             = FDsSceneFrameSet_construct;
-   // @method
-   o.findPropertyFrame     = FDsSceneFrameSet_findPropertyFrame;
    // @method
    o.loadByGuid            = FDsSceneFrameSet_loadByGuid;
    o.loadByCode            = FDsSceneFrameSet_loadByCode;
@@ -58,7 +51,7 @@ function FDsSceneFrameSet(o){
 //==========================================================
 function FDsSceneFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, event);
+   o.__base.FDsFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置样式
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
@@ -128,20 +121,19 @@ function FDsSceneFrameSet_onDataLoaded(canvas){
 // <T>目录对象选择处理。</T>
 //
 // @method
-// @param select:FObject 选中对象
-// @param flag:Boolean 处理标志
+// @param select:FObject 选择对象
+// @param flag:Boolean 选择标志
 //==========================================================
 function FDsSceneFrameSet_onCatalogSelected(select, flag){
    var o = this;
+   // 检查空间
    var space = o._activeSpace;
+   if(!space){
+      return;
+   }
    var canvas = o._canvasContent;
    // 隐藏所有属性面板
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
+   o.hidePropertyFrames();
    // 显示选中属性面板
    if(RClass.isClass(select, FE3dScene)){
       // 选中场景
@@ -223,27 +215,7 @@ function FDsSceneFrameSet_onCatalogSelected(select, flag){
 function FDsSceneFrameSet_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiFrameSet.construct.call(o);
-   // 设置属性
-   o._propertyFrames = new TDictionary();
-}
-
-//==========================================================
-// <T>根据名称获得属性页面。</T>
-//
-// @method
-// @param code:String 代码
-// @return FUiFrame 页面
-//==========================================================
-function FDsSceneFrameSet_findPropertyFrame(code){
-   var o = this;
-   var frame = o._propertyFrames.get(code);
-   if(!frame){
-      frame = RConsole.find(FUiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
-      frame._frameSet = o;
-      o._propertyFrames.set(code, frame);
-   }
-   return frame;
+   o.__base.FDsFrameSet.construct.call(o);
 }
 
 //==========================================================
@@ -277,8 +249,5 @@ function FDsSceneFrameSet_loadByCode(p){
 function FDsSceneFrameSet_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiFrameSet.dispose.call(o);
-   // 设置属性
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
+   o.__base.FDsFrameSet.dispose.call(o);
 }

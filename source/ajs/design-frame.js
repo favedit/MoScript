@@ -47,29 +47,29 @@ function FDsCommonAnimationPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
-function FDsCommonCameraPropertyFrame(o){
+function FDsCommonCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._workspace        = null;
    o._camera           = null;
    o._controlPosition  = null;
    o._controlDirection = null;
-   o.construct         = FDsCommonCameraPropertyFrame_construct;
-   o.loadObject        = FDsCommonCameraPropertyFrame_loadObject;
-   o.dispose           = FDsCommonCameraPropertyFrame_dispose;
+   o.construct         = FDsCommonCameraFrame_construct;
+   o.loadObject        = FDsCommonCameraFrame_loadObject;
+   o.dispose           = FDsCommonCameraFrame_dispose;
    return o;
 }
-function FDsCommonCameraPropertyFrame_construct(){
+function FDsCommonCameraFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsCommonCameraPropertyFrame_loadObject(s, c){
+function FDsCommonCameraFrame_loadObject(s, c){
    var o = this;
    var r = c._resource;
    o._camera = c;
    o._controlPosition.set(c.position());
    o._controlDirection.set(c.direction());
 }
-function FDsCommonCameraPropertyFrame_dispose(){
+function FDsCommonCameraFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }

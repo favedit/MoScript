@@ -129,7 +129,7 @@ function FDsModelCanvasToolBar_onSizeClick(event){
    o._controlSizeWidth.setText(width);
    o._controlSizeHeight.setText(height);
    // 设置大小
-   o._frameSet._canvas.switchSize(width, height);
+   o._frameSet._canvasContent.switchSize(width, height);
 }
 
 //==========================================================
@@ -140,7 +140,7 @@ function FDsModelCanvasToolBar_onSizeClick(event){
 //==========================================================
 function FDsModelCanvasToolBar_onDimensionalChange(event){
    var o = this;
-   var canvas = o._frameSet._canvas;
+   var canvas = o._frameSet._canvasContent;
    var visible = o._controlDimensionalVisible.isCheck();
    var width = RInteger.parse(o._controlDimensionalWidth.text());
    var height = RInteger.parse(o._controlDimensionalHeight.text());
@@ -187,7 +187,7 @@ function FDsModelCanvasToolBar_onDimensionalAutoClick(event){
       default:
          throw new TError(o, 'Unknown command.');
    }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
+   o._frameSet._canvasContent.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
 }
 
 //==========================================================
@@ -199,7 +199,7 @@ function FDsModelCanvasToolBar_onDimensionalAutoClick(event){
 function FDsModelCanvasToolBar_onRotationClick(event, v){
    var o = this;
    var button = event.sender;
-   var canvas = o._frameSet._canvas;
+   var canvas = o._frameSet._canvasContent;
    canvas.switchRotation(button.isCheck());
 }
 

@@ -13,7 +13,7 @@ function FG3dEffectConsole(o){
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
-   o._path            = "/ar3/shader/";
+   o._path            = "/ars/shader/";
    o._effectInfo      = null;
    o._tagContext      = null;
    // @attribute

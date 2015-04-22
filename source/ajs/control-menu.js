@@ -21,14 +21,14 @@ function FUiMenuBar_onBuildPanel(p){
    var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
    o._hLine = RBuilder.appendTableRow(h);
 }
-function FUiMenuBar_appendChild(p){
+function FUiMenuBar_appendChild(control){
    var o = this;
-   o.__base.FUiContainer.appendChild.call(o, p);
-   if(RClass.isClass(p, FUiMenuButton)){
-      var hl = o._hLine;
-      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
-      hc._hParentLine = hl;
-      p.setPanel(hc);
+   o.__base.FUiContainer.appendChild.call(o, control);
+   if(RClass.isClass(control, MUiMenuButton)){
+      var hLine = o._hLine;
+      var hCell = RBuilder.appendTableCell(hLine, o.styleName('ButtonPanel'));
+      hCell._hParentLine = hLine;
+      control.setPanel(hCell);
    }
 }
 function FUiMenuBar_removeChild(p){
@@ -330,14 +330,20 @@ function FUiMenuButtonMenu_dispose(){
 }
 function FUiMenuButtonSplit(o){
    o = RClass.inherits(this, o, FUiControl, MUiMenuButton);
-   o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
-   o.onBuild     = FUiMenuButtonSplit_onBuild;
+   o._stylePanelHorizontal = RClass.register(o, new AStyle('_stylePanelHorizontal'));
+   o._stylePanelVertical   = RClass.register(o, new AStyle('_stylePanelVertical'));
+   o.onBuild               = FUiMenuButtonSplit_onBuild;
    return o;
 }
-function FUiMenuButtonSplit_onBuild(p){
+function FUiMenuButtonSplit_onBuild(event){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, p);
-   o._hPanel.className = o.styleName('Panel');
+   o.__base.FUiControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   if(RClass.isClass(o._parent, FUiMenuBar)){
+      hPanel.className = o.styleName('PanelVertical');
+   }else{
+      hPanel.className = o.styleName('PanelHorizontal');
+   }
 }
 function FUiPopupMenu(o){
    o = RClass.inherits(this, o, FUiContainer, MUiPopup);

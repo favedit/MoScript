@@ -19,18 +19,18 @@ function MUiDescribeFrame(o){
 // <T>从配置信息中构建构造页面。</T>
 //
 // @method
-// @param h:hDocument:HtmlTag 页面元素
-// @param n:frameName:String 页面名称
+// @param hDocument:HtmlTag 页面元素
+// @param frameName:String 页面名称
 //==========================================================
-function MUiDescribeFrame_buildDefine(h, n){
+function MUiDescribeFrame_buildDefine(hDocument, frameName){
    var o = this;
    // 获得名称
-   if(RString.isEmpty(n)){
-      n = o._frameName;
+   if(RString.isEmpty(frameName)){
+      frameName = o._frameName;
    }
    // 获取页面定义
-   var fc = RConsole.find(FUiDescribeFrameConsole);
-   var x = fc.load(n);
+   var frameConsole = RConsole.find(FUiDescribeFrameConsole);
+   var xconfig = frameConsole.load(frameName);
    // 构建处理
-   RUiControl.build(o, x, null, h);
+   RUiControl.build(o, xconfig, null, hDocument);
 }

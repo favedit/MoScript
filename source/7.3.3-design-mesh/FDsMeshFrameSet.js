@@ -131,37 +131,37 @@ function FDsMeshFrameSet_onMeshLoad(p){
 // <T>目录对象选择处理。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param value:Object 对象
 //==========================================================
 function FDsMeshFrameSet_onCatalogSelected(p, pc){
    var o = this;
    var space = o._activeSpace;
    // 隐藏所有属性面板
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
    }
    // 显示选中属性面板
    if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dMeshDisplay)){
@@ -169,7 +169,7 @@ function FDsMeshFrameSet_onCatalogSelected(p, pc){
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dMeshRenderable)){
