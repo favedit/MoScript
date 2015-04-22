@@ -536,6 +536,7 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
          item._typeCd = xnode.get('type_cd');
+         item._shareCd = xnode.get('share_cd');
          item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(item._typeCd);
@@ -617,8 +618,9 @@ function FDsResourceListContent_dispose(){
 }
 function FDsResourceListItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
-   o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-   o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+   o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
+   o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
+   o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
    o.onBuild         = FDsResourceListItem_onBuild;
    o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
    o.refreshStyle    = FDsResourceListItem_refreshStyle;
@@ -632,13 +634,18 @@ function FDsResourceListItem_onBuild(p){
    h.style.height = '150px';
    o._hLine1.className = o.styleName('TypePanel');
    o._hLine1.vAlign = 'top';
-   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
 }
 function FDsResourceListItem_setTypeLabel(label){
    this._hTypeLabel.innerHTML = label;
 }
 function FDsResourceListItem_refreshStyle(){
    var o = this;
+   if(o._shareCd == 'Public'){
+      o._hTypeLabel.className = o.styleName('TypePublicLabel');
+   }else{
+      o._hTypeLabel.className = o.styleName('TypePrivateLabel');
+   }
    var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
@@ -840,6 +847,8 @@ function FDsResourceMenuBar(o){
    o.onDeleteLoad          = FDsResourceMenuBar_onDeleteLoad;
    o.onDeleteExecute       = FDsResourceMenuBar_onDeleteExecute;
    o.onDeleteClick         = FDsResourceMenuBar_onDeleteClick;
+   o.onShareLoad           = FDsResourceMenuBar_onShareLoad;
+   o.onShareClick          = FDsResourceMenuBar_onShareClick;
    o.construct             = FDsResourceMenuBar_construct;
    o.dispose               = FDsResourceMenuBar_dispose;
    return o;
@@ -850,6 +859,8 @@ function FDsResourceMenuBar_onBuilded(p){
    o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
    o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlShareOpen.addClickListener(o, o.onShareClick);
+   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
    var o = this;
@@ -912,6 +923,29 @@ function FDsResourceMenuBar_onDeleteClick(event){
    }
    var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
    dialog.addResultListener(o, o.onDeleteExecute);
+}
+function FDsResourceMenuBar_onShareLoad(){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsResourceMenuBar_onShareClick(event){
+   var o = this;
+   var item = o._frameSet._listContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var sender = event.sender;
+   var name = sender.name();
+   var shareCd = null;
+   if(name == 'shareOpen'){
+      shareCd = 'Public';
+   }else{
+      shareCd = 'Private';
+   }
+   var guid = item._guid;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
+   connection.addLoadListener(o, o.onShareLoad);
 }
 function FDsResourceMenuBar_construct(){
    var o = this;

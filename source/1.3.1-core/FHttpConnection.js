@@ -30,6 +30,7 @@ function FHttpConnection(o){
    //..........................................................
    // @method
    o.construct            = FHttpConnection_construct;
+   // @method
    o.setHeaders           = FHttpConnection_setHeaders;
    o.inputData            = FHttpConnection_inputData;
    o.setInputData         = FHttpConnection_setInputData;
@@ -39,6 +40,8 @@ function FHttpConnection(o){
    o.sendSync             = FHttpConnection_sendSync;
    o.sendAsync            = FHttpConnection_sendAsync;
    o.send                 = FHttpConnection_send;
+   // @method
+   o.dispose              = FHttpConnection_dispose;
    return o;
 }
 
@@ -51,7 +54,6 @@ function FHttpConnection_onConnectionSend(){
    var o = this;
    var input = o._input;
    if(input){
-      var s = null;
       if(input.constructor == String){
          o._inputData = input;
          o._contentLength = input.length;
@@ -72,9 +74,9 @@ function FHttpConnection_onConnectionSend(){
 function FHttpConnection_onConnectionReady(){
    var o = this._linker;
    if(o._asynchronous){
-      var c = o._connection;
-      if(c.readyState == EHttpStatus.Finish){
-         if(c.status == 200){
+      var connection = o._connection;
+      if(connection.readyState == EHttpStatus.Finish){
+         if(connection.status == 200){
             o.setOutputData();
             o.onConnectionComplete();
          }else{
@@ -118,19 +120,18 @@ function FHttpConnection_setHeaders(){
    var c = o._connection;
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
-      // 二进制
+      // 二进制内容
       if(RBrowser.isBrowser(EBrowser.Explorer)){
          c.setRequestHeader('Accept-Charset', 'x-user-defined');
          c.responseType = 'arraybuffer';
       }else{
          c.overrideMimeType('text/plain; charset=x-user-defined');
-         //c.overrideMimeType("application/octet-stream"); 
          if(o._asynchronous){
             c.responseType = 'arraybuffer';
          }
       }
    }else{
-      // 文本
+      // 文本内容
       c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
    // 数据长度
@@ -250,4 +251,28 @@ function FHttpConnection_send(url, data){
       o.sendSync();
    }
    return o.content();
+}
+
+//==========================================================
+// <T>发送页面请求。</T>
+//
+// @method
+// @param url:String 发送地址
+// @param data:Object 发送数据
+//==========================================================
+function FHttpConnection_dispose(){
+   var o = this;
+   // 释放属性
+   o._input = null;
+   o._inputData = null;
+   o._output = null;
+   o._outputData = null;
+   var connection = o._connection;
+   if(connection){
+      connection.onreadystatechange = null;
+      o._connection = null;
+   }
+   // 父处理
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }

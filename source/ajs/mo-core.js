@@ -10059,13 +10059,13 @@ function FHttpConnection(o){
    o.sendSync             = FHttpConnection_sendSync;
    o.sendAsync            = FHttpConnection_sendAsync;
    o.send                 = FHttpConnection_send;
+   o.dispose              = FHttpConnection_dispose;
    return o;
 }
 function FHttpConnection_onConnectionSend(){
    var o = this;
    var input = o._input;
    if(input){
-      var s = null;
       if(input.constructor == String){
          o._inputData = input;
          o._contentLength = input.length;
@@ -10080,9 +10080,9 @@ function FHttpConnection_onConnectionSend(){
 function FHttpConnection_onConnectionReady(){
    var o = this._linker;
    if(o._asynchronous){
-      var c = o._connection;
-      if(c.readyState == EHttpStatus.Finish){
-         if(c.status == 200){
+      var connection = o._connection;
+      if(connection.readyState == EHttpStatus.Finish){
+         if(connection.status == 200){
             o.setOutputData();
             o.onConnectionComplete();
          }else{
@@ -10176,6 +10176,20 @@ function FHttpConnection_send(url, data){
       o.sendSync();
    }
    return o.content();
+}
+function FHttpConnection_dispose(){
+   var o = this;
+   o._input = null;
+   o._inputData = null;
+   o._output = null;
+   o._outputData = null;
+   var connection = o._connection;
+   if(connection){
+      connection.onreadystatechange = null;
+      o._connection = null;
+   }
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
    o = RClass.inherits(this, o, FHttpConnection);

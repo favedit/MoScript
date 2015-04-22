@@ -9,7 +9,7 @@ function FDsSceneCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName             = 'resource.scene.CatalogToolBar';
+   o._frameName             = 'resource.share.scene.CatalogToolBar';
    //..........................................................
    // @attribute
    o._activeNodeGuid        = null;

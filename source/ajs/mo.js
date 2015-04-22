@@ -10059,13 +10059,13 @@ function FHttpConnection(o){
    o.sendSync             = FHttpConnection_sendSync;
    o.sendAsync            = FHttpConnection_sendAsync;
    o.send                 = FHttpConnection_send;
+   o.dispose              = FHttpConnection_dispose;
    return o;
 }
 function FHttpConnection_onConnectionSend(){
    var o = this;
    var input = o._input;
    if(input){
-      var s = null;
       if(input.constructor == String){
          o._inputData = input;
          o._contentLength = input.length;
@@ -10080,9 +10080,9 @@ function FHttpConnection_onConnectionSend(){
 function FHttpConnection_onConnectionReady(){
    var o = this._linker;
    if(o._asynchronous){
-      var c = o._connection;
-      if(c.readyState == EHttpStatus.Finish){
-         if(c.status == 200){
+      var connection = o._connection;
+      if(connection.readyState == EHttpStatus.Finish){
+         if(connection.status == 200){
             o.setOutputData();
             o.onConnectionComplete();
          }else{
@@ -10176,6 +10176,20 @@ function FHttpConnection_send(url, data){
       o.sendSync();
    }
    return o.content();
+}
+function FHttpConnection_dispose(){
+   var o = this;
+   o._input = null;
+   o._inputData = null;
+   o._output = null;
+   o._outputData = null;
+   var connection = o._connection;
+   if(connection){
+      connection.onreadystatechange = null;
+      o._connection = null;
+   }
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
    o = RClass.inherits(this, o, FHttpConnection);
@@ -53672,14 +53686,20 @@ var EDsFrame = new function EDsFrame(){
 }
 var EDsFrameSet = new function EDsFrameSet(){
    var o = this;
-   o.SolutionFrameSet = 'resource.solution.FrameSet';
-   o.ProjectFrameSet  = 'resource.project.FrameSet';
-   o.ResourceFrameSet = 'resource.resource.FrameSet';
-   o.BitmapFrameSet   = 'resource.bitmap.FrameSet';
-   o.MaterialFrameSet = 'resource.material.FrameSet';
-   o.ModelFrameSet    = 'resource.model.FrameSet';
-   o.TemplateFrameSet = 'resource.template.FrameSet';
-   o.SceneFrameSet    = 'resource.scene.FrameSet';
+   o.SolutionFrameSet        = 'resource.solution.FrameSet';
+   o.ProjectFrameSet         = 'resource.project.FrameSet';
+   o.ResourceFrameSet        = 'resource.resource.FrameSet';
+   o.BitmapFrameSet          = 'resource.bitmap.FrameSet';
+   o.MaterialFrameSet        = 'resource.material.FrameSet';
+   o.ModelFrameSet           = 'resource.model.FrameSet';
+   o.TemplateFrameSet        = 'resource.template.FrameSet';
+   o.SceneFrameSet           = 'resource.scene.FrameSet';
+   o.PrivateResourceFrameSet = 'resource.private.resource.FrameSet';
+   o.PrivateTemplateFrameSet = 'resource.private.template.FrameSet';
+   o.PrivateSceneFrameSet    = 'resource.private.scene.FrameSet';
+   o.ShareResourceFrameSet   = 'resource.share.resource.FrameSet';
+   o.ShareTemplateFrameSet   = 'resource.share.template.FrameSet';
+   o.ShareSceneFrameSet      = 'resource.share.scene.FrameSet';
    return o;
 }
 function MDsBoundBox(o){
@@ -54974,7 +54994,9 @@ function FDrResourceConsole(o){
    o._resources     = null;
    o.construct      = FDrResourceConsole_construct;
    o.doList         = FDrResourceConsole_doList;
+   o.doShare        = FDrResourceConsole_doShare;
    o.doDelete       = FDrResourceConsole_doDelete;
+   o.doListShare    = FDrResourceConsole_doListShare;
    o.doFolderCreate = FDrResourceConsole_doFolderCreate;
    o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
    o.doFolderDelete = FDrResourceConsole_doFolderDelete;
@@ -54990,9 +55012,19 @@ function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
    var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
+function FDrResourceConsole_doShare(guid, shareCd){
+   var o = this;
+   var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
 function FDrResourceConsole_doDelete(typeCd, guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrResourceConsole_doListShare(typeCd, search, order, pageSize, page){
+   var o = this;
+   var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
@@ -55097,6 +55129,11 @@ function FDsSceneDisplay(o){
 }
 function FDsSceneLayer(o){
    o = RClass.inherits(this, o, FE3dSceneLayer);
+   return o;
+}
+function FDsSceneRenderable(o){
+   o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
+   o._optionSelected = false;
    return o;
 }
 function FDsCommonAnimationPropertyFrame(o){
@@ -57411,19 +57448,19 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.TemplateFrameSet){
-         var menuBar = RClass.create(FDsTemplateMenuBar);
+      }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
+         var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsTemplateFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.SceneFrameSet){
-         var menuBar = RClass.create(FDsSceneMenuBar);
+      }else if(name == EDsFrameSet.PrivateSceneFrameSet){
+         var menuBar = RClass.create(FDsPrivateSceneMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSceneFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -57465,10 +57502,10 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       case EDsFrameSet.ModelFrameSet:
          frameSet.loadByGuid(guid);
          break;
-      case EDsFrameSet.TemplateFrameSet:
+      case EDsFrameSet.PrivateTemplateFrameSet:
          frameSet.loadByGuid(guid);
          break;
-      case EDsFrameSet.SceneFrameSet:
+      case EDsFrameSet.PrivateSceneFrameSet:
          frameSet.loadByGuid(guid);
          break;
       default:
@@ -57506,11 +57543,11 @@ function FDsSolutionWorkspace_load(){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
-   }else if(code == EDsFrameSet.TemplateFrameSet){
+   }else if(code == EDsFrameSet.PrivateTemplateFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
-   }else if(code == EDsFrameSet.SceneFrameSet){
+   }else if(code == EDsFrameSet.PrivateSceneFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
@@ -60044,6 +60081,7 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
          item._typeCd = xnode.get('type_cd');
+         item._shareCd = xnode.get('share_cd');
          item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(item._typeCd);
@@ -60125,8 +60163,9 @@ function FDsResourceListContent_dispose(){
 }
 function FDsResourceListItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
-   o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-   o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+   o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
+   o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
+   o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
    o.onBuild         = FDsResourceListItem_onBuild;
    o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
    o.refreshStyle    = FDsResourceListItem_refreshStyle;
@@ -60140,13 +60179,18 @@ function FDsResourceListItem_onBuild(p){
    h.style.height = '150px';
    o._hLine1.className = o.styleName('TypePanel');
    o._hLine1.vAlign = 'top';
-   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
 }
 function FDsResourceListItem_setTypeLabel(label){
    this._hTypeLabel.innerHTML = label;
 }
 function FDsResourceListItem_refreshStyle(){
    var o = this;
+   if(o._shareCd == 'Public'){
+      o._hTypeLabel.className = o.styleName('TypePublicLabel');
+   }else{
+      o._hTypeLabel.className = o.styleName('TypePrivateLabel');
+   }
    var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
@@ -60348,6 +60392,8 @@ function FDsResourceMenuBar(o){
    o.onDeleteLoad          = FDsResourceMenuBar_onDeleteLoad;
    o.onDeleteExecute       = FDsResourceMenuBar_onDeleteExecute;
    o.onDeleteClick         = FDsResourceMenuBar_onDeleteClick;
+   o.onShareLoad           = FDsResourceMenuBar_onShareLoad;
+   o.onShareClick          = FDsResourceMenuBar_onShareClick;
    o.construct             = FDsResourceMenuBar_construct;
    o.dispose               = FDsResourceMenuBar_dispose;
    return o;
@@ -60358,6 +60404,8 @@ function FDsResourceMenuBar_onBuilded(p){
    o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
    o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlShareOpen.addClickListener(o, o.onShareClick);
+   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
    var o = this;
@@ -60420,6 +60468,29 @@ function FDsResourceMenuBar_onDeleteClick(event){
    }
    var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
    dialog.addResultListener(o, o.onDeleteExecute);
+}
+function FDsResourceMenuBar_onShareLoad(){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsResourceMenuBar_onShareClick(event){
+   var o = this;
+   var item = o._frameSet._listContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var sender = event.sender;
+   var name = sender.name();
+   var shareCd = null;
+   if(name == 'shareOpen'){
+      shareCd = 'Public';
+   }else{
+      shareCd = 'Private';
+   }
+   var guid = item._guid;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
+   connection.addLoadListener(o, o.onShareLoad);
 }
 function FDsResourceMenuBar_construct(){
    var o = this;
@@ -67960,8 +68031,8 @@ function FDsSceneCanvasToolBar_dispose(){
 }
 function FDsSceneCatalog(o){
    o = RClass.inherits(this, o, FDsCatalog);
-   o._iconView             = 'design3d.scene.view';
-   o._iconViewNot          = 'design3d.scene.viewno';
+   o._iconView             = 'resource.scene.view';
+   o._iconViewNot          = 'resource.scene.viewno';
    o._displays             = null;
    o._renderables          = null;
    o._materials            = null;
@@ -68235,7 +68306,7 @@ function FDsSceneCatalog_dispose(){
 }
 function FDsSceneCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName             = 'resource.scene.CatalogToolBar';
+   o._frameName             = 'resource.share.scene.CatalogToolBar';
    o._activeNodeGuid        = null;
    o._controlCreateCamera   = null;
    o._controlCreateLayer    = null;
@@ -68446,32 +68517,6 @@ function FDsSceneFrameSet_onBuilded(event){
    var spliter = o._spliterProperty;
    spliter.setAlignCd(EUiAlign.Right);
    spliter.setSizeHtml(o._frameProperty._hPanel);
-   var toolbar = o._catalogToolbar = RClass.create(FDsSceneCatalogToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsSceneCatalog);
-   catalog._frameSet = o;
-   catalog.build(event);
-   catalog.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalogContent.push(catalog);
-   var toolbar = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsSceneCanvas);
-   canvas._frameSet = o;
-   canvas._toolbar = o._canvasToolbar;
-   canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.addLoadListener(o, o.onDataLoaded);
-   canvas.build(event);
-   o._frameCanvasContent.push(canvas);
-   var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
-   toolbar._frameSet = o;
-   toolbar.buildDefine(event);
-   o._framePropertyToolBar.push(toolbar);
 }
 function FDsSceneFrameSet_onDataLoaded(canvas){
    var o = this;
@@ -68566,7 +68611,6 @@ function FDsSceneFrameSet_dispose(){
 }
 function FDsSceneMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'resource.scene.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
    o._runButton     = null;
@@ -68583,9 +68627,6 @@ function FDsSceneMenuBar(o){
 function FDsSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlSave.addClickListener(o, o.onSaveClick);
-   o._controlCapture.addClickListener(o, o.onCaptureClick);
-   o._controlExecute.addClickListener(o, o.onExecuteClick);
 }
 function FDsSceneMenuBar_onSaveLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
@@ -68625,7 +68666,7 @@ function FDsSceneMenuBar_dispose(){
 }
 function FDsScenePropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                   = 'resource.scene.PropertyToolBar';
+   o._frameName                   = 'resource.share.scene.PropertyToolBar';
    o._controlRefresh   = null;
    o._activeNodeGuid              = null;
    o.onBuilded                    = FDsScenePropertyToolBar_onBuilded;
@@ -68728,14 +68769,9 @@ function FDsScenePropertyToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
 }
-function FDsSceneRenderable(o){
-   o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
-   o._optionSelected = false;
-   return o;
-}
 function FDsSceneWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
-   o._frameName            = 'design3d.scene.Workspace';
+   o._frameName            = 'resource.share.scene.Workspace';
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -68899,6 +68935,2539 @@ function FDsSceneWorkspace_loadScene(p){
 function FDsSceneWorkspace_dispose(){
    var o = this;
    o.__base.FUiWorkspace.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsPrivateTabBar(o){
+   o = RClass.inherits(this, o, FUiTabBar);
+   o._frameName            = 'resource.share.TabBar';
+   o._resourceTypeCd       = 'private';
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsPrivateTabBar_onBuilded;
+   o.onButtonClick         = FDsPrivateTabBar_onButtonClick;
+   o.construct             = FDsPrivateTabBar_construct;
+   o.dispose               = FDsPrivateTabBar_dispose;
+   return o;
+}
+function FDsPrivateTabBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+   o._controlResource.addClickListener(o, o.onButtonClick);
+}
+function FDsPrivateTabBar_onButtonClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   if(name == 'resource'){
+      o._workspace.selectFrameSet(EDsFrameSet.ShareResourceFrameSet);
+   }else{
+      alert('功能未开启，请以后关注。');
+   }
+}
+function FDsPrivateTabBar_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsPrivateTabBar_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
+function FDsPrivateWorkspace(o){
+   o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
+   o._frameName            = 'resource.share.Workspace';
+   o._storageCode          = o._frameName;
+   o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._activeFrameSetCode   = null;
+   o._activeProjectGuid    = null;
+   o._frameToolBar         = null;
+   o._frameStatusBar       = null;
+   o._activeFrameSet       = null;
+   o._frameSets            = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsPrivateWorkspace_onBuilded;
+   o.construct             = FDsPrivateWorkspace_construct;
+   o.selectFrameSet        = FDsPrivateWorkspace_selectFrameSet;
+   o.load                  = FDsPrivateWorkspace_load;
+   o.dispose               = FDsPrivateWorkspace_dispose;
+   return o;
+}
+function FDsPrivateWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
+   o._frameBody._hPanel.className = o.styleName('Body_Ground');
+   o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   o._hMenuPanel = RBuilder.appendTableCell(hRow);
+   var control = o._tabBar = RClass.create(FDsPrivateTabBar);
+   control._workspace = o;
+   control.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '100px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(control._hPanel);
+   o._frameMenuBar._hPanel.appendChild(hTable);
+}
+function FDsPrivateWorkspace_construct(){
+   var o = this;
+   o.__base.FUiWorkspace.construct.call(o);
+   o._frameSets = new TDictionary();
+   o._propertyFrames = new TDictionary();
+}
+function FDsPrivateWorkspace_selectFrameSet(name, guid){
+   var o = this;
+   var frameSet = o._frameSets.get(name);
+   if(!frameSet){
+      if(name == EDsFrameSet.ShareResourceFrameSet){
+         var menuBar = RClass.create(FDsPrivateResourceMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareSceneFrameSet){
+         var menuBar = RClass.create(FDsPrivateSceneMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else{
+         throw new TError('Unknown frameset. (name={1})', name);
+      }
+      o._frameSets.set(name, frameSet);
+   }
+   var activeFrameSet = o._activeFrameSet;
+   if(activeFrameSet != frameSet){
+      if(activeFrameSet){
+         o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
+         o._frameBody.remove(activeFrameSet);
+      }
+      o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
+      o._frameBody.push(frameSet);
+      frameSet.psResize();
+   }
+   o._activeFrameSet = frameSet;
+   switch(name){
+      case EDsFrameSet.ShareResourceFrameSet:
+         frameSet.load();
+         break;
+      case EDsFrameSet.ShareSceneFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      default:
+         throw new TError('Unknown frameset. (name={1})', name);
+   }
+   o.storageSet('frameset_code', name)
+   o.storageSet('frameset_guid', guid)
+   o.storageUpdate();
+   return frameSet;
+}
+function FDsPrivateWorkspace_load(){
+   var o = this;
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.ShareResourceFrameSet);
+   var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
+   var button = o._tabBar.findControl('resource');
+   button.doClick();
+}
+function FDsPrivateWorkspace_dispose(){
+   var o = this;
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+   o.__base.FUiWorkspace.dispose.call(o);
+}
+function FDsPrivateResourceCatalogContent(o){
+   o = RClass.inherits(this, o, FDsResourceCatalogContent);
+   return o;
+}
+function FDsPrivateResourceCatalogToolBar(o){
+   o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
+   o._frameName = 'resource.private.resource.CatalogToolBar';
+   return o;
+}
+function FDsPrivateResourceFrameSet(o){
+   o = RClass.inherits(this, o, FUiFrameSet);
+   o._frameName            = 'resource.share.resource.FrameSet';
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
+   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+   o._resourceTypeCd       = 'picture';
+   o._frameCatalog         = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSearch          = null;
+   o._frameSearchToolbar   = null;
+   o._frameSearchContent   = null;
+   o._framePreview         = null;
+   o._framePreviewToolbar  = null;
+   o._framePreviewContent  = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsPrivateResourceFrameSet_onBuilded;
+   o.onCatalogSelected     = FDsPrivateResourceFrameSet_onCatalogSelected;
+   o.construct             = FDsPrivateResourceFrameSet_construct;
+   o.findPropertyFrame     = FDsPrivateResourceFrameSet_findPropertyFrame;
+   o.switchContent         = FDsPrivateResourceFrameSet_switchContent;
+   o.load                  = FDsPrivateResourceFrameSet_load;
+   o.dispose               = FDsPrivateResourceFrameSet_dispose;
+   return o;
+}
+function FDsPrivateResourceFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FUiFrameSet.onBuilded.call(o, event);
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameListToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameListContent._hPanel.className = o.styleName('List_Content');
+   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolbar = RClass.create(FDsPrivateResourceCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = RClass.create(FDsPrivateResourceCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   var control = o._listToolBar = RClass.create(FDsPrivateResourceListToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameListToolBar.push(control);
+   var control = o._listContent = RClass.create(FDsPrivateResourceListContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameListContent.push(control);
+}
+function FDsPrivateResourceFrameSet_onCatalogSelected(p, pc){
+   var o = this;
+   var space = o._activeSpace;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      f.show();
+      f.loadObject(space, space);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsPrivateResourceFrameSet_construct(){
+   var o = this;
+   o.__base.FUiFrameSet.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsPrivateResourceFrameSet_findPropertyFrame(p){
+   var o = this;
+   var f = o._propertyFrames.get(p);
+   if(!f){
+      var fc = RConsole.find(FFrameConsole);
+      f = fc.get(o, p, o._framePreview._hContainer);
+      f._workspace = o;
+      o._propertyFrames.set(p, f);
+   }
+   return f;
+}
+function FDsPrivateResourceFrameSet_switchContent(typeCd){
+   var o = this;
+   o._resourceTypeCd = typeCd;
+   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
+}
+function FDsPrivateResourceFrameSet_load(){
+   var o = this;
+   o._listToolBar.storageLoad();
+}
+function FDsPrivateResourceFrameSet_dispose(){
+   var o = this;
+   o.__base.FUiFrameSet.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsPrivateResourceListContent(o){
+   o = RClass.inherits(this, o, FDsResourceListContent);
+   return o;
+}
+function FDsPrivateResourceListItem(o){
+   o = RClass.inherits(this, o, FDsResourceListItem);
+   return o;
+}
+function FDsPrivateResourceListToolBar(o){
+   o = RClass.inherits(this, o, FDsResourceListToolBar);
+   o._frameName   = 'resource.private.resource.ListToolBar';
+   o._storageCode = o._frameName;
+   return o;
+}
+function FDsPrivateResourceMenuBar(o){
+   o = RClass.inherits(this, o, FUiMenuBar);
+   o._frameName      = 'resource.private.resource.MenuBar';
+   o._controlRefresh = null;
+   o.onBuilded       = FDsPrivateResourceMenuBar_onBuilded;
+   o.onRefreshClick  = FDsPrivateResourceMenuBar_onRefreshClick;
+   return o;
+}
+function FDsPrivateResourceMenuBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+}
+function FDsPrivateResourceMenuBar_onRefreshClick(event){
+}
+function FDsPrivateResourcePropertyContent(o){
+   o = RClass.inherits(this, o, FDsResourcePropertyContent);
+   return o;
+}
+function FDsPrivateResourcePropertyToolBar(o){
+   o = RClass.inherits(this, o, FDsResourcePropertyToolBar);
+   o._frameName = 'resource.private.resource.PropertyToolBar';
+   return o;
+}
+function FDsPrivateResourceTabBar(o){
+   o = RClass.inherits(this, o, FUiTabBar);
+   o._frameName             = 'design3d.resource.TabBar';
+   o._resourceTypeCd        = 'mesh';
+   o._controlPictureButton  = null;
+   o._controlSoundButton    = null;
+   o._controlVidioButton    = null;
+   o._controlTextureButton  = null;
+   o._controlMaterialButton = null;
+   o._controlMeshButton     = null;
+   o._controlModelButton    = null;
+   o._controlTemplateButton = null;
+   o._controlSceneButton    = null;
+   o.onBuilded              = FDsPrivateResourceTabBar_onBuilded;
+   o.onButtonClick          = FDsPrivateResourceTabBar_onButtonClick;
+   o.construct              = FDsPrivateResourceTabBar_construct;
+   o.dispose                = FDsPrivateResourceTabBar_dispose;
+   return o;
+}
+function FDsPrivateResourceTabBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+   o._controlPictureButton.addClickListener(o, o.onButtonClick);
+   o._controlSoundButton.addClickListener(o, o.onButtonClick);
+   o._controlVidioButton.addClickListener(o, o.onButtonClick);
+   o._controlTextureButton.addClickListener(o, o.onButtonClick);
+   o._controlMaterialButton.addClickListener(o, o.onButtonClick);
+   o._controlMeshButton.addClickListener(o, o.onButtonClick);
+   o._controlModelButton.addClickListener(o, o.onButtonClick);
+   o._controlTemplateButton.addClickListener(o, o.onButtonClick);
+   o._controlSceneButton.addClickListener(o, o.onButtonClick);
+}
+function FDsPrivateResourceTabBar_onButtonClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   o._resourceTypeCd = name;
+   R
+}
+function FDsPrivateResourceTabBar_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsPrivateResourceTabBar_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
+function FDsPrivateResourceWorkspace(o){
+   o = RClass.inherits(this, o, FUiWorkspace);
+   o._frameName            = 'resource.share.resource.Workspace';
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+   o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+   o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+   o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+   o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._resourceTypeCd       = 'picture';
+   o._frameToolBar         = null;
+   o._frameStatusBar       = null;
+   o._frameCatalog         = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSearch          = null;
+   o._frameSearchToolbar   = null;
+   o._frameSearchContent   = null;
+   o._framePreview         = null;
+   o._framePreviewToolbar  = null;
+   o._framePreviewContent  = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsPrivateResourceWorkspace_onBuilded;
+   o.onMeshLoad            = FDsPrivateResourceWorkspace_onMeshLoad;
+   o.onCatalogSelected     = FDsPrivateResourceWorkspace_onCatalogSelected;
+   o.construct             = FDsPrivateResourceWorkspace_construct;
+   o.findPropertyFrame     = FDsPrivateResourceWorkspace_findPropertyFrame;
+   o.switchContent         = FDsPrivateResourceWorkspace_switchContent;
+   o.load                  = FDsPrivateResourceWorkspace_load;
+   o.dispose               = FDsPrivateResourceWorkspace_dispose;
+   return o;
+}
+function FDsPrivateResourceWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   var frame = o._frameToolBar = o.searchControl('toolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameBody = o.searchControl('bodyFrame');
+   frame._hPanel.className = o.styleName('Catalog_Ground');
+   var frame = o._frameStatusBar = o.searchControl('statusFrame');
+   frame._hPanel.className = o.styleName('Statusbar_Ground');
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   var c = o._toolbar = RClass.create(FDsPrivateResourceMenuBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.appendChild(c._hPanel);
+   var c = o._tabBar = RClass.create(FDsPrivateResourceTabBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '450px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(c._hPanel);
+   o._frameToolBar._hPanel.appendChild(hTable);
+   var frameSet = o._frameSet = RClass.create(FDsPrivateResourceFrameSet);
+   frameSet._workspace = o;
+   frameSet.buildDefine(p);
+   o._frameBody.push(frameSet);
+   frameSet.switchContent(o._resourceTypeCd);
+}
+function FDsPrivateResourceWorkspace_onMeshLoad(p){
+   var o = this;
+   o._activeSpace = p._activeSpace;
+   o._catalog.buildSpace(o._activeSpace);
+}
+function FDsPrivateResourceWorkspace_onCatalogSelected(p, pc){
+   var o = this;
+   var space = o._activeSpace;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      f.show();
+      f.loadObject(space, space);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsPrivateResourceWorkspace_construct(){
+   var o = this;
+   o.__base.FUiWorkspace.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsPrivateResourceWorkspace_findPropertyFrame(p){
+   var o = this;
+   var f = o._propertyFrames.get(p);
+   if(!f){
+      var fc = RConsole.find(FFrameConsole);
+      f = fc.get(o, p, o._framePreview._hContainer);
+      f._workspace = o;
+      o._propertyFrames.set(p, f);
+   }
+   return f;
+}
+function FDsPrivateResourceWorkspace_switchContent(typeCd){
+   this._frameSet.switchContent(typeCd);
+}
+function FDsPrivateResourceWorkspace_load(){
+   var o = this;
+}
+function FDsPrivateResourceWorkspace_dispose(){
+   var o = this;
+   o.__base.FUiWorkspace.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsPrivateSceneCanvas(o){
+   o = RClass.inherits(this, o, FDsSceneCanvas);
+   return o;
+}
+function FDsPrivateSceneCanvasToolBar(o){
+   o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+   o._frameName = 'resource.private.scene.CanvasToolBar';
+   return o;
+}
+function FDsPrivateSceneCatalog(o){
+   o = RClass.inherits(this, o, FDsSceneCatalog);
+   return o;
+}
+function FDsPrivateSceneCatalogToolBar(o){
+   o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+   o._frameName = 'resource.private.scene.CatalogToolBar';
+   return o;
+}
+function FDsPrivateSceneFrameSet(o){
+   o = RClass.inherits(this, o, FDsSceneFrameSet);
+   o._frameName        = 'resource.private.scene.FrameSet';
+   o.onBuilded         = FDsPrivateSceneFrameSet_onBuilded;
+   o.onCatalogSelected = FDsPrivateSceneFrameSet_onCatalogSelected;
+   return o;
+}
+function FDsPrivateSceneFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
+   var toolbar = o._catalogToolbar = RClass.create(FDsPrivateSceneCatalogToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCatalogToolBar.push(toolbar);
+   var catalog = o._catalogContent = RClass.create(FDsPrivateSceneCatalog);
+   catalog._frameSet = o;
+   catalog.build(event);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalogContent.push(catalog);
+   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateSceneCanvasToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCanvasToolBar.push(toolbar);
+   var canvas = o._canvasContent = RClass.create(FDsPrivateSceneCanvas);
+   canvas._frameSet = o;
+   canvas._toolbar = o._canvasToolbar;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
+   canvas.build(event);
+   o._frameCanvasContent.push(canvas);
+   var toolbar = o._propertyToolbar = RClass.create(FDsPrivateScenePropertyToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._framePropertyToolBar.push(toolbar);
+}
+function FDsPrivateSceneFrameSet_onCatalogSelected(select, flag){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var canvas = o._canvasContent;
+   o.hidePropertyFrames();
+   if(RClass.isClass(select, FE3dScene)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dTechnique)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRegion)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dCamera)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(select == 'layers'){
+      if(flag){
+         canvas.selectLayers(select);
+      }
+   }else if(RClass.isClass(select, FE3dSceneLayer)){
+      if(flag){
+         canvas.selectLayer(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneDisplay)){
+      if(flag){
+         canvas.selectDisplay(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneMaterial)){
+      if(flag){
+         canvas.selectMaterial(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dAnimation)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRenderable)){
+      if(flag){
+         canvas.selectRenderable(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else{
+      throw new TError('Unknown select type. (select={1})', select);
+   }
+}
+function FDsPrivateSceneMenuBar(o){
+   o = RClass.inherits(this, o, FDsSceneMenuBar);
+   o._frameName = 'resource.private.scene.MenuBar';
+   o.onBuilded  = FDsPrivateSceneMenuBar_onBuilded;
+   return o;
+}
+function FDsPrivateSceneMenuBar_onBuilded(p){
+   var o = this;
+   o.__base.FDsSceneMenuBar.onBuilded.call(o, p);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+   o._controlExecute.addClickListener(o, o.onExecuteClick);
+}
+function FDsPrivateScenePropertyToolBar(o){
+   o = RClass.inherits(this, o, FDsScenePropertyToolBar);
+   o._frameName = 'resource.private.scene.PropertyToolBar';
+   return o;
+}
+function FDsPrivateSceneWorkspace(o){
+   o = RClass.inherits(this, o, FDsSceneWorkspace);
+   o._frameName            = 'resource.share.scene.Workspace';
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._framesetMain         = null;
+   o._framesetBody         = null;
+   o._frameToolBar         = null;
+   o._frameBody            = null;
+   o._frameProperty        = null;
+   o._frameCatalog         = null;
+   o._frameWorkspace       = null;
+   o._frameStatusBar       = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsPrivateSceneWorkspace_onBuilded;
+   o.onSceneLoad           = FDsPrivateSceneWorkspace_onSceneLoad;
+   o.onCatalogSelected     = FDsPrivateSceneWorkspace_onCatalogSelected;
+   o.construct             = FDsPrivateSceneWorkspace_construct;
+   o.findPropertyFrame     = FDsPrivateSceneWorkspace_findPropertyFrame;
+   o.loadScene             = FDsPrivateSceneWorkspace_loadScene;
+   o.dispose               = FDsPrivateSceneWorkspace_dispose;
+   return o;
+}
+function FDsPrivateSceneWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FDsSceneWorkspace.onBuilded.call(o, p);
+   var f = o._frameToolBar = o.searchControl('toolbarFrame');
+   f._hPanel.className = o.styleName('Toolbar_Ground');
+   var f = o._frameCatalog = o.searchControl('catalogFrame');
+   f._hPanel.className = o.styleName('Catalog_Ground');
+   var f = o._frameWorkspace = o.searchControl('spaceFrame');
+   f._hPanel.className = o.styleName('Workspace_Ground');
+   var f = o._frameProperty = o.searchControl('propertyFrame');
+   f._hPanel.className = o.styleName('Property_Ground');
+   var f = o._frameStatusBar = o.searchControl('statusFrame');
+   f._hPanel.className = o.styleName('Statusbar_Ground');
+   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
+   var f = o._propertySpliter = o.searchControl('propertySpliter');
+   f.setAlignCd(EUiAlign.Right);
+   f.setSizeHtml(o._frameProperty._hPanel);
+   var c = o._toolbar = RClass.create(FDsPrivateSceneMenuBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   o._frameToolBar.push(c);
+   var c = o._catalog = RClass.create(FDsPrivateSceneCatalog);
+   c._workspace = o;
+   c.build(p);
+   c.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalog.push(c);
+   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   var c = o._canvasToolbar = RClass.create(FDsPrivateSceneCanvasToolBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   o._canvasToolbarFrame.push(c);
+   var f = o._canvasFrame = o.searchControl('canvasFrame');
+   var c = o._canvas = RClass.create(FDsPrivateSceneCanvas);
+   c._workspace = o;
+   c._toolbar = o._canvasToolbar;
+   c.addLoadListener(o, o.onSceneLoad);
+   c._hParent = f._hPanel;
+   c._hParent.style.backgroundColor = '#000000';
+   c.build(p);
+   o._canvasFrame.push(c);
+}
+function FDsPrivateSceneWorkspace_onSceneLoad(p){
+   var o = this;
+   var t = o._activeScene = p._activeScene;
+   o._catalog.buildScene(t);
+}
+function FDsPrivateSceneWorkspace_onCatalogSelected(p, pc){
+   var o = this;
+   var s = o._activeScene;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dScene)){
+      var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(p == 'layers'){
+      if(pc){
+         o._canvas.selectLayers(p);
+      }
+   }else if(RClass.isClass(p, FE3dSceneLayer)){
+      if(pc){
+         o._canvas.selectLayer(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      if(pc){
+         o._canvas.selectDisplay(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      if(pc){
+         o._canvas.selectMaterial(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3rAnimation)){
+      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dRenderable)){
+      if(pc){
+         o._canvas.selectRenderable(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsPrivateSceneWorkspace_construct(){
+   var o = this;
+   o.__base.FDsSceneWorkspace.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsPrivateSceneWorkspace_findPropertyFrame(p){
+   var o = this;
+   var frame = o._propertyFrames.get(p);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, p, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(p, frame);
+   }
+   return frame;
+}
+function FDsPrivateSceneWorkspace_loadScene(p){
+   var o = this;
+   o._sceneCode = p;
+   o._canvas.loadScene(p);
+}
+function FDsPrivateSceneWorkspace_dispose(){
+   var o = this;
+   o.__base.FDsSceneWorkspace.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsShareTabBar(o){
+   o = RClass.inherits(this, o, FUiTabBar);
+   o._frameName            = 'resource.share.TabBar';
+   o._resourceTypeCd       = 'private';
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsShareTabBar_onBuilded;
+   o.onButtonClick         = FDsShareTabBar_onButtonClick;
+   o.construct             = FDsShareTabBar_construct;
+   o.dispose               = FDsShareTabBar_dispose;
+   return o;
+}
+function FDsShareTabBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+   o._controlResource.addClickListener(o, o.onButtonClick);
+}
+function FDsShareTabBar_onButtonClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   if(name == 'resource'){
+      o._workspace.selectFrameSet(EDsFrameSet.ShareResourceFrameSet);
+   }else{
+      alert('功能未开启，请以后关注。');
+   }
+}
+function FDsShareTabBar_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsShareTabBar_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
+function FDsShareWorkspace(o){
+   o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
+   o._frameName            = 'resource.share.Workspace';
+   o._storageCode          = o._frameName;
+   o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._activeFrameSetCode   = null;
+   o._activeProjectGuid    = null;
+   o._frameToolBar         = null;
+   o._frameStatusBar       = null;
+   o._activeFrameSet       = null;
+   o._frameSets            = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsShareWorkspace_onBuilded;
+   o.construct             = FDsShareWorkspace_construct;
+   o.selectFrameSet        = FDsShareWorkspace_selectFrameSet;
+   o.load                  = FDsShareWorkspace_load;
+   o.dispose               = FDsShareWorkspace_dispose;
+   return o;
+}
+function FDsShareWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
+   o._frameBody._hPanel.className = o.styleName('Body_Ground');
+   o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   o._hMenuPanel = RBuilder.appendTableCell(hRow);
+   var control = o._tabBar = RClass.create(FDsShareTabBar);
+   control._workspace = o;
+   control.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '100px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(control._hPanel);
+   o._frameMenuBar._hPanel.appendChild(hTable);
+}
+function FDsShareWorkspace_construct(){
+   var o = this;
+   o.__base.FUiWorkspace.construct.call(o);
+   o._frameSets = new TDictionary();
+   o._propertyFrames = new TDictionary();
+}
+function FDsShareWorkspace_selectFrameSet(name, guid){
+   var o = this;
+   var frameSet = o._frameSets.get(name);
+   if(!frameSet){
+      if(name == EDsFrameSet.ShareResourceFrameSet){
+         var menuBar = RClass.create(FDsShareResourceMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareSceneFrameSet){
+         var menuBar = RClass.create(FDsShareSceneMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else{
+         throw new TError('Unknown frameset. (name={1})', name);
+      }
+      o._frameSets.set(name, frameSet);
+   }
+   var activeFrameSet = o._activeFrameSet;
+   if(activeFrameSet != frameSet){
+      if(activeFrameSet){
+         o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
+         o._frameBody.remove(activeFrameSet);
+      }
+      o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
+      o._frameBody.push(frameSet);
+      frameSet.psResize();
+   }
+   o._activeFrameSet = frameSet;
+   switch(name){
+      case EDsFrameSet.ShareResourceFrameSet:
+         frameSet.load();
+         break;
+      case EDsFrameSet.ShareSceneFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      default:
+         throw new TError('Unknown frameset. (name={1})', name);
+   }
+   o.storageSet('frameset_code', name)
+   o.storageSet('frameset_guid', guid)
+   o.storageUpdate();
+   return frameSet;
+}
+function FDsShareWorkspace_load(){
+   var o = this;
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.ShareResourceFrameSet);
+   var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
+   var button = o._tabBar.findControl('resource');
+   button.doClick();
+}
+function FDsShareWorkspace_dispose(){
+   var o = this;
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+   o.__base.FUiWorkspace.dispose.call(o);
+}
+function FDsShareResourceCatalogContent(o){
+   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o._activeSpace          = null;
+   o._materials            = null;
+   o.onBuild               = FDsShareResourceCatalogContent_onBuild;
+   o.onLoadDisplay         = FDsShareResourceCatalogContent_onLoadDisplay;
+   o.onNodeClick           = FDsShareResourceCatalogContent_onNodeClick;
+   o.onNodeViewClick       = FDsShareResourceCatalogContent_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsShareResourceCatalogContent_onNodeViewDoubleClick;
+   o.lsnsSelect            = null;
+   o.construct             = FDsShareResourceCatalogContent_construct;
+   o.selectObject          = FDsShareResourceCatalogContent_selectObject;
+   o.showObject            = FDsShareResourceCatalogContent_showObject;
+   o.dispose               = FDsShareResourceCatalogContent_dispose;
+   return o;
+}
+function FDsShareResourceCatalogContent_onBuild(p){
+   var o = this;
+   o.__base.FUiDataTreeView.onBuild.call(o, p);
+   o.lsnsClick.register(o, o.onNodeClick);
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
+}
+function FDsShareResourceCatalogContent_onLoadDisplay(p){
+   var o = this;
+   var n = p._linkNode;
+   o.buildRenderable(n, p);
+}
+function FDsShareResourceCatalogContent_onNodeClick(t, n){
+   var o = this;
+}
+function FDsShareResourceCatalogContent_onNodeViewClick(p){
+   var o = this;
+}
+function FDsShareResourceCatalogContent_onNodeViewDoubleClick(p){
+   var o = this;
+}
+function FDsShareResourceCatalogContent_construct(){
+   var o = this;
+   o.__base.FUiDataTreeView.construct.call(o);
+   o._renderables = new TObjects();
+   o._materials = new TObjects();
+}
+function FDsShareResourceCatalogContent_selectObject(p){
+   var o = this;
+   if(p != null){
+      o.processSelectedListener(p, true);
+   }
+}
+function FDsShareResourceCatalogContent_showObject(p){
+   var o = this;
+}
+function FDsShareResourceCatalogContent_dispose(){
+   var o = this;
+   o.__base.FUiDataTreeView.dispose.call(o);
+}
+function FDsShareResourceCatalogToolBar(o){
+   o = RClass.inherits(this, o, FUiToolBar);
+   o._frameName                = 'resource.share.resource.CatalogToolBar';
+   o._controlFolderOpenButton  = null;
+   o._controlFolderCloseButton = null;
+   o._activeNodeGuid           = null;
+   o.onBuilded                 = FDsShareResourceCatalogToolBar_onBuilded;
+   o.onFolderOpenClick         = FDsShareResourceCatalogToolBar_onFolderOpenClick;
+   o.onFolderCloseClick        = FDsShareResourceCatalogToolBar_onFolderCloseClick;
+   o.construct                 = FDsShareResourceCatalogToolBar_construct;
+   o.dispose                   = FDsShareResourceCatalogToolBar_dispose;
+   return o;
+}
+function FDsShareResourceCatalogToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
+   o._controlFolderClose.addClickListener(o, o.onFolderCloseClick);
+}
+function FDsShareResourceCatalogToolBar_onFolderOpenClick(event){
+}
+function FDsShareResourceCatalogToolBar_onFolderCloseClick(event){
+}
+function FDsShareResourceCatalogToolBar_construct(){
+   var o = this;
+   o.__base.FUiToolBar.construct.call(o);
+}
+function FDsShareResourceCatalogToolBar_dispose(){
+   var o = this;
+   o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsShareResourceFrameSet(o){
+   o = RClass.inherits(this, o, FUiFrameSet);
+   o._frameName            = 'resource.share.resource.FrameSet';
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
+   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+   o._resourceTypeCd       = 'picture';
+   o._frameCatalog         = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSearch          = null;
+   o._frameSearchToolbar   = null;
+   o._frameSearchContent   = null;
+   o._framePreview         = null;
+   o._framePreviewToolbar  = null;
+   o._framePreviewContent  = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsShareResourceFrameSet_onBuilded;
+   o.onCatalogSelected     = FDsShareResourceFrameSet_onCatalogSelected;
+   o.construct             = FDsShareResourceFrameSet_construct;
+   o.findPropertyFrame     = FDsShareResourceFrameSet_findPropertyFrame;
+   o.switchContent         = FDsShareResourceFrameSet_switchContent;
+   o.load                  = FDsShareResourceFrameSet_load;
+   o.dispose               = FDsShareResourceFrameSet_dispose;
+   return o;
+}
+function FDsShareResourceFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FUiFrameSet.onBuilded.call(o, event);
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameListToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameListContent._hPanel.className = o.styleName('List_Content');
+   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolbar = RClass.create(FDsShareResourceCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = RClass.create(FDsShareResourceCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   var control = o._listToolBar = RClass.create(FDsShareResourceListToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameListToolBar.push(control);
+   var control = o._listContent = RClass.create(FDsShareResourceListContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameListContent.push(control);
+}
+function FDsShareResourceFrameSet_onCatalogSelected(p, pc){
+   var o = this;
+   var space = o._activeSpace;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      f.show();
+      f.loadObject(space, space);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsShareResourceFrameSet_construct(){
+   var o = this;
+   o.__base.FUiFrameSet.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsShareResourceFrameSet_findPropertyFrame(p){
+   var o = this;
+   var f = o._propertyFrames.get(p);
+   if(!f){
+      var fc = RConsole.find(FFrameConsole);
+      f = fc.get(o, p, o._framePreview._hContainer);
+      f._workspace = o;
+      o._propertyFrames.set(p, f);
+   }
+   return f;
+}
+function FDsShareResourceFrameSet_switchContent(typeCd){
+   var o = this;
+   o._resourceTypeCd = typeCd;
+   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
+}
+function FDsShareResourceFrameSet_load(){
+   var o = this;
+   o._listToolBar.storageLoad();
+}
+function FDsShareResourceFrameSet_dispose(){
+   var o = this;
+   o.__base.FUiFrameSet.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsShareResourceListContent(o){
+   o = RClass.inherits(this, o, FUiListView);
+   o._contentFlag      = null;
+   o._contentTypeCd    = EE3sResource.All;
+   o._contentSerach    = '';
+   o._contentOrder     = '';
+   o._contentPageSize  = 40;
+   o._contentPageCount = 0;
+   o._contentPage      = 0;
+   o._activeItem       = null;
+   o._activeGuid       = null;
+   o._refreshButton    = null;
+   o._saveButton       = null;
+   o._runButton        = null;
+   o.onServiceLoad     = FDsShareResourceListContent_onServiceLoad;
+   o.construct         = FDsShareResourceListContent_construct;
+   o.doClickItem       = FDsShareResourceListContent_doClickItem;
+   o.doDoubleClickItem = FDsShareResourceListContent_doDoubleClickItem;
+   o.serviceSearch     = FDsShareResourceListContent_serviceSearch;
+   o.serviceResearch   = FDsShareResourceListContent_serviceResearch;
+   o.dispose           = FDsShareResourceListContent_dispose;
+   return o;
+}
+function FDsShareResourceListContent_onServiceLoad(p){
+   var o = this;
+   var xitems = p.root.findNode('ResourceCollection');
+   var pageSize = xitems.getInteger('page_size');
+   var pageCount = xitems.getInteger('page_count');
+   var page = xitems.getInteger('page');
+   o._frameSet._listToolBar.setNavigator(pageSize, pageCount, page);
+   o.clear();
+   var xnodes = xitems.nodes();
+   var count = xnodes.count();
+   for(var i = 0; i < count; i++){
+      var xnode = xnodes.getAt(i);
+      if(xnode.isName('Resource')){
+         var item = o.createItem(FDsShareResourceListItem);
+         item.propertyLoad(xnode);
+         item._guid = xnode.get('guid');
+         item._typeCd = xnode.get('type_cd');
+         item._shareCd = xnode.get('share_cd');
+         item._code = xnode.get('code');
+         item._updateDate = xnode.get('update_date');
+         item.setTypeLabel(item._typeCd);
+         item.setLabel(xnode.get('code') + ' - ' + xnode.get('label'));
+         item.refreshStyle();
+         o.push(item);
+      }
+   }
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsShareResourceListContent_construct(){
+   var o = this;
+   o.__base.FUiListView.construct.call(o);
+}
+function FDsShareResourceListContent_doClickItem(control){
+   var o = this;
+   o.__base.FUiListView.doClickItem.call(o, control);
+}
+function FDsShareResourceListContent_doDoubleClickItem(control){
+   var o = this;
+   o.__base.FUiListView.doDoubleClickItem.call(o, control)
+   var guid = control._guid;
+   o._activeItem = control;
+   o._activeGuid = control._guid;
+   var workspace = o._frameSet._workspace;
+   var typeCd = control._typeCd;
+   if(typeCd == EE3sResource.Bitmap){
+      workspace.selectFrameSet(EDsFrameSet.ShareBitmapFrameSet, guid);
+   }else if(typeCd == EE3sResource.Material){
+      workspace.selectFrameSet(EDsFrameSet.ShareMaterialFrameSet, guid);
+   }else if(typeCd == EE3sResource.Model){
+      workspace.selectFrameSet(EDsFrameSet.ShareModelFrameSet, guid);
+   }else if(typeCd == EE3sResource.Template){
+      workspace.selectFrameSet(EDsFrameSet.ShareTemplateFrameSet, guid);
+   }else if(typeCd == EE3sResource.Scene){
+      workspace.selectFrameSet(EDsFrameSet.ShareSceneFrameSet, guid);
+   }else{
+      throw new TError(o, 'Unsupport resource format.');
+   }
+}
+function FDsShareResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
+   var o = this;
+   if(typeCd == null){
+      typeCd = o._contentTypeCd;
+   }
+   if(search == null){
+      search = o._contentSerach;
+   }
+   if(order == null){
+      order = o._contentOrder;
+   }
+   if(pageSize == null){
+      pageSize = o._contentPageSize;
+   }
+   if(page == null){
+      page = o._contentPage;
+   }
+   var flag = typeCd + '|' + search + '|' + order + '|' + pageSize + '|' + page;
+   if(o._contentFlag == flag){
+      return;
+   }
+   o._contentFlag = flag;
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
+   o._contentOrder = order;
+   o._contentPageSize = pageSize;
+   o._contentPage = page;
+   RConsole.find(FUiDesktopConsole).showLoading();
+   var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+   connection.addLoadListener(o, o.onServiceLoad);
+}
+function FDsShareResourceListContent_serviceResearch(){
+   var o = this;
+   o.serviceSearch(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+}
+function FDsShareResourceListContent_dispose(){
+   var o = this;
+   o.__base.FUiListView.dispose.call(o);
+}
+function FDsShareResourceListItem(o){
+   o = RClass.inherits(this, o, FUiListViewItem);
+   o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
+   o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
+   o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
+   o.onBuild         = FDsShareResourceListItem_onBuild;
+   o.setTypeLabel    = FDsShareResourceListItem_setTypeLabel;
+   o.refreshStyle    = FDsShareResourceListItem_refreshStyle;
+   return o;
+}
+function FDsShareResourceListItem_onBuild(p){
+   var o = this;
+   o.__base.FUiListViewItem.onBuild.call(o, p);
+   var h = o._hPanel;
+   h.style.width = '200px';
+   h.style.height = '150px';
+   o._hLine1.className = o.styleName('TypePanel');
+   o._hLine1.vAlign = 'top';
+   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
+}
+function FDsShareResourceListItem_setTypeLabel(label){
+   this._hTypeLabel.innerHTML = label;
+}
+function FDsShareResourceListItem_refreshStyle(){
+   var o = this;
+   if(o._shareCd == 'Public'){
+      o._hTypeLabel.className = o.styleName('TypePublicLabel');
+   }else{
+      o._hTypeLabel.className = o.styleName('TypePrivateLabel');
+   }
+   var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
+   o._hForm.style.backgroundImage = 'url("' + url + '")';
+}
+function FDsShareResourceListToolBar(o){
+   o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
+   o._frameName        = 'resource.share.resource.ListToolBar';
+   o._storageCode      = o._frameName;
+   o._dropButton       = null;
+   o._selectButton     = null;
+   o._translateButton  = null;
+   o._rotationButton   = null;
+   o._scaleButton      = null;
+   o._lookFrontButton  = null;
+   o._lookUpButton     = null;
+   o._lookLeftButton   = null;
+   o._playButton       = null;
+   o._viewButton       = null;
+   o.onBuilded         = FDsShareResourceListToolBar_onBuilded;
+   o.onSearchClick     = FDsShareResourceListToolBar_onSearchClick;
+   o.onNavigatorClick  = FDsShareResourceListToolBar_onNavigatorClick;
+   o.onTypeClick       = FDsShareResourceListToolBar_onTypeClick;
+   o.construct         = FDsShareResourceListToolBar_construct;
+   o.makeTypeCd        = FDsShareResourceListToolBar_makeTypeCd;
+   o.setNavigator      = FDsShareResourceListToolBar_setNavigator;
+   o.doNavigator       = FDsShareResourceListToolBar_doNavigator;
+   o.storageLoad       = FDsShareResourceListToolBar_storageLoad;
+   o.dispose           = FDsShareResourceListToolBar_dispose;
+   return o;
+}
+function FDsShareResourceListToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlSearchEdit.addClickListener(o, o.onSearchClick);
+   o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
+   o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
+   o._controlNextButton.addClickListener(o, o.onNavigatorClick);
+   o._controlLastButton.addClickListener(o, o.onNavigatorClick);
+   o._controlTypeAll.addClickListener(o, o.onTypeClick);
+   o._controlTypeNone.addClickListener(o, o.onTypeClick);
+   o._controlTypeBitmap.addClickListener(o, o.onTypeClick);
+   o._controlTypeBitmap.check(true);
+   o._controlTypeMaterial.addClickListener(o, o.onTypeClick);
+   o._controlTypeMaterial.check(true);
+   o._controlTypeModel.addClickListener(o, o.onTypeClick);
+   o._controlTypeModel.check(true);
+   o._controlTypeTemplate.addClickListener(o, o.onTypeClick);
+   o._controlTypeTemplate.check(true);
+   o._controlTypeScene.addClickListener(o, o.onTypeClick);
+   o._controlTypeScene.check(true);
+}
+function FDsShareResourceListToolBar_onSearchClick(p){
+   this.doNavigator(0);
+}
+function FDsShareResourceListToolBar_onNavigatorClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   var page = o._contentPage;
+   switch(name){
+      case 'firstButton':
+         page = 0;
+         break;
+      case 'priorButton':
+         page--;
+         break;
+      case 'nextButton':
+         page++;
+         break;
+      case 'lastButton':
+         page = o._contentPageCount - 1;
+         break;
+   }
+   o.doNavigator(page);
+}
+function FDsShareResourceListToolBar_onTypeClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   var page = o._contentPage;
+   switch(name){
+      case 'typeAll':
+         o._controlTypeBitmap.check(true);
+         o._controlTypeMaterial.check(true);
+         o._controlTypeModel.check(true);
+         o._controlTypeTemplate.check(true);
+         o._controlTypeScene.check(true);
+         break;
+      case 'typeNone':
+         o._controlTypeBitmap.check(false);
+         o._controlTypeMaterial.check(false);
+         o._controlTypeModel.check(false);
+         o._controlTypeTemplate.check(false);
+         o._controlTypeScene.check(false);
+         break;
+      case 'typeBitmap':
+         page = 0;
+         break;
+      case 'typeMaterial':
+         page--;
+         break;
+      case 'typeMesh':
+         page++;
+         break;
+      case 'typeTemplate':
+         page = o._contentPageCount - 1;
+         break;
+      case 'typeScene':
+         page = o._contentPageCount - 1;
+         break;
+   }
+   var typeCd = o.makeTypeCd();
+   var search = o._controlSearchEdit.text();
+   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, 0)
+   o.storageSet('resource_type_cd', typeCd);
+   o.storageSet('control_type_bitmap:check', RBoolean.toString(o._controlTypeBitmap.isCheck()))
+   o.storageSet('control_type_material:check', RBoolean.toString(o._controlTypeMaterial.isCheck()))
+   o.storageSet('control_type_model:check', RBoolean.toString(o._controlTypeModel.isCheck()))
+   o.storageSet('control_type_template:check', RBoolean.toString(o._controlTypeTemplate.isCheck()))
+   o.storageSet('control_type_scene:check', RBoolean.toString(o._controlTypeScene.isCheck()))
+   o.storageUpdate();
+}
+function FDsShareResourceListToolBar_construct(){
+   var o = this;
+   o.__base.FUiToolBar.construct.call(o);
+}
+function FDsShareResourceListToolBar_makeTypeCd(){
+   var o = this;
+   var types = '';
+   if(o._controlTypeBitmap.isCheck()){
+      types += '|Bitmap';
+   }
+   if(o._controlTypeMaterial.isCheck()){
+      types += '|Material';
+   }
+   if(o._controlTypeModel.isCheck()){
+      types += '|Model';
+   }
+   if(o._controlTypeTemplate.isCheck()){
+      types += '|Template';
+   }
+   if(o._controlTypeScene.isCheck()){
+      types += '|Scene';
+   }
+   if(types != ''){
+      types = types.substring(1);
+   }
+   if(RString.isEmpty(types)){
+      types = 'All';
+   }
+   return types;
+}
+function FDsShareResourceListToolBar_setNavigator(pageSize, pageCount, page){
+   var o = this;
+   o._contentPageSize = pageSize;
+   o._contentPageCount = pageCount;
+   o._contentPage = page;
+   o._controlPageEdit.setText(page);
+   if(page == 0){
+   }
+}
+function FDsShareResourceListToolBar_doNavigator(page){
+   var o = this;
+   var typeCd = o.makeTypeCd();
+   var search = o._controlSearchEdit.text();
+   page = RInteger.toRange(page, 0, o._contentPageCount);
+   if((o._contentTypeCd != typeCd) || (o._contentSerach != search) || (o._contentPage != page)){
+      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._contentPageSize, page)
+   }
+   o._contentTypeCd = typeCd;
+   o._contentSerach = search;
+}
+function FDsShareResourceListToolBar_storageLoad(){
+   var o = this;
+   o._controlTypeBitmap.check(o.storageGetBoolean('control_type_bitmap:check', true));
+   o._controlTypeMaterial.check(o.storageGetBoolean('control_type_material:check', true));
+   o._controlTypeModel.check(o.storageGetBoolean('control_type_model:check', true));
+   o._controlTypeTemplate.check(o.storageGetBoolean('control_type_template:check', true));
+   o._controlTypeScene.check(o.storageGetBoolean('control_type_scene:check', true));
+   var typeCd = o.makeTypeCd();
+   var types = o.storageGet('resource_type_cd', 'All');
+   var search = o._controlSearchEdit.text();
+   o._frameSet._listContent.serviceSearch(types, search, '', o._contentPageSize, 0)
+}
+function FDsShareResourceListToolBar_dispose(){
+   var o = this;
+   o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsShareResourceMenuBar(o){
+   o = RClass.inherits(this, o, FUiMenuBar);
+   o._frameName      = 'resource.share.resource.MenuBar';
+   o._controlRefresh = null;
+   o.onBuilded       = FDsShareResourceMenuBar_onBuilded;
+   o.onRefreshClick  = FDsShareResourceMenuBar_onRefreshClick;
+   o.construct       = FDsShareResourceMenuBar_construct;
+   o.dispose         = FDsShareResourceMenuBar_dispose;
+   return o;
+}
+function FDsShareResourceMenuBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+}
+function FDsShareResourceMenuBar_onRefreshClick(event){
+}
+function FDsShareResourceMenuBar_construct(){
+   var o = this;
+   o.__base.FUiMenuBar.construct.call(o);
+}
+function FDsShareResourceMenuBar_dispose(){
+   var o = this;
+   o.__base.FUiMenuBar.dispose.call(o);
+}
+function FDsShareResourcePropertyContent(o){
+   o = RClass.inherits(this, o, FDsCanvas);
+   o._activeSpace         = null;
+   o._canvasModeCd        = EDsCanvasMode.Drop;
+   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
+   o._optionRotation      = false;
+   o._rotation            = null;
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._captureRotation     = null;
+   o._dimensional         = null;
+   o._selectObject        = null;
+   o._selectBoundBox      = null;
+   o._selectRenderables   = null;
+   o._cameraMoveRate      = 8;
+   o._cameraKeyRotation   = 3;
+   o._cameraMouseRotation = 0.005;
+   o._templateMatrix      = null;
+   o._templateRenderable  = null;
+   o._templateFace        = null;
+   o._templateTranslation = null;
+   o._templateRotation    = null;
+   o._templateScale       = null;
+   o._templateViewScale   = 0.05;
+   o.onBuild              = FDsShareResourcePropertyContent_onBuild;
+   o.onMouseCaptureStart  = FDsShareResourcePropertyContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsShareResourcePropertyContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsShareResourcePropertyContent_onMouseCaptureStop;
+   o.onEnterFrame         = FDsShareResourcePropertyContent_onEnterFrame;
+   o.onMeshLoad           = FDsShareResourcePropertyContent_onMeshLoad;
+   o.oeResize             = FDsShareResourcePropertyContent_oeResize;
+   o.oeRefresh            = FDsShareResourcePropertyContent_oeRefresh;
+   o.construct            = FDsShareResourcePropertyContent_construct;
+   o.innerSelectDisplay   = FDsShareResourcePropertyContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsShareResourcePropertyContent_innerSelectLayer;
+   o.selectNone           = FDsShareResourcePropertyContent_selectNone;
+   o.selectDisplay        = FDsShareResourcePropertyContent_selectDisplay;
+   o.selectMaterial       = FDsShareResourcePropertyContent_selectMaterial;
+   o.selectRenderable     = FDsShareResourcePropertyContent_selectRenderable;
+   o.switchRotation       = FDsShareResourcePropertyContent_switchRotation;
+   o.reloadRegion         = FDsShareResourcePropertyContent_reloadRegion;
+   o.loadMeshByGuid       = FDsShareResourcePropertyContent_loadMeshByGuid;
+   o.loadMeshByCode       = FDsShareResourcePropertyContent_loadMeshByCode;
+   o.dispose              = FDsShareResourcePropertyContent_dispose;
+   return o;
+}
+function FDsShareResourcePropertyContent_onBuild(p){
+   var o = this;
+   o.__base.FDsCanvas.onBuild.call(o, p);
+}
+function FDsShareResourcePropertyContent_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
+      return;
+   }
+   var r = o._activeSpace.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o.selectRenderable(r);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+   if(r){
+      var d = r.display();
+      o._captureMatrix.assign(d.matrix());
+   }
+   o._templateMatrix.identity();
+   if(o._templateFace){
+      o._templateFaceMatrix.assign(o._templateFace.matrix());
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         if(!r._dragMatrix){
+            r._dragMatrix = new SMatrix3d();
+         }
+         r._dragMatrix.assign(r.matrix());
+      }
+   }
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
+}
+function FDsShareResourcePropertyContent_onMouseCapture(p){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var mc = o._canvasModeCd;
+   var mv = o._canvasMoveCd;
+   var cm = o._captureMatrix;
+   var sm = null;
+   var tf = o._templateFace;
+   var tm = o._templateMatrix;
+   switch(mc){
+      case EDsCanvasMode.Drop:
+         var c = o._activeSpace.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x - cy * o._cameraMouseRotation;
+         r.y = cr.y - cx * o._cameraMouseRotation;
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.tx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.ty = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.tz = cx / 10;
+            }
+         }
+         break;
+      case EDsCanvasMode.Rotation:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.rx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.ry = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.rz = cx / 10;
+            }
+         }
+         break;
+      case EDsCanvasMode.Scale:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.sx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.sy = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.sz = cx / 10;
+            }else if(mv == EDsCanvasDrag.All){
+               tm.sx = cx / 10;
+               tm.sy = cx / 10;
+               tm.sz = cx / 10;
+            }
+         }
+         break;
+   }
+   if(tf){
+      tf.matrix().merge(o._templateFaceMatrix, tm);
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         r._matrix.merge(r._dragMatrix, tm);
+      }
+   }
+}
+function FDsShareResourcePropertyContent_onMouseCaptureStop(p){
+   var o = this;
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+function FDsShareResourcePropertyContent_onEnterFrame(){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
+      return;
+   }
+   var st = s.timer();
+   var ss = st.spanSecond();
+   var c = s.camera();
+   var d = o._cameraMoveRate * ss;
+   var r = o._cameraKeyRotation * ss;
+   var kf = RKeyboard.isPress(EStageKey.Forward);
+   var kb = RKeyboard.isPress(EStageKey.Back);
+   if(kf && !kb){
+      c.doWalk(d);
+   }
+   if(!kf && kb){
+      c.doWalk(-d);
+   }
+   var kq = RKeyboard.isPress(EStageKey.Up);
+   var ke = RKeyboard.isPress(EStageKey.Down);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
+   var kd = RKeyboard.isPress(EStageKey.RotationRight);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kz = RKeyboard.isPress(EStageKey.RotationUp);
+   var kw = RKeyboard.isPress(EStageKey.RotationDown);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var display = o._activeSpace._display;
+      var matrix = display.matrix();
+      matrix.setRotation(matrix.rx, matrix.ry + r.y, matrix.rz);
+      matrix.update();
+      r.y = 0.01;
+   }
+}
+function FDsShareResourcePropertyContent_onMeshLoad(p){
+   var o = this;
+   var m = o._activeSpace;
+   var g = m.region();
+   var rc = g.camera();
+   rc.setPosition(0, 3, -10);
+   rc.lookAt(0, 3, 0);
+   rc.update();
+   var h = o._hPanel;
+   var rp = rc.projection();
+   rp.size().set(h.width, h.height);
+   rp._angle = 45;
+   rp.update();
+   var l = g.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   o.processLoadListener(o);
+}
+function FDsShareResourcePropertyContent_oeResize(p){
+   var o = this;
+   o.__base.FDsCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeSpace;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
+   }
+   return EEventStatus.Stop;
+}
+function FDsShareResourcePropertyContent_oeRefresh(p){
+   return EEventStatus.Stop;
+}
+function FDsShareResourcePropertyContent_construct(){
+   var o = this;
+   o.__base.FDsCanvas.construct.call(o);
+   o._capturePosition = new SPoint2();
+   o._captureMatrix = new SMatrix3d();
+   o._templateMatrix = new SMatrix3d();
+   o._templateFaceMatrix = new SMatrix3d();
+   o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+   o._selectRenderables = new TObjects();
+}
+function FDsShareResourcePropertyContent_innerSelectDisplay(p){
+   var o = this;
+   var s = p.renderables();
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var r = s.getAt(i);
+      if(RClass.isClass(r, FDsSceneRenderable)){
+         o._selectRenderables.push(r);
+         r.showBoundBox();
+      }
+   }
+}
+function FDsShareResourcePropertyContent_innerSelectLayer(p){
+   var o = this;
+   var s = p.displays();
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var d = s.getAt(i);
+      o.innerSelectDisplay(d)
+   }
+}
+function FDsShareResourcePropertyContent_selectNone(){
+   var o = this;
+   o._selectObject = null;
+   var s = o._selectRenderables;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var r = s.get(i);
+      r.hideBoundBox();
+   }
+   o._selectRenderables.clear();
+}
+function FDsShareResourcePropertyContent_selectDisplay(p){
+   var o = this;
+   o.selectNone();
+   o._selectObject = p;
+   o.innerSelectDisplay(p);
+}
+function FDsShareResourcePropertyContent_selectMaterial(p){
+   var o = this;
+   o.selectNone();
+   o._selectObject = p;
+   var d = p._display;
+   var s = d.renderables();
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var r = s.get(i);
+      if(r._materialReference == p){
+         o._selectRenderables.push(r);
+         r._optionSelected = true;
+         r.showBoundBox();
+      }
+   }
+}
+function FDsShareResourcePropertyContent_selectRenderable(p){
+   var o = this;
+   return;
+   var sr = p;
+   if(sr){
+      var n = sr._renderable._resource._code;
+      switch(n){
+         case 'ms_translation_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_translation_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_translation_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_rotation_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_rotation_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_rotation_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_scale_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_scale_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_scale_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = sr;
+            return;
+         case 'ms_scale_all':
+            o._canvasMoveCd = EDsCanvasDrag.All;
+            o._templateRenderable = sr;
+            return;
+         default:
+            o._canvasMoveCd = EDsCanvasDrag.Unknown;
+            o._templateRenderable = null;
+      }
+   }
+   o.selectNone();
+   if(p){
+      o._selectRenderables.push(p);
+      p._optionSelected = true;
+      p.showBoundBox();
+      o._workspace._catalog.showObject(p);
+   }
+   var t = o._templateTranslation;
+   var r = o._templateRotation;
+   var s = o._templateScale;
+   var mc = o._canvasModeCd;
+   switch(mc){
+      case EDsCanvasMode.Drop:
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         t.setVisible(sr != null);
+         r.hide();
+         s.hide();
+         o._templateFace = t;
+         break;
+      case EDsCanvasMode.Rotation:
+         t.hide();
+         r.setVisible(sr != null);
+         s.hide();
+         o._templateFace = r;
+         break;
+      case EDsCanvasMode.Scale:
+         t.hide();
+         r.hide();
+         s.setVisible(sr != null);
+         o._templateFace = s;
+         break;
+   }
+   var st = o._templateFace;
+   if(sr && st){
+      var d = sr.display();
+      var m = st.matrix();
+      m.assign(d.matrix());
+      m.setScaleAll(o._templateViewScale);
+      m.update();
+   }
+}
+function FDsShareResourcePropertyContent_switchMode(p){
+   var o = this;
+   o._canvasModeCd = p;
+   o.selectRenderable(o._selectRenderable);
+}
+function FDsShareResourcePropertyContent_switchRotation(p){
+   this._optionRotation = p;
+}
+function FDsShareResourcePropertyContent_reloadRegion(region){
+   var o = this;
+   var resource = region.resource();
+   o._cameraMoveRate = resource.moveSpeed();
+   o._cameraKeyRotation = resource.rotationKeySpeed();
+   o._cameraMouseRotation = resource.rotationMouseSpeed();
+}
+function FDsShareResourcePropertyContent_loadMeshByGuid(p){
+   var o = this;
+   var rmc = RConsole.find(FE3dMeshConsole);
+   if(o._activeSpace != null){
+   }
+   var space = o._activeSpace = rmc.allocByGuid(o, p);
+   space.addLoadListener(o, o.onMeshLoad);
+   space._layer.pushRenderable(o._dimensional);
+   RStage.register('mesh3d', space);
+}
+function FDsShareResourcePropertyContent_loadMeshByCode(p){
+   var o = this;
+   var rmc = RConsole.find(FE3dMeshConsole);
+   if(o._activeSpace != null){
+      rmc.free(o._activeSpace);
+   }
+   var space = o._activeSpace = rmc.allocByCode(o, p);
+   space.addLoadListener(o, o.onMeshLoad);
+   space._layer.pushRenderable(o._dimensional);
+   RStage.register('mesh3d', space);
+}
+function FDsShareResourcePropertyContent_dispose(){
+   var o = this;
+   o._rotation = RObject.dispose(o._rotation);
+x   // 父处理
+   o.__base.FDsCanvas.dispose.call(o);
+}
+function FDsShareResourcePropertyToolBar(o){
+   o = RClass.inherits(this, o, FUiToolBar);
+   o._frameName             = 'resource.resource.PropertyToolBar';
+   o._controlInsertButton   = null;
+   o._controlUpdateButton   = null;
+   o._controlDeleteButton   = null;
+   o._controlRotationButton = null;
+   o.onBuilded              = FDsShareResourcePropertyToolBar_onBuilded;
+   o.onUpdateClick          = FDsShareResourcePropertyToolBar_onUpdateClick;
+   o.onRotationClick        = FDsShareResourcePropertyToolBar_onRotationClick;
+   o.construct              = FDsShareResourcePropertyToolBar_construct;
+   o.dispose                = FDsShareResourcePropertyToolBar_dispose;
+   return o;
+}
+function FDsShareResourcePropertyToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
+   o._controlRotationButton.addClickListener(o, o.onRotationClick);
+}
+function FDsShareResourcePropertyToolBar_onUpdateClick(event){
+   var o = this;
+}
+function FDsShareResourcePropertyToolBar_onRotationClick(event){
+   var o = this;
+   var previewContent = o._workspace._previewContent;
+   previewContent.switchRotation(event.checked);
+}
+function FDsShareResourcePropertyToolBar_construct(){
+   var o = this;
+   o.__base.FUiToolBar.construct.call(o);
+}
+function FDsShareResourcePropertyToolBar_dispose(){
+   var o = this;
+   o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsShareResourceTabBar(o){
+   o = RClass.inherits(this, o, FUiTabBar);
+   o._frameName             = 'design3d.resource.TabBar';
+   o._resourceTypeCd        = 'mesh';
+   o._controlPictureButton  = null;
+   o._controlSoundButton    = null;
+   o._controlVidioButton    = null;
+   o._controlTextureButton  = null;
+   o._controlMaterialButton = null;
+   o._controlMeshButton     = null;
+   o._controlModelButton    = null;
+   o._controlTemplateButton = null;
+   o._controlSceneButton    = null;
+   o.onBuilded              = FDsShareResourceTabBar_onBuilded;
+   o.onButtonClick          = FDsShareResourceTabBar_onButtonClick;
+   o.construct              = FDsShareResourceTabBar_construct;
+   o.dispose                = FDsShareResourceTabBar_dispose;
+   return o;
+}
+function FDsShareResourceTabBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+   o._controlPictureButton.addClickListener(o, o.onButtonClick);
+   o._controlSoundButton.addClickListener(o, o.onButtonClick);
+   o._controlVidioButton.addClickListener(o, o.onButtonClick);
+   o._controlTextureButton.addClickListener(o, o.onButtonClick);
+   o._controlMaterialButton.addClickListener(o, o.onButtonClick);
+   o._controlMeshButton.addClickListener(o, o.onButtonClick);
+   o._controlModelButton.addClickListener(o, o.onButtonClick);
+   o._controlTemplateButton.addClickListener(o, o.onButtonClick);
+   o._controlSceneButton.addClickListener(o, o.onButtonClick);
+}
+function FDsShareResourceTabBar_onButtonClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   o._resourceTypeCd = name;
+   R
+}
+function FDsShareResourceTabBar_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsShareResourceTabBar_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
+function FDsShareResourceWorkspace(o){
+   o = RClass.inherits(this, o, FUiWorkspace);
+   o._frameName            = 'resource.share.resource.Workspace';
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+   o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+   o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+   o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+   o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._resourceTypeCd       = 'picture';
+   o._frameToolBar         = null;
+   o._frameStatusBar       = null;
+   o._frameCatalog         = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSearch          = null;
+   o._frameSearchToolbar   = null;
+   o._frameSearchContent   = null;
+   o._framePreview         = null;
+   o._framePreviewToolbar  = null;
+   o._framePreviewContent  = null;
+   o._propertyFrames       = null;
+   o.onBuilded             = FDsShareResourceWorkspace_onBuilded;
+   o.onMeshLoad            = FDsShareResourceWorkspace_onMeshLoad;
+   o.onCatalogSelected     = FDsShareResourceWorkspace_onCatalogSelected;
+   o.construct             = FDsShareResourceWorkspace_construct;
+   o.findPropertyFrame     = FDsShareResourceWorkspace_findPropertyFrame;
+   o.switchContent         = FDsShareResourceWorkspace_switchContent;
+   o.load                  = FDsShareResourceWorkspace_load;
+   o.dispose               = FDsShareResourceWorkspace_dispose;
+   return o;
+}
+function FDsShareResourceWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   var frame = o._frameToolBar = o.searchControl('toolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameBody = o.searchControl('bodyFrame');
+   frame._hPanel.className = o.styleName('Catalog_Ground');
+   var frame = o._frameStatusBar = o.searchControl('statusFrame');
+   frame._hPanel.className = o.styleName('Statusbar_Ground');
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   var c = o._toolbar = RClass.create(FDsShareResourceMenuBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.appendChild(c._hPanel);
+   var c = o._tabBar = RClass.create(FDsShareResourceTabBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '450px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(c._hPanel);
+   o._frameToolBar._hPanel.appendChild(hTable);
+   var frameSet = o._frameSet = RClass.create(FDsShareResourceFrameSet);
+   frameSet._workspace = o;
+   frameSet.buildDefine(p);
+   o._frameBody.push(frameSet);
+   frameSet.switchContent(o._resourceTypeCd);
+}
+function FDsShareResourceWorkspace_onMeshLoad(p){
+   var o = this;
+   o._activeSpace = p._activeSpace;
+   o._catalog.buildSpace(o._activeSpace);
+}
+function FDsShareResourceWorkspace_onCatalogSelected(p, pc){
+   var o = this;
+   var space = o._activeSpace;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      f.show();
+      f.loadObject(space, space);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+      f.show();
+      f.loadObject(space, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsShareResourceWorkspace_construct(){
+   var o = this;
+   o.__base.FUiWorkspace.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsShareResourceWorkspace_findPropertyFrame(p){
+   var o = this;
+   var f = o._propertyFrames.get(p);
+   if(!f){
+      var fc = RConsole.find(FFrameConsole);
+      f = fc.get(o, p, o._framePreview._hContainer);
+      f._workspace = o;
+      o._propertyFrames.set(p, f);
+   }
+   return f;
+}
+function FDsShareResourceWorkspace_switchContent(typeCd){
+   this._frameSet.switchContent(typeCd);
+}
+function FDsShareResourceWorkspace_load(){
+   var o = this;
+}
+function FDsShareResourceWorkspace_dispose(){
+   var o = this;
+   o.__base.FUiWorkspace.dispose.call(o);
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
+}
+function FDsShareSceneCanvas(o){
+   o = RClass.inherits(this, o, FDsSceneCanvas);
+   return o;
+}
+function FDsShareSceneCanvasToolBar(o){
+   o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+   o._frameName = 'resource.share.scene.CanvasToolBar';
+   return o;
+}
+function FDsShareSceneCatalog(o){
+   o = RClass.inherits(this, o, FDsSceneCatalog);
+   return o;
+}
+function FDsShareSceneCatalogToolBar(o){
+   o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+   o._frameName = 'resource.share.scene.CatalogToolBar';
+   return o;
+}
+function FDsShareSceneFrameSet(o){
+   o = RClass.inherits(this, o, FDsSceneFrameSet);
+   o._frameName        = 'resource.share.scene.FrameSet';
+   o.onBuilded         = FDsShareSceneFrameSet_onBuilded;
+   o.onCatalogSelected = FDsShareSceneFrameSet_onCatalogSelected;
+   return o;
+}
+function FDsShareSceneFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
+   var toolbar = o._catalogToolbar = RClass.create(FDsShareSceneCatalogToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCatalogToolBar.push(toolbar);
+   var catalog = o._catalogContent = RClass.create(FDsShareSceneCatalog);
+   catalog._frameSet = o;
+   catalog.build(event);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalogContent.push(catalog);
+   var toolbar = o._canvasToolbar = RClass.create(FDsShareSceneCanvasToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCanvasToolBar.push(toolbar);
+   var canvas = o._canvasContent = RClass.create(FDsShareSceneCanvas);
+   canvas._frameSet = o;
+   canvas._toolbar = o._canvasToolbar;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
+   canvas.build(event);
+   o._frameCanvasContent.push(canvas);
+   var toolbar = o._propertyToolbar = RClass.create(FDsShareScenePropertyToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._framePropertyToolBar.push(toolbar);
+}
+function FDsShareSceneFrameSet_onCatalogSelected(select, flag){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var canvas = o._canvasContent;
+   o.hidePropertyFrames();
+   if(RClass.isClass(select, FE3dScene)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dTechnique)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRegion)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dCamera)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(select == 'layers'){
+      if(flag){
+         canvas.selectLayers(select);
+      }
+   }else if(RClass.isClass(select, FE3dSceneLayer)){
+      if(flag){
+         canvas.selectLayer(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneDisplay)){
+      if(flag){
+         canvas.selectDisplay(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dSceneMaterial)){
+      if(flag){
+         canvas.selectMaterial(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dAnimation)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dRenderable)){
+      if(flag){
+         canvas.selectRenderable(select);
+      }
+      var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else{
+      throw new TError('Unknown select type. (select={1})', select);
+   }
+}
+function FDsShareSceneMenuBar(o){
+   o = RClass.inherits(this, o, FDsSceneMenuBar);
+   o._frameName = 'resource.share.scene.MenuBar';
+   o.onBuilded  = FDsShareSceneMenuBar_onBuilded;
+   return o;
+}
+function FDsShareSceneMenuBar_onBuilded(p){
+   var o = this;
+   o.__base.FDsSceneMenuBar.onBuilded.call(o, p);
+   o._controlExecute.addClickListener(o, o.onExecuteClick);
+}
+function FDsShareScenePropertyToolBar(o){
+   o = RClass.inherits(this, o, FDsScenePropertyToolBar);
+   o._frameName = 'resource.share.scene.PropertyToolBar';
+   return o;
+}
+function FDsShareSceneWorkspace(o){
+   o = RClass.inherits(this, o, FDsSceneWorkspace);
+   o._frameName            = 'resource.share.scene.Workspace';
+   o.onBuilded             = FDsShareSceneWorkspace_onBuilded;
+   o.onSceneLoad           = FDsShareSceneWorkspace_onSceneLoad;
+   o.onCatalogSelected     = FDsShareSceneWorkspace_onCatalogSelected;
+   o.construct             = FDsShareSceneWorkspace_construct;
+   o.findPropertyFrame     = FDsShareSceneWorkspace_findPropertyFrame;
+   o.loadScene             = FDsShareSceneWorkspace_loadScene;
+   o.dispose               = FDsShareSceneWorkspace_dispose;
+   return o;
+}
+function FDsShareSceneWorkspace_onBuilded(p){
+   var o = this;
+   o.__base.FDsSceneWorkspace.onBuilded.call(o, p);
+   var f = o._frameToolBar = o.searchControl('toolbarFrame');
+   f._hPanel.className = o.styleName('Toolbar_Ground');
+   var f = o._frameCatalog = o.searchControl('catalogFrame');
+   f._hPanel.className = o.styleName('Catalog_Ground');
+   var f = o._frameWorkspace = o.searchControl('spaceFrame');
+   f._hPanel.className = o.styleName('Workspace_Ground');
+   var f = o._frameProperty = o.searchControl('propertyFrame');
+   f._hPanel.className = o.styleName('Property_Ground');
+   var f = o._frameStatusBar = o.searchControl('statusFrame');
+   f._hPanel.className = o.styleName('Statusbar_Ground');
+   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
+   var f = o._propertySpliter = o.searchControl('propertySpliter');
+   f.setAlignCd(EUiAlign.Right);
+   f.setSizeHtml(o._frameProperty._hPanel);
+   var c = o._toolbar = RClass.create(FDsShareSceneMenuBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   o._frameToolBar.push(c);
+   var c = o._catalog = RClass.create(FDsShareSceneCatalog);
+   c._workspace = o;
+   c.build(p);
+   c.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalog.push(c);
+   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   var c = o._canvasToolbar = RClass.create(FDsShareSceneCanvasToolBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   o._canvasToolbarFrame.push(c);
+   var f = o._canvasFrame = o.searchControl('canvasFrame');
+   var c = o._canvas = RClass.create(FDsShareSceneCanvas);
+   c._workspace = o;
+   c._toolbar = o._canvasToolbar;
+   c.addLoadListener(o, o.onSceneLoad);
+   c._hParent = f._hPanel;
+   c._hParent.style.backgroundColor = '#000000';
+   c.build(p);
+   o._canvasFrame.push(c);
+}
+function FDsShareSceneWorkspace_onSceneLoad(p){
+   var o = this;
+   var t = o._activeScene = p._activeScene;
+   o._catalog.buildScene(t);
+}
+function FDsShareSceneWorkspace_onCatalogSelected(p, pc){
+   var o = this;
+   var s = o._activeScene;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(p, FE3dScene)){
+      var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(p == 'layers'){
+      if(pc){
+         o._canvas.selectLayers(p);
+      }
+   }else if(RClass.isClass(p, FE3dSceneLayer)){
+      if(pc){
+         o._canvas.selectLayer(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      if(pc){
+         o._canvas.selectDisplay(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      if(pc){
+         o._canvas.selectMaterial(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3rAnimation)){
+      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dRenderable)){
+      if(pc){
+         o._canvas.selectRenderable(p);
+      }
+      var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+function FDsShareSceneWorkspace_construct(){
+   var o = this;
+   o.__base.FDsSceneWorkspace.construct.call(o);
+   o._propertyFrames = new TDictionary();
+}
+function FDsShareSceneWorkspace_findPropertyFrame(p){
+   var o = this;
+   var frame = o._propertyFrames.get(p);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, p, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(p, frame);
+   }
+   return frame;
+}
+function FDsShareSceneWorkspace_loadScene(p){
+   var o = this;
+   o._sceneCode = p;
+   o._canvas.loadScene(p);
+}
+function FDsShareSceneWorkspace_dispose(){
+   var o = this;
+   o.__base.FDsSceneWorkspace.dispose.call(o);
    o._propertyFrames.dispose();
    o._propertyFrames = null;
 }

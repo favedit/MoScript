@@ -176,7 +176,9 @@ function FDrResourceConsole(o){
    o._resources     = null;
    o.construct      = FDrResourceConsole_construct;
    o.doList         = FDrResourceConsole_doList;
+   o.doShare        = FDrResourceConsole_doShare;
    o.doDelete       = FDrResourceConsole_doDelete;
+   o.doListShare    = FDrResourceConsole_doListShare;
    o.doFolderCreate = FDrResourceConsole_doFolderCreate;
    o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
    o.doFolderDelete = FDrResourceConsole_doFolderDelete;
@@ -192,9 +194,19 @@ function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
    var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
+function FDrResourceConsole_doShare(guid, shareCd){
+   var o = this;
+   var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
 function FDrResourceConsole_doDelete(typeCd, guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrResourceConsole_doListShare(typeCd, search, order, pageSize, page){
+   var o = this;
+   var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 function FDrResourceConsole_doFolderCreate(parentGuid, code, label){

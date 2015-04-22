@@ -63,6 +63,7 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
          item._typeCd = xnode.get('type_cd');
+         item._shareCd = xnode.get('share_cd');
          item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(item._typeCd);

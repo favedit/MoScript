@@ -25,6 +25,8 @@ function FDsResourceMenuBar(o){
    o.onDeleteLoad          = FDsResourceMenuBar_onDeleteLoad;
    o.onDeleteExecute       = FDsResourceMenuBar_onDeleteExecute;
    o.onDeleteClick         = FDsResourceMenuBar_onDeleteClick;
+   o.onShareLoad           = FDsResourceMenuBar_onShareLoad;
+   o.onShareClick          = FDsResourceMenuBar_onShareClick;
    //..........................................................
    // @method
    o.construct             = FDsResourceMenuBar_construct;
@@ -47,6 +49,8 @@ function FDsResourceMenuBar_onBuilded(p){
    o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
    o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlShareOpen.addClickListener(o, o.onShareClick);
+   o._controlShareClose.addClickListener(o, o.onShareClick);
 }
 
 //==========================================================
@@ -150,6 +154,46 @@ function FDsResourceMenuBar_onDeleteClick(event){
    // 删除确认窗口
    var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
    dialog.addResultListener(o, o.onDeleteExecute);
+}
+
+//==========================================================
+// <T>共享加载处理。</T>
+//
+// @method
+// @param event:SClickEvent 点击事件
+//==========================================================
+function FDsResourceMenuBar_onShareLoad(){
+   var o = this;
+   // 隐藏窗口处理
+   RConsole.find(FUiDesktopConsole).hide();
+}
+
+//==========================================================
+// <T>共享点击处理。</T>
+//
+// @method
+// @param event:SClickEvent 点击事件
+//==========================================================
+function FDsResourceMenuBar_onShareClick(event){
+   var o = this;
+   var item = o._frameSet._listContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var sender = event.sender;
+   var name = sender.name();
+   var shareCd = null;
+   if(name == 'shareOpen'){
+      shareCd = 'Public';
+   }else{
+      shareCd = 'Private';
+   }
+   var guid = item._guid;
+   // 禁止窗口处理
+   RConsole.find(FUiDesktopConsole).showUploading();
+   // 发送数据请求
+   var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
+   connection.addLoadListener(o, o.onShareLoad);
 }
 
 //==========================================================

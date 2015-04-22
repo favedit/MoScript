@@ -182,23 +182,23 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.TemplateFrameSet){
+      }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
          // 创建菜单
-         var menuBar = RClass.create(FDsTemplateMenuBar);
+         var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
          // 创建框架
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsTemplateFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.SceneFrameSet){
+      }else if(name == EDsFrameSet.PrivateSceneFrameSet){
          // 创建菜单
-         var menuBar = RClass.create(FDsSceneMenuBar);
+         var menuBar = RClass.create(FDsPrivateSceneMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
          // 创建框架
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSceneFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -244,10 +244,10 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       case EDsFrameSet.ModelFrameSet:
          frameSet.loadByGuid(guid);
          break;
-      case EDsFrameSet.TemplateFrameSet:
+      case EDsFrameSet.PrivateTemplateFrameSet:
          frameSet.loadByGuid(guid);
          break;
-      case EDsFrameSet.SceneFrameSet:
+      case EDsFrameSet.PrivateSceneFrameSet:
          frameSet.loadByGuid(guid);
          break;
       default:
@@ -295,11 +295,11 @@ function FDsSolutionWorkspace_load(){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
-   }else if(code == EDsFrameSet.TemplateFrameSet){
+   }else if(code == EDsFrameSet.PrivateTemplateFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
-   }else if(code == EDsFrameSet.SceneFrameSet){
+   }else if(code == EDsFrameSet.PrivateSceneFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)

@@ -8,8 +8,8 @@ function FDsSceneCatalog(o){
    o = RClass.inherits(this, o, FDsCatalog);
    //..........................................................
    // @const
-   o._iconView             = 'design3d.scene.view';
-   o._iconViewNot          = 'design3d.scene.viewno';
+   o._iconView             = 'resource.scene.view';
+   o._iconViewNot          = 'resource.scene.viewno';
    //..........................................................
    // @attributes
    o._displays             = null;

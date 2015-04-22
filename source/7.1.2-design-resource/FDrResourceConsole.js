@@ -17,7 +17,10 @@ function FDrResourceConsole(o){
    o.construct      = FDrResourceConsole_construct;
    // @method
    o.doList         = FDrResourceConsole_doList;
+   o.doShare        = FDrResourceConsole_doShare;
    o.doDelete       = FDrResourceConsole_doDelete;
+   // @method
+   o.doListShare    = FDrResourceConsole_doListShare;
    // @method
    o.doFolderCreate = FDrResourceConsole_doFolderCreate;
    o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
@@ -55,6 +58,19 @@ function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
 }
 
 //==========================================================
+// <T>分享一条数据记录。</T>
+//
+// @method
+// @param guid:String 唯一编号
+// @param shareCd:String 分享类型
+//==========================================================
+function FDrResourceConsole_doShare(guid, shareCd){
+   var o = this;
+   var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+
+//==========================================================
 // <T>删除一条数据记录。</T>
 //
 // @method
@@ -64,6 +80,23 @@ function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
 function FDrResourceConsole_doDelete(typeCd, guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+
+//==========================================================
+// <T>查询数据内容。</T>
+//
+// @method
+// @param typeCd:String 类型代码
+// @param serach:String 搜索内容
+// @param order:String 排序内容
+// @param pageSize:Integer 分页大小
+// @param page:Integer 分页
+//==========================================================
+function FDrResourceConsole_doListShare(typeCd, search, order, pageSize, page){
+   var o = this;
+   // 发送数据请求
+   var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 

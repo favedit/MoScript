@@ -9,7 +9,7 @@ function FDsScenePropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName                   = 'resource.scene.PropertyToolBar';
+   o._frameName                   = 'resource.share.scene.PropertyToolBar';
    //..........................................................
    // @attribute
    o._controlRefresh   = null;

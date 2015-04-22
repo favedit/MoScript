@@ -7,8 +7,9 @@
 function FDsResourceListItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
    //..........................................................
-   o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-   o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+   o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
+   o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
+   o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
    //..........................................................
    // @event
    o.onBuild         = FDsResourceListItem_onBuild;
@@ -35,7 +36,7 @@ function FDsResourceListItem_onBuild(p){
    // 建立类型
    o._hLine1.className = o.styleName('TypePanel');
    o._hLine1.vAlign = 'top';
-   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
 }
 
 //==========================================================
@@ -56,6 +57,12 @@ function FDsResourceListItem_setTypeLabel(label){
 //==========================================================
 function FDsResourceListItem_refreshStyle(){
    var o = this;
+   // 设置样式
+   if(o._shareCd == 'Public'){
+      o._hTypeLabel.className = o.styleName('TypePublicLabel');
+   }else{
+      o._hTypeLabel.className = o.styleName('TypePrivateLabel');
+   }
    // 建立控件
    var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';

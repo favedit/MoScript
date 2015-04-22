@@ -7,9 +7,6 @@
 function FDsSceneMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName     = 'resource.scene.MenuBar';
-   //..........................................................
    // @attribute
    o._refreshButton = null;
    o._saveButton    = null;
@@ -40,11 +37,6 @@ function FDsSceneMenuBar(o){
 function FDsSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   //..........................................................
-   // 注册事件
-   o._controlSave.addClickListener(o, o.onSaveClick);
-   o._controlCapture.addClickListener(o, o.onCaptureClick);
-   o._controlExecute.addClickListener(o, o.onExecuteClick);
 }
 
 //==========================================================
