@@ -11,9 +11,6 @@ function FDsModelCatalogContent(o){
    o._iconView             = 'design3d.mesh.view';
    o._iconViewNot          = 'design3d.mesh.viewno';
    //..........................................................
-   // @attributes
-   o._activeSpace          = null;
-   //..........................................................
    // @event
    o.onBuild               = FDsModelCatalogContent_onBuild;
    // @event
@@ -222,8 +219,9 @@ function FDsModelCatalogContent_buildDisplay(parent, display){
 //==========================================================
 function FDsModelCatalogContent_buildSpace(space){
    var o = this;
+   o.clearAllNodes();
+   // 获得资源
    var resource = space.resource();
-   o._activeSpace = space;
    // 清空节点
    o.clear();
    // 创建场景节点

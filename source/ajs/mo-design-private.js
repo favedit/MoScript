@@ -3102,8 +3102,8 @@ function FDsPrivateTemplateWorkspace_dispose(){
    var o = this;
    o.__base.FUiWorkspace.dispose.call(o);
 }
-function FDsPrivateSceneCanvas(o){
-   o = RClass.inherits(this, o, FDsSceneCanvas);
+function FDsPrivateSceneCanvasContent(o){
+   o = RClass.inherits(this, o, FDsSceneCanvasContent);
    return o;
 }
 function FDsPrivateSceneCanvasToolBar(o){
@@ -3111,8 +3111,8 @@ function FDsPrivateSceneCanvasToolBar(o){
    o._frameName = 'resource.private.scene.CanvasToolBar';
    return o;
 }
-function FDsPrivateSceneCatalog(o){
-   o = RClass.inherits(this, o, FDsSceneCatalog);
+function FDsPrivateSceneCatalogContent(o){
+   o = RClass.inherits(this, o, FDsSceneCatalogContent);
    return o;
 }
 function FDsPrivateSceneCatalogToolBar(o){
@@ -3122,9 +3122,8 @@ function FDsPrivateSceneCatalogToolBar(o){
 }
 function FDsPrivateSceneFrameSet(o){
    o = RClass.inherits(this, o, FDsSceneFrameSet);
-   o._frameName        = 'resource.private.scene.FrameSet';
-   o.onBuilded         = FDsPrivateSceneFrameSet_onBuilded;
-   o.onCatalogSelected = FDsPrivateSceneFrameSet_onCatalogSelected;
+   o._frameName = 'resource.private.scene.FrameSet';
+   o.onBuilded  = FDsPrivateSceneFrameSet_onBuilded;
    return o;
 }
 function FDsPrivateSceneFrameSet_onBuilded(event){
@@ -3134,7 +3133,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsPrivateSceneCatalog);
+   var catalog = o._catalogContent = RClass.create(FDsPrivateSceneCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -3143,7 +3142,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsPrivateSceneCanvas);
+   var canvas = o._canvasContent = RClass.create(FDsPrivateSceneCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -3156,74 +3155,6 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);
-}
-function FDsPrivateSceneFrameSet_onCatalogSelected(select, flag){
-   var o = this;
-   var space = o._activeSpace;
-   if(!space){
-      return;
-   }
-   var canvas = o._canvasContent;
-   o.hidePropertyFrames();
-   if(RClass.isClass(select, FE3dScene)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FG3dTechnique)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dRegion)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dCamera)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FG3dDirectionalLight)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(select == 'layers'){
-      if(flag){
-         canvas.selectLayers(select);
-      }
-   }else if(RClass.isClass(select, FE3dSceneLayer)){
-      if(flag){
-         canvas.selectLayer(select);
-      }
-      var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dSceneDisplay)){
-      if(flag){
-         canvas.selectDisplay(select);
-      }
-      var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dSceneMaterial)){
-      if(flag){
-         canvas.selectMaterial(select);
-      }
-      var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dAnimation)){
-      var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else if(RClass.isClass(select, FE3dRenderable)){
-      if(flag){
-         canvas.selectRenderable(select);
-      }
-      var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
-      frame.show();
-      frame.loadObject(space, select);
-   }else{
-      throw new TError('Unknown select type. (select={1})', select);
-   }
 }
 function FDsPrivateSceneMenuBar(o){
    o = RClass.inherits(this, o, FDsSceneMenuBar);

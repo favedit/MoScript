@@ -41,7 +41,6 @@ function FDsBitmapCanvasContent(o){
    o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
    o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
    o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsBitmapCanvasContent_onEnterFrame;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    //..........................................................
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
@@ -172,64 +171,6 @@ function FDsBitmapCanvasContent_onMouseCaptureStop(p){
    var o = this;
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
-
-//==========================================================
-// <T>每帧处理。</T>
-//
-// @method
-//==========================================================
-function FDsBitmapCanvasContent_onEnterFrame(){
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
-      return;
-   }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   //..........................................................
-   // 按键处理
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   // 按键前后移动
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
-   }
-   if(!kf && kb){
-      c.doWalk(-d);
-   }
-   // 按键上下移动
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   // 按键左右旋转
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   // 按键上下旋转
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   // 更新相机
-   c.update();
 }
 
 //==========================================================

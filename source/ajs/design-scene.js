@@ -1,5 +1,6 @@
 function FDsSceneCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
+   o._resourceTypeCd      = EE3sResource.Scene;
    o._rotation            = null;
    o._optionRotation      = false;
    o._capturePosition     = null;
@@ -34,7 +35,6 @@ function FDsSceneCanvasContent(o){
    o.switchMode           = FDsSceneCanvasContent_switchMode;
    o.switchPlay           = FDsSceneCanvasContent_switchPlay;
    o.switchMovie          = FDsSceneCanvasContent_switchMovie;
-   o.capture              = FDsSceneCanvasContent_capture;
    o.loadByGuid           = FDsSceneCanvasContent_loadByGuid;
    o.dispose              = FDsSceneCanvasContent_dispose;
    return o;
@@ -386,24 +386,6 @@ function FDsSceneCanvasContent_switchMovie(flag){
       }
    }
 }
-function FDsSceneCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Scene + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
 function FDsSceneCanvasContent_loadByGuid(guid){
    var o = this;
    var sceneConsole = RConsole.find(FE3dInstanceConsole);
@@ -420,6 +402,7 @@ function FDsSceneCanvasContent_loadByGuid(guid){
    space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
    if(!space._linked){
       RConsole.find(FUiDesktopConsole).showLoading();
+      space._layer.pushRenderable(o._dimensional);
       space.addLoadListener(o, o.onDataLoaded);
       space._linked = true;
    }

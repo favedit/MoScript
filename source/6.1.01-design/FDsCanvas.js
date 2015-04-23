@@ -7,6 +7,12 @@
 function FDsCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
    //..........................................................
+   // @property
+   o._servicePreview      = 'cloud.resource.preview';
+   o._resourceTypeCd      = null;
+   //..........................................................
+   // @attribute
+   o._optionRotation      = false;
    // @attribute
    o._activeSpace         = null;
    // @attribute
@@ -26,7 +32,6 @@ function FDsCanvas(o){
    // @attribute
    o._dimensional         = null;
    o._rotation            = null;
-   o._rotationAble        = false;
    //..........................................................
    // @event
    o.onBuild              = FDsCanvas_onBuild;
@@ -44,7 +49,9 @@ function FDsCanvas(o){
    o.activeSpace          = FDsCanvas_activeSpace;
    // @method
    o.switchSize           = FDsCanvas_switchSize;
+   o.switchRotation       = FDsCanvas_switchRotation;
    o.reloadRegion         = FDsCanvas_reloadRegion;
+   o.capture              = FDsCanvas_capture;
    // @method
    o.dispose              = FDsCanvas_dispose;
    return o;
@@ -54,24 +61,24 @@ function FDsCanvas(o){
 // <T>构建处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FDsCanvas_onBuild(p){
+function FDsCanvas_onBuild(event){
    var o = this;
-   o.__base.FUiCanvas.onBuild.call(o, p);
+   o.__base.FUiCanvas.onBuild.call(o, event);
    // 创建渲染环境
-   var h = o._hPanel;
-   h.__linker = o;
-   h.style.width = '100%';
-   h.style.height = '100%';
+   var hPanel = o._hPanel;
+   hPanel.__linker = o;
+   hPanel.style.width = '100%';
+   hPanel.style.height = '100%';
    // 创建渲染环境
-   var a = new Object();
-   a.alpha = false;
-   a.antialias = true;
-   var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
+   var parameters = new Object();
+   parameters.alpha = false;
+   parameters.antialias = true;
+   var context = o._graphicContext = REngine3d.createContext(FWglContext, hPanel, parameters);
    // 创建坐标系
    var dimensional = o._dimensional = RClass.create(FE3dDimensional);
-   dimensional.linkGraphicContext(c);
+   dimensional.linkGraphicContext(context);
    dimensional.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
@@ -98,6 +105,8 @@ function FDsCanvas_onMouseCaptureStart(event){
    //o._capturePosition.set(p.clientX, p.clientY);
    //o._captureMatrix.assign(d.matrix());
    //o._captureRotation.assign(s.camera()._rotation);
+   // 设置鼠标
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
 
 //==========================================================
@@ -148,9 +157,12 @@ function FDsCanvas_onMouseCapture(event){
 // <T>鼠标捕捉结束处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsCanvas_onMouseCaptureStop(p){
+function FDsCanvas_onMouseCaptureStop(event){
+   var o = this;
+   // 设置鼠标
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
 }
 
 //==========================================================
@@ -160,71 +172,71 @@ function FDsCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsCanvas_onEnterFrame(){
    var o = this;
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   // 检查参数
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var st = s.timer();
-   var ss = st.spanSecond();
+   var camera = space.camera();
    //..........................................................
-   // 按键处理
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
+   // 计算间隔
+   var timer = space.timer();
+   var span = timer.spanSecond();
+   var moveRate = o._cameraMoveRate * span;
+   var rotationRate = o._cameraKeyRotation * span;
+   //..........................................................
    // 按键前后移动
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
+   var keyForward = RKeyboard.isPress(EStageKey.Forward);
+   var keyBack = RKeyboard.isPress(EStageKey.Back);
+   if(keyForward && !keyBack){
+      camera.doWalk(moveRate);
    }
-   if(!kf && kb){
-      c.doWalk(-d);
+   if(!keyForward && keyBack){
+      camera.doWalk(-moveRate);
    }
    // 按键上下移动
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
+   var keyUp = RKeyboard.isPress(EStageKey.Up);
+   var keyDown = RKeyboard.isPress(EStageKey.Down);
+   if(keyUp && !keyDown){
+      camera.doFly(moveRate);
    }
-   if(!kq && ke){
-      c.doFly(-d);
+   if(!keyUp && keyDown){
+      camera.doFly(-moveRate);
    }
    // 按键左右旋转
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
+   var keyRleft = RKeyboard.isPress(EStageKey.RotationLeft);
+   var keyRright = RKeyboard.isPress(EStageKey.RotationRight);
+   if(keyRleft && !keyRright){
+      camera.doYaw(rotationRate);
    }
-   if(!ka && kd){
-      c.doYaw(-r);
+   if(!keyRleft && keyRright){
+      camera.doYaw(-rotationRate);
    }
    // 按键上下旋转
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
+   var keyRup = RKeyboard.isPress(EStageKey.RotationUp);
+   var keyDown = RKeyboard.isPress(EStageKey.RotationDown);
+   if(keyRup && !keyDown){
+      camera.doPitch(rotationRate);
    }
-   if(!kz && kw){
-      c.doPitch(-r);
+   if(!keyRup && keyDown){
+      camera.doPitch(-rotationRate);
    }
    // 更新相机
-   c.update();
+   camera.update();
    //..........................................................
-   // 旋转模型
+   // 旋转处理
    if(o._optionRotation){
-      var r = o._rotation;
-      // 旋转所有层
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
+      var rotation = o._rotation;
+      var layers = space.layers();
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         var matrix = layer.matrix();
+         matrix.setRotation(0, rotation.y, 0);
+         matrix.update();
       }
       // 设置变量
-      r.y += 0.01;
+      rotation.y += 0.01;
    }
 }
 
@@ -283,7 +295,7 @@ function FDsCanvas_activeSpace(){
 }
 
 //==========================================================
-// <T>切换大小。</T>
+// <T>切换画板大小。</T>
 //
 // @method
 // @param width:Integer 宽度
@@ -319,6 +331,16 @@ function FDsCanvas_switchSize(width, height){
 }
 
 //==========================================================
+// <T>切换旋转方式。</T>
+//
+// @method
+// @param flag:Boolean 标志
+//==========================================================
+function FDsCanvas_switchRotation(flag){
+   this._optionRotation = flag;
+}
+
+//==========================================================
 // <T>重新加载区域。</T>
 //
 // @method
@@ -335,6 +357,35 @@ function FDsCanvas_reloadRegion(){
 }
 
 //==========================================================
+// <T>捕捉当前画板。</T>
+//
+// @method
+//==========================================================
+function FDsCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var resource = space.resource();
+   var guid = resource.guid();
+   // 缩小到缩略图
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
+   // 获得像素数据
+   var context = o._graphicContext;
+   var size = context.size();
+   var width = size.width;
+   var height = size.height;
+   var data = context.readPixels(0, 0, width, height);
+   // 切回原来大小
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
+   // 上传缩略图
+   var url = '/' + o._servicePreview + '.wv?do=upload&type_cd=' + o._resourceTypeCd + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
+}
+
+//==========================================================
 // <T>释放处理。</T>
 //
 // @method
@@ -342,11 +393,7 @@ function FDsCanvas_reloadRegion(){
 function FDsCanvas_dispose(){
    var o = this;
    // 释放旋转
-   var v = o._rotation;
-   if(v){
-      v.dispose();
-      o._rotation = null;
-   }
+   o._rotation = RObject.dispose(o._rotation);
    // 父处理
    o.__base.FUiCanvas.dispose.call(o);
 }

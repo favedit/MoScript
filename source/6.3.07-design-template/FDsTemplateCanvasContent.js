@@ -8,6 +8,9 @@
 function FDsTemplateCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
    //..........................................................
+   // @property
+   o._resourceTypeCd     = EE3sResource.Template;
+   //..........................................................
    o._toolbar            = null;
    o._context            = null;
    o._stage              = null;
@@ -25,7 +28,6 @@ function FDsTemplateCanvasContent(o){
    //o.onMouseCaptureStart = FDsTemplateCanvasContent_onMouseCaptureStart;
    //o.onMouseCapture      = FDsTemplateCanvasContent_onMouseCapture;
    //o.onMouseCaptureStop  = FDsTemplateCanvasContent_onMouseCaptureStop;
-   o.onEnterFrame        = FDsTemplateCanvasContent_onEnterFrame;
    o.onDataLoaded        = FDsTemplateCanvasContent_onDataLoaded;
    //..........................................................
    o.oeRefresh           = FDsTemplateCanvasContent_oeRefresh;
@@ -34,8 +36,8 @@ function FDsTemplateCanvasContent(o){
    o.construct           = FDsTemplateCanvasContent_construct;
    // @method
    o.selectRenderable    = FDsTemplateCanvasContent_selectRenderable;
-   o.capture             = FDsTemplateCanvasContent_capture;
    o.loadByGuid          = FDsTemplateCanvasContent_loadByGuid;
+   o.loadByCode          = FDsTemplateCanvasContent_loadByCode;
    // @method
    o.dispose             = FDsTemplateCanvasContent_dispose;
    return o;
@@ -150,32 +152,6 @@ function FDsTemplateCanvasContent_onMouseCaptureStop(p){
 }
 
 //==========================================================
-// <T>每帧处理。</T>
-//
-// @method
-//==========================================================
-function FDsTemplateCanvasContent_onEnterFrame(event){
-   var o = this;
-   o.__base.FDsCanvas.onEnterFrame.call(o, event);
-   //..........................................................
-   // 旋转模型
-   //var m = o._activeSpace;
-   //if(m){
-      //var r = o._rotation;
-      //m.location().set(0, -8.0, 0);
-      //m.rotation().set(0, r.y, 0);
-      //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.002, 0.002, 0.002); // Car01
-      //m.scale().set(0.05, 0.05, 0.05);
-      //m.update();
-      // 设置变量
-      //if(o._rotationAble){
-      //   r.y += 0.01;
-      //}
-   //}
-}
-
-//==========================================================
 // <T>加载模板处理。</T>
 //
 // @method
@@ -270,37 +246,10 @@ function FDsTemplateCanvasContent_selectRenderable(p){
 }
 
 //==========================================================
-// <T>捕捉图像数据。</T>
+// <T>根据唯一编号加载模板。</T>
 //
 // @method
-// @param region:FE3dRegion 区域
-//==========================================================
-function FDsTemplateCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   // 获得像素
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   // 切回原来大小
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   // 上传图片
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Template + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
+// @param guid:String 唯一编号
 //==========================================================
 function FDsTemplateCanvasContent_loadByGuid(guid){
    var o = this;
@@ -317,6 +266,35 @@ function FDsTemplateCanvasContent_loadByGuid(guid){
       // 显示加载进度
       RConsole.find(FUiDesktopConsole).showLoading();
       // 设置事件
+      space._layer.pushRenderable(o._dimensional);
+      space.addLoadListener(o, o.onDataLoaded);
+      space._linked = true;
+   }
+   // 启动舞台
+   RStage.register('space', space);
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+//==========================================================
+function FDsTemplateCanvasContent_loadByCode(code){
+   var o = this;
+   // 释放模板
+   var space = o._activeSpace;
+   var templateConsole = RConsole.find(FE3dTemplateConsole);
+   if(space){
+      RStage.unregister(space);
+      templateConsole.free(space);
+   }
+   // 收集一个模板
+   space = o._activeSpace = templateConsole.allocByGuid(o, guid);
+   if(!space._linked){
+      // 显示加载进度
+      RConsole.find(FUiDesktopConsole).showLoading();
+      // 设置事件
+      space._layer.pushRenderable(o._dimensional);
       space.addLoadListener(o, o.onDataLoaded);
       space._linked = true;
    }

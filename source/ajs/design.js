@@ -218,6 +218,9 @@ function FDsApplication_dispose(){
 }
 function FDsCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
+   o._servicePreview      = 'cloud.resource.preview';
+   o._resourceTypeCd      = null;
+   o._optionRotation      = false;
    o._activeSpace         = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -231,7 +234,6 @@ function FDsCanvas(o){
    o._cameraMouseRotation = 0.005;
    o._dimensional         = null;
    o._rotation            = null;
-   o._rotationAble        = false;
    o.onBuild              = FDsCanvas_onBuild;
    o.onMouseCaptureStart  = FDsCanvas_onMouseCaptureStart;
    o.onMouseCapture       = FDsCanvas_onMouseCapture;
@@ -242,23 +244,25 @@ function FDsCanvas(o){
    o.construct            = FDsCanvas_construct;
    o.activeSpace          = FDsCanvas_activeSpace;
    o.switchSize           = FDsCanvas_switchSize;
+   o.switchRotation       = FDsCanvas_switchRotation;
    o.reloadRegion         = FDsCanvas_reloadRegion;
+   o.capture              = FDsCanvas_capture;
    o.dispose              = FDsCanvas_dispose;
    return o;
 }
-function FDsCanvas_onBuild(p){
+function FDsCanvas_onBuild(event){
    var o = this;
-   o.__base.FUiCanvas.onBuild.call(o, p);
-   var h = o._hPanel;
-   h.__linker = o;
-   h.style.width = '100%';
-   h.style.height = '100%';
-   var a = new Object();
-   a.alpha = false;
-   a.antialias = true;
-   var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
+   o.__base.FUiCanvas.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   hPanel.__linker = o;
+   hPanel.style.width = '100%';
+   hPanel.style.height = '100%';
+   var parameters = new Object();
+   parameters.alpha = false;
+   parameters.antialias = true;
+   var context = o._graphicContext = REngine3d.createContext(FWglContext, hPanel, parameters);
    var dimensional = o._dimensional = RClass.create(FE3dDimensional);
-   dimensional.linkGraphicContext(c);
+   dimensional.linkGraphicContext(context);
    dimensional.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(1000 / 60);
@@ -272,6 +276,7 @@ function FDsCanvas_onMouseCaptureStart(event){
    }
    o._capturePosition.set(event.clientX, event.clientY);
    o._captureRotation.assign(space.camera()._rotation);
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
 function FDsCanvas_onMouseCapture(event){
    var o = this;
@@ -300,64 +305,65 @@ function FDsCanvas_onMouseCapture(event){
          break;
    }
 }
-function FDsCanvas_onMouseCaptureStop(p){
+function FDsCanvas_onMouseCaptureStop(event){
+   var o = this;
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
 }
 function FDsCanvas_onEnterFrame(){
    var o = this;
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
+   var camera = space.camera();
+   var timer = space.timer();
+   var span = timer.spanSecond();
+   var moveRate = o._cameraMoveRate * span;
+   var rotationRate = o._cameraKeyRotation * span;
+   var keyForward = RKeyboard.isPress(EStageKey.Forward);
+   var keyBack = RKeyboard.isPress(EStageKey.Back);
+   if(keyForward && !keyBack){
+      camera.doWalk(moveRate);
    }
-   if(!kf && kb){
-      c.doWalk(-d);
+   if(!keyForward && keyBack){
+      camera.doWalk(-moveRate);
    }
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
+   var keyUp = RKeyboard.isPress(EStageKey.Up);
+   var keyDown = RKeyboard.isPress(EStageKey.Down);
+   if(keyUp && !keyDown){
+      camera.doFly(moveRate);
    }
-   if(!kq && ke){
-      c.doFly(-d);
+   if(!keyUp && keyDown){
+      camera.doFly(-moveRate);
    }
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
+   var keyRleft = RKeyboard.isPress(EStageKey.RotationLeft);
+   var keyRright = RKeyboard.isPress(EStageKey.RotationRight);
+   if(keyRleft && !keyRright){
+      camera.doYaw(rotationRate);
    }
-   if(!ka && kd){
-      c.doYaw(-r);
+   if(!keyRleft && keyRright){
+      camera.doYaw(-rotationRate);
    }
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
+   var keyRup = RKeyboard.isPress(EStageKey.RotationUp);
+   var keyDown = RKeyboard.isPress(EStageKey.RotationDown);
+   if(keyRup && !keyDown){
+      camera.doPitch(rotationRate);
    }
-   if(!kz && kw){
-      c.doPitch(-r);
+   if(!keyRup && keyDown){
+      camera.doPitch(-rotationRate);
    }
-   c.update();
+   camera.update();
    if(o._optionRotation){
-      var r = o._rotation;
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
+      var rotation = o._rotation;
+      var layers = space.layers();
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         var matrix = layer.matrix();
+         matrix.setRotation(0, rotation.y, 0);
+         matrix.update();
       }
-      r.y += 0.01;
+      rotation.y += 0.01;
    }
 }
 function FDsCanvas_oeResize(p){
@@ -409,6 +415,9 @@ function FDsCanvas_switchSize(width, height){
       projection.update();
    }
 }
+function FDsCanvas_switchRotation(flag){
+   this._optionRotation = flag;
+}
 function FDsCanvas_reloadRegion(){
    var o = this;
    var space = o._activeSpace;
@@ -418,13 +427,28 @@ function FDsCanvas_reloadRegion(){
    o._cameraKeyRotation = resource.rotationKeySpeed();
    o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
+function FDsCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var resource = space.resource();
+   var guid = resource.guid();
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
+   var context = o._graphicContext;
+   var size = context.size();
+   var width = size.width;
+   var height = size.height;
+   var data = context.readPixels(0, 0, width, height);
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
+   var url = '/' + o._servicePreview + '.wv?do=upload&type_cd=' + o._resourceTypeCd + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
+}
 function FDsCanvas_dispose(){
    var o = this;
-   var v = o._rotation;
-   if(v){
-      v.dispose();
-      o._rotation = null;
-   }
+   o._rotation = RObject.dispose(o._rotation);
    o.__base.FUiCanvas.dispose.call(o);
 }
 function FDsCatalog(o){

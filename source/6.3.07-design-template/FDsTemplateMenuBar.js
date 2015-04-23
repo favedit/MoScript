@@ -78,7 +78,8 @@ function FDsTemplateMenuBar_onCaptureClick(event){
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
    // 上传数据
-   var connection = o._frameSet._canvas.capture();
+   var canvas = o._frameSet._canvasContent;
+   var connection = canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
 

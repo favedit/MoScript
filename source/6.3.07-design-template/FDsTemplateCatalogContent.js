@@ -174,8 +174,9 @@ function FDsTemplateCatalogContent_buildDisplay(parentNode, display){
 //==========================================================
 function FDsTemplateCatalogContent_buildSpace(space){
    var o = this;
+   o.clearAllNodes();
+   // 获得资源
    var resource = space.resource();
-   o._activeSpace = space;
    // 新建模板节点
    var spaceNode = o.createNode();
    spaceNode.setTypeCode('Space');

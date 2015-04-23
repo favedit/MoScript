@@ -1,5 +1,6 @@
 function FDsTemplateCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
+   o._resourceTypeCd     = EE3sResource.Template;
    o._toolbar            = null;
    o._context            = null;
    o._stage              = null;
@@ -12,13 +13,12 @@ function FDsTemplateCanvasContent(o){
    o._dimensional        = null;
    o._selectBoundBox     = null;
    o.onBuild             = FDsTemplateCanvasContent_onBuild;
-   o.onEnterFrame        = FDsTemplateCanvasContent_onEnterFrame;
    o.onDataLoaded        = FDsTemplateCanvasContent_onDataLoaded;
    o.oeRefresh           = FDsTemplateCanvasContent_oeRefresh;
    o.construct           = FDsTemplateCanvasContent_construct;
    o.selectRenderable    = FDsTemplateCanvasContent_selectRenderable;
-   o.capture             = FDsTemplateCanvasContent_capture;
    o.loadByGuid          = FDsTemplateCanvasContent_loadByGuid;
+   o.loadByCode          = FDsTemplateCanvasContent_loadByCode;
    o.dispose             = FDsTemplateCanvasContent_dispose;
    return o;
 }
@@ -74,10 +74,6 @@ function FDsTemplateCanvasContent_onMouseCapture(p){
 }
 function FDsTemplateCanvasContent_onMouseCaptureStop(p){
 }
-function FDsTemplateCanvasContent_onEnterFrame(event){
-   var o = this;
-   o.__base.FDsCanvas.onEnterFrame.call(o, event);
-}
 function FDsTemplateCanvasContent_onDataLoaded(p){
    var o = this;
    var m = o._activeSpace;
@@ -130,24 +126,6 @@ function FDsTemplateCanvasContent_selectRenderable(p){
    var rm = r.mesh();
    var rl = rm.outline();
 }
-function FDsTemplateCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Template + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
 function FDsTemplateCanvasContent_loadByGuid(guid){
    var o = this;
    var space = o._activeSpace;
@@ -159,6 +137,24 @@ function FDsTemplateCanvasContent_loadByGuid(guid){
    space = o._activeSpace = templateConsole.allocByGuid(o, guid);
    if(!space._linked){
       RConsole.find(FUiDesktopConsole).showLoading();
+      space._layer.pushRenderable(o._dimensional);
+      space.addLoadListener(o, o.onDataLoaded);
+      space._linked = true;
+   }
+   RStage.register('space', space);
+}
+function FDsTemplateCanvasContent_loadByCode(code){
+   var o = this;
+   var space = o._activeSpace;
+   var templateConsole = RConsole.find(FE3dTemplateConsole);
+   if(space){
+      RStage.unregister(space);
+      templateConsole.free(space);
+   }
+   space = o._activeSpace = templateConsole.allocByGuid(o, guid);
+   if(!space._linked){
+      RConsole.find(FUiDesktopConsole).showLoading();
+      space._layer.pushRenderable(o._dimensional);
       space.addLoadListener(o, o.onDataLoaded);
       space._linked = true;
    }
@@ -211,10 +207,11 @@ function FDsTemplateCanvasToolBar_onPlayClick(p, v){
    var c = o._frameSet._canvasContent;
    c._rotationAble = v;
 }
-function FDsTemplateCanvasToolBar_onViewClick(p, v){
+function FDsTemplateCanvasToolBar_onViewClick(event){
    var o = this;
-   var c = o._frameSet._canvasContent;
-   c._rotationAble = v;
+   var checked = event.checked;
+   var canvas = o._frameSet._canvasContent;
+   canvas.switchRotation(checked);
 }
 function FDsTemplateCanvasToolBar_construct(){
    var o = this;
@@ -315,8 +312,8 @@ function FDsTemplateCatalogContent_buildDisplay(parentNode, display){
 }
 function FDsTemplateCatalogContent_buildSpace(space){
    var o = this;
+   o.clearAllNodes();
    var resource = space.resource();
-   o._activeSpace = space;
    var spaceNode = o.createNode();
    spaceNode.setTypeCode('Space');
    spaceNode.setLabel(resource.code());
@@ -669,7 +666,8 @@ function FDsTemplateMenuBar_onCaptureLoad(event){
 function FDsTemplateMenuBar_onCaptureClick(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).showUploading();
-   var connection = o._frameSet._canvas.capture();
+   var canvas = o._frameSet._canvasContent;
+   var connection = canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
 function FDsTemplateMenuBar_construct(){

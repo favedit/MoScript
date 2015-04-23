@@ -8,6 +8,9 @@
 function FDsSceneCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
+   // @property
+   o._resourceTypeCd      = EE3sResource.Scene;
+   //..........................................................
    // @attribute
    o._rotation            = null;
    o._optionRotation      = false;
@@ -50,7 +53,6 @@ function FDsSceneCanvasContent(o){
    o.switchMode           = FDsSceneCanvasContent_switchMode;
    o.switchPlay           = FDsSceneCanvasContent_switchPlay;
    o.switchMovie          = FDsSceneCanvasContent_switchMovie;
-   o.capture              = FDsSceneCanvasContent_capture;
    o.loadByGuid           = FDsSceneCanvasContent_loadByGuid;
    // @method
    o.dispose              = FDsSceneCanvasContent_dispose;
@@ -223,6 +225,7 @@ function FDsSceneCanvasContent_onDataLoaded(p){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
+      space._layer.pushRenderable(o._dimensional);
    // 创建界面层
    //var l = RClass.create(FDisplayUiLayer);
    //l.selectTechnique(c, FG3dControlTechnique);
@@ -587,35 +590,7 @@ function FDsSceneCanvasContent_switchMovie(flag){
 }
 
 //==========================================================
-// <T>捕捉图像数据。</T>
-//
-// @method
-// @param region:FE3dRegion 区域
-//==========================================================
-function FDsSceneCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   // 获得像素
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   // 切回原来大小
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   // 上传图片
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Scene + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
-
-//==========================================================
-// <T>根据唯一编号加载场景处理。</T>
+// <T>根据唯一编号加载场景。</T>
 //
 // @method
 // @param guid:String 唯一编号

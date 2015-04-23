@@ -1,11 +1,11 @@
 //==========================================================
-// <T>私人场景画板。</T>
+// <T>私人场景目录内容。</T>
 //
 // @method
 // @author maocy
 // @history 150422
 //==========================================================
-function FDsPrivateSceneCanvas(o){
-   o = RClass.inherits(this, o, FDsSceneCanvas);
+function FDsPrivateSceneCatalogContent(o){
+   o = RClass.inherits(this, o, FDsSceneCatalogContent);
    return o;
 }

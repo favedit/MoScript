@@ -1,5 +1,6 @@
 function FDsModelCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
+   o._resourceTypeCd      = EE3sResource.Model;
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
@@ -8,7 +9,6 @@ function FDsModelCanvasContent(o){
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
-   o._dimensional         = null;
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
@@ -23,7 +23,6 @@ function FDsModelCanvasContent(o){
    o.onMouseCaptureStart  = FDsModelCanvasContent_onMouseCaptureStart;
    o.onMouseCapture       = FDsModelCanvasContent_onMouseCapture;
    o.onMouseCaptureStop   = FDsModelCanvasContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsModelCanvasContent_onEnterFrame;
    o.onDataLoaded         = FDsModelCanvasContent_onDataLoaded;
    o.oeResize             = FDsModelCanvasContent_oeResize;
    o.oeRefresh            = FDsModelCanvasContent_oeRefresh;
@@ -37,7 +36,6 @@ function FDsModelCanvasContent(o){
    o.switchDimensional    = FDsModelCanvasContent_switchDimensional;
    o.switchRotation       = FDsModelCanvasContent_switchRotation;
    o.viewAutoSize         = FDsModelCanvasContent_viewAutoSize;
-   o.capture              = FDsModelCanvasContent_capture;
    o.loadByGuid           = FDsModelCanvasContent_loadByGuid;
    o.loadByCode           = FDsModelCanvasContent_loadByCode;
    o.dispose              = FDsModelCanvasContent_dispose;
@@ -151,59 +149,6 @@ function FDsModelCanvasContent_onMouseCapture(p){
 function FDsModelCanvasContent_onMouseCaptureStop(p){
    var o = this;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
-function FDsModelCanvasContent_onEnterFrame(){
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
-      return;
-   }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
-   }
-   if(!kf && kb){
-      c.doWalk(-d);
-   }
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   c.update();
-   if(o._optionRotation){
-      var r = o._rotation;
-      var display = o._activeSpace._display;
-      var matrix = display.matrix();
-      matrix.setRotation(matrix.rx, matrix.ry + r.y, matrix.rz);
-      matrix.update();
-      r.y = 0.01;
-   }
 }
 function FDsModelCanvasContent_onDataLoaded(p){
    var o = this;
@@ -475,24 +420,6 @@ function FDsModelCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rota
    displayMatrix.update();
    display.reloadResource();
 }
-function FDsModelCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Model + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
 function FDsModelCanvasContent_loadByGuid(guid){
    var o = this;
    var space = o._activeSpace;
@@ -510,7 +437,7 @@ function FDsModelCanvasContent_loadByGuid(guid){
    }
    RStage.register('space', space);
 }
-function FDsModelCanvasContent_loadByCode(p){
+function FDsModelCanvasContent_loadByCode(code){
    var o = this;
    return;
    RConsole.find(FUiDesktopConsole).showLoading();
@@ -518,7 +445,7 @@ function FDsModelCanvasContent_loadByCode(p){
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
    }
-   var space = o._activeSpace = rmc.allocByCode(o, p);
+   var space = o._activeSpace = rmc.allocByCode(o, code);
    space.addLoadListener(o, o.onDataLoaded);
    space._layer.pushRenderable(o._dimensional);
    RStage.register('space', space);
@@ -670,7 +597,6 @@ function FDsModelCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
    o._iconView             = 'design3d.mesh.view';
    o._iconViewNot          = 'design3d.mesh.viewno';
-   o._activeSpace          = null;
    o.onBuild               = FDsModelCatalogContent_onBuild;
    o.onLoadDisplay         = FDsModelCatalogContent_onLoadDisplay;
    o.onNodeViewClick       = FDsModelCatalogContent_onNodeViewClick;
@@ -799,8 +725,8 @@ function FDsModelCatalogContent_buildDisplay(parent, display){
 }
 function FDsModelCatalogContent_buildSpace(space){
    var o = this;
+   o.clearAllNodes();
    var resource = space.resource();
-   o._activeSpace = space;
    o.clear();
    var node = o.createNode();
    node.setTypeCode('space');

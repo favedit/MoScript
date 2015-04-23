@@ -8,6 +8,9 @@
 function FDsModelCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
+   // @property
+   o._resourceTypeCd      = EE3sResource.Model;
+   //..........................................................
    // @attribute
    o._autoDistance        = null;
    o._autoOutline         = null;
@@ -18,7 +21,6 @@ function FDsModelCanvasContent(o){
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
-   o._dimensional         = null;
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
@@ -36,7 +38,6 @@ function FDsModelCanvasContent(o){
    o.onMouseCaptureStart  = FDsModelCanvasContent_onMouseCaptureStart;
    o.onMouseCapture       = FDsModelCanvasContent_onMouseCapture;
    o.onMouseCaptureStop   = FDsModelCanvasContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsModelCanvasContent_onEnterFrame;
    o.onDataLoaded         = FDsModelCanvasContent_onDataLoaded;
    //..........................................................
    o.oeResize             = FDsModelCanvasContent_oeResize;
@@ -54,7 +55,6 @@ function FDsModelCanvasContent(o){
    o.switchDimensional    = FDsModelCanvasContent_switchDimensional;
    o.switchRotation       = FDsModelCanvasContent_switchRotation;
    o.viewAutoSize         = FDsModelCanvasContent_viewAutoSize;
-   o.capture              = FDsModelCanvasContent_capture;
    o.loadByGuid           = FDsModelCanvasContent_loadByGuid;
    o.loadByCode           = FDsModelCanvasContent_loadByCode;
    // @method
@@ -253,75 +253,6 @@ function FDsModelCanvasContent_onMouseCaptureStop(p){
    var o = this;
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
-
-//==========================================================
-// <T>每帧处理。</T>
-//
-// @method
-//==========================================================
-function FDsModelCanvasContent_onEnterFrame(){
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
-      return;
-   }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   //..........................................................
-   // 按键处理
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   // 按键前后移动
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
-   }
-   if(!kf && kb){
-      c.doWalk(-d);
-   }
-   // 按键上下移动
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   // 按键左右旋转
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   // 按键上下旋转
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   // 更新相机
-   c.update();
-   //..........................................................
-   // 旋转模型
-   if(o._optionRotation){
-      var r = o._rotation;
-      var display = o._activeSpace._display;
-      var matrix = display.matrix();
-      matrix.setRotation(matrix.rx, matrix.ry + r.y, matrix.rz);
-      matrix.update();
-      // 设置变量
-      r.y = 0.01;
-   }
 }
 
 //==========================================================
@@ -727,37 +658,10 @@ function FDsModelCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rota
 }
 
 //==========================================================
-// <T>捕捉图像数据。</T>
+// <T>根据唯一编号加载模型。</T>
 //
 // @method
-// @param region:FE3dRegion 区域
-//==========================================================
-function FDsModelCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   // 获得像素
-   var context = o._graphicContext;
-   var size = context.size();
-   var width = size.width;
-   var height = size.height;
-   var data = context.readPixels(0, 0, width, height);
-   // 切回原来大小
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   // 上传图片
-   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Model + '&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
+// @param guid:String 唯一编号
 //==========================================================
 function FDsModelCanvasContent_loadByGuid(guid){
    var o = this;
@@ -783,11 +687,12 @@ function FDsModelCanvasContent_loadByGuid(guid){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>根据代码加载模型。</T>
 //
 // @method
+// @param code:String 代码
 //==========================================================
-function FDsModelCanvasContent_loadByCode(p){
+function FDsModelCanvasContent_loadByCode(code){
    var o = this;
    return;
    // 显示加载进度
@@ -798,7 +703,7 @@ function FDsModelCanvasContent_loadByCode(p){
       rmc.free(o._activeSpace);
    }
    // 收集一个显示模板
-   var space = o._activeSpace = rmc.allocByCode(o, p);
+   var space = o._activeSpace = rmc.allocByCode(o, code);
    space.addLoadListener(o, o.onDataLoaded);
    // 设置坐标系
    space._layer.pushRenderable(o._dimensional);

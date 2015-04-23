@@ -27,7 +27,6 @@ function FDsBitmapCanvasContent(o){
    o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
    o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
    o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsBitmapCanvasContent_onEnterFrame;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
    o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
@@ -94,51 +93,6 @@ function FDsBitmapCanvasContent_onMouseCapture(event){
 function FDsBitmapCanvasContent_onMouseCaptureStop(p){
    var o = this;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
-function FDsBitmapCanvasContent_onEnterFrame(){
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
-      return;
-   }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
-   }
-   if(!kf && kb){
-      c.doWalk(-d);
-   }
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   c.update();
 }
 function FDsBitmapCanvasContent_onLoaded(event){
    var o = this;

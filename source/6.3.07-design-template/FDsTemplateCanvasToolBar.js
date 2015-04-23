@@ -87,12 +87,13 @@ function FDsTemplateCanvasToolBar_onPlayClick(p, v){
 // <T>刷新按键处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsTemplateCanvasToolBar_onViewClick(p, v){
+function FDsTemplateCanvasToolBar_onViewClick(event){
    var o = this;
-   var c = o._frameSet._canvasContent;
-   c._rotationAble = v;
+   var checked = event.checked;
+   var canvas = o._frameSet._canvasContent;
+   canvas.switchRotation(checked);
 }
 
 //==========================================================
