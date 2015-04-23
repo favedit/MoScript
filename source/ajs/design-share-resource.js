@@ -339,37 +339,8 @@ function FDsShareResourceListContent_dispose(){
    o.__base.FUiListView.dispose.call(o);
 }
 function FDsShareResourceListItem(o){
-   o = RClass.inherits(this, o, FUiListViewItem);
-   o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
-   o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
-   o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
-   o.onBuild         = FDsShareResourceListItem_onBuild;
-   o.setTypeLabel    = FDsShareResourceListItem_setTypeLabel;
-   o.refreshStyle    = FDsShareResourceListItem_refreshStyle;
+   o = RClass.inherits(this, o, FDsResourceListItem);
    return o;
-}
-function FDsShareResourceListItem_onBuild(p){
-   var o = this;
-   o.__base.FUiListViewItem.onBuild.call(o, p);
-   var h = o._hPanel;
-   h.style.width = '200px';
-   h.style.height = '150px';
-   o._hLine1.className = o.styleName('TypePanel');
-   o._hLine1.vAlign = 'top';
-   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
-}
-function FDsShareResourceListItem_setTypeLabel(label){
-   this._hTypeLabel.innerHTML = label;
-}
-function FDsShareResourceListItem_refreshStyle(){
-   var o = this;
-   if(o._shareCd == 'Public'){
-      o._hTypeLabel.className = o.styleName('TypePublicLabel');
-   }else{
-      o._hTypeLabel.className = o.styleName('TypePrivateLabel');
-   }
-   var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
-   o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
 function FDsShareResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);

@@ -1,11 +1,8 @@
-function FDsModelCanvas(o){
+function FDsModelCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._activeGuid          = null;
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
-   o._canvasModeCd        = EDsCanvasMode.Drop;
-   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._optionRotation      = false;
    o._rotation            = null;
    o._capturePosition     = null;
@@ -15,9 +12,6 @@ function FDsModelCanvas(o){
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
-   o._cameraMoveRate      = 8;
-   o._cameraKeyRotation   = 3;
-   o._cameraMouseRotation = 0.005;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -25,35 +19,35 @@ function FDsModelCanvas(o){
    o._templateRotation    = null;
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
-   o.onBuild              = FDsModelCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsModelCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsModelCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsModelCanvas_onMouseCaptureStop;
-   o.onEnterFrame         = FDsModelCanvas_onEnterFrame;
-   o.onDataLoaded         = FDsModelCanvas_onDataLoaded;
-   o.oeResize             = FDsModelCanvas_oeResize;
-   o.oeRefresh            = FDsModelCanvas_oeRefresh;
-   o.construct            = FDsModelCanvas_construct;
-   o.innerSelectDisplay   = FDsModelCanvas_innerSelectDisplay;
-   o.innerSelectLayer     = FDsModelCanvas_innerSelectLayer;
-   o.selectNone           = FDsModelCanvas_selectNone;
-   o.selectDisplay        = FDsModelCanvas_selectDisplay;
-   o.selectMaterial       = FDsModelCanvas_selectMaterial;
-   o.selectRenderable     = FDsModelCanvas_selectRenderable;
-   o.switchDimensional    = FDsModelCanvas_switchDimensional;
-   o.switchRotation       = FDsModelCanvas_switchRotation;
-   o.viewAutoSize         = FDsModelCanvas_viewAutoSize;
-   o.capture              = FDsModelCanvas_capture;
-   o.loadByGuid           = FDsModelCanvas_loadByGuid;
-   o.loadByCode           = FDsModelCanvas_loadByCode;
-   o.dispose              = FDsModelCanvas_dispose;
+   o.onBuild              = FDsModelCanvasContent_onBuild;
+   o.onMouseCaptureStart  = FDsModelCanvasContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsModelCanvasContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsModelCanvasContent_onMouseCaptureStop;
+   o.onEnterFrame         = FDsModelCanvasContent_onEnterFrame;
+   o.onDataLoaded         = FDsModelCanvasContent_onDataLoaded;
+   o.oeResize             = FDsModelCanvasContent_oeResize;
+   o.oeRefresh            = FDsModelCanvasContent_oeRefresh;
+   o.construct            = FDsModelCanvasContent_construct;
+   o.innerSelectDisplay   = FDsModelCanvasContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsModelCanvasContent_innerSelectLayer;
+   o.selectNone           = FDsModelCanvasContent_selectNone;
+   o.selectDisplay        = FDsModelCanvasContent_selectDisplay;
+   o.selectMaterial       = FDsModelCanvasContent_selectMaterial;
+   o.selectRenderable     = FDsModelCanvasContent_selectRenderable;
+   o.switchDimensional    = FDsModelCanvasContent_switchDimensional;
+   o.switchRotation       = FDsModelCanvasContent_switchRotation;
+   o.viewAutoSize         = FDsModelCanvasContent_viewAutoSize;
+   o.capture              = FDsModelCanvasContent_capture;
+   o.loadByGuid           = FDsModelCanvasContent_loadByGuid;
+   o.loadByCode           = FDsModelCanvasContent_loadByCode;
+   o.dispose              = FDsModelCanvasContent_dispose;
    return o;
 }
-function FDsModelCanvas_onBuild(p){
+function FDsModelCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
 }
-function FDsModelCanvas_onMouseCaptureStart(p){
+function FDsModelCanvasContent_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -83,7 +77,7 @@ function FDsModelCanvas_onMouseCaptureStart(p){
    }
    RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
-function FDsModelCanvas_onMouseCapture(p){
+function FDsModelCanvasContent_onMouseCapture(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -154,11 +148,11 @@ function FDsModelCanvas_onMouseCapture(p){
       }
    }
 }
-function FDsModelCanvas_onMouseCaptureStop(p){
+function FDsModelCanvasContent_onMouseCaptureStop(p){
    var o = this;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
 }
-function FDsModelCanvas_onEnterFrame(){
+function FDsModelCanvasContent_onEnterFrame(){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -211,7 +205,7 @@ function FDsModelCanvas_onEnterFrame(){
       r.y = 0.01;
    }
 }
-function FDsModelCanvas_onDataLoaded(p){
+function FDsModelCanvasContent_onDataLoaded(p){
    var o = this;
    var m = o._activeSpace;
    var g = m.region();
@@ -234,7 +228,7 @@ function FDsModelCanvas_onDataLoaded(p){
    event.dispose();
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsModelCanvas_oeResize(p){
+function FDsModelCanvasContent_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
    var hp = o._hPanel;
@@ -248,10 +242,10 @@ function FDsModelCanvas_oeResize(p){
    }
    return EEventStatus.Stop;
 }
-function FDsModelCanvas_oeRefresh(p){
+function FDsModelCanvasContent_oeRefresh(p){
    return EEventStatus.Stop;
 }
-function FDsModelCanvas_construct(){
+function FDsModelCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._autoDistance = new SPoint3(6, 6, 6);
@@ -265,7 +259,7 @@ function FDsModelCanvas_construct(){
    o._captureRotation = new SVector3();
    o._selectRenderables = new TObjects();
 }
-function FDsModelCanvas_innerSelectDisplay(p){
+function FDsModelCanvasContent_innerSelectDisplay(p){
    var o = this;
    var s = p.renderables();
    var c = s.count();
@@ -277,7 +271,7 @@ function FDsModelCanvas_innerSelectDisplay(p){
       }
    }
 }
-function FDsModelCanvas_innerSelectLayer(p){
+function FDsModelCanvasContent_innerSelectLayer(p){
    var o = this;
    var s = p.displays();
    var c = s.count();
@@ -286,7 +280,7 @@ function FDsModelCanvas_innerSelectLayer(p){
       o.innerSelectDisplay(d)
    }
 }
-function FDsModelCanvas_selectNone(){
+function FDsModelCanvasContent_selectNone(){
    var o = this;
    o._selectObject = null;
    var s = o._selectRenderables;
@@ -297,13 +291,13 @@ function FDsModelCanvas_selectNone(){
    }
    o._selectRenderables.clear();
 }
-function FDsModelCanvas_selectDisplay(p){
+function FDsModelCanvasContent_selectDisplay(p){
    var o = this;
    o.selectNone();
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsModelCanvas_selectMaterial(p){
+function FDsModelCanvasContent_selectMaterial(p){
    var o = this;
    o.selectNone();
    o._selectObject = p;
@@ -319,7 +313,7 @@ function FDsModelCanvas_selectMaterial(p){
       }
    }
 }
-function FDsModelCanvas_selectRenderable(p){
+function FDsModelCanvasContent_selectRenderable(p){
    var o = this;
    return;
    var sr = p;
@@ -415,12 +409,12 @@ function FDsModelCanvas_selectRenderable(p){
       m.update();
    }
 }
-function FDsModelCanvas_switchMode(p){
+function FDsModelCanvasContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsModelCanvas_switchDimensional(visible, width, height){
+function FDsModelCanvasContent_switchDimensional(visible, width, height){
    var o = this;
    o._dimensional.setVisible(visible);
    var matrix = o._dimensional.matrix();
@@ -432,10 +426,10 @@ function FDsModelCanvas_switchDimensional(visible, width, height){
    }
    matrix.updateForce();
 }
-function FDsModelCanvas_switchRotation(p){
+function FDsModelCanvasContent_switchRotation(p){
    this._optionRotation = p;
 }
-function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
+function FDsModelCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
    var o = this;
    var outline = o._autoOutline;
    var space = o._activeSpace;
@@ -481,7 +475,7 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    displayMatrix.update();
    display.reloadResource();
 }
-function FDsModelCanvas_capture(){
+function FDsModelCanvasContent_capture(){
    var o = this;
    var space = o._activeSpace;
    var guid = space._resource._guid;
@@ -491,17 +485,15 @@ function FDsModelCanvas_capture(){
    RStage.process();
    var context = o._graphicContext;
    var size = context.size();
-   var native = context._native;
    var width = size.width;
    var height = size.height;
-   var data = new Uint8Array(4 * width * height);
-   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   var data = context.readPixels(0, 0, width, height);
    o.switchSize(switchWidth, switchHeight);
    RStage.process();
    var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Model + '&guid=' + guid + '&width=' + width + '&height=' + height;
    return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
-function FDsModelCanvas_loadByGuid(guid){
+function FDsModelCanvasContent_loadByGuid(guid){
    var o = this;
    var space = o._activeSpace;
    var modelConsole = RConsole.find(FE3dModelConsole);
@@ -518,7 +510,7 @@ function FDsModelCanvas_loadByGuid(guid){
    }
    RStage.register('space', space);
 }
-function FDsModelCanvas_loadByCode(p){
+function FDsModelCanvasContent_loadByCode(p){
    var o = this;
    return;
    RConsole.find(FUiDesktopConsole).showLoading();
@@ -531,7 +523,7 @@ function FDsModelCanvas_loadByCode(p){
    space._layer.pushRenderable(o._dimensional);
    RStage.register('space', space);
 }
-function FDsModelCanvas_dispose(){
+function FDsModelCanvasContent_dispose(){
    var o = this;
    o._rotation = RObject.dispose(o._rotation);
 x   // 父处理
@@ -674,36 +666,36 @@ function FDsModelCanvasToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
 }
-function FDsModelCatalog(o){
+function FDsModelCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
    o._iconView             = 'design3d.mesh.view';
    o._iconViewNot          = 'design3d.mesh.viewno';
    o._activeSpace          = null;
-   o.onBuild               = FDsModelCatalog_onBuild;
-   o.onLoadDisplay         = FDsModelCatalog_onLoadDisplay;
-   o.onNodeViewClick       = FDsModelCatalog_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsModelCatalog_onNodeViewDoubleClick;
+   o.onBuild               = FDsModelCatalogContent_onBuild;
+   o.onLoadDisplay         = FDsModelCatalogContent_onLoadDisplay;
+   o.onNodeViewClick       = FDsModelCatalogContent_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsModelCatalogContent_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
-   o.construct             = FDsModelCatalog_construct;
-   o.buildRenderable       = FDsModelCatalog_buildRenderable;
-   o.buildDisplay          = FDsModelCatalog_buildDisplay;
-   o.buildSpace            = FDsModelCatalog_buildSpace;
-   o.selectObject          = FDsModelCatalog_selectObject;
-   o.showObject            = FDsModelCatalog_showObject;
-   o.dispose               = FDsModelCatalog_dispose;
+   o.construct             = FDsModelCatalogContent_construct;
+   o.buildRenderable       = FDsModelCatalogContent_buildRenderable;
+   o.buildDisplay          = FDsModelCatalogContent_buildDisplay;
+   o.buildSpace            = FDsModelCatalogContent_buildSpace;
+   o.selectObject          = FDsModelCatalogContent_selectObject;
+   o.showObject            = FDsModelCatalogContent_showObject;
+   o.dispose               = FDsModelCatalogContent_dispose;
    return o;
 }
-function FDsModelCatalog_onBuild(p){
+function FDsModelCatalogContent_onBuild(p){
    var o = this;
    o.__base.FDsCatalog.onBuild.call(o, p);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.model');
 }
-function FDsModelCatalog_onLoadDisplay(p){
+function FDsModelCatalogContent_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    o.buildRenderable(n, p);
 }
-function FDsModelCatalog_onNodeViewClick(p){
+function FDsModelCatalogContent_onNodeViewClick(p){
    var o = this;
    var c = p.treeNodeCell;
    var s = p.treeNode.dataPropertyGet('linker');
@@ -740,7 +732,7 @@ function FDsModelCatalog_onNodeViewClick(p){
       }
    }
 }
-function FDsModelCatalog_onNodeViewDoubleClick(p){
+function FDsModelCatalogContent_onNodeViewDoubleClick(p){
    var o = this;
    var n = p.treeNode;
    var c = p.treeNodeCell;
@@ -764,12 +756,12 @@ function FDsModelCatalog_onNodeViewDoubleClick(p){
       }
    }
 }
-function FDsModelCatalog_construct(){
+function FDsModelCatalogContent_construct(){
    var o = this;
    o.__base.FDsCatalog.construct.call(o);
    o._renderables = new TObjects();
 }
-function FDsModelCatalog_buildRenderable(parentNode, geometry){
+function FDsModelCatalogContent_buildRenderable(parentNode, geometry){
    var o = this;
    var renderable = geometry._renderable;
    var resource = renderable.resource();
@@ -779,10 +771,10 @@ function FDsModelCatalog_buildRenderable(parentNode, geometry){
    node.setTypeCode('renderable');
    node.setLabel(code);
    node.setNote(label);
-   node.dataPropertySet('linker', renderable);
+   node.dataPropertySet('linker', geometry);
    parentNode.appendNode(node);
 }
-function FDsModelCatalog_buildDisplay(parent, display){
+function FDsModelCatalogContent_buildDisplay(parent, display){
    var o = this;
    var resource = display.resource();
    var geometrys = display._geometrys;
@@ -805,7 +797,7 @@ function FDsModelCatalog_buildDisplay(parent, display){
       o.buildRenderable(displayNode, geometry);
    }
 }
-function FDsModelCatalog_buildSpace(space){
+function FDsModelCatalogContent_buildSpace(space){
    var o = this;
    var resource = space.resource();
    o._activeSpace = space;
@@ -821,13 +813,13 @@ function FDsModelCatalog_buildSpace(space){
    o.buildDisplay(node, space._display);
    node.click();
 }
-function FDsModelCatalog_selectObject(p){
+function FDsModelCatalogContent_selectObject(p){
    var o = this;
    if(p != null){
       o.processSelectedListener(p, true);
    }
 }
-function FDsModelCatalog_showObject(p){
+function FDsModelCatalogContent_showObject(p){
    var o = this;
    if(RClass.isClass(p, FDsSceneRenderable)){
       var s = o._renderables;
@@ -841,7 +833,7 @@ function FDsModelCatalog_showObject(p){
       }
    }
 }
-function FDsModelCatalog_dispose(){
+function FDsModelCatalogContent_dispose(){
    var o = this;
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);
@@ -1022,104 +1014,6 @@ function FDsModelCatalogToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
 }
-function FDsModelDisplayFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._activeSpace   = null;
-   o._activeDisplay = null;
-   o.onBuilded      = FDsModelDisplayFrame_onBuilded;
-   o.onDataChanged  = FDsModelDisplayFrame_onDataChanged;
-   o.construct      = FDsModelDisplayFrame_construct;
-   o.loadObject     = FDsModelDisplayFrame_loadObject;
-   o.dispose        = FDsModelDisplayFrame_dispose;
-   return o;
-}
-function FDsModelDisplayFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
-   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
-   o._controlScale.addDataChangedListener(o, o.onDataChanged);
-}
-function FDsModelDisplayFrame_onDataChanged(p){
-   var o = this;
-   var display = o._activeDisplay;
-   var resource = display.resource();
-   var matrix = resource.matrix();
-   var value = o._controlTranslate.get();
-   matrix.setTranslate(value.x, value.y, value.z);
-   var value = o._controlRotation.get();
-   matrix.setRotation(value.x, value.y, value.z);
-   var value = o._controlScale.get();
-   matrix.setScale(value.x, value.y, value.z);
-   matrix.update();
-   display.matrix().assign(matrix);
-}
-function FDsModelDisplayFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsModelDisplayFrame_loadObject(space, display){
-   var o = this;
-   o._activeSpace = space;
-   o._activeDisplay = display;
-   var resource = display.resource();
-   var matrix = resource.matrix();
-   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
-   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
-   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
-}
-function FDsModelDisplayFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
-function FDsModelDisplayPropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._activeDisplay  = null;
-   o._activeResource = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame  = null;
-   o.onBuilded       = FDsModelDisplayPropertyFrame_onBuilded;
-   o.onDataChanged   = FDsModelDisplayPropertyFrame_onDataChanged;
-   o.construct       = FDsModelDisplayPropertyFrame_construct;
-   o.loadObject      = FDsModelDisplayPropertyFrame_loadObject;
-   o.dispose         = FDsModelDisplayPropertyFrame_dispose;
-   return o;
-}
-function FDsModelDisplayPropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlCode.addDataChangedListener(o, o.onDataChanged);
-   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
-}
-function FDsModelDisplayPropertyFrame_onDataChanged(p){
-   var o = this;
-   var r = o._activeResource;
-   r._code = o._controlCode.get();
-   r._label = o._controlLabel.get();
-}
-function FDsModelDisplayPropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsModelDisplayPropertyFrame_loadObject(space, display){
-   var o = this;
-   var resource = display._resource;
-   o._activeSpace = space;
-   o._activeDisplay = display;
-   o._controlGuid.set(resource.guid());
-   o._controlCode.set(resource.code());
-   o._controlLabel.set(resource.label());
-   o._frameDisplay.loadObject(space, display);
-}
-function FDsModelDisplayPropertyFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
 function FDsModelFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -1188,7 +1082,7 @@ function FDsModelFrameSet_onCatalogSelected(select, flag){
       var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
       frame.show();
       frame.loadObject(space, select);
-   }else if(RClass.isClass(space, FG3dLight)){
+   }else if(RClass.isClass(select, FG3dLight)){
       var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
       frame.show();
       frame.loadObject(space, select);
@@ -1228,10 +1122,8 @@ function FDsModelFrameSet_dispose(){
 }
 function FDsModelMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'resource.model.MenuBar';
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
-   o.onBuilded             = FDsModelMenuBar_onBuilded;
    o.onSaveLoad            = FDsModelMenuBar_onSaveLoad;
    o.onSaveClick           = FDsModelMenuBar_onSaveClick;
    o.onCaptureLoad         = FDsModelMenuBar_onCaptureLoad;
@@ -1239,12 +1131,6 @@ function FDsModelMenuBar(o){
    o.construct             = FDsModelMenuBar_construct;
    o.dispose               = FDsModelMenuBar_dispose;
    return o;
-}
-function FDsModelMenuBar_onBuilded(p){
-   var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 function FDsModelMenuBar_onSaveLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
@@ -1275,114 +1161,6 @@ function FDsModelMenuBar_construct(){
 function FDsModelMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
-}
-function FDsModelRenderableFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._activeSpace      = null;
-   o._activeRenderable = null;
-   o.onBuilded         = FDsModelRenderableFrame_onBuilded;
-   o.onDataChanged     = FDsModelRenderableFrame_onDataChanged;
-   o.onEffectClick     = FDsModelRenderableFrame_onEffectClick;
-   o.construct         = FDsModelRenderableFrame_construct;
-   o.loadObject        = FDsModelRenderableFrame_loadObject;
-   o.dispose           = FDsModelRenderableFrame_dispose;
-   return o;
-}
-function FDsModelRenderableFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
-   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
-   o._controlScale.addDataChangedListener(o, o.onDataChanged);
-   o._controlEffects.addClickListener(o, o.onEffectClick);
-}
-function FDsModelRenderableFrame_onDataChanged(p){
-   var o = this;
-   var renderable = o._activeRenderable;
-   var resource = renderable.resource();
-   var matrix = resource.matrix();
-   var value = o._controlTranslate.get();
-   matrix.setTranslate(value.x, value.y, value.z);
-   var value = o._controlRotation.get();
-   matrix.setRotation(value.x, value.y, value.z);
-   var value = o._controlScale.get();
-   matrix.setScale(value.x, value.y, value.z);
-   matrix.update();
-   renderable.matrix().assign(matrix);
-}
-function FDsModelRenderableFrame_onEffectClick(ps, pi){
-   var o = this;
-   var e = pi.tag();
-   var p = e._program;
-   var s = p._vertexShader;
-   alert(s._source);
-   var s = p._fragmentShader;
-   alert(s._source);
-}
-function FDsModelRenderableFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsModelRenderableFrame_loadObject(space, renderable){
-   var o = this;
-   var resource = renderable.resource();
-   o._activeSpace = space;
-   o._activeRenderable = renderable;
-   var matrix = resource.matrix();
-   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
-   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
-   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
-   var ces = o._controlEffects;
-   ces.clear();
-   var es = renderable.infos();
-   var c = es.count();
-   for(var i = 0; i < c; i++){
-      var e = es.valueAt(i).effect;
-      if(e){
-         var l = ces.createItem(null, e.code());
-         l.setTag(e);
-         ces.push(l);
-      }
-   }
-}
-function FDsModelRenderableFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
-function FDsModelRenderablePropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible          = false;
-   o._workspace        = null;
-   o._activeSpace = null;
-   o._activeRenderable   = null;
-   o._controlGuid      = null;
-   o._controlCode      = null;
-   o._controlLabel     = null;
-   o._frameRenderable  = null;
-   o._frameMaterial1   = null;
-   o._frameMaterial2   = null;
-   o.construct         = FDsModelRenderablePropertyFrame_construct;
-   o.loadObject        = FDsModelRenderablePropertyFrame_loadObject;
-   o.dispose           = FDsModelRenderablePropertyFrame_dispose;
-   return o;
-}
-function FDsModelRenderablePropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsModelRenderablePropertyFrame_loadObject(space, renderable){
-   var o = this;
-   var resource = renderable.resource();
-   o._activeSpace = space;
-   o._activeRenderable = renderable;
-   o._controlGuid.set(resource.guid());
-   o._controlCode.set(resource.code());
-   o._controlLabel.set(resource.label());
-   o._frameRenderable.loadObject(space, renderable);
-}
-function FDsModelRenderablePropertyFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
 }
 function FDsModelWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);

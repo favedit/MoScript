@@ -3976,30 +3976,32 @@ function FUiDescribeFrameConsole_construct(){
    o._defines = new TDictionary();
    o.lsnsLoaded = new TListeners();
 }
-function FUiDescribeFrameConsole_load(n){
+function FUiDescribeFrameConsole_load(name){
    var o = this;
-   var x = o._defines.get(n);
-   if(x){
-      return x;
+   var defines = o._defines;
+   var xconfig = defines.get(name);
+   if(xconfig){
+      return xconfig;
    }
-   var xd = new TXmlDocument();
-   var x = xd.root();
-   x.set('action', 'query');
-   var xf = x.create('Frame');
-   xf.set('name', n);
-   var xc = RConsole.find(FXmlConsole);
-   var xr = xc.send(RUiService.url(o._service), xd);
-   var rs = xr.nodes();
-   var rc = rs.count();
-   for(var i = 0; i < rc; i++){
-      var rx = rs.get(i);
-      o._defines.set(rx.get('name'), rx);
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'query');
+   var xframe = xroot.create('Frame');
+   xframe.set('name', name);
+   var url = RUiService.url(o._service);
+   var xresult = RConsole.find(FXmlConsole).send(url, xdocument);
+   var xframes = xresult.nodes();
+   var count = xframes.count();
+   for(var i = 0; i < count; i++){
+      var xframe = xframes.at(i);
+      var frameName = xframe.get('name');
+      defines.set(frameName, xframe);
    }
-   var x = o._defines.get(n);
-   if(x == null){
-      throw new TError(o, 'Unknown frame. (name={1])', n);
+   var xframe = defines.get(name);
+   if(!xframe){
+      throw new TError(o, 'Unknown frame. (name={1])', name);
    }
-   return x;
+   return xframe;
 }
 function FUiDescribeFrameConsole_createFromName(name, type){
    var o = this;

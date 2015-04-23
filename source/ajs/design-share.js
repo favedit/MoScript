@@ -91,6 +91,38 @@ function FDsShareWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareBitmapFrameSet){
+         var menuBar = RClass.create(FDsShareBitmapMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareMaterialFrameSet){
+         var menuBar = RClass.create(FDsShareMaterialMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareModelFrameSet){
+         var menuBar = RClass.create(FDsShareModelMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareModelFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ShareTemplateFrameSet){
+         var menuBar = RClass.create(FDsShareTemplateMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.ShareSceneFrameSet){
          var menuBar = RClass.create(FDsShareSceneMenuBar);
          menuBar._workspace = o;
@@ -119,6 +151,10 @@ function FDsShareWorkspace_selectFrameSet(name, guid){
       case EDsFrameSet.ShareResourceFrameSet:
          frameSet.load();
          break;
+      case EDsFrameSet.ShareBitmapFrameSet:
+      case EDsFrameSet.ShareMaterialFrameSet:
+      case EDsFrameSet.ShareModelFrameSet:
+      case EDsFrameSet.ShareTemplateFrameSet:
       case EDsFrameSet.ShareSceneFrameSet:
          frameSet.loadByGuid(guid);
          break;

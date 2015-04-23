@@ -1554,7 +1554,6 @@ function FDsResourceTabBar_onButtonClick(event){
    var sender = event.sender;
    var name = sender.name();
    o._resourceTypeCd = name;
-   R
 }
 function FDsResourceTabBar_construct(){
    var o = this;

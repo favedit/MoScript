@@ -9,7 +9,7 @@
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_BUILDER% %JS_HOME%
 
 @REM ============================================================
-COPY /Y %JS_HOME%\9.1.1-context\*.js %JS_HOME%\ajs\
+COPY /Y %JS_HOME%\9.1.01-context\*.js %JS_HOME%\ajs\
 
 "%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\demo.js --js_output_file ajs\release\mo-demo.js
 "%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\me.js   --js_output_file ajs\release\mo-engine.js

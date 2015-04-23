@@ -20,11 +20,11 @@ function FG2dCanvasContext_linkCanvas(hCanvas){
    var o = this;
    o.__base.FG2dContext.linkCanvas.call(o, hCanvas);
    if(hCanvas.getContext){
-      var native = hCanvas.getContext('2d');
-      if(!native){
+      var graphic = hCanvas.getContext('2d');
+      if(!graphic){
          throw new TError(o, "Current browser can't support Context2D technique.");
       }
-      o._native = native;
+      o._native = graphic;
    }
    o._hCanvas = hCanvas;
 }

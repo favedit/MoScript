@@ -489,11 +489,9 @@ function FDsPrivateMaterialCanvas_capture(){
    RStage.process();
    var context = o._graphicContext;
    var size = context.size();
-   var native = context._native;
    var width = size.width;
    var height = size.height;
-   var data = new Uint8Array(4 * width * height);
-   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   var data = context.readPixels(0, 0, width, height);
    o.switchSize(switchWidth, switchHeight);
    RStage.process();
    var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Model + '&guid=' + guid + '&width=' + width + '&height=' + height;

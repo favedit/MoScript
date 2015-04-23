@@ -42,6 +42,7 @@ function FWglContext(o){
    o.clear               = FWglContext_clear;
    o.clearColor          = FWglContext_clearColor;
    o.clearDepth          = FWglContext_clearDepth;
+   o.readPixels          = FWglContext_readPixels;
    o.drawTriangles       = FWglContext_drawTriangles;
    o.present             = FWglContext_present;
    o.checkError          = FWglContext_checkError;
@@ -673,6 +674,13 @@ function FWglContext_clearDepth(d){
    c.clearDepth(d);
    c.clear(c.DEPTH_BUFFER_BIT);
    o._statistics._frameClearCount++;
+}
+function FWglContext_readPixels(left, top, width, height){
+   var o = this;
+   var graphic = o._native;
+   var data = new Uint8Array(4 * width * height);
+   graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
+   return data;
 }
 function FWglContext_drawTriangles(b, i, c){
    var o = this;

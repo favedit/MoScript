@@ -47,14 +47,8 @@ var EDsFrame = new function EDsFrame(){
 }
 var EDsFrameSet = new function EDsFrameSet(){
    var o = this;
-   o.SolutionFrameSet        = 'resource.solution.FrameSet';
-   o.ProjectFrameSet         = 'resource.project.FrameSet';
-   o.ResourceFrameSet        = 'resource.resource.FrameSet';
-   o.BitmapFrameSet          = 'resource.bitmap.FrameSet';
-   o.MaterialFrameSet        = 'resource.material.FrameSet';
-   o.ModelFrameSet           = 'resource.model.FrameSet';
-   o.TemplateFrameSet        = 'resource.template.FrameSet';
-   o.SceneFrameSet           = 'resource.scene.FrameSet';
+   o.PrivateSolutionFrameSet = 'resource.private.solution.FrameSet';
+   o.PrivateProjectFrameSet  = 'resource.private.project.FrameSet';
    o.PrivateResourceFrameSet = 'resource.private.resource.FrameSet';
    o.PrivateBitmapFrameSet   = 'resource.private.bitmap.FrameSet';
    o.PrivateMaterialFrameSet = 'resource.private.material.FrameSet';
@@ -263,9 +257,9 @@ function FDsCanvas_onBuild(p){
    a.alpha = false;
    a.antialias = true;
    var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
-   var dm = o._dimensional = RClass.create(FE3dDimensional);
-   dm.linkGraphicContext(c);
-   dm.setup();
+   var dimensional = o._dimensional = RClass.create(FE3dDimensional);
+   dimensional.linkGraphicContext(c);
+   dimensional.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(1000 / 60);
    RConsole.find(FMouseConsole).register(o);

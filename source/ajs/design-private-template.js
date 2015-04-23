@@ -1,5 +1,5 @@
-function FDsPrivateTemplateCanvas(o){
-   o = RClass.inherits(this, o, FDsTemplateCanvas);
+function FDsPrivateTemplateCanvasContent(o){
+   o = RClass.inherits(this, o, FDsTemplateCanvasContent);
    return o;
 }
 function FDsPrivateTemplateCanvasToolBar(o){
@@ -7,8 +7,8 @@ function FDsPrivateTemplateCanvasToolBar(o){
    o._frameName      = 'resource.private.template.CanvasToolBar';
    return o;
 }
-function FDsPrivateTemplateCatalog(o){
-   o = RClass.inherits(this, o, FDsTemplateCatalog);
+function FDsPrivateTemplateCatalogContent(o){
+   o = RClass.inherits(this, o, FDsTemplateCatalogContent);
    return o;
 }
 function FDsPrivateTemplateCatalogToolBar(o){
@@ -30,7 +30,7 @@ function FDsPrivateTemplateFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsPrivateTemplateCatalog);
+   var catalog = o._catalogContent = RClass.create(FDsPrivateTemplateCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -40,7 +40,7 @@ function FDsPrivateTemplateFrameSet_onBuilded(event){
    toolbar._workspace = o._worksapce;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsPrivateTemplateCanvas);
+   var canvas = o._canvasContent = RClass.create(FDsPrivateTemplateCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -96,7 +96,14 @@ function FDsPrivateTemplateFrameSet_onCatalogSelected(select, flag){
 function FDsPrivateTemplateMenuBar(o){
    o = RClass.inherits(this, o, FDsTemplateMenuBar);
    o._frameName = 'resource.private.template.MenuBar';
+   o.onBuilded  = FDsPrivateTemplateMenuBar_onBuilded;
    return o;
+}
+function FDsPrivateTemplateMenuBar_onBuilded(event){
+   var o = this;
+   o.__base.FDsTemplateMenuBar.onBuilded.call(o, event);
+   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 function FDsPrivateTemplateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);

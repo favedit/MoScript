@@ -24,9 +24,9 @@ function FDsPrivateTabBar_onButtonClick(event){
    var sender = event.sender;
    var name = sender.name();
    if(name == 'solution'){
-      o._workspace.selectFrameSet(EDsFrameSet.SolutionFrameSet);
+      o._workspace.selectFrameSet(EDsFrameSet.PrivateSolutionFrameSet);
    }else if(name == 'project'){
-      o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
+      o._workspace.selectFrameSet(EDsFrameSet.PrivateProjectFrameSet);
    }else if(name == 'resource'){
       o._workspace.selectFrameSet(EDsFrameSet.PrivateResourceFrameSet);
    }else{
@@ -90,7 +90,7 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
    var o = this;
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
-      if(name == EDsFrameSet.SolutionFrameSet){
+      if(name == EDsFrameSet.PrivateSolutionFrameSet){
          var menuBar = RClass.create(FDsSolutionMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
@@ -98,7 +98,7 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.ProjectFrameSet){
+      }else if(name == EDsFrameSet.PrivateProjectFrameSet){
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
@@ -127,14 +127,6 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
          frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
-      }else if(name == EDsFrameSet.PrivateMeshFrameSet){
-         var menuBar = RClass.create(FDsPrivateMeshMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateMeshFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -179,10 +171,10 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
    }
    o._activeFrameSet = frameSet;
    switch(name){
-      case EDsFrameSet.SolutionFrameSet:
+      case EDsFrameSet.PrivateSolutionFrameSet:
          frameSet.load();
          break;
-      case EDsFrameSet.ProjectFrameSet:
+      case EDsFrameSet.PrivateProjectFrameSet:
          frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.PrivateResourceFrameSet:
@@ -192,9 +184,6 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.PrivateMaterialFrameSet:
-         frameSet.loadByGuid(guid);
-         break;
-      case EDsFrameSet.PrivateMeshFrameSet:
          frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.PrivateModelFrameSet:

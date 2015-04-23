@@ -1,4 +1,4 @@
-function FDsSceneCanvas(o){
+function FDsSceneCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._rotation            = null;
    o._optionRotation      = false;
@@ -15,35 +15,35 @@ function FDsSceneCanvas(o){
    o._templateRotation    = null;
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
-   o.onBuild              = FDsSceneCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsSceneCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsSceneCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsSceneCanvas_onMouseCaptureStop;
-   o.onDataLoaded         = FDsSceneCanvas_onDataLoaded;
-   o.oeResize             = FDsSceneCanvas_oeResize;
-   o.oeRefresh            = FDsSceneCanvas_oeRefresh;
-   o.construct            = FDsSceneCanvas_construct;
-   o.innerSelectDisplay   = FDsSceneCanvas_innerSelectDisplay;
-   o.innerSelectLayer     = FDsSceneCanvas_innerSelectLayer;
-   o.selectNone           = FDsSceneCanvas_selectNone;
-   o.selectLayers         = FDsSceneCanvas_selectLayers;
-   o.selectLayer          = FDsSceneCanvas_selectLayer;
-   o.selectDisplay        = FDsSceneCanvas_selectDisplay;
-   o.selectMaterial       = FDsSceneCanvas_selectMaterial;
-   o.selectRenderable     = FDsSceneCanvas_selectRenderable;
-   o.switchMode           = FDsSceneCanvas_switchMode;
-   o.switchPlay           = FDsSceneCanvas_switchPlay;
-   o.switchMovie          = FDsSceneCanvas_switchMovie;
-   o.capture              = FDsSceneCanvas_capture;
-   o.loadByGuid           = FDsSceneCanvas_loadByGuid;
-   o.dispose              = FDsSceneCanvas_dispose;
+   o.onBuild              = FDsSceneCanvasContent_onBuild;
+   o.onMouseCaptureStart  = FDsSceneCanvasContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsSceneCanvasContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsSceneCanvasContent_onMouseCaptureStop;
+   o.onDataLoaded         = FDsSceneCanvasContent_onDataLoaded;
+   o.oeResize             = FDsSceneCanvasContent_oeResize;
+   o.oeRefresh            = FDsSceneCanvasContent_oeRefresh;
+   o.construct            = FDsSceneCanvasContent_construct;
+   o.innerSelectDisplay   = FDsSceneCanvasContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsSceneCanvasContent_innerSelectLayer;
+   o.selectNone           = FDsSceneCanvasContent_selectNone;
+   o.selectLayers         = FDsSceneCanvasContent_selectLayers;
+   o.selectLayer          = FDsSceneCanvasContent_selectLayer;
+   o.selectDisplay        = FDsSceneCanvasContent_selectDisplay;
+   o.selectMaterial       = FDsSceneCanvasContent_selectMaterial;
+   o.selectRenderable     = FDsSceneCanvasContent_selectRenderable;
+   o.switchMode           = FDsSceneCanvasContent_switchMode;
+   o.switchPlay           = FDsSceneCanvasContent_switchPlay;
+   o.switchMovie          = FDsSceneCanvasContent_switchMovie;
+   o.capture              = FDsSceneCanvasContent_capture;
+   o.loadByGuid           = FDsSceneCanvasContent_loadByGuid;
+   o.dispose              = FDsSceneCanvasContent_dispose;
    return o;
 }
-function FDsSceneCanvas_onBuild(p){
+function FDsSceneCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
 }
-function FDsSceneCanvas_onMouseCaptureStart(p){
+function FDsSceneCanvasContent_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -72,7 +72,7 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
       }
    }
 }
-function FDsSceneCanvas_onMouseCapture(p){
+function FDsSceneCanvasContent_onMouseCapture(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -143,9 +143,9 @@ function FDsSceneCanvas_onMouseCapture(p){
       }
    }
 }
-function FDsSceneCanvas_onMouseCaptureStop(p){
+function FDsSceneCanvasContent_onMouseCaptureStop(p){
 }
-function FDsSceneCanvas_onDataLoaded(p){
+function FDsSceneCanvasContent_onDataLoaded(p){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
@@ -153,7 +153,7 @@ function FDsSceneCanvas_onDataLoaded(p){
    o.processLoadListener(o);
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsSceneCanvas_oeResize(p){
+function FDsSceneCanvasContent_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
    var hp = o._hPanel;
@@ -167,10 +167,10 @@ function FDsSceneCanvas_oeResize(p){
    }
    return EEventStatus.Stop;
 }
-function FDsSceneCanvas_oeRefresh(p){
+function FDsSceneCanvasContent_oeRefresh(p){
    return EEventStatus.Stop;
 }
-function FDsSceneCanvas_construct(){
+function FDsSceneCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
@@ -181,7 +181,7 @@ function FDsSceneCanvas_construct(){
    o._captureRotation = new SVector3();
    o._selectRenderables = new TObjects();
 }
-function FDsSceneCanvas_innerSelectDisplay(select){
+function FDsSceneCanvasContent_innerSelectDisplay(select){
    var o = this;
    var displays = select.displays();
    var count = displays.count();
@@ -199,7 +199,7 @@ function FDsSceneCanvas_innerSelectDisplay(select){
       }
    }
 }
-function FDsSceneCanvas_innerSelectLayer(layer){
+function FDsSceneCanvasContent_innerSelectLayer(layer){
    var o = this;
    var displays = layer.displays();
    var count = displays.count();
@@ -208,7 +208,7 @@ function FDsSceneCanvas_innerSelectLayer(layer){
       o.innerSelectDisplay(display)
    }
 }
-function FDsSceneCanvas_selectNone(){
+function FDsSceneCanvasContent_selectNone(){
    var o = this;
    o._selectObject = null;
    var renderables = o._selectRenderables;
@@ -219,7 +219,7 @@ function FDsSceneCanvas_selectNone(){
    }
    o._selectRenderables.clear();
 }
-function FDsSceneCanvas_selectLayers(p){
+function FDsSceneCanvasContent_selectLayers(p){
    var o = this;
    o.selectNone();
    var s = o._activeSpace.layers();
@@ -227,19 +227,19 @@ function FDsSceneCanvas_selectLayers(p){
       o.innerSelectLayer(s.valueAt(i));
    }
 }
-function FDsSceneCanvas_selectLayer(p){
+function FDsSceneCanvasContent_selectLayer(p){
    var o = this;
    o.selectNone();
    o._selectObject = p;
    o.innerSelectLayer(p);
 }
-function FDsSceneCanvas_selectDisplay(p){
+function FDsSceneCanvasContent_selectDisplay(p){
    var o = this;
    o.selectNone();
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsSceneCanvas_selectMaterial(material){
+function FDsSceneCanvasContent_selectMaterial(material){
    var o = this;
    o.selectNone();
    o._selectObject = material;
@@ -256,7 +256,7 @@ function FDsSceneCanvas_selectMaterial(material){
       }
    }
 }
-function FDsSceneCanvas_selectRenderable(renderable){
+function FDsSceneCanvasContent_selectRenderable(renderable){
    var o = this;
    if(renderable){
       var n = renderable._renderable._resource._code;
@@ -351,12 +351,12 @@ function FDsSceneCanvas_selectRenderable(renderable){
       matrix.update();
    }
 }
-function FDsSceneCanvas_switchMode(p){
+function FDsSceneCanvasContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsSceneCanvas_switchPlay(flag){
+function FDsSceneCanvasContent_switchPlay(flag){
    var o = this;
    var space = o._activeSpace;
    var displays = space.allDisplays();
@@ -370,7 +370,7 @@ function FDsSceneCanvas_switchPlay(flag){
       }
    }
 }
-function FDsSceneCanvas_switchMovie(flag){
+function FDsSceneCanvasContent_switchMovie(flag){
    var o = this;
    var space = o._activeSpace;
    var displays = space.allDisplays();
@@ -386,7 +386,7 @@ function FDsSceneCanvas_switchMovie(flag){
       }
    }
 }
-function FDsSceneCanvas_capture(){
+function FDsSceneCanvasContent_capture(){
    var o = this;
    var space = o._activeSpace;
    var guid = space._resource._guid;
@@ -396,17 +396,15 @@ function FDsSceneCanvas_capture(){
    RStage.process();
    var context = o._graphicContext;
    var size = context.size();
-   var native = context._native;
    var width = size.width;
    var height = size.height;
-   var data = new Uint8Array(4 * width * height);
-   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   var data = context.readPixels(0, 0, width, height);
    o.switchSize(switchWidth, switchHeight);
    RStage.process();
    var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Scene + '&guid=' + guid + '&width=' + width + '&height=' + height;
    return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
-function FDsSceneCanvas_loadByGuid(guid){
+function FDsSceneCanvasContent_loadByGuid(guid){
    var o = this;
    var sceneConsole = RConsole.find(FE3dInstanceConsole);
    sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
@@ -427,7 +425,7 @@ function FDsSceneCanvas_loadByGuid(guid){
    }
    RStage.register('space', space);
 }
-function FDsSceneCanvas_dispose(){
+function FDsSceneCanvasContent_dispose(){
    var o = this;
    var v = o._rotation;
    if(v){
@@ -511,30 +509,30 @@ function FDsSceneCanvasToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
 }
-function FDsSceneCatalog(o){
+function FDsSceneCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
    o._iconView             = 'resource.scene.view';
    o._iconViewNot          = 'resource.scene.viewno';
    o._displays             = null;
    o._renderables          = null;
    o._materials            = null;
-   o.onBuild               = FDsSceneCatalog_onBuild;
-   o.onLoadDisplay         = FDsSceneCatalog_onLoadDisplay;
-   o.onNodeViewClick       = FDsSceneCatalog_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsSceneCatalog_onNodeViewDoubleClick;
+   o.onBuild               = FDsSceneCatalogContent_onBuild;
+   o.onLoadDisplay         = FDsSceneCatalogContent_onLoadDisplay;
+   o.onNodeViewClick       = FDsSceneCatalogContent_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsSceneCatalogContent_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
-   o.construct             = FDsSceneCatalog_construct;
-   o.buildNodeView         = FDsSceneCatalog_buildNodeView;
-   o.buildRenderable       = FDsSceneCatalog_buildRenderable;
-   o.buildDisplay          = FDsSceneCatalog_buildDisplay;
-   o.buildLayer            = FDsSceneCatalog_buildLayer;
-   o.buildSpace            = FDsSceneCatalog_buildSpace;
-   o.selectObject          = FDsSceneCatalog_selectObject;
-   o.showObject            = FDsSceneCatalog_showObject;
-   o.dispose               = FDsSceneCatalog_dispose;
+   o.construct             = FDsSceneCatalogContent_construct;
+   o.buildNodeView         = FDsSceneCatalogContent_buildNodeView;
+   o.buildRenderable       = FDsSceneCatalogContent_buildRenderable;
+   o.buildDisplay          = FDsSceneCatalogContent_buildDisplay;
+   o.buildLayer            = FDsSceneCatalogContent_buildLayer;
+   o.buildSpace            = FDsSceneCatalogContent_buildSpace;
+   o.selectObject          = FDsSceneCatalogContent_selectObject;
+   o.showObject            = FDsSceneCatalogContent_showObject;
+   o.dispose               = FDsSceneCatalogContent_dispose;
    return o;
 }
-function FDsSceneCatalog_onBuild(p){
+function FDsSceneCatalogContent_onBuild(p){
    var o = this;
    var c = RClass.create(FUiTreeColumn);
    c.setName('view');
@@ -542,12 +540,12 @@ function FDsSceneCatalog_onBuild(p){
    o.__base.FDsCatalog.onBuild.call(o, p);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.scene');
 }
-function FDsSceneCatalog_onLoadDisplay(event){
+function FDsSceneCatalogContent_onLoadDisplay(event){
    var o = this;
    var node = event._linkNode;
    o.buildRenderable(node, event);
 }
-function FDsSceneCatalog_onNodeViewClick(p){
+function FDsSceneCatalogContent_onNodeViewClick(p){
    var o = this;
    var c = p.treeNodeCell;
    var s = p.treeNode.dataPropertyGet('linker');
@@ -600,7 +598,7 @@ function FDsSceneCatalog_onNodeViewClick(p){
       }
    }
 }
-function FDsSceneCatalog_onNodeViewDoubleClick(p){
+function FDsSceneCatalogContent_onNodeViewDoubleClick(p){
    var o = this;
    var n = p.treeNode;
    var c = p.treeNodeCell;
@@ -633,21 +631,21 @@ function FDsSceneCatalog_onNodeViewDoubleClick(p){
       }
    }
 }
-function FDsSceneCatalog_construct(){
+function FDsSceneCatalogContent_construct(){
    var o = this;
    o.__base.FDsCatalog.construct.call(o);
    o._displays = new TObjects();
    o._renderables = new TObjects();
    o._materials = new TObjects();
 }
-function FDsSceneCatalog_buildNodeView(node, view){
+function FDsSceneCatalogContent_buildNodeView(node, view){
    var o = this;
    var cell = node.cell('view');
    cell.setIcon(o._iconView);
    cell.setClickListener(o, o.onNodeViewClick);
    cell.setDoubleClickListener(o, o.onNodeViewDoubleClick);
 }
-function FDsSceneCatalog_buildRenderable(parentNode, sprite){
+function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
    var o = this;
    var materials = sprite.materials();
    if(materials){
@@ -698,7 +696,7 @@ function FDsSceneCatalog_buildRenderable(parentNode, sprite){
       }
    }
 }
-function FDsSceneCatalog_buildDisplay(parentNode, p){
+function FDsSceneCatalogContent_buildDisplay(parentNode, p){
    var o = this;
    var displays = p.displays();
    if(displays){
@@ -719,7 +717,7 @@ function FDsSceneCatalog_buildDisplay(parentNode, p){
       }
    }
 }
-function FDsSceneCatalog_buildLayer(parentNode, space){
+function FDsSceneCatalogContent_buildLayer(parentNode, space){
    var o = this;
    var layersNode = o.createNode();
    layersNode.setTypeCode('Layers');
@@ -744,7 +742,7 @@ function FDsSceneCatalog_buildLayer(parentNode, space){
       o.buildDisplay(layerNode, layer)
    }
 }
-function FDsSceneCatalog_buildSpace(space){
+function FDsSceneCatalogContent_buildSpace(space){
    var o = this;
    o.clearAllNodes();
    var resource = space.resource();
@@ -759,13 +757,13 @@ function FDsSceneCatalog_buildSpace(space){
    o.buildLayer(spaceNode, space);
    spaceNode.click();
 }
-function FDsSceneCatalog_selectObject(item){
+function FDsSceneCatalogContent_selectObject(item){
    var o = this;
    if(item){
       o.processSelectedListener(item, true);
    }
 }
-function FDsSceneCatalog_showObject(select){
+function FDsSceneCatalogContent_showObject(select){
    var o = this;
    if(RClass.isClass(select, FDsSceneRenderable)){
       var renderables = o._renderables;
@@ -779,7 +777,7 @@ function FDsSceneCatalog_showObject(select){
       }
    }
 }
-function FDsSceneCatalog_dispose(){
+function FDsSceneCatalogContent_dispose(){
    var o = this;
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);
@@ -788,7 +786,6 @@ function FDsSceneCatalog_dispose(){
 }
 function FDsSceneCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName             = 'resource.share.scene.CatalogToolBar';
    o._activeNodeGuid        = null;
    o._controlCreateCamera   = null;
    o._controlCreateLayer    = null;
