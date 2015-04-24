@@ -8,7 +8,7 @@ function FDsMaterialWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.mesh.Workspace';
+   o._frameName            = 'design2d.bitmap.Workspace';
    //..........................................................
    // @style
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));

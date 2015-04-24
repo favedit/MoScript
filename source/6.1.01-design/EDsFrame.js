@@ -19,9 +19,11 @@ var EDsFrame = new function EDsFrame(){
    o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
    // @member 模型属性页面
-   o.SolutionProjectPropertyFrame  = 'design3d.solution.property.ProjectFrame';
+   o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
    // @member 模型属性页面
-   o.ResourcePropertyFrame         = 'design3d.resource.property.SpaceFrame';
+   o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';
+   // @member 模型属性页面
+   o.BitmapPropertyFrame           = 'resource.bitmap.property.Frame';
    // @member 网格属性页面
    o.MeshSpacePropertyFrame        = 'design3d.mesh.property.SpaceFrame';
    o.MeshLayerPropertyFrame        = 'design3d.mesh.property.LayerFrame';

@@ -4,18 +4,18 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsShareBitmapCatalogItem(o){
+function FDsMaterialCatalogItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
    //..........................................................
    o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
    o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
    //..........................................................
    // @event
-   o.onBuild         = FDsShareBitmapCatalogItem_onBuild;
+   o.onBuild         = FDsMaterialCatalogItem_onBuild;
    //..........................................................
    // @method
-   o.setTypeLabel    = FDsShareBitmapCatalogItem_setTypeLabel;
-   o.refreshStyle    = FDsShareBitmapCatalogItem_refreshStyle;
+   o.setTypeLabel    = FDsMaterialCatalogItem_setTypeLabel;
+   o.refreshStyle    = FDsMaterialCatalogItem_refreshStyle;
    return o;
 }
 
@@ -25,7 +25,7 @@ function FDsShareBitmapCatalogItem(o){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FDsShareBitmapCatalogItem_onBuild(p){
+function FDsMaterialCatalogItem_onBuild(p){
    var o = this;
    // 建立控件
    o.__base.FUiListViewItem.onBuild.call(o, p);
@@ -44,7 +44,7 @@ function FDsShareBitmapCatalogItem_onBuild(p){
 // @method
 // @param label:String 标签
 //==========================================================
-function FDsShareBitmapCatalogItem_setTypeLabel(label){
+function FDsMaterialCatalogItem_setTypeLabel(label){
    this._hTypeLabel.innerHTML = label;
 }
 
@@ -54,7 +54,7 @@ function FDsShareBitmapCatalogItem_setTypeLabel(label){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FDsShareBitmapCatalogItem_refreshStyle(){
+function FDsMaterialCatalogItem_refreshStyle(){
    var o = this;
    // 建立控件
    var url = '/cloud.content2d.bitmap.image.wv?do=preview&guid=' + o._guid + '&update_date=' + o._updateDate;

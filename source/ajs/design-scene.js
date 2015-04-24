@@ -147,8 +147,6 @@ function FDsSceneCanvasContent_onMouseCaptureStop(p){
 }
 function FDsSceneCanvasContent_onDataLoaded(p){
    var o = this;
-   var c = o._graphicContext;
-   var s = o._activeSpace;
    o.reloadRegion()
    o.processLoadListener(o);
    RConsole.find(FUiDesktopConsole).hide();
@@ -388,11 +386,6 @@ function FDsSceneCanvasContent_switchMovie(flag){
 }
 function FDsSceneCanvasContent_loadByGuid(guid){
    var o = this;
-   var sceneConsole = RConsole.find(FE3dInstanceConsole);
-   sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
-   sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
-   sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
-   sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
    var space = o._activeSpace;
    var sceneConsole = RConsole.find(FE3dSceneConsole);
    if(space){
@@ -402,7 +395,6 @@ function FDsSceneCanvasContent_loadByGuid(guid){
    space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
    if(!space._linked){
       RConsole.find(FUiDesktopConsole).showLoading();
-      space._layer.pushRenderable(o._dimensional);
       space.addLoadListener(o, o.onDataLoaded);
       space._linked = true;
    }
@@ -942,19 +934,19 @@ function FDsSceneCatalogToolBar_dispose(){
 }
 function FDsSceneFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
-   o._frameName            = 'resource.scene.FrameSet';
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
    o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
    o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-   o._framesetMain         = null;
-   o._framesetBody         = null;
-   o._frameToolBar         = null;
-   o._frameBody            = null;
-   o._frameProperty        = null;
    o._frameCatalog         = null;
-   o._frameWorkspace       = null;
-   o._frameStatusBar       = null;
+   o._frameCatalogToolBar  = null;
+   o._frameCatalogContent  = null;
+   o._frameCanvas          = null;
+   o._frameCanvasToolBar   = null;
+   o._frameCanvasContent   = null;
+   o._frameProperty        = null;
+   o._framePropertyToolBar = null;
+   o._framePropertyContent = null;
    o.onBuilded             = FDsSceneFrameSet_onBuilded;
    o.onDataLoaded          = FDsSceneFrameSet_onDataLoaded;
    o.onCatalogSelected     = FDsSceneFrameSet_onCatalogSelected;
@@ -979,6 +971,11 @@ function FDsSceneFrameSet_onBuilded(event){
    var spliter = o._spliterProperty;
    spliter.setAlignCd(EUiAlign.Right);
    spliter.setSizeHtml(o._frameProperty._hPanel);
+   var sceneConsole = RConsole.find(FE3dInstanceConsole);
+   sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
+   sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
+   sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
+   sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
 }
 function FDsSceneFrameSet_onDataLoaded(canvas){
    var o = this;
@@ -1062,10 +1059,10 @@ function FDsSceneFrameSet_loadByGuid(guid){
    o._activeGuid = guid;
    o._canvasContent.loadByGuid(guid);
 }
-function FDsSceneFrameSet_loadByCode(p){
+function FDsSceneFrameSet_loadByCode(code){
    var o = this;
-   o._meshCode = p;
-   o._canvasContent.loadByCode(p);
+   o._avtiveCode = code;
+   o._canvasContent.loadByCode(code);
 }
 function FDsSceneFrameSet_dispose(){
    var o = this;

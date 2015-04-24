@@ -1283,6 +1283,7 @@ function TNode(name){
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
    o.hasNode      = TNode_hasNode;
+   o.nodeCount    = TNode_nodeCount;
    o.node         = TNode_node;
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
@@ -1335,17 +1336,21 @@ function TNode_hasNode(){
    var s = this._nodes;
    return s ? !s.isEmpty() : false;
 }
-function TNode_node(n){
-   var s = this._nodes;
-   return s ? s.get(n) : null;
+function TNode_nodeCount(){
+   var nodes = this._nodes;
+   return nodes ? nodes.count() : 0;
+}
+function TNode_node(index){
+   var nodes = this._nodes;
+   return nodes ? nodes.at(index) : null;
 }
 function TNode_nodes(){
    var o = this;
-   var r = o._nodes;
-   if(!r){
-      r = o._nodes = new TObjects();
+   var nodes = o._nodes;
+   if(!nodes){
+      nodes = o._nodes = new TObjects();
    }
-   return r;
+   return nodes;
 }
 function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;

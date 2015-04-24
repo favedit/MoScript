@@ -29,8 +29,9 @@ var EDsFrame = new function EDsFrame(){
    o.CommonDisplayPropertyFrame    = 'resource.common.property.DisplayFrame';
    o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
-   o.SolutionProjectPropertyFrame  = 'design3d.solution.property.ProjectFrame';
-   o.ResourcePropertyFrame         = 'design3d.resource.property.SpaceFrame';
+   o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
+   o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';
+   o.BitmapPropertyFrame           = 'resource.bitmap.property.Frame';
    o.MeshSpacePropertyFrame        = 'design3d.mesh.property.SpaceFrame';
    o.MeshLayerPropertyFrame        = 'design3d.mesh.property.LayerFrame';
    o.MeshDisplayPropertyFrame      = 'design3d.mesh.property.DisplayFrame';
@@ -287,7 +288,8 @@ function FDsCanvas_onMouseCapture(event){
    var cx = event.clientX - o._capturePosition.x;
    var cy = event.clientY - o._capturePosition.y;
    var mc = o._canvasModeCd;
-   switch(o._toolbar._canvasModeCd){
+   var toolbar = o._frameSet._canvasToolBar;
+   switch(toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
          var camera = space.camera();
          var rotation = camera.rotation();
@@ -760,15 +762,19 @@ function FDsCatalog_dispose(){
 }
 function FDsFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
-   o._activeGuid        = null;
-   o._activeCode        = null;
-   o._activeSpace       = null;
-   o._propertyFrames    = null;
-   o.construct          = FDsFrameSet_construct;
-   o.findPropertyFrame  = FDsFrameSet_findPropertyFrame;
-   o.propertyFrames     = FDsFrameSet_propertyFrames;
-   o.hidePropertyFrames = FDsFrameSet_hidePropertyFrames;
-   o.dispose            = FDsFrameSet_dispose;
+   o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+   o._activeGuid           = null;
+   o._activeCode           = null;
+   o._activeSpace          = null;
+   o._propertyFrames       = null;
+   o.construct             = FDsFrameSet_construct;
+   o.findPropertyFrame     = FDsFrameSet_findPropertyFrame;
+   o.propertyFrames        = FDsFrameSet_propertyFrames;
+   o.hidePropertyFrames    = FDsFrameSet_hidePropertyFrames;
+   o.dispose               = FDsFrameSet_dispose;
    return o;
 }
 function FDsFrameSet_construct(){

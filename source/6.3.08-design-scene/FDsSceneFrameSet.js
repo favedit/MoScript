@@ -8,9 +8,6 @@
 function FDsSceneFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.scene.FrameSet';
-   //..........................................................
    // @style
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
@@ -18,16 +15,15 @@ function FDsSceneFrameSet(o){
    o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
    //..........................................................
    // @attribute
-   o._framesetMain         = null;
-   o._framesetBody         = null;
-   // @attribute
-   o._frameToolBar         = null;
-   o._frameBody            = null;
-   o._frameProperty        = null;
-   // @attribute
    o._frameCatalog         = null;
-   o._frameWorkspace       = null;
-   o._frameStatusBar       = null;
+   o._frameCatalogToolBar  = null;
+   o._frameCatalogContent  = null;
+   o._frameCanvas          = null;
+   o._frameCanvasToolBar   = null;
+   o._frameCanvasContent   = null;
+   o._frameProperty        = null;
+   o._framePropertyToolBar = null;
+   o._framePropertyContent = null;
    //..........................................................
    // @process
    o.onBuilded             = FDsSceneFrameSet_onBuilded;
@@ -69,6 +65,13 @@ function FDsSceneFrameSet_onBuilded(event){
    var spliter = o._spliterProperty;
    spliter.setAlignCd(EUiAlign.Right);
    spliter.setSizeHtml(o._frameProperty._hPanel);
+   //..........................................................
+   // 设置实例工厂
+   var sceneConsole = RConsole.find(FE3dInstanceConsole);
+   sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
+   sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
+   sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
+   sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
 }
 
 //==========================================================
@@ -79,8 +82,8 @@ function FDsSceneFrameSet_onBuilded(event){
 //==========================================================
 function FDsSceneFrameSet_onDataLoaded(canvas){
    var o = this;
-   var space = o._activeSpace = canvas._activeSpace;
    // 加载完成
+   var space = o._activeSpace = canvas._activeSpace;
    o._catalogContent.buildSpace(space);
 }
 
@@ -186,7 +189,7 @@ function FDsSceneFrameSet_construct(){
 }
 
 //==========================================================
-// <T>根据唯一编码加载网格模板。</T>
+// <T>根据唯一编码加载场景。</T>
 //
 // @method
 // @param guid:String 唯一编码
@@ -198,14 +201,15 @@ function FDsSceneFrameSet_loadByGuid(guid){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>根据代码加载场景。</T>
 //
 // @method
+// @param code:String 代码
 //==========================================================
-function FDsSceneFrameSet_loadByCode(p){
+function FDsSceneFrameSet_loadByCode(code){
    var o = this;
-   o._meshCode = p;
-   o._canvasContent.loadByCode(p);
+   o._avtiveCode = code;
+   o._canvasContent.loadByCode(code);
 }
 
 //==========================================================

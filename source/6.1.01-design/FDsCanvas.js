@@ -127,7 +127,8 @@ function FDsCanvas_onMouseCapture(event){
    //var d = t.renderables().get(0);
    //var m = d.matrix();
    //var cm = o._captureMatrix;
-   switch(o._toolbar._canvasModeCd){
+   var toolbar = o._frameSet._canvasToolBar;
+   switch(toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
          var camera = space.camera();
          var rotation = camera.rotation();

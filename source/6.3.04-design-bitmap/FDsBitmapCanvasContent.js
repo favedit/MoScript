@@ -14,19 +14,9 @@ function FDsBitmapCanvasContent(o){
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
-   // @attribute
-   o._canvasModeCd        = EDsCanvasMode.Drop;
-   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._capturePosition     = null;
    o._captureCameraPosition = null;
    o._dimensional         = null;
-   // @attribute
-   o._switchWidth         = '*';
-   o._switchHeight        = '*';
-   // @attribute
-   o._cameraMoveRate      = 8;
-   o._cameraKeyRotation   = 3;
-   o._cameraMouseMove     = 0.05;
    // @attribute
    o._templateMatrix      = null;
    o._templateRenderable  = null;
@@ -38,9 +28,9 @@ function FDsBitmapCanvasContent(o){
    //..........................................................
    // @event
    o.onBuild              = FDsBitmapCanvasContent_onBuild;
-   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
+   //o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
+   //o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
+   //o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    //..........................................................
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
@@ -49,9 +39,7 @@ function FDsBitmapCanvasContent(o){
    // @method
    o.construct            = FDsBitmapCanvasContent_construct;
    // @method
-   o.switchSize           = FDsBitmapCanvasContent_switchSize;
    o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
-   o.reloadRegion         = FDsBitmapCanvasContent_reloadRegion;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    // @method
    o.dispose              = FDsBitmapCanvasContent_dispose;
@@ -281,53 +269,6 @@ function FDsBitmapCanvasContent_selectDisplay(p){
 }
 
 //==========================================================
-// <T>切换工作模式。</T>
-//
-// @method
-// @param p:modeCd:Integer 
-//==========================================================
-function FDsBitmapCanvasContent_switchMode(p){
-   var o = this;
-   o._canvasModeCd = p;
-}
-
-//==========================================================
-// <T>切换大小。</T>
-//
-// @method
-// @param width:Integer 宽度
-// @param height:Integer 高度
-//==========================================================
-function FDsBitmapCanvasContent_switchSize(width, height){
-   var o = this;
-   o._switchWidth = width;
-   o._switchHeight = height;
-   // 获得大小
-   var hCanvas = o._hPanel;
-   var hParent = o._hParent;
-   if(width == '*'){
-      width = hParent.offsetWidth;
-   }
-   if(height == '*'){
-      height = hParent.offsetHeight;
-   }
-   // 设置大小
-   hCanvas.width = width;
-   hCanvas.style.width = width + 'px';
-   hCanvas.height = height;
-   hCanvas.style.height = height + 'px';
-   // 设置投影
-   o._graphicContext.setViewport(0, 0, width, height);
-   // 设置投影
-   var space = o._activeSpace;
-   if(space){
-      var projection = space.camera().projection();
-      projection.size().set(width, height);
-      projection.update();
-   }
-}
-
-//==========================================================
 // <T>自动优化大小。</T>
 //
 // @method
@@ -398,20 +339,6 @@ function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rot
 }
 
 //==========================================================
-// <T>重新加载区域。</T>
-//
-// @method
-// @param region:FE3dRegion 区域
-//==========================================================
-function FDsBitmapCanvasContent_reloadRegion(region){
-   var o = this;
-   var resource = region.resource();
-   o._cameraMoveRate = resource.moveSpeed();
-   o._cameraKeyRotation = resource.rotationKeySpeed();
-   o._cameraMouseMove = resource.rotationMouseSpeed();
-}
-
-//==========================================================
 // <T>加载模板处理。</T>
 //
 // @method
@@ -421,7 +348,7 @@ function FDsBitmapCanvasContent_loadByGuid(guid){
    // 显示加载进度
    RConsole.find(FUiDesktopConsole).showLoading();
    // 释放网格
-   var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
+   var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
    var bitmap = o._activeBitmap;
    bitmap.loadUrl(url);
    bitmap.clearLoadListeners();

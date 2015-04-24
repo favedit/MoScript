@@ -25,6 +25,8 @@ function FE3dBitmap(o){
    o.processLoad      = FE3dBitmap_processLoad;
    o.process          = FE3dBitmap_process;
    o.loadUrl          = FE3dBitmap_loadUrl;
+   // @method
+   o.dispose          = FE3dBitmap_dispose;
    return o;
 }
 
@@ -36,6 +38,8 @@ function FE3dBitmap(o){
 function FE3dBitmap_construct(){
    var o = this;
    o.__base.FE3dMeshRenderable.construct.call(o);
+   // 设置属性
+   o._material = RClass.create(FE3dMaterial);
 }
 
 //==========================================================
@@ -170,6 +174,19 @@ function FE3dBitmap_process(){
 function FE3dBitmap_loadUrl(url){
    var o = this;
    var context = o._graphicContext;
-   o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
+   o._renderable = RConsole.find(FE3dBitmapConsole).loadUrl(context, url);
    o._ready = false;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3dBitmap_dispose(){
+   var o = this;
+   // 清空属性
+   o._material = RObject.dispoe(o._material);
+   // 父处理
+   o.__base.FE3dMeshRenderable.dispose.call(o);
 }

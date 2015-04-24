@@ -223,9 +223,9 @@ function FDsSceneCanvasContent_onMouseCaptureStop(p){
 //==========================================================
 function FDsSceneCanvasContent_onDataLoaded(p){
    var o = this;
-   var c = o._graphicContext;
-   var s = o._activeSpace;
-      space._layer.pushRenderable(o._dimensional);
+   //var context = o._graphicContext;
+   //var space = o._activeSpace;
+   //space._layer.pushRenderable(o._dimensional);
    // 创建界面层
    //var l = RClass.create(FDisplayUiLayer);
    //l.selectTechnique(c, FG3dControlTechnique);
@@ -597,12 +597,6 @@ function FDsSceneCanvasContent_switchMovie(flag){
 //==========================================================
 function FDsSceneCanvasContent_loadByGuid(guid){
    var o = this;
-   // 设置实例工厂
-   var sceneConsole = RConsole.find(FE3dInstanceConsole);
-   sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
-   sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
-   sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
-   sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
    // 释放场景
    var space = o._activeSpace;
    var sceneConsole = RConsole.find(FE3dSceneConsole);

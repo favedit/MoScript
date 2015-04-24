@@ -1,27 +1,33 @@
 //==========================================================
-// <T>模板工作区域。</T>
+// <T>设计框架。</T>
 //
+// @class
 // @author maocy
-// @history 150121
+// @history 150424
 //==========================================================
 function FDsFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
+   // @style
+   o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
    //..........................................................
    // @attribute
-   o._activeGuid        = null;
-   o._activeCode        = null;
-   o._activeSpace       = null;
+   o._activeGuid           = null;
+   o._activeCode           = null;
+   o._activeSpace          = null;
    // @attribute
-   o._propertyFrames    = null;
+   o._propertyFrames       = null;
    //..........................................................
    // @method
-   o.construct          = FDsFrameSet_construct;
+   o.construct             = FDsFrameSet_construct;
    // @method
-   o.findPropertyFrame  = FDsFrameSet_findPropertyFrame;
-   o.propertyFrames     = FDsFrameSet_propertyFrames;
-   o.hidePropertyFrames = FDsFrameSet_hidePropertyFrames;
+   o.findPropertyFrame     = FDsFrameSet_findPropertyFrame;
+   o.propertyFrames        = FDsFrameSet_propertyFrames;
+   o.hidePropertyFrames    = FDsFrameSet_hidePropertyFrames;
    // @method
-   o.dispose            = FDsFrameSet_dispose;
+   o.dispose               = FDsFrameSet_dispose;
    return o;
 }
 

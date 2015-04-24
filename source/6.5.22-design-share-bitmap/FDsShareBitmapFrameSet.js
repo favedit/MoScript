@@ -1,18 +1,18 @@
 //==========================================================
-// <T>模板工作区域。</T>
+// <T>共享位图框架。</T>
 //
+// @class
 // @author maocy
-// @history 150121
+// @history 150424
 //==========================================================
 function FDsShareBitmapFrameSet(o){
    o = RClass.inherits(this, o, FDsBitmapFrameSet);
    //..........................................................
    // @property
-   o._frameName        = 'resource.share.bitmap.FrameSet';
+   o._frameName = 'resource.share.bitmap.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded         = FDsShareBitmapFrameSet_onBuilded;
-   o.onCatalogSelected = FDsShareBitmapFrameSet_onCatalogSelected;
+   o.onBuilded  = FDsShareBitmapFrameSet_onBuilded;
    return o;
 }
 
@@ -84,58 +84,4 @@ function FDsShareBitmapFrameSet_onBuilded(p){
    //canvas._hParent.style.scroll = 'auto';
    //canvas.build(p);
    //frame.push(canvas);
-}
-
-//==========================================================
-// <T>目录对象选择处理。</T>
-//
-// @method
-// @param p:value:Object 对象
-//==========================================================
-function FDsShareBitmapFrameSet_onCatalogSelected(p, pc){
-   var o = this;
-   var space = o._activeSpace;
-   // 隐藏所有属性面板
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
-   }
-   // 显示选中属性面板
-   if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-      f.show();
-      f.loadObject(space, space);
-   }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else{
-      throw new TError('Unknown select object type. (value={1})', p);
-   }
 }

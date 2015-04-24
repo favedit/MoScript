@@ -222,7 +222,7 @@ function FDsPrivateWorkspace_load(){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
-   }else if(code == EDsFrameSet.PrivateMeshFrameSet){
+   }else if(code == EDsFrameSet.PrivateMaterialFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)

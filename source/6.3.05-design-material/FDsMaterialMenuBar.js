@@ -7,9 +7,6 @@
 function FDsMaterialMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.model.MenuBar';
-   //..........................................................
    // @attribute
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
@@ -40,8 +37,8 @@ function FDsMaterialMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
+   //o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   //o._controlImportButton.addClickListener(o, o.onCaptureClick);
 }
 
 //==========================================================
@@ -71,7 +68,7 @@ function FDsMaterialMenuBar_onSaveClick(p){
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    // 更新处理
-   var connection = RConsole.find(FDrModelConsole).update(xconfig);
+   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 

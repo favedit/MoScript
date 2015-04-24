@@ -8,47 +8,23 @@
 function FDsMaterialCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
-   // @property
-   o._frameName                 = 'resource.model.CanvasToolBar';
-   //..........................................................
    // @attribute
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   // @attribute
-   o._controlDrop               = null;
-   // @attribute
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   // @attribute
-   o._controlDimensionalVisible = null;
-   o._controlDimensionalWidth   = null;
-   o._controlDimensionalHeight  = null;
-   o._controlDimensionalAuto    = null;
-   o._controlDimensionalFlipX   = null;
-   o._controlDimensionalFlipY   = null;
-   o._controlDimensionalFlipZ   = null;
-   o._controlDimensionalX       = null;
-   o._controlDimensionalY       = null;
-   o._controlDimensionalZ       = null;
-   // @attribute
-   o._controlRotation           = null;
+   o._controlSize1      = null;
+   o._controlSize2      = null;
+   o._controlSize3      = null;
+   o._controlSize4      = null;
+   o._controlSizeWidth  = null;
+   o._controlSizeHeight = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsMaterialCanvasToolBar_onBuilded;
+   o.onBuilded          = FDsMaterialCanvasToolBar_onBuilded;
    // @event
-   o.onModeClick                = FDsMaterialCanvasToolBar_onModeClick;
-   o.onSizeClick                = FDsMaterialCanvasToolBar_onSizeClick;
-   o.onDimensionalChange        = FDsMaterialCanvasToolBar_onDimensionalChange;
-   o.onDimensionalAutoClick     = FDsMaterialCanvasToolBar_onDimensionalAutoClick;
-   o.onRotationClick            = FDsMaterialCanvasToolBar_onRotationClick;
+   o.onSizeClick        = FDsMaterialCanvasToolBar_onSizeClick;
    //..........................................................
    // @method
-   o.construct                  = FDsMaterialCanvasToolBar_construct;
+   o.construct          = FDsMaterialCanvasToolBar_construct;
    // @method
-   o.dispose                    = FDsMaterialCanvasToolBar_dispose;
+   o.dispose            = FDsMaterialCanvasToolBar_dispose;
    return o;
 }
 
@@ -62,12 +38,6 @@ function FDsMaterialCanvasToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 关联拖拽事件
-   var control = o._controlDrop;
-   control._canvasModeCd = EDsCanvasMode.Drop;
-   control.addClickListener(o, o.onModeClick);
-   control.check(true);
-   //..........................................................
    // 关联按键事件
    o._controlSize1.addClickListener(o, o.onSizeClick);
    o._controlSize2.addClickListener(o, o.onSizeClick);
@@ -75,24 +45,6 @@ function FDsMaterialCanvasToolBar_onBuilded(p){
    o._controlSize4.addClickListener(o, o.onSizeClick);
    o._controlSizeWidth.setText('*');
    o._controlSizeHeight.setText('*');
-   //..........................................................
-   // 关联按键事件
-   o._controlDimensionalVisible.addClickListener(o, o.onDimensionalChange);
-   o._controlDimensionalVisible.check(true);
-   o._controlDimensionalWidth.addDataChangedListener(o, o.onDimensionalChange);
-   o._controlDimensionalWidth.setText(1);
-   o._controlDimensionalHeight.addDataChangedListener(o, o.onDimensionalChange);
-   o._controlDimensionalHeight.setText(1);
-   o._controlDimensionalAuto.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalFlipX.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalFlipY.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalFlipZ.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalX.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalY.addClickListener(o, o.onDimensionalAutoClick);
-   o._controlDimensionalZ.addClickListener(o, o.onDimensionalAutoClick);
-   //..........................................................
-   // 关联按键事件
-   o._controlRotation.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
@@ -129,78 +81,7 @@ function FDsMaterialCanvasToolBar_onSizeClick(event){
    o._controlSizeWidth.setText(width);
    o._controlSizeHeight.setText(height);
    // 设置大小
-   o._frameSet._canvas.switchSize(width, height);
-}
-
-//==========================================================
-// <T>坐标系可见性处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMaterialCanvasToolBar_onDimensionalChange(event){
-   var o = this;
-   var canvas = o._frameSet._canvas;
-   var visible = o._controlDimensionalVisible.isCheck();
-   var width = RInteger.parse(o._controlDimensionalWidth.text());
-   var height = RInteger.parse(o._controlDimensionalHeight.text());
-   canvas.switchDimensional(visible, width, height);
-}
-
-//==========================================================
-// <T>坐标系自动调整处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMaterialCanvasToolBar_onDimensionalAutoClick(event){
-   var o = this;
-   var sender = event.sender;
-   var name = sender.name();
-   var flipX = false;
-   var flipY = false;
-   var flipZ = false;
-   var rotationX = false;
-   var rotationY = false;
-   var rotationZ = false;
-   switch(name){
-      case 'dimensionalAuto':
-         break;
-      case 'dimensionalFlipX':
-         flipX = true;
-         break;
-      case 'dimensionalFlipY':
-         flipY = true;
-         break;
-      case 'dimensionalFlipZ':
-         flipZ = true;
-         break;
-      case 'dimensionalX':
-         rotationX = true;
-         break;
-      case 'dimensionalY':
-         rotationY = true;
-         break;
-      case 'dimensionalZ':
-         rotationZ = true;
-         break;
-      default:
-         throw new TError(o, 'Unknown command.');
-   }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
-}
-
-//==========================================================
-// <T>刷新按键处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMaterialCanvasToolBar_onRotationClick(event, v){
-   var o = this;
-   var button = event.sender;
-   var canvas = o._frameSet._canvas;
-   canvas.switchRotation(button.isCheck());
+   //o._frameSet._canvas.switchSize(width, height);
 }
 
 //==========================================================

@@ -2,9 +2,11 @@ function FDrAbsResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Local;
    o._serviceCode   = null;
+   o._classUnit     = null;
    o._resources     = null;
    o.construct      = FDrAbsResourceConsole_construct;
    o.makeServiceUrl = FDrAbsResourceConsole_makeServiceUrl;
+   o.loadResource   = FDrAbsResourceConsole_loadResource;
    o.doList         = FDrAbsResourceConsole_doList;
    o.doQuery        = FDrAbsResourceConsole_doQuery;
    o.doCreate       = FDrAbsResourceConsole_doCreate;
@@ -24,6 +26,17 @@ function FDrAbsResourceConsole_makeServiceUrl(action){
       url += '&date=' + RDate.format();
    }
    return url;
+}
+function FDrAbsResourceConsole_loadResource(xconfig){
+   var o = this;
+   var guid = xconfig.get('guid');
+   var resource = o._resources.get(guid);
+   if(!resource){
+      resource = RClass.create(o._classUnit);
+      o._resources.set(guid, resource);
+   }
+   resource.loadConfig(xconfig);
+   return resource;
 }
 function FDrAbsResourceConsole_doList(search, order, pageSize, page){
    var o = this;
@@ -69,6 +82,75 @@ function FDrAbsResourceConsole_doDelete(guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrBitmap(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode    = 'Bitmap';
+   o._sizeWidth    = 0;
+   o._sizeHeight   = 0;
+   o.sizeWidth     = FDrBitmap_sizeWidth;
+   o.setSizeWidth  = FDrBitmap_setSizeWidth;
+   o.sizeHeight    = FDrBitmap_sizeHeight;
+   o.setSizeHeight = FDrBitmap_setSizeHeight;
+   o.loadConfig    = FDrBitmap_loadConfig;
+   o.saveConfig    = FDrBitmap_saveConfig;
+   return o;
+}
+function FDrBitmap_sizeWidth(){
+   return this._sizeWidth;
+}
+function FDrBitmap_setSizeWidth(width){
+   this._sizeWidth = width;
+}
+function FDrBitmap_sizeHeight(){
+   return this._sizeHeight;
+}
+function FDrBitmap_setSizeHeight(height){
+   this._sizeHeight = height;
+}
+function FDrBitmap_loadConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.loadConfig.call(o, xconfig);
+   o._sizeWidth = xconfig.getInteger('size_width');
+   o._sizeHeight = xconfig.getInteger('size_height');
+}
+function FDrBitmap_saveConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.saveConfig.call(o, xconfig);
+   xconfig.set('size_width', o._sizeWidth);
+   xconfig.set('size_height', o._sizeHeight);
+}
+function FDrBitmapConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.resource.bitmap';
+   o._classUnit   = FDrBitmap;
+   o.createUnit   = FDrBitmapConsole_createUnit;
+   o.query        = FDrBitmapConsole_query;
+   o.update       = FDrBitmapConsole_update;
+   return o;
+}
+function FDrBitmapConsole_createUnit(){
+   return RClass.create(FDrBitmap);
+}
+function FDrBitmapConsole_query(guid){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
+   var url = RBrowser.hostPath(uri);
+   var xroot = RConsole.find(FXmlConsole).send(url);
+   var nodeCount = xroot.nodeCount();
+   for(var n = 0; n < nodeCount; n++){
+      var xbitmap = xroot.node(n);
+      if(xbitmap.isName('Bitmap')){
+         o.loadResource(xbitmap);
+      }
+   }
+   return o._resources.get(guid);
+}
+function FDrBitmapConsole_update(xconfig){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=update';
+   var url = RBrowser.hostPath(uri);
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
 }
 function FDrMesh(o){
    o = RClass.inherits(this, o, FDrResource);
@@ -161,13 +243,28 @@ function FDrProjectConsole(o){
    return o;
 }
 function FDrResource(o){
-   o = RClass.inherits(this, o, FDrObject);
+   o = RClass.inherits(this, o, FDrObject, MAttributeGuid, MAttributeCode, MAttributeLabel);
    o._classCode = null;
    o.classCode  = FDrResource_classCode;
+   o.loadConfig = FDrResource_loadConfig;
+   o.saveConfig = FDrResource_saveConfig;
    return o;
 }
 function FDrResource_classCode(){
    return this._classCode;
+}
+function FDrResource_loadConfig(xconfig){
+   var o = this;
+   o._guid = xconfig.get('guid');
+   o._code = xconfig.get('code');
+   o._label = xconfig.get('label');
+}
+function FDrResource_saveConfig(xconfig){
+   var o = this;
+   xconfig.setName(o._classCode);
+   xconfig.set('guid', o._guid);
+   xconfig.set('code', o._code);
+   xconfig.set('label', o._label);
 }
 function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);

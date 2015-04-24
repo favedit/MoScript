@@ -6,16 +6,9 @@ function FDsBitmapCanvasContent(o){
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
-   o._canvasModeCd        = EDsCanvasMode.Drop;
-   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._capturePosition     = null;
    o._captureCameraPosition = null;
    o._dimensional         = null;
-   o._switchWidth         = '*';
-   o._switchHeight        = '*';
-   o._cameraMoveRate      = 8;
-   o._cameraKeyRotation   = 3;
-   o._cameraMouseMove     = 0.05;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -24,16 +17,11 @@ function FDsBitmapCanvasContent(o){
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
    o.onBuild              = FDsBitmapCanvasContent_onBuild;
-   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
    o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
    o.construct            = FDsBitmapCanvasContent_construct;
-   o.switchSize           = FDsBitmapCanvasContent_switchSize;
    o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
-   o.reloadRegion         = FDsBitmapCanvasContent_reloadRegion;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    o.dispose              = FDsBitmapCanvasContent_dispose;
    return o;
@@ -130,34 +118,6 @@ function FDsBitmapCanvasContent_selectDisplay(p){
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsBitmapCanvasContent_switchMode(p){
-   var o = this;
-   o._canvasModeCd = p;
-}
-function FDsBitmapCanvasContent_switchSize(width, height){
-   var o = this;
-   o._switchWidth = width;
-   o._switchHeight = height;
-   var hCanvas = o._hPanel;
-   var hParent = o._hParent;
-   if(width == '*'){
-      width = hParent.offsetWidth;
-   }
-   if(height == '*'){
-      height = hParent.offsetHeight;
-   }
-   hCanvas.width = width;
-   hCanvas.style.width = width + 'px';
-   hCanvas.height = height;
-   hCanvas.style.height = height + 'px';
-   o._graphicContext.setViewport(0, 0, width, height);
-   var space = o._activeSpace;
-   if(space){
-      var projection = space.camera().projection();
-      projection.size().set(width, height);
-      projection.update();
-   }
-}
 function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
    var o = this;
    var outline = o._autoOutline;
@@ -210,17 +170,10 @@ function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rot
    renderableMatrix.identity();
    renderable.reloadResource();
 }
-function FDsBitmapCanvasContent_reloadRegion(region){
-   var o = this;
-   var resource = region.resource();
-   o._cameraMoveRate = resource.moveSpeed();
-   o._cameraKeyRotation = resource.rotationKeySpeed();
-   o._cameraMouseMove = resource.rotationMouseSpeed();
-}
 function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
    RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
+   var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
    var bitmap = o._activeBitmap;
    bitmap.loadUrl(url);
    bitmap.clearLoadListeners();
@@ -232,50 +185,22 @@ function FDsBitmapCanvasContent_dispose(){
 }
 function FDsBitmapCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'resource.bitmap.CanvasToolBar';
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   o._controlDrop               = null;
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   o._controlRotation           = null;
-   o.onBuilded                  = FDsBitmapCanvasToolBar_onBuilded;
-   o.onModeClick                = FDsBitmapCanvasToolBar_onModeClick;
-   o.onSizeClick                = FDsBitmapCanvasToolBar_onSizeClick;
-   o.onRotationChange           = FDsBitmapCanvasToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsBitmapCanvasToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsBitmapCanvasToolBar_onRotationClick;
-   o.construct                  = FDsBitmapCanvasToolBar_construct;
-   o.dispose                    = FDsBitmapCanvasToolBar_dispose;
+   o._canvasModeCd      = EDsCanvasMode.Drop;
+   o._controlSize1      = null;
+   o._controlSize2      = null;
+   o._controlSize3      = null;
+   o._controlSize4      = null;
+   o._controlSizeWidth  = null;
+   o._controlSizeHeight = null;
+   o.onBuilded          = FDsBitmapCanvasToolBar_onBuilded;
+   o.onSizeClick        = FDsBitmapCanvasToolBar_onSizeClick;
+   o.construct          = FDsBitmapCanvasToolBar_construct;
+   o.dispose            = FDsBitmapCanvasToolBar_dispose;
    return o;
 }
 function FDsBitmapCanvasToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
-   var control = o._controlDrop;
-   control._canvasModeCd = EDsCanvasMode.Drop;
-   control.addClickListener(o, o.onModeClick);
-   control.check(true);
-   o._controlSize1.addClickListener(o, o.onSizeClick);
-   o._controlSize2.addClickListener(o, o.onSizeClick);
-   o._controlSize3.addClickListener(o, o.onSizeClick);
-   o._controlSize4.addClickListener(o, o.onSizeClick);
-}
-function FDsBitmapCanvasToolBar_onModeClick(p){
-   var o = this;
 }
 function FDsBitmapCanvasToolBar_onSizeClick(event){
    var o = this;
@@ -292,56 +217,6 @@ function FDsBitmapCanvasToolBar_onSizeClick(event){
    o._controlSizeWidth.setText(width);
    o._controlSizeHeight.setText(height);
    o._frameSet._canvas.switchSize(width, height);
-}
-function FDsBitmapCanvasToolBar_onRotationChange(event){
-   var o = this;
-   var canvas = o._frameSet._canvas;
-   var visible = o._controlRotationVisible.isCheck();
-   var width = RInteger.parse(o._controlRotationWidth.text());
-   var height = RInteger.parse(o._controlRotationHeight.text());
-   canvas.switchRotation(visible, width, height);
-}
-function FDsBitmapCanvasToolBar_onRotationAutoClick(event){
-   var o = this;
-   var sender = event.sender;
-   var name = sender.name();
-   var flipX = false;
-   var flipY = false;
-   var flipZ = false;
-   var rotationX = false;
-   var rotationY = false;
-   var rotationZ = false;
-   switch(name){
-      case 'dimensionalAuto':
-         break;
-      case 'dimensionalFlipX':
-         flipX = true;
-         break;
-      case 'dimensionalFlipY':
-         flipY = true;
-         break;
-      case 'dimensionalFlipZ':
-         flipZ = true;
-         break;
-      case 'dimensionalX':
-         rotationX = true;
-         break;
-      case 'dimensionalY':
-         rotationY = true;
-         break;
-      case 'dimensionalZ':
-         rotationZ = true;
-         break;
-      default:
-         throw new TError(o, 'Unknown command.');
-   }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
-}
-function FDsBitmapCanvasToolBar_onRotationClick(event, v){
-   var o = this;
-   var button = event.sender;
-   var canvas = o._frameSet._canvas;
-   canvas.switchRotation(button.isCheck());
 }
 function FDsBitmapCanvasToolBar_construct(){
    var o = this;
@@ -560,171 +435,163 @@ function FDsBitmapCatalogToolBar_dispose(){
 }
 function FDsBitmapFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
-   o._frameName            = 'resource.bitmap.FrameSet';
-   o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-   o._activeSpace          = null;
-   o._activeMesh           = null;
-   o._framesetMain         = null;
-   o._framesetBody         = null;
-   o._frameToolBar         = null;
-   o._frameBody            = null;
+   o._frameCanvas          = null;
+   o._frameCanvasToolBar   = null;
+   o._frameCanvasContent   = null;
    o._frameProperty        = null;
-   o._frameCatalog         = null;
-   o._frameWorkspace       = null;
-   o._frameStatusBar       = null;
-   o._propertyFrames       = null;
+   o._framePropertyToolBar = null;
+   o._framePropertyContent = null;
    o.onBuilded             = FDsBitmapFrameSet_onBuilded;
-   o.onMeshLoad            = FDsBitmapFrameSet_onMeshLoad;
-   o.onCatalogSelected     = FDsBitmapFrameSet_onCatalogSelected;
+   o.onDataLoaded          = FDsBitmapFrameSet_onDataLoaded;
    o.construct             = FDsBitmapFrameSet_construct;
-   o.findPropertyFrame     = FDsBitmapFrameSet_findPropertyFrame;
    o.loadByGuid            = FDsBitmapFrameSet_loadByGuid;
    o.loadByCode            = FDsBitmapFrameSet_loadByCode;
+   o.reload                = FDsBitmapFrameSet_reload;
    o.dispose               = FDsBitmapFrameSet_dispose;
    return o;
 }
 function FDsBitmapFrameSet_onBuilded(p){
    var o = this;
    o.__base.FDsFrameSet.onBuilded.call(o, p);
-   var f = o._frameCatalog = o.searchControl('catalogFrame');
-   f._hPanel.className = o.styleName('Catalog_Ground');
-   var f = o._frameWorkspace = o.searchControl('spaceFrame');
-   f._hPanel.className = o.styleName('Workspace_Ground');
-   var f = o._frameProperty = o.searchControl('propertyFrame');
-   f._hPanel.className = o.styleName('Property_Ground');
-   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f.setAlignCd(EUiAlign.Left);
-   f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._frameProperty._hPanel);
+   o._frameCanvasToolBar._hPanel.className = o.styleName('ToolBar_Ground');
+   o._frameCanvasContent._hPanel.className = o.styleName('Canvas_Content');
+   o._framePropertyToolBar._hPanel.className = o.styleName('ToolBar_Ground');
+   o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+   var spliterProperty = o._spliterProperty;
+   spliterProperty.setAlignCd(EUiAlign.Right);
+   spliterProperty.setSizeHtml(o._frameProperty._hPanel);
 }
-function FDsBitmapFrameSet_onMeshLoad(p){
+function FDsBitmapFrameSet_onDataLoaded(event){
    var o = this;
-   o._activeSpace = p._activeSpace;
-   o._catalog.buildSpace(o._activeSpace);
-}
-function FDsBitmapFrameSet_onCatalogSelected(p, pc){
-   var o = this;
-   var space = o._activeSpace;
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
-   }
-   if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-      f.show();
-      f.loadObject(space, space);
-   }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else{
-      throw new TError('Unknown select object type. (value={1})', p);
-   }
+   debugger
+   o._activeSpace = event._activeSpace;
 }
 function FDsBitmapFrameSet_construct(){
    var o = this;
    o.__base.FDsFrameSet.construct.call(o);
-   o._propertyFrames = new TDictionary();
-}
-function FDsBitmapFrameSet_findPropertyFrame(code){
-   var o = this;
-   var frame = o._propertyFrames.get(code);
-   if(!frame){
-      frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
-      frame._workspace = o;
-      o._propertyFrames.set(code, frame);
-   }
-   return frame;
 }
 function FDsBitmapFrameSet_loadByGuid(guid){
    var o = this;
    o._activeGuid = guid;
-   o._catalogContent.serviceList(guid);
+   var bitmap = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+   var canvas = o._canvasContent;
+   canvas.loadByGuid(guid);
+   var frame = o.findPropertyFrame(EDsFrame.BitmapPropertyFrame);
+   frame.loadObject(bitmap);
 }
-function FDsBitmapFrameSet_loadByCode(p){
+function FDsBitmapFrameSet_loadByCode(code){
    var o = this;
-   o._meshCode = p;
-   o._canvas.loadByCode(p);
+   o._activeCode = code;
+   var connection = RConsole.find(FDrBitmapConsole).query(code);
+   connection.addLoadListener(o, o.onDataLoaded);
+}
+function FDsBitmapFrameSet_reload(){
+   var o = this;
 }
 function FDsBitmapFrameSet_dispose(){
    var o = this;
    o.__base.FDsFrameSet.dispose.call(o);
-   o._propertyFrames.dispose();
-   o._propertyFrames = null;
+}
+function FDsBitmapImportDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.bitmap.ImportDialog';
+   o._nodeGuid             = null;
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsBitmapImportDialog_onBuilded;
+   o.onFileLoaded          = FDsBitmapImportDialog_onFileLoaded;
+   o.onConfirmLoad         = FDsBitmapImportDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsBitmapImportDialog_onConfirmClick;
+   o.onCancelClick         = FDsBitmapImportDialog_onCancelClick;
+   o.construct             = FDsBitmapImportDialog_construct;
+   o.dispose               = FDsBitmapImportDialog_dispose;
+   return o;
+}
+function FDsBitmapImportDialog_onBuilded(event){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, event);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsBitmapImportDialog_onFileLoaded(event){
+   var o = this;
+   var reader = o._fileReader;
+   var resource = o._resource;
+   var guid = resource.guid();
+   var url = '/cloud.resource.bitmap.wv?do=importData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
+   var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+   connection.addLoadListener(o, o.onConfirmLoad);
+   o._fileReader = RObject.dispose(reader);
+}
+function FDsBitmapImportDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+   o._frameSet.reload();
+}
+function FDsBitmapImportDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var file = o._controlFile._hInput.files[0];
+   var reader = o._fileReader = RClass.create(FFileReader);
+   reader.addLoadListener(o, o.onFileLoaded);
+   reader.loadFile(file);
+}
+function FDsBitmapImportDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsBitmapImportDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsBitmapImportDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsBitmapMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'resource.bitmap.MenuBar';
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
-   o.onBuilded             = FDsBitmapMenuBar_onBuilded;
-   o.onSaveLoad            = FDsBitmapMenuBar_onSaveLoad;
-   o.onSaveClick           = FDsBitmapMenuBar_onSaveClick;
-   o.onCaptureLoad         = FDsBitmapMenuBar_onCaptureLoad;
-   o.onCaptureClick        = FDsBitmapMenuBar_onCaptureClick;
-   o.construct             = FDsBitmapMenuBar_construct;
-   o.dispose               = FDsBitmapMenuBar_dispose;
+   o._controlBack    = null;
+   o._controlSave    = null;
+   o._controlCapture = null;
+   o.onBuilded       = FDsBitmapMenuBar_onBuilded;
+   o.onBackClick     = FDsBitmapMenuBar_onBackClick;
+   o.onSaveLoad      = FDsBitmapMenuBar_onSaveLoad;
+   o.onSaveClick     = FDsBitmapMenuBar_onSaveClick;
+   o.onImportLoad    = FDsBitmapMenuBar_onImportLoad;
+   o.onImportClick   = FDsBitmapMenuBar_onImportClick;
+   o.construct       = FDsBitmapMenuBar_construct;
+   o.dispose         = FDsBitmapMenuBar_dispose;
    return o;
 }
-function FDsBitmapMenuBar_onBuilded(p){
+function FDsBitmapMenuBar_onBuilded(event){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlImportButton.addClickListener(o, o.onCaptureClick);
+   o.__base.FUiMenuBar.onBuilded.call(o, event);
+}
+function FDsBitmapMenuBar_onBackClick(event){
+   var o = this;
 }
 function FDsBitmapMenuBar_onSaveLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsBitmapMenuBar_onSaveClick(p){
+function FDsBitmapMenuBar_onSaveClick(event){
    var o = this;
-   var space = o._frameSet._activeSpace;
-   var resource = space.resource();
+   var bitmap = o._frameSet._activeResource;
    RConsole.find(FUiDesktopConsole).showUploading();
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
    connection.addLoadListener(o, o.onSaveLoad);
 }
-function FDsBitmapMenuBar_onCaptureLoad(event){
+function FDsBitmapMenuBar_onImportLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsBitmapMenuBar_onCaptureClick(event){
+function FDsBitmapMenuBar_onImportClick(event){
    var o = this;
-   RConsole.find(FUiDesktopConsole).showUploading();
-   var connection = o._frameSet._canvas.capture();
-   connection.addLoadListener(o, o.onCaptureLoad);
+   var resource = o._frameSet._activeResource;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsBitmapImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsBitmapMenuBar_construct(){
    var o = this;
@@ -734,110 +601,66 @@ function FDsBitmapMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
 }
-function FDsBitmapPropertyToolBar(o){
-   o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   o._controlDrop               = null;
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   o._controlRotation           = null;
-   o.onBuilded                  = FDsBitmapPropertyToolBar_onBuilded;
-   o.onModeClick                = FDsBitmapPropertyToolBar_onModeClick;
-   o.onSizeClick                = FDsBitmapPropertyToolBar_onSizeClick;
-   o.onRotationChange           = FDsBitmapPropertyToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsBitmapPropertyToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsBitmapPropertyToolBar_onRotationClick;
-   o.construct                  = FDsBitmapPropertyToolBar_construct;
-   o.dispose                    = FDsBitmapPropertyToolBar_dispose;
+function FDsBitmapPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._activeBitmap      = null;
+   o._controlGuid       = null;
+   o._controlCode       = null;
+   o._controlLabel      = null;
+   o._controlSizeWidth  = null;
+   o._controlSizeHeight = null;
+   o.onBuilded          = FDsBitmapPropertyFrame_onBuilded;
+   o.onDataChanged      = FDsBitmapPropertyFrame_onDataChanged;
+   o.construct          = FDsBitmapPropertyFrame_construct;
+   o.loadObject         = FDsBitmapPropertyFrame_loadObject;
+   o.dispose            = FDsBitmapPropertyFrame_dispose;
    return o;
 }
-function FDsBitmapPropertyToolBar_onBuilded(p){
+function FDsBitmapPropertyFrame_construct(){
    var o = this;
-   o.__base.FUiToolBar.onBuilded.call(o, p);
+   o.__base.FUiForm.construct.call(o);
 }
-function FDsBitmapPropertyToolBar_onModeClick(p){
+function FDsBitmapPropertyFrame_onBuilded(p){
    var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
 }
-function FDsBitmapPropertyToolBar_onSizeClick(event){
+function FDsBitmapPropertyFrame_onDataChanged(p){
    var o = this;
-   var button = event.sender;
-   var width = '*';
-   var height = '*';
-   var name = button.name();
-   var label = button.label();
-   if(name != 'sizeAuto'){
-      var size = label.split('x');
-      width = parseInt(size[0]);
-      height = parseInt(size[1]);
-   }
-   o._controlSizeWidth.setText(width);
-   o._controlSizeHeight.setText(height);
-   o._frameSet._canvas.switchSize(width, height);
+   var bitmap = o._activeBitmap;
+   bitmap.setCode(o._controlCode.get());
+   bitmap.setLabel(o._controlLabel.get());
 }
-function FDsBitmapPropertyToolBar_onRotationChange(event){
+function FDsBitmapPropertyFrame_loadObject(bitmap){
    var o = this;
-   var canvas = o._frameSet._canvas;
-   var visible = o._controlRotationVisible.isCheck();
-   var width = RInteger.parse(o._controlRotationWidth.text());
-   var height = RInteger.parse(o._controlRotationHeight.text());
-   canvas.switchRotation(visible, width, height);
+   o._activeBitmap = bitmap;
+   o._controlGuid.set(bitmap.guid());
+   o._controlCode.set(bitmap.code());
+   o._controlLabel.set(bitmap.label());
+   o._controlSizeWidth.set(bitmap.sizeWidth());
+   o._controlSizeHeight.set(bitmap.sizeHeight());
 }
-function FDsBitmapPropertyToolBar_onRotationAutoClick(event){
+function FDsBitmapPropertyFrame_dispose(){
    var o = this;
-   var sender = event.sender;
-   var name = sender.name();
-   var flipX = false;
-   var flipY = false;
-   var flipZ = false;
-   var rotationX = false;
-   var rotationY = false;
-   var rotationZ = false;
-   switch(name){
-      case 'dimensionalAuto':
-         break;
-      case 'dimensionalFlipX':
-         flipX = true;
-         break;
-      case 'dimensionalFlipY':
-         flipY = true;
-         break;
-      case 'dimensionalFlipZ':
-         flipZ = true;
-         break;
-      case 'dimensionalX':
-         rotationX = true;
-         break;
-      case 'dimensionalY':
-         rotationY = true;
-         break;
-      case 'dimensionalZ':
-         rotationZ = true;
-         break;
-      default:
-         throw new TError(o, 'Unknown command.');
-   }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
+   o.__base.FUiForm.dispose.call(o);
 }
-function FDsBitmapPropertyToolBar_onRotationClick(event, v){
+function FDsBitmapPropertyToolBar(o){
+   o = RClass.inherits(this, o, FUiToolBar);
+   o._controlRefresh = null;
+   o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
+   o.onRefreshClick  = FDsBitmapPropertyToolBar_onRefreshClick;
+   o.construct       = FDsBitmapPropertyToolBar_construct;
+   o.dispose         = FDsBitmapPropertyToolBar_dispose;
+   return o;
+}
+function FDsBitmapPropertyToolBar_onBuilded(event){
    var o = this;
-   var button = event.sender;
-   var canvas = o._frameSet._canvas;
-   canvas.switchRotation(button.isCheck());
+   o.__base.FUiToolBar.onBuilded.call(o, event);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+}
+function FDsBitmapPropertyToolBar_onRefreshClick(event){
+   var o = this;
 }
 function FDsBitmapPropertyToolBar_construct(){
    var o = this;

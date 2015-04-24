@@ -1,31 +1,31 @@
 //==========================================================
-// <T>主菜单。</T>
+// <T>设计位图菜单。</T>
 //
+// @class
 // @author maocy
-// @history 141231
+// @history 150424
 //==========================================================
 function FDsBitmapMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName            = 'resource.bitmap.MenuBar';
-   //..........................................................
    // @attribute
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
+   o._controlBack    = null;
+   o._controlSave    = null;
+   o._controlCapture = null;
    //..........................................................
    // @event
-   o.onBuilded             = FDsBitmapMenuBar_onBuilded;
+   o.onBuilded       = FDsBitmapMenuBar_onBuilded;
    // @event
-   o.onSaveLoad            = FDsBitmapMenuBar_onSaveLoad;
-   o.onSaveClick           = FDsBitmapMenuBar_onSaveClick;
-   o.onCaptureLoad         = FDsBitmapMenuBar_onCaptureLoad;
-   o.onCaptureClick        = FDsBitmapMenuBar_onCaptureClick;
+   o.onBackClick     = FDsBitmapMenuBar_onBackClick;
+   o.onSaveLoad      = FDsBitmapMenuBar_onSaveLoad;
+   o.onSaveClick     = FDsBitmapMenuBar_onSaveClick;
+   o.onImportLoad    = FDsBitmapMenuBar_onImportLoad;
+   o.onImportClick   = FDsBitmapMenuBar_onImportClick;
    //..........................................................
    // @method
-   o.construct             = FDsBitmapMenuBar_construct;
+   o.construct       = FDsBitmapMenuBar_construct;
    // @method
-   o.dispose               = FDsBitmapMenuBar_dispose;
+   o.dispose         = FDsBitmapMenuBar_dispose;
    return o;
 }
 
@@ -33,15 +33,21 @@ function FDsBitmapMenuBar(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsBitmapMenuBar_onBuilded(p){
+function FDsBitmapMenuBar_onBuilded(event){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
-   //..........................................................
-   // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlImportButton.addClickListener(o, o.onCaptureClick);
+   o.__base.FUiMenuBar.onBuilded.call(o, event);
+}
+
+//==========================================================
+// <T>后退按键处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsBitmapMenuBar_onBackClick(event){
+   var o = this;
 }
 
 //==========================================================
@@ -59,46 +65,44 @@ function FDsBitmapMenuBar_onSaveLoad(event){
 // <T>保存按键处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onSaveClick(p){
+function FDsBitmapMenuBar_onSaveClick(event){
    var o = this;
-   var space = o._frameSet._activeSpace;
-   var resource = space.resource();
+   var bitmap = o._frameSet._activeResource;
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
-   // 存储配置
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
    // 更新处理
-   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 
 //==========================================================
-// <T>捕捉图像加载处理。</T>
+// <T>导入加载处理。</T>
 //
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onCaptureLoad(event){
+function FDsBitmapMenuBar_onImportLoad(event){
    // 解除画面锁定
    RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
-// <T>捕捉图像处理。</T>
+// <T>导入点击处理。</T>
 //
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsBitmapMenuBar_onCaptureClick(event){
+function FDsBitmapMenuBar_onImportClick(event){
    var o = this;
-   // 画面禁止操作
-   RConsole.find(FUiDesktopConsole).showUploading();
-   // 上传数据
-   var connection = o._frameSet._canvas.capture();
-   connection.addLoadListener(o, o.onCaptureLoad);
+   // 获得资源
+   var resource = o._frameSet._activeResource;
+   // 弹出界面
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsBitmapImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

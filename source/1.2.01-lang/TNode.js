@@ -24,6 +24,7 @@ function TNode(name){
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
    o.hasNode      = TNode_hasNode;
+   o.nodeCount    = TNode_nodeCount;
    o.node         = TNode_node;
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
@@ -143,15 +144,26 @@ function TNode_hasNode(){
 }
 
 //==========================================================
+// <T>获得子节点总数。</T>
+//
+// @method
+// @return Integer 节点总数
+//==========================================================
+function TNode_nodeCount(){
+   var nodes = this._nodes;
+   return nodes ? nodes.count() : 0;
+}
+
+//==========================================================
 // <T>获得指定索引位置的节点。</T>
 //
 // @method
-// @param n:index:Integer 索引位置
+// @param index:Integer 索引位置
 // @return TNode 节点
 //==========================================================
-function TNode_node(n){
-   var s = this._nodes;
-   return s ? s.get(n) : null;
+function TNode_node(index){
+   var nodes = this._nodes;
+   return nodes ? nodes.at(index) : null;
 }
 
 //==========================================================
@@ -162,11 +174,11 @@ function TNode_node(n){
 //==========================================================
 function TNode_nodes(){
    var o = this;
-   var r = o._nodes;
-   if(!r){
-      r = o._nodes = new TObjects();
+   var nodes = o._nodes;
+   if(!nodes){
+      nodes = o._nodes = new TObjects();
    }
-   return r;
+   return nodes;
 }
 
 //==========================================================

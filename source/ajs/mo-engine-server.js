@@ -2716,6 +2716,7 @@ function TNode(name){
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
    o.hasNode      = TNode_hasNode;
+   o.nodeCount    = TNode_nodeCount;
    o.node         = TNode_node;
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
@@ -2768,17 +2769,21 @@ function TNode_hasNode(){
    var s = this._nodes;
    return s ? !s.isEmpty() : false;
 }
-function TNode_node(n){
-   var s = this._nodes;
-   return s ? s.get(n) : null;
+function TNode_nodeCount(){
+   var nodes = this._nodes;
+   return nodes ? nodes.count() : 0;
+}
+function TNode_node(index){
+   var nodes = this._nodes;
+   return nodes ? nodes.at(index) : null;
 }
 function TNode_nodes(){
    var o = this;
-   var r = o._nodes;
-   if(!r){
-      r = o._nodes = new TObjects();
+   var nodes = o._nodes;
+   if(!nodes){
+      nodes = o._nodes = new TObjects();
    }
-   return r;
+   return nodes;
 }
 function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
@@ -25814,11 +25819,13 @@ function FE3dBitmap(o){
    o.processLoad      = FE3dBitmap_processLoad;
    o.process          = FE3dBitmap_process;
    o.loadUrl          = FE3dBitmap_loadUrl;
+   o.dispose          = FE3dBitmap_dispose;
    return o;
 }
 function FE3dBitmap_construct(){
    var o = this;
    o.__base.FE3dMeshRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
 }
 function FE3dBitmap_testReady(){
    var o = this;
@@ -25875,8 +25882,66 @@ function FE3dBitmap_process(){
 function FE3dBitmap_loadUrl(url){
    var o = this;
    var context = o._graphicContext;
-   o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
+   o._renderable = RConsole.find(FE3dBitmapConsole).loadUrl(context, url);
    o._ready = false;
+}
+function FE3dBitmap_dispose(){
+   var o = this;
+   o._material = RObject.dispoe(o._material);
+   o.__base.FE3dMeshRenderable.dispose.call(o);
+}
+function FE3dBitmapConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd  = EScope.Local;
+   o._bitmaps  = null;
+   o._dataUrl  = '/cloud.resource.bitmap.wv'
+   o.construct = FE3dBitmapConsole_construct;
+   o.bitmaps   = FE3dBitmapConsole_bitmaps;
+   o.load      = FE3dBitmapConsole_load;
+   o.loadUrl   = FE3dBitmapConsole_loadUrl;
+   return o;
+}
+function FE3dBitmapConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._bitmaps = new TDictionary();
+}
+function FE3dBitmapConsole_bitmaps(){
+   return this._bitmaps;
+}
+function FE3dBitmapConsole_load(context, guid, code){
+   var o = this;
+   var flag = guid + '|' + code;
+   var bitmap = o._bitmaps.get(flag);
+   if(bitmap){
+      return bitmap;
+   }
+   var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
+   RLogger.info(o, 'Load bitmap. (url={1})', url);
+   if(code == 'environment'){
+      bitmap = RClass.create(FE3rBitmapCubePack);
+   }else{
+      bitmap = RClass.create(FE3rBitmapFlatPack);
+   }
+   bitmap.linkGraphicContext(context);
+   bitmap.loadUrl(url);
+   o._bitmaps.set(flag, bitmap);
+   return bitmap;
+}
+function FE3dBitmapConsole_loadUrl(context, url){
+   var o = this;
+   var bitmap = o._bitmaps.get(url);
+   if(bitmap){
+      return bitmap;
+   }
+   var loadUrl = RBrowser.contentPath(url);
+   RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+   var bitmap = RClass.create(FE3dBitmapData);
+   bitmap.linkGraphicContext(context);
+   bitmap.setup();
+   bitmap.loadUrl(url);
+   o._bitmaps.set(url, bitmap);
+   return bitmap;
 }
 function FE3dBitmapData(o){
    o = RClass.inherits(this, o, FE3rObject);

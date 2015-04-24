@@ -12,12 +12,15 @@ function FDrAbsResourceConsole(o){
    o._scopeCd       = EScope.Local;
    // @attribute
    o._serviceCode   = null;
+   o._classUnit     = null;
    o._resources     = null;
    //..........................................................
    // @method
    o.construct      = FDrAbsResourceConsole_construct;
    // @method
    o.makeServiceUrl = FDrAbsResourceConsole_makeServiceUrl;
+   // @method
+   o.loadResource   = FDrAbsResourceConsole_loadResource;
    // @method
    o.doList         = FDrAbsResourceConsole_doList;
    o.doQuery        = FDrAbsResourceConsole_doQuery;
@@ -53,6 +56,24 @@ function FDrAbsResourceConsole_makeServiceUrl(action){
       url += '&date=' + RDate.format();
    }
    return url;
+}
+
+//==========================================================
+// <T>根据配置信息加载一个资源。</T>
+//
+// @method
+// @return FDrResource 资源
+//==========================================================
+function FDrAbsResourceConsole_loadResource(xconfig){
+   var o = this;
+   var guid = xconfig.get('guid');
+   var resource = o._resources.get(guid);
+   if(!resource){
+      resource = RClass.create(o._classUnit);
+      o._resources.set(guid, resource);
+   }
+   resource.loadConfig(xconfig);
+   return resource;
 }
 
 //==========================================================
