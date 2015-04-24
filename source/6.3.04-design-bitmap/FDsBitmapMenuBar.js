@@ -16,10 +16,8 @@ function FDsBitmapMenuBar(o){
    // @event
    o.onBuilded       = FDsBitmapMenuBar_onBuilded;
    // @event
-   o.onBackClick     = FDsBitmapMenuBar_onBackClick;
    o.onSaveLoad      = FDsBitmapMenuBar_onSaveLoad;
    o.onSaveClick     = FDsBitmapMenuBar_onSaveClick;
-   o.onImportLoad    = FDsBitmapMenuBar_onImportLoad;
    o.onImportClick   = FDsBitmapMenuBar_onImportClick;
    //..........................................................
    // @method
@@ -38,16 +36,6 @@ function FDsBitmapMenuBar(o){
 function FDsBitmapMenuBar_onBuilded(event){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, event);
-}
-
-//==========================================================
-// <T>后退按键处理。</T>
-//
-// @method
-// @param event:SEvent 事件
-//==========================================================
-function FDsBitmapMenuBar_onBackClick(event){
-   var o = this;
 }
 
 //==========================================================
@@ -75,17 +63,6 @@ function FDsBitmapMenuBar_onSaveClick(event){
    // 更新处理
    var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
    connection.addLoadListener(o, o.onSaveLoad);
-}
-
-//==========================================================
-// <T>导入加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件
-//==========================================================
-function FDsBitmapMenuBar_onImportLoad(event){
-   // 解除画面锁定
-   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================

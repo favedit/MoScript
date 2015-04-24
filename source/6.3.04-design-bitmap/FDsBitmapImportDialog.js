@@ -60,7 +60,7 @@ function FDsBitmapImportDialog_onFileLoaded(event){
    var resource = o._resource;
    var guid = resource.guid();
    // 上传数据
-   var url = '/cloud.resource.bitmap.wv?do=importData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var url = '/cloud.resource.bitmap.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
    url = RBrowser.urlEncode(url);
    // 发送数据
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());

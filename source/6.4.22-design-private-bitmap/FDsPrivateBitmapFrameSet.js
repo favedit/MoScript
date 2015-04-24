@@ -38,7 +38,6 @@ function FDsPrivateBitmapFrameSet_onBuilded(p){
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
    canvas.build(p);
-   //canvas.addLoadListener(o, o.onMeshLoad);
    o._frameCanvasContent.push(canvas);
    //..........................................................
    // 设置属性工具栏

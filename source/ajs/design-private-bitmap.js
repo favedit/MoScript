@@ -7,15 +7,6 @@ function FDsPrivateBitmapCanvasToolBar(o){
    o._frameName = 'resource.private.bitmap.CanvasToolBar';
    return o;
 }
-function FDsPrivateBitmapCatalogContent(o){
-   o = RClass.inherits(this, o, FDsBitmapCatalogContent);
-   return o;
-}
-function FDsPrivateBitmapCatalogToolBar(o){
-   o = RClass.inherits(this, o, FDsBitmapCatalogToolBar);
-   o._frameName = 'resource.private.bitmap.CatalogToolBar';
-   return o;
-}
 function FDsPrivateBitmapFrameSet(o){
    o = RClass.inherits(this, o, FDsBitmapFrameSet);
    o._frameName = 'resource.private.bitmap.FrameSet';
@@ -45,15 +36,22 @@ function FDsPrivateBitmapFrameSet_onBuilded(p){
 }
 function FDsPrivateBitmapMenuBar(o){
    o = RClass.inherits(this, o, FDsBitmapMenuBar);
-   o._frameName = 'resource.private.bitmap.MenuBar';
-   o.onBuilded  = FDsPrivateBitmapMenuBar_onBuilded;
+   o._frameName  = 'resource.private.bitmap.MenuBar';
+   o.onBuilded   = FDsPrivateBitmapMenuBar_onBuilded;
+   o.onBackClick = FDsPrivateBitmapMenuBar_onBackClick;
    return o;
 }
 function FDsPrivateBitmapMenuBar_onBuilded(event){
    var o = this;
    o.__base.FDsBitmapMenuBar.onBuilded.call(o, event);
+   o._controlBack.addClickListener(o, o.onBackClick);
    o._controlSave.addClickListener(o, o.onSaveClick);
    o._controlImport.addClickListener(o, o.onImportClick);
+}
+function FDsPrivateBitmapMenuBar_onBackClick(event){
+   var o = this;
+   var workspace = o._frameSet._workspace;
+   workspace.selectFrameSet(EDsFrameSet.PrivateResourceFrameSet);
 }
 function FDsPrivateBitmapPropertyToolBar(o){
    o = RClass.inherits(this, o, FDsBitmapPropertyToolBar);

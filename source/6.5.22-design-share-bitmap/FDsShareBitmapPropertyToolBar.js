@@ -9,6 +9,6 @@ function FDsShareBitmapPropertyToolBar(o){
    o = RClass.inherits(this, o, FDsBitmapPropertyToolBar);
    //..........................................................
    // @property
-   o._frameName = 'resource.share.bitmap.CatalogToolBar';
+   o._frameName = 'resource.share.bitmap.PropertyToolBar';
    return o;
 }
