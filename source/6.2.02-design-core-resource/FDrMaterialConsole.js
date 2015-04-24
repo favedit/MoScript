@@ -1,20 +1,20 @@
 //==========================================================
-// <T>设计位图资源控制台。</T>
+// <T>设计材质资源控制台。</T>
 //
 // @class
 // @author maocy
 // @version 150424
 //==========================================================
-function FDrBitmapConsole(o){
+function FDrMaterialConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    //..........................................................
    // @attribute
-   o._serviceCode = 'cloud.resource.bitmap';
-   o._classUnit   = FDrBitmap;
+   o._serviceCode = 'cloud.resource.material';
+   o._classUnit   = FDrMaterial;
    //..........................................................
    // @method
-   o.query        = FDrBitmapConsole_query;
-   o.update       = FDrBitmapConsole_update;
+   o.query        = FDrMaterialConsole_query;
+   o.update       = FDrMaterialConsole_update;
    return o;
 }
 
@@ -23,7 +23,7 @@ function FDrBitmapConsole(o){
 //
 // @param guid:String 唯一编号
 //==========================================================
-function FDrBitmapConsole_query(guid){
+function FDrMaterialConsole_query(guid){
    var o = this;
    // 生成地址
    var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
@@ -34,7 +34,7 @@ function FDrBitmapConsole_query(guid){
    var nodeCount = xroot.nodeCount();
    for(var n = 0; n < nodeCount; n++){
       var xbitmap = xroot.node(n);
-      if(xbitmap.isName('Bitmap')){
+      if(xbitmap.isName('Material')){
          o.loadResource(xbitmap);
       }
    }
@@ -47,7 +47,7 @@ function FDrBitmapConsole_query(guid){
 //
 // @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FDrBitmapConsole_update(xconfig){
+function FDrMaterialConsole_update(xconfig){
    var o = this;
    // 生成地址
    var uri = '/' + o._serviceCode + '.ws?action=update';

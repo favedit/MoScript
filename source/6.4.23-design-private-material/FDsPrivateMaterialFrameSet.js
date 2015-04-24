@@ -27,10 +27,10 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置目录工具栏
-   //var toolbar = o._toolbar = RClass.create(FDsPrivateMaterialMenuBar);
-   //toolbar._frameSet = o;
-   //toolbar.buildDefine(event);
-   //o._frameToolBar.push(toolbar);
+   var toolbar = o._catalogToolBar = RClass.create(FDsPrivateMaterialCatalogToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCatalogToolBar.push(toolbar);
    // 设置目录内容
    var catalog = o._catalogContent = RClass.create(FDsPrivateMaterialCatalogContent);
    catalog._frameSet = o;
@@ -39,18 +39,17 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    o._frameCatalogContent.push(catalog);
    //..........................................................
    // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateMaterialCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateMaterialCanvasToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   // 设置画板内容
-   var canvas = o._canvasContent = RClass.create(FDsPrivateMaterialCanvasContent);
-   canvas._frameSet = o;
-   canvas._toolbar = o._canvasToolbar;
-   canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
-   canvas._hParent.style.scroll = 'auto';
-   canvas.addLoadListener(o, o.onDataLoaded);
-   canvas.build(event);
-   o._frameCanvasContent.push(canvas);
+   //..........................................................
+   // 设置属性工具栏
+   var toolbar = o._propertyToolBar = RClass.create(FDsPrivateMaterialPropertyToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._framePropertyToolBar.push(toolbar);
+   // 设置属性内容
+   //var frame = o.findPropertyFrame(EDsFrame.BitmapPropertyFrame);
+   //o._framePropertyContent.push(frame);
 }

@@ -1,54 +1,30 @@
 //==========================================================
-// <T>网格画板工具栏。</T>
+// <T>设计材质目录工具栏。</T>
 //
 // @class
 // @author maocy
-// @history 150404
+// @history 150424
 //==========================================================
 function FDsMaterialCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
-   // @property
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
-   //..........................................................
    // @attribute
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   // @attribute
-   o._controlDrop               = null;
-   // @attribute
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   // @attribute
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   // @attribute
-   o._controlRotation           = null;
+   o._controlCreate   = null;
+   o._controlDelete   = null;
+   o._controlMoveUp   = null;
+   o._controlMoveDown = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsMaterialCatalogToolBar_onBuilded;
+   o.onBuilded        = FDsMaterialCatalogToolBar_onBuilded;
    // @event
-   o.onModeClick                = FDsMaterialCatalogToolBar_onModeClick;
-   o.onSizeClick                = FDsMaterialCatalogToolBar_onSizeClick;
-   o.onRotationChange           = FDsMaterialCatalogToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsMaterialCatalogToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsMaterialCatalogToolBar_onRotationClick;
+   o.onCreateClick    = FDsMaterialCatalogToolBar_onCreateClick;
+   o.onDeleteClick    = FDsMaterialCatalogToolBar_onDeleteClick;
+   o.onMoveClick      = FDsMaterialCatalogToolBar_onMoveClick;
    //..........................................................
    // @method
-   o.construct                  = FDsMaterialCatalogToolBar_construct;
+   o.construct        = FDsMaterialCatalogToolBar_construct;
    // @method
-   o.dispose                    = FDsMaterialCatalogToolBar_dispose;
+   o.dispose          = FDsMaterialCatalogToolBar_dispose;
    return o;
 }
 
@@ -62,32 +38,11 @@ function FDsMaterialCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 关联拖拽事件
-   //var control = o._controlDrop;
-   //control._canvasModeCd = EDsCanvasMode.Drop;
-   //control.addClickListener(o, o.onModeClick);
-   //control.check(true);
-   //..........................................................
    // 关联按键事件
-   //o._controlSize1.addClickListener(o, o.onSizeClick);
-   //o._controlSize2.addClickListener(o, o.onSizeClick);
-   //o._controlSize3.addClickListener(o, o.onSizeClick);
-   //o._controlSize4.addClickListener(o, o.onSizeClick);
-   //o._controlSizeWidth.setText('*');
-   //o._controlSizeHeight.setText('*');
-   //..........................................................
-   // 关联按键事件
-   //o._controlRotationVisible.addClickListener(o, o.onRotationChange);
-   //o._controlRotationVisible.check(true);
-   //o._controlRotationWidth.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationWidth.setText(1);
-   //o._controlRotationHeight.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationHeight.setText(1);
-   //o._controlRotationAuto.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipY.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationY.addClickListener(o, o.onRotationAutoClick);
+   o._controlCreate.addClickListener(o, o.onCreateClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlMoveUp.addClickListener(o, o.onMoveClick);
+   o._controlMoveDown.addClickListener(o, o.onMoveClick);
 }
 
 //==========================================================
@@ -96,10 +51,8 @@ function FDsMaterialCatalogToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMaterialCatalogToolBar_onModeClick(p){
+function FDsMaterialCatalogToolBar_onCreateClick(p){
    var o = this;
-   //o._canvasModeCd = p._canvasModeCd;
-   //o._workspace._canvas.switchMode(p._canvasModeCd);
 }
 
 //==========================================================
@@ -108,23 +61,8 @@ function FDsMaterialCatalogToolBar_onModeClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsMaterialCatalogToolBar_onSizeClick(event){
+function FDsMaterialCatalogToolBar_onDeleteClick(event){
    var o = this;
-   var button = event.sender;
-   // 解析尺寸
-   var width = '*';
-   var height = '*';
-   var name = button.name();
-   var label = button.label();
-   if(name != 'sizeAuto'){
-      var size = label.split('x');
-      width = parseInt(size[0]);
-      height = parseInt(size[1]);
-   }
-   o._controlSizeWidth.setText(width);
-   o._controlSizeHeight.setText(height);
-   // 设置大小
-   o._frameSet._canvas.switchSize(width, height);
 }
 
 //==========================================================
@@ -133,69 +71,8 @@ function FDsMaterialCatalogToolBar_onSizeClick(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMaterialCatalogToolBar_onRotationChange(event){
+function FDsMaterialCatalogToolBar_onMoveClick(event){
    var o = this;
-   var canvas = o._frameSet._canvas;
-   var visible = o._controlRotationVisible.isCheck();
-   var width = RInteger.parse(o._controlRotationWidth.text());
-   var height = RInteger.parse(o._controlRotationHeight.text());
-   canvas.switchRotation(visible, width, height);
-}
-
-//==========================================================
-// <T>坐标系自动调整处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMaterialCatalogToolBar_onRotationAutoClick(event){
-   var o = this;
-   var sender = event.sender;
-   var name = sender.name();
-   var flipX = false;
-   var flipY = false;
-   var flipZ = false;
-   var rotationX = false;
-   var rotationY = false;
-   var rotationZ = false;
-   switch(name){
-      case 'dimensionalAuto':
-         break;
-      case 'dimensionalFlipX':
-         flipX = true;
-         break;
-      case 'dimensionalFlipY':
-         flipY = true;
-         break;
-      case 'dimensionalFlipZ':
-         flipZ = true;
-         break;
-      case 'dimensionalX':
-         rotationX = true;
-         break;
-      case 'dimensionalY':
-         rotationY = true;
-         break;
-      case 'dimensionalZ':
-         rotationZ = true;
-         break;
-      default:
-         throw new TError(o, 'Unknown command.');
-   }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
-}
-
-//==========================================================
-// <T>刷新按键处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMaterialCatalogToolBar_onRotationClick(event, v){
-   var o = this;
-   var button = event.sender;
-   var canvas = o._frameSet._canvas;
-   canvas.switchRotation(button.isCheck());
 }
 
 //==========================================================

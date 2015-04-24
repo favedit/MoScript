@@ -57,6 +57,6 @@ function FDsMaterialCatalogItem_setTypeLabel(label){
 function FDsMaterialCatalogItem_refreshStyle(){
    var o = this;
    // 建立控件
-   var url = '/cloud.content2d.bitmap.image.wv?do=preview&guid=' + o._guid + '&update_date=' + o._updateDate;
+   var url = '/cloud.resource.bitmap.wv?do=preview&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }

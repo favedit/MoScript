@@ -1,54 +1,25 @@
 //==========================================================
-// <T>网格画板工具栏。</T>
+// <T>设计材质属性工具栏。</T>
 //
 // @class
 // @author maocy
-// @history 150404
+// @history 150424
 //==========================================================
 function FDsMaterialPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
-   // @property
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
-   //..........................................................
    // @attribute
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   // @attribute
-   o._controlDrop               = null;
-   // @attribute
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   // @attribute
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   // @attribute
-   o._controlRotation           = null;
+   o._controlRefresh = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsMaterialPropertyToolBar_onBuilded;
+   o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
    // @event
-   o.onModeClick                = FDsMaterialPropertyToolBar_onModeClick;
-   o.onSizeClick                = FDsMaterialPropertyToolBar_onSizeClick;
-   o.onRotationChange           = FDsMaterialPropertyToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsMaterialPropertyToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsMaterialPropertyToolBar_onRotationClick;
+   o.onRefreshClick  = FDsMaterialPropertyToolBar_onRefreshClick;
    //..........................................................
    // @method
-   o.construct                  = FDsMaterialPropertyToolBar_construct;
+   o.construct       = FDsMaterialPropertyToolBar_construct;
    // @method
-   o.dispose                    = FDsMaterialPropertyToolBar_dispose;
+   o.dispose         = FDsMaterialPropertyToolBar_dispose;
    return o;
 }
 
@@ -62,32 +33,8 @@ function FDsMaterialPropertyToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 关联拖拽事件
-   //var control = o._controlDrop;
-   //control._canvasModeCd = EDsCanvasMode.Drop;
-   //control.addClickListener(o, o.onModeClick);
-   //control.check(true);
-   //..........................................................
    // 关联按键事件
-   //o._controlSize1.addClickListener(o, o.onSizeClick);
-   //o._controlSize2.addClickListener(o, o.onSizeClick);
-   //o._controlSize3.addClickListener(o, o.onSizeClick);
-   //o._controlSize4.addClickListener(o, o.onSizeClick);
-   //o._controlSizeWidth.setText('*');
-   //o._controlSizeHeight.setText('*');
-   //..........................................................
-   // 关联按键事件
-   //o._controlRotationVisible.addClickListener(o, o.onRotationChange);
-   //o._controlRotationVisible.check(true);
-   //o._controlRotationWidth.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationWidth.setText(1);
-   //o._controlRotationHeight.addDataChangedListener(o, o.onRotationChange);
-   //o._controlRotationHeight.setText(1);
-   //o._controlRotationAuto.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationFlipY.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationX.addClickListener(o, o.onRotationAutoClick);
-   //o._controlRotationY.addClickListener(o, o.onRotationAutoClick);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
 }
 
 //==========================================================
@@ -96,7 +43,7 @@ function FDsMaterialPropertyToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMaterialPropertyToolBar_onModeClick(p){
+function FDsMaterialPropertyToolBar_onRefreshClick(p){
    var o = this;
    //o._canvasModeCd = p._canvasModeCd;
    //o._workspace._canvas.switchMode(p._canvasModeCd);

@@ -124,13 +124,9 @@ function FDrBitmapConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    o._serviceCode = 'cloud.resource.bitmap';
    o._classUnit   = FDrBitmap;
-   o.createUnit   = FDrBitmapConsole_createUnit;
    o.query        = FDrBitmapConsole_query;
    o.update       = FDrBitmapConsole_update;
    return o;
-}
-function FDrBitmapConsole_createUnit(){
-   return RClass.create(FDrBitmap);
 }
 function FDrBitmapConsole_query(guid){
    var o = this;
@@ -147,6 +143,61 @@ function FDrBitmapConsole_query(guid){
    return o._resources.get(guid);
 }
 function FDrBitmapConsole_update(xconfig){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=update';
+   var url = RBrowser.hostPath(uri);
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrMaterial(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode    = 'Material';
+   o.loadConfig    = FDrMaterial_loadConfig;
+   o.saveConfig    = FDrMaterial_saveConfig;
+   return o;
+}
+function FDrMaterial_sizeWidth(){
+   return this._sizeWidth;
+}
+function FDrMaterial_setSizeWidth(width){
+   this._sizeWidth = width;
+}
+function FDrMaterial_sizeHeight(){
+   return this._sizeHeight;
+}
+function FDrMaterial_setSizeHeight(height){
+   this._sizeHeight = height;
+}
+function FDrMaterial_loadConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.loadConfig.call(o, xconfig);
+}
+function FDrMaterial_saveConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.saveConfig.call(o, xconfig);
+}
+function FDrMaterialConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.resource.material';
+   o._classUnit   = FDrMaterial;
+   o.query        = FDrMaterialConsole_query;
+   o.update       = FDrMaterialConsole_update;
+   return o;
+}
+function FDrMaterialConsole_query(guid){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
+   var url = RBrowser.hostPath(uri);
+   var xroot = RConsole.find(FXmlConsole).send(url);
+   var nodeCount = xroot.nodeCount();
+   for(var n = 0; n < nodeCount; n++){
+      var xbitmap = xroot.node(n);
+      if(xbitmap.isName('Material')){
+         o.loadResource(xbitmap);
+      }
+   }
+   return o._resources.get(guid);
+}
+function FDrMaterialConsole_update(xconfig){
    var o = this;
    var uri = '/' + o._serviceCode + '.ws?action=update';
    var url = RBrowser.hostPath(uri);

@@ -7,7 +7,7 @@
    padding-bottom: 1px;
    border-top: 1px solid #EEEEEE;
    border-bottom: 1px solid #666666;
-   background: #AEAEAE;
+   background-color: #AEAEAE;
    background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
    background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
    background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
@@ -15,15 +15,15 @@
 }
 
 .FDsFrameSet_Catalog_Content{
-   background: #EEEEEE;
+   background-color: #EEEEEE;
 }
 
 .FDsFrameSet_Canvas_Content{
-   background: #EEEEEE;
+   background-color: #EEEEEE;
 }
 
 .FDsFrameSet_Property_Content;
-   background: #777777;
+   background-color: #777777;
 }
 
 /* ------------------------------------------------------ */
@@ -825,84 +825,28 @@
 /* ------------------------------------------------------ */
 /* FDsPrivateWorkspace                                    */
 /* ------------------------------------------------------ */
-.FDsPrivateWorkspace_Menubar_Ground{
+.FDsPrivateWorkspace_MenuBar_Ground{
    padding-top: 2px;
    border-top: 1px solid #DDDDDD;
    border-bottom: 1px solid #999999;
    background: #EEEEEE;
-   background: -ms-linear-gradient(top, #AEAEAE, #999999);
-   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
+   background: -ms-linear-gradient(top, #EEEEEE, #CCCCCC);
+   background: -moz-linear-gradient(top, #EEEEEE, #CCCCCC); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#CCCCCC)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#EEEEEE, endColorStr=#CCCCCC);
 }
 
-.FDsPrivateWorkspace_Toolbar_Ground{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #AEAEAE, #999999);
-   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#999999)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
+.FDsPrivateWorkspace_Body_Ground{
+   background: #EEEEEE;
 }
 
-.FDsPrivateWorkspace_Statusbar_Ground{
+.FDsPrivateWorkspace_StatusBar_Ground{
    background: #AEAEAE;
    border-top: 1px solid #999999;
    background: -ms-linear-gradient(top, #555555, #AEAEAE);
    background: -moz-linear-gradient(top, #555555, #AEAEAE); 
    background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
-}
-
-.FDsPrivateWorkspace_Catalog_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsPrivateWorkspace_Catalog_Ground{
-   background: #EEEEEE;
-}
-
-.FDsPrivateWorkspace_Search_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsPrivateWorkspace_Search_Ground{
-   background: #EEEEEE;
-}
-
-.FDsPrivateWorkspace_Preview_Toolbar{
-   background: #AEAEAE;
-   padding-top: 1px;
-   border-bottom: 1px solid #999999;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsPrivateWorkspace_Preview_Ground{
-   background: #EEEEEE;
-}
-
-.FDsPrivateWorkspace_Workspace_Ground{
-   background: #EEEEEE;
-}
-
-.FDsPrivateWorkspace_Property_Ground{;
-   background: #777777;
 }
 
 /* ------------------------------------------------------ */

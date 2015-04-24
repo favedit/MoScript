@@ -32,18 +32,19 @@ var EDsFrame = new function EDsFrame(){
    o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
    o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';
    o.BitmapPropertyFrame           = 'resource.bitmap.property.Frame';
-   o.MeshSpacePropertyFrame        = 'design3d.mesh.property.SpaceFrame';
-   o.MeshLayerPropertyFrame        = 'design3d.mesh.property.LayerFrame';
-   o.MeshDisplayPropertyFrame      = 'design3d.mesh.property.DisplayFrame';
-   o.MeshRenderablePropertyFrame   = 'design3d.mesh.property.RenderableFrame';
+   o.MaterialPropertyFrame         = 'resource.material.property.Frame';
+   o.MeshSpacePropertyFrame        = 'resource.mesh.property.SpaceFrame';
+   o.MeshLayerPropertyFrame        = 'resource.mesh.property.LayerFrame';
+   o.MeshDisplayPropertyFrame      = 'resource.mesh.property.DisplayFrame';
+   o.MeshRenderablePropertyFrame   = 'resource.mesh.property.RenderableFrame';
    o.ModelSpacePropertyFrame       = 'resource.model.property.SpaceFrame';
    o.ModelLayerPropertyFrame       = 'resource.model.property.LayerFrame';
    o.ModelDisplayPropertyFrame     = 'resource.model.property.DisplayFrame';
    o.ModelRenderablePropertyFrame  = 'resource.model.property.RenderableFrame';
-   o.SceneSpacePropertyFrame       = 'design3d.scene.property.SpaceFrame';
-   o.SceneDisplayPropertyFrame     = 'design3d.scene.property.DisplayFrame';
-   o.SceneMoviePropertyFrame       = 'design3d.scene.property.MovieFrame';
-   o.SceneRenderablePropertyFrame  = 'design3d.scene.property.RenderableFrame';
+   o.SceneSpacePropertyFrame       = 'resource.scene.property.SpaceFrame';
+   o.SceneDisplayPropertyFrame     = 'resource.scene.property.DisplayFrame';
+   o.SceneMoviePropertyFrame       = 'resource.scene.property.MovieFrame';
+   o.SceneRenderablePropertyFrame  = 'resource.scene.property.RenderableFrame';
    return o;
 }
 var EDsFrameSet = new function EDsFrameSet(){
@@ -216,6 +217,145 @@ function FDsApplication_dispose(){
       o._renderables = null
    }
    o.__base.FObject.dispose.call(o);
+}
+function FDsBitmapCanvas(o){
+   o = RClass.inherits(this, o, FDsCanvas);
+   o._activeBitmap        = null;
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._templateMatrix      = null;
+   o._templateRenderable  = null;
+   o._templateFace        = null;
+   o._templateTranslation = null;
+   o._templateRotation    = null;
+   o._templateScale       = null;
+   o._templateViewScale   = 0.05;
+   o.onBuild              = FDsBitmapCanvas_onBuild;
+   o.onMouseCaptureStart  = FDsBitmapCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = FDsBitmapCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = FDsBitmapCanvas_onMouseCaptureStop;
+   o.onMouseWheel         = FDsBitmapCanvas_onMouseWheel;
+   o.onLoaded             = FDsBitmapCanvas_onLoaded;
+   o.oeResize             = FDsBitmapCanvas_oeResize;
+   o.oeRefresh            = FDsBitmapCanvas_oeRefresh;
+   o.construct            = FDsBitmapCanvas_construct;
+   o.loadByGuid           = FDsBitmapCanvas_loadByGuid;
+   o.dispose              = FDsBitmapCanvas_dispose;
+   return o;
+}
+function FDsBitmapCanvas_onBuild(p){
+   var o = this;
+   o.__base.FDsCanvas.onBuild.call(o, p);
+   var hPanel = o._hPanel;
+   var space = o._activeSpace = RClass.create(FE3dFlatStage);
+   space.linkGraphicContext(o);
+   space.selectTechnique(o, FE3dGeneralTechnique);
+   space.region().backgroundColor().set(1, 1, 1, 1);
+   space.region().linkGraphicContext(o);
+   RStage.register('space', space);
+   var camera = space.camera();
+   camera.setPosition(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection._angle = 45;
+   projection.size().set(hPanel.width, hPanel.height);
+   projection.update();
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
+}
+function FDsBitmapCanvas_onMouseCaptureStart(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   o._capturePosition.set(event.clientX, event.clientY);
+   o._captureMatrix.assign(bitmap.matrix());
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
+}
+function FDsBitmapCanvas_onMouseCapture(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   var matrix = bitmap.matrix();
+   var cx = event.clientX - o._capturePosition.x;
+   var cy = event.clientY - o._capturePosition.y;
+   var captureMatrix = o._captureMatrix;
+   matrix.tx = captureMatrix.tx + cx;
+   matrix.ty = captureMatrix.ty + cy;
+   matrix.updateForce();
+}
+function FDsBitmapCanvas_onMouseCaptureStop(event){
+   var o = this;
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+function FDsBitmapCanvas_onMouseWheel(event){
+   var o = this;
+   var scale = 1.0;
+   if(event.deltaY < 0){
+      scale = 1.1;
+   }else if(event.deltaY > 0){
+      scale = 0.9;
+   }
+   var bitmap = o._activeBitmap;
+   var matrix = bitmap.matrix();
+   matrix.sx *= scale;
+   matrix.sy *= scale;
+   matrix.updateForce();
+}
+function FDsBitmapCanvas_onLoaded(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsBitmapCanvas_oeResize(event){
+   var o = this;
+   o.__base.FDsCanvas.oeResize.call(o, event);
+   return EEventStatus.Stop;
+}
+function FDsBitmapCanvas_oeRefresh(p){
+   return EEventStatus.Stop;
+}
+function FDsBitmapCanvas_construct(){
+   var o = this;
+   o.__base.FDsCanvas.construct.call(o);
+   o._captureMatrix = new SMatrix3d();
+}
+function FDsBitmapCanvas_loadByGuid(guid){
+   var o = this;
+   var size = o._graphicContext.size();
+   RConsole.find(FUiDesktopConsole).showLoading();
+   var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+   var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
+   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   bitmap.linkGraphicContext(o);
+   bitmap.setup();
+   bitmap.material().info().effectCode = 'flat';
+   bitmap.addLoadListener(o, o.onLoaded);
+   bitmap.loadUrl(url);
+   var matrix = bitmap.matrix();
+   var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
+   var top = Math.max((size.height - resource.sizeHeight()) / 2, 0);
+   matrix.setTranslate(left, top);
+   matrix.setScale(resource.sizeWidth(), resource.sizeHeight());
+   matrix.update();
+   var space = o._activeSpace;
+   var layer = space.layer();
+   layer.clearRenderables();
+   layer.pushRenderable(bitmap);
+}
+function FDsBitmapCanvas_dispose(){
+   var o = this;
+   o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);

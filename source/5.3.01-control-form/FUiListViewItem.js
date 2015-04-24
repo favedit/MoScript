@@ -92,7 +92,7 @@ function FUiListViewItem_onBuild(p){
    var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
    // 建立图标区域
    o._hIconPanel = RBuilder.appendTableCell(hContentLine, o.styleName('IconPanel'))
-   o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'design3d.tools.select'));
+   o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'tools.select'));
    RHtml.displaySet(o._hIcon, false);
    // 建立文本区域
    o._hLabel = RBuilder.appendTableCell(hContentLine, o.styleName('Label'));

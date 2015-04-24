@@ -10378,7 +10378,7 @@ function FUiListViewItem_onBuild(p){
    var hContentForm = o._hContentForm = RBuilder.appendTable(hLine2, o.styleName('Content'));
    var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
    o._hIconPanel = RBuilder.appendTableCell(hContentLine, o.styleName('IconPanel'))
-   o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'design3d.tools.select'));
+   o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'tools.select'));
    RHtml.displaySet(o._hIcon, false);
    o._hLabel = RBuilder.appendTableCell(hContentLine, o.styleName('Label'));
    if(o._label){

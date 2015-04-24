@@ -53,19 +53,23 @@ function FDsMaterialCatalogContent_onBuilded(p){
 //==========================================================
 function FDsMaterialCatalogContent_onServiceLoad(event){
    var o = this;
-   var xitems = event.root.findNode('ImageCollection');
+   var xitems = event.root.findNode('BitmapCollection');
    // 显示项目
    o.clear();
    var xnodes = xitems.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Image')){
+      if(xnode.isName('Bitmap')){
+         // 获得属性
+         var code = xnode.get('code');
+         // 创建项目
          var item = o.createItem(FDsMaterialCatalogItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
-         item._code = xnode.get('code');
+         item._code = code;
          item._updateDate = xnode.get('update_date');
+         item.setTypeLabel(code);
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
@@ -96,6 +100,7 @@ function FDsMaterialCatalogContent_construct(){
 function FDsMaterialCatalogContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
+   return;
    // 设置属性
    var guid = control._guid;
    o._activeItem = control;
@@ -116,17 +121,9 @@ function FDsMaterialCatalogContent_doDoubleClickItem(control){
    // 设置属性
    var guid = control._guid;
    o._activeItem = control;
-   o._activeGuid = control._guid;
-   // 画面切换
-   //var workspace = o._frameSet._workspace;
-   //var typeCd = control._typeCd;
-   //if(typeCd == 'Bitmap'){
-   //   workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   //}else if(typeCd == 'Mesh3d'){
-   //   workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
-   //}else{
-   //   throw new TError(o, 'Unsupport format.');
-   //}
+   o._activeGuid = guid;
+   // 画板切换
+   o._frameSet.switchCanvas('Bitmap', guid);
 }
 
 //==========================================================
@@ -139,11 +136,11 @@ function FDsMaterialCatalogContent_doDoubleClickItem(control){
 function FDsMaterialCatalogContent_serviceList(guid){
    var o = this;
    // 画面禁止操作
-   //RConsole.find(FUiDesktopConsole).showLoading();
+   RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
-   //var url = '/cloud.content2d.bitmap.image.ws?action=list&guid=' + guid;
-   //var connection = RConsole.find(FXmlConsole).sendAsync(url);
-   //connection.addLoadListener(o, o.onServiceLoad);
+   var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
+   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onServiceLoad);
 }
 
 //==========================================================

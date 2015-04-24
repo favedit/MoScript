@@ -45,9 +45,9 @@ function FDsPrivateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    o._frameName            = 'resource.private.Workspace';
    o._storageCode          = o._frameName;
-   o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+   o._styleMenuBarGround   = RClass.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleStatusBarGround = RClass.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
    o._activeFrameSetCode   = null;
    o._activeProjectGuid    = null;
    o._frameToolBar         = null;
@@ -64,9 +64,9 @@ function FDsPrivateWorkspace(o){
 function FDsPrivateWorkspace_onBuilded(event){
    var o = this;
    o.__base.FUiWorkspace.onBuilded.call(o, event);
-   o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
+   o._frameMenuBar._hPanel.className = o.styleName('MenuBar_Ground');
    o._frameBody._hPanel.className = o.styleName('Body_Ground');
-   o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
+   o._frameStatusBar._hPanel.className = o.styleName('StatusBar_Ground');
    var hTable = RBuilder.createTable(event);
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);

@@ -26,6 +26,7 @@ function FDsMaterialFrameSet(o){
    // @method
    o.construct             = FDsMaterialFrameSet_construct;
    // @method
+   o.switchCanvas          = FDsMaterialFrameSet_switchCanvas;
    o.loadByGuid            = FDsMaterialFrameSet_loadByGuid;
    o.loadByCode            = FDsMaterialFrameSet_loadByCode;
    // @method
@@ -37,11 +38,11 @@ function FDsMaterialFrameSet(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsMaterialFrameSet_onBuilded(p){
+function FDsMaterialFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FDsFrameSet.onBuilded.call(o, p);
+   o.__base.FDsFrameSet.onBuilded.call(o, event);
    //..........................................................
    o._frameCatalogToolBar._hPanel.className = o.styleName('ToolBar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
@@ -57,6 +58,23 @@ function FDsMaterialFrameSet_onBuilded(p){
    var spliterProperty = o._spliterProperty;
    spliterProperty.setAlignCd(EUiAlign.Right);
    spliterProperty.setSizeHtml(o._frameProperty._hPanel);
+   //..........................................................
+   // 设置画板内容
+   var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+   canvas._frameSet = o;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   //canvas.addLoadListener(o, o.onDataLoaded);
+   canvas.build(event);
+   // 设置画板内容
+   var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
+   canvas._frameSet = o;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   //canvas.addLoadListener(o, o.onDataLoaded);
+   canvas.build(event);
 }
 
 //==========================================================
@@ -138,6 +156,22 @@ function FDsMaterialFrameSet_construct(){
 }
 
 //==========================================================
+// <T>切换画板。</T>
+//
+// @method
+//==========================================================
+function FDsMaterialFrameSet_switchCanvas(typeCd, guid){
+   var o = this;
+   if(typeCd == 'Bitmap'){
+      var canvas = o._canvasBitmap;
+      o._frameCanvasContent.push(canvas);
+      canvas.loadByGuid(guid);
+   }else{
+      o._frameCanvasContent.push(o._canvasContent);
+   }
+}
+
+//==========================================================
 // <T>根据唯一编码加载网格模板。</T>
 //
 // @method
@@ -146,7 +180,16 @@ function FDsMaterialFrameSet_construct(){
 function FDsMaterialFrameSet_loadByGuid(guid){
    var o = this;
    o._activeGuid = guid;
+   // 获得资源信息
+   var resource = o._activeResource = RConsole.find(FDrMaterialConsole).query(guid);
+   // 加载目录
    o._catalogContent.serviceList(guid);
+   // 加载画板
+   //var canvas = o._canvasContent;
+   //canvas.loadByGuid(guid);
+   // 加载属性
+   var frame = o.findPropertyFrame(EDsFrame.MaterialPropertyFrame);
+   frame.loadObject(resource);
 }
 
 //==========================================================

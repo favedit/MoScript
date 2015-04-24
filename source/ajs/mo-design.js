@@ -32,18 +32,19 @@ var EDsFrame = new function EDsFrame(){
    o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
    o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';
    o.BitmapPropertyFrame           = 'resource.bitmap.property.Frame';
-   o.MeshSpacePropertyFrame        = 'design3d.mesh.property.SpaceFrame';
-   o.MeshLayerPropertyFrame        = 'design3d.mesh.property.LayerFrame';
-   o.MeshDisplayPropertyFrame      = 'design3d.mesh.property.DisplayFrame';
-   o.MeshRenderablePropertyFrame   = 'design3d.mesh.property.RenderableFrame';
+   o.MaterialPropertyFrame         = 'resource.material.property.Frame';
+   o.MeshSpacePropertyFrame        = 'resource.mesh.property.SpaceFrame';
+   o.MeshLayerPropertyFrame        = 'resource.mesh.property.LayerFrame';
+   o.MeshDisplayPropertyFrame      = 'resource.mesh.property.DisplayFrame';
+   o.MeshRenderablePropertyFrame   = 'resource.mesh.property.RenderableFrame';
    o.ModelSpacePropertyFrame       = 'resource.model.property.SpaceFrame';
    o.ModelLayerPropertyFrame       = 'resource.model.property.LayerFrame';
    o.ModelDisplayPropertyFrame     = 'resource.model.property.DisplayFrame';
    o.ModelRenderablePropertyFrame  = 'resource.model.property.RenderableFrame';
-   o.SceneSpacePropertyFrame       = 'design3d.scene.property.SpaceFrame';
-   o.SceneDisplayPropertyFrame     = 'design3d.scene.property.DisplayFrame';
-   o.SceneMoviePropertyFrame       = 'design3d.scene.property.MovieFrame';
-   o.SceneRenderablePropertyFrame  = 'design3d.scene.property.RenderableFrame';
+   o.SceneSpacePropertyFrame       = 'resource.scene.property.SpaceFrame';
+   o.SceneDisplayPropertyFrame     = 'resource.scene.property.DisplayFrame';
+   o.SceneMoviePropertyFrame       = 'resource.scene.property.MovieFrame';
+   o.SceneRenderablePropertyFrame  = 'resource.scene.property.RenderableFrame';
    return o;
 }
 var EDsFrameSet = new function EDsFrameSet(){
@@ -216,6 +217,145 @@ function FDsApplication_dispose(){
       o._renderables = null
    }
    o.__base.FObject.dispose.call(o);
+}
+function FDsBitmapCanvas(o){
+   o = RClass.inherits(this, o, FDsCanvas);
+   o._activeBitmap        = null;
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._templateMatrix      = null;
+   o._templateRenderable  = null;
+   o._templateFace        = null;
+   o._templateTranslation = null;
+   o._templateRotation    = null;
+   o._templateScale       = null;
+   o._templateViewScale   = 0.05;
+   o.onBuild              = FDsBitmapCanvas_onBuild;
+   o.onMouseCaptureStart  = FDsBitmapCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = FDsBitmapCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = FDsBitmapCanvas_onMouseCaptureStop;
+   o.onMouseWheel         = FDsBitmapCanvas_onMouseWheel;
+   o.onLoaded             = FDsBitmapCanvas_onLoaded;
+   o.oeResize             = FDsBitmapCanvas_oeResize;
+   o.oeRefresh            = FDsBitmapCanvas_oeRefresh;
+   o.construct            = FDsBitmapCanvas_construct;
+   o.loadByGuid           = FDsBitmapCanvas_loadByGuid;
+   o.dispose              = FDsBitmapCanvas_dispose;
+   return o;
+}
+function FDsBitmapCanvas_onBuild(p){
+   var o = this;
+   o.__base.FDsCanvas.onBuild.call(o, p);
+   var hPanel = o._hPanel;
+   var space = o._activeSpace = RClass.create(FE3dFlatStage);
+   space.linkGraphicContext(o);
+   space.selectTechnique(o, FE3dGeneralTechnique);
+   space.region().backgroundColor().set(1, 1, 1, 1);
+   space.region().linkGraphicContext(o);
+   RStage.register('space', space);
+   var camera = space.camera();
+   camera.setPosition(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection._angle = 45;
+   projection.size().set(hPanel.width, hPanel.height);
+   projection.update();
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
+}
+function FDsBitmapCanvas_onMouseCaptureStart(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   o._capturePosition.set(event.clientX, event.clientY);
+   o._captureMatrix.assign(bitmap.matrix());
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
+}
+function FDsBitmapCanvas_onMouseCapture(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   var matrix = bitmap.matrix();
+   var cx = event.clientX - o._capturePosition.x;
+   var cy = event.clientY - o._capturePosition.y;
+   var captureMatrix = o._captureMatrix;
+   matrix.tx = captureMatrix.tx + cx;
+   matrix.ty = captureMatrix.ty + cy;
+   matrix.updateForce();
+}
+function FDsBitmapCanvas_onMouseCaptureStop(event){
+   var o = this;
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+function FDsBitmapCanvas_onMouseWheel(event){
+   var o = this;
+   var scale = 1.0;
+   if(event.deltaY < 0){
+      scale = 1.1;
+   }else if(event.deltaY > 0){
+      scale = 0.9;
+   }
+   var bitmap = o._activeBitmap;
+   var matrix = bitmap.matrix();
+   matrix.sx *= scale;
+   matrix.sy *= scale;
+   matrix.updateForce();
+}
+function FDsBitmapCanvas_onLoaded(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsBitmapCanvas_oeResize(event){
+   var o = this;
+   o.__base.FDsCanvas.oeResize.call(o, event);
+   return EEventStatus.Stop;
+}
+function FDsBitmapCanvas_oeRefresh(p){
+   return EEventStatus.Stop;
+}
+function FDsBitmapCanvas_construct(){
+   var o = this;
+   o.__base.FDsCanvas.construct.call(o);
+   o._captureMatrix = new SMatrix3d();
+}
+function FDsBitmapCanvas_loadByGuid(guid){
+   var o = this;
+   var size = o._graphicContext.size();
+   RConsole.find(FUiDesktopConsole).showLoading();
+   var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+   var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
+   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   bitmap.linkGraphicContext(o);
+   bitmap.setup();
+   bitmap.material().info().effectCode = 'flat';
+   bitmap.addLoadListener(o, o.onLoaded);
+   bitmap.loadUrl(url);
+   var matrix = bitmap.matrix();
+   var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
+   var top = Math.max((size.height - resource.sizeHeight()) / 2, 0);
+   matrix.setTranslate(left, top);
+   matrix.setScale(resource.sizeWidth(), resource.sizeHeight());
+   matrix.update();
+   var space = o._activeSpace;
+   var layer = space.layer();
+   layer.clearRenderables();
+   layer.pushRenderable(bitmap);
+}
+function FDsBitmapCanvas_dispose(){
+   var o = this;
+   o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
@@ -1346,13 +1486,9 @@ function FDrBitmapConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    o._serviceCode = 'cloud.resource.bitmap';
    o._classUnit   = FDrBitmap;
-   o.createUnit   = FDrBitmapConsole_createUnit;
    o.query        = FDrBitmapConsole_query;
    o.update       = FDrBitmapConsole_update;
    return o;
-}
-function FDrBitmapConsole_createUnit(){
-   return RClass.create(FDrBitmap);
 }
 function FDrBitmapConsole_query(guid){
    var o = this;
@@ -1369,6 +1505,61 @@ function FDrBitmapConsole_query(guid){
    return o._resources.get(guid);
 }
 function FDrBitmapConsole_update(xconfig){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=update';
+   var url = RBrowser.hostPath(uri);
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrMaterial(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode    = 'Material';
+   o.loadConfig    = FDrMaterial_loadConfig;
+   o.saveConfig    = FDrMaterial_saveConfig;
+   return o;
+}
+function FDrMaterial_sizeWidth(){
+   return this._sizeWidth;
+}
+function FDrMaterial_setSizeWidth(width){
+   this._sizeWidth = width;
+}
+function FDrMaterial_sizeHeight(){
+   return this._sizeHeight;
+}
+function FDrMaterial_setSizeHeight(height){
+   this._sizeHeight = height;
+}
+function FDrMaterial_loadConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.loadConfig.call(o, xconfig);
+}
+function FDrMaterial_saveConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.saveConfig.call(o, xconfig);
+}
+function FDrMaterialConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.resource.material';
+   o._classUnit   = FDrMaterial;
+   o.query        = FDrMaterialConsole_query;
+   o.update       = FDrMaterialConsole_update;
+   return o;
+}
+function FDrMaterialConsole_query(guid){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
+   var url = RBrowser.hostPath(uri);
+   var xroot = RConsole.find(FXmlConsole).send(url);
+   var nodeCount = xroot.nodeCount();
+   for(var n = 0; n < nodeCount; n++){
+      var xbitmap = xroot.node(n);
+      if(xbitmap.isName('Material')){
+         o.loadResource(xbitmap);
+      }
+   }
+   return o._resources.get(guid);
+}
+function FDrMaterialConsole_update(xconfig){
    var o = this;
    var uri = '/' + o._serviceCode + '.ws?action=update';
    var url = RBrowser.hostPath(uri);
@@ -7471,143 +7662,8 @@ function FDsResourceWorkspace_dispose(){
    o._propertyFrames = null;
 }
 function FDsBitmapCanvasContent(o){
-   o = RClass.inherits(this, o, FDsCanvas);
-   o._activeBitmap        = null;
-   o._capturePosition     = null;
-   o._captureMatrix       = null;
-   o._templateMatrix      = null;
-   o._templateRenderable  = null;
-   o._templateFace        = null;
-   o._templateTranslation = null;
-   o._templateRotation    = null;
-   o._templateScale       = null;
-   o._templateViewScale   = 0.05;
-   o.onBuild              = FDsBitmapCanvasContent_onBuild;
-   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
-   o.onMouseWheel         = FDsBitmapCanvasContent_onMouseWheel;
-   o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
-   o.oeResize             = FDsBitmapCanvasContent_oeResize;
-   o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
-   o.construct            = FDsBitmapCanvasContent_construct;
-   o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
-   o.dispose              = FDsBitmapCanvasContent_dispose;
+   o = RClass.inherits(this, o, FDsBitmapCanvas);
    return o;
-}
-function FDsBitmapCanvasContent_onBuild(p){
-   var o = this;
-   o.__base.FDsCanvas.onBuild.call(o, p);
-   var hPanel = o._hPanel;
-   var space = o._activeSpace = RClass.create(FE3dFlatStage);
-   space.linkGraphicContext(o);
-   space.selectTechnique(o, FE3dGeneralTechnique);
-   space.region().backgroundColor().set(1, 1, 1, 1);
-   space.region().linkGraphicContext(o);
-   RStage.register('space', space);
-   var camera = space.camera();
-   camera.setPosition(0, 0, -10);
-   camera.lookAt(0, 0, 0);
-   camera.update();
-   var projection = camera.projection();
-   projection._angle = 45;
-   projection.size().set(hPanel.width, hPanel.height);
-   projection.update();
-   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
-}
-function FDsBitmapCanvasContent_onMouseCaptureStart(event){
-   var o = this;
-   var space = o._activeSpace;
-   if(!space){
-      return;
-   }
-   var bitmap = o._activeBitmap;
-   if(!bitmap){
-      return;
-   }
-   o._capturePosition.set(event.clientX, event.clientY);
-   o._captureMatrix.assign(bitmap.matrix());
-   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
-}
-function FDsBitmapCanvasContent_onMouseCapture(event){
-   var o = this;
-   var space = o._activeSpace;
-   if(!space){
-      return;
-   }
-   var bitmap = o._activeBitmap;
-   if(!bitmap){
-      return;
-   }
-   var matrix = bitmap.matrix();
-   var cx = event.clientX - o._capturePosition.x;
-   var cy = event.clientY - o._capturePosition.y;
-   var captureMatrix = o._captureMatrix;
-   matrix.tx = captureMatrix.tx + cx;
-   matrix.ty = captureMatrix.ty + cy;
-   matrix.updateForce();
-}
-function FDsBitmapCanvasContent_onMouseCaptureStop(event){
-   var o = this;
-   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
-function FDsBitmapCanvasContent_onMouseWheel(event){
-   var o = this;
-   var scale = 1.0;
-   if(event.deltaY < 0){
-      scale = 1.1;
-   }else if(event.deltaY > 0){
-      scale = 0.9;
-   }
-   var bitmap = o._activeBitmap;
-   var matrix = bitmap.matrix();
-   matrix.sx *= scale;
-   matrix.sy *= scale;
-   matrix.updateForce();
-}
-function FDsBitmapCanvasContent_onLoaded(event){
-   var o = this;
-   RConsole.find(FUiDesktopConsole).hide();
-}
-function FDsBitmapCanvasContent_oeResize(event){
-   var o = this;
-   o.__base.FDsCanvas.oeResize.call(o, event);
-   return EEventStatus.Stop;
-}
-function FDsBitmapCanvasContent_oeRefresh(p){
-   return EEventStatus.Stop;
-}
-function FDsBitmapCanvasContent_construct(){
-   var o = this;
-   o.__base.FDsCanvas.construct.call(o);
-   o._captureMatrix = new SMatrix3d();
-}
-function FDsBitmapCanvasContent_loadByGuid(guid){
-   var o = this;
-   var size = o._graphicContext.size();
-   RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-   var resource = o._activeResource = o._frameSet._activeResource;
-   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-   bitmap.linkGraphicContext(o);
-   bitmap.setup();
-   bitmap.material().info().effectCode = 'flat';
-   bitmap.addLoadListener(o, o.onLoaded);
-   bitmap.loadUrl(url);
-   var matrix = bitmap.matrix();
-   var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
-   var top = Math.max((size.height - resource.sizeHeight()) / 2, 0);
-   matrix.setTranslate(left, top);
-   matrix.setScale(resource.sizeWidth(), resource.sizeHeight());
-   matrix.update();
-   var space = o._activeSpace;
-   var layer = space.layer();
-   layer.clearRenderables();
-   layer.pushRenderable(bitmap);
-}
-function FDsBitmapCanvasContent_dispose(){
-   var o = this;
-   o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsBitmapCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
@@ -8004,6 +8060,10 @@ function FDsBitmapWorkspace_dispose(){
    o._propertyFrames.dispose();
    o._propertyFrames = null;
 }
+function FDsMaterialCanvasBitmap(o){
+   o = RClass.inherits(this, o, FDsBitmapCanvas);
+   return o;
+}
 function FDsMaterialCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._activeGuid          = null;
@@ -8308,18 +8368,20 @@ function FDsMaterialCatalogContent_onBuilded(p){
 }
 function FDsMaterialCatalogContent_onServiceLoad(event){
    var o = this;
-   var xitems = event.root.findNode('ImageCollection');
+   var xitems = event.root.findNode('BitmapCollection');
    o.clear();
    var xnodes = xitems.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Image')){
+      if(xnode.isName('Bitmap')){
+         var code = xnode.get('code');
          var item = o.createItem(FDsMaterialCatalogItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
-         item._code = xnode.get('code');
+         item._code = code;
          item._updateDate = xnode.get('update_date');
+         item.setTypeLabel(code);
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
@@ -8334,6 +8396,7 @@ function FDsMaterialCatalogContent_construct(){
 function FDsMaterialCatalogContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
+   return;
    var guid = control._guid;
    o._activeItem = control;
    var canvas = o._frameSet._canvasContent;
@@ -8344,10 +8407,15 @@ function FDsMaterialCatalogContent_doDoubleClickItem(control){
    o.__base.FUiListView.doDoubleClickItem.call(o, control)
    var guid = control._guid;
    o._activeItem = control;
-   o._activeGuid = control._guid;
+   o._activeGuid = guid;
+   o._frameSet.switchCanvas('Bitmap', guid);
 }
 function FDsMaterialCatalogContent_serviceList(guid){
    var o = this;
+   RConsole.find(FUiDesktopConsole).showLoading();
+   var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
+   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onServiceLoad);
 }
 function FDsMaterialCatalogContent_dispose(){
    var o = this;
@@ -8377,113 +8445,39 @@ function FDsMaterialCatalogItem_setTypeLabel(label){
 }
 function FDsMaterialCatalogItem_refreshStyle(){
    var o = this;
-   var url = '/cloud.content2d.bitmap.image.wv?do=preview&guid=' + o._guid + '&update_date=' + o._updateDate;
+   var url = '/cloud.resource.bitmap.wv?do=preview&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
 function FDsMaterialCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   o._controlDrop               = null;
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   o._controlRotation           = null;
-   o.onBuilded                  = FDsMaterialCatalogToolBar_onBuilded;
-   o.onModeClick                = FDsMaterialCatalogToolBar_onModeClick;
-   o.onSizeClick                = FDsMaterialCatalogToolBar_onSizeClick;
-   o.onRotationChange           = FDsMaterialCatalogToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsMaterialCatalogToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsMaterialCatalogToolBar_onRotationClick;
-   o.construct                  = FDsMaterialCatalogToolBar_construct;
-   o.dispose                    = FDsMaterialCatalogToolBar_dispose;
+   o._controlCreate   = null;
+   o._controlDelete   = null;
+   o._controlMoveUp   = null;
+   o._controlMoveDown = null;
+   o.onBuilded        = FDsMaterialCatalogToolBar_onBuilded;
+   o.onCreateClick    = FDsMaterialCatalogToolBar_onCreateClick;
+   o.onDeleteClick    = FDsMaterialCatalogToolBar_onDeleteClick;
+   o.onMoveClick      = FDsMaterialCatalogToolBar_onMoveClick;
+   o.construct        = FDsMaterialCatalogToolBar_construct;
+   o.dispose          = FDsMaterialCatalogToolBar_dispose;
    return o;
 }
 function FDsMaterialCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlCreate.addClickListener(o, o.onCreateClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlMoveUp.addClickListener(o, o.onMoveClick);
+   o._controlMoveDown.addClickListener(o, o.onMoveClick);
 }
-function FDsMaterialCatalogToolBar_onModeClick(p){
+function FDsMaterialCatalogToolBar_onCreateClick(p){
    var o = this;
 }
-function FDsMaterialCatalogToolBar_onSizeClick(event){
+function FDsMaterialCatalogToolBar_onDeleteClick(event){
    var o = this;
-   var button = event.sender;
-   var width = '*';
-   var height = '*';
-   var name = button.name();
-   var label = button.label();
-   if(name != 'sizeAuto'){
-      var size = label.split('x');
-      width = parseInt(size[0]);
-      height = parseInt(size[1]);
-   }
-   o._controlSizeWidth.setText(width);
-   o._controlSizeHeight.setText(height);
-   o._frameSet._canvas.switchSize(width, height);
 }
-function FDsMaterialCatalogToolBar_onRotationChange(event){
+function FDsMaterialCatalogToolBar_onMoveClick(event){
    var o = this;
-   var canvas = o._frameSet._canvas;
-   var visible = o._controlRotationVisible.isCheck();
-   var width = RInteger.parse(o._controlRotationWidth.text());
-   var height = RInteger.parse(o._controlRotationHeight.text());
-   canvas.switchRotation(visible, width, height);
-}
-function FDsMaterialCatalogToolBar_onRotationAutoClick(event){
-   var o = this;
-   var sender = event.sender;
-   var name = sender.name();
-   var flipX = false;
-   var flipY = false;
-   var flipZ = false;
-   var rotationX = false;
-   var rotationY = false;
-   var rotationZ = false;
-   switch(name){
-      case 'dimensionalAuto':
-         break;
-      case 'dimensionalFlipX':
-         flipX = true;
-         break;
-      case 'dimensionalFlipY':
-         flipY = true;
-         break;
-      case 'dimensionalFlipZ':
-         flipZ = true;
-         break;
-      case 'dimensionalX':
-         rotationX = true;
-         break;
-      case 'dimensionalY':
-         rotationY = true;
-         break;
-      case 'dimensionalZ':
-         rotationZ = true;
-         break;
-      default:
-         throw new TError(o, 'Unknown command.');
-   }
-   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
-}
-function FDsMaterialCatalogToolBar_onRotationClick(event, v){
-   var o = this;
-   var button = event.sender;
-   var canvas = o._frameSet._canvas;
-   canvas.switchRotation(button.isCheck());
 }
 function FDsMaterialCatalogToolBar_construct(){
    var o = this;
@@ -8508,14 +8502,15 @@ function FDsMaterialFrameSet(o){
    o.onDataLoaded          = FDsMaterialFrameSet_onDataLoaded;
    o.onCatalogSelected     = FDsMaterialFrameSet_onCatalogSelected;
    o.construct             = FDsMaterialFrameSet_construct;
+   o.switchCanvas          = FDsMaterialFrameSet_switchCanvas;
    o.loadByGuid            = FDsMaterialFrameSet_loadByGuid;
    o.loadByCode            = FDsMaterialFrameSet_loadByCode;
    o.dispose               = FDsMaterialFrameSet_dispose;
    return o;
 }
-function FDsMaterialFrameSet_onBuilded(p){
+function FDsMaterialFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FDsFrameSet.onBuilded.call(o, p);
+   o.__base.FDsFrameSet.onBuilded.call(o, event);
    o._frameCatalogToolBar._hPanel.className = o.styleName('ToolBar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
    o._frameCanvasToolBar._hPanel.className = o.styleName('ToolBar_Ground');
@@ -8528,6 +8523,18 @@ function FDsMaterialFrameSet_onBuilded(p){
    var spliterProperty = o._spliterProperty;
    spliterProperty.setAlignCd(EUiAlign.Right);
    spliterProperty.setSizeHtml(o._frameProperty._hPanel);
+   var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+   canvas._frameSet = o;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   canvas.build(event);
+   var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
+   canvas._frameSet = o;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
+   canvas.build(event);
 }
 function FDsMaterialFrameSet_onDataLoaded(p){
    var o = this;
@@ -8581,10 +8588,23 @@ function FDsMaterialFrameSet_construct(){
    var o = this;
    o.__base.FDsFrameSet.construct.call(o);
 }
+function FDsMaterialFrameSet_switchCanvas(typeCd, guid){
+   var o = this;
+   if(typeCd == 'Bitmap'){
+      var canvas = o._canvasBitmap;
+      o._frameCanvasContent.push(canvas);
+      canvas.loadByGuid(guid);
+   }else{
+      o._frameCanvasContent.push(o._canvasContent);
+   }
+}
 function FDsMaterialFrameSet_loadByGuid(guid){
    var o = this;
    o._activeGuid = guid;
+   var resource = o._activeResource = RConsole.find(FDrMaterialConsole).query(guid);
    o._catalogContent.serviceList(guid);
+   var frame = o.findPropertyFrame(EDsFrame.MaterialPropertyFrame);
+   frame.loadObject(resource);
 }
 function FDsMaterialFrameSet_loadByCode(code){
    var o = this;
@@ -8642,43 +8662,61 @@ function FDsMaterialMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
 }
+function FDsMaterialPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._activeResource = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o.onBuilded       = FDsMaterialPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsMaterialPropertyFrame_onDataChanged;
+   o.construct       = FDsMaterialPropertyFrame_construct;
+   o.loadObject      = FDsMaterialPropertyFrame_loadObject;
+   o.dispose         = FDsMaterialPropertyFrame_dispose;
+   return o;
+}
+function FDsMaterialPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMaterialPropertyFrame_onBuilded(event){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, event);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMaterialPropertyFrame_onDataChanged(p){
+   var o = this;
+   var resource = o._activeResource;
+   resource.setCode(o._controlCode.get());
+   resource.setLabel(o._controlLabel.get());
+}
+function FDsMaterialPropertyFrame_loadObject(resource){
+   var o = this;
+   o._activeResource = resource;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+}
+function FDsMaterialPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsMaterialPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'resource.bitmap.CatalogToolBar';
-   o._canvasModeCd              = EDsCanvasMode.Drop;
-   o._controlDrop               = null;
-   o._controlSize1              = null;
-   o._controlSize2              = null;
-   o._controlSize3              = null;
-   o._controlSize4              = null;
-   o._controlSizeWidth          = null;
-   o._controlSizeHeight         = null;
-   o._controlRotationVisible = null;
-   o._controlRotationWidth   = null;
-   o._controlRotationHeight  = null;
-   o._controlRotationAuto    = null;
-   o._controlRotationFlipX   = null;
-   o._controlRotationFlipY   = null;
-   o._controlRotationFlipZ   = null;
-   o._controlRotationX       = null;
-   o._controlRotationY       = null;
-   o._controlRotationZ       = null;
-   o._controlRotation           = null;
-   o.onBuilded                  = FDsMaterialPropertyToolBar_onBuilded;
-   o.onModeClick                = FDsMaterialPropertyToolBar_onModeClick;
-   o.onSizeClick                = FDsMaterialPropertyToolBar_onSizeClick;
-   o.onRotationChange           = FDsMaterialPropertyToolBar_onRotationChange;
-   o.onRotationAutoClick        = FDsMaterialPropertyToolBar_onRotationAutoClick;
-   o.onRotationClick            = FDsMaterialPropertyToolBar_onRotationClick;
-   o.construct                  = FDsMaterialPropertyToolBar_construct;
-   o.dispose                    = FDsMaterialPropertyToolBar_dispose;
+   o._controlRefresh = null;
+   o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
+   o.onRefreshClick  = FDsMaterialPropertyToolBar_onRefreshClick;
+   o.construct       = FDsMaterialPropertyToolBar_construct;
+   o.dispose         = FDsMaterialPropertyToolBar_dispose;
    return o;
 }
 function FDsMaterialPropertyToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
 }
-function FDsMaterialPropertyToolBar_onModeClick(p){
+function FDsMaterialPropertyToolBar_onRefreshClick(p){
    var o = this;
 }
 function FDsMaterialPropertyToolBar_onSizeClick(event){
