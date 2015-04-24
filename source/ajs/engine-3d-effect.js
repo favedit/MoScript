@@ -1,9 +1,39 @@
-function FE3dGeneralColorAutomaticEffect(o){
+function FE3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o.drawGroup = FE3dAutomaticEffect_drawGroup;
+   return o;
+}
+function FE3dAutomaticEffect_drawGroup(region, renderables, offset, count){
+   var o = this;
+   if(count > 1){
+      var modelConsole = RConsole.find(FE3rModelConsole);
+      var model = modelConsole.merge(o, region, offset, count);
+      if(model){
+         var context = o._graphicContext;
+         var meshes = model.meshes();
+         var meshCount = meshes.count();
+         var spaceName = region.spaceName();
+         var mesh = meshes.first();
+         var info = mesh.selectInfo(spaceName);
+         var effect = info.effect;
+         if(!effect){
+            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
+         }
+         for(var i = 1; i < meshCount; i++){
+            var mesh = meshes.getAt(i);
+            var info = mesh.selectInfo(spaceName);
+            info.effect = effect;
+         }
+         return effect.drawRenderables(region, meshes, 0, meshCount);
+      }
+   }
+   o.drawRenderables(region, renderables, offset, count);
+}
+function FE3dGeneralColorAutomaticEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    o._code          = 'general.color.automatic';
    o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
-   o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
 }
 function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
@@ -68,33 +98,45 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       o.buildMaterial(f, pr);
       p.setParameter('fc_materials', f.material.memory());
    }
-   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
+function FE3dGeneralColorFlatEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
+   o._code          = 'general.color.flat';
+   o.drawRenderable = FE3dGeneralColorFlatEffect_drawRenderable;
+   return o;
+}
+function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
    var o = this;
-   if(count > 1){
-      var modelConsole = RConsole.find(FE3rModelConsole);
-      var model = modelConsole.merge(o, region, offset, count);
-      if(model){
-         var context = o._graphicContext;
-         var meshes = model.meshes();
-         var meshCount = meshes.count();
-         var spaceName = region.spaceName();
-         var mesh = meshes.first();
-         var info = mesh.selectInfo(spaceName);
-         var effect = info.effect;
-         if(!effect){
-            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
-         }
-         for(var i = 1; i < meshCount; i++){
-            var mesh = meshes.getAt(i);
-            var info = mesh.selectInfo(spaceName);
-            info.effect = effect;
-         }
-         return effect.drawRenderables(region, meshes, 0, meshCount);
+   var context = o._graphicContext;
+   var size = context.size();
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   if(renderable._optionMerge){
+      var meshs = renderable.mergeRenderables();
+      var meshCount = meshs.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
+      var index = 0;
+      for(var i = 0; i < meshCount; i++){
+         var mesh = meshs.getAt(i);
+         var matrix = mesh.matrix();
+         data[index++] = matrix.sx / size.width * 2;
+         data[index++] = matrix.sy / size.height * 2;
+         data[index++] = matrix.tx / size.width * 2 - 1;
+         data[index++] = 1 - matrix.ty / size.height * 2;
+         mesh.currentMatrix().writeData(data, 4 * i);
       }
+      program.setParameter('vc_position', data);
+   }else{
+      var matrix = renderable.matrix();
+      var cx = matrix.sx / size.width * 2;
+      var cy = matrix.sy / size.height * 2;
+      var tx = matrix.tx / size.width * 2 - 1;
+      var ty = 1 - matrix.ty / size.height * 2;
+      program.setParameter4('vc_position', cx, cy, tx, ty);
    }
-   o.drawRenderables(region, renderables, offset, count);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);

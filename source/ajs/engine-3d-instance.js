@@ -16,9 +16,12 @@ function FE3dAnimation(o){
 function FE3dBitmap(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
    o._ready           = false;
+   o._size            = null;
    o._renderable      = null;
    o.construct        = FE3dBitmap_construct;
    o.testReady        = FE3dBitmap_testReady;
+   o.size             = FE3dBitmap_size;
+   o.setSize          = FE3dBitmap_setSize;
    o.renderable       = FE3dBitmap_renderable;
    o.setRenderable    = FE3dBitmap_setRenderable;
    o.vertexBuffers    = FE3dBitmap_vertexBuffers;
@@ -36,6 +39,7 @@ function FE3dBitmap_construct(){
    var o = this;
    o.__base.FE3dMeshRenderable.construct.call(o);
    o._material = RClass.create(FE3dMaterial);
+   o._size = new SSize2();
 }
 function FE3dBitmap_testReady(){
    var o = this;
@@ -56,6 +60,14 @@ function FE3dBitmap_testReady(){
       }
    }
    return o._ready;
+}
+function FE3dBitmap_size(){
+   return this._size;
+}
+function FE3dBitmap_setSize(width, height){
+   var o = this;
+   o._size.set(width, height);
+   o._scale.set(width, height, 1);
 }
 function FE3dBitmap_renderable(p){
    return this._renderable;
@@ -246,10 +258,10 @@ function FE3dBitmapData_setup(){
    var o = this;
    var context = o._graphicContext;
    var data = [
-      -1,  1, 0,
-       1,  1, 0,
-       1, -1, 0,
-      -1, -1, 0 ];
+      0,  0, 0,
+      1,  0, 0,
+      1, -1, 0,
+      0, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setName('position');
    buffer._formatCd = EG3dAttributeFormat.Float3;
@@ -657,6 +669,22 @@ function FE3dDirectionalLight_dispose(){
    var o = this;
    o._material = RObject.dispose(o._material);
    o.__base.FG3dDirectionalLight.dispose.call(o);
+}
+function FE3dFlatStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._layer    = null;
+   o.construct = FE3dFlatStage_construct;
+   o.layer     = FE3dFlatStage_layer;
+   return o;
+}
+function FE3dFlatStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var layer = o._layer = RClass.create(FDisplayLayer);
+   o.registerLayer('Layer', layer);
+}
+function FE3dFlatStage_layer(){
+   return this._layer;
 }
 function FE3dInstanceConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -2432,6 +2460,54 @@ function FE3dSimpleCanvas_dispose(){
       o._rotation = null;
    }
    o.__base.FE3dCanvas.dispose.call(o);
+}
+function FE3dSimpleStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._optionKeyboard = true;
+   o._skyLayer       = null;
+   o._mapLayer       = null;
+   o._spriteLayer    = null;
+   o._faceLayer      = null;
+   o.construct       = FE3dSimpleStage_construct;
+   o.skyLayer        = FE3dSimpleStage_skyLayer;
+   o.mapLayer        = FE3dSimpleStage_mapLayer;
+   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
+   o.faceLayer       = FE3dSimpleStage_faceLayer;
+   o.active          = FE3dSimpleStage_active;
+   o.deactive        = FE3dSimpleStage_deactive;
+   return o;
+}
+function FE3dSimpleStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SkyLayer', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('MapLayer', l);
+   var l = o._spriteLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SpriteLayer', l);
+   var l = o._faceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('FaceLayer', l);
+}
+function FE3dSimpleStage_skyLayer(){
+   return this._skyLayer;
+}
+function FE3dSimpleStage_mapLayer(){
+   return this._mapLayer;
+}
+function FE3dSimpleStage_spriteLayer(){
+   return this._spriteLayer;
+}
+function FE3dSimpleStage_faceLayer(){
+   return this._faceLayer;
+}
+function FE3dSimpleStage_active(){
+   var o = this;
+   o.__base.FE3dStage.active.call(o);
+}
+function FE3dSimpleStage_deactive(){
+   var o = this;
+   o.__base.FE3dStage.deactive.call(o);
 }
 function FE3dSpace(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);

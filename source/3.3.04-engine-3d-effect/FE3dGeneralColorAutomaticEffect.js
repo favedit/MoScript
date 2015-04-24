@@ -5,7 +5,7 @@
 // @history 150119
 //==========================================================
 function FE3dGeneralColorAutomaticEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    //..........................................................
    // @attribute
    o._code          = 'general.color.automatic';
@@ -13,7 +13,6 @@ function FE3dGeneralColorAutomaticEffect(o){
    // @method
    o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
-   o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
 }
 
@@ -111,44 +110,5 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    // 绘制处理
-   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
-}
-
-//==========================================================
-// <T>绘制渲染集合。</T>
-//
-// @method
-// @param region:MG3dRegion 渲染区域
-// @param renderables:TObjects 渲染集合
-// @param offset:Integer 开始位置
-// @param count:Integer 总数
-//==========================================================
-function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
-   var o = this;
-   if(count > 1){
-      var modelConsole = RConsole.find(FE3rModelConsole);
-      var model = modelConsole.merge(o, region, offset, count);
-      if(model){
-         var context = o._graphicContext;
-         var meshes = model.meshes();
-         var meshCount = meshes.count();
-         var spaceName = region.spaceName();
-         // 获得首个渲染器
-         var mesh = meshes.first();
-         var info = mesh.selectInfo(spaceName);
-         var effect = info.effect;
-         if(!effect){
-            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
-         }
-         // 激活效果器
-         for(var i = 1; i < meshCount; i++){
-            var mesh = meshes.getAt(i);
-            var info = mesh.selectInfo(spaceName);
-            info.effect = effect;
-         }
-         // 绘制渲染集合
-         return effect.drawRenderables(region, meshes, 0, meshCount);
-      }
-   }
-   o.drawRenderables(region, renderables, offset, count);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }

@@ -9,12 +9,15 @@ function FE3dBitmap(o){
    //..........................................................
    // @attribute
    o._ready           = false;
+   o._size            = null;
    o._renderable      = null;
    //..........................................................
    // @method
    o.construct        = FE3dBitmap_construct;
    // @method
    o.testReady        = FE3dBitmap_testReady;
+   o.size             = FE3dBitmap_size;
+   o.setSize          = FE3dBitmap_setSize;
    o.renderable       = FE3dBitmap_renderable;
    o.setRenderable    = FE3dBitmap_setRenderable;
    o.vertexBuffers    = FE3dBitmap_vertexBuffers;
@@ -40,6 +43,7 @@ function FE3dBitmap_construct(){
    o.__base.FE3dMeshRenderable.construct.call(o);
    // 设置属性
    o._material = RClass.create(FE3dMaterial);
+   o._size = new SSize2();
 }
 
 //==========================================================
@@ -67,6 +71,27 @@ function FE3dBitmap_testReady(){
       }
    }
    return o._ready;
+}
+
+//==========================================================
+// <T>获得大小。</T>
+//
+// @return SSize2 大小
+//==========================================================
+function FE3dBitmap_size(){
+   return this._size;
+}
+
+//==========================================================
+// <T>设置大小。</T>
+//
+// @param width:Number 宽度
+// @param height:Number 高度
+//==========================================================
+function FE3dBitmap_setSize(width, height){
+   var o = this;
+   o._size.set(width, height);
+   o._scale.set(width, height, 1);
 }
 
 //==========================================================

@@ -31,6 +31,7 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.clearRenderables  = FDisplay_clearRenderables;
    // @method
    o.filterDisplays    = FDisplay_filterDisplays;
    o.filterRenderables = FDisplay_filterRenderables;
@@ -121,8 +122,8 @@ function FDisplay_scale(){
 // @return Boolean 是否含有
 //==========================================================
 function FDisplay_hasRenderable(){
-   var r = this._renderables;
-   return r ? !r.isEmpty() : false;
+   var renderables = this._renderables;
+   return renderables ? !renderables.isEmpty() : false;
 }
 
 //==========================================================
@@ -133,33 +134,47 @@ function FDisplay_hasRenderable(){
 //==========================================================
 function FDisplay_renderables(){
    var o = this;
-   var r = o._renderables;
-   if(!r){
-      r = o._renderables = new TObjects();
+   var renderables = o._renderables;
+   if(!renderables){
+      renderables = o._renderables = new TObjects();
    }
-   return r;
+   return renderables;
 }
 
 //==========================================================
 // <T>增加一个渲染对象。</T>
 //
-// @param p:renderable:FRenderable 渲染对象
+// @method
+// @param renderable:FRenderable 渲染对象
 //==========================================================
-function FDisplay_pushRenderable(p){
+function FDisplay_pushRenderable(renderable){
    var o = this;
-   p._display = o;
-   o.renderables().push(p);
+   renderable._display = o;
+   o.renderables().push(renderable);
 }
 
 //==========================================================
 // <T>移除一个渲染对象。</T>
 //
-// @param p:renderable:FRenderable 渲染对象
+// @method
+// @param renderable:FRenderable 渲染对象
 //==========================================================
-function FDisplay_removeRenderable(p){
-   var s = this._renderables;
-   if(s){
-      s.remove(p);
+function FDisplay_removeRenderable(renderable){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.remove(renderable);
+   }
+}
+
+//==========================================================
+// <T>清空渲染对象集合。</T>
+//
+// @method
+//==========================================================
+function FDisplay_clearRenderables(){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.clear();
    }
 }
 

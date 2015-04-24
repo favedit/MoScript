@@ -951,20 +951,20 @@ function FWglFragmentShader_targetSource(){
    }
    return o._source;
 }
-function FWglFragmentShader_upload(v){
+function FWglFragmentShader_upload(source){
    var o = this;
-   var g = o._graphicContext._native;
-   var n = o._native;
-   g.shaderSource(n, v);
-   g.compileShader(n);
-   var r = g.getShaderParameter(n, g.COMPILE_STATUS);
-   if(!r){
-      var i = g.getShaderInfoLog(n);
-      g.deleteShader(n);
+   var graphic = o._graphicContext._native;
+   var shader = o._native;
+   graphic.shaderSource(shader, source);
+   graphic.compileShader(shader);
+   var result = graphic.getShaderParameter(shader, graphic.COMPILE_STATUS);
+   if(!result){
+      var info = graphic.getShaderInfoLog(shader);
+      graphic.deleteShader(shader);
       o._native = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
-   o._source = v;
+   o._source = source;
    return true;
 }
 function FWglFragmentShader_dispose(){
@@ -1411,20 +1411,20 @@ function FWglVertexShader_targetSource(){
    }
    return o._source;
 }
-function FWglVertexShader_upload(v){
+function FWglVertexShader_upload(source){
    var o = this;
-   var g = o._graphicContext._native;
-   var n = o._native;
-   g.shaderSource(n, v);
-   g.compileShader(n);
-   var r = g.getShaderParameter(n, g.COMPILE_STATUS);
-   if(!r){
-      var i = g.getShaderInfoLog(n);
-      g.deleteShader(n);
+   var graphic = o._graphicContext._native;
+   var shader = o._native;
+   graphic.shaderSource(shader, source);
+   graphic.compileShader(shader);
+   var result = graphic.getShaderParameter(shader, graphic.COMPILE_STATUS);
+   if(!result){
+      var info = graphic.getShaderInfoLog(shader);
+      graphic.deleteShader(shader);
       o._native = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
-   o._source = v;
+   o._source = source;
    return true;
 }
 function FWglVertexShader_dispose(){

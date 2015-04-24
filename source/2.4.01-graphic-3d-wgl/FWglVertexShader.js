@@ -51,24 +51,24 @@ function FWglVertexShader_targetSource(){
 // <T>上传渲染代码。</T>
 //
 // @method
-// @param v:value:String 渲染代码
+// @param source:String 渲染代码
 //==========================================================
-function FWglVertexShader_upload(v){
+function FWglVertexShader_upload(source){
    var o = this;
-   var g = o._graphicContext._native;
-   var n = o._native;
+   var graphic = o._graphicContext._native;
+   var shader = o._native;
    // 上传代码
-   g.shaderSource(n, v);
+   graphic.shaderSource(shader, source);
    // 编译处理
-   g.compileShader(n);
-   var r = g.getShaderParameter(n, g.COMPILE_STATUS);
-   if(!r){
-      var i = g.getShaderInfoLog(n);
-      g.deleteShader(n); 
+   graphic.compileShader(shader);
+   var result = graphic.getShaderParameter(shader, graphic.COMPILE_STATUS);
+   if(!result){
+      var info = graphic.getShaderInfoLog(shader);
+      graphic.deleteShader(shader); 
       o._native = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
-   o._source = v;
+   o._source = source;
    return true;
 }
 

@@ -22,6 +22,9 @@ function SMouseEvent(){
    o.offsetY     = 0;
    o.clientX     = 0;
    o.clientY     = 0;
+   o.deltaX      = 0;
+   o.deltaY      = 0;
+   o.deltaZ      = 0;
    //..........................................................
    // @method
    o.attachEvent = SMouseEvent_attachEvent;
@@ -32,31 +35,34 @@ function SMouseEvent(){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:HtmlEvent 页面事件
+// @param event:HtmlEvent 页面事件
 //==========================================================
-function SMouseEvent_attachEvent(p){
+function SMouseEvent_attachEvent(event){
    var o = this;
-   var hs = o.hSource = RHtml.eventSource(p);
+   var hs = o.hSource = RHtml.eventSource(event);
    if(hs){
       o.source = hs.__linker;
    }
-   o.button = p.button;
-   o.mouseLeft = (p.button == EMouseButton.Left);
-   o.mouseMiddle = (p.button == EMouseButton.Middle);
-   o.mouseRight = (p.button == EMouseButton.Right);
-   o.altKey = p.altKey;
-   o.ctrlKey = p.ctrlKey;
+   o.button = event.button;
+   o.mouseLeft = (event.button == EMouseButton.Left);
+   o.mouseMiddle = (event.button == EMouseButton.Middle);
+   o.mouseRight = (event.button == EMouseButton.Right);
+   o.altKey = event.altKey;
+   o.ctrlKey = event.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o.x = p.pageX;
-      o.y = p.pageY;
-      o.offsetX = p.layerX;
-      o.offsetY = p.layerY;
+      o.x = event.pageX;
+      o.y = event.pageY;
+      o.offsetX = event.layerX;
+      o.offsetY = event.layerY;
    }else{
-      o.x = p.x;
-      o.y = p.y;
-      o.offsetX = p.offsetX;
-      o.offsetY = p.offsetY;
+      o.x = event.x;
+      o.y = event.y;
+      o.offsetX = event.offsetX;
+      o.offsetY = event.offsetY;
    }
-   o.clientX = p.clientX;
-   o.clientY = p.clientY;
+   o.clientX = event.clientX;
+   o.clientY = event.clientY;
+   o.deltaX = event.deltaX;
+   o.deltaY = event.deltaY;
+   o.deltaZ = event.deltaZ;
 }

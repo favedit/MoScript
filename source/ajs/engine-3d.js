@@ -311,54 +311,6 @@ function FE3dRenderable_remove(){
       o._display = null;
    }
 }
-function FE3dSimpleStage(o){
-   o = RClass.inherits(this, o, FE3dStage);
-   o._optionKeyboard = true;
-   o._skyLayer       = null;
-   o._mapLayer       = null;
-   o._spriteLayer    = null;
-   o._faceLayer      = null;
-   o.construct       = FE3dSimpleStage_construct;
-   o.skyLayer        = FE3dSimpleStage_skyLayer;
-   o.mapLayer        = FE3dSimpleStage_mapLayer;
-   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
-   o.faceLayer       = FE3dSimpleStage_faceLayer;
-   o.active          = FE3dSimpleStage_active;
-   o.deactive        = FE3dSimpleStage_deactive;
-   return o;
-}
-function FE3dSimpleStage_construct(){
-   var o = this;
-   o.__base.FE3dStage.construct.call(o);
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SkyLayer', l);
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('MapLayer', l);
-   var l = o._spriteLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SpriteLayer', l);
-   var l = o._faceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('FaceLayer', l);
-}
-function FE3dSimpleStage_skyLayer(){
-   return this._skyLayer;
-}
-function FE3dSimpleStage_mapLayer(){
-   return this._mapLayer;
-}
-function FE3dSimpleStage_spriteLayer(){
-   return this._spriteLayer;
-}
-function FE3dSimpleStage_faceLayer(){
-   return this._faceLayer;
-}
-function FE3dSimpleStage_active(){
-   var o = this;
-   o.__base.FE3dStage.active.call(o);
-}
-function FE3dSimpleStage_deactive(){
-   var o = this;
-   o.__base.FE3dStage.deactive.call(o);
-}
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;
@@ -576,21 +528,22 @@ var RE3dEngine = new function RE3dEngine(){
    return o;
 }
 function RE3dEngine_onSetup(){
-   var ec = RConsole.find(FG3dEffectConsole);
-   ec.register('select.select.control', FG3dSelectAutomaticEffect);
-   ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
-   ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
-   ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
-   ec.register('control.control.automatic', FG3dControlAutomaticEffect);
-   ec.register('control.control.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
-   ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
-   ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
-   ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
-   ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   var effectConsole = RConsole.find(FG3dEffectConsole);
+   effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
+   effectConsole.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
+   effectConsole.register('control.control.automatic', FG3dControlAutomaticEffect);
+   effectConsole.register('control.control.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
+   effectConsole.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
+   effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
+   effectConsole.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
 }
 function RE3dEngine_setup(){
    var o = this;

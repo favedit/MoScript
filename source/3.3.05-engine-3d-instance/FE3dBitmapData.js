@@ -205,10 +205,10 @@ function FE3dBitmapData_setup(){
    var context = o._graphicContext;
    // 设置顶点数据
    var data = [
-      -1,  1, 0,
-       1,  1, 0,
-       1, -1, 0,
-      -1, -1, 0 ];
+      0,  0, 0,
+      1,  0, 0,
+      1, -1, 0,
+      0, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setName('position');
    buffer._formatCd = EG3dAttributeFormat.Float3;

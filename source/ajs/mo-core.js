@@ -1599,94 +1599,6 @@ var EResult = new function EResult(){
    o.Cancel   = -2;
    return o;
 }
-function MAttributeCode(o){
-   o = RClass.inherits(this, o);
-   o._code   = null;
-   o.isCode  = MAttributeCode_isCode;
-   o.code    = MAttributeCode_code;
-   o.setCode = MAttributeCode_setCode;
-   return o;
-}
-function MAttributeCode_isCode(code){
-   return this._code == code;
-}
-function MAttributeCode_code(){
-   return this._code;
-}
-function MAttributeCode_setCode(code){
-   this._code = code;
-}
-function MAttributeGuid(o){
-   o = RClass.inherits(this, o);
-   o._guid   = null;
-   o.guid    = MAttributeGuid_guid;
-   o.setGuid = MAttributeGuid_setGuid;
-   return o;
-}
-function MAttributeGuid_guid(){
-   return this._guid;
-}
-function MAttributeGuid_setGuid(guid){
-   this._guid = guid;
-}
-function MAttributeLabel(o){
-   o = RClass.inherits(this, o);
-   o._label   = null;
-   o.label    = MAttributeLabel_label;
-   o.setLabel = MAttributeLabel_setLabel;
-   return o;
-}
-function MAttributeLabel_label(){
-   return this._label;
-}
-function MAttributeLabel_setLabel(label){
-   this._label = label;
-}
-function MAttributeName(o){
-   o = RClass.inherits(this, o);
-   o._name   = null;
-   o.name    = MAttributeName_name;
-   o.setName = MAttributeName_setName;
-   return o;
-}
-function MAttributeName_name(){
-   return this._name;
-}
-function MAttributeName_setName(name){
-   this._name = name;
-}
-function MAttributeParent(o){
-   o = RClass.inherits(this, o);
-   o._parent    = null;
-   o.parent     = MAttributeParent_parent;
-   o.findParent = MAttributeParent_findParent;
-   o.setParent  = MAttributeParent_setParent;
-   o.dispose    = MAttributeParent_dispose;
-   return o;
-}
-function MAttributeParent_parent(){
-   return this._parent;
-}
-function MAttributeParent_findParent(clazz){
-   var find = this;
-   if(clazz){
-      while(RClass.isClass(find._parent, clazz)){
-         find = find._parent;
-      }
-   }else{
-      while(find._parent){
-         find = find._parent;
-      }
-   }
-   return find;
-}
-function MAttributeParent_setParent(parent){
-   this._parent = parent;
-}
-function MAttributeParent_dispose(){
-   var o = this;
-   o._parent = null;
-}
 function MInstance(o){
    o = RClass.inherits(this, o);
    o.__free          = false;
@@ -8999,6 +8911,94 @@ var ESoftware = new function ESoftware(){
    o.Apple = 4;
    return o;
 }
+function MAttributeCode(o){
+   o = RClass.inherits(this, o);
+   o._code   = null;
+   o.isCode  = MAttributeCode_isCode;
+   o.code    = MAttributeCode_code;
+   o.setCode = MAttributeCode_setCode;
+   return o;
+}
+function MAttributeCode_isCode(code){
+   return this._code == code;
+}
+function MAttributeCode_code(){
+   return this._code;
+}
+function MAttributeCode_setCode(code){
+   this._code = code;
+}
+function MAttributeGuid(o){
+   o = RClass.inherits(this, o);
+   o._guid   = null;
+   o.guid    = MAttributeGuid_guid;
+   o.setGuid = MAttributeGuid_setGuid;
+   return o;
+}
+function MAttributeGuid_guid(){
+   return this._guid;
+}
+function MAttributeGuid_setGuid(guid){
+   this._guid = guid;
+}
+function MAttributeLabel(o){
+   o = RClass.inherits(this, o);
+   o._label   = null;
+   o.label    = MAttributeLabel_label;
+   o.setLabel = MAttributeLabel_setLabel;
+   return o;
+}
+function MAttributeLabel_label(){
+   return this._label;
+}
+function MAttributeLabel_setLabel(label){
+   this._label = label;
+}
+function MAttributeName(o){
+   o = RClass.inherits(this, o);
+   o._name   = null;
+   o.name    = MAttributeName_name;
+   o.setName = MAttributeName_setName;
+   return o;
+}
+function MAttributeName_name(){
+   return this._name;
+}
+function MAttributeName_setName(name){
+   this._name = name;
+}
+function MAttributeParent(o){
+   o = RClass.inherits(this, o);
+   o._parent    = null;
+   o.parent     = MAttributeParent_parent;
+   o.findParent = MAttributeParent_findParent;
+   o.setParent  = MAttributeParent_setParent;
+   o.dispose    = MAttributeParent_dispose;
+   return o;
+}
+function MAttributeParent_parent(){
+   return this._parent;
+}
+function MAttributeParent_findParent(clazz){
+   var find = this;
+   if(clazz){
+      while(RClass.isClass(find._parent, clazz)){
+         find = find._parent;
+      }
+   }else{
+      while(find._parent){
+         find = find._parent;
+      }
+   }
+   return find;
+}
+function MAttributeParent_setParent(parent){
+   this._parent = parent;
+}
+function MAttributeParent_dispose(){
+   var o = this;
+   o._parent = null;
+}
 function MClone(o){
    o = RClass.inherits(this, o);
    o.clone  = MClone_clone;
@@ -9604,34 +9604,40 @@ function SMouseEvent(){
    o.offsetY     = 0;
    o.clientX     = 0;
    o.clientY     = 0;
+   o.deltaX      = 0;
+   o.deltaY      = 0;
+   o.deltaZ      = 0;
    o.attachEvent = SMouseEvent_attachEvent;
    return o;
 }
-function SMouseEvent_attachEvent(p){
+function SMouseEvent_attachEvent(event){
    var o = this;
-   var hs = o.hSource = RHtml.eventSource(p);
+   var hs = o.hSource = RHtml.eventSource(event);
    if(hs){
       o.source = hs.__linker;
    }
-   o.button = p.button;
-   o.mouseLeft = (p.button == EMouseButton.Left);
-   o.mouseMiddle = (p.button == EMouseButton.Middle);
-   o.mouseRight = (p.button == EMouseButton.Right);
-   o.altKey = p.altKey;
-   o.ctrlKey = p.ctrlKey;
+   o.button = event.button;
+   o.mouseLeft = (event.button == EMouseButton.Left);
+   o.mouseMiddle = (event.button == EMouseButton.Middle);
+   o.mouseRight = (event.button == EMouseButton.Right);
+   o.altKey = event.altKey;
+   o.ctrlKey = event.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o.x = p.pageX;
-      o.y = p.pageY;
-      o.offsetX = p.layerX;
-      o.offsetY = p.layerY;
+      o.x = event.pageX;
+      o.y = event.pageY;
+      o.offsetX = event.layerX;
+      o.offsetY = event.layerY;
    }else{
-      o.x = p.x;
-      o.y = p.y;
-      o.offsetX = p.offsetX;
-      o.offsetY = p.offsetY;
+      o.x = event.x;
+      o.y = event.y;
+      o.offsetX = event.offsetX;
+      o.offsetY = event.offsetY;
    }
-   o.clientX = p.clientX;
-   o.clientY = p.clientY;
+   o.clientX = event.clientX;
+   o.clientY = event.clientY;
+   o.deltaX = event.deltaX;
+   o.deltaY = event.deltaY;
+   o.deltaZ = event.deltaZ;
 }
 function SResizeEvent(){
    var o = this;

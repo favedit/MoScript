@@ -1599,94 +1599,6 @@ var EResult = new function EResult(){
    o.Cancel   = -2;
    return o;
 }
-function MAttributeCode(o){
-   o = RClass.inherits(this, o);
-   o._code   = null;
-   o.isCode  = MAttributeCode_isCode;
-   o.code    = MAttributeCode_code;
-   o.setCode = MAttributeCode_setCode;
-   return o;
-}
-function MAttributeCode_isCode(code){
-   return this._code == code;
-}
-function MAttributeCode_code(){
-   return this._code;
-}
-function MAttributeCode_setCode(code){
-   this._code = code;
-}
-function MAttributeGuid(o){
-   o = RClass.inherits(this, o);
-   o._guid   = null;
-   o.guid    = MAttributeGuid_guid;
-   o.setGuid = MAttributeGuid_setGuid;
-   return o;
-}
-function MAttributeGuid_guid(){
-   return this._guid;
-}
-function MAttributeGuid_setGuid(guid){
-   this._guid = guid;
-}
-function MAttributeLabel(o){
-   o = RClass.inherits(this, o);
-   o._label   = null;
-   o.label    = MAttributeLabel_label;
-   o.setLabel = MAttributeLabel_setLabel;
-   return o;
-}
-function MAttributeLabel_label(){
-   return this._label;
-}
-function MAttributeLabel_setLabel(label){
-   this._label = label;
-}
-function MAttributeName(o){
-   o = RClass.inherits(this, o);
-   o._name   = null;
-   o.name    = MAttributeName_name;
-   o.setName = MAttributeName_setName;
-   return o;
-}
-function MAttributeName_name(){
-   return this._name;
-}
-function MAttributeName_setName(name){
-   this._name = name;
-}
-function MAttributeParent(o){
-   o = RClass.inherits(this, o);
-   o._parent    = null;
-   o.parent     = MAttributeParent_parent;
-   o.findParent = MAttributeParent_findParent;
-   o.setParent  = MAttributeParent_setParent;
-   o.dispose    = MAttributeParent_dispose;
-   return o;
-}
-function MAttributeParent_parent(){
-   return this._parent;
-}
-function MAttributeParent_findParent(clazz){
-   var find = this;
-   if(clazz){
-      while(RClass.isClass(find._parent, clazz)){
-         find = find._parent;
-      }
-   }else{
-      while(find._parent){
-         find = find._parent;
-      }
-   }
-   return find;
-}
-function MAttributeParent_setParent(parent){
-   this._parent = parent;
-}
-function MAttributeParent_dispose(){
-   var o = this;
-   o._parent = null;
-}
 function MInstance(o){
    o = RClass.inherits(this, o);
    o.__free          = false;
@@ -8999,6 +8911,94 @@ var ESoftware = new function ESoftware(){
    o.Apple = 4;
    return o;
 }
+function MAttributeCode(o){
+   o = RClass.inherits(this, o);
+   o._code   = null;
+   o.isCode  = MAttributeCode_isCode;
+   o.code    = MAttributeCode_code;
+   o.setCode = MAttributeCode_setCode;
+   return o;
+}
+function MAttributeCode_isCode(code){
+   return this._code == code;
+}
+function MAttributeCode_code(){
+   return this._code;
+}
+function MAttributeCode_setCode(code){
+   this._code = code;
+}
+function MAttributeGuid(o){
+   o = RClass.inherits(this, o);
+   o._guid   = null;
+   o.guid    = MAttributeGuid_guid;
+   o.setGuid = MAttributeGuid_setGuid;
+   return o;
+}
+function MAttributeGuid_guid(){
+   return this._guid;
+}
+function MAttributeGuid_setGuid(guid){
+   this._guid = guid;
+}
+function MAttributeLabel(o){
+   o = RClass.inherits(this, o);
+   o._label   = null;
+   o.label    = MAttributeLabel_label;
+   o.setLabel = MAttributeLabel_setLabel;
+   return o;
+}
+function MAttributeLabel_label(){
+   return this._label;
+}
+function MAttributeLabel_setLabel(label){
+   this._label = label;
+}
+function MAttributeName(o){
+   o = RClass.inherits(this, o);
+   o._name   = null;
+   o.name    = MAttributeName_name;
+   o.setName = MAttributeName_setName;
+   return o;
+}
+function MAttributeName_name(){
+   return this._name;
+}
+function MAttributeName_setName(name){
+   this._name = name;
+}
+function MAttributeParent(o){
+   o = RClass.inherits(this, o);
+   o._parent    = null;
+   o.parent     = MAttributeParent_parent;
+   o.findParent = MAttributeParent_findParent;
+   o.setParent  = MAttributeParent_setParent;
+   o.dispose    = MAttributeParent_dispose;
+   return o;
+}
+function MAttributeParent_parent(){
+   return this._parent;
+}
+function MAttributeParent_findParent(clazz){
+   var find = this;
+   if(clazz){
+      while(RClass.isClass(find._parent, clazz)){
+         find = find._parent;
+      }
+   }else{
+      while(find._parent){
+         find = find._parent;
+      }
+   }
+   return find;
+}
+function MAttributeParent_setParent(parent){
+   this._parent = parent;
+}
+function MAttributeParent_dispose(){
+   var o = this;
+   o._parent = null;
+}
 function MClone(o){
    o = RClass.inherits(this, o);
    o.clone  = MClone_clone;
@@ -9604,34 +9604,40 @@ function SMouseEvent(){
    o.offsetY     = 0;
    o.clientX     = 0;
    o.clientY     = 0;
+   o.deltaX      = 0;
+   o.deltaY      = 0;
+   o.deltaZ      = 0;
    o.attachEvent = SMouseEvent_attachEvent;
    return o;
 }
-function SMouseEvent_attachEvent(p){
+function SMouseEvent_attachEvent(event){
    var o = this;
-   var hs = o.hSource = RHtml.eventSource(p);
+   var hs = o.hSource = RHtml.eventSource(event);
    if(hs){
       o.source = hs.__linker;
    }
-   o.button = p.button;
-   o.mouseLeft = (p.button == EMouseButton.Left);
-   o.mouseMiddle = (p.button == EMouseButton.Middle);
-   o.mouseRight = (p.button == EMouseButton.Right);
-   o.altKey = p.altKey;
-   o.ctrlKey = p.ctrlKey;
+   o.button = event.button;
+   o.mouseLeft = (event.button == EMouseButton.Left);
+   o.mouseMiddle = (event.button == EMouseButton.Middle);
+   o.mouseRight = (event.button == EMouseButton.Right);
+   o.altKey = event.altKey;
+   o.ctrlKey = event.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o.x = p.pageX;
-      o.y = p.pageY;
-      o.offsetX = p.layerX;
-      o.offsetY = p.layerY;
+      o.x = event.pageX;
+      o.y = event.pageY;
+      o.offsetX = event.layerX;
+      o.offsetY = event.layerY;
    }else{
-      o.x = p.x;
-      o.y = p.y;
-      o.offsetX = p.offsetX;
-      o.offsetY = p.offsetY;
+      o.x = event.x;
+      o.y = event.y;
+      o.offsetX = event.offsetX;
+      o.offsetY = event.offsetY;
    }
-   o.clientX = p.clientX;
-   o.clientY = p.clientY;
+   o.clientX = event.clientX;
+   o.clientY = event.clientY;
+   o.deltaX = event.deltaX;
+   o.deltaY = event.deltaY;
+   o.deltaZ = event.deltaZ;
 }
 function SResizeEvent(){
    var o = this;
@@ -13938,6 +13944,7 @@ var RWindow = new function RWindow(){
    o.ohMouseDown       = RWindow_ohMouseDown;
    o.ohMouseMove       = RWindow_ohMouseMove;
    o.ohMouseUp         = RWindow_ohMouseUp;
+   o.ohMouseWheel      = RWindow_ohMouseWheel;
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
@@ -13989,6 +13996,15 @@ function RWindow_ohMouseUp(p){
    var e = o._mouseEvent;
    e.attachEvent(p);
    o.lsnsMouseUp.process(e);
+}
+function RWindow_ohMouseWheel(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseWheel.process(e);
 }
 function RWindow_ohKeyDown(p){
    var o = RWindow;
@@ -14052,6 +14068,7 @@ function RWindow_connect(w){
       hContainer.addEventListener('mousedown', o.ohMouseDown, true);
       hContainer.addEventListener('mousemove', o.ohMouseMove, true);
       hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
@@ -14060,6 +14077,7 @@ function RWindow_connect(w){
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
       hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onmousewheel = o.ohMouseWheel;
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;
@@ -19434,20 +19452,20 @@ function FWglFragmentShader_targetSource(){
    }
    return o._source;
 }
-function FWglFragmentShader_upload(v){
+function FWglFragmentShader_upload(source){
    var o = this;
-   var g = o._graphicContext._native;
-   var n = o._native;
-   g.shaderSource(n, v);
-   g.compileShader(n);
-   var r = g.getShaderParameter(n, g.COMPILE_STATUS);
-   if(!r){
-      var i = g.getShaderInfoLog(n);
-      g.deleteShader(n);
+   var graphic = o._graphicContext._native;
+   var shader = o._native;
+   graphic.shaderSource(shader, source);
+   graphic.compileShader(shader);
+   var result = graphic.getShaderParameter(shader, graphic.COMPILE_STATUS);
+   if(!result){
+      var info = graphic.getShaderInfoLog(shader);
+      graphic.deleteShader(shader);
       o._native = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
-   o._source = v;
+   o._source = source;
    return true;
 }
 function FWglFragmentShader_dispose(){
@@ -19894,20 +19912,20 @@ function FWglVertexShader_targetSource(){
    }
    return o._source;
 }
-function FWglVertexShader_upload(v){
+function FWglVertexShader_upload(source){
    var o = this;
-   var g = o._graphicContext._native;
-   var n = o._native;
-   g.shaderSource(n, v);
-   g.compileShader(n);
-   var r = g.getShaderParameter(n, g.COMPILE_STATUS);
-   if(!r){
-      var i = g.getShaderInfoLog(n);
-      g.deleteShader(n);
+   var graphic = o._graphicContext._native;
+   var shader = o._native;
+   graphic.shaderSource(shader, source);
+   graphic.compileShader(shader);
+   var result = graphic.getShaderParameter(shader, graphic.COMPILE_STATUS);
+   if(!result){
+      var info = graphic.getShaderInfoLog(shader);
+      graphic.deleteShader(shader);
       o._native = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
-   o._source = v;
+   o._source = source;
    return true;
 }
 function FWglVertexShader_dispose(){
@@ -20122,6 +20140,7 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.clearRenderables  = FDisplay_clearRenderables;
    o.filterDisplays    = FDisplay_filterDisplays;
    o.filterRenderables = FDisplay_filterRenderables;
    o.show              = FDisplay_show;
@@ -20160,26 +20179,32 @@ function FDisplay_scale(){
    return this._scale;
 }
 function FDisplay_hasRenderable(){
-   var r = this._renderables;
-   return r ? !r.isEmpty() : false;
+   var renderables = this._renderables;
+   return renderables ? !renderables.isEmpty() : false;
 }
 function FDisplay_renderables(){
    var o = this;
-   var r = o._renderables;
-   if(!r){
-      r = o._renderables = new TObjects();
+   var renderables = o._renderables;
+   if(!renderables){
+      renderables = o._renderables = new TObjects();
    }
-   return r;
+   return renderables;
 }
-function FDisplay_pushRenderable(p){
+function FDisplay_pushRenderable(renderable){
    var o = this;
-   p._display = o;
-   o.renderables().push(p);
+   renderable._display = o;
+   o.renderables().push(renderable);
 }
-function FDisplay_removeRenderable(p){
-   var s = this._renderables;
-   if(s){
-      s.remove(p);
+function FDisplay_removeRenderable(renderable){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.remove(renderable);
+   }
+}
+function FDisplay_clearRenderables(){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.clear();
    }
 }
 function FDisplay_filterDisplays(p){
@@ -21421,54 +21446,6 @@ function FE3dRenderable_remove(){
       o._display = null;
    }
 }
-function FE3dSimpleStage(o){
-   o = RClass.inherits(this, o, FE3dStage);
-   o._optionKeyboard = true;
-   o._skyLayer       = null;
-   o._mapLayer       = null;
-   o._spriteLayer    = null;
-   o._faceLayer      = null;
-   o.construct       = FE3dSimpleStage_construct;
-   o.skyLayer        = FE3dSimpleStage_skyLayer;
-   o.mapLayer        = FE3dSimpleStage_mapLayer;
-   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
-   o.faceLayer       = FE3dSimpleStage_faceLayer;
-   o.active          = FE3dSimpleStage_active;
-   o.deactive        = FE3dSimpleStage_deactive;
-   return o;
-}
-function FE3dSimpleStage_construct(){
-   var o = this;
-   o.__base.FE3dStage.construct.call(o);
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SkyLayer', l);
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('MapLayer', l);
-   var l = o._spriteLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SpriteLayer', l);
-   var l = o._faceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('FaceLayer', l);
-}
-function FE3dSimpleStage_skyLayer(){
-   return this._skyLayer;
-}
-function FE3dSimpleStage_mapLayer(){
-   return this._mapLayer;
-}
-function FE3dSimpleStage_spriteLayer(){
-   return this._spriteLayer;
-}
-function FE3dSimpleStage_faceLayer(){
-   return this._faceLayer;
-}
-function FE3dSimpleStage_active(){
-   var o = this;
-   o.__base.FE3dStage.active.call(o);
-}
-function FE3dSimpleStage_deactive(){
-   var o = this;
-   o.__base.FE3dStage.deactive.call(o);
-}
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;
@@ -21686,21 +21663,22 @@ var RE3dEngine = new function RE3dEngine(){
    return o;
 }
 function RE3dEngine_onSetup(){
-   var ec = RConsole.find(FG3dEffectConsole);
-   ec.register('select.select.control', FG3dSelectAutomaticEffect);
-   ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
-   ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
-   ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
-   ec.register('control.control.automatic', FG3dControlAutomaticEffect);
-   ec.register('control.control.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
-   ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
-   ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
-   ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
-   ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   var effectConsole = RConsole.find(FG3dEffectConsole);
+   effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
+   effectConsole.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
+   effectConsole.register('control.control.automatic', FG3dControlAutomaticEffect);
+   effectConsole.register('control.control.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
+   effectConsole.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
+   effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
+   effectConsole.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
 }
 function RE3dEngine_setup(){
    var o = this;
@@ -26673,12 +26651,42 @@ function FE3rTrack_dispose(){
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
 }
-function FE3dGeneralColorAutomaticEffect(o){
+function FE3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o.drawGroup = FE3dAutomaticEffect_drawGroup;
+   return o;
+}
+function FE3dAutomaticEffect_drawGroup(region, renderables, offset, count){
+   var o = this;
+   if(count > 1){
+      var modelConsole = RConsole.find(FE3rModelConsole);
+      var model = modelConsole.merge(o, region, offset, count);
+      if(model){
+         var context = o._graphicContext;
+         var meshes = model.meshes();
+         var meshCount = meshes.count();
+         var spaceName = region.spaceName();
+         var mesh = meshes.first();
+         var info = mesh.selectInfo(spaceName);
+         var effect = info.effect;
+         if(!effect){
+            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
+         }
+         for(var i = 1; i < meshCount; i++){
+            var mesh = meshes.getAt(i);
+            var info = mesh.selectInfo(spaceName);
+            info.effect = effect;
+         }
+         return effect.drawRenderables(region, meshes, 0, meshCount);
+      }
+   }
+   o.drawRenderables(region, renderables, offset, count);
+}
+function FE3dGeneralColorAutomaticEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    o._code          = 'general.color.automatic';
    o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
-   o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
 }
 function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
@@ -26743,33 +26751,45 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       o.buildMaterial(f, pr);
       p.setParameter('fc_materials', f.material.memory());
    }
-   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
+function FE3dGeneralColorFlatEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
+   o._code          = 'general.color.flat';
+   o.drawRenderable = FE3dGeneralColorFlatEffect_drawRenderable;
+   return o;
+}
+function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
    var o = this;
-   if(count > 1){
-      var modelConsole = RConsole.find(FE3rModelConsole);
-      var model = modelConsole.merge(o, region, offset, count);
-      if(model){
-         var context = o._graphicContext;
-         var meshes = model.meshes();
-         var meshCount = meshes.count();
-         var spaceName = region.spaceName();
-         var mesh = meshes.first();
-         var info = mesh.selectInfo(spaceName);
-         var effect = info.effect;
-         if(!effect){
-            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
-         }
-         for(var i = 1; i < meshCount; i++){
-            var mesh = meshes.getAt(i);
-            var info = mesh.selectInfo(spaceName);
-            info.effect = effect;
-         }
-         return effect.drawRenderables(region, meshes, 0, meshCount);
+   var context = o._graphicContext;
+   var size = context.size();
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   if(renderable._optionMerge){
+      var meshs = renderable.mergeRenderables();
+      var meshCount = meshs.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
+      var index = 0;
+      for(var i = 0; i < meshCount; i++){
+         var mesh = meshs.getAt(i);
+         var matrix = mesh.matrix();
+         data[index++] = matrix.sx / size.width * 2;
+         data[index++] = matrix.sy / size.height * 2;
+         data[index++] = matrix.tx / size.width * 2 - 1;
+         data[index++] = 1 - matrix.ty / size.height * 2;
+         mesh.currentMatrix().writeData(data, 4 * i);
       }
+      program.setParameter('vc_position', data);
+   }else{
+      var matrix = renderable.matrix();
+      var cx = matrix.sx / size.width * 2;
+      var cy = matrix.sy / size.height * 2;
+      var tx = matrix.tx / size.width * 2 - 1;
+      var ty = 1 - matrix.ty / size.height * 2;
+      program.setParameter4('vc_position', cx, cy, tx, ty);
    }
-   o.drawRenderables(region, renderables, offset, count);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
@@ -27169,9 +27189,12 @@ function FE3dAnimation(o){
 function FE3dBitmap(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
    o._ready           = false;
+   o._size            = null;
    o._renderable      = null;
    o.construct        = FE3dBitmap_construct;
    o.testReady        = FE3dBitmap_testReady;
+   o.size             = FE3dBitmap_size;
+   o.setSize          = FE3dBitmap_setSize;
    o.renderable       = FE3dBitmap_renderable;
    o.setRenderable    = FE3dBitmap_setRenderable;
    o.vertexBuffers    = FE3dBitmap_vertexBuffers;
@@ -27189,6 +27212,7 @@ function FE3dBitmap_construct(){
    var o = this;
    o.__base.FE3dMeshRenderable.construct.call(o);
    o._material = RClass.create(FE3dMaterial);
+   o._size = new SSize2();
 }
 function FE3dBitmap_testReady(){
    var o = this;
@@ -27209,6 +27233,14 @@ function FE3dBitmap_testReady(){
       }
    }
    return o._ready;
+}
+function FE3dBitmap_size(){
+   return this._size;
+}
+function FE3dBitmap_setSize(width, height){
+   var o = this;
+   o._size.set(width, height);
+   o._scale.set(width, height, 1);
 }
 function FE3dBitmap_renderable(p){
    return this._renderable;
@@ -27399,10 +27431,10 @@ function FE3dBitmapData_setup(){
    var o = this;
    var context = o._graphicContext;
    var data = [
-      -1,  1, 0,
-       1,  1, 0,
-       1, -1, 0,
-      -1, -1, 0 ];
+      0,  0, 0,
+      1,  0, 0,
+      1, -1, 0,
+      0, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setName('position');
    buffer._formatCd = EG3dAttributeFormat.Float3;
@@ -27810,6 +27842,22 @@ function FE3dDirectionalLight_dispose(){
    var o = this;
    o._material = RObject.dispose(o._material);
    o.__base.FG3dDirectionalLight.dispose.call(o);
+}
+function FE3dFlatStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._layer    = null;
+   o.construct = FE3dFlatStage_construct;
+   o.layer     = FE3dFlatStage_layer;
+   return o;
+}
+function FE3dFlatStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var layer = o._layer = RClass.create(FDisplayLayer);
+   o.registerLayer('Layer', layer);
+}
+function FE3dFlatStage_layer(){
+   return this._layer;
 }
 function FE3dInstanceConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -29585,6 +29633,54 @@ function FE3dSimpleCanvas_dispose(){
       o._rotation = null;
    }
    o.__base.FE3dCanvas.dispose.call(o);
+}
+function FE3dSimpleStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._optionKeyboard = true;
+   o._skyLayer       = null;
+   o._mapLayer       = null;
+   o._spriteLayer    = null;
+   o._faceLayer      = null;
+   o.construct       = FE3dSimpleStage_construct;
+   o.skyLayer        = FE3dSimpleStage_skyLayer;
+   o.mapLayer        = FE3dSimpleStage_mapLayer;
+   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
+   o.faceLayer       = FE3dSimpleStage_faceLayer;
+   o.active          = FE3dSimpleStage_active;
+   o.deactive        = FE3dSimpleStage_deactive;
+   return o;
+}
+function FE3dSimpleStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SkyLayer', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('MapLayer', l);
+   var l = o._spriteLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SpriteLayer', l);
+   var l = o._faceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('FaceLayer', l);
+}
+function FE3dSimpleStage_skyLayer(){
+   return this._skyLayer;
+}
+function FE3dSimpleStage_mapLayer(){
+   return this._mapLayer;
+}
+function FE3dSimpleStage_spriteLayer(){
+   return this._spriteLayer;
+}
+function FE3dSimpleStage_faceLayer(){
+   return this._faceLayer;
+}
+function FE3dSimpleStage_active(){
+   var o = this;
+   o.__base.FE3dStage.active.call(o);
+}
+function FE3dSimpleStage_deactive(){
+   var o = this;
+   o.__base.FE3dStage.deactive.call(o);
 }
 function FE3dSpace(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
@@ -61186,15 +61282,9 @@ function FDsResourceWorkspace_dispose(){
 }
 function FDsBitmapCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._activeGuid          = null;
-   o._activeSpace         = null;
    o._activeBitmap        = null;
-   o._autoDistance        = null;
-   o._autoOutline         = null;
-   o._autoMatrix          = null;
    o._capturePosition     = null;
-   o._captureCameraPosition = null;
-   o._dimensional         = null;
+   o._captureMatrix       = null;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -61203,11 +61293,14 @@ function FDsBitmapCanvasContent(o){
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
    o.onBuild              = FDsBitmapCanvasContent_onBuild;
+   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
+   o.onMouseWheel         = FDsBitmapCanvasContent_onMouseWheel;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
    o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
    o.construct            = FDsBitmapCanvasContent_construct;
-   o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    o.dispose              = FDsBitmapCanvasContent_dispose;
    return o;
@@ -61216,7 +61309,7 @@ function FDsBitmapCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    var hPanel = o._hPanel;
-   var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+   var space = o._activeSpace = RClass.create(FE3dFlatStage);
    space.linkGraphicContext(o);
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
@@ -61227,13 +61320,10 @@ function FDsBitmapCanvasContent_onBuild(p){
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
-   projection.size().set(hPanel.width, hPanel.height);
    projection._angle = 45;
+   projection.size().set(hPanel.width, hPanel.height);
    projection.update();
-   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-   bitmap.linkGraphicContext(o);
-   bitmap.setup();
-   space.spriteLayer().pushRenderable(bitmap);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
 function FDsBitmapCanvasContent_onMouseCaptureStart(event){
    var o = this;
@@ -61241,8 +61331,12 @@ function FDsBitmapCanvasContent_onMouseCaptureStart(event){
    if(!space){
       return;
    }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
    o._capturePosition.set(event.clientX, event.clientY);
-   o._captureCameraPosition.assign(space.camera().position());
+   o._captureMatrix.assign(bitmap.matrix());
    RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
 function FDsBitmapCanvasContent_onMouseCapture(event){
@@ -61251,39 +61345,43 @@ function FDsBitmapCanvasContent_onMouseCapture(event){
    if(!space){
       return;
    }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   var matrix = bitmap.matrix();
    var cx = event.clientX - o._capturePosition.x;
    var cy = event.clientY - o._capturePosition.y;
-   var mv = o._canvasMoveCd;
-   var cm = o._captureMatrix;
-   switch(o._canvasModeCd){
-      case EDsCanvasMode.Drop:
-         var camera = space.camera();
-         camera.position().x = o._captureCameraPosition.x - cx * o._cameraMouseMove;
-         camera.position().z = o._captureCameraPosition.z - cy * o._cameraMouseMove;
-         camera.update();
-         break;
-   }
+   var captureMatrix = o._captureMatrix;
+   matrix.tx = captureMatrix.tx + cx;
+   matrix.ty = captureMatrix.ty + cy;
+   matrix.updateForce();
 }
-function FDsBitmapCanvasContent_onMouseCaptureStop(p){
+function FDsBitmapCanvasContent_onMouseCaptureStop(event){
    var o = this;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+function FDsBitmapCanvasContent_onMouseWheel(event){
+   var o = this;
+   var scale = 1.0;
+   if(event.deltaY < 0){
+      scale = 1.1;
+   }else if(event.deltaY > 0){
+      scale = 0.9;
+   }
+   var bitmap = o._activeBitmap;
+   var matrix = bitmap.matrix();
+   matrix.sx *= scale;
+   matrix.sy *= scale;
+   matrix.updateForce();
 }
 function FDsBitmapCanvasContent_onLoaded(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsBitmapCanvasContent_oeResize(p){
+function FDsBitmapCanvasContent_oeResize(event){
    var o = this;
-   o.__base.FDsCanvas.oeResize.call(o, p);
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
-   var s = o._activeSpace;
-   if(s){
-      var cp = s.camera().projection();
-      cp.size().set(w, h);
-      cp.update();
-   }
+   o.__base.FDsCanvas.oeResize.call(o, event);
    return EEventStatus.Stop;
 }
 function FDsBitmapCanvasContent_oeRefresh(p){
@@ -61292,78 +61390,30 @@ function FDsBitmapCanvasContent_oeRefresh(p){
 function FDsBitmapCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
-   o._autoDistance = new SPoint3(6, 6, 6);
-   o._autoOutline = new SOutline3d();
-   o._autoMatrix = new SMatrix3d();
-   o._capturePosition = new SPoint2();
-   o._captureCameraPosition = new SPoint3();
-}
-function FDsBitmapCanvasContent_selectDisplay(p){
-   var o = this;
-   o.selectNone();
-   o._selectObject = p;
-   o.innerSelectDisplay(p);
-}
-function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
-   var o = this;
-   var outline = o._autoOutline;
-   var space = o._activeSpace;
-   var display = space._display;
-   var displayResource = display.resource();
-   var displayMatrix = displayResource.matrix();
-   var renderable = display._renderable;
-   var renderableResource = renderable.resource();
-   var renderableMatrix = renderableResource.matrix();
-   if(rotationX){
-      displayMatrix.rx += RConst.PI_2;
-   }
-   if(rotationY){
-      displayMatrix.ry += RConst.PI_2;
-   }
-   if(rotationZ){
-      displayMatrix.rz += RConst.PI_2;
-   }
-   var matrix = o._autoMatrix.identity();
-   matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
-   matrix.update();
-   var resource = space.resource();
-   var resourceOutline = resource.calculateOutline();
-   outline.calculateFrom(resourceOutline, matrix);
-   if(flipX){
-      displayMatrix.sx = -displayMatrix.sx;
-   }
-   if(flipY){
-      displayMatrix.sy = -displayMatrix.sy;
-   }
-   if(flipZ){
-      displayMatrix.sz = -displayMatrix.sz;
-   }
-   var autoDistance = o._autoDistance;
-   var scaleX = autoDistance.x / outline.distance.x;
-   var scaleY = autoDistance.y / outline.distance.y;
-   var scaleZ = autoDistance.z / outline.distance.z;
-   var scale = RMath.min(scaleX, scaleY, scaleZ);
-   scaleX = scale * RMath.sign(displayMatrix.sx)
-   scaleY = scale * RMath.sign(displayMatrix.sy)
-   scaleZ = scale * RMath.sign(displayMatrix.sz)
-   var x = -outline.center.x * scaleX;
-   var y = -outline.min.y * scaleY;
-   var z = -outline.center.z * scaleZ;
-   displayMatrix.setTranslate(x, y, z);
-   displayMatrix.setScale(scaleX, scaleY, scaleZ);
-   displayMatrix.update();
-   display.reloadResource();
-   renderableMatrix.identity();
-   renderable.reloadResource();
+   o._captureMatrix = new SMatrix3d();
 }
 function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
+   var size = o._graphicContext.size();
    RConsole.find(FUiDesktopConsole).showLoading();
    var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-   var bitmap = o._activeBitmap;
-   bitmap.loadUrl(url);
-   bitmap.clearLoadListeners();
+   var resource = o._activeResource = o._frameSet._activeResource;
+   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   bitmap.linkGraphicContext(o);
+   bitmap.setup();
+   bitmap.material().info().effectCode = 'flat';
    bitmap.addLoadListener(o, o.onLoaded);
+   bitmap.loadUrl(url);
+   var matrix = bitmap.matrix();
+   var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
+   var top = Math.max((size.height - resource.sizeHeight()) / 2, 0);
+   matrix.setTranslate(left, top);
+   matrix.setScale(resource.sizeWidth(), resource.sizeHeight());
+   matrix.update();
+   var space = o._activeSpace;
+   var layer = space.layer();
+   layer.clearRenderables();
+   layer.pushRenderable(bitmap);
 }
 function FDsBitmapCanvasContent_dispose(){
    var o = this;

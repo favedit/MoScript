@@ -676,6 +676,7 @@ var RWindow = new function RWindow(){
    o.ohMouseDown       = RWindow_ohMouseDown;
    o.ohMouseMove       = RWindow_ohMouseMove;
    o.ohMouseUp         = RWindow_ohMouseUp;
+   o.ohMouseWheel      = RWindow_ohMouseWheel;
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
@@ -727,6 +728,15 @@ function RWindow_ohMouseUp(p){
    var e = o._mouseEvent;
    e.attachEvent(p);
    o.lsnsMouseUp.process(e);
+}
+function RWindow_ohMouseWheel(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseWheel.process(e);
 }
 function RWindow_ohKeyDown(p){
    var o = RWindow;
@@ -790,6 +800,7 @@ function RWindow_connect(w){
       hContainer.addEventListener('mousedown', o.ohMouseDown, true);
       hContainer.addEventListener('mousemove', o.ohMouseMove, true);
       hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
@@ -798,6 +809,7 @@ function RWindow_connect(w){
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
       hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onmousewheel = o.ohMouseWheel;
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;

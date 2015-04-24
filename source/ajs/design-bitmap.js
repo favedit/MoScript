@@ -1,14 +1,8 @@
 function FDsBitmapCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._activeGuid          = null;
-   o._activeSpace         = null;
    o._activeBitmap        = null;
-   o._autoDistance        = null;
-   o._autoOutline         = null;
-   o._autoMatrix          = null;
    o._capturePosition     = null;
-   o._captureCameraPosition = null;
-   o._dimensional         = null;
+   o._captureMatrix       = null;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -17,11 +11,14 @@ function FDsBitmapCanvasContent(o){
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
    o.onBuild              = FDsBitmapCanvasContent_onBuild;
+   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
+   o.onMouseWheel         = FDsBitmapCanvasContent_onMouseWheel;
    o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
    o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
    o.construct            = FDsBitmapCanvasContent_construct;
-   o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    o.dispose              = FDsBitmapCanvasContent_dispose;
    return o;
@@ -30,7 +27,7 @@ function FDsBitmapCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    var hPanel = o._hPanel;
-   var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+   var space = o._activeSpace = RClass.create(FE3dFlatStage);
    space.linkGraphicContext(o);
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
@@ -41,13 +38,10 @@ function FDsBitmapCanvasContent_onBuild(p){
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
-   projection.size().set(hPanel.width, hPanel.height);
    projection._angle = 45;
+   projection.size().set(hPanel.width, hPanel.height);
    projection.update();
-   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-   bitmap.linkGraphicContext(o);
-   bitmap.setup();
-   space.spriteLayer().pushRenderable(bitmap);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
 function FDsBitmapCanvasContent_onMouseCaptureStart(event){
    var o = this;
@@ -55,8 +49,12 @@ function FDsBitmapCanvasContent_onMouseCaptureStart(event){
    if(!space){
       return;
    }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
    o._capturePosition.set(event.clientX, event.clientY);
-   o._captureCameraPosition.assign(space.camera().position());
+   o._captureMatrix.assign(bitmap.matrix());
    RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
 function FDsBitmapCanvasContent_onMouseCapture(event){
@@ -65,39 +63,43 @@ function FDsBitmapCanvasContent_onMouseCapture(event){
    if(!space){
       return;
    }
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
+   var matrix = bitmap.matrix();
    var cx = event.clientX - o._capturePosition.x;
    var cy = event.clientY - o._capturePosition.y;
-   var mv = o._canvasMoveCd;
-   var cm = o._captureMatrix;
-   switch(o._canvasModeCd){
-      case EDsCanvasMode.Drop:
-         var camera = space.camera();
-         camera.position().x = o._captureCameraPosition.x - cx * o._cameraMouseMove;
-         camera.position().z = o._captureCameraPosition.z - cy * o._cameraMouseMove;
-         camera.update();
-         break;
-   }
+   var captureMatrix = o._captureMatrix;
+   matrix.tx = captureMatrix.tx + cx;
+   matrix.ty = captureMatrix.ty + cy;
+   matrix.updateForce();
 }
-function FDsBitmapCanvasContent_onMouseCaptureStop(p){
+function FDsBitmapCanvasContent_onMouseCaptureStop(event){
    var o = this;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+function FDsBitmapCanvasContent_onMouseWheel(event){
+   var o = this;
+   var scale = 1.0;
+   if(event.deltaY < 0){
+      scale = 1.1;
+   }else if(event.deltaY > 0){
+      scale = 0.9;
+   }
+   var bitmap = o._activeBitmap;
+   var matrix = bitmap.matrix();
+   matrix.sx *= scale;
+   matrix.sy *= scale;
+   matrix.updateForce();
 }
 function FDsBitmapCanvasContent_onLoaded(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).hide();
 }
-function FDsBitmapCanvasContent_oeResize(p){
+function FDsBitmapCanvasContent_oeResize(event){
    var o = this;
-   o.__base.FDsCanvas.oeResize.call(o, p);
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
-   var s = o._activeSpace;
-   if(s){
-      var cp = s.camera().projection();
-      cp.size().set(w, h);
-      cp.update();
-   }
+   o.__base.FDsCanvas.oeResize.call(o, event);
    return EEventStatus.Stop;
 }
 function FDsBitmapCanvasContent_oeRefresh(p){
@@ -106,78 +108,30 @@ function FDsBitmapCanvasContent_oeRefresh(p){
 function FDsBitmapCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
-   o._autoDistance = new SPoint3(6, 6, 6);
-   o._autoOutline = new SOutline3d();
-   o._autoMatrix = new SMatrix3d();
-   o._capturePosition = new SPoint2();
-   o._captureCameraPosition = new SPoint3();
-}
-function FDsBitmapCanvasContent_selectDisplay(p){
-   var o = this;
-   o.selectNone();
-   o._selectObject = p;
-   o.innerSelectDisplay(p);
-}
-function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
-   var o = this;
-   var outline = o._autoOutline;
-   var space = o._activeSpace;
-   var display = space._display;
-   var displayResource = display.resource();
-   var displayMatrix = displayResource.matrix();
-   var renderable = display._renderable;
-   var renderableResource = renderable.resource();
-   var renderableMatrix = renderableResource.matrix();
-   if(rotationX){
-      displayMatrix.rx += RConst.PI_2;
-   }
-   if(rotationY){
-      displayMatrix.ry += RConst.PI_2;
-   }
-   if(rotationZ){
-      displayMatrix.rz += RConst.PI_2;
-   }
-   var matrix = o._autoMatrix.identity();
-   matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
-   matrix.update();
-   var resource = space.resource();
-   var resourceOutline = resource.calculateOutline();
-   outline.calculateFrom(resourceOutline, matrix);
-   if(flipX){
-      displayMatrix.sx = -displayMatrix.sx;
-   }
-   if(flipY){
-      displayMatrix.sy = -displayMatrix.sy;
-   }
-   if(flipZ){
-      displayMatrix.sz = -displayMatrix.sz;
-   }
-   var autoDistance = o._autoDistance;
-   var scaleX = autoDistance.x / outline.distance.x;
-   var scaleY = autoDistance.y / outline.distance.y;
-   var scaleZ = autoDistance.z / outline.distance.z;
-   var scale = RMath.min(scaleX, scaleY, scaleZ);
-   scaleX = scale * RMath.sign(displayMatrix.sx)
-   scaleY = scale * RMath.sign(displayMatrix.sy)
-   scaleZ = scale * RMath.sign(displayMatrix.sz)
-   var x = -outline.center.x * scaleX;
-   var y = -outline.min.y * scaleY;
-   var z = -outline.center.z * scaleZ;
-   displayMatrix.setTranslate(x, y, z);
-   displayMatrix.setScale(scaleX, scaleY, scaleZ);
-   displayMatrix.update();
-   display.reloadResource();
-   renderableMatrix.identity();
-   renderable.reloadResource();
+   o._captureMatrix = new SMatrix3d();
 }
 function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
+   var size = o._graphicContext.size();
    RConsole.find(FUiDesktopConsole).showLoading();
    var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-   var bitmap = o._activeBitmap;
-   bitmap.loadUrl(url);
-   bitmap.clearLoadListeners();
+   var resource = o._activeResource = o._frameSet._activeResource;
+   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   bitmap.linkGraphicContext(o);
+   bitmap.setup();
+   bitmap.material().info().effectCode = 'flat';
    bitmap.addLoadListener(o, o.onLoaded);
+   bitmap.loadUrl(url);
+   var matrix = bitmap.matrix();
+   var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
+   var top = Math.max((size.height - resource.sizeHeight()) / 2, 0);
+   matrix.setTranslate(left, top);
+   matrix.setScale(resource.sizeWidth(), resource.sizeHeight());
+   matrix.update();
+   var space = o._activeSpace;
+   var layer = space.layer();
+   layer.clearRenderables();
+   layer.pushRenderable(bitmap);
 }
 function FDsBitmapCanvasContent_dispose(){
    var o = this;

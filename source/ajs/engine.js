@@ -96,6 +96,7 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.clearRenderables  = FDisplay_clearRenderables;
    o.filterDisplays    = FDisplay_filterDisplays;
    o.filterRenderables = FDisplay_filterRenderables;
    o.show              = FDisplay_show;
@@ -134,26 +135,32 @@ function FDisplay_scale(){
    return this._scale;
 }
 function FDisplay_hasRenderable(){
-   var r = this._renderables;
-   return r ? !r.isEmpty() : false;
+   var renderables = this._renderables;
+   return renderables ? !renderables.isEmpty() : false;
 }
 function FDisplay_renderables(){
    var o = this;
-   var r = o._renderables;
-   if(!r){
-      r = o._renderables = new TObjects();
+   var renderables = o._renderables;
+   if(!renderables){
+      renderables = o._renderables = new TObjects();
    }
-   return r;
+   return renderables;
 }
-function FDisplay_pushRenderable(p){
+function FDisplay_pushRenderable(renderable){
    var o = this;
-   p._display = o;
-   o.renderables().push(p);
+   renderable._display = o;
+   o.renderables().push(renderable);
 }
-function FDisplay_removeRenderable(p){
-   var s = this._renderables;
-   if(s){
-      s.remove(p);
+function FDisplay_removeRenderable(renderable){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.remove(renderable);
+   }
+}
+function FDisplay_clearRenderables(){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.clear();
    }
 }
 function FDisplay_filterDisplays(p){

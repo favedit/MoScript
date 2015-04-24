@@ -96,6 +96,7 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.clearRenderables  = FDisplay_clearRenderables;
    o.filterDisplays    = FDisplay_filterDisplays;
    o.filterRenderables = FDisplay_filterRenderables;
    o.show              = FDisplay_show;
@@ -134,26 +135,32 @@ function FDisplay_scale(){
    return this._scale;
 }
 function FDisplay_hasRenderable(){
-   var r = this._renderables;
-   return r ? !r.isEmpty() : false;
+   var renderables = this._renderables;
+   return renderables ? !renderables.isEmpty() : false;
 }
 function FDisplay_renderables(){
    var o = this;
-   var r = o._renderables;
-   if(!r){
-      r = o._renderables = new TObjects();
+   var renderables = o._renderables;
+   if(!renderables){
+      renderables = o._renderables = new TObjects();
    }
-   return r;
+   return renderables;
 }
-function FDisplay_pushRenderable(p){
+function FDisplay_pushRenderable(renderable){
    var o = this;
-   p._display = o;
-   o.renderables().push(p);
+   renderable._display = o;
+   o.renderables().push(renderable);
 }
-function FDisplay_removeRenderable(p){
-   var s = this._renderables;
-   if(s){
-      s.remove(p);
+function FDisplay_removeRenderable(renderable){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.remove(renderable);
+   }
+}
+function FDisplay_clearRenderables(){
+   var renderables = this._renderables;
+   if(renderables){
+      renderables.clear();
    }
 }
 function FDisplay_filterDisplays(p){
@@ -1395,54 +1402,6 @@ function FE3dRenderable_remove(){
       o._display = null;
    }
 }
-function FE3dSimpleStage(o){
-   o = RClass.inherits(this, o, FE3dStage);
-   o._optionKeyboard = true;
-   o._skyLayer       = null;
-   o._mapLayer       = null;
-   o._spriteLayer    = null;
-   o._faceLayer      = null;
-   o.construct       = FE3dSimpleStage_construct;
-   o.skyLayer        = FE3dSimpleStage_skyLayer;
-   o.mapLayer        = FE3dSimpleStage_mapLayer;
-   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
-   o.faceLayer       = FE3dSimpleStage_faceLayer;
-   o.active          = FE3dSimpleStage_active;
-   o.deactive        = FE3dSimpleStage_deactive;
-   return o;
-}
-function FE3dSimpleStage_construct(){
-   var o = this;
-   o.__base.FE3dStage.construct.call(o);
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SkyLayer', l);
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('MapLayer', l);
-   var l = o._spriteLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('SpriteLayer', l);
-   var l = o._faceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('FaceLayer', l);
-}
-function FE3dSimpleStage_skyLayer(){
-   return this._skyLayer;
-}
-function FE3dSimpleStage_mapLayer(){
-   return this._mapLayer;
-}
-function FE3dSimpleStage_spriteLayer(){
-   return this._spriteLayer;
-}
-function FE3dSimpleStage_faceLayer(){
-   return this._faceLayer;
-}
-function FE3dSimpleStage_active(){
-   var o = this;
-   o.__base.FE3dStage.active.call(o);
-}
-function FE3dSimpleStage_deactive(){
-   var o = this;
-   o.__base.FE3dStage.deactive.call(o);
-}
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;
@@ -1660,21 +1619,22 @@ var RE3dEngine = new function RE3dEngine(){
    return o;
 }
 function RE3dEngine_onSetup(){
-   var ec = RConsole.find(FG3dEffectConsole);
-   ec.register('select.select.control', FG3dSelectAutomaticEffect);
-   ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
-   ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
-   ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
-   ec.register('control.control.automatic', FG3dControlAutomaticEffect);
-   ec.register('control.control.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
-   ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
-   ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
-   ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
-   ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   var effectConsole = RConsole.find(FG3dEffectConsole);
+   effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
+   effectConsole.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
+   effectConsole.register('control.control.automatic', FG3dControlAutomaticEffect);
+   effectConsole.register('control.control.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
+   effectConsole.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
+   effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
+   effectConsole.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
 }
 function RE3dEngine_setup(){
    var o = this;
@@ -6647,12 +6607,42 @@ function FE3rTrack_dispose(){
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
 }
-function FE3dGeneralColorAutomaticEffect(o){
+function FE3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o.drawGroup = FE3dAutomaticEffect_drawGroup;
+   return o;
+}
+function FE3dAutomaticEffect_drawGroup(region, renderables, offset, count){
+   var o = this;
+   if(count > 1){
+      var modelConsole = RConsole.find(FE3rModelConsole);
+      var model = modelConsole.merge(o, region, offset, count);
+      if(model){
+         var context = o._graphicContext;
+         var meshes = model.meshes();
+         var meshCount = meshes.count();
+         var spaceName = region.spaceName();
+         var mesh = meshes.first();
+         var info = mesh.selectInfo(spaceName);
+         var effect = info.effect;
+         if(!effect){
+            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
+         }
+         for(var i = 1; i < meshCount; i++){
+            var mesh = meshes.getAt(i);
+            var info = mesh.selectInfo(spaceName);
+            info.effect = effect;
+         }
+         return effect.drawRenderables(region, meshes, 0, meshCount);
+      }
+   }
+   o.drawRenderables(region, renderables, offset, count);
+}
+function FE3dGeneralColorAutomaticEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    o._code          = 'general.color.automatic';
    o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
-   o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
 }
 function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
@@ -6717,33 +6707,45 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       o.buildMaterial(f, pr);
       p.setParameter('fc_materials', f.material.memory());
    }
-   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
+function FE3dGeneralColorFlatEffect(o){
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
+   o._code          = 'general.color.flat';
+   o.drawRenderable = FE3dGeneralColorFlatEffect_drawRenderable;
+   return o;
+}
+function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
    var o = this;
-   if(count > 1){
-      var modelConsole = RConsole.find(FE3rModelConsole);
-      var model = modelConsole.merge(o, region, offset, count);
-      if(model){
-         var context = o._graphicContext;
-         var meshes = model.meshes();
-         var meshCount = meshes.count();
-         var spaceName = region.spaceName();
-         var mesh = meshes.first();
-         var info = mesh.selectInfo(spaceName);
-         var effect = info.effect;
-         if(!effect){
-            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
-         }
-         for(var i = 1; i < meshCount; i++){
-            var mesh = meshes.getAt(i);
-            var info = mesh.selectInfo(spaceName);
-            info.effect = effect;
-         }
-         return effect.drawRenderables(region, meshes, 0, meshCount);
+   var context = o._graphicContext;
+   var size = context.size();
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   if(renderable._optionMerge){
+      var meshs = renderable.mergeRenderables();
+      var meshCount = meshs.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
+      var index = 0;
+      for(var i = 0; i < meshCount; i++){
+         var mesh = meshs.getAt(i);
+         var matrix = mesh.matrix();
+         data[index++] = matrix.sx / size.width * 2;
+         data[index++] = matrix.sy / size.height * 2;
+         data[index++] = matrix.tx / size.width * 2 - 1;
+         data[index++] = 1 - matrix.ty / size.height * 2;
+         mesh.currentMatrix().writeData(data, 4 * i);
       }
+      program.setParameter('vc_position', data);
+   }else{
+      var matrix = renderable.matrix();
+      var cx = matrix.sx / size.width * 2;
+      var cy = matrix.sy / size.height * 2;
+      var tx = matrix.tx / size.width * 2 - 1;
+      var ty = 1 - matrix.ty / size.height * 2;
+      program.setParameter4('vc_position', cx, cy, tx, ty);
    }
-   o.drawRenderables(region, renderables, offset, count);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
@@ -7143,9 +7145,12 @@ function FE3dAnimation(o){
 function FE3dBitmap(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
    o._ready           = false;
+   o._size            = null;
    o._renderable      = null;
    o.construct        = FE3dBitmap_construct;
    o.testReady        = FE3dBitmap_testReady;
+   o.size             = FE3dBitmap_size;
+   o.setSize          = FE3dBitmap_setSize;
    o.renderable       = FE3dBitmap_renderable;
    o.setRenderable    = FE3dBitmap_setRenderable;
    o.vertexBuffers    = FE3dBitmap_vertexBuffers;
@@ -7163,6 +7168,7 @@ function FE3dBitmap_construct(){
    var o = this;
    o.__base.FE3dMeshRenderable.construct.call(o);
    o._material = RClass.create(FE3dMaterial);
+   o._size = new SSize2();
 }
 function FE3dBitmap_testReady(){
    var o = this;
@@ -7183,6 +7189,14 @@ function FE3dBitmap_testReady(){
       }
    }
    return o._ready;
+}
+function FE3dBitmap_size(){
+   return this._size;
+}
+function FE3dBitmap_setSize(width, height){
+   var o = this;
+   o._size.set(width, height);
+   o._scale.set(width, height, 1);
 }
 function FE3dBitmap_renderable(p){
    return this._renderable;
@@ -7373,10 +7387,10 @@ function FE3dBitmapData_setup(){
    var o = this;
    var context = o._graphicContext;
    var data = [
-      -1,  1, 0,
-       1,  1, 0,
-       1, -1, 0,
-      -1, -1, 0 ];
+      0,  0, 0,
+      1,  0, 0,
+      1, -1, 0,
+      0, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setName('position');
    buffer._formatCd = EG3dAttributeFormat.Float3;
@@ -7784,6 +7798,22 @@ function FE3dDirectionalLight_dispose(){
    var o = this;
    o._material = RObject.dispose(o._material);
    o.__base.FG3dDirectionalLight.dispose.call(o);
+}
+function FE3dFlatStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._layer    = null;
+   o.construct = FE3dFlatStage_construct;
+   o.layer     = FE3dFlatStage_layer;
+   return o;
+}
+function FE3dFlatStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var layer = o._layer = RClass.create(FDisplayLayer);
+   o.registerLayer('Layer', layer);
+}
+function FE3dFlatStage_layer(){
+   return this._layer;
 }
 function FE3dInstanceConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -9559,6 +9589,54 @@ function FE3dSimpleCanvas_dispose(){
       o._rotation = null;
    }
    o.__base.FE3dCanvas.dispose.call(o);
+}
+function FE3dSimpleStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
+   o._optionKeyboard = true;
+   o._skyLayer       = null;
+   o._mapLayer       = null;
+   o._spriteLayer    = null;
+   o._faceLayer      = null;
+   o.construct       = FE3dSimpleStage_construct;
+   o.skyLayer        = FE3dSimpleStage_skyLayer;
+   o.mapLayer        = FE3dSimpleStage_mapLayer;
+   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
+   o.faceLayer       = FE3dSimpleStage_faceLayer;
+   o.active          = FE3dSimpleStage_active;
+   o.deactive        = FE3dSimpleStage_deactive;
+   return o;
+}
+function FE3dSimpleStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SkyLayer', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('MapLayer', l);
+   var l = o._spriteLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('SpriteLayer', l);
+   var l = o._faceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('FaceLayer', l);
+}
+function FE3dSimpleStage_skyLayer(){
+   return this._skyLayer;
+}
+function FE3dSimpleStage_mapLayer(){
+   return this._mapLayer;
+}
+function FE3dSimpleStage_spriteLayer(){
+   return this._spriteLayer;
+}
+function FE3dSimpleStage_faceLayer(){
+   return this._faceLayer;
+}
+function FE3dSimpleStage_active(){
+   var o = this;
+   o.__base.FE3dStage.active.call(o);
+}
+function FE3dSimpleStage_deactive(){
+   var o = this;
+   o.__base.FE3dStage.deactive.call(o);
 }
 function FE3dSpace(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
