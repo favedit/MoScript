@@ -43,29 +43,39 @@ function FG3dTechniqueConsole_techniques(){
 // <T>根据类名称或对象获得技术器。</T>
 //
 // @method
-// @param c:context:FG3dContext 环境对象
-// @param p:class:Object 类对象
+// @param context:FG3dContext 环境对象
+// @param clazz:Function 类对象
 // @return FG3dTechnique 效果器
 //==========================================================
-function FG3dTechniqueConsole_find(c, p){
+function FG3dTechniqueConsole_find(context, clazz){
    var o = this;
-   var n = RClass.name(p);
-   var ts = o._techniques;
-   var t = ts.get(n);
-   if(!t){
+   // 获得环境
+   if(!RClass.isClass(context, FGraphicContext)){
+      context = context.graphicContext();
+   }
+   if(!RClass.isClass(context, FGraphicContext)){
+      throw new TError(o, 'Unknown context.');
+   }
+   // 查找技术
+   var code = context.hashCode() + '|' + RClass.name(clazz);
+   var techniques = o._techniques;
+   var technique = techniques.get(code);
+   if(!technique){
       // 创建技术
-      t = RClass.createByName(n);
-      t.linkGraphicContext(c);
-      t.setup();
+      technique = RClass.create(clazz);
+      technique.linkGraphicContext(context);
+      technique.setup();
+      var techniqueCode = technique.code();
       // 设置过程集合
-      var ps = t.passes();
-      var pc = ps.count();
-      for(var i = 0; i < pc; i++){
-         var v = ps.get(i);
-         v.setFullCode(t.code() + '.' + v.code());
+      var passes = technique.passes();
+      var passCount = passes.count();
+      for(var i = 0; i < passCount; i++){
+         var pass = passes.at(i);
+         var passCode = pass.code();
+         pass.setFullCode(techniqueCode + '.' + passCode);
       }
       // 存储技术
-      ts.set(n, t);
+      techniques.set(code, technique);
    }
-   return t;
+   return technique;
 }

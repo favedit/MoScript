@@ -370,56 +370,62 @@ function FG3dLayout_construct(){
 function FG3dLayout_buffers(){
    return this._buffers;
 }
-function FG3dLayout_linkBuffers(p){
+function FG3dLayout_linkBuffers(buffers){
    var o = this;
-   if(!p.isEmpty()){
-      var s = o._buffers = new TObjects();
-      s.assign(p);
+   if(!buffers.isEmpty()){
+      var items = o._buffers;
+      if(!items){
+         items = o._buffers = new TObjects();
+      }
+      items.assign(buffers);
    }
 }
 function FG3dLayout_bindBuffers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._buffers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindVertexBuffer(v.slot, v.buffer, v.index, v.formatCd);
+   var context = o._graphicContext;
+   var buffers = o._buffers;
+   if(buffers){
+      var count = buffers.count();
+      for(var i = 0; i < count; i++){
+         var buffer = buffers.at(i);
+         context.bindVertexBuffer(buffer.slot, buffer.buffer, buffer.index, buffer.formatCd);
       }
    }
 }
 function FG3dLayout_samplers(){
    return this._samplers;
 }
-function FG3dLayout_linkSamplers(p){
+function FG3dLayout_linkSamplers(samplers){
    var o = this;
-   if(!p.isEmpty()){
-      var s = o._samplers = new TObjects();
-      s.assign(p);
+   if(!samplers.isEmpty()){
+      var items = o._samplers;
+      if(!items){
+         items = o._samplers = new TObjects();
+      }
+      items.assign(samplers);
    }
 }
 function FG3dLayout_bindSamplers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._samplers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindTexture(v.slot, v.index, v.texture);
+   var context = o._graphicContext;
+   var samplers = o._samplers;
+   if(samplers){
+      var count = samplers.count();
+      for(var i = 0; i < count; i++){
+         var sampler = samplers.at(i);
+         context.bindTexture(sampler.slot, sampler.index, sampler.texture);
       }
    }
 }
 function FG3dLayout_unbindSamplers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._samplers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindTexture(v.slot, v.index, null);
+   var context = o._graphicContext;
+   var samplers = o._samplers;
+   if(samplers){
+      var count = samplers.count();
+      for(var i = 0; i < count; i++){
+         var sampler = samplers.at(i);
+         context.bindTexture(sampler.slot, sampler.index, null);
       }
    }
 }

@@ -807,13 +807,12 @@ function FGridControl_pushButton(b){
 //==========================================================
 function FGridControl_onMouseDown(e, he){
    var o = this;
-   return;
-   var fc = RConsole.find(FFocusConsole);
-   fc.focusClass(MDataset, o);
-   fc.focusHtml(he);
-   if(!RConsole.find(FDesignConsole).isDesign()){
-      he.cancelBubble = true;
-   }
+   //var fc = RConsole.find(FFocusConsole);
+   //fc.focusClass(MDataset, o);
+   //fc.focusHtml(he);
+   //if(!RConsole.find(FDesignConsole).isDesign()){
+   //   he.cancelBubble = true;
+   //}
 }
 
 //==========================================================
@@ -1197,7 +1196,6 @@ function FGridControl_getFormLink(t){
 //------------------------------------------------------------
 function FGridControl_getHeadMode(e){
    var o = this;
-   return;
    var p = RHtml.point(o._hHeadForm);
    var x = e.srcElement.offsetLeft + e.x - p.x;
    var cs = o._columns;
@@ -1693,7 +1691,6 @@ function FGridControl_storeValues(a){
 
 // ------------------------------------------------------------
 function FGridControl_buildRows(){
-   return;
    var o = this;
    // 如果行还没有建立的话，则建立行记录
    var rs = o._rows;

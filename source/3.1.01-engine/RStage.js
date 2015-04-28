@@ -8,6 +8,7 @@ var RStage = new function RStage(){
    var o = this;
    //..........................................................
    // @attribute
+   o._started       = false;
    o._active        = true;
    o._interval      = 1000 / 40;
    o._stages        = null;
@@ -87,10 +88,11 @@ function RStage_unregister(stage){
 function RStage_active(){
    var o = this;
    var stages = o._stages;
-   if(stages != null){
-      var c = stages.count();
-      for(var i = 0; i < c; i++){
-         stages.valueAt(i).active();
+   if(stages){
+      var count = stages.count();
+      for(var i = 0; i < count; i++){
+         var stage = stages.at(i);
+         stage.active();
       }
    }
 }
@@ -103,10 +105,11 @@ function RStage_active(){
 function RStage_deactive(){
    var o = this;
    var stages = o._stages;
-   if(stages != null){
-      var c = stages.count();
-      for(var i = 0; i < c; i++){
-         stages.valueAt(i).deactive();
+   if(stages){
+      var count = stages.count();
+      for(var i = 0; i < count; i++){
+         var stage = stages.at(i);
+         stage.deactive();
       }
    }
 }
@@ -118,24 +121,28 @@ function RStage_deactive(){
 //==========================================================
 function RStage_process(){
    var o = this;
-   if(o._active){
-      try{
-         // 前处理
-         o.lsnsEnterFrame.process(o);
-         // 舞台处理
-         var stages = o._stages;
-         if(stages){
-            var count = stages.count();
-            for(var i = 0; i < count; i++){
-               stages.valueAt(i).process();
-            }
+   // 检查参数
+   if(!o._active){
+      return;
+   }
+   // 逻辑处理
+   try{
+      // 前处理
+      o.lsnsEnterFrame.process(o);
+      // 舞台处理
+      var stages = o._stages;
+      if(stages){
+         var count = stages.count();
+         for(var i = 0; i < count; i++){
+            var stage = stages.at(i);
+            stage.process();
          }
-         // 后处理
-         o.lsnsLeaveFrame.process(o);
-         RTimer.update();
-      }catch(e){
-         alert(e);
       }
+      // 后处理
+      o.lsnsLeaveFrame.process(o);
+      RTimer.update();
+   }catch(e){
+      alert(e);
    }
 }
 
@@ -147,6 +154,10 @@ function RStage_process(){
 //==========================================================
 function RStage_start(interval){
    var o = this;
+   // 检查是否已经启动
+   if(o._started){
+      return;
+   }
    // 引擎配置
    RE3dEngine.setup();
    // 激活舞台
@@ -158,5 +169,7 @@ function RStage_start(interval){
       interval = o._interval;
    }
    RTimer.setup();
+   // 设置定时器
    setInterval('RStage_onProcess()', parseInt(interval));
+   o._started = true;
 }

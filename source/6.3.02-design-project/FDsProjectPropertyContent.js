@@ -515,7 +515,6 @@ function FDsProjectPropertyContent_selectMaterial(p){
 //==========================================================
 function FDsProjectPropertyContent_selectRenderable(p){
    var o = this;
-   return;
    var sr = p;
    if(sr){
       var n = sr._renderable._resource._code;
@@ -660,7 +659,7 @@ function FDsProjectPropertyContent_loadMeshByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
-      //rmc.free(o._activeSpace);
+      rmc.free(o._activeSpace);
    }
    // 收集一个显示模板
    var space = o._activeSpace = rmc.allocByGuid(o, p);
@@ -710,6 +709,6 @@ function FDsProjectPropertyContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
+   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

@@ -62,7 +62,6 @@ function FUiMessageDialog(o){
 function FUiMessageDialog_onBuild(event){
    var o = this;
    o.__base.FUiWindow.oeBuild.call(o, e);
-   return;
    o.setIcon('Icon');
    // Form (1colx2row)
    //o.hBodyPanel.style.height = 400;
@@ -98,9 +97,8 @@ function FUiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
-   return;
-   h.style.backgroundColor = "BLUE";
-   h.style.cousor = "hand";
+   //h.style.backgroundColor = "BLUE";
+   //h.style.cousor = "hand";
 }
 // ------------------------------------------------------------
 function FUiMessageDialog_onItemClick(e){
@@ -115,13 +113,12 @@ function FUiMessageDialog_onItemClick(e){
 // ------------------------------------------------------------
 function FUiMessageDialog_onDescClick(e){
    var o = this;
-   return;
-   var st = o.hDescBody.style.display;
-   if('none' == st){
-      o.hDescBody.style.display = 'block';
-   }else{
-      o.hDescBody.style.display = 'none';
-   }
+   //var st = o.hDescBody.style.display;
+   //if('none' == st){
+   //   o.hDescBody.style.display = 'block';
+   //}else{
+   //   o.hDescBody.style.display = 'none';
+   //}
 }
 // ------------------------------------------------------------
 function FUiMessageDialog_onBuildMessages(){

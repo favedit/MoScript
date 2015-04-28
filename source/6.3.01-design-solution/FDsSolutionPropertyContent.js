@@ -50,10 +50,6 @@ function FDsSolutionPropertyContent(o){
    // @method
    o.innerSelectDisplay   = FDsSolutionPropertyContent_innerSelectDisplay;
    o.innerSelectLayer     = FDsSolutionPropertyContent_innerSelectLayer;
-   o.selectNone           = FDsSolutionPropertyContent_selectNone;
-   o.selectDisplay        = FDsSolutionPropertyContent_selectDisplay;
-   o.selectMaterial       = FDsSolutionPropertyContent_selectMaterial;
-   o.selectRenderable     = FDsSolutionPropertyContent_selectRenderable;
    o.switchRotation       = FDsSolutionPropertyContent_switchRotation;
    o.reloadRegion         = FDsSolutionPropertyContent_reloadRegion;
    o.loadMeshByGuid       = FDsSolutionPropertyContent_loadMeshByGuid;
@@ -448,173 +444,6 @@ function FDsSolutionPropertyContent_innerSelectLayer(p){
 }
 
 //==========================================================
-// <T>不选中任何对象。</T>
-//
-// @method
-//==========================================================
-function FDsSolutionPropertyContent_selectNone(){
-   var o = this;
-   o._selectObject = null;
-   // 取消所有选中对象
-   var s = o._selectRenderables;
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      r.hideBoundBox();
-   }
-   o._selectRenderables.clear();
-}
-
-//==========================================================
-// <T>选中渲染显示对象处理。</T>
-//
-// @method
-// @param p:display:FDisplay 显示对象
-//==========================================================
-function FDsSolutionPropertyContent_selectDisplay(p){
-   var o = this;
-   // 取消选中
-   o.selectNone();
-   // 选中对象
-   o._selectObject = p;
-   // 选中集合
-   o.innerSelectDisplay(p);
-}
-
-//==========================================================
-// <T>选中渲染材质处理。</T>
-//
-// @method
-// @param p:material:FG3dMaterial 渲染材质
-//==========================================================
-function FDsSolutionPropertyContent_selectMaterial(p){
-   var o = this;
-   // 取消选中
-   o.selectNone();
-   // 选中对象
-   o._selectObject = p;
-   // 选中材质
-   var d = p._display;
-   var s = d.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      if(r._materialReference == p){
-         o._selectRenderables.push(r);
-         r._optionSelected = true;
-         r.showBoundBox();
-      }
-   }
-}
-
-//==========================================================
-// <T>选中渲染对象处理。</T>
-//
-// @method
-// @param p:renderable:FG3dRenderable 渲染对象
-//==========================================================
-function FDsSolutionPropertyContent_selectRenderable(p){
-   var o = this;
-   return;
-   var sr = p;
-   if(sr){
-      var n = sr._renderable._resource._code;
-      switch(n){
-         case 'ms_translation_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_translation_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_translation_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_all':
-            o._canvasMoveCd = EDsCanvasDrag.All;
-            o._templateRenderable = sr;
-            return;
-         default:
-            o._canvasMoveCd = EDsCanvasDrag.Unknown;
-            o._templateRenderable = null;
-      }
-   }
-   // 选中当前对象
-   o.selectNone();
-   if(p){
-      o._selectRenderables.push(p);
-      p._optionSelected = true;
-      p.showBoundBox();
-      o._workspace._catalog.showObject(p);
-   }
-   // 设置变量
-   var t = o._templateTranslation;
-   var r = o._templateRotation;
-   var s = o._templateScale;
-   // 模式判定
-   var mc = o._canvasModeCd;
-   switch(mc){
-      case EDsCanvasMode.Drop:
-         break;
-      case EDsCanvasMode.Select:
-         break;
-      case EDsCanvasMode.Translate:
-         t.setVisible(sr != null);
-         r.hide();
-         s.hide();
-         o._templateFace = t;
-         break;
-      case EDsCanvasMode.Rotation:
-         t.hide();
-         r.setVisible(sr != null);
-         s.hide();
-         o._templateFace = r;
-         break;
-      case EDsCanvasMode.Scale:
-         t.hide();
-         r.hide();
-         s.setVisible(sr != null);
-         o._templateFace = s;
-         break;
-   }
-   // 设置位置
-   var st = o._templateFace;
-   if(sr && st){
-      var d = sr.display();
-      var m = st.matrix();
-      m.assign(d.matrix());
-      m.setScaleAll(o._templateViewScale);
-      m.update();
-   }
-}
-
-//==========================================================
 // <T>切换工作模式。</T>
 //
 // @method
@@ -623,8 +452,6 @@ function FDsSolutionPropertyContent_selectRenderable(p){
 function FDsSolutionPropertyContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
-   // 设置变量
-   o.selectRenderable(o._selectRenderable);
 }
 
 //==========================================================
@@ -660,7 +487,7 @@ function FDsSolutionPropertyContent_loadMeshByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
-      //rmc.free(o._activeSpace);
+      rmc.free(o._activeSpace);
    }
    // 收集一个显示模板
    var space = o._activeSpace = rmc.allocByGuid(o, p);
@@ -710,6 +537,6 @@ function FDsSolutionPropertyContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
+   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

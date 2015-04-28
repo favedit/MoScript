@@ -27,11 +27,10 @@ function FUiEnvironmentConsole(o){
 // @method
 //==========================================================
 function FUiEnvironmentConsole_connect(){
-   return;
-   var xData = window.xEnvironment;
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
+   //var xData = window.xEnvironment;
+   //if(xData){
+   //   this.environment = RXml.makeNode(xData);
+   //}
 }
 
 // ------------------------------------------------------------

@@ -252,7 +252,7 @@ function FDsBitmapCanvas_onBuild(p){
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
    space.region().linkGraphicContext(o);
-   RStage.register('space', space);
+   RStage.register('space.bitmap', space);
    var camera = space.camera();
    camera.setPosition(0, 0, -10);
    camera.lookAt(0, 0, 0);
@@ -301,13 +301,16 @@ function FDsBitmapCanvas_onMouseCaptureStop(event){
 }
 function FDsBitmapCanvas_onMouseWheel(event){
    var o = this;
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
    var scale = 1.0;
    if(event.deltaY < 0){
       scale = 1.1;
    }else if(event.deltaY > 0){
       scale = 0.9;
    }
-   var bitmap = o._activeBitmap;
    var matrix = bitmap.matrix();
    matrix.sx *= scale;
    matrix.sy *= scale;
@@ -1346,4 +1349,349 @@ function FDsMainWorkspace_onBuild(p){
 function FDsMainWorkspace_dispose(){
    var o = this;
    o.__base.FWorkspace.dispose.call(o);
+}
+function FDsSpaceCanvas(o){
+   o = RClass.inherits(this, o, FDsCanvas);
+   o._rotation            = null;
+   o._optionRotation      = false;
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._captureRotation     = null;
+   o._selectObject        = null;
+   o._selectRenderables   = null;
+   o._templateMatrix      = null;
+   o._templateRenderable  = null;
+   o._templateFace        = null;
+   o._templateTranslation = null;
+   o._templateRotation    = null;
+   o._templateScale       = null;
+   o._templateViewScale   = 0.05;
+   o.onBuild              = FDsSpaceCanvas_onBuild;
+   o.onMouseCaptureStart  = FDsSpaceCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = FDsSpaceCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = FDsSpaceCanvas_onMouseCaptureStop;
+   o.oeResize             = FDsSpaceCanvas_oeResize;
+   o.oeRefresh            = FDsSpaceCanvas_oeRefresh;
+   o.construct            = FDsSpaceCanvas_construct;
+   o.innerSelectDisplay   = FDsSpaceCanvas_innerSelectDisplay;
+   o.innerSelectLayer     = FDsSpaceCanvas_innerSelectLayer;
+   o.selectNone           = FDsSpaceCanvas_selectNone;
+   o.selectLayers         = FDsSpaceCanvas_selectLayers;
+   o.selectLayer          = FDsSpaceCanvas_selectLayer;
+   o.selectDisplay        = FDsSpaceCanvas_selectDisplay;
+   o.selectMaterial       = FDsSpaceCanvas_selectMaterial;
+   o.selectRenderable     = FDsSpaceCanvas_selectRenderable;
+   o.switchMode           = FDsSpaceCanvas_switchMode;
+   o.switchPlay           = FDsSpaceCanvas_switchPlay;
+   o.switchMovie          = FDsSpaceCanvas_switchMovie;
+   o.loadByGuid           = FDsSpaceCanvas_loadByGuid;
+   o.dispose              = FDsSpaceCanvas_dispose;
+   return o;
+}
+function FDsSpaceCanvas_onBuild(p){
+   var o = this;
+   o.__base.FDsCanvas.onBuild.call(o, p);
+}
+function FDsSpaceCanvas_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
+      return;
+   }
+   var r = o._activeSpace.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o.selectRenderable(r);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+   if(r){
+      var d = r.display();
+      o._captureMatrix.assign(d.matrix());
+   }
+   o._templateMatrix.identity();
+   if(o._templateFace){
+      o._templateFaceMatrix.assign(o._templateFace.matrix());
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         if(!r._dragMatrix){
+            r._dragMatrix = new SMatrix3d();
+         }
+         r._dragMatrix.assign(r.matrix());
+      }
+   }
+}
+function FDsSpaceCanvas_onMouseCapture(p){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var mc = o._canvasModeCd;
+   var mv = o._canvasMoveCd;
+   var cm = o._captureMatrix;
+   var sm = null;
+   var tf = o._templateFace;
+   var tm = o._templateMatrix;
+   switch(mc){
+      case EDsCanvasMode.Drop:
+         var c = o._activeSpace.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x - cy * o._cameraMouseRotation;
+         r.y = cr.y - cx * o._cameraMouseRotation;
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.tx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.ty = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.tz = cx / 10;
+            }
+         }
+         break;
+      case EDsCanvasMode.Rotation:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.rx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.ry = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.rz = cx / 10;
+            }
+         }
+         break;
+      case EDsCanvasMode.Scale:
+         if(tf){
+            if(mv == EDsCanvasDrag.X){
+               tm.sx = cx / 10;
+            }else if(mv == EDsCanvasDrag.Y){
+               tm.sy = -cy / 10;
+            }else if(mv == EDsCanvasDrag.Z){
+               tm.sz = cx / 10;
+            }else if(mv == EDsCanvasDrag.All){
+               tm.sx = cx / 10;
+               tm.sy = cx / 10;
+               tm.sz = cx / 10;
+            }
+         }
+         break;
+   }
+   if(tf){
+      tf.matrix().merge(o._templateFaceMatrix, tm);
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         r._matrix.merge(r._dragMatrix, tm);
+      }
+   }
+}
+function FDsSpaceCanvas_onMouseCaptureStop(p){
+}
+function FDsSpaceCanvas_oeResize(p){
+   var o = this;
+   o.__base.FDsCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeSpace;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
+   }
+   return EEventStatus.Stop;
+}
+function FDsSpaceCanvas_oeRefresh(p){
+   return EEventStatus.Stop;
+}
+function FDsSpaceCanvas_construct(){
+   var o = this;
+   o.__base.FDsCanvas.construct.call(o);
+   o._capturePosition = new SPoint2();
+   o._captureMatrix = new SMatrix3d();
+   o._templateMatrix = new SMatrix3d();
+   o._templateFaceMatrix = new SMatrix3d();
+   o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+   o._selectRenderables = new TObjects();
+}
+function FDsSpaceCanvas_innerSelectDisplay(select){
+   var o = this;
+   var displays = select.displays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      o.innerSelectDisplay(display);
+   }
+   var renderables = select.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(RClass.isClass(renderable, FDsSceneRenderable)){
+         o._selectRenderables.push(renderable);
+         renderable.showBoundBox();
+      }
+   }
+}
+function FDsSpaceCanvas_innerSelectLayer(layer){
+   var o = this;
+   var displays = layer.displays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      o.innerSelectDisplay(display)
+   }
+}
+function FDsSpaceCanvas_selectNone(){
+   var o = this;
+   o._selectObject = null;
+   var renderables = o._selectRenderables;
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      renderable.hideBoundBox();
+   }
+   o._selectRenderables.clear();
+}
+function FDsSpaceCanvas_selectLayers(p){
+   var o = this;
+   o.selectNone();
+   var s = o._activeSpace.layers();
+   for(var i = s.count() - 1; i >= 0; i--){
+      o.innerSelectLayer(s.valueAt(i));
+   }
+}
+function FDsSpaceCanvas_selectLayer(p){
+   var o = this;
+   o.selectNone();
+   o._selectObject = p;
+   o.innerSelectLayer(p);
+}
+function FDsSpaceCanvas_selectDisplay(p){
+   var o = this;
+   o.selectNone();
+   o._selectObject = p;
+   o.innerSelectDisplay(p);
+}
+function FDsSpaceCanvas_selectMaterial(material){
+   var o = this;
+   o.selectNone();
+   o._selectObject = material;
+   var display = material._display;
+   var sprite = display._sprite;
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable._materialReference == material._parentMaterial){
+         o._selectRenderables.push(renderable);
+         renderable._optionSelected = true;
+         renderable.showBoundBox();
+      }
+   }
+}
+function FDsSpaceCanvas_selectRenderable(renderable){
+   var o = this;
+   if(renderable){
+      var n = renderable._renderable._resource._code;
+      switch(n){
+         case 'ms_translation_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_translation_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_translation_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_rotation_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_rotation_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_rotation_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_scale_x':
+            o._canvasMoveCd = EDsCanvasDrag.X;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_scale_y':
+            o._canvasMoveCd = EDsCanvasDrag.Y;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_scale_z':
+            o._canvasMoveCd = EDsCanvasDrag.Z;
+            o._templateRenderable = renderable;
+            return;
+         case 'ms_scale_all':
+            o._canvasMoveCd = EDsCanvasDrag.All;
+            o._templateRenderable = renderable;
+            return;
+         default:
+            o._canvasMoveCd = EDsCanvasDrag.Unknown;
+            o._templateRenderable = null;
+      }
+   }
+   o.selectNone();
+   if(renderable){
+      renderable._optionSelected = true;
+      renderable.showBoundBox();
+      o._selectRenderables.push(renderable);
+      o._frameSet._catalogContent.showObject(renderable);
+   }
+}
+function FDsSpaceCanvas_switchMode(p){
+   var o = this;
+   o._canvasModeCd = p;
+   o.selectRenderable(o._selectRenderable);
+}
+function FDsSpaceCanvas_switchPlay(flag){
+   var o = this;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         sprite._optionPlay = flag;
+         display._optionPlay = flag;
+      }
+   }
+}
+function FDsSpaceCanvas_switchMovie(flag){
+   var o = this;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionMovie = flag;
+         }
+         display._optionMovie = flag;
+      }
+   }
+}
+function FDsSpaceCanvas_dispose(){
+   var o = this;
+   o._rotation = RObject.dispose(o._rotation);
+   o.__base.FDsCanvas.dispose.call(o);
 }

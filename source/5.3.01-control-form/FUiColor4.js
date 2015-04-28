@@ -196,17 +196,16 @@ function FUiColor4_onDataKeyDown(s, e){
       RKey.fixCase(e, o.editCase);
    }
    // 自动提示
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
+   //if(o._editable){
+   //   if(o.editComplete){
+   //      if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
+   //         var ed = o.findEditor();
+   //         if(ed){
+   //            ed.onEditKeyDown(s, e);
+   //         }
+   //      }
+   //   }
+   //}
 }
 
 

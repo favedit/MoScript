@@ -74,7 +74,7 @@ function FDsMaterialCanvasContent_onBuild(p){
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
    space.region().linkGraphicContext(o);
-   RStage.register('space', space);
+   RStage.register('space.material', space);
    //g.addEnterFrameListener(o, o.onEnterFrame);
    //var sl = o._layer = o._activeSpace.spriteLayer();
    // 设置相机
@@ -88,10 +88,10 @@ function FDsMaterialCanvasContent_onBuild(p){
    projection._angle = 45;
    projection.update();
    // 创建位图
-   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-   bitmap.linkGraphicContext(o);
-   bitmap.setup();
-   space.spriteLayer().pushRenderable(bitmap);
+   //var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   //bitmap.linkGraphicContext(o);
+   //bitmap.setup();
+   //space.spriteLayer().pushRenderable(bitmap);
    // 设置光源
    //var l = g.directionalLight();
    //var lc = l.camera();
@@ -418,6 +418,7 @@ function FDsMaterialCanvasContent_reloadRegion(region){
 //==========================================================
 function FDsMaterialCanvasContent_loadByGuid(guid){
    var o = this;
+   debugger
    // 显示加载进度
    RConsole.find(FUiDesktopConsole).showLoading();
    // 释放网格

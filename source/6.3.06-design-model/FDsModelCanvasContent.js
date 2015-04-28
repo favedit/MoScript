@@ -447,7 +447,6 @@ function FDsModelCanvasContent_selectMaterial(p){
 //==========================================================
 function FDsModelCanvasContent_selectRenderable(p){
    var o = this;
-   return;
    var sr = p;
    if(sr){
       var n = sr._renderable._resource._code;
@@ -694,21 +693,20 @@ function FDsModelCanvasContent_loadByGuid(guid){
 //==========================================================
 function FDsModelCanvasContent_loadByCode(code){
    var o = this;
-   return;
    // 显示加载进度
-   RConsole.find(FUiDesktopConsole).showLoading();
+   //RConsole.find(FUiDesktopConsole).showLoading();
    // 释放网格
-   var rmc = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace != null){
-      rmc.free(o._activeSpace);
-   }
+   //var rmc = RConsole.find(FE3dModelConsole);
+   //if(o._activeSpace != null){
+   //   rmc.free(o._activeSpace);
+   //}
    // 收集一个显示模板
-   var space = o._activeSpace = rmc.allocByCode(o, code);
-   space.addLoadListener(o, o.onDataLoaded);
+   //var space = o._activeSpace = rmc.allocByCode(o, code);
+   //space.addLoadListener(o, o.onDataLoaded);
    // 设置坐标系
-   space._layer.pushRenderable(o._dimensional);
+   //space._layer.pushRenderable(o._dimensional);
    // 启动舞台
-   RStage.register('space', space);
+   //RStage.register('space', space);
 }
 
 //==========================================================
@@ -720,6 +718,6 @@ function FDsModelCanvasContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
+   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

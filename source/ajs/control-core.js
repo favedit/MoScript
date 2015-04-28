@@ -426,11 +426,6 @@ function FUiEnvironmentConsole(o){
    return o;
 }
 function FUiEnvironmentConsole_connect(){
-   return;
-   var xData = window.xEnvironment;
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
 }
 function FUiEnvironmentConsole_build(config){
    var o = this;
@@ -735,25 +730,6 @@ function FUiFrameConsole_process(g){
    RConsole.find(FXmlConsole).process(e);
 }
 function FUiFrameConsole_loadEvents(cfg){
-   return;
-   var o = this;
-   if(!(cfg && cfg.nodes)){
-      return;
-   }
-   var ns = cfg.nodes;
-   var l = ns.count;
-   for(var n = 0; n < l; n++){
-      var x = ns.get(n);
-      if(x.isName('Event')){
-         var c = RClass.create(FEvent);
-         c.loadConfig(x);
-         if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
-            RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
-         }
-         var s = c.name + '@' + c.source + '@' + c.form;
-         o.events.set(s, c);
-      }
-   }
 }
 function FUiFrameConsole_processEvent(e){
    var o = this;
@@ -1105,7 +1081,6 @@ function FUiMessageDialog(o){
 function FUiMessageDialog_onBuild(event){
    var o = this;
    o.__base.FUiWindow.oeBuild.call(o, e);
-   return;
    o.setIcon('Icon');
    var hTab = RBuilder.appendTable(o.hBodyPanel, 0, 0, 0);
    hTab.style.vAlign = "top";
@@ -1128,9 +1103,6 @@ function FUiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
-   return;
-   h.style.backgroundColor = "BLUE";
-   h.style.cousor = "hand";
 }
 function FUiMessageDialog_onItemClick(e){
    var o = this;
@@ -1142,13 +1114,6 @@ function FUiMessageDialog_onItemClick(e){
 }
 function FUiMessageDialog_onDescClick(e){
    var o = this;
-   return;
-   var st = o.hDescBody.style.display;
-   if('none' == st){
-      o.hDescBody.style.display = 'block';
-   }else{
-      o.hDescBody.style.display = 'none';
-   }
 }
 function FUiMessageDialog_onBuildMessages(){
    var o = this;
@@ -1508,25 +1473,7 @@ function FUiWindowConsole_loadDefine(name){
       root.create('Window', 'name', name);
       var cnn = new TXmlCnn();
       var doc = cnn.syncSend('window.xml', doc);
-      return doc.root();
-      var oNode = null;
-      var sNodeName = null;
-      var arNodes = oConnect.rootNode.nodes;
-      for(var n=0; n<arNodes.length; n++){
-         var oNode = arNodes[n];
-         sNodeName = oNode.name.toLowerCase();
-         if(sNodeName == 'window'){
-            var sFullName = oNode.attribute('name');
-            this.m_oDefinePool.setNameValue(sFullName, oNode);
-            if(sFullName == sWinName){
-               oWinNode = oNode;
-            }
-         }else if(sNodeName == 'dataset'){
-            DatasetManager.addDefine(oNode.attribute('name'), oNode);
-         }else if(sNodeName == 'searchlist'){
-            SearchManager.addDefine(oNode);
-         }
-      }
+      doc.root();
    }
    if(!config){
       return ILogger.fatal(this, 'loadDefine', 'Not find window define: ' + sWinName);

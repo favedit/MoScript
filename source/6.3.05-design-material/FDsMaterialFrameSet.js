@@ -63,18 +63,19 @@ function FDsMaterialFrameSet_onBuilded(event){
    var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   //canvas._hParent.style.backgroundColor = '#333333';
    //canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(event);
    // 设置画板内容
    var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   //canvas._hParent.style.backgroundColor = '#333333';
    //canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(event);
+   o._frameCanvasContent.push(canvas);
 }
 
 //==========================================================
@@ -164,10 +165,10 @@ function FDsMaterialFrameSet_switchCanvas(typeCd, guid){
    var o = this;
    if(typeCd == 'Bitmap'){
       var canvas = o._canvasBitmap;
-      o._frameCanvasContent.push(canvas);
       canvas.loadByGuid(guid);
+      //o._frameCanvasContent.push(canvas);
    }else{
-      o._frameCanvasContent.push(o._canvasContent);
+      //o._frameCanvasContent.push(o._canvasContent);
    }
 }
 

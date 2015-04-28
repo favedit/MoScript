@@ -260,7 +260,6 @@ function FDsModelCanvasContent_selectMaterial(p){
 }
 function FDsModelCanvasContent_selectRenderable(p){
    var o = this;
-   return;
    var sr = p;
    if(sr){
       var n = sr._renderable._resource._code;
@@ -439,21 +438,10 @@ function FDsModelCanvasContent_loadByGuid(guid){
 }
 function FDsModelCanvasContent_loadByCode(code){
    var o = this;
-   return;
-   RConsole.find(FUiDesktopConsole).showLoading();
-   var rmc = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace != null){
-      rmc.free(o._activeSpace);
-   }
-   var space = o._activeSpace = rmc.allocByCode(o, code);
-   space.addLoadListener(o, o.onDataLoaded);
-   space._layer.pushRenderable(o._dimensional);
-   RStage.register('space', space);
 }
 function FDsModelCanvasContent_dispose(){
    var o = this;
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsModelCanvasToolBar(o){

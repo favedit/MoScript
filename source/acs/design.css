@@ -22,7 +22,7 @@
    background-color: #EEEEEE;
 }
 
-.FDsFrameSet_Property_Content;
+.FDsFrameSet_Property_Content{
    background-color: #777777;
 }
 
@@ -341,12 +341,15 @@
 /* FDsResourceFrameSet                                   */
 /* ------------------------------------------------------ */
 .FDsResourceFrameSet_Toolbar_Ground{
-   background: #AEAEAE;
+   padding-left: 4px;
    padding-top: 1px;
-   border-bottom: 1px solid #999999;
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
+   background-color: #AEAEAE;
    background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
    background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 

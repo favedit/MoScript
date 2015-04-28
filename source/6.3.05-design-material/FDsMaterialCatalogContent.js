@@ -100,13 +100,12 @@ function FDsMaterialCatalogContent_construct(){
 function FDsMaterialCatalogContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
-   return;
    // 设置属性
-   var guid = control._guid;
-   o._activeItem = control;
+   //var guid = control._guid;
+   //o._activeItem = control;
    // 选中项目
-   var canvas = o._frameSet._canvasContent;
-   canvas.loadByGuid(guid);
+   //var canvas = o._frameSet._canvasContent;
+   //canvas.loadByGuid(guid);
 }
 
 //==========================================================

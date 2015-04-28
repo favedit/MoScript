@@ -184,27 +184,26 @@ function FTable_oeRefresh(e){
       hdp.style.paddingLeft = hfpw;
       hdp.style.paddingTop = hfph;
       // 显示的时候调整一次自动标题宽度
-      return;
-      var ca = null;
-      var aw = ow;
-      var cs = o._columns;
-      var cc = cs.count();
-      for(var i = 0; i < cc; i++){
-         var c = cs.value(i);
-         if(c.isDisplay){
-            if(c.dispAuto){
-               if(ca){
-                  return RMessage.fatal(o, null, 'Too many auto column! (name1={1},name2={2})', ca.name, c.name);
-               }
-               ca = c;
-            }else{
-               aw -= c._hPanel.offsetWidth;
-            }
-         }
-      }
-      if(ca){
-         ca.setWidth(Math.max(aw - 1, ca.width ? ca.width : 120));
-      }
+      //var ca = null;
+      //var aw = ow;
+      //var cs = o._columns;
+      //var cc = cs.count();
+      //for(var i = 0; i < cc; i++){
+      //   var c = cs.value(i);
+      //   if(c.isDisplay){
+      //      if(c.dispAuto){
+      //         if(ca){
+      //            return RMessage.fatal(o, null, 'Too many auto column! (name1={1},name2={2})', ca.name, c.name);
+      //         }
+      //         ca = c;
+      //      }else{
+      //         aw -= c._hPanel.offsetWidth;
+      //      }
+      //   }
+      //}
+      //if(ca){
+      //   ca.setWidth(Math.max(aw - 1, ca.width ? ca.width : 120));
+      //}
    }
 }
 

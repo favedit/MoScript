@@ -247,26 +247,25 @@ function FUiFrameConsole_process(g){
 // @param x:config:TNode 事件定义
 //==========================================================
 function FUiFrameConsole_loadEvents(cfg){
-   return;
-   var o = this;
-   if(!(cfg && cfg.nodes)){
-      return;
-   }
-   var ns = cfg.nodes;
-   var l = ns.count;
-   for(var n = 0; n < l; n++){
-      var x = ns.get(n);
-      if(x.isName('Event')){
-         var c = RClass.create(FEvent);
-         c.loadConfig(x);
-         if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
-            RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
-         }
-         // onchange@editLength@design.webform.EditForm
-         var s = c.name + '@' + c.source + '@' + c.form;
-         o.events.set(s, c);
-      }
-   }
+   //var o = this;
+   //if(!(cfg && cfg.nodes)){
+   //   return;
+   //}
+   //var ns = cfg.nodes;
+   //var l = ns.count;
+   //for(var n = 0; n < l; n++){
+   //   var x = ns.get(n);
+   //   if(x.isName('Event')){
+   //      var c = RClass.create(FEvent);
+   //      c.loadConfig(x);
+   //      if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
+   //         RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
+   //      }
+   //      // onchange@editLength@design.webform.EditForm
+   //      var s = c.name + '@' + c.source + '@' + c.form;
+   //      o.events.set(s, c);
+   //   }
+   //}
 }
 
 //==========================================================

@@ -1543,31 +1543,38 @@ function FG3dEffectConsole_findTemplate(pc, pn){
    }
    return e;
 }
-function FG3dEffectConsole_find(pc, pg, pr){
+function FG3dEffectConsole_find(context, region, renderable){
    var o = this;
-   var en = pr.material().info().effectCode;
-   if(RString.isEmpty(en)){
-      en = 'automatic'
+   if(!RClass.isClass(context, FGraphicContext)){
+      context = context.graphicContext();
    }
-   var ef = pg.spaceName() + '.' + en;
-   var et = o.findTemplate(pc, ef);
-   if(et){
-      o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
-      et.buildInfo(o._tagContext, o._effectInfo);
-      var ec = ef + o._tagContext.code;
-      var es = o._effects;
-      var e = es.get(ec);
-      if(e == null){
-         var e = o.create(pc, ef);
-         e._flag = ec;
-         e.load();
-         e.build(o._effectInfo);
-         RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
+   if(!RClass.isClass(context, FGraphicContext)){
+      throw new TError(o, 'Unknown context.');
+   }
+   var effectCode = renderable.material().info().effectCode;
+   if(RString.isEmpty(effectCode)){
+      effectCode = 'automatic'
+   }
+   var effectFlag = region.spaceName() + '.' + effectCode;
+   var effectTemplate = o.findTemplate(context, effectFlag);
+   if(effectTemplate){
+      var effectInfo = o._effectInfo;
+      effectInfo.reset();
+      o.buildEffectInfo(context, effectInfo, region, renderable);
+      effectTemplate.buildInfo(o._tagContext, effectInfo);
+      var flag = effectFlag + o._tagContext.code;
+      var effects = o._effects;
+      var effect = effects.get(flag);
+      if(!effect){
+         effect = o.create(context, effectFlag);
+         effect._flag = flag;
+         effect.load();
+         effect.build(o._effectInfo);
+         RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
       }
-      es.set(ec, e);
+      effects.set(flag, effect);
    }
-   return e;
+   return effect;
 }
 function FG3dEffectConsole_loadConfig(p){
    var o = this;
@@ -2122,24 +2129,32 @@ function FG3dTechniqueConsole_construct(){
 function FG3dTechniqueConsole_techniques(){
    return this._techniques;
 }
-function FG3dTechniqueConsole_find(c, p){
+function FG3dTechniqueConsole_find(context, clazz){
    var o = this;
-   var n = RClass.name(p);
-   var ts = o._techniques;
-   var t = ts.get(n);
-   if(!t){
-      t = RClass.createByName(n);
-      t.linkGraphicContext(c);
-      t.setup();
-      var ps = t.passes();
-      var pc = ps.count();
-      for(var i = 0; i < pc; i++){
-         var v = ps.get(i);
-         v.setFullCode(t.code() + '.' + v.code());
-      }
-      ts.set(n, t);
+   if(!RClass.isClass(context, FGraphicContext)){
+      context = context.graphicContext();
    }
-   return t;
+   if(!RClass.isClass(context, FGraphicContext)){
+      throw new TError(o, 'Unknown context.');
+   }
+   var code = context.hashCode() + '|' + RClass.name(clazz);
+   var techniques = o._techniques;
+   var technique = techniques.get(code);
+   if(!technique){
+      technique = RClass.create(clazz);
+      technique.linkGraphicContext(context);
+      technique.setup();
+      var techniqueCode = technique.code();
+      var passes = technique.passes();
+      var passCount = passes.count();
+      for(var i = 0; i < passCount; i++){
+         var pass = passes.at(i);
+         var passCode = pass.code();
+         pass.setFullCode(techniqueCode + '.' + passCode);
+      }
+      techniques.set(code, technique);
+   }
+   return technique;
 }
 function FG3dTechniqueMode(o){
    o = RClass.inherits(this, o, FObject);
@@ -2717,56 +2732,62 @@ function FG3dLayout_construct(){
 function FG3dLayout_buffers(){
    return this._buffers;
 }
-function FG3dLayout_linkBuffers(p){
+function FG3dLayout_linkBuffers(buffers){
    var o = this;
-   if(!p.isEmpty()){
-      var s = o._buffers = new TObjects();
-      s.assign(p);
+   if(!buffers.isEmpty()){
+      var items = o._buffers;
+      if(!items){
+         items = o._buffers = new TObjects();
+      }
+      items.assign(buffers);
    }
 }
 function FG3dLayout_bindBuffers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._buffers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindVertexBuffer(v.slot, v.buffer, v.index, v.formatCd);
+   var context = o._graphicContext;
+   var buffers = o._buffers;
+   if(buffers){
+      var count = buffers.count();
+      for(var i = 0; i < count; i++){
+         var buffer = buffers.at(i);
+         context.bindVertexBuffer(buffer.slot, buffer.buffer, buffer.index, buffer.formatCd);
       }
    }
 }
 function FG3dLayout_samplers(){
    return this._samplers;
 }
-function FG3dLayout_linkSamplers(p){
+function FG3dLayout_linkSamplers(samplers){
    var o = this;
-   if(!p.isEmpty()){
-      var s = o._samplers = new TObjects();
-      s.assign(p);
+   if(!samplers.isEmpty()){
+      var items = o._samplers;
+      if(!items){
+         items = o._samplers = new TObjects();
+      }
+      items.assign(samplers);
    }
 }
 function FG3dLayout_bindSamplers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._samplers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindTexture(v.slot, v.index, v.texture);
+   var context = o._graphicContext;
+   var samplers = o._samplers;
+   if(samplers){
+      var count = samplers.count();
+      for(var i = 0; i < count; i++){
+         var sampler = samplers.at(i);
+         context.bindTexture(sampler.slot, sampler.index, sampler.texture);
       }
    }
 }
 function FG3dLayout_unbindSamplers(){
    var o = this;
-   var g = o._graphicContext;
-   var s = o._samplers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var v = s.getAt(i);
-         g.bindTexture(v.slot, v.index, null);
+   var context = o._graphicContext;
+   var samplers = o._samplers;
+   if(samplers){
+      var count = samplers.count();
+      for(var i = 0; i < count; i++){
+         var sampler = samplers.at(i);
+         context.bindTexture(sampler.slot, sampler.index, null);
       }
    }
 }

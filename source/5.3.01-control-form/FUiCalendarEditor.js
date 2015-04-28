@@ -619,15 +619,14 @@ function FUiCalendarEditor_storeChange(){
 
 function FUiCalendarEditor_onBuildButton(){
    var o = this;
-   return;
-   o.base.FDropEditor.onBuildButton.call(o);
-   var h = o.hNow = RBuilder.append(o.hButtonPanel, 'SPAN', o.style('Now'));
-   var hp = o.hButtonPanel;
-   hp.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
-   hp.height = 20;
+   //o.base.FDropEditor.onBuildButton.call(o);
+   //var h = o.hNow = RBuilder.append(o.hButtonPanel, 'SPAN', o.style('Now'));
+   //var hp = o.hButtonPanel;
+   //hp.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
+   //hp.height = 20;
    //o.hButtonPanel.style.border = '1px solid blue';
-   h.innerText = RContext.get('FUiCalendarEditor:now');
-   o.attachEvent("onButtonNow",h);
+   //h.innerText = RContext.get('FUiCalendarEditor:now');
+   //o.attachEvent("onButtonNow",h);
 }
 //==========================================================
 function FUiCalendarEditor_onMdown(e){

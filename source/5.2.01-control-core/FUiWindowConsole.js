@@ -110,28 +110,27 @@ function FUiWindowConsole_loadDefine(name){
 
       var cnn = new TXmlCnn();
       var doc = cnn.syncSend('window.xml', doc);
-
-      return doc.root();
+      doc.root();
 
       // Find node
-      var oNode = null;
-      var sNodeName = null;
-      var arNodes = oConnect.rootNode.nodes;
-      for(var n=0; n<arNodes.length; n++){
-         var oNode = arNodes[n];
-         sNodeName = oNode.name.toLowerCase();
-         if(sNodeName == 'window'){
-            var sFullName = oNode.attribute('name');
-            this.m_oDefinePool.setNameValue(sFullName, oNode);
-            if(sFullName == sWinName){
-               oWinNode = oNode;
-            }
-         }else if(sNodeName == 'dataset'){
-            DatasetManager.addDefine(oNode.attribute('name'), oNode);
-         }else if(sNodeName == 'searchlist'){
-            SearchManager.addDefine(oNode);
-         }
-      }
+      //var oNode = null;
+      //var sNodeName = null;
+      //var arNodes = oConnect.rootNode.nodes;
+      //for(var n=0; n<arNodes.length; n++){
+      //   var oNode = arNodes[n];
+      //   sNodeName = oNode.name.toLowerCase();
+      //   if(sNodeName == 'window'){
+      //      var sFullName = oNode.attribute('name');
+      //      this.m_oDefinePool.setNameValue(sFullName, oNode);
+      //      if(sFullName == sWinName){
+      //         oWinNode = oNode;
+      //      }
+      //   }else if(sNodeName == 'dataset'){
+      //      DatasetManager.addDefine(oNode.attribute('name'), oNode);
+      //   }else if(sNodeName == 'searchlist'){
+      //      SearchManager.addDefine(oNode);
+      //   }
+      //}
    }
    if(!config){
       return ILogger.fatal(this, 'loadDefine', 'Not find window define: ' + sWinName);

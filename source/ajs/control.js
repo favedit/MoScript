@@ -2664,19 +2664,13 @@ function FUiCanvas(o){
    o = RClass.inherits(this, o, FUiControl);
    o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
    o.onBuildPanel = FUiCanvas_onBuildPanel;
-   o.onBuild      = FUiCanvas_onBuild;
    o.construct    = FUiCanvas_construct;
    o.dispose      = FUiCanvas_dispose;
    return o;
 }
-function FUiCanvas_onBuildPanel(p){
+function FUiCanvas_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
-}
-function FUiCanvas_onBuild(p){
-   var o = this;
-   var t = o._tree;
-   var r = o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel = RBuilder.create(event, 'CANVAS', o.styleName('Canvas'));
 }
 function FUiCanvas_construct(){
    var o = this;

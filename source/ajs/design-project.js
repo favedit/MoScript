@@ -123,8 +123,6 @@ function FDsProjectCanvasPreviewToolBar_setNavigator(pageSize, pageCount, page){
    o._pageCount = pageCount;
    o._page = page;
    o._controlPageEdit.setText(page);
-   if(page == 0){
-   }
 }
 function FDsProjectCanvasPreviewToolBar_doNavigator(page){
    var o = this;
@@ -205,8 +203,6 @@ function FDsProjectCanvasSpaceToolBar_setNavigator(pageSize, pageCount, page){
    o._pageCount = pageCount;
    o._page = page;
    o._controlPageEdit.setText(page);
-   if(page == 0){
-   }
 }
 function FDsProjectCanvasSpaceToolBar_doNavigator(page){
    var o = this;
@@ -1015,7 +1011,6 @@ function FDsProjectPropertyContent_selectMaterial(p){
 }
 function FDsProjectPropertyContent_selectRenderable(p){
    var o = this;
-   return;
    var sr = p;
    if(sr){
       var n = sr._renderable._resource._code;
@@ -1128,6 +1123,7 @@ function FDsProjectPropertyContent_loadMeshByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
+      rmc.free(o._activeSpace);
    }
    var space = o._activeSpace = rmc.allocByGuid(o, p);
    space.addLoadListener(o, o.onMeshLoad);
@@ -1148,7 +1144,6 @@ function FDsProjectPropertyContent_loadMeshByCode(p){
 function FDsProjectPropertyContent_dispose(){
    var o = this;
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsProjectPropertyToolBar(o){

@@ -216,42 +216,51 @@ function FG3dEffectConsole_findTemplate(pc, pn){
 // <T>根据渲染对象获得效果器。</T>
 //
 // @method
-// @param pc:context:FG3dContext 环境对象
-// @param pg:region:FG3dRegion 渲染区域
-// @param pr:renderable:FG3dRenderable 渲染对象
+// @param context:FG3dContext 环境对象
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dEffectConsole_find(pc, pg, pr){
+function FG3dEffectConsole_find(context, region, renderable){
    var o = this;
-   // 获得效果名称
-   var en = pr.material().info().effectCode;
-   if(RString.isEmpty(en)){
-      en = 'automatic'
+   // 获得环境
+   if(!RClass.isClass(context, FGraphicContext)){
+      context = context.graphicContext();
    }
-   var ef = pg.spaceName() + '.' + en;
+   if(!RClass.isClass(context, FGraphicContext)){
+      throw new TError(o, 'Unknown context.');
+   }
+   // 查找技术
+   // 获得效果名称
+   var effectCode = renderable.material().info().effectCode;
+   if(RString.isEmpty(effectCode)){
+      effectCode = 'automatic'
+   }
+   var effectFlag = region.spaceName() + '.' + effectCode;
    // 查找模板
-   var et = o.findTemplate(pc, ef);
-   if(et){
+   var effectTemplate = o.findTemplate(context, effectFlag);
+   if(effectTemplate){
       // 生成标志
-      o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
-      et.buildInfo(o._tagContext, o._effectInfo);
-      var ec = ef + o._tagContext.code;
+      var effectInfo = o._effectInfo;
+      effectInfo.reset();
+      o.buildEffectInfo(context, effectInfo, region, renderable);
+      effectTemplate.buildInfo(o._tagContext, effectInfo);
+      var flag = effectFlag + o._tagContext.code;
       // 查找效果器
-      var es = o._effects;
-      var e = es.get(ec);
-      if(e == null){
+      var effects = o._effects;
+      var effect = effects.get(flag);
+      if(!effect){
          // 创建效果器
-         var e = o.create(pc, ef);
-         e._flag = ec;
-         e.load();
-         e.build(o._effectInfo);
-         RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
+         effect = o.create(context, effectFlag);
+         effect._flag = flag;
+         effect.load();
+         effect.build(o._effectInfo);
+         RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
       }
       // 存储效果器
-      es.set(ec, e);
+      effects.set(flag, effect);
    }
-   return e;
+   return effect;
 }
 
 //==========================================================

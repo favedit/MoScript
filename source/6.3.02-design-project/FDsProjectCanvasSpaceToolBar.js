@@ -127,9 +127,9 @@ function FDsProjectCanvasSpaceToolBar_setNavigator(pageSize, pageCount, page){
    o._pageCount = pageCount;
    o._page = page;
    o._controlPageEdit.setText(page);
-   if(page == 0){
+   //if(page == 0){
       //o._controlFirstButton.disable();
-   }
+   //}
 }
 
 //==========================================================

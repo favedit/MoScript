@@ -224,9 +224,9 @@ function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
    o._contentPageCount = pageCount;
    o._contentPage = page;
    o._controlPageEdit.setText(page);
-   if(page == 0){
+   //if(page == 0){
       //o._controlFirstButton.disable();
-   }
+   //}
 }
 
 //==========================================================

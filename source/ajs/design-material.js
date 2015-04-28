@@ -51,7 +51,7 @@ function FDsMaterialCanvasContent_onBuild(p){
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
    space.region().linkGraphicContext(o);
-   RStage.register('space', space);
+   RStage.register('space.material', space);
    var camera = space.camera();
    camera.setPosition(0, 0, -10);
    camera.lookAt(0, 0, 0);
@@ -60,10 +60,6 @@ function FDsMaterialCanvasContent_onBuild(p){
    projection.size().set(hPanel.width, hPanel.height);
    projection._angle = 45;
    projection.update();
-   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-   bitmap.linkGraphicContext(o);
-   bitmap.setup();
-   space.spriteLayer().pushRenderable(bitmap);
 }
 function FDsMaterialCanvasContent_onMouseCaptureStart(event){
    var o = this;
@@ -223,6 +219,7 @@ function FDsMaterialCanvasContent_reloadRegion(region){
 }
 function FDsMaterialCanvasContent_loadByGuid(guid){
    var o = this;
+   debugger
    RConsole.find(FUiDesktopConsole).showLoading();
    var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
    var bitmap = o._activeBitmap;
@@ -334,11 +331,6 @@ function FDsMaterialCatalogContent_construct(){
 function FDsMaterialCatalogContent_doClickItem(control){
    var o = this;
    o.__base.FUiListView.doClickItem.call(o, control);
-   return;
-   var guid = control._guid;
-   o._activeItem = control;
-   var canvas = o._frameSet._canvasContent;
-   canvas.loadByGuid(guid);
 }
 function FDsMaterialCatalogContent_doDoubleClickItem(control){
    var o = this;
@@ -464,15 +456,14 @@ function FDsMaterialFrameSet_onBuilded(event){
    var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
    canvas.build(event);
    var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
    canvas.build(event);
+   o._frameCanvasContent.push(canvas);
 }
 function FDsMaterialFrameSet_onDataLoaded(p){
    var o = this;
@@ -530,10 +521,8 @@ function FDsMaterialFrameSet_switchCanvas(typeCd, guid){
    var o = this;
    if(typeCd == 'Bitmap'){
       var canvas = o._canvasBitmap;
-      o._frameCanvasContent.push(canvas);
       canvas.loadByGuid(guid);
    }else{
-      o._frameCanvasContent.push(o._canvasContent);
    }
 }
 function FDsMaterialFrameSet_loadByGuid(guid){

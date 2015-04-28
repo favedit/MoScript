@@ -904,6 +904,7 @@ function FStage_dispose(){
 }
 var RStage = new function RStage(){
    var o = this;
+   o._started       = false;
    o._active        = true;
    o._interval      = 1000 / 40;
    o._stages        = null;
@@ -942,44 +943,51 @@ function RStage_unregister(stage){
 function RStage_active(){
    var o = this;
    var stages = o._stages;
-   if(stages != null){
-      var c = stages.count();
-      for(var i = 0; i < c; i++){
-         stages.valueAt(i).active();
+   if(stages){
+      var count = stages.count();
+      for(var i = 0; i < count; i++){
+         var stage = stages.at(i);
+         stage.active();
       }
    }
 }
 function RStage_deactive(){
    var o = this;
    var stages = o._stages;
-   if(stages != null){
-      var c = stages.count();
-      for(var i = 0; i < c; i++){
-         stages.valueAt(i).deactive();
+   if(stages){
+      var count = stages.count();
+      for(var i = 0; i < count; i++){
+         var stage = stages.at(i);
+         stage.deactive();
       }
    }
 }
 function RStage_process(){
    var o = this;
-   if(o._active){
-      try{
-         o.lsnsEnterFrame.process(o);
-         var stages = o._stages;
-         if(stages){
-            var count = stages.count();
-            for(var i = 0; i < count; i++){
-               stages.valueAt(i).process();
-            }
+   if(!o._active){
+      return;
+   }
+   try{
+      o.lsnsEnterFrame.process(o);
+      var stages = o._stages;
+      if(stages){
+         var count = stages.count();
+         for(var i = 0; i < count; i++){
+            var stage = stages.at(i);
+            stage.process();
          }
-         o.lsnsLeaveFrame.process(o);
-         RTimer.update();
-      }catch(e){
-         alert(e);
       }
+      o.lsnsLeaveFrame.process(o);
+      RTimer.update();
+   }catch(e){
+      alert(e);
    }
 }
 function RStage_start(interval){
    var o = this;
+   if(o._started){
+      return;
+   }
    RE3dEngine.setup();
    o.active();
    o.process();
@@ -988,6 +996,7 @@ function RStage_start(interval){
    }
    RTimer.setup();
    setInterval('RStage_onProcess()', parseInt(interval));
+   o._started = true;
 }
 function FE2dCanvas(o){
    o = RClass.inherits(this, o, FObject, MCanvasObject);

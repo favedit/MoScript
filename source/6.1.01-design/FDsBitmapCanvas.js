@@ -57,7 +57,7 @@ function FDsBitmapCanvas_onBuild(p){
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(1, 1, 1, 1);
    space.region().linkGraphicContext(o);
-   RStage.register('space', space);
+   RStage.register('space.bitmap', space);
    //g.addEnterFrameListener(o, o.onEnterFrame);
    // 设置相机
    var camera = space.camera();
@@ -143,6 +143,11 @@ function FDsBitmapCanvas_onMouseCaptureStop(event){
 //==========================================================
 function FDsBitmapCanvas_onMouseWheel(event){
    var o = this;
+   // 获得位图
+   var bitmap = o._activeBitmap;
+   if(!bitmap){
+      return;
+   }
    // 计算缩放
    var scale = 1.0;
    if(event.deltaY < 0){
@@ -150,8 +155,7 @@ function FDsBitmapCanvas_onMouseWheel(event){
    }else if(event.deltaY > 0){
       scale = 0.9;
    }
-   // 获得位图
-   var bitmap = o._activeBitmap;
+   // 更新矩阵
    var matrix = bitmap.matrix();
    matrix.sx *= scale;
    matrix.sy *= scale;

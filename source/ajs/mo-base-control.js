@@ -2664,19 +2664,13 @@ function FUiCanvas(o){
    o = RClass.inherits(this, o, FUiControl);
    o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
    o.onBuildPanel = FUiCanvas_onBuildPanel;
-   o.onBuild      = FUiCanvas_onBuild;
    o.construct    = FUiCanvas_construct;
    o.dispose      = FUiCanvas_dispose;
    return o;
 }
-function FUiCanvas_onBuildPanel(p){
+function FUiCanvas_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
-}
-function FUiCanvas_onBuild(p){
-   var o = this;
-   var t = o._tree;
-   var r = o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel = RBuilder.create(event, 'CANVAS', o.styleName('Canvas'));
 }
 function FUiCanvas_construct(){
    var o = this;
@@ -4327,11 +4321,6 @@ function FUiEnvironmentConsole(o){
    return o;
 }
 function FUiEnvironmentConsole_connect(){
-   return;
-   var xData = window.xEnvironment;
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
 }
 function FUiEnvironmentConsole_build(config){
    var o = this;
@@ -4636,25 +4625,6 @@ function FUiFrameConsole_process(g){
    RConsole.find(FXmlConsole).process(e);
 }
 function FUiFrameConsole_loadEvents(cfg){
-   return;
-   var o = this;
-   if(!(cfg && cfg.nodes)){
-      return;
-   }
-   var ns = cfg.nodes;
-   var l = ns.count;
-   for(var n = 0; n < l; n++){
-      var x = ns.get(n);
-      if(x.isName('Event')){
-         var c = RClass.create(FEvent);
-         c.loadConfig(x);
-         if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
-            RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
-         }
-         var s = c.name + '@' + c.source + '@' + c.form;
-         o.events.set(s, c);
-      }
-   }
 }
 function FUiFrameConsole_processEvent(e){
    var o = this;
@@ -5006,7 +4976,6 @@ function FUiMessageDialog(o){
 function FUiMessageDialog_onBuild(event){
    var o = this;
    o.__base.FUiWindow.oeBuild.call(o, e);
-   return;
    o.setIcon('Icon');
    var hTab = RBuilder.appendTable(o.hBodyPanel, 0, 0, 0);
    hTab.style.vAlign = "top";
@@ -5029,9 +4998,6 @@ function FUiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
-   return;
-   h.style.backgroundColor = "BLUE";
-   h.style.cousor = "hand";
 }
 function FUiMessageDialog_onItemClick(e){
    var o = this;
@@ -5043,13 +5009,6 @@ function FUiMessageDialog_onItemClick(e){
 }
 function FUiMessageDialog_onDescClick(e){
    var o = this;
-   return;
-   var st = o.hDescBody.style.display;
-   if('none' == st){
-      o.hDescBody.style.display = 'block';
-   }else{
-      o.hDescBody.style.display = 'none';
-   }
 }
 function FUiMessageDialog_onBuildMessages(){
    var o = this;
@@ -5409,25 +5368,7 @@ function FUiWindowConsole_loadDefine(name){
       root.create('Window', 'name', name);
       var cnn = new TXmlCnn();
       var doc = cnn.syncSend('window.xml', doc);
-      return doc.root();
-      var oNode = null;
-      var sNodeName = null;
-      var arNodes = oConnect.rootNode.nodes;
-      for(var n=0; n<arNodes.length; n++){
-         var oNode = arNodes[n];
-         sNodeName = oNode.name.toLowerCase();
-         if(sNodeName == 'window'){
-            var sFullName = oNode.attribute('name');
-            this.m_oDefinePool.setNameValue(sFullName, oNode);
-            if(sFullName == sWinName){
-               oWinNode = oNode;
-            }
-         }else if(sNodeName == 'dataset'){
-            DatasetManager.addDefine(oNode.attribute('name'), oNode);
-         }else if(sNodeName == 'searchlist'){
-            SearchManager.addDefine(oNode);
-         }
-      }
+      doc.root();
    }
    if(!config){
       return ILogger.fatal(this, 'loadDefine', 'Not find window define: ' + sWinName);
@@ -6793,14 +6734,6 @@ function FUiCalendarEditor_storeChange(){
 }
 function FUiCalendarEditor_onBuildButton(){
    var o = this;
-   return;
-   o.base.FDropEditor.onBuildButton.call(o);
-   var h = o.hNow = RBuilder.append(o.hButtonPanel, 'SPAN', o.style('Now'));
-   var hp = o.hButtonPanel;
-   hp.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
-   hp.height = 20;
-   h.innerText = RContext.get('FUiCalendarEditor:now');
-   o.attachEvent("onButtonNow",h);
 }
 function FUiCalendarEditor_onMdown(e){
    var o = e.source;
@@ -7372,17 +7305,6 @@ function FUiColor_onDataKeyDown(s, e){
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
 }
 function FUiColor_formatValue(v){
    var o = this;
@@ -7584,17 +7506,6 @@ function FUiColor3Tpl_onDataKeyDown(s, e){
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
 }
 function FUiColor3Tpl_formatValue(v){
    var o = this;
@@ -7749,17 +7660,6 @@ function FUiColor4_onDataKeyDown(s, e){
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
 }
 function FUiColor4_formatValue(v){
    var o = this;
@@ -7849,24 +7749,24 @@ function FUiColor4_clone(){
 function FUiColor4_link(){
    var o = this;
 }
-function FColorPicker(o){
+function FUiColorPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
    o.borderStyle = EUiBorder.RoundDrop;
-   o.onBuildEdit = FColorPicker_onBuildEdit;
-   o.onEditEnd   = FColorPicker_onEditEnd;
-   o.onDataKeyDown   = FColorPicker_onDataKeyDown;
-   o.checkColor = FColorPicker_checkColor;
-   o.setText     = FColorPicker_setText;
-   o.drop        = FColorPicker_drop;
-   o.dispose     = FColorPicker_dispose;
+   o.onBuildEdit = FUiColorPicker_onBuildEdit;
+   o.onEditEnd   = FUiColorPicker_onEditEnd;
+   o.onDataKeyDown   = FUiColorPicker_onDataKeyDown;
+   o.checkColor = FUiColorPicker_checkColor;
+   o.setText     = FUiColorPicker_setText;
+   o.drop        = FUiColorPicker_drop;
+   o.dispose     = FUiColorPicker_dispose;
    return o;
 }
-function FColorPicker_onBuildEdit(b){
+function FUiColorPicker_onBuildEdit(b){
    var o = this;
    var h = o.hEdit = RBuilder.appendEdit(b.hPanel, o.style('Edit'));
    h.maxLength = 20;
 }
-function FColorPicker_onEditEnd(editor){
+function FUiColorPicker_onEditEnd(editor){
    var o = this;
    RLog.debug(o, 'Begin (editor={0}:{1} value={2})', editor, editor?editor.color:'', o.dataValue);
    if(editor){
@@ -7876,12 +7776,12 @@ function FColorPicker_onEditEnd(editor){
    o.onDataEditEnd(o);
    RLog.debug(o, 'End (editor={0} value={1})', editor, o.dataValue);
 }
-function FColorPicker_setText(t){
+function FUiColorPicker_setText(t){
    var o = this;
    o.base.FEditControl.setText.call(o, RString.toUpper(t));
    o.hDrop.style.backgroundColor = t;
 }
-function FColorPicker_checkColor(c)
+function FUiColorPicker_checkColor(c)
 {
    var oSpan = document.createElement("<span style='color:"+c+";'></span>");
    if(oSpan.style.color != ""){
@@ -7889,9 +7789,8 @@ function FColorPicker_checkColor(c)
    }else{
       return false;
    }
-   oSpan = null;
 }
-function FColorPicker_onDataKeyDown(e){
+function FUiColorPicker_onDataKeyDown(e){
       var o = this;
       o.base.FEditControl.onDataKeyDown.call(o, o, e);
       if(o.checkColor(o.text())){
@@ -7900,17 +7799,17 @@ function FColorPicker_onDataKeyDown(e){
          o.hDrop.style.backgroundColor = '';
       }
 }
-function FColorPicker_drop(){
+function FUiColorPicker_drop(){
    var o = this;
    if(o.canDrop() && o.canEdit){
-      var ed = o.editor = RConsole.find(FEditConsole).focus(o, FColorPickerEditor, o.name);
+      var ed = o.editor = RConsole.find(FEditConsole).focus(o, FUiColorPickerEditor, o.name);
       if(ed.linkControl(o)){
          ed.set(o.reget());
       }
       ed.show();
    }
 }
-function FColorPicker_dispose(){
+function FUiColorPicker_dispose(){
    var o = this;
    o.base.FEditControl.dispose.call(o);
    RMemory.freeHtml(o.hEdit);
@@ -10611,17 +10510,6 @@ function FUiNumber_onDataKeyDown(s, e){
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
 }
 function FUiNumber_setText(t){
    var o = this;
@@ -10753,17 +10641,6 @@ function FUiNumber2_onDataKeyDown(s, e){
    o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
-   }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
    }
 }
 function FUiNumber2_formatValue(v){
@@ -10974,17 +10851,6 @@ function FUiNumber3_onDataKeyDown(s, e){
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
 }
 function FUiNumber3_formatValue(v){
    var o = this;
@@ -11143,17 +11009,6 @@ function FUiNumber4_onDataKeyDown(s, e){
    o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
-   }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
    }
 }
 function FUiNumber4_formatValue(v){
@@ -11426,22 +11281,6 @@ function FUiProgressBar_get(){
 function FUiProgressBar_set(value){
    var o = this;
    o._rate = value;
-   return;
-   var htb = o.hPanelForm;
-   if(!RString.isEmpty(value)){
-      htb.innerText = '';
-      htb.style.tableLayout  = 'fixed';
-      htb.height = 10;
-      var hr = htb.insertRow();
-      var v = RFloat.parse(RString.nvl(value));
-      v = v * 100;
-      v = v + "%";
-      var hc1 = hr.insertCell();
-      hc1.style.width = v;
-      hc1.style.backgroundColor = '#29BAD5';
-      var hc2 = hr.insertCell();
-      htb.title  = v;
-   }
 }
 function FUiProgressBar_dispose(){
    var o = this;
@@ -14122,13 +13961,6 @@ function FGridControl_pushButton(b){
 }
 function FGridControl_onMouseDown(e, he){
    var o = this;
-   return;
-   var fc = RConsole.find(FFocusConsole);
-   fc.focusClass(MDataset, o);
-   fc.focusHtml(he);
-   if(!RConsole.find(FDesignConsole).isDesign()){
-      he.cancelBubble = true;
-   }
 }
 function FGridControl_onHeadMouseDown(e){
    var o = this;
@@ -14374,7 +14206,6 @@ function FGridControl_getFormLink(t){
 }
 function FGridControl_getHeadMode(e){
    var o = this;
-   return;
    var p = RHtml.point(o._hHeadForm);
    var x = e.srcElement.offsetLeft + e.x - p.x;
    var cs = o._columns;
@@ -14677,7 +14508,6 @@ function FGridControl_storeValues(a){
    return a;
 }
 function FGridControl_buildRows(){
-   return;
    var o = this;
    var rs = o._rows;
    if(!rs.count){
@@ -15252,27 +15082,6 @@ function FTable_oeRefresh(e){
       hdp.style.height = (oh - hfph) + 'px';
       hdp.style.paddingLeft = hfpw;
       hdp.style.paddingTop = hfph;
-      return;
-      var ca = null;
-      var aw = ow;
-      var cs = o._columns;
-      var cc = cs.count();
-      for(var i = 0; i < cc; i++){
-         var c = cs.value(i);
-         if(c.isDisplay){
-            if(c.dispAuto){
-               if(ca){
-                  return RMessage.fatal(o, null, 'Too many auto column! (name1={1},name2={2})', ca.name, c.name);
-               }
-               ca = c;
-            }else{
-               aw -= c._hPanel.offsetWidth;
-            }
-         }
-      }
-      if(ca){
-         ca.setWidth(Math.max(aw - 1, ca.width ? ca.width : 120));
-      }
    }
 }
 function FTable_appendColumn(p){

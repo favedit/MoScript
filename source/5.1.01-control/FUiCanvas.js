@@ -1,6 +1,7 @@
 //==========================================================
-// <T>绘制对象。</T>
+// <T>界面画板象。</T>
 //
+// @class
 // @author maocy
 // @history 150127
 //==========================================================
@@ -12,7 +13,6 @@ function FUiCanvas(o){
    //..........................................................
    // @event
    o.onBuildPanel = FUiCanvas_onBuildPanel;
-   o.onBuild      = FUiCanvas_onBuild;
    //..........................................................
    // @method
    o.construct    = FUiCanvas_construct;
@@ -24,24 +24,11 @@ function FUiCanvas(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:TEventProcess 事件
 //==========================================================
-function FUiCanvas_onBuildPanel(p){
+function FUiCanvas_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
-}
-
-//==========================================================
-// <T>构建页面处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件
-//==========================================================
-function FUiCanvas_onBuild(p){
-   var o = this;
-   var t = o._tree;
-   var r = o.__base.FUiControl.onBuild.call(o, p);
-   // 建立底板
+   o._hPanel = RBuilder.create(event, 'CANVAS', o.styleName('Canvas'));
 }
 
 //==========================================================

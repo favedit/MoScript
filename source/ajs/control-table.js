@@ -1789,13 +1789,6 @@ function FGridControl_pushButton(b){
 }
 function FGridControl_onMouseDown(e, he){
    var o = this;
-   return;
-   var fc = RConsole.find(FFocusConsole);
-   fc.focusClass(MDataset, o);
-   fc.focusHtml(he);
-   if(!RConsole.find(FDesignConsole).isDesign()){
-      he.cancelBubble = true;
-   }
 }
 function FGridControl_onHeadMouseDown(e){
    var o = this;
@@ -2041,7 +2034,6 @@ function FGridControl_getFormLink(t){
 }
 function FGridControl_getHeadMode(e){
    var o = this;
-   return;
    var p = RHtml.point(o._hHeadForm);
    var x = e.srcElement.offsetLeft + e.x - p.x;
    var cs = o._columns;
@@ -2344,7 +2336,6 @@ function FGridControl_storeValues(a){
    return a;
 }
 function FGridControl_buildRows(){
-   return;
    var o = this;
    var rs = o._rows;
    if(!rs.count){
@@ -2919,27 +2910,6 @@ function FTable_oeRefresh(e){
       hdp.style.height = (oh - hfph) + 'px';
       hdp.style.paddingLeft = hfpw;
       hdp.style.paddingTop = hfph;
-      return;
-      var ca = null;
-      var aw = ow;
-      var cs = o._columns;
-      var cc = cs.count();
-      for(var i = 0; i < cc; i++){
-         var c = cs.value(i);
-         if(c.isDisplay){
-            if(c.dispAuto){
-               if(ca){
-                  return RMessage.fatal(o, null, 'Too many auto column! (name1={1},name2={2})', ca.name, c.name);
-               }
-               ca = c;
-            }else{
-               aw -= c._hPanel.offsetWidth;
-            }
-         }
-      }
-      if(ca){
-         ca.setWidth(Math.max(aw - 1, ca.width ? ca.width : 120));
-      }
    }
 }
 function FTable_appendColumn(p){

@@ -419,7 +419,6 @@ function FDsPrivateResourceTabBar_onButtonClick(event){
    var sender = event.sender;
    var name = sender.name();
    o._resourceTypeCd = name;
-   R
 }
 function FDsPrivateResourceTabBar_construct(){
    var o = this;

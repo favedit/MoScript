@@ -100,22 +100,21 @@ function FUiProgressBar_get(){
 function FUiProgressBar_set(value){
    var o = this;
    o._rate = value;
-   return;
-   var htb = o.hPanelForm;
-   if(!RString.isEmpty(value)){
-      htb.innerText = '';
-      htb.style.tableLayout  = 'fixed';
-      htb.height = 10;
-      var hr = htb.insertRow();
-      var v = RFloat.parse(RString.nvl(value));
-      v = v * 100;
-      v = v + "%";
-      var hc1 = hr.insertCell();
-      hc1.style.width = v;
-      hc1.style.backgroundColor = '#29BAD5';
-      var hc2 = hr.insertCell();
-      htb.title  = v;
-   }
+   //var htb = o.hPanelForm;
+   //if(!RString.isEmpty(value)){
+   //   htb.innerText = '';
+   //   htb.style.tableLayout  = 'fixed';
+   //   htb.height = 10;
+   //   var hr = htb.insertRow();
+   //   var v = RFloat.parse(RString.nvl(value));
+   //   v = v * 100;
+   //   v = v + "%";
+   //   var hc1 = hr.insertCell();
+   //   hc1.style.width = v;
+   //   hc1.style.backgroundColor = '#29BAD5';
+   //   var hc2 = hr.insertCell();
+   //   htb.title  = v;
+   //}
 }
 
 //==========================================================

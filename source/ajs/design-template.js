@@ -41,7 +41,6 @@ function FDsTemplateCanvasContent_onMouseCapture(p){
    if(!space){
       return;
    }
-   return;
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
    var d = t.renderables().get(0);
@@ -163,7 +162,6 @@ function FDsTemplateCanvasContent_loadByCode(code){
 function FDsTemplateCanvasContent_dispose(){
    var o = this;
   o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsTemplateCanvasToolBar(o){

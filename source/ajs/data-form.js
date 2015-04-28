@@ -48,7 +48,6 @@ function FUiDataColorPicker_onDataKeyDown(s, e){
       RKey.fixCase(e, o.editCase);
    }
    if(o._editable){
-      return;
       if(o.editComplete){
          if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
             var ed = o.findEditor();
@@ -147,17 +146,6 @@ function FUiDataEdit_onDataKeyDown(s, e){
    o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
-   }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
    }
 }
 function FUiDataEdit_formatValue(v){
@@ -682,17 +670,6 @@ function FUiDataIconPicker_onDataKeyDown(s, e){
    o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
-   }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
    }
 }
 function FUiDataIconPicker_formatValue(v){
