@@ -556,10 +556,6 @@ function FDsSceneCatalogToolBar_dispose(){
 }
 function FDsSceneFrameSet(o){
    o = RClass.inherits(this, o, FDsFrameSet);
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
    o._frameCatalog         = null;
    o._frameCatalogToolBar  = null;
    o._frameCatalogContent  = null;
@@ -581,11 +577,11 @@ function FDsSceneFrameSet(o){
 function FDsSceneFrameSet_onBuilded(event){
    var o = this;
    o.__base.FDsFrameSet.onBuilded.call(o, event);
-   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogToolBar._hPanel.className = o.styleName('ToolBar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
-   o._frameCanvasToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCanvasToolBar._hPanel.className = o.styleName('ToolBar_Ground');
    o._frameCanvasContent._hPanel.className = o.styleName('Canvas_Content');
-   o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._framePropertyToolBar._hPanel.className = o.styleName('ToolBar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    var spliter = o._spliterCatalog;
    spliter.setAlignCd(EUiAlign.Left);

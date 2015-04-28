@@ -1384,7 +1384,6 @@ function FDsSpaceCanvas(o){
    o.switchMode           = FDsSpaceCanvas_switchMode;
    o.switchPlay           = FDsSpaceCanvas_switchPlay;
    o.switchMovie          = FDsSpaceCanvas_switchMovie;
-   o.loadByGuid           = FDsSpaceCanvas_loadByGuid;
    o.dispose              = FDsSpaceCanvas_dispose;
    return o;
 }

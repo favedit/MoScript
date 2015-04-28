@@ -25,7 +25,7 @@ function FDsPrivateModelFrameSet(o){
 function FDsPrivateModelFrameSet_onBuilded(event){
    var o = this;
    o.__base.FDsModelFrameSet.onBuilded.call(o, event);
-   var toolbar = o._catalogToolbar = RClass.create(FDsPrivateModelCatalogToolBar);
+   var toolbar = o._catalogToolBar = RClass.create(FDsPrivateModelCatalogToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
@@ -34,7 +34,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
    o._frameCatalogContent.push(catalog);
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateModelCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateModelCanvasToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);

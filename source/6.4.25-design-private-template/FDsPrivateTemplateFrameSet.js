@@ -28,7 +28,7 @@ function FDsPrivateTemplateFrameSet_onBuilded(event){
    o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置目录工具栏
-   var toolbar = o._catalogToolbar = RClass.create(FDsPrivateTemplateCatalogToolBar);
+   var toolbar = o._catalogToolBar = RClass.create(FDsPrivateTemplateCatalogToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
@@ -40,9 +40,8 @@ function FDsPrivateTemplateFrameSet_onBuilded(event){
    o._frameCatalogContent.push(catalog);
    //..........................................................
    // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateTemplateCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateTemplateCanvasToolBar);
    toolbar._frameSet = o;
-   toolbar._workspace = o._worksapce;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板
@@ -50,7 +49,6 @@ function FDsPrivateTemplateFrameSet_onBuilded(event){
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
-   canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
    canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(event);

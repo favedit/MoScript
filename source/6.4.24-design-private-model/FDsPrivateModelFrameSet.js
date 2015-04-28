@@ -26,7 +26,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    o.__base.FDsModelFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置目录工具栏
-   var toolbar = o._catalogToolbar = RClass.create(FDsPrivateModelCatalogToolBar);
+   var toolbar = o._catalogToolBar = RClass.create(FDsPrivateModelCatalogToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
@@ -38,7 +38,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    o._frameCatalogContent.push(catalog);
    //..........................................................
    // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateModelCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateModelCanvasToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
