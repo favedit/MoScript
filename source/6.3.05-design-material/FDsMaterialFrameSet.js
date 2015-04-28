@@ -186,8 +186,8 @@ function FDsMaterialFrameSet_loadByGuid(guid){
    // 加载目录
    o._catalogContent.serviceList(guid);
    // 加载画板
-   //var canvas = o._canvasContent;
-   //canvas.loadByGuid(guid);
+   var canvas = o._canvasContent;
+   canvas.loadByGuid(guid);
    // 加载属性
    var frame = o.findPropertyFrame(EDsFrame.MaterialPropertyFrame);
    frame.loadObject(resource);

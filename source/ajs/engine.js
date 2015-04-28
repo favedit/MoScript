@@ -567,11 +567,11 @@ function FResourceConsole(o){
    o.load                 = FResourceConsole_load;
    return o;
 }
-function FResourceConsole_onComplete(r, d){
+function FResourceConsole_onComplete(connection, data){
    var o = this;
-   r._data = null;
-   o._loadingResources.remove(r);
-   r.onComplete(d);
+   connection._data = null;
+   o._loadingResources.remove(connection);
+   connection.onComplete(data);
 }
 function FResourceConsole_onPipelineComplete(p, r, d){
    var o = this;

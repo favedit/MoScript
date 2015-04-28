@@ -22,25 +22,27 @@ function FE3sVendorNet(o){
 function FE3sVendorNet_makeSource(){
    var o = this;
    // 生成地址
-   var u = o._contentUrl;
-   if(u.indexOf('?') == -1){
-      u += '?';
+   var url = o._contentUrl;
+   if(url.indexOf('?') == -1){
+      url += '?';
+   }else{
+      url += '&';
    }
    // 设置参数
-   var s = o._parameters;
-   var c = s.count();
-   var f = false;
-   for(var i = 0; i < c; i++){
-      var n = s.name(i);
-      var v = s.value(i);
-      if(!RString.isEmpty(v)){
-         if(f){
-            u += '&';
+   var parameters = o._parameters;
+   var count = parameters.count();
+   var first = false;
+   for(var i = 0; i < count; i++){
+      var name = parameters.name(i);
+      var value = parameters.value(i);
+      if(!RString.isEmpty(value)){
+         if(first){
+            url += '&';
          }else{
-            f = true;
+            first = true;
          }
-         u += n + '=' + v;
+         url += name + '=' + value;
       }
    }
-   return u
+   return url;
 }

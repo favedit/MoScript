@@ -20632,11 +20632,11 @@ function FResourceConsole(o){
    o.load                 = FResourceConsole_load;
    return o;
 }
-function FResourceConsole_onComplete(r, d){
+function FResourceConsole_onComplete(connection, data){
    var o = this;
-   r._data = null;
-   o._loadingResources.remove(r);
-   r.onComplete(d);
+   connection._data = null;
+   o._loadingResources.remove(connection);
+   connection.onComplete(data);
 }
 function FResourceConsole_onPipelineComplete(p, r, d){
    var o = this;
@@ -22588,15 +22588,19 @@ function FE3sMaterialBitmapPack_dispose(){
 }
 function FE3sMaterialConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._resources  = null;
    o._materials  = null;
    o.construct   = FE3sMaterialConsole_construct;
    o.find        = FE3sMaterialConsole_find;
    o.unserialize = FE3sMaterialConsole_unserialize;
+   o.loadByGuid  = FE3sMaterialConsole_loadByGuid;
+   o.dispose     = FE3sMaterialConsole_dispose;
    return o;
 }
 function FE3sMaterialConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._resources = new TDictionary();
    o._materials = new TDictionary();
 }
 function FE3sMaterialConsole_find(p){
@@ -22612,6 +22616,48 @@ function FE3sMaterialConsole_unserialize(input){
    }
    o._materials.set(materialGuid, material);
    return material;
+}
+function FE3sMaterialConsole_loadByGuid(guid){
+   var o = this;
+   var resources = o._resources;
+   var resource = resources.get(guid);
+   if(resource){
+      return resource;
+   }
+   var vendor = RConsole.find(FE3sVendorConsole).find('material');
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
+   resource = RClass.create(FE3sMaterialResource);
+   resource.setGuid(guid);
+   resource.setVendor(vendor);
+   resource.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(resource);
+   resources.set(guid, resource);
+   return resource;
+}
+function FE3sMaterialConsole_dispose(){
+   var o = this;
+   o._resources = RObject.free(o._resources);
+   o._materials = RObject.free(o._materials);
+   o.__base.FConsole.dispose.call(o);
+}
+function FE3sMaterialResource(o){
+   o = RClass.inherits(this, o, FE3sResource);
+   o._typeName     = 'Material';
+   o._dataCompress = true;
+   o._material     = null;
+   o.material      = FE3sMaterialResource_material;
+   o.unserialize   = FE3sMaterialResource_unserialize;
+   return o;
+}
+function FE3sMaterialResource_material(){
+   return this._material;
+}
+function FE3sMaterialResource_unserialize(input){
+   var o = this;
+   o.__base.FE3sResource.unserialize.call(o, input);
+   o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
+   RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
 }
 function FE3sMesh(o){
    o = RClass.inherits(this, o, FE3sSpace, ME3sGeometry);
@@ -23249,17 +23295,15 @@ function FE3sRenderable(o){
    return o;
 }
 function FE3sResource(o){
-   o = RClass.inherits(this, o, FResource);
+   o = RClass.inherits(this, o, FResource, MListenerLoad);
    o._dataLoad     = false;
    o._dataReady    = false;
    o._dataSize     = 0;
    o._dataCompress = false;
-   o._lsnsLoad     = null;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
-   o.loadListener  = FE3sResource_loadListener;
    o.testReady     = FE3sResource_testReady;
    o.unserialize   = FE3sResource_unserialize;
    o.saveConfig    = FE3sResource_saveConfig;
@@ -23267,24 +23311,22 @@ function FE3sResource(o){
    o.dispose       = FE3sResource_dispose;
    return o;
 }
-function FE3sResource_onComplete(p){
+function FE3sResource_onComplete(input){
    var o = this;
-   var v = RClass.create(FDataView);
-   v.setEndianCd(true);
-   if(p.constructor == Array){
-      var pb = new Uint8Array(p);
-      v.link(pb.buffer);
-   }else if(p.constructor == Uint8Array){
-      v.link(p.buffer);
+   var view = RClass.create(FDataView);
+   view.setEndianCd(true);
+   if(input.constructor == Array){
+      var inputData = new Uint8Array(input);
+      view.link(inputData.buffer);
+   }else if(input.constructor == Uint8Array){
+      view.link(input.buffer);
    }else{
-      v.link(p.outputData());
+      view.link(input.outputData());
    }
-   o.unserialize(v);
-   v.dispose();
+   o.unserialize(view);
+   view.dispose();
    o._dataReady = true;
-   if(o._lsnsLoad){
-      o._lsnsLoad.process();
-   }
+   o.processLoadListener();
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -23292,23 +23334,15 @@ function FE3sResource_vendor(){
 function FE3sResource_setVendor(p){
    this._vendor = p;
 }
-function FE3sResource_loadListener(){
-   var o = this;
-   var ls = o._lsnsLoad;
-   if(ls == null){
-      ls = o._lsnsLoad = new TListeners();
-   }
-   return ls;
-}
 function FE3sResource_testReady(){
    return this._dataReady;
 }
-function FE3sResource_unserialize(p){
+function FE3sResource_unserialize(input){
    var o = this;
-   o._typeName = p.readString();
-   o._guid = p.readString();
-   o._code = p.readString();
-   o._label = p.readString();
+   o._typeName = input.readString();
+   o._guid = input.readString();
+   o._code = input.readString();
+   o._label = input.readString();
 }
 function FE3sResource_saveConfig(xconfig){
    var o = this;
@@ -23332,8 +23366,8 @@ function FE3sResource_load(u){
 }
 function FE3sResource_dispose(){
    var o = this;
-   o._lsnsLoad = null;
    o._vendor = null;
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FConsole.dispose.call(o);
 }
 function FE3sResourceConsole(o){
@@ -24565,12 +24599,14 @@ function FE3sVendorConsole_setup(p){
    var o = this;
    if(p == 'net'){
       o._vendors.set('bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.bitmap.wv'), 'guid'));
+      o._vendors.set('material', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.material.wv?do=data'), 'guid'));
       o._vendors.set('mesh', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.mesh.wv'), 'guid'));
       o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.model.wv'), 'guid'));
       o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.template.wv'), 'guid'));
       o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.scene.wv'), 'guid|code'));
    }else if(p == 'local'){
-      o._vendors.set('bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
+      o._vendors.set('bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/bitmap/{guid}.bin')));
+      o._vendors.set('material', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/material/{guid}.bin')));
       o._vendors.set('mesh', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/mesh/{guid}.bin')));
       o._vendors.set('model', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/model/{guid}.bin')));
       o._vendors.set('template', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/template/{guid}.bin')));
@@ -24604,26 +24640,28 @@ function FE3sVendorNet(o){
 }
 function FE3sVendorNet_makeSource(){
    var o = this;
-   var u = o._contentUrl;
-   if(u.indexOf('?') == -1){
-      u += '?';
+   var url = o._contentUrl;
+   if(url.indexOf('?') == -1){
+      url += '?';
+   }else{
+      url += '&';
    }
-   var s = o._parameters;
-   var c = s.count();
-   var f = false;
-   for(var i = 0; i < c; i++){
-      var n = s.name(i);
-      var v = s.value(i);
-      if(!RString.isEmpty(v)){
-         if(f){
-            u += '&';
+   var parameters = o._parameters;
+   var count = parameters.count();
+   var first = false;
+   for(var i = 0; i < count; i++){
+      var name = parameters.name(i);
+      var value = parameters.value(i);
+      if(!RString.isEmpty(value)){
+         if(first){
+            url += '&';
          }else{
-            f = true;
+            first = true;
          }
-         u += n + '=' + v;
+         url += name + '=' + value;
       }
    }
-   return u
+   return url;
 }
 function SE3rPlayInfo(o){
    if(!o){o = this;}
@@ -61896,22 +61934,10 @@ function FDsMaterialCanvasBitmap(o){
 }
 function FDsMaterialCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._activeGuid          = null;
-   o._activeSpace         = null;
-   o._activeBitmap        = null;
-   o._autoDistance        = null;
-   o._autoOutline         = null;
-   o._autoMatrix          = null;
-   o._canvasModeCd        = EDsCanvasMode.Drop;
-   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
+   o._activeResource      = null;
+   o._activeMaterial      = null;
    o._capturePosition     = null;
    o._captureCameraPosition = null;
-   o._dimensional         = null;
-   o._switchWidth         = '*';
-   o._switchHeight        = '*';
-   o._cameraMoveRate      = 8;
-   o._cameraKeyRotation   = 3;
-   o._cameraMouseMove     = 0.05;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -61920,15 +61946,10 @@ function FDsMaterialCanvasContent(o){
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
    o.onBuild              = FDsMaterialCanvasContent_onBuild;
-   o.onMouseCaptureStart  = FDsMaterialCanvasContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsMaterialCanvasContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsMaterialCanvasContent_onMouseCaptureStop;
    o.onLoaded             = FDsMaterialCanvasContent_onLoaded;
    o.oeResize             = FDsMaterialCanvasContent_oeResize;
    o.oeRefresh            = FDsMaterialCanvasContent_oeRefresh;
    o.construct            = FDsMaterialCanvasContent_construct;
-   o.switchSize           = FDsMaterialCanvasContent_switchSize;
-   o.viewAutoSize         = FDsMaterialCanvasContent_viewAutoSize;
    o.reloadRegion         = FDsMaterialCanvasContent_reloadRegion;
    o.loadByGuid           = FDsMaterialCanvasContent_loadByGuid;
    o.dispose              = FDsMaterialCanvasContent_dispose;
@@ -61953,41 +61974,9 @@ function FDsMaterialCanvasContent_onBuild(p){
    projection._angle = 45;
    projection.update();
 }
-function FDsMaterialCanvasContent_onMouseCaptureStart(event){
-   var o = this;
-   var space = o._activeSpace;
-   if(!space){
-      return;
-   }
-   o._capturePosition.set(event.clientX, event.clientY);
-   o._captureCameraPosition.assign(space.camera().position());
-   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
-}
-function FDsMaterialCanvasContent_onMouseCapture(event){
-   var o = this;
-   var space = o._activeSpace;
-   if(!space){
-      return;
-   }
-   var cx = event.clientX - o._capturePosition.x;
-   var cy = event.clientY - o._capturePosition.y;
-   var mv = o._canvasMoveCd;
-   var cm = o._captureMatrix;
-   switch(o._canvasModeCd){
-      case EDsCanvasMode.Drop:
-         var camera = space.camera();
-         camera.position().x = o._captureCameraPosition.x - cx * o._cameraMouseMove;
-         camera.position().z = o._captureCameraPosition.z - cy * o._cameraMouseMove;
-         camera.update();
-         break;
-   }
-}
-function FDsMaterialCanvasContent_onMouseCaptureStop(p){
-   var o = this;
-   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
-}
 function FDsMaterialCanvasContent_onLoaded(event){
    var o = this;
+   var material = o._activeMaterial = o._activeResource.material();
    RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMaterialCanvasContent_oeResize(p){
@@ -62010,9 +61999,6 @@ function FDsMaterialCanvasContent_oeRefresh(p){
 function FDsMaterialCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
-   o._autoDistance = new SPoint3(6, 6, 6);
-   o._autoOutline = new SOutline3d();
-   o._autoMatrix = new SMatrix3d();
    o._capturePosition = new SPoint2();
    o._captureCameraPosition = new SPoint3();
 }
@@ -62026,82 +62012,6 @@ function FDsMaterialCanvasContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
 }
-function FDsMaterialCanvasContent_switchSize(width, height){
-   var o = this;
-   o._switchWidth = width;
-   o._switchHeight = height;
-   var hCanvas = o._hPanel;
-   var hParent = o._hParent;
-   if(width == '*'){
-      width = hParent.offsetWidth;
-   }
-   if(height == '*'){
-      height = hParent.offsetHeight;
-   }
-   hCanvas.width = width;
-   hCanvas.style.width = width + 'px';
-   hCanvas.height = height;
-   hCanvas.style.height = height + 'px';
-   o._graphicContext.setViewport(0, 0, width, height);
-   var space = o._activeSpace;
-   if(space){
-      var projection = space.camera().projection();
-      projection.size().set(width, height);
-      projection.update();
-   }
-}
-function FDsMaterialCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
-   var o = this;
-   var outline = o._autoOutline;
-   var space = o._activeSpace;
-   var display = space._display;
-   var displayResource = display.resource();
-   var displayMatrix = displayResource.matrix();
-   var renderable = display._renderable;
-   var renderableResource = renderable.resource();
-   var renderableMatrix = renderableResource.matrix();
-   if(rotationX){
-      displayMatrix.rx += RConst.PI_2;
-   }
-   if(rotationY){
-      displayMatrix.ry += RConst.PI_2;
-   }
-   if(rotationZ){
-      displayMatrix.rz += RConst.PI_2;
-   }
-   var matrix = o._autoMatrix.identity();
-   matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
-   matrix.update();
-   var resource = space.resource();
-   var resourceOutline = resource.calculateOutline();
-   outline.calculateFrom(resourceOutline, matrix);
-   if(flipX){
-      displayMatrix.sx = -displayMatrix.sx;
-   }
-   if(flipY){
-      displayMatrix.sy = -displayMatrix.sy;
-   }
-   if(flipZ){
-      displayMatrix.sz = -displayMatrix.sz;
-   }
-   var autoDistance = o._autoDistance;
-   var scaleX = autoDistance.x / outline.distance.x;
-   var scaleY = autoDistance.y / outline.distance.y;
-   var scaleZ = autoDistance.z / outline.distance.z;
-   var scale = RMath.min(scaleX, scaleY, scaleZ);
-   scaleX = scale * RMath.sign(displayMatrix.sx)
-   scaleY = scale * RMath.sign(displayMatrix.sy)
-   scaleZ = scale * RMath.sign(displayMatrix.sz)
-   var x = -outline.center.x * scaleX;
-   var y = -outline.min.y * scaleY;
-   var z = -outline.center.z * scaleZ;
-   displayMatrix.setTranslate(x, y, z);
-   displayMatrix.setScale(scaleX, scaleY, scaleZ);
-   displayMatrix.update();
-   display.reloadResource();
-   renderableMatrix.identity();
-   renderable.reloadResource();
-}
 function FDsMaterialCanvasContent_reloadRegion(region){
    var o = this;
    var resource = region.resource();
@@ -62111,13 +62021,9 @@ function FDsMaterialCanvasContent_reloadRegion(region){
 }
 function FDsMaterialCanvasContent_loadByGuid(guid){
    var o = this;
-   debugger
    RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
-   var bitmap = o._activeBitmap;
-   bitmap.loadUrl(url);
-   bitmap.clearLoadListeners();
-   bitmap.addLoadListener(o, o.onLoaded);
+   var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+   resource.addLoadListener(o, o.onLoaded);
 }
 function FDsMaterialCanvasContent_dispose(){
    var o = this;
@@ -62422,6 +62328,8 @@ function FDsMaterialFrameSet_loadByGuid(guid){
    o._activeGuid = guid;
    var resource = o._activeResource = RConsole.find(FDrMaterialConsole).query(guid);
    o._catalogContent.serviceList(guid);
+   var canvas = o._canvasContent;
+   canvas.loadByGuid(guid);
    var frame = o.findPropertyFrame(EDsFrame.MaterialPropertyFrame);
    frame.loadObject(resource);
 }
@@ -62434,22 +62342,99 @@ function FDsMaterialFrameSet_dispose(){
    var o = this;
    o.__base.FDsFrameSet.dispose.call(o);
 }
+function FDsMaterialImportDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.material.ImportDialog';
+   o._nodeGuid             = null;
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsMaterialImportDialog_onBuilded;
+   o.onFileLoaded          = FDsMaterialImportDialog_onFileLoaded;
+   o.onConfirmLoad         = FDsMaterialImportDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsMaterialImportDialog_onConfirmClick;
+   o.onCancelClick         = FDsMaterialImportDialog_onCancelClick;
+   o.construct             = FDsMaterialImportDialog_construct;
+   o.dispose               = FDsMaterialImportDialog_dispose;
+   return o;
+}
+function FDsMaterialImportDialog_onBuilded(event){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, event);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsMaterialImportDialog_onFileLoaded(event){
+   var o = this;
+   var reader = o._fileReader;
+   var resource = o._resource;
+   var guid = resource.guid();
+   var url = '/cloud.resource.material.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
+   var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+   connection.addLoadListener(o, o.onConfirmLoad);
+   o._fileReader = RObject.dispose(reader);
+}
+function FDsMaterialImportDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+   o._frameSet.reload();
+}
+function FDsMaterialImportDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var file = o._controlFile._hInput.files[0];
+   var reader = o._fileReader = RClass.create(FFileReader);
+   reader.addLoadListener(o, o.onFileLoaded);
+   reader.loadFile(file);
+}
+function FDsMaterialImportDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsMaterialImportDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsMaterialImportDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsMaterialMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
-   o.onBuilded             = FDsMaterialMenuBar_onBuilded;
-   o.onSaveLoad            = FDsMaterialMenuBar_onSaveLoad;
-   o.onSaveClick           = FDsMaterialMenuBar_onSaveClick;
-   o.onCaptureLoad         = FDsMaterialMenuBar_onCaptureLoad;
-   o.onCaptureClick        = FDsMaterialMenuBar_onCaptureClick;
-   o.construct             = FDsMaterialMenuBar_construct;
-   o.dispose               = FDsMaterialMenuBar_dispose;
+   o._controlBack     = null;
+   o._controlSave     = null;
+   o._controlProperty = null;
+   o._controlSelect   = null;
+   o._controlImport   = null;
+   o._controlCapture  = null;
+   o.onBuilded        = FDsMaterialMenuBar_onBuilded;
+   o.onBackClick      = FDsMaterialMenuBar_onBackClick;
+   o.onSaveLoad       = FDsMaterialMenuBar_onSaveLoad;
+   o.onSaveClick      = FDsMaterialMenuBar_onSaveClick;
+   o.onPropertyClick  = FDsMaterialMenuBar_onPropertyClick;
+   o.onSelectLoad     = FDsMaterialMenuBar_onSelectLoad;
+   o.onSelectConfirm  = FDsMaterialMenuBar_onSelectConfirm;
+   o.onSelectClick    = FDsMaterialMenuBar_onSelectClick;
+   o.onImportClick    = FDsMaterialMenuBar_onImportClick;
+   o.onCaptureLoad    = FDsMaterialMenuBar_onCaptureLoad;
+   o.onCaptureClick   = FDsMaterialMenuBar_onCaptureClick;
+   o.construct        = FDsMaterialMenuBar_construct;
+   o.dispose          = FDsMaterialMenuBar_dispose;
    return o;
 }
 function FDsMaterialMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o._controlBack.addClickListener(o, o.onBackClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlProperty.addClickListener(o, o.onPropertyClick);
+   o._controlSelect.addClickListener(o, o.onSelectClick);
+   o._controlImport.addClickListener(o, o.onImportClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+}
+function FDsMaterialMenuBar_onBackClick(event){
+   var o = this;
 }
 function FDsMaterialMenuBar_onSaveLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
@@ -62463,6 +62448,29 @@ function FDsMaterialMenuBar_onSaveClick(p){
    resource.saveConfig(xconfig);
    var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
+}
+function FDsMaterialMenuBar_onPropertyClick(event){
+   var o = this;
+}
+function FDsMaterialMenuBar_onSelectLoad(event){
+}
+function FDsMaterialMenuBar_onSelectConfirm(event){
+}
+function FDsMaterialMenuBar_onSelectClick(event){
+   var o = this;
+   var resource = o._frameSet._activeResource;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsMaterialMenuBar_onImportClick(event){
+   var o = this;
+   var resource = o._frameSet._activeResource;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsMaterialMenuBar_onCaptureLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
@@ -62611,6 +62619,64 @@ function FDsMaterialPropertyToolBar_construct(){
 function FDsMaterialPropertyToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsMaterialSelectDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.material.SelectDialog';
+   o._nodeGuid             = null;
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsMaterialSelectDialog_onBuilded;
+   o.onFileLoaded          = FDsMaterialSelectDialog_onFileLoaded;
+   o.onConfirmLoad         = FDsMaterialSelectDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsMaterialSelectDialog_onConfirmClick;
+   o.onCancelClick         = FDsMaterialSelectDialog_onCancelClick;
+   o.construct             = FDsMaterialSelectDialog_construct;
+   o.dispose               = FDsMaterialSelectDialog_dispose;
+   return o;
+}
+function FDsMaterialSelectDialog_onBuilded(event){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, event);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsMaterialSelectDialog_onFileLoaded(event){
+   var o = this;
+   var reader = o._fileReader;
+   var resource = o._resource;
+   var guid = resource.guid();
+   var url = '/cloud.resource.material.wv?do=importData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
+   var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+   connection.addLoadListener(o, o.onConfirmLoad);
+   o._fileReader = RObject.dispose(reader);
+}
+function FDsMaterialSelectDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+   o._frameSet.reload();
+}
+function FDsMaterialSelectDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var file = o._controlFile._hInput.files[0];
+   var reader = o._fileReader = RClass.create(FFileReader);
+   reader.addLoadListener(o, o.onFileLoaded);
+   reader.loadFile(file);
+}
+function FDsMaterialSelectDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsMaterialSelectDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsMaterialSelectDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsMaterialWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);

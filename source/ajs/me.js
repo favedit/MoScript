@@ -20632,11 +20632,11 @@ function FResourceConsole(o){
    o.load                 = FResourceConsole_load;
    return o;
 }
-function FResourceConsole_onComplete(r, d){
+function FResourceConsole_onComplete(connection, data){
    var o = this;
-   r._data = null;
-   o._loadingResources.remove(r);
-   r.onComplete(d);
+   connection._data = null;
+   o._loadingResources.remove(connection);
+   connection.onComplete(data);
 }
 function FResourceConsole_onPipelineComplete(p, r, d){
    var o = this;
@@ -22588,15 +22588,19 @@ function FE3sMaterialBitmapPack_dispose(){
 }
 function FE3sMaterialConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._resources  = null;
    o._materials  = null;
    o.construct   = FE3sMaterialConsole_construct;
    o.find        = FE3sMaterialConsole_find;
    o.unserialize = FE3sMaterialConsole_unserialize;
+   o.loadByGuid  = FE3sMaterialConsole_loadByGuid;
+   o.dispose     = FE3sMaterialConsole_dispose;
    return o;
 }
 function FE3sMaterialConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._resources = new TDictionary();
    o._materials = new TDictionary();
 }
 function FE3sMaterialConsole_find(p){
@@ -22612,6 +22616,48 @@ function FE3sMaterialConsole_unserialize(input){
    }
    o._materials.set(materialGuid, material);
    return material;
+}
+function FE3sMaterialConsole_loadByGuid(guid){
+   var o = this;
+   var resources = o._resources;
+   var resource = resources.get(guid);
+   if(resource){
+      return resource;
+   }
+   var vendor = RConsole.find(FE3sVendorConsole).find('material');
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
+   resource = RClass.create(FE3sMaterialResource);
+   resource.setGuid(guid);
+   resource.setVendor(vendor);
+   resource.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(resource);
+   resources.set(guid, resource);
+   return resource;
+}
+function FE3sMaterialConsole_dispose(){
+   var o = this;
+   o._resources = RObject.free(o._resources);
+   o._materials = RObject.free(o._materials);
+   o.__base.FConsole.dispose.call(o);
+}
+function FE3sMaterialResource(o){
+   o = RClass.inherits(this, o, FE3sResource);
+   o._typeName     = 'Material';
+   o._dataCompress = true;
+   o._material     = null;
+   o.material      = FE3sMaterialResource_material;
+   o.unserialize   = FE3sMaterialResource_unserialize;
+   return o;
+}
+function FE3sMaterialResource_material(){
+   return this._material;
+}
+function FE3sMaterialResource_unserialize(input){
+   var o = this;
+   o.__base.FE3sResource.unserialize.call(o, input);
+   o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
+   RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
 }
 function FE3sMesh(o){
    o = RClass.inherits(this, o, FE3sSpace, ME3sGeometry);
@@ -23249,17 +23295,15 @@ function FE3sRenderable(o){
    return o;
 }
 function FE3sResource(o){
-   o = RClass.inherits(this, o, FResource);
+   o = RClass.inherits(this, o, FResource, MListenerLoad);
    o._dataLoad     = false;
    o._dataReady    = false;
    o._dataSize     = 0;
    o._dataCompress = false;
-   o._lsnsLoad     = null;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
-   o.loadListener  = FE3sResource_loadListener;
    o.testReady     = FE3sResource_testReady;
    o.unserialize   = FE3sResource_unserialize;
    o.saveConfig    = FE3sResource_saveConfig;
@@ -23267,24 +23311,22 @@ function FE3sResource(o){
    o.dispose       = FE3sResource_dispose;
    return o;
 }
-function FE3sResource_onComplete(p){
+function FE3sResource_onComplete(input){
    var o = this;
-   var v = RClass.create(FDataView);
-   v.setEndianCd(true);
-   if(p.constructor == Array){
-      var pb = new Uint8Array(p);
-      v.link(pb.buffer);
-   }else if(p.constructor == Uint8Array){
-      v.link(p.buffer);
+   var view = RClass.create(FDataView);
+   view.setEndianCd(true);
+   if(input.constructor == Array){
+      var inputData = new Uint8Array(input);
+      view.link(inputData.buffer);
+   }else if(input.constructor == Uint8Array){
+      view.link(input.buffer);
    }else{
-      v.link(p.outputData());
+      view.link(input.outputData());
    }
-   o.unserialize(v);
-   v.dispose();
+   o.unserialize(view);
+   view.dispose();
    o._dataReady = true;
-   if(o._lsnsLoad){
-      o._lsnsLoad.process();
-   }
+   o.processLoadListener();
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -23292,23 +23334,15 @@ function FE3sResource_vendor(){
 function FE3sResource_setVendor(p){
    this._vendor = p;
 }
-function FE3sResource_loadListener(){
-   var o = this;
-   var ls = o._lsnsLoad;
-   if(ls == null){
-      ls = o._lsnsLoad = new TListeners();
-   }
-   return ls;
-}
 function FE3sResource_testReady(){
    return this._dataReady;
 }
-function FE3sResource_unserialize(p){
+function FE3sResource_unserialize(input){
    var o = this;
-   o._typeName = p.readString();
-   o._guid = p.readString();
-   o._code = p.readString();
-   o._label = p.readString();
+   o._typeName = input.readString();
+   o._guid = input.readString();
+   o._code = input.readString();
+   o._label = input.readString();
 }
 function FE3sResource_saveConfig(xconfig){
    var o = this;
@@ -23332,8 +23366,8 @@ function FE3sResource_load(u){
 }
 function FE3sResource_dispose(){
    var o = this;
-   o._lsnsLoad = null;
    o._vendor = null;
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FConsole.dispose.call(o);
 }
 function FE3sResourceConsole(o){
@@ -24565,12 +24599,14 @@ function FE3sVendorConsole_setup(p){
    var o = this;
    if(p == 'net'){
       o._vendors.set('bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.bitmap.wv'), 'guid'));
+      o._vendors.set('material', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.material.wv?do=data'), 'guid'));
       o._vendors.set('mesh', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.mesh.wv'), 'guid'));
       o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.model.wv'), 'guid'));
       o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.template.wv'), 'guid'));
       o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.scene.wv'), 'guid|code'));
    }else if(p == 'local'){
-      o._vendors.set('bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
+      o._vendors.set('bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/bitmap/{guid}.bin')));
+      o._vendors.set('material', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/material/{guid}.bin')));
       o._vendors.set('mesh', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/mesh/{guid}.bin')));
       o._vendors.set('model', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/model/{guid}.bin')));
       o._vendors.set('template', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/template/{guid}.bin')));
@@ -24604,26 +24640,28 @@ function FE3sVendorNet(o){
 }
 function FE3sVendorNet_makeSource(){
    var o = this;
-   var u = o._contentUrl;
-   if(u.indexOf('?') == -1){
-      u += '?';
+   var url = o._contentUrl;
+   if(url.indexOf('?') == -1){
+      url += '?';
+   }else{
+      url += '&';
    }
-   var s = o._parameters;
-   var c = s.count();
-   var f = false;
-   for(var i = 0; i < c; i++){
-      var n = s.name(i);
-      var v = s.value(i);
-      if(!RString.isEmpty(v)){
-         if(f){
-            u += '&';
+   var parameters = o._parameters;
+   var count = parameters.count();
+   var first = false;
+   for(var i = 0; i < count; i++){
+      var name = parameters.name(i);
+      var value = parameters.value(i);
+      if(!RString.isEmpty(value)){
+         if(first){
+            url += '&';
          }else{
-            f = true;
+            first = true;
          }
-         u += n + '=' + v;
+         url += name + '=' + value;
       }
    }
-   return u
+   return url;
 }
 function SE3rPlayInfo(o){
    if(!o){o = this;}

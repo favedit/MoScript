@@ -8,21 +8,31 @@ function FDsMaterialMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @attribute
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
+   o._controlBack     = null;
+   o._controlSave     = null;
+   o._controlProperty = null;
+   o._controlSelect   = null;
+   o._controlImport   = null;
+   o._controlCapture  = null;
    //..........................................................
    // @event
-   o.onBuilded             = FDsMaterialMenuBar_onBuilded;
+   o.onBuilded        = FDsMaterialMenuBar_onBuilded;
    // @event
-   o.onSaveLoad            = FDsMaterialMenuBar_onSaveLoad;
-   o.onSaveClick           = FDsMaterialMenuBar_onSaveClick;
-   o.onCaptureLoad         = FDsMaterialMenuBar_onCaptureLoad;
-   o.onCaptureClick        = FDsMaterialMenuBar_onCaptureClick;
+   o.onBackClick      = FDsMaterialMenuBar_onBackClick;
+   o.onSaveLoad       = FDsMaterialMenuBar_onSaveLoad;
+   o.onSaveClick      = FDsMaterialMenuBar_onSaveClick;
+   o.onPropertyClick  = FDsMaterialMenuBar_onPropertyClick;
+   o.onSelectLoad     = FDsMaterialMenuBar_onSelectLoad;
+   o.onSelectConfirm  = FDsMaterialMenuBar_onSelectConfirm;
+   o.onSelectClick    = FDsMaterialMenuBar_onSelectClick;
+   o.onImportClick    = FDsMaterialMenuBar_onImportClick;
+   o.onCaptureLoad    = FDsMaterialMenuBar_onCaptureLoad;
+   o.onCaptureClick   = FDsMaterialMenuBar_onCaptureClick;
    //..........................................................
    // @method
-   o.construct             = FDsMaterialMenuBar_construct;
+   o.construct        = FDsMaterialMenuBar_construct;
    // @method
-   o.dispose               = FDsMaterialMenuBar_dispose;
+   o.dispose          = FDsMaterialMenuBar_dispose;
    return o;
 }
 
@@ -37,8 +47,22 @@ function FDsMaterialMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   //o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   //o._controlImportButton.addClickListener(o, o.onCaptureClick);
+   o._controlBack.addClickListener(o, o.onBackClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlProperty.addClickListener(o, o.onPropertyClick);
+   o._controlSelect.addClickListener(o, o.onSelectClick);
+   o._controlImport.addClickListener(o, o.onImportClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+}
+
+//==========================================================
+// <T>返回点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onBackClick(event){
+   var o = this;
 }
 
 //==========================================================
@@ -70,6 +94,68 @@ function FDsMaterialMenuBar_onSaveClick(p){
    // 更新处理
    var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
+}
+
+//==========================================================
+// <T>属性点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onPropertyClick(event){
+   var o = this;
+}
+
+//==========================================================
+// <T>选择加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onSelectLoad(event){
+}
+
+//==========================================================
+// <T>选择确认处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onSelectConfirm(event){
+}
+
+//==========================================================
+// <T>选择点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onSelectClick(event){
+   var o = this;
+   // 获得资源
+   var resource = o._frameSet._activeResource;
+   // 弹出界面
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
+}
+
+//==========================================================
+// <T>导入点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onImportClick(event){
+   var o = this;
+   // 获得资源
+   var resource = o._frameSet._activeResource;
+   // 弹出界面
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._resource = resource;
+   dialog._frameSet = o._frameSet;
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

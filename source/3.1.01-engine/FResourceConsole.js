@@ -47,13 +47,14 @@ function FResourceConsole(o){
 // <T>加载事件完成后，响应的处理。</T>
 //
 // @method
-// @param p:connection:FHttpConnection 链接
+// @param connection:FHttpConnection 链接
+// @param data:Object 数据
 //==========================================================
-function FResourceConsole_onComplete(r, d){
+function FResourceConsole_onComplete(connection, data){
    var o = this;
-   r._data = null;
-   o._loadingResources.remove(r);
-   r.onComplete(d);
+   connection._data = null;
+   o._loadingResources.remove(connection);
+   connection.onComplete(data);
 }
 
 //==========================================================
