@@ -1279,16 +1279,6 @@ function FE3dDisplayContainer_dispose(){
    o._materials = RObject.free(o._materials);
    o.__base.FDisplayContainer.dispose.call(o);
 }
-function FE3dMaterial(o){
-   o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
-   o.loadResource = FE3dMaterial_loadResource;
-   return o;
-}
-function FE3dMaterial_loadResource(p){
-   var o = this;
-   o._resource = p;
-   o._info.assign(p.info());
-}
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
    o._display           = null;
@@ -1299,6 +1289,7 @@ function FE3dRenderable(o){
    o._vertexBuffers     = null;
    o._indexBuffer       = null;
    o._materialReference = null;
+   o._materials         = null;
    o._textures          = null;
    o.construct          = FE3dRenderable_construct;
    o.setup              = RMethod.empty;
@@ -1311,6 +1302,8 @@ function FE3dRenderable(o){
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    o.materialReference  = FE3dRenderable_materialReference;
+   o.materials          = FE3dRenderable_materials;
+   o.pushMaterial       = FE3dRenderable_pushMaterial;
    o.findTexture        = FE3dRenderable_findTexture;
    o.pushTexture        = FE3dRenderable_pushTexture;
    o.textures           = FE3dRenderable_textures;
@@ -1367,6 +1360,17 @@ function FE3dRenderable_vertexBuffers(){
 }
 function FE3dRenderable_materialReference(){
    return this._materialReference;
+}
+function FE3dRenderable_materials(){
+   return this._materials;
+}
+function FE3dRenderable_pushMaterial(material){
+   var o = this;
+   var materials = o._materials;
+   if(!materials){
+      materials = o._materials = new TObjects();
+   }
+   materials.push(material);
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
@@ -2048,6 +2052,7 @@ function FE3sDisplay(o){
    o.renderables      = FE3sDisplay_renderables;
    o.calculateOutline = FE3sDisplay_calculateOutline;
    o.unserialize      = FE3sDisplay_unserialize;
+   o.saveConfig       = FE3sDisplay_saveConfig;
    o.clone            = FE3sDisplay_clone;
    return o;
 }
@@ -2087,6 +2092,19 @@ function FE3sDisplay_unserialize(input){
       for(var i = 0; i < renderableCount; i++){
          var renderable = resourceConsole.unserialize(input);
          renderables.push(renderable);
+      }
+   }
+}
+function FE3sDisplay_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDrawable.saveConfig.call(o, xconfig);
+   var renderables = o._renderables;
+   if(renderables){
+      var xrenderables = xconfig.create('RenderableCollection');
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.saveConfig(xrenderables.create('Renderable'));
       }
    }
 }
@@ -3246,6 +3264,7 @@ function FE3sRenderable(o){
    o._materialRefers   = null;
    o.construct         = FE3sRenderable_construct;
    o.materialRefers    = FE3sRenderable_materialRefers;
+   o.syncMaterialRefer = FE3sRenderable_syncMaterialRefer;
    o.pushMaterialRefer = FE3sRenderable_pushMaterialRefer;
    o.unserialize       = FE3sRenderable_unserialize;
    o.saveConfig        = FE3sRenderable_saveConfig;
@@ -3259,13 +3278,24 @@ function FE3sRenderable_construct(){
 function FE3sRenderable_materialRefers(){
    return this._materialRefers;
 }
+function FE3sRenderable_syncMaterialRefer(index){
+   var o = this;
+   var materialRefers = o._materialRefers;
+   if(!materialRefers){
+      materialRefers = o._materialRefers = new TObjects();
+   }
+   for(var i = materialRefers.count(); i <= index; i++){
+      materialRefers.push(RClass.create(FE3sMaterialRefer));
+   }
+   return materialRefers.at(index);
+}
 function FE3sRenderable_pushMaterialRefer(materialRefer){
    var o = this;
    var materialRefers = o._materialRefers;
    if(!materialRefers){
-      materialRefers = o._materialRefers = new TDictionary();
+      materialRefers = o._materialRefers = new TObjects();
    }
-   materialRefers.set(materialRefer.guid(), materialRefer);
+   materialRefers.push(materialRefer);
 }
 function FE3sRenderable_unserialize(input){
    var o = this;
@@ -5492,6 +5522,7 @@ function FE3rMaterial(o){
    o._reference     = null;
    o.visible        = FE3rMaterial_visible;
    o.setVisible     = FE3rMaterial_setVisible;
+   o.findBitmap     = FE3rMaterial_findBitmap;
    o.bitmaps        = FE3rMaterial_bitmaps;
    o.reference      = FE3rMaterial_reference;
    o.testReady      = FE3rMaterial_testReady;
@@ -5506,6 +5537,9 @@ function FE3rMaterial_visible(){
 }
 function FE3rMaterial_setVisible(p){
    this._visible = p;
+}
+function FE3rMaterial_findBitmap(code){
+   return this._bitmaps.get(code);
 }
 function FE3rMaterial_bitmaps(){
    return this._bitmaps;
@@ -6894,23 +6928,23 @@ function FE3dGeneralColorPass(o){
    return o;
 }
 function FE3dGeneralColorSkeletonEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    o._code            = 'general.color.skeleton';
    o._supportSkeleton = true;
    o.drawRenderable   = FE3dGeneralColorSkeletonEffect_drawRenderable;
    return o;
 }
-function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorSkeletonEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
-   var m = pr.material();
+   var vcp = region.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = region.calculate(EG3dRegionParameter.LightDirection);
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_model_matrix', renderable.currentMatrix());
+   p.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
@@ -6925,9 +6959,9 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   var bones = pr.bones();
+   var bones = renderable.bones();
    if(bones){
-      var boneCount = pr._boneLimit;
+      var boneCount = renderable._boneLimit;
       var data = RTypeArray.findTemp(EDataType.Float32, 16 * boneCount);
       for(var i = 0; i < boneCount; i++){
          var bone = bones.get(i);
@@ -6936,9 +6970,7 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
       }
       p.setParameter('vc_bone_matrix', data);
    }
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FE3dTechnique);
@@ -7992,7 +8024,13 @@ function FE3dInstanceConsole_create(code){
 }
 function FE3dMaterial(o){
    o = RClass.inherits(this, o, FE3rMaterial, MLinkerResource);
+   o.loadResource = FE3dMaterial_loadResource;
    return o;
+}
+function FE3dMaterial_loadResource(p){
+   var o = this;
+   o._resource = p;
+   o._info.assign(p.info());
 }
 function FE3dMesh(o){
    o = RClass.inherits(this, o, FE3dSpace, MLinkerResource, MListenerLoad);
@@ -9442,8 +9480,10 @@ function FE3dSceneMaterial_reloadResource(){
    o.calculate(resource);
    o.update();
    var material = o._parentMaterial;
-   material.calculate(resource);
-   material.update();
+   if(material){
+      material.calculate(resource);
+      material.update();
+   }
 }
 function FE3dSceneRegion(o){
    o = RClass.inherits(this, o, FE3dRegion);
@@ -9798,6 +9838,7 @@ function FE3dSpace(o){
    o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
    o.createRegion          = FE3dSpace_createRegion;
    o.resource              = FE3dSpace_resource;
+   o.findMaterial          = FE3dSpace_findMaterial;
    o.materials             = FE3dSpace_materials;
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
    o.loadRegionResource    = FE3dSpace_loadRegionResource;
@@ -9837,6 +9878,9 @@ function FE3dSpace_createRegion(){
 }
 function FE3dSpace_resource(p){
    return this._resource;
+}
+function FE3dSpace_findMaterial(guid){
+   return this._materials.get(guid);
 }
 function FE3dSpace_materials(p){
    return this._materials;
@@ -10846,8 +10890,15 @@ function FE3dTemplateRenderable_testReady(){
       if(!o._model.testReady()){
          return false;
       }
-      if(!o._material.testReady()){
-         return false;
+      var materials = o._materials;
+      if(materials){
+         var count = materials.count();
+         for(var i = 0; i < count; i++){
+            var material = materials.at(i);
+            if(!material.testReady()){
+               return false;
+            }
+         }
       }
       o._ready = true;
    }
@@ -10869,9 +10920,23 @@ function FE3dTemplateRenderable_loadResource(resource){
    o._model = RConsole.find(FE3rModelConsole).load(o, modelGuid);
    var materialGuid = resource.materialGuid();
    if(!RString.isEmpty(materialGuid)){
-      o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
-      o._materialResource = o._material.resource();
-   }else{
+      var material = o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+      o._materialResource = material.resource();
+      o.pushMaterial(material);
+   }
+   var template = o._display._parent;
+   var materialRefers = resource.materialRefers();
+   if(materialRefers){
+      var count = materialRefers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = materialRefers.at(i);
+         var materialGuid = materialRefer.guid();
+         var material = template.findMaterial(materialGuid);
+         o.pushMaterial(material);
+         o._material = material;
+      }
+   }
+   if(!o._material){
       o._material = o._materialReference = RClass.create(FE3dMaterial);
    }
 }

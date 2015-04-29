@@ -3256,6 +3256,7 @@ function FG3dAutomaticEffect(o){
    o.buildInfo                = FG3dAutomaticEffect_buildInfo;
    o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
    o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterialSamplers     = FG3dAutomaticEffect_bindMaterialSamplers;
    o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
    o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
    return o;
@@ -3554,21 +3555,36 @@ function FG3dAutomaticEffect_bindAttributes(p){
       }
    }
 }
-function FG3dAutomaticEffect_bindSamplers(p){
+function FG3dAutomaticEffect_bindSamplers(renderable){
    var o = this;
-   var g = o._program;
+   var program = o._program;
    if(o._supportMaterialMap){
-      g.setSampler('fs_material', pg.materialMap().texture());
    }
-   if(g.hasSampler()){
-      var ss = g.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._bind && s._statusUsed){
-            var ln = s.linker();
-            var sp = p.findTexture(ln);
-            g.setSampler(s.name(), sp.texture());
+   if(program.hasSampler()){
+      var samplers = program.samplers();
+      var count = samplers.count();
+      for(var n = 0; n < count; n++){
+         var sampler = samplers.at(n);
+         if(sampler._bind && sampler._statusUsed){
+            var linker = sampler.linker();
+            var texture = renderable.findTexture(linker);
+            program.setSampler(sampler.name(), texture.texture());
+         }
+      }
+   }
+}
+function FG3dAutomaticEffect_bindMaterialSamplers(renderable, material){
+   var o = this;
+   var program = o._program;
+   if(program.hasSampler()){
+      var samplers = program.samplers();
+      var count = samplers.count();
+      for(var n = 0; n < count; n++){
+         var sampler = samplers.at(n);
+         if(sampler._bind && sampler._statusUsed){
+            var linker = sampler.linker();
+            var texture = material.findBitmap(linker);
+            program.setSampler(sampler.name(), texture.texture());
          }
       }
    }
@@ -3593,45 +3609,54 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
-function FG3dAutomaticEffect_drawRenderable(pg, renderable){
+function FG3dAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
-   var g = o._program;
-   var f = renderable.activeInfo();
-   var l = f.layout;
-   if(!l){
-      l = f.layout = context.createLayout();
+   var program = o._program;
+   var info = renderable.activeInfo();
+   var layout = info.layout;
+   if(!layout){
+      layout = info.layout = context.createLayout();
       if(o._supportLayout){
-         l.bind();
+         layout.bind();
          o.bindAttributes(renderable);
-         l.unbind();
-         l.active();
+         layout.unbind();
+         layout.active();
       }else{
          context.recordBegin();
          o.bindAttributes(renderable);
          context.recordEnd();
-         l.linkBuffers(context.recordBuffers());
+         layout.linkBuffers(context.recordBuffers());
       }
       context.recordBegin();
       o.bindSamplers(renderable);
       context.recordEnd();
-      l.linkSamplers(context.recordSamplers());
+      layout.linkSamplers(context.recordSamplers());
    }else{
       if(o._supportLayout){
-         l.active();
+         layout.active();
       }else{
-         l.bindBuffers();
+         layout.bindBuffers();
       }
-      l.bindSamplers();
+      layout.bindSamplers();
    }
    var indexBuffers = renderable.indexBuffers();
    var indexCount = indexBuffers.count();
-   for(var i = 0; i < indexCount; i++){
-      var indexBuffer = indexBuffers.at(i);
-      context.drawTriangles(indexBuffer);
+   if(indexCount > 1){
+      var materials = renderable.materials();
+      for(var i = 0; i < indexCount; i++){
+         var indexBuffer = indexBuffers.at(i);
+         var material = materials.at(i);
+         if(material){
+            o.bindMaterialSamplers(renderable, material);
+         }
+         context.drawTriangles(indexBuffer);
+      }
+   }else{
+      context.drawTriangles(renderable.indexBuffer());
    }
    if(o._supportLayout){
-      l.deactive();
+      layout.deactive();
    }
 }
 function FG3dControlAutomaticEffect(o){

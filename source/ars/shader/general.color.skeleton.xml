@@ -231,7 +231,7 @@
          vec3 resultAmbient = color.rgb * ambientColor.rgb;
          </shader:true>
          <shader:false source='option.material.map'>
-         vec3 resultAmbient = color.rgb * fc_ambient_color.rgb;
+         vec3 resultAmbient = color.rgb * fc_ambient_color.rgb * 2.0;
          </shader:false>
          </shader:true>
          <shader:equals source='technique.mode' value='result'>
@@ -295,7 +295,7 @@
          </shader:false>
          </shader:true>
          <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultSpecular;
+         result.rgb += resultSpecular * 2.0;
          </shader:equals>
          <shader:equals source='technique.mode' value='specular.level'>
          result.rgb = vec3(specularFactor, specularFactor, specularFactor);

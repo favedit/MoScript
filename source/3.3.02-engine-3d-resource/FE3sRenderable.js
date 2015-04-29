@@ -15,6 +15,7 @@ function FE3sRenderable(o){
    o.construct         = FE3sRenderable_construct;
    // @method
    o.materialRefers    = FE3sRenderable_materialRefers;
+   o.syncMaterialRefer = FE3sRenderable_syncMaterialRefer;
    o.pushMaterialRefer = FE3sRenderable_pushMaterialRefer;
    // @method
    o.unserialize       = FE3sRenderable_unserialize;
@@ -44,6 +45,24 @@ function FE3sRenderable_materialRefers(){
 }
 
 //==========================================================
+// <T>同步一个材质引用。</T>
+//
+// @method
+// @param index:Integer 索引位置
+//==========================================================
+function FE3sRenderable_syncMaterialRefer(index){
+   var o = this;
+   var materialRefers = o._materialRefers;
+   if(!materialRefers){
+      materialRefers = o._materialRefers = new TObjects();
+   }
+   for(var i = materialRefers.count(); i <= index; i++){
+      materialRefers.push(RClass.create(FE3sMaterialRefer));
+   }
+   return materialRefers.at(index);
+}
+
+//==========================================================
 // <T>增加一个材质引用。</T>
 //
 // @method
@@ -53,9 +72,9 @@ function FE3sRenderable_pushMaterialRefer(materialRefer){
    var o = this;
    var materialRefers = o._materialRefers;
    if(!materialRefers){
-      materialRefers = o._materialRefers = new TDictionary();
+      materialRefers = o._materialRefers = new TObjects();
    }
-   materialRefers.set(materialRefer.guid(), materialRefer);
+   materialRefers.push(materialRefer);
 }
 
 //==========================================================

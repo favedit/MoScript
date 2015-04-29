@@ -44,6 +44,7 @@ function FG3dAutomaticEffect(o){
    // @method
    o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
    o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterialSamplers     = FG3dAutomaticEffect_bindMaterialSamplers;
    o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
    // @method
    o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
@@ -425,25 +426,50 @@ function FG3dAutomaticEffect_bindAttributes(p){
 // <T>绑定所有取样器。</T>
 //
 // @method
-// @param p:renderable:FG3dRenderable 渲染对象
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dAutomaticEffect_bindSamplers(p){
+function FG3dAutomaticEffect_bindSamplers(renderable){
    var o = this;
-   var g = o._program;
+   var program = o._program;
    // 绑定特定取样器
    if(o._supportMaterialMap){
-      g.setSampler('fs_material', pg.materialMap().texture());
+      //program.setSampler('fs_material', pg.materialMap().texture());
    }
    // 绑定取样器集合
-   if(g.hasSampler()){
-      var ss = g.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._bind && s._statusUsed){
-            var ln = s.linker();
-            var sp = p.findTexture(ln);
-            g.setSampler(s.name(), sp.texture());
+   if(program.hasSampler()){
+      var samplers = program.samplers();
+      var count = samplers.count();
+      for(var n = 0; n < count; n++){
+         var sampler = samplers.at(n);
+         if(sampler._bind && sampler._statusUsed){
+            var linker = sampler.linker();
+            var texture = renderable.findTexture(linker);
+            program.setSampler(sampler.name(), texture.texture());
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>绑定所有取样器。</T>
+//
+// @method
+// @param renderable:FG3dRenderable 渲染对象
+// @param material:FE3dMaterial 渲染材质
+//==========================================================
+function FG3dAutomaticEffect_bindMaterialSamplers(renderable, material){
+   var o = this;
+   var program = o._program;
+   // 绑定取样器集合
+   if(program.hasSampler()){
+      var samplers = program.samplers();
+      var count = samplers.count();
+      for(var n = 0; n < count; n++){
+         var sampler = samplers.at(n);
+         if(sampler._bind && sampler._statusUsed){
+            var linker = sampler.linker();
+            var texture = material.findBitmap(linker);
+            program.setSampler(sampler.name(), texture.texture());
          }
       }
    }
@@ -486,55 +512,64 @@ function FG3dAutomaticEffect_bindMaterial(p){
 // @param region:FG3dRegion 渲染区域
 // @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dAutomaticEffect_drawRenderable(pg, renderable){
+function FG3dAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
-   var g = o._program;
+   var program = o._program;
    // 绘制准备
-   var f = renderable.activeInfo();
-   var l = f.layout;
-   if(!l){
-      l = f.layout = context.createLayout();
+   var info = renderable.activeInfo();
+   var layout = info.layout;
+   if(!layout){
+      layout = info.layout = context.createLayout();
       // 绑定属性流集合
       if(o._supportLayout){
-         l.bind();
+         layout.bind();
          o.bindAttributes(renderable);
-         l.unbind();
-         l.active();
+         layout.unbind();
+         layout.active();
       }else{
          context.recordBegin();
          o.bindAttributes(renderable);
          context.recordEnd();
-         l.linkBuffers(context.recordBuffers());
+         layout.linkBuffers(context.recordBuffers());
       }
       // 绑定取样器集合
       context.recordBegin();
       o.bindSamplers(renderable);
       context.recordEnd();
-      l.linkSamplers(context.recordSamplers());
+      layout.linkSamplers(context.recordSamplers());
    }else{
       // 绑定所有属性流
       if(o._supportLayout){
-         l.active();
+         layout.active();
       }else{
-         l.bindBuffers();
+         layout.bindBuffers();
       }
       // 绑定取样器集合
-      l.bindSamplers();
+      layout.bindSamplers();
    }
    //..........................................................
    // 绘制处理
    var indexBuffers = renderable.indexBuffers();
    var indexCount = indexBuffers.count();
-   for(var i = 0; i < indexCount; i++){
-      var indexBuffer = indexBuffers.at(i);
-      context.drawTriangles(indexBuffer);
+   if(indexCount > 1){
+      var materials = renderable.materials();
+      for(var i = 0; i < indexCount; i++){
+         var indexBuffer = indexBuffers.at(i);
+         var material = materials.at(i);
+         if(material){
+            o.bindMaterialSamplers(renderable, material);
+         }
+         context.drawTriangles(indexBuffer);
+      }
+   }else{
+      context.drawTriangles(renderable.indexBuffer());
    }
-   // 取消绑定取样器集合
-   //l.unbindSamplers();
+   // 取消绑定取样器集合（TODO：不执行也正确）
+   // layout.unbindSamplers();
    //..........................................................
    // 绘制完成
    if(o._supportLayout){
-      l.deactive();
+      layout.deactive();
    }
 }

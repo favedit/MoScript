@@ -20,6 +20,7 @@ function FE3dRenderable(o){
    o._indexBuffer       = null;
    // @attribute
    o._materialReference = null;
+   o._materials         = null;
    o._textures          = null;
    //..........................................................
    // @method
@@ -39,6 +40,8 @@ function FE3dRenderable(o){
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    // @method
    o.materialReference  = FE3dRenderable_materialReference;
+   o.materials          = FE3dRenderable_materials;
+   o.pushMaterial       = FE3dRenderable_pushMaterial;
    // @method
    o.findTexture        = FE3dRenderable_findTexture;
    o.pushTexture        = FE3dRenderable_pushTexture;
@@ -158,6 +161,31 @@ function FE3dRenderable_vertexBuffers(){
 //==========================================================
 function FE3dRenderable_materialReference(){
    return this._materialReference;
+}
+
+//==========================================================
+// <T>获得材质集合。</T>
+//
+// @method
+// @return TObjects 材质集合
+//==========================================================
+function FE3dRenderable_materials(){
+   return this._materials;
+}
+
+//==========================================================
+// <T>增加一个材质。</T>
+//
+// @method
+// @return material 材质
+//==========================================================
+function FE3dRenderable_pushMaterial(material){
+   var o = this;
+   var materials = o._materials;
+   if(!materials){
+      materials = o._materials = new TObjects();
+   }
+   materials.push(material);
 }
 
 //==========================================================

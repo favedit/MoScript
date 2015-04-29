@@ -23,6 +23,7 @@ function FE3dSpace(o){
    o.createRegion          = FE3dSpace_createRegion;
    // @method
    o.resource              = FE3dSpace_resource;
+   o.findMaterial          = FE3dSpace_findMaterial;
    o.materials             = FE3dSpace_materials;
    // @method
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
@@ -100,6 +101,16 @@ function FE3dSpace_createRegion(){
 //==========================================================
 function FE3dSpace_resource(p){
    return this._resource;
+}
+
+//==========================================================
+// <T>根据唯一代码查找材质。</T>
+//
+// @method
+// @param FE3rMaterial 材质
+//==========================================================
+function FE3dSpace_findMaterial(guid){
+   return this._materials.get(guid);
 }
 
 //==========================================================

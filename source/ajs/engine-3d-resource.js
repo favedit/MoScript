@@ -394,6 +394,7 @@ function FE3sDisplay(o){
    o.renderables      = FE3sDisplay_renderables;
    o.calculateOutline = FE3sDisplay_calculateOutline;
    o.unserialize      = FE3sDisplay_unserialize;
+   o.saveConfig       = FE3sDisplay_saveConfig;
    o.clone            = FE3sDisplay_clone;
    return o;
 }
@@ -433,6 +434,19 @@ function FE3sDisplay_unserialize(input){
       for(var i = 0; i < renderableCount; i++){
          var renderable = resourceConsole.unserialize(input);
          renderables.push(renderable);
+      }
+   }
+}
+function FE3sDisplay_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDrawable.saveConfig.call(o, xconfig);
+   var renderables = o._renderables;
+   if(renderables){
+      var xrenderables = xconfig.create('RenderableCollection');
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.saveConfig(xrenderables.create('Renderable'));
       }
    }
 }
@@ -1592,6 +1606,7 @@ function FE3sRenderable(o){
    o._materialRefers   = null;
    o.construct         = FE3sRenderable_construct;
    o.materialRefers    = FE3sRenderable_materialRefers;
+   o.syncMaterialRefer = FE3sRenderable_syncMaterialRefer;
    o.pushMaterialRefer = FE3sRenderable_pushMaterialRefer;
    o.unserialize       = FE3sRenderable_unserialize;
    o.saveConfig        = FE3sRenderable_saveConfig;
@@ -1605,13 +1620,24 @@ function FE3sRenderable_construct(){
 function FE3sRenderable_materialRefers(){
    return this._materialRefers;
 }
+function FE3sRenderable_syncMaterialRefer(index){
+   var o = this;
+   var materialRefers = o._materialRefers;
+   if(!materialRefers){
+      materialRefers = o._materialRefers = new TObjects();
+   }
+   for(var i = materialRefers.count(); i <= index; i++){
+      materialRefers.push(RClass.create(FE3sMaterialRefer));
+   }
+   return materialRefers.at(index);
+}
 function FE3sRenderable_pushMaterialRefer(materialRefer){
    var o = this;
    var materialRefers = o._materialRefers;
    if(!materialRefers){
-      materialRefers = o._materialRefers = new TDictionary();
+      materialRefers = o._materialRefers = new TObjects();
    }
-   materialRefers.set(materialRefer.guid(), materialRefer);
+   materialRefers.push(materialRefer);
 }
 function FE3sRenderable_unserialize(input){
    var o = this;

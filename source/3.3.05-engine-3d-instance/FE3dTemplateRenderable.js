@@ -47,12 +47,22 @@ function FE3dTemplateRenderable_construct(){
 function FE3dTemplateRenderable_testReady(){
    var o = this;
    if(!o._ready){
+      // 测试模型加载状态
       if(!o._model.testReady()){
          return false;
       }
-      if(!o._material.testReady()){
-         return false;
+      // 测试材质加载状态
+      var materials = o._materials;
+      if(materials){
+         var count = materials.count();
+         for(var i = 0; i < count; i++){
+            var material = materials.at(i);
+            if(!material.testReady()){
+               return false;
+            }
+         }
       }
+      // 加载完成
       o._ready = true;
    }
    return o._ready;
@@ -92,9 +102,27 @@ function FE3dTemplateRenderable_loadResource(resource){
    // 设置资源
    var materialGuid = resource.materialGuid();
    if(!RString.isEmpty(materialGuid)){
-      o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
-      o._materialResource = o._material.resource();
-   }else{
+      var material = o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+      o._materialResource = material.resource();
+      o.pushMaterial(material);
+   }
+   //..........................................................
+   // 加载材质集合
+   var template = o._display._parent;
+   var materialRefers = resource.materialRefers();
+   if(materialRefers){
+      var count = materialRefers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = materialRefers.at(i);
+         var materialGuid = materialRefer.guid();
+         var material = template.findMaterial(materialGuid);
+         o.pushMaterial(material);
+         o._material = material;
+      }
+   }
+   //..........................................................
+   // 设置空材质
+   if(!o._material){
       o._material = o._materialReference = RClass.create(FE3dMaterial);
    }
 }

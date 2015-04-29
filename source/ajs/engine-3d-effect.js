@@ -144,23 +144,23 @@ function FE3dGeneralColorPass(o){
    return o;
 }
 function FE3dGeneralColorSkeletonEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    o._code            = 'general.color.skeleton';
    o._supportSkeleton = true;
    o.drawRenderable   = FE3dGeneralColorSkeletonEffect_drawRenderable;
    return o;
 }
-function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorSkeletonEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
-   var m = pr.material();
+   var vcp = region.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = region.calculate(EG3dRegionParameter.LightDirection);
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_model_matrix', renderable.currentMatrix());
+   p.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
@@ -175,9 +175,9 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   var bones = pr.bones();
+   var bones = renderable.bones();
    if(bones){
-      var boneCount = pr._boneLimit;
+      var boneCount = renderable._boneLimit;
       var data = RTypeArray.findTemp(EDataType.Float32, 16 * boneCount);
       for(var i = 0; i < boneCount; i++){
          var bone = bones.get(i);
@@ -186,9 +186,7 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
       }
       p.setParameter('vc_bone_matrix', data);
    }
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FE3dTechnique);

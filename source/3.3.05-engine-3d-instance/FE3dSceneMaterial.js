@@ -67,6 +67,8 @@ function FE3dSceneMaterial_reloadResource(){
    o.update();
    // 更新父材质
    var material = o._parentMaterial;
-   material.calculate(resource);
-   material.update();
+   if(material){
+      material.calculate(resource);
+      material.update();
+   }
 }

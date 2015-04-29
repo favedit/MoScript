@@ -5,7 +5,7 @@
 // @history 150119
 //==========================================================
 function FE3dGeneralColorSkeletonEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o = RClass.inherits(this, o, FE3dAutomaticEffect);
    //..........................................................
    // @attribute
    o._code            = 'general.color.skeleton';
@@ -21,23 +21,23 @@ function FE3dGeneralColorSkeletonEffect(o){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param pg:region:FG3dRegion 渲染区域
-// @param pr:renderable:FG3dRenderable 渲染对象
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorSkeletonEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
    // 获得参数
-   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var vcp = region.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = region.calculate(EG3dRegionParameter.LightDirection);
    // 绑定材质
-   var m = pr.material();
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_model_matrix', renderable.currentMatrix());
+   p.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
@@ -54,9 +54,9 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
    // 设置骨头集合
-   var bones = pr.bones();
+   var bones = renderable.bones();
    if(bones){
-      var boneCount = pr._boneLimit;
+      var boneCount = renderable._boneLimit;
       var data = RTypeArray.findTemp(EDataType.Float32, 16 * boneCount);
       for(var i = 0; i < boneCount; i++){
          var bone = bones.get(i);
@@ -66,9 +66,11 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
       p.setParameter('vc_bone_matrix', data);
    }
    // 绑定所有属性流
-   o.bindAttributes(pr);
+   //o.bindAttributes(renderable);
    // 绑定所有取样器
-   o.bindSamplers(pr);
+   //o.bindSamplers(renderable);
    // 绘制处理
-   c.drawTriangles(pr.indexBuffer());
+   //c.drawTriangles(renderable.indexBuffer());
+   // 绘制处理
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }

@@ -19,6 +19,7 @@ function FE3sDisplay(o){
    o.calculateOutline = FE3sDisplay_calculateOutline;
    // @method
    o.unserialize      = FE3sDisplay_unserialize;
+   o.saveConfig       = FE3sDisplay_saveConfig;
    o.clone            = FE3sDisplay_clone;
    return o;
 }
@@ -87,6 +88,27 @@ function FE3sDisplay_unserialize(input){
       for(var i = 0; i < renderableCount; i++){
          var renderable = resourceConsole.unserialize(input);
          renderables.push(renderable);
+      }
+   }
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FE3sDisplay_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDrawable.saveConfig.call(o, xconfig);
+   // 存储显示集合
+   var renderables = o._renderables;
+   if(renderables){
+      var xrenderables = xconfig.create('RenderableCollection');
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.saveConfig(xrenderables.create('Renderable'));
       }
    }
 }

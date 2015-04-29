@@ -40,6 +40,7 @@ function FDsCommonRenderableFrame_onBuilded(p){
    o._controlRotation.addDataChangedListener(o, o.onDataChanged);
    o._controlScale.addDataChangedListener(o, o.onDataChanged);
    // 增加对象
+   o._controlMaterials.addClickListener(o, o.onMaterialClick);
    o._controlEffects.addClickListener(o, o.onEffectClick);
 }
 
@@ -74,6 +75,15 @@ function FDsCommonRenderableFrame_onDataChanged(p){
 //==========================================================
 function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
    var o = this;
+   var materialRefer = pi.tag();
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
+   dialog._frame = o;
+   dialog._materialRefer = materialRefer;
+   //dialog.setContentGuid('');
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================
@@ -115,6 +125,7 @@ function FDsCommonRenderableFrame_loadObject(s, renderable){
    var o = this;
    o._activeScene = s;
    o._activeRenderable = renderable;
+   var resource = renderable.resource();
    // 设置矩阵参数
    var matrix = renderable.matrix();
    o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
@@ -123,25 +134,24 @@ function FDsCommonRenderableFrame_loadObject(s, renderable){
    // 建立材质集合
    var materialBox = o._controlMaterials;
    materialBox.clear();
-   //var materials = renderable.materials();
    var indexBuffers = renderable.indexBuffers();
    var count = indexBuffers.count();
    for(var i = 0; i < count; i++){
-      //var e = materials.at(i);
-      var item = materialBox.createItem(null, i + ': ');
-      item.setTag(e);
+      var materialRefer = resource.syncMaterialRefer(i);
+      var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
+      item.setTag(materialRefer);
       materialBox.push(item);
    }
    // 建立效果器集合
    var effectBox = o._controlEffects;
    effectBox.clear();
-   var es = renderable.infos();
-   var c = es.count();
-   for(var i = 0; i < c; i++){
-      var e = es.at(i).effect;
-      if(e){
-         var item = effectBox.createItem(null, e.code());
-         item.setTag(e);
+   var infos = renderable.infos();
+   var count = infos.count();
+   for(var i = 0; i < count; i++){
+      var effect = infos.at(i).effect;
+      if(effect){
+         var item = effectBox.createItem(null, effect.code());
+         item.setTag(effect);
          effectBox.push(item);
       }
    }

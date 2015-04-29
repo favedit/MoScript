@@ -703,6 +703,62 @@ function FDsCommonMaterialPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonMaterialReferDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName      = 'resource.common.dialog.MaterialReferDialog';
+   o._displayModeCd  = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o._controlConfirm = null;
+   o._controlCancel  = null;
+   o.onBuilded       = FDsCommonMaterialReferDialog_onBuilded;
+   o.onConfirmLoad   = FDsCommonMaterialReferDialog_onConfirmLoad;
+   o.onConfirmClick  = FDsCommonMaterialReferDialog_onConfirmClick;
+   o.onCancelClick   = FDsCommonMaterialReferDialog_onCancelClick;
+   o.construct       = FDsCommonMaterialReferDialog_construct;
+   o.setContentGuid  = FDsCommonMaterialReferDialog_setContentGuid;
+   o.setContentCode  = FDsCommonMaterialReferDialog_setContentCode;
+   o.setContentLabel = FDsCommonMaterialReferDialog_setContentLabel;
+   o.dispose         = FDsCommonMaterialReferDialog_dispose;
+   return o;
+}
+function FDsCommonMaterialReferDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+   o._controlCancel.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonMaterialReferDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonMaterialReferDialog_onConfirmClick(event){
+   var o = this;
+   o._materialRefer._guid = o._controlGuid.get();
+   o.hide();
+}
+function FDsCommonMaterialReferDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonMaterialReferDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonMaterialReferDialog_setContentGuid(guid){
+   this._controlGuid.set(guid);
+}
+function FDsCommonMaterialReferDialog_setContentCode(code){
+   this._controlCode.set(code);
+}
+function FDsCommonMaterialReferDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonMaterialReferDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonRegionPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible                   = false;
@@ -781,6 +837,7 @@ function FDsCommonRenderableFrame_onBuilded(p){
    o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
    o._controlRotation.addDataChangedListener(o, o.onDataChanged);
    o._controlScale.addDataChangedListener(o, o.onDataChanged);
+   o._controlMaterials.addClickListener(o, o.onMaterialClick);
    o._controlEffects.addClickListener(o, o.onEffectClick);
 }
 function FDsCommonRenderableFrame_onDataChanged(p){
@@ -797,6 +854,13 @@ function FDsCommonRenderableFrame_onDataChanged(p){
 }
 function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
    var o = this;
+   var materialRefer = pi.tag();
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
+   dialog._frame = o;
+   dialog._materialRefer = materialRefer;
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsCommonRenderableFrame_onEffectClick(ps, pi){
    var o = this;
@@ -815,6 +879,7 @@ function FDsCommonRenderableFrame_loadObject(s, renderable){
    var o = this;
    o._activeScene = s;
    o._activeRenderable = renderable;
+   var resource = renderable.resource();
    var matrix = renderable.matrix();
    o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
    o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
@@ -824,19 +889,20 @@ function FDsCommonRenderableFrame_loadObject(s, renderable){
    var indexBuffers = renderable.indexBuffers();
    var count = indexBuffers.count();
    for(var i = 0; i < count; i++){
-      var item = materialBox.createItem(null, i + ': ');
-      item.setTag(e);
+      var materialRefer = resource.syncMaterialRefer(i);
+      var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
+      item.setTag(materialRefer);
       materialBox.push(item);
    }
    var effectBox = o._controlEffects;
    effectBox.clear();
-   var es = renderable.infos();
-   var c = es.count();
-   for(var i = 0; i < c; i++){
-      var e = es.at(i).effect;
-      if(e){
-         var item = effectBox.createItem(null, e.code());
-         item.setTag(e);
+   var infos = renderable.infos();
+   var count = infos.count();
+   for(var i = 0; i < count; i++){
+      var effect = infos.at(i).effect;
+      if(effect){
+         var item = effectBox.createItem(null, effect.code());
+         item.setTag(effect);
          effectBox.push(item);
       }
    }

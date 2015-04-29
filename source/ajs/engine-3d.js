@@ -179,16 +179,6 @@ function FE3dDisplayContainer_dispose(){
    o._materials = RObject.free(o._materials);
    o.__base.FDisplayContainer.dispose.call(o);
 }
-function FE3dMaterial(o){
-   o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
-   o.loadResource = FE3dMaterial_loadResource;
-   return o;
-}
-function FE3dMaterial_loadResource(p){
-   var o = this;
-   o._resource = p;
-   o._info.assign(p.info());
-}
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
    o._display           = null;
@@ -199,6 +189,7 @@ function FE3dRenderable(o){
    o._vertexBuffers     = null;
    o._indexBuffer       = null;
    o._materialReference = null;
+   o._materials         = null;
    o._textures          = null;
    o.construct          = FE3dRenderable_construct;
    o.setup              = RMethod.empty;
@@ -211,6 +202,8 @@ function FE3dRenderable(o){
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    o.materialReference  = FE3dRenderable_materialReference;
+   o.materials          = FE3dRenderable_materials;
+   o.pushMaterial       = FE3dRenderable_pushMaterial;
    o.findTexture        = FE3dRenderable_findTexture;
    o.pushTexture        = FE3dRenderable_pushTexture;
    o.textures           = FE3dRenderable_textures;
@@ -267,6 +260,17 @@ function FE3dRenderable_vertexBuffers(){
 }
 function FE3dRenderable_materialReference(){
    return this._materialReference;
+}
+function FE3dRenderable_materials(){
+   return this._materials;
+}
+function FE3dRenderable_pushMaterial(material){
+   var o = this;
+   var materials = o._materials;
+   if(!materials){
+      materials = o._materials = new TObjects();
+   }
+   materials.push(material);
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;

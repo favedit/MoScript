@@ -19,6 +19,7 @@ function FE3rMaterial(o){
    // @method
    o.visible        = FE3rMaterial_visible;
    o.setVisible     = FE3rMaterial_setVisible;
+   o.findBitmap     = FE3rMaterial_findBitmap;
    o.bitmaps        = FE3rMaterial_bitmaps;
    o.reference      = FE3rMaterial_reference;
    // @method
@@ -50,6 +51,17 @@ function FE3rMaterial_visible(){
 //==========================================================
 function FE3rMaterial_setVisible(p){
    this._visible = p;
+}
+
+//==========================================================
+// <T>根据代码查找位图。</T>
+//
+// @method
+// @param code:String 代码
+// @return FE3rBitmap 位图
+//==========================================================
+function FE3rMaterial_findBitmap(code){
+   return this._bitmaps.get(code);
 }
 
 //==========================================================

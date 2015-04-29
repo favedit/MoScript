@@ -805,6 +805,7 @@ function FE3rMaterial(o){
    o._reference     = null;
    o.visible        = FE3rMaterial_visible;
    o.setVisible     = FE3rMaterial_setVisible;
+   o.findBitmap     = FE3rMaterial_findBitmap;
    o.bitmaps        = FE3rMaterial_bitmaps;
    o.reference      = FE3rMaterial_reference;
    o.testReady      = FE3rMaterial_testReady;
@@ -819,6 +820,9 @@ function FE3rMaterial_visible(){
 }
 function FE3rMaterial_setVisible(p){
    this._visible = p;
+}
+function FE3rMaterial_findBitmap(code){
+   return this._bitmaps.get(code);
 }
 function FE3rMaterial_bitmaps(){
    return this._bitmaps;
