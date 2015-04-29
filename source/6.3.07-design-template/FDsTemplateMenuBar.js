@@ -9,14 +9,20 @@ function FDsTemplateMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @attribute
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
+   o._controlSave           = null;
+   o._controlCapture        = null;
+   o._controlSelectMaterial = null;
+   o._controlCreateDisplay  = null;
+   o._controlDelete         = null;
    //..........................................................
    // @event
    o.onSaveLoad            = FDsTemplateMenuBar_onSaveLoad;
    o.onSaveClick           = FDsTemplateMenuBar_onSaveClick;
    o.onCaptureLoad         = FDsTemplateMenuBar_onCaptureLoad;
    o.onCaptureClick        = FDsTemplateMenuBar_onCaptureClick;
+   o.onSelectMaterialClick = FDsTemplateMenuBar_onSelectMaterialClick;
+   o.onCreateDisplayClick  = FDsTemplateMenuBar_onCreateDisplayClick;
+   o.onDeleteClick         = FDsTemplateMenuBar_onDeleteClick;
    //..........................................................
    // @method
    o.construct             = FDsTemplateMenuBar_construct;
@@ -81,6 +87,65 @@ function FDsTemplateMenuBar_onCaptureClick(event){
    var canvas = o._frameSet._canvasContent;
    var connection = canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
+}
+
+//==========================================================
+// <T>新建点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsTemplateMenuBar_onSelectMaterialClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+
+//==========================================================
+// <T>新建点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsTemplateMenuBar_onCreateDisplayClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+
+//==========================================================
+// <T>删除点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsTemplateMenuBar_onDeleteClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

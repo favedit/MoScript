@@ -64,17 +64,17 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
       m._dirty = false;
    }
 }
-function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
-   var m = pr.material();
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
-   if(pr._optionMerge){
-      var ms = pr.mergeRenderables();
+   if(renderable._optionMerge){
+      var ms = renderable.mergeRenderables();
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
       for(var i = 0; i < mc; i++){
@@ -83,7 +83,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       }
       p.setParameter('vc_model_matrix', d);
    }else{
-      p.setParameter('vc_model_matrix', pr.currentMatrix());
+      p.setParameter('vc_model_matrix', renderable.currentMatrix());
    }
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
@@ -91,14 +91,14 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
    if(o._supportMaterialMap){
-      var i = pr._materialId;
+      var i = renderable._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      var f = pr.activeInfo();
-      o.buildMaterial(f, pr);
+      var f = renderable.activeInfo();
+      o.buildMaterial(f, renderable);
       p.setParameter('fc_materials', f.material.memory());
    }
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, renderable);
 }
 function FE3dGeneralColorFlatEffect(o){
    o = RClass.inherits(this, o, FE3dAutomaticEffect);

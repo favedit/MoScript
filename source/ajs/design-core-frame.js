@@ -128,6 +128,81 @@ function FDsCommonCameraPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonDisplayDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.DisplayDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonDisplayDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonDisplayDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonDisplayDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonDisplayDialog_onCancelClick;
+   o.construct             = FDsCommonDisplayDialog_construct;
+   o.setSpace              = FDsCommonDisplayDialog_setSpace;
+   o.setDisplayLabel       = FDsCommonDisplayDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonDisplayDialog_setContentCode;
+   o.setContentLabel       = FDsCommonDisplayDialog_setContentLabel;
+   o.dispose               = FDsCommonDisplayDialog_dispose;
+   return o;
+}
+function FDsCommonDisplayDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlSpaceGuid.setEditAble(false);
+   o._controlSpaceLabel.setEditAble(false);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+   o._controlCancel.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonDisplayDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonDisplayDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xsprite = xaction.create('Display');
+   xsprite.set('space_guid', o._spaceGuid);
+   xsprite.set('code', o._controlCode.get());
+   xsprite.set('label', o._controlLabel.get());
+   xsprite.set('model_guid', o._controlModelGuid.get());
+   xsprite.set('model_code', o._controlModelCode.get());
+   var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonDisplayDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonDisplayDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonDisplayDialog_setSpace(space){
+   var o = this;
+   var resource = space.resource();
+   o._controlSpaceGuid.set(resource.guid());
+   o._controlSpaceLabel.set(resource.makeLabel());
+}
+function FDsCommonDisplayDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonDisplayDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonDisplayDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonDisplayDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonDisplayFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._activeSpace   = null;
@@ -506,6 +581,81 @@ function FDsCommonMaterial2Frame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonMaterialDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.MaterialDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonMaterialDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonMaterialDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonMaterialDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonMaterialDialog_onCancelClick;
+   o.construct             = FDsCommonMaterialDialog_construct;
+   o.setSpace              = FDsCommonMaterialDialog_setSpace;
+   o.setDisplayLabel       = FDsCommonMaterialDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonMaterialDialog_setContentCode;
+   o.setContentLabel       = FDsCommonMaterialDialog_setContentLabel;
+   o.dispose               = FDsCommonMaterialDialog_dispose;
+   return o;
+}
+function FDsCommonMaterialDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlSpaceGuid.setEditAble(false);
+   o._controlSpaceLabel.setEditAble(false);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+   o._controlCancel.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonMaterialDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonMaterialDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xsprite = xaction.create('Material');
+   xsprite.set('space_guid', o._spaceGuid);
+   xsprite.set('code', o._controlCode.get());
+   xsprite.set('label', o._controlLabel.get());
+   xsprite.set('material_guid', o._controlMaterialGuid.get());
+   xsprite.set('material_code', o._controlMaterialCode.get());
+   var connection = RConsole.find(FDrTemplateConsole).selectMaterial(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonMaterialDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonMaterialDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonMaterialDialog_setSpace(space){
+   var o = this;
+   var resource = space.resource();
+   o._controlSpaceGuid.set(resource.guid());
+   o._controlSpaceLabel.set(resource.makeLabel());
+}
+function FDsCommonMaterialDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonMaterialDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonMaterialDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonMaterialDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonMaterialPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible        = false;
@@ -618,6 +768,7 @@ function FDsCommonRenderableFrame(o){
    o._activeRenderable = null;
    o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
    o.onDataChanged     = FDsCommonRenderableFrame_onDataChanged;
+   o.onMaterialClick   = FDsCommonRenderableFrame_onMaterialClick;
    o.onEffectClick     = FDsCommonRenderableFrame_onEffectClick;
    o.construct         = FDsCommonRenderableFrame_construct;
    o.loadObject        = FDsCommonRenderableFrame_loadObject;
@@ -644,6 +795,9 @@ function FDsCommonRenderableFrame_onDataChanged(p){
    m.setScale(v.x, v.y, v.z);
    m.update();
 }
+function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
+   var o = this;
+}
 function FDsCommonRenderableFrame_onEffectClick(ps, pi){
    var o = this;
    var e = pi.tag();
@@ -657,24 +811,33 @@ function FDsCommonRenderableFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsCommonRenderableFrame_loadObject(s, r){
+function FDsCommonRenderableFrame_loadObject(s, renderable){
    var o = this;
    o._activeScene = s;
-   o._activeRenderable = r;
-   var m = r.matrix();
-   o._controlTranslate.set(m.tx, m.ty, m.tz);
-   o._controlRotation.set(m.rx, m.ry, m.rz);
-   o._controlScale.set(m.sx, m.sy, m.sz);
-   var ces = o._controlEffects;
-   ces.clear();
-   var es = r.infos();
+   o._activeRenderable = renderable;
+   var matrix = renderable.matrix();
+   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
+   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
+   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
+   var materialBox = o._controlMaterials;
+   materialBox.clear();
+   var indexBuffers = renderable.indexBuffers();
+   var count = indexBuffers.count();
+   for(var i = 0; i < count; i++){
+      var item = materialBox.createItem(null, i + ': ');
+      item.setTag(e);
+      materialBox.push(item);
+   }
+   var effectBox = o._controlEffects;
+   effectBox.clear();
+   var es = renderable.infos();
    var c = es.count();
    for(var i = 0; i < c; i++){
-      var e = es.value(i).effect;
+      var e = es.at(i).effect;
       if(e){
-         var l = ces.createItem(null, e.code());
-         l.setTag(e);
-         ces.push(l);
+         var item = effectBox.createItem(null, e.code());
+         item.setTag(e);
+         effectBox.push(item);
       }
    }
 }

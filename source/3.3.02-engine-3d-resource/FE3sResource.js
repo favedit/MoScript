@@ -18,6 +18,8 @@ function FE3sResource(o){
    o.onComplete    = FE3sResource_onComplete;
    //..........................................................
    // @method
+   o.makeLabel     = FE3sResource_makeLabel;
+   // @method
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
    // @method
@@ -59,6 +61,23 @@ function FE3sResource_onComplete(input){
    o._dataReady = true;
    // 加载事件处理
    o.processLoadListener();
+}
+
+//==========================================================
+// <T>生成显示名称。</T>
+//
+// @return String 显示名称
+//==========================================================
+function FE3sResource_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 
 //==========================================================

@@ -364,8 +364,7 @@ function FDsTemplateCatalogToolBar(o){
    o._controlFolderClose    = null;
    o.onBuilded              = FDsTemplateCatalogToolBar_onBuilded;
    o.onCreateCameraClick    = FDsTemplateCatalogToolBar_onCreateCameraClick;
-   o.onCreateLayerClick     = FDsTemplateCatalogToolBar_onCreateLayerClick;
-   o.onCreateSpriteClick    = FDsTemplateCatalogToolBar_onCreateSpriteClick;
+   o.onCreateDisplayClick   = FDsTemplateCatalogToolBar_onCreateDisplayClick;
    o.onDeleteLoad           = FDsTemplateCatalogToolBar_onDeleteLoad;
    o.onDeleteExecute        = FDsTemplateCatalogToolBar_onDeleteExecute;
    o.onCopyLoad             = FDsTemplateCatalogToolBar_onCopyLoad;
@@ -382,8 +381,7 @@ function FDsTemplateCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
-   o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
-   o._controlCreateSprite.addClickListener(o, o.onCreateSpriteClick);
+   o._controlCreateDisplay.addClickListener(o, o.onCreateDisplayClick);
    o._controlCopy.addClickListener(o, o.onCopyClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
@@ -392,43 +390,13 @@ function FDsTemplateCatalogToolBar_onBuilded(p){
 function FDsTemplateCatalogToolBar_onCreateCameraClick(event){
    var o = this;
 }
-function FDsTemplateCatalogToolBar_onCreateLayerClick(event){
+function FDsTemplateCatalogToolBar_onCreateDisplayClick(event){
    var o = this;
-}
-function FDsTemplateCatalogToolBar_onCreateSpriteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return alert('请选中目录节点。');
-   }
-   var linker = node.dataPropertyGet('linker');
-   var layer = null;
-   var sprite = null;
-   if(RClass.isClass(linker, FDisplayLayer)){
-      layer = linker;
-   }else if(RClass.isClass(linker, FE3dSprite)){
-      layer = linker.findParent(FDisplayLayer);
-      sprite = linker;
-   }else{
-      return alert('请选中显示层或者精灵节点。');
-   }
    var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
    var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonSpriteDialog);
    dialog._frameSet = frameSet;
-   dialog._spaceGuid = frameSet._activeSpace.resource().guid();
-   dialog._layerGuid = layer.resource().guid();
-   if(sprite){
-      dialog._displayGuid = sprite.resource().guid();
-   }else{
-      dialog._displayGuid = null;
-   }
-   if(layer){
-      dialog.setLayerLabel(layer.makeLabel());
-   }
-   if(sprite){
-      dialog.setDisplayLabel(sprite.makeLabel());
-   }
+   dialog._spaceGuid = space.resource().guid();
    dialog.setContentCode('');
    dialog.setContentLabel('');
    dialog.showPosition(EUiPosition.Center);
@@ -631,12 +599,18 @@ function FDsTemplateFrameSet_dispose(){
 }
 function FDsTemplateMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
+   o._controlSave           = null;
+   o._controlCapture        = null;
+   o._controlSelectMaterial = null;
+   o._controlCreateDisplay  = null;
+   o._controlDelete         = null;
    o.onSaveLoad            = FDsTemplateMenuBar_onSaveLoad;
    o.onSaveClick           = FDsTemplateMenuBar_onSaveClick;
    o.onCaptureLoad         = FDsTemplateMenuBar_onCaptureLoad;
    o.onCaptureClick        = FDsTemplateMenuBar_onCaptureClick;
+   o.onSelectMaterialClick = FDsTemplateMenuBar_onSelectMaterialClick;
+   o.onCreateDisplayClick  = FDsTemplateMenuBar_onCreateDisplayClick;
+   o.onDeleteClick         = FDsTemplateMenuBar_onDeleteClick;
    o.construct             = FDsTemplateMenuBar_construct;
    o.dispose               = FDsTemplateMenuBar_dispose;
    return o;
@@ -663,6 +637,41 @@ function FDsTemplateMenuBar_onCaptureClick(event){
    var canvas = o._frameSet._canvasContent;
    var connection = canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
+}
+function FDsTemplateMenuBar_onSelectMaterialClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsTemplateMenuBar_onCreateDisplayClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsTemplateMenuBar_onDeleteClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsTemplateMenuBar_construct(){
    var o = this;

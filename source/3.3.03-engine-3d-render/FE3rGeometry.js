@@ -13,6 +13,7 @@ function FE3rGeometry(o){
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
+   o._indexBuffers     = null;
    o._resourceMaterial = null;
    o._material         = null;
    o._textures         = null;
@@ -28,6 +29,7 @@ function FE3rGeometry(o){
    o.findVertexBuffer  = FE3rGeometry_findVertexBuffer;
    o.vertexBuffers     = FE3rGeometry_vertexBuffers;
    o.indexBuffer       = FE3rGeometry_indexBuffer;
+   o.indexBuffers      = FE3rGeometry_indexBuffers;
    o.material          = FE3rGeometry_material;
    o.findTexture       = FE3rGeometry_findTexture;
    o.textures          = FE3rGeometry_textures;
@@ -47,6 +49,7 @@ function FE3rGeometry_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
    o._vertexBuffers = new TDictionary();
+   o._indexBuffers = new TObjects();
 }
 
 //==========================================================
@@ -148,6 +151,16 @@ function FE3rGeometry_indexBuffer(){
 }
 
 //==========================================================
+// <T>获得索引缓冲集合。</T>
+//
+// @method
+// @return TObjects 索引缓冲集合
+//==========================================================
+function FE3rGeometry_indexBuffers(){
+   return this._indexBuffers;
+}
+
+//==========================================================
 // <T>获得材质。</T>
 //
 // @method
@@ -219,6 +232,7 @@ function FE3rGeometry_loadResource(resource){
             throw new TError(o, "Unknown data type.");
          }
          buffer.upload(data, 3 * dataCount);
+         o._indexBuffers.push(buffer);
       }else{
          // 创建顶点缓冲
          var buffer = context.createVertexBuffer();

@@ -14,6 +14,7 @@ function FDsCommonRenderableFrame(o){
    // @event
    o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
    o.onDataChanged     = FDsCommonRenderableFrame_onDataChanged;
+   o.onMaterialClick   = FDsCommonRenderableFrame_onMaterialClick;
    o.onEffectClick     = FDsCommonRenderableFrame_onEffectClick;
    //..........................................................
    // @method
@@ -66,6 +67,16 @@ function FDsCommonRenderableFrame_onDataChanged(p){
 }
 
 //==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
+   var o = this;
+}
+
+//==========================================================
 // <T>效果点击处理。</T>
 //
 // @method
@@ -97,30 +108,41 @@ function FDsCommonRenderableFrame_construct(){
 // <T>加载渲染对象信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param r:renderable:FE3dRenderable 渲染对象
+// @param space:FE3dSpace 空间
+// @param renderable:FE3dRenderable 渲染对象
 //==========================================================
-function FDsCommonRenderableFrame_loadObject(s, r){
+function FDsCommonRenderableFrame_loadObject(s, renderable){
    var o = this;
    o._activeScene = s;
-   o._activeRenderable = r;
-   // 获得矩阵
-   var m = r.matrix();
-   // 设置参数
-   o._controlTranslate.set(m.tx, m.ty, m.tz);
-   o._controlRotation.set(m.rx, m.ry, m.rz);
-   o._controlScale.set(m.sx, m.sy, m.sz);
-   // 设置效果器
-   var ces = o._controlEffects;
-   ces.clear();
-   var es = r.infos();
+   o._activeRenderable = renderable;
+   // 设置矩阵参数
+   var matrix = renderable.matrix();
+   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
+   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
+   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
+   // 建立材质集合
+   var materialBox = o._controlMaterials;
+   materialBox.clear();
+   //var materials = renderable.materials();
+   var indexBuffers = renderable.indexBuffers();
+   var count = indexBuffers.count();
+   for(var i = 0; i < count; i++){
+      //var e = materials.at(i);
+      var item = materialBox.createItem(null, i + ': ');
+      item.setTag(e);
+      materialBox.push(item);
+   }
+   // 建立效果器集合
+   var effectBox = o._controlEffects;
+   effectBox.clear();
+   var es = renderable.infos();
    var c = es.count();
    for(var i = 0; i < c; i++){
-      var e = es.value(i).effect;
+      var e = es.at(i).effect;
       if(e){
-         var l = ces.createItem(null, e.code());
-         l.setTag(e);
-         ces.push(l);
+         var item = effectBox.createItem(null, e.code());
+         item.setTag(e);
+         effectBox.push(item);
       }
    }
 }

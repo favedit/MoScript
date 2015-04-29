@@ -9,11 +9,35 @@ function FDrTemplateConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    //..........................................................
    // @attribute
-   o._serviceCode = 'cloud.resource.template';
+   o._serviceCode   = 'cloud.resource.template';
    //..........................................................
    // @method
-   o.update       = FDrTemplateConsole_update;
+   o.selectMaterial = FDrTemplateConsole_selectMaterial;
+   o.createDisplay  = FDrTemplateConsole_createDisplay;
+   o.update         = FDrTemplateConsole_update;
    return o;
+}
+
+//==========================================================
+// <T>选择材质处理。</T>
+//
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FDrTemplateConsole_selectMaterial(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createMaterial');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+
+//==========================================================
+// <T>插入精灵处理。</T>
+//
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FDrTemplateConsole_createDisplay(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createDisplay');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
 }
 
 //==========================================================

@@ -54,11 +54,11 @@ function FDsModelCatalogToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
-   o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
-   o._controlCreateSprite.addClickListener(o, o.onCreateSpriteClick);
-   o._controlCopy.addClickListener(o, o.onCopyClick);
-   o._controlDelete.addClickListener(o, o.onDeleteClick);
+   //o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
+   //o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
+   //o._controlCreateSprite.addClickListener(o, o.onCreateSpriteClick);
+   //o._controlCopy.addClickListener(o, o.onCopyClick);
+   //o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
    o._controlFolderClose.addClickListener(o, o.onFolderCloseClick);
 }

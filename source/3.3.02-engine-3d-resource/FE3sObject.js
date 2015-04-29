@@ -12,12 +12,31 @@ function FE3sObject(o){
    o._isClone    = false;
    //..........................................................
    // @method
+   o.makeLabel   = FE3sObject_makeLabel;
+   // @method
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
    o.clone       = FE3sObject_clone;
    // @method
    o.dispose     = FE3sObject_dispose;
    return o;
+}
+
+//==========================================================
+// <T>生成显示名称。</T>
+//
+// @return String 显示名称
+//==========================================================
+function FE3sObject_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 
 //==========================================================

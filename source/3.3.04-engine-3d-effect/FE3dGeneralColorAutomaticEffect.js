@@ -66,10 +66,10 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param pg:region:FG3dRegion 渲染区域
-// @param pr:renderable:FG3dRenderable 渲染对象
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
@@ -77,12 +77,12 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
    // 绑定材质
-   var m = pr.material();
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
    // 设置骨头集合
-   if(pr._optionMerge){
-      var ms = pr.mergeRenderables();
+   if(renderable._optionMerge){
+      var ms = renderable.mergeRenderables();
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
       for(var i = 0; i < mc; i++){
@@ -91,7 +91,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       }
       p.setParameter('vc_model_matrix', d);
    }else{
-      p.setParameter('vc_model_matrix', pr.currentMatrix());
+      p.setParameter('vc_model_matrix', renderable.currentMatrix());
    }
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
@@ -100,15 +100,15 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_light_direction', vld);
    // 设置材质
    if(o._supportMaterialMap){
-      var i = pr._materialId;
+      var i = renderable._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      var f = pr.activeInfo();
-      o.buildMaterial(f, pr);
+      var f = renderable.activeInfo();
+      o.buildMaterial(f, renderable);
       p.setParameter('fc_materials', f.material.memory());
    }
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    // 绘制处理
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, renderable);
 }

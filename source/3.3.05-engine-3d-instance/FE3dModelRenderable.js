@@ -22,6 +22,7 @@ function FE3dModelRenderable(o){
    o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;
    o.vertexBuffers     = FE3dModelRenderable_vertexBuffers;
    o.indexBuffer       = FE3dModelRenderable_indexBuffer;
+   o.indexBuffers      = FE3dModelRenderable_indexBuffers;
    o.findTexture       = FE3dModelRenderable_findTexture;
    o.textures          = FE3dModelRenderable_textures;
    o.bones             = FE3dModelRenderable_bones;
@@ -97,6 +98,16 @@ function FE3dModelRenderable_vertexBuffers(){
 //==========================================================
 function FE3dModelRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+
+//==========================================================
+// <T>获得索引缓冲集合。</T>
+//
+// @method
+// @return TObjects 索引缓冲集合
+//==========================================================
+function FE3dModelRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 
 //==========================================================

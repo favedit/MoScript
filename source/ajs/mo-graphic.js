@@ -3593,29 +3593,29 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
-function FG3dAutomaticEffect_drawRenderable(pg, pr){
+function FG3dAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    var g = o._program;
-   var f = pr.activeInfo();
+   var f = renderable.activeInfo();
    var l = f.layout;
    if(!l){
-      l = f.layout = c.createLayout();
+      l = f.layout = context.createLayout();
       if(o._supportLayout){
          l.bind();
-         o.bindAttributes(pr);
+         o.bindAttributes(renderable);
          l.unbind();
          l.active();
       }else{
-         c.recordBegin();
-         o.bindAttributes(pr);
-         c.recordEnd();
-         l.linkBuffers(c.recordBuffers());
+         context.recordBegin();
+         o.bindAttributes(renderable);
+         context.recordEnd();
+         l.linkBuffers(context.recordBuffers());
       }
-      c.recordBegin();
-      o.bindSamplers(pr);
-      c.recordEnd();
-      l.linkSamplers(c.recordSamplers());
+      context.recordBegin();
+      o.bindSamplers(renderable);
+      context.recordEnd();
+      l.linkSamplers(context.recordSamplers());
    }else{
       if(o._supportLayout){
          l.active();
@@ -3624,7 +3624,12 @@ function FG3dAutomaticEffect_drawRenderable(pg, pr){
       }
       l.bindSamplers();
    }
-   c.drawTriangles(pr.indexBuffer());
+   var indexBuffers = renderable.indexBuffers();
+   var indexCount = indexBuffers.count();
+   for(var i = 0; i < indexCount; i++){
+      var indexBuffer = indexBuffers.at(i);
+      context.drawTriangles(indexBuffer);
+   }
    if(o._supportLayout){
       l.deactive();
    }

@@ -650,7 +650,7 @@ function FE3sFrame_unserialize(p){
    o._scale.unserialize(p);
 }
 function FE3sGeometry(o){
-   o = RClass.inherits(this, o, FE3sDrawable, ME3sGeometry);
+   o = RClass.inherits(this, o, FE3sRenderable, ME3sGeometry);
    o.construct     = FE3sGeometry_construct;
    o.unserialize   = FE3sGeometry_unserialize;
    o.dispose       = FE3sGeometry_dispose;
@@ -658,12 +658,12 @@ function FE3sGeometry(o){
 }
 function FE3sGeometry_construct(){
    var o = this;
-   o.__base.FE3sDrawable.construct.call(o);
+   o.__base.FE3sRenderable.construct.call(o);
    o.__base.ME3sGeometry.construct.call(o);
 }
 function FE3sGeometry_unserialize(input){
    var o = this;
-   o.__base.FE3sDrawable.unserialize.call(o, input);
+   o.__base.FE3sRenderable.unserialize.call(o, input);
    var outline = o._outline;
    outline.unserialize(input);
    if(outline.isEmpty()){
@@ -683,7 +683,7 @@ function FE3sGeometry_unserialize(input){
 function FE3sGeometry_dispose(){
    var o = this;
    o.__base.ME3sGeometry.dispose.call(o);
-   o.__base.FE3sDrawable.dispose.call(o);
+   o.__base.FE3sRenderable.dispose.call(o);
 }
 function FE3sLight(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -921,6 +921,10 @@ function FE3sMaterialConsole_dispose(){
    o._resources = RObject.free(o._resources);
    o._materials = RObject.free(o._materials);
    o.__base.FConsole.dispose.call(o);
+}
+function FE3sMaterialRefer(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   return o;
 }
 function FE3sMaterialResource(o){
    o = RClass.inherits(this, o, FE3sResource);
@@ -1413,11 +1417,23 @@ function FE3sObject(o){
    o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
    o._typeName   = null;
    o._isClone    = false;
+   o.makeLabel   = FE3sObject_makeLabel;
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
    o.clone       = FE3sObject_clone;
    o.dispose     = FE3sObject_dispose;
    return o;
+}
+function FE3sObject_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 function FE3sObject_unserialize(input){
    var o = this;
@@ -1573,7 +1589,66 @@ function FE3sRegion_saveConfig(p){
 }
 function FE3sRenderable(o){
    o = RClass.inherits(this, o, FE3sDrawable);
+   o._materialRefers   = null;
+   o.construct         = FE3sRenderable_construct;
+   o.materialRefers    = FE3sRenderable_materialRefers;
+   o.pushMaterialRefer = FE3sRenderable_pushMaterialRefer;
+   o.unserialize       = FE3sRenderable_unserialize;
+   o.saveConfig        = FE3sRenderable_saveConfig;
+   o.clone             = FE3sRenderable_clone;
    return o;
+}
+function FE3sRenderable_construct(){
+   var o = this;
+   o.__base.FE3sDrawable.construct.call(o);
+}
+function FE3sRenderable_materialRefers(){
+   return this._materialRefers;
+}
+function FE3sRenderable_pushMaterialRefer(materialRefer){
+   var o = this;
+   var materialRefers = o._materialRefers;
+   if(!materialRefers){
+      materialRefers = o._materialRefers = new TDictionary();
+   }
+   materialRefers.set(materialRefer.guid(), materialRefer);
+}
+function FE3sRenderable_unserialize(input){
+   var o = this;
+   o.__base.FE3sDrawable.unserialize.call(o, input);
+   var count = input.readUint16();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var materialRefer = RClass.create(FE3sMaterialRefer);
+         materialRefer.unserialize(input);
+         o.pushMaterialRefer(materialRefer);
+      }
+   }
+}
+function FE3sRenderable_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDrawable.saveConfig.call(o, xconfig);
+   var materialRefers = o._materialRefers;
+   if(materialRefers){
+      var count = materialRefers.count();
+      var xmaterialRefers = xconfig.create('MaterialReferCollection');
+      for(var i = 0; i < count; i++){
+         materialRefers.at(i).saveConfig(xmaterialRefers.create('MaterialRefer'));
+      }
+   }
+}
+function FE3sRenderable_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sDrawable.clone.call(o, instance);
+   var materialRefers = o._materialRefers;
+   if(materialRefers){
+      var count = materialRefers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = materialRefers.at(i);
+         result.pushMaterialRefer(materialRefer.clone());
+      }
+   }
+   return result;
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource, MListenerLoad);
@@ -1583,6 +1658,7 @@ function FE3sResource(o){
    o._dataCompress = false;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
+   o.makeLabel     = FE3sResource_makeLabel;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
    o.testReady     = FE3sResource_testReady;
@@ -1608,6 +1684,17 @@ function FE3sResource_onComplete(input){
    view.dispose();
    o._dataReady = true;
    o.processLoadListener();
+}
+function FE3sResource_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 function FE3sResource_vendor(){
    return this._vendor;

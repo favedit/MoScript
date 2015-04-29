@@ -18,6 +18,7 @@ function FE3dMeshRenderable(o){
    o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
+   o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
    o.bones            = FE3dMeshRenderable_bones;
    // @method
    o.reloadResource   = FE3dMeshRenderable_reloadResource;
@@ -57,6 +58,16 @@ function FE3dMeshRenderable_vertexCount(){
 //==========================================================
 function FE3dMeshRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+
+//==========================================================
+// <T>获得索引缓冲集合。</T>
+//
+// @method
+// @return TObjects 索引缓冲集合
+//==========================================================
+function FE3dMeshRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 
 //==========================================================

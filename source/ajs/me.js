@@ -18236,29 +18236,29 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
-function FG3dAutomaticEffect_drawRenderable(pg, pr){
+function FG3dAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    var g = o._program;
-   var f = pr.activeInfo();
+   var f = renderable.activeInfo();
    var l = f.layout;
    if(!l){
-      l = f.layout = c.createLayout();
+      l = f.layout = context.createLayout();
       if(o._supportLayout){
          l.bind();
-         o.bindAttributes(pr);
+         o.bindAttributes(renderable);
          l.unbind();
          l.active();
       }else{
-         c.recordBegin();
-         o.bindAttributes(pr);
-         c.recordEnd();
-         l.linkBuffers(c.recordBuffers());
+         context.recordBegin();
+         o.bindAttributes(renderable);
+         context.recordEnd();
+         l.linkBuffers(context.recordBuffers());
       }
-      c.recordBegin();
-      o.bindSamplers(pr);
-      c.recordEnd();
-      l.linkSamplers(c.recordSamplers());
+      context.recordBegin();
+      o.bindSamplers(renderable);
+      context.recordEnd();
+      l.linkSamplers(context.recordSamplers());
    }else{
       if(o._supportLayout){
          l.active();
@@ -18267,7 +18267,12 @@ function FG3dAutomaticEffect_drawRenderable(pg, pr){
       }
       l.bindSamplers();
    }
-   c.drawTriangles(pr.indexBuffer());
+   var indexBuffers = renderable.indexBuffers();
+   var indexCount = indexBuffers.count();
+   for(var i = 0; i < indexCount; i++){
+      var indexBuffer = indexBuffers.at(i);
+      context.drawTriangles(indexBuffer);
+   }
    if(o._supportLayout){
       l.deactive();
    }
@@ -22369,7 +22374,7 @@ function FE3sFrame_unserialize(p){
    o._scale.unserialize(p);
 }
 function FE3sGeometry(o){
-   o = RClass.inherits(this, o, FE3sDrawable, ME3sGeometry);
+   o = RClass.inherits(this, o, FE3sRenderable, ME3sGeometry);
    o.construct     = FE3sGeometry_construct;
    o.unserialize   = FE3sGeometry_unserialize;
    o.dispose       = FE3sGeometry_dispose;
@@ -22377,12 +22382,12 @@ function FE3sGeometry(o){
 }
 function FE3sGeometry_construct(){
    var o = this;
-   o.__base.FE3sDrawable.construct.call(o);
+   o.__base.FE3sRenderable.construct.call(o);
    o.__base.ME3sGeometry.construct.call(o);
 }
 function FE3sGeometry_unserialize(input){
    var o = this;
-   o.__base.FE3sDrawable.unserialize.call(o, input);
+   o.__base.FE3sRenderable.unserialize.call(o, input);
    var outline = o._outline;
    outline.unserialize(input);
    if(outline.isEmpty()){
@@ -22402,7 +22407,7 @@ function FE3sGeometry_unserialize(input){
 function FE3sGeometry_dispose(){
    var o = this;
    o.__base.ME3sGeometry.dispose.call(o);
-   o.__base.FE3sDrawable.dispose.call(o);
+   o.__base.FE3sRenderable.dispose.call(o);
 }
 function FE3sLight(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -22640,6 +22645,10 @@ function FE3sMaterialConsole_dispose(){
    o._resources = RObject.free(o._resources);
    o._materials = RObject.free(o._materials);
    o.__base.FConsole.dispose.call(o);
+}
+function FE3sMaterialRefer(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   return o;
 }
 function FE3sMaterialResource(o){
    o = RClass.inherits(this, o, FE3sResource);
@@ -23132,11 +23141,23 @@ function FE3sObject(o){
    o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
    o._typeName   = null;
    o._isClone    = false;
+   o.makeLabel   = FE3sObject_makeLabel;
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
    o.clone       = FE3sObject_clone;
    o.dispose     = FE3sObject_dispose;
    return o;
+}
+function FE3sObject_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 function FE3sObject_unserialize(input){
    var o = this;
@@ -23292,7 +23313,66 @@ function FE3sRegion_saveConfig(p){
 }
 function FE3sRenderable(o){
    o = RClass.inherits(this, o, FE3sDrawable);
+   o._materialRefers   = null;
+   o.construct         = FE3sRenderable_construct;
+   o.materialRefers    = FE3sRenderable_materialRefers;
+   o.pushMaterialRefer = FE3sRenderable_pushMaterialRefer;
+   o.unserialize       = FE3sRenderable_unserialize;
+   o.saveConfig        = FE3sRenderable_saveConfig;
+   o.clone             = FE3sRenderable_clone;
    return o;
+}
+function FE3sRenderable_construct(){
+   var o = this;
+   o.__base.FE3sDrawable.construct.call(o);
+}
+function FE3sRenderable_materialRefers(){
+   return this._materialRefers;
+}
+function FE3sRenderable_pushMaterialRefer(materialRefer){
+   var o = this;
+   var materialRefers = o._materialRefers;
+   if(!materialRefers){
+      materialRefers = o._materialRefers = new TDictionary();
+   }
+   materialRefers.set(materialRefer.guid(), materialRefer);
+}
+function FE3sRenderable_unserialize(input){
+   var o = this;
+   o.__base.FE3sDrawable.unserialize.call(o, input);
+   var count = input.readUint16();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var materialRefer = RClass.create(FE3sMaterialRefer);
+         materialRefer.unserialize(input);
+         o.pushMaterialRefer(materialRefer);
+      }
+   }
+}
+function FE3sRenderable_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sDrawable.saveConfig.call(o, xconfig);
+   var materialRefers = o._materialRefers;
+   if(materialRefers){
+      var count = materialRefers.count();
+      var xmaterialRefers = xconfig.create('MaterialReferCollection');
+      for(var i = 0; i < count; i++){
+         materialRefers.at(i).saveConfig(xmaterialRefers.create('MaterialRefer'));
+      }
+   }
+}
+function FE3sRenderable_clone(instance){
+   var o = this;
+   var result = o.__base.FE3sDrawable.clone.call(o, instance);
+   var materialRefers = o._materialRefers;
+   if(materialRefers){
+      var count = materialRefers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = materialRefers.at(i);
+         result.pushMaterialRefer(materialRefer.clone());
+      }
+   }
+   return result;
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource, MListenerLoad);
@@ -23302,6 +23382,7 @@ function FE3sResource(o){
    o._dataCompress = false;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
+   o.makeLabel     = FE3sResource_makeLabel;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
    o.testReady     = FE3sResource_testReady;
@@ -23327,6 +23408,17 @@ function FE3sResource_onComplete(input){
    view.dispose();
    o._dataReady = true;
    o.processLoadListener();
+}
+function FE3sResource_makeLabel(){
+   var o = this;
+   var result = '';
+   if(!RString.isEmpty(o._code)){
+      result += o._code;
+   }
+   if(!RString.isEmpty(o._label)){
+      result += ' [' + o._label + ']';
+   }
+   return result;
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -25292,6 +25384,7 @@ function FE3rGeometry(o){
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
+   o._indexBuffers     = null;
    o._resourceMaterial = null;
    o._material         = null;
    o._textures         = null;
@@ -25303,6 +25396,7 @@ function FE3rGeometry(o){
    o.findVertexBuffer  = FE3rGeometry_findVertexBuffer;
    o.vertexBuffers     = FE3rGeometry_vertexBuffers;
    o.indexBuffer       = FE3rGeometry_indexBuffer;
+   o.indexBuffers      = FE3rGeometry_indexBuffers;
    o.material          = FE3rGeometry_material;
    o.findTexture       = FE3rGeometry_findTexture;
    o.textures          = FE3rGeometry_textures;
@@ -25315,6 +25409,7 @@ function FE3rGeometry_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
    o._vertexBuffers = new TDictionary();
+   o._indexBuffers = new TObjects();
 }
 function FE3rGeometry_testReady(){
    var o = this;
@@ -25356,6 +25451,9 @@ function FE3rGeometry_vertexBuffers(){
 function FE3rGeometry_indexBuffer(){
    return this._indexBuffer;
 }
+function FE3rGeometry_indexBuffers(){
+   return this._indexBuffers;
+}
 function FE3rGeometry_material(){
    return this._material;
 }
@@ -25391,6 +25489,7 @@ function FE3rGeometry_loadResource(resource){
             throw new TError(o, "Unknown data type.");
          }
          buffer.upload(data, 3 * dataCount);
+         o._indexBuffers.push(buffer);
       }else{
          var buffer = context.createVertexBuffer();
          buffer._name = code;
@@ -26785,17 +26884,17 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
       m._dirty = false;
    }
 }
-function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
-   var m = pr.material();
+   var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
-   if(pr._optionMerge){
-      var ms = pr.mergeRenderables();
+   if(renderable._optionMerge){
+      var ms = renderable.mergeRenderables();
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
       for(var i = 0; i < mc; i++){
@@ -26804,7 +26903,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       }
       p.setParameter('vc_model_matrix', d);
    }else{
-      p.setParameter('vc_model_matrix', pr.currentMatrix());
+      p.setParameter('vc_model_matrix', renderable.currentMatrix());
    }
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
@@ -26812,14 +26911,14 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
    if(o._supportMaterialMap){
-      var i = pr._materialId;
+      var i = renderable._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      var f = pr.activeInfo();
-      o.buildMaterial(f, pr);
+      var f = renderable.activeInfo();
+      o.buildMaterial(f, renderable);
       p.setParameter('fc_materials', f.material.memory());
    }
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, renderable);
 }
 function FE3dGeneralColorFlatEffect(o){
    o = RClass.inherits(this, o, FE3dAutomaticEffect);
@@ -28131,6 +28230,7 @@ function FE3dMeshRenderable(o){
    o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
+   o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
    o.bones            = FE3dMeshRenderable_bones;
    o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
@@ -28147,6 +28247,9 @@ function FE3dMeshRenderable_vertexCount(){
 }
 function FE3dMeshRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FE3dMeshRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 function FE3dMeshRenderable_bones(p){
    return this._bones;
@@ -28385,6 +28488,7 @@ function FE3dModelRenderable(o){
    o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;
    o.vertexBuffers     = FE3dModelRenderable_vertexBuffers;
    o.indexBuffer       = FE3dModelRenderable_indexBuffer;
+   o.indexBuffers      = FE3dModelRenderable_indexBuffers;
    o.findTexture       = FE3dModelRenderable_findTexture;
    o.textures          = FE3dModelRenderable_textures;
    o.bones             = FE3dModelRenderable_bones;
@@ -28419,6 +28523,9 @@ function FE3dModelRenderable_vertexBuffers(){
 }
 function FE3dModelRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FE3dModelRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 function FE3dModelRenderable_findTexture(p){
    return this._renderable.findTexture(p);
@@ -30303,15 +30410,17 @@ function FE3dTemplate_loadResource(resource){
    technique.setResource(resource.technique());
    o.__base.FE3dSpace.loadResource.call(o, resource);
    var displayResources = resource.displays();
-   var displayCount = displayResources.count();
-   if(displayCount > 0){
-      for(var i = 0; i < displayCount; i++){
-         var displayResource = displayResources.at(i);
-         var display = RClass.create(FE3dTemplateDisplay);
-         display._parent = o;
-         display.linkGraphicContext(o);
-         display.loadResource(displayResource);
-         o._sprites.push(display);
+   if(displayResources){
+      var displayCount = displayResources.count();
+      if(displayCount > 0){
+         for(var i = 0; i < displayCount; i++){
+            var displayResource = displayResources.at(i);
+            var display = RClass.create(FE3dTemplateDisplay);
+            display._parent = o;
+            display.linkGraphicContext(o);
+            display.loadResource(displayResource);
+            o._sprites.push(display);
+         }
       }
    }
 }
@@ -30829,8 +30938,12 @@ function FE3dTemplateRenderable_loadResource(resource){
    var modelGuid = resource.modelGuid();
    o._model = RConsole.find(FE3rModelConsole).load(o, modelGuid);
    var materialGuid = resource.materialGuid();
-   o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
-   o._materialResource = o._material.resource();
+   if(!RString.isEmpty(materialGuid)){
+      o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+      o._materialResource = o._material.resource();
+   }else{
+      o._material = o._materialReference = RClass.create(FE3dMaterial);
+   }
 }
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;

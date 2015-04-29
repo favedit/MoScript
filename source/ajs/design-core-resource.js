@@ -439,9 +439,21 @@ function FDrTemplate(o){
 }
 function FDrTemplateConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
-   o._serviceCode = 'cloud.resource.template';
-   o.update       = FDrTemplateConsole_update;
+   o._serviceCode   = 'cloud.resource.template';
+   o.selectMaterial = FDrTemplateConsole_selectMaterial;
+   o.createDisplay  = FDrTemplateConsole_createDisplay;
+   o.update         = FDrTemplateConsole_update;
    return o;
+}
+function FDrTemplateConsole_selectMaterial(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createMaterial');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrTemplateConsole_createDisplay(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createDisplay');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
 }
 function FDrTemplateConsole_update(config){
    var o = this;

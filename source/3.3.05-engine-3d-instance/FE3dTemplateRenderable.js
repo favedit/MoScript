@@ -91,8 +91,12 @@ function FE3dTemplateRenderable_loadResource(resource){
    o._model = RConsole.find(FE3rModelConsole).load(o, modelGuid);
    // 设置资源
    var materialGuid = resource.materialGuid();
-   o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
-   o._materialResource = o._material.resource();
+   if(!RString.isEmpty(materialGuid)){
+      o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+      o._materialResource = o._material.resource();
+   }else{
+      o._material = o._materialReference = RClass.create(FE3dMaterial);
+   }
 }
 
 //==========================================================

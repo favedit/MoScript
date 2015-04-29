@@ -100,8 +100,11 @@ function FDsPrivateTemplateMenuBar(o){
 function FDsPrivateTemplateMenuBar_onBuilded(event){
    var o = this;
    o.__base.FDsTemplateMenuBar.onBuilded.call(o, event);
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+   o._controlSelectMaterial.addClickListener(o, o.onSelectMaterialClick);
+   o._controlCreateDisplay.addClickListener(o, o.onCreateDisplayClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
 function FDsPrivateTemplateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);

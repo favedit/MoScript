@@ -6,7 +6,7 @@
 // @history 150415
 //==========================================================
 function FE3sGeometry(o){
-   o = RClass.inherits(this, o, FE3sDrawable, ME3sGeometry);
+   o = RClass.inherits(this, o, FE3sRenderable, ME3sGeometry);
    //..........................................................
    // @method
    o.construct     = FE3sGeometry_construct;
@@ -24,7 +24,7 @@ function FE3sGeometry(o){
 //==========================================================
 function FE3sGeometry_construct(){
    var o = this;
-   o.__base.FE3sDrawable.construct.call(o);
+   o.__base.FE3sRenderable.construct.call(o);
    o.__base.ME3sGeometry.construct.call(o);
 }
 
@@ -37,7 +37,7 @@ function FE3sGeometry_construct(){
 //==========================================================
 function FE3sGeometry_unserialize(input){
    var o = this;
-   o.__base.FE3sDrawable.unserialize.call(o, input);
+   o.__base.FE3sRenderable.unserialize.call(o, input);
    // 读取属性
    var outline = o._outline;
    outline.unserialize(input);
@@ -66,5 +66,5 @@ function FE3sGeometry_unserialize(input){
 function FE3sGeometry_dispose(){
    var o = this;
    o.__base.ME3sGeometry.dispose.call(o);
-   o.__base.FE3sDrawable.dispose.call(o);
+   o.__base.FE3sRenderable.dispose.call(o);
 }

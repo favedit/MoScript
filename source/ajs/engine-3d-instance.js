@@ -890,6 +890,7 @@ function FE3dMeshRenderable(o){
    o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
+   o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
    o.bones            = FE3dMeshRenderable_bones;
    o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
@@ -906,6 +907,9 @@ function FE3dMeshRenderable_vertexCount(){
 }
 function FE3dMeshRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FE3dMeshRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 function FE3dMeshRenderable_bones(p){
    return this._bones;
@@ -1144,6 +1148,7 @@ function FE3dModelRenderable(o){
    o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;
    o.vertexBuffers     = FE3dModelRenderable_vertexBuffers;
    o.indexBuffer       = FE3dModelRenderable_indexBuffer;
+   o.indexBuffers      = FE3dModelRenderable_indexBuffers;
    o.findTexture       = FE3dModelRenderable_findTexture;
    o.textures          = FE3dModelRenderable_textures;
    o.bones             = FE3dModelRenderable_bones;
@@ -1178,6 +1183,9 @@ function FE3dModelRenderable_vertexBuffers(){
 }
 function FE3dModelRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FE3dModelRenderable_indexBuffers(){
+   return this._renderable.indexBuffers();
 }
 function FE3dModelRenderable_findTexture(p){
    return this._renderable.findTexture(p);
@@ -3062,15 +3070,17 @@ function FE3dTemplate_loadResource(resource){
    technique.setResource(resource.technique());
    o.__base.FE3dSpace.loadResource.call(o, resource);
    var displayResources = resource.displays();
-   var displayCount = displayResources.count();
-   if(displayCount > 0){
-      for(var i = 0; i < displayCount; i++){
-         var displayResource = displayResources.at(i);
-         var display = RClass.create(FE3dTemplateDisplay);
-         display._parent = o;
-         display.linkGraphicContext(o);
-         display.loadResource(displayResource);
-         o._sprites.push(display);
+   if(displayResources){
+      var displayCount = displayResources.count();
+      if(displayCount > 0){
+         for(var i = 0; i < displayCount; i++){
+            var displayResource = displayResources.at(i);
+            var display = RClass.create(FE3dTemplateDisplay);
+            display._parent = o;
+            display.linkGraphicContext(o);
+            display.loadResource(displayResource);
+            o._sprites.push(display);
+         }
       }
    }
 }
@@ -3588,8 +3598,12 @@ function FE3dTemplateRenderable_loadResource(resource){
    var modelGuid = resource.modelGuid();
    o._model = RConsole.find(FE3rModelConsole).load(o, modelGuid);
    var materialGuid = resource.materialGuid();
-   o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
-   o._materialResource = o._material.resource();
+   if(!RString.isEmpty(materialGuid)){
+      o._material = o._materialReference = RConsole.find(FE3rMaterialConsole).load(o, materialGuid);
+      o._materialResource = o._material.resource();
+   }else{
+      o._material = o._materialReference = RClass.create(FE3dMaterial);
+   }
 }
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;

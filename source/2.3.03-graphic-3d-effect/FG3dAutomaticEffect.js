@@ -483,35 +483,35 @@ function FG3dAutomaticEffect_bindMaterial(p){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param pg:region:FG3dRegion 渲染区域
-// @param pr:renderable:FG3dRenderable 渲染对象
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dAutomaticEffect_drawRenderable(pg, pr){
+function FG3dAutomaticEffect_drawRenderable(pg, renderable){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    var g = o._program;
    // 绘制准备
-   var f = pr.activeInfo();
+   var f = renderable.activeInfo();
    var l = f.layout;
    if(!l){
-      l = f.layout = c.createLayout();
+      l = f.layout = context.createLayout();
       // 绑定属性流集合
       if(o._supportLayout){
          l.bind();
-         o.bindAttributes(pr);
+         o.bindAttributes(renderable);
          l.unbind();
          l.active();
       }else{
-         c.recordBegin();
-         o.bindAttributes(pr);
-         c.recordEnd();
-         l.linkBuffers(c.recordBuffers());
+         context.recordBegin();
+         o.bindAttributes(renderable);
+         context.recordEnd();
+         l.linkBuffers(context.recordBuffers());
       }
       // 绑定取样器集合
-      c.recordBegin();
-      o.bindSamplers(pr);
-      c.recordEnd();
-      l.linkSamplers(c.recordSamplers());
+      context.recordBegin();
+      o.bindSamplers(renderable);
+      context.recordEnd();
+      l.linkSamplers(context.recordSamplers());
    }else{
       // 绑定所有属性流
       if(o._supportLayout){
@@ -524,7 +524,12 @@ function FG3dAutomaticEffect_drawRenderable(pg, pr){
    }
    //..........................................................
    // 绘制处理
-   c.drawTriangles(pr.indexBuffer());
+   var indexBuffers = renderable.indexBuffers();
+   var indexCount = indexBuffers.count();
+   for(var i = 0; i < indexCount; i++){
+      var indexBuffer = indexBuffers.at(i);
+      context.drawTriangles(indexBuffer);
+   }
    // 取消绑定取样器集合
    //l.unbindSamplers();
    //..........................................................

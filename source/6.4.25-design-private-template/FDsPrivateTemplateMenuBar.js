@@ -28,6 +28,9 @@ function FDsPrivateTemplateMenuBar_onBuilded(event){
    o.__base.FDsTemplateMenuBar.onBuilded.call(o, event);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+   o._controlSelectMaterial.addClickListener(o, o.onSelectMaterialClick);
+   o._controlCreateDisplay.addClickListener(o, o.onCreateDisplayClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }

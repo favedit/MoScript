@@ -307,15 +307,17 @@ function FE3dTemplate_loadResource(resource){
    o.__base.FE3dSpace.loadResource.call(o, resource);
    // 加载资源渲染集合
    var displayResources = resource.displays();
-   var displayCount = displayResources.count();
-   if(displayCount > 0){
-      for(var i = 0; i < displayCount; i++){
-         var displayResource = displayResources.at(i);
-         var display = RClass.create(FE3dTemplateDisplay);
-         display._parent = o;
-         display.linkGraphicContext(o);
-         display.loadResource(displayResource);
-         o._sprites.push(display);
+   if(displayResources){
+      var displayCount = displayResources.count();
+      if(displayCount > 0){
+         for(var i = 0; i < displayCount; i++){
+            var displayResource = displayResources.at(i);
+            var display = RClass.create(FE3dTemplateDisplay);
+            display._parent = o;
+            display.linkGraphicContext(o);
+            display.loadResource(displayResource);
+            o._sprites.push(display);
+         }
       }
    }
 }
