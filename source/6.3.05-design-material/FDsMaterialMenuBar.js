@@ -26,6 +26,9 @@ function FDsMaterialMenuBar(o){
    o.onSelectConfirm  = FDsMaterialMenuBar_onSelectConfirm;
    o.onSelectClick    = FDsMaterialMenuBar_onSelectClick;
    o.onImportClick    = FDsMaterialMenuBar_onImportClick;
+   o.onDeleteLoad     = FDsMaterialMenuBar_onDeleteLoad;
+   o.onDeleteExecute  = FDsMaterialMenuBar_onDeleteExecute;
+   o.onDeleteClick    = FDsMaterialMenuBar_onDeleteClick;
    o.onCaptureLoad    = FDsMaterialMenuBar_onCaptureLoad;
    o.onCaptureClick   = FDsMaterialMenuBar_onCaptureClick;
    //..........................................................
@@ -52,6 +55,7 @@ function FDsMaterialMenuBar_onBuilded(p){
    o._controlProperty.addClickListener(o, o.onPropertyClick);
    o._controlSelect.addClickListener(o, o.onSelectClick);
    o._controlImport.addClickListener(o, o.onImportClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlCapture.addClickListener(o, o.onCaptureClick);
 }
 
@@ -132,12 +136,19 @@ function FDsMaterialMenuBar_onSelectConfirm(event){
 //==========================================================
 function FDsMaterialMenuBar_onSelectClick(event){
    var o = this;
-   // 获得资源
-   var resource = o._frameSet._activeResource;
+   // 获得选中位图
+   var item = o._frameSet._catalogContent.focusItem();
+   if(!item){
+      return alert('请选中位图');
+   }
    // 弹出界面
    var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
-   dialog._resource = resource;
    dialog._frameSet = o._frameSet;
+   dialog._activeItem = item;
+   dialog.switchModeCd('select');
+   dialog._controlTypeCode.set(item._code);
+   dialog._controlCode.set(item._code);
+   dialog._controlLabel.set(item._label);
    dialog.showPosition(EUiPosition.Center);
 }
 
@@ -149,13 +160,59 @@ function FDsMaterialMenuBar_onSelectClick(event){
 //==========================================================
 function FDsMaterialMenuBar_onImportClick(event){
    var o = this;
-   // 获得资源
-   var resource = o._frameSet._activeResource;
-   // 弹出界面
-   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
-   dialog._resource = resource;
-   dialog._frameSet = o._frameSet;
-   dialog.showPosition(EUiPosition.Center);
+   // 画面允许操作
+   RConsole.find(FUiDesktopConsole).hide();
+   // 刷新列表
+   var frame = o._frameSet._listContent;
+   frame.serviceResearch();
+}
+
+//==========================================================
+// <T>捕捉图像处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onDeleteLoad(event){
+   var o = this;
+   // 画面允许操作
+   RConsole.find(FUiDesktopConsole).hide();
+   // 刷新列表
+   //var frame = o._frameSet._listContent;
+   //frame.serviceResearch();
+}
+
+//==========================================================
+// <T>捕捉图像处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onDeleteExecute(event){
+   var o = this;
+   var item = o._frameSet._catalogContent.focusItem();
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
+   // 发送数据请求
+   var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
+   connection.addLoadListener(o, o.onDeleteLoad);
+}
+
+//==========================================================
+// <T>捕捉图像处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMaterialMenuBar_onDeleteClick(event){
+   var o = this;
+   var item = o._frameSet._catalogContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   // 删除确认窗口
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+   dialog.addResultListener(o, o.onDeleteExecute);
 }
 
 //==========================================================

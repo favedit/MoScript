@@ -138,9 +138,13 @@ function FDsResourceListContent_doDoubleClickItem(control){
 //
 // @method
 // @param typeCd:String 类型
-// @param search:String 搜索内容
+// @param search:String 搜索
+// @param order:String 排序
+// @param pageSize:String 分页
+// @param page:String 页号
+// @param force:Boolean 强制
 //==========================================================
-function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
+function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page, force){
    var o = this;
    // 检查参数
    if(typeCd == null){
@@ -159,9 +163,11 @@ function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, p
       page = o._contentPage;
    }
    // 检查变更
-   var flag = typeCd + '|' + search + '|' + order + '|' + pageSize + '|' + page;
-   if(o._contentFlag == flag){
-      return;
+   if(!force){
+      var flag = typeCd + '|' + search + '|' + order + '|' + pageSize + '|' + page;
+      if(o._contentFlag == flag){
+         return;
+      }
    }
    o._contentFlag = flag;
    // 设置参数
@@ -186,7 +192,7 @@ function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, p
 //==========================================================
 function FDsResourceListContent_serviceResearch(){
    var o = this;
-   o.serviceSearch(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+   o.serviceSearch(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage, true);
 }
 
 //==========================================================

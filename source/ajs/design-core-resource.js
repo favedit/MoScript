@@ -150,22 +150,10 @@ function FDrBitmapConsole_update(xconfig){
 }
 function FDrMaterial(o){
    o = RClass.inherits(this, o, FDrResource);
-   o._classCode    = 'Material';
-   o.loadConfig    = FDrMaterial_loadConfig;
-   o.saveConfig    = FDrMaterial_saveConfig;
+   o._classCode = 'Material';
+   o.loadConfig = FDrMaterial_loadConfig;
+   o.saveConfig = FDrMaterial_saveConfig;
    return o;
-}
-function FDrMaterial_sizeWidth(){
-   return this._sizeWidth;
-}
-function FDrMaterial_setSizeWidth(width){
-   this._sizeWidth = width;
-}
-function FDrMaterial_sizeHeight(){
-   return this._sizeHeight;
-}
-function FDrMaterial_setSizeHeight(height){
-   this._sizeHeight = height;
 }
 function FDrMaterial_loadConfig(xconfig){
    var o = this;
@@ -181,6 +169,7 @@ function FDrMaterialConsole(o){
    o._classUnit   = FDrMaterial;
    o.query        = FDrMaterialConsole_query;
    o.update       = FDrMaterialConsole_update;
+   o.deleteBitmap = FDrMaterialConsole_deleteBitmap;
    return o;
 }
 function FDrMaterialConsole_query(guid){
@@ -202,6 +191,12 @@ function FDrMaterialConsole_update(xconfig){
    var uri = '/' + o._serviceCode + '.ws?action=update';
    var url = RBrowser.hostPath(uri);
    return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrMaterialConsole_deleteBitmap(guid){
+   var o = this;
+   var uri = '/' + o._serviceCode + '.ws?action=deleteBitmap&guid=' + guid;
+   var url = RBrowser.hostPath(uri);
+   return RConsole.find(FXmlConsole).sendAsync(url);
 }
 function FDrMesh(o){
    o = RClass.inherits(this, o, FDrResource);

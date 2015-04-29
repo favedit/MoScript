@@ -32,7 +32,10 @@ function FDsPrivateResourceMenuBar_onBuilded(p){
    //..........................................................
    // 注册事件
    o._controlImportPicture.addClickListener(o, o.onImportPictureClick);
-   o._controlImportMesh.addClickListener(o, o.onImportMeshClick);
+   o._controlImportModel.addClickListener(o, o.onImportModelClick);
+   o._controlCreateMaterial.addClickListener(o, o.onCreateMaterialClick);
+   o._controlCreateTemplate.addClickListener(o, o.onCreateTemplateClick);
+   o._controlCreateScene.addClickListener(o, o.onCreateSceneClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlShareOpen.addClickListener(o, o.onShareClick);
    o._controlShareClose.addClickListener(o, o.onShareClick);

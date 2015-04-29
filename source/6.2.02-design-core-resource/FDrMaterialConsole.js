@@ -15,6 +15,7 @@ function FDrMaterialConsole(o){
    // @method
    o.query        = FDrMaterialConsole_query;
    o.update       = FDrMaterialConsole_update;
+   o.deleteBitmap = FDrMaterialConsole_deleteBitmap;
    return o;
 }
 
@@ -54,4 +55,18 @@ function FDrMaterialConsole_update(xconfig){
    var url = RBrowser.hostPath(uri);
    // 发送数据
    return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+
+//==========================================================
+// <T>删除位图处理。</T>
+//
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FDrMaterialConsole_deleteBitmap(guid){
+   var o = this;
+   // 生成地址
+   var uri = '/' + o._serviceCode + '.ws?action=deleteBitmap&guid=' + guid;
+   var url = RBrowser.hostPath(uri);
+   // 发送数据
+   return RConsole.find(FXmlConsole).sendAsync(url);
 }

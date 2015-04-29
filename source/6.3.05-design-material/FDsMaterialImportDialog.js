@@ -10,6 +10,7 @@ function FDsMaterialImportDialog(o){
    //..........................................................
    // @property
    o._frameName            = 'resource.material.ImportDialog';
+   o._modeCd               = null;
    //..........................................................
    // @attribute
    o._nodeGuid             = null;
@@ -28,6 +29,8 @@ function FDsMaterialImportDialog(o){
    //..........................................................
    // @method
    o.construct             = FDsMaterialImportDialog_construct;
+   // @method
+   o.switchModeCd          = FDsMaterialImportDialog_switchModeCd;
    // @method
    o.dispose               = FDsMaterialImportDialog_dispose;
    return o;
@@ -56,12 +59,31 @@ function FDsMaterialImportDialog_onBuilded(event){
 //==========================================================
 function FDsMaterialImportDialog_onFileLoaded(event){
    var o = this;
-   var reader = o._fileReader;
    // 获得参数
-   var resource = o._resource;
+   var item = o._activeItem;
+   var resource = o._frameSet._activeResource;
    var guid = resource.guid();
-   // 上传数据
-   var url = '/cloud.resource.material.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var typeCode = o._controlTypeCode.get();
+   var code = o._controlCode.get();
+   if(RString.isEmpty(code)){
+      code = typeCode;
+   }
+   var label = o._controlLabel.get();
+   // 获得模式
+   var url = null;
+   var reader = o._fileReader;
+   switch(o._modeCd){
+      case 'select':
+         var linkGuid = item._linkGuid;
+         var bitmapGuid = item._guid;
+         url = '/cloud.resource.material.wv?do=replaceData&material_guid=' + guid + '&link_guid=' + linkGuid + '&bitmap_guid=' + bitmapGuid + '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+         break;
+      case 'import':
+         url = '/cloud.resource.material.wv?do=importData&material_guid=' + guid + '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+         break;
+      default:
+         throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
+   }
    url = RBrowser.urlEncode(url);
    // 发送数据
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
@@ -83,7 +105,7 @@ function FDsMaterialImportDialog_onConfirmLoad(event){
    // 隐藏窗口
    o.hide();
    // 刷新搜索内容
-   o._frameSet.reload();
+   //o._frameSet.reload();
 }
 
 //==========================================================
@@ -122,6 +144,29 @@ function FDsMaterialImportDialog_construct(){
    var o = this;
    // 父处理
    o.__base.FUiDialog.construct.call(o);
+}
+
+//==========================================================
+// <T>切换模式处理。</T>
+//
+// @method
+// @param modeCd:String 模式类型
+//==========================================================
+function FDsMaterialImportDialog_switchModeCd(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   switch(modeCd){
+      case 'select':
+         o.setLabel('替换位图资源');
+         break;
+      case 'import':
+         o.setLabel('导入位图资源');
+         break;
+      default:
+         throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
+   }
+   o._controlCode.set('');
+   o._controlLabel.set('');
 }
 
 //==========================================================

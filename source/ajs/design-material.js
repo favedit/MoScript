@@ -182,6 +182,7 @@ function FDsMaterialCatalogContent_onServiceLoad(event){
          var item = o.createItem(FDsMaterialCatalogItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
+         item._linkGuid = xnode.get('link_guid');
          item._code = code;
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(code);
@@ -415,6 +416,7 @@ function FDsMaterialFrameSet_dispose(){
 function FDsMaterialImportDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    o._frameName            = 'resource.material.ImportDialog';
+   o._modeCd               = null;
    o._nodeGuid             = null;
    o._controlPrivateButton = null;
    o._controlTeamButton    = null;
@@ -425,6 +427,7 @@ function FDsMaterialImportDialog(o){
    o.onConfirmClick        = FDsMaterialImportDialog_onConfirmClick;
    o.onCancelClick         = FDsMaterialImportDialog_onCancelClick;
    o.construct             = FDsMaterialImportDialog_construct;
+   o.switchModeCd          = FDsMaterialImportDialog_switchModeCd;
    o.dispose               = FDsMaterialImportDialog_dispose;
    return o;
 }
@@ -436,10 +439,29 @@ function FDsMaterialImportDialog_onBuilded(event){
 }
 function FDsMaterialImportDialog_onFileLoaded(event){
    var o = this;
-   var reader = o._fileReader;
-   var resource = o._resource;
+   var item = o._activeItem;
+   var resource = o._frameSet._activeResource;
    var guid = resource.guid();
-   var url = '/cloud.resource.material.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var typeCode = o._controlTypeCode.get();
+   var code = o._controlCode.get();
+   if(RString.isEmpty(code)){
+      code = typeCode;
+   }
+   var label = o._controlLabel.get();
+   var url = null;
+   var reader = o._fileReader;
+   switch(o._modeCd){
+      case 'select':
+         var linkGuid = item._linkGuid;
+         var bitmapGuid = item._guid;
+         url = '/cloud.resource.material.wv?do=replaceData&material_guid=' + guid + '&link_guid=' + linkGuid + '&bitmap_guid=' + bitmapGuid + '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+         break;
+      case 'import':
+         url = '/cloud.resource.material.wv?do=importData&material_guid=' + guid + '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+         break;
+      default:
+         throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
+   }
    url = RBrowser.urlEncode(url);
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
@@ -449,7 +471,6 @@ function FDsMaterialImportDialog_onConfirmLoad(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).hide();
    o.hide();
-   o._frameSet.reload();
 }
 function FDsMaterialImportDialog_onConfirmClick(event){
    var o = this;
@@ -465,6 +486,22 @@ function FDsMaterialImportDialog_onCancelClick(event){
 function FDsMaterialImportDialog_construct(){
    var o = this;
    o.__base.FUiDialog.construct.call(o);
+}
+function FDsMaterialImportDialog_switchModeCd(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   switch(modeCd){
+      case 'select':
+         o.setLabel('替换位图资源');
+         break;
+      case 'import':
+         o.setLabel('导入位图资源');
+         break;
+      default:
+         throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
+   }
+   o._controlCode.set('');
+   o._controlLabel.set('');
 }
 function FDsMaterialImportDialog_dispose(){
    var o = this;
@@ -487,6 +524,9 @@ function FDsMaterialMenuBar(o){
    o.onSelectConfirm  = FDsMaterialMenuBar_onSelectConfirm;
    o.onSelectClick    = FDsMaterialMenuBar_onSelectClick;
    o.onImportClick    = FDsMaterialMenuBar_onImportClick;
+   o.onDeleteLoad     = FDsMaterialMenuBar_onDeleteLoad;
+   o.onDeleteExecute  = FDsMaterialMenuBar_onDeleteExecute;
+   o.onDeleteClick    = FDsMaterialMenuBar_onDeleteClick;
    o.onCaptureLoad    = FDsMaterialMenuBar_onCaptureLoad;
    o.onCaptureClick   = FDsMaterialMenuBar_onCaptureClick;
    o.construct        = FDsMaterialMenuBar_construct;
@@ -501,6 +541,7 @@ function FDsMaterialMenuBar_onBuilded(p){
    o._controlProperty.addClickListener(o, o.onPropertyClick);
    o._controlSelect.addClickListener(o, o.onSelectClick);
    o._controlImport.addClickListener(o, o.onImportClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlCapture.addClickListener(o, o.onCaptureClick);
 }
 function FDsMaterialMenuBar_onBackClick(event){
@@ -528,19 +569,44 @@ function FDsMaterialMenuBar_onSelectConfirm(event){
 }
 function FDsMaterialMenuBar_onSelectClick(event){
    var o = this;
-   var resource = o._frameSet._activeResource;
+   var item = o._frameSet._catalogContent.focusItem();
+   if(!item){
+      return alert('请选中位图');
+   }
    var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
-   dialog._resource = resource;
    dialog._frameSet = o._frameSet;
+   dialog._activeItem = item;
+   dialog.switchModeCd('select');
+   dialog._controlTypeCode.set(item._code);
+   dialog._controlCode.set(item._code);
+   dialog._controlLabel.set(item._label);
    dialog.showPosition(EUiPosition.Center);
 }
 function FDsMaterialMenuBar_onImportClick(event){
    var o = this;
-   var resource = o._frameSet._activeResource;
-   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
-   dialog._resource = resource;
-   dialog._frameSet = o._frameSet;
-   dialog.showPosition(EUiPosition.Center);
+   RConsole.find(FUiDesktopConsole).hide();
+   var frame = o._frameSet._listContent;
+   frame.serviceResearch();
+}
+function FDsMaterialMenuBar_onDeleteLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+}
+function FDsMaterialMenuBar_onDeleteExecute(event){
+   var o = this;
+   var item = o._frameSet._catalogContent.focusItem();
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
+   connection.addLoadListener(o, o.onDeleteLoad);
+}
+function FDsMaterialMenuBar_onDeleteClick(event){
+   var o = this;
+   var item = o._frameSet._catalogContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+   dialog.addResultListener(o, o.onDeleteExecute);
 }
 function FDsMaterialMenuBar_onCaptureLoad(event){
    RConsole.find(FUiDesktopConsole).hide();

@@ -67,6 +67,7 @@ function FDsMaterialCatalogContent_onServiceLoad(event){
          var item = o.createItem(FDsMaterialCatalogItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
+         item._linkGuid = xnode.get('link_guid');
          item._code = code;
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(code);

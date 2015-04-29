@@ -30,7 +30,7 @@ function FDsResourceImportDialog(o){
    o.construct             = FDsResourceImportDialog_construct;
    // @method
    o.setNodeLabel          = FDsResourceImportDialog_setNodeLabel;
-   o.switchMode            = FDsResourceFolderDialog_switchMode;
+   o.switchMode            = FDsResourceImportDialog_switchMode;
    // @method
    o.dispose               = FDsResourceImportDialog_dispose;
    return o;
@@ -179,15 +179,18 @@ function FDsResourceImportDialog_setNodeLabel(label){
 // @method
 // @param modeCd:String 数据模式
 //==========================================================
-function FDsResourceFolderDialog_switchMode(modeCd){
+function FDsResourceImportDialog_switchMode(modeCd){
    var o = this;
    o._modeCd = modeCd;
-   if(modeCd == 'picture'){
-      o.setLabel('导入图片资源');
-   }else if(modeCd == 'mesh'){
-      o.setLabel('导入网格资源');
-   }else{
-      throw new TError(o, 'Unknown mode.');
+   switch(modeCd){
+      case EE3sResource.Bitmap:
+         o.setLabel('导入图片资源');
+         break;
+      case EE3sResource.Model:
+         o.setLabel('导入模型资源');
+         break;
+      default:
+         throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
    }
    o._controlCode.set('');
    o._controlLabel.set('');
