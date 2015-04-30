@@ -1,3 +1,8 @@
+function FDsModelRenderable(o){
+   o = RClass.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
+   o._optionSelected = false;
+   return o;
+}
 function FDsSceneDisplay(o){
    o = RClass.inherits(this, o, FE3dSceneDisplay);
    return o;

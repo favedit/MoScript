@@ -672,7 +672,7 @@ function FDsModelCanvasContent_loadByGuid(guid){
       modelConsole.free(space);
    }
    // 收集一个模型
-   space = o._activeSpace = modelConsole.alloc(o, guid);
+   space = o._activeSpace = modelConsole.allocByGuid(o, guid);
    if(!space._linked){
       // 显示加载进度
       RConsole.find(FUiDesktopConsole).showLoading();

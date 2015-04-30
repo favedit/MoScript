@@ -8,8 +8,8 @@ function FDsModelCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
    //..........................................................
    // @const
-   o._iconView             = 'design3d.mesh.view';
-   o._iconViewNot          = 'design3d.mesh.viewno';
+   o._iconView             = 'resource.tools.view';
+   o._iconViewNot          = 'resource.tools.viewno';
    //..........................................................
    // @event
    o.onBuild               = FDsModelCatalogContent_onBuild;
@@ -187,8 +187,8 @@ function FDsModelCatalogContent_buildRenderable(parentNode, geometry){
 function FDsModelCatalogContent_buildDisplay(parent, display){
    var o = this;
    var resource = display.resource();
-   var geometrys = display._geometrys;
-   var count = geometrys.count();
+   var shapes = display.shapes();
+   var count = shapes.count();
    // 创建显示节点
    var displayNode = o.createNode();
    displayNode.setTypeCode('display');
@@ -206,8 +206,8 @@ function FDsModelCatalogContent_buildDisplay(parent, display){
    displayNode.appendNode(materialNode);
    // 创建材质节点
    for(var i = 0; i < count; i++){
-      var geometry = geometrys.get(i);
-      o.buildRenderable(displayNode, geometry);
+      var shape = shapes.get(i);
+      o.buildRenderable(displayNode, shape);
    }
 }
 

@@ -9,11 +9,13 @@ function FE3dModelDisplay(o){
    //..........................................................
    // @attribute
    o._material      = null;
+   o._shapes        = null;
    //..........................................................
    // @method
    o.construct      = FE3dModelDisplay_construct;
    // @method
    o.material       = FE3dModelDisplay_material;
+   o.shapes         = FE3dModelDisplay_shapes;
    // @method
    o.load           = FE3dModelDisplay_load;
    o.reloadResource = FE3dModelDisplay_reloadResource;
@@ -45,6 +47,16 @@ function FE3dModelDisplay_material(){
 }
 
 //==========================================================
+// <T>获得渲染形状。</T>
+//
+// @method
+// @return TObjects 渲染形状
+//==========================================================
+function FE3dModelDisplay_shapes(){
+   return this._shapes;
+}
+
+//==========================================================
 // <T>加载资源。</T>
 //
 // @method
@@ -52,24 +64,28 @@ function FE3dModelDisplay_material(){
 //==========================================================
 function FE3dModelDisplay_load(renderable){
    var o = this;
+   var material = o._material;
+   var instanceConsole = RConsole.find(FE3dInstanceConsole);
+   // 设置资源
    var modelResource = renderable.resource();
-   var resource = o._resource = modelResource._display;
+   var resource = o._resource = modelResource.display();
    o._matrix.assign(resource.matrix());
-   o._material.loadResource(resource.material());
+   material.loadResource(resource.material());
    // 创建网格集合
    var geometryRenderables = renderable.geometrys();
    if(geometryRenderables){
       var geometryCount = geometryRenderables.count();
-      var geometrys = o._geometrys = new TObjects();
-      //var renderables = o.renderables();
+      var shapes = o._shapes = new TObjects();
       for(var i = 0; i < geometryCount; i++){
          var geometryRenderable = geometryRenderables.get(i);
-         var renderable = RClass.create(FE3dModelRenderable);
-         renderable._display = o;
-         renderable._material = o._material;
-         renderable.load(geometryRenderable);
-         geometrys.push(renderable);
-         o.pushRenderable(renderable);
+         // 创建形状
+         var shape = instanceConsole.create(EE3dInstance.ModelRenderable);
+         shape.setDisplay(o);
+         shape.setMaterial(material);
+         shape.load(geometryRenderable);
+         shapes.push(shape);
+         // 放入显示队列
+         o.pushRenderable(shape);
       }
    }
 }

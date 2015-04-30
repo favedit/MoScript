@@ -83,104 +83,109 @@ function SE3sMaterialInfo(){
    o.saveConfig  = SE3sMaterialInfo_saveConfig;
    return o;
 }
-function SE3sMaterialInfo_unserialize(p){
+function SE3sMaterialInfo_unserialize(input){
    var o = this;
-   o.effectCode = p.readString();
-   o.optionDepth = p.readBoolean();
-   o.optionDouble = p.readBoolean();
-   o.optionNormalInvert = p.readBoolean();
-   o.optionShadow = p.readBoolean();
-   o.optionShadowSelf = p.readBoolean();
-   o.optionAlpha = p.readBoolean();
-   o.alphaBase = p.readFloat();
-   o.alphaRate = p.readFloat();
-   o.optionColor = p.readBoolean();
-   o.colorMin = p.readFloat();
-   o.colorMax = p.readFloat();
-   o.colorRate = p.readFloat();
-   o.colorMerge = p.readFloat();
-   o.optionAmbient = p.readBoolean();
-   o.ambientColor.unserialize(p);
-   o.optionDiffuse = p.readBoolean();
-   o.diffuseColor.unserialize(p);
-   o.optionDiffuseView = p.readBoolean();
-   o.diffuseViewColor.unserialize(p);
-   o.optionSpecular = p.readBoolean();
-   o.specularColor.unserialize(p);
-   o.specularBase = p.readFloat();
-   o.specularLevel = p.readFloat();
-   o.optionSpecularView = p.readBoolean();
-   o.specularViewColor.unserialize(p);
-   o.specularViewBase = p.readFloat();
-   o.specularViewLevel = p.readFloat();
-   o.optionReflect = p.readBoolean();
-   o.reflectColor.unserialize(p);
-   o.reflectMerge = p.readFloat();
-   o.optionRefract = p.readBoolean();
-   o.refractFrontColor.unserialize(p);
-   o.refractBackColor.unserialize(p);
-   o.optionOpacity = p.readBoolean();
-   o.opacityColor.unserialize(p);
-   o.opacityRate = p.readFloat();
-   o.opacityAlpha = p.readFloat();
-   o.opacityDepth = p.readFloat();
-   o.opacityTransmittance = p.readFloat();
-   o.optionEmissive = p.readBoolean();
-   o.emissiveColor.unserialize(p);
+   o.effectCode = input.readString();
+   o.optionDepth = input.readBoolean();
+   o.optionDouble = input.readBoolean();
+   o.optionNormalInvert = input.readBoolean();
+   o.optionShadow = input.readBoolean();
+   o.optionShadowSelf = input.readBoolean();
+   o.optionAlpha = input.readBoolean();
+   o.alphaBase = input.readFloat();
+   o.alphaRate = input.readFloat();
+   o.optionColor = input.readBoolean();
+   o.colorMin = input.readFloat();
+   o.colorMax = input.readFloat();
+   o.colorBalance = input.readFloat();
+   o.colorRate = input.readFloat();
+   o.optionVertex = input.readBoolean();
+   o.vertexColor.unserialize(input);
+   o.optionAmbient = input.readBoolean();
+   o.ambientColor.unserialize(input);
+   o.optionDiffuse = input.readBoolean();
+   o.diffuseColor.unserialize(input);
+   o.optionDiffuseView = input.readBoolean();
+   o.diffuseViewColor.unserialize(input);
+   o.optionSpecular = input.readBoolean();
+   o.specularColor.unserialize(input);
+   o.specularBase = input.readFloat();
+   o.specularLevel = input.readFloat();
+   o.optionSpecularView = input.readBoolean();
+   o.specularViewColor.unserialize(input);
+   o.specularViewBase = input.readFloat();
+   o.specularViewLevel = input.readFloat();
+   o.optionReflect = input.readBoolean();
+   o.reflectColor.unserialize(input);
+   o.reflectMerge = input.readFloat();
+   o.optionRefract = input.readBoolean();
+   o.refractFrontColor.unserialize(input);
+   o.refractBackColor.unserialize(input);
+   o.optionOpacity = input.readBoolean();
+   o.opacityColor.unserialize(input);
+   o.opacityRate = input.readFloat();
+   o.opacityAlpha = input.readFloat();
+   o.opacityDepth = input.readFloat();
+   o.opacityTransmittance = input.readFloat();
+   o.optionEmissive = input.readBoolean();
+   o.emissiveColor.unserialize(input);
 }
-function SE3sMaterialInfo_saveConfig(p){
+function SE3sMaterialInfo_saveConfig(xconfig){
    var o = this;
-   p.set('effect_code', o.effectCode);
-   p.setBoolean('option_double', o.optionDouble);
-   p.setBoolean('option_alpha', o.optionAlpha);
-   p.setBoolean('option_normal_invert', o.optionNormalInvert);
-   p.setBoolean('option_shadow', o.optionShadow);
-   p.setBoolean('option_shadow_self', o.optionShadowSelf);
-   var x = p.create('Alpha');
+   xconfig.set('effect_code', o.effectCode);
+   xconfig.setBoolean('option_double', o.optionDouble);
+   xconfig.setBoolean('option_alpha', o.optionAlpha);
+   xconfig.setBoolean('option_normal_invert', o.optionNormalInvert);
+   xconfig.setBoolean('option_shadow', o.optionShadow);
+   xconfig.setBoolean('option_shadow_self', o.optionShadowSelf);
+   var x = xconfig.create('Alpha');
    x.setBoolean('valid', o.optionAlpha);
    x.setFloat('base', o.alphaBase);
    x.setFloat('rate', o.alphaRate);
-   var x = p.create('Color');
+   var x = xconfig.create('Color');
    x.setBoolean('valid', o.optionColor);
    x.setFloat('min', o.colorMin);
    x.setFloat('max', o.colorMax);
+   x.setFloat('balance', o.colorBalance);
    x.setFloat('rate', o.colorRate);
-   x.setFloat('merge', o.colorMerge);
-   var x = p.create('Ambient')
+   var x = xconfig.create('Vertex')
+   x.setBoolean('valid', o.optionVertex);
+   o.vertexColor.savePower(x);
+   var x = xconfig.create('Ambient')
    x.setBoolean('valid', o.optionAmbient);
    o.ambientColor.savePower(x);
-   var x = p.create('Diffuse');
+   var x = xconfig.create('Diffuse');
    x.setBoolean('valid', o.optionDiffuse);
    o.diffuseColor.savePower(x);
-   var x = p.create('DiffuseView');
+   var x = xconfig.create('DiffuseView');
    x.setBoolean('valid', o.optionDiffuseView);
    o.diffuseViewColor.savePower(x);
-   var x = p.create('Specular');
+   var x = xconfig.create('Specular');
    x.setBoolean('valid', o.optionSpecular);
    o.specularColor.savePower(x);
    x.setFloat('base', o.specularBase);
    x.setFloat('level', o.specularLevel);
-   var x = p.create('SpecularView');
+   var x = xconfig.create('SpecularView');
    x.setBoolean('valid', o.optionSpecularView);
    o.specularViewColor.savePower(x);
    x.setFloat('base', o.specularViewBase);
    x.setFloat('level', o.specularViewLevel);
-   var x = p.create('Reflect');
+   var x = xconfig.create('Reflect');
    x.setBoolean('valid', o.optionReflect);
    o.reflectColor.savePower(x);
    x.setFloat('merge', o.reflectMerge);
-   var x = p.create('Refract')
+   var x = xconfig.create('Refract')
    x.setBoolean('valid', o.optionRefract);
    o.refractFrontColor.savePower(x.create('Front'));
    o.refractBackColor.savePower(x.create('Back'));
-   var x = p.create('Opacity')
+   var x = xconfig.create('Opacity')
    x.setBoolean('valid', o.optionOpacity);
    o.opacityColor.savePower(x);
    x.setFloat('rate', o.opacityRate);
    x.setFloat('alpha', o.opacityAlpha);
    x.setFloat('depth', o.opacityDepth);
    x.setFloat('transmittance', o.opacityTransmittance);
-   var x = p.create('Emissive')
+   var x = xconfig.create('Emissive')
    x.setBoolean('valid', o.optionEmissive);
    o.emissiveColor.savePower(x);
 }

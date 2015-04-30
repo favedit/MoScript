@@ -20,15 +20,16 @@
    <Parameter name='fc_camera_position'     format='Float3'/>
    <Parameter name='fc_light_direction'     format='Float3'/>
    <Parameter name='fc_materials'           format='Float4'/>
-   <Parameter name='fc_color'               format='Float4' define='fc_materials[0]'/>
-   <Parameter name='fc_alpha'               format='Float4' define='fc_materials[1]'/>
-   <Parameter name='fc_ambient_color'       format='Float4' define='fc_materials[2]'/>
-   <Parameter name='fc_diffuse_color'       format='Float4' define='fc_materials[3]'/>
-   <Parameter name='fc_specular_color'      format='Float4' define='fc_materials[4]'/>
-   <Parameter name='fc_specular'            format='Float4' define='fc_materials[5]'/>
-   <Parameter name='fc_reflect_color'       format='Float4' define='fc_materials[6]'/>
-   <Parameter name='fc_reflect'             format='Float4' define='fc_materials[7]'/>
-   <Parameter name='fc_emissive_color'      format='Float4' define='fc_materials[8]'/>
+   <Parameter name='fc_alpha'               format='Float4' define='fc_materials[0]'/>
+   <Parameter name='fc_color'               format='Float4' define='fc_materials[1]'/>
+   <Parameter name='fc_vertex_color'        format='Float4' define='fc_materials[2]'/>
+   <Parameter name='fc_ambient_color'       format='Float4' define='fc_materials[3]'/>
+   <Parameter name='fc_diffuse_color'       format='Float4' define='fc_materials[4]'/>
+   <Parameter name='fc_specular_color'      format='Float4' define='fc_materials[5]'/>
+   <Parameter name='fc_specular'            format='Float4' define='fc_materials[6]'/>
+   <Parameter name='fc_reflect_color'       format='Float4' define='fc_materials[7]'/>
+   <Parameter name='fc_reflect'             format='Float4' define='fc_materials[8]'/>
+   <Parameter name='fc_emissive_color'      format='Float4' define='fc_materials[9]'/>
    <!--=====================================================-->
    <Attribute name='va_instance'    linker='instance'    format='Float1'/>
    <Attribute name='va_position'    linker='position'    format='Float4'/>
@@ -316,15 +317,17 @@
             </shader:true>
          </shader:true>
          //............................................................
-         // 计算颜色
+         // 计算顶点颜色
          <shader:true source='option.color'>
             <shader:true source='vertex.attribute.color'>
-               vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
-               vertexColor = vertexColor / (fc_color.y - fc_color.x);
-               vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
-               result.rgb *= vertexColor.rgb;
+               result.rgb *= v_color.rgb * fc_vertex_color.rgb;
             </shader:true>
          </shader:true>
+         //............................................................
+         // 计算颜色
+         result = max(min(result, fc_color.y) - fc_color.x, 0.0);
+         result = result / (fc_color.y - fc_color.x);
+         result = (result - fc_color.z) * fc_color.w + fc_color.z;
          //............................................................
          <shader:true source='support.alpha'>
             result.a = color.a * fc_alpha.y;

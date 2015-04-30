@@ -33,6 +33,7 @@ function FE3dInstanceConsole_construct(){
    var o = this;
    // 设置属性
    var factory = o._factory = RClass.create(FClassFactory);
+   factory.register(EE3dInstance.ModelRenderable, FE3dModelRenderable);
    factory.register(EE3dInstance.TemplateRenderable, FE3dTemplateRenderable);
    factory.register(EE3dInstance.Scene, FE3dScene);
    factory.register(EE3dInstance.SceneLayer, FE3dSceneLayer);

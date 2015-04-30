@@ -331,6 +331,7 @@ function FG3dAutomaticEffect_bindSamplers(renderable){
    var o = this;
    var program = o._program;
    if(o._supportMaterialMap){
+      program.setSampler('fs_material', region.materialMap().texture());
    }
    if(program.hasSampler()){
       var samplers = program.samplers();

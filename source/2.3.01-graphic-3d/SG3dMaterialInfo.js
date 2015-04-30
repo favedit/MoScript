@@ -49,9 +49,12 @@ function SG3dMaterialInfo(o){
    o.optionColor          = null;
    o.colorMin             = 0.0;
    o.colorMax             = 1.0;
-   o.colorRate            = 0.5;
-   o.colorMerge           = 1.0;
+   o.colorBalance         = 0.5;
+   o.colorRate            = 1.0;
    //..........................................................
+   // @attribute 设置光信息
+   o.optionVertex         = null;
+   o.vertexColor          = new SColor4();
    // @attribute 设置光信息
    o.optionAmbient        = null;
    o.ambientColor         = new SColor4();
@@ -127,18 +130,21 @@ function SG3dMaterialInfo_assign(info){
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
    o.optionShadowSelf = info.optionShadowSelf;
-   // 设置颜色
-   o.optionColor = info.optionColor;
-   o.colorMin = info.colorMin;
-   o.colorMax = info.colorMax;
-   o.colorRate = info.colorRate;
-   o.colorMerge = info.colorMerge;
    // 设置透明
    o.optionAlpha = info.optionAlpha;
    o.alphaBase = info.alphaBase;
    o.alphaRate = info.alphaRate;
    o.alphaLevel = info.alphaLevel;
    o.alphaMerge = info.alphaMerge;
+   // 设置颜色
+   o.optionColor = info.optionColor;
+   o.colorMin = info.colorMin;
+   o.colorMax = info.colorMax;
+   o.colorBalance = info.colorBalance;
+   o.colorRate = info.colorRate;
+   // 设置顶点颜色
+   o.optionVertex = info.optionVertex;
+   o.vertexColor.assign(info.vertexColor);
    // 设置环境
    o.optionAmbient = info.optionAmbient;
    o.ambientColor.assign(info.ambientColor);
@@ -207,18 +213,21 @@ function SG3dMaterialInfo_calculate(info){
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
    o.optionShadowSelf = info.optionShadowSelf;
-   // 设置颜色
-   o.optionColor = info.optionColor;
-   o.colorMin = info.colorMin;
-   o.colorMax = info.colorMax;
-   o.colorRate = info.colorRate;
-   o.colorMerge = info.colorMerge;
    // 设置透明
    o.optionAlpha = info.optionAlpha;
    o.alphaBase = info.alphaBase;
    o.alphaRate = info.alphaRate;
    o.alphaLevel = info.alphaLevel;
    o.alphaMerge = info.alphaMerge;
+   // 设置颜色
+   o.optionColor = info.optionColor;
+   o.colorMin = info.colorMin;
+   o.colorMax = info.colorMax;
+   o.colorBalance = info.colorBalance;
+   o.colorRate = info.colorRate;
+   // 设置环境
+   o.optionVertex = info.optionVertex;
+   o.vertexColor.assignPower(info.vertexColor);
    // 设置环境
    o.optionAmbient = info.optionAmbient;
    o.ambientColor.assignPower(info.ambientColor);
@@ -284,67 +293,70 @@ function SG3dMaterialInfo_reset(){
    o.optionShadow = true;
    o.optionShadowSelf = true;
    // 设置属性
-   //o.coordRateWidth = 1.0;
-   //o.coordRateHeight = 1.0;
-   // 设置属性
-   o.optionColor = true;
-   o.colorMin = 0.0;
-   o.colorMax = 1.0;
-   o.colorRate = 0.5;
-   o.colorMerge = 1.0;
+   //o.coordRateWidth = 1;
+   //o.coordRateHeight = 1;
    // 设置属性
    o.optionAlpha = false;
    o.alphaBase = 0.2;
-   o.alphaRate = 1.0;
-   o.alphaLevel = 1.0;
-   o.alphaMerge = 1.0;
+   o.alphaRate = 1;
+   o.alphaLevel = 1;
+   o.alphaMerge = 1;
+   // 设置属性
+   o.optionColor = true;
+   o.colorMin = 0;
+   o.colorMax = 1;
+   o.colorBalance = 0.5;
+   o.colorRate = 1;
+   // 设置属性
+   o.optionVertex = true;
+   o.vertexColor.set(1, 1, 1, 1);
    // 设置属性
    o.optionAmbient = true;
-   o.ambientColor.set(0.5, 0.5, 0.5, 1.0);
-   o.ambientShadow = 1.0;
+   o.ambientColor.set(0.5, 0.5, 0.5, 1);
+   o.ambientShadow = 1;
    // 设置属性
    o.optionDiffuse = true;
-   o.diffuseColor.set(0.5, 0.5, 0.5, 1.0);
-   o.diffuseShadow = 1.0;
+   o.diffuseColor.set(0.5, 0.5, 0.5, 1);
+   o.diffuseShadow = 1;
    // 设置属性
    o.optionDiffuseView = true;
-   o.diffuseViewColor.set(1.0, 1.0, 1.0, 1.0);
-   o.diffuseViewShadow = 1.0;
+   o.diffuseViewColor.set(1, 1, 1, 1);
+   o.diffuseViewShadow = 1;
    // 设置属性
    o.optionSpecular = true;
-   o.specularColor.set(0.5, 0.5, 0.5, 1.0);
-   o.specularBase = 0.0;
-   o.specularLevel = 16.0;
-   o.specularAverage = 1.0;
-   o.specularShadow = 1.0;
+   o.specularColor.set(0.5, 0.5, 0.5, 1);
+   o.specularBase = 0;
+   o.specularLevel = 16;
+   o.specularAverage = 1;
+   o.specularShadow = 1;
    // 设置属性
    o.optionSpecularView = true;
-   o.specularViewColor.set(1.0, 1.0, 1.0, 1.0);
-   o.specularViewBase = 0.0;
-   o.specularViewRate = 16.0;
-   o.specularViewAverage = 1.0;
-   o.specularViewShadow = 1.0;
+   o.specularViewColor.set(1, 1, 1, 1);
+   o.specularViewBase = 0;
+   o.specularViewRate = 16;
+   o.specularViewAverage = 1;
+   o.specularViewShadow = 1;
    // 设置属性
    o.optionReflect = true;
-   o.reflectColor.set(1.0, 1.0, 1.0, 1.0);
-   o.reflectMerge = 1.0;
-   o.reflectShadow = 1.0;
+   o.reflectColor.set(1, 1, 1, 1);
+   o.reflectMerge = 1;
+   o.reflectShadow = 1;
    // 设置属性
    o.optionRefract = true;
-   o.refractFrontColor.set(1.0, 1.0, 1.0, 1.0);
-   o.refractFrontMerge = 1.0;
-   o.refractFrontShadow = 1.0;
-   o.refractBackColor.set(1.0, 1.0, 1.0, 1.0);
-   o.refractBackMerge = 1.0;
-   o.refractBackShadow = 1.0;
+   o.refractFrontColor.set(1, 1, 1, 1);
+   o.refractFrontMerge = 1;
+   o.refractFrontShadow = 1;
+   o.refractBackColor.set(1, 1, 1, 1);
+   o.refractBackMerge = 1;
+   o.refractBackShadow = 1;
    // 设置属性
    o.optionOpacity = true;
-   o.opacityColor.set(1.0, 1.0, 1.0, 1.0);
-   o.opacityRate = 1.0;
-   o.opacityAlpha = 1.0;
-   o.opacityDepth = 1.0;
-   o.opacityTransmittance = 1.0;
+   o.opacityColor.set(1, 1, 1, 1);
+   o.opacityRate = 1;
+   o.opacityAlpha = 1;
+   o.opacityDepth = 1;
+   o.opacityTransmittance = 1;
    // 设置属性
    o.optionEmissive = true;
-   o.emissiveColor.set(1.0, 1.0, 1.0, 1.0);
+   o.emissiveColor.set(1, 1, 1, 1);
 }

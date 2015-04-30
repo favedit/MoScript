@@ -22,6 +22,7 @@ function FE3dRenderable(o){
    // @attribute
    o._materialReference = null;
    o._materials         = null;
+   o._bones             = null;
    o._textures          = null;
    //..........................................................
    // @method
@@ -45,10 +46,11 @@ function FE3dRenderable(o){
    o.materials          = FE3dRenderable_materials;
    o.pushMaterial       = FE3dRenderable_pushMaterial;
    // @method
+   o.bones              = FE3dRenderable_bones;
+   // @method
    o.findTexture        = FE3dRenderable_findTexture;
    o.pushTexture        = FE3dRenderable_pushTexture;
    o.textures           = FE3dRenderable_textures;
-   o.bones              = RMethod.empty;
    // @method
    o.processDelay       = RMethod.empty;
    o.update             = FE3dRenderable_update;
@@ -208,6 +210,16 @@ function FE3dRenderable_indexBuffer(){
 //==========================================================
 function FE3dRenderable_indexBuffers(){
    return this._indexBuffers;
+}
+
+//==========================================================
+// <T>获得骨头集合。</T>
+//
+// @method
+// @return TObjects 骨头集合
+//==========================================================
+function FE3dRenderable_bones(){
+   return this._bones;
 }
 
 //==========================================================

@@ -47,10 +47,10 @@ function FE3rMaterial_visible(){
 // <T>设置可见性。</T>
 //
 // @method
-// @param p:value:Boolean 可见性
+// @param visible:Boolean 可见性
 //==========================================================
-function FE3rMaterial_setVisible(p){
-   this._visible = p;
+function FE3rMaterial_setVisible(visible){
+   this._visible = visible;
 }
 
 //==========================================================
@@ -163,12 +163,14 @@ function FE3rMaterial_load(){
       var bitmaps = o._bitmaps = new TDictionary();
       var count = bitmapResources.count();
       for(var i = 0; i < count; i++){
+         // 获得位图资源
          var bitmapResource = bitmapResources.at(i);
-         // 加载位图
-         var bitmapPackResource = bitmapResource.bitmapPack();
-         var bitmapPack = bitmapConsole.load(o, o._guid, bitmapPackResource.code());
-         // 存储集合
          var bitmapCode = bitmapResource.code();
+         // 获得打包资源
+         var bitmapPackResource = bitmapResource.bitmapPack();
+         var packCode = bitmapPackResource.code();
+         var bitmapPack = bitmapConsole.load(o, o._guid, packCode);
+         // 创建位图
          var bitmap = RClass.create(FE3rBitmap);
          bitmap._pack  = bitmapPack;
          bitmap.loadResource(bitmapResource);

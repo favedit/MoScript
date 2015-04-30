@@ -301,6 +301,80 @@ function FDsCommonDisplayPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonLayerDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.LayerDialog';
+   o._displayModeCd        = null;
+   o._controlSpaceGuid     = null;
+   o._controlSpaceLabel    = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonLayerDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonLayerDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonLayerDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonLayerDialog_onCancelClick;
+   o.construct             = FDsCommonLayerDialog_construct;
+   o.setSpace              = FDsCommonLayerDialog_setSpace;
+   o.setDisplayLabel       = FDsCommonLayerDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonLayerDialog_setContentCode;
+   o.setContentLabel       = FDsCommonLayerDialog_setContentLabel;
+   o.dispose               = FDsCommonLayerDialog_dispose;
+   return o;
+}
+function FDsCommonLayerDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlSpaceGuid.setEditAble(false);
+   o._controlSpaceLabel.setEditAble(false);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+   o._controlCancel.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonLayerDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonLayerDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xsprite = xaction.create('Display');
+   xsprite.set('space_guid', o._spaceGuid);
+   xsprite.set('code', o._controlCode.get());
+   xsprite.set('label', o._controlLabel.get());
+   xsprite.set('model_guid', o._controlModelGuid.get());
+   xsprite.set('model_code', o._controlModelCode.get());
+   var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonLayerDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonLayerDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonLayerDialog_setSpace(space){
+   var o = this;
+   var resource = space.resource();
+   o._controlSpaceGuid.set(resource.guid());
+   o._controlSpaceLabel.set(resource.makeLabel());
+}
+function FDsCommonLayerDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonLayerDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonLayerDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonLayerDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonLayerPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible       = false;
@@ -397,8 +471,10 @@ function FDsCommonMaterial1Frame(o){
    o._controlOptionColor    = null;
    o._controlColorMin       = null;
    o._controlColorMax       = null;
+   o._controlColorBalance   = null;
    o._controlColorRate      = null;
-   o._controlColorMerge     = null;
+   o._controlOptionVertex   = null;
+   o._controlVertexColor    = null;
    o._controlOptionAmbient  = null;
    o._controlAmbientColor   = null;
    o._controlOptionDiffuse  = null;
@@ -431,8 +507,10 @@ function FDsCommonMaterial1Frame_onBuilded(p){
    o._controlOptionColor.addDataChangedListener(o, o.onOptionChanged);
    o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorBalance.addDataChangedListener(o, o.onDataChanged);
    o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
-   o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionVertex.addDataChangedListener(o, o.onOptionChanged);
+   o._controlVertexColor.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionAmbient.addDataChangedListener(o, o.onOptionChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionDiffuse.addDataChangedListener(o, o.onOptionChanged);
@@ -449,6 +527,8 @@ function FDsCommonMaterial1Frame_onBuilded(p){
 }
 function FDsCommonMaterial1Frame_onOptionChanged(p){
    var o = this;
+   var space = o._activeSpace;
+   var material = o._activeMaterial;
 }
 function FDsCommonMaterial1Frame_onDataChanged(p){
    var o = this;
@@ -463,8 +543,9 @@ function FDsCommonMaterial1Frame_onDataChanged(p){
    infoResource.alphaRate = o._controlAlphaRate.get();
    infoResource.colorMin = o._controlColorMin.get();
    infoResource.colorMax = o._controlColorMax.get();
+   infoResource.colorBalance = o._controlColorBalance.get();
    infoResource.colorRate = o._controlColorRate.get();
-   infoResource.colorMerge = o._controlColorMerge.get();
+   infoResource.vertexColor.assign(o._controlVertexColor.get());
    infoResource.ambientColor.assign(o._controlAmbientColor.get());
    infoResource.diffuseColor.assign(o._controlDiffuseColor.get());
    infoResource.specularColor.assign(o._controlSpecularColor.get());
@@ -493,8 +574,10 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    o._controlOptionColor.set(infoResource.optionColor);
    o._controlColorMin.set(infoResource.colorMin);
    o._controlColorMax.set(infoResource.colorMax);
+   o._controlColorBalance.set(infoResource.colorBalance);
    o._controlColorRate.set(infoResource.colorRate);
-   o._controlColorMerge.set(infoResource.colorMerge);
+   o._controlOptionVertex.set(infoResource.optionVertex);
+   o._controlVertexColor.set(infoResource.vertexColor);
    o._controlOptionAmbient.set(infoResource.optionAmbient);
    o._controlAmbientColor.set(infoResource.ambientColor);
    o._controlOptionDiffuse.set(infoResource.optionDiffuse);

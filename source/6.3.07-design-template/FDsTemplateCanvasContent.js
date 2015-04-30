@@ -6,12 +6,11 @@
 // @history 150130
 //==========================================================
 function FDsTemplateCanvasContent(o){
-   o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
+   o = RClass.inherits(this, o, FDsSpaceCanvas);
    //..........................................................
    // @property
    o._resourceTypeCd     = EE3sResource.Template;
    //..........................................................
-   o._toolbar            = null;
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
@@ -51,7 +50,7 @@ function FDsTemplateCanvasContent(o){
 //==========================================================
 function FDsTemplateCanvasContent_onBuild(p){
    var o = this;
-   o.__base.FDsCanvas.onBuild.call(o, p);
+   o.__base.FDsSpaceCanvas.onBuild.call(o, p);
    // 创建简单舞台
    //var g = o._stage = RClass.create(FE3dSimpleStage);
    //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
@@ -195,7 +194,7 @@ function FDsTemplateCanvasContent_onDataLoaded(p){
 function FDsTemplateCanvasContent_oeRefresh(p){
    var o = this;
    var c = o._graphicContext;
-   o.__base.FDsCanvas.oeRefresh.call(o, p);
+   o.__base.FDsSpaceCanvas.oeRefresh.call(o, p);
    // 获得大小
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
@@ -219,7 +218,7 @@ function FDsTemplateCanvasContent_oeRefresh(p){
 //==========================================================
 function FDsTemplateCanvasContent_construct(){
    var o = this;
-   o.__base.FDsCanvas.construct.call(o);
+   o.__base.FDsSpaceCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
@@ -311,5 +310,5 @@ function FDsTemplateCanvasContent_dispose(){
    // 释放旋转
   o._rotation = RObject.dispose(o._rotation);
    // 父处理
-   o.__base.FDsCanvas.dispose.call(o);
+   o.__base.FDsSpaceCanvas.dispose.call(o);
 }

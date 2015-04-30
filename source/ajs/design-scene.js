@@ -1,8 +1,9 @@
 function FDsSceneCanvasContent(o){
    o = RClass.inherits(this, o, FDsSpaceCanvas);
-   o.onDataLoaded = FDsSceneCanvasContent_onDataLoaded;
-   o.loadByGuid   = FDsSceneCanvasContent_loadByGuid;
-   o.dispose      = FDsSceneCanvasContent_dispose;
+   o._resourceTypeCd = EE3sResource.Scene;
+   o.onDataLoaded    = FDsSceneCanvasContent_onDataLoaded;
+   o.loadByGuid      = FDsSceneCanvasContent_loadByGuid;
+   o.dispose         = FDsSceneCanvasContent_dispose;
    return o;
 }
 function FDsSceneCanvasContent_onDataLoaded(p){
@@ -688,17 +689,19 @@ function FDsSceneFrameSet_dispose(){
 }
 function FDsSceneMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
-   o.onBuilded      = FDsSceneMenuBar_onBuilded;
-   o.onSaveLoad     = FDsSceneMenuBar_onSaveLoad;
-   o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
-   o.onCaptureLoad  = FDsSceneMenuBar_onCaptureLoad;
-   o.onCaptureClick = FDsSceneMenuBar_onCaptureClick;
-   o.onExecuteClick = FDsSceneMenuBar_onExecuteClick;
-   o.construct      = FDsSceneMenuBar_construct;
-   o.dispose        = FDsSceneMenuBar_dispose;
+   o._refreshButton        = null;
+   o._saveButton           = null;
+   o._runButton            = null;
+   o.onBuilded             = FDsSceneMenuBar_onBuilded;
+   o.onSaveLoad            = FDsSceneMenuBar_onSaveLoad;
+   o.onSaveClick           = FDsSceneMenuBar_onSaveClick;
+   o.onCaptureLoad         = FDsSceneMenuBar_onCaptureLoad;
+   o.onCaptureClick        = FDsSceneMenuBar_onCaptureClick;
+   o.onCreateLayerClick    = FDsSceneMenuBar_onCreateLayerClick;
+   o.onImportTemplateClick = FDsSceneMenuBar_onImportTemplateClick;
+   o.onExecuteClick        = FDsSceneMenuBar_onExecuteClick;
+   o.construct             = FDsSceneMenuBar_construct;
+   o.dispose               = FDsSceneMenuBar_dispose;
    return o;
 }
 function FDsSceneMenuBar_onBuilded(p){
@@ -728,7 +731,11 @@ function FDsSceneMenuBar_onCaptureClick(event){
    var connection = canvasContent.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
-function FDsSceneMenuBar_onExecuteClick(p){
+function FDsSceneMenuBar_onCreateLayerClick(){
+}
+function FDsSceneMenuBar_onImportTemplateClick(){
+}
+function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;
    var u = '../design/view.html?code=' + o._frameSet._sceneCode;
    window.location = u;

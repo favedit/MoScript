@@ -818,8 +818,8 @@ function FE3rMaterial(o){
 function FE3rMaterial_visible(){
    return this._visible;
 }
-function FE3rMaterial_setVisible(p){
-   this._visible = p;
+function FE3rMaterial_setVisible(visible){
+   this._visible = visible;
 }
 function FE3rMaterial_findBitmap(code){
    return this._bitmaps.get(code);
@@ -877,9 +877,10 @@ function FE3rMaterial_load(){
       var count = bitmapResources.count();
       for(var i = 0; i < count; i++){
          var bitmapResource = bitmapResources.at(i);
-         var bitmapPackResource = bitmapResource.bitmapPack();
-         var bitmapPack = bitmapConsole.load(o, o._guid, bitmapPackResource.code());
          var bitmapCode = bitmapResource.code();
+         var bitmapPackResource = bitmapResource.bitmapPack();
+         var packCode = bitmapPackResource.code();
+         var bitmapPack = bitmapConsole.load(o, o._guid, packCode);
          var bitmap = RClass.create(FE3rBitmap);
          bitmap._pack  = bitmapPack;
          bitmap.loadResource(bitmapResource);

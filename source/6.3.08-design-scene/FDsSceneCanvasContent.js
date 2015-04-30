@@ -8,13 +8,16 @@
 function FDsSceneCanvasContent(o){
    o = RClass.inherits(this, o, FDsSpaceCanvas);
    //..........................................................
+   // @attribute
+   o._resourceTypeCd = EE3sResource.Scene;
+   //..........................................................
    // @event
-   o.onDataLoaded = FDsSceneCanvasContent_onDataLoaded;
+   o.onDataLoaded    = FDsSceneCanvasContent_onDataLoaded;
    //..........................................................
    // @method
-   o.loadByGuid   = FDsSceneCanvasContent_loadByGuid;
+   o.loadByGuid      = FDsSceneCanvasContent_loadByGuid;
    // @method
-   o.dispose      = FDsSceneCanvasContent_dispose;
+   o.dispose         = FDsSceneCanvasContent_dispose;
    return o;
 }
 

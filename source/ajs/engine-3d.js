@@ -179,6 +179,10 @@ function FE3dDisplayContainer_dispose(){
    o._materials = RObject.free(o._materials);
    o.__base.FDisplayContainer.dispose.call(o);
 }
+function FE3dMaterial(o){
+   o = RClass.inherits(this, o, FE3rMaterial);
+   return o;
+}
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
    o._display           = null;
@@ -191,6 +195,7 @@ function FE3dRenderable(o){
    o._indexBuffers      = null;
    o._materialReference = null;
    o._materials         = null;
+   o._bones             = null;
    o._textures          = null;
    o.construct          = FE3dRenderable_construct;
    o.setup              = RMethod.empty;
@@ -206,10 +211,10 @@ function FE3dRenderable(o){
    o.materialReference  = FE3dRenderable_materialReference;
    o.materials          = FE3dRenderable_materials;
    o.pushMaterial       = FE3dRenderable_pushMaterial;
+   o.bones              = FE3dRenderable_bones;
    o.findTexture        = FE3dRenderable_findTexture;
    o.pushTexture        = FE3dRenderable_pushTexture;
    o.textures           = FE3dRenderable_textures;
-   o.bones              = RMethod.empty;
    o.processDelay       = RMethod.empty;
    o.update             = FE3dRenderable_update;
    o.remove             = FE3dRenderable_remove;
@@ -279,6 +284,9 @@ function FE3dRenderable_indexBuffer(){
 }
 function FE3dRenderable_indexBuffers(){
    return this._indexBuffers;
+}
+function FE3dRenderable_bones(){
+   return this._bones;
 }
 function FE3dRenderable_findTexture(p){
    return this._textures.get(p);

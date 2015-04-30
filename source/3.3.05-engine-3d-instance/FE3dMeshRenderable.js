@@ -9,17 +9,17 @@ function FE3dMeshRenderable(o){
    //..........................................................
    // @attribute
    o._renderable      = null;
-   // @attribute
-   o._activeSkin      = null;
    o._activeTrack     = null;
-   o._bones           = null;
    //..........................................................
    // @method
    o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
+   o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
+   o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
-   o.bones            = FE3dMeshRenderable_bones;
+   o.findTexture      = FE3dMeshRenderable_findTexture;
+   o.textures         = FE3dMeshRenderable_textures;
    // @method
    o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
@@ -51,6 +51,26 @@ function FE3dMeshRenderable_vertexCount(){
 }
 
 //==========================================================
+// <T>查找顶点缓冲。</T>
+//
+// @method
+// @return FG3dVertexBuffer 顶点缓冲
+//==========================================================
+function FE3dMeshRenderable_findVertexBuffer(p){
+   return this._renderable.findVertexBuffer(p);
+}
+
+//==========================================================
+// <T>获得顶点缓冲集合。</T>
+//
+// @method
+// @return TObjects 顶点缓冲集合
+//==========================================================
+function FE3dMeshRenderable_vertexBuffers(){
+   return this._renderable.vertexBuffers();
+}
+
+//==========================================================
 // <T>获得索引缓冲。</T>
 //
 // @method
@@ -71,13 +91,24 @@ function FE3dMeshRenderable_indexBuffers(){
 }
 
 //==========================================================
-// <T>获得骨头集合。</T>
+// <T>根据名称查找纹理。</T>
 //
 // @method
-// @return TObjects 骨头集合
+// @param p:name:String 名称
+// @return FRenderIndexBuffer 纹理
 //==========================================================
-function FE3dMeshRenderable_bones(p){
-   return this._bones;
+function FE3dMeshRenderable_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+
+//==========================================================
+// <T>获得纹理集合。</T>
+//
+// @method
+// @return TDictionary 纹理集合
+//==========================================================
+function FE3dMeshRenderable_textures(){
+   return this._renderable.textures();
 }
 
 //==========================================================
@@ -94,11 +125,12 @@ function FE3dMeshRenderable_reloadResource(){
 // <T>逻辑处理。</T>
 //
 // @method
-// @param p:region:FG3dRegion 区域
+// @param region:FG3dRegion 区域
 //==========================================================
-function FE3dMeshRenderable_process(p){
+function FE3dMeshRenderable_process(region){
    var o = this;
-   o.__base.FE3dRenderable.process.call(o, p)
+   o.__base.FE3dRenderable.process.call(o, region);
+   // 处理轨迹
    var track = o._activeTrack;
    if(track){
       if(o._display._optionPlay){
@@ -170,18 +202,9 @@ function FE3dMeshRenderable_update(region){
 //==========================================================
 function FE3dMeshRenderable_dispose(){
    var o = this;
-   // 释放矩阵
-   var v = o._modelMatrix;
-   if(v){
-      v.dispose();
-      o._modelMatrix = null;
-   }
-   // 释放顶点缓冲
-   var v = o._vertexBuffers;
-   if(v){
-      v.dispose();
-      o._vertexBuffers = null;
-   }
+   // 释放属性
+   o._modelMatrix = RObject.dispose(o._modelMatrix);
+   o._vertexBuffers = RObject.dispose(o._vertexBuffers);
    // 父处理
    o.__base.FE3dRenderable.dispose.call(o);
 }

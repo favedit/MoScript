@@ -1367,9 +1367,6 @@ function FDsSpaceCanvas(o){
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
    o.onBuild              = FDsSpaceCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsSpaceCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsSpaceCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsSpaceCanvas_onMouseCaptureStop;
    o.oeResize             = FDsSpaceCanvas_oeResize;
    o.oeRefresh            = FDsSpaceCanvas_oeRefresh;
    o.construct            = FDsSpaceCanvas_construct;

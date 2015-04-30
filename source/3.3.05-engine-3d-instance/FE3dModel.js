@@ -5,14 +5,11 @@
 // @history 150106
 //==========================================================
 function FE3dModel(o){
-   o = RClass.inherits(this, o, FE3dSpace, MLinkerResource, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dSpace, MPoolAble, MLinkerResource, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady     = false;
-   o._renderables   = null;
-   o._animation     = null;
    // @attribute
-   o._geometrys     = null;
    o._renderable    = null;
    o._display       = null;
    //..........................................................
@@ -22,9 +19,10 @@ function FE3dModel(o){
    o.display        = FE3dModel_display;
    // @method
    o.testReady      = FE3dModel_testReady;
+   o.renderable     = FE3dModel_renderable;
+   o.setRenderable  = FE3dModel_setRenderable;
    o.loadRenderable = FE3dModel_loadRenderable;
    o.processLoad    = FE3dModel_processLoad;
-   o.process        = FE3dModel_process;
    return o;
 }
 
@@ -38,7 +36,7 @@ function FE3dModel_construct(){
    o.__base.FE3dSpace.construct.call(o);
    // 创建显示层
    var layer = o._layer = RClass.create(FDisplayLayer);
-   o.registerLayer('Layer', layer);
+   o.registerLayer('sprite', layer);
    // 创建显示对象
    var display = o._display = RClass.create(FE3dModelDisplay);
    layer.pushDisplay(display);
@@ -47,6 +45,7 @@ function FE3dModel_construct(){
 //==========================================================
 // <T>获得显示对象。</T>
 //
+// @method
 // @return FE3dModelDisplay 显示对象
 //==========================================================
 function FE3dModel_display(){
@@ -56,10 +55,31 @@ function FE3dModel_display(){
 //==========================================================
 // <T>测试是否准备好。</T>
 //
+// @method
 // @return 是否准备好
 //==========================================================
 function FE3dModel_testReady(){
    return this._dataReady;
+}
+
+//==========================================================
+// <T>获得渲染对象。</T>
+//
+// @method
+// @return 渲染对象
+//==========================================================
+function FE3dModel_renderable(){
+   return this._renderable;
+}
+
+//==========================================================
+// <T>设置渲染对象。</T>
+//
+// @method
+// @param renderable 渲染对象
+//==========================================================
+function FE3dModel_setRenderable(renderable){
+   this._renderable = renderable;
 }
 
 //==========================================================
@@ -69,6 +89,7 @@ function FE3dModel_testReady(){
 //==========================================================
 function FE3dModel_loadRenderable(renderable){
    var o = this;
+   o._renderable = renderable;
    var resource = renderable.resource();
    // 选择技术
    o.selectTechnique(o, FE3dGeneralTechnique);
@@ -97,20 +118,5 @@ function FE3dModel_processLoad(){
    o.loadRenderable(renderable);
    // 加载完成
    o.processLoadListener(o);
-   return true;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-function FE3dModel_process(){
-   var o = this;
-   o.__base.FE3dSpace.process.call(o);
-   // 处理动画集合
-   if(o._animation){
-      o._animation.process();
-   }
    return true;
 }

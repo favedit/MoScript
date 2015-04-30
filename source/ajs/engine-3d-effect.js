@@ -36,43 +36,44 @@ function FE3dGeneralColorAutomaticEffect(o){
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
    return o;
 }
-function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
+function FE3dGeneralColorAutomaticEffect_buildMaterial(effectInfo, renderable){
    var o = this;
-   var m = p.material();
-   var d = f.material;
-   if(!d){
-      d = f.material = RClass.create(FFloatStream);
-      d.setLength(40);
-      m._dirty = true;
+   var material = renderable.material();
+   var data = effectInfo.material;
+   if(!data){
+      data = effectInfo.material = RClass.create(FFloatStream);
+      data.setLength(40);
+      material._dirty = true;
    }
-   if(m._dirty){
-      var mi = m.info();
-      d.reset();
-      d.writeFloat4(mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-      if(mi.optionAlpha){
-         d.writeFloat4(mi.alphaBase, mi.alphaRate, 0, 0);
+   if(material._dirty){
+      var info = material.info();
+      data.reset();
+      if(info.optionAlpha){
+         data.writeFloat4(info.alphaBase, info.alphaRate, 0, 0);
       }else{
-         d.writeFloat4(mi.alphaBase, 1, 0, 0);
+         data.writeFloat4(info.alphaBase, 1, 0, 0);
       }
-      d.writeColor4(mi.ambientColor);
-      d.writeColor4(mi.diffuseColor);
-      d.writeColor4(mi.specularColor);
-      d.writeFloat4(mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-      d.writeColor4(mi.reflectColor);
-      d.writeFloat4(0, 0, 1 - mi.reflectMerge, mi.reflectMerge);
-      d.writeColor4(mi.emissiveColor);
-      m._dirty = false;
+      data.writeFloat4(info.colorMin, info.colorMax, info.colorBalance, info.colorRate);
+      data.writeColor4(info.vertexColor);
+      data.writeColor4(info.ambientColor);
+      data.writeColor4(info.diffuseColor);
+      data.writeColor4(info.specularColor);
+      data.writeFloat4(info.specularBase, info.specularLevel, info.specularAverage, info.specularShadow);
+      data.writeColor4(info.reflectColor);
+      data.writeFloat4(0, 0, 1 - info.reflectMerge, info.reflectMerge);
+      data.writeColor4(info.emissiveColor);
+      material._dirty = false;
    }
 }
-function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
+function FE3dGeneralColorAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
-   var m = renderable.material();
-   var mi = m.info();
-   o.bindMaterial(m);
+   var cameraPosition = region.calculate(EG3dRegionParameter.CameraPosition);
+   var lightDirection = region.calculate(EG3dRegionParameter.LightDirection);
+   var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
    if(renderable._optionMerge){
       var ms = renderable.mergeRenderables();
       var mc = ms.count();
@@ -85,20 +86,20 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
    }else{
       p.setParameter('vc_model_matrix', renderable.currentMatrix());
    }
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', vcp);
-   p.setParameter('vc_light_direction', vld);
-   p.setParameter('fc_camera_position', vcp);
-   p.setParameter('fc_light_direction', vld);
+   p.setParameter('vc_vp_matrix', vpMatrix);
+   p.setParameter('vc_camera_position', cameraPosition);
+   p.setParameter('vc_light_direction', lightDirection);
+   p.setParameter('fc_camera_position', cameraPosition);
+   p.setParameter('fc_light_direction', lightDirection);
    if(o._supportMaterialMap){
       var i = renderable._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      var f = renderable.activeInfo();
-      o.buildMaterial(f, renderable);
-      p.setParameter('fc_materials', f.material.memory());
+      var info = renderable.activeInfo();
+      o.buildMaterial(info, renderable);
+      p.setParameter('fc_materials', info.material.memory());
    }
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, renderable);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 function FE3dGeneralColorFlatEffect(o){
    o = RClass.inherits(this, o, FE3dAutomaticEffect);

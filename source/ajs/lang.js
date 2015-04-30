@@ -180,6 +180,19 @@ function MInvoke(o){
    o.invoke = RMethod.virtual(o, 'invoke');
    return o;
 }
+function MPoolAble(o){
+   o = RClass.inherits(this, o);
+   o._poolCode   = null;
+   o.poolCode    = MPoolAble_poolCode;
+   o.setPoolCode = MPoolAble_setPoolCode;
+   return o;
+}
+function MPoolAble_poolCode(){
+   return this._code;
+}
+function MPoolAble_setPoolCode(poolCode){
+   this._poolCode = poolCode;
+}
 function SArguments(){
    var o = this;
    o.owner = null;

@@ -57,8 +57,10 @@ function FE3dTemplateRenderable_testReady(){
          var count = materials.count();
          for(var i = 0; i < count; i++){
             var material = materials.at(i);
-            if(!material.testReady()){
-               return false;
+            if(material){
+               if(!material.testReady()){
+                  return false;
+               }
             }
          }
       }

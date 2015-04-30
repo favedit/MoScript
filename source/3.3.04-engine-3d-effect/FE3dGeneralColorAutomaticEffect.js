@@ -20,45 +20,48 @@ function FE3dGeneralColorAutomaticEffect(o){
 // <T>建立材质数据。</T>
 //
 // @method
-// @param p:renderable:FG3dRenderable 渲染对象
+// @param effectInfo:FG3dEffectInfo 渲染对象
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
+function FE3dGeneralColorAutomaticEffect_buildMaterial(effectInfo, renderable){
    var o = this;
-   var m = p.material();
+   var material = renderable.material();
    // 建立容器
-   var d = f.material;
-   if(!d){
-      d = f.material = RClass.create(FFloatStream);
-      d.setLength(40);
-      m._dirty = true;
+   var data = effectInfo.material;
+   if(!data){
+      data = effectInfo.material = RClass.create(FFloatStream);
+      data.setLength(40);
+      material._dirty = true;
    }
    // 建立数据
-   if(m._dirty){
-      var mi = m.info();
-      d.reset();
-      // 颜色设置（索引0）
-      d.writeFloat4(mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-      // 颜色透明（索引1）
-      if(mi.optionAlpha){
-         d.writeFloat4(mi.alphaBase, mi.alphaRate, 0, 0);
+   if(material._dirty){
+      var info = material.info();
+      data.reset();
+      // 颜色透明（索引0）
+      if(info.optionAlpha){
+         data.writeFloat4(info.alphaBase, info.alphaRate, 0, 0);
       }else{
-         d.writeFloat4(mi.alphaBase, 1, 0, 0);
+         data.writeFloat4(info.alphaBase, 1, 0, 0);
       }
-      // 环境颜色（索引2）
-      d.writeColor4(mi.ambientColor);
-      // 散射颜色（索引3）
-      d.writeColor4(mi.diffuseColor);
-      // 高光颜色（索引4）
-      d.writeColor4(mi.specularColor);
-      // 高光参数（索引5）
-      d.writeFloat4(mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-      // 反射颜色（索引6）
-      d.writeColor4(mi.reflectColor);
-      // 反射参数（索引7）
-      d.writeFloat4(0, 0, 1 - mi.reflectMerge, mi.reflectMerge);
-      // 发光颜色（索引8）
-      d.writeColor4(mi.emissiveColor);
-      m._dirty = false;
+      // 颜色设置（索引1）
+      data.writeFloat4(info.colorMin, info.colorMax, info.colorBalance, info.colorRate);
+      // 顶点颜色（索引2）
+      data.writeColor4(info.vertexColor);
+      // 环境颜色（索引3）
+      data.writeColor4(info.ambientColor);
+      // 散射颜色（索引4）
+      data.writeColor4(info.diffuseColor);
+      // 高光颜色（索引5）
+      data.writeColor4(info.specularColor);
+      // 高光参数（索引6）
+      data.writeFloat4(info.specularBase, info.specularLevel, info.specularAverage, info.specularShadow);
+      // 反射颜色（索引7）
+      data.writeColor4(info.reflectColor);
+      // 反射参数（索引8）
+      data.writeFloat4(0, 0, 1 - info.reflectMerge, info.reflectMerge);
+      // 发光颜色（索引9）
+      data.writeColor4(info.emissiveColor);
+      material._dirty = false;
    }
 }
 
@@ -69,17 +72,18 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
 // @param region:FG3dRegion 渲染区域
 // @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
+function FE3dGeneralColorAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
    // 获得参数
-   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var cameraPosition = region.calculate(EG3dRegionParameter.CameraPosition);
+   var lightDirection = region.calculate(EG3dRegionParameter.LightDirection);
+   var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix)
    // 绑定材质
-   var m = renderable.material();
-   var mi = m.info();
-   o.bindMaterial(m);
+   var material = renderable.material();
+   //var mi = m.info();
+   o.bindMaterial(material);
    // 设置骨头集合
    if(renderable._optionMerge){
       var ms = renderable.mergeRenderables();
@@ -93,22 +97,22 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, renderable){
    }else{
       p.setParameter('vc_model_matrix', renderable.currentMatrix());
    }
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', vcp);
-   p.setParameter('vc_light_direction', vld);
-   p.setParameter('fc_camera_position', vcp);
-   p.setParameter('fc_light_direction', vld);
+   p.setParameter('vc_vp_matrix', vpMatrix);
+   p.setParameter('vc_camera_position', cameraPosition);
+   p.setParameter('vc_light_direction', lightDirection);
+   p.setParameter('fc_camera_position', cameraPosition);
+   p.setParameter('fc_light_direction', lightDirection);
    // 设置材质
    if(o._supportMaterialMap){
       var i = renderable._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      var f = renderable.activeInfo();
-      o.buildMaterial(f, renderable);
-      p.setParameter('fc_materials', f.material.memory());
+      var info = renderable.activeInfo();
+      o.buildMaterial(info, renderable);
+      p.setParameter('fc_materials', info.material.memory());
    }
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    // 绘制处理
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, pg, renderable);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }

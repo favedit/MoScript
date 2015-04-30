@@ -11,7 +11,7 @@ function FE3dModelConsole(o){
    // @attribute
    o._scopeCd    = EScope.Local;
    // @attribute
-   o._loadModels = null;
+   o._looper     = null;
    o._pools      = null;
    // @attribute
    o._thread     = null;
@@ -22,8 +22,11 @@ function FE3dModelConsole(o){
    //..........................................................
    // @method
    o.construct   = FE3dModelConsole_construct;
+   // @method
    o.pools       = FE3dModelConsole_pools;
-   o.alloc       = FE3dModelConsole_alloc;
+   // @method
+   o.allocByGuid = FE3dModelConsole_allocByGuid;
+   o.allocByCode = FE3dModelConsole_allocByCode;
    o.free        = FE3dModelConsole_free;
    return o;
 }
@@ -35,11 +38,11 @@ function FE3dModelConsole(o){
 //==========================================================
 function FE3dModelConsole_onProcess(){
    var o = this;
-   var looper = o._loadModels;
+   var looper = o._looper;
    looper.record();
    while(looper.next()){
-      var model = looper.current();
-      if(model.processLoad()){
+      var item = looper.current();
+      if(item.processLoad()){
          looper.removeCurrent();
       }
    }
@@ -53,7 +56,7 @@ function FE3dModelConsole_onProcess(){
 function FE3dModelConsole_construct(){
    var o = this;
    // 设置属性
-   o._loadModels = new TLooper();
+   o._looper = new TLooper();
    o._pools = RClass.create(FObjectPools);
    // 创建线程
    var thread = o._thread = RClass.create(FThread);
@@ -80,7 +83,7 @@ function FE3dModelConsole_pools(){
 // @param guid:String 唯一编码
 // @return FE3dModel 渲染模型
 //==========================================================
-function FE3dModelConsole_alloc(context, guid){
+function FE3dModelConsole_allocByGuid(context, guid){
    var o = this;
    // 尝试从缓冲池中取出
    var model = o._pools.alloc(guid);
@@ -92,10 +95,37 @@ function FE3dModelConsole_alloc(context, guid){
    // 加载模型
    var model = RClass.create(FE3dModel);
    model.linkGraphicContext(context);
-   model._poolCode = guid;
-   model._renderable = renderable;
+   model.setPoolCode(guid);
+   model.setRenderable(renderable);
    // 追加到加载队列
-   o._loadModels.push(model);
+   o._looper.push(model);
+   return model;
+}
+
+//==========================================================
+// <T>加载一个模型。</T>
+//
+// @method
+// @param context:MGraphicObject 渲染环境
+// @param guid:String 唯一编码
+// @return FE3dModel 渲染模型
+//==========================================================
+function FE3dModelConsole_allocByCode(context, code){
+   var o = this;
+   // 尝试从缓冲池中取出
+   var model = o._pools.alloc(code);
+   if(model){
+      return model;
+   }
+   // 加载渲染对象
+   //var renderable = RConsole.find(FE3rModelConsole).load(context, guid);
+   // 加载模型
+   //var model = RClass.create(FE3dModel);
+   //model.linkGraphicContext(context);
+   //model.setPoolCode(code);
+   //model.setRenderable(renderable);
+   // 追加到加载队列
+   //o._looper.push(model);
    return model;
 }
 
@@ -108,6 +138,6 @@ function FE3dModelConsole_alloc(context, guid){
 function FE3dModelConsole_free(model){
    var o = this;
    // 放到缓冲池
-   var code = model._poolCode;
+   var code = model.poolCode();
    o._pools.free(code, model);
 }

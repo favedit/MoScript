@@ -426,6 +426,7 @@ function FG3dAutomaticEffect_bindAttributes(p){
 // <T>绑定所有取样器。</T>
 //
 // @method
+// @param region:FG3dRegion 渲染区域
 // @param renderable:FG3dRenderable 渲染对象
 //==========================================================
 function FG3dAutomaticEffect_bindSamplers(renderable){
@@ -433,7 +434,7 @@ function FG3dAutomaticEffect_bindSamplers(renderable){
    var program = o._program;
    // 绑定特定取样器
    if(o._supportMaterialMap){
-      //program.setSampler('fs_material', pg.materialMap().texture());
+      program.setSampler('fs_material', region.materialMap().texture());
    }
    // 绑定取样器集合
    if(program.hasSampler()){

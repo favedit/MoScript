@@ -427,7 +427,7 @@ function FDsModelCanvasContent_loadByGuid(guid){
       RStage.unregister(space);
       modelConsole.free(space);
    }
-   space = o._activeSpace = modelConsole.alloc(o, guid);
+   space = o._activeSpace = modelConsole.allocByGuid(o, guid);
    if(!space._linked){
       RConsole.find(FUiDesktopConsole).showLoading();
       space._layer.pushRenderable(o._dimensional);
@@ -583,8 +583,8 @@ function FDsModelCanvasToolBar_dispose(){
 }
 function FDsModelCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
-   o._iconView             = 'design3d.mesh.view';
-   o._iconViewNot          = 'design3d.mesh.viewno';
+   o._iconView             = 'resource.tools.view';
+   o._iconViewNot          = 'resource.tools.viewno';
    o.onBuild               = FDsModelCatalogContent_onBuild;
    o.onLoadDisplay         = FDsModelCatalogContent_onLoadDisplay;
    o.onNodeViewClick       = FDsModelCatalogContent_onNodeViewClick;
@@ -691,8 +691,8 @@ function FDsModelCatalogContent_buildRenderable(parentNode, geometry){
 function FDsModelCatalogContent_buildDisplay(parent, display){
    var o = this;
    var resource = display.resource();
-   var geometrys = display._geometrys;
-   var count = geometrys.count();
+   var shapes = display.shapes();
+   var count = shapes.count();
    var displayNode = o.createNode();
    displayNode.setTypeCode('display');
    displayNode.setLabel('Model (' + count + ')');
@@ -707,8 +707,8 @@ function FDsModelCatalogContent_buildDisplay(parent, display){
    materialNode.dataPropertySet('resource', materialResource);
    displayNode.appendNode(materialNode);
    for(var i = 0; i < count; i++){
-      var geometry = geometrys.get(i);
-      o.buildRenderable(displayNode, geometry);
+      var shape = shapes.get(i);
+      o.buildRenderable(displayNode, shape);
    }
 }
 function FDsModelCatalogContent_buildSpace(space){

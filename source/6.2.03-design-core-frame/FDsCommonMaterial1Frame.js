@@ -21,8 +21,11 @@ function FDsCommonMaterial1Frame(o){
    o._controlOptionColor    = null;
    o._controlColorMin       = null;
    o._controlColorMax       = null;
+   o._controlColorBalance   = null;
    o._controlColorRate      = null;
-   o._controlColorMerge     = null;
+   // @attribute
+   o._controlOptionVertex   = null;
+   o._controlVertexColor    = null;
    // @attribute
    o._controlOptionAmbient  = null;
    o._controlAmbientColor   = null;
@@ -76,8 +79,11 @@ function FDsCommonMaterial1Frame_onBuilded(p){
    o._controlOptionColor.addDataChangedListener(o, o.onOptionChanged);
    o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorBalance.addDataChangedListener(o, o.onDataChanged);
    o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
-   o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
+   o._controlOptionVertex.addDataChangedListener(o, o.onOptionChanged);
+   o._controlVertexColor.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
    o._controlOptionAmbient.addDataChangedListener(o, o.onOptionChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
@@ -107,14 +113,15 @@ function FDsCommonMaterial1Frame_onBuilded(p){
 //==========================================================
 function FDsCommonMaterial1Frame_onOptionChanged(p){
    var o = this;
-   //var t = o._activeSpace;
-   //var m = o._activeMaterial;
+   var space = o._activeSpace;
+   var material = o._activeMaterial;
    //var mr = m.resource();
    //var mi = mr.info();
    // 设置效果（修改错误会无法运行）
    // mi.effectCode = o._controlEffectCode.get();
    // 设置配置
    //mi.optionColor = o._controlOptionColor.get();
+   //mi.optionVertex = o._controlOptionVertex.get();
    //mi.optionAmbient = o._controlOptionAmbient.get();
    //mi.optionDiffuse = o._controlOptionDiffuse.get();
    //mi.optionSpecular = o._controlOptionSpecular.get();
@@ -149,8 +156,10 @@ function FDsCommonMaterial1Frame_onDataChanged(p){
    // 设置颜色
    infoResource.colorMin = o._controlColorMin.get();
    infoResource.colorMax = o._controlColorMax.get();
+   infoResource.colorBalance = o._controlColorBalance.get();
    infoResource.colorRate = o._controlColorRate.get();
-   infoResource.colorMerge = o._controlColorMerge.get();
+   // 设置顶点颜色
+   infoResource.vertexColor.assign(o._controlVertexColor.get());
    // 设置环境颜色
    infoResource.ambientColor.assign(o._controlAmbientColor.get());
    // 设置散射颜色
@@ -203,8 +212,11 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    o._controlOptionColor.set(infoResource.optionColor);
    o._controlColorMin.set(infoResource.colorMin);
    o._controlColorMax.set(infoResource.colorMax);
+   o._controlColorBalance.set(infoResource.colorBalance);
    o._controlColorRate.set(infoResource.colorRate);
-   o._controlColorMerge.set(infoResource.colorMerge);
+   // 设置顶点
+   o._controlOptionVertex.set(infoResource.optionVertex);
+   o._controlVertexColor.set(infoResource.vertexColor);
    // 设置环境
    o._controlOptionAmbient.set(infoResource.optionAmbient);
    o._controlAmbientColor.set(infoResource.ambientColor);

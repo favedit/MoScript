@@ -1,7 +1,6 @@
 function FDsTemplateCanvasContent(o){
-   o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
+   o = RClass.inherits(this, o, FDsSpaceCanvas);
    o._resourceTypeCd     = EE3sResource.Template;
-   o._toolbar            = null;
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
@@ -24,7 +23,7 @@ function FDsTemplateCanvasContent(o){
 }
 function FDsTemplateCanvasContent_onBuild(p){
    var o = this;
-   o.__base.FDsCanvas.onBuild.call(o, p);
+   o.__base.FDsSpaceCanvas.onBuild.call(o, p);
 }
 function FDsTemplateCanvasContent_onMouseCaptureStart(p){
    var o = this;
@@ -99,7 +98,7 @@ function FDsTemplateCanvasContent_onDataLoaded(p){
 function FDsTemplateCanvasContent_oeRefresh(p){
    var o = this;
    var c = o._graphicContext;
-   o.__base.FDsCanvas.oeRefresh.call(o, p);
+   o.__base.FDsSpaceCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
    var hc = o._hPanel;
@@ -113,7 +112,7 @@ function FDsTemplateCanvasContent_oeRefresh(p){
 }
 function FDsTemplateCanvasContent_construct(){
    var o = this;
-   o.__base.FDsCanvas.construct.call(o);
+   o.__base.FDsSpaceCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
@@ -162,7 +161,7 @@ function FDsTemplateCanvasContent_loadByCode(code){
 function FDsTemplateCanvasContent_dispose(){
    var o = this;
   o._rotation = RObject.dispose(o._rotation);
-   o.__base.FDsCanvas.dispose.call(o);
+   o.__base.FDsSpaceCanvas.dispose.call(o);
 }
 function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
