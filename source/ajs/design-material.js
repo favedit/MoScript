@@ -584,9 +584,12 @@ function FDsMaterialMenuBar_onSelectClick(event){
 }
 function FDsMaterialMenuBar_onImportClick(event){
    var o = this;
-   RConsole.find(FUiDesktopConsole).hide();
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._frameSet = o._frameSet;
+   dialog.switchModeCd('import');
+   dialog._controlCode.set('');
+   dialog._controlLabel.set('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsMaterialMenuBar_onDeleteLoad(event){
    var o = this;

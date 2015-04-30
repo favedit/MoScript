@@ -9,23 +9,25 @@ function FDsSceneMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @attribute
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
+   o._refreshButton        = null;
+   o._saveButton           = null;
+   o._runButton            = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsSceneMenuBar_onBuilded;
+   o.onBuilded             = FDsSceneMenuBar_onBuilded;
    // @event
-   o.onSaveLoad     = FDsSceneMenuBar_onSaveLoad;
-   o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
-   o.onCaptureLoad  = FDsSceneMenuBar_onCaptureLoad;
-   o.onCaptureClick = FDsSceneMenuBar_onCaptureClick;
-   o.onExecuteClick = FDsSceneMenuBar_onExecuteClick;
+   o.onSaveLoad            = FDsSceneMenuBar_onSaveLoad;
+   o.onSaveClick           = FDsSceneMenuBar_onSaveClick;
+   o.onCaptureLoad         = FDsSceneMenuBar_onCaptureLoad;
+   o.onCaptureClick        = FDsSceneMenuBar_onCaptureClick;
+   o.onCreateLayerClick    = FDsSceneMenuBar_onCreateLayerClick;
+   o.onImportTemplateClick = FDsSceneMenuBar_onImportTemplateClick;
+   o.onExecuteClick        = FDsSceneMenuBar_onExecuteClick;
    //..........................................................
    // @method
-   o.construct      = FDsSceneMenuBar_construct;
+   o.construct             = FDsSceneMenuBar_construct;
    // @method
-   o.dispose        = FDsSceneMenuBar_dispose;
+   o.dispose               = FDsSceneMenuBar_dispose;
    return o;
 }
 
@@ -99,12 +101,30 @@ function FDsSceneMenuBar_onCaptureClick(event){
 }
 
 //==========================================================
+// <T>创建显示层处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsSceneMenuBar_onCreateLayerClick(){
+}
+
+//==========================================================
+// <T>倒入模板处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsSceneMenuBar_onImportTemplateClick(){
+}
+
+//==========================================================
 // <T>保存按键处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsSceneMenuBar_onExecuteClick(p){
+function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;
    var u = '../design/view.html?code=' + o._frameSet._sceneCode;
    //window.open(u);

@@ -2991,7 +2991,7 @@ function FDsCommonRegionPropertyFrame_dispose(){
 }
 function FDsCommonRenderableFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._activeScene      = null;
+   o._activeSpace      = null;
    o._activeRenderable = null;
    o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
    o.onDataChanged     = FDsCommonRenderableFrame_onDataChanged;
@@ -3046,24 +3046,26 @@ function FDsCommonRenderableFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsCommonRenderableFrame_loadObject(s, renderable){
+function FDsCommonRenderableFrame_loadObject(space, renderable){
    var o = this;
-   o._activeScene = s;
+   o._activeSpace = space;
    o._activeRenderable = renderable;
    var resource = renderable.resource();
    var matrix = renderable.matrix();
    o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
    o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
    o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
-   var materialBox = o._controlMaterials;
-   materialBox.clear();
-   var indexBuffers = renderable.indexBuffers();
-   var count = indexBuffers.count();
-   for(var i = 0; i < count; i++){
-      var materialRefer = resource.syncMaterialRefer(i);
-      var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
-      item.setTag(materialRefer);
-      materialBox.push(item);
+   if(resource){
+      var materialBox = o._controlMaterials;
+      materialBox.clear();
+      var indexBuffers = renderable.indexBuffers();
+      var count = indexBuffers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = resource.syncMaterialRefer(i);
+         var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
+         item.setTag(materialRefer);
+         materialBox.push(item);
+      }
    }
    var effectBox = o._controlEffects;
    effectBox.clear();
@@ -9250,9 +9252,12 @@ function FDsMaterialMenuBar_onSelectClick(event){
 }
 function FDsMaterialMenuBar_onImportClick(event){
    var o = this;
-   RConsole.find(FUiDesktopConsole).hide();
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._frameSet = o._frameSet;
+   dialog.switchModeCd('import');
+   dialog._controlCode.set('');
+   dialog._controlLabel.set('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsMaterialMenuBar_onDeleteLoad(event){
    var o = this;

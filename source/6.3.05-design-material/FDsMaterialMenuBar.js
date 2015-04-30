@@ -160,11 +160,13 @@ function FDsMaterialMenuBar_onSelectClick(event){
 //==========================================================
 function FDsMaterialMenuBar_onImportClick(event){
    var o = this;
-   // 画面允许操作
-   RConsole.find(FUiDesktopConsole).hide();
-   // 刷新列表
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   // 弹出界面
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+   dialog._frameSet = o._frameSet;
+   dialog.switchModeCd('import');
+   dialog._controlCode.set('');
+   dialog._controlLabel.set('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

@@ -8,7 +8,7 @@ function FDsCommonRenderableFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._activeScene      = null;
+   o._activeSpace      = null;
    o._activeRenderable = null;
    //..........................................................
    // @event
@@ -121,9 +121,9 @@ function FDsCommonRenderableFrame_construct(){
 // @param space:FE3dSpace 空间
 // @param renderable:FE3dRenderable 渲染对象
 //==========================================================
-function FDsCommonRenderableFrame_loadObject(s, renderable){
+function FDsCommonRenderableFrame_loadObject(space, renderable){
    var o = this;
-   o._activeScene = s;
+   o._activeSpace = space;
    o._activeRenderable = renderable;
    var resource = renderable.resource();
    // 设置矩阵参数
@@ -132,15 +132,17 @@ function FDsCommonRenderableFrame_loadObject(s, renderable){
    o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
    o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
    // 建立材质集合
-   var materialBox = o._controlMaterials;
-   materialBox.clear();
-   var indexBuffers = renderable.indexBuffers();
-   var count = indexBuffers.count();
-   for(var i = 0; i < count; i++){
-      var materialRefer = resource.syncMaterialRefer(i);
-      var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
-      item.setTag(materialRefer);
-      materialBox.push(item);
+   if(resource){
+      var materialBox = o._controlMaterials;
+      materialBox.clear();
+      var indexBuffers = renderable.indexBuffers();
+      var count = indexBuffers.count();
+      for(var i = 0; i < count; i++){
+         var materialRefer = resource.syncMaterialRefer(i);
+         var item = materialBox.createItem(null, i + ': ' + materialRefer.guid());
+         item.setTag(materialRefer);
+         materialBox.push(item);
+      }
    }
    // 建立效果器集合
    var effectBox = o._controlEffects;

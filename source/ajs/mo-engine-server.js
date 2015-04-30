@@ -26263,6 +26263,7 @@ function FE3dBitmapData(o){
    o._vertexCount      = 4;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
+   o._indexBuffers     = null;
    o._material         = null;
    o._textures         = null;
    o._image            = null;
@@ -26277,6 +26278,7 @@ function FE3dBitmapData(o){
    o.findVertexBuffer  = FE3dBitmapData_findVertexBuffer;
    o.vertexBuffers     = FE3dBitmapData_vertexBuffers;
    o.indexBuffer       = FE3dBitmapData_indexBuffer;
+   o.indexBuffers      = FE3dBitmapData_indexBuffers;
    o.material          = FE3dBitmapData_material;
    o.findTexture       = FE3dBitmapData_findTexture;
    o.textures          = FE3dBitmapData_textures;
@@ -26336,6 +26338,9 @@ function FE3dBitmapData_vertexBuffers(){
 }
 function FE3dBitmapData_indexBuffer(){
    return this._indexBuffer;
+}
+function FE3dBitmapData_indexBuffers(){
+   return this._indexBuffers;
 }
 function FE3dBitmapData_material(){
    return this._material;
