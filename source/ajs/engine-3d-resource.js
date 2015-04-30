@@ -202,20 +202,23 @@ function SE3sSceneShadow_unserialize(p){
 }
 function FE3sAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._model        = null;
-   o._skeletonGuid = null;
-   o._skeleton     = null;
-   o._frameCount   = 0;
-   o._frameTick    = 0;
-   o._frameSpan    = 0;
-   o._tracks       = null;
-   o.skeletonGuid  = FE3sAnimation_skeletonGuid;
-   o.skeleton      = FE3sAnimation_skeleton;
-   o.frameCount    = FE3sAnimation_frameCount;
-   o.frameTick     = FE3sAnimation_frameTick;
-   o.frameSpan     = FE3sAnimation_frameSpan;
-   o.tracks        = FE3sAnimation_tracks;
-   o.unserialize   = FE3sAnimation_unserialize;
+   o._model           = null;
+   o._skeletonGuid    = null;
+   o._skeleton        = null;
+   o._frameCount      = 0;
+   o._frameTick       = 0;
+   o._frameSpan       = 0;
+   o._frameTranslates = null;
+   o._frameRotations  = null;
+   o._frameScales     = null;
+   o._tracks          = null;
+   o.skeletonGuid     = FE3sAnimation_skeletonGuid;
+   o.skeleton         = FE3sAnimation_skeleton;
+   o.frameCount       = FE3sAnimation_frameCount;
+   o.frameTick        = FE3sAnimation_frameTick;
+   o.frameSpan        = FE3sAnimation_frameSpan;
+   o.tracks           = FE3sAnimation_tracks;
+   o.unserialize      = FE3sAnimation_unserialize;
    return o;
 }
 function FE3sAnimation_skeletonGuid(){
@@ -251,14 +254,77 @@ function FE3sAnimation_unserialize(input){
    o._frameCount = input.readUint16();
    o._frameTick = input.readUint16();
    o._frameSpan = input.readUint32();
+   var translateCount = input.readUint32();
+   var translateBytes = RInteger.strideByte(translateCount);
+   if(translateCount > 0){
+      var translates = o._frameTranslates = new TObjects();
+      for(var i = 0; i < translateCount; i++){
+         var translate = new SPoint3();
+         translate.unserialize(input);
+         translates.push(translate);
+      }
+   }
+   var rotationCount = input.readUint32();
+   var rotationBytes = RInteger.strideByte(rotationCount);
+   if(rotationCount > 0){
+      var rotations = o._frameRotations = new TObjects();
+      for(var i = 0; i < rotationCount; i++){
+         var rotation = new SQuaternion();
+         rotation.unserialize(input);
+         rotations.push(rotation);
+      }
+   }
+   var scaleCount = input.readUint32();
+   var scaleBytes = RInteger.strideByte(scaleCount);
+   if(scaleCount > 0){
+      var scales = o._frameScales = new TObjects();
+      for(var i = 0; i < scaleCount; i++){
+         var scale = new SVector3();
+         scale.unserialize(input);
+         scales.push(scale);
+      }
+   }
    var tracks = null;
    var trackCount = input.readUint16();
    if(trackCount > 0){
       tracks = o._tracks = new TObjects();
-      for(var i = 0; i < trackCount; i++){
+      for(var n = 0; n < trackCount; n++){
          var track = RClass.create(FE3sTrack);
          track.unserialize(input);
          tracks.push(track);
+         var frameCount = track._frameCount;
+         var frames = track._frames;
+         for(var i = 0; i < frameCount; i++){
+            var frame = RClass.create(FE3sFrame);
+            var translateIndex = 0;
+            if(translateBytes == 4){
+               translateIndex = input.readUint32();
+            }else if(translateBytes == 2){
+               translateIndex = input.readUint16();
+            }else{
+               translateIndex = input.readUint8();
+            }
+            frame._translation = translates.at(translateIndex);
+            var rotationIndex = 0;
+            if(rotationBytes == 4){
+               rotationIndex = input.readUint32();
+            }else if(rotationBytes == 2){
+               rotationIndex = input.readUint16();
+            }else{
+               rotationIndex = input.readUint8();
+            }
+            frame._quaternion = rotations.at(rotationIndex);
+            var scaleIndex = 0;
+            if(scaleBytes == 4){
+               scaleIndex = input.readUint32();
+            }else if(scaleBytes == 2){
+               scaleIndex = input.readUint16();
+            }else{
+               scaleIndex = input.readUint8();
+            }
+            frame._scale = scales.at(scaleIndex);
+            frames.push(frame);
+         }
       }
    }
    if(tracks && o._skeletonGuid){
@@ -625,24 +691,13 @@ function FE3sDrawable_clone(instance){
 }
 function FE3sFrame(o){
    o = RClass.inherits(this, o, FObject);
-   o._tick        = 0;
    o._translation = null;
    o._quaternion  = null;
    o._scale       = null;
-   o.construct    = FE3sFrame_construct;
-   o.tick         = FE3sFrame_tick;
    o.translation  = FE3sFrame_translation;
    o.quaternion   = FE3sFrame_quaternion;
    o.scale        = FE3sFrame_scale;
-   o.unserialize  = FE3sFrame_unserialize;
    return o;
-}
-function FE3sFrame_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._translation = new SPoint3();
-   o._quaternion = new SQuaternion();
-   o._scale = new SVector3();
 }
 function FE3sFrame_tick(){
    return this._tick;
@@ -655,13 +710,6 @@ function FE3sFrame_quaternion(){
 }
 function FE3sFrame_scale(){
    return this._scale;
-}
-function FE3sFrame_unserialize(p){
-   var o = this;
-   o._tick = p.readUint16();
-   o._translation.unserialize(p);
-   o._quaternion.unserialize(p);
-   o._scale.unserialize(p);
 }
 function FE3sGeometry(o){
    o = RClass.inherits(this, o, FE3sRenderable, ME3sGeometry);
@@ -2887,21 +2935,13 @@ function FE3sTrack_calculate(info, tick){
 function FE3sTrack_unserialize(input){
    var o = this;
    o._meshCode = input.readString();
-   o._boneIndex = input.readUint8();
+   o._boneIndex = input.readUint16();
    o._frameTick = input.readUint16();
    o._matrix.unserialize(input);
    o._matrixInvert.assign(o._matrix);
    o._matrixInvert.invert();
-   var count = input.readInt16();
-   if(count > 0){
-      o._frameCount = count;
-      var frames = o._frames = new TObjects();
-      for(var i = 0; i < count; i++){
-         var frame = RClass.create(FE3sFrame);
-         frame.unserialize(input)
-         frames.push(frame);
-      }
-   }
+   o._frameCount = input.readInt16();
+   o._frames = new TObjects();
 }
 function FE3sVendor(o){
    o = RClass.inherits(this, o, FObject);

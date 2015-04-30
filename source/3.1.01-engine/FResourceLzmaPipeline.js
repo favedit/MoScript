@@ -30,13 +30,14 @@ function FResourceLzmaPipeline(o){
 // <T>完成处理。</T>
 //
 // @method
+// @param data:ArrayBuffer 数据
 //==========================================================
-function FResourceLzmaPipeline_onComplete(p){
+function FResourceLzmaPipeline_onComplete(data){
    var o = this;
-   var r = o._resource;
-   var t = RTimer.now() - o._startTime;
-   RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, tick={3})', r.guid(), o._dataLength, t);
-   o._console.onPipelineComplete(o, r, p);
+   var resource = o._resource;
+   var span = RTimer.now() - o._startTime;
+   RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, total={3}, tick={4})', resource.guid(), o._dataLength, data.byteLength, span);
+   o._console.onPipelineComplete(o, resource, data);
    o._startTime = RTimer.current();
 }
 
@@ -44,7 +45,6 @@ function FResourceLzmaPipeline_onComplete(p){
 // <T>获得压缩类型。</T>
 //
 // @method
-// @return EResourceCompress 压缩类型
 //==========================================================
 function FResourceLzmaPipeline_construct(){
    var o = this;
@@ -56,19 +56,19 @@ function FResourceLzmaPipeline_construct(){
 //
 // @method
 //==========================================================
-function FResourceLzmaPipeline_decompress(r){
+function FResourceLzmaPipeline_decompress(resource){
    var o = this;
-   var d = r._data;
-   o._resource = r;
+   var data = resource._data;
+   o._resource = resource;
    // 创建工作器
-   var w = o._worker;
-   if(!w){
-      var u = RBrowser.contentPath('/ajs/lzma_worker.js');
-      w = o._worker = new LZMA(u);
+   var worker = o._worker;
+   if(!worker){
+      var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
+      worker = o._worker = new LZMA(uri);
    }
    // 解压缩处理
-   w.decompress(d, function(v){o.onComplete(v);}, null);
-   o._dataLength = d.byteLength;
+   worker.decompress(data, function(value){o.onComplete(value);}, null);
+   o._dataLength = data.byteLength;
    o._startTime = RTimer.current();
 }
 
@@ -77,17 +77,17 @@ function FResourceLzmaPipeline_decompress(r){
 //
 // @method
 //==========================================================
-function FResourceLzmaPipeline_decompressSingle(r){
+function FResourceLzmaPipeline_decompressSingle(resource){
    var o = this;
-   var d = r._data;
-   o._resource = r;
+   var d = resource._data;
+   o._resource = resource;
    o._dataLength = d.byteLength;
    o._startTime = RTimer.now();
    // 回调工作方式
    //var inflate = new Zlib.RawInflate(d);
    //var inflate = new Zlib.Inflate(d);
    //var plain = inflate.decompress();
-   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
+   LZMAD.decompress(d, function(value){o.onComplete(value);}, null);
    //o.onComplete(plain);
 }
 

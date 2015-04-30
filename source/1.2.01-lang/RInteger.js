@@ -19,6 +19,8 @@ var RInteger = new function RInteger(){
    o.isInt      = RInteger_isInt;
    o.isInteger  = RInteger_isInt;
    o.nvl        = RInteger_nvl;
+   o.strideByte = RInteger_strideByte;
+   o.strideBit  = RInteger_strideBit;
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;
    o.toRange    = RInteger_toRange;
@@ -51,6 +53,38 @@ function RInteger_isInt(v){
 //==========================================================
 function RInteger_nvl(v, d){
    return v ? v : (d ? d : 0);
+}
+
+//============================================================
+// <T>计算一个整数的字节宽。</T>
+//
+// @param value 整数
+// @return 字节宽
+//============================================================
+function RInteger_strideByte(value){
+   if(value > 65535){
+      return 4;
+   }else if(value > 255){
+      return 2;
+   }else{
+      return 1;
+   }
+}
+
+//============================================================
+// <T>计算一个整数的位宽。</T>
+//
+// @param value 整数
+// @return 位宽
+//============================================================
+function RInteger_strideBit(value){
+   if(value > 65535){
+      return 32;
+   }else if(value > 255){
+      return 16;
+   }else{
+      return 8;
+   }
 }
 
 //==========================================================

@@ -711,38 +711,38 @@ function FResourceLzmaPipeline(o){
    o.dispose          = FResourceLzmaPipeline_dispose;
    return o;
 }
-function FResourceLzmaPipeline_onComplete(p){
+function FResourceLzmaPipeline_onComplete(data){
    var o = this;
-   var r = o._resource;
-   var t = RTimer.now() - o._startTime;
-   RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, tick={3})', r.guid(), o._dataLength, t);
-   o._console.onPipelineComplete(o, r, p);
+   var resource = o._resource;
+   var span = RTimer.now() - o._startTime;
+   RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, total={3}, tick={4})', resource.guid(), o._dataLength, data.byteLength, span);
+   o._console.onPipelineComplete(o, resource, data);
    o._startTime = RTimer.current();
 }
 function FResourceLzmaPipeline_construct(){
    var o = this;
    o.__base.FResourcePipeline.construct.call(o);
 }
-function FResourceLzmaPipeline_decompress(r){
+function FResourceLzmaPipeline_decompress(resource){
    var o = this;
-   var d = r._data;
-   o._resource = r;
-   var w = o._worker;
-   if(!w){
-      var u = RBrowser.contentPath('/ajs/lzma_worker.js');
-      w = o._worker = new LZMA(u);
+   var data = resource._data;
+   o._resource = resource;
+   var worker = o._worker;
+   if(!worker){
+      var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
+      worker = o._worker = new LZMA(uri);
    }
-   w.decompress(d, function(v){o.onComplete(v);}, null);
-   o._dataLength = d.byteLength;
+   worker.decompress(data, function(value){o.onComplete(value);}, null);
+   o._dataLength = data.byteLength;
    o._startTime = RTimer.current();
 }
-function FResourceLzmaPipeline_decompressSingle(r){
+function FResourceLzmaPipeline_decompressSingle(resource){
    var o = this;
-   var d = r._data;
-   o._resource = r;
+   var d = resource._data;
+   o._resource = resource;
    o._dataLength = d.byteLength;
    o._startTime = RTimer.now();
-   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
+   LZMAD.decompress(d, function(value){o.onComplete(value);}, null);
 }
 function FResourceLzmaPipeline_dispose(){
    var o = this;

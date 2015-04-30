@@ -3124,9 +3124,7 @@ var LZMA = (function () {
                 postMessage({
                     action: action_compress,
                     callback_num: callback_num,
-                    /// .slice(0) is required for Firefox 4.0 (because I think arrays are now passed by reference, which is not allowed when sending messages to or from web workers).
-                    /// .slice(0) simply returns the entire array by value.
-                    result: res.slice(0)
+                    result: new Uint8Array(res)
                 });
             }
         }

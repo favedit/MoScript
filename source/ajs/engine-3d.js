@@ -188,6 +188,7 @@ function FE3dRenderable(o){
    o._vertexCount       = 0;
    o._vertexBuffers     = null;
    o._indexBuffer       = null;
+   o._indexBuffers      = null;
    o._materialReference = null;
    o._materials         = null;
    o._textures          = null;
@@ -201,6 +202,7 @@ function FE3dRenderable(o){
    o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
+   o.indexBuffers       = FE3dRenderable_indexBuffers;
    o.materialReference  = FE3dRenderable_materialReference;
    o.materials          = FE3dRenderable_materials;
    o.pushMaterial       = FE3dRenderable_pushMaterial;
@@ -274,6 +276,9 @@ function FE3dRenderable_pushMaterial(material){
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
+}
+function FE3dRenderable_indexBuffers(){
+   return this._indexBuffers;
 }
 function FE3dRenderable_findTexture(p){
    return this._textures.get(p);

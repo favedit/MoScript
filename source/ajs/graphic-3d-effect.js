@@ -412,15 +412,20 @@ function FG3dAutomaticEffect_drawRenderable(region, renderable){
       }
       layout.bindSamplers();
    }
+   var indexCount = 0;
    var indexBuffers = renderable.indexBuffers();
-   var indexCount = indexBuffers.count();
+   if(indexBuffers){
+      indexCount = indexBuffers.count();
+   }
    if(indexCount > 1){
       var materials = renderable.materials();
       for(var i = 0; i < indexCount; i++){
          var indexBuffer = indexBuffers.at(i);
-         var material = materials.at(i);
-         if(material){
-            o.bindMaterialSamplers(renderable, material);
+         if(materials){
+            var material = materials.at(i);
+            if(material){
+               o.bindMaterialSamplers(renderable, material);
+            }
          }
          context.drawTriangles(indexBuffer);
       }

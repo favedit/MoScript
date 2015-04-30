@@ -18,6 +18,7 @@ function FE3dRenderable(o){
    o._vertexCount       = 0;
    o._vertexBuffers     = null;
    o._indexBuffer       = null;
+   o._indexBuffers      = null;
    // @attribute
    o._materialReference = null;
    o._materials         = null;
@@ -38,6 +39,7 @@ function FE3dRenderable(o){
    o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
+   o.indexBuffers       = FE3dRenderable_indexBuffers;
    // @method
    o.materialReference  = FE3dRenderable_materialReference;
    o.materials          = FE3dRenderable_materials;
@@ -196,6 +198,16 @@ function FE3dRenderable_pushMaterial(material){
 //==========================================================
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
+}
+
+//==========================================================
+// <T>获得索引缓冲集合。</T>
+//
+// @method
+// @return TObjects 索引缓冲集合
+//==========================================================
+function FE3dRenderable_indexBuffers(){
+   return this._indexBuffers;
 }
 
 //==========================================================

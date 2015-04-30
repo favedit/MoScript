@@ -138,21 +138,13 @@ function FE3sTrack_unserialize(input){
    var o = this;
    // 读取属性
    o._meshCode = input.readString();
-   o._boneIndex = input.readUint8();
+   o._boneIndex = input.readUint16();
    o._frameTick = input.readUint16();
    o._matrix.unserialize(input);
    // 计算逆矩阵
    o._matrixInvert.assign(o._matrix);
    o._matrixInvert.invert();
    // 读取帧集合
-   var count = input.readInt16();
-   if(count > 0){
-      o._frameCount = count;
-      var frames = o._frames = new TObjects();
-      for(var i = 0; i < count; i++){
-         var frame = RClass.create(FE3sFrame);
-         frame.unserialize(input)
-         frames.push(frame);
-      }
-   }
+   o._frameCount = input.readInt16();
+   o._frames = new TObjects();
 }
