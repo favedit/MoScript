@@ -96,12 +96,15 @@ function FDsCanvas_onBuild(event){
 //==========================================================
 function FDsCanvas_onMouseCaptureStart(event){
    var o = this;
+   // 获得参数
    var space = o._activeSpace;
    if(!space){
       return;
    }
+   var camera = space.camera();
+   // 获得位置
    o._capturePosition.set(event.clientX, event.clientY);
-   o._captureRotation.assign(space.camera()._rotation);
+   o._captureRotation.assign(camera._rotation);
    //var d = t.renderables().get(0);
    //o._capturePosition.set(p.clientX, p.clientY);
    //o._captureMatrix.assign(d.matrix());
@@ -118,20 +121,23 @@ function FDsCanvas_onMouseCaptureStart(event){
 //==========================================================
 function FDsCanvas_onMouseCapture(event){
    var o = this;
+   // 获得参数
    var space = o._activeSpace;
    if(!space){
       return;
    }
+   var camera = space.camera();
+   // 获得位移
    var cx = event.clientX - o._capturePosition.x;
    var cy = event.clientY - o._capturePosition.y;
    var mc = o._canvasModeCd;
    //var d = t.renderables().get(0);
    //var m = d.matrix();
    //var cm = o._captureMatrix;
+   // 鼠标处理
    var toolbar = o._frameSet._canvasToolBar;
    switch(toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
-         var camera = space.camera();
          var rotation = camera.rotation();
          var captureRotation = o._captureRotation;
          rotation.x = captureRotation.x - cy * o._cameraMouseRotation;

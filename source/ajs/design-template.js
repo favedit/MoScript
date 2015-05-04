@@ -15,7 +15,6 @@ function FDsTemplateCanvasContent(o){
    o.onDataLoaded        = FDsTemplateCanvasContent_onDataLoaded;
    o.oeRefresh           = FDsTemplateCanvasContent_oeRefresh;
    o.construct           = FDsTemplateCanvasContent_construct;
-   o.selectRenderable    = FDsTemplateCanvasContent_selectRenderable;
    o.loadByGuid          = FDsTemplateCanvasContent_loadByGuid;
    o.loadByCode          = FDsTemplateCanvasContent_loadByCode;
    o.dispose             = FDsTemplateCanvasContent_dispose;
@@ -117,12 +116,6 @@ function FDsTemplateCanvasContent_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-function FDsTemplateCanvasContent_selectRenderable(p){
-   var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
 }
 function FDsTemplateCanvasContent_loadByGuid(guid){
    var o = this;

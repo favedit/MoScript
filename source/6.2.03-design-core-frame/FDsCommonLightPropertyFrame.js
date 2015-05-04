@@ -57,8 +57,8 @@ function FDsCommonLightPropertyFrame_loadObject(space, light){
    o._controlCode.set(resource.code());
    o._controlLabel.set(resource.label());
    // 设置参数
-   o._frameCamera.loadObject(space, light.camera());
-   o._frameMaterial1.loadObject(space, light.material());
+   //o._frameCamera.loadObject(space, light.camera());
+   //o._frameMaterial1.loadObject(space, light.material());
 }
 
 //==========================================================

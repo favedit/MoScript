@@ -452,8 +452,6 @@ function FDsCommonLightPropertyFrame_loadObject(space, light){
    o._controlGuid.set(resource.guid());
    o._controlCode.set(resource.code());
    o._controlLabel.set(resource.label());
-   o._frameCamera.loadObject(space, light.camera());
-   o._frameMaterial1.loadObject(space, light.material());
 }
 function FDsCommonLightPropertyFrame_dispose(){
    var o = this;

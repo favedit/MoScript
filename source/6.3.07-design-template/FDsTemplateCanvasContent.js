@@ -34,7 +34,6 @@ function FDsTemplateCanvasContent(o){
    // @method
    o.construct           = FDsTemplateCanvasContent_construct;
    // @method
-   o.selectRenderable    = FDsTemplateCanvasContent_selectRenderable;
    o.loadByGuid          = FDsTemplateCanvasContent_loadByGuid;
    o.loadByCode          = FDsTemplateCanvasContent_loadByCode;
    // @method
@@ -223,24 +222,6 @@ function FDsTemplateCanvasContent_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-
-//==========================================================
-// <T>选中渲染对象处理。</T>
-//
-// @method
-//==========================================================
-function FDsTemplateCanvasContent_selectRenderable(p){
-   var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   // 显示包围盒
-   //var b = o._selectBoundBox;
-   //b.outline().assign(rl);
-   //b.upload();
-   //b.remove();
-   //p._display.pushRenderable(b);
 }
 
 //==========================================================

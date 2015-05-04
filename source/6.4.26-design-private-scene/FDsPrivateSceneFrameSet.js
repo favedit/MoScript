@@ -39,7 +39,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    o._frameCatalogContent.push(catalog);
    //..........................................................
    // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateSceneCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);

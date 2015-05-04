@@ -1113,7 +1113,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
    o._frameCatalogContent.push(catalog);
-   var toolbar = o._canvasToolbar = RClass.create(FDsPrivateSceneCanvasToolBar);
+   var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
