@@ -8141,20 +8141,22 @@ function SRectangle_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }
-function SSize2(w, h){
+function SSize2(width, height){
    var o = this;
-   o.width      = RInteger.nvl(w);
-   o.height     = RInteger.nvl(h);
-   o.isEmpty    = SSize2_isEmpty;
-   o.equalsData = SSize2_equalsData;
-   o.equals     = SSize2_equals;
-   o.square     = SSize2_square;
-   o.assign     = SSize2_assign;
-   o.set        = SSize2_set;
-   o.parse      = SSize2_parse;
-   o.toString   = SSize2_toString;
-   o.dispose    = SSize2_dispose;
-   o.dump       = SSize2_dump;
+   o.width       = RInteger.nvl(width);
+   o.height      = RInteger.nvl(height);
+   o.isEmpty     = SSize2_isEmpty;
+   o.equalsData  = SSize2_equalsData;
+   o.equals      = SSize2_equals;
+   o.square      = SSize2_square;
+   o.assign      = SSize2_assign;
+   o.set         = SSize2_set;
+   o.serialize   = SSize2_serialize;
+   o.unserialize = SSize2_unserialize;
+   o.parse       = SSize2_parse;
+   o.toString    = SSize2_toString;
+   o.dispose     = SSize2_dispose;
+   o.dump        = SSize2_dump;
    return o;
 }
 function SSize2_isEmpty(){
@@ -8193,6 +8195,19 @@ function SSize2_set(w, h){
    var o = this;
    o.width = w;
    o.height = h;
+}
+function SSize2_serialize(output){
+   var o = this;
+   output.writeFloat(o.width);
+   output.writeFloat(o.height);
+}
+function SSize2_unserialize(input, dataCd){
+   var o = this;
+   if(!dataCd){
+      dataCd = EDataType.Float16;
+   }
+   o.width = input.readData(dataCd);
+   o.height = input.readData(dataCd);
 }
 function SSize2_parse(v){
    var o = this;
@@ -9070,6 +9085,7 @@ function MDataStream(o){
    o.readDouble   = FByteStream_readDouble;
    o.readString   = FByteStream_readString;
    o.readBytes    = FByteStream_readBytes;
+   o.readData     = FByteStream_readData;
    o.writeBoolean = FByteStream_writeBoolean;
    o.writeInt8    = FByteStream_writeInt8;
    o.writeInt16   = FByteStream_writeInt16;
@@ -9099,195 +9115,215 @@ function FByteStream_testString(){
 }
 function FByteStream_readBoolean(){
    var o = this;
-   var r = o._viewer.getInt8(o._position, o._endianCd);
+   var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
-   return r > 0;
+   return value > 0;
 }
 function FByteStream_readInt8(){
    var o = this;
-   var r = o._viewer.getInt8(o._position, o._endianCd);
+   var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
-   return r;
+   return value;
 }
 function FByteStream_readInt16(){
    var o = this;
-   var r = o._viewer.getInt16(o._position, o._endianCd);
+   var value = o._viewer.getInt16(o._position, o._endianCd);
    o._position += 2;
-   return r;
+   return value;
 }
 function FByteStream_readInt32(){
    var o = this;
-   var r = o._viewer.getInt32(o._position, o._endianCd);
+   var value = o._viewer.getInt32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readInt64(){
    var o = this;
-   var r = o._viewer.getInt64(o._position, o._endianCd);
+   var value = o._viewer.getInt64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readUint8(){
    var o = this;
-   var r = o._viewer.getUint8(o._position, o._endianCd);
+   var value = o._viewer.getUint8(o._position, o._endianCd);
    o._position += 1;
-   return r;
+   return value;
 }
 function FByteStream_readUint16(){
    var o = this;
-   var r = o._viewer.getUint16(o._position, o._endianCd);
+   var value = o._viewer.getUint16(o._position, o._endianCd);
    o._position += 2;
-   return r;
+   return value;
 }
 function FByteStream_readUint32(){
    var o = this;
-   var r = o._viewer.getUint32(o._position, o._endianCd);
+   var value = o._viewer.getUint32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readUint64(){
    var o = this;
-   var r = o._viewer.getUint64(o._position, o._endianCd);
+   var value = o._viewer.getUint64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readFloat(){
    var o = this;
-   var r = o._viewer.getFloat32(o._position, o._endianCd);
+   var value = o._viewer.getFloat32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readDouble(){
    var o = this;
-   var r = o._viewer.getFloat64(o._position, o._endianCd);
+   var value = o._viewer.getFloat64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readString(){
    var o = this;
-   var l = o._viewer.getUint16(o._position, o._endianCd);
+   var viewer = o._viewer;
+   var length = viewer.getUint16(o._position, o._endianCd);
    o._position += 2;
-   var r = new TString();
-   for(var i = 0; i < l; i++){
-      var v = o._viewer.getUint16(o._position, o._endianCd);
+   var value = new TString();
+   for(var i = 0; i < length; i++){
+      var character = viewer.getUint16(o._position, o._endianCd);
       o._position += 2;
-      r.push(String.fromCharCode(v));
+      value.push(String.fromCharCode(character));
    }
-   return r.toString();
+   return value.flush();
 }
-function FByteStream_readBytes(pd, po, pl){
+function FByteStream_readData(dataCd){
    var o = this;
-   if(pl <= 0){
+   switch(dataCd){
+      case EDataType.Int8:
+         return o.readInt8();
+      case EDataType.Int16:
+         return o.readInt16();
+      case EDataType.Int32:
+         return o.readInt32();
+      case EDataType.Int64:
+         return o.readInt64();
+      case EDataType.Uint8:
+         return o.readUint8();
+      case EDataType.Uint16:
+         return o.readUint16();
+      case EDataType.Uint32:
+         return o.readUint32();
+      case EDataType.Uint64:
+         return o.readUint64();
+      case EDataType.Float32:
+         return o.readFloat();
+      case EDataType.Float64:
+         return o.readDouble();
+      case EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
+}
+function FByteStream_readBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
       return;
    }
-   if(po != 0){
+   if(offset != 0){
       throw new TError('Unsupport.');
    }
-   if(pl % 8 == 0){
-      var a = new Float64Array(pd);
-      var c = pl >> 3;
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getFloat64(o._position, o._endianCd);
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getFloat64(o._position, o._endianCd);
          o._position += 8;
       }
       return;
    }
-   if(pl % 4 == 0){
-      var c = pl >> 2;
-      var a = new Uint32Array(pd);
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getUint32(o._position, o._endianCd);
+   if(length % 4 == 0){
+      var count = length >> 2;
+      var array = new Uint32Array(data);
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint32(o._position, o._endianCd);
          o._position += 4;
       }
       return;
    }
-   if(pl % 2 == 0){
-      var c = pl >> 1;
-      var a = new Uint16Array(pd);
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getUint16(o._position, o._endianCd);
+   if(length % 2 == 0){
+      var count = length >> 1;
+      var array = new Uint16Array(data);
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint16(o._position, o._endianCd);
          o._position += 2;
       }
       return;
    }
-   var a = new Uint8Array(pd);
-   for(var i = 0; i < pl; i++){
-      a[i] = o._viewer.getUint8(o._position++, o._endianCd);
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      array[i] = viewer.getUint8(o._position++, o._endianCd);
    }
 }
-function FByteStream_writeBoolean(v){
+function FByteStream_writeBoolean(value){
    var o = this;
-   var r = o._viewer.setInt8(o._position, (v > 0) ? 1 : 0, o._endianCd);
+   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
    o._position++;
-   return r;
 }
-function FByteStream_writeInt8(v){
+function FByteStream_writeInt8(value){
    var o = this;
-   var r = o._viewer.setInt8(o._position, v, o._endianCd);
+   o._viewer.setInt8(o._position, value, o._endianCd);
    o._position++;
-   return r;
 }
-function FByteStream_writeInt16(v){
+function FByteStream_writeInt16(value){
    var o = this;
-   var r = o._viewer.setInt16(o._position, v, o._endianCd);
+   o._viewer.setInt16(o._position, value, o._endianCd);
    o._position += 2;
-   return r;
 }
-function FByteStream_writeInt32(v){
+function FByteStream_writeInt32(value){
    var o = this;
-   var r = o._viewer.setInt32(o._position, v, o._endianCd);
+   o._viewer.setInt32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeInt64(v){
+function FByteStream_writeInt64(value){
    var o = this;
-   var r = o._viewer.setInt64(o._position, v, o._endianCd);
+   o._viewer.setInt64(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeUint8(v){
+function FByteStream_writeUint8(value){
    var o = this;
-   var r = o._viewer.setUint8(o._position, v, o._endianCd);
+   o._viewer.setUint8(o._position, value, o._endianCd);
    o._position += 1;
-   return r;
 }
-function FByteStream_writeUint16(v){
+function FByteStream_writeUint16(value){
    var o = this;
-   var r = o._viewer.setUint16(o._position, v, o._endianCd);
+   o._viewer.setUint16(o._position, value, o._endianCd);
    o._position += 2;
-   return r;
 }
-function FByteStream_writeUint32(v){
+function FByteStream_writeUint32(value){
    var o = this;
-   var r = o._viewer.setUint32(o._position, v, o._endianCd);
+   o._viewer.setUint32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeUint64(v){
+function FByteStream_writeUint64(value){
    var o = this;
-   var r = o._viewer.setUint64(o._position, v, o._endianCd);
+   o._viewer.setUint64(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeFloat(v){
+function FByteStream_writeFloat(value){
    var o = this;
-   var r = o._viewer.setFloat32(o._position, v, o._endianCd);
+   o._viewer.setFloat32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeDouble(v){
+function FByteStream_writeDouble(value){
    var o = this;
-   var r = o._viewer.setDouble(o._position, v, o._endianCd);
+   o._viewer.setDouble(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeString(v){
+function FByteStream_writeString(value){
    var o = this;
-   var l = v.length;
-   o._viewer.setUint16(o._position, l, o._endianCd);
+   var viewer = o._viewer;
+   var length = v.length;
+   viewer.setUint16(o._position, length, o._endianCd);
    o._position += 2;
-   for(var i = 0; i < l; i++){
-      o._viewer.setUint16(o._position, v.charCodeAt(i), o._endianCd)
+   for(var i = 0; i < length; i++){
+      viewer.setUint16(o._position, value.charCodeAt(i), o._endianCd)
       o._position += 2;
    }
 }
@@ -14791,66 +14827,60 @@ function FG3dEffectConsole_create(c, p){
    e.setup();
    return e;
 }
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
+function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderable){
    var o = this;
-   var t = pg.technique();
-   pf.techniqueModeCode = t.activeMode().code();
-   pf.optionMerge = pr._optionMerge;
-   if(pf.optionMerge){
-      pf.mergeCount = pr.mergeMaxCount();
+   var capability = context.capability();
+   var technique = region.technique();
+   effectInfo.techniqueModeCode = technique.activeMode().code();
+   effectInfo.optionMerge = renderable._optionMerge;
+   if(effectInfo.optionMerge){
+      effectInfo.mergeCount = renderable.mergeMaxCount();
    }
-   var mi = pr.material().info();
-   pf.optionNormalInvert = mi.optionNormalInvert;
-   pf.optionColor = mi.optionColor;
-   pf.optionAmbient = mi.optionAmbient;
-   pf.optionDiffuse = mi.optionDiffuse;
-   pf.optionSpecular = mi.optionSpecular;
-   pf.optionReflect = mi.optionReflect;
-   pf.optionRefract = mi.optionRefract;
-   pf.vertexCount = pr.vertexCount();
-   var vs = pr.vertexBuffers();
-   var c = vs.count();
-   if(vs.constructor == TDictionary){
-      for(var i = 0; i < c; i++){
-         var v = vs.value(i);
-         pf.attributes.push(v.name());
-      }
-   }else{
-      for(var i = 0; i < c; i++){
-         var v = vs.get(i);
-         pf.attributes.push(v.name());
-      }
+   var mi = renderable.material().info();
+   effectInfo.optionNormalInvert = mi.optionNormalInvert;
+   effectInfo.optionColor = mi.optionColor;
+   effectInfo.optionAmbient = mi.optionAmbient;
+   effectInfo.optionDiffuse = mi.optionDiffuse;
+   effectInfo.optionSpecular = mi.optionSpecular;
+   effectInfo.optionReflect = mi.optionReflect;
+   effectInfo.optionRefract = mi.optionRefract;
+   effectInfo.vertexCount = renderable.vertexCount();
+   var vertexBuffers = renderable.vertexBuffers();
+   var count = vertexBuffers.count();
+   for(var i = 0; i < count; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      effectInfo.attributes.push(vertexBuffer.name());
    }
-   var ts = pr.textures();
-   if(ts){
-      var c = ts.count();
-      for(var i = 0; i < c; i++){
-         pf.samplers.push(ts.name(i));
+   var textures = renderable.textures();
+   if(textures){
+      var count = textures.count();
+      for(var i = 0; i < count; i++){
+         effectInfo.samplers.push(textures.name(i));
       }
    }
-   var bs = pr.bones();
-   if(bs){
-      var bc = bs.count();
-      pf.vertexBoneCount = bc;
-      var cb = pc.capability().calculateBoneCount(pf.vertexBoneCount, pf.vertexCount);
-      if(bc > cb){
-         bc = cb;
+   var bones = renderable.bones();
+   if(bones){
+      var boneCount = bones.count();
+      effectInfo.vertexBoneCount = boneCount;
+      var boneLimit = capability.calculateBoneCount(effectInfo.vertexBoneCount, effectInfo.vertexCount);
+      if(boneCount > boneLimit){
+         boneCount = boneLimit;
       }
-      pr._boneLimit = bc;
-      pf.vertexBoneLimit = bc;
+      renderable._boneLimit = boneCount;
+      effectInfo.vertexBoneLimit = boneCount;
    }
 }
-function FG3dEffectConsole_findTemplate(pc, pn){
+function FG3dEffectConsole_findTemplate(context, code){
    var o = this;
-   var es = o._templateEffects;
-   var e = es.get(pn);
-   if(e == null){
-      var e = o.create(pc, pn);
-      e.load();
-      RLogger.info(o, 'Create effect template. (name={1}, instance={2})', pn, e);
-      es.set(pn, e);
+   var effects = o._templateEffects;
+   var effect = effects.get(code);
+   if(effect == null){
+      var effect = o.create(context, code);
+      effect.load();
+      RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+      effects.set(code, effect);
    }
-   return e;
+   return effect;
 }
 function FG3dEffectConsole_find(context, region, renderable){
    var o = this;
@@ -16576,106 +16606,106 @@ function FG3dAutomaticEffect_setup(){
    var cp = c.capability();
    o._supportLayout = cp.optionLayout;
 }
-function FG3dAutomaticEffect_buildInfo(pt, pc){
+function FG3dAutomaticEffect_buildInfo(tagContext, pc){
    var o = this;
-   var c = o._graphicContext;
-   var cp = c.capability();
-   var s = new TString();
-   s.append(pc.techniqueModeCode)
-   pt.set("technique.mode", pc.techniqueModeCode);
+   var context = o._graphicContext;
+   var capability = context.capability();
+   var flag = new TString();
+   flag.append(pc.techniqueModeCode)
+   tagContext.set("technique.mode", pc.techniqueModeCode);
    var om = o._optionMerge = pc.optionMerge;
    if(om){
       var mc = pc.mergeCount;
-      s.append("|OI" + mc);
-      pt.setBoolean("option.instance", true);
-      pt.set("instance.count", mc);
+      flag.append("|OI" + mc);
+      tagContext.setBoolean("option.instance", true);
+      tagContext.set("instance.count", mc);
    }
-   if(cp.optionMaterialMap){
-      s.append("|OM");
-      pt.setBoolean("option.material.map", true);
+   if(capability.optionMaterialMap){
+      flag.append("|OM");
+      tagContext.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
    if(pc.optionNormalInvert){
-      s.append("|ON");
-      pt.setBoolean("option.normal.invert", true);
+      flag.append("|ON");
+      tagContext.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
    if(pc.optionColor){
-      s.append("|OC");
-      pt.setBoolean("option.color", true);
+      flag.append("|OC");
+      tagContext.setBoolean("option.color", true);
       o.optionAmbient = true;
    }
    if(pc.optionAmbient){
-      s.append("|OA");
-      pt.setBoolean("option.ambient", true);
+      flag.append("|OA");
+      tagContext.setBoolean("option.ambient", true);
       o.optionAmbient = true;
    }
    if(pc.optionDiffuse){
-      s.append("|OD");
-      pt.setBoolean("option.diffuse", true);
+      flag.append("|OD");
+      tagContext.setBoolean("option.diffuse", true);
       o.optionDiffuse = true;
    }
    if(pc.optionSpecular){
-      s.append("|OS");
-      pt.setBoolean("option.specular", true);
+      flag.append("|OS");
+      tagContext.setBoolean("option.specular", true);
       o.optionSpecular = true;
    }
    if(pc.optionReflect){
-      s.append("|ORL");
-      pt.setBoolean("option.reflect", true);
+      flag.append("|ORL");
+      tagContext.setBoolean("option.reflect", true);
       o.optionReflect = true;
    }
    if(pc.optionRefract){
-      s.append("|ORF");
-      pt.setBoolean("option.refract", true);
+      flag.append("|ORF");
+      tagContext.setBoolean("option.refract", true);
       o.optionRefract = true;
    }
    var ac = pc.attributeContains(EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
-      s.append("|AC");
-      pt.setBoolean("vertex.attribute.color", true);
+      flag.append("|AC");
+      tagContext.setBoolean("vertex.attribute.color", true);
    }
    var ad = pc.attributeContains(EG3dAttribute.Coord);
    o._dynamicVertexCoord = (o._supportVertexCoord && ad);
    if(o._dynamicVertexCoord){
-      s.append("|AD");
-      pt.setBoolean("vertex.attribute.coord", true);
+      flag.append("|AD");
+      tagContext.setBoolean("vertex.attribute.coord", true);
    }
    var an = pc.attributeContains(EG3dAttribute.Normal);
    o._dynamicVertexNormal = (o._supportVertexNormal && an);
    if(o._dynamicVertexNormal){
-      s.append("|AN");
-      pt.setBoolean("vertex.attribute.normal", true);
+      flag.append("|AN");
+      tagContext.setBoolean("vertex.attribute.normal", true);
    }
    var ab = pc.attributeContains(EG3dAttribute.Binormal);
    var at = pc.attributeContains(EG3dAttribute.Tangent);
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
-      s.append("|AF");
-      pt.setBoolean("vertex.attribute.normal.full", true);
+      flag.append("|AF");
+      tagContext.setBoolean("vertex.attribute.normal.full", true);
    }
-   o._dynamicInstance = (o._supportInstance && cp.optionInstance);
+   o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){
-      s.append("|SI");
+      flag.append("|SI");
       if(pc){
-         pt.setBoolean("support.instance", true);
+         tagContext.setBoolean("support.instance", true);
       }
    }
    o._dynamicSkeleton = o._supportSkeleton;
    if(o._dynamicSkeleton){
-      s.append("|SS");
+      flag.append("|SS");
       if(pc){
-         pt.setBoolean("support.skeleton", true);
+         tagContext.setBoolean("support.skeleton", true);
       }
    }
    var sdf  = pc.samplerContains(EG3dSampler.Diffuse);
    o._dynamicAlpha = o._supportAlpha;
    if(o._dynamicAlpha){
-      s.append("|RA");
+      flag.append("|RA");
       if(pc){
-         pt.setBoolean("support.alpha", true);
+         tagContext.setBoolean("support.alpha", true);
       }
       o._optionBlendMode = true;
    }else{
@@ -16683,54 +16713,54 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    o._dynamicAmbient = o._supportAmbient;
    if(o._dynamicAmbient){
-      s.append("|TA");
+      flag.append("|TA");
       if(pc){
-         pt.setBoolean("support.ambient", true);
+         tagContext.setBoolean("support.ambient", true);
       }
       if(sdf){
-         s.append("|TAS");
+         flag.append("|TAS");
          if(pc){
-            pt.setBoolean("support.ambient.sampler", true);
+            tagContext.setBoolean("support.ambient.sampler", true);
          }
       }
    }
    if(pc.samplerContains(EG3dSampler.Alpha)){
-      pt.setBoolean("support.alpha.sampler", true);
+      tagContext.setBoolean("support.alpha.sampler", true);
    }
    var snr = pc.samplerContains(EG3dSampler.Normal);
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);
    if(o._supportDiffuse){
       if(pc){
-         pt.setBoolean("support.diffuse", true);
+         tagContext.setBoolean("support.diffuse", true);
       }
       if(snr){
-         s.append("|TDD");
+         flag.append("|TDD");
          if(pc){
-            pt.setBoolean("support.dump", true);
-            pt.setBoolean("support.diffuse.dump", true);
+            tagContext.setBoolean("support.dump", true);
+            tagContext.setBoolean("support.diffuse.dump", true);
          }
       }else if(o._dynamicVertexNormal){
-         s.append("|TDN");
+         flag.append("|TDN");
          if(pc){
-            pt.setBoolean("support.diffuse.normal", true);
+            tagContext.setBoolean("support.diffuse.normal", true);
          }
       }
    }
    o._dynamicDiffuseView = (o._supportDiffuseView && (o._dynamicVertexNormal || snr));
    if(o._supportDiffuseView){
       if(pc){
-         pt.setBoolean("support.diffuse.view", true);
+         tagContext.setBoolean("support.diffuse.view", true);
       }
       if(snr){
-         s.append("|TDVD");
+         flag.append("|TDVD");
          if(pc){
-            pt.setBoolean("support.dump", true);
-            pt.setBoolean("support.diffuse.view.dump", true);
+            tagContext.setBoolean("support.dump", true);
+            tagContext.setBoolean("support.diffuse.view.dump", true);
          }
       }else if(o._dynamicVertexNormal){
-         s.append("|TDVN");
+         flag.append("|TDVN");
          if(pc){
-            pt.setBoolean("support.diffuse.view.normal", true);
+            tagContext.setBoolean("support.diffuse.view.normal", true);
          }
       }
    }
@@ -16739,127 +16769,126 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    o._dynamicSpecularColor = (o._supportSpecularColor && spc);
    o._dynamicSpecularLevel = (o._supportSpecularLevel && spl);
    if((o._dynamicSpecularColor || o._dynamicSpecularLevel) && o._dynamicVertexNormal){
-      s.append("|TS");
+      flag.append("|TS");
       if(pc){
-         pt.setBoolean("support.specular", true);
+         tagContext.setBoolean("support.specular", true);
       }
       if(o._dynamicSpecularColor){
-         s.append("|TSC");
+         flag.append("|TSC");
          if(pc){
-            pt.setBoolean("support.specular.color", true);
+            tagContext.setBoolean("support.specular.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
-         s.append("|TSL");
+         flag.append("|TSL");
          if(pc){
-            pt.setBoolean("support.specular.level", true);
+            tagContext.setBoolean("support.specular.level", true);
          }
       }else{
-         s.append("|NSL");
+         flag.append("|NSL");
          if(pc){
-            pt.setBoolean("support.specular.normal", true);
+            tagContext.setBoolean("support.specular.normal", true);
          }
       }
    }
    o._dynamicSpecularView = o._supportSpecularView;
    if(o._dynamicSpecularView && o._dynamicVertexNormal){
-      s.append("|TSV");
+      flag.append("|TSV");
       if(pc){
-         pt.setBoolean("support.specular.view", true);
+         tagContext.setBoolean("support.specular.view", true);
       }
       if(o._dynamicSpecularColor){
-         s.append("|TSVC");
+         flag.append("|TSVC");
          if(pc){
-            pt.setBoolean("support.specular.view.color", true);
+            tagContext.setBoolean("support.specular.view.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
-         s.append("|TSVL");
+         flag.append("|TSVL");
          if(pc){
-            pt.setBoolean("support.specular.view.level", true);
+            tagContext.setBoolean("support.specular.view.level", true);
          }
       }else{
-         s.append("|NSVL");
+         flag.append("|NSVL");
          if(pc){
-            pt.setBoolean("support.specular.view.normal", true);
+            tagContext.setBoolean("support.specular.view.normal", true);
          }
       }
    }
    var slg = pc.samplerContains(EG3dSampler.Light);
    o._dynamicLight = (o._supportLight && slg);
    if(o._dynamicLight){
-      s.append("|TL");
+      flag.append("|TL");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.light", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.light", true);
       }
    }
    var slr = pc.samplerContains(EG3dSampler.Reflect);
    o._dynamicReflect = (o._supportReflect && slr);
    if(o._dynamicReflect){
-      s.append("|TRL");
+      flag.append("|TRL");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.reflect", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.reflect", true);
       }
    }
    var slf = pc.samplerContains(EG3dSampler.Refract);
    o._dynamicRefract = (o._supportRefract && slf);
    if(o._dynamicRefract){
-      s.append("|TRF");
+      flag.append("|TRF");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.refract", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.refract", true);
       }
    }
    var sle = pc.samplerContains(EG3dSampler.Emissive);
    o._dynamicEmissive = (o._supportEmissive && sle);
    if(o._dynamicEmissive){
-      s.append("|TLE");
+      flag.append("|TLE");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.emissive", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.emissive", true);
       }
    }
    var shg = pc.samplerContains(EG3dSampler.Height);
    o._dynamicHeight = (o._supportHeight && shg);
    if(o._dynamicHeight){
-      s.append("|TH");
+      flag.append("|TH");
       if(pc){
-         pt.setBoolean("support.height", true);
+         tagContext.setBoolean("support.height", true);
       }
    }
    var sen = pc.samplerContains(EG3dSampler.Environment);
    o._dynamicEnvironment = (o._supportEnvironment && sen);
    if(o._dynamicEnvironment){
-      s.append("|TE");
+      flag.append("|TE");
       if(pc){
-         pt.setBoolean("support.environment", true);
+         tagContext.setBoolean("support.environment", true);
       }
    }
    if(o._dynamicSkeleton){
-      var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
-      s.append("|B" + bc);
-      pt.set("bone.count", bc);
-      pt.setBoolean("support.bone.weight.1", true);
-      pt.setBoolean("support.bone.weight.2", true);
-      pt.setBoolean("support.bone.weight.3", true);
-      pt.setBoolean("support.bone.weight.4", true);
+      var boneCount = capability.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      flag.append("|B" + boneCount);
+      tagContext.set("bone.count", boneCount);
+      tagContext.setBoolean("support.bone.weight.1", true);
+      tagContext.setBoolean("support.bone.weight.2", true);
+      tagContext.setBoolean("support.bone.weight.3", true);
+      tagContext.setBoolean("support.bone.weight.4", true);
    }
-   pt.code = s.toString();
+   tagContext.code = flag.flush();
 }
-function FG3dAutomaticEffect_bindAttributes(p){
+function FG3dAutomaticEffect_bindAttributes(renderable){
    var o = this;
-   var c = o._graphicContext;
-   var g = o._program;
-   if(g.hasAttribute()){
-      var as = g.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = p.findVertexBuffer(a._linker);
-            g.setAttribute(a._name, vb, vb._formatCd);
+   var program = o._program;
+   if(program.hasAttribute()){
+      var attributes = program.attributes();
+      var count = attributes.count();
+      for(var n = 0; n < count; n++){
+         var attribute = attributes.at(n);
+         if(attribute._statusUsed){
+            var buffer = renderable.findVertexBuffer(attribute._linker);
+            program.setAttribute(attribute._name, buffer, buffer._formatCd);
          }
       }
    }
@@ -16899,24 +16928,24 @@ function FG3dAutomaticEffect_bindMaterialSamplers(renderable, material){
       }
    }
 }
-function FG3dAutomaticEffect_bindMaterial(p){
+function FG3dAutomaticEffect_bindMaterial(material){
    var o = this;
-   var c = o._graphicContext;
-   var m = p.info();
-   if(m.optionDepth){
-      c.setDepthMode(o._stateDepth, o._stateDepthCd);
+   var context = o._graphicContext;
+   var info = material.info();
+   if(info.optionDepth){
+      context.setDepthMode(o._stateDepth, o._stateDepthCd);
    }else{
-      c.setDepthMode(false);
+      context.setDepthMode(false);
    }
-   if(m.optionAlpha){
-      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
+   if(info.optionAlpha){
+      context.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
    }else{
-      c.setBlendFactors(false);
+      context.setBlendFactors(false);
    }
-   if(m.optionDouble){
-      c.setCullingMode(false);
+   if(info.optionDouble){
+      context.setCullingMode(false);
    }else{
-      c.setCullingMode(o._stateDepth, o._stateCullCd);
+      context.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
 function FG3dAutomaticEffect_drawRenderable(region, renderable){
@@ -20422,6 +20451,7 @@ function RE3dEngine_onSetup(){
    effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
@@ -21359,13 +21389,12 @@ function FE3sMaterialBitmapPack_formatName(){
 function FE3sMaterialBitmapPack_size(){
    return this._size;
 }
-function FE3sMaterialBitmapPack_unserialize(p){
+function FE3sMaterialBitmapPack_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
-   o._formatName = p.readString();
-   o._size.width = p.readUint16();
-   o._size.height = p.readUint16();
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._typeName = input.readString();
+   o._formatName = input.readString();
+   o._size.unserialize(input, EDataType.Uint16);
 }
 function FE3sMaterialBitmapPack_dispose(){
    var o = this;
@@ -25677,37 +25706,38 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(effectInfo, renderable){
 }
 function FE3dGeneralColorAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
-   var c = o._graphicContext;
-   var p = o._program;
+   var program = o._program;
    var cameraPosition = region.calculate(EG3dRegionParameter.CameraPosition);
    var lightDirection = region.calculate(EG3dRegionParameter.LightDirection);
    var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix)
    var material = renderable.material();
    o.bindMaterial(material);
    if(renderable._optionMerge){
-      var ms = renderable.mergeRenderables();
-      var mc = ms.count();
-      var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
-      for(var i = 0; i < mc; i++){
-         var m = ms.getAt(i);
-         m.currentMatrix().writeData(d, 16 * i);
+      var mergeRenderables = renderable.mergeRenderables();
+      var mergeCount = mergeRenderables.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 16 * mergeCount);
+      for(var i = 0; i < mergeCount; i++){
+         var mergeRenderable = mergeRenderables.at(i);
+         var matrix = mergeRenderable.currentMatrix();
+         matrix.writeData(data, 16 * i);
       }
-      p.setParameter('vc_model_matrix', d);
+      program.setParameter('vc_model_matrix', data);
    }else{
-      p.setParameter('vc_model_matrix', renderable.currentMatrix());
+      var matrix = renderable.currentMatrix();
+      program.setParameter('vc_model_matrix', matrix);
    }
-   p.setParameter('vc_vp_matrix', vpMatrix);
-   p.setParameter('vc_camera_position', cameraPosition);
-   p.setParameter('vc_light_direction', lightDirection);
-   p.setParameter('fc_camera_position', cameraPosition);
-   p.setParameter('fc_light_direction', lightDirection);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter('vc_camera_position', cameraPosition);
+   program.setParameter('vc_light_direction', lightDirection);
+   program.setParameter('fc_camera_position', cameraPosition);
+   program.setParameter('fc_light_direction', lightDirection);
    if(o._supportMaterialMap){
-      var i = renderable._materialId;
-      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
+      var materialId = renderable._materialId;
+      program.setParameter4('fc_material', 1 / 32, materialId / 512, 0, 0);
    }else{
       var info = renderable.activeInfo();
       o.buildMaterial(info, renderable);
-      p.setParameter('fc_materials', info.material.memory());
+      program.setParameter('fc_materials', info.material.memory());
    }
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
@@ -27038,8 +27068,13 @@ function FE3dMeshRenderable_renderable(){
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
 }
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._renderable.findVertexBuffer(p);
+function FE3dMeshRenderable_findVertexBuffer(code){
+   var o = this;
+   var buffer = o._vertexBuffers.get(code);
+   if(buffer){
+      return buffer;
+   }
+   return o._renderable.findVertexBuffer(code);
 }
 function FE3dMeshRenderable_vertexBuffers(){
    return this._renderable.vertexBuffers();
@@ -27050,11 +27085,21 @@ function FE3dMeshRenderable_indexBuffer(){
 function FE3dMeshRenderable_indexBuffers(){
    return this._renderable.indexBuffers();
 }
-function FE3dMeshRenderable_findTexture(p){
-   return this._renderable.findTexture(p);
+function FE3dMeshRenderable_findTexture(code){
+   var o = this;
+   var textures = o._textures.get(code);
+   if(textures){
+      return textures;
+   }
+   return o._renderable.findTexture(p);
 }
 function FE3dMeshRenderable_textures(){
-   return this._renderable.textures();
+   var o = this;
+   var textures = o._textures;
+   if(textures){
+      return textures;
+   }
+   return o._renderable.textures();
 }
 function FE3dMeshRenderable_reloadResource(){
    var o = this;

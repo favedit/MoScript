@@ -69,16 +69,16 @@ function FE3sMaterialBitmapPack_size(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @method
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sMaterialBitmapPack_unserialize(p){
+function FE3sMaterialBitmapPack_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sObject.unserialize.call(o, input);
    // 读取属性
-   o._typeName = p.readString();
-   o._formatName = p.readString();
-   o._size.width = p.readUint16();
-   o._size.height = p.readUint16();
+   o._typeName = input.readString();
+   o._formatName = input.readString();
+   o._size.unserialize(input, EDataType.Uint16);
 }
 
 //==========================================================

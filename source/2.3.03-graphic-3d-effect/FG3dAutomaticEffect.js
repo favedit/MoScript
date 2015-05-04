@@ -67,73 +67,73 @@ function FG3dAutomaticEffect_setup(){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param pt:tagContext:FTagContext 模板环境
-// @param pc:effectInfo:SG3dEffectInfo 渲染信息
+// @param tagContext:FTagContext 模板环境
+// @param effectInfo:SG3dEffectInfo 渲染信息
 //==========================================================
-function FG3dAutomaticEffect_buildInfo(pt, pc){
+function FG3dAutomaticEffect_buildInfo(tagContext, pc){
    var o = this;
-   var c = o._graphicContext;
-   var cp = c.capability();
+   var context = o._graphicContext;
+   var capability = context.capability();
    // 获得参数
-   var s = new TString();
-   s.append(pc.techniqueModeCode)
-   pt.set("technique.mode", pc.techniqueModeCode);
+   var flag = new TString();
+   flag.append(pc.techniqueModeCode)
+   tagContext.set("technique.mode", pc.techniqueModeCode);
    //............................................................
    // 支持纹理材质映射
    var om = o._optionMerge = pc.optionMerge;
    if(om){
       var mc = pc.mergeCount;
-      s.append("|OI" + mc);
-      pt.setBoolean("option.instance", true);
-      pt.set("instance.count", mc);
+      flag.append("|OI" + mc);
+      tagContext.setBoolean("option.instance", true);
+      tagContext.set("instance.count", mc);
    }
    //............................................................
    // 支持纹理材质映射
-   if(cp.optionMaterialMap){
-      s.append("|OM");
-      pt.setBoolean("option.material.map", true);
+   if(capability.optionMaterialMap){
+      flag.append("|OM");
+      tagContext.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
    // 支持纹理法线反响
    if(pc.optionNormalInvert){
-      s.append("|ON");
-      pt.setBoolean("option.normal.invert", true);
+      flag.append("|ON");
+      tagContext.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
    // 支持纹理颜色
    if(pc.optionColor){
-      s.append("|OC");
-      pt.setBoolean("option.color", true);
+      flag.append("|OC");
+      tagContext.setBoolean("option.color", true);
       o.optionAmbient = true;
    }
    // 支持纹理环境
    if(pc.optionAmbient){
-      s.append("|OA");
-      pt.setBoolean("option.ambient", true);
+      flag.append("|OA");
+      tagContext.setBoolean("option.ambient", true);
       o.optionAmbient = true;
    }
    // 支持纹理散射
    if(pc.optionDiffuse){
-      s.append("|OD");
-      pt.setBoolean("option.diffuse", true);
+      flag.append("|OD");
+      tagContext.setBoolean("option.diffuse", true);
       o.optionDiffuse = true;
    }
    // 支持纹理高光
    if(pc.optionSpecular){
-      s.append("|OS");
-      pt.setBoolean("option.specular", true);
+      flag.append("|OS");
+      tagContext.setBoolean("option.specular", true);
       o.optionSpecular = true;
    }
    // 支持纹理反射
    if(pc.optionReflect){
-      s.append("|ORL");
-      pt.setBoolean("option.reflect", true);
+      flag.append("|ORL");
+      tagContext.setBoolean("option.reflect", true);
       o.optionReflect = true;
    }
    // 支持纹理折射
    if(pc.optionRefract){
-      s.append("|ORF");
-      pt.setBoolean("option.refract", true);
+      flag.append("|ORF");
+      tagContext.setBoolean("option.refract", true);
       o.optionRefract = true;
    }
    //............................................................
@@ -141,22 +141,22 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var ac = pc.attributeContains(EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
-      s.append("|AC");
-      pt.setBoolean("vertex.attribute.color", true);
+      flag.append("|AC");
+      tagContext.setBoolean("vertex.attribute.color", true);
    }
    // 支持顶点纹理
    var ad = pc.attributeContains(EG3dAttribute.Coord);
    o._dynamicVertexCoord = (o._supportVertexCoord && ad);
    if(o._dynamicVertexCoord){
-      s.append("|AD");
-      pt.setBoolean("vertex.attribute.coord", true);
+      flag.append("|AD");
+      tagContext.setBoolean("vertex.attribute.coord", true);
    }
    // 支持法线
    var an = pc.attributeContains(EG3dAttribute.Normal);
    o._dynamicVertexNormal = (o._supportVertexNormal && an);
    if(o._dynamicVertexNormal){
-      s.append("|AN");
-      pt.setBoolean("vertex.attribute.normal", true);
+      flag.append("|AN");
+      tagContext.setBoolean("vertex.attribute.normal", true);
    }
    // 支持全法线
    var ab = pc.attributeContains(EG3dAttribute.Binormal);
@@ -164,24 +164,24 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
-      s.append("|AF");
-      pt.setBoolean("vertex.attribute.normal.full", true);
+      flag.append("|AF");
+      tagContext.setBoolean("vertex.attribute.normal.full", true);
    }
    //............................................................
    // 支持实例技术
-   o._dynamicInstance = (o._supportInstance && cp.optionInstance);
+   o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){
-      s.append("|SI");
+      flag.append("|SI");
       if(pc){
-         pt.setBoolean("support.instance", true);
+         tagContext.setBoolean("support.instance", true);
       }
    }
    // 支持骨骼技术
    o._dynamicSkeleton = o._supportSkeleton;
    if(o._dynamicSkeleton){
-      s.append("|SS");
+      flag.append("|SS");
       if(pc){
-         pt.setBoolean("support.skeleton", true);
+         tagContext.setBoolean("support.skeleton", true);
       }
    }
    //............................................................
@@ -191,9 +191,9 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    //o._dynamicAlpha = (o._supportAlpha && samplerAlpha);
    o._dynamicAlpha = o._supportAlpha;
    if(o._dynamicAlpha){
-      s.append("|RA");
+      flag.append("|RA");
       if(pc){
-         pt.setBoolean("support.alpha", true);
+         tagContext.setBoolean("support.alpha", true);
       }
       o._optionBlendMode = true;
    }else{
@@ -202,21 +202,21 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    // 支持环境色技术
    o._dynamicAmbient = o._supportAmbient;
    if(o._dynamicAmbient){
-      s.append("|TA");
+      flag.append("|TA");
       if(pc){
-         pt.setBoolean("support.ambient", true);
+         tagContext.setBoolean("support.ambient", true);
       }
       if(sdf){
-         s.append("|TAS");
+         flag.append("|TAS");
          if(pc){
-            pt.setBoolean("support.ambient.sampler", true);
+            tagContext.setBoolean("support.ambient.sampler", true);
          }
       }
    }
    //............................................................
    // 支持透明纹理
    if(pc.samplerContains(EG3dSampler.Alpha)){
-      pt.setBoolean("support.alpha.sampler", true);
+      tagContext.setBoolean("support.alpha.sampler", true);
    }
    //............................................................
    // 支持散射技术
@@ -224,18 +224,18 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);
    if(o._supportDiffuse){
       if(pc){
-         pt.setBoolean("support.diffuse", true);
+         tagContext.setBoolean("support.diffuse", true);
       }
       if(snr){
-         s.append("|TDD");
+         flag.append("|TDD");
          if(pc){
-            pt.setBoolean("support.dump", true);
-            pt.setBoolean("support.diffuse.dump", true);
+            tagContext.setBoolean("support.dump", true);
+            tagContext.setBoolean("support.diffuse.dump", true);
          }
       }else if(o._dynamicVertexNormal){
-         s.append("|TDN");
+         flag.append("|TDN");
          if(pc){
-            pt.setBoolean("support.diffuse.normal", true);
+            tagContext.setBoolean("support.diffuse.normal", true);
          }
       }
    }
@@ -243,18 +243,18 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    o._dynamicDiffuseView = (o._supportDiffuseView && (o._dynamicVertexNormal || snr));
    if(o._supportDiffuseView){
       if(pc){
-         pt.setBoolean("support.diffuse.view", true);
+         tagContext.setBoolean("support.diffuse.view", true);
       }
       if(snr){
-         s.append("|TDVD");
+         flag.append("|TDVD");
          if(pc){
-            pt.setBoolean("support.dump", true);
-            pt.setBoolean("support.diffuse.view.dump", true);
+            tagContext.setBoolean("support.dump", true);
+            tagContext.setBoolean("support.diffuse.view.dump", true);
          }
       }else if(o._dynamicVertexNormal){
-         s.append("|TDVN");
+         flag.append("|TDVN");
          if(pc){
-            pt.setBoolean("support.diffuse.view.normal", true);
+            tagContext.setBoolean("support.diffuse.view.normal", true);
          }
       }
    }
@@ -265,54 +265,54 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    o._dynamicSpecularColor = (o._supportSpecularColor && spc);
    o._dynamicSpecularLevel = (o._supportSpecularLevel && spl);
    if((o._dynamicSpecularColor || o._dynamicSpecularLevel) && o._dynamicVertexNormal){
-      s.append("|TS");
+      flag.append("|TS");
       if(pc){
-         pt.setBoolean("support.specular", true);
+         tagContext.setBoolean("support.specular", true);
       }
       // 支持高光颜色技术
       if(o._dynamicSpecularColor){
-         s.append("|TSC");
+         flag.append("|TSC");
          if(pc){
-            pt.setBoolean("support.specular.color", true);
+            tagContext.setBoolean("support.specular.color", true);
          }
       }
       // 支持高光级别技术
       if(o._dynamicSpecularLevel){
-         s.append("|TSL");
+         flag.append("|TSL");
          if(pc){
-            pt.setBoolean("support.specular.level", true);
+            tagContext.setBoolean("support.specular.level", true);
          }
       }else{
-         s.append("|NSL");
+         flag.append("|NSL");
          if(pc){
-            pt.setBoolean("support.specular.normal", true);
+            tagContext.setBoolean("support.specular.normal", true);
          }
       }
    }
    // 支持视角高光技术
    o._dynamicSpecularView = o._supportSpecularView;
    if(o._dynamicSpecularView && o._dynamicVertexNormal){
-      s.append("|TSV");
+      flag.append("|TSV");
       if(pc){
-         pt.setBoolean("support.specular.view", true);
+         tagContext.setBoolean("support.specular.view", true);
       }
       // 支持高光颜色技术
       if(o._dynamicSpecularColor){
-         s.append("|TSVC");
+         flag.append("|TSVC");
          if(pc){
-            pt.setBoolean("support.specular.view.color", true);
+            tagContext.setBoolean("support.specular.view.color", true);
          }
       }
       // 支持高光级别技术
       if(o._dynamicSpecularLevel){
-         s.append("|TSVL");
+         flag.append("|TSVL");
          if(pc){
-            pt.setBoolean("support.specular.view.level", true);
+            tagContext.setBoolean("support.specular.view.level", true);
          }
       }else{
-         s.append("|NSVL");
+         flag.append("|NSVL");
          if(pc){
-            pt.setBoolean("support.specular.view.normal", true);
+            tagContext.setBoolean("support.specular.view.normal", true);
          }
       }
    }
@@ -321,40 +321,40 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var slg = pc.samplerContains(EG3dSampler.Light);
    o._dynamicLight = (o._supportLight && slg);
    if(o._dynamicLight){
-      s.append("|TL");
+      flag.append("|TL");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.light", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.light", true);
       }
    }
    // 支持反射技术
    var slr = pc.samplerContains(EG3dSampler.Reflect);
    o._dynamicReflect = (o._supportReflect && slr);
    if(o._dynamicReflect){
-      s.append("|TRL");
+      flag.append("|TRL");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.reflect", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.reflect", true);
       }
    }
    // 支持折射技术
    var slf = pc.samplerContains(EG3dSampler.Refract);
    o._dynamicRefract = (o._supportRefract && slf);
    if(o._dynamicRefract){
-      s.append("|TRF");
+      flag.append("|TRF");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.refract", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.refract", true);
       }
    }
    // 支持发光技术
    var sle = pc.samplerContains(EG3dSampler.Emissive);
    o._dynamicEmissive = (o._supportEmissive && sle);
    if(o._dynamicEmissive){
-      s.append("|TLE");
+      flag.append("|TLE");
       if(pc){
-         pt.setBoolean("support.sampler.light", true);
-         pt.setBoolean("support.emissive", true);
+         tagContext.setBoolean("support.sampler.light", true);
+         tagContext.setBoolean("support.emissive", true);
       }
    }
    //............................................................
@@ -362,9 +362,9 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var shg = pc.samplerContains(EG3dSampler.Height);
    o._dynamicHeight = (o._supportHeight && shg);
    if(o._dynamicHeight){
-      s.append("|TH");
+      flag.append("|TH");
       if(pc){
-         pt.setBoolean("support.height", true);
+         tagContext.setBoolean("support.height", true);
       }
    }
    //............................................................
@@ -372,51 +372,50 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var sen = pc.samplerContains(EG3dSampler.Environment);
    o._dynamicEnvironment = (o._supportEnvironment && sen);
    if(o._dynamicEnvironment){
-      s.append("|TE");
+      flag.append("|TE");
       if(pc){
-         pt.setBoolean("support.environment", true);
+         tagContext.setBoolean("support.environment", true);
       }
    }
    //............................................................
    // 计算最大实例个数
    //o._dynamicInstance = o._supportInstance;
    //if(o._dynamicInstance){
-      //var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
-      //pt.set("instance.count", ic);
+      //var ic = capability.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      //tagContext.set("instance.count", ic);
    //}
    // 计算骨头实例个数
    if(o._dynamicSkeleton){
-      var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
-      s.append("|B" + bc);
-      pt.set("bone.count", bc);
-      pt.setBoolean("support.bone.weight.1", true);
-      pt.setBoolean("support.bone.weight.2", true);
-      pt.setBoolean("support.bone.weight.3", true);
-      pt.setBoolean("support.bone.weight.4", true);
+      var boneCount = capability.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      flag.append("|B" + boneCount);
+      tagContext.set("bone.count", boneCount);
+      tagContext.setBoolean("support.bone.weight.1", true);
+      tagContext.setBoolean("support.bone.weight.2", true);
+      tagContext.setBoolean("support.bone.weight.3", true);
+      tagContext.setBoolean("support.bone.weight.4", true);
    }
    //............................................................
    // 设置代码
-   pt.code = s.toString();
+   tagContext.code = flag.flush();
 }
 
 //==========================================================
 // <T>绑定所有属性流。</T>
 //
 // @method
-// @param p:renderable:FG3dRenderable 渲染对象
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dAutomaticEffect_bindAttributes(p){
+function FG3dAutomaticEffect_bindAttributes(renderable){
    var o = this;
-   var c = o._graphicContext;
-   var g = o._program;
-   if(g.hasAttribute()){
-      var as = g.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = p.findVertexBuffer(a._linker);
-            g.setAttribute(a._name, vb, vb._formatCd);
+   var program = o._program;
+   if(program.hasAttribute()){
+      var attributes = program.attributes();
+      var count = attributes.count();
+      for(var n = 0; n < count; n++){
+         var attribute = attributes.at(n);
+         if(attribute._statusUsed){
+            var buffer = renderable.findVertexBuffer(attribute._linker);
+            program.setAttribute(attribute._name, buffer, buffer._formatCd);
          }
       }
    }
@@ -480,29 +479,29 @@ function FG3dAutomaticEffect_bindMaterialSamplers(renderable, material){
 // <T>绑定材质。</T>
 //
 // @method
-// @param p:material:FG3dMaterial 材质
+// @param material:FG3dMaterial 材质
 //==========================================================
-function FG3dAutomaticEffect_bindMaterial(p){
+function FG3dAutomaticEffect_bindMaterial(material){
    var o = this;
-   var c = o._graphicContext;
-   var m = p.info();
+   var context = o._graphicContext;
+   var info = material.info();
    // 设置深度
-   if(m.optionDepth){
-      c.setDepthMode(o._stateDepth, o._stateDepthCd);
+   if(info.optionDepth){
+      context.setDepthMode(o._stateDepth, o._stateDepthCd);
    }else{
-      c.setDepthMode(false);
+      context.setDepthMode(false);
    }
    // 设置透明
-   if(m.optionAlpha){
-      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
+   if(info.optionAlpha){
+      context.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
    }else{
-      c.setBlendFactors(false);
+      context.setBlendFactors(false);
    }
    // 设置双面
-   if(m.optionDouble){
-      c.setCullingMode(false);
+   if(info.optionDouble){
+      context.setCullingMode(false);
    }else{
-      c.setCullingMode(o._stateDepth, o._stateCullCd);
+      context.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
 

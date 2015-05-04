@@ -921,13 +921,12 @@ function FE3sMaterialBitmapPack_formatName(){
 function FE3sMaterialBitmapPack_size(){
    return this._size;
 }
-function FE3sMaterialBitmapPack_unserialize(p){
+function FE3sMaterialBitmapPack_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
-   o._formatName = p.readString();
-   o._size.width = p.readUint16();
-   o._size.height = p.readUint16();
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._typeName = input.readString();
+   o._formatName = input.readString();
+   o._size.unserialize(input, EDataType.Uint16);
 }
 function FE3sMaterialBitmapPack_dispose(){
    var o = this;

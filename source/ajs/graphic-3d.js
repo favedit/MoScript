@@ -1214,66 +1214,60 @@ function FG3dEffectConsole_create(c, p){
    e.setup();
    return e;
 }
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
+function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderable){
    var o = this;
-   var t = pg.technique();
-   pf.techniqueModeCode = t.activeMode().code();
-   pf.optionMerge = pr._optionMerge;
-   if(pf.optionMerge){
-      pf.mergeCount = pr.mergeMaxCount();
+   var capability = context.capability();
+   var technique = region.technique();
+   effectInfo.techniqueModeCode = technique.activeMode().code();
+   effectInfo.optionMerge = renderable._optionMerge;
+   if(effectInfo.optionMerge){
+      effectInfo.mergeCount = renderable.mergeMaxCount();
    }
-   var mi = pr.material().info();
-   pf.optionNormalInvert = mi.optionNormalInvert;
-   pf.optionColor = mi.optionColor;
-   pf.optionAmbient = mi.optionAmbient;
-   pf.optionDiffuse = mi.optionDiffuse;
-   pf.optionSpecular = mi.optionSpecular;
-   pf.optionReflect = mi.optionReflect;
-   pf.optionRefract = mi.optionRefract;
-   pf.vertexCount = pr.vertexCount();
-   var vs = pr.vertexBuffers();
-   var c = vs.count();
-   if(vs.constructor == TDictionary){
-      for(var i = 0; i < c; i++){
-         var v = vs.value(i);
-         pf.attributes.push(v.name());
-      }
-   }else{
-      for(var i = 0; i < c; i++){
-         var v = vs.get(i);
-         pf.attributes.push(v.name());
-      }
+   var mi = renderable.material().info();
+   effectInfo.optionNormalInvert = mi.optionNormalInvert;
+   effectInfo.optionColor = mi.optionColor;
+   effectInfo.optionAmbient = mi.optionAmbient;
+   effectInfo.optionDiffuse = mi.optionDiffuse;
+   effectInfo.optionSpecular = mi.optionSpecular;
+   effectInfo.optionReflect = mi.optionReflect;
+   effectInfo.optionRefract = mi.optionRefract;
+   effectInfo.vertexCount = renderable.vertexCount();
+   var vertexBuffers = renderable.vertexBuffers();
+   var count = vertexBuffers.count();
+   for(var i = 0; i < count; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      effectInfo.attributes.push(vertexBuffer.name());
    }
-   var ts = pr.textures();
-   if(ts){
-      var c = ts.count();
-      for(var i = 0; i < c; i++){
-         pf.samplers.push(ts.name(i));
+   var textures = renderable.textures();
+   if(textures){
+      var count = textures.count();
+      for(var i = 0; i < count; i++){
+         effectInfo.samplers.push(textures.name(i));
       }
    }
-   var bs = pr.bones();
-   if(bs){
-      var bc = bs.count();
-      pf.vertexBoneCount = bc;
-      var cb = pc.capability().calculateBoneCount(pf.vertexBoneCount, pf.vertexCount);
-      if(bc > cb){
-         bc = cb;
+   var bones = renderable.bones();
+   if(bones){
+      var boneCount = bones.count();
+      effectInfo.vertexBoneCount = boneCount;
+      var boneLimit = capability.calculateBoneCount(effectInfo.vertexBoneCount, effectInfo.vertexCount);
+      if(boneCount > boneLimit){
+         boneCount = boneLimit;
       }
-      pr._boneLimit = bc;
-      pf.vertexBoneLimit = bc;
+      renderable._boneLimit = boneCount;
+      effectInfo.vertexBoneLimit = boneCount;
    }
 }
-function FG3dEffectConsole_findTemplate(pc, pn){
+function FG3dEffectConsole_findTemplate(context, code){
    var o = this;
-   var es = o._templateEffects;
-   var e = es.get(pn);
-   if(e == null){
-      var e = o.create(pc, pn);
-      e.load();
-      RLogger.info(o, 'Create effect template. (name={1}, instance={2})', pn, e);
-      es.set(pn, e);
+   var effects = o._templateEffects;
+   var effect = effects.get(code);
+   if(effect == null){
+      var effect = o.create(context, code);
+      effect.load();
+      RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+      effects.set(code, effect);
    }
-   return e;
+   return effect;
 }
 function FG3dEffectConsole_find(context, region, renderable){
    var o = this;

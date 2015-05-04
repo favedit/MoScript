@@ -8141,20 +8141,22 @@ function SRectangle_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }
-function SSize2(w, h){
+function SSize2(width, height){
    var o = this;
-   o.width      = RInteger.nvl(w);
-   o.height     = RInteger.nvl(h);
-   o.isEmpty    = SSize2_isEmpty;
-   o.equalsData = SSize2_equalsData;
-   o.equals     = SSize2_equals;
-   o.square     = SSize2_square;
-   o.assign     = SSize2_assign;
-   o.set        = SSize2_set;
-   o.parse      = SSize2_parse;
-   o.toString   = SSize2_toString;
-   o.dispose    = SSize2_dispose;
-   o.dump       = SSize2_dump;
+   o.width       = RInteger.nvl(width);
+   o.height      = RInteger.nvl(height);
+   o.isEmpty     = SSize2_isEmpty;
+   o.equalsData  = SSize2_equalsData;
+   o.equals      = SSize2_equals;
+   o.square      = SSize2_square;
+   o.assign      = SSize2_assign;
+   o.set         = SSize2_set;
+   o.serialize   = SSize2_serialize;
+   o.unserialize = SSize2_unserialize;
+   o.parse       = SSize2_parse;
+   o.toString    = SSize2_toString;
+   o.dispose     = SSize2_dispose;
+   o.dump        = SSize2_dump;
    return o;
 }
 function SSize2_isEmpty(){
@@ -8193,6 +8195,19 @@ function SSize2_set(w, h){
    var o = this;
    o.width = w;
    o.height = h;
+}
+function SSize2_serialize(output){
+   var o = this;
+   output.writeFloat(o.width);
+   output.writeFloat(o.height);
+}
+function SSize2_unserialize(input, dataCd){
+   var o = this;
+   if(!dataCd){
+      dataCd = EDataType.Float16;
+   }
+   o.width = input.readData(dataCd);
+   o.height = input.readData(dataCd);
 }
 function SSize2_parse(v){
    var o = this;
@@ -9070,6 +9085,7 @@ function MDataStream(o){
    o.readDouble   = FByteStream_readDouble;
    o.readString   = FByteStream_readString;
    o.readBytes    = FByteStream_readBytes;
+   o.readData     = FByteStream_readData;
    o.writeBoolean = FByteStream_writeBoolean;
    o.writeInt8    = FByteStream_writeInt8;
    o.writeInt16   = FByteStream_writeInt16;
@@ -9099,195 +9115,215 @@ function FByteStream_testString(){
 }
 function FByteStream_readBoolean(){
    var o = this;
-   var r = o._viewer.getInt8(o._position, o._endianCd);
+   var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
-   return r > 0;
+   return value > 0;
 }
 function FByteStream_readInt8(){
    var o = this;
-   var r = o._viewer.getInt8(o._position, o._endianCd);
+   var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
-   return r;
+   return value;
 }
 function FByteStream_readInt16(){
    var o = this;
-   var r = o._viewer.getInt16(o._position, o._endianCd);
+   var value = o._viewer.getInt16(o._position, o._endianCd);
    o._position += 2;
-   return r;
+   return value;
 }
 function FByteStream_readInt32(){
    var o = this;
-   var r = o._viewer.getInt32(o._position, o._endianCd);
+   var value = o._viewer.getInt32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readInt64(){
    var o = this;
-   var r = o._viewer.getInt64(o._position, o._endianCd);
+   var value = o._viewer.getInt64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readUint8(){
    var o = this;
-   var r = o._viewer.getUint8(o._position, o._endianCd);
+   var value = o._viewer.getUint8(o._position, o._endianCd);
    o._position += 1;
-   return r;
+   return value;
 }
 function FByteStream_readUint16(){
    var o = this;
-   var r = o._viewer.getUint16(o._position, o._endianCd);
+   var value = o._viewer.getUint16(o._position, o._endianCd);
    o._position += 2;
-   return r;
+   return value;
 }
 function FByteStream_readUint32(){
    var o = this;
-   var r = o._viewer.getUint32(o._position, o._endianCd);
+   var value = o._viewer.getUint32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readUint64(){
    var o = this;
-   var r = o._viewer.getUint64(o._position, o._endianCd);
+   var value = o._viewer.getUint64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readFloat(){
    var o = this;
-   var r = o._viewer.getFloat32(o._position, o._endianCd);
+   var value = o._viewer.getFloat32(o._position, o._endianCd);
    o._position += 4;
-   return r;
+   return value;
 }
 function FByteStream_readDouble(){
    var o = this;
-   var r = o._viewer.getFloat64(o._position, o._endianCd);
+   var value = o._viewer.getFloat64(o._position, o._endianCd);
    o._position += 8;
-   return r;
+   return value;
 }
 function FByteStream_readString(){
    var o = this;
-   var l = o._viewer.getUint16(o._position, o._endianCd);
+   var viewer = o._viewer;
+   var length = viewer.getUint16(o._position, o._endianCd);
    o._position += 2;
-   var r = new TString();
-   for(var i = 0; i < l; i++){
-      var v = o._viewer.getUint16(o._position, o._endianCd);
+   var value = new TString();
+   for(var i = 0; i < length; i++){
+      var character = viewer.getUint16(o._position, o._endianCd);
       o._position += 2;
-      r.push(String.fromCharCode(v));
+      value.push(String.fromCharCode(character));
    }
-   return r.toString();
+   return value.flush();
 }
-function FByteStream_readBytes(pd, po, pl){
+function FByteStream_readData(dataCd){
    var o = this;
-   if(pl <= 0){
+   switch(dataCd){
+      case EDataType.Int8:
+         return o.readInt8();
+      case EDataType.Int16:
+         return o.readInt16();
+      case EDataType.Int32:
+         return o.readInt32();
+      case EDataType.Int64:
+         return o.readInt64();
+      case EDataType.Uint8:
+         return o.readUint8();
+      case EDataType.Uint16:
+         return o.readUint16();
+      case EDataType.Uint32:
+         return o.readUint32();
+      case EDataType.Uint64:
+         return o.readUint64();
+      case EDataType.Float32:
+         return o.readFloat();
+      case EDataType.Float64:
+         return o.readDouble();
+      case EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
+}
+function FByteStream_readBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
       return;
    }
-   if(po != 0){
+   if(offset != 0){
       throw new TError('Unsupport.');
    }
-   if(pl % 8 == 0){
-      var a = new Float64Array(pd);
-      var c = pl >> 3;
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getFloat64(o._position, o._endianCd);
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getFloat64(o._position, o._endianCd);
          o._position += 8;
       }
       return;
    }
-   if(pl % 4 == 0){
-      var c = pl >> 2;
-      var a = new Uint32Array(pd);
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getUint32(o._position, o._endianCd);
+   if(length % 4 == 0){
+      var count = length >> 2;
+      var array = new Uint32Array(data);
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint32(o._position, o._endianCd);
          o._position += 4;
       }
       return;
    }
-   if(pl % 2 == 0){
-      var c = pl >> 1;
-      var a = new Uint16Array(pd);
-      for(var i = 0; i < c; i++){
-         a[i] = o._viewer.getUint16(o._position, o._endianCd);
+   if(length % 2 == 0){
+      var count = length >> 1;
+      var array = new Uint16Array(data);
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint16(o._position, o._endianCd);
          o._position += 2;
       }
       return;
    }
-   var a = new Uint8Array(pd);
-   for(var i = 0; i < pl; i++){
-      a[i] = o._viewer.getUint8(o._position++, o._endianCd);
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      array[i] = viewer.getUint8(o._position++, o._endianCd);
    }
 }
-function FByteStream_writeBoolean(v){
+function FByteStream_writeBoolean(value){
    var o = this;
-   var r = o._viewer.setInt8(o._position, (v > 0) ? 1 : 0, o._endianCd);
+   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
    o._position++;
-   return r;
 }
-function FByteStream_writeInt8(v){
+function FByteStream_writeInt8(value){
    var o = this;
-   var r = o._viewer.setInt8(o._position, v, o._endianCd);
+   o._viewer.setInt8(o._position, value, o._endianCd);
    o._position++;
-   return r;
 }
-function FByteStream_writeInt16(v){
+function FByteStream_writeInt16(value){
    var o = this;
-   var r = o._viewer.setInt16(o._position, v, o._endianCd);
+   o._viewer.setInt16(o._position, value, o._endianCd);
    o._position += 2;
-   return r;
 }
-function FByteStream_writeInt32(v){
+function FByteStream_writeInt32(value){
    var o = this;
-   var r = o._viewer.setInt32(o._position, v, o._endianCd);
+   o._viewer.setInt32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeInt64(v){
+function FByteStream_writeInt64(value){
    var o = this;
-   var r = o._viewer.setInt64(o._position, v, o._endianCd);
+   o._viewer.setInt64(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeUint8(v){
+function FByteStream_writeUint8(value){
    var o = this;
-   var r = o._viewer.setUint8(o._position, v, o._endianCd);
+   o._viewer.setUint8(o._position, value, o._endianCd);
    o._position += 1;
-   return r;
 }
-function FByteStream_writeUint16(v){
+function FByteStream_writeUint16(value){
    var o = this;
-   var r = o._viewer.setUint16(o._position, v, o._endianCd);
+   o._viewer.setUint16(o._position, value, o._endianCd);
    o._position += 2;
-   return r;
 }
-function FByteStream_writeUint32(v){
+function FByteStream_writeUint32(value){
    var o = this;
-   var r = o._viewer.setUint32(o._position, v, o._endianCd);
+   o._viewer.setUint32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeUint64(v){
+function FByteStream_writeUint64(value){
    var o = this;
-   var r = o._viewer.setUint64(o._position, v, o._endianCd);
+   o._viewer.setUint64(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeFloat(v){
+function FByteStream_writeFloat(value){
    var o = this;
-   var r = o._viewer.setFloat32(o._position, v, o._endianCd);
+   o._viewer.setFloat32(o._position, value, o._endianCd);
    o._position += 4;
-   return r;
 }
-function FByteStream_writeDouble(v){
+function FByteStream_writeDouble(value){
    var o = this;
-   var r = o._viewer.setDouble(o._position, v, o._endianCd);
+   o._viewer.setDouble(o._position, value, o._endianCd);
    o._position += 8;
-   return r;
 }
-function FByteStream_writeString(v){
+function FByteStream_writeString(value){
    var o = this;
-   var l = v.length;
-   o._viewer.setUint16(o._position, l, o._endianCd);
+   var viewer = o._viewer;
+   var length = v.length;
+   viewer.setUint16(o._position, length, o._endianCd);
    o._position += 2;
-   for(var i = 0; i < l; i++){
-      o._viewer.setUint16(o._position, v.charCodeAt(i), o._endianCd)
+   for(var i = 0; i < length; i++){
+      viewer.setUint16(o._position, value.charCodeAt(i), o._endianCd)
       o._position += 2;
    }
 }

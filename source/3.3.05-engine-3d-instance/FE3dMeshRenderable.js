@@ -54,10 +54,18 @@ function FE3dMeshRenderable_vertexCount(){
 // <T>查找顶点缓冲。</T>
 //
 // @method
+// @param code:String 代码
 // @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._renderable.findVertexBuffer(p);
+function FE3dMeshRenderable_findVertexBuffer(code){
+   var o = this;
+   // 查找顶点缓冲
+   var buffer = o._vertexBuffers.get(code);
+   if(buffer){
+      return buffer;
+   }
+   // 从渲染对象中查找
+   return o._renderable.findVertexBuffer(code);
 }
 
 //==========================================================
@@ -91,14 +99,21 @@ function FE3dMeshRenderable_indexBuffers(){
 }
 
 //==========================================================
-// <T>根据名称查找纹理。</T>
+// <T>根据代码查找纹理。</T>
 //
 // @method
-// @param p:name:String 名称
-// @return FRenderIndexBuffer 纹理
+// @param code:String 代码
+// @return FG3dTexture 纹理
 //==========================================================
-function FE3dMeshRenderable_findTexture(p){
-   return this._renderable.findTexture(p);
+function FE3dMeshRenderable_findTexture(code){
+   var o = this;
+   // 查找纹理集合
+   var textures = o._textures.get(code);
+   if(textures){
+      return textures;
+   }
+   // 从渲染对象中查找
+   return o._renderable.findTexture(p);
 }
 
 //==========================================================
@@ -108,7 +123,14 @@ function FE3dMeshRenderable_findTexture(p){
 // @return TDictionary 纹理集合
 //==========================================================
 function FE3dMeshRenderable_textures(){
-   return this._renderable.textures();
+   var o = this;
+   // 查找纹理集合
+   var textures = o._textures;
+   if(textures){
+      return textures;
+   }
+   // 从渲染对象中查找
+   return o._renderable.textures();
 }
 
 //==========================================================

@@ -17171,20 +17171,20 @@ function FUiTreeNode_nodeCount(){
 }
 function FUiTreeNode_show(){
    var o = this;
-   var t = o._tree;
+   var tree = o._tree;
    RHtml.visibleSet(o._hPanel, true);
-   var ns = o._nodes;
-   if(ns){
-      var c = ns.count();
-      for(var i = 0; i < c; i++){
-         var n = ns.get(i);
-         if(!n._statusLinked){
-            t.appendNode(n, o);
+   var nodes = o._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = 0; i < count; i++){
+         var node = nodes.at(i);
+         if(!node._statusLinked){
+            tree.appendNode(node, o);
          }
-         if(n._statusDisplay){
-            RHtml.visibleSet(n._hPanel, true);
-            if(n._extended){
-               n.show();
+         if(node._statusDisplay){
+            RHtml.visibleSet(node._hPanel, true);
+            if(node._extended){
+               node.show();
             }
          }
       }

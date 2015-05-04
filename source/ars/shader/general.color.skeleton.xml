@@ -295,7 +295,7 @@
          </shader:false>
          </shader:true>
          <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultSpecular * 2.0;
+         result.rgb += resultSpecular;
          </shader:equals>
          <shader:equals source='technique.mode' value='specular.level'>
          result.rgb = vec3(specularFactor, specularFactor, specularFactor);
@@ -316,10 +316,10 @@
          //............................................................
          // 计算颜色
          <shader:true source='vertex.attribute.color'>
-         vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
-         vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
-         result.rgb *= vertexColor.rgb;
+         //vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
+         //vertexColor = vertexColor / (fc_color.y - fc_color.x);
+         //vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
+         //result.rgb *= vertexColor.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
          result.a = color.a * fc_alpha.y;

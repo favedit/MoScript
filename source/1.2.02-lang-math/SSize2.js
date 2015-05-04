@@ -2,31 +2,35 @@
 // <T>二维尺寸结构。</T>
 //
 // @struct
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
+// @param width:Number 宽度
+// @param height:Number 高度
 // @author maocy
 // @version 150101
 //==========================================================
-function SSize2(w, h){
+function SSize2(width, height){
    var o = this;
    //..........................................................
    // @attribute
-   o.width      = RInteger.nvl(w);
-   o.height     = RInteger.nvl(h);
+   o.width       = RInteger.nvl(width);
+   o.height      = RInteger.nvl(height);
    //..........................................................
    // @method
-   o.isEmpty    = SSize2_isEmpty;
-   o.equalsData = SSize2_equalsData;
-   o.equals     = SSize2_equals;
-   o.square     = SSize2_square;
-   o.assign     = SSize2_assign;
-   o.set        = SSize2_set;
-   o.parse      = SSize2_parse;
-   o.toString   = SSize2_toString;
+   o.isEmpty     = SSize2_isEmpty;
+   o.equalsData  = SSize2_equalsData;
+   o.equals      = SSize2_equals;
+   o.square      = SSize2_square;
+   o.assign      = SSize2_assign;
+   o.set         = SSize2_set;
    // @method
-   o.dispose    = SSize2_dispose;
+   o.serialize   = SSize2_serialize;
+   o.unserialize = SSize2_unserialize;
    // @method
-   o.dump       = SSize2_dump;
+   o.parse       = SSize2_parse;
+   o.toString    = SSize2_toString;
+   // @method
+   o.dispose     = SSize2_dispose;
+   // @method
+   o.dump        = SSize2_dump;
    return o;
 }
 
@@ -109,6 +113,33 @@ function SSize2_set(w, h){
    var o = this;
    o.width = w;
    o.height = h;
+}
+
+//==========================================================
+// <T>序列化数据到输出流里。</T>
+//
+// @method
+// @param output:FByteStream 数据流
+//==========================================================
+function SSize2_serialize(output){
+   var o = this;
+   output.writeFloat(o.width);
+   output.writeFloat(o.height);
+}
+
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param input:FByteStream 数据流
+//==========================================================
+function SSize2_unserialize(input, dataCd){
+   var o = this;
+   if(!dataCd){
+      dataCd = EDataType.Float16;
+   }
+   o.width = input.readData(dataCd);
+   o.height = input.readData(dataCd);
 }
 
 //============================================================

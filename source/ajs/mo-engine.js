@@ -1655,6 +1655,7 @@ function RE3dEngine_onSetup(){
    effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
@@ -2592,13 +2593,12 @@ function FE3sMaterialBitmapPack_formatName(){
 function FE3sMaterialBitmapPack_size(){
    return this._size;
 }
-function FE3sMaterialBitmapPack_unserialize(p){
+function FE3sMaterialBitmapPack_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
-   o._formatName = p.readString();
-   o._size.width = p.readUint16();
-   o._size.height = p.readUint16();
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._typeName = input.readString();
+   o._formatName = input.readString();
+   o._size.unserialize(input, EDataType.Uint16);
 }
 function FE3sMaterialBitmapPack_dispose(){
    var o = this;
@@ -6910,37 +6910,38 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(effectInfo, renderable){
 }
 function FE3dGeneralColorAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
-   var c = o._graphicContext;
-   var p = o._program;
+   var program = o._program;
    var cameraPosition = region.calculate(EG3dRegionParameter.CameraPosition);
    var lightDirection = region.calculate(EG3dRegionParameter.LightDirection);
    var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix)
    var material = renderable.material();
    o.bindMaterial(material);
    if(renderable._optionMerge){
-      var ms = renderable.mergeRenderables();
-      var mc = ms.count();
-      var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
-      for(var i = 0; i < mc; i++){
-         var m = ms.getAt(i);
-         m.currentMatrix().writeData(d, 16 * i);
+      var mergeRenderables = renderable.mergeRenderables();
+      var mergeCount = mergeRenderables.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 16 * mergeCount);
+      for(var i = 0; i < mergeCount; i++){
+         var mergeRenderable = mergeRenderables.at(i);
+         var matrix = mergeRenderable.currentMatrix();
+         matrix.writeData(data, 16 * i);
       }
-      p.setParameter('vc_model_matrix', d);
+      program.setParameter('vc_model_matrix', data);
    }else{
-      p.setParameter('vc_model_matrix', renderable.currentMatrix());
+      var matrix = renderable.currentMatrix();
+      program.setParameter('vc_model_matrix', matrix);
    }
-   p.setParameter('vc_vp_matrix', vpMatrix);
-   p.setParameter('vc_camera_position', cameraPosition);
-   p.setParameter('vc_light_direction', lightDirection);
-   p.setParameter('fc_camera_position', cameraPosition);
-   p.setParameter('fc_light_direction', lightDirection);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter('vc_camera_position', cameraPosition);
+   program.setParameter('vc_light_direction', lightDirection);
+   program.setParameter('fc_camera_position', cameraPosition);
+   program.setParameter('fc_light_direction', lightDirection);
    if(o._supportMaterialMap){
-      var i = renderable._materialId;
-      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
+      var materialId = renderable._materialId;
+      program.setParameter4('fc_material', 1 / 32, materialId / 512, 0, 0);
    }else{
       var info = renderable.activeInfo();
       o.buildMaterial(info, renderable);
-      p.setParameter('fc_materials', info.material.memory());
+      program.setParameter('fc_materials', info.material.memory());
    }
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
@@ -8271,8 +8272,13 @@ function FE3dMeshRenderable_renderable(){
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
 }
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._renderable.findVertexBuffer(p);
+function FE3dMeshRenderable_findVertexBuffer(code){
+   var o = this;
+   var buffer = o._vertexBuffers.get(code);
+   if(buffer){
+      return buffer;
+   }
+   return o._renderable.findVertexBuffer(code);
 }
 function FE3dMeshRenderable_vertexBuffers(){
    return this._renderable.vertexBuffers();
@@ -8283,11 +8289,21 @@ function FE3dMeshRenderable_indexBuffer(){
 function FE3dMeshRenderable_indexBuffers(){
    return this._renderable.indexBuffers();
 }
-function FE3dMeshRenderable_findTexture(p){
-   return this._renderable.findTexture(p);
+function FE3dMeshRenderable_findTexture(code){
+   var o = this;
+   var textures = o._textures.get(code);
+   if(textures){
+      return textures;
+   }
+   return o._renderable.findTexture(p);
 }
 function FE3dMeshRenderable_textures(){
-   return this._renderable.textures();
+   var o = this;
+   var textures = o._textures;
+   if(textures){
+      return textures;
+   }
+   return o._renderable.textures();
 }
 function FE3dMeshRenderable_reloadResource(){
    var o = this;

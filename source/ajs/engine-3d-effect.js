@@ -67,37 +67,38 @@ function FE3dGeneralColorAutomaticEffect_buildMaterial(effectInfo, renderable){
 }
 function FE3dGeneralColorAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
-   var c = o._graphicContext;
-   var p = o._program;
+   var program = o._program;
    var cameraPosition = region.calculate(EG3dRegionParameter.CameraPosition);
    var lightDirection = region.calculate(EG3dRegionParameter.LightDirection);
    var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix)
    var material = renderable.material();
    o.bindMaterial(material);
    if(renderable._optionMerge){
-      var ms = renderable.mergeRenderables();
-      var mc = ms.count();
-      var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
-      for(var i = 0; i < mc; i++){
-         var m = ms.getAt(i);
-         m.currentMatrix().writeData(d, 16 * i);
+      var mergeRenderables = renderable.mergeRenderables();
+      var mergeCount = mergeRenderables.count();
+      var data = RTypeArray.findTemp(EDataType.Float32, 16 * mergeCount);
+      for(var i = 0; i < mergeCount; i++){
+         var mergeRenderable = mergeRenderables.at(i);
+         var matrix = mergeRenderable.currentMatrix();
+         matrix.writeData(data, 16 * i);
       }
-      p.setParameter('vc_model_matrix', d);
+      program.setParameter('vc_model_matrix', data);
    }else{
-      p.setParameter('vc_model_matrix', renderable.currentMatrix());
+      var matrix = renderable.currentMatrix();
+      program.setParameter('vc_model_matrix', matrix);
    }
-   p.setParameter('vc_vp_matrix', vpMatrix);
-   p.setParameter('vc_camera_position', cameraPosition);
-   p.setParameter('vc_light_direction', lightDirection);
-   p.setParameter('fc_camera_position', cameraPosition);
-   p.setParameter('fc_light_direction', lightDirection);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter('vc_camera_position', cameraPosition);
+   program.setParameter('vc_light_direction', lightDirection);
+   program.setParameter('fc_camera_position', cameraPosition);
+   program.setParameter('fc_light_direction', lightDirection);
    if(o._supportMaterialMap){
-      var i = renderable._materialId;
-      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
+      var materialId = renderable._materialId;
+      program.setParameter4('fc_material', 1 / 32, materialId / 512, 0, 0);
    }else{
       var info = renderable.activeInfo();
       o.buildMaterial(info, renderable);
-      p.setParameter('fc_materials', info.material.memory());
+      program.setParameter('fc_materials', info.material.memory());
    }
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }

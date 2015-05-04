@@ -909,8 +909,13 @@ function FE3dMeshRenderable_renderable(){
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
 }
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._renderable.findVertexBuffer(p);
+function FE3dMeshRenderable_findVertexBuffer(code){
+   var o = this;
+   var buffer = o._vertexBuffers.get(code);
+   if(buffer){
+      return buffer;
+   }
+   return o._renderable.findVertexBuffer(code);
 }
 function FE3dMeshRenderable_vertexBuffers(){
    return this._renderable.vertexBuffers();
@@ -921,11 +926,21 @@ function FE3dMeshRenderable_indexBuffer(){
 function FE3dMeshRenderable_indexBuffers(){
    return this._renderable.indexBuffers();
 }
-function FE3dMeshRenderable_findTexture(p){
-   return this._renderable.findTexture(p);
+function FE3dMeshRenderable_findTexture(code){
+   var o = this;
+   var textures = o._textures.get(code);
+   if(textures){
+      return textures;
+   }
+   return o._renderable.findTexture(p);
 }
 function FE3dMeshRenderable_textures(){
-   return this._renderable.textures();
+   var o = this;
+   var textures = o._textures;
+   if(textures){
+      return textures;
+   }
+   return o._renderable.textures();
 }
 function FE3dMeshRenderable_reloadResource(){
    var o = this;

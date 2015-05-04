@@ -2311,20 +2311,22 @@ function SRectangle_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }
-function SSize2(w, h){
+function SSize2(width, height){
    var o = this;
-   o.width      = RInteger.nvl(w);
-   o.height     = RInteger.nvl(h);
-   o.isEmpty    = SSize2_isEmpty;
-   o.equalsData = SSize2_equalsData;
-   o.equals     = SSize2_equals;
-   o.square     = SSize2_square;
-   o.assign     = SSize2_assign;
-   o.set        = SSize2_set;
-   o.parse      = SSize2_parse;
-   o.toString   = SSize2_toString;
-   o.dispose    = SSize2_dispose;
-   o.dump       = SSize2_dump;
+   o.width       = RInteger.nvl(width);
+   o.height      = RInteger.nvl(height);
+   o.isEmpty     = SSize2_isEmpty;
+   o.equalsData  = SSize2_equalsData;
+   o.equals      = SSize2_equals;
+   o.square      = SSize2_square;
+   o.assign      = SSize2_assign;
+   o.set         = SSize2_set;
+   o.serialize   = SSize2_serialize;
+   o.unserialize = SSize2_unserialize;
+   o.parse       = SSize2_parse;
+   o.toString    = SSize2_toString;
+   o.dispose     = SSize2_dispose;
+   o.dump        = SSize2_dump;
    return o;
 }
 function SSize2_isEmpty(){
@@ -2363,6 +2365,19 @@ function SSize2_set(w, h){
    var o = this;
    o.width = w;
    o.height = h;
+}
+function SSize2_serialize(output){
+   var o = this;
+   output.writeFloat(o.width);
+   output.writeFloat(o.height);
+}
+function SSize2_unserialize(input, dataCd){
+   var o = this;
+   if(!dataCd){
+      dataCd = EDataType.Float16;
+   }
+   o.width = input.readData(dataCd);
+   o.height = input.readData(dataCd);
 }
 function SSize2_parse(v){
    var o = this;
