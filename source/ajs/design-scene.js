@@ -1,7 +1,6 @@
 function FDsSceneCanvasContent(o){
-   o = RClass.inherits(this, o, FDsSpaceCanvas);
+   o = RClass.inherits(this, o, FDsSpaceDesignCanvas);
    o._resourceTypeCd = EE3sResource.Scene;
-   o.onDataLoaded    = FDsSceneCanvasContent_onDataLoaded;
    o.loadByGuid      = FDsSceneCanvasContent_loadByGuid;
    o.dispose         = FDsSceneCanvasContent_dispose;
    return o;
@@ -30,7 +29,7 @@ function FDsSceneCanvasContent_loadByGuid(guid){
 }
 function FDsSceneCanvasContent_dispose(){
    var o = this;
-   o.__base.FDsSpaceCanvas.dispose.call(o);
+   o.__base.FDsSpaceDesignCanvas.dispose.call(o);
 }
 function FDsSceneCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
@@ -109,25 +108,15 @@ function FDsSceneCanvasToolBar_dispose(){
 }
 function FDsSceneCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
-   o._iconView             = 'resource.scene.view';
-   o._iconViewNot          = 'resource.scene.viewno';
-   o._displays             = null;
-   o._renderables          = null;
-   o._materials            = null;
-   o.onBuild               = FDsSceneCatalogContent_onBuild;
-   o.onLoadDisplay         = FDsSceneCatalogContent_onLoadDisplay;
-   o.onNodeViewClick       = FDsSceneCatalogContent_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsSceneCatalogContent_onNodeViewDoubleClick;
-   o.lsnsSelect            = null;
-   o.construct             = FDsSceneCatalogContent_construct;
-   o.buildNodeView         = FDsSceneCatalogContent_buildNodeView;
-   o.buildRenderable       = FDsSceneCatalogContent_buildRenderable;
-   o.buildDisplay          = FDsSceneCatalogContent_buildDisplay;
-   o.buildLayer            = FDsSceneCatalogContent_buildLayer;
-   o.buildSpace            = FDsSceneCatalogContent_buildSpace;
-   o.selectObject          = FDsSceneCatalogContent_selectObject;
-   o.showObject            = FDsSceneCatalogContent_showObject;
-   o.dispose               = FDsSceneCatalogContent_dispose;
+   o._catalogCode    = 'resource.scene';
+   o.onBuild         = FDsSceneCatalogContent_onBuild;
+   o.onLoadDisplay   = FDsSceneCatalogContent_onLoadDisplay;
+   o.construct       = FDsSceneCatalogContent_construct;
+   o.buildRenderable = FDsSceneCatalogContent_buildRenderable;
+   o.buildDisplay    = FDsSceneCatalogContent_buildDisplay;
+   o.buildLayer      = FDsSceneCatalogContent_buildLayer;
+   o.buildSpace      = FDsSceneCatalogContent_buildSpace;
+   o.dispose         = FDsSceneCatalogContent_dispose;
    return o;
 }
 function FDsSceneCatalogContent_onBuild(p){
@@ -136,112 +125,16 @@ function FDsSceneCatalogContent_onBuild(p){
    c.setName('view');
    o.push(c);
    o.__base.FDsCatalog.onBuild.call(o, p);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.scene');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=' + o._catalogCode);
 }
 function FDsSceneCatalogContent_onLoadDisplay(event){
    var o = this;
    var node = event._linkNode;
    o.buildRenderable(node, event);
 }
-function FDsSceneCatalogContent_onNodeViewClick(p){
-   var o = this;
-   var c = p.treeNodeCell;
-   var s = p.treeNode.dataPropertyGet('linker');
-   if(RClass.isClass(s, FDisplay)){
-      if(p.ctrlKey){
-         var ds = o._displays;
-         for(var i = ds.count() - 1; i >= 0; i--){
-            var nd = ds.get(i);
-            var d = nd.dataPropertyGet('linker');
-            d._visible = false;
-            nd.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   if(RClass.isClass(s, FDrawable)){
-      if(p.ctrlKey){
-         var rs = o._renderables;
-         for(var i = rs.count() - 1; i >= 0; i--){
-            var nr = rs.get(i);
-            var r = nr.dataPropertyGet('linker');
-            r._visible = false;
-            nr.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   if(RClass.isClass(s, FG3dMaterial)){
-      if(p.ctrlKey){
-         var ms = o._materials;
-         for(var i = ms.count() - 1; i >= 0; i--){
-            var nm = ms.get(i);
-            var m = nm.dataPropertyGet('linker');
-            m._visible = false;
-            nm.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-}
-function FDsSceneCatalogContent_onNodeViewDoubleClick(p){
-   var o = this;
-   var n = p.treeNode;
-   var c = p.treeNodeCell;
-   var s = n.dataPropertyGet('linker');
-   if(RClass.isClass(s, FDisplay)){
-      var s = o._displays;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var d = n.dataPropertyGet('linker');
-         d._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   if(RClass.isClass(s, FDrawable)){
-      var s = o._renderables;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var r = n.dataPropertyGet('linker');
-         r._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   if(RClass.isClass(s, FG3dMaterial)){
-      var s = o._materials;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var m = n.dataPropertyGet('linker');
-         m._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-}
 function FDsSceneCatalogContent_construct(){
    var o = this;
    o.__base.FDsCatalog.construct.call(o);
-   o._displays = new TObjects();
-   o._renderables = new TObjects();
-   o._materials = new TObjects();
-}
-function FDsSceneCatalogContent_buildNodeView(node, view){
-   var o = this;
-   var cell = node.cell('view');
-   cell.setIcon(o._iconView);
-   cell.setClickListener(o, o.onNodeViewClick);
-   cell.setDoubleClickListener(o, o.onNodeViewDoubleClick);
 }
 function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
    var o = this;
@@ -258,7 +151,7 @@ function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
          materialNode.dataPropertySet('linker', material);
          o.buildNodeView(materialNode, true);
          parentNode.appendNode(materialNode);
-         o._materials.push(material);
+         o._materialNodes.push(materialNode);
       }
    }
    var animations = sprite.animations();
@@ -290,7 +183,7 @@ function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
          renderableNode.dataPropertySet('linker', renderable);
          o.buildNodeView(renderableNode, true);
          parentNode.appendNode(renderableNode);
-         o._renderables.push(renderableNode);
+         o._renderableNodes.push(renderableNode);
       }
    }
 }
@@ -308,7 +201,7 @@ function FDsSceneCatalogContent_buildDisplay(parentNode, p){
          displayNode.setNote(resource.label());
          displayNode.dataPropertySet('linker', display);
          o.buildNodeView(displayNode, true);
-         o._displays.push(displayNode);
+         o._displayNodes.push(displayNode);
          parentNode.appendNode(displayNode);
          display.addLoadListener(o, o.onLoadDisplay);
          display._linkNode = displayNode;
@@ -355,31 +248,8 @@ function FDsSceneCatalogContent_buildSpace(space){
    o.buildLayer(spaceNode, space);
    spaceNode.click();
 }
-function FDsSceneCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-function FDsSceneCatalogContent_showObject(select){
-   var o = this;
-   if(RClass.isClass(select, FDsSceneRenderable)){
-      var renderables = o._renderables;
-      var count = renderables.count();
-      for(var i = 0; i < count; i++){
-         var renderable = renderables.at(i);
-         var r = renderable.dataPropertyGet('linker');
-         if(r == select){
-            o.processSelectedListener(select, false);
-         }
-      }
-   }
-}
 function FDsSceneCatalogContent_dispose(){
    var o = this;
-   o._displays = RObject.dispose(o._displays);
-   o._renderables = RObject.dispose(o._renderables);
-   o._materials = RObject.dispose(o._materials);
    o.__base.FDsCatalog.dispose.call(o);
 }
 function FDsSceneCatalogToolBar(o){

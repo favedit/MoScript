@@ -134,20 +134,22 @@ function FDisplayContainer_removeDisplay(display){
 // <T>过滤显示集合。</T>
 //
 // @method
-// @param p:displays:TObjects 显示集合
+// @param region:FRegion 渲染区域
 //==========================================================
-function FDisplayContainer_filterDisplays(p){
+function FDisplayContainer_filterDisplays(region){
    var o = this;
-   o.__base.FDisplay.filterDisplays.call(o, p);
+   o.__base.FDisplay.filterDisplays.call(o, region);
    // 检查可见性
-   if(o._visible){
-      // 过滤显示集合
-      var s = o._displays;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.at(i).filterDisplays(p);
-         }
+   if(!o._visible){
+      return false;
+   }
+   // 过滤显示集合
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         display.filterDisplays(region);
       }
    }
 }
@@ -170,7 +172,8 @@ function FDisplayContainer_filterRenderables(region){
    if(displays){
       var count = displays.count();
       for(var i = 0; i < count; i++){
-         displays.at(i).filterRenderables(region);
+         var display = displays.at(i);
+         display.filterRenderables(region);
       }
    }
    return true;

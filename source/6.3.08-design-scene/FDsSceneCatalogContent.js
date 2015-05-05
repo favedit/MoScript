@@ -1,45 +1,30 @@
 //==========================================================
-// <T>场景目录内容。</T>
+// <T>设计场景目录内容。</T>
 //
 // @class
 // @author maocy
-// @history 141231
+// @history 150505
 //==========================================================
 function FDsSceneCatalogContent(o){
    o = RClass.inherits(this, o, FDsCatalog);
    //..........................................................
-   // @const
-   o._iconView             = 'resource.scene.view';
-   o._iconViewNot          = 'resource.scene.viewno';
-   //..........................................................
-   // @attributes
-   o._displays             = null;
-   o._renderables          = null;
-   o._materials            = null;
+   // @property
+   o._catalogCode    = 'resource.scene';
    //..........................................................
    // @event
-   o.onBuild               = FDsSceneCatalogContent_onBuild;
+   o.onBuild         = FDsSceneCatalogContent_onBuild;
    // @event
-   o.onLoadDisplay         = FDsSceneCatalogContent_onLoadDisplay;
-   o.onNodeViewClick       = FDsSceneCatalogContent_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsSceneCatalogContent_onNodeViewDoubleClick;
-   //..........................................................
-   // @listeners
-   o.lsnsSelect            = null;
+   o.onLoadDisplay   = FDsSceneCatalogContent_onLoadDisplay;
    //..........................................................
    // @method
-   o.construct             = FDsSceneCatalogContent_construct;
+   o.construct       = FDsSceneCatalogContent_construct;
    // @method
-   o.buildNodeView         = FDsSceneCatalogContent_buildNodeView;
-   o.buildRenderable       = FDsSceneCatalogContent_buildRenderable;
-   o.buildDisplay          = FDsSceneCatalogContent_buildDisplay;
-   o.buildLayer            = FDsSceneCatalogContent_buildLayer;
-   o.buildSpace            = FDsSceneCatalogContent_buildSpace;
+   o.buildRenderable = FDsSceneCatalogContent_buildRenderable;
+   o.buildDisplay    = FDsSceneCatalogContent_buildDisplay;
+   o.buildLayer      = FDsSceneCatalogContent_buildLayer;
+   o.buildSpace      = FDsSceneCatalogContent_buildSpace;
    // @method
-   o.selectObject          = FDsSceneCatalogContent_selectObject;
-   o.showObject            = FDsSceneCatalogContent_showObject;
-   // @method
-   o.dispose               = FDsSceneCatalogContent_dispose;
+   o.dispose         = FDsSceneCatalogContent_dispose;
    return o;
 }
 
@@ -58,7 +43,7 @@ function FDsSceneCatalogContent_onBuild(p){
    // 父处理
    o.__base.FDsCatalog.onBuild.call(o, p);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.scene');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=' + o._catalogCode);
 }
 
 //==========================================================
@@ -75,113 +60,6 @@ function FDsSceneCatalogContent_onLoadDisplay(event){
 }
 
 //==========================================================
-// <T>节点可见性格子点击处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-function FDsSceneCatalogContent_onNodeViewClick(p){
-   var o = this;
-   var c = p.treeNodeCell;
-   var s = p.treeNode.dataPropertyGet('linker');
-   // 测试显示对象
-   if(RClass.isClass(s, FDisplay)){
-      if(p.ctrlKey){
-         var ds = o._displays;
-         for(var i = ds.count() - 1; i >= 0; i--){
-            var nd = ds.get(i);
-            var d = nd.dataPropertyGet('linker');
-            d._visible = false;
-            nd.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   // 测试绘制对象
-   if(RClass.isClass(s, FDrawable)){
-      if(p.ctrlKey){
-         var rs = o._renderables;
-         for(var i = rs.count() - 1; i >= 0; i--){
-            var nr = rs.get(i);
-            var r = nr.dataPropertyGet('linker');
-            r._visible = false;
-            nr.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      if(p.ctrlKey){
-         var ms = o._materials;
-         for(var i = ms.count() - 1; i >= 0; i--){
-            var nm = ms.get(i);
-            var m = nm.dataPropertyGet('linker');
-            m._visible = false;
-            nm.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-}
-
-//==========================================================
-// <T>节点可见性格子点击处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-function FDsSceneCatalogContent_onNodeViewDoubleClick(p){
-   var o = this;
-   var n = p.treeNode;
-   var c = p.treeNodeCell;
-   // 显示内容
-   var s = n.dataPropertyGet('linker');
-   // 测试显示对象
-   if(RClass.isClass(s, FDisplay)){
-      var s = o._displays;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var d = n.dataPropertyGet('linker');
-         d._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   // 测试绘制对象
-   if(RClass.isClass(s, FDrawable)){
-      var s = o._renderables;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var r = n.dataPropertyGet('linker');
-         r._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      var s = o._materials;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var m = n.dataPropertyGet('linker');
-         m._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -189,25 +67,6 @@ function FDsSceneCatalogContent_onNodeViewDoubleClick(p){
 function FDsSceneCatalogContent_construct(){
    var o = this;
    o.__base.FDsCatalog.construct.call(o);
-   // 设置属性
-   o._displays = new TObjects();
-   o._renderables = new TObjects();
-   o._materials = new TObjects();
-}
-
-//==========================================================
-// <T>建立节点可见格子。</T>
-//
-// @method
-// @param node:FTreeNode 节点
-// @param view:Boolean 可见性
-//==========================================================
-function FDsSceneCatalogContent_buildNodeView(node, view){
-   var o = this;
-   var cell = node.cell('view');
-   cell.setIcon(o._iconView);
-   cell.setClickListener(o, o.onNodeViewClick);
-   cell.setDoubleClickListener(o, o.onNodeViewDoubleClick);
 }
 
 //==========================================================
@@ -234,7 +93,7 @@ function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
          materialNode.dataPropertySet('linker', material);
          o.buildNodeView(materialNode, true);
          parentNode.appendNode(materialNode);
-         o._materials.push(material);
+         o._materialNodes.push(materialNode);
       }
    }
    // 创建动画集合
@@ -270,7 +129,7 @@ function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
          renderableNode.dataPropertySet('linker', renderable);
          o.buildNodeView(renderableNode, true);
          parentNode.appendNode(renderableNode);
-         o._renderables.push(renderableNode);
+         o._renderableNodes.push(renderableNode);
       }
    }
 }
@@ -298,7 +157,7 @@ function FDsSceneCatalogContent_buildDisplay(parentNode, p){
          displayNode.setNote(resource.label());
          displayNode.dataPropertySet('linker', display);
          o.buildNodeView(displayNode, true);
-         o._displays.push(displayNode);
+         o._displayNodes.push(displayNode);
          parentNode.appendNode(displayNode);
          // 创建渲染集合
          display.addLoadListener(o, o.onLoadDisplay);
@@ -374,49 +233,12 @@ function FDsSceneCatalogContent_buildSpace(space){
 }
 
 //==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-function FDsSceneCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param select:FObject 对象
-//==========================================================
-function FDsSceneCatalogContent_showObject(select){
-   var o = this;
-   if(RClass.isClass(select, FDsSceneRenderable)){
-      var renderables = o._renderables;
-      var count = renderables.count();
-      for(var i = 0; i < count; i++){
-         var renderable = renderables.at(i);
-         var r = renderable.dataPropertyGet('linker');
-         if(r == select){
-            o.processSelectedListener(select, false);
-         }
-      }
-   }
-}
-
-//==========================================================
 // <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FDsSceneCatalogContent_dispose(){
    var o = this;
-   o._displays = RObject.dispose(o._displays);
-   o._renderables = RObject.dispose(o._renderables);
-   o._materials = RObject.dispose(o._materials);
    // 父处理
    o.__base.FDsCatalog.dispose.call(o);
 }

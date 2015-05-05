@@ -110,6 +110,7 @@ function FE3dSceneDisplay_loadResource(resource){
 function FE3dSceneDisplay_loadTemplate(template){
    var o = this;
    var resource = o._resource;
+   //..........................................................
    // 设置材质
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
@@ -123,10 +124,12 @@ function FE3dSceneDisplay_loadTemplate(template){
       var material = renderable.material();
       var materialGuid = material.guid();
       var displayMaterial = parentMaterials.get(materialGuid);
-      displayMaterial._parentMaterial = material;
+      displayMaterial.loadParent(material);
       displayMaterial.reloadResource();
+      renderable.setMaterial(displayMaterial);
    }
    o.pushDisplay(sprite);
+   //..........................................................
    // 设置动画
    var animations = sprite.animations();
    if(animations){

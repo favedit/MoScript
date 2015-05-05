@@ -32,10 +32,10 @@ function RE3dEngine_onSetup(){
    effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    effectConsole.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    // 控件效果器
-   effectConsole.register('control.control.automatic', FG3dControlAutomaticEffect);
-   effectConsole.register('control.control.control', FG3dControlAutomaticEffect);
+   effectConsole.register('control.control.automatic', FE3dControlAutomaticEffect);
+   effectConsole.register('control.control.control', FE3dControlAutomaticEffect);
    // 通用效果器
-   effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
+   effectConsole.register('general.color.control', FE3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);

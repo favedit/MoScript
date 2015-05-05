@@ -9,47 +9,42 @@ function FDsSpaceCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
-   o._rotation            = null;
-   o._optionRotation      = false;
-   o._capturePosition     = null;
-   o._captureMatrix       = null;
-   o._captureRotation     = null;
-   o._selectObject        = null;
-   o._selectRenderables   = null;
+   o._rotation             = null;
+   o._optionRotation       = false;
+   o._capturePosition      = null;
+   o._captureMatrix        = null;
+   o._captureRotation      = null;
+   o._selectObject         = null;
+   o._selectRenderables    = null;
    // @attribute
-   o._templateMatrix      = null;
-   o._templateRenderable  = null;
-   o._templateFace        = null;
-   o._templateTranslation = null;
-   o._templateRotation    = null;
-   o._templateScale       = null;
-   o._templateViewScale   = 0.05;
+   o._templateMatrix       = null;
+   o._templateRenderable   = null;
    //..........................................................
    // @event
-   o.onBuild              = FDsSpaceCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsSpaceCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsSpaceCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsSpaceCanvas_onMouseCaptureStop;
+   o.onBuild               = FDsSpaceCanvas_onBuild;
+   o.onMouseCaptureStart   = FDsSpaceCanvas_onMouseCaptureStart;
+   o.onMouseCapture        = FDsSpaceCanvas_onMouseCapture;
+   o.onMouseCaptureStop    = FDsSpaceCanvas_onMouseCaptureStop;
    //..........................................................
-   o.oeResize             = FDsSpaceCanvas_oeResize;
-   o.oeRefresh            = FDsSpaceCanvas_oeRefresh;
+   o.oeResize              = FDsSpaceCanvas_oeResize;
+   o.oeRefresh             = FDsSpaceCanvas_oeRefresh;
    //..........................................................
    // @method
-   o.construct            = FDsSpaceCanvas_construct;
+   o.construct             = FDsSpaceCanvas_construct;
    // @method
-   o.innerSelectDisplay   = FDsSpaceCanvas_innerSelectDisplay;
-   o.innerSelectLayer     = FDsSpaceCanvas_innerSelectLayer;
-   o.selectNone           = FDsSpaceCanvas_selectNone;
-   o.selectLayers         = FDsSpaceCanvas_selectLayers;
-   o.selectLayer          = FDsSpaceCanvas_selectLayer;
-   o.selectDisplay        = FDsSpaceCanvas_selectDisplay;
-   o.selectMaterial       = FDsSpaceCanvas_selectMaterial;
-   o.selectRenderable     = FDsSpaceCanvas_selectRenderable;
-   o.switchMode           = FDsSpaceCanvas_switchMode;
-   o.switchPlay           = FDsSpaceCanvas_switchPlay;
-   o.switchMovie          = FDsSpaceCanvas_switchMovie;
+   o.innerSelectRenderable = FDsSpaceCanvas_innerSelectRenderable;
+   o.innerSelectDisplay    = FDsSpaceCanvas_innerSelectDisplay;
+   o.innerSelectLayer      = FDsSpaceCanvas_innerSelectLayer;
+   o.selectNone            = FDsSpaceCanvas_selectNone;
+   o.selectLayers          = FDsSpaceCanvas_selectLayers;
+   o.selectLayer           = FDsSpaceCanvas_selectLayer;
+   o.selectDisplay         = FDsSpaceCanvas_selectDisplay;
+   o.selectMaterial        = FDsSpaceCanvas_selectMaterial;
+   o.selectRenderable      = FDsSpaceCanvas_selectRenderable;
+   o.switchPlay            = FDsSpaceCanvas_switchPlay;
+   o.switchMovie           = FDsSpaceCanvas_switchMovie;
    // @method
-   o.dispose              = FDsSpaceCanvas_dispose;
+   o.dispose               = FDsSpaceCanvas_dispose;
    return o;
 }
 
@@ -62,17 +57,6 @@ function FDsSpaceCanvas(o){
 function FDsSpaceCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
-   // 创建界面控制器
-   //var templateConsole = RConsole.find(FE3dTemplateConsole);
-   //var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
-   //templateTranslation._optionFace = true;
-   //templateTranslation.setVisible(false);
-   //var templateRotation = o._templateRotation = templateConsole.allocByCode(o, 'com.design.rotation');
-   //templateRotation._optionFace = true;
-   //templateRotation.setVisible(false);
-   //var templateScale = o._templateScale = templateConsole.allocByCode(o, 'com.design.scale');
-   //templateScale._optionFace = true;
-   //templateScale.setVisible(false);
 }
 
 //==========================================================
@@ -97,20 +81,6 @@ function FDsSpaceCanvas_onMouseCaptureStart(event){
       var display = renderable.display();
       o._captureMatrix.assign(display.matrix());
    }
-   // 记录坐标
-   //o._templateMatrix.identity();
-   //if(o._templateFace){
-   //   o._templateFaceMatrix.assign(o._templateFace.matrix());
-   //   // 记录选中坐标
-   //   var rs = o._selectRenderables;
-   //   for(var i = rs.count() - 1; i >= 0; i--){
-   //      var r = rs.getAt(i);
-   //      if(!r._dragMatrix){
-   //         r._dragMatrix = new SMatrix3d();
-   //      }
-   //      r._dragMatrix.assign(r.matrix());
-   //   }
-   //}
 }
 
 //==========================================================
@@ -261,6 +231,19 @@ function FDsSpaceCanvas_construct(){
 }
 
 //==========================================================
+// <T>选中渲染对象处理。</T>
+//
+// @method
+// @param renderable:FRenderable 渲染对象
+//==========================================================
+function FDsSpaceCanvas_innerSelectRenderable(renderable){
+   var o = this;
+   renderable._optionSelected = true;
+   renderable.showBoundBox();
+   o._selectRenderables.push(renderable);
+}
+
+//==========================================================
 // <T>选中渲染显示对象处理。</T>
 //
 // @method
@@ -281,8 +264,7 @@ function FDsSpaceCanvas_innerSelectDisplay(select){
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
       if(RClass.isClass(renderable, FDsSceneRenderable)){
-         o._selectRenderables.push(renderable);
-         renderable.showBoundBox();
+         o.innerSelectRenderable(renderable);
       }
    }
 }
@@ -310,31 +292,34 @@ function FDsSpaceCanvas_innerSelectLayer(layer){
 //==========================================================
 function FDsSpaceCanvas_selectNone(){
    var o = this;
-   o._selectObject = null;
-   // 取消所有选中对象
+   // 取消选中集合
    var renderables = o._selectRenderables;
    var count = renderables.count();
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
+      renderable._optionSelected = false;
       renderable.hideBoundBox();
    }
+   // 清空属性
+   o._selectObject = null;
    o._selectRenderables.clear();
 }
 
 //==========================================================
-// <T>选中渲染层处理。</T>
+// <T>选中渲染层集合处理。</T>
 //
 // @method
-// @param p:layer:FDisplayLayer 渲染层
 //==========================================================
-function FDsSpaceCanvas_selectLayers(p){
+function FDsSpaceCanvas_selectLayers(){
    var o = this;
    // 取消选中
    o.selectNone();
    // 选中集合
-   var s = o._activeSpace.layers();
-   for(var i = s.count() - 1; i >= 0; i--){
-      o.innerSelectLayer(s.valueAt(i));
+   var layers = o._activeSpace.layers();
+   var layerCount = layers.count();
+   for(var i = 0; i < layerCount; i++){
+      var layer = layers.at(i);
+      o.innerSelectLayer(layer);
    }
 }
 
@@ -342,32 +327,32 @@ function FDsSpaceCanvas_selectLayers(p){
 // <T>选中渲染层处理。</T>
 //
 // @method
-// @param p:layer:FDisplayLayer 渲染层
+// @param layer:FDisplayLayer 渲染层
 //==========================================================
-function FDsSpaceCanvas_selectLayer(p){
+function FDsSpaceCanvas_selectLayer(layer){
    var o = this;
    // 取消选中
    o.selectNone();
    // 选中对象
-   o._selectObject = p;
+   o._selectObject = layer;
    // 选中集合
-   o.innerSelectLayer(p);
+   o.innerSelectLayer(layer);
 }
 
 //==========================================================
 // <T>选中渲染显示对象处理。</T>
 //
 // @method
-// @param p:display:FDisplay 显示对象
+// @param display:FDisplay 显示对象
 //==========================================================
-function FDsSpaceCanvas_selectDisplay(p){
+function FDsSpaceCanvas_selectDisplay(display){
    var o = this;
    // 取消选中
    o.selectNone();
    // 选中对象
-   o._selectObject = p;
+   o._selectObject = display;
    // 选中集合
-   o.innerSelectDisplay(p);
+   o.innerSelectDisplay(display);
 }
 
 //==========================================================
@@ -389,10 +374,8 @@ function FDsSpaceCanvas_selectMaterial(material){
    var count = renderables.count();
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
-      if(renderable._materialReference == material._parentMaterial){
-         o._selectRenderables.push(renderable);
-         renderable._optionSelected = true;
-         renderable.showBoundBox();
+      if(renderable.material() == material){
+         o.innerSelectRenderable(renderable);
       }
    }
 }
@@ -405,114 +388,12 @@ function FDsSpaceCanvas_selectMaterial(material){
 //==========================================================
 function FDsSpaceCanvas_selectRenderable(renderable){
    var o = this;
-   //if(renderable){
-   //   var n = renderable._renderable._resource._code;
-   //   switch(n){
-   //      case 'ms_translation_x':
-   //         o._canvasMoveCd = EDsCanvasDrag.X;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_translation_y':
-   //         o._canvasMoveCd = EDsCanvasDrag.Y;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_translation_z':
-   //         o._canvasMoveCd = EDsCanvasDrag.Z;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_rotation_x':
-   //         o._canvasMoveCd = EDsCanvasDrag.X;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_rotation_y':
-   //         o._canvasMoveCd = EDsCanvasDrag.Y;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_rotation_z':
-   //         o._canvasMoveCd = EDsCanvasDrag.Z;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_scale_x':
-   //         o._canvasMoveCd = EDsCanvasDrag.X;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_scale_y':
-   //         o._canvasMoveCd = EDsCanvasDrag.Y;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_scale_z':
-   //         o._canvasMoveCd = EDsCanvasDrag.Z;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      case 'ms_scale_all':
-   //         o._canvasMoveCd = EDsCanvasDrag.All;
-   //         o._templateRenderable = renderable;
-   //         return;
-   //      default:
-   //         o._canvasMoveCd = EDsCanvasDrag.Unknown;
-   //         o._templateRenderable = null;
-   //   }
-   //}
    // 选中当前对象
    o.selectNone();
    if(renderable){
-      renderable._optionSelected = true;
-      renderable.showBoundBox();
-      o._selectRenderables.push(renderable);
+      o.innerSelectRenderable(renderable);
       o._frameSet._catalogContent.showObject(renderable);
    }
-   // 设置变量
-   //var templateTranslation = o._templateTranslation;
-   //var templateRotation = o._templateRotation;
-   //var templateScale = o._templateScale;
-   // 模式判定
-   //var modeCd = o._canvasModeCd;
-   //switch(modeCd){
-   //   case EDsCanvasMode.Drop:
-   //      break;
-   //   case EDsCanvasMode.Select:
-   //      break;
-   //   case EDsCanvasMode.Translate:
-   //      templateTranslation.setVisible(renderable != null);
-   //      templateRotation.setVisible(false);
-   //      templateScale.setVisible(false);
-   //      o._templateFace = templateTranslation;
-   //      break;
-   //   case EDsCanvasMode.Rotation:
-   //      templateTranslation.setVisible(false);
-   //      templateRotation.setVisible(renderable != null);
-   //      templateScale.setVisible(false);
-   //      o._templateFace = templateScale;
-   //      break;
-   //   case EDsCanvasMode.Scale:
-   //      templateTranslation.setVisible(false);
-   //      templateRotation.setVisible(false);
-   //      templateScale.setVisible(renderable != null);
-   //      o._templateFace = templateScale;
-   //      break;
-   //}
-   // 设置位置
-   //var templateFace = o._templateFace;
-   //if(renderable && templateFace){
-   //   var display = renderable.display();
-   //   var matrix = templateFace.matrix();
-   //   matrix.assign(display.matrix());
-   //   matrix.setScaleAll(o._templateViewScale);
-   //   matrix.update();
-   //}
-}
-
-//==========================================================
-// <T>切换工作模式。</T>
-//
-// @method
-// @param p:modeCd:Integer 
-//==========================================================
-function FDsSpaceCanvas_switchMode(p){
-   var o = this;
-   o._canvasModeCd = p;
-   // 设置变量
-   o.selectRenderable(o._selectRenderable);
 }
 
 //==========================================================

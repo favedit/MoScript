@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150211
 //==========================================================
-function FG3dControlPass(o){
+function FE3dControlPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute

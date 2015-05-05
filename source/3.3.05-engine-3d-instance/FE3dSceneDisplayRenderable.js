@@ -19,11 +19,11 @@ function FE3dSceneDisplayRenderable(o){
 // @method
 // @param material:FE3sTemplateRenderable 资源
 //==========================================================
-function FE3dSceneDisplayRenderable_loadMaterial(p){
+function FE3dSceneDisplayRenderable_loadMaterial(material){
    var o = this;
    // 设置材质
-   o._materialReference = p;
-   o._material.calculate(p);
+   o._materialReference = material;
+   o._material.calculate(material);
 }
 
 //==========================================================

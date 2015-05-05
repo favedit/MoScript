@@ -8,6 +8,7 @@ function FE3dScene(o){
    o = RClass.inherits(this, o, FE3dSpace, MLinkerResource, MListenerLoad);
    //..........................................................
    // @attribute
+   o._ready                = false;
    o._dataReady            = false;
    o._resource             = null;
    o._dirty                = false;
@@ -26,6 +27,7 @@ function FE3dScene(o){
    o.loadLayerResource     = FE3dScene_loadLayerResource;
    o.loadResource          = FE3dScene_loadResource;
    // @method
+   o.testReady             = FE3dScene_testReady;
    o.dirty                 = FE3dScene_dirty;
    o.processLoad           = FE3dScene_processLoad;
    // @method
@@ -213,6 +215,16 @@ function FE3dScene_loadResource(p){
 }
 
 //==========================================================
+// <T>测试是否准备好。</T>
+//
+// @method
+// @param Boolean 是否准备好
+//==========================================================
+function FE3dScene_testReady(){
+   return this._ready;
+}
+
+//==========================================================
 // <T>场景脏处理。</T>
 //
 // @method
@@ -235,6 +247,7 @@ function FE3dScene_processLoad(){
       return false;
    }
    o.loadResource(o._resource);
+   o._ready = true;
    // 事件发送
    o.processLoadListener(o);
    return true;

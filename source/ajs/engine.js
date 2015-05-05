@@ -8,8 +8,9 @@ var EDisplayTransform = new function EDisplayTransform(){
 }
 var EResourceCompress = new function EResourceCompress(){
    var o = this;
-   o.None = 'none';
-   o.Lzma = 'lzma';
+   o.None    = 'none';
+   o.Deflate = 'deflate';
+   o.Lzma    = 'lzma';
    return o;
 }
 var EStageKey = new function EStageKey(){
@@ -308,16 +309,18 @@ function FDisplayContainer_removeDisplay(display){
    o.displays().remove(display);
    display.setParent(null);
 }
-function FDisplayContainer_filterDisplays(p){
+function FDisplayContainer_filterDisplays(region){
    var o = this;
-   o.__base.FDisplay.filterDisplays.call(o, p);
-   if(o._visible){
-      var s = o._displays;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.at(i).filterDisplays(p);
-         }
+   o.__base.FDisplay.filterDisplays.call(o, region);
+   if(!o._visible){
+      return false;
+   }
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         display.filterDisplays(region);
       }
    }
 }
@@ -331,7 +334,8 @@ function FDisplayContainer_filterRenderables(region){
    if(displays){
       var count = displays.count();
       for(var i = 0; i < count; i++){
-         displays.at(i).filterRenderables(region);
+         var display = displays.at(i);
+         display.filterRenderables(region);
       }
    }
    return true;
@@ -476,6 +480,7 @@ function FRenderable_filterDrawables(region){
          }
       }
    }
+   return true;
 }
 function FRenderable_process(region){
    var o = this;

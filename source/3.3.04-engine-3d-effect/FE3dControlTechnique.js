@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150119
 //==========================================================
-function FG3dControlTechnique(o){
+function FE3dControlTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
@@ -13,9 +13,9 @@ function FG3dControlTechnique(o){
    o._passControl = null;
    //..........................................................
    // @method
-   o.setup       = FG3dControlTechnique_setup;
-   o.passControl = FG3dControlTechnique_passControl;
-   o.drawRegion  = FG3dControlTechnique_drawRegion;
+   o.setup       = FE3dControlTechnique_setup;
+   o.passControl = FE3dControlTechnique_passControl;
+   o.drawRegion  = FE3dControlTechnique_drawRegion;
    return o;
 }
 
@@ -24,7 +24,7 @@ function FG3dControlTechnique(o){
 //
 // @method
 //==========================================================
-function FG3dControlTechnique_setup(){
+function FE3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    //..........................................................
@@ -32,7 +32,7 @@ function FG3dControlTechnique_setup(){
    o.registerMode(EG3dTechniqueMode.Result);
    //..........................................................
    // 创建选取处理过程
-   var pd = o._passControl = RClass.create(FG3dControlPass);
+   var pd = o._passControl = RClass.create(FE3dControlPass);
    pd.linkGraphicContext(o);
    pd.setup();
    o._passes.push(pd);
@@ -44,7 +44,7 @@ function FG3dControlTechnique_setup(){
 // @method
 // @return FG3dShadowDepthPass 深度渲染过程
 //==========================================================
-function FG3dControlTechnique_passControl(){
+function FE3dControlTechnique_passControl(){
    return this._passControl;
 }
 
@@ -54,7 +54,7 @@ function FG3dControlTechnique_passControl(){
 // @method
 // @param p:region:FG3dRegion 区域
 //==========================================================
-function FG3dControlTechnique_drawRegion(p){
+function FE3dControlTechnique_drawRegion(p){
    var o = this;
    if(p.renderables().isEmpty()){
       return;

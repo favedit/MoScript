@@ -8,8 +8,10 @@
 var EResourceCompress = new function EResourceCompress(){
    var o = this;
    // @attribute 未压缩
-   o.None = 'none';
+   o.None    = 'none';
+   // @attribute DEFLATE压缩
+   o.Deflate = 'deflate';
    // @attribute LZMA压缩
-   o.Lzma = 'lzma';
+   o.Lzma    = 'lzma';
    return o;
 }

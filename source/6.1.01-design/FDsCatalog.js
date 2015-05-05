@@ -1,5 +1,5 @@
 //==========================================================
-// <T>主菜单。</T>
+// <T>设计目录基类。</T>
 //
 // @author maocy
 // @history 141231
@@ -8,13 +8,13 @@ function FDsCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @const
-   o._iconView             = 'design3d.scene.view';
-   o._iconViewNot          = 'design3d.scene.viewno';
+   o._iconView             = 'resource.scene.view';
+   o._iconViewNot          = 'resource.scene.viewno';
    //..........................................................
    // @attributes
-   o._displays             = null;
-   o._renderables          = null;
-   o._materials            = null;
+   o._displayNodes         = null;
+   o._renderableNodes      = null;
+   o._materialNodes        = null;
    //..........................................................
    // @event
    o.onBuild               = FDsCatalog_onBuild;
@@ -23,9 +23,6 @@ function FDsCatalog(o){
    o.onNodeClick           = FDsCatalog_onNodeClick;
    o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
    o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
-   //..........................................................
-   // @listeners
-   o.lsnsSelect            = null;
    //..........................................................
    // @method
    o.construct             = FDsCatalog_construct;
@@ -90,61 +87,64 @@ function FDsCatalog_onNodeClick(tree, node){
 // <T>节点可见性格子点击处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FDsCatalog_onNodeViewClick(p){
+function FDsCatalog_onNodeViewClick(event){
    var o = this;
-   var c = p.treeNodeCell;
-   var s = p.treeNode.dataPropertyGet('linker');
+   var cell = event.treeNodeCell;
+   var linker = event.treeNode.dataPropertyGet('linker');
    // 测试显示对象
-   if(RClass.isClass(s, FDisplay)){
-      if(p.ctrlKey){
-         var ds = o._displays;
-         for(var i = ds.count() - 1; i >= 0; i--){
-            var nd = ds.get(i);
-            var d = nd.dataPropertyGet('linker');
-            d._visible = false;
-            nd.cell('view').setIcon(o._iconViewNot);
+   if(RClass.isClass(linker, FDisplay)){
+      if(event.ctrlKey){
+         var displayNodes = o._displayNodes;
+         var displayCount = displayNodes.count()
+         for(var i = 0; i < displayCount; i++){
+            var displayNode = displayNodes.at(i);
+            var display = displayNode.dataPropertyGet('linker');
+            display._visible = false;
+            displayNode.cell('view').setIcon(o._iconViewNot);
          }
-         s._visible = true;
-         c.setIcon(o._iconView);
+         linker.setVisible(true);
+         cell.setIcon(o._iconView);
       }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
+         linker.setVisible(!linker.visible());
+         cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
       }
    }
    // 测试绘制对象
-   if(RClass.isClass(s, FDrawable)){
-      if(p.ctrlKey){
-         var rs = o._renderables;
-         for(var i = rs.count() - 1; i >= 0; i--){
-            var nr = rs.get(i);
-            var r = nr.dataPropertyGet('linker');
-            r._visible = false;
-            nr.cell('view').setIcon(o._iconViewNot);
+   if(RClass.isClass(linker, FDrawable)){
+      if(event.ctrlKey){
+         var renderableNodes = o._renderableNodes;
+         var renderableCount = renderableNodes.count();
+         for(var i = 0; i < renderableCount; i++){
+            var renderableNode = renderableNodes.at(i);
+            var renderable = renderableNode.dataPropertyGet('linker');
+            renderable._visible = false;
+            renderableNode.cell('view').setIcon(o._iconViewNot);
          }
-         s._visible = true;
-         c.setIcon(o._iconView);
+         linker.setVisible(true);
+         cell.setIcon(o._iconView);
       }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
+         linker.setVisible(!linker.visible());
+         cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
       }
    }
    // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      if(p.ctrlKey){
-         var ms = o._materials;
-         for(var i = ms.count() - 1; i >= 0; i--){
-            var nm = ms.get(i);
-            var m = nm.dataPropertyGet('linker');
-            m._visible = false;
-            nm.cell('view').setIcon(o._iconViewNot);
+   if(RClass.isClass(linker, FG3dMaterial)){
+      if(event.ctrlKey){
+         var materialNodes = o._materialNodes;
+         var materialCount = materialNodes.count();
+         for(var i = 0; i < materialCount; i++){
+            var materialNode = materialNodes.at(i);
+            var material = materialNode.dataPropertyGet('linker');
+            material.setVisible(false);
+            materialNode.cell('view').setIcon(o._iconViewNot);
          }
-         s._visible = true;
-         c.setIcon(o._iconView);
+         linker.setVisible(true);
+         cell.setIcon(o._iconView);
       }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
+         linker.setVisible(!linker.visible());
+         cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
       }
    }
 }
@@ -153,42 +153,43 @@ function FDsCatalog_onNodeViewClick(p){
 // <T>节点可见性格子点击处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FDsCatalog_onNodeViewDoubleClick(p){
+function FDsCatalog_onNodeViewDoubleClick(event){
    var o = this;
-   var n = p.treeNode;
-   var c = p.treeNodeCell;
-   // 显示内容
-   var s = n.dataPropertyGet('linker');
+   var node = event.treeNode;
+   var linker = node.dataPropertyGet('linker');
    // 测试显示对象
-   if(RClass.isClass(s, FDisplay)){
-      var s = o._displays;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var d = n.dataPropertyGet('linker');
-         d._visible = true;
-         n.cell('view').setIcon(o._iconView);
+   if(RClass.isClass(linker, FDisplay)){
+      var displayNodes = o._displayNodes;
+      var displayCount = displayNodes.count()
+      for(var i = 0; i < displayCount; i++){
+         var displayNode = displayNodes.at(i);
+         var display = displayNode.dataPropertyGet('linker');
+         display.setVisible(true);
+         displayNode.cell('view').setIcon(o._iconView);
       }
    }
    // 测试绘制对象
-   if(RClass.isClass(s, FDrawable)){
-      var s = o._renderables;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var r = n.dataPropertyGet('linker');
-         r._visible = true;
-         n.cell('view').setIcon(o._iconView);
+   if(RClass.isClass(linker, FDrawable)){
+      var renderableNodes = o._renderableNodes;
+      var renderableCount = renderableNodes.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderableNode = renderableNodes.at(i);
+         var renderable = renderableNode.dataPropertyGet('linker');
+         renderable.setVisible(true);
+         renderableNode.cell('view').setIcon(o._iconView);
       }
    }
    // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      var s = o._materials;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var m = n.dataPropertyGet('linker');
-         m._visible = true;
-         n.cell('view').setIcon(o._iconView);
+   if(RClass.isClass(linker, FG3dMaterial)){
+      var materialNodes = o._materialNodes;
+      var materialCount = materialNodes.count();
+      for(var i = 0; i < materialCount; i++){
+         var materialNode = materialNodes.at(i);
+         var material = materialNode.dataPropertyGet('linker');
+         material.setVisible(true);
+         materialNode.cell('view').setIcon(o._iconView);
       }
    }
 }
@@ -202,9 +203,9 @@ function FDsCatalog_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
-   o._displays = new TObjects();
-   o._renderables = new TObjects();
-   o._materials = new TObjects();
+   o._displayNodes = new TObjects();
+   o._renderableNodes = new TObjects();
+   o._materialNodes = new TObjects();
 }
 
 //==========================================================
@@ -291,7 +292,7 @@ function FDsCatalog_buildRenderable(n, p){
          dn.setTypeCode('material');
          dn.dataPropertySet('linker', m);
          o.buildNodeView(dn, true);
-         o._materials.push(dn);
+         o._materialNodes.push(dn);
          n.appendNode(dn);
       }
    }
@@ -327,7 +328,7 @@ function FDsCatalog_buildRenderable(n, p){
          dn.setTypeCode('renderable');
          dn.dataPropertySet('linker', r);
          o.buildNodeView(dn, true);
-         o._renderables.push(dn);
+         o._renderableNodes.push(dn);
          n.appendNode(dn);
       }
    }
@@ -356,7 +357,7 @@ function FDsCatalog_buildDisplay(n, p){
          dn.setTypeCode('display');
          dn.dataPropertySet('linker', d);
          o.buildNodeView(dn, true);
-         o._displays.push(dn);
+         o._displayNodes.push(dn);
          n.appendNode(dn);
          // 创建渲染集合
          d.addLoadListener(o, o.onLoadDisplay);
@@ -433,12 +434,12 @@ function FDsCatalog_buildSpace(p){
 // <T>选中对象。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param item:Object 对象
 //==========================================================
-function FDsCatalog_selectObject(p){
+function FDsCatalog_selectObject(item){
    var o = this;
-   if(p != null){
-      o.processSelectedListener(p, true);
+   if(item){
+      o.processSelectedListener(item, true);
    }
 }
 
@@ -446,18 +447,18 @@ function FDsCatalog_selectObject(p){
 // <T>选中对象。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param item:Object 对象
 //==========================================================
-function FDsCatalog_showObject(p){
+function FDsCatalog_showObject(item){
    var o = this;
-   if(RClass.isClass(p, FDsSceneRenderable)){
-      var s = o._renderables;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var nr = s.getAt(i);
-         var r = nr.dataPropertyGet('linker');
-         if(r == p){
-            o.processSelectedListener(p, false);
+   if(RClass.isClass(item, FDsSceneRenderable)){
+      var renderableNodes = o._renderableNodes;
+      var renderableCount = renderableNodes.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderableNode = renderableNodes.at(i);
+         var renderable = renderableNode.dataPropertyGet('linker');
+         if(renderable == item){
+            o.processSelectedListener(item, false);
          }
       }
    }
@@ -470,9 +471,9 @@ function FDsCatalog_showObject(p){
 //==========================================================
 function FDsCatalog_dispose(){
    var o = this;
-   o._displays = RObject.dispose(o._displays);
-   o._renderables = RObject.dispose(o._renderables);
-   o._materials = RObject.dispose(o._materials);
+   o._displayNodes = RObject.dispose(o._displayNodes);
+   o._renderableNodes = RObject.dispose(o._renderableNodes);
+   o._materialNodes = RObject.dispose(o._materialNodes);
    // 父处理
    o.__base.FUiDataTreeView.dispose.call(o);
 }

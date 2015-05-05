@@ -95,6 +95,7 @@ function FRenderable_filterDrawables(region){
          }
       }
    }
+   return true;
 }
 
 //==========================================================

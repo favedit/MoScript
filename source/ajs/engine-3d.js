@@ -1,24 +1,6 @@
 function ME3dObject(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o._guid   = null;
-   o._code   = null;
-   o.guid    = ME3dObject_guid;
-   o.setGuid = ME3dObject_setGuid;
-   o.code    = ME3dObject_code;
-   o.setCode = ME3dObject_setCode;
+   o = RClass.inherits(this, o, MGraphicObject, MAttributeGuid, MAttributeCode);
    return o;
-}
-function ME3dObject_guid(){
-   return this._guid;
-}
-function ME3dObject_setGuid(p){
-   this._guid = p;
-}
-function ME3dObject_code(){
-   return this._code;
-}
-function ME3dObject_setCode(p){
-   this._code = p;
 }
 function FE3dCanvas(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
@@ -178,10 +160,6 @@ function FE3dDisplayContainer_dispose(){
    var o = this;
    o._materials = RObject.free(o._materials);
    o.__base.FDisplayContainer.dispose.call(o);
-}
-function FE3dMaterial(o){
-   o = RClass.inherits(this, o, FE3rMaterial);
-   return o;
 }
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
@@ -550,9 +528,9 @@ function RE3dEngine_onSetup(){
    effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
    effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    effectConsole.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
-   effectConsole.register('control.control.automatic', FG3dControlAutomaticEffect);
-   effectConsole.register('control.control.control', FG3dControlAutomaticEffect);
-   effectConsole.register('general.color.control', FG3dControlAutomaticEffect);
+   effectConsole.register('control.control.automatic', FE3dControlAutomaticEffect);
+   effectConsole.register('control.control.control', FE3dControlAutomaticEffect);
+   effectConsole.register('general.color.control', FE3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);
