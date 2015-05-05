@@ -8,8 +8,8 @@ function FDsCommonMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._activeSpace                 = null;
-   o._activeMaterial              = null;
+   o._activeSpace           = null;
+   o._activeMaterial        = null;
    // @attribute
    o._controlOptionDouble   = null;
    o._controlEffectCode     = null;

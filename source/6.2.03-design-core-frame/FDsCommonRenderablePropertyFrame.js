@@ -53,19 +53,19 @@ function FDsCommonRenderablePropertyFrame_construct(){
 function FDsCommonRenderablePropertyFrame_loadObject(space, renderable){
    var o = this;
    // 获得材质
-   var material = renderable.materialReference();
+   var material = renderable.material();
    var resource = renderable.renderable().resource();
    // 设置属性
    o._activeRenderable = renderable;
-   //o._activeMaterial = material;
+   o._activeMaterial = material;
    // 设置参数
    o._controlGuid.set(resource.guid());
    o._controlCode.set(resource.code());
    o._controlLabel.set(resource.label());
    // 设置参数
    o._frameRenderable.loadObject(space, renderable);
-   //o._frameMaterial1.loadObject(s, m);
-   //o._frameMaterial2.loadObject(s, m);
+   o._frameMaterial1.loadObject(space, material);
+   o._frameMaterial2.loadObject(space, material);
 }
 
 //==========================================================

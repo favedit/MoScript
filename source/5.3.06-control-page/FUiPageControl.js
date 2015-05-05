@@ -47,10 +47,10 @@ function FUiPageControl(o){
    o._esize           = EUiSize.Both;
    //..........................................................
    // @html
-   o._hTop             = null;
-   o._hLine            = null;
-   o._hBottom          = null;
-   o._hSheets          = null;
+   o._hTop            = null;
+   o._hLine           = null;
+   o._hBottom         = null;
+   o._hSheets         = null;
    //..........................................................
    // @event
    o.onBuildPanel     = FUiPageControl_onBuildPanel;
@@ -76,11 +76,11 @@ function FUiPageControl(o){
 // <T>建立当前控件的显示底板。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FUiPageControl_onBuildPanel(p){
+function FUiPageControl_onBuildPanel(event){
    var o = this;
-   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
    h.width = '100%';
 }
 
@@ -88,11 +88,11 @@ function FUiPageControl_onBuildPanel(p){
 // <T>建立当前控件的显示框架。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FUiPageControl_onBuild(p){
+function FUiPageControl_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuild.call(o, p);
+   o.__base.FUiContainer.onBuild.call(o, event);
    // 获得底板
    var h = o._hPanel;
    // 建立标题区
@@ -128,18 +128,18 @@ function FUiPageControl_onBuild(p){
 // <T>刷新处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FUiPageControl_oeRefresh(p){
+function FUiPageControl_oeRefresh(event){
    var o = this;
-   var r = o.__base.FUiContainer.oeRefresh.call(o, p);
-   if(p.isBefore()){
+   var r = o.__base.FUiContainer.oeRefresh.call(o, event);
+   if(event.isBefore()){
       // Select first
       if(o._sheets.count()){
          /*for(var n=0; n<o._sheets.count; n++){
-            var p = o._sheets.value(n);
-            p.processBuildChildren();
-            p.hasBuilded = true;
+            var event = o._sheets.value(n);
+            event.processBuildChildren();
+            event.hasBuilded = true;
          }*/
          if(o._activeSheet){
             o._activeSheet.oeRefresh(e);
@@ -171,67 +171,67 @@ function FUiPageControl_construct(){
 // <T>增加一个控件。</T>
 //
 // @method
-// @param p:control:FControl 控件
+// @param control:FControl 控件
 //==========================================================
-function FUiPageControl_appendChild(p){
+function FUiPageControl_appendChild(control){
    var o = this;
    // 追加子页面
-   if(RClass.isClass(p, FUiPageSheet)){
+   if(RClass.isClass(control, FUiPageSheet)){
       var ci = o._hLast.cellIndex;
       // 追加标题顶边线
-      var hc = p._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
+      var hc = control._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Top');
-      var hc = p._hTop = RBuilder.appendTableCell(o._hTop, null, ci + 1);
-      hc.className = p.styleName('Top');
-      var hc = p._hTopR = RBuilder.appendTableCell(o._hTop, null, ci + 2);
+      hc.className = control.styleName('Top');
+      var hc = control._hTop = RBuilder.appendTableCell(o._hTop, null, ci + 1);
+      hc.className = control.styleName('Top');
+      var hc = control._hTopR = RBuilder.appendTableCell(o._hTop, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Top');
+      hc.className = control.styleName('Top');
       // 建立左边线
-      var hc = p._hLeft = RBuilder.appendTableCell(o._hLine, null, ci);
+      var hc = control._hLeft = RBuilder.appendTableCell(o._hLine, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Left');
+      hc.className = control.styleName('Left');
       //RBuilder.appendEmpty(hc);
       // 建立按键
-      var hc = p._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
-      p.attachEvent('onButtonEnter', hc);
-      p.attachEvent('onButtonLeave', hc);
-      p.attachEvent('onHeadMouseDown', hc);
+      var hc = control._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
+      control.attachEvent('onButtonEnter', hc);
+      control.attachEvent('onButtonLeave', hc);
+      control.attachEvent('onHeadMouseDown', hc);
       hc.width = 1;
-      var hb = p._hButton = RBuilder.append(hc, 'DIV', p.styleName('Button'));
+      var hb = control._hButton = RBuilder.appendDiv(hc, control.styleName('Button'));
       // 建立按键图标
-      if(p.icon){
-         p._hIcon = RBuilder.appendIcon(hb, null, p.icon);
+      if(control.icon){
+         control._hIcon = RBuilder.appendIcon(hb, null, control.icon);
       }
       // 建立按键标签
-      if(p.label){
-         p._hText = RBuilder.appendSpan(hb, p.styleName('ButtonText'));
-         p._hText.innerText = ' ' + p.label();
+      if(control.label){
+         control._hText = RBuilder.appendSpan(hb, control.styleName('ButtonText'));
+         control._hText.innerText = ' ' + control.label();
       }
       // 建立右边线
-      var hc = p._hRight = RBuilder.appendTableCell(o._hLine, null, ci + 2);
+      var hc = control._hRight = RBuilder.appendTableCell(o._hLine, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Right')
+      hc.className = control.styleName('Right')
       //RBuilder.appendEmpty(hc);
       // 建立标题底边线
-      var hc = p._hBottomL = RBuilder.appendTableCell(o._hBottom, null, ci);
+      var hc = control._hBottomL = RBuilder.appendTableCell(o._hBottom, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Bottom');
-      var hc = p._hBottom = RBuilder.appendTableCell(o._hBottom, null, ci + 1);
-      hc.className = p.styleName('Bottom');
-      var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
+      hc.className = control.styleName('Bottom');
+      var hc = control._hBottom = RBuilder.appendTableCell(o._hBottom, null, ci + 1);
+      hc.className = control.styleName('Bottom');
+      var hc = control._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Bottom');
+      hc.className = control.styleName('Bottom');
       //..........................................................
       // 追加数据信息
       var hr = RBuilder.appendTableRow(o._hPanel);
-      if(p.index){
+      if(control.index){
          hr.style.display = 'none';
       }
       var hc = RBuilder.appendTableCell(hr);
-      p._hForm = hr;
+      control._hForm = hr;
       hc.style.verticalAlign = 'top';
-      hc.appendChild(p._hPanel);
+      hc.appendChild(control._hPanel);
       // 选中第一个
       o.selectByIndex(0);
    }
@@ -241,31 +241,33 @@ function FUiPageControl_appendChild(p){
 // <T>根据名称获得页面。</T>
 //
 // @method
-// @param p:name:String 名称
+// @param name:String 名称
 // @return FUiPageSheet 页面
 //==========================================================
-function FUiPageControl_sheet(p){
-   return this._sheets.get(p);
+function FUiPageControl_sheet(name){
+   return this._sheets.get(name);
 }
 
 //==========================================================
 // <T>选中活动页面。</T>
 //
 // @method
-// @param p:sheet:FUiPageSheet 页面
+// @param sheet:FUiPageSheet 页面
 //==========================================================
-function FUiPageControl_select(p){
+function FUiPageControl_select(sheet){
    var o = this;
-   var ss = o._sheets;
-   var c = ss.count();
-   o._activeSheet = p;
-   for(var i = 0; i < c; i++){
-      var s = o._sheets.value(i);
-      if(s != p){
-         s.select(false);
+   o._activeSheet = sheet;
+   // 取消其他页选中
+   var sheets = o._sheets;
+   var count = sheets.count();
+   for(var i = 0; i < count; i++){
+      var findSheet = sheets.at(i);
+      if(findSheet != sheet){
+         findSheet.select(false);
       }
    }
-   p.select(true);
+   // 选中当前页
+   sheet.select(true);
 }
 
 //==========================================================

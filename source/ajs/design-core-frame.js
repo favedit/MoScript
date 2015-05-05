@@ -459,8 +459,8 @@ function FDsCommonLightPropertyFrame_dispose(){
 }
 function FDsCommonMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._activeSpace                 = null;
-   o._activeMaterial              = null;
+   o._activeSpace           = null;
+   o._activeMaterial        = null;
    o._controlOptionDouble   = null;
    o._controlEffectCode     = null;
    o._controlOptionAlpha    = null;
@@ -1017,13 +1017,16 @@ function FDsCommonRenderablePropertyFrame_construct(){
 }
 function FDsCommonRenderablePropertyFrame_loadObject(space, renderable){
    var o = this;
-   var material = renderable.materialReference();
+   var material = renderable.material();
    var resource = renderable.renderable().resource();
    o._activeRenderable = renderable;
+   o._activeMaterial = material;
    o._controlGuid.set(resource.guid());
    o._controlCode.set(resource.code());
    o._controlLabel.set(resource.label());
    o._frameRenderable.loadObject(space, renderable);
+   o._frameMaterial1.loadObject(space, material);
+   o._frameMaterial2.loadObject(space, material);
 }
 function FDsCommonRenderablePropertyFrame_dispose(){
    var o = this;

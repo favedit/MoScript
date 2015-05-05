@@ -24,7 +24,6 @@
 // @history 150202
 //==========================================================
 function FUiPageSheet(o){
-   //o = RClass.inherits(this, o, FUiLayout, MDisplayAble);
    o = RClass.inherits(this, o, FUiLayout);
    //..........................................................
    // @property
@@ -114,9 +113,9 @@ function FUiPageSheet_onBuildPanel(event){
 // <T>按键获得热点处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FUiPageSheet_onButtonEnter(p){
+function FUiPageSheet_onButtonEnter(event){
    var o = this;
    if(!o._selected){
       o._hButton.className = o.styleName('ButtonHover');
@@ -127,9 +126,9 @@ function FUiPageSheet_onButtonEnter(p){
 // <T>按键失去热点处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FUiPageSheet_onButtonLeave(p){
+function FUiPageSheet_onButtonLeave(event){
    var o = this;
    if(!o._selected){
       o._hButton.className = o.styleName('Button');
@@ -140,9 +139,9 @@ function FUiPageSheet_onButtonLeave(p){
 // <T>头部区域鼠标落下处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FUiPageSheet_onHeadMouseDown(p){
+function FUiPageSheet_onHeadMouseDown(event){
    var o = this;
    o._parent.select(o);
 }
@@ -164,46 +163,46 @@ function FUiPageSheet_construct(){
 // <T>内部选中处理。</T>
 //
 // @method
-// @param p:flag:Boolean 选中标志
+// @param flag:Boolean 选中标志
 //==========================================================
-function FUiPageSheet_innerSelect(p){
+function FUiPageSheet_innerSelect(flag){
    var o = this;
    var b = o._parent;
-   if(p && !o._hasBuilded){
+   if(flag && !o._hasBuilded){
       //o.buildChildren();
       o._hasBuilded = true;
    }
    var first = (o._index == 0);
    var prior = (b._activeSheet._index - 1 == o._index);
    // Select
-   if(o._selected != p){
-      if(p){
+   if(o._selected != flag){
+      if(flag){
          o.lsnsSelect.process();
       }
-      o._selected = p;
+      o._selected = flag;
    }
-   // Style
-   o._hButton.className = p ? o.styleName('ButtonSelect') : o.styleName('Button');
-   o._hTop.className = p ? o.styleName('TopSelect') : o.styleName('Top');
-   o._hLeft.className = p ? o.styleName('LeftSelect') : (first ? o.styleName('Right') : o.styleName('Left'));
-   o._hBottomL.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hBottom.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hBottomR.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hRight.className = p ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
-   // Sheet
-   RHtml.visibleSet(o._hForm, p);
+   // 设置样式
+   o._hButton.className = flag ? o.styleName('ButtonSelect') : o.styleName('Button');
+   o._hTop.className = flag ? o.styleName('TopSelect') : o.styleName('Top');
+   o._hLeft.className = flag ? o.styleName('LeftSelect') : (first ? o.styleName('Right') : o.styleName('Left'));
+   o._hBottomL.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hBottom.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hBottomR.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hRight.className = flag ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
+   // 设置表单可见性
+   RHtml.visibleSet(o._hForm, flag);
 }
 
 //==========================================================
 // <T>选中处理。</T>
 //
 // @method
-// @param p:flag:Boolean 选中标志
+// @param flag:Boolean 选中标志
 //==========================================================
-function FUiPageSheet_select(p){
+function FUiPageSheet_select(flag){
    var o = this;
-   o.innerSelect(p);
-   if(p){
+   o.innerSelect(flag);
+   if(flag){
       o.psRefresh();
       o.psResize();
    }
@@ -213,11 +212,11 @@ function FUiPageSheet_select(p){
 // <T>设置可见处理。</T>
 //
 // @method
-// @param p:flag:Boolean 可见标志
+// @param flag:Boolean 可见标志
 //==========================================================
-function FUiPageSheet_setVisible(p){
+function FUiPageSheet_setVisible(flag){
    var o = this;
-   RHtml.displaySet(o._hPanel, p);
+   RHtml.displaySet(o._hPanel, flag);
 }
 
 //==========================================================

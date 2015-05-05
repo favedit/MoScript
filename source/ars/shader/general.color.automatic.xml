@@ -320,14 +320,13 @@
          // 计算顶点颜色
          <shader:true source='option.color'>
             <shader:true source='vertex.attribute.color'>
+               vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
+               vertexColor = vertexColor / (fc_color.y - fc_color.x);
+               vertexColor = (vertexColor - fc_color.z) * fc_color.w + fc_color.z;
+               result = result * vertexColor;
                result.rgb *= v_color.rgb * fc_vertex_color.rgb;
             </shader:true>
          </shader:true>
-         //............................................................
-         // 计算颜色
-         result = max(min(result, fc_color.y) - fc_color.x, 0.0);
-         result = result / (fc_color.y - fc_color.x);
-         result = (result - fc_color.z) * fc_color.w + fc_color.z;
          //............................................................
          <shader:true source='support.alpha'>
             result.a = color.a * fc_alpha.y;

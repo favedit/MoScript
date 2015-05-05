@@ -39,6 +39,7 @@ function RE3dEngine_onSetup(){
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.parallax', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    // 阴影效果器

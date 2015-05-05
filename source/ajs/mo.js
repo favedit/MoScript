@@ -21718,6 +21718,7 @@ function RE3dEngine_onSetup(){
    effectConsole.register('general.color.flat', FE3dGeneralColorFlatEffect);
    effectConsole.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.parallax', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
@@ -47669,10 +47670,10 @@ function FUiPageControl(o){
    o._sheets          = null;
    o._activeSheet     = null;
    o._esize           = EUiSize.Both;
-   o._hTop             = null;
-   o._hLine            = null;
-   o._hBottom          = null;
-   o._hSheets          = null;
+   o._hTop            = null;
+   o._hLine           = null;
+   o._hBottom         = null;
+   o._hSheets         = null;
    o.onBuildPanel     = FUiPageControl_onBuildPanel;
    o.onBuild          = FUiPageControl_onBuild;
    o.oeRefresh        = FUiPageControl_oeRefresh;
@@ -47685,14 +47686,14 @@ function FUiPageControl(o){
    o.dispose          = FUiPageControl_dispose;
    return o;
 }
-function FUiPageControl_onBuildPanel(p){
+function FUiPageControl_onBuildPanel(event){
    var o = this;
-   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
    h.width = '100%';
 }
-function FUiPageControl_onBuild(p){
+function FUiPageControl_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuild.call(o, p);
+   o.__base.FUiContainer.onBuild.call(o, event);
    var h = o._hPanel;
    var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
    var hf = o.hTitleForm = RBuilder.appendTable(hc, o.styleName('TitleForm'));
@@ -47712,10 +47713,10 @@ function FUiPageControl_onBuild(p){
    var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
    hc.className = o.styleName('Bottom', FUiPageSheet);
 }
-function FUiPageControl_oeRefresh(p){
+function FUiPageControl_oeRefresh(event){
    var o = this;
-   var r = o.__base.FUiContainer.oeRefresh.call(o, p);
-   if(p.isBefore()){
+   var r = o.__base.FUiContainer.oeRefresh.call(o, event);
+   if(event.isBefore()){
       if(o._sheets.count()){
          if(o._activeSheet){
             o._activeSheet.oeRefresh(e);
@@ -47734,71 +47735,71 @@ function FUiPageControl_construct(){
    o.__base.FUiContainer.construct.call(o);
    o._sheets = new TDictionary();
 }
-function FUiPageControl_appendChild(p){
+function FUiPageControl_appendChild(control){
    var o = this;
-   if(RClass.isClass(p, FUiPageSheet)){
+   if(RClass.isClass(control, FUiPageSheet)){
       var ci = o._hLast.cellIndex;
-      var hc = p._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
+      var hc = control._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Top');
-      var hc = p._hTop = RBuilder.appendTableCell(o._hTop, null, ci + 1);
-      hc.className = p.styleName('Top');
-      var hc = p._hTopR = RBuilder.appendTableCell(o._hTop, null, ci + 2);
+      hc.className = control.styleName('Top');
+      var hc = control._hTop = RBuilder.appendTableCell(o._hTop, null, ci + 1);
+      hc.className = control.styleName('Top');
+      var hc = control._hTopR = RBuilder.appendTableCell(o._hTop, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Top');
-      var hc = p._hLeft = RBuilder.appendTableCell(o._hLine, null, ci);
+      hc.className = control.styleName('Top');
+      var hc = control._hLeft = RBuilder.appendTableCell(o._hLine, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Left');
-      var hc = p._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
-      p.attachEvent('onButtonEnter', hc);
-      p.attachEvent('onButtonLeave', hc);
-      p.attachEvent('onHeadMouseDown', hc);
+      hc.className = control.styleName('Left');
+      var hc = control._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
+      control.attachEvent('onButtonEnter', hc);
+      control.attachEvent('onButtonLeave', hc);
+      control.attachEvent('onHeadMouseDown', hc);
       hc.width = 1;
-      var hb = p._hButton = RBuilder.append(hc, 'DIV', p.styleName('Button'));
-      if(p.icon){
-         p._hIcon = RBuilder.appendIcon(hb, null, p.icon);
+      var hb = control._hButton = RBuilder.appendDiv(hc, control.styleName('Button'));
+      if(control.icon){
+         control._hIcon = RBuilder.appendIcon(hb, null, control.icon);
       }
-      if(p.label){
-         p._hText = RBuilder.appendSpan(hb, p.styleName('ButtonText'));
-         p._hText.innerText = ' ' + p.label();
+      if(control.label){
+         control._hText = RBuilder.appendSpan(hb, control.styleName('ButtonText'));
+         control._hText.innerText = ' ' + control.label();
       }
-      var hc = p._hRight = RBuilder.appendTableCell(o._hLine, null, ci + 2);
+      var hc = control._hRight = RBuilder.appendTableCell(o._hLine, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Right')
-      var hc = p._hBottomL = RBuilder.appendTableCell(o._hBottom, null, ci);
+      hc.className = control.styleName('Right')
+      var hc = control._hBottomL = RBuilder.appendTableCell(o._hBottom, null, ci);
       hc.width = 1;
-      hc.className = p.styleName('Bottom');
-      var hc = p._hBottom = RBuilder.appendTableCell(o._hBottom, null, ci + 1);
-      hc.className = p.styleName('Bottom');
-      var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
+      hc.className = control.styleName('Bottom');
+      var hc = control._hBottom = RBuilder.appendTableCell(o._hBottom, null, ci + 1);
+      hc.className = control.styleName('Bottom');
+      var hc = control._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
-      hc.className = p.styleName('Bottom');
+      hc.className = control.styleName('Bottom');
       var hr = RBuilder.appendTableRow(o._hPanel);
-      if(p.index){
+      if(control.index){
          hr.style.display = 'none';
       }
       var hc = RBuilder.appendTableCell(hr);
-      p._hForm = hr;
+      control._hForm = hr;
       hc.style.verticalAlign = 'top';
-      hc.appendChild(p._hPanel);
+      hc.appendChild(control._hPanel);
       o.selectByIndex(0);
    }
 }
-function FUiPageControl_sheet(p){
-   return this._sheets.get(p);
+function FUiPageControl_sheet(name){
+   return this._sheets.get(name);
 }
-function FUiPageControl_select(p){
+function FUiPageControl_select(sheet){
    var o = this;
-   var ss = o._sheets;
-   var c = ss.count();
-   o._activeSheet = p;
-   for(var i = 0; i < c; i++){
-      var s = o._sheets.value(i);
-      if(s != p){
-         s.select(false);
+   o._activeSheet = sheet;
+   var sheets = o._sheets;
+   var count = sheets.count();
+   for(var i = 0; i < count; i++){
+      var findSheet = sheets.at(i);
+      if(findSheet != sheet){
+         findSheet.select(false);
       }
    }
-   p.select(true);
+   sheet.select(true);
 }
 function FUiPageControl_selectByIndex(n){
    var o = this;
@@ -47881,19 +47882,19 @@ function FUiPageSheet_onBuildPanel(event){
    hForm.style.width = '100%';
    hForm.style.height = '100%';
 }
-function FUiPageSheet_onButtonEnter(p){
+function FUiPageSheet_onButtonEnter(event){
    var o = this;
    if(!o._selected){
       o._hButton.className = o.styleName('ButtonHover');
    }
 }
-function FUiPageSheet_onButtonLeave(p){
+function FUiPageSheet_onButtonLeave(event){
    var o = this;
    if(!o._selected){
       o._hButton.className = o.styleName('Button');
    }
 }
-function FUiPageSheet_onHeadMouseDown(p){
+function FUiPageSheet_onHeadMouseDown(event){
    var o = this;
    o._parent.select(o);
 }
@@ -47902,40 +47903,40 @@ function FUiPageSheet_construct(){
    o.__base.FUiLayout.construct.call(o);
    o.lsnsSelect = new TListeners();
 }
-function FUiPageSheet_innerSelect(p){
+function FUiPageSheet_innerSelect(flag){
    var o = this;
    var b = o._parent;
-   if(p && !o._hasBuilded){
+   if(flag && !o._hasBuilded){
       o._hasBuilded = true;
    }
    var first = (o._index == 0);
    var prior = (b._activeSheet._index - 1 == o._index);
-   if(o._selected != p){
-      if(p){
+   if(o._selected != flag){
+      if(flag){
          o.lsnsSelect.process();
       }
-      o._selected = p;
+      o._selected = flag;
    }
-   o._hButton.className = p ? o.styleName('ButtonSelect') : o.styleName('Button');
-   o._hTop.className = p ? o.styleName('TopSelect') : o.styleName('Top');
-   o._hLeft.className = p ? o.styleName('LeftSelect') : (first ? o.styleName('Right') : o.styleName('Left'));
-   o._hBottomL.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hBottom.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hBottomR.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
-   o._hRight.className = p ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
-   RHtml.visibleSet(o._hForm, p);
+   o._hButton.className = flag ? o.styleName('ButtonSelect') : o.styleName('Button');
+   o._hTop.className = flag ? o.styleName('TopSelect') : o.styleName('Top');
+   o._hLeft.className = flag ? o.styleName('LeftSelect') : (first ? o.styleName('Right') : o.styleName('Left'));
+   o._hBottomL.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hBottom.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hBottomR.className = flag ? o.styleName('BottomSelect') : o.styleName('Bottom');
+   o._hRight.className = flag ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
+   RHtml.visibleSet(o._hForm, flag);
 }
-function FUiPageSheet_select(p){
+function FUiPageSheet_select(flag){
    var o = this;
-   o.innerSelect(p);
-   if(p){
+   o.innerSelect(flag);
+   if(flag){
       o.psRefresh();
       o.psResize();
    }
 }
-function FUiPageSheet_setVisible(p){
+function FUiPageSheet_setVisible(flag){
    var o = this;
-   RHtml.displaySet(o._hPanel, p);
+   RHtml.displaySet(o._hPanel, flag);
 }
 function FUiPageSheet_dispose(){
    var o = this;
@@ -56634,8 +56635,8 @@ function FDsCommonLightPropertyFrame_dispose(){
 }
 function FDsCommonMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._activeSpace                 = null;
-   o._activeMaterial              = null;
+   o._activeSpace           = null;
+   o._activeMaterial        = null;
    o._controlOptionDouble   = null;
    o._controlEffectCode     = null;
    o._controlOptionAlpha    = null;
@@ -57192,13 +57193,16 @@ function FDsCommonRenderablePropertyFrame_construct(){
 }
 function FDsCommonRenderablePropertyFrame_loadObject(space, renderable){
    var o = this;
-   var material = renderable.materialReference();
+   var material = renderable.material();
    var resource = renderable.renderable().resource();
    o._activeRenderable = renderable;
+   o._activeMaterial = material;
    o._controlGuid.set(resource.guid());
    o._controlCode.set(resource.code());
    o._controlLabel.set(resource.label());
    o._frameRenderable.loadObject(space, renderable);
+   o._frameMaterial1.loadObject(space, material);
+   o._frameMaterial2.loadObject(space, material);
 }
 function FDsCommonRenderablePropertyFrame_dispose(){
    var o = this;
