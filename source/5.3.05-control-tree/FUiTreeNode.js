@@ -222,15 +222,15 @@ function FUiTreeNode_onNodeEnter(e){
 // <T>鼠标移出节点的事件。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param event:TEvent 事件对象
 //==========================================================
-function FUiTreeNode_onNodeLeave(e){
+function FUiTreeNode_onNodeLeave(event){
    var o = this;
-   var t = o._tree;
-   if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
+   var tree = o._tree;
+   if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = false;
       o.refreshStyle();
-      t.lsnsLeave.process(t, o);
+      tree.lsnsLeave.process(tree, o);
    }
 }
 
@@ -238,12 +238,12 @@ function FUiTreeNode_onNodeLeave(e){
 // <T>鼠标点击节点的事件。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param event:TEvent 事件对象
 //==========================================================
-function FUiTreeNode_onNodeClick(e){
+function FUiTreeNode_onNodeClick(event){
    var o = this;
-   var t = o._tree;
-   var esn = e.hSender.tagName;
+   var tree = o._tree;
+   var esn = event.hSender.tagName;
    // 处理复选框的情况
    if('INPUT' == esn){
       return;
@@ -251,11 +251,11 @@ function FUiTreeNode_onNodeClick(e){
    // 检查点击的是展开图标还是节点图标
    var isImg = false;
    if('IMG' == esn){
-      isImg = ('image' == e.hSender._linkType);
+      isImg = ('image' == event.hSender._linkType);
    }
    // 查询点击节点是否已获焦点对象的父节点
    var isParent = false;
-   var find = t._focusNode;
+   var find = tree._focusNode;
    while(find){
       if(find == o){
          isParent = true;
@@ -265,13 +265,13 @@ function FUiTreeNode_onNodeClick(e){
    }
    // 设置焦点节点
    if(!isImg || (isImg && (isParent || !o._child))){
-      t.selectNode(o, true);
+      tree.selectNode(o, true);
    }
    // 判断是否需要加载节点
    if(!o._statusLoaded && o._child){
       o.extend(true);
       if(!isImg){
-         t.lsnsClick.process(t, o);
+         tree.lsnsClick.process(tree, o);
       }
    }else{
       // 已经是加载过的节点
@@ -287,7 +287,7 @@ function FUiTreeNode_onNodeClick(e){
         }
       }
       if((isImg && isParent) || (isImg && !o._child) || !isImg){
-         t.lsnsClick.process(t, o);
+         tree.lsnsClick.process(tree, o);
       }
    }
 }

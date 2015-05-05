@@ -17,6 +17,7 @@ function FE3sProjection(o){
    o.znear       = FE3sProjection_znear;
    o.zfar        = FE3sProjection_zfar;
    o.unserialize = FE3sProjection_unserialize;
+   o.saveConfig  = FE3sProjection_saveConfig;
    return o;
 }
 
@@ -63,4 +64,19 @@ function FE3sProjection_unserialize(p){
    o._angle = p.readFloat();
    o._znear = p.readFloat();
    o._zfar = p.readFloat();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FE3sProjection_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   // 存储属性
+   xconfig.setFloat('angle', o._angle);
+   xconfig.setFloat('znear', o._znear);
+   xconfig.setFloat('zfar', o._zfar);
 }

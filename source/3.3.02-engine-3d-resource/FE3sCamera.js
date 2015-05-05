@@ -8,29 +8,30 @@ function FE3sCamera(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute 属性
-   o._typeName    = null;
+   o._typeCd     = null;
    // @attribute 中心
    //o._centerFront = null;
    //o._centerBack  = null;
    // @attribute 位置
-   o._position    = null;
+   o._position   = null;
    // @attribute 方向
-   o._direction   = null;
+   o._direction  = null;
    // @attribute 焦平面
    //o._focalNear   = null;
    //o._focalFar    = null;
    // @attribute 视角
-   o._projection  = null;
+   o._projection = null;
    //..........................................................
    // @method
-   o.construct    = FE3sCamera_construct;
+   o.construct   = FE3sCamera_construct;
    // @method
-   o.typeName     = FE3sCamera_typeName;
-   o.position     = FE3sCamera_position;
-   o.direction    = FE3sCamera_direction;
-   o.projection   = FE3sCamera_projection;
+   o.typeCd      = FE3sCamera_typeCd;
+   o.position    = FE3sCamera_position;
+   o.direction   = FE3sCamera_direction;
+   o.projection  = FE3sCamera_projection;
    // @method
-   o.unserialize  = FE3sCamera_unserialize;
+   o.unserialize = FE3sCamera_unserialize;
+   o.saveConfig  = FE3sCamera_saveConfig;
    return o;
 }
 
@@ -54,8 +55,8 @@ function FE3sCamera_construct(){
 // @method
 // @return String 类型名称
 //==========================================================
-function FE3sCamera_typeName(){
-   return this._typeName;
+function FE3sCamera_typeCd(){
+   return this._typeCd;
 }
 
 //==========================================================
@@ -98,7 +99,7 @@ function FE3sCamera_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
-   o._typeName = p.readString();
+   o._typeCd = p.readString();
    // 读取中心
    //o._centerFront = p.readFloat();
    //o._centerBack = p.readFloat();
@@ -111,4 +112,20 @@ function FE3sCamera_unserialize(p){
    //o._focalFar = p.readFloat();
    // 读取视角
    o._projection.unserialize(p);
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FE3sCamera_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   // 存储属性
+   xconfig.set('position', o._position.toString());
+   xconfig.set('direction', o._direction.toString());
+   // 存储相机
+   o._projection.saveConfig(xconfig.create('Projection'));
 }

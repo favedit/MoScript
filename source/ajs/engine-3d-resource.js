@@ -414,16 +414,17 @@ function FE3sBoneRefer_unserialize(p){
 }
 function FE3sCamera(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._typeName    = null;
-   o._position    = null;
-   o._direction   = null;
-   o._projection  = null;
-   o.construct    = FE3sCamera_construct;
-   o.typeName     = FE3sCamera_typeName;
-   o.position     = FE3sCamera_position;
-   o.direction    = FE3sCamera_direction;
-   o.projection   = FE3sCamera_projection;
-   o.unserialize  = FE3sCamera_unserialize;
+   o._typeCd     = null;
+   o._position   = null;
+   o._direction  = null;
+   o._projection = null;
+   o.construct   = FE3sCamera_construct;
+   o.typeCd      = FE3sCamera_typeCd;
+   o.position    = FE3sCamera_position;
+   o.direction   = FE3sCamera_direction;
+   o.projection  = FE3sCamera_projection;
+   o.unserialize = FE3sCamera_unserialize;
+   o.saveConfig  = FE3sCamera_saveConfig;
    return o;
 }
 function FE3sCamera_construct(){
@@ -433,8 +434,8 @@ function FE3sCamera_construct(){
    o._direction = new SVector3();
    o._projection = RClass.create(FE3sProjection);
 }
-function FE3sCamera_typeName(){
-   return this._typeName;
+function FE3sCamera_typeCd(){
+   return this._typeCd;
 }
 function FE3sCamera_position(){
    return this._position;
@@ -448,10 +449,17 @@ function FE3sCamera_projection(){
 function FE3sCamera_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
+   o._typeCd = p.readString();
    o._position.unserialize(p);
    o._direction.unserialize(p);
    o._projection.unserialize(p);
+}
+function FE3sCamera_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('position', o._position.toString());
+   xconfig.set('direction', o._direction.toString());
+   o._projection.saveConfig(xconfig.create('Projection'));
 }
 function FE3sComponent(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -1549,6 +1557,7 @@ function FE3sProjection(o){
    o.znear       = FE3sProjection_znear;
    o.zfar        = FE3sProjection_zfar;
    o.unserialize = FE3sProjection_unserialize;
+   o.saveConfig  = FE3sProjection_saveConfig;
    return o;
 }
 function FE3sProjection_angle(){
@@ -1566,6 +1575,13 @@ function FE3sProjection_unserialize(p){
    o._angle = p.readFloat();
    o._znear = p.readFloat();
    o._zfar = p.readFloat();
+}
+function FE3sProjection_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.setFloat('angle', o._angle);
+   xconfig.setFloat('znear', o._znear);
+   xconfig.setFloat('zfar', o._zfar);
 }
 function FE3sRegion(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -1645,13 +1661,14 @@ function FE3sRegion_unserialize(p){
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }
-function FE3sRegion_saveConfig(p){
+function FE3sRegion_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('color', o._backgroundColor.toString());
-   p.setFloat('move_speed', o._moveSpeed);
-   p.setFloat('rotation_key_speed', o._rotationKeySpeed);
-   p.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('color', o._backgroundColor.toString());
+   xconfig.setFloat('move_speed', o._moveSpeed);
+   xconfig.setFloat('rotation_key_speed', o._rotationKeySpeed);
+   xconfig.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   o._camera.saveConfig(xconfig.create('Camera'));
 }
 function FE3sRenderable(o){
    o = RClass.inherits(this, o, FE3sDrawable);

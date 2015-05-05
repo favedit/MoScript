@@ -430,6 +430,7 @@ function FE3dCamera(o){
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
    o.loadResource    = FE3dCamera_loadResource;
+   o.commitResource  = FE3dCamera_commitResource;
    o.update          = FE3dCamera_update;
    return o;
 }
@@ -467,6 +468,12 @@ function FE3dCamera_loadResource(resource){
    projection._znear = resourceProjection.znear();
    projection._zfar = resourceProjection.zfar();
    projection.update();
+}
+function FE3dCamera_commitResource(){
+   var o = this;
+   var resource = o._resource;
+   resource._position.assign(o._position);
+   resource._direction.assign(o._direction);
 }
 function FE3dCamera_update(){
    var o = this;
@@ -1549,7 +1556,7 @@ function FE3dSceneCanvas(o){
    o.onTouchStart           = FE3dSceneCanvas_onTouchStart;
    o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
    o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
-   o.onDataLoaded            = FE3dSceneCanvas_onDataLoaded;
+   o.onDataLoaded           = FE3dSceneCanvas_onDataLoaded;
    o.onResize               = FE3dSceneCanvas_onResize;
    o.construct              = FE3dSceneCanvas_construct;
    o.testPlay               = FE3dSceneCanvas_testPlay;
@@ -1790,7 +1797,7 @@ function FE3dSceneCanvas_doAction(e, p, f){
          break;
    }
 }
-function FE3dSceneCanvas_loadByGuid(p){
+function FE3dSceneCanvas_loadByGuid(guid){
    var o = this;
    var sceneConsole = RConsole.find(FE3dSceneConsole);
    if(o._activeSpace){
@@ -1983,9 +1990,11 @@ function FE3dSceneDisplay_loadTemplate(template){
       var material = renderable.material();
       var materialGuid = material.guid();
       var displayMaterial = parentMaterials.get(materialGuid);
-      displayMaterial.loadParent(material);
-      displayMaterial.reloadResource();
-      renderable.setMaterial(displayMaterial);
+      if(displayMaterial){
+         displayMaterial.loadParent(material);
+         displayMaterial.reloadResource();
+         renderable.setMaterial(displayMaterial);
+      }
    }
    o.pushDisplay(sprite);
    var animations = sprite.animations();
@@ -2490,6 +2499,7 @@ function FE3dSpace(o){
    o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
    o.loadLayerResource     = FE3dSpace_loadLayerResource;
    o.loadResource          = FE3dSpace_loadResource;
+   o.commitResource        = FE3dSpace_commitResource;
    o.dirty                 = FE3dSpace_dirty;
    o.processLoad           = FE3dSpace_processLoad;
    o.active                = FE3dSpace_active;
@@ -2605,6 +2615,11 @@ function FE3dSpace_loadResource(resource){
          o.loadLayerResource(layer);
       }
    }
+}
+function FE3dSpace_commitResource(){
+   var o = this;
+   var camera = o._region.camera();
+   camera.commitResource();
 }
 function FE3dSpace_dirty(){
    this._dirty = true;

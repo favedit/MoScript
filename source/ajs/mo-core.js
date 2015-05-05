@@ -9443,13 +9443,14 @@ function MDataView_setDouble(p, v){
 }
 function MListener(o){
    o = RClass.inherits(this, o);
-   o._listenerss      = null;
-   o.addListener     = MListener_addListener;
-   o.setListener     = MListener_setListener;
-   o.removeListener  = MListener_removeListener;
-   o.clearListeners  = MListener_clearListeners;
-   o.processListener = MListener_processListener;
-   o.dispose         = MListener_dispose;
+   o._listenerss       = null;
+   o.addListener       = MListener_addListener;
+   o.setListener       = MListener_setListener;
+   o.removeListener    = MListener_removeListener;
+   o.clearListeners    = MListener_clearListeners;
+   o.clearAllListeners = MListener_clearAllListeners;
+   o.processListener   = MListener_processListener;
+   o.dispose           = MListener_dispose;
    return o;
 }
 function MListener_addListener(name, owner, method){
@@ -9489,6 +9490,19 @@ function MListener_clearListeners(name){
       var listeners = listenerss.get(name);
       if(listeners){
          listeners.clear();
+      }
+   }
+}
+function MListener_clearAllListeners(){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var count = listenerss.count();
+      for(var i = 0; i < count; i++){
+         var listeners = listenerss.at(i);
+         if(listeners){
+            listeners.clear();
+         }
       }
    }
 }

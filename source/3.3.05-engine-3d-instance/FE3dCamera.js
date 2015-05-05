@@ -24,6 +24,7 @@ function FE3dCamera(o){
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
    o.loadResource    = FE3dCamera_loadResource;
+   o.commitResource  = FE3dCamera_commitResource;
    // @method
    o.update          = FE3dCamera_update;
    return o;
@@ -107,6 +108,18 @@ function FE3dCamera_loadResource(resource){
    projection._zfar = resourceProjection.zfar();
    projection.update();
    //cameraProjection.loadResource(rcv);
+}
+
+//==========================================================
+// <T>提交资源。</T>
+//
+// @method
+//==========================================================
+function FE3dCamera_commitResource(){
+   var o = this;
+   var resource = o._resource;
+   resource._position.assign(o._position);
+   resource._direction.assign(o._direction);
 }
 
 //==========================================================

@@ -239,7 +239,9 @@ function FDsSpaceCanvas_construct(){
 function FDsSpaceCanvas_innerSelectRenderable(renderable){
    var o = this;
    renderable._optionSelected = true;
-   renderable.showBoundBox();
+   if(RClass.isClass(renderable, MDsBoundBox)){
+      renderable.showBoundBox();
+   }
    o._selectRenderables.push(renderable);
 }
 
@@ -298,7 +300,9 @@ function FDsSpaceCanvas_selectNone(){
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
       renderable._optionSelected = false;
-      renderable.hideBoundBox();
+      if(RClass.isClass(renderable, MDsBoundBox)){
+         renderable.hideBoundBox();
+      }
    }
    // 清空属性
    o._selectObject = null;

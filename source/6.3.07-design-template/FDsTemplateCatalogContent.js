@@ -6,7 +6,7 @@
 // @history 141231
 //==========================================================
 function FDsTemplateCatalogContent(o){
-   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o = RClass.inherits(this, o, FDsCatalog);
    //..........................................................
    // @event
    o.onBuild        = FDsTemplateCatalogContent_onBuild;
@@ -22,8 +22,6 @@ function FDsTemplateCatalogContent(o){
    o.buildDisplay   = FDsTemplateCatalogContent_buildDisplay;
    o.buildSpace     = FDsTemplateCatalogContent_buildSpace;
    // @method
-   o.selectObject   = FDsTemplateCatalogContent_selectObject;
-   // @method
    o.dispose        = FDsTemplateCatalogContent_dispose;
    return o;
 }
@@ -36,9 +34,9 @@ function FDsTemplateCatalogContent(o){
 //==========================================================
 function FDsTemplateCatalogContent_onBuild(p){
    var o = this;
-   o.__base.FUiDataTreeView.onBuild.call(o, p);
+   o.__base.FDsCatalog.onBuild.call(o, p);
    // 注册事件
-   o.lsnsClick.register(o, o.onNodeClick);
+   //o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
 }
@@ -62,7 +60,7 @@ function FDsTemplateCatalogContent_onNodeClick(t, n){
 //==========================================================
 function FDsTemplateCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDsCatalog.construct.call(o);
 }
 
 //==========================================================
@@ -215,19 +213,6 @@ function FDsTemplateCatalogContent_buildSpace(space){
 }
 
 //==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param p:value:Object 对象
-//==========================================================
-function FDsTemplateCatalogContent_selectObject(p){
-   var o = this;
-   if(p != null){
-      o.processSelectedListener(p)
-   }
-}
-
-//==========================================================
 // <T>释放处理。</T>
 //
 // @method
@@ -235,5 +220,5 @@ function FDsTemplateCatalogContent_selectObject(p){
 function FDsTemplateCatalogContent_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDsCatalog.dispose.call(o);
 }

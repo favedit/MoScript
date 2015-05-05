@@ -124,9 +124,11 @@ function FE3dSceneDisplay_loadTemplate(template){
       var material = renderable.material();
       var materialGuid = material.guid();
       var displayMaterial = parentMaterials.get(materialGuid);
-      displayMaterial.loadParent(material);
-      displayMaterial.reloadResource();
-      renderable.setMaterial(displayMaterial);
+      if(displayMaterial){
+         displayMaterial.loadParent(material);
+         displayMaterial.reloadResource();
+         renderable.setMaterial(displayMaterial);
+      }
    }
    o.pushDisplay(sprite);
    //..........................................................

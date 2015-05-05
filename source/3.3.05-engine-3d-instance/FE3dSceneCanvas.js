@@ -38,7 +38,7 @@ function FE3dSceneCanvas(o){
    o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
    o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
    // @event
-   o.onDataLoaded            = FE3dSceneCanvas_onDataLoaded;
+   o.onDataLoaded           = FE3dSceneCanvas_onDataLoaded;
    o.onResize               = FE3dSceneCanvas_onResize;
    //..........................................................
    // @method
@@ -416,11 +416,12 @@ function FE3dSceneCanvas_doAction(e, p, f){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>加载场景处理。</T>
 //
 // @method
+// @param guid:String 唯一编号
 //==========================================================
-function FE3dSceneCanvas_loadByGuid(p){
+function FE3dSceneCanvas_loadByGuid(guid){
    var o = this;
    // 收集场景
    var sceneConsole = RConsole.find(FE3dSceneConsole);
@@ -434,9 +435,10 @@ function FE3dSceneCanvas_loadByGuid(p){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>加载场景处理。</T>
 //
 // @method
+// @param code:String 代码
 //==========================================================
 function FE3dSceneCanvas_loadByCode(code){
    var o = this;

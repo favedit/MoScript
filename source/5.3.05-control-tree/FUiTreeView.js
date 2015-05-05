@@ -423,16 +423,16 @@ function FUiTreeView_appendChild(child){
 function FUiTreeView_createNode(){
    var o = this;
    // 创建节点
-   var n = o._freeNodes.pop();
-   if(!n){
-      var n = RClass.create(FUiTreeNode);
-      n._tree = o;
-      n.build(o._hPanel);
+   var node = o._freeNodes.pop();
+   if(!node){
+      node = RClass.create(FUiTreeNode);
+      node._tree = o;
+      node.build(o._hPanel);
    }
    // 放入所有节点中
-   RHtml.visibleSet(n._hPanel, true);
-   o._allNodes.push(n);
-   return n;
+   RHtml.visibleSet(node._hPanel, true);
+   o._allNodes.push(node);
+   return node;
 }
 
 //==========================================================
@@ -650,6 +650,15 @@ function FUiTreeView_freeNode(node){
       node._statusLinked = false;
       // 隐藏处理
       o._hNodeRows.removeChild(node._hPanel);
+      // 释放节点事件
+      var cells = node.cells();
+      if(cells){
+         var cellCount = cells.count();
+         for(var i = 0; i < cellCount; i++){
+            var cell = cells.at(i);
+            cell.clearAllListeners();
+         }
+      }
       // 移除处理
       o._allNodes.remove(node);
       o._freeNodes.push(node);

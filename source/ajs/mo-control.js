@@ -16931,28 +16931,28 @@ function FUiTreeNode_onNodeEnter(e){
       t.lsnsEnter.process(t, o);
    }
 }
-function FUiTreeNode_onNodeLeave(e){
+function FUiTreeNode_onNodeLeave(event){
    var o = this;
-   var t = o._tree;
-   if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
+   var tree = o._tree;
+   if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = false;
       o.refreshStyle();
-      t.lsnsLeave.process(t, o);
+      tree.lsnsLeave.process(tree, o);
    }
 }
-function FUiTreeNode_onNodeClick(e){
+function FUiTreeNode_onNodeClick(event){
    var o = this;
-   var t = o._tree;
-   var esn = e.hSender.tagName;
+   var tree = o._tree;
+   var esn = event.hSender.tagName;
    if('INPUT' == esn){
       return;
    }
    var isImg = false;
    if('IMG' == esn){
-      isImg = ('image' == e.hSender._linkType);
+      isImg = ('image' == event.hSender._linkType);
    }
    var isParent = false;
-   var find = t._focusNode;
+   var find = tree._focusNode;
    while(find){
       if(find == o){
          isParent = true;
@@ -16961,12 +16961,12 @@ function FUiTreeNode_onNodeClick(e){
       find = find.parent;
    }
    if(!isImg || (isImg && (isParent || !o._child))){
-      t.selectNode(o, true);
+      tree.selectNode(o, true);
    }
    if(!o._statusLoaded && o._child){
       o.extend(true);
       if(!isImg){
-         t.lsnsClick.process(t, o);
+         tree.lsnsClick.process(tree, o);
       }
    }else{
       if(o._child){
@@ -16981,7 +16981,7 @@ function FUiTreeNode_onNodeClick(e){
         }
       }
       if((isImg && isParent) || (isImg && !o._child) || !isImg){
-         t.lsnsClick.process(t, o);
+         tree.lsnsClick.process(tree, o);
       }
    }
 }
@@ -17919,15 +17919,15 @@ function FUiTreeView_appendChild(child){
 }
 function FUiTreeView_createNode(){
    var o = this;
-   var n = o._freeNodes.pop();
-   if(!n){
-      var n = RClass.create(FUiTreeNode);
-      n._tree = o;
-      n.build(o._hPanel);
+   var node = o._freeNodes.pop();
+   if(!node){
+      node = RClass.create(FUiTreeNode);
+      node._tree = o;
+      node.build(o._hPanel);
    }
-   RHtml.visibleSet(n._hPanel, true);
-   o._allNodes.push(n);
-   return n;
+   RHtml.visibleSet(node._hPanel, true);
+   o._allNodes.push(node);
+   return node;
 }
 function FUiTreeView_appendNode(node, parent){
    var o = this;
@@ -18076,6 +18076,14 @@ function FUiTreeView_freeNode(node){
    if(node._statusLinked){
       node._statusLinked = false;
       o._hNodeRows.removeChild(node._hPanel);
+      var cells = node.cells();
+      if(cells){
+         var cellCount = cells.count();
+         for(var i = 0; i < cellCount; i++){
+            var cell = cells.at(i);
+            cell.clearAllListeners();
+         }
+      }
       o._allNodes.remove(node);
       o._freeNodes.push(node);
    }

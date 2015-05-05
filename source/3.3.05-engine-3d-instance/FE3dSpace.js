@@ -31,6 +31,7 @@ function FE3dSpace(o){
    o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
    o.loadLayerResource     = FE3dSpace_loadLayerResource;
    o.loadResource          = FE3dSpace_loadResource;
+   o.commitResource        = FE3dSpace_commitResource;
    // @method
    o.dirty                 = FE3dSpace_dirty;
    o.processLoad           = FE3dSpace_processLoad;
@@ -259,6 +260,17 @@ function FE3dSpace_loadResource(resource){
          o.loadLayerResource(layer);
       }
    }
+}
+
+//==========================================================
+// <T>提交资源。</T>
+//
+// @method
+//==========================================================
+function FE3dSpace_commitResource(){
+   var o = this;
+   var camera = o._region.camera();
+   camera.commitResource();
 }
 
 //==========================================================

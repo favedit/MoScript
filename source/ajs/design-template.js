@@ -212,7 +212,7 @@ function FDsTemplateCanvasToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsTemplateCatalogContent(o){
-   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o = RClass.inherits(this, o, FDsCatalog);
    o.onBuild        = FDsTemplateCatalogContent_onBuild;
    o.onNodeClick    = FDsTemplateCatalogContent_onNodeClick;
    o.construct      = FDsTemplateCatalogContent_construct;
@@ -221,14 +221,12 @@ function FDsTemplateCatalogContent(o){
    o.buildMaterial  = FDsTemplateCatalogContent_buildMaterial;
    o.buildDisplay   = FDsTemplateCatalogContent_buildDisplay;
    o.buildSpace     = FDsTemplateCatalogContent_buildSpace;
-   o.selectObject   = FDsTemplateCatalogContent_selectObject;
    o.dispose        = FDsTemplateCatalogContent_dispose;
    return o;
 }
 function FDsTemplateCatalogContent_onBuild(p){
    var o = this;
-   o.__base.FUiDataTreeView.onBuild.call(o, p);
-   o.lsnsClick.register(o, o.onNodeClick);
+   o.__base.FDsCatalog.onBuild.call(o, p);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
 }
 function FDsTemplateCatalogContent_onNodeClick(t, n){
@@ -238,7 +236,7 @@ function FDsTemplateCatalogContent_onNodeClick(t, n){
 }
 function FDsTemplateCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDsCatalog.construct.call(o);
 }
 function FDsTemplateCatalogContent_buildTechnique(n, p){
    var o = this;
@@ -334,15 +332,9 @@ function FDsTemplateCatalogContent_buildSpace(space){
    }
    spaceNode.click();
 }
-function FDsTemplateCatalogContent_selectObject(p){
-   var o = this;
-   if(p != null){
-      o.processSelectedListener(p)
-   }
-}
 function FDsTemplateCatalogContent_dispose(){
    var o = this;
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDsCatalog.dispose.call(o);
 }
 function FDsTemplateCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);

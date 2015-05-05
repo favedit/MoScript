@@ -1445,7 +1445,9 @@ function FDsSpaceCanvas_construct(){
 function FDsSpaceCanvas_innerSelectRenderable(renderable){
    var o = this;
    renderable._optionSelected = true;
-   renderable.showBoundBox();
+   if(RClass.isClass(renderable, MDsBoundBox)){
+      renderable.showBoundBox();
+   }
    o._selectRenderables.push(renderable);
 }
 function FDsSpaceCanvas_innerSelectDisplay(select){
@@ -1481,7 +1483,9 @@ function FDsSpaceCanvas_selectNone(){
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
       renderable._optionSelected = false;
-      renderable.hideBoundBox();
+      if(RClass.isClass(renderable, MDsBoundBox)){
+         renderable.hideBoundBox();
+      }
    }
    o._selectObject = null;
    o._selectRenderables.clear();
@@ -11244,7 +11248,7 @@ function FDsTemplateCanvasToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsTemplateCatalogContent(o){
-   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o = RClass.inherits(this, o, FDsCatalog);
    o.onBuild        = FDsTemplateCatalogContent_onBuild;
    o.onNodeClick    = FDsTemplateCatalogContent_onNodeClick;
    o.construct      = FDsTemplateCatalogContent_construct;
@@ -11253,14 +11257,12 @@ function FDsTemplateCatalogContent(o){
    o.buildMaterial  = FDsTemplateCatalogContent_buildMaterial;
    o.buildDisplay   = FDsTemplateCatalogContent_buildDisplay;
    o.buildSpace     = FDsTemplateCatalogContent_buildSpace;
-   o.selectObject   = FDsTemplateCatalogContent_selectObject;
    o.dispose        = FDsTemplateCatalogContent_dispose;
    return o;
 }
 function FDsTemplateCatalogContent_onBuild(p){
    var o = this;
-   o.__base.FUiDataTreeView.onBuild.call(o, p);
-   o.lsnsClick.register(o, o.onNodeClick);
+   o.__base.FDsCatalog.onBuild.call(o, p);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
 }
 function FDsTemplateCatalogContent_onNodeClick(t, n){
@@ -11270,7 +11272,7 @@ function FDsTemplateCatalogContent_onNodeClick(t, n){
 }
 function FDsTemplateCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDsCatalog.construct.call(o);
 }
 function FDsTemplateCatalogContent_buildTechnique(n, p){
    var o = this;
@@ -11366,15 +11368,9 @@ function FDsTemplateCatalogContent_buildSpace(space){
    }
    spaceNode.click();
 }
-function FDsTemplateCatalogContent_selectObject(p){
-   var o = this;
-   if(p != null){
-      o.processSelectedListener(p)
-   }
-}
 function FDsTemplateCatalogContent_dispose(){
    var o = this;
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDsCatalog.dispose.call(o);
 }
 function FDsTemplateCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
@@ -12552,6 +12548,7 @@ function FDsSceneMenuBar_onSaveLoad(event){
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var space = o._frameSet._activeSpace;
+   space.commitResource();
    var resource = space.resource();
    RConsole.find(FUiDesktopConsole).showUploading();
    var xconfig = new TXmlNode();
@@ -12595,8 +12592,8 @@ function FDsSceneMenuBar_onImportTemplateClick(){
 }
 function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;
-   var u = '../design/view.html?code=' + o._frameSet._sceneCode;
-   window.location = u;
+   var url = 'Space.wa?do=run&guid=' + o._frameSet._activeGuid;
+   window.location = url;
 }
 function FDsSceneMenuBar_construct(){
    var o = this;

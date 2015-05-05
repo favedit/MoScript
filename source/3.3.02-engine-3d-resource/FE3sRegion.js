@@ -229,14 +229,18 @@ function FE3sRegion_unserialize(p){
 // <T>数据内容存储到配置节点中。</T>
 //
 // @method
-// @param p:config:TXmlNode 配置节点
+// @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FE3sRegion_saveConfig(p){
+function FE3sRegion_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
    // 存储属性
-   p.set('color', o._backgroundColor.toString());
-   p.setFloat('move_speed', o._moveSpeed);
-   p.setFloat('rotation_key_speed', o._rotationKeySpeed);
-   p.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   xconfig.set('color', o._backgroundColor.toString());
+   xconfig.setFloat('move_speed', o._moveSpeed);
+   xconfig.setFloat('rotation_key_speed', o._rotationKeySpeed);
+   xconfig.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   // 存储相机
+   o._camera.saveConfig(xconfig.create('Camera'));
+   // 存储光源
+   //o._light.saveConfig(xconfig.create('Light'));
 }

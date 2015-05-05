@@ -2072,16 +2072,17 @@ function FE3sBoneRefer_unserialize(p){
 }
 function FE3sCamera(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._typeName    = null;
-   o._position    = null;
-   o._direction   = null;
-   o._projection  = null;
-   o.construct    = FE3sCamera_construct;
-   o.typeName     = FE3sCamera_typeName;
-   o.position     = FE3sCamera_position;
-   o.direction    = FE3sCamera_direction;
-   o.projection   = FE3sCamera_projection;
-   o.unserialize  = FE3sCamera_unserialize;
+   o._typeCd     = null;
+   o._position   = null;
+   o._direction  = null;
+   o._projection = null;
+   o.construct   = FE3sCamera_construct;
+   o.typeCd      = FE3sCamera_typeCd;
+   o.position    = FE3sCamera_position;
+   o.direction   = FE3sCamera_direction;
+   o.projection  = FE3sCamera_projection;
+   o.unserialize = FE3sCamera_unserialize;
+   o.saveConfig  = FE3sCamera_saveConfig;
    return o;
 }
 function FE3sCamera_construct(){
@@ -2091,8 +2092,8 @@ function FE3sCamera_construct(){
    o._direction = new SVector3();
    o._projection = RClass.create(FE3sProjection);
 }
-function FE3sCamera_typeName(){
-   return this._typeName;
+function FE3sCamera_typeCd(){
+   return this._typeCd;
 }
 function FE3sCamera_position(){
    return this._position;
@@ -2106,10 +2107,17 @@ function FE3sCamera_projection(){
 function FE3sCamera_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
+   o._typeCd = p.readString();
    o._position.unserialize(p);
    o._direction.unserialize(p);
    o._projection.unserialize(p);
+}
+function FE3sCamera_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('position', o._position.toString());
+   xconfig.set('direction', o._direction.toString());
+   o._projection.saveConfig(xconfig.create('Projection'));
 }
 function FE3sComponent(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -3207,6 +3215,7 @@ function FE3sProjection(o){
    o.znear       = FE3sProjection_znear;
    o.zfar        = FE3sProjection_zfar;
    o.unserialize = FE3sProjection_unserialize;
+   o.saveConfig  = FE3sProjection_saveConfig;
    return o;
 }
 function FE3sProjection_angle(){
@@ -3224,6 +3233,13 @@ function FE3sProjection_unserialize(p){
    o._angle = p.readFloat();
    o._znear = p.readFloat();
    o._zfar = p.readFloat();
+}
+function FE3sProjection_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.setFloat('angle', o._angle);
+   xconfig.setFloat('znear', o._znear);
+   xconfig.setFloat('zfar', o._zfar);
 }
 function FE3sRegion(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -3303,13 +3319,14 @@ function FE3sRegion_unserialize(p){
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }
-function FE3sRegion_saveConfig(p){
+function FE3sRegion_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('color', o._backgroundColor.toString());
-   p.setFloat('move_speed', o._moveSpeed);
-   p.setFloat('rotation_key_speed', o._rotationKeySpeed);
-   p.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('color', o._backgroundColor.toString());
+   xconfig.setFloat('move_speed', o._moveSpeed);
+   xconfig.setFloat('rotation_key_speed', o._rotationKeySpeed);
+   xconfig.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
+   o._camera.saveConfig(xconfig.create('Camera'));
 }
 function FE3sRenderable(o){
    o = RClass.inherits(this, o, FE3sDrawable);
@@ -7871,6 +7888,7 @@ function FE3dCamera(o){
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
    o.loadResource    = FE3dCamera_loadResource;
+   o.commitResource  = FE3dCamera_commitResource;
    o.update          = FE3dCamera_update;
    return o;
 }
@@ -7908,6 +7926,12 @@ function FE3dCamera_loadResource(resource){
    projection._znear = resourceProjection.znear();
    projection._zfar = resourceProjection.zfar();
    projection.update();
+}
+function FE3dCamera_commitResource(){
+   var o = this;
+   var resource = o._resource;
+   resource._position.assign(o._position);
+   resource._direction.assign(o._direction);
 }
 function FE3dCamera_update(){
    var o = this;
@@ -8990,7 +9014,7 @@ function FE3dSceneCanvas(o){
    o.onTouchStart           = FE3dSceneCanvas_onTouchStart;
    o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
    o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
-   o.onDataLoaded            = FE3dSceneCanvas_onDataLoaded;
+   o.onDataLoaded           = FE3dSceneCanvas_onDataLoaded;
    o.onResize               = FE3dSceneCanvas_onResize;
    o.construct              = FE3dSceneCanvas_construct;
    o.testPlay               = FE3dSceneCanvas_testPlay;
@@ -9231,7 +9255,7 @@ function FE3dSceneCanvas_doAction(e, p, f){
          break;
    }
 }
-function FE3dSceneCanvas_loadByGuid(p){
+function FE3dSceneCanvas_loadByGuid(guid){
    var o = this;
    var sceneConsole = RConsole.find(FE3dSceneConsole);
    if(o._activeSpace){
@@ -9424,9 +9448,11 @@ function FE3dSceneDisplay_loadTemplate(template){
       var material = renderable.material();
       var materialGuid = material.guid();
       var displayMaterial = parentMaterials.get(materialGuid);
-      displayMaterial.loadParent(material);
-      displayMaterial.reloadResource();
-      renderable.setMaterial(displayMaterial);
+      if(displayMaterial){
+         displayMaterial.loadParent(material);
+         displayMaterial.reloadResource();
+         renderable.setMaterial(displayMaterial);
+      }
    }
    o.pushDisplay(sprite);
    var animations = sprite.animations();
@@ -9931,6 +9957,7 @@ function FE3dSpace(o){
    o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
    o.loadLayerResource     = FE3dSpace_loadLayerResource;
    o.loadResource          = FE3dSpace_loadResource;
+   o.commitResource        = FE3dSpace_commitResource;
    o.dirty                 = FE3dSpace_dirty;
    o.processLoad           = FE3dSpace_processLoad;
    o.active                = FE3dSpace_active;
@@ -10046,6 +10073,11 @@ function FE3dSpace_loadResource(resource){
          o.loadLayerResource(layer);
       }
    }
+}
+function FE3dSpace_commitResource(){
+   var o = this;
+   var camera = o._region.camera();
+   camera.commitResource();
 }
 function FE3dSpace_dirty(){
    this._dirty = true;

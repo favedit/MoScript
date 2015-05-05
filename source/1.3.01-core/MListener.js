@@ -9,17 +9,18 @@ function MListener(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
-   o._listenerss      = null;
+   o._listenerss       = null;
    //..........................................................
    // @method
-   o.addListener     = MListener_addListener;
-   o.setListener     = MListener_setListener;
-   o.removeListener  = MListener_removeListener;
-   o.clearListeners  = MListener_clearListeners;
+   o.addListener       = MListener_addListener;
+   o.setListener       = MListener_setListener;
+   o.removeListener    = MListener_removeListener;
+   o.clearListeners    = MListener_clearListeners;
+   o.clearAllListeners = MListener_clearAllListeners;
    // @method
-   o.processListener = MListener_processListener;
+   o.processListener   = MListener_processListener;
    // @method
-   o.dispose         = MListener_dispose;
+   o.dispose           = MListener_dispose;
    return o;
 }
 
@@ -97,6 +98,25 @@ function MListener_clearListeners(name){
       var listeners = listenerss.get(name);
       if(listeners){
          listeners.clear();
+      }
+   }
+}
+
+//==========================================================
+// <T>清空全部监听器。</T>
+//
+// @method
+//==========================================================
+function MListener_clearAllListeners(){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var count = listenerss.count();
+      for(var i = 0; i < count; i++){
+         var listeners = listenerss.at(i);
+         if(listeners){
+            listeners.clear();
+         }
       }
    }
 }

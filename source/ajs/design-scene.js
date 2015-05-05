@@ -584,6 +584,7 @@ function FDsSceneMenuBar_onSaveLoad(event){
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var space = o._frameSet._activeSpace;
+   space.commitResource();
    var resource = space.resource();
    RConsole.find(FUiDesktopConsole).showUploading();
    var xconfig = new TXmlNode();
@@ -627,8 +628,8 @@ function FDsSceneMenuBar_onImportTemplateClick(){
 }
 function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;
-   var u = '../design/view.html?code=' + o._frameSet._sceneCode;
-   window.location = u;
+   var url = 'Space.wa?do=run&guid=' + o._frameSet._activeGuid;
+   window.location = url;
 }
 function FDsSceneMenuBar_construct(){
    var o = this;
