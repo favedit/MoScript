@@ -224,11 +224,15 @@ function FG3dEffectConsole_find(context, region, renderable){
    if(!RClass.isClass(context, FGraphicContext)){
       throw new TError(o, 'Unknown context.');
    }
-   // 查找技术
    // 获得效果名称
    var effectCode = renderable.material().info().effectCode;
    if(RString.isEmpty(effectCode)){
       effectCode = 'automatic'
+   }
+   if(effectCode == 'skeleton' || effectCode == 'skeleton.4'){
+      if(renderable.bones() == null){
+         effectCode = 'automatic'
+      }
    }
    var effectFlag = region.spaceName() + '.' + effectCode;
    // 查找模板

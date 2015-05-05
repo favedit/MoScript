@@ -105,6 +105,7 @@ function FDsCommonSpriteDialog_onConfirmClick(event){
    xsprite.set('display_guid', o._displayGuid);
    xsprite.set('code', o._controlCode.get());
    xsprite.set('label', o._controlLabel.get());
+   xsprite.set('template_guid', o._controlTemplateGuid.get());
    xsprite.set('template_code', o._controlTemplateCode.get());
    // 执行数据处理
    var console = RConsole.find(FDrSceneConsole);

@@ -1142,6 +1142,8 @@ function FDsPrivateSceneMenuBar_onBuilded(p){
    o.__base.FDsSceneMenuBar.onBuilded.call(o, p);
    o._controlSave.addClickListener(o, o.onSaveClick);
    o._controlCapture.addClickListener(o, o.onCaptureClick);
+   o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
+   o._controlImportTemplate.addClickListener(o, o.onImportTemplateClick);
    o._controlExecute.addClickListener(o, o.onExecuteClick);
 }
 function FDsPrivateScenePropertyToolBar(o){

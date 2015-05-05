@@ -106,7 +106,18 @@ function FDsSceneMenuBar_onCaptureClick(event){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsSceneMenuBar_onCreateLayerClick(){
+function FDsSceneMenuBar_onCreateLayerClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonLayerDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================
@@ -116,6 +127,17 @@ function FDsSceneMenuBar_onCreateLayerClick(){
 // @param event:SEvent 事件
 //==========================================================
 function FDsSceneMenuBar_onImportTemplateClick(){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   // 显示对话框
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonTemplateDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

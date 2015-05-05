@@ -16269,6 +16269,11 @@ function FG3dEffectConsole_find(context, region, renderable){
    if(RString.isEmpty(effectCode)){
       effectCode = 'automatic'
    }
+   if(effectCode == 'skeleton' || effectCode == 'skeleton.4'){
+      if(renderable.bones() == null){
+         effectCode = 'automatic'
+      }
+   }
    var effectFlag = region.spaceName() + '.' + effectCode;
    var effectTemplate = o.findTemplate(context, effectFlag);
    if(effectTemplate){
@@ -21721,6 +21726,8 @@ function RE3dEngine_onSetup(){
    effectConsole.register('general.color.parallax', FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.fur.skeleton', FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.fur.skeleton.4', FE3dGeneralColorSkeletonEffect);
    effectConsole.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
    effectConsole.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);

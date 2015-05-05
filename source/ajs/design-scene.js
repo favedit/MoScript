@@ -601,9 +601,29 @@ function FDsSceneMenuBar_onCaptureClick(event){
    var connection = canvasContent.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
-function FDsSceneMenuBar_onCreateLayerClick(){
+function FDsSceneMenuBar_onCreateLayerClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonLayerDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsSceneMenuBar_onImportTemplateClick(){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonTemplateDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;

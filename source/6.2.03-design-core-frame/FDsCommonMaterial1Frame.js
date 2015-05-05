@@ -200,6 +200,9 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    o._activeSpace = space;
    o._activeMaterial = material;
    var resource = material.resource();
+   if(!resource){
+      return;
+   }
    var infoResource = resource.info();
    // 设置参数
    o._controlOptionDouble.set(infoResource.optionDouble);

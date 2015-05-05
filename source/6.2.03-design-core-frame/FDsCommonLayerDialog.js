@@ -99,14 +99,12 @@ function FDsCommonLayerDialog_onConfirmClick(event){
    RConsole.find(FUiDesktopConsole).showUploading();
    // 获得属性
    var xaction = new TXmlNode('Action');
-   var xsprite = xaction.create('Display');
+   var xsprite = xaction.create('Layer');
    xsprite.set('space_guid', o._spaceGuid);
    xsprite.set('code', o._controlCode.get());
    xsprite.set('label', o._controlLabel.get());
-   xsprite.set('model_guid', o._controlModelGuid.get());
-   xsprite.set('model_code', o._controlModelCode.get());
    // 执行数据处理
-   var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+   var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
    connection.addLoadListener(o, o.onConfirmLoad);
 }
 

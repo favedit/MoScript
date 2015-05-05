@@ -1557,6 +1557,11 @@ function FG3dEffectConsole_find(context, region, renderable){
    if(RString.isEmpty(effectCode)){
       effectCode = 'automatic'
    }
+   if(effectCode == 'skeleton' || effectCode == 'skeleton.4'){
+      if(renderable.bones() == null){
+         effectCode = 'automatic'
+      }
+   }
    var effectFlag = region.spaceName() + '.' + effectCode;
    var effectTemplate = o.findTemplate(context, effectFlag);
    if(effectTemplate){

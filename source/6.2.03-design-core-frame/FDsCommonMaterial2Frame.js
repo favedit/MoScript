@@ -8,8 +8,8 @@ function FDsCommonMaterial2Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._scene                    = null;
-   o._material                 = null;
+   o._activeSpace              = null;
+   o._activeMaterial           = null;
    // @attribute
    o._controlDiffuseViewColor  = null;
    o._controlSpecularViewColor = null;
@@ -57,8 +57,8 @@ function FDsCommonMaterial2Frame_onBuilded(p){
 //==========================================================
 function FDsCommonMaterial2Frame_onDataChanged(p){
    var o = this;
-   var t = o._scene;
-   var m = o._material;
+   var t = o._activeSpace;
+   var m = o._activeMaterial;
    var mr = m.resource();
    var mi = mr.info();
    // 设置配置
@@ -94,26 +94,29 @@ function FDsCommonMaterial2Frame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param m:material:FE3sMaterial 材质
+// @param space:FE3dSpace 空间
+// @param material:FE3sMaterial 材质
 //==========================================================
-function FDsCommonMaterial2Frame_loadObject(s, m){
+function FDsCommonMaterial2Frame_loadObject(space, material){
    var o = this;
-   o._scene = s;
-   o._material = m;
+   o._activeSpace = space;
+   o._activeMaterial = material;
    // 设置参数
-   var mr = m.resource();
-   var mi = mr.info();
+   var resource = material.resource();
+   if(!resource){
+      return;
+   }
+   var info = resource.info();
    // 设置配置
-   o._controlOptionView.set(mi.optionView);
-   o._controlOptionNormalInvert.set(mi.optionNormalInvert);
-   o._controlOptionShadow.set(mi.optionShadow);
-   o._controlOptionShadowSelf.set(mi.optionShadowSelf);
+   o._controlOptionView.set(info.optionView);
+   o._controlOptionNormalInvert.set(info.optionNormalInvert);
+   o._controlOptionShadow.set(info.optionShadow);
+   o._controlOptionShadowSelf.set(info.optionShadowSelf);
    // 设置颜色
-   o._controlDiffuseViewColor.set(mi.diffuseViewColor);
-   o._controlSpecularViewColor.set(mi.specularViewColor);
-   o._controlSpecularViewBase.set(mi.specularViewBase);
-   o._controlSpecularViewLevel.set(mi.specularViewLevel);
+   o._controlDiffuseViewColor.set(info.diffuseViewColor);
+   o._controlSpecularViewColor.set(info.specularViewColor);
+   o._controlSpecularViewBase.set(info.specularViewBase);
+   o._controlSpecularViewLevel.set(info.specularViewLevel);
 }
 
 //==========================================================

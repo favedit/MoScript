@@ -2579,13 +2579,11 @@ function FDsCommonLayerDialog_onConfirmClick(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).showUploading();
    var xaction = new TXmlNode('Action');
-   var xsprite = xaction.create('Display');
+   var xsprite = xaction.create('Layer');
    xsprite.set('space_guid', o._spaceGuid);
    xsprite.set('code', o._controlCode.get());
    xsprite.set('label', o._controlLabel.get());
-   xsprite.set('model_guid', o._controlModelGuid.get());
-   xsprite.set('model_code', o._controlModelCode.get());
-   var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+   var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
    connection.addLoadListener(o, o.onConfirmLoad);
 }
 function FDsCommonLayerDialog_onCancelClick(event){
@@ -2802,6 +2800,9 @@ function FDsCommonMaterial1Frame_loadObject(space, material){
    o._activeSpace = space;
    o._activeMaterial = material;
    var resource = material.resource();
+   if(!resource){
+      return;
+   }
    var infoResource = resource.info();
    o._controlOptionDouble.set(infoResource.optionDouble);
    o._controlEffectCode.set(infoResource.effectCode);
@@ -2835,8 +2836,8 @@ function FDsCommonMaterial1Frame_dispose(){
 }
 function FDsCommonMaterial2Frame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._scene                    = null;
-   o._material                 = null;
+   o._activeSpace              = null;
+   o._activeMaterial           = null;
    o._controlDiffuseViewColor  = null;
    o._controlSpecularViewColor = null;
    o._controlSpecularViewBase  = null;
@@ -2862,8 +2863,8 @@ function FDsCommonMaterial2Frame_onBuilded(p){
 }
 function FDsCommonMaterial2Frame_onDataChanged(p){
    var o = this;
-   var t = o._scene;
-   var m = o._material;
+   var t = o._activeSpace;
+   var m = o._activeMaterial;
    var mr = m.resource();
    var mi = mr.info();
    mi.optionView = o._controlOptionView.get();
@@ -2882,20 +2883,23 @@ function FDsCommonMaterial2Frame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsCommonMaterial2Frame_loadObject(s, m){
+function FDsCommonMaterial2Frame_loadObject(space, material){
    var o = this;
-   o._scene = s;
-   o._material = m;
-   var mr = m.resource();
-   var mi = mr.info();
-   o._controlOptionView.set(mi.optionView);
-   o._controlOptionNormalInvert.set(mi.optionNormalInvert);
-   o._controlOptionShadow.set(mi.optionShadow);
-   o._controlOptionShadowSelf.set(mi.optionShadowSelf);
-   o._controlDiffuseViewColor.set(mi.diffuseViewColor);
-   o._controlSpecularViewColor.set(mi.specularViewColor);
-   o._controlSpecularViewBase.set(mi.specularViewBase);
-   o._controlSpecularViewLevel.set(mi.specularViewLevel);
+   o._activeSpace = space;
+   o._activeMaterial = material;
+   var resource = material.resource();
+   if(!resource){
+      return;
+   }
+   var info = resource.info();
+   o._controlOptionView.set(info.optionView);
+   o._controlOptionNormalInvert.set(info.optionNormalInvert);
+   o._controlOptionShadow.set(info.optionShadow);
+   o._controlOptionShadowSelf.set(info.optionShadowSelf);
+   o._controlDiffuseViewColor.set(info.diffuseViewColor);
+   o._controlSpecularViewColor.set(info.specularViewColor);
+   o._controlSpecularViewBase.set(info.specularViewBase);
+   o._controlSpecularViewLevel.set(info.specularViewLevel);
 }
 function FDsCommonMaterial2Frame_dispose(){
    var o = this;
@@ -3236,7 +3240,6 @@ function FDsCommonRenderableFrame_dispose(){
 function FDsCommonRenderablePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible          = false;
-   o._workspace        = null;
    o._activeRenderable = null;
    o._activeMaterial   = null;
    o._controlGuid      = null;
@@ -3372,6 +3375,7 @@ function FDsCommonSpriteDialog_onConfirmClick(event){
    xsprite.set('display_guid', o._displayGuid);
    xsprite.set('code', o._controlCode.get());
    xsprite.set('label', o._controlLabel.get());
+   xsprite.set('template_guid', o._controlTemplateGuid.get());
    xsprite.set('template_code', o._controlTemplateCode.get());
    var console = RConsole.find(FDrSceneConsole);
    var connection = null;
@@ -3494,6 +3498,79 @@ function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
 function FDsCommonTechniquePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonTemplateDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.TemplateDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonTemplateDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonTemplateDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonTemplateDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonTemplateDialog_onCancelClick;
+   o.construct             = FDsCommonTemplateDialog_construct;
+   o.setSpace              = FDsCommonTemplateDialog_setSpace;
+   o.setDisplayLabel       = FDsCommonTemplateDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonTemplateDialog_setContentCode;
+   o.setContentLabel       = FDsCommonTemplateDialog_setContentLabel;
+   o.dispose               = FDsCommonTemplateDialog_dispose;
+   return o;
+}
+function FDsCommonTemplateDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+   o._controlCancel.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonTemplateDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonTemplateDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xsprite = xaction.create('Display');
+   xsprite.set('space_guid', o._spaceGuid);
+   xsprite.set('code', o._controlCode.get());
+   xsprite.set('label', o._controlLabel.get());
+   xsprite.set('model_guid', o._controlModelGuid.get());
+   xsprite.set('model_code', o._controlModelCode.get());
+   var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonTemplateDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonTemplateDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonTemplateDialog_setSpace(space){
+   var o = this;
+   var resource = space.resource();
+   o._controlSpaceGuid.set(resource.guid());
+   o._controlSpaceLabel.set(resource.makeLabel());
+}
+function FDsCommonTemplateDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonTemplateDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonTemplateDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonTemplateDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsSolutionCatalogContent(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
@@ -12492,9 +12569,29 @@ function FDsSceneMenuBar_onCaptureClick(event){
    var connection = canvasContent.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }
-function FDsSceneMenuBar_onCreateLayerClick(){
+function FDsSceneMenuBar_onCreateLayerClick(event){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonLayerDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsSceneMenuBar_onImportTemplateClick(){
+   var o = this;
+   var frameSet = o._frameSet;
+   var space = frameSet._activeSpace;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonTemplateDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = space.resource().guid();
+   dialog.setSpace(space);
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsSceneMenuBar_onExecuteClick(event){
    var o = this;

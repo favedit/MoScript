@@ -11,8 +11,6 @@ function FDsCommonRenderablePropertyFrame(o){
    // @attribute
    o._visible          = false;
    // @attribute
-   o._workspace        = null;
-   // @attribute
    o._activeRenderable = null;
    o._activeMaterial   = null;
    // @attribute
