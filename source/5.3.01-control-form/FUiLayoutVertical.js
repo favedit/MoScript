@@ -15,9 +15,10 @@
 // @version 150420
 //==========================================================
 function FUiLayoutVertical(o){
-
-
    o = RClass.inherits(this, o, FUiContainer);
+   //..........................................................
+   // @style
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @html
    o._hLine       = null;
@@ -54,6 +55,11 @@ function FUiLayoutVertical_appendChild(control){
    // 追加子控件
    var hCell = RBuilder.appendTableRowCell(o._hPanel);
    hCell.appendChild(control._hPanel);
+   // 设置高度
+   var height = control.size().height;
+   if(height){
+      hCell.style.height = height + 'px';
+   }
 }
 
 //==========================================================

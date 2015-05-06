@@ -32,7 +32,7 @@ function FDsPrivateBitmapFrameSet_onBuilded(p){
    toolbar.buildDefine(p);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板内容
-   var canvas = o._canvasContent = RClass.create(FDsPrivateBitmapCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
@@ -41,7 +41,7 @@ function FDsPrivateBitmapFrameSet_onBuilded(p){
    o._frameCanvasContent.push(canvas);
    //..........................................................
    // 设置属性工具栏
-   var toolbar = o._propertyToolBar = RClass.create(FDsPrivateBitmapPropertyToolBar);
+   var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(p);
    o._framePropertyToolBar.push(toolbar);

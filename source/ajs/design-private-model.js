@@ -1,14 +1,6 @@
-function FDsPrivateModelCanvasContent(o){
-   o = RClass.inherits(this, o, FDsModelCanvasContent);
-   return o;
-}
 function FDsPrivateModelCanvasToolBar(o){
    o = RClass.inherits(this, o, FDsModelCanvasToolBar);
    o._frameName = 'resource.private.model.CanvasToolBar';
-   return o;
-}
-function FDsPrivateModelCatalogContent(o){
-   o = RClass.inherits(this, o, FDsModelCatalogContent);
    return o;
 }
 function FDsPrivateModelCatalogToolBar(o){
@@ -29,7 +21,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsPrivateModelCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -38,7 +30,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsPrivateModelCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -59,9 +51,4 @@ function FDsPrivateModelMenuBar_onBuilded(p){
    o.__base.FDsModelMenuBar.onBuilded.call(o, p);
    o._controlSaveButton.addClickListener(o, o.onSaveClick);
    o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
-}
-function FDsPrivateModelWorkspace(o){
-   o = RClass.inherits(this, o, FDsModelWorkspace);
-   o._frameName = 'resource.private.model.Workspace';
-   return o;
 }

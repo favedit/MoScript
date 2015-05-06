@@ -118,12 +118,23 @@
          // 设置法线
          <shader:true source='vertex.attribute.normal'>
             mat3 modelMatrix3 = mat3(modelMatrix);
+            <shader:true source='vertex.attribute.normal.compress'>
             vec3 normal = normalize((va_normal.xyz - 0.470588) * 2.125 * modelMatrix3);
+            </shader:true>
+            <shader:false source='vertex.attribute.normal.compress'>
+            vec3 normal = normalize(va_normal.xyz * modelMatrix3);
+            </shader:false>
             v_normal = normal;
             // 设置法线空间
             <shader:true source='support.dump'>
+               <shader:true source='vertex.attribute.normal.compress'>
                vec3 binormal = normalize((va_binormal - 0.470588) * 2.125 * modelMatrix3);
                vec3 tangent = normalize((va_tangent - 0.470588) * 2.125 * modelMatrix3);
+               </shader:true>
+               <shader:false source='vertex.attribute.normal.compress'>
+               vec3 binormal = normalize(va_binormal * modelMatrix3);
+               vec3 tangent = normalize(va_tangent * modelMatrix3);
+               </shader:false>
                mat3 matrixTs = mat3(tangent, binormal, normal);
                v_camera_ts = normalize((vc_camera_position - modelPosition.xyz) * matrixTs);
                v_light_ts = normalize(vc_light_direction * matrixTs);

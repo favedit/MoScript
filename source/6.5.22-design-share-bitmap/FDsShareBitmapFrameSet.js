@@ -32,7 +32,7 @@ function FDsShareBitmapFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板
-   var canvas = o._canvasContent = RClass.create(FDsShareBitmapCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
@@ -41,7 +41,7 @@ function FDsShareBitmapFrameSet_onBuilded(event){
    o._frameCanvasContent.push(canvas);
    //..........................................................
    // 设置画板工具栏
-   var toolbar = o._propertyToolbar = RClass.create(FDsShareBitmapPropertyToolBar);
+   var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);

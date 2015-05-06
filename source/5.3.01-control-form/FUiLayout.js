@@ -54,8 +54,6 @@ function FUiLayout(o){
    o.resize          = FUiLayout_resize;
    // @method
    o.dispose         = FUiLayout_dispose;
-
-   //o.panelExtend  = FUiLayout_panelExtend;
    return o;
 }
 
@@ -341,7 +339,10 @@ function FUiLayout_appendChild(control){
       control._hPanel.style.paddingTop = 2;
       control._hPanel.style.paddingBottom = 2;
       // 追加横向对象
-      if(control._sizeCd == EUiSize.Fill){
+      if(control.dockCd() == EUiDock.Fill){
+         var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(control._sizeCd == EUiSize.Fill){
          var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
          hCell.appendChild(control._hPanel);
       }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
@@ -404,8 +405,8 @@ function FUiLayout_resize(){
       var ha = false;
       var c = cs.count();
       for(var n = 0; n < c; n++){
-         var p = o._components.value(n);
-         if(RClass.isClass(p, FTable) || RClass.isClass(p, FUiPageControl)){
+         var p = o._components.at(n);
+         if(RClass.isClass(p, FUiTable) || RClass.isClass(p, FUiPageControl)){
             ha = true;
             break;
          }
@@ -427,23 +428,3 @@ function FUiLayout_dispose(){
    o._hContainer = null;
    o.__base.FUiContainer.dispose.call(o);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// ------------------------------------------------------------
-//function FUiLayout_panelExtend(v){
-//   var o = this;
-//   if(o.hLastLine){
-//      o._hPanelLast.height = v ? '1' : '100%';
-//   }
-//}
-// ------------------------------------------------------------

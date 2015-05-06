@@ -1260,15 +1260,18 @@ function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
-   var c = o._camera = RClass.create(FE3dCamera);
-   c.position().set(0, 0, -100);
-   c.lookAt(0, 0, 0);
-   c.update();
-   c._projection.update();
-   var l = o._directionalLight = RClass.create(FE3dDirectionalLight);
-   l.direction().set(0, -1, 0);
-   var c = o._backgroundColor = new SColor4();
-   c.set(0, 0, 0, 1);
+   var camera = o._camera = RClass.create(FE3dCamera);
+   camera.position().set(0, 0, -100);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   camera.projection().update();
+   var light = o._directionalLight = RClass.create(FE3dDirectionalLight);
+   light.direction().set(0, -1, 0);
+   var lightCamera = light.camera();
+   lightCamera.position().set(10, 10, -10);
+   lightCamera.lookAt(0, 0, 0);
+   var backgroundColor = o._backgroundColor = new SColor4();
+   backgroundColor.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new SMatrix3d();
 }
 function FE3dRegion_backgroundColor(){

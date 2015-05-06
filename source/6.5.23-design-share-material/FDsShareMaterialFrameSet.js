@@ -32,7 +32,7 @@ function FDsShareMaterialFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameToolBar.push(toolbar);
    // 设置目录内容
-   var catalog = o._catalogContent = RClass.create(FDsShareMaterialCatalog);
+   var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -44,7 +44,7 @@ function FDsShareMaterialFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板内容
-   var canvas = o._canvasContent = RClass.create(FDsShareMaterialCanvas);
+   var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;

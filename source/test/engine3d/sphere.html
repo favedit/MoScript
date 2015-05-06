@@ -25,7 +25,6 @@ function _load(){
    canvas = RClass.create(FE3dSimpleCanvas);
    canvas.build(_hCanvas);
    canvas.setPanel(_hCanvas);
-
    var context = canvas.graphicContext();
 
    var stage = RClass.create(FE3dSimpleStage);
@@ -42,14 +41,9 @@ function _load(){
    projection.size().assign(context.size());
    projection.update();
 
-   var light = stage.region().directionalLight();
-   var lightCamera = light.camera();
-   lightCamera.position().set(10, 10, -10);
-   lightCamera.lookAt(0, 0, 0);
-
    sphere = RClass.create(FE3dSphere);
    sphere.linkGraphicContext(context);
-   sphere.setSplitCount(32);
+   sphere.setSplitCount(36);
    sphere.setup();
 
    stage.spriteLayer().pushRenderable(sphere);

@@ -1,4 +1,28 @@
 /* ------------------------------------------------------ */
+/* FDsResourceSelectDialog                                */
+/* ------------------------------------------------------ */
+.FDsResourceSelectDialog_Toolbar_Ground{
+   padding-left: 4px;
+   padding-top: 1px;
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
+   background-color: #AEAEAE;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsResourceSelectDialog_Catalog_Content{
+   background-color: #EEEEEE;
+}
+
+.FDsResourceSelectDialog_List_Content{
+   background-color: #EEEEEE;
+}
+
+/* ------------------------------------------------------ */
 /* FDsFrameSet                                            */
 /* ------------------------------------------------------ */
 .FDsFrameSet_ToolBar_Ground{

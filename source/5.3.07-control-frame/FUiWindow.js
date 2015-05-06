@@ -59,7 +59,9 @@ function FUiWindow(o){
 function FUiWindow_onBuildPanel(event){
    var o = this;
    o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
-   o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
+   var hForm = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
+   hForm.style.width = '100%';
+   hForm.style.height = '100%';
 }
 
 //==========================================================

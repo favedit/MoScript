@@ -31,7 +31,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
    // 设置目录栏
-   var catalog = o._catalogContent = RClass.create(FDsPrivateModelCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -43,7 +43,7 @@ function FDsPrivateModelFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板
-   var canvas = o._canvasContent = RClass.create(FDsPrivateModelCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;

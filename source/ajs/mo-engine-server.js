@@ -13979,6 +13979,7 @@ function SG3dEffectInfo(){
    o.blendTargetMode       = null;
    o.optionAlphaTest       = null;
    o.optionNormalInvert    = null;
+   o.optionNormalCompress  = null;
    o.supportInstance       = null;
    o.vertexCount           = 0;
    o.vertexColor           = null;
@@ -14031,6 +14032,7 @@ function SG3dEffectInfo_reset(){
    o.blendTargetMode = EG3dBlendMode.OneMinusSourceAlpha;
    o.optionAlphaTest = false;
    o.optionNormalInvert = false;
+   o.optionNormalCompress = true;
    o.supportInstance = false;
    o.vertexCount = 0;
    o.vertexColor = false;
@@ -14870,6 +14872,15 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
+      var vertexName = vertexBuffer.name();
+      if(vertexName == 'normal'){
+         var stride = vertexBuffer.stride();
+         if(stride == 4){
+            effectInfo.optionNormalCompress = true;
+         }else{
+            effectInfo.optionNormalCompress = false;
+         }
+      }
       effectInfo.attributes.push(vertexBuffer.name());
    }
    var textures = renderable.textures();
@@ -16593,37 +16604,38 @@ function FG3dVertexShader(o){
 }
 function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
-   o._optionMerge             = false;
-   o._optionBlendMode         = true;
-   o._supportInstance         = false;
-   o._supportLayout           = false;
-   o._supportMaterialMap      = false;
-   o._supportVertexColor      = true;
-   o._supportVertexCoord      = true;
-   o._supportVertexNormal     = true;
-   o._supportVertexNormalFull = true;
-   o._supportSkeleton         = false;
-   o._supportAlpha            = true;
-   o._supportAmbient          = true;
-   o._supportDiffuse          = true;
-   o._supportDiffuseView      = true;
-   o._supportSpecularColor    = true;
-   o._supportSpecularLevel    = true;
-   o._supportSpecularView     = true;
-   o._supportLight            = true;
-   o._supportReflect          = true;
-   o._supportRefract          = true;
-   o._supportEmissive         = true;
-   o._supportHeight           = true;
-   o._supportEnvironment      = true;
-   o._dynamicSkeleton         = true;
-   o.setup                    = FG3dAutomaticEffect_setup;
-   o.buildInfo                = FG3dAutomaticEffect_buildInfo;
-   o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
-   o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
-   o.bindMaterialSamplers     = FG3dAutomaticEffect_bindMaterialSamplers;
-   o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
-   o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
+   o._optionMerge                 = false;
+   o._optionBlendMode             = true;
+   o._supportInstance             = false;
+   o._supportLayout               = false;
+   o._supportMaterialMap          = false;
+   o._supportVertexColor          = true;
+   o._supportVertexCoord          = true;
+   o._supportVertexNormal         = true;
+   o._supportVertexNormalFull     = true;
+   o._supportVertexNormalCompress = false;
+   o._supportSkeleton             = false;
+   o._supportAlpha                = true;
+   o._supportAmbient              = true;
+   o._supportDiffuse              = true;
+   o._supportDiffuseView          = true;
+   o._supportSpecularColor        = true;
+   o._supportSpecularLevel        = true;
+   o._supportSpecularView         = true;
+   o._supportLight                = true;
+   o._supportReflect              = true;
+   o._supportRefract              = true;
+   o._supportEmissive             = true;
+   o._supportHeight               = true;
+   o._supportEnvironment          = true;
+   o._dynamicSkeleton             = true;
+   o.setup                        = FG3dAutomaticEffect_setup;
+   o.buildInfo                    = FG3dAutomaticEffect_buildInfo;
+   o.bindAttributes               = FG3dAutomaticEffect_bindAttributes;
+   o.bindSamplers                 = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterialSamplers         = FG3dAutomaticEffect_bindMaterialSamplers;
+   o.bindMaterial                 = FG3dAutomaticEffect_bindMaterial;
+   o.drawRenderable               = FG3dAutomaticEffect_drawRenderable;
    return o;
 }
 function FG3dAutomaticEffect_setup(){
@@ -16709,8 +16721,13 @@ function FG3dAutomaticEffect_buildInfo(tagContext, pc){
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
-      flag.append("|AF");
+      flag.append("|ANF");
       tagContext.setBoolean("vertex.attribute.normal.full", true);
+   }
+   o._dynamicVertexNormalCompress = pc.optionNormalCompress;
+   if(o._dynamicVertexNormalCompress){
+      flag.append("|ANC");
+      tagContext.setBoolean("vertex.attribute.normal.compress", true);
    }
    o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){
@@ -27448,15 +27465,18 @@ function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
-   var c = o._camera = RClass.create(FE3dCamera);
-   c.position().set(0, 0, -100);
-   c.lookAt(0, 0, 0);
-   c.update();
-   c._projection.update();
-   var l = o._directionalLight = RClass.create(FE3dDirectionalLight);
-   l.direction().set(0, -1, 0);
-   var c = o._backgroundColor = new SColor4();
-   c.set(0, 0, 0, 1);
+   var camera = o._camera = RClass.create(FE3dCamera);
+   camera.position().set(0, 0, -100);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   camera.projection().update();
+   var light = o._directionalLight = RClass.create(FE3dDirectionalLight);
+   light.direction().set(0, -1, 0);
+   var lightCamera = light.camera();
+   lightCamera.position().set(10, 10, -10);
+   lightCamera.lookAt(0, 0, 0);
+   var backgroundColor = o._backgroundColor = new SColor4();
+   backgroundColor.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new SMatrix3d();
 }
 function FE3dRegion_backgroundColor(){

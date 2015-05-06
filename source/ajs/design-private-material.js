@@ -3,10 +3,6 @@ function FDsPrivateMaterialCanvasToolBar(o){
    o._frameName = 'resource.private.material.CanvasToolBar';
    return o;
 }
-function FDsPrivateMaterialCatalogContent(o){
-   o = RClass.inherits(this, o, FDsMaterialCatalogContent);
-   return o;
-}
 function FDsPrivateMaterialCatalogToolBar(o){
    o = RClass.inherits(this, o, FDsMaterialCatalogToolBar);
    o._frameName = 'resource.private.material.CatalogToolBar';
@@ -25,7 +21,7 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsPrivateMaterialCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    o._frameCatalogContent.push(catalog);
@@ -33,7 +29,7 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var toolbar = o._propertyToolBar = RClass.create(FDsPrivateMaterialPropertyToolBar);
+   var toolbar = o._propertyToolBar = RClass.create(FDsMaterialPropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);
@@ -41,15 +37,5 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
 function FDsPrivateMaterialMenuBar(o){
    o = RClass.inherits(this, o, FDsMaterialMenuBar);
    o._frameName = 'resource.private.material.MenuBar';
-   return o;
-}
-function FDsPrivateMaterialPropertyToolBar(o){
-   o = RClass.inherits(this, o, FDsMaterialPropertyToolBar);
-   o._frameName = 'resource.private.material.PropertyToolBar';
-   return o;
-}
-function FDsPrivateMaterialWorkspace(o){
-   o = RClass.inherits(this, o, FDsMaterialWorkspace);
-   o._frameName = 'resource.private.material.Workspace';
    return o;
 }

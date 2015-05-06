@@ -9,12 +9,15 @@ function MUiSize(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
+   o._dockCd         = RClass.register(o, new APtyString('_dockCd'));
    o._location       = RClass.register(o, new APtyPoint2('_location'));
    o._size           = RClass.register(o, new APtySize2('_size'));
    //..........................................................
    // @method
    o.construct       = MUiSize_construct;
    // @method
+   o.dockCd          = MUiSize_dockCd;
+   o.setDockCd       = MUiSize_setDockCd;
    o.left            = MUiSize_left;
    o.setLeft         = MUiSize_setLeft;
    o.top             = MUiSize_top;
@@ -37,16 +40,6 @@ function MUiSize(o){
    o.dispose         = MUiSize_dispose;
    // @method
    o.innerDump       = MUiSize_innerDump;
-
-
-   //..........................................................
-   // @event
-   //o.onSize    = null;
-   //..........................................................
-   // @method
-   //o.calcRect  = MUiSize_calcRect;
-   //o.resize    = MUiSize_resize;
-   //o.resetSize = MUiSize_resetSize;
    return o;
 }
 
@@ -58,7 +51,27 @@ function MUiSize(o){
 function MUiSize_construct(){
    var o = this;
    o._location = new SPoint2();
-   o._size = new SSize2();
+   o._size = new SUiSize2();
+}
+
+//==========================================================
+// <T>获得停靠类型。</T>
+//
+// @method
+// @return EUiDock 停靠类型
+//==========================================================
+function MUiSize_dockCd(){
+   return this._dockCd;
+}
+
+//==========================================================
+// <T>设置停靠类型。</T>
+//
+// @method
+// @param dockCd:EUiDock 停靠类型
+//==========================================================
+function MUiSize_setDockCd(dockCd){
+   this._dockCd = dockCd;
 }
 
 //==========================================================
@@ -148,17 +161,6 @@ function MUiSize_refreshLocation(){
 }
 
 //==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function MUiSize_construct(){
-   var o = this;
-   o._location = new SPoint2();
-   o._size = new SSize2();
-}
-
-//==========================================================
 // <T>获得宽度。</T>
 //
 // @method
@@ -212,35 +214,43 @@ function MUiSize_size(){
 // <T>设置大小。</T>
 //
 // @method
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
+// @param width:Number 宽度
+// @param height:Number 高度
 //==========================================================
-function MUiSize_setSize(w, h){
+function MUiSize_setSize(width, height){
    var o = this;
-   var t = o.panel(EPanel.Size);
+   var hPanel = o.panel(EPanel.Size);
    // 设置宽度
-   if(w != null){
-      o._size.width = w;
-      if(t){
-         if(t.tagName == 'TD'){
-            if(w != 0){
-               t.width = w;
+   if(width != null){
+      o._size.width = width;
+      if(hPanel){
+         if(hPanel.tagName == 'TD'){
+            if(width != 0){
+               hPanel.width = width;
             }
          }else{
-            t.style.width = (w == 0) ? null : w + 'px';
+            if(RString.contains(width, '%')){
+               hPanel.style.width = width;
+            }else{
+               hPanel.style.width = (width == 0) ? null : width + 'px';
+            }
          }
       }
    }
    // 设置高度
-   if(h != null){
-      o._size.height = h;
-      if(t){
-         if(t.tagName == 'TD'){
-            if(h != 0){
-               t.height = h;
+   if(height != null){
+      o._size.height = height;
+      if(hPanel){
+         if(hPanel.tagName == 'TD'){
+            if(height != 0){
+               hPanel.height = height;
             }
          }else{
-            t.style.height = (h == 0) ? null : h + 'px';
+            if(RString.contains(height, '%')){
+               hPanel.style.height = height;
+            }else{
+               hPanel.style.height = (height == 0) ? null : height + 'px';
+            }
          }
       }
    }
@@ -314,129 +324,4 @@ function MUiSize_innerDump(s, l){
    var o = this;
    s.append('MUiSize:');
    s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//==========================================================
-// <T>改变大小。</T>
-//
-// @method
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
-//==========================================================
-function MUiSize_resize(width, height){
-   var sizeable = false;
-   var hStyle = this.htmlPanel(EPanel.Border).style;
-   if(null != width){
-      width = Math.max(parseInt(width), EMoveSize.MinWidth);
-      if(this.width != width){
-         this.width = width;
-         hStyle.pixelWidth = width;
-         sizeable = true;
-      }
-   }
-   if(height != null){
-      height = Math.max(parseInt(height), EMoveSize.MinHeight);
-      if(this.height != height){
-         this.height = height;
-         hStyle.pixelHeight = height;
-         sizeable = true;
-      }
-   }
-   if(sizeable && this.onSize){
-      this.onSize();
-   }
-}
-
-
-//==========================================================
-// <T>重置大小。</T>
-//
-// @method
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
-//==========================================================
-function MUiSize_resetSize(){
-   var o = this;
-   o.setBounds(o.left, o.top, o.left+o.width-1, o.top+o.height-1, true)
-}
-
-//==========================================================
-// <T>计算矩形。</T>
-//
-// @method
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
-//==========================================================
-function MUiSize_calcRect(){
-   this.rect = RRect.nvl(this.rect);
-   RHtml.toRect(this.rect, this.hPanel);
-   return this.rect;
-}
-
-//==========================================================
-// <T>设置尺寸。</T>
-//
-// @method
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
-//==========================================================
-function MUiSize_setBounds2(l, t, r, b, force){
-   var o = this;
-   var h = o.panel(EPanel.Size);
-   if(!h){
-      return;
-   }
-   var s = h.style;
-   var c = false;
-   // set left and top
-   if(l && l >= 0){
-      if(force || o.left != l){
-         o.left = l;
-         s.pixelLeft = l;
-         c = true;
-      }
-   }
-   if(t && t >= 0){
-      if(force || o.top != t){
-         o.top = t;
-         s.pixelTop = t;
-         c = true;
-      }
-   }
-   // set left and top
-   if(r && r >= 0){
-      var width = r-o.left+1;
-      if(force || o.width != width){
-         o.width = width;
-         s.pixelWidth = o.width;
-         c = true;
-      }
-   }
-   if(b && b >= 0){
-      var height = b-o.top+1;
-      if(force || o.height != height){
-         o.height = height;
-         s.pixelHeight = o.height;
-         c = true;
-      }
-   }
-   if(c && o.onSize){
-      o.onSize();
-   }
 }

@@ -13,6 +13,9 @@
 function FUiLayoutHorizontal(o){
    o = RClass.inherits(this, o, FUiContainer);
    //..........................................................
+   // @style
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   //..........................................................
    // @html
    o._hLine       = null;
    //..........................................................
@@ -44,9 +47,9 @@ function FUiLayoutHorizontal_onBuildPanel(event){
 // @method
 // @return event:TProcessEvent 处理事件
 //==========================================================
-function FUiLayoutHorizontal_onBuildPanel(event){
+function FUiLayoutHorizontal_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuildPanel.call(o, event)
+   o.__base.FUiContainer.onBuild.call(o, event)
    // 创建横向容器
    o._hLine = RBuilder.appendTableRow(o._hPanel);
 }

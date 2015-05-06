@@ -48,7 +48,7 @@ function FDsPrivateResourceFrameSet_onBuilded(event){
    control.buildDefine(event);
    o._frameCatalogToolBar.push(control);
    // 设置目录栏
-   var control = o._catalogContent = RClass.create(FDsPrivateResourceCatalogContent);
+   var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.build(event);
@@ -62,20 +62,20 @@ function FDsPrivateResourceFrameSet_onBuilded(event){
    control.buildDefine(event);
    o._frameListToolBar.push(control);
    // 设置搜索内容
-   var control = o._listContent = RClass.create(FDsPrivateResourceListContent);
+   var control = o._listContent = RClass.create(FDsResourceListContent);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.build(event);
    o._frameListContent.push(control);
    //..........................................................
    // 设置画板工具栏
-   //var control = o._propertyToolbar = RClass.create(FDsPrivateResourcePropertyToolBar);
+   //var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
    //control._workspace = o._workspace;
    //control._frameSet = o;
    //control.buildDefine(p);
    //o._framePreviewToolbar.push(control);
    // 设置画板
-   //var control = o._propertyContent = RClass.create(FDsPrivateResourcePropertyContent);
+   //var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
    //control._workspace = o._workspace;
    //control._frameSet = o;
    //control._toolbar = o._propertyToolbar;

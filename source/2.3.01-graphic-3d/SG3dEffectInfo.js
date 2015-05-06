@@ -26,6 +26,7 @@ function SG3dEffectInfo(){
    o.blendTargetMode       = null;
    o.optionAlphaTest       = null;
    o.optionNormalInvert    = null;
+   o.optionNormalCompress  = null;
    // @attribute 配置
    o.supportInstance       = null;
    // @attribute 顶点模式
@@ -111,6 +112,7 @@ function SG3dEffectInfo_reset(){
    o.blendTargetMode = EG3dBlendMode.OneMinusSourceAlpha;
    o.optionAlphaTest = false;
    o.optionNormalInvert = false;
+   o.optionNormalCompress = true;
    // @attribute 配置
    o.supportInstance = false;
    // @attribute 顶点模式

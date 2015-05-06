@@ -4316,7 +4316,10 @@ function FUiLayout_appendChild(control){
    }else{
       control._hPanel.style.paddingTop = 2;
       control._hPanel.style.paddingBottom = 2;
-      if(control._sizeCd == EUiSize.Fill){
+      if(control.dockCd() == EUiDock.Fill){
+         var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(control._sizeCd == EUiSize.Fill){
          var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
          hCell.appendChild(control._hPanel);
       }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
@@ -4365,8 +4368,8 @@ function FUiLayout_resize(){
       var ha = false;
       var c = cs.count();
       for(var n = 0; n < c; n++){
-         var p = o._components.value(n);
-         if(RClass.isClass(p, FTable) || RClass.isClass(p, FUiPageControl)){
+         var p = o._components.at(n);
+         if(RClass.isClass(p, FUiTable) || RClass.isClass(p, FUiPageControl)){
             ha = true;
             break;
          }
@@ -4383,6 +4386,7 @@ function FUiLayout_dispose(){
 }
 function FUiLayoutHorizontal(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hLine       = null;
    o.onBuildPanel = FUiLayoutHorizontal_onBuildPanel;
    o.onBuild      = FUiLayoutHorizontal_onBuild;
@@ -4394,9 +4398,9 @@ function FUiLayoutHorizontal_onBuildPanel(event){
    var o = this;
    o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
 }
-function FUiLayoutHorizontal_onBuildPanel(event){
+function FUiLayoutHorizontal_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuildPanel.call(o, event)
+   o.__base.FUiContainer.onBuild.call(o, event)
    o._hLine = RBuilder.appendTableRow(o._hPanel);
 }
 function FUiLayoutHorizontal_appendChild(control){
@@ -4411,6 +4415,7 @@ function FUiLayoutHorizontal_dispose(){
 }
 function FUiLayoutVertical(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hLine       = null;
    o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
    o.appendChild  = FUiLayoutVertical_appendChild;
@@ -4425,6 +4430,10 @@ function FUiLayoutVertical_appendChild(control){
    var o = this;
    var hCell = RBuilder.appendTableRowCell(o._hPanel);
    hCell.appendChild(control._hPanel);
+   var height = control.size().height;
+   if(height){
+      hCell.style.height = height + 'px';
+   }
 }
 function FUiLayoutVertical_dispose(){
    var o = this;

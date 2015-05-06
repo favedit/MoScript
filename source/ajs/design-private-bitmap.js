@@ -1,7 +1,3 @@
-function FDsPrivateBitmapCanvasContent(o){
-   o = RClass.inherits(this, o, FDsBitmapCanvasContent);
-   return o;
-}
 function FDsPrivateBitmapCanvasToolBar(o){
    o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
    o._frameName = 'resource.private.bitmap.CanvasToolBar';
@@ -20,14 +16,14 @@ function FDsPrivateBitmapFrameSet_onBuilded(p){
    toolbar._frameSet = o;
    toolbar.buildDefine(p);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsPrivateBitmapCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
    canvas._frameSet = o;
    canvas._hParent = o._frameCanvasContent._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
    canvas.build(p);
    o._frameCanvasContent.push(canvas);
-   var toolbar = o._propertyToolBar = RClass.create(FDsPrivateBitmapPropertyToolBar);
+   var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(p);
    o._framePropertyToolBar.push(toolbar);
@@ -52,14 +48,4 @@ function FDsPrivateBitmapMenuBar_onBackClick(event){
    var o = this;
    var workspace = o._frameSet._workspace;
    workspace.selectFrameSet(EDsFrameSet.PrivateResourceFrameSet);
-}
-function FDsPrivateBitmapPropertyToolBar(o){
-   o = RClass.inherits(this, o, FDsBitmapPropertyToolBar);
-   o._frameName = 'resource.private.bitmap.PropertyToolBar';
-   return o;
-}
-function FDsPrivateBitmapWorkspace(o){
-   o = RClass.inherits(this, o, FDsBitmapWorkspace);
-   o._frameName = 'resource.private.bitmap.Workspace';
-   return o;
 }

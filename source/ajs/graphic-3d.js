@@ -345,6 +345,7 @@ function SG3dEffectInfo(){
    o.blendTargetMode       = null;
    o.optionAlphaTest       = null;
    o.optionNormalInvert    = null;
+   o.optionNormalCompress  = null;
    o.supportInstance       = null;
    o.vertexCount           = 0;
    o.vertexColor           = null;
@@ -397,6 +398,7 @@ function SG3dEffectInfo_reset(){
    o.blendTargetMode = EG3dBlendMode.OneMinusSourceAlpha;
    o.optionAlphaTest = false;
    o.optionNormalInvert = false;
+   o.optionNormalCompress = true;
    o.supportInstance = false;
    o.vertexCount = 0;
    o.vertexColor = false;
@@ -1236,6 +1238,15 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
+      var vertexName = vertexBuffer.name();
+      if(vertexName == 'normal'){
+         var stride = vertexBuffer.stride();
+         if(stride == 4){
+            effectInfo.optionNormalCompress = true;
+         }else{
+            effectInfo.optionNormalCompress = false;
+         }
+      }
       effectInfo.attributes.push(vertexBuffer.name());
    }
    var textures = renderable.textures();

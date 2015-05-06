@@ -8,6 +8,9 @@
 function FDsBitmapPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
+   // @property
+   o._frameName      = 'resource.bitmap.PropertyToolBar';
+   //..........................................................
    // @attribute
    o._controlRefresh = null;
    //..........................................................

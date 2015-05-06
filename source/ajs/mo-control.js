@@ -751,6 +751,12 @@ var EUiDirection = new function EUiDirection(){
    o.Vertical   = 'V';
    return o;
 }
+var EUiDock = new function EUiDock(){
+   var o = this;
+   o.None = 'none';
+   o.Fill = 'fill';
+   return o;
+}
 var EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
@@ -1892,9 +1898,12 @@ function MUiProgress(o){
 }
 function MUiSize(o){
    o = RClass.inherits(this, o);
+   o._dockCd         = RClass.register(o, new APtyString('_dockCd'));
    o._location       = RClass.register(o, new APtyPoint2('_location'));
    o._size           = RClass.register(o, new APtySize2('_size'));
    o.construct       = MUiSize_construct;
+   o.dockCd          = MUiSize_dockCd;
+   o.setDockCd       = MUiSize_setDockCd;
    o.left            = MUiSize_left;
    o.setLeft         = MUiSize_setLeft;
    o.top             = MUiSize_top;
@@ -1918,7 +1927,13 @@ function MUiSize(o){
 function MUiSize_construct(){
    var o = this;
    o._location = new SPoint2();
-   o._size = new SSize2();
+   o._size = new SUiSize2();
+}
+function MUiSize_dockCd(){
+   return this._dockCd;
+}
+function MUiSize_setDockCd(dockCd){
+   this._dockCd = dockCd;
 }
 function MUiSize_left(){
    return this._location.x;
@@ -1955,11 +1970,6 @@ function MUiSize_refreshLocation(){
    var o = this;
    o.setLocation(o._location.x, o._location.y);
 }
-function MUiSize_construct(){
-   var o = this;
-   o._location = new SPoint2();
-   o._size = new SSize2();
-}
 function MUiSize_width(){
    return this._size.width;
 }
@@ -1975,30 +1985,38 @@ function MUiSize_setHeight(p){
 function MUiSize_size(){
    return this._size;
 }
-function MUiSize_setSize(w, h){
+function MUiSize_setSize(width, height){
    var o = this;
-   var t = o.panel(EPanel.Size);
-   if(w != null){
-      o._size.width = w;
-      if(t){
-         if(t.tagName == 'TD'){
-            if(w != 0){
-               t.width = w;
+   var hPanel = o.panel(EPanel.Size);
+   if(width != null){
+      o._size.width = width;
+      if(hPanel){
+         if(hPanel.tagName == 'TD'){
+            if(width != 0){
+               hPanel.width = width;
             }
          }else{
-            t.style.width = (w == 0) ? null : w + 'px';
+            if(RString.contains(width, '%')){
+               hPanel.style.width = width;
+            }else{
+               hPanel.style.width = (width == 0) ? null : width + 'px';
+            }
          }
       }
    }
-   if(h != null){
-      o._size.height = h;
-      if(t){
-         if(t.tagName == 'TD'){
-            if(h != 0){
-               t.height = h;
+   if(height != null){
+      o._size.height = height;
+      if(hPanel){
+         if(hPanel.tagName == 'TD'){
+            if(height != 0){
+               hPanel.height = height;
             }
          }else{
-            t.style.height = (h == 0) ? null : h + 'px';
+            if(RString.contains(height, '%')){
+               hPanel.style.height = height;
+            }else{
+               hPanel.style.height = (height == 0) ? null : height + 'px';
+            }
          }
       }
    }
@@ -2034,80 +2052,6 @@ function MUiSize_innerDump(s, l){
    var o = this;
    s.append('MUiSize:');
    s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
-}
-function MUiSize_resize(width, height){
-   var sizeable = false;
-   var hStyle = this.htmlPanel(EPanel.Border).style;
-   if(null != width){
-      width = Math.max(parseInt(width), EMoveSize.MinWidth);
-      if(this.width != width){
-         this.width = width;
-         hStyle.pixelWidth = width;
-         sizeable = true;
-      }
-   }
-   if(height != null){
-      height = Math.max(parseInt(height), EMoveSize.MinHeight);
-      if(this.height != height){
-         this.height = height;
-         hStyle.pixelHeight = height;
-         sizeable = true;
-      }
-   }
-   if(sizeable && this.onSize){
-      this.onSize();
-   }
-}
-function MUiSize_resetSize(){
-   var o = this;
-   o.setBounds(o.left, o.top, o.left+o.width-1, o.top+o.height-1, true)
-}
-function MUiSize_calcRect(){
-   this.rect = RRect.nvl(this.rect);
-   RHtml.toRect(this.rect, this.hPanel);
-   return this.rect;
-}
-function MUiSize_setBounds2(l, t, r, b, force){
-   var o = this;
-   var h = o.panel(EPanel.Size);
-   if(!h){
-      return;
-   }
-   var s = h.style;
-   var c = false;
-   if(l && l >= 0){
-      if(force || o.left != l){
-         o.left = l;
-         s.pixelLeft = l;
-         c = true;
-      }
-   }
-   if(t && t >= 0){
-      if(force || o.top != t){
-         o.top = t;
-         s.pixelTop = t;
-         c = true;
-      }
-   }
-   if(r && r >= 0){
-      var width = r-o.left+1;
-      if(force || o.width != width){
-         o.width = width;
-         s.pixelWidth = o.width;
-         c = true;
-      }
-   }
-   if(b && b >= 0){
-      var height = b-o.top+1;
-      if(force || o.height != height){
-         o.height = height;
-         s.pixelHeight = o.height;
-         c = true;
-      }
-   }
-   if(c && o.onSize){
-      o.onSize();
-   }
 }
 function MUiSizeable(o){
    o = RClass.inherits(this, o);
@@ -2354,6 +2298,32 @@ function SServiceInfo(){
    o.action  = null;
    o.url     = null;
    return o;
+}
+function SUiSize2(width, height){
+   var o = this;
+   SSize2.call(o, width, height);
+   o.parse = SUiSize2_parse;
+   return o;
+}
+function SUiSize2_parse(source){
+   var o = this;
+   var items = source.split(',')
+   if(items.length == 2){
+      var width = items[0];
+      if(RString.contains(width, '%')){
+         o.width = width;
+      }else{
+         o.width = parseInt(width);
+      }
+      var height = items[1];
+      if(RString.contains(height, '%')){
+         o.height = height;
+      }else{
+         o.height = parseInt(height);
+      }
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", items);
+   }
 }
 function TDatasetFetchArg(o){
    if(!o){o = this;}
@@ -9852,7 +9822,10 @@ function FUiLayout_appendChild(control){
    }else{
       control._hPanel.style.paddingTop = 2;
       control._hPanel.style.paddingBottom = 2;
-      if(control._sizeCd == EUiSize.Fill){
+      if(control.dockCd() == EUiDock.Fill){
+         var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(control._sizeCd == EUiSize.Fill){
          var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
          hCell.appendChild(control._hPanel);
       }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
@@ -9901,8 +9874,8 @@ function FUiLayout_resize(){
       var ha = false;
       var c = cs.count();
       for(var n = 0; n < c; n++){
-         var p = o._components.value(n);
-         if(RClass.isClass(p, FTable) || RClass.isClass(p, FUiPageControl)){
+         var p = o._components.at(n);
+         if(RClass.isClass(p, FUiTable) || RClass.isClass(p, FUiPageControl)){
             ha = true;
             break;
          }
@@ -9919,6 +9892,7 @@ function FUiLayout_dispose(){
 }
 function FUiLayoutHorizontal(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hLine       = null;
    o.onBuildPanel = FUiLayoutHorizontal_onBuildPanel;
    o.onBuild      = FUiLayoutHorizontal_onBuild;
@@ -9930,9 +9904,9 @@ function FUiLayoutHorizontal_onBuildPanel(event){
    var o = this;
    o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
 }
-function FUiLayoutHorizontal_onBuildPanel(event){
+function FUiLayoutHorizontal_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuildPanel.call(o, event)
+   o.__base.FUiContainer.onBuild.call(o, event)
    o._hLine = RBuilder.appendTableRow(o._hPanel);
 }
 function FUiLayoutHorizontal_appendChild(control){
@@ -9947,6 +9921,7 @@ function FUiLayoutHorizontal_dispose(){
 }
 function FUiLayoutVertical(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hLine       = null;
    o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
    o.appendChild  = FUiLayoutVertical_appendChild;
@@ -9961,6 +9936,10 @@ function FUiLayoutVertical_appendChild(control){
    var o = this;
    var hCell = RBuilder.appendTableRowCell(o._hPanel);
    hCell.appendChild(control._hPanel);
+   var height = control.size().height;
+   if(height){
+      hCell.style.height = height + 'px';
+   }
 }
 function FUiLayoutVertical_dispose(){
    var o = this;
@@ -18626,7 +18605,9 @@ function FUiWindow(o){
 function FUiWindow_onBuildPanel(event){
    var o = this;
    o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
-   o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
+   var hForm = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
+   hForm.style.width = '100%';
+   hForm.style.height = '100%';
 }
 function FUiWindow_onBuild(event){
    var o = this;

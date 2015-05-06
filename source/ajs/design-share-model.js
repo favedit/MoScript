@@ -1,14 +1,6 @@
-function FDsShareModelCanvasContent(o){
-   o = RClass.inherits(this, o, FDsModelCanvasContent);
-   return o;
-}
 function FDsShareModelCanvasToolBar(o){
    o = RClass.inherits(this, o, FDsModelCanvasToolBar);
    o._frameName = 'resource.share.model.CanvasToolBar';
-   return o;
-}
-function FDsShareModelCatalogContent(o){
-   o = RClass.inherits(this, o, FDsModelCatalogContent);
    return o;
 }
 function FDsShareModelCatalogToolBar(o){
@@ -29,7 +21,7 @@ function FDsShareModelFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsShareModelCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -38,7 +30,7 @@ function FDsShareModelFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsShareModelCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -57,9 +49,4 @@ function FDsShareModelMenuBar(o){
 function FDsShareModelMenuBar_onBuilded(p){
    var o = this;
    o.__base.FDsModelMenuBar.onBuilded.call(o, p);
-}
-function FDsShareModelWorkspace(o){
-   o = RClass.inherits(this, o, FDsModelWorkspace);
-   o._frameName = 'resource.share.model.Workspace';
-   return o;
 }

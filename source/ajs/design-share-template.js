@@ -1,7 +1,3 @@
-function FDsShareTemplateCanvasContent(o){
-   o = RClass.inherits(this, o, FDsTemplateCanvasContent);
-   return o;
-}
 function FDsShareTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    o._frameName      = 'resource.share.template.CanvasToolBar';
@@ -57,10 +53,6 @@ function FDsShareTemplateCanvasToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
 }
-function FDsShareTemplateCatalogContent(o){
-   o = RClass.inherits(this, o, FDsTemplateCatalogContent);
-   return o;
-}
 function FDsShareTemplateCatalogToolBar(o){
    o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
    o._frameName = 'resource.share.template.CatalogToolBar';
@@ -79,7 +71,7 @@ function FDsShareTemplateFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsShareTemplateCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsTemplateCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -89,7 +81,7 @@ function FDsShareTemplateFrameSet_onBuilded(event){
    toolbar._workspace = o._worksapce;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsShareTemplateCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsTemplateCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -157,8 +149,4 @@ function FDsShareTemplateToolBar_construct(){
 function FDsShareTemplateToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
-}
-function FDsShareTemplateWorkspace(o){
-   o = RClass.inherits(this, o, FDsTemplateWorkspace);
-   return o;
 }

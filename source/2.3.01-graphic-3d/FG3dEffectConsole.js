@@ -159,6 +159,16 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
+      var vertexName = vertexBuffer.name();
+      // 法线压缩判定（临时处理）
+      if(vertexName == 'normal'){
+         var stride = vertexBuffer.stride();
+         if(stride == 4){
+            effectInfo.optionNormalCompress = true;
+         }else{
+            effectInfo.optionNormalCompress = false;
+         }
+      }
       effectInfo.attributes.push(vertexBuffer.name());
    }
    // 设置纹理信息

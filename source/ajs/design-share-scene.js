@@ -1,14 +1,6 @@
-function FDsShareSceneCanvasContent(o){
-   o = RClass.inherits(this, o, FDsSceneCanvasContent);
-   return o;
-}
 function FDsShareSceneCanvasToolBar(o){
    o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
    o._frameName = 'resource.share.scene.CanvasToolBar';
-   return o;
-}
-function FDsShareSceneCatalogContent(o){
-   o = RClass.inherits(this, o, FDsSceneCatalogContent);
    return o;
 }
 function FDsShareSceneCatalogToolBar(o){
@@ -29,7 +21,7 @@ function FDsShareSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsShareSceneCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -38,7 +30,7 @@ function FDsShareSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsShareSceneCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -47,7 +39,7 @@ function FDsShareSceneFrameSet_onBuilded(event){
    canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(event);
    o._frameCanvasContent.push(canvas);
-   var toolbar = o._propertyToolbar = RClass.create(FDsShareScenePropertyToolBar);
+   var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);
@@ -62,14 +54,4 @@ function FDsShareSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FDsSceneMenuBar.onBuilded.call(o, p);
    o._controlExecute.addClickListener(o, o.onExecuteClick);
-}
-function FDsShareScenePropertyToolBar(o){
-   o = RClass.inherits(this, o, FDsScenePropertyToolBar);
-   o._frameName = 'resource.share.scene.PropertyToolBar';
-   return o;
-}
-function FDsShareSceneWorkspace(o){
-   o = RClass.inherits(this, o, FDsSceneWorkspace);
-   o._frameName = 'resource.share.scene.Workspace';
-   return o;
 }

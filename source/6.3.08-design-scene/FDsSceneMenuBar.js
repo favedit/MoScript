@@ -139,6 +139,10 @@ function FDsSceneMenuBar_onImportTemplateClick(){
    dialog.setContentCode('');
    dialog.setContentLabel('');
    dialog.showPosition(EUiPosition.Center);
+   // 显示对话框
+   //var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceSelectDialog);
+   //dialog._frameSet = frameSet;
+   //dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

@@ -641,7 +641,7 @@ function FDsSceneMenuBar_dispose(){
 }
 function FDsScenePropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                   = 'resource.share.scene.PropertyToolBar';
+   o._frameName                   = 'resource.scene.PropertyToolBar';
    o._controlRefresh   = null;
    o._activeNodeGuid              = null;
    o.onBuilded                    = FDsScenePropertyToolBar_onBuilded;

@@ -1,36 +1,37 @@
 function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
-   o._optionMerge             = false;
-   o._optionBlendMode         = true;
-   o._supportInstance         = false;
-   o._supportLayout           = false;
-   o._supportMaterialMap      = false;
-   o._supportVertexColor      = true;
-   o._supportVertexCoord      = true;
-   o._supportVertexNormal     = true;
-   o._supportVertexNormalFull = true;
-   o._supportSkeleton         = false;
-   o._supportAlpha            = true;
-   o._supportAmbient          = true;
-   o._supportDiffuse          = true;
-   o._supportDiffuseView      = true;
-   o._supportSpecularColor    = true;
-   o._supportSpecularLevel    = true;
-   o._supportSpecularView     = true;
-   o._supportLight            = true;
-   o._supportReflect          = true;
-   o._supportRefract          = true;
-   o._supportEmissive         = true;
-   o._supportHeight           = true;
-   o._supportEnvironment      = true;
-   o._dynamicSkeleton         = true;
-   o.setup                    = FG3dAutomaticEffect_setup;
-   o.buildInfo                = FG3dAutomaticEffect_buildInfo;
-   o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
-   o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
-   o.bindMaterialSamplers     = FG3dAutomaticEffect_bindMaterialSamplers;
-   o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
-   o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
+   o._optionMerge                 = false;
+   o._optionBlendMode             = true;
+   o._supportInstance             = false;
+   o._supportLayout               = false;
+   o._supportMaterialMap          = false;
+   o._supportVertexColor          = true;
+   o._supportVertexCoord          = true;
+   o._supportVertexNormal         = true;
+   o._supportVertexNormalFull     = true;
+   o._supportVertexNormalCompress = false;
+   o._supportSkeleton             = false;
+   o._supportAlpha                = true;
+   o._supportAmbient              = true;
+   o._supportDiffuse              = true;
+   o._supportDiffuseView          = true;
+   o._supportSpecularColor        = true;
+   o._supportSpecularLevel        = true;
+   o._supportSpecularView         = true;
+   o._supportLight                = true;
+   o._supportReflect              = true;
+   o._supportRefract              = true;
+   o._supportEmissive             = true;
+   o._supportHeight               = true;
+   o._supportEnvironment          = true;
+   o._dynamicSkeleton             = true;
+   o.setup                        = FG3dAutomaticEffect_setup;
+   o.buildInfo                    = FG3dAutomaticEffect_buildInfo;
+   o.bindAttributes               = FG3dAutomaticEffect_bindAttributes;
+   o.bindSamplers                 = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterialSamplers         = FG3dAutomaticEffect_bindMaterialSamplers;
+   o.bindMaterial                 = FG3dAutomaticEffect_bindMaterial;
+   o.drawRenderable               = FG3dAutomaticEffect_drawRenderable;
    return o;
 }
 function FG3dAutomaticEffect_setup(){
@@ -116,8 +117,13 @@ function FG3dAutomaticEffect_buildInfo(tagContext, pc){
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
-      flag.append("|AF");
+      flag.append("|ANF");
       tagContext.setBoolean("vertex.attribute.normal.full", true);
+   }
+   o._dynamicVertexNormalCompress = pc.optionNormalCompress;
+   if(o._dynamicVertexNormalCompress){
+      flag.append("|ANC");
+      tagContext.setBoolean("vertex.attribute.normal.compress", true);
    }
    o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){

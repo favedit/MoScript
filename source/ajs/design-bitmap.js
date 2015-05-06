@@ -251,6 +251,7 @@ function FDsBitmapPropertyFrame_dispose(){
 }
 function FDsBitmapPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
+   o._frameName      = 'resource.bitmap.PropertyToolBar';
    o._controlRefresh = null;
    o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
    o.onRefreshClick  = FDsBitmapPropertyToolBar_onRefreshClick;

@@ -32,7 +32,7 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
    // 设置目录内容
-   var catalog = o._catalogContent = RClass.create(FDsPrivateMaterialCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    //catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -45,7 +45,7 @@ function FDsPrivateMaterialFrameSet_onBuilded(event){
    o._frameCanvasToolBar.push(toolbar);
    //..........................................................
    // 设置属性工具栏
-   var toolbar = o._propertyToolBar = RClass.create(FDsPrivateMaterialPropertyToolBar);
+   var toolbar = o._propertyToolBar = RClass.create(FDsMaterialPropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);
