@@ -8,7 +8,7 @@ function FE3dSimpleCanvas(o){
    o = RClass.inherits(this, o, FE3dCanvas);
    //..........................................................
    // @attribute
-   o._activeStage           = null;
+   o._activeSpace           = null;
    // @attribute
    o._captureStatus         = false;
    o._capturePosition       = null;
@@ -59,7 +59,7 @@ function FE3dSimpleCanvas(o){
 //==========================================================
 function FE3dSimpleCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -129,7 +129,7 @@ function FE3dSimpleCanvas_onEnterFrame(){
 //==========================================================
 function FE3dSimpleCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -146,13 +146,13 @@ function FE3dSimpleCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FE3dSimpleCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   var c = o._activeStage.camera();
+   var c = o._activeSpace.camera();
    var r = c.rotation();
    var cr = o._captureCameraRotation;
    r.x = cr.x + cy * o._cameraMouseRotation;
@@ -177,11 +177,11 @@ function FE3dSimpleCanvas_onMouseCaptureStop(p){
 function FE3dSimpleCanvas_onTouchStart(p){
    var o = this;
    // 检查场景加载完成
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
-   var r = o._activeStage.region();
+   var r = o._activeSpace.region();
    // 获得事件
    var ts = p.touches;
    var c = ts.length;
@@ -217,7 +217,7 @@ function FE3dSimpleCanvas_onTouchMove(p){
       p.preventDefault();
       // 处理事件
       var t = ts[0];
-      var cm = o._activeStage.camera();
+      var cm = o._activeSpace.camera();
       var cr = cm.rotation();
       // 计算偏移
       var cx = t.clientX - o._capturePosition.x;
@@ -247,7 +247,7 @@ function FE3dSimpleCanvas_onTouchStop(p){
 function FE3dSimpleCanvas_onSceneLoad(p){
    var o = this;
    var c = o._graphicContext;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    // 设置投影
    var cs = c.size();
    var rp = s.camera().projection();
@@ -274,7 +274,7 @@ function FE3dSimpleCanvas_onResize(p){
    // 获得相机信息
    var c = o._graphicContext;
    var cs = c.size();
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(s){
       var rp = s.camera().projection();
       rp.size().set(cs.width, cs.height);
@@ -304,7 +304,7 @@ function FE3dSimpleCanvas_construct(){
 //==========================================================
 function FE3dSimpleCanvas_switchPlay(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -324,7 +324,7 @@ function FE3dSimpleCanvas_switchPlay(p){
 //==========================================================
 function FE3dSimpleCanvas_switchMovie(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -344,7 +344,7 @@ function FE3dSimpleCanvas_switchMovie(p){
 //==========================================================
 function FE3dSimpleCanvas_doAction(e, p, f){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }

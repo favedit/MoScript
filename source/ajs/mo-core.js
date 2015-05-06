@@ -96,6 +96,7 @@ function TArray(){
    o._memory  = new Array();
    o.isEmpty  = TArray_isEmpty;
    o.length   = TArray_length;
+   o.memory   = TArray_memory;
    o.contains = TArray_contains;
    o.indexOf  = TArray_indexOf;
    o.get      = TArray_get;
@@ -116,6 +117,9 @@ function TArray_isEmpty(){
 }
 function TArray_length(){
    return this._length;
+}
+function TArray_memory(){
+   return this._memory;
 }
 function TArray_contains(v){
    return this.indexOf(v) != -1;
@@ -138,8 +142,11 @@ function TArray_set(n, v){
       this._memory[n] = v;
    }
 }
-function TArray_push(v){
-   this._memory[this._length++] = v;
+function TArray_push(){
+   var count = arguments.length;
+   for(var i = 0; i < count; i++){
+      this._memory[this._length++] = arguments[i];
+   }
 }
 function TArray_swap(l, r){
    if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){

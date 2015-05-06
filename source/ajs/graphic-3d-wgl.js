@@ -1356,26 +1356,26 @@ function FWglVertexBuffer_isValid(){
    var g = o._graphicContext._native;
    return g.isBuffer(o._native);
 }
-function FWglVertexBuffer_upload(pd, ps, pc){
+function FWglVertexBuffer_upload(data, stride, count){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   o._stride = ps;
-   o._count = pc;
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
-      d = new Float32Array(pd);
-   }else if(pd.constructor == Uint8Array){
-      d = pd;
-   }else if(pd.constructor == Float32Array){
-      d = pd;
+   var context = o._graphicContext;
+   var graphics = context._native;
+   o._stride = stride;
+   o._count = count;
+   var arrays = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
+      arrays = new Float32Array(data);
+   }else if(data.constructor == Uint8Array){
+      arrays = data;
+   }else if(data.constructor == Float32Array){
+      arrays = data;
    }else{
-      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', pd);
+      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', data);
    }
-   g.bindBuffer(g.ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
-   g.bufferData(g.ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   graphics.bindBuffer(graphics.ARRAY_BUFFER, o._native);
+   context.checkError('bindBuffer', 'Bindbuffer');
+   graphics.bufferData(graphics.ARRAY_BUFFER, arrays, graphics.STATIC_DRAW);
+   context.checkError('bufferData', 'bufferData');
 }
 function FWglVertexBuffer_dispose(){
    var o = this;

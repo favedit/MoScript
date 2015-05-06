@@ -48,33 +48,33 @@ function FWglVertexBuffer_isValid(){
 // <T>上传数据</T>
 //
 // @method
-// @param pv:data:Array 数据
-// @param ps:stride:Integer 宽度
-// @param pc:count:Integer 总数
+// @param data:Array 数据
+// @param stride:Integer 宽度
+// @param count:Integer 总数
 //==========================================================
-function FWglVertexBuffer_upload(pd, ps, pc){
+function FWglVertexBuffer_upload(data, stride, count){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
+   var context = o._graphicContext;
+   var graphics = context._native;
    // 设置数据
-   o._stride = ps;
-   o._count = pc;
+   o._stride = stride;
+   o._count = count;
    // 获得数据
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
-      d = new Float32Array(pd);
-   }else if(pd.constructor == Uint8Array){
-      d = pd;
-   }else if(pd.constructor == Float32Array){
-      d = pd;
+   var arrays = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
+      arrays = new Float32Array(data);
+   }else if(data.constructor == Uint8Array){
+      arrays = data;
+   }else if(data.constructor == Float32Array){
+      arrays = data;
    }else{
-      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', pd);
+      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', data);
    }
    // 上传数据
-   g.bindBuffer(g.ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
-   g.bufferData(g.ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   graphics.bindBuffer(graphics.ARRAY_BUFFER, o._native);
+   context.checkError('bindBuffer', 'Bindbuffer');
+   graphics.bufferData(graphics.ARRAY_BUFFER, arrays, graphics.STATIC_DRAW);
+   context.checkError('bufferData', 'bufferData');
 }
 
 //==========================================================

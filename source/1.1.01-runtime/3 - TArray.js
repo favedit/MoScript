@@ -15,6 +15,7 @@ function TArray(){
    // @method
    o.isEmpty  = TArray_isEmpty;
    o.length   = TArray_length;
+   o.memory   = TArray_memory;
    o.contains = TArray_contains;
    o.indexOf  = TArray_indexOf;
    o.get      = TArray_get;
@@ -49,6 +50,16 @@ function TArray_isEmpty(){
 //==========================================================
 function TArray_length(){
    return this._length;
+}
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return Array 数据
+//==========================================================
+function TArray_memory(){
+   return this._memory;
 }
 
 //==========================================================
@@ -108,10 +119,13 @@ function TArray_set(n, v){
 // <T>把对象追加到数组的最后位置。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param values:Object 对象
 //==========================================================
-function TArray_push(v){
-   this._memory[this._length++] = v;
+function TArray_push(){
+   var count = arguments.length;
+   for(var i = 0; i < count; i++){
+      this._memory[this._length++] = arguments[i];
+   }
 }
 
 //==========================================================

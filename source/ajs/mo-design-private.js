@@ -864,17 +864,9 @@ function FDsPrivateTemplateMenuBar_onBuilded(event){
    o._controlCreateDisplay.addClickListener(o, o.onCreateDisplayClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
-function FDsPrivateSceneCanvasContent(o){
-   o = RClass.inherits(this, o, FDsSceneCanvasContent);
-   return o;
-}
 function FDsPrivateSceneCanvasToolBar(o){
    o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
    o._frameName = 'resource.private.scene.CanvasToolBar';
-   return o;
-}
-function FDsPrivateSceneCatalogContent(o){
-   o = RClass.inherits(this, o, FDsSceneCatalogContent);
    return o;
 }
 function FDsPrivateSceneCatalogToolBar(o){
@@ -895,7 +887,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
-   var catalog = o._catalogContent = RClass.create(FDsPrivateSceneCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -904,7 +896,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
-   var canvas = o._canvasContent = RClass.create(FDsPrivateSceneCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -913,7 +905,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(event);
    o._frameCanvasContent.push(canvas);
-   var toolbar = o._propertyToolbar = RClass.create(FDsPrivateScenePropertyToolBar);
+   var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);
@@ -932,14 +924,4 @@ function FDsPrivateSceneMenuBar_onBuilded(p){
    o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
    o._controlImportTemplate.addClickListener(o, o.onImportTemplateClick);
    o._controlExecute.addClickListener(o, o.onExecuteClick);
-}
-function FDsPrivateScenePropertyToolBar(o){
-   o = RClass.inherits(this, o, FDsScenePropertyToolBar);
-   o._frameName = 'resource.private.scene.PropertyToolBar';
-   return o;
-}
-function FDsPrivateSceneWorkspace(o){
-   o = RClass.inherits(this, o, FDsSceneWorkspace);
-   o._frameName = 'resource.share.scene.Workspace';
-   return o;
 }

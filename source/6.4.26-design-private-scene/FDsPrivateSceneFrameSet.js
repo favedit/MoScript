@@ -32,7 +32,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCatalogToolBar.push(toolbar);
    // 设置目录内容栏
-   var catalog = o._catalogContent = RClass.create(FDsPrivateSceneCatalogContent);
+   var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
    catalog._frameSet = o;
    catalog.build(event);
    catalog.addSelectedListener(o, o.onCatalogSelected);
@@ -44,7 +44,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    toolbar.buildDefine(event);
    o._frameCanvasToolBar.push(toolbar);
    // 设置画板内容区
-   var canvas = o._canvasContent = RClass.create(FDsPrivateSceneCanvasContent);
+   var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
    canvas._frameSet = o;
    canvas._toolbar = o._canvasToolbar;
    canvas._hParent = o._frameCanvasContent._hPanel;
@@ -55,7 +55,7 @@ function FDsPrivateSceneFrameSet_onBuilded(event){
    o._frameCanvasContent.push(canvas);
    //..........................................................
    // 设置属性工具栏
-   var toolbar = o._propertyToolbar = RClass.create(FDsPrivateScenePropertyToolBar);
+   var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
    toolbar._frameSet = o;
    toolbar.buildDefine(event);
    o._framePropertyToolBar.push(toolbar);

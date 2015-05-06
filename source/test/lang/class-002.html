@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/runtime.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/lang-math.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/core-window.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+//Obejct.defineProperty(TObjects, 'length2', {
+//   'get' : function(){
+//      return this._items.length;
+//   }
+//});
+
+Object.prototype.length2 = {
+   get:function(){
+      return this._items.length;
+   }
+};
+
+
+function _load(){
+   //RRuntime.processCd = EProcess.Debug;
+   //RBrowser.construct();
+   //var names = new Array();
+   //alert(names.length);
+   //debugger
+   //var ca = RClass.create(FClassA);
+   //RDump.dump(ca, _dump);
+
+	//RLogger.connect(_msg);
+	//var cd = RClass.create(FClassD);
+	//RDump.dump(cd, _dump);
+   //var s = new TAttributes();
+   //alert(s.dump());
+
+   var cls = TObjects;
+
+   var value1 = new Object();
+
+
+
+   var values = new TObjects();
+
+   values.push(1);
+   //values.length2 = 3;
+   alert(values.length2);
+   RDump.dump(values, _dump);
+   //RDump.dump(RDump, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

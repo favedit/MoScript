@@ -2179,7 +2179,7 @@ function FE3dSceneRegion_dispose(){
 }
 function FE3dSimpleCanvas(o){
    o = RClass.inherits(this, o, FE3dCanvas);
-   o._activeStage           = null;
+   o._activeSpace           = null;
    o._captureStatus         = false;
    o._capturePosition       = null;
    o._captureCameraPosition = null;
@@ -2212,7 +2212,7 @@ function FE3dSimpleCanvas(o){
 }
 function FE3dSimpleCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -2267,7 +2267,7 @@ function FE3dSimpleCanvas_onEnterFrame(){
 }
 function FE3dSimpleCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -2276,13 +2276,13 @@ function FE3dSimpleCanvas_onMouseCaptureStart(p){
 }
 function FE3dSimpleCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   var c = o._activeStage.camera();
+   var c = o._activeSpace.camera();
    var r = c.rotation();
    var cr = o._captureCameraRotation;
    r.x = cr.x + cy * o._cameraMouseRotation;
@@ -2292,11 +2292,11 @@ function FE3dSimpleCanvas_onMouseCaptureStop(p){
 }
 function FE3dSimpleCanvas_onTouchStart(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
-   var r = o._activeStage.region();
+   var r = o._activeSpace.region();
    var ts = p.touches;
    var c = ts.length;
    if(c == 1){
@@ -2318,7 +2318,7 @@ function FE3dSimpleCanvas_onTouchMove(p){
    if(c == 1){
       p.preventDefault();
       var t = ts[0];
-      var cm = o._activeStage.camera();
+      var cm = o._activeSpace.camera();
       var cr = cm.rotation();
       var cx = t.clientX - o._capturePosition.x;
       var cy = t.clientY - o._capturePosition.y;
@@ -2333,7 +2333,7 @@ function FE3dSimpleCanvas_onTouchStop(p){
 function FE3dSimpleCanvas_onSceneLoad(p){
    var o = this;
    var c = o._graphicContext;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    var cs = c.size();
    var rp = s.camera().projection();
    rp.size().set(cs.width, cs.height);
@@ -2349,7 +2349,7 @@ function FE3dSimpleCanvas_onResize(p){
    o.__base.FE3dCanvas.onResize.call(o, p);
    var c = o._graphicContext;
    var cs = c.size();
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(s){
       var rp = s.camera().projection();
       rp.size().set(cs.width, cs.height);
@@ -2366,7 +2366,7 @@ function FE3dSimpleCanvas_construct(){
 }
 function FE3dSimpleCanvas_switchPlay(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -2379,7 +2379,7 @@ function FE3dSimpleCanvas_switchPlay(p){
 }
 function FE3dSimpleCanvas_switchMovie(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -2392,7 +2392,7 @@ function FE3dSimpleCanvas_switchMovie(p){
 }
 function FE3dSimpleCanvas_doAction(e, p, f){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -2643,6 +2643,87 @@ function FE3dSpace_active(){
 function FE3dSpace_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
+}
+function FE3dSphere(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._outline              = null;
+   o._splitCount           = 8;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FE3dSphere_construct;
+   o.splitCount            = FE3dSphere_splitCount;
+   o.setSplitCount         = FE3dSphere_setSplitCount;
+   o.setup                 = FE3dSphere_setup;
+   return o;
+}
+function FE3dSphere_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._outline = new SOutline3();
+}
+function FE3dSphere_splitCount(){
+   return this._splitCount;
+}
+function FE3dSphere_setSplitCount(count){
+   this._splitCount = count;
+}
+function FE3dSphere_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var positions = new TArray();
+   var normals = new TArray();
+   var cr = o._splitCount * 2;
+   var cz = o._splitCount;
+   var stepr = Math.PI * 2 / cr;
+   var stepz = Math.PI / cz;
+   var count = 0;
+   for(var rz = 0; rz <= cz; rz++){
+      for(var r = 0; r < cr; r++){
+         var radius = stepr * r - Math.PI;
+         var radiusZ = stepz * rz - RConst.PI_2;
+         var x = Math.sin(radius) * Math.cos(radiusZ);
+         var y = Math.sin(radiusZ);
+         var z = -Math.cos(radius) * Math.cos(radiusZ);
+         positions.push(x, y, z);
+         normals.push(x, y, z);
+         count++;
+      }
+   }
+   o._vertexCount = count;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer._name = 'position';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
+   buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
+   o._vertexBuffers.set(buffer._name, buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer._name = 'normal';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
+   buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
+   o._vertexBuffers.set(buffer._name, buffer);
+   var indexes = new TArray();
+   for(var rz = 0; rz < cz; rz++){
+      for(var r = 0; r < cr; r++){
+         var i = cr * rz;
+         var ci = i + r;
+         var ni = i + r + cr;
+         if(r == cr - 1){
+            indexes.push(ci, ni, i);
+            indexes.push(ni, i + cr, i);
+         }else{
+            indexes.push(ci, ni, ci + 1);
+            indexes.push(ni, ni + 1, ci + 1);
+         }
+      }
+   }
+   var ib = o._indexBuffer = context.createIndexBuffer();
+   ib.upload(new Uint16Array(indexes.memory()), indexes.length());
+   o.update();
+   var info = o.material().info();
+   info.ambientColor.set(0.2, 0.2, 0.2, 1);
+   info.diffuseColor.set(0.8, 0.8, 0.8, 1);
+   info.specularColor.set(0.8, 0.8, 0.8, 1);
+   info.specularLevel = 64;
 }
 function FE3dSprite(o){
    o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject, MLinkerResource);
