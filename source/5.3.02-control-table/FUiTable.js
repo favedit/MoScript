@@ -25,7 +25,7 @@
 // @author maocy
 // @version 150125
 //==========================================================
-function FTable(o) {
+function FUiTable(o) {
    o = RClass.inherits(this, o, FGridControl, MDataset);
    //..........................................................
    // @property
@@ -52,20 +52,20 @@ function FTable(o) {
    o._hDataForm        = null;
    //..........................................................
    // @event
-   o.onBuildContent       = FTable_onBuildContent;
+   o.onBuildContent       = FUiTable_onBuildContent;
    //..........................................................
    // @process
-   o.oeRefresh         = FTable_oeRefresh;
+   o.oeRefresh         = FUiTable_oeRefresh;
    //..........................................................
    // @method
-   o.appendColumn      = FTable_appendColumn;
+   o.appendColumn      = FUiTable_appendColumn;
 
    //..........................................................
    // @event
-   //o.onResizeAfter = FTable_onResizeAfter;
+   //o.onResizeAfter = FUiTable_onResizeAfter;
    //..........................................................
    // @process
-   //o.oeResize      = FTable_oeResize;
+   //o.oeResize      = FUiTable_oeResize;
    return o;
 }
 
@@ -75,7 +75,7 @@ function FTable(o) {
 // @method
 // @param p:event:TEventProcess 构建事件
 //==========================================================
-function FTable_onBuildContent(p){
+function FUiTable_onBuildContent(p){
    var o = this;
    var hbp = o._hContentPanel;
    // 建立固定区(Layer:2)
@@ -144,7 +144,7 @@ function FTable_onBuildContent(p){
 // @method
 // @param p:event:TEventProcess 构建事件
 //==========================================================
-function FTable_oeRefresh(e){
+function FUiTable_oeRefresh(e){
    var o = this;
    o.__base.FGridControl.oeRefresh.call(o, e);
    if(e.isAfter()){
@@ -214,7 +214,7 @@ function FTable_oeRefresh(e){
 // @method
 // @param p:event:TEventProcess 构建事件
 //==========================================================
-function FTable_appendColumn(p){
+function FUiTable_appendColumn(p){
    var o = this;
    // 为固定列的情况
    if(p._optionFixed){
@@ -245,7 +245,7 @@ function FTable_appendColumn(p){
 
 
 // ------------------------------------------------------------
-function FTable_onResizeAfter(){
+function FUiTable_onResizeAfter(){
    var o = this;
    var hdp = o._hDataPanel;
    var hfp = o._hFixPanel;
@@ -259,7 +259,7 @@ function FTable_onResizeAfter(){
 }
 
 // ------------------------------------------------------------
-function FTable_oeResize(e){
+function FUiTable_oeResize(e){
    var o = this;
    // 检查是否尺寸改变
    var h = o._hPanel;

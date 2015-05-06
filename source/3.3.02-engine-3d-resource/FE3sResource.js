@@ -8,29 +8,28 @@ function FE3sResource(o){
    o = RClass.inherits(this, o, FResource, MListenerLoad);
    //..........................................................
    // @attribute
-   o._dataLoad     = false;
-   o._dataReady    = false;
-   o._dataSize     = 0;
-   o._dataCompress = false;
-   o._vendor       = null;
+   o._dataLoad   = false;
+   o._dataReady  = false;
+   o._dataSize   = 0;
+   o._blockSize  = 0;
+   o._blockCount = 0;
+   o._vendor     = null;
    //..........................................................
    // @event
-   o.onComplete    = FE3sResource_onComplete;
+   o.onComplete  = FE3sResource_onComplete;
    //..........................................................
    // @method
-   o.makeLabel     = FE3sResource_makeLabel;
+   o.makeLabel   = FE3sResource_makeLabel;
    // @method
-   o.vendor        = FE3sResource_vendor;
-   o.setVendor     = FE3sResource_setVendor;
+   o.vendor      = FE3sResource_vendor;
+   o.setVendor   = FE3sResource_setVendor;
    // @method
-   o.testReady     = FE3sResource_testReady;
+   o.testReady   = FE3sResource_testReady;
    // @method
-   o.unserialize   = FE3sResource_unserialize;
-   o.saveConfig    = FE3sResource_saveConfig;
+   o.unserialize = FE3sResource_unserialize;
+   o.saveConfig  = FE3sResource_saveConfig;
    // @method
-   o.load          = FE3sResource_load;
-   // @method
-   o.dispose       = FE3sResource_dispose;
+   o.dispose     = FE3sResource_dispose;
    return o;
 }
 
@@ -42,21 +41,27 @@ function FE3sResource(o){
 //==========================================================
 function FE3sResource_onComplete(input){
    var o = this;
-   // 创建读取流
-   var view = RClass.create(FDataView);
-   view.setEndianCd(true);
-   if(input.constructor == Array){
-      var inputData = new Uint8Array(input);
-      view.link(inputData.buffer);
-   }else if(input.constructor == Uint8Array){
-      view.link(input.buffer);
+   // 读取数据
+   if(RClass.isClass(input, MDataStream)){
+      // 反序列化数据
+      o.unserialize(input);
    }else{
-      view.link(input.outputData());
+      // 创建读取流
+      var view = RClass.create(FDataView);
+      view.setEndianCd(true);
+      if(input.constructor == Array){
+         var inputData = new Uint8Array(input);
+         view.link(inputData.buffer);
+      }else if(input.constructor == Uint8Array){
+         view.link(input.buffer);
+      }else{
+         view.link(input.outputData());
+      }
+      // 反序列化数据
+      o.unserialize(view);
+      // 释放资源
+      view.dispose();
    }
-   // 反序列化数据
-   o.unserialize(view);
-   // 释放资源
-   view.dispose();
    // 加载完成
    o._dataReady = true;
    // 加载事件处理
@@ -139,24 +144,6 @@ function FE3sResource_saveConfig(xconfig){
    xconfig.set('guid', o._guid);
    xconfig.set('code', o._code);
    xconfig.set('label', o._label);
-}
-
-//==========================================================
-// <T>从输入流里反序列化信息内容</T>
-//
-// @param p:input:FByteStream 数据流
-// @return 处理结果
-//==========================================================
-function FE3sResource_load(u){
-   var o = this;
-   var hc = RConsole.find(FHttpConsole);
-   var c = hc.send(u);
-   if(o._dataCompress){
-      c.lsnsLoad.register(o, o.onLoad);
-   }else{
-      c.lsnsLoad.register(o, o.onComplete);
-   }
-   o._dataLoad = true;
 }
 
 //==========================================================

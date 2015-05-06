@@ -9078,36 +9078,37 @@ function MDataStream(o){
    o._viewer      = null;
    o._endianCd    = false;
    o._position    = 0;
-   o.testString   = FByteStream_testString;
-   o.readBoolean  = FByteStream_readBoolean;
-   o.readInt8     = FByteStream_readInt8;
-   o.readInt16    = FByteStream_readInt16;
-   o.readInt32    = FByteStream_readInt32;
-   o.readInt64    = FByteStream_readInt64;
-   o.readUint8    = FByteStream_readUint8;
-   o.readUint16   = FByteStream_readUint16;
-   o.readUint32   = FByteStream_readUint32;
-   o.readUint64   = FByteStream_readUint64;
-   o.readFloat    = FByteStream_readFloat;
-   o.readDouble   = FByteStream_readDouble;
-   o.readString   = FByteStream_readString;
-   o.readBytes    = FByteStream_readBytes;
-   o.readData     = FByteStream_readData;
-   o.writeBoolean = FByteStream_writeBoolean;
-   o.writeInt8    = FByteStream_writeInt8;
-   o.writeInt16   = FByteStream_writeInt16;
-   o.writeInt32   = FByteStream_writeInt32;
-   o.writeInt64   = FByteStream_writeInt64;
-   o.writeUint8   = FByteStream_writeUint8;
-   o.writeUint16  = FByteStream_writeUint16;
-   o.writeUint32  = FByteStream_writeUint32;
-   o.writeUint64  = FByteStream_writeUint64;
-   o.writeFloat   = FByteStream_writeFloat;
-   o.writeDouble  = FByteStream_writeDouble;
-   o.writeString  = FByteStream_writeString;
+   o.testString   = MDataStream_testString;
+   o.readBoolean  = MDataStream_readBoolean;
+   o.readInt8     = MDataStream_readInt8;
+   o.readInt16    = MDataStream_readInt16;
+   o.readInt32    = MDataStream_readInt32;
+   o.readInt64    = MDataStream_readInt64;
+   o.readUint8    = MDataStream_readUint8;
+   o.readUint16   = MDataStream_readUint16;
+   o.readUint32   = MDataStream_readUint32;
+   o.readUint64   = MDataStream_readUint64;
+   o.readFloat    = MDataStream_readFloat;
+   o.readDouble   = MDataStream_readDouble;
+   o.readString   = MDataStream_readString;
+   o.readData     = MDataStream_readData;
+   o.readBytes    = MDataStream_readBytes;
+   o.writeBoolean = MDataStream_writeBoolean;
+   o.writeInt8    = MDataStream_writeInt8;
+   o.writeInt16   = MDataStream_writeInt16;
+   o.writeInt32   = MDataStream_writeInt32;
+   o.writeInt64   = MDataStream_writeInt64;
+   o.writeUint8   = MDataStream_writeUint8;
+   o.writeUint16  = MDataStream_writeUint16;
+   o.writeUint32  = MDataStream_writeUint32;
+   o.writeUint64  = MDataStream_writeUint64;
+   o.writeFloat   = MDataStream_writeFloat;
+   o.writeDouble  = MDataStream_writeDouble;
+   o.writeString  = MDataStream_writeString;
+   o.writeBytes   = MDataStream_writeBytes;
    return o;
 }
-function FByteStream_testString(){
+function MDataStream_testString(){
    var o = this;
    var position = o._position;
    var length = o._viewer.getUint16(position, o._endianCd);
@@ -9120,86 +9121,89 @@ function FByteStream_testString(){
    }
    return result.toString();
 }
-function FByteStream_readBoolean(){
+function MDataStream_readBoolean(){
    var o = this;
    var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
    return value > 0;
 }
-function FByteStream_readInt8(){
+function MDataStream_readInt8(){
    var o = this;
    var value = o._viewer.getInt8(o._position, o._endianCd);
    o._position++;
    return value;
 }
-function FByteStream_readInt16(){
+function MDataStream_readInt16(){
    var o = this;
    var value = o._viewer.getInt16(o._position, o._endianCd);
    o._position += 2;
    return value;
 }
-function FByteStream_readInt32(){
+function MDataStream_readInt32(){
    var o = this;
    var value = o._viewer.getInt32(o._position, o._endianCd);
    o._position += 4;
    return value;
 }
-function FByteStream_readInt64(){
+function MDataStream_readInt64(){
    var o = this;
    var value = o._viewer.getInt64(o._position, o._endianCd);
    o._position += 8;
    return value;
 }
-function FByteStream_readUint8(){
+function MDataStream_readUint8(){
    var o = this;
    var value = o._viewer.getUint8(o._position, o._endianCd);
    o._position += 1;
    return value;
 }
-function FByteStream_readUint16(){
+function MDataStream_readUint16(){
    var o = this;
    var value = o._viewer.getUint16(o._position, o._endianCd);
    o._position += 2;
    return value;
 }
-function FByteStream_readUint32(){
+function MDataStream_readUint32(){
    var o = this;
    var value = o._viewer.getUint32(o._position, o._endianCd);
    o._position += 4;
    return value;
 }
-function FByteStream_readUint64(){
+function MDataStream_readUint64(){
    var o = this;
    var value = o._viewer.getUint64(o._position, o._endianCd);
    o._position += 8;
    return value;
 }
-function FByteStream_readFloat(){
+function MDataStream_readFloat(){
    var o = this;
    var value = o._viewer.getFloat32(o._position, o._endianCd);
    o._position += 4;
    return value;
 }
-function FByteStream_readDouble(){
+function MDataStream_readDouble(){
    var o = this;
    var value = o._viewer.getFloat64(o._position, o._endianCd);
    o._position += 8;
    return value;
 }
-function FByteStream_readString(){
+function MDataStream_readString(){
    var o = this;
    var viewer = o._viewer;
-   var length = viewer.getUint16(o._position, o._endianCd);
-   o._position += 2;
+   var endianCd = o._endianCd;
+   var position = o._position;
+   var length = viewer.getUint16(position, endianCd);
+   position += 2;
    var value = new TString();
    for(var i = 0; i < length; i++){
-      var character = viewer.getUint16(o._position, o._endianCd);
-      o._position += 2;
+      var character = viewer.getUint16(position, endianCd);
       value.push(String.fromCharCode(character));
+      position += 2;
    }
+   o._position = position;
    return value.flush();
 }
-function FByteStream_readData(dataCd){
+function MDataStream_readData(dataCd){
    var o = this;
    switch(dataCd){
       case EDataType.Int8:
@@ -9227,7 +9231,123 @@ function FByteStream_readData(dataCd){
    }
    throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
 }
-function FByteStream_readBytes(data, offset, length){
+function MDataStream_readBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
+      return;
+   }
+   if(offset != 0){
+      throw new TError(o, 'Unsupport.');
+   }
+   var position = o._position;
+   var endianCd = o._endianCd;
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getFloat64(position, endianCd);
+         position += 8;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 4 == 0){
+      var array = new Uint32Array(data);
+      var count = length >> 2;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint32(position, endianCd);
+         position += 4;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 2 == 0){
+      var array = new Uint16Array(data);
+      var count = length >> 1;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint16(position, endianCd);
+         position += 2;
+      }
+      o._position = position;
+      return;
+   }
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      array[i] = viewer.getUint8(position++, endianCd);
+   }
+   o._position = position;
+}
+function MDataStream_writeBoolean(value){
+   var o = this;
+   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
+   o._position++;
+}
+function MDataStream_writeInt8(value){
+   var o = this;
+   o._viewer.setInt8(o._position, value, o._endianCd);
+   o._position++;
+}
+function MDataStream_writeInt16(value){
+   var o = this;
+   o._viewer.setInt16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+function MDataStream_writeInt32(value){
+   var o = this;
+   o._viewer.setInt32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+function MDataStream_writeInt64(value){
+   var o = this;
+   o._viewer.setInt64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+function MDataStream_writeUint8(value){
+   var o = this;
+   o._viewer.setUint8(o._position, value, o._endianCd);
+   o._position += 1;
+}
+function MDataStream_writeUint16(value){
+   var o = this;
+   o._viewer.setUint16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+function MDataStream_writeUint32(value){
+   var o = this;
+   o._viewer.setUint32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+function MDataStream_writeUint64(value){
+   var o = this;
+   o._viewer.setUint64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+function MDataStream_writeFloat(value){
+   var o = this;
+   o._viewer.setFloat32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+function MDataStream_writeDouble(value){
+   var o = this;
+   o._viewer.setDouble(o._position, value, o._endianCd);
+   o._position += 8;
+}
+function MDataStream_writeString(value){
+   var o = this;
+   var viewer = o._viewer;
+   var length = v.length;
+   var endianCd = o._endianCd;
+   var position = o._position;
+   viewer.setUint16(position, length, endianCd);
+   position += 2;
+   for(var i = 0; i < length; i++){
+      viewer.setUint16(position, value.charCodeAt(i), endianCd);
+      position += 2;
+   }
+   o._position = position;
+}
+function MDataStream_writeBytes(data, offset, length){
    var o = this;
    var viewer = o._viewer;
    if(length <= 0){
@@ -9236,103 +9356,43 @@ function FByteStream_readBytes(data, offset, length){
    if(offset != 0){
       throw new TError('Unsupport.');
    }
+   var position = o._position;
+   var endianCd = o._endianCd;
    if(length % 8 == 0){
       var array = new Float64Array(data);
       var count = length >> 3;
       for(var i = 0; i < count; i++){
-         array[i] = viewer.getFloat64(o._position, o._endianCd);
-         o._position += 8;
+         viewer.setFloat64(position, array[i], endianCd);
+         position += 8;
       }
+      o._position = position;
       return;
    }
    if(length % 4 == 0){
-      var count = length >> 2;
       var array = new Uint32Array(data);
+      var count = length >> 2;
       for(var i = 0; i < count; i++){
-         array[i] = viewer.getUint32(o._position, o._endianCd);
-         o._position += 4;
+         viewer.setUint32(position, array[i], endianCd);
+         position += 4;
       }
+      o._position = position;
       return;
    }
    if(length % 2 == 0){
-      var count = length >> 1;
       var array = new Uint16Array(data);
+      var count = length >> 1;
       for(var i = 0; i < count; i++){
-         array[i] = viewer.getUint16(o._position, o._endianCd);
-         o._position += 2;
+         viewer.setUint16(position, array[i], endianCd);
+         position += 2;
       }
+      o._position = position;
       return;
    }
    var array = new Uint8Array(data);
    for(var i = 0; i < length; i++){
-      array[i] = viewer.getUint8(o._position++, o._endianCd);
+      viewer.setUint8(position++, array[i], endianCd);
    }
-}
-function FByteStream_writeBoolean(value){
-   var o = this;
-   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
-   o._position++;
-}
-function FByteStream_writeInt8(value){
-   var o = this;
-   o._viewer.setInt8(o._position, value, o._endianCd);
-   o._position++;
-}
-function FByteStream_writeInt16(value){
-   var o = this;
-   o._viewer.setInt16(o._position, value, o._endianCd);
-   o._position += 2;
-}
-function FByteStream_writeInt32(value){
-   var o = this;
-   o._viewer.setInt32(o._position, value, o._endianCd);
-   o._position += 4;
-}
-function FByteStream_writeInt64(value){
-   var o = this;
-   o._viewer.setInt64(o._position, value, o._endianCd);
-   o._position += 8;
-}
-function FByteStream_writeUint8(value){
-   var o = this;
-   o._viewer.setUint8(o._position, value, o._endianCd);
-   o._position += 1;
-}
-function FByteStream_writeUint16(value){
-   var o = this;
-   o._viewer.setUint16(o._position, value, o._endianCd);
-   o._position += 2;
-}
-function FByteStream_writeUint32(value){
-   var o = this;
-   o._viewer.setUint32(o._position, value, o._endianCd);
-   o._position += 4;
-}
-function FByteStream_writeUint64(value){
-   var o = this;
-   o._viewer.setUint64(o._position, value, o._endianCd);
-   o._position += 8;
-}
-function FByteStream_writeFloat(value){
-   var o = this;
-   o._viewer.setFloat32(o._position, value, o._endianCd);
-   o._position += 4;
-}
-function FByteStream_writeDouble(value){
-   var o = this;
-   o._viewer.setDouble(o._position, value, o._endianCd);
-   o._position += 8;
-}
-function FByteStream_writeString(value){
-   var o = this;
-   var viewer = o._viewer;
-   var length = v.length;
-   viewer.setUint16(o._position, length, o._endianCd);
-   o._position += 2;
-   for(var i = 0; i < length; i++){
-      viewer.setUint16(o._position, value.charCodeAt(i), o._endianCd)
-      o._position += 2;
-   }
+   o._position = position;
 }
 function MDataView(o){
    o = RClass.inherits(this, o);
@@ -10010,6 +10070,7 @@ function FDataStream(o){
    o.length    = FDataStream_length;
    o.setLength = FDataStream_setLength;
    o.memory    = FDataStream_memory;
+   o.flip      = FDataStream_flip;
    o.dispose   = FDataStream_dispose;
    return o;
 }
@@ -10028,6 +10089,11 @@ function FDataStream_setLength(p){
 }
 function FDataStream_memory(){
    return this._memory;
+}
+function FDataStream_flip(){
+   var o = this;
+   o._length = o._position;
+   o._position = 0;
 }
 function FDataStream_dispose(){
    var o = this;
@@ -20618,22 +20684,25 @@ function FRenderable_process(region){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeCode    = null;
-   o._type        = null;
-   o._guid        = null;
-   o._code        = null;
-   o._label       = null;
-   o._sourceUrl   = null;
-   o.typeCode     = FResource_typeCode;
-   o.type         = FResource_type;
-   o.guid         = FResource_guid;
-   o.setGuid      = FResource_setGuid;
-   o.code         = FResource_code;
-   o.setCode      = FResource_setCode;
-   o.label        = FResource_label;
-   o.setLabel     = FResource_setLabel;
-   o.sourceUrl    = FResource_sourceUrl;
-   o.setSourceUrl = FResource_setSourceUrl;
+   o._typeCode     = null;
+   o._type         = null;
+   o._dataCompress = false;
+   o._dataBlock    = false;
+   o._guid         = null;
+   o._code         = null;
+   o._label        = null;
+   o._sourceUrl    = null;
+   o.typeCode      = FResource_typeCode;
+   o.type          = FResource_type;
+   o.guid          = FResource_guid;
+   o.setGuid       = FResource_setGuid;
+   o.code          = FResource_code;
+   o.setCode       = FResource_setCode;
+   o.label         = FResource_label;
+   o.setLabel      = FResource_setLabel;
+   o.sourceUrl     = FResource_sourceUrl;
+   o.setSourceUrl  = FResource_setSourceUrl;
+   o.testBlockReady = FResource_testBlockReady;
    return o;
 }
 function FResource_typeCode(){
@@ -20666,6 +20735,35 @@ function FResource_sourceUrl(){
 function FResource_setSourceUrl(p){
    this._sourceUrl = p;
 }
+function FResource_testBlockReady(){
+   var o = this;
+   var blocks = o._blocks;
+   var count = blocks.count();
+   for(var i = 0; i < count; i++){
+      var block = blocks.at(i);
+      if(!block.testReady()){
+         return false;
+      }
+   }
+   return true;
+}
+function FResourceBlock(o){
+   o = RClass.inherits(this, o, FObject);
+   o._ready    = false;
+   o._data     = null;
+   o.testReady = FResourceBlock_testReady;
+   o.dispose   = FResourceBlock_dispose;
+   return o;
+}
+function FResourceBlock_testReady(){
+   return this._ready;
+}
+function FResourceBlock_dispose(){
+   var o = this;
+   o._compressData = null;
+   o._data = null;
+   o.__base.FObject.dispose.call(o);
+}
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd             = EScope.Local;
@@ -20674,6 +20772,7 @@ function FResourceConsole(o){
    o._resources           = null;
    o._loadResources       = null;
    o._loadingResources    = null;
+   o._processBlocks       = null;
    o._processResources    = null;
    o._processingResources = null;
    o._pipeline            = null;
@@ -20684,7 +20783,9 @@ function FResourceConsole(o){
    o._interval            = 200;
    o.onComplete           = FResourceConsole_onComplete;
    o.onPipelineComplete   = FResourceConsole_onPipelineComplete;
+   o.onPipelineBlockComplete = FResourceConsole_onPipelineBlockComplete;
    o.onLoad               = FResourceConsole_onLoad;
+   o.onBlockLoad          = FResourceConsole_onBlockLoad;
    o.onProcess            = FResourceConsole_onProcess;
    o.construct            = FResourceConsole_construct;
    o.registerType         = FResourceConsole_registerType;
@@ -20694,68 +20795,124 @@ function FResourceConsole(o){
    o.load                 = FResourceConsole_load;
    return o;
 }
-function FResourceConsole_onComplete(connection, data){
+function FResourceConsole_onComplete(resource, data){
    var o = this;
-   connection._data = null;
-   o._loadingResources.remove(connection);
-   connection.onComplete(data);
+   resource._data = null;
+   o._loadingResources.remove(resource);
+   resource.onComplete(data);
 }
-function FResourceConsole_onPipelineComplete(p, r, d){
+function FResourceConsole_onPipelineComplete(pipeline, resource, data){
    var o = this;
-   o.freePipeline(p);
-   o._processingResources.remove(r);
-   o.onComplete(r, d);
+   o.freePipeline(pipeline);
+   o._processingResources.remove(resource);
+   o.onComplete(resource, data);
 }
-function FResourceConsole_onLoad(p){
+function FResourceConsole_onPipelineBlockComplete(pipeline, resource, block, data){
    var o = this;
-   var d = p.outputData();
-   var r = p._resource;
-   r._data = new Uint8Array(d);
-   o._loadingResources.remove(r);
-   o._processResources.push(r);
+   o.freePipeline(pipeline);
+   block._data = data;
+   block._ready = true;
+   if(resource.testBlockReady()){
+      var stream = RClass.create(FDataStream);
+      stream.setEndianCd(true);
+      stream.setLength(resource._dataLength);
+      var blocks = resource._blocks;
+      var count = blocks.count();
+      for(var i = 0; i < count; i++){
+         var block = blocks.at(i);
+         var data = block._data;
+         stream.writeBytes(data.buffer, 0, data.byteLength);
+         block.dispose();
+      }
+      blocks.clear();
+      stream.flip();
+      var span = RTimer.current() - resource._compressStartTick;
+      RLogger.info(o, 'Process resource decompress. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, resource._compressLength, resource._dataLength, span);
+      resource.onComplete(stream);
+   }
+}
+function FResourceConsole_onLoad(connection){
+   var o = this;
+   var data = connection.outputData();
+   var resource = connection._resource;
+   resource._data = new Uint8Array(data);
+   o._loadingResources.remove(resource);
+   o._processResources.push(resource);
+}
+function FResourceConsole_onBlockLoad(connection){
+   var o = this;
+   var resource = connection._resource;
+   var data = connection.outputData();
+   var view = RClass.create(FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   var compressCode = view.readString();
+   var length = resource._dataLength = view.readInt32();
+   var blockSize = view.readInt32();
+   var blockCount = view.readInt32();
+   var blocks = resource._blocks = new TObjects();
+   for(var i = 0; i < blockCount; i++){
+      var size = view.readInt32();
+      var blockData = new ArrayBuffer(size);
+      view.readBytes(blockData, 0, size);
+      var block = RClass.create(FResourceBlock);
+      block._index = i;
+      block._compressData = new Uint8Array(blockData);
+      blocks.push(block);
+      var pipeline = o.allocPipeline();
+      pipeline.decompressBlock(resource, block);
+   }
+   view.dispose();
+   o._loadingResources.remove(resource);
+   resource._compressLength = data.byteLength;
+   resource._compressStartTick = RTimer.current();
 }
 function FResourceConsole_onProcess(){
    var o = this;
-   var hc = RConsole.find(FHttpConsole);
-   var rs = o._loadResources;
-   var ps = o._loadingResources;
-   var pc = ps.count();
-   if(!rs.isEmpty()){
+   var httpConsole = RConsole.find(FHttpConsole);
+   var loadResources = o._loadResources;
+   var loadingResources = o._loadingResources;
+   var pc = loadingResources.count();
+   if(!loadResources.isEmpty()){
       for(var i = o._loadLimit - pc; i > 0; i--){
-         var r = rs.shift();
-         var ru = r.sourceUrl();
-         var c = hc.send(ru);
-         c._resource = r;
-         if(r._dataCompress){
-            c.addLoadListener(o, o.onLoad);
+         var resource = loadResources.shift();
+         var sourceUrl = resource.sourceUrl();
+         var connection = httpConsole.send(sourceUrl);
+         connection._resource = resource;
+         if(resource._dataCompress){
+            if(resource._dataBlock){
+               connection.addLoadListener(o, o.onBlockLoad);
+            }else{
+               connection.addLoadListener(o, o.onLoad);
+            }
          }else{
-            c.addLoadListener(o, o.onComplete);
+            connection.addLoadListener(o, o.onComplete);
          }
-         r._dataLoad = true;
-         ps.push(r);
-         if(rs.isEmpty()){
+         resource._dataLoad = true;
+         loadingResources.push(resource);
+         if(loadResources.isEmpty()){
             break;
          }
       }
    }
-   var rs = o._processResources;
-   var ps = o._processingResources;
-   var pc = ps.count();
-   if(!rs.isEmpty()){
-      var p = o._pipeline;
-      if(p){
-         if(ps.isEmpty()){
-            var r = rs.shift();
-            ps.push(r);
-            p.decompressSingle(r);
+   var processResources = o._processResources;
+   var processingResources = o._processingResources;
+   var pc = processingResources.count();
+   if(!processResources.isEmpty()){
+      var pipeline = o._pipeline;
+      if(pipeline){
+         if(processingResources.isEmpty()){
+            var resource = processResources.shift();
+            processingResources.push(resource);
+            pipeline.decompressSingle(resource);
          }
       }else{
          for(var i = o._processLimit - pc; i > 0; i--){
-            var r = rs.shift();
-            var l = o.allocPipeline();
-            ps.push(r);
-            l.decompress(r);
-            if(rs.isEmpty()){
+            var resource = processResources.shift();
+            var pipeline = o.allocPipeline();
+            processingResources.push(resource);
+            pipeline.decompress(resource);
+            if(processResources.isEmpty()){
                break;
             }
          }
@@ -20770,6 +20927,7 @@ function FResourceConsole_construct(){
    o._resources = new TDictionary();
    o._loadResources  = new TObjects();
    o._loadingResources = new TObjects();
+   o._processBlocks = new TLooper();
    o._processResources = new TObjects();
    o._processingResources = new TObjects();
    o._pipelinePool  = RClass.create(FObjectPool);
@@ -20793,28 +20951,27 @@ function FResourceConsole_factory(){
 }
 function FResourceConsole_allocPipeline(){
    var o = this;
-   var s = o._pipelinePool;
-   if(!s.hasFree()){
-      var p = RClass.create(FResourceLzmaPipeline);
-      p.setConsole(o);
-      s.push(p);
+   var pool = o._pipelinePool;
+   if(!pool.hasFree()){
+      var pipeline = RClass.create(FResourceLzmaPipeline);
+      pipeline.setConsole(o);
+      pool.push(pipeline);
    }
-   return s.alloc();
+   return pool.alloc();
 }
-function FResourceConsole_freePipeline(p){
-   this._pipelinePool.free(p);
+function FResourceConsole_freePipeline(pipeline){
+   this._pipelinePool.free(pipeline);
 }
-function FResourceConsole_load(p){
+function FResourceConsole_load(resource){
    var o = this;
-   var g = p.guid();
-   var s = o._resources;
-   var r = s.get(g);
-   if(r){
-      throw new TError(o, 'Resource is already loaded. (guid={1})', g);
+   var guid = resource.guid();
+   var resources = o._resources;
+   if(resources.contains(guid)){
+      throw new TError(o, 'Resource is already loaded. (guid={1})', guid);
    }
-   s.set(g, p);
-   o._loadResources.push(p);
-   p._dataLoad = true;
+   resources.set(guid, resource);
+   o._loadResources.push(resource);
+   resource._dataLoad = true;
 }
 function FResourceGroup(o){
    o = RClass.inherits(this, o, FObject);
@@ -20832,8 +20989,11 @@ function FResourceLzmaPipeline(o){
    o._dataLength      = 0;
    o._startTime       = 0;
    o.onComplete       = FResourceLzmaPipeline_onComplete;
+   o.onBlockComplete  = FResourceLzmaPipeline_onBlockComplete;
    o.construct        = FResourceLzmaPipeline_construct;
+   o.worker           = FResourceLzmaPipeline_worker;
    o.decompress       = FResourceLzmaPipeline_decompress;
+   o.decompressBlock  = FResourceLzmaPipeline_decompressBlock;
    o.decompressSingle = FResourceLzmaPipeline_decompressSingle;
    o.dispose          = FResourceLzmaPipeline_dispose;
    return o;
@@ -20846,20 +21006,44 @@ function FResourceLzmaPipeline_onComplete(data){
    o._console.onPipelineComplete(o, resource, data);
    o._startTime = RTimer.current();
 }
+function FResourceLzmaPipeline_onBlockComplete(data){
+   var o = this;
+   var resource = o._resource;
+   var block = o._block;
+   var span = RTimer.now() - o._startTime;
+   RLogger.info(o, 'Process resource block decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', resource.guid(), block._index, o._dataLength, data.byteLength, span);
+   o._console.onPipelineBlockComplete(o, resource, block, data);
+   o._startTime = RTimer.current();
+}
 function FResourceLzmaPipeline_construct(){
    var o = this;
    o.__base.FResourcePipeline.construct.call(o);
 }
-function FResourceLzmaPipeline_decompress(resource){
+function FResourceLzmaPipeline_worker(){
    var o = this;
-   var data = resource._data;
-   o._resource = resource;
    var worker = o._worker;
    if(!worker){
       var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
       worker = o._worker = new LZMA(uri);
    }
+   return worker;
+}
+function FResourceLzmaPipeline_decompress(resource){
+   var o = this;
+   var data = resource._data;
+   o._resource = resource;
+   var worker = o.worker();
    worker.decompress(data, function(value){o.onComplete(value);}, null);
+   o._dataLength = data.byteLength;
+   o._startTime = RTimer.current();
+}
+function FResourceLzmaPipeline_decompressBlock(resource, block){
+   var o = this;
+   var data = block._compressData;
+   o._resource = resource;
+   o._block = block;
+   var worker = o.worker();
+   worker.decompress(data, function(value){o.onBlockComplete(value);}, null);
    o._dataLength = data.byteLength;
    o._startTime = RTimer.current();
 }
@@ -22958,6 +23142,7 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
+   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -23430,16 +23615,16 @@ function FE3sRegion_camera(){
 function FE3sRegion_light(){
    return this._light;
 }
-function FE3sRegion_unserialize(p){
+function FE3sRegion_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._backgroundColor.unserialize(p);
-   o._moveSpeed = p.readFloat();
-   o._rotationKeySpeed = p.readFloat();
-   o._rotationMouseSpeed = p.readFloat();
-   o._material.unserialize(p);
-   o._camera.unserialize(p);
-   o._light.unserialize(p);
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._backgroundColor.unserialize(input);
+   o._moveSpeed = input.readFloat();
+   o._rotationKeySpeed = input.readFloat();
+   o._rotationMouseSpeed = input.readFloat();
+   o._material.unserialize(input);
+   o._camera.unserialize(input);
+   o._light.unserialize(input);
 }
 function FE3sRegion_saveConfig(xconfig){
    var o = this;
@@ -23527,36 +23712,40 @@ function FE3sRenderable_clone(instance){
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource, MListenerLoad);
-   o._dataLoad     = false;
-   o._dataReady    = false;
-   o._dataSize     = 0;
-   o._dataCompress = false;
-   o._vendor       = null;
-   o.onComplete    = FE3sResource_onComplete;
-   o.makeLabel     = FE3sResource_makeLabel;
-   o.vendor        = FE3sResource_vendor;
-   o.setVendor     = FE3sResource_setVendor;
-   o.testReady     = FE3sResource_testReady;
-   o.unserialize   = FE3sResource_unserialize;
-   o.saveConfig    = FE3sResource_saveConfig;
-   o.load          = FE3sResource_load;
-   o.dispose       = FE3sResource_dispose;
+   o._dataLoad   = false;
+   o._dataReady  = false;
+   o._dataSize   = 0;
+   o._blockSize  = 0;
+   o._blockCount = 0;
+   o._vendor     = null;
+   o.onComplete  = FE3sResource_onComplete;
+   o.makeLabel   = FE3sResource_makeLabel;
+   o.vendor      = FE3sResource_vendor;
+   o.setVendor   = FE3sResource_setVendor;
+   o.testReady   = FE3sResource_testReady;
+   o.unserialize = FE3sResource_unserialize;
+   o.saveConfig  = FE3sResource_saveConfig;
+   o.dispose     = FE3sResource_dispose;
    return o;
 }
 function FE3sResource_onComplete(input){
    var o = this;
-   var view = RClass.create(FDataView);
-   view.setEndianCd(true);
-   if(input.constructor == Array){
-      var inputData = new Uint8Array(input);
-      view.link(inputData.buffer);
-   }else if(input.constructor == Uint8Array){
-      view.link(input.buffer);
+   if(RClass.isClass(input, MDataStream)){
+      o.unserialize(input);
    }else{
-      view.link(input.outputData());
+      var view = RClass.create(FDataView);
+      view.setEndianCd(true);
+      if(input.constructor == Array){
+         var inputData = new Uint8Array(input);
+         view.link(inputData.buffer);
+      }else if(input.constructor == Uint8Array){
+         view.link(input.buffer);
+      }else{
+         view.link(input.outputData());
+      }
+      o.unserialize(view);
+      view.dispose();
    }
-   o.unserialize(view);
-   view.dispose();
    o._dataReady = true;
    o.processLoadListener();
 }
@@ -23595,17 +23784,6 @@ function FE3sResource_saveConfig(xconfig){
    xconfig.set('guid', o._guid);
    xconfig.set('code', o._code);
    xconfig.set('label', o._label);
-}
-function FE3sResource_load(u){
-   var o = this;
-   var hc = RConsole.find(FHttpConsole);
-   var c = hc.send(u);
-   if(o._dataCompress){
-      c.lsnsLoad.register(o, o.onLoad);
-   }else{
-      c.lsnsLoad.register(o, o.onComplete);
-   }
-   o._dataLoad = true;
 }
 function FE3sResource_dispose(){
    var o = this;
@@ -29563,6 +29741,14 @@ function FE3dSceneDisplay_loadResource(resource){
 function FE3dSceneDisplay_loadTemplate(template){
    var o = this;
    var resource = o._resource;
+   var sprites = template._sprites;
+   if(sprites){
+      var count = sprites.count();
+      for(var i = 0; i < count; i++){
+         var sprite = sprites.at(i);
+         sprite.matrix().identity();
+      }
+   }
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
    var sprite = o._sprite = template.sprite();

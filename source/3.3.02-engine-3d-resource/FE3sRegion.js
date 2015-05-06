@@ -188,41 +188,41 @@ function FE3sRegion_light(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sRegion_unserialize(p){
+function FE3sRegion_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sObject.unserialize.call(o, input);
    // 读取颜色
-   o._backgroundColor.unserialize(p);
+   o._backgroundColor.unserialize(input);
    // 读取数据
-   o._moveSpeed = p.readFloat();
-   o._rotationKeySpeed = p.readFloat();
-   o._rotationMouseSpeed = p.readFloat();
+   o._moveSpeed = input.readFloat();
+   o._rotationKeySpeed = input.readFloat();
+   o._rotationMouseSpeed = input.readFloat();
    // 读取颜色级别
-   //o._colorLevel.unserialize(p);
+   //o._colorLevel.unserialize(input);
    // 读取雾化
-   //o._fogNear = p.readFloat();
-   //o._fogFar = p.readFloat();
-   //o._fogRate = p.readFloat();
-   //o._fogAttenuation = p.readFloat();
-   //o._fogColor.unserialize(p);
+   //o._fogNear = input.readFloat();
+   //o._fogFar = input.readFloat();
+   //o._fogRate = input.readFloat();
+   //o._fogAttenuation = input.readFloat();
+   //o._fogColor.unserialize(input);
    // 读取边界
-   //o._edgeRate = p.readFloat();
-   //o._edgeLevel = p.readFloat();
-   //o._edgeWidth = p.readFloat();
-   //o._edgeColor.unserialize(p);
+   //o._edgeRate = input.readFloat();
+   //o._edgeLevel = input.readFloat();
+   //o._edgeWidth = input.readFloat();
+   //o._edgeColor.unserialize(input);
    // 读取平面
-   //o._faceRange = p.readFloat();
-   //o._faceLimit = p.readFloat();
-   //o._faceRate = p.readFloat();
+   //o._faceRange = input.readFloat();
+   //o._faceLimit = input.readFloat();
+   //o._faceRate = input.readFloat();
    // 读取材质
-   o._material.unserialize(p);
+   o._material.unserialize(input);
    // 读取相机
-   o._camera.unserialize(p);
+   o._camera.unserialize(input);
    // 读取光源
-   o._light.unserialize(p);
+   o._light.unserialize(input);
 }
 
 //==========================================================

@@ -15,11 +15,15 @@ function FResourceLzmaPipeline(o){
    //..........................................................
    // @event
    o.onComplete       = FResourceLzmaPipeline_onComplete;
+   o.onBlockComplete  = FResourceLzmaPipeline_onBlockComplete;
    //..........................................................
    // @method
    o.construct        = FResourceLzmaPipeline_construct;
    // @method
+   o.worker           = FResourceLzmaPipeline_worker;
+   // @method
    o.decompress       = FResourceLzmaPipeline_decompress;
+   o.decompressBlock  = FResourceLzmaPipeline_decompressBlock;
    o.decompressSingle = FResourceLzmaPipeline_decompressSingle;
    // @method
    o.dispose          = FResourceLzmaPipeline_dispose;
@@ -42,13 +46,44 @@ function FResourceLzmaPipeline_onComplete(data){
 }
 
 //==========================================================
-// <T>获得压缩类型。</T>
+// <T>完成分块处理。</T>
+//
+// @method
+// @param data:ArrayBuffer 数据
+//==========================================================
+function FResourceLzmaPipeline_onBlockComplete(data){
+   var o = this;
+   var resource = o._resource;
+   var block = o._block;
+   var span = RTimer.now() - o._startTime;
+   RLogger.info(o, 'Process resource block decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', resource.guid(), block._index, o._dataLength, data.byteLength, span);
+   o._console.onPipelineBlockComplete(o, resource, block, data);
+   o._startTime = RTimer.current();
+}
+
+//==========================================================
+// <T>构造处理。</T>
 //
 // @method
 //==========================================================
 function FResourceLzmaPipeline_construct(){
    var o = this;
    o.__base.FResourcePipeline.construct.call(o);
+}
+
+//==========================================================
+// <T>获得工作器。</T>
+//
+// @method
+//==========================================================
+function FResourceLzmaPipeline_worker(){
+   var o = this;
+   var worker = o._worker;
+   if(!worker){
+      var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
+      worker = o._worker = new LZMA(uri);
+   }
+   return worker;
 }
 
 //==========================================================
@@ -60,14 +95,26 @@ function FResourceLzmaPipeline_decompress(resource){
    var o = this;
    var data = resource._data;
    o._resource = resource;
-   // 创建工作器
-   var worker = o._worker;
-   if(!worker){
-      var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
-      worker = o._worker = new LZMA(uri);
-   }
    // 解压缩处理
+   var worker = o.worker();
    worker.decompress(data, function(value){o.onComplete(value);}, null);
+   o._dataLength = data.byteLength;
+   o._startTime = RTimer.current();
+}
+
+//==========================================================
+// <T>解压处理。</T>
+//
+// @method
+//==========================================================
+function FResourceLzmaPipeline_decompressBlock(resource, block){
+   var o = this;
+   var data = block._compressData;
+   o._resource = resource;
+   o._block = block;
+   // 解压缩处理
+   var worker = o.worker();
+   worker.decompress(data, function(value){o.onBlockComplete(value);}, null);
    o._dataLength = data.byteLength;
    o._startTime = RTimer.current();
 }

@@ -9,28 +9,33 @@ function FResource(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._typeCode    = null;
-   o._type        = null;
+   o._typeCode     = null;
+   o._type         = null;
    // @attribute
-   o._guid        = null;
-   o._code        = null;
-   o._label       = null;
+   o._dataCompress = false;
+   o._dataBlock    = false;
    // @attribute
-   o._sourceUrl   = null;
+   o._guid         = null;
+   o._code         = null;
+   o._label        = null;
+   // @attribute
+   o._sourceUrl    = null;
    //..........................................................
    // @method
-   o.typeCode     = FResource_typeCode;
-   o.type         = FResource_type;
+   o.typeCode      = FResource_typeCode;
+   o.type          = FResource_type;
    // @method
-   o.guid         = FResource_guid;
-   o.setGuid      = FResource_setGuid;
-   o.code         = FResource_code;
-   o.setCode      = FResource_setCode;
-   o.label        = FResource_label;
-   o.setLabel     = FResource_setLabel;
+   o.guid          = FResource_guid;
+   o.setGuid       = FResource_setGuid;
+   o.code          = FResource_code;
+   o.setCode       = FResource_setCode;
+   o.label         = FResource_label;
+   o.setLabel      = FResource_setLabel;
    // @method
-   o.sourceUrl    = FResource_sourceUrl;
-   o.setSourceUrl = FResource_setSourceUrl;
+   o.sourceUrl     = FResource_sourceUrl;
+   o.setSourceUrl  = FResource_setSourceUrl;
+   // @method
+   o.testBlockReady = FResource_testBlockReady;
    return o;
 }
 
@@ -132,4 +137,23 @@ function FResource_sourceUrl(){
 //==========================================================
 function FResource_setSourceUrl(p){
    this._sourceUrl = p;
+}
+
+//==========================================================
+// <T>测试所有块是否加载完成。</T>
+//
+// @method
+// @return Boolean 是否加载完成
+//==========================================================
+function FResource_testBlockReady(){
+   var o = this;
+   var blocks = o._blocks;
+   var count = blocks.count();
+   for(var i = 0; i < count; i++){
+      var block = blocks.at(i);
+      if(!block.testReady()){
+         return false;
+      }
+   }
+   return true;
 }

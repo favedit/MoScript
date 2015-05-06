@@ -19,6 +19,8 @@ function FDataStream(o){
    o.setLength = FDataStream_setLength;
    o.memory    = FDataStream_memory;
    // @method
+   o.flip      = FDataStream_flip;
+   // @method
    o.dispose   = FDataStream_dispose;
    return o;
 }
@@ -32,8 +34,6 @@ function FDataStream(o){
 function FDataStream_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   //o._memory = new ArrayBuffer();
-   //o._viewer = new DataView(o._memory);
 }
 
 //==========================================================
@@ -67,6 +67,17 @@ function FDataStream_setLength(p){
 //==========================================================
 function FDataStream_memory(){
    return this._memory;
+}
+
+//==========================================================
+// <T>反转数据处理。</T>
+//
+// @method
+//==========================================================
+function FDataStream_flip(){
+   var o = this;
+   o._length = o._position;
+   o._position = 0;
 }
 
 //==========================================================

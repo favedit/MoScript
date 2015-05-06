@@ -1178,6 +1178,7 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
+   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -1650,16 +1651,16 @@ function FE3sRegion_camera(){
 function FE3sRegion_light(){
    return this._light;
 }
-function FE3sRegion_unserialize(p){
+function FE3sRegion_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._backgroundColor.unserialize(p);
-   o._moveSpeed = p.readFloat();
-   o._rotationKeySpeed = p.readFloat();
-   o._rotationMouseSpeed = p.readFloat();
-   o._material.unserialize(p);
-   o._camera.unserialize(p);
-   o._light.unserialize(p);
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._backgroundColor.unserialize(input);
+   o._moveSpeed = input.readFloat();
+   o._rotationKeySpeed = input.readFloat();
+   o._rotationMouseSpeed = input.readFloat();
+   o._material.unserialize(input);
+   o._camera.unserialize(input);
+   o._light.unserialize(input);
 }
 function FE3sRegion_saveConfig(xconfig){
    var o = this;
@@ -1747,36 +1748,40 @@ function FE3sRenderable_clone(instance){
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource, MListenerLoad);
-   o._dataLoad     = false;
-   o._dataReady    = false;
-   o._dataSize     = 0;
-   o._dataCompress = false;
-   o._vendor       = null;
-   o.onComplete    = FE3sResource_onComplete;
-   o.makeLabel     = FE3sResource_makeLabel;
-   o.vendor        = FE3sResource_vendor;
-   o.setVendor     = FE3sResource_setVendor;
-   o.testReady     = FE3sResource_testReady;
-   o.unserialize   = FE3sResource_unserialize;
-   o.saveConfig    = FE3sResource_saveConfig;
-   o.load          = FE3sResource_load;
-   o.dispose       = FE3sResource_dispose;
+   o._dataLoad   = false;
+   o._dataReady  = false;
+   o._dataSize   = 0;
+   o._blockSize  = 0;
+   o._blockCount = 0;
+   o._vendor     = null;
+   o.onComplete  = FE3sResource_onComplete;
+   o.makeLabel   = FE3sResource_makeLabel;
+   o.vendor      = FE3sResource_vendor;
+   o.setVendor   = FE3sResource_setVendor;
+   o.testReady   = FE3sResource_testReady;
+   o.unserialize = FE3sResource_unserialize;
+   o.saveConfig  = FE3sResource_saveConfig;
+   o.dispose     = FE3sResource_dispose;
    return o;
 }
 function FE3sResource_onComplete(input){
    var o = this;
-   var view = RClass.create(FDataView);
-   view.setEndianCd(true);
-   if(input.constructor == Array){
-      var inputData = new Uint8Array(input);
-      view.link(inputData.buffer);
-   }else if(input.constructor == Uint8Array){
-      view.link(input.buffer);
+   if(RClass.isClass(input, MDataStream)){
+      o.unserialize(input);
    }else{
-      view.link(input.outputData());
+      var view = RClass.create(FDataView);
+      view.setEndianCd(true);
+      if(input.constructor == Array){
+         var inputData = new Uint8Array(input);
+         view.link(inputData.buffer);
+      }else if(input.constructor == Uint8Array){
+         view.link(input.buffer);
+      }else{
+         view.link(input.outputData());
+      }
+      o.unserialize(view);
+      view.dispose();
    }
-   o.unserialize(view);
-   view.dispose();
    o._dataReady = true;
    o.processLoadListener();
 }
@@ -1815,17 +1820,6 @@ function FE3sResource_saveConfig(xconfig){
    xconfig.set('guid', o._guid);
    xconfig.set('code', o._code);
    xconfig.set('label', o._label);
-}
-function FE3sResource_load(u){
-   var o = this;
-   var hc = RConsole.find(FHttpConsole);
-   var c = hc.send(u);
-   if(o._dataCompress){
-      c.lsnsLoad.register(o, o.onLoad);
-   }else{
-      c.lsnsLoad.register(o, o.onComplete);
-   }
-   o._dataLoad = true;
 }
 function FE3sResource_dispose(){
    var o = this;

@@ -111,6 +111,16 @@ function FE3dSceneDisplay_loadTemplate(template){
    var o = this;
    var resource = o._resource;
    //..........................................................
+   // 重设变换，模型的变换矩阵在场景中无效。
+   var sprites = template._sprites;
+   if(sprites){
+      var count = sprites.count();
+      for(var i = 0; i < count; i++){
+         var sprite = sprites.at(i);
+         sprite.matrix().identity();
+      }
+   }
+   //..........................................................
    // 设置材质
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;

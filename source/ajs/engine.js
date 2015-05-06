@@ -496,22 +496,25 @@ function FRenderable_process(region){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeCode    = null;
-   o._type        = null;
-   o._guid        = null;
-   o._code        = null;
-   o._label       = null;
-   o._sourceUrl   = null;
-   o.typeCode     = FResource_typeCode;
-   o.type         = FResource_type;
-   o.guid         = FResource_guid;
-   o.setGuid      = FResource_setGuid;
-   o.code         = FResource_code;
-   o.setCode      = FResource_setCode;
-   o.label        = FResource_label;
-   o.setLabel     = FResource_setLabel;
-   o.sourceUrl    = FResource_sourceUrl;
-   o.setSourceUrl = FResource_setSourceUrl;
+   o._typeCode     = null;
+   o._type         = null;
+   o._dataCompress = false;
+   o._dataBlock    = false;
+   o._guid         = null;
+   o._code         = null;
+   o._label        = null;
+   o._sourceUrl    = null;
+   o.typeCode      = FResource_typeCode;
+   o.type          = FResource_type;
+   o.guid          = FResource_guid;
+   o.setGuid       = FResource_setGuid;
+   o.code          = FResource_code;
+   o.setCode       = FResource_setCode;
+   o.label         = FResource_label;
+   o.setLabel      = FResource_setLabel;
+   o.sourceUrl     = FResource_sourceUrl;
+   o.setSourceUrl  = FResource_setSourceUrl;
+   o.testBlockReady = FResource_testBlockReady;
    return o;
 }
 function FResource_typeCode(){
@@ -544,6 +547,35 @@ function FResource_sourceUrl(){
 function FResource_setSourceUrl(p){
    this._sourceUrl = p;
 }
+function FResource_testBlockReady(){
+   var o = this;
+   var blocks = o._blocks;
+   var count = blocks.count();
+   for(var i = 0; i < count; i++){
+      var block = blocks.at(i);
+      if(!block.testReady()){
+         return false;
+      }
+   }
+   return true;
+}
+function FResourceBlock(o){
+   o = RClass.inherits(this, o, FObject);
+   o._ready    = false;
+   o._data     = null;
+   o.testReady = FResourceBlock_testReady;
+   o.dispose   = FResourceBlock_dispose;
+   return o;
+}
+function FResourceBlock_testReady(){
+   return this._ready;
+}
+function FResourceBlock_dispose(){
+   var o = this;
+   o._compressData = null;
+   o._data = null;
+   o.__base.FObject.dispose.call(o);
+}
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd             = EScope.Local;
@@ -552,6 +584,7 @@ function FResourceConsole(o){
    o._resources           = null;
    o._loadResources       = null;
    o._loadingResources    = null;
+   o._processBlocks       = null;
    o._processResources    = null;
    o._processingResources = null;
    o._pipeline            = null;
@@ -562,7 +595,9 @@ function FResourceConsole(o){
    o._interval            = 200;
    o.onComplete           = FResourceConsole_onComplete;
    o.onPipelineComplete   = FResourceConsole_onPipelineComplete;
+   o.onPipelineBlockComplete = FResourceConsole_onPipelineBlockComplete;
    o.onLoad               = FResourceConsole_onLoad;
+   o.onBlockLoad          = FResourceConsole_onBlockLoad;
    o.onProcess            = FResourceConsole_onProcess;
    o.construct            = FResourceConsole_construct;
    o.registerType         = FResourceConsole_registerType;
@@ -572,68 +607,124 @@ function FResourceConsole(o){
    o.load                 = FResourceConsole_load;
    return o;
 }
-function FResourceConsole_onComplete(connection, data){
+function FResourceConsole_onComplete(resource, data){
    var o = this;
-   connection._data = null;
-   o._loadingResources.remove(connection);
-   connection.onComplete(data);
+   resource._data = null;
+   o._loadingResources.remove(resource);
+   resource.onComplete(data);
 }
-function FResourceConsole_onPipelineComplete(p, r, d){
+function FResourceConsole_onPipelineComplete(pipeline, resource, data){
    var o = this;
-   o.freePipeline(p);
-   o._processingResources.remove(r);
-   o.onComplete(r, d);
+   o.freePipeline(pipeline);
+   o._processingResources.remove(resource);
+   o.onComplete(resource, data);
 }
-function FResourceConsole_onLoad(p){
+function FResourceConsole_onPipelineBlockComplete(pipeline, resource, block, data){
    var o = this;
-   var d = p.outputData();
-   var r = p._resource;
-   r._data = new Uint8Array(d);
-   o._loadingResources.remove(r);
-   o._processResources.push(r);
+   o.freePipeline(pipeline);
+   block._data = data;
+   block._ready = true;
+   if(resource.testBlockReady()){
+      var stream = RClass.create(FDataStream);
+      stream.setEndianCd(true);
+      stream.setLength(resource._dataLength);
+      var blocks = resource._blocks;
+      var count = blocks.count();
+      for(var i = 0; i < count; i++){
+         var block = blocks.at(i);
+         var data = block._data;
+         stream.writeBytes(data.buffer, 0, data.byteLength);
+         block.dispose();
+      }
+      blocks.clear();
+      stream.flip();
+      var span = RTimer.current() - resource._compressStartTick;
+      RLogger.info(o, 'Process resource decompress. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, resource._compressLength, resource._dataLength, span);
+      resource.onComplete(stream);
+   }
+}
+function FResourceConsole_onLoad(connection){
+   var o = this;
+   var data = connection.outputData();
+   var resource = connection._resource;
+   resource._data = new Uint8Array(data);
+   o._loadingResources.remove(resource);
+   o._processResources.push(resource);
+}
+function FResourceConsole_onBlockLoad(connection){
+   var o = this;
+   var resource = connection._resource;
+   var data = connection.outputData();
+   var view = RClass.create(FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   var compressCode = view.readString();
+   var length = resource._dataLength = view.readInt32();
+   var blockSize = view.readInt32();
+   var blockCount = view.readInt32();
+   var blocks = resource._blocks = new TObjects();
+   for(var i = 0; i < blockCount; i++){
+      var size = view.readInt32();
+      var blockData = new ArrayBuffer(size);
+      view.readBytes(blockData, 0, size);
+      var block = RClass.create(FResourceBlock);
+      block._index = i;
+      block._compressData = new Uint8Array(blockData);
+      blocks.push(block);
+      var pipeline = o.allocPipeline();
+      pipeline.decompressBlock(resource, block);
+   }
+   view.dispose();
+   o._loadingResources.remove(resource);
+   resource._compressLength = data.byteLength;
+   resource._compressStartTick = RTimer.current();
 }
 function FResourceConsole_onProcess(){
    var o = this;
-   var hc = RConsole.find(FHttpConsole);
-   var rs = o._loadResources;
-   var ps = o._loadingResources;
-   var pc = ps.count();
-   if(!rs.isEmpty()){
+   var httpConsole = RConsole.find(FHttpConsole);
+   var loadResources = o._loadResources;
+   var loadingResources = o._loadingResources;
+   var pc = loadingResources.count();
+   if(!loadResources.isEmpty()){
       for(var i = o._loadLimit - pc; i > 0; i--){
-         var r = rs.shift();
-         var ru = r.sourceUrl();
-         var c = hc.send(ru);
-         c._resource = r;
-         if(r._dataCompress){
-            c.addLoadListener(o, o.onLoad);
+         var resource = loadResources.shift();
+         var sourceUrl = resource.sourceUrl();
+         var connection = httpConsole.send(sourceUrl);
+         connection._resource = resource;
+         if(resource._dataCompress){
+            if(resource._dataBlock){
+               connection.addLoadListener(o, o.onBlockLoad);
+            }else{
+               connection.addLoadListener(o, o.onLoad);
+            }
          }else{
-            c.addLoadListener(o, o.onComplete);
+            connection.addLoadListener(o, o.onComplete);
          }
-         r._dataLoad = true;
-         ps.push(r);
-         if(rs.isEmpty()){
+         resource._dataLoad = true;
+         loadingResources.push(resource);
+         if(loadResources.isEmpty()){
             break;
          }
       }
    }
-   var rs = o._processResources;
-   var ps = o._processingResources;
-   var pc = ps.count();
-   if(!rs.isEmpty()){
-      var p = o._pipeline;
-      if(p){
-         if(ps.isEmpty()){
-            var r = rs.shift();
-            ps.push(r);
-            p.decompressSingle(r);
+   var processResources = o._processResources;
+   var processingResources = o._processingResources;
+   var pc = processingResources.count();
+   if(!processResources.isEmpty()){
+      var pipeline = o._pipeline;
+      if(pipeline){
+         if(processingResources.isEmpty()){
+            var resource = processResources.shift();
+            processingResources.push(resource);
+            pipeline.decompressSingle(resource);
          }
       }else{
          for(var i = o._processLimit - pc; i > 0; i--){
-            var r = rs.shift();
-            var l = o.allocPipeline();
-            ps.push(r);
-            l.decompress(r);
-            if(rs.isEmpty()){
+            var resource = processResources.shift();
+            var pipeline = o.allocPipeline();
+            processingResources.push(resource);
+            pipeline.decompress(resource);
+            if(processResources.isEmpty()){
                break;
             }
          }
@@ -648,6 +739,7 @@ function FResourceConsole_construct(){
    o._resources = new TDictionary();
    o._loadResources  = new TObjects();
    o._loadingResources = new TObjects();
+   o._processBlocks = new TLooper();
    o._processResources = new TObjects();
    o._processingResources = new TObjects();
    o._pipelinePool  = RClass.create(FObjectPool);
@@ -671,28 +763,27 @@ function FResourceConsole_factory(){
 }
 function FResourceConsole_allocPipeline(){
    var o = this;
-   var s = o._pipelinePool;
-   if(!s.hasFree()){
-      var p = RClass.create(FResourceLzmaPipeline);
-      p.setConsole(o);
-      s.push(p);
+   var pool = o._pipelinePool;
+   if(!pool.hasFree()){
+      var pipeline = RClass.create(FResourceLzmaPipeline);
+      pipeline.setConsole(o);
+      pool.push(pipeline);
    }
-   return s.alloc();
+   return pool.alloc();
 }
-function FResourceConsole_freePipeline(p){
-   this._pipelinePool.free(p);
+function FResourceConsole_freePipeline(pipeline){
+   this._pipelinePool.free(pipeline);
 }
-function FResourceConsole_load(p){
+function FResourceConsole_load(resource){
    var o = this;
-   var g = p.guid();
-   var s = o._resources;
-   var r = s.get(g);
-   if(r){
-      throw new TError(o, 'Resource is already loaded. (guid={1})', g);
+   var guid = resource.guid();
+   var resources = o._resources;
+   if(resources.contains(guid)){
+      throw new TError(o, 'Resource is already loaded. (guid={1})', guid);
    }
-   s.set(g, p);
-   o._loadResources.push(p);
-   p._dataLoad = true;
+   resources.set(guid, resource);
+   o._loadResources.push(resource);
+   resource._dataLoad = true;
 }
 function FResourceGroup(o){
    o = RClass.inherits(this, o, FObject);
@@ -710,8 +801,11 @@ function FResourceLzmaPipeline(o){
    o._dataLength      = 0;
    o._startTime       = 0;
    o.onComplete       = FResourceLzmaPipeline_onComplete;
+   o.onBlockComplete  = FResourceLzmaPipeline_onBlockComplete;
    o.construct        = FResourceLzmaPipeline_construct;
+   o.worker           = FResourceLzmaPipeline_worker;
    o.decompress       = FResourceLzmaPipeline_decompress;
+   o.decompressBlock  = FResourceLzmaPipeline_decompressBlock;
    o.decompressSingle = FResourceLzmaPipeline_decompressSingle;
    o.dispose          = FResourceLzmaPipeline_dispose;
    return o;
@@ -724,20 +818,44 @@ function FResourceLzmaPipeline_onComplete(data){
    o._console.onPipelineComplete(o, resource, data);
    o._startTime = RTimer.current();
 }
+function FResourceLzmaPipeline_onBlockComplete(data){
+   var o = this;
+   var resource = o._resource;
+   var block = o._block;
+   var span = RTimer.now() - o._startTime;
+   RLogger.info(o, 'Process resource block decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', resource.guid(), block._index, o._dataLength, data.byteLength, span);
+   o._console.onPipelineBlockComplete(o, resource, block, data);
+   o._startTime = RTimer.current();
+}
 function FResourceLzmaPipeline_construct(){
    var o = this;
    o.__base.FResourcePipeline.construct.call(o);
 }
-function FResourceLzmaPipeline_decompress(resource){
+function FResourceLzmaPipeline_worker(){
    var o = this;
-   var data = resource._data;
-   o._resource = resource;
    var worker = o._worker;
    if(!worker){
       var uri = RBrowser.contentPath('/ajs/lzma_worker.js');
       worker = o._worker = new LZMA(uri);
    }
+   return worker;
+}
+function FResourceLzmaPipeline_decompress(resource){
+   var o = this;
+   var data = resource._data;
+   o._resource = resource;
+   var worker = o.worker();
    worker.decompress(data, function(value){o.onComplete(value);}, null);
+   o._dataLength = data.byteLength;
+   o._startTime = RTimer.current();
+}
+function FResourceLzmaPipeline_decompressBlock(resource, block){
+   var o = this;
+   var data = block._compressData;
+   o._resource = resource;
+   o._block = block;
+   var worker = o.worker();
+   worker.decompress(data, function(value){o.onBlockComplete(value);}, null);
    o._dataLength = data.byteLength;
    o._startTime = RTimer.current();
 }

@@ -1983,6 +1983,14 @@ function FE3dSceneDisplay_loadResource(resource){
 function FE3dSceneDisplay_loadTemplate(template){
    var o = this;
    var resource = o._resource;
+   var sprites = template._sprites;
+   if(sprites){
+      var count = sprites.count();
+      for(var i = 0; i < count; i++){
+         var sprite = sprites.at(i);
+         sprite.matrix().identity();
+      }
+   }
    var materials = o._materials;
    var parentMaterials = o._parentMaterials;
    var sprite = o._sprite = template.sprite();
