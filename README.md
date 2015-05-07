@@ -60,12 +60,12 @@ http://www.microbject.com
 暂无发布版本。
 
 - 移动运行效果
-![MoCross](/Resource/device-pad-01.jpg)
-![MoCross](/Resource/device-android-01.jpg)
+![MoCross](/resource/device-pad-01.jpg)
+![MoCross](/resource/device-android-01.jpg)
 - 资源管理器
-![MoCross](/Resource/design-001.jpg)
+![MoCross](/resource/design-001.jpg)
 - 场景编辑器
-![MoCross](/Resource/design-002.jpg)
+![MoCross](/resource/design-002.jpg)
 
 ### 更新
 
