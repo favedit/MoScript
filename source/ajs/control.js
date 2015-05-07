@@ -753,8 +753,11 @@ var EUiDirection = new function EUiDirection(){
 }
 var EUiDock = new function EUiDock(){
    var o = this;
-   o.None = 'none';
-   o.Fill = 'fill';
+   o.None   = 'none';
+   o.Left   = 'left';
+   o.Right  = 'right';
+   o.Center = 'center';
+   o.Fill   = 'fill';
    return o;
 }
 var EUiLabelMode = new function EUiLabelMode(){
@@ -3377,7 +3380,7 @@ function FUiWorkspace(o){
 }
 function FUiWorkspace_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.createFragment(event);
+   o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
 }
 function FUiWorkspace_appendChild(control){
    var o = this;

@@ -195,10 +195,12 @@ function FDsResourceCreateDialog_onBuilded(p){
 }
 function FDsResourceCreateDialog_onConfirmLoad(event){
    var o = this;
-   RConsole.find(FUiDesktopConsole).hide();
    o.hide();
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   RConsole.find(FUiDesktopConsole).hide();
+   if(RConsole.find(FUiResultConsole).checkEvent(event)){
+      var frame = o._frameSet._listContent;
+      frame.serviceResearch();
+   }
 }
 function FDsResourceCreateDialog_onConfirmClick(event){
    var o = this;
@@ -479,9 +481,9 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    var url = null;
-   if(o._modeCd == 'picture'){
+   if(o._modeCd == EE3sResource.Bitmap){
       url = '/cloud.resource.bitmap.wv?do=importData';
-   }else if(o._modeCd == 'mesh'){
+   }else if(o._modeCd == EE3sResource.Model){
       url = '/cloud.resource.model.wv?do=importData';
    }else{
       throw new TError(o, 'Type is invalid.');
@@ -1003,6 +1005,10 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 }
 function FDsResourceMenuBar_onDeleteExecute(event){
    var o = this;
+   if(event.resultCd != EResult.Success){
+      RConsole.find(FUiDesktopConsole).hide();
+      return
+   }
    var item = o._frameSet._listContent.focusItem();
    var typeCd = item._typeCd;
    var guid = item._guid;

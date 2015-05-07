@@ -4407,6 +4407,14 @@ function FUiLayoutHorizontal_appendChild(control){
    var o = this;
    var hCell = RBuilder.appendTableCell(o._hLine);
    hCell.appendChild(control._hPanel);
+   var dockCd = control.dockCd();
+   if(dockCd == 'left'){
+      hCell.align = 'left';
+   }else if(dockCd == 'center'){
+      hCell.align = 'center';
+   }else if(dockCd == 'right'){
+      hCell.align = 'right';
+   }
 }
 function FUiLayoutHorizontal_dispose(){
    var o = this;
@@ -4838,12 +4846,13 @@ function FUiMemo_onBuildEditValue(p){
    var hl = o._hValueLine = RBuilder.appendTableRow(hf);
    o._hChangePanel = RBuilder.appendTableCell(hl);
    o.onBuildEditChange(p);
-   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInput = RBuilder.append(hep, 'TEXTAREA', o.styleName('Input'));
-   o.attachEvent('onInputEdit', he, o.onInputEdit);
-   RHtml.setSize(hep, o._inputSize);
+   var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var hInput = o._hInput = RBuilder.append(hInputPanel, 'TEXTAREA', o.styleName('Input'));
+   hInput.wrap = 'off';
+   o.attachEvent('onInputEdit', hInput, o.onInputEdit);
+   RHtml.setSize(hInputPanel, o._inputSize);
    if(o._editLength){
-      he.maxLength = o._editLength;
+      hInput.maxLength = o._editLength;
    }
 }
 function FUiMemo_onInputEdit(p){
@@ -4856,25 +4865,25 @@ function FUiMemo_construct(){
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
-function FUiMemo_formatDisplay(p){
+function FUiMemo_formatDisplay(value){
    var o = this;
-   var r = RString.nvl(p);
-   o._dataDisplay = r;
-   return r;
+   var text = RString.nvl(value);
+   o._dataDisplay = text;
+   return text;
 }
-function FUiMemo_formatValue(p){
-   return p;
+function FUiMemo_formatValue(value){
+   return value;
 }
 function FUiMemo_get(){
    var o = this;
-   var r = o.__base.FUiEditControl.get.call(o);
-   var r = o._hInput.value;
-   return r;
+   o.__base.FUiEditControl.get.call(o);
+   var value = o._hInput.value;
+   return value;
 }
-function FUiMemo_set(p){
+function FUiMemo_set(value){
    var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
-   o._hInput.value = RString.nvl(p);
+   o.__base.FUiEditControl.set.call(o, value);
+   o._hInput.value = RString.nvl(value);
 }
 function FUiMemo_refreshValue(){
    var o = this;
@@ -5611,6 +5620,7 @@ function FUiPanel_onTitleClick(p){
 }
 function FUiPanelHorizontal(o){
    o = RClass.inherits(this, o, FUiLayoutHorizontal);
+   o._sizeCd = EUiSize.Horizontal;
    return o;
 }
 function FUiPanelVertical(o){

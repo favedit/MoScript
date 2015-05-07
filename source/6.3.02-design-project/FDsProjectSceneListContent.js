@@ -143,7 +143,7 @@ function FDsProjectSceneListContent_serviceList(guid){
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
-   var url = '/cloud.content.scene.ws?action=list&project_guid=' + guid;
+   var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
    return connection;

@@ -63,12 +63,15 @@ function FDsResourceCreateDialog_onBuilded(p){
 function FDsResourceCreateDialog_onConfirmLoad(event){
    var o = this;
    // 隐藏窗口
-   RConsole.find(FUiDesktopConsole).hide();
-   // 隐藏窗口
    o.hide();
-   // 刷新搜索内容
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   // 隐藏窗口
+   RConsole.find(FUiDesktopConsole).hide();
+   // 检查结果
+   if(RConsole.find(FUiResultConsole).checkEvent(event)){
+      // 刷新搜索内容
+      var frame = o._frameSet._listContent;
+      frame.serviceResearch();
+   }
 }
 
 //==========================================================

@@ -8,6 +8,9 @@
 function FDsMaterialPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
+   // @property
+   o._frameName      = 'resource.material.PropertyToolBar';
+   //..........................................................
    // @attribute
    o._controlRefresh = null;
    //..........................................................

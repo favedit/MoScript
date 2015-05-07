@@ -99,10 +99,10 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.PrivateProjectFrameSet){
-         var menuBar = RClass.create(FDsProjectMenuBar);
+         var menuBar = RClass.create(FDsPrivateProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsProjectFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -211,7 +211,7 @@ function FDsPrivateWorkspace_load(){
    if(code == EDsFrameSet.SolutionFrameSet){
       button = o._tabBar.findControl('solution');
       button.doClick();
-   }else if(code == EDsFrameSet.ProjectFrameSet){
+   }else if(code == EDsFrameSet.PrivateProjectFrameSet){
       button = o._tabBar.findControl('solution');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
@@ -247,6 +247,54 @@ function FDsPrivateWorkspace_dispose(){
    var o = this;
    o._frameSets = RObject.dispose(o._frameSets);
    o.__base.FUiWorkspace.dispose.call(o);
+}
+function FDsPrivateProjectFrameSet(o){
+   o = RClass.inherits(this, o, FDsProjectFrameSet);
+   o._frameName = 'resource.private.project.FrameSet';
+   o.onBuilded  = FDsPrivateProjectFrameSet_onBuilded;
+   return o;
+}
+function FDsPrivateProjectFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsProjectFrameSet.onBuilded.call(o, event);
+   var control = o._sceneListToolbar = RClass.create(FDsProjectSceneListToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSceneListToolBar.push(control);
+   var control = o._sceneListContent = RClass.create(FDsProjectSceneListContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameSceneListContent.push(control);
+   var control = o._sceneCatalogToolbar = RClass.create(FDsProjectSceneCatalogToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSceneCatalogToolBar.push(control);
+   var control = o._sceneCatalogContent = RClass.create(FDsProjectSceneCatalogContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameSceneCatalogContent.push(control);
+   var control = o._canvasSpaceToolbar = RClass.create(FDsProjectCanvasSpaceToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCanvasSpaceToolBar.push(control);
+   var control = o._canvasPreviewToolbar = RClass.create(FDsProjectCanvasPreviewToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCanvasPreviewToolBar.push(control);
+   var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._framePropertyAttributeToolBar.push(control);
+}
+function FDsPrivateProjectMenuBar(o){
+   o = RClass.inherits(this, o, FDsProjectMenuBar);
+   o._frameName = 'resource.private.project.MenuBar';
+   o.onBuilded  = FDsPrivateProjectMenuBar_onBuilded;
+   return o;
+}
+function FDsPrivateProjectMenuBar_onBuilded(p){
+   var o = this;
+   o.__base.FDsProjectMenuBar.onBuilded.call(o, p);
 }
 function FDsPrivateResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FDsResourceCatalogToolBar);

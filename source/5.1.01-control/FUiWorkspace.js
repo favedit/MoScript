@@ -33,8 +33,8 @@ function FUiWorkspace(o){
 //==========================================================
 function FUiWorkspace_onBuildPanel(event){
    var o = this;
-   //o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-   o._hPanel = RBuilder.createFragment(event);
+   o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
+   //o._hPanel = RBuilder.createFragment(event);
 }
 
 //==========================================================

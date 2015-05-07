@@ -460,6 +460,49 @@ function FUiEnvironmentConsole_xml(){
    }
    return null;
 }
+function FUiErrorDialog(o){
+   o = RClass.inherits(this, o, FUiDialog, MListenerResult);
+   o._styleText            = RClass.register(o, new AStyle('_styleText'));
+   o._frameName            = 'system.dialog.ErrorDialog';
+   o._controlText          = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FUiErrorDialog_onBuilded;
+   o.onConfirmClick        = FUiErrorDialog_onConfirmClick;
+   o.construct             = FUiErrorDialog_construct;
+   o.setCode               = FUiErrorDialog_setCode;
+   o.setDescription        = FUiErrorDialog_setDescription;
+   o.dispose               = FUiErrorDialog_dispose;
+   return o;
+}
+function FUiErrorDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+}
+function FUiErrorDialog_onConfirmClick(event){
+   var o = this;
+   var event = new SEvent();
+   event.sender = o;
+   event.resultCd = EResult.Success;
+   o.processResultListener(event);
+   event.dispose();
+   o.hide();
+}
+function FUiErrorDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FUiErrorDialog_setCode(value){
+   this._controlCode.set(value);
+}
+function FUiErrorDialog_setDescription(value){
+   this._controlDescription.set(value);
+}
+function FUiErrorDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FUiFocusConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope              = EScope.Page;
@@ -979,6 +1022,7 @@ function FUiMessageConsole(o){
    o._messageWindow = null;
    o.showInfo       = FUiMessageConsole_showInfo;
    o.showConfirm    = FUiMessageConsole_showConfirm;
+   o.showError      = FUiMessageConsole_showError;
    o.popup          = FUiMessageConsole_popup;
    o.close          = FUiMessageConsole_close;
    o.parse          = FUiMessageConsole_parse;
@@ -996,6 +1040,14 @@ function FUiMessageConsole_showConfirm(text){
    var dialog = RConsole.find(FUiWindowConsole).find(FUiConfirmDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
+   dialog.showPosition(EUiPosition.Center);
+   return dialog;
+}
+function FUiMessageConsole_showError(code, message, description){
+   var dialog = RConsole.find(FUiWindowConsole).find(FUiErrorDialog);
+   dialog.clearResultListeners();
+   dialog.setCode(message);
+   dialog.setDescription(description);
    dialog.showPosition(EUiPosition.Center);
    return dialog;
 }
@@ -1366,6 +1418,7 @@ function FUiResultConsole(o){
    o.scope          = EScope.Page;
    o.executeCommand = FUiResultConsole_executeCommand;
    o.checkService   = FUiResultConsole_checkService;
+   o.checkEvent     = FUiResultConsole_checkEvent;
    return o;
 }
 function FUiResultConsole_executeCommand(command){
@@ -1425,6 +1478,32 @@ function FUiResultConsole_checkService(config){
          }
       }
       RConsole.find(FFocusConsole).restoreFocus();
+   }
+   return true;
+}
+function FUiResultConsole_checkEvent(event){
+   var o = this;
+   var xconfig = event.root;
+   if(xconfig){
+      var resultCd = xconfig.get('result_cd');
+      if(resultCd == 'success'){
+         return true;
+      }
+      var messageCd = xconfig.get('message_cd');
+      var xmessages = xconfig.find('Messages');
+      if(xmessages){
+         var count = xmessages.nodeCount();
+         for(var i = 0; i < count; i++){
+            var xmessage = xmessages.node(i);
+            if(xmessage.isName('Message')){
+               var code = xmessage.get('code');
+               var message = xmessage.get('message');
+               var description = xmessage.get('description');
+               RConsole.find(FUiMessageConsole).showError(code, message, description);
+               return false;
+            }
+         }
+      }
    }
    return true;
 }

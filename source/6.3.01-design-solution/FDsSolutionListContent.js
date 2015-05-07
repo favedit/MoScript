@@ -118,7 +118,7 @@ function FDsSolutionListContent_doDoubleClickItem(control){
    o._activeControl = control;
    o._activeGuid = guid;
    var workspace = o._frameSet._workspace;
-   workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet, guid);
+   workspace.selectFrameSet(EDsFrameSet.PrivateProjectFrameSet, guid);
 }
 
 //==========================================================

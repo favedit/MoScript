@@ -56,7 +56,7 @@ function FDsProjectCatalogContent_onBuild(p){
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
 }
 
 //==========================================================

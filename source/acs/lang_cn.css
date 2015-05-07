@@ -100,7 +100,7 @@ textarea{
    width: 12px;
    height: 12px;
 }
-::-webkit-scrollbar-thumb:vertical{
+::-webkit-scrollbar-thumb{
    height:50px;
    background-color: #CCCCCC;
    border: 1px solid #999999;

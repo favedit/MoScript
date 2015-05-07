@@ -9,7 +9,7 @@ function FDsProjectSceneCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.project.SceneCatalogToolBar';
+   o._frameName       = 'resource.project.SceneCatalogToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd    = EDsCanvasMode.Drop;

@@ -41,10 +41,6 @@ function FE3sGeometry_unserialize(input){
    // 读取属性
    var outline = o._outline;
    outline.unserialize(input);
-   if(outline.isEmpty()){
-      throw new TError('Outline is empty.');
-   }
-   outline.update();
    // 读取数据流集合
    var streamCount = input.readInt8();
    if(streamCount > 0){
@@ -55,7 +51,11 @@ function FE3sGeometry_unserialize(input){
          streams.push(stream);
       }
    }
-   // 
+   // 计算轮廓
+   if(outline.isEmpty()){
+      o.calculateOutline();
+   }
+   outline.update();
 }
 
 //==========================================================

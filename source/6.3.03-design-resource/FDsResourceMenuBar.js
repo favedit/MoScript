@@ -199,6 +199,13 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 //==========================================================
 function FDsResourceMenuBar_onDeleteExecute(event){
    var o = this;
+   // 检查结果
+   if(event.resultCd != EResult.Success){
+      // 画面允许操作
+      RConsole.find(FUiDesktopConsole).hide();
+      return
+   }
+   // 删除处理
    var item = o._frameSet._listContent.focusItem();
    var typeCd = item._typeCd;
    var guid = item._guid;

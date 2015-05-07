@@ -453,7 +453,7 @@ function FDsSolutionListContent_doDoubleClickItem(control){
    o._activeControl = control;
    o._activeGuid = guid;
    var workspace = o._frameSet._workspace;
-   workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet, guid);
+   workspace.selectFrameSet(EDsFrameSet.PrivateProjectFrameSet, guid);
 }
 function FDsSolutionListContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
@@ -578,16 +578,17 @@ function FDsSolutionListToolBar_dispose(){
 }
 function FDsSolutionMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'resource.private.solution.MenuBar';
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
-   o.onBuilded      = FDsSolutionMenuBar_onBuilded;
-   o.onCreateClick  = FDsSolutionMenuBar_onCreateClick;
-   o.onDeleteLoad   = FDsSolutionMenuBar_onDeleteLoad;
-   o.onDeleteClick  = FDsSolutionMenuBar_onDeleteClick;
-   o.construct      = FDsSolutionMenuBar_construct;
-   o.dispose        = FDsSolutionMenuBar_dispose;
+   o._frameName      = 'resource.private.solution.MenuBar';
+   o._refreshButton  = null;
+   o._saveButton     = null;
+   o._runButton      = null;
+   o.onBuilded       = FDsSolutionMenuBar_onBuilded;
+   o.onCreateClick   = FDsSolutionMenuBar_onCreateClick;
+   o.onDeleteLoad    = FDsSolutionMenuBar_onDeleteLoad;
+   o.onDeleteExecute = FDsSolutionMenuBar_onDeleteExecute;
+   o.onDeleteClick   = FDsSolutionMenuBar_onDeleteClick;
+   o.construct       = FDsSolutionMenuBar_construct;
+   o.dispose         = FDsSolutionMenuBar_dispose;
    return o;
 }
 function FDsSolutionMenuBar_onBuilded(p){
@@ -605,17 +606,30 @@ function FDsSolutionMenuBar_onCreateClick(event){
 }
 function FDsSolutionMenuBar_onDeleteLoad(event){
    var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
    var frame = o._frameSet._listContent;
    frame.serviceResearch();
-   RWindow.enable();
+}
+function FDsSolutionMenuBar_onDeleteExecute(event){
+   var o = this;
+   if(event.resultCd != EResult.Success){
+      RConsole.find(FUiDesktopConsole).hide();
+      return
+   }
+   var listContent = o._frameSet._listContent;
+   var guid = listContent._activeGuid;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
+   connection.addLoadListener(o, o.onDeleteLoad);
 }
 function FDsSolutionMenuBar_onDeleteClick(event){
    var o = this;
-   var listContent = o._frameSet._listContent;
-   var guid = listContent._activeGuid;
-   RWindow.disable();
-   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
-   connection.addLoadListener(o, o.onDeleteLoad);
+   var item = o._frameSet._listContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前项目？');
+   dialog.addResultListener(o, o.onDeleteExecute);
 }
 function FDsSolutionMenuBar_construct(){
    var o = this;

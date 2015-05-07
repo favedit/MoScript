@@ -741,10 +741,6 @@ function FE3sGeometry_unserialize(input){
    o.__base.FE3sRenderable.unserialize.call(o, input);
    var outline = o._outline;
    outline.unserialize(input);
-   if(outline.isEmpty()){
-      throw new TError('Outline is empty.');
-   }
-   outline.update();
    var streamCount = input.readInt8();
    if(streamCount > 0){
       var streams = o._streams = new TObjects();
@@ -754,6 +750,10 @@ function FE3sGeometry_unserialize(input){
          streams.push(stream);
       }
    }
+   if(outline.isEmpty()){
+      o.calculateOutline();
+   }
+   outline.update();
 }
 function FE3sGeometry_dispose(){
    var o = this;

@@ -670,6 +670,7 @@ function FDsMaterialPropertyFrame_dispose(){
 }
 function FDsMaterialPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
+   o._frameName      = 'resource.material.PropertyToolBar';
    o._controlRefresh = null;
    o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
    o.onRefreshClick  = FDsMaterialPropertyToolBar_onRefreshClick;

@@ -66,14 +66,15 @@ function FUiMemo_onBuildEditValue(p){
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入栏
-   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInput = RBuilder.append(hep, 'TEXTAREA', o.styleName('Input'));
-   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var hInput = o._hInput = RBuilder.append(hInputPanel, 'TEXTAREA', o.styleName('Input'));
+   hInput.wrap = 'off';
+   o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
-   RHtml.setSize(hep, o._inputSize);
+   RHtml.setSize(hInputPanel, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
-      he.maxLength = o._editLength;
+      hInput.maxLength = o._editLength;
    }
 }
 
@@ -105,30 +106,30 @@ function FUiMemo_construct(){
 // <T>格式化显示内容。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 // @return 内容
 //==========================================================
-function FUiMemo_formatDisplay(p){
+function FUiMemo_formatDisplay(value){
    var o = this;
-   var r = RString.nvl(p);
+   var text = RString.nvl(value);
    //if(ECase.Upper == o.editCase){
    //   r = RString.toUpper(r);
    //}else if(ECase.Lower == o.editCase){
    //   r = RString.toLower(r);
    //}
-   o._dataDisplay = r;
-   return r;
+   o._dataDisplay = text;
+   return text;
 }
 
 //==========================================================
 // <T>格式化数据内容。</T>
 //
 // @method
-// @param p:value:String 内容
+// @param value:String 内容
 // @return 数据
 //==========================================================
-function FUiMemo_formatValue(p){
-   return p;
+function FUiMemo_formatValue(value){
+   return value;
 }
 
 //==========================================================
@@ -139,23 +140,23 @@ function FUiMemo_formatValue(p){
 //==========================================================
 function FUiMemo_get(){
    var o = this;
-   var r = o.__base.FUiEditControl.get.call(o);
+   o.__base.FUiEditControl.get.call(o);
    // 获得显示
-   var r = o._hInput.value;
-   return r;
+   var value = o._hInput.value;
+   return value;
 }
 
 //==========================================================
 // <T>设置数据。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 //==========================================================
-function FUiMemo_set(p){
+function FUiMemo_set(value){
    var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, value);
    // 设置显示
-   o._hInput.value = RString.nvl(p);
+   o._hInput.value = RString.nvl(value);
    //o.finded = v;
    //if(o.hChangeIcon){
    //   o.hChangeIcon.style.display = 'none';

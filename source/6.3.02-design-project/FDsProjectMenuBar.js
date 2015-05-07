@@ -7,9 +7,6 @@
 function FDsProjectMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
-   // @property
-   o._frameName     = 'design3d.project.MenuBar';
-   //..........................................................
    // @attribute
    o._refreshButton = null;
    o._saveButton    = null;
@@ -38,7 +35,7 @@ function FDsProjectMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
 }
 
 //==========================================================

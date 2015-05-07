@@ -99,10 +99,10 @@ function FDsPrivateWorkspace_selectFrameSet(name, guid){
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.PrivateProjectFrameSet){
-         var menuBar = RClass.create(FDsProjectMenuBar);
+         var menuBar = RClass.create(FDsPrivateProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsProjectFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -211,7 +211,7 @@ function FDsPrivateWorkspace_load(){
    if(code == EDsFrameSet.SolutionFrameSet){
       button = o._tabBar.findControl('solution');
       button.doClick();
-   }else if(code == EDsFrameSet.ProjectFrameSet){
+   }else if(code == EDsFrameSet.PrivateProjectFrameSet){
       button = o._tabBar.findControl('solution');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)

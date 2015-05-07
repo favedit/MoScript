@@ -1,6 +1,10 @@
-// ============================================================
-// FUiResultConsole
-// ============================================================
+//==========================================================
+// <T>数据结果控制台。</T>
+//
+// @class
+// @author maocy
+// @version 150507
+//==========================================================
 function FUiResultConsole(o){
    o = RClass.inherits(this, o, FConsole);
    // Attribute
@@ -8,6 +12,7 @@ function FUiResultConsole(o){
    // Method
    o.executeCommand = FUiResultConsole_executeCommand;
    o.checkService   = FUiResultConsole_checkService;
+   o.checkEvent     = FUiResultConsole_checkEvent;
    return o;
 }
 // ------------------------------------------------------------
@@ -53,7 +58,14 @@ function FUiResultConsole_executeCommand(command){
       fmMain.submit();
    }
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>检查处理结果。</T>
+//
+// @class
+// @author maocy
+// @version 150507
+//==========================================================
 function FUiResultConsole_checkService(config){
    var o = this;
    if(config){
@@ -76,4 +88,44 @@ function FUiResultConsole_checkService(config){
    }
    return true;
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>检查事件。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FUiResultConsole_checkEvent(event){
+   var o = this;
+   var xconfig = event.root;
+   if(xconfig){
+      // 检查消息
+      //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(config))){
+      //   return false;
+      //}
+      // 检查命令
+      var resultCd = xconfig.get('result_cd');
+      if(resultCd == 'success'){
+         return true;
+      }
+      var messageCd = xconfig.get('message_cd');
+      var xmessages = xconfig.find('Messages');
+      if(xmessages){
+         var count = xmessages.nodeCount();
+         for(var i = 0; i < count; i++){
+            var xmessage = xmessages.node(i);
+            if(xmessage.isName('Message')){
+               //var typeCd = xmessage.get('type');
+               var code = xmessage.get('code');
+               var message = xmessage.get('message');
+               var description = xmessage.get('description');
+               RConsole.find(FUiMessageConsole).showError(code, message, description);
+               return false;
+            }
+         }
+      }
+      // 如果能够恢复焦点的情况下，自动恢复默认焦点
+      //RConsole.find(FFocusConsole).restoreFocus();
+   }
+   return true;
+}

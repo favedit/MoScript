@@ -4031,7 +4031,7 @@ function FDsSolutionListContent_doDoubleClickItem(control){
    o._activeControl = control;
    o._activeGuid = guid;
    var workspace = o._frameSet._workspace;
-   workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet, guid);
+   workspace.selectFrameSet(EDsFrameSet.PrivateProjectFrameSet, guid);
 }
 function FDsSolutionListContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
@@ -4156,16 +4156,17 @@ function FDsSolutionListToolBar_dispose(){
 }
 function FDsSolutionMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'resource.private.solution.MenuBar';
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
-   o.onBuilded      = FDsSolutionMenuBar_onBuilded;
-   o.onCreateClick  = FDsSolutionMenuBar_onCreateClick;
-   o.onDeleteLoad   = FDsSolutionMenuBar_onDeleteLoad;
-   o.onDeleteClick  = FDsSolutionMenuBar_onDeleteClick;
-   o.construct      = FDsSolutionMenuBar_construct;
-   o.dispose        = FDsSolutionMenuBar_dispose;
+   o._frameName      = 'resource.private.solution.MenuBar';
+   o._refreshButton  = null;
+   o._saveButton     = null;
+   o._runButton      = null;
+   o.onBuilded       = FDsSolutionMenuBar_onBuilded;
+   o.onCreateClick   = FDsSolutionMenuBar_onCreateClick;
+   o.onDeleteLoad    = FDsSolutionMenuBar_onDeleteLoad;
+   o.onDeleteExecute = FDsSolutionMenuBar_onDeleteExecute;
+   o.onDeleteClick   = FDsSolutionMenuBar_onDeleteClick;
+   o.construct       = FDsSolutionMenuBar_construct;
+   o.dispose         = FDsSolutionMenuBar_dispose;
    return o;
 }
 function FDsSolutionMenuBar_onBuilded(p){
@@ -4183,17 +4184,30 @@ function FDsSolutionMenuBar_onCreateClick(event){
 }
 function FDsSolutionMenuBar_onDeleteLoad(event){
    var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
    var frame = o._frameSet._listContent;
    frame.serviceResearch();
-   RWindow.enable();
+}
+function FDsSolutionMenuBar_onDeleteExecute(event){
+   var o = this;
+   if(event.resultCd != EResult.Success){
+      RConsole.find(FUiDesktopConsole).hide();
+      return
+   }
+   var listContent = o._frameSet._listContent;
+   var guid = listContent._activeGuid;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
+   connection.addLoadListener(o, o.onDeleteLoad);
 }
 function FDsSolutionMenuBar_onDeleteClick(event){
    var o = this;
-   var listContent = o._frameSet._listContent;
-   var guid = listContent._activeGuid;
-   RWindow.disable();
-   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
-   connection.addLoadListener(o, o.onDeleteLoad);
+   var item = o._frameSet._listContent.focusItem();
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前项目？');
+   dialog.addResultListener(o, o.onDeleteExecute);
 }
 function FDsSolutionMenuBar_construct(){
    var o = this;
@@ -4899,7 +4913,7 @@ function FDsProjectCatalogContent_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
 }
 function FDsProjectCatalogContent_onLoadDisplay(p){
    var o = this;
@@ -5213,34 +5227,6 @@ function FDsProjectFrameSet_onBuilded(event){
    var f = o._propertySpliter = o.searchControl('propertySpliter');
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
-   var control = o._sceneListToolbar = RClass.create(FDsProjectSceneListToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._frameSceneListToolBar.push(control);
-   var control = o._sceneListContent = RClass.create(FDsProjectSceneListContent);
-   control._frameSet = o;
-   control.build(event);
-   o._frameSceneListContent.push(control);
-   var control = o._sceneCatalogToolbar = RClass.create(FDsProjectSceneCatalogToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._frameSceneCatalogToolBar.push(control);
-   var control = o._sceneCatalogContent = RClass.create(FDsProjectSceneCatalogContent);
-   control._frameSet = o;
-   control.build(event);
-   o._frameSceneCatalogContent.push(control);
-   var control = o._canvasSpaceToolbar = RClass.create(FDsProjectCanvasSpaceToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._frameCanvasSpaceToolBar.push(control);
-   var control = o._canvasPreviewToolbar = RClass.create(FDsProjectCanvasPreviewToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._frameCanvasPreviewToolBar.push(control);
-   var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyAttributeToolBar.push(control);
 }
 function FDsProjectFrameSet_onMeshLoad(p){
    var o = this;
@@ -5321,7 +5307,6 @@ function FDsProjectFrameSet_dispose(){
 }
 function FDsProjectMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'design3d.project.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
    o._runButton     = null;
@@ -5334,7 +5319,7 @@ function FDsProjectMenuBar(o){
 function FDsProjectMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
 }
 function FDsProjectMenuBar_onSaveClick(p){
    var o = this;
@@ -5870,7 +5855,7 @@ function FDsProjectSceneCatalogContent_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
 }
 function FDsProjectSceneCatalogContent_onLoadDisplay(p){
    var o = this;
@@ -6070,7 +6055,7 @@ function FDsProjectSceneCatalogContent_dispose(){
 }
 function FDsProjectSceneCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.project.SceneCatalogToolBar';
+   o._frameName       = 'resource.project.SceneCatalogToolBar';
    o._canvasModeCd    = EDsCanvasMode.Drop;
    o._dropButton      = null;
    o._selectButton    = null;
@@ -6294,7 +6279,7 @@ function FDsProjectSceneListContent_serviceList(guid){
    var o = this;
    o._activeGuid = guid;
    RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.content.scene.ws?action=list&project_guid=' + guid;
+   var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
    return connection;
@@ -6824,10 +6809,12 @@ function FDsResourceCreateDialog_onBuilded(p){
 }
 function FDsResourceCreateDialog_onConfirmLoad(event){
    var o = this;
-   RConsole.find(FUiDesktopConsole).hide();
    o.hide();
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   RConsole.find(FUiDesktopConsole).hide();
+   if(RConsole.find(FUiResultConsole).checkEvent(event)){
+      var frame = o._frameSet._listContent;
+      frame.serviceResearch();
+   }
 }
 function FDsResourceCreateDialog_onConfirmClick(event){
    var o = this;
@@ -7108,9 +7095,9 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    var url = null;
-   if(o._modeCd == 'picture'){
+   if(o._modeCd == EE3sResource.Bitmap){
       url = '/cloud.resource.bitmap.wv?do=importData';
-   }else if(o._modeCd == 'mesh'){
+   }else if(o._modeCd == EE3sResource.Model){
       url = '/cloud.resource.model.wv?do=importData';
    }else{
       throw new TError(o, 'Type is invalid.');
@@ -7632,6 +7619,10 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 }
 function FDsResourceMenuBar_onDeleteExecute(event){
    var o = this;
+   if(event.resultCd != EResult.Success){
+      RConsole.find(FUiDesktopConsole).hide();
+      return
+   }
    var item = o._frameSet._listContent.focusItem();
    var typeCd = item._typeCd;
    var guid = item._guid;
@@ -9738,6 +9729,7 @@ function FDsMaterialPropertyFrame_dispose(){
 }
 function FDsMaterialPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
+   o._frameName      = 'resource.material.PropertyToolBar';
    o._controlRefresh = null;
    o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
    o.onRefreshClick  = FDsMaterialPropertyToolBar_onRefreshClick;

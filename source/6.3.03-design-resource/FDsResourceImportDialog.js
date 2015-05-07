@@ -88,9 +88,9 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var label = o._controlLabel.get();
    // 上传数据
    var url = null;
-   if(o._modeCd == 'picture'){
+   if(o._modeCd == EE3sResource.Bitmap){
       url = '/cloud.resource.bitmap.wv?do=importData';
-   }else if(o._modeCd == 'mesh'){
+   }else if(o._modeCd == EE3sResource.Model){
       url = '/cloud.resource.model.wv?do=importData';
    }else{
       throw new TError(o, 'Type is invalid.');

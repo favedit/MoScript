@@ -19,6 +19,7 @@ function FUiMessageConsole(o){
    // @method
    o.showInfo       = FUiMessageConsole_showInfo;
    o.showConfirm    = FUiMessageConsole_showConfirm;
+   o.showError      = FUiMessageConsole_showError;
    o.popup          = FUiMessageConsole_popup;
    o.close          = FUiMessageConsole_close;
    // @method
@@ -51,6 +52,21 @@ function FUiMessageConsole_showConfirm(text){
    var dialog = RConsole.find(FUiWindowConsole).find(FUiConfirmDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
+   dialog.showPosition(EUiPosition.Center);
+   return dialog;
+}
+
+//==========================================================
+// <T>显示错误窗口。</T>
+//
+// @method
+// @param text:String 文本内容
+//==========================================================
+function FUiMessageConsole_showError(code, message, description){
+   var dialog = RConsole.find(FUiWindowConsole).find(FUiErrorDialog);
+   dialog.clearResultListeners();
+   dialog.setCode(message);
+   dialog.setDescription(description);
    dialog.showPosition(EUiPosition.Center);
    return dialog;
 }

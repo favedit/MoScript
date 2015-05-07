@@ -65,6 +65,15 @@ function FUiLayoutHorizontal_appendChild(control){
    // 追加子控件
    var hCell = RBuilder.appendTableCell(o._hLine);
    hCell.appendChild(control._hPanel);
+   // 设置位置
+   var dockCd = control.dockCd();
+   if(dockCd == 'left'){
+      hCell.align = 'left';
+   }else if(dockCd == 'center'){
+      hCell.align = 'center';
+   }else if(dockCd == 'right'){
+      hCell.align = 'right';
+   }
 }
 
 //==========================================================
