@@ -35,8 +35,9 @@ function FUiFramePage(o){
 //==========================================================
 function FUiFramePage_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
-   h.vAlign = 'top';
+   var hPanel = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
+   hPanel.vAlign = 'top';
+   hPanel.height = '100%';
 }
 
 //==========================================================

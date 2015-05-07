@@ -212,7 +212,7 @@ function RBrowser_construct(){
    }
    var capability = o._capability = new SBrowserCapability();
    if(window.Worker){
-      capability.optionProcess = true;
+      capability.optionProcess = false;
    }
    if(window.localStorage){
       capability.optionStorage = true;
@@ -404,8 +404,18 @@ function RBuilder_createTableCell(d, s){
    var h = this.create(d, 'TD', s);
    return h;
 }
-function RBuilder_createFragment(d){
-   return d.createDocumentFragment();
+function RBuilder_createFragment(document){
+   var hDocument = null;
+   if(document.ownerDocument){
+      hDocument = document.ownerDocument;
+   }else if(document.hDocument){
+      hDocument = document.hDocument;
+   }else{
+      hDocument = document;
+   }
+   var hElement = hDocument.createDocumentFragment();
+   hElement.__fragment = true;
+   return hElement;
 }
 function RBuilder_append(p, t, s){
    var r = RBuilder.create(p.ownerDocument, t, s);

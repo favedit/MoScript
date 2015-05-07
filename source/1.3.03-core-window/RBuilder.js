@@ -283,11 +283,21 @@ function RBuilder_createTableCell(d, s){
 // <T>创建一个文档碎片。</T>
 //
 // @method
-// @param d:document:HtmlDocument 页面文档对象
+// @param document:HtmlDocument 页面文档对象
 // @return HtmlTag 表格对象
 //==========================================================
-function RBuilder_createFragment(d){
-   return d.createDocumentFragment();
+function RBuilder_createFragment(document){
+   var hDocument = null;
+   if(document.ownerDocument){
+      hDocument = document.ownerDocument;
+   }else if(document.hDocument){
+      hDocument = document.hDocument;
+   }else{
+      hDocument = document;
+   }
+   var hElement = hDocument.createDocumentFragment();
+   hElement.__fragment = true;
+   return hElement;
 }
 
 //==========================================================

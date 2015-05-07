@@ -46,41 +46,46 @@ function MUiMargin_margin(){
 // <T>设置填充空白。</T>
 //
 // @method
-// @param l:left:Integer 左空白
-// @param t:top:Integer 上空白
-// @param r:right:Integer 右空白
-// @param b:bottom:Integer 下空白
+// @param left:Integer 左空白
+// @param top:Integer 上空白
+// @param right:Integer 右空白
+// @param bottom:Integer 下空白
 //==========================================================
-function MUiMargin_setMargin(l, t, r, b){
+function MUiMargin_setMargin(left, top, right, bottom){
    var o = this;
-   var p = o._margin;
-   var h = o.panel(EPanel.Container);
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   // 获得样式
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
    // 设置左空白
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.marginLeft = (l == 0) ? null : l + 'px';
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.marginLeft = (left == 0) ? null : left + 'px';
       }
    }
    // 设置上空白
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.marginTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.marginTop = (top == 0) ? null : top + 'px';
       }
    }
    // 设置右空白
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.marginRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.marginRight = (right == 0) ? null : right + 'px';
       }
    }
    // 设置下空白
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.marginBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }

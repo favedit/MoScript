@@ -133,19 +133,19 @@ function MUiSize_location(){
 //==========================================================
 function MUiSize_setLocation(x, y){
    var o = this;
-   var t = o.panel(EPanel.Size);
+   var hPanel = o.panel(EPanel.Size);
    // 设置左距离
    if(x != null){
       o._location.x = x;
-      if(t){
-         t.style.left = (x == 0) ? null : x + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.left = (x == 0) ? null : x + 'px';
       }
    }
    // 设置上距离
    if(y != null){
       o._location.y = y;
-      if(t){
-         t.style.top = (y == 0) ? null : y + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.top = (y == 0) ? null : y + 'px';
       }
    }
 }
@@ -223,7 +223,7 @@ function MUiSize_setSize(width, height){
    // 设置宽度
    if(width != null){
       o._size.width = width;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(width != 0){
                hPanel.width = width;
@@ -240,7 +240,7 @@ function MUiSize_setSize(width, height){
    // 设置高度
    if(height != null){
       o._size.height = height;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(height != 0){
                hPanel.height = height;

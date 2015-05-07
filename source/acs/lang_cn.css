@@ -4,6 +4,7 @@
 html{
    width:100%;
    height:100%;
+   margin: 0px;
 }
 
 /* ------------------------------------------------------ */
@@ -14,19 +15,6 @@ body{
    height:100%;
    margin: 0px;
 }
-
-/*body
-   {
-   font-size:9pt;
-   font-family:"NSimSun";
-   scrollbar-face-color:#BBBBBB;
-   scrollbar-highlight-color:#FFFFFF;
-   scrollbar-shadow-color:#999999;
-   scrollbar-3dlight-color:#999999;
-   scrollbar-arrow-color:#666666;
-   scrollbar-track-color:#F0F0F0;
-   scrollbar-darkshadow-color:#FFFFFF;
-   }*/
 
 /* ------------------------------------------------------ */
 /* Href                                                   */
@@ -100,4 +88,24 @@ textarea{
 
 .Tag_Check{
    border:0; cursor:hand;
+}
+
+
+
+
+
+
+
+::-webkit-scrollbar{
+   width: 12px;
+   height: 12px;
+}
+::-webkit-scrollbar-thumb:vertical{
+   height:50px;
+   background-color: #CCCCCC;
+   border: 1px solid #999999;
+   -webkit-border-radius: 2px;
+}
+::-webkit-scrollbar-track-piece{
+   background-color: #EEEEEE;
 }

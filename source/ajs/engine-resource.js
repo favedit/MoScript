@@ -481,8 +481,10 @@ function FResourceSinglePipeline_decompress(data){
    var processData = null;
    if(compressData.constructor == ArrayBuffer){
       processData = new Uint8Array(compressData);
-   }else{
+   }else if(compressData.constructor == Uint8Array){
       processData = compressData;
+   }else{
+      throw new TError(o, 'Unknown data type.');
    }
    o._statusBusy = true;
    LZMA.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
@@ -607,6 +609,7 @@ function FResourceThreadPipeline_decompress(data){
    o._data = data;
    o._dataLength = compressData.byteLength;
    var worker = o.worker();
+   debugger
    worker.decompress(compressData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceThreadPipeline_dispose(){

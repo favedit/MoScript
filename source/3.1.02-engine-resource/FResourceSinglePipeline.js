@@ -95,8 +95,10 @@ function FResourceSinglePipeline_decompress(data){
    var processData = null;
    if(compressData.constructor == ArrayBuffer){
       processData = new Uint8Array(compressData);
-   }else{
+   }else if(compressData.constructor == Uint8Array){
       processData = compressData;
+   }else{
+      throw new TError(o, 'Unknown data type.');
    }
    // 解压缩处理
    o._statusBusy = true;

@@ -20,8 +20,9 @@ function FUiFramePage(o){
 }
 function FUiFramePage_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
-   h.vAlign = 'top';
+   var hPanel = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
+   hPanel.vAlign = 'top';
+   hPanel.height = '100%';
 }
 function FUiFramePage_onBuild(p){
    var o = this;
@@ -76,29 +77,29 @@ function FUiFrameSet_construct(){
    o.__base.FUiContainer.construct.call(o);
    o._frames = new TObjects();
 }
-function FUiFrameSet_appendFrame(p){
+function FUiFrameSet_appendFrame(frame){
    var o = this;
    if(o._directionCd == EUiDirection.Horizontal){
-      var hr = o._hLine;
-      if(!hr){
-         hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
+      var hLine = o._hLine;
+      if(!hLine){
+         hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
-      p.setPanel(hr);
-      var sw = p._size.width;
-      if(sw){
-         p._hPanel.width = sw;
+      frame.setPanel(hLine);
+      var sizeWidth = frame._size.width;
+      if(sizeWidth){
+         frame._hPanel.width = sizeWidth;
       }
    }else if(o._directionCd == EUiDirection.Vertical){
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      p.setPanel(hr);
-      var sh = p._size.height;
-      if(sh){
-         p._hPanel.height = sh;
+      var hLine = RBuilder.appendTableRow(o._hPanel);
+      frame.setPanel(hLine);
+      var sizeHeight = frame._size.height;
+      if(sizeHeight){
+         frame._hPanel.height = sizeHeight;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
    }
-   o._frames.push(p);
+   o._frames.push(frame);
 }
 function FUiFrameSet_appendSpliter(p){
    var o = this;

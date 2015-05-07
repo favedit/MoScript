@@ -29,24 +29,25 @@ function FUiWorkspace(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FUiWorkspace_onBuildPanel(p){
+function FUiWorkspace_onBuildPanel(event){
    var o = this;
-   //o._hContainer = p.hDocument.body;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+   //o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+   o._hPanel = RBuilder.createFragment(event);
 }
 
 //==========================================================
 // <T>增加一个控件。</T>
 //
 // @method
-// @param p:control:FUiControl 控件
+// @param control:FUiControl 控件
 //==========================================================
-function FUiWorkspace_appendChild(p){
+function FUiWorkspace_appendChild(control){
    var o = this;
-   if(RClass.isClass(p, FUiFrameSet)){
-      //o._hContainer.appendChild(p._hPanel);
-      o._hPanel.appendChild(p._hPanel);
+   if(RClass.isClass(control, FUiFrameSet)){
+      o._hPanel.appendChild(control._hPanel);
+   }else{
+      throw new TError(o, 'Unknown child type.');
    }
 }

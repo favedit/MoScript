@@ -13636,7 +13636,7 @@ function RBrowser_construct(){
    }
    var capability = o._capability = new SBrowserCapability();
    if(window.Worker){
-      capability.optionProcess = true;
+      capability.optionProcess = false;
    }
    if(window.localStorage){
       capability.optionStorage = true;
@@ -13828,8 +13828,18 @@ function RBuilder_createTableCell(d, s){
    var h = this.create(d, 'TD', s);
    return h;
 }
-function RBuilder_createFragment(d){
-   return d.createDocumentFragment();
+function RBuilder_createFragment(document){
+   var hDocument = null;
+   if(document.ownerDocument){
+      hDocument = document.ownerDocument;
+   }else if(document.hDocument){
+      hDocument = document.hDocument;
+   }else{
+      hDocument = document;
+   }
+   var hElement = hDocument.createDocumentFragment();
+   hElement.__fragment = true;
+   return hElement;
 }
 function RBuilder_append(p, t, s){
    var r = RBuilder.create(p.ownerDocument, t, s);
@@ -21359,8 +21369,10 @@ function FResourceSinglePipeline_decompress(data){
    var processData = null;
    if(compressData.constructor == ArrayBuffer){
       processData = new Uint8Array(compressData);
-   }else{
+   }else if(compressData.constructor == Uint8Array){
       processData = compressData;
+   }else{
+      throw new TError(o, 'Unknown data type.');
    }
    o._statusBusy = true;
    LZMA.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
@@ -21485,6 +21497,7 @@ function FResourceThreadPipeline_decompress(data){
    o._data = data;
    o._dataLength = compressData.byteLength;
    var worker = o.worker();
+   debugger
    worker.decompress(compressData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceThreadPipeline_dispose(){
@@ -33860,32 +33873,36 @@ function MUiMargin_construct(){
 function MUiMargin_margin(){
    return this._margin;
 }
-function MUiMargin_setMargin(l, t, r, b){
+function MUiMargin_setMargin(left, top, right, bottom){
    var o = this;
-   var p = o._margin;
-   var h = o.panel(EPanel.Container);
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.marginLeft = (l == 0) ? null : l + 'px';
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.marginLeft = (left == 0) ? null : left + 'px';
       }
    }
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.marginTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.marginTop = (top == 0) ? null : top + 'px';
       }
    }
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.marginRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.marginRight = (right == 0) ? null : right + 'px';
       }
    }
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.marginBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }
@@ -33915,32 +33932,36 @@ function MUiPadding_construct(){
 function MUiPadding_padding(){
    return this._padding;
 }
-function MUiPadding_setPadding(l, t, r, b){
+function MUiPadding_setPadding(left, top, right, bottom){
    var o = this;
-   var p = o._padding;
-   var h = o.panel(EPanel.Container);
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.paddingLeft = (left == 0) ? null : left + 'px';
       }
    }
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.paddingTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.paddingTop = (top == 0) ? null : top + 'px';
       }
    }
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.paddingRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.paddingRight = (right == 0) ? null : right + 'px';
       }
    }
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }
@@ -34026,17 +34047,17 @@ function MUiSize_location(){
 }
 function MUiSize_setLocation(x, y){
    var o = this;
-   var t = o.panel(EPanel.Size);
+   var hPanel = o.panel(EPanel.Size);
    if(x != null){
       o._location.x = x;
-      if(t){
-         t.style.left = (x == 0) ? null : x + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.left = (x == 0) ? null : x + 'px';
       }
    }
    if(y != null){
       o._location.y = y;
-      if(t){
-         t.style.top = (y == 0) ? null : y + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.top = (y == 0) ? null : y + 'px';
       }
    }
 }
@@ -34064,7 +34085,7 @@ function MUiSize_setSize(width, height){
    var hPanel = o.panel(EPanel.Size);
    if(width != null){
       o._size.width = width;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(width != 0){
                hPanel.width = width;
@@ -34080,7 +34101,7 @@ function MUiSize_setSize(width, height){
    }
    if(height != null){
       o._size.height = height;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(height != 0){
                hPanel.height = height;
@@ -35441,14 +35462,16 @@ function FUiWorkspace(o){
    o.appendChild  = FUiWorkspace_appendChild;
    return o;
 }
-function FUiWorkspace_onBuildPanel(p){
+function FUiWorkspace_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+   o._hPanel = RBuilder.createFragment(event);
 }
-function FUiWorkspace_appendChild(p){
+function FUiWorkspace_appendChild(control){
    var o = this;
-   if(RClass.isClass(p, FUiFrameSet)){
-      o._hPanel.appendChild(p._hPanel);
+   if(RClass.isClass(control, FUiFrameSet)){
+      o._hPanel.appendChild(control._hPanel);
+   }else{
+      throw new TError(o, 'Unknown child type.');
    }
 }
 var RUiControl = new function RUiControl(){
@@ -50316,8 +50339,9 @@ function FUiFramePage(o){
 }
 function FUiFramePage_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
-   h.vAlign = 'top';
+   var hPanel = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
+   hPanel.vAlign = 'top';
+   hPanel.height = '100%';
 }
 function FUiFramePage_onBuild(p){
    var o = this;
@@ -50372,29 +50396,29 @@ function FUiFrameSet_construct(){
    o.__base.FUiContainer.construct.call(o);
    o._frames = new TObjects();
 }
-function FUiFrameSet_appendFrame(p){
+function FUiFrameSet_appendFrame(frame){
    var o = this;
    if(o._directionCd == EUiDirection.Horizontal){
-      var hr = o._hLine;
-      if(!hr){
-         hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
+      var hLine = o._hLine;
+      if(!hLine){
+         hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
-      p.setPanel(hr);
-      var sw = p._size.width;
-      if(sw){
-         p._hPanel.width = sw;
+      frame.setPanel(hLine);
+      var sizeWidth = frame._size.width;
+      if(sizeWidth){
+         frame._hPanel.width = sizeWidth;
       }
    }else if(o._directionCd == EUiDirection.Vertical){
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      p.setPanel(hr);
-      var sh = p._size.height;
-      if(sh){
-         p._hPanel.height = sh;
+      var hLine = RBuilder.appendTableRow(o._hPanel);
+      frame.setPanel(hLine);
+      var sizeHeight = frame._size.height;
+      if(sizeHeight){
+         frame._hPanel.height = sizeHeight;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
    }
-   o._frames.push(p);
+   o._frames.push(frame);
 }
 function FUiFrameSet_appendSpliter(p){
    var o = this;

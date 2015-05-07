@@ -86,7 +86,7 @@ function RBrowser_construct(){
    // 设置浏览器能力
    var capability = o._capability = new SBrowserCapability();
    if(window.Worker){
-      capability.optionProcess = true;
+      capability.optionProcess = false;
    }
    if(window.localStorage){
       capability.optionStorage = true;

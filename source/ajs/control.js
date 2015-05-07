@@ -1786,32 +1786,36 @@ function MUiMargin_construct(){
 function MUiMargin_margin(){
    return this._margin;
 }
-function MUiMargin_setMargin(l, t, r, b){
+function MUiMargin_setMargin(left, top, right, bottom){
    var o = this;
-   var p = o._margin;
-   var h = o.panel(EPanel.Container);
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.marginLeft = (l == 0) ? null : l + 'px';
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.marginLeft = (left == 0) ? null : left + 'px';
       }
    }
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.marginTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.marginTop = (top == 0) ? null : top + 'px';
       }
    }
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.marginRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.marginRight = (right == 0) ? null : right + 'px';
       }
    }
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.marginBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }
@@ -1841,32 +1845,36 @@ function MUiPadding_construct(){
 function MUiPadding_padding(){
    return this._padding;
 }
-function MUiPadding_setPadding(l, t, r, b){
+function MUiPadding_setPadding(left, top, right, bottom){
    var o = this;
-   var p = o._padding;
-   var h = o.panel(EPanel.Container);
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.paddingLeft = (left == 0) ? null : left + 'px';
       }
    }
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.paddingTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.paddingTop = (top == 0) ? null : top + 'px';
       }
    }
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.paddingRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.paddingRight = (right == 0) ? null : right + 'px';
       }
    }
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }
@@ -1952,17 +1960,17 @@ function MUiSize_location(){
 }
 function MUiSize_setLocation(x, y){
    var o = this;
-   var t = o.panel(EPanel.Size);
+   var hPanel = o.panel(EPanel.Size);
    if(x != null){
       o._location.x = x;
-      if(t){
-         t.style.left = (x == 0) ? null : x + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.left = (x == 0) ? null : x + 'px';
       }
    }
    if(y != null){
       o._location.y = y;
-      if(t){
-         t.style.top = (y == 0) ? null : y + 'px';
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.top = (y == 0) ? null : y + 'px';
       }
    }
 }
@@ -1990,7 +1998,7 @@ function MUiSize_setSize(width, height){
    var hPanel = o.panel(EPanel.Size);
    if(width != null){
       o._size.width = width;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(width != 0){
                hPanel.width = width;
@@ -2006,7 +2014,7 @@ function MUiSize_setSize(width, height){
    }
    if(height != null){
       o._size.height = height;
-      if(hPanel){
+      if(hPanel && !hPanel.__fragment){
          if(hPanel.tagName == 'TD'){
             if(height != 0){
                hPanel.height = height;
@@ -3367,14 +3375,16 @@ function FUiWorkspace(o){
    o.appendChild  = FUiWorkspace_appendChild;
    return o;
 }
-function FUiWorkspace_onBuildPanel(p){
+function FUiWorkspace_onBuildPanel(event){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+   o._hPanel = RBuilder.createFragment(event);
 }
-function FUiWorkspace_appendChild(p){
+function FUiWorkspace_appendChild(control){
    var o = this;
-   if(RClass.isClass(p, FUiFrameSet)){
-      o._hPanel.appendChild(p._hPanel);
+   if(RClass.isClass(control, FUiFrameSet)){
+      o._hPanel.appendChild(control._hPanel);
+   }else{
+      throw new TError(o, 'Unknown child type.');
    }
 }
 var RUiControl = new function RUiControl(){

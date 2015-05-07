@@ -62,35 +62,35 @@ function FUiFrameSet_construct(){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:frame:FUiFrame 页面
+// @param frame:FUiFrame 页面
 //==========================================================
-function FUiFrameSet_appendFrame(p){
+function FUiFrameSet_appendFrame(frame){
    var o = this;
    if(o._directionCd == EUiDirection.Horizontal){
       // 横向排布
-      var hr = o._hLine;
-      if(!hr){
-         hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
+      var hLine = o._hLine;
+      if(!hLine){
+         hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
-      p.setPanel(hr);
+      frame.setPanel(hLine);
       // 设置宽度
-      var sw = p._size.width;
-      if(sw){
-         p._hPanel.width = sw;
+      var sizeWidth = frame._size.width;
+      if(sizeWidth){
+         frame._hPanel.width = sizeWidth;
       }
    }else if(o._directionCd == EUiDirection.Vertical){
       // 纵向排布
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      p.setPanel(hr);
+      var hLine = RBuilder.appendTableRow(o._hPanel);
+      frame.setPanel(hLine);
       // 设置高度
-      var sh = p._size.height;
-      if(sh){
-         p._hPanel.height = sh;
+      var sizeHeight = frame._size.height;
+      if(sizeHeight){
+         frame._hPanel.height = sizeHeight;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
    }
-   o._frames.push(p);
+   o._frames.push(frame);
 }
 
 //==========================================================

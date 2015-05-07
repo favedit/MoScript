@@ -46,41 +46,46 @@ function MUiPadding_padding(){
 // <T>设置填充空白。</T>
 //
 // @method
-// @param l:left:Integer 左空白
-// @param t:top:Integer 上空白
-// @param r:right:Integer 右空白
-// @param b:bottom:Integer 下空白
+// @param left:Integer 左空白
+// @param top:Integer 上空白
+// @param right:Integer 右空白
+// @param bottom:Integer 下空白
 //==========================================================
-function MUiPadding_setPadding(l, t, r, b){
+function MUiPadding_setPadding(left, top, right, bottom){
    var o = this;
-   var p = o._padding;
-   var h = o.panel(EPanel.Container);
+   var padding = o._padding;
+   var hPanel = o.panel(EPanel.Container);
+   // 获得样式
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
    // 设置左空白
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.paddingLeft = (left == 0) ? null : left + 'px';
       }
    }
    // 设置上空白
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.paddingTop = (t == 0) ? null : t + 'px';
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.paddingTop = (top == 0) ? null : top + 'px';
       }
    }
    // 设置右空白
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.paddingRight = (r == 0) ? null : r + 'px';
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.paddingRight = (right == 0) ? null : right + 'px';
       }
    }
    // 设置下空白
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
       }
    }
 }
