@@ -20,6 +20,7 @@
      <PathMerger source='/2.4.01-graphic-3d-wgl'          target='/ajs/graphic-3d-wgl.js'/>
 
      <PathMerger source='/3.1.01-engine'                  target='/ajs/engine.js'/>
+     <PathMerger source='/3.1.02-engine-resource'         target='/ajs/engine-resource.js'/>
      <PathMerger source='/3.2.01-engine-2d'               target='/ajs/engine-2d.js'/>
      <PathMerger source='/3.3.01-engine-3d'               target='/ajs/engine-3d.js'/>
      <PathMerger source='/3.3.02-engine-3d-resource'      target='/ajs/engine-3d-resource.js'/>
@@ -109,6 +110,7 @@
      </FileMerger>
      <FileMerger target='/ajs/mo-engine.js'>
         <File source='/ajs/engine.js'/>
+        <File source='/ajs/engine-resource.js'/>
         <File source='/ajs/engine-2d.js'/>
         <File source='/ajs/engine-3d.js'/>
         <File source='/ajs/engine-3d-resource.js'/>

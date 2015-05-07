@@ -210,16 +210,16 @@ function RBrowser_construct(){
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
-   var c = o._capability = new SBrowserCapability();
+   var capability = o._capability = new SBrowserCapability();
    if(window.Worker){
-      c.optionProcess = true;
+      capability.optionProcess = true;
    }
    if(window.localStorage){
-      c.optionStorage = true;
+      capability.optionStorage = true;
    }
    try{
       new Blob(["Test"], {'type':'text/plain'});
-      c.blobCreate = true;
+      capability.blobCreate = true;
    }catch(e){
       RLogger.warn(o, 'Browser blob not support.');
    }

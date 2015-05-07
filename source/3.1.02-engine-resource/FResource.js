@@ -34,8 +34,6 @@ function FResource(o){
    // @method
    o.sourceUrl     = FResource_sourceUrl;
    o.setSourceUrl  = FResource_setSourceUrl;
-   // @method
-   o.testBlockReady = FResource_testBlockReady;
    return o;
 }
 
@@ -137,23 +135,4 @@ function FResource_sourceUrl(){
 //==========================================================
 function FResource_setSourceUrl(p){
    this._sourceUrl = p;
-}
-
-//==========================================================
-// <T>测试所有块是否加载完成。</T>
-//
-// @method
-// @return Boolean 是否加载完成
-//==========================================================
-function FResource_testBlockReady(){
-   var o = this;
-   var blocks = o._blocks;
-   var count = blocks.count();
-   for(var i = 0; i < count; i++){
-      var block = blocks.at(i);
-      if(!block.testReady()){
-         return false;
-      }
-   }
-   return true;
 }
