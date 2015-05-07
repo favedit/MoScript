@@ -75,7 +75,7 @@ function FHttpConnection_onConnectionReady(){
    var o = this._linker;
    if(o._asynchronous){
       var connection = o._connection;
-      if(connection.readyState == EHttpStatus.Finish){
+      if(connection.readyState == EHttpStatus.Loaded){
          if(connection.status == 200){
             o.setOutputData();
             o.onConnectionComplete();
@@ -179,12 +179,12 @@ function FHttpConnection_outputData(){
 //==========================================================
 function FHttpConnection_setOutputData(){
    var o = this;
-   var c = o._connection;
+   var connection = o._connection;
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
-      o._outputData = c.response;
+      o._outputData = connection.response;
    }else{
-      o._outputData = c.responseText;
+      o._outputData = connection.responseText;
    }
 }
 
@@ -205,10 +205,10 @@ function FHttpConnection_content(){
 //==========================================================
 function FHttpConnection_sendSync(){
    var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, false);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, false);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
    o.setOutputData();
    o.onConnectionComplete();
    RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
@@ -221,10 +221,10 @@ function FHttpConnection_sendSync(){
 //==========================================================
 function FHttpConnection_sendAsync(){
    var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, true);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, true);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
    RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
 }
 

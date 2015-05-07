@@ -148,7 +148,10 @@ function RDump_dumpInner(di){
    }
    for(var n = 0; n < c; n++){
       var name = names[n];
-      var value = obj[name];
+      var value = '{error}';
+      try{
+         value = obj[name];
+      }catch(e){}
       var stype = RClass.safeTypeOf(value, true);
       var type = RClass.safeTypeOf(value, true);
       var info = null;

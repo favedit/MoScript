@@ -98,7 +98,6 @@ function FResourceThreadPipeline_decompress(data){
    o._dataLength = compressData.byteLength;
    // 解压缩处理
    var worker = o.worker();
-   debugger
    worker.decompress(compressData, function(buffer){o.onComplete(buffer);}, null);
 }
 

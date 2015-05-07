@@ -79,10 +79,10 @@ function FUiListViewItem_onBuild(p){
    var o = this;
    // 建立控件
    o.__base.FUiControl.onBuild.call(o, p);
-   var h = o._hPanel;
+   var hPanel = o._hPanel;
    //..........................................................
    // 建立边框
-   var hBorder = o._hBorder = RBuilder.appendDiv(h, o.styleName('Normal'));
+   var hBorder = o._hBorder = RBuilder.appendDiv(hPanel, o.styleName('Normal'));
    var hTable = o._hForm = RBuilder.appendTable(hBorder, o.styleName('Form'));
    var hLine1 = o._hLine1 = RBuilder.appendTableRowCell(hTable)
    var hLine2 = o._hLine2 = RBuilder.appendTableRowCell(hTable)
@@ -100,8 +100,8 @@ function FUiListViewItem_onBuild(p){
       o.setLabel(o._label);
    }
    // 关联事件
-   o.attachEvent('onClick', h);
-   o.attachEvent('onDoubleClick', h);
+   o.attachEvent('onClick', hPanel);
+   o.attachEvent('onDoubleClick', hPanel);
 }
 
 //==========================================================
@@ -130,20 +130,24 @@ function FUiListViewItem_onLeave(){
 // <T>点击事件处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件信息
+// @param event:SEvent 事件信息
 //==========================================================
-function FUiListViewItem_onClick(p){
+function FUiListViewItem_onClick(event){
    var o = this;
-   o._parent.doClickItem(o);
+   if(o._checked){
+      o._parent.doDoubleClickItem(o);
+   }else{
+      o._parent.doClickItem(o);
+   }
 }
 
 //==========================================================
-// <T>点击事件处理。</T>
+// <T>双击事件处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件信息
+// @param event:SEvent 事件信息
 //==========================================================
-function FUiListViewItem_onDoubleClick(p){
+function FUiListViewItem_onDoubleClick(event){
    var o = this;
    o._parent.doDoubleClickItem(o);
 }
@@ -174,16 +178,17 @@ function FUiListViewItem_setLabel(p){
 // <T>设置选中状态。</T>
 //
 // @method
+// @param checked:Boolean 是否选中
 //==========================================================
-function FUiListViewItem_setChecked(p){
+function FUiListViewItem_setChecked(checked){
    var o = this;
-   o._checked = p;
+   o._checked = checked;
    if(o._hIcon){
-      o._hIcon.style.display = p ? 'block' : 'none';
+      o._hIcon.style.display = checked ? 'block' : 'none';
    }else{
-      o._hIconPanel.innerHTML = p ? 'O' : '';
+      o._hIconPanel.innerHTML = checked ? 'O' : '';
    }
-   o._hBorder.className = p ? o.styleName('Select') : o.styleName('Normal');
+   o._hBorder.className = checked ? o.styleName('Select') : o.styleName('Normal');
 }
 
 //==========================================================

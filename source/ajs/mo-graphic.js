@@ -2528,14 +2528,14 @@ function SG3dContextCapability(){
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
 }
-function SG3dContextCapability_calculateBoneCount(bc, vc){
+function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
    var o = this;
    var rb = 0;
-   var bi = bc % 8;
+   var bi = boneCount % 4;
    if(bi != 0){
-      rb = bc + 8 - bi;
+      rb = boneCount + 4 - bi;
    }else{
-      rb = bc;
+      rb = boneCount;
    }
    var r = 0;
    var ib = (o.vertexConst - 16) / 4;
@@ -2546,13 +2546,13 @@ function SG3dContextCapability_calculateBoneCount(bc, vc){
    }
    return r;
 }
-function SG3dContextCapability_calculateInstanceCount(bc, vc){
+function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
    var o = this;
-   var cr = (4 * bc) + 4;
+   var cr = (4 * boneCount) + 4;
    var ib = (o.vertexConst - 16) / cr;
    var r = cl;
-   if(vc > 0){
-      var iv = o.vertexCount / vc;
+   if(vertexCount > 0){
+      var iv = o.vertexCount / vertexCount;
       r = Math.min(ib, iv);
    }
    if(r > 64){
@@ -5259,6 +5259,7 @@ function FWglVertexShader_targetSource(){
 }
 function FWglVertexShader_upload(source){
    var o = this;
+   alert(source);
    var graphic = o._graphicContext._native;
    var shader = o._native;
    graphic.shaderSource(shader, source);

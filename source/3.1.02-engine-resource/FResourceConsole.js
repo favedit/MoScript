@@ -62,7 +62,6 @@ function FResourceConsole_onLoad(connection){
    // 设置资源
    var data = connection.outputData();
    var resource = connection._resource;
-   //resource._data = new Uint8Array(data);
    // 加载数据
    var storage = RClass.create(FResourceSingleStorage);
    storage.setResource(resource);

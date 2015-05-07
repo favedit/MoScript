@@ -1299,7 +1299,6 @@ function FResourceThreadPipeline_decompress(data){
    o._data = data;
    o._dataLength = compressData.byteLength;
    var worker = o.worker();
-   debugger
    worker.decompress(compressData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceThreadPipeline_dispose(){

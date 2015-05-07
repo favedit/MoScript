@@ -8835,11 +8835,11 @@ var EHttpMethod = new function EHttpMethod(){
 }
 var EHttpStatus = new function EHttpStatus(){
    var o = this;
-   o.Begin   = 0;
-   o.Build   = 1;
-   o.Send    = 2;
-   o.Receive = 3;
-   o.Finish  = 4;
+   o.Uninitialized = 0;
+   o.Open          = 1;
+   o.Send          = 2;
+   o.Receiving     = 3;
+   o.Loaded        = 4;
    return o;
 }
 var EKeyCode = new function EKeyCode(){
@@ -10248,7 +10248,7 @@ function FHttpConnection_onConnectionReady(){
    var o = this._linker;
    if(o._asynchronous){
       var connection = o._connection;
-      if(connection.readyState == EHttpStatus.Finish){
+      if(connection.readyState == EHttpStatus.Loaded){
          if(connection.status == 200){
             o.setOutputData();
             o.onConnectionComplete();
@@ -10302,11 +10302,11 @@ function FHttpConnection_outputData(){
 }
 function FHttpConnection_setOutputData(){
    var o = this;
-   var c = o._connection;
+   var connection = o._connection;
    if(o._contentCd == EHttpContent.Binary){
-      o._outputData = c.response;
+      o._outputData = connection.response;
    }else{
-      o._outputData = c.responseText;
+      o._outputData = connection.responseText;
    }
 }
 function FHttpConnection_content(){
@@ -10314,20 +10314,20 @@ function FHttpConnection_content(){
 }
 function FHttpConnection_sendSync(){
    var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, false);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, false);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
    o.setOutputData();
    o.onConnectionComplete();
    RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
 }
 function FHttpConnection_sendAsync(){
    var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, true);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, true);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
    RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
 }
 function FHttpConnection_send(url, data){
@@ -10539,7 +10539,10 @@ function RDump_dumpInner(di){
    }
    for(var n = 0; n < c; n++){
       var name = names[n];
-      var value = obj[name];
+      var value = '{error}';
+      try{
+         value = obj[name];
+      }catch(e){}
       var stype = RClass.safeTypeOf(value, true);
       var type = RClass.safeTypeOf(value, true);
       var info = null;
@@ -15952,14 +15955,14 @@ function SG3dContextCapability(){
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
 }
-function SG3dContextCapability_calculateBoneCount(bc, vc){
+function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
    var o = this;
    var rb = 0;
-   var bi = bc % 8;
+   var bi = boneCount % 4;
    if(bi != 0){
-      rb = bc + 8 - bi;
+      rb = boneCount + 4 - bi;
    }else{
-      rb = bc;
+      rb = boneCount;
    }
    var r = 0;
    var ib = (o.vertexConst - 16) / 4;
@@ -15970,13 +15973,13 @@ function SG3dContextCapability_calculateBoneCount(bc, vc){
    }
    return r;
 }
-function SG3dContextCapability_calculateInstanceCount(bc, vc){
+function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
    var o = this;
-   var cr = (4 * bc) + 4;
+   var cr = (4 * boneCount) + 4;
    var ib = (o.vertexConst - 16) / cr;
    var r = cl;
-   if(vc > 0){
-      var iv = o.vertexCount / vc;
+   if(vertexCount > 0){
+      var iv = o.vertexCount / vertexCount;
       r = Math.min(ib, iv);
    }
    if(r > 64){
@@ -18683,6 +18686,7 @@ function FWglVertexShader_targetSource(){
 }
 function FWglVertexShader_upload(source){
    var o = this;
+   alert(source);
    var graphic = o._graphicContext._native;
    var shader = o._native;
    graphic.shaderSource(shader, source);
@@ -20112,7 +20116,6 @@ function FResourceThreadPipeline_decompress(data){
    o._data = data;
    o._dataLength = compressData.byteLength;
    var worker = o.worker();
-   debugger
    worker.decompress(compressData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceThreadPipeline_dispose(){

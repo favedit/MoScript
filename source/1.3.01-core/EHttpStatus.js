@@ -7,15 +7,15 @@
 //===========================================================
 var EHttpStatus = new function EHttpStatus(){
    var o = this;
-   // @attribute Integer 准备连接
-   o.Begin   = 0;
-   // @attribute Integer 初始化连接
-   o.Build   = 1;
-   // @attribute Integer 发送连接
-   o.Send    = 2;
-   // @attribute Integer 接收回馈消息
-   o.Receive = 3;
-   // @attribute Integer 完成连接
-   o.Finish  = 4;
+   // @attribute Integer 未初始化
+   o.Uninitialized = 0;
+   // @attribute Integer 打开
+   o.Open          = 1;
+   // @attribute Integer 发送
+   o.Send          = 2;
+   // @attribute Integer 接收中
+   o.Receiving     = 3;
+   // @attribute Integer 加载
+   o.Loaded        = 4;
    return o;
 }
