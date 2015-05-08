@@ -48,5 +48,7 @@ function TError(po, pm, pp){
    r.appendLine(pm);
    r.appendLine('------------------------------------------------------------');
    r.append(s);
-   throw new Error(r);
+   var info = r.flush();
+   alert(info);
+   //throw new Error(info);
 }

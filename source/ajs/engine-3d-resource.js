@@ -1178,7 +1178,6 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
-   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -1467,8 +1466,11 @@ function FE3sMovie(o){
    o._rotation   = null;
    o.construct   = FE3sMovie_construct;
    o.interval    = FE3sMovie_interval;
+   o.setInterval = FE3sMovie_setInterval;
    o.rotation    = FE3sMovie_rotation;
    o.unserialize = FE3sMovie_unserialize;
+   o.saveConfig  = FE3sMovie_saveConfig;
+   o.dispose     = FE3sMovie_dispose;
    return o;
 }
 function FE3sMovie_construct(){
@@ -1479,14 +1481,28 @@ function FE3sMovie_construct(){
 function FE3sMovie_interval(){
    return this._interval;
 }
+function FE3sMovie_setInterval(interval){
+   this._interval = interval;
+}
 function FE3sMovie_rotation(){
    return this._rotation;
 }
-function FE3sMovie_unserialize(p){
+function FE3sMovie_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._interval = p.readInt32();
-   o._rotation.unserialize(p);
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._interval = input.readInt32();
+   o._rotation.unserialize(input);
+}
+function FE3sMovie_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('interval', o._interval);
+   xconfig.set('rotation', o._rotation);
+}
+function FE3sMovie_dispose(){
+   var o = this;
+   o._rotation = RObject.dispose(o._rotation);
+   o.__base.FE3sObject.disposet.call(o);
 }
 function FE3sObject(o){
    o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
@@ -2421,7 +2437,17 @@ function FE3sSprite_saveConfig(xconfig){
       var count = materials.count();
       var xmaterials = xconfig.create('MaterialCollection');
       for(var i = 0; i < count; i++){
-         materials.at(i).saveConfig(xmaterials.create('Material'));
+         var material = materials.at(i);
+         material.saveConfig(xmaterials.create('Material'));
+      }
+   }
+   var movies = o._movies;
+   if(movies){
+      var count = movies.count();
+      var xmovies = xconfig.create('MovieCollection');
+      for(var i = 0; i < count; i++){
+         var movie = movies.at(i);
+         movie.saveConfig(xmovies.create('Movie'));
       }
    }
 }

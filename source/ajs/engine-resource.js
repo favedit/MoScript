@@ -449,6 +449,7 @@ function FResourceSinglePipeline(o){
 }
 function FResourceSinglePipeline_onComplete(buffer){
    var o = this;
+   var data = o._data;
    var bufferData = null;
    if(buffer.constructor == Array){
       bufferData = new Uint8Array(buffer);
@@ -457,7 +458,6 @@ function FResourceSinglePipeline_onComplete(buffer){
    }else{
       throw new TError(o, 'Unknown buffer type.');
    }
-   var data = o._data;
    data.completeData(bufferData);
    var span = RTimer.now() - o._startTime;
    RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
@@ -474,6 +474,7 @@ function FResourceSinglePipeline_testBusy(){
 }
 function FResourceSinglePipeline_decompress(data){
    var o = this;
+   o._statusBusy = true;
    o._startTime = RTimer.current();
    var compressData = data.compressData();
    o._data = data;
@@ -486,8 +487,7 @@ function FResourceSinglePipeline_decompress(data){
    }else{
       throw new TError(o, 'Unknown data type.');
    }
-   o._statusBusy = true;
-   LZMA.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
+   LZMAD.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceSinglePipeline_dispose(){
    var o = this;

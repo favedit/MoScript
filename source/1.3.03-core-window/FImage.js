@@ -44,8 +44,8 @@ function FImage(o){
 //==========================================================
 function FImage_ohLoad(){
    var o = this.__linker;
-   var m = o._hImage;
-   o._size.set(m.naturalWidth, m.naturalHeight);
+   var hImage = o._hImage;
+   o._size.set(hImage.naturalWidth, hImage.naturalHeight);
    o._ready = true;
    // 处理加载事件
    var event = new SEvent(o);

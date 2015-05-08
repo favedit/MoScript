@@ -14,6 +14,7 @@ function FE3dSprite(o){
    o._shapes          = null;
    o._skeletons       = null;
    o._animations      = null;
+   o._movies          = null;
    // @attribute
    o._resource        = null;
    //..........................................................
@@ -30,6 +31,8 @@ function FE3dSprite(o){
    o.findAnimation    = FE3dSprite_findAnimation;
    o.animations       = FE3dSprite_animations;
    o.pushAnimation    = FE3dSprite_pushAnimation;
+   o.movies           = FE3dSprite_movies;
+   o.pushMovie        = FE3dSprite_pushMovie;
    // @method
    o.loadSkeletons    = FE3dSprite_loadSkeletons;
    o.linkAnimation    = FE3dSprite_linkAnimation;
@@ -189,6 +192,31 @@ function FE3dSprite_pushAnimation(animation){
    }
    var animationResource = animation.resource();
    animations.set(animationResource.guid(), animation);
+}
+
+//==========================================================
+// <T>获得动画集合。</T>
+//
+// @method
+// @param TObjects 动画集合
+//==========================================================
+function FE3dSprite_movies(){
+   return this._movies;
+}
+
+//==========================================================
+// <T>增加一个动画。</T>
+//
+// @method
+// @param movie:FE3dMovie 动画
+//==========================================================
+function FE3dSprite_pushMovie(movie){
+   var o = this;
+   var movies = o._movies;
+   if(!movies){
+      movies = o._movies = new TObjects();
+   }
+   movies.push(movie);
 }
 
 //==========================================================

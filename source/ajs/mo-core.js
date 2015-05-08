@@ -2276,7 +2276,8 @@ function TError(po, pm, pp){
    r.appendLine(pm);
    r.appendLine('------------------------------------------------------------');
    r.append(s);
-   throw new Error(r);
+   var info = r.flush();
+   alert(info);
 }
 function TFatalError(po, pe, pm, pp){
    var o = this;
@@ -4878,6 +4879,7 @@ var RLogger = new function RLogger(){
    o.warn         = RLogger_warn;
    o.error        = RLogger_error;
    o.fatal        = RLogger_fatal;
+   o.show         = RLogger_show;
    return o;
 }
 function RLogger_output(s, p){
@@ -5025,6 +5027,30 @@ function RLogger_fatal(sf, er, ms, pm){
    m.append(s);
    var text = m.toString();
    throw new Error(text);
+}
+function RLogger_show(sf, ms, pm){
+   var o = this;
+   var n = RMethod.name(RLogger_show.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   alert(r.flush());
 }
 var RMethod = new function RMethod(){
    var o = this;

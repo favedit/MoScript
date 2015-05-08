@@ -404,7 +404,7 @@ function FDsSpaceCanvas_selectRenderable(renderable){
 // <T>切换播放模式。</T>
 //
 // @method
-// @param p:modeCd:Integer 
+// @param flag:Boolean 模式
 //==========================================================
 function FDsSpaceCanvas_switchPlay(flag){
    var o = this;

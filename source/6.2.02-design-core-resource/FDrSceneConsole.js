@@ -15,6 +15,7 @@ function FDrSceneConsole(o){
    o.createCamera = FDrSceneConsole_createCamera;
    o.createLayer  = FDrSceneConsole_createLayer;
    o.createSprite = FDrSceneConsole_createSprite;
+   o.createMovie  = FDrSceneConsole_createMovie;
    o.copyNode     = FDrSceneConsole_copyNode;
    o.deleteNode   = FDrSceneConsole_deleteNode;
    o.update       = FDrSceneConsole_update;
@@ -51,6 +52,17 @@ function FDrSceneConsole_createLayer(xconfig){
 function FDrSceneConsole_createSprite(xconfig){
    var o = this;
    var url = o.makeServiceUrl('createSprite');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+
+//==========================================================
+// <T>插入动画处理。</T>
+//
+// @param xconfig:TXmlNode 配置节点
+//==========================================================
+function FDrSceneConsole_createMovie(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createMovie');
    return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
 }
 

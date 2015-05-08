@@ -28,6 +28,7 @@ var EDsFrame = new function EDsFrame(){
    o.CommonLayerPropertyFrame      = 'resource.common.property.LayerFrame';
    o.CommonDisplayPropertyFrame    = 'resource.common.property.DisplayFrame';
    o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
+   o.CommonMoviePropertyFrame      = 'resource.common.property.MovieFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
    o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
    o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';
@@ -2178,6 +2179,7 @@ function FDrSceneConsole(o){
    o.createCamera = FDrSceneConsole_createCamera;
    o.createLayer  = FDrSceneConsole_createLayer;
    o.createSprite = FDrSceneConsole_createSprite;
+   o.createMovie  = FDrSceneConsole_createMovie;
    o.copyNode     = FDrSceneConsole_copyNode;
    o.deleteNode   = FDrSceneConsole_deleteNode;
    o.update       = FDrSceneConsole_update;
@@ -2196,6 +2198,11 @@ function FDrSceneConsole_createLayer(xconfig){
 function FDrSceneConsole_createSprite(xconfig){
    var o = this;
    var url = o.makeServiceUrl('createSprite');
+   return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+}
+function FDrSceneConsole_createMovie(xconfig){
+   var o = this;
+   var url = o.makeServiceUrl('createMovie');
    return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
 }
 function FDrSceneConsole_copyNode(sceneGuid, nodeGuid){
@@ -3086,6 +3093,134 @@ function FDsCommonMaterialReferDialog_setContentLabel(label){
 function FDsCommonMaterialReferDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
+}
+function FDsCommonMovieDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.MovieDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonMovieDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonMovieDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonMovieDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonMovieDialog_onCancelClick;
+   o.construct             = FDsCommonMovieDialog_construct;
+   o.setLayerLabel         = FDsCommonMovieDialog_setLayerLabel;
+   o.setDisplayLabel       = FDsCommonMovieDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonMovieDialog_setContentCode;
+   o.setContentLabel       = FDsCommonMovieDialog_setContentLabel;
+   o.dispose               = FDsCommonMovieDialog_dispose;
+   return o;
+}
+function FDsCommonMovieDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlLayerLabel.setEditAble(false);
+   o._controlDisplayLabel.setEditAble(false);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonMovieDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonMovieDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xmovie = xaction.create('Movie');
+   xmovie.set('space_guid', o._spaceGuid);
+   xmovie.set('layer_guid', o._layerGuid);
+   xmovie.set('display_guid', o._displayGuid);
+   xmovie.set('code', o._controlCode.get());
+   xmovie.set('label', o._controlLabel.get());
+   xmovie.set('interval', o._controlInterval.get());
+   xmovie.set('rotation', o._controlRotation.get());
+   var console = RConsole.find(FDrSceneConsole);
+   var connection = null;
+   connection = console.createMovie(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonMovieDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonMovieDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonMovieDialog_setLayerLabel(label){
+   this._controlLayerLabel.set(label);
+}
+function FDsCommonMovieDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonMovieDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonMovieDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonMovieDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
+function FDsCommonMoviePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible         = false;
+   o._activeSpace     = null;
+   o._activeMovie = null;
+   o._controlGuid     = null;
+   o._controlCode     = null;
+   o._controlLabel    = null;
+   o.onBuilded        = FDsCommonMoviePropertyFrame_onBuilded;
+   o.onDataChanged    = FDsCommonMoviePropertyFrame_onDataChanged;
+   o.construct        = FDsCommonMoviePropertyFrame_construct;
+   o.loadObject       = FDsCommonMoviePropertyFrame_loadObject;
+   o.dispose          = FDsCommonMoviePropertyFrame_dispose;
+   return o;
+}
+function FDsCommonMoviePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonMoviePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlInterval.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonMoviePropertyFrame_onDataChanged(p){
+   var o = this;
+   var movie = o._activeMovie;
+   var resource = movie.resource();
+   resource.setCode(o._controlCode.get());
+   resource.setLabel(o._controlLabel.get());
+   resource.setInterval(o._controlInterval.get());
+   resource.rotation().assign(o._controlRotation.get());
+   movie.reloadResource();
+}
+function FDsCommonMoviePropertyFrame_loadObject(space, movie){
+   var o = this;
+   var resource = movie.resource();
+   o._activeSpace = space;
+   o._activeMovie = movie;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+   o._controlInterval.set(resource.interval());
+   o._controlRotation.set(resource.rotation());
+}
+function FDsCommonMoviePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
 }
 function FDsCommonProgramDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
@@ -12347,12 +12482,12 @@ function FDsSceneCatalogContent(o){
    o.dispose         = FDsSceneCatalogContent_dispose;
    return o;
 }
-function FDsSceneCatalogContent_onBuild(p){
+function FDsSceneCatalogContent_onBuild(event){
    var o = this;
-   var c = RClass.create(FUiTreeColumn);
-   c.setName('view');
-   o.push(c);
-   o.__base.FDsCatalog.onBuild.call(o, p);
+   var column = RClass.create(FUiTreeColumn);
+   column.setName('view');
+   o.push(column);
+   o.__base.FDsCatalog.onBuild.call(o, event);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=' + o._catalogCode);
 }
 function FDsSceneCatalogContent_onLoadDisplay(event){
@@ -12366,6 +12501,20 @@ function FDsSceneCatalogContent_construct(){
 }
 function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
    var o = this;
+   var movies = sprite.movies();
+   if(movies){
+      var movieCount = movies.count();
+      for(var i = 0; i < movieCount; i++){
+         var movie = movies.at(i);
+         var movieResource = movie.resource();
+         var movieNode = o.createNode();
+         movieNode.setTypeCode('Movie');
+         movieNode.setLabel(movieResource.code());
+         movieNode.setNote(movieResource.label());
+         movieNode.dataPropertySet('linker', movie);
+         parentNode.appendNode(movieNode);
+      }
+   }
    var materials = sprite.materials();
    if(materials){
       var materialCount = materials.count();
@@ -12486,6 +12635,7 @@ function FDsSceneCatalogToolBar(o){
    o._controlCreateCamera   = null;
    o._controlCreateLayer    = null;
    o._controlCreateSprite   = null;
+   o._controlCreateMovie    = null;
    o._controlDelete         = null;
    o._controlFolderOpen     = null;
    o._controlFolderClose    = null;
@@ -12493,6 +12643,7 @@ function FDsSceneCatalogToolBar(o){
    o.onCreateCameraClick    = FDsSceneCatalogToolBar_onCreateCameraClick;
    o.onCreateLayerClick     = FDsSceneCatalogToolBar_onCreateLayerClick;
    o.onCreateSpriteClick    = FDsSceneCatalogToolBar_onCreateSpriteClick;
+   o.onCreateMovieClick     = FDsSceneCatalogToolBar_onCreateMovieClick;
    o.onDeleteLoad           = FDsSceneCatalogToolBar_onDeleteLoad;
    o.onDeleteExecute        = FDsSceneCatalogToolBar_onDeleteExecute;
    o.onCopyLoad             = FDsSceneCatalogToolBar_onCopyLoad;
@@ -12511,6 +12662,7 @@ function FDsSceneCatalogToolBar_onBuilded(p){
    o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
    o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
    o._controlCreateSprite.addClickListener(o, o.onCreateSpriteClick);
+   o._controlCreateMovie.addClickListener(o, o.onCreateMovieClick);
    o._controlCopy.addClickListener(o, o.onCopyClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
@@ -12550,6 +12702,38 @@ function FDsSceneCatalogToolBar_onCreateSpriteClick(event){
    }else{
       dialog._displayGuid = null;
    }
+   if(layer){
+      dialog.setLayerLabel(layer.makeLabel());
+   }
+   if(sprite){
+      dialog.setDisplayLabel(sprite.makeLabel());
+   }
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsSceneCatalogToolBar_onCreateMovieClick(event){
+   var o = this;
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return alert('请选中目录节点。');
+   }
+   var linker = node.dataPropertyGet('linker');
+   var layer = null;
+   var sprite = null;
+   if(RClass.isClass(linker, FE3dSprite)){
+      layer = linker.findParent(FDisplayLayer);
+      sprite = linker;
+   }else{
+      return alert('请选中精灵节点。');
+   }
+   var frameSet = o._frameSet;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMovieDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = frameSet._activeSpace.resource().guid();
+   dialog._layerGuid = layer.resource().guid();
+   dialog._displayGuid = sprite.resource().guid();
    if(layer){
       dialog.setLayerLabel(layer.makeLabel());
    }
@@ -12754,6 +12938,10 @@ function FDsSceneFrameSet_onCatalogSelected(select, flag){
       frame.loadObject(space, select);
    }else if(RClass.isClass(select, FE3dAnimation)){
       var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dMovie)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
       frame.show();
       frame.loadObject(space, select);
    }else if(RClass.isClass(select, FE3dRenderable)){

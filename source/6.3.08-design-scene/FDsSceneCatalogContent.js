@@ -32,16 +32,16 @@ function FDsSceneCatalogContent(o){
 // <T>构建树目录。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FDsSceneCatalogContent_onBuild(p){
+function FDsSceneCatalogContent_onBuild(event){
    var o = this;
    // 建立查看列
-   var c = RClass.create(FUiTreeColumn);
-   c.setName('view');
-   o.push(c);
+   var column = RClass.create(FUiTreeColumn);
+   column.setName('view');
+   o.push(column);
    // 父处理
-   o.__base.FDsCatalog.onBuild.call(o, p);
+   o.__base.FDsCatalog.onBuild.call(o, event);
    // 加载定义
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=' + o._catalogCode);
 }
@@ -78,6 +78,22 @@ function FDsSceneCatalogContent_construct(){
 //==========================================================
 function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
    var o = this;
+   // 创建动画集合
+   var movies = sprite.movies();
+   if(movies){
+      var movieCount = movies.count();
+      for(var i = 0; i < movieCount; i++){
+         var movie = movies.at(i);
+         var movieResource = movie.resource();
+         // 创建节点
+         var movieNode = o.createNode();
+         movieNode.setTypeCode('Movie');
+         movieNode.setLabel(movieResource.code());
+         movieNode.setNote(movieResource.label());
+         movieNode.dataPropertySet('linker', movie);
+         parentNode.appendNode(movieNode);
+      }
+   }
    // 创建材质集合
    var materials = sprite.materials();
    if(materials){

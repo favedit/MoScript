@@ -844,6 +844,134 @@ function FDsCommonMaterialReferDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
 }
+function FDsCommonMovieDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.MovieDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonMovieDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonMovieDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonMovieDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonMovieDialog_onCancelClick;
+   o.construct             = FDsCommonMovieDialog_construct;
+   o.setLayerLabel         = FDsCommonMovieDialog_setLayerLabel;
+   o.setDisplayLabel       = FDsCommonMovieDialog_setDisplayLabel;
+   o.setContentCode        = FDsCommonMovieDialog_setContentCode;
+   o.setContentLabel       = FDsCommonMovieDialog_setContentLabel;
+   o.dispose               = FDsCommonMovieDialog_dispose;
+   return o;
+}
+function FDsCommonMovieDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlLayerLabel.setEditAble(false);
+   o._controlDisplayLabel.setEditAble(false);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsCommonMovieDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+}
+function FDsCommonMovieDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var xaction = new TXmlNode('Action');
+   var xmovie = xaction.create('Movie');
+   xmovie.set('space_guid', o._spaceGuid);
+   xmovie.set('layer_guid', o._layerGuid);
+   xmovie.set('display_guid', o._displayGuid);
+   xmovie.set('code', o._controlCode.get());
+   xmovie.set('label', o._controlLabel.get());
+   xmovie.set('interval', o._controlInterval.get());
+   xmovie.set('rotation', o._controlRotation.get());
+   var console = RConsole.find(FDrSceneConsole);
+   var connection = null;
+   connection = console.createMovie(xaction);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsCommonMovieDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsCommonMovieDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonMovieDialog_setLayerLabel(label){
+   this._controlLayerLabel.set(label);
+}
+function FDsCommonMovieDialog_setDisplayLabel(label){
+   this._controlDisplayLabel.set(label);
+}
+function FDsCommonMovieDialog_setContentCode(label){
+   this._controlCode.set(label);
+}
+function FDsCommonMovieDialog_setContentLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsCommonMovieDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
+function FDsCommonMoviePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible         = false;
+   o._activeSpace     = null;
+   o._activeMovie = null;
+   o._controlGuid     = null;
+   o._controlCode     = null;
+   o._controlLabel    = null;
+   o.onBuilded        = FDsCommonMoviePropertyFrame_onBuilded;
+   o.onDataChanged    = FDsCommonMoviePropertyFrame_onDataChanged;
+   o.construct        = FDsCommonMoviePropertyFrame_construct;
+   o.loadObject       = FDsCommonMoviePropertyFrame_loadObject;
+   o.dispose          = FDsCommonMoviePropertyFrame_dispose;
+   return o;
+}
+function FDsCommonMoviePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonMoviePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlInterval.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonMoviePropertyFrame_onDataChanged(p){
+   var o = this;
+   var movie = o._activeMovie;
+   var resource = movie.resource();
+   resource.setCode(o._controlCode.get());
+   resource.setLabel(o._controlLabel.get());
+   resource.setInterval(o._controlInterval.get());
+   resource.rotation().assign(o._controlRotation.get());
+   movie.reloadResource();
+}
+function FDsCommonMoviePropertyFrame_loadObject(space, movie){
+   var o = this;
+   var resource = movie.resource();
+   o._activeSpace = space;
+   o._activeMovie = movie;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+   o._controlInterval.set(resource.interval());
+   o._controlRotation.set(resource.rotation());
+}
+function FDsCommonMoviePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsCommonProgramDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    o._frameName            = 'resource.common.dialog.ProgramDialog';

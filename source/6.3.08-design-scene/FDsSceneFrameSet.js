@@ -158,6 +158,11 @@ function FDsSceneFrameSet_onCatalogSelected(select, flag){
       var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
       frame.show();
       frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dMovie)){
+      // 选中动画
+      var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
    }else if(RClass.isClass(select, FE3dRenderable)){
       // 选中渲染对象
       if(flag){

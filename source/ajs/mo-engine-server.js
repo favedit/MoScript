@@ -2276,7 +2276,8 @@ function TError(po, pm, pp){
    r.appendLine(pm);
    r.appendLine('------------------------------------------------------------');
    r.append(s);
-   throw new Error(r);
+   var info = r.flush();
+   alert(info);
 }
 function TFatalError(po, pe, pm, pp){
    var o = this;
@@ -4878,6 +4879,7 @@ var RLogger = new function RLogger(){
    o.warn         = RLogger_warn;
    o.error        = RLogger_error;
    o.fatal        = RLogger_fatal;
+   o.show         = RLogger_show;
    return o;
 }
 function RLogger_output(s, p){
@@ -5025,6 +5027,30 @@ function RLogger_fatal(sf, er, ms, pm){
    m.append(s);
    var text = m.toString();
    throw new Error(text);
+}
+function RLogger_show(sf, ms, pm){
+   var o = this;
+   var n = RMethod.name(RLogger_show.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   alert(r.flush());
 }
 var RMethod = new function RMethod(){
    var o = this;
@@ -19994,6 +20020,7 @@ function FResourceSinglePipeline(o){
 }
 function FResourceSinglePipeline_onComplete(buffer){
    var o = this;
+   var data = o._data;
    var bufferData = null;
    if(buffer.constructor == Array){
       bufferData = new Uint8Array(buffer);
@@ -20002,7 +20029,6 @@ function FResourceSinglePipeline_onComplete(buffer){
    }else{
       throw new TError(o, 'Unknown buffer type.');
    }
-   var data = o._data;
    data.completeData(bufferData);
    var span = RTimer.now() - o._startTime;
    RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
@@ -20019,6 +20045,7 @@ function FResourceSinglePipeline_testBusy(){
 }
 function FResourceSinglePipeline_decompress(data){
    var o = this;
+   o._statusBusy = true;
    o._startTime = RTimer.current();
    var compressData = data.compressData();
    o._data = data;
@@ -20031,8 +20058,7 @@ function FResourceSinglePipeline_decompress(data){
    }else{
       throw new TError(o, 'Unknown data type.');
    }
-   o._statusBusy = true;
-   LZMA.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
+   LZMAD.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
 }
 function FResourceSinglePipeline_dispose(){
    var o = this;
@@ -22032,7 +22058,6 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
-   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -22321,8 +22346,11 @@ function FE3sMovie(o){
    o._rotation   = null;
    o.construct   = FE3sMovie_construct;
    o.interval    = FE3sMovie_interval;
+   o.setInterval = FE3sMovie_setInterval;
    o.rotation    = FE3sMovie_rotation;
    o.unserialize = FE3sMovie_unserialize;
+   o.saveConfig  = FE3sMovie_saveConfig;
+   o.dispose     = FE3sMovie_dispose;
    return o;
 }
 function FE3sMovie_construct(){
@@ -22333,14 +22361,28 @@ function FE3sMovie_construct(){
 function FE3sMovie_interval(){
    return this._interval;
 }
+function FE3sMovie_setInterval(interval){
+   this._interval = interval;
+}
 function FE3sMovie_rotation(){
    return this._rotation;
 }
-function FE3sMovie_unserialize(p){
+function FE3sMovie_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._interval = p.readInt32();
-   o._rotation.unserialize(p);
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._interval = input.readInt32();
+   o._rotation.unserialize(input);
+}
+function FE3sMovie_saveConfig(xconfig){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, xconfig);
+   xconfig.set('interval', o._interval);
+   xconfig.set('rotation', o._rotation);
+}
+function FE3sMovie_dispose(){
+   var o = this;
+   o._rotation = RObject.dispose(o._rotation);
+   o.__base.FE3sObject.disposet.call(o);
 }
 function FE3sObject(o){
    o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
@@ -23275,7 +23317,17 @@ function FE3sSprite_saveConfig(xconfig){
       var count = materials.count();
       var xmaterials = xconfig.create('MaterialCollection');
       for(var i = 0; i < count; i++){
-         materials.at(i).saveConfig(xmaterials.create('Material'));
+         var material = materials.at(i);
+         material.saveConfig(xmaterials.create('Material'));
+      }
+   }
+   var movies = o._movies;
+   if(movies){
+      var count = movies.count();
+      var xmovies = xconfig.create('MovieCollection');
+      for(var i = 0; i < count; i++){
+         var movie = movies.at(i);
+         movie.saveConfig(xmovies.create('Movie'));
       }
    }
 }
@@ -24185,18 +24237,23 @@ function FE3rBitmapCubePack(o){
 }
 function FE3rBitmapCubePack_onLoad(p){
    var o = this;
-   var c = o._graphicContext;
-   var is = o._images;
+   var context = o._graphicContext;
+   var images = o._images;
    var capability = RBrowser.capability();
    for(var i = 0; i < 6; i++){
-      if(!is[i].testReady()){
+      if(!images.at(i).testReady()){
          return;
       }
    }
-   var t = o._texture = c.createCubeTexture();
-   t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
+   var texture = o._texture = context.createCubeTexture();
+   texture.upload(images.at(0), images.at(1), images.at(2), images.at(3), images.at(4), images.at(5));
+   for(var i = 0; i < 6; i++){
+      var image = images.at(i);
+      image.dispose();
+   }
    o._images = RObject.dispose(o._images);
    o._dataReady = true;
+   o._ready = true;
 }
 function FE3rBitmapCubePack_construct(){
    var o = this;
@@ -24206,11 +24263,12 @@ function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
    o._images = new TObjects();
    for(var i = 0; i < 6; i++){
-      var image = o._images[i] = RClass.create(FImage);
+      var image = RClass.create(FImage);
       image._index = i;
       image.setOptionAlpha(false);
       image.loadUrl(url + "&index=" + i);
       image.addLoadListener(o, o.onLoad);
+      o._images.push(image);
    }
 }
 function FE3rBitmapCubePack_dispose(){
@@ -27367,7 +27425,7 @@ function FE3dInstanceConsole_construct(){
    factory.register(EE3dInstance.SceneLayer, FE3dSceneLayer);
    factory.register(EE3dInstance.SceneDisplay, FE3dSceneDisplay);
    factory.register(EE3dInstance.SceneMaterial, FE3dSceneMaterial);
-   factory.register(EE3dInstance.SceneMovie, FE3dSceneDisplayMovie);
+   factory.register(EE3dInstance.SceneMovie, FE3dMovie);
    factory.register(EE3dInstance.SceneRenderable, FE3dSceneDisplayRenderable);
 }
 function FE3dInstanceConsole_factory(){
@@ -27860,6 +27918,53 @@ function FE3dModelRenderable_load(renderable){
    }
    o._effectCode = material.info().effectCode;
    o._renderable = renderable;
+}
+function FE3dMovie(o){
+   o = RClass.inherits(this, o, FObject, MLinkerResource);
+   o._interval      = null;
+   o._firstTick     = 0;
+   o._lastTick      = 0;
+   o._matrix        = null;
+   o.construct      = FE3dMovie_construct;
+   o.loadResource   = FE3dMovie_loadResource;
+   o.reloadResource = FE3dMovie_reloadResource;
+   o.process        = FE3dMovie_process;
+   return o;
+}
+function FE3dMovie_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+}
+function FE3dMovie_loadResource(resource){
+   var o = this;
+   o._resource = resource;
+   o._interval = resource._interval;
+   o._matrix.setRotation(resource._rotation.x, resource._rotation.y * Math.PI / 180, resource._rotation.z);
+   o._matrix.update();
+}
+function FE3dMovie_reloadResource(){
+   var o = this;
+   var resource = o._resource;
+   o.loadResource(resource);
+}
+function FE3dMovie_process(matrix){
+   var o = this;
+   if(o._firstTick == 0){
+      o._firstTick = RTimer.current();
+   }
+   if(o._lastTick == 0){
+      o._lastTick = RTimer.current();
+   }
+   var tick = RTimer.current();
+   var span = tick - o._lastTick;
+   if(span > o._interval){
+      var code = o._resource.code();
+      if(code == 'rotation'){
+         matrix.append(o._matrix);
+      }
+      o._lastTick = tick;
+   }
 }
 function FE3dPolygon(o){
    o = RClass.inherits(this, o, FE3dRenderable);
@@ -28404,18 +28509,22 @@ function FE3dSceneCanvas_construct(){
 function FE3dSceneCanvas_testPlay(){
    return this._actionPlay;
 }
-function FE3dSceneCanvas_switchPlay(p){
+function FE3dSceneCanvas_switchPlay(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionPlay = flag;
+         }
+         display._optionPlay = flag;
       }
    }
-   o._actionPlay = p;
+   o._actionPlay = flag;
 }
 function FE3dSceneCanvas_testMovie(){
    return this._actionMovie;
@@ -28592,7 +28701,6 @@ function FE3dSceneDisplay(o){
    o._resource         = null;
    o._materials        = null;
    o._parentMaterials  = null;
-   o._movies           = null;
    o._template         = null;
    o._sprite           = null;
    o.construct         = FE3dSceneDisplay_construct;
@@ -28622,12 +28730,11 @@ function FE3dSceneDisplay_loadResource(resource){
    var movieResources = resource.movies();
    if(movieResources){
       var movieCount = movieResources.count();
-      var movies = o._movies = new TObjects();
       for(var i = 0; i < movieCount; i++){
          var movieResource = movieResources.at(i);
          var movie = instanceConsole.create(EE3dInstance.SceneMovie);
          movie.loadResource(movieResource);
-         movies.push(movie);
+         o.pushMovie(movie);
       }
    }
    var materialResources = resource.materials();
@@ -28652,9 +28759,11 @@ function FE3dSceneDisplay_loadTemplate(template){
    var resource = o._resource;
    var sprites = template._sprites;
    if(sprites){
+      var optionPlay = o._optionPlay;
       var count = sprites.count();
       for(var i = 0; i < count; i++){
          var sprite = sprites.at(i);
+         sprite._optionPlay = optionPlay;
          sprite.matrix().identity();
       }
    }
@@ -28712,42 +28821,6 @@ function FE3dSceneDisplay_processLoad(){
    return true;
 }
 function FE3dSceneDisplay_clone(){
-}
-function FE3dSceneDisplayMovie(o){
-   o = RClass.inherits(this, o, FObject);
-   o._resource    = null;
-   o._interval    = null;
-   o._firstTick   = 0;
-   o._lastTick    = 0;
-   o._matrix      = new SMatrix3d();
-   o.loadResource = FE3dSceneDisplayMovie_loadResource;
-   o.process      = FE3dSceneDisplayMovie_process;
-   return o;
-}
-function FE3dSceneDisplayMovie_loadResource(p){
-   var o = this;
-   o._resource = p;
-   o._interval = p._interval;
-   o._matrix.setRotation(p._rotation.x, p._rotation.y * Math.PI / 180, p._rotation.z);
-   o._matrix.update();
-}
-function FE3dSceneDisplayMovie_process(p){
-   var o = this;
-   if(o._firstTick == 0){
-      o._firstTick = RTimer.current();
-   }
-   if(o._lastTick == 0){
-      o._lastTick = RTimer.current();
-   }
-   var ct = RTimer.current();
-   var sp = ct - o._lastTick;
-   if(sp > o._interval){
-      var c = o._resource.code();
-      if(c == 'rotation'){
-         p.append(o._matrix);
-      }
-      o._lastTick = ct;
-   }
 }
 function FE3dSceneDisplayRenderable(o){
    o = RClass.inherits(this, o, FE3dTemplateRenderable);
@@ -29410,6 +29483,7 @@ function FE3dSprite(o){
    o._shapes          = null;
    o._skeletons       = null;
    o._animations      = null;
+   o._movies          = null;
    o._resource        = null;
    o.construct        = FE3dSprite_construct;
    o.testReady        = FE3dSprite_testReady;
@@ -29421,6 +29495,8 @@ function FE3dSprite(o){
    o.findAnimation    = FE3dSprite_findAnimation;
    o.animations       = FE3dSprite_animations;
    o.pushAnimation    = FE3dSprite_pushAnimation;
+   o.movies           = FE3dSprite_movies;
+   o.pushMovie        = FE3dSprite_pushMovie;
    o.loadSkeletons    = FE3dSprite_loadSkeletons;
    o.linkAnimation    = FE3dSprite_linkAnimation;
    o.loadAnimations   = FE3dSprite_loadAnimations;
@@ -29504,6 +29580,17 @@ function FE3dSprite_pushAnimation(animation){
    }
    var animationResource = animation.resource();
    animations.set(animationResource.guid(), animation);
+}
+function FE3dSprite_movies(){
+   return this._movies;
+}
+function FE3dSprite_pushMovie(movie){
+   var o = this;
+   var movies = o._movies;
+   if(!movies){
+      movies = o._movies = new TObjects();
+   }
+   movies.push(movie);
 }
 function FE3dSprite_loadSkeletons(p){
    var o = this;

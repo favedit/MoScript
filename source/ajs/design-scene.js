@@ -119,12 +119,12 @@ function FDsSceneCatalogContent(o){
    o.dispose         = FDsSceneCatalogContent_dispose;
    return o;
 }
-function FDsSceneCatalogContent_onBuild(p){
+function FDsSceneCatalogContent_onBuild(event){
    var o = this;
-   var c = RClass.create(FUiTreeColumn);
-   c.setName('view');
-   o.push(c);
-   o.__base.FDsCatalog.onBuild.call(o, p);
+   var column = RClass.create(FUiTreeColumn);
+   column.setName('view');
+   o.push(column);
+   o.__base.FDsCatalog.onBuild.call(o, event);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=' + o._catalogCode);
 }
 function FDsSceneCatalogContent_onLoadDisplay(event){
@@ -138,6 +138,20 @@ function FDsSceneCatalogContent_construct(){
 }
 function FDsSceneCatalogContent_buildRenderable(parentNode, sprite){
    var o = this;
+   var movies = sprite.movies();
+   if(movies){
+      var movieCount = movies.count();
+      for(var i = 0; i < movieCount; i++){
+         var movie = movies.at(i);
+         var movieResource = movie.resource();
+         var movieNode = o.createNode();
+         movieNode.setTypeCode('Movie');
+         movieNode.setLabel(movieResource.code());
+         movieNode.setNote(movieResource.label());
+         movieNode.dataPropertySet('linker', movie);
+         parentNode.appendNode(movieNode);
+      }
+   }
    var materials = sprite.materials();
    if(materials){
       var materialCount = materials.count();
@@ -258,6 +272,7 @@ function FDsSceneCatalogToolBar(o){
    o._controlCreateCamera   = null;
    o._controlCreateLayer    = null;
    o._controlCreateSprite   = null;
+   o._controlCreateMovie    = null;
    o._controlDelete         = null;
    o._controlFolderOpen     = null;
    o._controlFolderClose    = null;
@@ -265,6 +280,7 @@ function FDsSceneCatalogToolBar(o){
    o.onCreateCameraClick    = FDsSceneCatalogToolBar_onCreateCameraClick;
    o.onCreateLayerClick     = FDsSceneCatalogToolBar_onCreateLayerClick;
    o.onCreateSpriteClick    = FDsSceneCatalogToolBar_onCreateSpriteClick;
+   o.onCreateMovieClick     = FDsSceneCatalogToolBar_onCreateMovieClick;
    o.onDeleteLoad           = FDsSceneCatalogToolBar_onDeleteLoad;
    o.onDeleteExecute        = FDsSceneCatalogToolBar_onDeleteExecute;
    o.onCopyLoad             = FDsSceneCatalogToolBar_onCopyLoad;
@@ -283,6 +299,7 @@ function FDsSceneCatalogToolBar_onBuilded(p){
    o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
    o._controlCreateLayer.addClickListener(o, o.onCreateLayerClick);
    o._controlCreateSprite.addClickListener(o, o.onCreateSpriteClick);
+   o._controlCreateMovie.addClickListener(o, o.onCreateMovieClick);
    o._controlCopy.addClickListener(o, o.onCopyClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
    o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
@@ -322,6 +339,38 @@ function FDsSceneCatalogToolBar_onCreateSpriteClick(event){
    }else{
       dialog._displayGuid = null;
    }
+   if(layer){
+      dialog.setLayerLabel(layer.makeLabel());
+   }
+   if(sprite){
+      dialog.setDisplayLabel(sprite.makeLabel());
+   }
+   dialog.setContentCode('');
+   dialog.setContentLabel('');
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsSceneCatalogToolBar_onCreateMovieClick(event){
+   var o = this;
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return alert('请选中目录节点。');
+   }
+   var linker = node.dataPropertyGet('linker');
+   var layer = null;
+   var sprite = null;
+   if(RClass.isClass(linker, FE3dSprite)){
+      layer = linker.findParent(FDisplayLayer);
+      sprite = linker;
+   }else{
+      return alert('请选中精灵节点。');
+   }
+   var frameSet = o._frameSet;
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMovieDialog);
+   dialog._frameSet = frameSet;
+   dialog._spaceGuid = frameSet._activeSpace.resource().guid();
+   dialog._layerGuid = layer.resource().guid();
+   dialog._displayGuid = sprite.resource().guid();
    if(layer){
       dialog.setLayerLabel(layer.makeLabel());
    }
@@ -526,6 +575,10 @@ function FDsSceneFrameSet_onCatalogSelected(select, flag){
       frame.loadObject(space, select);
    }else if(RClass.isClass(select, FE3dAnimation)){
       var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(RClass.isClass(select, FE3dMovie)){
+      var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
       frame.show();
       frame.loadObject(space, select);
    }else if(RClass.isClass(select, FE3dRenderable)){

@@ -334,11 +334,12 @@
                vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
                vertexColor = vertexColor / (fc_color.y - fc_color.x);
                vertexColor = (vertexColor - fc_color.z) * fc_color.w + fc_color.z;
-               result = result * vertexColor;
-               result.rgb *= v_color.rgb * fc_vertex_color.rgb;
+               result.rgb *= vertexColor.rgb;
             </shader:true>
          </shader:true>
          //............................................................
+         // 修正颜色和透明度
+         result.rgb *= fc_vertex_color.rgb;
          <shader:true source='support.alpha'>
             result.a = color.a * fc_alpha.y;
          </shader:true>

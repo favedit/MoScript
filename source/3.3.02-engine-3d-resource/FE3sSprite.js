@@ -93,7 +93,18 @@ function FE3sSprite_saveConfig(xconfig){
       var count = materials.count();
       var xmaterials = xconfig.create('MaterialCollection');
       for(var i = 0; i < count; i++){
-         materials.at(i).saveConfig(xmaterials.create('Material'));
+         var material = materials.at(i);
+         material.saveConfig(xmaterials.create('Material'));
+      }
+   }
+   // 存储动画集合
+   var movies = o._movies;
+   if(movies){
+      var count = movies.count();
+      var xmovies = xconfig.create('MovieCollection');
+      for(var i = 0; i < count; i++){
+         var movie = movies.at(i);
+         movie.saveConfig(xmovies.create('Movie'));
       }
    }
 }

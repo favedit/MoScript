@@ -217,18 +217,23 @@ function FE3rBitmapCubePack(o){
 }
 function FE3rBitmapCubePack_onLoad(p){
    var o = this;
-   var c = o._graphicContext;
-   var is = o._images;
+   var context = o._graphicContext;
+   var images = o._images;
    var capability = RBrowser.capability();
    for(var i = 0; i < 6; i++){
-      if(!is[i].testReady()){
+      if(!images.at(i).testReady()){
          return;
       }
    }
-   var t = o._texture = c.createCubeTexture();
-   t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
+   var texture = o._texture = context.createCubeTexture();
+   texture.upload(images.at(0), images.at(1), images.at(2), images.at(3), images.at(4), images.at(5));
+   for(var i = 0; i < 6; i++){
+      var image = images.at(i);
+      image.dispose();
+   }
    o._images = RObject.dispose(o._images);
    o._dataReady = true;
+   o._ready = true;
 }
 function FE3rBitmapCubePack_construct(){
    var o = this;
@@ -238,11 +243,12 @@ function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
    o._images = new TObjects();
    for(var i = 0; i < 6; i++){
-      var image = o._images[i] = RClass.create(FImage);
+      var image = RClass.create(FImage);
       image._index = i;
       image.setOptionAlpha(false);
       image.loadUrl(url + "&index=" + i);
       image.addLoadListener(o, o.onLoad);
+      o._images.push(image);
    }
 }
 function FE3rBitmapCubePack_dispose(){

@@ -356,20 +356,24 @@ function FE3dSceneCanvas_testPlay(){
 // <T>切换播放模式。</T>
 //
 // @method
-// @param p:modeCd:Integer 
+// @param flag:Boolean 模式
 //==========================================================
-function FE3dSceneCanvas_switchPlay(p){
+function FE3dSceneCanvas_switchPlay(flag){
    var o = this;
-   var s = o._activeSpace;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
+   var space = o._activeSpace;
+   var displays = space.allDisplays();
+   var count = displays.count();
+   for(var i = 0; i < count; i++){
+      var display = displays.at(i);
+      if(RClass.isClass(display, FE3dSceneDisplay)){
+         var sprite = display._sprite;
+         if(sprite){
+            sprite._optionPlay = flag;
+         }
+         display._optionPlay = flag;
       }
    }
-   o._actionPlay = p;
+   o._actionPlay = flag;
 }
 
 //==========================================================

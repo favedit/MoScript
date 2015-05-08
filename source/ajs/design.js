@@ -28,6 +28,7 @@ var EDsFrame = new function EDsFrame(){
    o.CommonLayerPropertyFrame      = 'resource.common.property.LayerFrame';
    o.CommonDisplayPropertyFrame    = 'resource.common.property.DisplayFrame';
    o.CommonAnimationPropertyFrame  = 'resource.common.property.AnimationFrame';
+   o.CommonMoviePropertyFrame      = 'resource.common.property.MovieFrame';
    o.CommonRenderablePropertyFrame = 'resource.common.property.RenderableFrame';
    o.SolutionProjectPropertyFrame  = 'resource.solution.property.ProjectFrame';
    o.ResourcePropertyFrame         = 'resource.resource.property.SpaceFrame';

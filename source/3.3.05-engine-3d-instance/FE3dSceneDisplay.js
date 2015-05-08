@@ -17,7 +17,6 @@ function FE3dSceneDisplay(o){
    // @attribute
    o._materials        = null;
    o._parentMaterials  = null;
-   o._movies           = null;
    o._template         = null;
    o._sprite           = null;
    //..........................................................
@@ -72,13 +71,12 @@ function FE3dSceneDisplay_loadResource(resource){
    var movieResources = resource.movies();
    if(movieResources){
       var movieCount = movieResources.count();
-      var movies = o._movies = new TObjects();
       for(var i = 0; i < movieCount; i++){
          var movieResource = movieResources.at(i);
          // 创建场景动画
          var movie = instanceConsole.create(EE3dInstance.SceneMovie);
          movie.loadResource(movieResource);
-         movies.push(movie);
+         o.pushMovie(movie);
       }
    }
    // 设置材质集合
@@ -114,9 +112,11 @@ function FE3dSceneDisplay_loadTemplate(template){
    // 重设变换，模型的变换矩阵在场景中无效。
    var sprites = template._sprites;
    if(sprites){
+      var optionPlay = o._optionPlay;
       var count = sprites.count();
       for(var i = 0; i < count; i++){
          var sprite = sprites.at(i);
+         sprite._optionPlay = optionPlay;
          sprite.matrix().identity();
       }
    }

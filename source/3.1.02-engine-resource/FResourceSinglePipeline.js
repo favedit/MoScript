@@ -36,6 +36,7 @@ function FResourceSinglePipeline(o){
 //==========================================================
 function FResourceSinglePipeline_onComplete(buffer){
    var o = this;
+   var data = o._data;
    // 获得数据
    var bufferData = null;
    if(buffer.constructor == Array){
@@ -46,7 +47,6 @@ function FResourceSinglePipeline_onComplete(buffer){
       throw new TError(o, 'Unknown buffer type.');
    }
    // 设置数据
-   var data = o._data;
    data.completeData(bufferData);
    // 输出信息
    var span = RTimer.now() - o._startTime;
@@ -86,6 +86,7 @@ function FResourceSinglePipeline_testBusy(){
 //==========================================================
 function FResourceSinglePipeline_decompress(data){
    var o = this;
+   o._statusBusy = true;
    o._startTime = RTimer.current();
    // 获得数据
    var compressData = data.compressData();
@@ -101,8 +102,7 @@ function FResourceSinglePipeline_decompress(data){
       throw new TError(o, 'Unknown data type.');
    }
    // 解压缩处理
-   o._statusBusy = true;
-   LZMA.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
+   LZMAD.decompress(processData, function(buffer){o.onComplete(buffer);}, null);
 }
 
 //==========================================================
