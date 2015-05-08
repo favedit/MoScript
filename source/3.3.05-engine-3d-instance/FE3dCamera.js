@@ -20,6 +20,7 @@ function FE3dCamera(o){
    // @method
    o.rotation        = FE3dCamera_rotation;
    // @method
+   o.doForward       = FE3dCamera_doForward;
    o.doPitch         = FE3dCamera_doPitch;
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
@@ -55,6 +56,19 @@ function FE3dCamera_construct(){
 //==========================================================
 function FE3dCamera_rotation(){
    return this._rotation;
+}
+
+//==========================================================
+// <T>向前/向后移动。</T>
+//
+// @method
+// @param p:radian:Number 弧度
+//==========================================================
+function FE3dCamera_doForward(value){
+   var o = this;
+   o._position.x += o._direction.x * value;
+   o._position.y += o._direction.y * value;
+   o._position.z += o._direction.z * value;
 }
 
 //==========================================================

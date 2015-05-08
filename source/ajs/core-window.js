@@ -5,6 +5,14 @@ function SBrowserCapability(){
    o.blobCreate    = false;
    return o;
 }
+function STouchEvent(){
+   var o = this;
+   o.dispose = STouchEvent_dispose;
+   return o;
+}
+function STouchEvent_dispose(){
+   var o = this;
+}
 function FImage(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
    o._optionAlpha   = true;
@@ -79,6 +87,89 @@ function FImage_dispose(){
    o._size = RObject.dispose(o._size);
    o._hImage = RHtml.free(o._hImage);
    o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+function FTouchTracker(o){
+   o = RClass.inherits(this, o, FObject, MListenerTouchZoom);
+   o._touchsLength   = null;
+   o._touchs         = null;
+   o._touchPool      = null;
+   o._touchZoomEvent = null;
+   o.construct       = FTouchTracker_construct;
+   o.calculateLength = FTouchTracker_calculateLength;
+   o.eventStart      = FTouchTracker_eventStart;
+   o.eventMove       = FTouchTracker_eventMove;
+   o.eventStop       = FTouchTracker_eventStop;
+   o.dispose         = FTouchTracker_dispose;
+   return o;
+}
+function FTouchTracker_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._touchs = new TObjects();
+   o._touchPool = RClass.create(FObjectPool);
+   o._touchZoomEvent = new SEvent(o);
+}
+function FTouchTracker_calculateLength(hEvent){
+   var o = this;
+   var total = 0;
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var hTouche1 = hTouches[i];
+         var hTouche2 = (i == count - 1) ? hTouches[0] : hTouches[i + 1];
+         var cx = hTouche1.clientX - hTouche2.clientX;
+         var cy = hTouche1.clientY - hTouche2.clientY;
+         var length = Math.sqrt(cx * cx + cy * cy);
+         total += length;
+      }
+   }
+   return total;
+}
+function FTouchTracker_eventStart(hEvent){
+   var o = this;
+   var touchs = o._touchs;
+   touchs.clear();
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   for(var i = 0; i < count; i++){
+      var hTouche = hTouches[i];
+      var touch = new STouchEvent();
+      touch.clientX = hTouche.clientX;
+      touch.clientY = hTouche.clientY;
+      touchs.push(touch);
+   }
+   o._touchsLength = o.calculateLength(hEvent);
+}
+function FTouchTracker_eventMove(hEvent){
+   var o = this;
+   var touchs = o._touchs;
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   for(var i = 0; i < count; i++){
+      var hTouche = hTouches[i];
+      var touch = touchs.at(i);
+      touch.clientX = hTouche.clientX;
+      touch.clientY = hTouche.clientY;
+   }
+   var touchsLength = o.calculateLength(hEvent);
+   if(o._touchsLength != touchsLength){
+      var event = o._touchZoomEvent;
+      event.touchsLength = touchsLength;
+      event.delta = touchsLength - o._touchsLength;
+      o.processTouchZoomListener(event);
+      o._touchsLength = touchsLength;
+   }
+}
+function FTouchTracker_eventStop(hEvent){
+   var o = this;
+}
+function FTouchTracker_dispose(){
+   var o = this;
+   o._touchs = RObject.dispose(o._touchs);
+   o._touchZoomEvent = RObject.dispose(o._touchZoomEvent);
+   o.__base.MListenerTouchZoom.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FWindowStorage(o){

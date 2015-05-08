@@ -13,3 +13,8 @@
 COPY /Y %JS_HOME%\9.1.01-context\*.js %JS_HOME%\ajs\
 
 @REM COPY /Y %JS_HOME%\ajs\*.js %PJ_HOME%\MoCloud\mp-cloud-design\webroot\ajs
+
+COPY /Y %JS_HOME%\ajs\lzma.js        %PJ_HOME%\MoCloud\mp-cloud-content\webroot\engine\ajs\lzma.js
+COPY /Y %JS_HOME%\ajs\lzma_worker.js %PJ_HOME%\MoCloud\mp-cloud-content\webroot\engine\ajs\lzma_worker.js
+COPY /Y %JS_HOME%\ajs\mo.js          %PJ_HOME%\MoCloud\mp-cloud-content\webroot\engine\ajs\mo.js
+COPY /Y %JS_HOME%\ajs\me.js          %PJ_HOME%\MoCloud\mp-cloud-content\webroot\engine\ajs\mo-engine.js

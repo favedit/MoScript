@@ -37,6 +37,7 @@ function SMatrix4x4(){
    o.build           = SMatrix4x4_build;
    // @method
    o.writeData       = SMatrix4x4_writeData;
+   o.writeData4x3    = SMatrix4x4_writeData4x3;
    // @method
    o.toString        = SMatrix4x4_toString;
    return o;
@@ -567,6 +568,30 @@ function SMatrix4x4_writeData(d, i){
    d[i++] = pd[ 7];
    d[i++] = pd[11];
    d[i++] = pd[15];
+}
+
+//==========================================================
+// <T>写入数据。</T>
+//
+// @method
+// @param d:data:Array 数组
+// @param i:offset:Integer 索引位置
+//==========================================================
+function SMatrix4x4_writeData4x3(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
 }
 
 //==========================================================

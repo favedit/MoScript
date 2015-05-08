@@ -26,6 +26,8 @@ function FE3dSceneCanvas(o){
    o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
+   // @attribute
+   o._touchTracker          = null;
    //..........................................................
    // @event
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;
@@ -37,6 +39,7 @@ function FE3dSceneCanvas(o){
    o.onTouchStart           = FE3dSceneCanvas_onTouchStart;
    o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
    o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
+   o.onTouchZoom            = FE3dSceneCanvas_onTouchZoom;
    // @event
    o.onDataLoaded           = FE3dSceneCanvas_onDataLoaded;
    o.onResize               = FE3dSceneCanvas_onResize;
@@ -64,70 +67,70 @@ function FE3dSceneCanvas(o){
 //==========================================================
 function FE3dSceneCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var st = s.timer();
-   var ss = st.spanSecond();
+   var timer = space.timer();
+   var span = timer.spanSecond();
    //..........................................................
    // 按键处理
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
+   var camera = space.camera();
+   var distance = o._cameraMoveRate * span;
+   var rotation = o._cameraKeyRotation * span;
    // 按键前后移动
-   var kw = RKeyboard.isPress(EStageKey.Forward);
-   var ks = RKeyboard.isPress(EStageKey.Back);
-   if((kw && !ks) || o._actionForward){
-      c.doWalk(d);
+   var keyForward = RKeyboard.isPress(EStageKey.Forward);
+   var keyBack = RKeyboard.isPress(EStageKey.Back);
+   if((keyForward && !keyBack) || o._actionForward){
+      camera.doWalk(distance);
    }
-   if((!kw && ks) || o._actionBack){
-      c.doWalk(-d);
+   if((!keyForward && keyBack) || o._actionBack){
+      camera.doWalk(-distance);
    }
    // 按键上下移动
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if((kq && !ke) || o._actionUp){
-      c.doFly(d);
+   var keyUp = RKeyboard.isPress(EStageKey.Up);
+   var keyDown = RKeyboard.isPress(EStageKey.Down);
+   if((keyUp && !keyDown) || o._actionUp){
+      camera.doFly(distance);
    }
-   if((!kq && ke) || o._actionDown){
-      c.doFly(-d);
+   if((!keyUp && keyDown) || o._actionDown){
+      camera.doFly(-distance);
    }
    // 按键左右旋转
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
+   var keyLeft = RKeyboard.isPress(EStageKey.RotationLeft);
+   var keyRight = RKeyboard.isPress(EStageKey.RotationRight);
+   if(keyLeft && !keyRight){
+      camera.doYaw(rotation);
    }
-   if(!ka && kd){
-      c.doYaw(-r);
+   if(!keyLeft && keyRight){
+      camera.doYaw(-rotation);
    }
    // 按键上下旋转
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
+   var keyRotationUp = RKeyboard.isPress(EStageKey.RotationUp);
+   var keyRotationDown = RKeyboard.isPress(EStageKey.RotationDown);
+   if(keyRotationUp && !keyRotationDown){
+      camera.doPitch(rotation);
    }
-   if(!kz && kw){
-      c.doPitch(-r);
+   if(!keyRotationUp && keyRotationDown){
+      camera.doPitch(-rotation);
    }
    // 更新相机
-   c.update();
+   camera.update();
    //..........................................................
    // 旋转模型
    if(o._optionRotation){
-      var r = o._rotation;
+      var rotation = o._rotation;
       // 旋转所有层
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
+      var layers = space.layers();
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         var matrix = layer.matrix();
+         matrix.setRotation(0, rotation.y, 0);
+         matrix.update();
       }
       // 设置变量
-      r.y += 0.01;
+      rotation.y += 0.01;
    }
 }
 
@@ -185,9 +188,9 @@ function FE3dSceneCanvas_onMouseCaptureStop(p){
 // <T>触摸事件开始处理。</T>
 //
 // @method
-// @param p:event:TouchEvent 触摸事件
+// @param event:TouchEvent 触摸事件
 //==========================================================
-function FE3dSceneCanvas_onTouchStart(p){
+function FE3dSceneCanvas_onTouchStart(event){
    var o = this;
    // 检查场景加载完成
    var s = o._activeSpace;
@@ -196,17 +199,19 @@ function FE3dSceneCanvas_onTouchStart(p){
    }
    var r = o._activeSpace.region();
    // 获得事件
-   var ts = p.touches;
+   var ts = event.touches;
    var c = ts.length;
    // 单个触点事件处理
    if(c == 1){
-      p.preventDefault();
+      event.preventDefault();
       // 处理事件
       var t = ts[0];
       o._captureStatus = true;
       o._capturePosition.set(t.clientX, t.clientY);
       o._captureCameraPosition.assign(s.camera().position());
       o._captureCameraRotation.assign(s.camera().rotation());
+   }else{
+      o._touchTracker.eventStart(event);
    }
 }
 
@@ -214,22 +219,22 @@ function FE3dSceneCanvas_onTouchStart(p){
 // <T>触摸事件移动处理。</T>
 //
 // @method
-// @param p:event:TouchEvent 触摸事件
+// @param event:TouchEvent 触摸事件
 //==========================================================
-function FE3dSceneCanvas_onTouchMove(p){
+function FE3dSceneCanvas_onTouchMove(event){
    var o = this;
    // 检查状态
    if(!o._captureStatus){
       return;
    }
    // 获得事件
-   var ts = p.touches;
-   var c = ts.length;
+   var touchs = event.touches;
+   var touchCount = touchs.length;
    // 单个触点事件处理
-   if(c == 1){
-      p.preventDefault();
+   if(touchCount == 1){
+      event.preventDefault();
       // 处理事件
-      var t = ts[0];
+      var t = touchs[0];
       var cm = o._activeSpace.camera();
       var cr = cm.rotation();
       // 计算偏移
@@ -237,6 +242,8 @@ function FE3dSceneCanvas_onTouchMove(p){
       var cy = t.clientY - o._capturePosition.y;
       cr.x = o._captureCameraRotation.x + (-cy * o._cameraMouseRotation);
       cr.y = o._captureCameraRotation.y + (-cx * o._cameraMouseRotation);
+   }else if(touchCount > 1){
+      o._touchTracker.eventMove(event);
    }
 }
 
@@ -244,20 +251,40 @@ function FE3dSceneCanvas_onTouchMove(p){
 // <T>触摸事件结束处理。</T>
 //
 // @method
-// @param p:event:TouchEvent 触摸事件
+// @param event:TouchEvent 触摸事件
 //==========================================================
-function FE3dSceneCanvas_onTouchStop(p){
+function FE3dSceneCanvas_onTouchStop(event){
    var o = this;
+   o._touchTracker.eventStop(event);
    o._captureStatus = false;
+}
+
+//==========================================================
+// <T>触摸事件缩放处理。</T>
+//
+// @method
+// @param event:TouchEvent 触摸事件
+//==========================================================
+function FE3dSceneCanvas_onTouchZoom(event){
+   var o = this;
+   var delta = event.delta;
+   // 获得空间
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   // 相机处理
+   var camera = space.camera();
+   camera.doForward(delta * 0.006);
 }
 
 //==========================================================
 // <T>加载模板处理。</T>
 //
 // @method
-// @param p:template:FTemplate3d 模板
+// @param event:SEvent 事件信息
 //==========================================================
-function FE3dSceneCanvas_onDataLoaded(p){
+function FE3dSceneCanvas_onDataLoaded(event){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
@@ -282,11 +309,11 @@ function FE3dSceneCanvas_onDataLoaded(p){
 // <T>改变大小事件处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件信息
+// @param event:SEvent 事件信息
 //==========================================================
-function FE3dSceneCanvas_onResize(p){
+function FE3dSceneCanvas_onResize(event){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, p);
+   o.__base.FE3dCanvas.onResize.call(o, event);
    // 获得相机信息
    var c = o._graphicContext;
    var cs = c.size();
@@ -310,6 +337,9 @@ function FE3dSceneCanvas_construct(){
    o._capturePosition = new SPoint2();
    o._captureCameraPosition = new SPoint3();
    o._captureCameraRotation = new SVector3();
+   // 创建触摸跟踪器
+   o._touchTracker = RClass.create(FTouchTracker);
+   o._touchTracker.addTouchZoomListener(o, o.onTouchZoom);
 }
 
 //==========================================================

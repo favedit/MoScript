@@ -1413,7 +1413,6 @@ function FWglVertexShader_targetSource(){
 }
 function FWglVertexShader_upload(source){
    var o = this;
-   alert(source);
    var graphic = o._graphicContext._native;
    var shader = o._native;
    graphic.shaderSource(shader, source);

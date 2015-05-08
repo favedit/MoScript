@@ -247,38 +247,38 @@ function FE3dGeneralColorSkeletonEffect(o){
 function FE3dGeneralColorSkeletonEffect_drawRenderable(region, renderable){
    var o = this;
    var c = o._graphicContext;
-   var p = o._program;
+   var program = o._program;
    var vcp = region.calculate(EG3dRegionParameter.CameraPosition);
    var vld = region.calculate(EG3dRegionParameter.LightDirection);
    var m = renderable.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', renderable.currentMatrix());
-   p.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', vcp);
-   p.setParameter('vc_light_direction', vld);
-   p.setParameter('fc_camera_position', vcp);
-   p.setParameter('fc_light_direction', vld);
-   p.setParameter('fc_color', mi.ambientColor);
-   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   p.setParameter('fc_diffuse_color', mi.diffuseColor);
-   p.setParameter('fc_specular_color', mi.specularColor);
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   p.setParameter('fc_specular_view_color', mi.specularViewColor);
-   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameter('fc_reflect_color', mi.reflectColor);
+   program.setParameter('vc_model_matrix', renderable.currentMatrix());
+   program.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   program.setParameter('vc_camera_position', vcp);
+   program.setParameter('vc_light_direction', vld);
+   program.setParameter('fc_camera_position', vcp);
+   program.setParameter('fc_light_direction', vld);
+   program.setParameter('fc_color', mi.ambientColor);
+   program.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   program.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   program.setParameter('fc_ambient_color', mi.ambientColor);
+   program.setParameter('fc_diffuse_color', mi.diffuseColor);
+   program.setParameter('fc_specular_color', mi.specularColor);
+   program.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   program.setParameter('fc_specular_view_color', mi.specularViewColor);
+   program.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   program.setParameter('fc_reflect_color', mi.reflectColor);
    var bones = renderable.bones();
    if(bones){
       var boneCount = renderable._boneLimit;
-      var data = RTypeArray.findTemp(EDataType.Float32, 16 * boneCount);
+      var data = RTypeArray.findTemp(EDataType.Float32, 12 * boneCount);
       for(var i = 0; i < boneCount; i++){
-         var bone = bones.get(i);
+         var bone = bones.at(i);
          var boneMatrix = bone.matrix();
-         boneMatrix.writeData(data, 16 * i);
+         boneMatrix.writeData4x3(data, 12 * i);
       }
-      p.setParameter('vc_bone_matrix', data);
+      program.setParameter('vc_bone_matrix', data);
    }
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }

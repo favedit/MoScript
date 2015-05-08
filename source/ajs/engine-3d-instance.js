@@ -426,6 +426,7 @@ function FE3dCamera(o){
    o._quaternionZ    = null;
    o.construct       = FE3dCamera_construct;
    o.rotation        = FE3dCamera_rotation;
+   o.doForward       = FE3dCamera_doForward;
    o.doPitch         = FE3dCamera_doPitch;
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
@@ -446,6 +447,12 @@ function FE3dCamera_construct(){
 }
 function FE3dCamera_rotation(){
    return this._rotation;
+}
+function FE3dCamera_doForward(value){
+   var o = this;
+   o._position.x += o._direction.x * value;
+   o._position.y += o._direction.y * value;
+   o._position.z += o._direction.z * value;
 }
 function FE3dCamera_doPitch(p){
    this._rotation.x += p;
@@ -1552,6 +1559,7 @@ function FE3dSceneCanvas(o){
    o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
+   o._touchTracker          = null;
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;
    o.onMouseCaptureStart    = FE3dSceneCanvas_onMouseCaptureStart;
    o.onMouseCapture         = FE3dSceneCanvas_onMouseCapture;
@@ -1559,6 +1567,7 @@ function FE3dSceneCanvas(o){
    o.onTouchStart           = FE3dSceneCanvas_onTouchStart;
    o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
    o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
+   o.onTouchZoom            = FE3dSceneCanvas_onTouchZoom;
    o.onDataLoaded           = FE3dSceneCanvas_onDataLoaded;
    o.onResize               = FE3dSceneCanvas_onResize;
    o.construct              = FE3dSceneCanvas_construct;
@@ -1574,59 +1583,59 @@ function FE3dSceneCanvas(o){
 }
 function FE3dSceneCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   var kw = RKeyboard.isPress(EStageKey.Forward);
-   var ks = RKeyboard.isPress(EStageKey.Back);
-   if((kw && !ks) || o._actionForward){
-      c.doWalk(d);
+   var timer = space.timer();
+   var span = timer.spanSecond();
+   var camera = space.camera();
+   var distance = o._cameraMoveRate * span;
+   var rotation = o._cameraKeyRotation * span;
+   var keyForward = RKeyboard.isPress(EStageKey.Forward);
+   var keyBack = RKeyboard.isPress(EStageKey.Back);
+   if((keyForward && !keyBack) || o._actionForward){
+      camera.doWalk(distance);
    }
-   if((!kw && ks) || o._actionBack){
-      c.doWalk(-d);
+   if((!keyForward && keyBack) || o._actionBack){
+      camera.doWalk(-distance);
    }
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if((kq && !ke) || o._actionUp){
-      c.doFly(d);
+   var keyUp = RKeyboard.isPress(EStageKey.Up);
+   var keyDown = RKeyboard.isPress(EStageKey.Down);
+   if((keyUp && !keyDown) || o._actionUp){
+      camera.doFly(distance);
    }
-   if((!kq && ke) || o._actionDown){
-      c.doFly(-d);
+   if((!keyUp && keyDown) || o._actionDown){
+      camera.doFly(-distance);
    }
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
+   var keyLeft = RKeyboard.isPress(EStageKey.RotationLeft);
+   var keyRight = RKeyboard.isPress(EStageKey.RotationRight);
+   if(keyLeft && !keyRight){
+      camera.doYaw(rotation);
    }
-   if(!ka && kd){
-      c.doYaw(-r);
+   if(!keyLeft && keyRight){
+      camera.doYaw(-rotation);
    }
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
+   var keyRotationUp = RKeyboard.isPress(EStageKey.RotationUp);
+   var keyRotationDown = RKeyboard.isPress(EStageKey.RotationDown);
+   if(keyRotationUp && !keyRotationDown){
+      camera.doPitch(rotation);
    }
-   if(!kz && kw){
-      c.doPitch(-r);
+   if(!keyRotationUp && keyRotationDown){
+      camera.doPitch(-rotation);
    }
-   c.update();
+   camera.update();
    if(o._optionRotation){
-      var r = o._rotation;
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
+      var rotation = o._rotation;
+      var layers = space.layers();
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         var matrix = layer.matrix();
+         matrix.setRotation(0, rotation.y, 0);
+         matrix.update();
       }
-      r.y += 0.01;
+      rotation.y += 0.01;
    }
 }
 function FE3dSceneCanvas_onMouseCaptureStart(p){
@@ -1657,47 +1666,62 @@ function FE3dSceneCanvas_onMouseCapture(p){
 }
 function FE3dSceneCanvas_onMouseCaptureStop(p){
 }
-function FE3dSceneCanvas_onTouchStart(p){
+function FE3dSceneCanvas_onTouchStart(event){
    var o = this;
    var s = o._activeSpace;
    if(!s){
       return;
    }
    var r = o._activeSpace.region();
-   var ts = p.touches;
+   var ts = event.touches;
    var c = ts.length;
    if(c == 1){
-      p.preventDefault();
+      event.preventDefault();
       var t = ts[0];
       o._captureStatus = true;
       o._capturePosition.set(t.clientX, t.clientY);
       o._captureCameraPosition.assign(s.camera().position());
       o._captureCameraRotation.assign(s.camera().rotation());
+   }else{
+      o._touchTracker.eventStart(event);
    }
 }
-function FE3dSceneCanvas_onTouchMove(p){
+function FE3dSceneCanvas_onTouchMove(event){
    var o = this;
    if(!o._captureStatus){
       return;
    }
-   var ts = p.touches;
-   var c = ts.length;
-   if(c == 1){
-      p.preventDefault();
-      var t = ts[0];
+   var touchs = event.touches;
+   var touchCount = touchs.length;
+   if(touchCount == 1){
+      event.preventDefault();
+      var t = touchs[0];
       var cm = o._activeSpace.camera();
       var cr = cm.rotation();
       var cx = t.clientX - o._capturePosition.x;
       var cy = t.clientY - o._capturePosition.y;
       cr.x = o._captureCameraRotation.x + (-cy * o._cameraMouseRotation);
       cr.y = o._captureCameraRotation.y + (-cx * o._cameraMouseRotation);
+   }else if(touchCount > 1){
+      o._touchTracker.eventMove(event);
    }
 }
-function FE3dSceneCanvas_onTouchStop(p){
+function FE3dSceneCanvas_onTouchStop(event){
    var o = this;
+   o._touchTracker.eventStop(event);
    o._captureStatus = false;
 }
-function FE3dSceneCanvas_onDataLoaded(p){
+function FE3dSceneCanvas_onTouchZoom(event){
+   var o = this;
+   var delta = event.delta;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   var camera = space.camera();
+   camera.doForward(delta * 0.006);
+}
+function FE3dSceneCanvas_onDataLoaded(event){
    var o = this;
    var c = o._graphicContext;
    var s = o._activeSpace;
@@ -1714,9 +1738,9 @@ function FE3dSceneCanvas_onDataLoaded(p){
    o.processLoadListener(event);
    event.dispose();
 }
-function FE3dSceneCanvas_onResize(p){
+function FE3dSceneCanvas_onResize(event){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, p);
+   o.__base.FE3dCanvas.onResize.call(o, event);
    var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeSpace;
@@ -1733,6 +1757,8 @@ function FE3dSceneCanvas_construct(){
    o._capturePosition = new SPoint2();
    o._captureCameraPosition = new SPoint3();
    o._captureCameraRotation = new SVector3();
+   o._touchTracker = RClass.create(FTouchTracker);
+   o._touchTracker.addTouchZoomListener(o, o.onTouchZoom);
 }
 function FE3dSceneCanvas_testPlay(){
    return this._actionPlay;

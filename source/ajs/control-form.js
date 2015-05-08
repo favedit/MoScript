@@ -4464,44 +4464,47 @@ function FUiListBox_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
-function FUiListBox_createItem(pi, pl){
+function FUiListBox_createItem(icon, label){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   var item = RClass.create(FUiListItem);
+   item.build(o._hPanel);
+   item.setLabel(label);
+   return item;
 }
-function FUiListBox_appendChild(p){
+function FUiListBox_appendChild(control){
    var o = this;
-   o._hPanel.appendChild(p._hPanel);
+   o._hPanel.appendChild(control._hPanel);
 }
-function FUiListBox_clickItem(p){
+function FUiListBox_clickItem(item){
    var o = this;
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
-            m.setChecked(m == p);
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(RClass.isClass(component, FUiListItem)){
+            component.setChecked(component == item);
          }
       }
    }
-   o.processClickListener(o, p);
+   var event = new SEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
 }
 function FUiListBox_clear(){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      var c = cs.count();
-      for(var i = 0; i < c; i++){
-         var m = cs.value(i);
-         if(RClass.isClass(m, FUiListItem)){
-            o._hPanel.removeChild(m._hPanel);
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(RClass.isClass(component, FUiListItem)){
+            o._hPanel.removeChild(component._hPanel);
          }
-         m.dispose();
+         component.dispose();
       }
-      cs.clear();
+      components.clear();
       o._controls.clear();
    }
 }

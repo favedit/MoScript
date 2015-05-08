@@ -73,9 +73,10 @@ function FDsCommonRenderableFrame_onDataChanged(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
+function FDsCommonRenderableFrame_onMaterialClick(event){
    var o = this;
-   var materialRefer = pi.tag();
+   var item = event.item;
+   var materialRefer = item.tag();
    // 显示对话框
    var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
    dialog._frame = o;
@@ -90,17 +91,24 @@ function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
 // <T>效果点击处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsCommonRenderableFrame_onEffectClick(ps, pi){
+function FDsCommonRenderableFrame_onEffectClick(event){
    var o = this;
-   var e = pi.tag();
-   var p = e._program;
-   var s = p._vertexShader;
+   // 获得代码
+   var item = event.item;
+   var effect = item.tag();
+   var program = effect._program;
+   var vertexShader = program.vertexShader();
    // s.targetSource()
-   alert(s._source);
-   var s = p._fragmentShader;
-   alert(s._source);
+   var fragmentShader = program.fragmentShader();
+   // 弹出内容
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonProgramDialog);
+   dialog._frameSet = o._frameSet;
+   dialog.setProgramCode(effect._code);
+   dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
+   dialog.setFragmentSource(fragmentShader.source(), fragmentShader.targetSource());
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

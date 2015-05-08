@@ -57,50 +57,53 @@ function FUiListBox_onBuildPanel(p){
 // <T>创建一个列表项目。</T>
 //
 // @method
-// @param pi:icon:String 图标
-// @param pl:label:String 标签
+// @param icon:String 图标
+// @param label:String 标签
 // @return FUiListItem 列表项目
 //==========================================================
-function FUiListBox_createItem(pi, pl){
+function FUiListBox_createItem(icon, label){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   var item = RClass.create(FUiListItem);
+   item.build(o._hPanel);
+   item.setLabel(label);
+   return item;
 }
 
 //==========================================================
 // <T>追加一个控件容器。</T>
 //
 // @method
-// @return p:control:FControl 控件
+// @return control:FControl 控件
 //==========================================================
-function FUiListBox_appendChild(p){
+function FUiListBox_appendChild(control){
    var o = this;
-   o._hPanel.appendChild(p._hPanel);
+   o._hPanel.appendChild(control._hPanel);
 }
 
 //==========================================================
 // <T>点击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListItem 列表项目
+// @param item:FUiListItem 列表项目
 //==========================================================
-function FUiListBox_clickItem(p){
+function FUiListBox_clickItem(item){
    var o = this;
    // 选中项目
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
-            m.setChecked(m == p);
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(RClass.isClass(component, FUiListItem)){
+            component.setChecked(component == item);
          }
       }
    }
    // 事件处理
-   o.processClickListener(o, p);
+   var event = new SEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
 }
 
 //==========================================================
@@ -110,17 +113,17 @@ function FUiListBox_clickItem(p){
 //==========================================================
 function FUiListBox_clear(){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      var c = cs.count();
-      for(var i = 0; i < c; i++){
-         var m = cs.value(i);
-         if(RClass.isClass(m, FUiListItem)){
-            o._hPanel.removeChild(m._hPanel);
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(RClass.isClass(component, FUiListItem)){
+            o._hPanel.removeChild(component._hPanel);
          }
-         m.dispose();
+         component.dispose();
       }
-      cs.clear();
+      components.clear();
       o._controls.clear();
    }
 }

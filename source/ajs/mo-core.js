@@ -6798,6 +6798,7 @@ function SMatrix4x4(){
    o.buildQuaternion = SMatrix4x4_buildQuaternion;
    o.build           = SMatrix4x4_build;
    o.writeData       = SMatrix4x4_writeData;
+   o.writeData4x3    = SMatrix4x4_writeData4x3;
    o.toString        = SMatrix4x4_toString;
    return o;
 }
@@ -7149,6 +7150,22 @@ function SMatrix4x4_writeData(d, i){
    d[i++] = pd[ 7];
    d[i++] = pd[11];
    d[i++] = pd[15];
+}
+function SMatrix4x4_writeData4x3(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
 }
 function SMatrix4x4_toString(){
    var d = this._data;
@@ -8819,6 +8836,7 @@ var EEvent = new function EEvent(){
    o.Selected    = 12;
    o.DataChanged = 13;
    o.Result      = 14;
+   o.TouchZoom   = 'touch.zoom';
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -9629,6 +9647,26 @@ function MListenerProcess_removeProcessListener(w, m){
 }
 function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
+}
+function MListenerTouchZoom(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addTouchZoomListener     = MListenerTouchZoom_addTouchZoomListener;
+   o.removeTouchZoomListener  = MListenerTouchZoom_removeTouchZoomListener;
+   o.clearTouchZoomListeners  = MListenerTouchZoom_clearTouchZoomListeners;
+   o.processTouchZoomListener = MListenerTouchZoom_processTouchZoomListener;
+   return o;
+}
+function MListenerTouchZoom_addTouchZoomListener(w, m){
+   return this.addListener(EEvent.TouchZoom, w, m);
+}
+function MListenerTouchZoom_removeTouchZoomListener(w, m){
+   this.removeListener(EEvent.TouchZoom, w, m);
+}
+function MListenerTouchZoom_clearTouchZoomListeners(){
+   this.clearListeners(EEvent.TouchZoom);
+}
+function MListenerTouchZoom_processTouchZoomListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.TouchZoom, p1, p2, p3, p4, p5);
 }
 function MMouseCapture(o){
    o = RClass.inherits(this, o);

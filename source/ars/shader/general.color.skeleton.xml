@@ -16,7 +16,7 @@
    <Parameter name='vc_vp_matrix'           format='Float4x4'/>
    <Parameter name='vc_camera_position'     format='Float3'/>
    <Parameter name='vc_light_direction'     format='Float3'/>
-   <Parameter name='vc_bone_matrix'         format='Float4x4'/>
+   <Parameter name='vc_bone_matrix'         format='Float4'/>
    <Parameter name='fc_camera_position'     format='Float3'/>
    <Parameter name='fc_light_direction'     format='Float3'/>
    <Parameter name='fc_color'               format='Float4'/>
@@ -48,10 +48,13 @@
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       //..........................................................
+      // 常量声明
+      const vec4 identity4 = vec4(0.0, 0.0, 0.0, 1.0);
+      //..........................................................
       // 变换矩阵声明
       uniform mat4 vc_model_matrix;
-      uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
       uniform mat4 vc_vp_matrix;
+      uniform vec4 vc_bone_matrix[<shader:write source='bone.array.count'/>];
       uniform vec3 vc_camera_position;
       uniform vec3 vc_light_direction;
       //..........................................................
@@ -95,12 +98,34 @@
       void main(){
          // 获得输入坐标
          vec4 inputPosition = vec4(va_position, 1.0);
+         // 获得输入法线
+         <shader:true source='vertex.attribute.normal'>
+         vec3 inputNormal = normalize((va_normal.xyz - 0.470588) * 2.125);
+         vec3 normal = vec3(0.0, 0.0, 0.0);
+         </shader:true>
          // 计算骨骼坐标
          vec4 position = vec4(0.0, 0.0, 0.0, 0.0);
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         ivec4 boneIndex = ivec4(va_bone_index * 3.0);
+         mat4 matrix = mat4(vc_bone_matrix[boneIndex.x], vc_bone_matrix[boneIndex.x + 1], vc_bone_matrix[boneIndex.x + 2], identity4) * va_bone_weight.x;
+         position += inputPosition * matrix;
+         <shader:true source='vertex.attribute.normal'>
+         normal += inputNormal * mat3(matrix) * va_bone_weight.x;
+         </shader:true>
+         matrix = mat4(vc_bone_matrix[boneIndex.y], vc_bone_matrix[boneIndex.y + 1], vc_bone_matrix[boneIndex.y + 2], identity4) * va_bone_weight.y;
+         position += inputPosition * matrix;
+         <shader:true source='vertex.attribute.normal'>
+         normal += inputNormal * mat3(matrix) * va_bone_weight.y;
+         </shader:true>
+         matrix = mat4(vc_bone_matrix[boneIndex.z], vc_bone_matrix[boneIndex.z + 1], vc_bone_matrix[boneIndex.z + 2], identity4) * va_bone_weight.z;
+         position += inputPosition * matrix;
+         <shader:true source='vertex.attribute.normal'>
+         normal += inputNormal * mat3(matrix) * va_bone_weight.z;
+         </shader:true>
+         matrix = mat4(vc_bone_matrix[boneIndex.w], vc_bone_matrix[boneIndex.w + 1], vc_bone_matrix[boneIndex.w + 2], identity4) * va_bone_weight.w;
+         position += inputPosition * matrix;
+         <shader:true source='vertex.attribute.normal'>
+         normal += inputNormal * mat3(matrix) * va_bone_weight.w;
+         </shader:true>
          // 计算模型坐标
          vec4 modelPosition = vec4(position.xyz, 1.0) * vc_model_matrix;
          // 计算最终坐标
@@ -116,13 +141,6 @@
          </shader:true>
          // 设置法线
          <shader:true source='vertex.attribute.normal'>
-         // 计算骨骼坐标
-         vec3 inputNormal = normalize((va_normal.xyz - 0.470588) * 2.125);
-         vec3 normal = vec3(0.0, 0.0, 0.0);
-         normal += inputNormal * mat3(vc_bone_matrix[int(va_bone_index.x)]) * va_bone_weight.x;
-         normal += inputNormal * mat3(vc_bone_matrix[int(va_bone_index.y)]) * va_bone_weight.y;
-         normal += inputNormal * mat3(vc_bone_matrix[int(va_bone_index.z)]) * va_bone_weight.z;
-         normal += inputNormal * mat3(vc_bone_matrix[int(va_bone_index.w)]) * va_bone_weight.w;
          mat3 modelMatrix3 = mat3(vc_model_matrix);
          normal = normal * modelMatrix3;
          v_normal = normal;

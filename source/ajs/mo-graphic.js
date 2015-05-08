@@ -3556,6 +3556,7 @@ function FG3dAutomaticEffect_buildInfo(tagContext, pc){
       var boneCount = capability.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
       flag.append("|B" + boneCount);
       tagContext.set("bone.count", boneCount);
+      tagContext.set("bone.array.count", boneCount * 3);
       tagContext.setBoolean("support.bone.weight.1", true);
       tagContext.setBoolean("support.bone.weight.2", true);
       tagContext.setBoolean("support.bone.weight.3", true);
@@ -5259,7 +5260,6 @@ function FWglVertexShader_targetSource(){
 }
 function FWglVertexShader_upload(source){
    var o = this;
-   alert(source);
    var graphic = o._graphicContext._native;
    var shader = o._native;
    graphic.shaderSource(shader, source);

@@ -844,6 +844,56 @@ function FDsCommonMaterialReferDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
 }
+function FDsCommonProgramDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.ProgramDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonProgramDialog_onBuilded;
+   o.onConfirmClick        = FDsCommonProgramDialog_onConfirmClick;
+   o.construct             = FDsCommonProgramDialog_construct;
+   o.setProgramCode        = FDsCommonProgramDialog_setProgramCode;
+   o.setVertexSource       = FDsCommonProgramDialog_setVertexSource;
+   o.setFragmentSource     = FDsCommonProgramDialog_setFragmentSource;
+   o.dispose               = FDsCommonProgramDialog_dispose;
+   return o;
+}
+function FDsCommonProgramDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+}
+function FDsCommonProgramDialog_onConfirmClick(event){
+   var o = this;
+   o.hide();
+}
+function FDsCommonProgramDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonProgramDialog_setProgramCode(value){
+   this._controlCode.set(value);
+}
+function FDsCommonProgramDialog_setVertexSource(source, targetSource){
+   var o = this;
+   o._controlVertexSource.set(source);
+   o._controlVertexTargetSource.set(targetSource);
+}
+function FDsCommonProgramDialog_setFragmentSource(source, targetSource){
+   var o = this;
+   o._controlFragmentSource.set(source);
+   o._controlFragmentTargetSource.set(targetSource);
+}
+function FDsCommonProgramDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
 function FDsCommonRegionPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible                   = false;
@@ -937,9 +987,10 @@ function FDsCommonRenderableFrame_onDataChanged(p){
    m.setScale(v.x, v.y, v.z);
    m.update();
 }
-function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
+function FDsCommonRenderableFrame_onMaterialClick(event){
    var o = this;
-   var materialRefer = pi.tag();
+   var item = event.item;
+   var materialRefer = item.tag();
    var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
    dialog._frame = o;
    dialog._materialRefer = materialRefer;
@@ -947,14 +998,19 @@ function FDsCommonRenderableFrame_onMaterialClick(ps, pi){
    dialog.setContentLabel('');
    dialog.showPosition(EUiPosition.Center);
 }
-function FDsCommonRenderableFrame_onEffectClick(ps, pi){
+function FDsCommonRenderableFrame_onEffectClick(event){
    var o = this;
-   var e = pi.tag();
-   var p = e._program;
-   var s = p._vertexShader;
-   alert(s._source);
-   var s = p._fragmentShader;
-   alert(s._source);
+   var item = event.item;
+   var effect = item.tag();
+   var program = effect._program;
+   var vertexShader = program.vertexShader();
+   var fragmentShader = program.fragmentShader();
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonProgramDialog);
+   dialog._frameSet = o._frameSet;
+   dialog.setProgramCode(effect._code);
+   dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
+   dialog.setFragmentSource(fragmentShader.source(), fragmentShader.targetSource());
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsCommonRenderableFrame_construct(){
    var o = this;
@@ -1034,6 +1090,55 @@ function FDsCommonRenderablePropertyFrame_loadObject(space, renderable){
 function FDsCommonRenderablePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonShaderDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'resource.common.dialog.ShaderDialog';
+   o._displayModeCd        = null;
+   o._controlLayerLabel    = null;
+   o._controlDisplayLabel  = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTemplateCode  = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsCommonShaderDialog_onBuilded;
+   o.onConfirmLoad         = FDsCommonShaderDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsCommonShaderDialog_onConfirmClick;
+   o.onCancelClick         = FDsCommonShaderDialog_onCancelClick;
+   o.construct             = FDsCommonShaderDialog_construct;
+   o.setSpace              = FDsCommonShaderDialog_setSpace;
+   o.setDisplayLabel       = FDsCommonShaderDialog_setDisplayLabel;
+   o.setVertexSource       = FDsCommonShaderDialog_setVertexSource;
+   o.setFragmentSource     = FDsCommonShaderDialog_setFragmentSource;
+   o.dispose               = FDsCommonShaderDialog_dispose;
+   return o;
+}
+function FDsCommonShaderDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirm.addClickListener(o, o.onConfirmClick);
+}
+function FDsCommonShaderDialog_onConfirmClick(event){
+   var o = this;
+   o.hide();
+}
+function FDsCommonShaderDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsCommonShaderDialog_setSpace(space){
+   var o = this;
+}
+function FDsCommonShaderDialog_setDisplayLabel(label){
+}
+function FDsCommonShaderDialog_setVertexSource(label){
+}
+function FDsCommonShaderDialog_setFragmentSource(label){
+}
+function FDsCommonShaderDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsCommonSpacePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);

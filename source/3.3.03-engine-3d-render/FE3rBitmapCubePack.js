@@ -44,13 +44,13 @@ function FE3rBitmapCubePack_onLoad(p){
    var t = o._texture = c.createCubeTexture();
    t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
    // 释放资源
-   if(capability.blobCreate){
-      for(var i = 0; i < 6; i++){
-         var m = is[i];
-         window.URL.revokeObjectURL(m.url());
-         is[i] = RObject.dispose(m);
-      }
-   }
+   //if(capability.blobCreate){
+   //   for(var i = 0; i < 6; i++){
+   //      var m = is[i];
+   //      window.URL.revokeObjectURL(m.url());
+   //      is[i] = RObject.dispose(m);
+   //   }
+   //}
    o._images = RObject.dispose(o._images);
    // 加载完成
    o._dataReady = true;

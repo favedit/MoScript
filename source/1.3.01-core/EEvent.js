@@ -37,5 +37,7 @@ var EEvent = new function EEvent(){
    o.DataChanged = 13;
    // @attribute 结果确认
    o.Result      = 14;
+   // @attribute 触摸缩放
+   o.TouchZoom   = 'touch.zoom';
    return o;
 }

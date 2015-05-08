@@ -961,6 +961,7 @@ function SMatrix4x4(){
    o.buildQuaternion = SMatrix4x4_buildQuaternion;
    o.build           = SMatrix4x4_build;
    o.writeData       = SMatrix4x4_writeData;
+   o.writeData4x3    = SMatrix4x4_writeData4x3;
    o.toString        = SMatrix4x4_toString;
    return o;
 }
@@ -1312,6 +1313,22 @@ function SMatrix4x4_writeData(d, i){
    d[i++] = pd[ 7];
    d[i++] = pd[11];
    d[i++] = pd[15];
+}
+function SMatrix4x4_writeData4x3(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
 }
 function SMatrix4x4_toString(){
    var d = this._data;

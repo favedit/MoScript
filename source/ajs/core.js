@@ -106,6 +106,7 @@ var EEvent = new function EEvent(){
    o.Selected    = 12;
    o.DataChanged = 13;
    o.Result      = 14;
+   o.TouchZoom   = 'touch.zoom';
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -916,6 +917,26 @@ function MListenerProcess_removeProcessListener(w, m){
 }
 function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
+}
+function MListenerTouchZoom(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addTouchZoomListener     = MListenerTouchZoom_addTouchZoomListener;
+   o.removeTouchZoomListener  = MListenerTouchZoom_removeTouchZoomListener;
+   o.clearTouchZoomListeners  = MListenerTouchZoom_clearTouchZoomListeners;
+   o.processTouchZoomListener = MListenerTouchZoom_processTouchZoomListener;
+   return o;
+}
+function MListenerTouchZoom_addTouchZoomListener(w, m){
+   return this.addListener(EEvent.TouchZoom, w, m);
+}
+function MListenerTouchZoom_removeTouchZoomListener(w, m){
+   this.removeListener(EEvent.TouchZoom, w, m);
+}
+function MListenerTouchZoom_clearTouchZoomListeners(){
+   this.clearListeners(EEvent.TouchZoom);
+}
+function MListenerTouchZoom_processTouchZoomListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.TouchZoom, p1, p2, p3, p4, p5);
 }
 function MMouseCapture(o){
    o = RClass.inherits(this, o);

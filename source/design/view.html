@@ -13,9 +13,13 @@
 var canvas = null;
 var playing = true;
 //------------------------------------------------------------
-function onSceneLoad(c, s){
-   canvas.switchPlay(playing);
-   canvas.switchMovie(playing);
+function onSceneLoad(event){
+   // 监听时间
+   var space = event.space;
+   space.addEnterFrameListener(null, onEnterFrame);
+   // 打开播放
+   canvas.switchPlay(true);
+   canvas.switchMovie(true);
 }
 //------------------------------------------------------------
 function onKeydown(p){
@@ -42,11 +46,11 @@ function onLoad(){
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 获得场景代码
-   var u = window.location.toString();
-   var i = u.indexOf('code=');
+   var url = window.location.toString();
+   var find = url.indexOf('code=');
    var code = null;
-   if(i != -1){
-      code = u.substring(i + 5);
+   if(find != -1){
+      code = url.substring(find + 5);
    }
    if(RString.isEmpty(code)){
       throw new TFatal(this, 'Scnee code is empty.');
@@ -54,13 +58,13 @@ function onLoad(){
    // 设置资源获取方式
    RConsole.find(FE3sVendorConsole).setup('net');
    // 创建场景画板
-   var w = canvas = RClass.create(FE3dSceneCanvas);
-   w._scaleRate = 1;
-   w._optionAlpha = false;
-   w.build(document);
-   w.setPanel(document.body);
-   w.loadByCode(code);
-   w.addLoadListener(null, onSceneLoad);
+   canvas = canvas = RClass.create(FE3dSceneCanvas);
+   canvas._scaleRate = 1;
+   canvas._optionAlpha = false;
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   canvas.loadByCode(code);
+   canvas.addLoadListener(null, onSceneLoad);
 }
 </SCRIPT>
 </HEAD>
@@ -87,7 +91,7 @@ function onLoad(){
    <DIV style='position:absolute; right:1em; bottom:1em;'>
       <TABLE>
          <TR>
-            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;'onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
          </TR>
          <TR>
             <TD height='0.5em'></TD>
