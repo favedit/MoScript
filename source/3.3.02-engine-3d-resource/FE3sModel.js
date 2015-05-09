@@ -10,7 +10,7 @@ function FE3sModel(o){
    // @attribute
    o._typeName      = 'Model';
    o._dataCompress  = true;
-   //o._dataBlock     = true;
+   o._dataBlock     = true;
    // @attribute
    o._meshes        = null;
    o._skeletons     = null;

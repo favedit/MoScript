@@ -133,11 +133,13 @@ function FE3dSceneDisplay_loadTemplate(template){
       // 设置材质关联
       var material = renderable.material();
       var materialGuid = material.guid();
-      var displayMaterial = parentMaterials.get(materialGuid);
-      if(displayMaterial){
-         displayMaterial.loadParent(material);
-         displayMaterial.reloadResource();
-         renderable.setMaterial(displayMaterial);
+      if(parentMaterials){
+         var displayMaterial = parentMaterials.get(materialGuid);
+         if(displayMaterial){
+            displayMaterial.loadParent(material);
+            displayMaterial.reloadResource();
+            renderable.setMaterial(displayMaterial);
+         }
       }
    }
    o.pushDisplay(sprite);

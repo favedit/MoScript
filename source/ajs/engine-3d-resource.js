@@ -1178,6 +1178,7 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
+   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;

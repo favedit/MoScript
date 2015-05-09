@@ -23534,6 +23534,7 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    o._typeName      = 'Model';
    o._dataCompress  = true;
+   o._dataBlock     = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -30252,11 +30253,13 @@ function FE3dSceneDisplay_loadTemplate(template){
       var renderable = renderables.at(n);
       var material = renderable.material();
       var materialGuid = material.guid();
-      var displayMaterial = parentMaterials.get(materialGuid);
-      if(displayMaterial){
-         displayMaterial.loadParent(material);
-         displayMaterial.reloadResource();
-         renderable.setMaterial(displayMaterial);
+      if(parentMaterials){
+         var displayMaterial = parentMaterials.get(materialGuid);
+         if(displayMaterial){
+            displayMaterial.loadParent(material);
+            displayMaterial.reloadResource();
+            renderable.setMaterial(displayMaterial);
+         }
       }
    }
    o.pushDisplay(sprite);
