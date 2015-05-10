@@ -62,7 +62,20 @@ function FWglVertexBuffer_upload(data, stride, count){
    // 获得数据
    var arrays = null;
    if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
-      arrays = new Float32Array(data);
+      switch(o._formatCd){
+         case EG3dAttributeFormat.Float1:
+         case EG3dAttributeFormat.Float2:
+         case EG3dAttributeFormat.Float3:
+         case EG3dAttributeFormat.Float4:
+            arrays = new Float32Array(data);
+            break;
+         case EG3dAttributeFormat.Byte4:
+         case EG3dAttributeFormat.Byte4Normal:
+            arrays = new Uint8Array(data);
+            break;
+         default:
+            throw new TError(o, 'Unknown data type.');
+      }
    }else if(data.constructor == Uint8Array){
       arrays = data;
    }else if(data.constructor == Float32Array){
@@ -70,9 +83,10 @@ function FWglVertexBuffer_upload(data, stride, count){
    }else{
       throw new TError(o, 'Upload vertex data type is invalid. (data={1})', data);
    }
-   // 上传数据
+   // 绑定数据
    graphics.bindBuffer(graphics.ARRAY_BUFFER, o._native);
    context.checkError('bindBuffer', 'Bindbuffer');
+   // 上传数据
    graphics.bufferData(graphics.ARRAY_BUFFER, arrays, graphics.STATIC_DRAW);
    context.checkError('bufferData', 'bufferData');
 }

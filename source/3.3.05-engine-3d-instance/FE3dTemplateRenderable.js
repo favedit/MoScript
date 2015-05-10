@@ -20,6 +20,8 @@ function FE3dTemplateRenderable(o){
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
    // @method
+   o.calculateOutline  = FE3dTemplateRenderable_calculateOutline;
+   // @method
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -83,6 +85,24 @@ function FE3dTemplateRenderable_testVisible(p){
       r = o.__base.FE3dMeshRenderable.testVisible.call(o);
    }
    return r;
+}
+
+//==========================================================
+// <T>计算轮廓大小。</T>
+//
+// @method
+// @return SOutline3 轮廓
+//==========================================================
+function FE3dTemplateRenderable_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var resource = o._resource
+      var meshResource = resource.mesh();
+      var meshOutline = meshResource.outline();
+      outline.assign(meshOutline);
+   }
+   return outline;
 }
 
 //==========================================================

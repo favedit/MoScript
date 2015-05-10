@@ -39,6 +39,7 @@ function FE3dRenderable(o){
    o.vertexCount        = FE3dRenderable_vertexCount;
    o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
+   o.pushVertexBuffer   = FE3dRenderable_pushVertexBuffer;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    o.indexBuffers       = FE3dRenderable_indexBuffers;
    // @method
@@ -155,6 +156,27 @@ function FE3dRenderable_findVertexBuffer(code){
 //==========================================================
 function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
+}
+
+//==========================================================
+// <T>增加一个顶点缓冲。</T>
+//
+// @method
+// @return buffer:FG3dVertexBuffer 顶点缓冲
+//==========================================================
+function FE3dRenderable_pushVertexBuffer(buffer){
+   var o = this;
+   // 检查参数
+   if(RString.isEmpty(buffer.code())){
+      throw new TError('Buffer code is empty.');
+   }
+   // 获得集合
+   var buffers = o._vertexBuffers;
+   if(!buffers){
+      buffers =  o._vertexBuffers = new TDictionary();
+   }
+   // 设置缓冲
+   buffers.set(buffer.code(), buffer);
 }
 
 //==========================================================

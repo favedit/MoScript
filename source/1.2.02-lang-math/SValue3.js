@@ -106,12 +106,14 @@ function SValue3_set(x, y, z){
 //==========================================================
 function SValue3_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
    }
+   return o;
 }
 
 //==========================================================

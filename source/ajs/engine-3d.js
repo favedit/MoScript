@@ -154,7 +154,20 @@ function FE3dDisplayContainer_materials(){
 }
 function FE3dDisplayContainer_calculateOutline(){
    var o = this;
-   return o._outline;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._renderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
+         }
+      }
+   }
+   return outline;
 }
 function FE3dDisplayContainer_dispose(){
    var o = this;
@@ -184,6 +197,7 @@ function FE3dRenderable(o){
    o.vertexCount        = FE3dRenderable_vertexCount;
    o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
+   o.pushVertexBuffer   = FE3dRenderable_pushVertexBuffer;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    o.indexBuffers       = FE3dRenderable_indexBuffers;
    o.materialReference  = FE3dRenderable_materialReference;
@@ -242,6 +256,17 @@ function FE3dRenderable_findVertexBuffer(code){
 }
 function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
+}
+function FE3dRenderable_pushVertexBuffer(buffer){
+   var o = this;
+   if(RString.isEmpty(buffer.code())){
+      throw new TError('Buffer code is empty.');
+   }
+   var buffers = o._vertexBuffers;
+   if(!buffers){
+      buffers =  o._vertexBuffers = new TDictionary();
+   }
+   buffers.set(buffer.code(), buffer);
 }
 function FE3dRenderable_materialReference(){
    return this._materialReference;

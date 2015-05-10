@@ -211,7 +211,7 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject, MAttributeName);
+   o = RClass.inherits(this, o, FG3dObject, MAttributeCode);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
 }
@@ -336,15 +336,37 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._strideCd = EG3dIndexStride.Uint16;
-   o._count    = 0;
-   o.strideCd  = FG3dIndexBuffer_strideCd;
-   o.count     = FG3dIndexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._strideCd     = EG3dIndexStride.Uint16;
+   o._count        = 0;
+   o._fillModeCd   = EG3dFillMode.Face;
+   o._lineWidth    = 1;
+   o.strideCd      = FG3dIndexBuffer_strideCd;
+   o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
+   o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
+   o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+   o.lineWidth     = FG3dIndexBuffer_lineWidth;
+   o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
+   o.count         = FG3dIndexBuffer_count;
+   o.upload        = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dIndexBuffer_strideCd(){
    return this._strideCd;
+}
+function FG3dIndexBuffer_setStrideCd(strideCd){
+   this._strideCd = strideCd;
+}
+function FG3dIndexBuffer_fillModeCd(){
+   return this._fillModeCd;
+}
+function FG3dIndexBuffer_setFillModeCd(fillModeCd){
+   this._fillModeCd = fillModeCd;
+}
+function FG3dIndexBuffer_lineWidth(){
+   return this._lineWidth;
+}
+function FG3dIndexBuffer_setLineWidth(lineWidth){
+   this._lineWidth = lineWidth;
 }
 function FG3dIndexBuffer_count(){
    return this._count;
@@ -842,17 +864,21 @@ function FG3dTexture_setWrapCd(wrapS, wrapT){
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._formatCd = EG3dAttributeFormat.Unknown;
-   o._stride   = 0;
-   o._count    = 0;
-   o.formatCd  = FG3dVertexBuffer_formatCd;
-   o.stride    = FG3dVertexBuffer_stride;
-   o.count     = FG3dVertexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._formatCd   = EG3dAttributeFormat.Unknown;
+   o._stride     = 0;
+   o._count      = 0;
+   o.formatCd    = FG3dVertexBuffer_formatCd;
+   o.setFormatCd = FG3dVertexBuffer_setFormatCd;
+   o.stride      = FG3dVertexBuffer_stride;
+   o.count       = FG3dVertexBuffer_count;
+   o.upload      = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_formatCd(){
    return this._formatCd;
+}
+function FG3dVertexBuffer_setFormatCd(formatCd){
+   this._formatCd = formatCd;
 }
 function FG3dVertexBuffer_stride(){
    return this._stride;

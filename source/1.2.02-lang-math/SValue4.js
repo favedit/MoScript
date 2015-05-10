@@ -83,12 +83,13 @@ function SValue4_absolute(){
 //==========================================================
 function SValue4_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-      o.w /= w;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
+      o.w *= result;
    }
 }
 

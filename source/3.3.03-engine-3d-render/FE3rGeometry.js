@@ -215,19 +215,19 @@ function FE3rGeometry_loadResource(resource){
    var streamResources = resource.streams();
    var streamCount = streamResources.count();
    for(var i = 0; i < streamCount; i++){
-      var streamResource = streamResources.get(i);
-      var code = streamResource._code;
-      var dataCount = streamResource._dataCount;
-      var data = streamResource._data;
+      var streamResource = streamResources.at(i);
+      var code = streamResource.code();
+      var dataCount = streamResource.dataCount();
+      var data = streamResource.data();
       if((code == 'index16') || (code == 'index32')){
          // 创建索引缓冲
          var buffer = o._indexBuffer = context.createIndexBuffer();
          buffer._resource = streamResource;
          var dataCd = streamResource.elementDataCd();
          if(dataCd == EDataType.Uint16){
-            buffer._strideCd = EG3dIndexStride.Uint16;
+            buffer.setStrideCd(EG3dIndexStride.Uint16);
          }else if(dataCd == EDataType.Uint32){
-            buffer._strideCd = EG3dIndexStride.Uint32;
+            buffer.setStrideCd(EG3dIndexStride.Uint32);
          }else{
             throw new TError(o, "Unknown data type.");
          }
@@ -236,29 +236,29 @@ function FE3rGeometry_loadResource(resource){
       }else{
          // 创建顶点缓冲
          var buffer = context.createVertexBuffer();
-         buffer._name = code;
+         buffer.setCode(code);
          buffer._resource = streamResource;
          buffer._vertexCount = dataCount;
          var pixels = null;
          switch(code){
             case "position":
                pixels = new Float32Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Float3;
+               buffer.setFormatCd(EG3dAttributeFormat.Float3);
                o._vertexCount = dataCount;
                break;
             case "coord":
                pixels = new Float32Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Float2;
+               buffer.setFormatCd(EG3dAttributeFormat.Float2);
                break;
             case "color":
                pixels = new Uint8Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
                break;
             case "normal":
             case "binormal":
             case "tangent":
                pixels = new Uint8Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
                break;
             default:
                throw new TError(o, "Unknown code");

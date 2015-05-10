@@ -9,12 +9,12 @@ var EFrustumPlane = new function EFrustumPlane(){
    o.Count = 6;
    return o;
 }
-function SColor4(){
+function SColor4(red, green, blue, alpha){
    var o = this;
-   o.red          = 0;
-   o.green        = 0;
-   o.blue         = 0;
-   o.alpha        = 1;
+   o.red          = red ? red : 0;
+   o.green        = green ? green : 0;
+   o.blue         = blue ? blue : 0;
+   o.alpha        = alpha ? alpha : 1;
    o.assign       = SColor4_assign;
    o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
@@ -2602,12 +2602,14 @@ function SValue3_set(x, y, z){
 }
 function SValue3_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
    }
+   return o;
 }
 function SValue3_absolute(){
    var o = this;
@@ -2690,12 +2692,13 @@ function SValue4_absolute(){
 }
 function SValue4_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-      o.w /= w;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
+      o.w *= result;
    }
 }
 function SValue4_negative(p){
@@ -2745,12 +2748,21 @@ function SValue4_toString(){
 function SVector3(x, y, z){
    var o = this;
    SValue3.call(o, x, y, z);
+   o.length    = o.absolute;
+   o.direction = SVector3_direction;
    o.conjugate = SVector3_conjugate;
    o.dotPoint3 = SVector3_dotPoint3;
    o.cross     = SVector3_cross;
    o.cross2    = SVector3_cross2;
    o.slerp     = SVector3_slerp;
    o.clone     = SVector3_clone;
+   return o;
+}
+function SVector3_direction(startPoint, endPoint){
+   var o = this;
+   o.x = endPoint.x - startPoint.x;
+   o.y = endPoint.y - startPoint.y;
+   o.z = endPoint.z - startPoint.z;
    return o;
 }
 function SVector3_conjugate(p){

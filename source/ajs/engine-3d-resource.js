@@ -2466,8 +2466,7 @@ function FE3sSprite_clone(instance){
    return result;
 }
 function FE3sStream(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code             = null;
+   o = RClass.inherits(this, o, FObject, MAttributeCode);
    o._elementDataCd    = 0;
    o._elementCount     = 0;
    o._elementNormalize = false;
@@ -2476,7 +2475,6 @@ function FE3sStream(o){
    o._dataLength       = 0;
    o._data             = null;
    o._formatCd         = EG3dAttributeFormat.Unknown;
-   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.dataStride        = FE3sStream_dataStride;
@@ -2485,9 +2483,6 @@ function FE3sStream(o){
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
    return o;
-}
-function FE3sStream_code(){
-   return this._code;
 }
 function FE3sStream_elementDataCd(){
    return this._elementDataCd;

@@ -9,16 +9,17 @@ function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
    //..........................................................
    // @attribute
-   o._formatCd = EG3dAttributeFormat.Unknown;
-   o._stride   = 0;
-   o._count    = 0;
+   o._formatCd   = EG3dAttributeFormat.Unknown;
+   o._stride     = 0;
+   o._count      = 0;
    //..........................................................
    // @method
-   o.formatCd  = FG3dVertexBuffer_formatCd;
-   o.stride    = FG3dVertexBuffer_stride;
-   o.count     = FG3dVertexBuffer_count;
+   o.formatCd    = FG3dVertexBuffer_formatCd;
+   o.setFormatCd = FG3dVertexBuffer_setFormatCd;
+   o.stride      = FG3dVertexBuffer_stride;
+   o.count       = FG3dVertexBuffer_count;
    // @method
-   o.upload    = RMethod.virtual(o, 'upload');
+   o.upload      = RMethod.virtual(o, 'upload');
    return o;
 }
 
@@ -30,6 +31,16 @@ function FG3dVertexBuffer(o){
 //==========================================================
 function FG3dVertexBuffer_formatCd(){
    return this._formatCd;
+}
+
+//==========================================================
+// <T>设置格式类型。</T>
+//
+// @method
+// @param formatCd:EG3dAttributeFormat 格式
+//==========================================================
+function FG3dVertexBuffer_setFormatCd(formatCd){
+   this._formatCd = formatCd;
 }
 
 //==========================================================

@@ -5,14 +5,14 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SColor4(){
+function SColor4(red, green, blue, alpha){
    var o = this;
    //..........................................................
    // @attribute
-   o.red          = 0;
-   o.green        = 0;
-   o.blue         = 0;
-   o.alpha        = 1;
+   o.red          = red ? red : 0;
+   o.green        = green ? green : 0;
+   o.blue         = blue ? blue : 0;
+   o.alpha        = alpha ? alpha : 1;
    //..........................................................
    // @method
    o.assign       = SColor4_assign;

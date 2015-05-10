@@ -27,7 +27,8 @@
      <PathMerger source='/3.3.03-engine-3d-render'        target='/ajs/engine-3d-render.js'/>
      <PathMerger source='/3.3.04-engine-3d-effect'        target='/ajs/engine-3d-effect.js'/>
      <PathMerger source='/3.3.05-engine-3d-instance'      target='/ajs/engine-3d-instance.js'/>
-     <PathMerger source='/3.3.06-engine-3d-server'        target='/ajs/engine-3d-server.js'/>
+     <PathMerger source='/3.3.06-engine-3d-extend'        target='/ajs/engine-3d-extend.js'/>
+     <PathMerger source='/3.4.01-engine-3d-server'        target='/ajs/engine-3d-server.js'/>
 
      <PathMerger source='/4.1.01-game'                    target='/ajs/game.js'/>
      <PathMerger source='/4.2.01-game-core'               target='/ajs/game-core.js'/>
@@ -117,6 +118,7 @@
         <File source='/ajs/engine-3d-render.js'/>
         <File source='/ajs/engine-3d-effect.js'/>
         <File source='/ajs/engine-3d-instance.js'/>
+        <File source='/ajs/engine-3d-extend.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-game.js'>
         <File source='/ajs/game.js'/>

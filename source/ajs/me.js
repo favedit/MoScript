@@ -5872,12 +5872,12 @@ var EFrustumPlane = new function EFrustumPlane(){
    o.Count = 6;
    return o;
 }
-function SColor4(){
+function SColor4(red, green, blue, alpha){
    var o = this;
-   o.red          = 0;
-   o.green        = 0;
-   o.blue         = 0;
-   o.alpha        = 1;
+   o.red          = red ? red : 0;
+   o.green        = green ? green : 0;
+   o.blue         = blue ? blue : 0;
+   o.alpha        = alpha ? alpha : 1;
    o.assign       = SColor4_assign;
    o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
@@ -8465,12 +8465,14 @@ function SValue3_set(x, y, z){
 }
 function SValue3_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
    }
+   return o;
 }
 function SValue3_absolute(){
    var o = this;
@@ -8553,12 +8555,13 @@ function SValue4_absolute(){
 }
 function SValue4_normalize(){
    var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-      o.w /= w;
+   var value = o.absolute();
+   if(value != 0){
+      var result = 1 / value;
+      o.x *= result;
+      o.y *= result;
+      o.z *= result;
+      o.w *= result;
    }
 }
 function SValue4_negative(p){
@@ -8608,12 +8611,21 @@ function SValue4_toString(){
 function SVector3(x, y, z){
    var o = this;
    SValue3.call(o, x, y, z);
+   o.length    = o.absolute;
+   o.direction = SVector3_direction;
    o.conjugate = SVector3_conjugate;
    o.dotPoint3 = SVector3_dotPoint3;
    o.cross     = SVector3_cross;
    o.cross2    = SVector3_cross2;
    o.slerp     = SVector3_slerp;
    o.clone     = SVector3_clone;
+   return o;
+}
+function SVector3_direction(startPoint, endPoint){
+   var o = this;
+   o.x = endPoint.x - startPoint.x;
+   o.y = endPoint.y - startPoint.y;
+   o.z = endPoint.z - startPoint.z;
    return o;
 }
 function SVector3_conjugate(p){
@@ -16481,8 +16493,8 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      var vertexName = vertexBuffer.name();
-      if(vertexName == 'normal'){
+      var vertexCode = vertexBuffer.code();
+      if(vertexCode == 'normal'){
          var stride = vertexBuffer.stride();
          if(stride == 4){
             effectInfo.optionNormalCompress = true;
@@ -16490,7 +16502,7 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
             effectInfo.optionNormalCompress = false;
          }
       }
-      effectInfo.attributes.push(vertexBuffer.name());
+      effectInfo.attributes.push(vertexBuffer.code());
    }
    var textures = renderable.textures();
    if(textures){
@@ -17558,7 +17570,7 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject, MAttributeName);
+   o = RClass.inherits(this, o, FG3dObject, MAttributeCode);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
 }
@@ -17683,15 +17695,37 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._strideCd = EG3dIndexStride.Uint16;
-   o._count    = 0;
-   o.strideCd  = FG3dIndexBuffer_strideCd;
-   o.count     = FG3dIndexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._strideCd     = EG3dIndexStride.Uint16;
+   o._count        = 0;
+   o._fillModeCd   = EG3dFillMode.Face;
+   o._lineWidth    = 1;
+   o.strideCd      = FG3dIndexBuffer_strideCd;
+   o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
+   o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
+   o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+   o.lineWidth     = FG3dIndexBuffer_lineWidth;
+   o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
+   o.count         = FG3dIndexBuffer_count;
+   o.upload        = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dIndexBuffer_strideCd(){
    return this._strideCd;
+}
+function FG3dIndexBuffer_setStrideCd(strideCd){
+   this._strideCd = strideCd;
+}
+function FG3dIndexBuffer_fillModeCd(){
+   return this._fillModeCd;
+}
+function FG3dIndexBuffer_setFillModeCd(fillModeCd){
+   this._fillModeCd = fillModeCd;
+}
+function FG3dIndexBuffer_lineWidth(){
+   return this._lineWidth;
+}
+function FG3dIndexBuffer_setLineWidth(lineWidth){
+   this._lineWidth = lineWidth;
 }
 function FG3dIndexBuffer_count(){
    return this._count;
@@ -18189,17 +18223,21 @@ function FG3dTexture_setWrapCd(wrapS, wrapT){
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._formatCd = EG3dAttributeFormat.Unknown;
-   o._stride   = 0;
-   o._count    = 0;
-   o.formatCd  = FG3dVertexBuffer_formatCd;
-   o.stride    = FG3dVertexBuffer_stride;
-   o.count     = FG3dVertexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._formatCd   = EG3dAttributeFormat.Unknown;
+   o._stride     = 0;
+   o._count      = 0;
+   o.formatCd    = FG3dVertexBuffer_formatCd;
+   o.setFormatCd = FG3dVertexBuffer_setFormatCd;
+   o.stride      = FG3dVertexBuffer_stride;
+   o.count       = FG3dVertexBuffer_count;
+   o.upload      = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_formatCd(){
    return this._formatCd;
+}
+function FG3dVertexBuffer_setFormatCd(formatCd){
+   this._formatCd = formatCd;
 }
 function FG3dVertexBuffer_stride(){
    return this._stride;
@@ -19496,39 +19534,39 @@ function FWglContext_readPixels(left, top, width, height){
    graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
    return data;
 }
-function FWglContext_drawTriangles(b, i, c){
+function FWglContext_drawTriangles(indexBuffer, offset, count){
    var o = this;
-   var g = o._native;
-   var r = true;
-   if(i == null){
-      i = 0;
+   var graphic = o._native;
+   var result = true;
+   if(offset == null){
+      offset = 0;
    }
-   if(c == null){
-      c = b.count();
+   if(count == null){
+      count = indexBuffer.count();
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
+   if(!result){
+       return result;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   if(b._fillMode == EG3dFillMode.Line){
-      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
+   if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
+      graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
    }else{
-      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+      graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
    }
-   o._statistics._frameTriangleCount += c;
+   o._statistics._frameTriangleCount += count;
    o._statistics._frameDrawCount++;
-   r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, null);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   return r;
+   return result;
 }
 function FWglContext_present(){
 }
@@ -20178,7 +20216,20 @@ function FWglVertexBuffer_upload(data, stride, count){
    o._count = count;
    var arrays = null;
    if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
-      arrays = new Float32Array(data);
+      switch(o._formatCd){
+         case EG3dAttributeFormat.Float1:
+         case EG3dAttributeFormat.Float2:
+         case EG3dAttributeFormat.Float3:
+         case EG3dAttributeFormat.Float4:
+            arrays = new Float32Array(data);
+            break;
+         case EG3dAttributeFormat.Byte4:
+         case EG3dAttributeFormat.Byte4Normal:
+            arrays = new Uint8Array(data);
+            break;
+         default:
+            throw new TError(o, 'Unknown data type.');
+      }
    }else if(data.constructor == Uint8Array){
       arrays = data;
    }else if(data.constructor == Float32Array){
@@ -21957,7 +22008,20 @@ function FE3dDisplayContainer_materials(){
 }
 function FE3dDisplayContainer_calculateOutline(){
    var o = this;
-   return o._outline;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._renderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
+         }
+      }
+   }
+   return outline;
 }
 function FE3dDisplayContainer_dispose(){
    var o = this;
@@ -21987,6 +22051,7 @@ function FE3dRenderable(o){
    o.vertexCount        = FE3dRenderable_vertexCount;
    o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers      = FE3dRenderable_vertexBuffers;
+   o.pushVertexBuffer   = FE3dRenderable_pushVertexBuffer;
    o.indexBuffer        = FE3dRenderable_indexBuffer;
    o.indexBuffers       = FE3dRenderable_indexBuffers;
    o.materialReference  = FE3dRenderable_materialReference;
@@ -22045,6 +22110,17 @@ function FE3dRenderable_findVertexBuffer(code){
 }
 function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
+}
+function FE3dRenderable_pushVertexBuffer(buffer){
+   var o = this;
+   if(RString.isEmpty(buffer.code())){
+      throw new TError('Buffer code is empty.');
+   }
+   var buffers = o._vertexBuffers;
+   if(!buffers){
+      buffers =  o._vertexBuffers = new TDictionary();
+   }
+   buffers.set(buffer.code(), buffer);
 }
 function FE3dRenderable_materialReference(){
    return this._materialReference;
@@ -24822,8 +24898,7 @@ function FE3sSprite_clone(instance){
    return result;
 }
 function FE3sStream(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code             = null;
+   o = RClass.inherits(this, o, FObject, MAttributeCode);
    o._elementDataCd    = 0;
    o._elementCount     = 0;
    o._elementNormalize = false;
@@ -24832,7 +24907,6 @@ function FE3sStream(o){
    o._dataLength       = 0;
    o._data             = null;
    o._formatCd         = EG3dAttributeFormat.Unknown;
-   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.dataStride        = FE3sStream_dataStride;
@@ -24841,9 +24915,6 @@ function FE3sStream(o){
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
    return o;
-}
-function FE3sStream_code(){
-   return this._code;
 }
 function FE3sStream_elementDataCd(){
    return this._elementDataCd;
@@ -26212,18 +26283,18 @@ function FE3rGeometry_loadResource(resource){
    var streamResources = resource.streams();
    var streamCount = streamResources.count();
    for(var i = 0; i < streamCount; i++){
-      var streamResource = streamResources.get(i);
-      var code = streamResource._code;
-      var dataCount = streamResource._dataCount;
-      var data = streamResource._data;
+      var streamResource = streamResources.at(i);
+      var code = streamResource.code();
+      var dataCount = streamResource.dataCount();
+      var data = streamResource.data();
       if((code == 'index16') || (code == 'index32')){
          var buffer = o._indexBuffer = context.createIndexBuffer();
          buffer._resource = streamResource;
          var dataCd = streamResource.elementDataCd();
          if(dataCd == EDataType.Uint16){
-            buffer._strideCd = EG3dIndexStride.Uint16;
+            buffer.setStrideCd(EG3dIndexStride.Uint16);
          }else if(dataCd == EDataType.Uint32){
-            buffer._strideCd = EG3dIndexStride.Uint32;
+            buffer.setStrideCd(EG3dIndexStride.Uint32);
          }else{
             throw new TError(o, "Unknown data type.");
          }
@@ -26231,29 +26302,29 @@ function FE3rGeometry_loadResource(resource){
          o._indexBuffers.push(buffer);
       }else{
          var buffer = context.createVertexBuffer();
-         buffer._name = code;
+         buffer.setCode(code);
          buffer._resource = streamResource;
          buffer._vertexCount = dataCount;
          var pixels = null;
          switch(code){
             case "position":
                pixels = new Float32Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Float3;
+               buffer.setFormatCd(EG3dAttributeFormat.Float3);
                o._vertexCount = dataCount;
                break;
             case "coord":
                pixels = new Float32Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Float2;
+               buffer.setFormatCd(EG3dAttributeFormat.Float2);
                break;
             case "color":
                pixels = new Uint8Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
                break;
             case "normal":
             case "binormal":
             case "tangent":
                pixels = new Uint8Array(data);
-               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
                break;
             default:
                throw new TError(o, "Unknown code");
@@ -27141,11 +27212,11 @@ function FE3rStream_buffer(){
 }
 function FE3rStream_loadResource(resource){
    var o = this;
-   var code = resource._code;
+   var code = resource.code();
    o._resource = resource;
    o._vertexCount = resource._dataCount;
    var buffer = o._buffer = o._graphicContext.createVertexBuffer();
-   buffer._name = code;
+   buffer.setCode(code);
    buffer._resource = resource;
    switch(code){
       case "bone_index":
@@ -28486,112 +28557,6 @@ function FE3dBitmapData_dispose(){
    o._textures = RObject.dispose(o._textures);
    o.__base.FE3rObject.dispose.call(o);
 }
-function FE3dBoundBox(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   o._outline              = null;
-   o._rate                 = 0.2;
-   o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
-   o.construct             = FE3dBoundBox_construct;
-   o.outline               = FE3dBoundBox_outline;
-   o.setup                 = FE3dBoundBox_setup;
-   o.upload                = FE3dBoundBox_upload;
-   return o;
-}
-function FE3dBoundBox_construct(){
-   var o = this;
-   o.__base.FE3dRenderable.construct.call(o);
-   o._material = RClass.create(FE3dMaterial);
-   o._outline = new SOutline3();
-}
-function FE3dBoundBox_outline(){
-   return this._outline;
-}
-function FE3dBoundBox_setup(){
-   var o = this;
-   var c = o._graphicContext;
-   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
-   vb._name = 'position';
-   vb._formatCd = EG3dAttributeFormat.Float3;
-   o._vertexBuffers.set(vb._name, vb);
-   var vd = new Uint8Array(4 * 32);
-   for(var n = 4 * 32 - 1; n >= 0; n--){
-      vd[n] = 0xFF;
-   }
-   var vb = o._vertexColorBuffer = c.createVertexBuffer();
-   vb._name = 'color';
-   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
-   vb.upload(vd, 1 * 4, 32);
-   o._vertexBuffers.set(vb._name, vb);
-   o._vertexCount = 32;
-   var id = [
-       0,  1,  0,  4,  0, 12,
-       3,  2,  3,  5,  3, 13,
-       8,  6,  8,  9,  8, 14,
-      11,  7, 11, 10, 11, 15,
-      20, 16, 20, 21, 20, 24,
-      23, 17, 23, 22, 23, 25,
-      28, 18, 28, 26, 28, 29,
-      31, 19, 31, 27, 31, 30 ];
-   var ib = o._indexBuffer = c.createIndexBuffer();
-   ib._fillMode = EG3dFillMode.Line;
-   ib._lineWidth = 1;
-   ib.upload(id, 48);
-   o.update();
-   var mi = o.material().info();
-   mi.effectCode = 'control';
-   mi.ambientColor.set(1, 1, 1, 1);
-}
-function FE3dBoundBox_upload(){
-   var o = this;
-   var l = o._outline;
-   var a = l.max;
-   var ax = a.x;
-   var ay = a.y;
-   var az = a.z;
-   var i = l.min;
-   var ix = i.x;
-   var iy = i.y;
-   var iz = i.z;
-   var r = o._rate;
-   var cx = (ax - ix) * r;
-   var cy = (ay - iy) * r;
-   var cz = (az - iz) * r;
-   var vd = [
-      ix,       ay,      iz,
-      ix + cx,  ay,      iz,
-      ax - cx,  ay,      iz,
-      ax,       ay,      iz,
-      ix,       ay - cy, iz,
-      ax,       ay - cy, iz,
-      ix,       iy + cy, iz,
-      ax,       iy + cy, iz,
-      ix,       iy,      iz,
-      ix + cx,  iy,      iz,
-      ax - cx,  iy,      iz,
-      ax,       iy,      iz,
-      ix,       ay,      iz + cz,
-      ax,       ay,      iz + cz,
-      ix,       iy,      iz + cz,
-      ax,       iy,      iz + cz,
-      ix,       ay,      az - cz,
-      ax,       ay,      az - cz,
-      ix,       iy,      az - cz,
-      ax,       iy,      az - cz,
-      ix,       ay,      az,
-      ix + cx,  ay,      az,
-      ax - cx,  ay,      az,
-      ax,       ay,      az,
-      ix,       ay - cy, az,
-      ax,       ay - cy, az,
-      ix,       iy + cy, az,
-      ax,       iy + cy, az,
-      ix,       iy,      az,
-      ix + cx,  iy,      az,
-      ax - cx,  iy,      az,
-      ax,       iy,      az];
-   o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
-}
 function FE3dCamera(o){
    o = RClass.inherits(this, o, FG3dPerspectiveCamera, MLinkerResource);
    o._rotation       = null;
@@ -28674,170 +28639,6 @@ function FE3dCamera_update(){
    m.transformPoint3(o._directionTarget, d);
    d.normalize();
    o.__base.FG3dPerspectiveCamera.update.call(o);
-}
-function FE3dCube(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   o.vertexPositionBuffer = null;
-   o.vertexColorBuffer    = null;
-   o.indexBuffer          = null;
-   o.setup                = FE3dCube_setup;
-   return o;
-}
-function FE3dCube_setup(p){
-   var o = this;
-   var vp = [
-      -1.0,  1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0, -1.0, -1.0,
-      -1.0, -1.0, -1.0,
-      -1.0,  1.0,  1.0,
-       1.0,  1.0,  1.0,
-       1.0, -1.0,  1.0,
-      -1.0, -1.0,  1.0 ];
-   o.vertexPositionBuffer = p.createVertexBuffer();
-   o.vertexPositionBuffer.upload(vp, 4 * 3, 8);
-   var vc = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0,
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 1.0, 1.0,
-      1.0, 0.0, 1.0, 1.0,
-      0.0, 0.0, 1.0, 1.0 ];
-   o.vertexColorBuffer = p.createVertexBuffer();
-   o.vertexColorBuffer.upload(vc, 4 * 4, 8);
-   var id = [
-      0, 1, 2, 0, 2, 3,
-      1, 5, 6, 1, 6, 2,
-      5, 4, 7, 5, 7, 6,
-      4, 0, 3, 4, 3, 7,
-      0, 4, 5, 0, 5, 1,
-      3, 2, 6, 3, 6, 7  ];
-   o.indexBuffer = context.createIndexBuffer();
-   o.indexBuffer.upload(id, 36);
-   var mi = o.material().info();
-   mi.effectCode = 'control';
-   mi.ambientColor.set(1, 1, 1, 1);
-}
-function FE3dDimensional(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   o._cellSize             = null;
-   o._size                 = null;
-   o._lineColor            = null;
-   o._lineCenterColor      = null;
-   o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
-   o.construct             = FE3dDimensional_construct;
-   o.setup                 = FE3dDimensional_setup;
-   return o;
-}
-function FE3dDimensional_construct(){
-   var o = this;
-   o.__base.FE3dRenderable.construct.call(o);
-   o._material = RClass.create(FE3dMaterial);
-   o._cellSize = new SSize2();
-   o._cellSize.set(1, 1);
-   o._size = new SSize2();
-   o._size.set(16, 16);
-}
-function FE3dDimensional_setup(){
-   var o = this;
-   var c = o._graphicContext;
-   var cw = o._cellSize.width;
-   var ch = o._cellSize.height;
-   var sw = o._size.width;
-   var sw2 = sw / 2;
-   var sh = o._size.height;
-   var sh2 = sh / 2;
-   var vc = 2 * ((sw + 2) + (sh + 2));
-   var v = 0;
-   var vi = 0;
-   var vd = new Float32Array(3 * vc);
-   var vci = 0;
-   var vcd = new Uint8Array(4 * vc);
-   var i = 0;
-   var it = vc;
-   var id = new Uint16Array(it);
-   for(var y = 0; y <= sh; y++){
-      var r = 1;
-      if(y - sh2 == 0){
-         r = 0
-      }
-      vd[v++] = cw * -sw2 * r;
-      vd[v++] = 0;
-      vd[v++] = ch * (y - sh2);
-      vd[v++] = cw * sw2 * r;
-      vd[v++] = 0;
-      vd[v++] = ch * (y - sh2);
-      for(var ci = 0; ci < 8; ci++){
-         vcd[vci++] = 255;
-      }
-      id[i++] = vi++;
-      id[i++] = vi++;
-   }
-   vd[v++] = cw * -sw2;
-   vd[v++] = 0;
-   vd[v++] = 0;
-   vd[v++] = cw * sw2;
-   vd[v++] = 0;
-   vd[v++] = 0;
-   for(var ci = 0; ci < 2; ci++){
-      vcd[vci++] = 255;
-      vcd[vci++] = 0;
-      vcd[vci++] = 0;
-      vcd[vci++] = 255;
-   }
-   id[i++] = vi++;
-   id[i++] = vi++;
-   for(var x = 0; x <= sw; x++){
-      var r = 1;
-      if(x - sw2 == 0){
-         r = 0
-      }
-      vd[v++] = cw * (x - sw2);
-      vd[v++] = 0;
-      vd[v++] = ch * - sh2 * r;
-      vd[v++] = cw * (x - sw2);
-      vd[v++] = 0;
-      vd[v++] = ch * sh2 * r;
-      for(var ci = 0; ci < 8; ci++){
-         vcd[vci++] = 255;
-      }
-      id[i++] = vi++;
-      id[i++] = vi++;
-   }
-   vd[v++] = 0;
-   vd[v++] = 0;
-   vd[v++] = ch * -sh2;
-   vd[v++] = 0;
-   vd[v++] = 0;
-   vd[v++] = ch * sh2;
-   for(var ci = 0; ci < 2; ci++){
-      vcd[vci++] = 255;
-      vcd[vci++] = 0;
-      vcd[vci++] = 0;
-      vcd[vci++] = 255;
-   }
-   id[i++] = vi++;
-   id[i++] = vi++;
-   o._vertexCount = vc;
-   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
-   vb._name = 'position';
-   vb._formatCd = EG3dAttributeFormat.Float3;
-   vb.upload(vd, 4 * 3, vc);
-   o._vertexBuffers.set(vb._name, vb);
-   var vb = o._vertexColorBuffer = c.createVertexBuffer();
-   vb._name = 'color';
-   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
-   vb.upload(vcd, 4, vc);
-   o._vertexBuffers.set(vb._name, vb);
-   var ib = o._indexBuffer = c.createIndexBuffer();
-   ib._fillMode = EG3dFillMode.Line;
-   ib.upload(id, it);
-   var mi = o.material().info();
-   mi.effectCode = 'control';
-   mi.ambientColor.set(1, 1, 1, 1);
 }
 function FE3dDirectionalLight(o){
    o = RClass.inherits(this, o, FG3dDirectionalLight, MLinkerResource);
@@ -29442,38 +29243,6 @@ function FE3dMovie_process(matrix){
       }
       o._lastTick = tick;
    }
-}
-function FE3dPolygon(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   return o;
-}
-function FE3dRectangle(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
-   o._indexBuffer          = null;
-   o.setup                 = FE3dRectangle_setup;
-   return o;
-}
-function FE3dRectangle_setup(p){
-   var o = this;
-   var vp = [
-      -1.0,  1.0, 0.0,
-       1.0,  1.0, 0.0,
-       1.0, -1.0, 0.0,
-      -1.0, -1.0, 0.0 ];
-   o._vertexPositionBuffer = p.createVertexBuffer();
-   o._vertexPositionBuffer.upload(vp, 4 * 3, 4);
-   var vc = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0 ];
-   o._vertexColorBuffer = p.createVertexBuffer();
-   o._vertexColorBuffer.upload(vc, 4 * 4, 4);
-   var id = [0, 1, 2, 0, 2, 3];
-   o._indexBuffer = context.createIndexBuffer();
-   o._indexBuffer.upload(id, 6);
 }
 function FE3dRegion(o){
    o = RClass.inherits(this, o, FRegion, MGraphicObject, MG3dRegion, MLinkerResource);
@@ -30181,6 +29950,7 @@ function FE3dSceneDisplay(o){
    o._template         = null;
    o._sprite           = null;
    o.construct         = FE3dSceneDisplay_construct;
+   o.calculateOutline  = FE3dSceneDisplay_calculateOutline;
    o.meshRenderables   = FE3dSceneDisplay_meshRenderables;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
@@ -30192,6 +29962,9 @@ function FE3dSceneDisplay_construct(){
    var o = this;
    o.__base.FE3dSprite.construct.call(o);
    o._movieMatrix = new SMatrix3d();
+}
+function FE3dSceneDisplay_calculateOutline(){
+   return this._sprite.calculateOutline();
 }
 function FE3dSceneDisplay_meshRenderables(){
    var o = this;
@@ -30873,87 +30646,6 @@ function FE3dSpace_active(){
 function FE3dSpace_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
-}
-function FE3dSphere(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
-   o._outline              = null;
-   o._splitCount           = 8;
-   o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
-   o.construct             = FE3dSphere_construct;
-   o.splitCount            = FE3dSphere_splitCount;
-   o.setSplitCount         = FE3dSphere_setSplitCount;
-   o.setup                 = FE3dSphere_setup;
-   return o;
-}
-function FE3dSphere_construct(){
-   var o = this;
-   o.__base.FE3dRenderable.construct.call(o);
-   o._material = RClass.create(FE3dMaterial);
-   o._outline = new SOutline3();
-}
-function FE3dSphere_splitCount(){
-   return this._splitCount;
-}
-function FE3dSphere_setSplitCount(count){
-   this._splitCount = count;
-}
-function FE3dSphere_setup(){
-   var o = this;
-   var context = o._graphicContext;
-   var positions = new TArray();
-   var normals = new TArray();
-   var cr = o._splitCount * 2;
-   var cz = o._splitCount;
-   var stepr = Math.PI * 2 / cr;
-   var stepz = Math.PI / cz;
-   var count = 0;
-   for(var rz = 0; rz <= cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - RConst.PI_2;
-         var x = Math.sin(radius) * Math.cos(radiusZ);
-         var y = Math.sin(radiusZ);
-         var z = -Math.cos(radius) * Math.cos(radiusZ);
-         positions.push(x, y, z);
-         normals.push(x, y, z);
-         count++;
-      }
-   }
-   o._vertexCount = count;
-   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-   buffer._name = 'position';
-   buffer._formatCd = EG3dAttributeFormat.Float3;
-   buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
-   o._vertexBuffers.set(buffer._name, buffer);
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer._name = 'normal';
-   buffer._formatCd = EG3dAttributeFormat.Float3;
-   buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
-   o._vertexBuffers.set(buffer._name, buffer);
-   var indexes = new TArray();
-   for(var rz = 0; rz < cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var i = cr * rz;
-         var ci = i + r;
-         var ni = i + r + cr;
-         if(r == cr - 1){
-            indexes.push(ci, ni, i);
-            indexes.push(ni, i + cr, i);
-         }else{
-            indexes.push(ci, ni, ci + 1);
-            indexes.push(ni, ni + 1, ci + 1);
-         }
-      }
-   }
-   var ib = o._indexBuffer = context.createIndexBuffer();
-   ib.upload(new Uint16Array(indexes.memory()), indexes.length());
-   o.update();
-   var info = o.material().info();
-   info.ambientColor.set(0.2, 0.2, 0.2, 1);
-   info.diffuseColor.set(0.8, 0.8, 0.8, 1);
-   info.specularColor.set(0.8, 0.8, 0.8, 1);
-   info.specularLevel = 64;
 }
 function FE3dSprite(o){
    o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject, MLinkerResource);
@@ -31859,6 +31551,7 @@ function FE3dTemplateRenderable(o){
    o.construct         = FE3dTemplateRenderable_construct;
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
+   o.calculateOutline  = FE3dTemplateRenderable_calculateOutline;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -31898,6 +31591,17 @@ function FE3dTemplateRenderable_testVisible(p){
       r = o.__base.FE3dMeshRenderable.testVisible.call(o);
    }
    return r;
+}
+function FE3dTemplateRenderable_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var resource = o._resource
+      var meshResource = resource.mesh();
+      var meshOutline = meshResource.outline();
+      outline.assign(meshOutline);
+   }
+   return outline;
 }
 function FE3dTemplateRenderable_loadResource(resource){
    var o = this;
@@ -31995,6 +31699,630 @@ function FE3dTemplateRenderable_load(){
 function FE3dTemplateRenderable_dispose(){
    var o = this;
    o.__base.FE3dMeshRenderable.dispose.call(o);
+}
+function SE3dRulerPrecision(o){
+   var o = this;
+   o.interval = 1;
+   o.length   = 0.5;
+   o.color    = new SColor4(255, 255, 255, 255);
+   return o;
+}
+function SE3dRulerPrecision_assign(info){
+   var o = this;
+   o.interval.assign(info.interval);
+   o.color.assign(info.color);
+}
+function SE3dRulerStyle(o){
+   var o = this;
+   o.lineColor    = new SColor4(255, 255, 255, 255);
+   o.bothLength   = 0.5;
+   o.bothColor    = new SColor4(255, 255, 255, 255);
+   o.tickInterval = 1;
+   o.tickLength   = 0.3;
+   o.tickColor    = new SColor4(255, 255, 255, 255);
+   o.precisions   = new TObjects();
+   o.assign       = SE3dRulerStyle_assign;
+   return o;
+}
+function SE3dRulerStyle_assign(info){
+   var o = this;
+   o.lineColor.assign(info.lineColor);
+   o.bothLength = info.bothLength;
+   o.bothColor.assign(info.lineColor);
+   o.tickInterval = info.tickInterval;
+   o.tickLength = info.tickLength;
+   o.tickColor.assign(info.lineColor);
+   o.precisions.assign(info.precisions);
+}
+function FE3dBoundBox(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._outline              = null;
+   o._rate                 = 0.2;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FE3dBoundBox_construct;
+   o.outline               = FE3dBoundBox_outline;
+   o.setup                 = FE3dBoundBox_setup;
+   o.upload                = FE3dBoundBox_upload;
+   return o;
+}
+function FE3dBoundBox_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._outline = new SOutline3();
+}
+function FE3dBoundBox_outline(){
+   return this._outline;
+}
+function FE3dBoundBox_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   o._vertexBuffers.set(vb._name, vb);
+   var vd = new Uint8Array(4 * 32);
+   for(var n = 4 * 32 - 1; n >= 0; n--){
+      vd[n] = 0xFF;
+   }
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vd, 1 * 4, 32);
+   o._vertexBuffers.set(vb._name, vb);
+   o._vertexCount = 32;
+   var id = [
+       0,  1,  0,  4,  0, 12,
+       3,  2,  3,  5,  3, 13,
+       8,  6,  8,  9,  8, 14,
+      11,  7, 11, 10, 11, 15,
+      20, 16, 20, 21, 20, 24,
+      23, 17, 23, 22, 23, 25,
+      28, 18, 28, 26, 28, 29,
+      31, 19, 31, 27, 31, 30 ];
+   var ib = o._indexBuffer = c.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib._lineWidth = 1;
+   ib.upload(id, 48);
+   o.update();
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
+}
+function FE3dBoundBox_upload(){
+   var o = this;
+   var l = o._outline;
+   var a = l.max;
+   var ax = a.x;
+   var ay = a.y;
+   var az = a.z;
+   var i = l.min;
+   var ix = i.x;
+   var iy = i.y;
+   var iz = i.z;
+   var r = o._rate;
+   var cx = (ax - ix) * r;
+   var cy = (ay - iy) * r;
+   var cz = (az - iz) * r;
+   var vd = [
+      ix,       ay,      iz,
+      ix + cx,  ay,      iz,
+      ax - cx,  ay,      iz,
+      ax,       ay,      iz,
+      ix,       ay - cy, iz,
+      ax,       ay - cy, iz,
+      ix,       iy + cy, iz,
+      ax,       iy + cy, iz,
+      ix,       iy,      iz,
+      ix + cx,  iy,      iz,
+      ax - cx,  iy,      iz,
+      ax,       iy,      iz,
+      ix,       ay,      iz + cz,
+      ax,       ay,      iz + cz,
+      ix,       iy,      iz + cz,
+      ax,       iy,      iz + cz,
+      ix,       ay,      az - cz,
+      ax,       ay,      az - cz,
+      ix,       iy,      az - cz,
+      ax,       iy,      az - cz,
+      ix,       ay,      az,
+      ix + cx,  ay,      az,
+      ax - cx,  ay,      az,
+      ax,       ay,      az,
+      ix,       ay - cy, az,
+      ax,       ay - cy, az,
+      ix,       iy + cy, az,
+      ax,       iy + cy, az,
+      ix,       iy,      az,
+      ix + cx,  iy,      az,
+      ax - cx,  iy,      az,
+      ax,       iy,      az];
+   o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
+}
+function FE3dCube(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o.vertexPositionBuffer = null;
+   o.vertexColorBuffer    = null;
+   o.indexBuffer          = null;
+   o.setup                = FE3dCube_setup;
+   return o;
+}
+function FE3dCube_setup(p){
+   var o = this;
+   var vp = [
+      -1.0,  1.0, -1.0,
+       1.0,  1.0, -1.0,
+       1.0, -1.0, -1.0,
+      -1.0, -1.0, -1.0,
+      -1.0,  1.0,  1.0,
+       1.0,  1.0,  1.0,
+       1.0, -1.0,  1.0,
+      -1.0, -1.0,  1.0 ];
+   o.vertexPositionBuffer = p.createVertexBuffer();
+   o.vertexPositionBuffer.upload(vp, 4 * 3, 8);
+   var vc = [
+      0.0, 1.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      0.0, 0.0, 0.0, 1.0,
+      0.0, 1.0, 0.0, 1.0,
+      1.0, 0.0, 1.0, 1.0,
+      1.0, 0.0, 1.0, 1.0,
+      0.0, 0.0, 1.0, 1.0 ];
+   o.vertexColorBuffer = p.createVertexBuffer();
+   o.vertexColorBuffer.upload(vc, 4 * 4, 8);
+   var id = [
+      0, 1, 2, 0, 2, 3,
+      1, 5, 6, 1, 6, 2,
+      5, 4, 7, 5, 7, 6,
+      4, 0, 3, 4, 3, 7,
+      0, 4, 5, 0, 5, 1,
+      3, 2, 6, 3, 6, 7  ];
+   o.indexBuffer = context.createIndexBuffer();
+   o.indexBuffer.upload(id, 36);
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
+}
+function FE3dDimensional(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._cellSize             = null;
+   o._size                 = null;
+   o._lineColor            = null;
+   o._lineCenterColor      = null;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FE3dDimensional_construct;
+   o.setup                 = FE3dDimensional_setup;
+   return o;
+}
+function FE3dDimensional_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._cellSize = new SSize2();
+   o._cellSize.set(1, 1);
+   o._size = new SSize2();
+   o._size.set(16, 16);
+}
+function FE3dDimensional_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var cw = o._cellSize.width;
+   var ch = o._cellSize.height;
+   var sw = o._size.width;
+   var sw2 = sw / 2;
+   var sh = o._size.height;
+   var sh2 = sh / 2;
+   var vc = 2 * ((sw + 2) + (sh + 2));
+   var v = 0;
+   var vi = 0;
+   var vd = new Float32Array(3 * vc);
+   var vci = 0;
+   var vcd = new Uint8Array(4 * vc);
+   var i = 0;
+   var it = vc;
+   var id = new Uint16Array(it);
+   for(var y = 0; y <= sh; y++){
+      var r = 1;
+      if(y - sh2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * -sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      vd[v++] = cw * sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = cw * -sw2;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = cw * sw2;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   for(var x = 0; x <= sw; x++){
+      var r = 1;
+      if(x - sw2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * - sh2 * r;
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * sh2 * r;
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * -sh2;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * sh2;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   o._vertexCount = vc;
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   vb.upload(vd, 4 * 3, vc);
+   o._vertexBuffers.set(vb._name, vb);
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vcd, 4, vc);
+   o._vertexBuffers.set(vb._name, vb);
+   var ib = o._indexBuffer = c.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib.upload(id, it);
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
+}
+function FE3dPolygon(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   return o;
+}
+function FE3dRectangle(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._indexBuffer          = null;
+   o.setup                 = FE3dRectangle_setup;
+   return o;
+}
+function FE3dRectangle_setup(p){
+   var o = this;
+   var vp = [
+      -1.0,  1.0, 0.0,
+       1.0,  1.0, 0.0,
+       1.0, -1.0, 0.0,
+      -1.0, -1.0, 0.0 ];
+   o._vertexPositionBuffer = p.createVertexBuffer();
+   o._vertexPositionBuffer.upload(vp, 4 * 3, 4);
+   var vc = [
+      0.0, 1.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      0.0, 0.0, 0.0, 1.0 ];
+   o._vertexColorBuffer = p.createVertexBuffer();
+   o._vertexColorBuffer.upload(vc, 4 * 4, 4);
+   var id = [0, 1, 2, 0, 2, 3];
+   o._indexBuffer = context.createIndexBuffer();
+   o._indexBuffer.upload(id, 6);
+}
+function FE3dRuler(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._style                = null;
+   o._beginPoint           = null;
+   o._endPoint             = null;
+   o._direction            = null;
+   o._directionLine        = null;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._vertexPositionData   = null;
+   o._vertexColorData      = null;
+   o._indexData            = null;
+   o.construct             = FE3dRuler_construct;
+   o.style                 = FE3dRuler_style;
+   o.beginPoint            = FE3dRuler_beginPoint;
+   o.endPoint              = FE3dRuler_endPoint;
+   o.direction             = FE3dRuler_direction;
+   o.setup                 = FE3dRuler_setup;
+   o.upload                = FE3dRuler_upload;
+   return o;
+}
+function FE3dRuler_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._style = new SE3dRulerStyle();
+   o._beginPoint = new SPoint3(0, 0, 0);
+   o._endPoint = new SPoint3(0, 10, 0);
+   o._direction = new SVector3(1, 0, 0);
+   o._directionLine = new SVector3();
+   o._vertexPositionData = new TArray();
+   o._vertexColorData = new TArray();
+   o._indexData = new TArray();
+}
+function FE3dRuler_style(){
+   return this._style;
+}
+function FE3dRuler_beginPoint(){
+   return this._beginPoint;
+}
+function FE3dRuler_endPoint(){
+   return this._endPoint;
+}
+function FE3dRuler_direction(){
+   return this._direction;
+}
+function FE3dRuler_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.setFillModeCd(EG3dFillMode.Line);
+   buffer.setLineWidth(1);
+   o.upload();
+   o.update();
+   var info = o.material().info();
+   info.effectCode = 'control';
+   info.ambientColor.set(1, 1, 1, 1);
+}
+function FE3dRuler_upload(){
+   var o = this;
+   var vertexCount = 0;
+   var style = o._style;
+   var positions = o._vertexPositionData;
+   positions.clear();
+   var colors = o._vertexColorData;
+   colors.clear();
+   var indexs = o._indexData;
+   indexs.clear();
+   var beginPoint = o._beginPoint;
+   var endPoint = o._endPoint;
+   positions.push(beginPoint.x, beginPoint.y, beginPoint.z);
+   colors.push(255, 255, 255, 255);
+   vertexCount++;
+   positions.push(endPoint.x, endPoint.y, endPoint.z);
+   colors.push(255, 255, 255, 255);
+   vertexCount++;
+   indexs.push(0, 1);
+   var bothLength = style.bothLength;
+   var bothColor = style.bothColor;
+   var direction = o._direction;
+   var tickBeginPoint = new SPoint3();
+   var tickEndPoint = new SPoint3();
+   positions.push(beginPoint.x, beginPoint.y, beginPoint.z);
+   colors.push(bothColor.red, bothColor.green, bothColor.blue, bothColor.alpha);
+   tickEndPoint.x = direction.x * bothLength + beginPoint.x;
+   tickEndPoint.y = direction.y * bothLength + beginPoint.y;
+   tickEndPoint.z = direction.z * bothLength + beginPoint.z;
+   positions.push(tickEndPoint.x, tickEndPoint.y, tickEndPoint.z);
+   colors.push(bothColor.red, bothColor.green, bothColor.blue, bothColor.alpha);
+   indexs.push(vertexCount, vertexCount + 1);
+   vertexCount += 2;
+   positions.push(endPoint.x, endPoint.y, endPoint.z);
+   colors.push(bothColor.red, bothColor.green, bothColor.blue, bothColor.alpha);
+   tickEndPoint.x = direction.x * bothLength + endPoint.x;
+   tickEndPoint.y = direction.y * bothLength + endPoint.y;
+   tickEndPoint.z = direction.z * bothLength + endPoint.z;
+   positions.push(tickEndPoint.x, tickEndPoint.y, tickEndPoint.z);
+   colors.push(bothColor.red, bothColor.green, bothColor.blue, bothColor.alpha);
+   indexs.push(vertexCount, vertexCount + 1);
+   vertexCount += 2;
+   var lineDirection = o._directionLine.direction(beginPoint, o._endPoint);
+   var length = lineDirection.length();
+   lineDirection.normalize();
+   var precisions = style.precisions;
+   var count = precisions.count();
+   for(var n = 0; n < count; n++){
+      var precision = precisions.at(n);
+      var tickInterval = precision.interval;
+      var tickLength = precision.length;
+      var tickColor = precision.color;
+      for(var i = tickInterval; i < length; i += tickInterval){
+         tickBeginPoint.x = lineDirection.x * i + beginPoint.x;
+         tickBeginPoint.y = lineDirection.y * i + beginPoint.y;
+         tickBeginPoint.z = lineDirection.z * i + beginPoint.z;
+         positions.push(tickBeginPoint.x, tickBeginPoint.y, tickBeginPoint.z);
+         colors.push(tickColor.red, tickColor.green, tickColor.blue, tickColor.alpha);
+         tickEndPoint.x = direction.x * tickLength + tickBeginPoint.x;
+         tickEndPoint.y = direction.y * tickLength + tickBeginPoint.y;
+         tickEndPoint.z = direction.z * tickLength + tickBeginPoint.z;
+         positions.push(tickEndPoint.x, tickEndPoint.y, tickEndPoint.z);
+         colors.push(tickColor.red, tickColor.green, tickColor.blue, tickColor.alpha);
+         indexs.push(vertexCount, vertexCount + 1);
+         vertexCount += 2;
+      }
+   }
+   o._vertexPositionBuffer.upload(positions.memory(), 4 * 3, vertexCount);
+   o._vertexColorBuffer.upload(colors.memory(), 1 * 4, vertexCount);
+   o._indexBuffer.upload(indexs.memory(), indexs.length());
+}
+function FE3dRulerBox(o){
+   o = RClass.inherits(this, o, FE3dSprite);
+   o._outline  = null;
+   o._style    = null;
+   o._rulerX   = null;
+   o._rulerY   = null;
+   o._rulerZ   = null;
+   o.construct = FE3dRulerBox_construct;
+   o.style     = FE3dRulerBox_style;
+   o.outline   = FE3dRulerBox_outline;
+   o.setup     = FE3dRulerBox_setup;
+   o.upload    = FE3dRulerBox_upload;
+   return o;
+}
+function FE3dRulerBox_construct(){
+   var o = this;
+   o.__base.FE3dSprite.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._style = new SE3dRulerStyle();
+   o._outline = new SOutline3();
+   var ruler = o._rulerX = RClass.create(FE3dRuler);
+   o.pushRenderable(ruler);
+   var ruler = o._rulerY = RClass.create(FE3dRuler);
+   o.pushRenderable(ruler);
+   var ruler = o._rulerZ = RClass.create(FE3dRuler);
+   o.pushRenderable(ruler);
+}
+function FE3dRulerBox_style(){
+   return this._style;
+}
+function FE3dRulerBox_outline(){
+   return this._outline;
+}
+function FE3dRulerBox_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var style = o._style;
+   o.matrix().setScaleAll(0.1);
+   o.matrix().update();
+   var outline = o._outline;
+   var min = outline.min;
+   var max = outline.max;
+   var ruler = o._rulerX;
+   ruler.linkGraphicContext(context);
+   ruler.style().assign(style);
+   ruler.beginPoint().assign(min);
+   ruler.endPoint().set(max.x, min.y, min.z);
+   ruler.direction().set(0, 0, -1);
+   ruler.setup();
+   var ruler = o._rulerY;
+   ruler.linkGraphicContext(context);
+   ruler.style().assign(style);
+   ruler.beginPoint().assign(min);
+   ruler.endPoint().set(min.x, max.y, min.z);
+   ruler.direction().set(-1, 0, 0);
+   ruler.setup();
+   var ruler = o._rulerZ;
+   ruler.linkGraphicContext(context);
+   ruler.style().assign(style);
+   ruler.beginPoint().assign(min);
+   ruler.endPoint().set(min.x, min.y, max.z);
+   ruler.direction().set(-1, 0, 0);
+   ruler.setup();
+}
+function FE3dRulerBox_upload(){
+   var o = this;
+   o._rulerX.upload();
+   o._rulerY.upload();
+   o._rulerZ.upload();
+}
+function FE3dSphere(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
+   o._outline              = null;
+   o._splitCount           = 8;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FE3dSphere_construct;
+   o.splitCount            = FE3dSphere_splitCount;
+   o.setSplitCount         = FE3dSphere_setSplitCount;
+   o.setup                 = FE3dSphere_setup;
+   return o;
+}
+function FE3dSphere_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+   o._outline = new SOutline3();
+}
+function FE3dSphere_splitCount(){
+   return this._splitCount;
+}
+function FE3dSphere_setSplitCount(count){
+   this._splitCount = count;
+}
+function FE3dSphere_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var positions = new TArray();
+   var normals = new TArray();
+   var cr = o._splitCount * 2;
+   var cz = o._splitCount;
+   var stepr = Math.PI * 2 / cr;
+   var stepz = Math.PI / cz;
+   var count = 0;
+   for(var rz = 0; rz <= cz; rz++){
+      for(var r = 0; r < cr; r++){
+         var radius = stepr * r - Math.PI;
+         var radiusZ = stepz * rz - RConst.PI_2;
+         var x = Math.sin(radius) * Math.cos(radiusZ);
+         var y = Math.sin(radiusZ);
+         var z = -Math.cos(radius) * Math.cos(radiusZ);
+         positions.push(x, y, z);
+         normals.push(x, y, z);
+         count++;
+      }
+   }
+   o._vertexCount = count;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer._name = 'position';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
+   buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
+   o._vertexBuffers.set(buffer._name, buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer._name = 'normal';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
+   buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
+   o._vertexBuffers.set(buffer._name, buffer);
+   var indexes = new TArray();
+   for(var rz = 0; rz < cz; rz++){
+      for(var r = 0; r < cr; r++){
+         var i = cr * rz;
+         var ci = i + r;
+         var ni = i + r + cr;
+         if(r == cr - 1){
+            indexes.push(ci, ni, i);
+            indexes.push(ni, i + cr, i);
+         }else{
+            indexes.push(ci, ni, ci + 1);
+            indexes.push(ni, ni + 1, ci + 1);
+         }
+      }
+   }
+   var ib = o._indexBuffer = context.createIndexBuffer();
+   ib.upload(new Uint16Array(indexes.memory()), indexes.length());
+   o.update();
+   var info = o.material().info();
+   info.ambientColor.set(0.2, 0.2, 0.2, 1);
+   info.diffuseColor.set(0.8, 0.8, 0.8, 1);
+   info.specularColor.set(0.8, 0.8, 0.8, 1);
+   info.specularLevel = 64;
 }
 function FGameObject(o){
    o = RClass.inherits(this, o, FObject);

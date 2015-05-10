@@ -46,11 +46,25 @@ function FE3dDisplayContainer_materials(){
 // <T>计算轮廓大小。</T>
 //
 // @method
-// @return FG3dMaterial 材质
+// @return SOutline3 轮廓
 //==========================================================
 function FE3dDisplayContainer_calculateOutline(){
    var o = this;
-   return o._outline;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      // 计算渲染集合的轮廓
+      var renderables = o._renderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
+         }
+      }
+   }
+   return outline;
 }
 
 //==========================================================

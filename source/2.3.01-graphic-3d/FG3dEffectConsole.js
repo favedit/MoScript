@@ -159,9 +159,9 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      var vertexName = vertexBuffer.name();
+      var vertexCode = vertexBuffer.code();
       // 法线压缩判定（临时处理）
-      if(vertexName == 'normal'){
+      if(vertexCode == 'normal'){
          var stride = vertexBuffer.stride();
          if(stride == 4){
             effectInfo.optionNormalCompress = true;
@@ -169,7 +169,7 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
             effectInfo.optionNormalCompress = false;
          }
       }
-      effectInfo.attributes.push(vertexBuffer.name());
+      effectInfo.attributes.push(vertexBuffer.code());
    }
    // 设置纹理信息
    var textures = renderable.textures();

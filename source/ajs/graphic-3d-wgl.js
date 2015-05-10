@@ -682,39 +682,39 @@ function FWglContext_readPixels(left, top, width, height){
    graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
    return data;
 }
-function FWglContext_drawTriangles(b, i, c){
+function FWglContext_drawTriangles(indexBuffer, offset, count){
    var o = this;
-   var g = o._native;
-   var r = true;
-   if(i == null){
-      i = 0;
+   var graphic = o._native;
+   var result = true;
+   if(offset == null){
+      offset = 0;
    }
-   if(c == null){
-      c = b.count();
+   if(count == null){
+      count = indexBuffer.count();
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
+   if(!result){
+       return result;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   if(b._fillMode == EG3dFillMode.Line){
-      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
+   if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
+      graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
    }else{
-      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+      graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
    }
-   o._statistics._frameTriangleCount += c;
+   o._statistics._frameTriangleCount += count;
    o._statistics._frameDrawCount++;
-   r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, null);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   return r;
+   return result;
 }
 function FWglContext_present(){
 }
@@ -1364,7 +1364,20 @@ function FWglVertexBuffer_upload(data, stride, count){
    o._count = count;
    var arrays = null;
    if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
-      arrays = new Float32Array(data);
+      switch(o._formatCd){
+         case EG3dAttributeFormat.Float1:
+         case EG3dAttributeFormat.Float2:
+         case EG3dAttributeFormat.Float3:
+         case EG3dAttributeFormat.Float4:
+            arrays = new Float32Array(data);
+            break;
+         case EG3dAttributeFormat.Byte4:
+         case EG3dAttributeFormat.Byte4Normal:
+            arrays = new Uint8Array(data);
+            break;
+         default:
+            throw new TError(o, 'Unknown data type.');
+      }
    }else if(data.constructor == Uint8Array){
       arrays = data;
    }else if(data.constructor == Float32Array){

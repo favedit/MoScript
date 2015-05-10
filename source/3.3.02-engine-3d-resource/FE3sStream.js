@@ -5,10 +5,9 @@
 // @history 150128
 //==========================================================
 function FE3sStream(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MAttributeCode);
    //..........................................................
    // @attribute
-   o._code             = null;
    o._elementDataCd    = 0;
    o._elementCount     = 0;
    o._elementNormalize = false;
@@ -19,7 +18,6 @@ function FE3sStream(o){
    o._formatCd         = EG3dAttributeFormat.Unknown;
    //..........................................................
    // @method
-   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.dataStride        = FE3sStream_dataStride;
@@ -30,15 +28,6 @@ function FE3sStream(o){
    // @method
    o.dispose           = FE3sStream_dispose;
    return o;
-}
-
-//==========================================================
-// <T>获得名称。</T>
-//
-// @return String 名称
-//==========================================================
-function FE3sStream_code(){
-   return this._code;
 }
 
 //==========================================================

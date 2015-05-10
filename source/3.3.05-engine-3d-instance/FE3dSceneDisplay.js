@@ -23,6 +23,8 @@ function FE3dSceneDisplay(o){
    // @method
    o.construct         = FE3dSceneDisplay_construct;
    // @method
+   o.calculateOutline  = FE3dSceneDisplay_calculateOutline;
+   // @method
    o.meshRenderables   = FE3dSceneDisplay_meshRenderables;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
@@ -41,6 +43,16 @@ function FE3dSceneDisplay_construct(){
    var o = this;
    o.__base.FE3dSprite.construct.call(o);
    o._movieMatrix = new SMatrix3d();
+}
+
+//==========================================================
+// <T>计算轮廓大小。</T>
+//
+// @method
+// @return SOutline3 轮廓
+//==========================================================
+function FE3dSceneDisplay_calculateOutline(){
+   return this._sprite.calculateOutline();
 }
 
 //==========================================================

@@ -13,12 +13,30 @@ function SVector3(x, y, z){
    SValue3.call(o, x, y, z);
    //..........................................................
    // @method
+   o.length    = o.absolute;
+   o.direction = SVector3_direction;
+   // @method
    o.conjugate = SVector3_conjugate;
    o.dotPoint3 = SVector3_dotPoint3;
    o.cross     = SVector3_cross;
    o.cross2    = SVector3_cross2;
    o.slerp     = SVector3_slerp;
    o.clone     = SVector3_clone;
+   return o;
+}
+
+//==========================================================
+// <T>计算2个点的方向</T>
+//
+// @method
+// @param startPoint:SPoint3 开始点
+// @param endPoint:SPoint3 结束点
+//==========================================================
+function SVector3_direction(startPoint, endPoint){
+   var o = this;
+   o.x = endPoint.x - startPoint.x;
+   o.y = endPoint.y - startPoint.y;
+   o.z = endPoint.z - startPoint.z;
    return o;
 }
 

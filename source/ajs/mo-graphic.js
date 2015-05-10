@@ -1514,8 +1514,8 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      var vertexName = vertexBuffer.name();
-      if(vertexName == 'normal'){
+      var vertexCode = vertexBuffer.code();
+      if(vertexCode == 'normal'){
          var stride = vertexBuffer.stride();
          if(stride == 4){
             effectInfo.optionNormalCompress = true;
@@ -1523,7 +1523,7 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
             effectInfo.optionNormalCompress = false;
          }
       }
-      effectInfo.attributes.push(vertexBuffer.name());
+      effectInfo.attributes.push(vertexBuffer.code());
    }
    var textures = renderable.textures();
    if(textures){
@@ -2591,7 +2591,7 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject, MAttributeName);
+   o = RClass.inherits(this, o, FG3dObject, MAttributeCode);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
 }
@@ -2716,15 +2716,37 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._strideCd = EG3dIndexStride.Uint16;
-   o._count    = 0;
-   o.strideCd  = FG3dIndexBuffer_strideCd;
-   o.count     = FG3dIndexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._strideCd     = EG3dIndexStride.Uint16;
+   o._count        = 0;
+   o._fillModeCd   = EG3dFillMode.Face;
+   o._lineWidth    = 1;
+   o.strideCd      = FG3dIndexBuffer_strideCd;
+   o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
+   o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
+   o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+   o.lineWidth     = FG3dIndexBuffer_lineWidth;
+   o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
+   o.count         = FG3dIndexBuffer_count;
+   o.upload        = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dIndexBuffer_strideCd(){
    return this._strideCd;
+}
+function FG3dIndexBuffer_setStrideCd(strideCd){
+   this._strideCd = strideCd;
+}
+function FG3dIndexBuffer_fillModeCd(){
+   return this._fillModeCd;
+}
+function FG3dIndexBuffer_setFillModeCd(fillModeCd){
+   this._fillModeCd = fillModeCd;
+}
+function FG3dIndexBuffer_lineWidth(){
+   return this._lineWidth;
+}
+function FG3dIndexBuffer_setLineWidth(lineWidth){
+   this._lineWidth = lineWidth;
 }
 function FG3dIndexBuffer_count(){
    return this._count;
@@ -3222,17 +3244,21 @@ function FG3dTexture_setWrapCd(wrapS, wrapT){
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
-   o._formatCd = EG3dAttributeFormat.Unknown;
-   o._stride   = 0;
-   o._count    = 0;
-   o.formatCd  = FG3dVertexBuffer_formatCd;
-   o.stride    = FG3dVertexBuffer_stride;
-   o.count     = FG3dVertexBuffer_count;
-   o.upload    = RMethod.virtual(o, 'upload');
+   o._formatCd   = EG3dAttributeFormat.Unknown;
+   o._stride     = 0;
+   o._count      = 0;
+   o.formatCd    = FG3dVertexBuffer_formatCd;
+   o.setFormatCd = FG3dVertexBuffer_setFormatCd;
+   o.stride      = FG3dVertexBuffer_stride;
+   o.count       = FG3dVertexBuffer_count;
+   o.upload      = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_formatCd(){
    return this._formatCd;
+}
+function FG3dVertexBuffer_setFormatCd(formatCd){
+   this._formatCd = formatCd;
 }
 function FG3dVertexBuffer_stride(){
    return this._stride;
@@ -4529,39 +4555,39 @@ function FWglContext_readPixels(left, top, width, height){
    graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
    return data;
 }
-function FWglContext_drawTriangles(b, i, c){
+function FWglContext_drawTriangles(indexBuffer, offset, count){
    var o = this;
-   var g = o._native;
-   var r = true;
-   if(i == null){
-      i = 0;
+   var graphic = o._native;
+   var result = true;
+   if(offset == null){
+      offset = 0;
    }
-   if(c == null){
-      c = b.count();
+   if(count == null){
+      count = indexBuffer.count();
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
+   if(!result){
+       return result;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   if(b._fillMode == EG3dFillMode.Line){
-      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
+   if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
+      graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
    }else{
-      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+      graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
    }
-   o._statistics._frameTriangleCount += c;
+   o._statistics._frameTriangleCount += count;
    o._statistics._frameDrawCount++;
-   r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, null);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   return r;
+   return result;
 }
 function FWglContext_present(){
 }
@@ -5211,7 +5237,20 @@ function FWglVertexBuffer_upload(data, stride, count){
    o._count = count;
    var arrays = null;
    if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
-      arrays = new Float32Array(data);
+      switch(o._formatCd){
+         case EG3dAttributeFormat.Float1:
+         case EG3dAttributeFormat.Float2:
+         case EG3dAttributeFormat.Float3:
+         case EG3dAttributeFormat.Float4:
+            arrays = new Float32Array(data);
+            break;
+         case EG3dAttributeFormat.Byte4:
+         case EG3dAttributeFormat.Byte4Normal:
+            arrays = new Uint8Array(data);
+            break;
+         default:
+            throw new TError(o, 'Unknown data type.');
+      }
    }else if(data.constructor == Uint8Array){
       arrays = data;
    }else if(data.constructor == Float32Array){

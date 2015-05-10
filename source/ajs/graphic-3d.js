@@ -1238,8 +1238,8 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
    var count = vertexBuffers.count();
    for(var i = 0; i < count; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      var vertexName = vertexBuffer.name();
-      if(vertexName == 'normal'){
+      var vertexCode = vertexBuffer.code();
+      if(vertexCode == 'normal'){
          var stride = vertexBuffer.stride();
          if(stride == 4){
             effectInfo.optionNormalCompress = true;
@@ -1247,7 +1247,7 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
             effectInfo.optionNormalCompress = false;
          }
       }
-      effectInfo.attributes.push(vertexBuffer.name());
+      effectInfo.attributes.push(vertexBuffer.code());
    }
    var textures = renderable.textures();
    if(textures){

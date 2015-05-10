@@ -46,12 +46,12 @@ function FE3rStream_buffer(){
 function FE3rStream_loadResource(resource){
    var o = this;
    // 设置属性
-   var code = resource._code;
+   var code = resource.code();
    o._resource = resource;
    o._vertexCount = resource._dataCount;
    // 创建顶点缓冲
    var buffer = o._buffer = o._graphicContext.createVertexBuffer();
-   buffer._name = code;
+   buffer.setCode(code);
    buffer._resource = resource;
    switch(code){
       case "bone_index":

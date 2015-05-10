@@ -1016,28 +1016,28 @@ function FWglContext_readPixels(left, top, width, height){
 //==========================================================
 // <T>绘制三角形。</T>
 //
-// @param b:indexBuffer:FIndexBuffer3d 索引缓冲
-// @param i:offset:Integer 开始位置
-// @param c:count:Integer 索引总数
+// @param indexBuffer:FIndexBuffer3d 索引缓冲
+// @param offset:Integer 开始位置
+// @param count:Integer 索引总数
 //==========================================================
-function FWglContext_drawTriangles(b, i, c){
+function FWglContext_drawTriangles(indexBuffer, offset, count){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    // 设置参数
-   if(i == null){
-      i = 0;
+   if(offset == null){
+      offset = 0;
    }
-   if(c == null){
-      c = b.count();
+   if(count == null){
+      count = indexBuffer.count();
    }
    // 绘制索引流
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
+   if(!result){
+       return result;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
+   var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
    //GL_POINTS,  
    //GL_LINE_STRIP,  
    //GL_LINE_LOOP,  
@@ -1047,30 +1047,30 @@ function FWglContext_drawTriangles(b, i, c){
    //GL_TRIANGLES,  
    //GL_QUAD_STRIP,  
    //GL_QUADS, 
-   if(b._fillMode == EG3dFillMode.Line){
-      //if(b._lineWidth){
-      //   g.lineWidth(b._lineWidth);
+   if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
+      //if(indexBuffer._lineWidth){
+         //graphic.lineWidth(indexBuffer._lineWidth);
       //}
-      //g.enable(g.BLEND);
-      //g.enable(g.LINE_SMOOTH);
-      //g.hint(g.LINE_SMOOTH_HINT, g.FASTEST);
-      //g.blendFunc(g.SRC_ALPHA, g.ONE_MINUS_SRC_ALPHA); 
-      g.drawElements(g.LINES, c, strideCd, 2 * i);
+      //graphic.enable(graphic.BLEND);
+      //graphic.enable(graphic.LINE_SMOOTH);
+      //graphic.hint(graphic.LINE_SMOOTH_HINT, graphic.FASTEST);
+      //graphic.blendFunc(graphic.SRC_ALPHA, graphic.ONE_MINUS_SRC_ALPHA); 
+      graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
    }else{
-      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+      graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
    }
-   o._statistics._frameTriangleCount += c;
+   o._statistics._frameTriangleCount += count;
    o._statistics._frameDrawCount++;
-   r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, null);
-   r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
-   if(!r){
-       return r;
+   graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
+   result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+   if(!result){
+       return result;
    }
-   return r;
+   return result;
 }
 
 //==========================================================
