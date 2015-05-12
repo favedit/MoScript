@@ -56,21 +56,21 @@ function FE3dBoundBox_outline(){
 function FE3dBoundBox_setup(){
    var o = this;
    var c = o._graphicContext;
-   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
-   vb._name = 'position';
-   vb._formatCd = EG3dAttributeFormat.Float3;
-   o._vertexBuffers.set(vb._name, vb);
-   var vd = new Uint8Array(4 * 32);
+   var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var vertexData = new Uint8Array(4 * 32);
    for(var n = 4 * 32 - 1; n >= 0; n--){
-      vd[n] = 0xFF;
+      vertexData[n] = 0xFF;
    }
-   var vb = o._vertexColorBuffer = c.createVertexBuffer();
-   vb._name = 'color';
-   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
-   vb.upload(vd, 1 * 4, 32);
-   o._vertexBuffers.set(vb._name, vb);
+   var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+   buffer.upload(vertexData, 1 * 4, 32);
+   o.pushVertexBuffer(buffer);
    o._vertexCount = 32;
-   var id = [
+   var indexData = [
        0,  1,  0,  4,  0, 12,
        3,  2,  3,  5,  3, 13,
        8,  6,  8,  9,  8, 14,
@@ -79,14 +79,13 @@ function FE3dBoundBox_setup(){
       23, 17, 23, 22, 23, 25,
       28, 18, 28, 26, 28, 29,
       31, 19, 31, 27, 31, 30 ];
-   var ib = o._indexBuffer = c.createIndexBuffer();
-   ib._fillMode = EG3dFillMode.Line;
-   ib._lineWidth = 1;
-   ib.upload(id, 48);
+   var buffer = o._indexBuffer = c.createIndexBuffer();
+   buffer.setFillModeCd(EG3dFillMode.Line);
+   buffer.upload(indexData, 48);
    o.update();
-   var mi = o.material().info();
-   mi.effectCode = 'control';
-   mi.ambientColor.set(1, 1, 1, 1);
+   var info = o.material().info();
+   info.effectCode = 'control';
+   info.ambientColor.set(1, 1, 1, 1);
 }
 function FE3dBoundBox_upload(){
    var o = this;
@@ -103,7 +102,7 @@ function FE3dBoundBox_upload(){
    var cx = (ax - ix) * r;
    var cy = (ay - iy) * r;
    var cz = (az - iz) * r;
-   var vd = [
+   var data = [
       ix,       ay,      iz,
       ix + cx,  ay,      iz,
       ax - cx,  ay,      iz,
@@ -136,7 +135,7 @@ function FE3dBoundBox_upload(){
       ix + cx,  iy,      az,
       ax - cx,  iy,      az,
       ax,       iy,      az];
-   o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
+   o._vertexPositionBuffer.upload(data, 4 * 3, 32);
 }
 function FE3dCube(o){
    o = RClass.inherits(this, o, FE3dRenderable);

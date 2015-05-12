@@ -234,11 +234,12 @@ function FE3dTemplateDisplay_loadResource(resource){
 //==========================================================
 function FE3dTemplateDisplay_reloadResource(){
    var o = this;
-   var s = o._shapes;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).reloadResource();
+   var shapes = o._shapes;
+   if(shapes){
+      var count = shapes.count();
+      for(var i = 0; i < count; i++){
+         var shape = shapes.at(i);
+         shape.reloadResource();
       }
    }
 }

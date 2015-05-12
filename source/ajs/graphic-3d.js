@@ -1247,13 +1247,20 @@ function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderab
             effectInfo.optionNormalCompress = false;
          }
       }
-      effectInfo.attributes.push(vertexBuffer.code());
+      if(RString.isEmpty(vertexCode)){
+         throw new TError(o, 'Vertex buffer code is empty.');
+      }
+      effectInfo.attributes.push(vertexCode);
    }
    var textures = renderable.textures();
    if(textures){
       var count = textures.count();
       for(var i = 0; i < count; i++){
-         effectInfo.samplers.push(textures.name(i));
+         var textureCode = textures.name(i);
+         if(RString.isEmpty(textureCode)){
+            throw new TError(o, 'Texture code is empty.');
+         }
+         effectInfo.samplers.push(textureCode);
       }
    }
    var bones = renderable.bones();

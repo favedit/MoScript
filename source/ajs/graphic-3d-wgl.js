@@ -287,21 +287,31 @@ function FWglContext_createLayout(){
    o._statistics._layoutTotal++;
    return r;
 }
-function FWglContext_createVertexBuffer(){
+function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var r = RClass.create(FWglVertexBuffer);
-   r.linkGraphicContext(o);
-   r.setup();
+   var buffer = null;
+   if(clazz){
+      buffer = RClass.create(clazz);
+   }else{
+      buffer = RClass.create(FWglVertexBuffer);
+   }
+   buffer.linkGraphicContext(o);
+   buffer.setup();
    o._statistics._vertexBufferTotal++;
-   return r;
+   return buffer;
 }
-function FWglContext_createIndexBuffer(){
+function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var r = RClass.create(FWglIndexBuffer);
-   r.linkGraphicContext(o);
-   r.setup();
+   var buffer = null;
+   if(clazz){
+      buffer = RClass.create(clazz);
+   }else{
+      buffer = RClass.create(FWglIndexBuffer);
+   }
+   buffer.linkGraphicContext(o);
+   buffer.setup();
    o._statistics._indexBufferTotal++;
-   return r;
+   return buffer;
 }
 function FWglContext_createFlatTexture(){
    var o = this;
@@ -1348,13 +1358,13 @@ function FWglVertexBuffer(o){
 function FWglVertexBuffer_setup(){
    var o = this;
    o.__base.FG3dVertexBuffer.setup.call(o);
-   var g = o._graphicContext._native;
-   o._native = g.createBuffer();
+   var graphic = o._graphicContext._native;
+   o._native = graphic.createBuffer();
 }
 function FWglVertexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._native;
-   return g.isBuffer(o._native);
+   var graphic = o._graphicContext._native;
+   return graphic.isBuffer(o._native);
 }
 function FWglVertexBuffer_upload(data, stride, count){
    var o = this;
@@ -1392,10 +1402,10 @@ function FWglVertexBuffer_upload(data, stride, count){
 }
 function FWglVertexBuffer_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._native;
-   if(n){
-      c._native.deleteBuffer(n);
+   var context = o._graphicContext;
+   var buffer = o._native;
+   if(buffer){
+      context._native.deleteBuffer(buffer);
       o._native = null;
    }
    o.__base.FG3dVertexBuffer.dispose.call(o);

@@ -80,11 +80,11 @@ function FE3dTemplateRenderable_testReady(){
 //==========================================================
 function FE3dTemplateRenderable_testVisible(p){
    var o = this;
-   var r = false;
+   var result = false;
    if(o._ready){
-      r = o.__base.FE3dMeshRenderable.testVisible.call(o);
+      result = o.__base.FE3dMeshRenderable.testVisible.call(o);
    }
-   return r;
+   return result;
 }
 
 //==========================================================
@@ -202,7 +202,7 @@ function FE3dTemplateRenderable_load(){
    var vertexBufferCount = vertexBuffers.count();
    for(var i = 0; i < vertexBufferCount; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      o._vertexBuffers.set(vertexBuffer._name, vertexBuffer);
+      o._vertexBuffers.set(vertexBuffer.code(), vertexBuffer);
    }
    // 设置蒙皮
    var skins = renderable.skins();
@@ -215,7 +215,7 @@ function FE3dTemplateRenderable_load(){
       for(var i = 0; i < streamCount; i++){
          var stream = streams.at(i);
          var buffer = stream.buffer();
-         o._vertexBuffers.set(buffer._name, buffer);
+         o._vertexBuffers.set(buffer.code(), buffer);
       }
       // 获得骨头集合
       var skinResource = skin.resource();

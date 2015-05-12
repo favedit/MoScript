@@ -77,10 +77,14 @@ function FE3dMovie_process(matrix){
    var tick = RTimer.current();
    var span = tick - o._lastTick;
    if(span > o._interval){
+      var resource = o._resource;
+      var speed = span / 1000;
       // 数据处理
       var code = o._resource.code();
       if(code == 'rotation'){
-         matrix.append(o._matrix);
+         matrix.ry += resource._rotation.y * speed;
+         matrix.updateForce();
+         //matrix.append(o._matrix);
       }
       o._lastTick = tick;
    }

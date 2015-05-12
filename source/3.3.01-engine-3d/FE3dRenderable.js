@@ -167,7 +167,8 @@ function FE3dRenderable_vertexBuffers(){
 function FE3dRenderable_pushVertexBuffer(buffer){
    var o = this;
    // 检查参数
-   if(RString.isEmpty(buffer.code())){
+   var code = buffer.code();
+   if(RString.isEmpty(code)){
       throw new TError('Buffer code is empty.');
    }
    // 获得集合
@@ -176,7 +177,7 @@ function FE3dRenderable_pushVertexBuffer(buffer){
       buffers =  o._vertexBuffers = new TDictionary();
    }
    // 设置缓冲
-   buffers.set(buffer.code(), buffer);
+   buffers.set(code, buffer);
 }
 
 //==========================================================

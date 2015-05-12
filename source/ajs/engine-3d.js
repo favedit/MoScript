@@ -259,14 +259,15 @@ function FE3dRenderable_vertexBuffers(){
 }
 function FE3dRenderable_pushVertexBuffer(buffer){
    var o = this;
-   if(RString.isEmpty(buffer.code())){
+   var code = buffer.code();
+   if(RString.isEmpty(code)){
       throw new TError('Buffer code is empty.');
    }
    var buffers = o._vertexBuffers;
    if(!buffers){
       buffers =  o._vertexBuffers = new TDictionary();
    }
-   buffers.set(buffer.code(), buffer);
+   buffers.set(code, buffer);
 }
 function FE3dRenderable_materialReference(){
    return this._materialReference;

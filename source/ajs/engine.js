@@ -595,6 +595,7 @@ function FStage_dispose(){
 var RStage = new function RStage(){
    var o = this;
    o._started       = false;
+   o._thread        = null;
    o._active        = true;
    o._interval      = 1000 / 40;
    o._stages        = null;
@@ -605,14 +606,32 @@ var RStage = new function RStage(){
    o.register       = RStage_register;
    o.unregister     = RStage_unregister;
    o.active         = RStage_active;
-   o.deactive       = RStage_deactive;
    o.process        = RStage_process;
+   o.deactive       = RStage_deactive;
    o.start          = RStage_start;
    o.construct();
    return o;
 }
-function RStage_onProcess(){
-   RStage.process();
+function RStage_onProcess(event){
+   var o = this;
+   if(!o._active){
+      return;
+   }
+   try{
+      o.lsnsEnterFrame.process(o);
+      var stages = o._stages;
+      if(stages){
+         var count = stages.count();
+         for(var i = 0; i < count; i++){
+            var stage = stages.at(i);
+            stage.process();
+         }
+      }
+      o.lsnsLeaveFrame.process(o);
+      RTimer.update();
+   }catch(e){
+      alert(e);
+   }
 }
 function RStage_construct(){
    var o = this;
@@ -641,6 +660,9 @@ function RStage_active(){
       }
    }
 }
+function RStage_process(){
+   this.onProcess();
+}
 function RStage_deactive(){
    var o = this;
    var stages = o._stages;
@@ -652,27 +674,6 @@ function RStage_deactive(){
       }
    }
 }
-function RStage_process(){
-   var o = this;
-   if(!o._active){
-      return;
-   }
-   try{
-      o.lsnsEnterFrame.process(o);
-      var stages = o._stages;
-      if(stages){
-         var count = stages.count();
-         for(var i = 0; i < count; i++){
-            var stage = stages.at(i);
-            stage.process();
-         }
-      }
-      o.lsnsLeaveFrame.process(o);
-      RTimer.update();
-   }catch(e){
-      alert(e);
-   }
-}
 function RStage_start(interval){
    var o = this;
    if(o._started){
@@ -680,11 +681,14 @@ function RStage_start(interval){
    }
    RE3dEngine.setup();
    o.active();
-   o.process();
+   RTimer.setup();
    if(interval == null){
       interval = o._interval;
    }
-   RTimer.setup();
-   setInterval('RStage_onProcess()', parseInt(interval));
+   o._interval = parseInt(interval);
+   var thread = o._thread = RClass.create(FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(thread);
    o._started = true;
 }

@@ -45,12 +45,12 @@ function FE3rModelMesh_testReady(){
    var o = this;
    if(!o._ready){
       // 测试所有位图加载好
-      var ts = o._textures;
-      if(ts != null){
-         var c = ts.count();
-         for(var i = 0; i < c; i++){
-            var t = ts.value(i);
-            if(!t.testReady()){
+      var textures = o._textures;
+      if(textures){
+         var count = textures.count();
+         for(var i = 0; i < count; i++){
+            var texture = textures.at(i);
+            if(!texture.testReady()){
                return false;
             }
          }
@@ -85,15 +85,15 @@ function FE3rModelMesh_skins(){
 // <T>增加一个蒙皮。</T>
 //
 // @method
-// @return FE3rSkin 蒙皮
+// @param skin:FE3rSkin 蒙皮
 //==========================================================
-function FE3rModelMesh_pushSkin(p){
+function FE3rModelMesh_pushSkin(skin){
    var o = this;
-   var r = o._skins;
-   if(!r){
-      r = o._skins = new TObjects();
+   var skins = o._skins;
+   if(!skins){
+      skins = o._skins = new TObjects();
    }
-   r.push(p);
+   skins.push(skin);
 }
 
 //==========================================================
@@ -102,6 +102,6 @@ function FE3rModelMesh_pushSkin(p){
 // @method
 // @return TArray 骨头集合
 //==========================================================
-function FE3rModelMesh_boneIds(p){
+function FE3rModelMesh_boneIds(){
    return this._boneIds;
 }

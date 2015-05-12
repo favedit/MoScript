@@ -9,6 +9,7 @@ var RStage = new function RStage(){
    //..........................................................
    // @attribute
    o._started       = false;
+   o._thread        = null;
    o._active        = true;
    o._interval      = 1000 / 40;
    o._stages        = null;
@@ -25,8 +26,8 @@ var RStage = new function RStage(){
    o.register       = RStage_register;
    o.unregister     = RStage_unregister;
    o.active         = RStage_active;
-   o.deactive       = RStage_deactive;
    o.process        = RStage_process;
+   o.deactive       = RStage_deactive;
    o.start          = RStage_start;
    //..........................................................
    // @construct
@@ -39,8 +40,31 @@ var RStage = new function RStage(){
 //
 // @method
 //==========================================================
-function RStage_onProcess(){
-   RStage.process();
+function RStage_onProcess(event){
+   var o = this;
+   // 检查参数
+   if(!o._active){
+      return;
+   }
+   // 逻辑处理
+   try{
+      // 前处理
+      o.lsnsEnterFrame.process(o);
+      // 舞台处理
+      var stages = o._stages;
+      if(stages){
+         var count = stages.count();
+         for(var i = 0; i < count; i++){
+            var stage = stages.at(i);
+            stage.process();
+         }
+      }
+      // 后处理
+      o.lsnsLeaveFrame.process(o);
+      RTimer.update();
+   }catch(e){
+      alert(e);
+   }
 }
 
 //==========================================================
@@ -98,6 +122,15 @@ function RStage_active(){
 }
 
 //==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function RStage_process(){
+   this.onProcess();
+}
+
+//==========================================================
 // <T>取消激活处理。</T>
 //
 // @method
@@ -111,38 +144,6 @@ function RStage_deactive(){
          var stage = stages.at(i);
          stage.deactive();
       }
-   }
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-function RStage_process(){
-   var o = this;
-   // 检查参数
-   if(!o._active){
-      return;
-   }
-   // 逻辑处理
-   try{
-      // 前处理
-      o.lsnsEnterFrame.process(o);
-      // 舞台处理
-      var stages = o._stages;
-      if(stages){
-         var count = stages.count();
-         for(var i = 0; i < count; i++){
-            var stage = stages.at(i);
-            stage.process();
-         }
-      }
-      // 后处理
-      o.lsnsLeaveFrame.process(o);
-      RTimer.update();
-   }catch(e){
-      alert(e);
    }
 }
 
@@ -162,14 +163,17 @@ function RStage_start(interval){
    RE3dEngine.setup();
    // 激活舞台
    o.active();
-   // 舞台处理
-   o.process();
-   // 启动时间处理
+   RTimer.setup();
+   // 计算间隔时间
    if(interval == null){
       interval = o._interval;
    }
-   RTimer.setup();
-   // 设置定时器
-   setInterval('RStage_onProcess()', parseInt(interval));
+   o._interval = parseInt(interval);
+   // 启动线程
+   var thread = o._thread = RClass.create(FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(thread);
+   // 设置标志
    o._started = true;
 }

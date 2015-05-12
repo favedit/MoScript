@@ -17,7 +17,9 @@ function FG3dVertexBuffer(o){
    o.formatCd    = FG3dVertexBuffer_formatCd;
    o.setFormatCd = FG3dVertexBuffer_setFormatCd;
    o.stride      = FG3dVertexBuffer_stride;
+   o.setStride   = FG3dVertexBuffer_setStride;
    o.count       = FG3dVertexBuffer_count;
+   o.setCount    = FG3dVertexBuffer_setCount;
    // @method
    o.upload      = RMethod.virtual(o, 'upload');
    return o;
@@ -54,6 +56,16 @@ function FG3dVertexBuffer_stride(){
 }
 
 //==========================================================
+// <T>设置宽度。</T>
+//
+// @method
+// @param stride:Integer 宽度
+//==========================================================
+function FG3dVertexBuffer_setStride(stride){
+   this._stride = stride;
+}
+
+//==========================================================
 // <T>获得总数。</T>
 //
 // @method
@@ -61,4 +73,14 @@ function FG3dVertexBuffer_stride(){
 //==========================================================
 function FG3dVertexBuffer_count(){
    return this._count;
+}
+
+//==========================================================
+// <T>设置总数。</T>
+//
+// @method
+// @param count:Integer 总数
+//==========================================================
+function FG3dVertexBuffer_setCount(count){
+   this._count = count;
 }

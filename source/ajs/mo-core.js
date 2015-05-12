@@ -12890,6 +12890,7 @@ function FMonitorConsole_doInterval(){
 function FMonitorConsole_startup(){
    if(!this.hWindow){
       this.hWindow = window;
+      debugger;
       this.intervalId = this.hWindow.setInterval(this.doInterval, this.interval);
    }
 }
@@ -13347,7 +13348,7 @@ function FThreadConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd     = EScope.Local;
    o._active      = true;
-   o._interval    = 20;
+   o._interval    = 5;
    o._threads     = null;
    o._hWindow     = null;
    o._hIntervalId = null;

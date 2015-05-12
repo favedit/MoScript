@@ -11,7 +11,7 @@ function FThreadConsole(o){
    // @attribute
    o._scopeCd     = EScope.Local;
    o._active      = true;
-   o._interval    = 20;
+   o._interval    = 5;
    o._threads     = null;
    //..........................................................
    // @html

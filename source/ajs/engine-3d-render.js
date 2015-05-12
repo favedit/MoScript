@@ -403,34 +403,41 @@ function FE3rDynamicMesh_mergeMaxCount(){
 function FE3rDynamicMesh_mergeRenderables(){
    return this._mergeRenderables;
 }
-function FE3rDynamicMesh_syncVertexBuffer(p){
+function FE3rDynamicMesh_syncVertexBuffer(renderableBuffer){
    var o = this;
-   var r = p._resource;
-   var rc = r._code;
-   var b = o._vertexBuffers.get(rc);
-   if(!b){
-      var vt = o._vertexTotal;
-      b = o._graphicContext.createVertexBuffer();
-      b._name = rc;
-      b._formatCd = p._formatCd;
-      b._stride = p._stride;
-      switch(p._formatCd){
+   var resource = renderableBuffer.resource();
+   var code = resource.code();
+   var buffer = o._vertexBuffers.get(code);
+   if(!buffer){
+      var formatCd = renderableBuffer.formatCd();
+      var vertexTotal = o._vertexTotal;
+      buffer = o._graphicContext.createVertexBuffer();
+      buffer.setCode(code);
+      buffer.setFormatCd(formatCd);
+      buffer.setStride(renderableBuffer.stride());
+      switch(formatCd){
+         case EG3dAttributeFormat.Float1:
+            buffer._data = new Float32Array(1 * vertexTotal);
+            break;
          case EG3dAttributeFormat.Float2:
-            b._data = new Float32Array(2 * vt);
+            buffer._data = new Float32Array(2 * vertexTotal);
             break;
          case EG3dAttributeFormat.Float3:
-            b._data = new Float32Array(3 * vt);
+            buffer._data = new Float32Array(3 * vertexTotal);
+            break;
+         case EG3dAttributeFormat.Float4:
+            buffer._data = new Float32Array(4 * vertexTotal);
             break;
          case EG3dAttributeFormat.Byte4:
          case EG3dAttributeFormat.Byte4Normal:
-            b._data = new Uint8Array(4 * vt);
+            buffer._data = new Uint8Array(4 * vertexTotal);
             break;
          default:
             throw new TError("Unknown code");
       }
-      o._vertexBuffers.set(rc, b);
+      o._vertexBuffers.set(code, buffer);
    }
-   return b;
+   return buffer;
 }
 function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
@@ -499,39 +506,39 @@ function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
    var gp = gc.capability();
-   var vt = o._vertexTotal;
-   var ft = o._indexTotal;
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
    var rs = o._mergeRenderables;
    var rc = rs.count();
    var rf = rs.first();
    o._material = rf._material;
    o._textures = rf._textures;
-   var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
-   b._name = 'instance';
-   b._stride = 4;
-   b._formatCd = EG3dAttributeFormat.Float1;
-   var vdi = b._data = new Float32Array(vt);
-   o._vertexBuffers.set(b._name, b);
-   var b = o._indexBuffer = gc.createIndexBuffer();
+   var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
+   instanceVertexBuffer.setCode('instance');
+   instanceVertexBuffer.setStride(4);
+   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
+   var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
+   o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
+   var indexBuffer = o._indexBuffer = gc.createIndexBuffer();
    if(gp.optionIndex32){
-      b._strideCd = EG3dIndexStride.Uint32;
-      b._data = new Uint32Array(ft);
+      indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
+      indexBuffer._data = new Uint32Array(indexTotal);
    }else{
-      b._strideCd = EG3dIndexStride.Uint16;
-      b._data = new Uint16Array(ft);
+      indexBuffer.setSstrideCd(EG3dIndexStride.Uint16);
+      indexBuffer._data = new Uint16Array(indexTotal);
    }
-   b._count = ft;
+   indexBuffer._count = indexTotal;
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
       var vc = r.vertexCount();
-      var vbs = r.vertexBuffers();
-      var vbc = vbs.count();
-      for(var vbi = 0; vbi < vbc; vbi++){
-         var vb = vbs.valueAt(vbi);
+      var vertexBuffers = r.vertexBuffers();
+      var vertexBufferCount = vertexBuffers.count();
+      for(var vbi = 0; vbi < vertexBufferCount; vbi++){
+         var vb = vertexBuffers.at(vbi);
          var vbr = vb._resource;
          var vbrc = vbr._code
-         var b = o.syncVertexBuffer(vb);
-         o.mergeVertexBuffer(r, vbrc, b, vbr);
+         var vertexBuffer = o.syncVertexBuffer(vb);
+         o.mergeVertexBuffer(r, vbrc, vertexBuffer, vbr);
       }
       RFloat.fill(vdi, o._vertexPosition, vc, i);
       var ib = r.indexBuffer();
@@ -541,14 +548,14 @@ function FE3rDynamicMesh_build(){
       o._vertexPosition += vc;
       o._indexPosition += ic;
    }
-   var vbs = o._vertexBuffers;
-   var vbc = vbs.count();
-   for(var vbi = 0; vbi < vbc; vbi++){
-      var vb = vbs.valueAt(vbi);
-      vb.upload(vb._data, vb._stride, vt);
-      vb._data = null;
+   var vertexBuffers = o._vertexBuffers;
+   var vertexBufferCount = vertexBuffers.count();
+   for(var i = 0; i < vertexBufferCount; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      vertexBuffer.upload(vertexBuffer._data, vertexBuffer.stride(), vertexTotal);
+      vertexBuffer._data = null;
    }
-   o._indexBuffer.upload(o._indexBuffer._data, ft);
+   o._indexBuffer.upload(o._indexBuffer._data, indexTotal);
    o._indexBuffer._data = null;
 }
 function FE3rDynamicModel(o){
@@ -733,7 +740,7 @@ function FE3rGeometry_loadResource(resource){
          buffer.upload(data, 3 * dataCount);
          o._indexBuffers.push(buffer);
       }else{
-         var buffer = context.createVertexBuffer();
+         var buffer = context.createVertexBuffer(FE3rVertexBuffer);
          buffer.setCode(code);
          buffer._resource = streamResource;
          buffer._vertexCount = dataCount;
@@ -1467,12 +1474,12 @@ function FE3rModelMesh_construct(){
 function FE3rModelMesh_testReady(){
    var o = this;
    if(!o._ready){
-      var ts = o._textures;
-      if(ts != null){
-         var c = ts.count();
-         for(var i = 0; i < c; i++){
-            var t = ts.value(i);
-            if(!t.testReady()){
+      var textures = o._textures;
+      if(textures){
+         var count = textures.count();
+         for(var i = 0; i < count; i++){
+            var texture = textures.at(i);
+            if(!texture.testReady()){
                return false;
             }
          }
@@ -1487,15 +1494,15 @@ function FE3rModelMesh_guid(){
 function FE3rModelMesh_skins(){
    return this._skins;
 }
-function FE3rModelMesh_pushSkin(p){
+function FE3rModelMesh_pushSkin(skin){
    var o = this;
-   var r = o._skins;
-   if(!r){
-      r = o._skins = new TObjects();
+   var skins = o._skins;
+   if(!skins){
+      skins = o._skins = new TObjects();
    }
-   r.push(p);
+   skins.push(skin);
 }
-function FE3rModelMesh_boneIds(p){
+function FE3rModelMesh_boneIds(){
    return this._boneIds;
 }
 function FE3rObject(o){
@@ -1545,18 +1552,13 @@ function FE3rPipeline_loadResource(p){
    ib.upload(rib.data(), rib.count());
 }
 function FE3rSkeleton(o){
-   o = RClass.inherits(this, o, FE3rObject);
-   o._resource    = null;
+   o = RClass.inherits(this, o, FE3rObject, MLinkerResource);
    o._bones       = null;
    o._skins       = null;
-   o.resource     = FE3rSkeleton_resource;
    o.bones        = FE3rSkeleton_bones;
    o.skins        = FE3rSkeleton_skins;
    o.loadResource = FE3rSkeleton_loadResource;
    return o;
-}
-function FE3rSkeleton_resource(){
-   return this._resource;
 }
 function FE3rSkeleton_bones(){
    return this._bones;
@@ -1564,18 +1566,18 @@ function FE3rSkeleton_bones(){
 function FE3rSkeleton_skins(){
    return this._skins;
 }
-function FE3rSkeleton_loadResource(p){
+function FE3rSkeleton_loadResource(resource){
    var o = this;
-   o._resource = p;
-   var rs = p._bones;
-   var c = rs.count();
-   if(c > 0){
-      var bs = o._bones = new TObjects();
-      for(var i = 0; i < c; i++){
-         var r = rs.value(i);
-         var b = RClass.create(FE3rBone);
-         b.loadResource(r);
-         bs.push(b);
+   o._resource = resource;
+   var boneResources = resource._bones;
+   var count = boneResources.count();
+   if(count > 0){
+      var bones = o._bones = new TObjects();
+      for(var i = 0; i < count; i++){
+         var boneResource = boneResources.at(i);
+         var bone = RClass.create(FE3rBone);
+         bone.loadResource(boneResource);
+         bones.push(bone);
       }
    }
 }
@@ -1612,18 +1614,21 @@ function FE3rSkin_resource(){
 function FE3rSkin_streams(){
    return this._streams;
 }
-function FE3rSkin_loadResource(p){
+function FE3rSkin_loadResource(resource){
    var o = this;
-   o._resource = p;
-   var rs = p.streams();
-   if(rs){
-      var ss = o._streams = new TObjects();
-      var c = rs.count();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3rStream);
-         s.linkGraphicContext(o);
-         s.loadResource(rs.get(i));
-         ss.push(s);
+   o._resource = resource;
+   var streamResources = resource.streams();
+   if(streamResources){
+      var count = streamResources.count();
+      if(count > 0){
+         var streams = o._streams = new TObjects();
+         for(var i = 0; i < count; i++){
+            var streamResource = streamResources.at(i);
+            var stream = RClass.create(FE3rStream);
+            stream.linkGraphicContext(o);
+            stream.loadResource(streamResource);
+            streams.push(stream);
+         }
       }
    }
 }
@@ -1645,22 +1650,23 @@ function FE3rStream_buffer(){
 function FE3rStream_loadResource(resource){
    var o = this;
    var code = resource.code();
+   var dataCount = resource._dataCount;
    o._resource = resource;
-   o._vertexCount = resource._dataCount;
-   var buffer = o._buffer = o._graphicContext.createVertexBuffer();
+   o._vertexCount = dataCount;
+   var buffer = o._buffer = o._graphicContext.createVertexBuffer(FE3rVertexBuffer);
    buffer.setCode(code);
-   buffer._resource = resource;
+   buffer.setResource(resource);
    switch(code){
       case "bone_index":
-         buffer._formatCd = EG3dAttributeFormat.Byte4;
+         buffer.setFormatCd(EG3dAttributeFormat.Byte4);
          break;
       case "bone_weight":
-         buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+         buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
          break;
       default:
          throw new TError("Unknown code");
    }
-   buffer.upload(resource._data, resource._dataStride, resource._dataCount);
+   buffer.upload(resource._data, resource._dataStride, dataCount);
 }
 function FE3rTexture(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
@@ -2064,4 +2070,14 @@ function FE3rTrack_dispose(){
    var o = this;
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
+}
+function FE3rVertexBuffer(o){
+   o = RClass.inherits(this, o, FWglVertexBuffer, MLinkerResource);
+   o.dispose = FE3rVertexBuffer_dispose;
+   return o;
+}
+function FE3rVertexBuffer_dispose(){
+   var o = this;
+   o.__base.MLinkerResource.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }

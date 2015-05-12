@@ -45,23 +45,25 @@ function FE3rStream_buffer(){
 //==========================================================
 function FE3rStream_loadResource(resource){
    var o = this;
-   // 设置属性
+   // 获得属性
    var code = resource.code();
+   var dataCount = resource._dataCount;
+   // 设置属性
    o._resource = resource;
-   o._vertexCount = resource._dataCount;
+   o._vertexCount = dataCount;
    // 创建顶点缓冲
-   var buffer = o._buffer = o._graphicContext.createVertexBuffer();
+   var buffer = o._buffer = o._graphicContext.createVertexBuffer(FE3rVertexBuffer);
    buffer.setCode(code);
-   buffer._resource = resource;
+   buffer.setResource(resource);
    switch(code){
       case "bone_index":
-         buffer._formatCd = EG3dAttributeFormat.Byte4;
+         buffer.setFormatCd(EG3dAttributeFormat.Byte4);
          break;
       case "bone_weight":
-         buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+         buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
          break;
       default:
          throw new TError("Unknown code");
    }
-   buffer.upload(resource._data, resource._dataStride, resource._dataCount);
+   buffer.upload(resource._data, resource._dataStride, dataCount);
 }

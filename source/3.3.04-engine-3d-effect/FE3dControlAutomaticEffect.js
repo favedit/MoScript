@@ -19,27 +19,29 @@ function FE3dControlAutomaticEffect(o){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param pg:region:FG3dRegion 渲染区域
-// @param pr:renderable:FG3dRenderable 渲染对象
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dControlAutomaticEffect_drawRenderable(pg, pr){
+function FE3dControlAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
-   var c = o._graphicContext;
-   var p = o._program;
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.currentMatrix();
+   var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
    // 绑定材质
-   var m = pr.material();
-   var mi = m.info();
-   o.bindMaterial(m);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', cameraVpMatrix);
    // 设置材质
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
+   program.setParameter4('fc_alpha', info.alphaBase, info.alphaRate, info.alphaLevel, info.alphaMerge);
+   program.setParameter('fc_ambient_color', info.ambientColor);
    // 绑定所有属性流
-   o.bindAttributes(pr);
+   o.bindAttributes(renderable);
    // 绑定所有取样器
-   o.bindSamplers(pr);
+   o.bindSamplers(renderable);
    // 绘制处理
-   c.drawTriangles(pr.indexBuffer());
+   context.drawTriangles(renderable.indexBuffer());
 }

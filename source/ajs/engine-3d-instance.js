@@ -990,9 +990,12 @@ function FE3dMovie_process(matrix){
    var tick = RTimer.current();
    var span = tick - o._lastTick;
    if(span > o._interval){
+      var resource = o._resource;
+      var speed = span / 1000;
       var code = o._resource.code();
       if(code == 'rotation'){
-         matrix.append(o._matrix);
+         matrix.ry += resource._rotation.y * speed;
+         matrix.updateForce();
       }
       o._lastTick = tick;
    }
@@ -3261,11 +3264,12 @@ function FE3dTemplateDisplay_loadResource(resource){
 }
 function FE3dTemplateDisplay_reloadResource(){
    var o = this;
-   var s = o._shapes;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).reloadResource();
+   var shapes = o._shapes;
+   if(shapes){
+      var count = shapes.count();
+      for(var i = 0; i < count; i++){
+         var shape = shapes.at(i);
+         shape.reloadResource();
       }
    }
 }
@@ -3339,11 +3343,11 @@ function FE3dTemplateRenderable_testReady(){
 }
 function FE3dTemplateRenderable_testVisible(p){
    var o = this;
-   var r = false;
+   var result = false;
    if(o._ready){
-      r = o.__base.FE3dMeshRenderable.testVisible.call(o);
+      result = o.__base.FE3dMeshRenderable.testVisible.call(o);
    }
-   return r;
+   return result;
 }
 function FE3dTemplateRenderable_calculateOutline(){
    var o = this;
@@ -3418,7 +3422,7 @@ function FE3dTemplateRenderable_load(){
    var vertexBufferCount = vertexBuffers.count();
    for(var i = 0; i < vertexBufferCount; i++){
       var vertexBuffer = vertexBuffers.at(i);
-      o._vertexBuffers.set(vertexBuffer._name, vertexBuffer);
+      o._vertexBuffers.set(vertexBuffer.code(), vertexBuffer);
    }
    var skins = renderable.skins();
    if(skins){
@@ -3429,7 +3433,7 @@ function FE3dTemplateRenderable_load(){
       for(var i = 0; i < streamCount; i++){
          var stream = streams.at(i);
          var buffer = stream.buffer();
-         o._vertexBuffers.set(buffer._name, buffer);
+         o._vertexBuffers.set(buffer.code(), buffer);
       }
       var skinResource = skin.resource();
       var boneReferResources = skinResource.boneRefers();

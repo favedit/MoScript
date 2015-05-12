@@ -35,20 +35,22 @@ function FE3dControlAutomaticEffect(o){
    o.drawRenderable = FE3dControlAutomaticEffect_drawRenderable;
    return o;
 }
-function FE3dControlAutomaticEffect_drawRenderable(pg, pr){
+function FE3dControlAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
-   var c = o._graphicContext;
-   var p = o._program;
-   var m = pr.material();
-   var mi = m.info();
-   o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.currentMatrix();
+   var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', cameraVpMatrix);
+   program.setParameter4('fc_alpha', info.alphaBase, info.alphaRate, info.alphaLevel, info.alphaMerge);
+   program.setParameter('fc_ambient_color', info.ambientColor);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
 }
 function FE3dControlFrameEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);

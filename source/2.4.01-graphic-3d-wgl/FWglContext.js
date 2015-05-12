@@ -399,30 +399,42 @@ function FWglContext_createLayout(){
 // <T>创建顶点缓冲。</T>
 //
 // @method
-// @return FVertexBuffer3d 顶点缓冲
+// @param clazz:Function 类对象
+// @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
-function FWglContext_createVertexBuffer(){
+function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var r = RClass.create(FWglVertexBuffer);
-   r.linkGraphicContext(o);
-   r.setup();
+   var buffer = null;
+   if(clazz){
+      buffer = RClass.create(clazz);
+   }else{
+      buffer = RClass.create(FWglVertexBuffer);
+   }
+   buffer.linkGraphicContext(o);
+   buffer.setup();
    o._statistics._vertexBufferTotal++;
-   return r;
+   return buffer;
 }
 
 //==========================================================
 // <T>创建索引缓冲。</T>
 //
 // @method
-// @return FIndexBuffer3d 索引缓冲
+// @param clazz:Function 类对象
+// @return FG3dIndexBuffer 索引缓冲
 //==========================================================
-function FWglContext_createIndexBuffer(){
+function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var r = RClass.create(FWglIndexBuffer);
-   r.linkGraphicContext(o);
-   r.setup();
+   var buffer = null;
+   if(clazz){
+      buffer = RClass.create(clazz);
+   }else{
+      buffer = RClass.create(FWglIndexBuffer);
+   }
+   buffer.linkGraphicContext(o);
+   buffer.setup();
    o._statistics._indexBufferTotal++;
-   return r;
+   return buffer;
 }
 
 //==========================================================

@@ -28,8 +28,8 @@ function FWglVertexBuffer(o){
 function FWglVertexBuffer_setup(){
    var o = this;
    o.__base.FG3dVertexBuffer.setup.call(o);
-   var g = o._graphicContext._native;
-   o._native = g.createBuffer();
+   var graphic = o._graphicContext._native;
+   o._native = graphic.createBuffer();
 }
 
 //==========================================================
@@ -40,8 +40,8 @@ function FWglVertexBuffer_setup(){
 //==========================================================
 function FWglVertexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._native;
-   return g.isBuffer(o._native);
+   var graphic = o._graphicContext._native;
+   return graphic.isBuffer(o._native);
 }
 
 //==========================================================
@@ -98,11 +98,11 @@ function FWglVertexBuffer_upload(data, stride, count){
 //==========================================================
 function FWglVertexBuffer_dispose(){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    // 释放对象
-   var n = o._native;
-   if(n){
-      c._native.deleteBuffer(n);
+   var buffer = o._native;
+   if(buffer){
+      context._native.deleteBuffer(buffer);
       o._native = null;
    }
    // 父处理

@@ -72,6 +72,7 @@ function FMonitorConsole_doInterval(){
 function FMonitorConsole_startup(){
    if(!this.hWindow){
       this.hWindow = window;
+      debugger;
       this.intervalId = this.hWindow.setInterval(this.doInterval, this.interval);
    }
 }

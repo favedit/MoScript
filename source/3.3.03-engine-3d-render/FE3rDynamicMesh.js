@@ -75,39 +75,46 @@ function FE3rDynamicMesh_mergeRenderables(){
 // <T>根据名称查找纹理。</T>
 //
 // @method
-// @param p:name:String 名称
+// @param renderableBuffer:String 名称
 // @return FRenderIndexBuffer 纹理
 //==========================================================
-function FE3rDynamicMesh_syncVertexBuffer(p){
+function FE3rDynamicMesh_syncVertexBuffer(renderableBuffer){
    var o = this;
    // 查找缓冲
-   var r = p._resource;
-   var rc = r._code;
-   var b = o._vertexBuffers.get(rc);
+   var resource = renderableBuffer.resource();
+   var code = resource.code();
+   var buffer = o._vertexBuffers.get(code);
    // 创建缓冲
-   if(!b){
-      var vt = o._vertexTotal;
-      b = o._graphicContext.createVertexBuffer();
-      b._name = rc;
-      b._formatCd = p._formatCd;
-      b._stride = p._stride;
-      switch(p._formatCd){
+   if(!buffer){
+      var formatCd = renderableBuffer.formatCd();
+      var vertexTotal = o._vertexTotal;
+      buffer = o._graphicContext.createVertexBuffer();
+      buffer.setCode(code);
+      buffer.setFormatCd(formatCd);
+      buffer.setStride(renderableBuffer.stride());
+      switch(formatCd){
+         case EG3dAttributeFormat.Float1:
+            buffer._data = new Float32Array(1 * vertexTotal);
+            break;
          case EG3dAttributeFormat.Float2:
-            b._data = new Float32Array(2 * vt);
+            buffer._data = new Float32Array(2 * vertexTotal);
             break;
          case EG3dAttributeFormat.Float3:
-            b._data = new Float32Array(3 * vt);
+            buffer._data = new Float32Array(3 * vertexTotal);
+            break;
+         case EG3dAttributeFormat.Float4:
+            buffer._data = new Float32Array(4 * vertexTotal);
             break;
          case EG3dAttributeFormat.Byte4:
          case EG3dAttributeFormat.Byte4Normal:
-            b._data = new Uint8Array(4 * vt);
+            buffer._data = new Uint8Array(4 * vertexTotal);
             break;
          default:
             throw new TError("Unknown code");
       }
-      o._vertexBuffers.set(rc, b);
+      o._vertexBuffers.set(code, buffer);
    }
-   return b;
+   return buffer;
 }
 
 //==========================================================
@@ -204,8 +211,8 @@ function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
    var gp = gc.capability();
-   var vt = o._vertexTotal;
-   var ft = o._indexTotal;
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
    var rs = o._mergeRenderables;
    var rc = rs.count();
    // 获得首个渲染对象
@@ -213,35 +220,35 @@ function FE3rDynamicMesh_build(){
    o._material = rf._material;
    o._textures = rf._textures;
    // 创建顶点实例流
-   var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
-   b._name = 'instance';
-   b._stride = 4;
-   b._formatCd = EG3dAttributeFormat.Float1;
-   var vdi = b._data = new Float32Array(vt);
-   o._vertexBuffers.set(b._name, b);
+   var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
+   instanceVertexBuffer.setCode('instance');
+   instanceVertexBuffer.setStride(4);
+   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
+   var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
+   o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
    // 创建索引流
-   var b = o._indexBuffer = gc.createIndexBuffer();
+   var indexBuffer = o._indexBuffer = gc.createIndexBuffer();
    if(gp.optionIndex32){
-      b._strideCd = EG3dIndexStride.Uint32;
-      b._data = new Uint32Array(ft);
+      indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
+      indexBuffer._data = new Uint32Array(indexTotal);
    }else{
-      b._strideCd = EG3dIndexStride.Uint16;
-      b._data = new Uint16Array(ft);
+      indexBuffer.setSstrideCd(EG3dIndexStride.Uint16);
+      indexBuffer._data = new Uint16Array(indexTotal);
    }
-   b._count = ft;
+   indexBuffer._count = indexTotal;
    // 合并顶点
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
       var vc = r.vertexCount();
-      var vbs = r.vertexBuffers();
-      var vbc = vbs.count();
-      for(var vbi = 0; vbi < vbc; vbi++){
-         var vb = vbs.valueAt(vbi);
+      var vertexBuffers = r.vertexBuffers();
+      var vertexBufferCount = vertexBuffers.count();
+      for(var vbi = 0; vbi < vertexBufferCount; vbi++){
+         var vb = vertexBuffers.at(vbi);
          var vbr = vb._resource;
          var vbrc = vbr._code
          // 创建缓冲
-         var b = o.syncVertexBuffer(vb);
-         o.mergeVertexBuffer(r, vbrc, b, vbr);
+         var vertexBuffer = o.syncVertexBuffer(vb);
+         o.mergeVertexBuffer(r, vbrc, vertexBuffer, vbr);
       }
       // 生成顶点实例数据
       RFloat.fill(vdi, o._vertexPosition, vc, i);
@@ -255,14 +262,14 @@ function FE3rDynamicMesh_build(){
       o._indexPosition += ic;
    }
    // 上传顶点数据
-   var vbs = o._vertexBuffers;
-   var vbc = vbs.count();
-   for(var vbi = 0; vbi < vbc; vbi++){
-      var vb = vbs.valueAt(vbi);
-      vb.upload(vb._data, vb._stride, vt);
-      vb._data = null;
+   var vertexBuffers = o._vertexBuffers;
+   var vertexBufferCount = vertexBuffers.count();
+   for(var i = 0; i < vertexBufferCount; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      vertexBuffer.upload(vertexBuffer._data, vertexBuffer.stride(), vertexTotal);
+      vertexBuffer._data = null;
    }
    // 上传索引数据
-   o._indexBuffer.upload(o._indexBuffer._data, ft);
+   o._indexBuffer.upload(o._indexBuffer._data, indexTotal);
    o._indexBuffer._data = null;
 }

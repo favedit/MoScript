@@ -1,9 +1,11 @@
 function MLinkerResource(o){
    o = RClass.inherits(this, o);
-   o._resource    = null;
-   o.resource     = MLinkerResource_resource;
-   o.setResource  = MLinkerResource_setResource;
-   o.loadResource = MLinkerResource_loadResource;
+   o._resource      = null;
+   o.resource       = MLinkerResource_resource;
+   o.setResource    = MLinkerResource_setResource;
+   o.loadResource   = MLinkerResource_loadResource;
+   o.reloadResource = MLinkerResource_reloadResource;
+   o.dispose        = MLinkerResource_dispose;
    return o;
 }
 function MLinkerResource_resource(){
@@ -14,6 +16,14 @@ function MLinkerResource_setResource(resource){
 }
 function MLinkerResource_loadResource(resource){
    this._resource = resource;
+}
+function MLinkerResource_reloadResource(resource){
+   var o = this;
+   o.loadResource(resource);
+}
+function MLinkerResource_dispose(){
+   var o = this;
+   o._resource = null;
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);

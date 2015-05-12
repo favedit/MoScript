@@ -5,31 +5,18 @@
 // @history 150130
 //==========================================================
 function FE3rSkeleton(o){
-   o = RClass.inherits(this, o, FE3rObject);
+   o = RClass.inherits(this, o, FE3rObject, MLinkerResource);
    //..........................................................
-   // @attribute
-   o._resource    = null;
    // @attribute
    o._bones       = null;
    o._skins       = null;
    //..........................................................
    // @method
-   o.resource     = FE3rSkeleton_resource;
    o.bones        = FE3rSkeleton_bones;
    o.skins        = FE3rSkeleton_skins;
    // @method
    o.loadResource = FE3rSkeleton_loadResource;
    return o;
-}
-
-//==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @return FE3sModel 资源
-//==========================================================
-function FE3rSkeleton_resource(){
-   return this._resource;
 }
 
 //==========================================================
@@ -56,22 +43,23 @@ function FE3rSkeleton_skins(){
 // <T>加载资源信息。</T>
 //
 // @method
-// @param p:resource:FRsModel 资源信息
+// @param resource:FE3sSkeleton 资源信息
 //==========================================================
-function FE3rSkeleton_loadResource(p){
+function FE3rSkeleton_loadResource(resource){
    var o = this;
    // 设置属性
-   o._resource = p;
+   o._resource = resource;
    // 设置骨头集合
-   var rs = p._bones;
-   var c = rs.count();
-   if(c > 0){
-      var bs = o._bones = new TObjects();
-      for(var i = 0; i < c; i++){
-         var r = rs.value(i);
-         var b = RClass.create(FE3rBone);
-         b.loadResource(r);
-         bs.push(b);
+   var boneResources = resource._bones;
+   var count = boneResources.count();
+   if(count > 0){
+      var bones = o._bones = new TObjects();
+      for(var i = 0; i < count; i++){
+         var boneResource = boneResources.at(i);
+         // 创建骨头
+         var bone = RClass.create(FE3rBone);
+         bone.loadResource(boneResource);
+         bones.push(bone);
       }
    }
 }

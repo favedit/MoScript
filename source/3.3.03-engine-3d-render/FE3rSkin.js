@@ -42,22 +42,26 @@ function FE3rSkin_streams(){
 // <T>加载资源信息。</T>
 //
 // @method
-// @param p:resource:FRsModel 资源信息
+// @param resource:FRsModel 资源信息
 //==========================================================
-function FE3rSkin_loadResource(p){
+function FE3rSkin_loadResource(resource){
    var o = this;
    // 设置属性
-   o._resource = p;
+   o._resource = resource;
    // 读取数据流集合
-   var rs = p.streams();
-   if(rs){
-      var ss = o._streams = new TObjects();
-      var c = rs.count();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3rStream);
-         s.linkGraphicContext(o);
-         s.loadResource(rs.get(i));
-         ss.push(s);
+   var streamResources = resource.streams();
+   if(streamResources){
+      var count = streamResources.count();
+      if(count > 0){
+         var streams = o._streams = new TObjects();
+         for(var i = 0; i < count; i++){
+            var streamResource = streamResources.at(i);
+            // 创建数据流
+            var stream = RClass.create(FE3rStream);
+            stream.linkGraphicContext(o);
+            stream.loadResource(streamResource);
+            streams.push(stream);
+         }
       }
    }
 }

@@ -235,7 +235,7 @@ function FE3rGeometry_loadResource(resource){
          o._indexBuffers.push(buffer);
       }else{
          // 创建顶点缓冲
-         var buffer = context.createVertexBuffer();
+         var buffer = context.createVertexBuffer(FE3rVertexBuffer);
          buffer.setCode(code);
          buffer._resource = streamResource;
          buffer._vertexCount = dataCount;

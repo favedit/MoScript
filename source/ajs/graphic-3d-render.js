@@ -870,7 +870,9 @@ function FG3dVertexBuffer(o){
    o.formatCd    = FG3dVertexBuffer_formatCd;
    o.setFormatCd = FG3dVertexBuffer_setFormatCd;
    o.stride      = FG3dVertexBuffer_stride;
+   o.setStride   = FG3dVertexBuffer_setStride;
    o.count       = FG3dVertexBuffer_count;
+   o.setCount    = FG3dVertexBuffer_setCount;
    o.upload      = RMethod.virtual(o, 'upload');
    return o;
 }
@@ -883,8 +885,14 @@ function FG3dVertexBuffer_setFormatCd(formatCd){
 function FG3dVertexBuffer_stride(){
    return this._stride;
 }
+function FG3dVertexBuffer_setStride(stride){
+   this._stride = stride;
+}
 function FG3dVertexBuffer_count(){
    return this._count;
+}
+function FG3dVertexBuffer_setCount(count){
+   this._count = count;
 }
 function FG3dVertexShader(o){
    o = RClass.inherits(this, o, FG3dShader);
