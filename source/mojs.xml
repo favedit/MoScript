@@ -211,5 +211,8 @@
         <File source='/ajs/mo-engine.js'/>
         <File source='/ajs/engine-3d-server.js'/>
      </FileMerger>
+     <FileMerger target='/ajs/mo-demo.js'>
+        <File source='/ajs/demo.js'/>
+     </FileMerger>
   </FileMergerCollection>
 </Configuration>

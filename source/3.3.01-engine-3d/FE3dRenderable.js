@@ -278,8 +278,13 @@ function FE3dRenderable_pushTexture(texture){
    if(!textures){
       textures = o._textures = new TDictionary();
    }
-   var code = texture.code();
-   textures.set(code, texture);
+   if(texture._name){
+      var code = texture._name;
+      textures.set(code, texture);
+   }else{
+      var code = texture.code();
+      textures.set(code, texture);
+   }
 }
 
 //==========================================================

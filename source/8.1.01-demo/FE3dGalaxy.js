@@ -49,6 +49,7 @@ function FE3dGalaxy(o){
 function FE3dGalaxy_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
    o._cellSize = new SSize2();
    o._cellSize.set(2, 2);
    o._size = new SSize2();
@@ -143,28 +144,28 @@ function FE3dGalaxy_setup(p){
    //..........................................................
    // 上传顶点实例数据
    var vb = o._vertexSpecialBuffer = c.createVertexBuffer();
-   vb._name = 'special';
+   vb.setCode('special');
    vb._formatCd = EG3dAttributeFormat.Float4;
    vb.upload(o._vertexSpecialData, 4 * 4, vc);
-   o._vertexBuffers.set(vb._name, vb);
+   o.pushVertexBuffer(vb);
    // 上传顶点坐标数据
    var vb = o._vertexPositionBuffer = c.createVertexBuffer();
-   vb._name = 'position';
+   vb.setCode('position');
    vb._formatCd = EG3dAttributeFormat.Float3;
    vb.upload(o._vertexPositionData, 4 * 3, vc);
-   o._vertexBuffers.set(vb._name, vb);
+   o.pushVertexBuffer(vb);
    // 上传顶点纹理数据
    var vb = o._vertexCoordBuffer = c.createVertexBuffer();
-   vb._name = 'coord';
+   vb.setCode('coord');
    vb._formatCd = EG3dAttributeFormat.Float2;
    vb.upload(o._vertexCoordData, 4 * 2, vc);
-   o._vertexBuffers.set(vb._name, vb);
+   o.pushVertexBuffer(vb);
    // 上传顶点颜色数据
    var vb = o._vertexColorBuffer = c.createVertexBuffer();
-   vb._name = 'color';
+   vb.setCode('color');
    vb._formatCd = EG3dAttributeFormat.Byte4Normal;
    vb.upload(o._vertexColorData, 4, vc);
-   o._vertexBuffers.set(vb._name, vb);
+   o.pushVertexBuffer(vb);
    // 上传索引数据
    var ib = o._indexBuffer = c.createIndexBuffer();
    var i32 = context.capability().optionIndex32;
