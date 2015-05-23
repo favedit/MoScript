@@ -40,6 +40,8 @@ function FG3dProgram(o){
    o.setSampler        = FG3dProgram_setSampler;
    // @method
    o.upload            = RMethod.virtual(o, 'upload');
+   // @method
+   o.dispose           = FG3dProgram_dispose;
    return o;
 }
 
@@ -305,4 +307,19 @@ function FG3dProgram_setSampler(pn, pt){
    }
    // 设置内容
    o._graphicContext.bindTexture(p._slot, p._index, pt);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FG3dProgram_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   // 释放对象
+   o._vertexShader = RObject.dispose(o._vertexShader);
+   o._fragmentShader = RObject.dispose(o._fragmentShader);
+   // 父处理
+   o.__base.FG3dObject.dispose.call(o);
 }

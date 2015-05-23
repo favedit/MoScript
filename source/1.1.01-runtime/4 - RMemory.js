@@ -9,23 +9,118 @@ var RMemory = new function RMemory(){
    var o = this;
    //..........................................................
    // @attribute
-   o.objects       = new Array();
-   o.instances     = new Object();
+   o._entryUnused  = null;;
+   o._pools        = new Object();
+   // @attribute
+   //o.objects       = new Array();
+   //o.instances     = new Object();
    //..........................................................
    // @method
-   o.isObject      = RMemory_isObject;
+   o.entryAlloc    = RMemory_entryAlloc;
+   o.entryFree     = RMemory_entryFree;
+   // @method
    o.alloc         = RMemory_alloc;
-   o.create        = RMemory_create;
-   o.register      = RMemory_register;
-   o.disposeObject = RMemory_disposeObject;
-   o.dispose       = RMemory_dispose;
-   o.unlink        = RMemory_unlink;
    o.free          = RMemory_free;
-   o.freeHtml      = RMemory_freeHtml;
-   o.release       = RMemory_release;
    o.refresh       = RMemory_refresh;
+   // @method
+   //o.isObject      = RMemory_isObject;
+   //o.create        = RMemory_create;
+   //o.register      = RMemory_register;
+   //o.disposeObject = RMemory_disposeObject;
+   //o.dispose       = RMemory_dispose;
+   //o.unlink        = RMemory_unlink;
+   //o.freeHtml      = RMemory_freeHtml;
+   //o.release       = RMemory_release;
    return o;
 }
+
+//============================================================
+// <T>内部收集一个节点。</T>
+//
+// @return 节点
+//============================================================
+function RMemory_entryAlloc(){
+   var o = this;
+   var entry = null;
+   var unused = o._entryUnused;
+   if(unused){
+      entry = unused;
+      o._entryUnused = unused.next;
+   }else{
+      entry = new SMemoryPoolEntry();
+   }
+   return entry;
+}
+
+//============================================================
+// <T>内部释放一个节点。</T>
+//
+// @param entry 节点
+//============================================================
+function RMemory_entryFree(entry){
+   var o = this;
+   RAssert.debugNotNull(entry);
+   entry.next = o._entryUnused;
+   o._entryUnused = entry;
+}
+
+//==========================================================
+// <T>收集一个类对象的实例。</T>
+//
+// @method
+// @param clazz:Function 类函数
+// @return Object 实例
+//==========================================================
+function RMemory_alloc(clazz){
+   var o = this;
+   // 获得类名
+   RAssert.debugNotNull(clazz);
+   var className = RRuntime.className(clazz);
+   // 获得缓冲池
+   var pools = o._pools;
+   var pool = pools[className];
+   if(!pool){
+      pool = new TMemoryPool();
+      pool._constructor = clazz;
+      pools[className] = pool;
+   }
+   // 创建对象
+   return pool.alloc();
+}
+
+//==========================================================
+// <T>释放一个实例。</T>
+//
+// @method
+// @param value:Object 实例
+//==========================================================
+function RMemory_free(value){
+   RAssert.debugNotNull(value);
+   var pool = value.__pool;
+   RAssert.debugNotNull(pool);
+   pool.free(value);
+}
+
+//==========================================================
+// <T>强制释放当前内存中所有对象实例。</T>
+//
+// @method
+//==========================================================
+function RMemory_refresh(){
+   CollectGarbage();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>测试一个对象是否可回收对象。</T>
@@ -40,20 +135,6 @@ var RMemory = new function RMemory(){
 function RMemory_isObject(o){
    var t = typeof(o);
    return ('boolean' != t) && ('number' != t) && ('string' != t) && ('date' != t) && ('function' != t) && (o instanceof Object);
-}
-
-//==========================================================
-// <T>从内存中创建一个类对象的实例。</T>
-//
-// @method
-// @param c:class:Function 类的构造函数
-// @return Object 类对象的实例
-// @history 090607 MAOCY 创建
-//==========================================================
-function RMemory_alloc(c){
-   var o = new c();
-   this.objects.push(o);
-   return o;
 }
 
 //==========================================================
@@ -164,19 +245,6 @@ function RMemory_unlink(o){
 }
 
 //==========================================================
-// <T>释放一个对象。</T>
-// <P>先执行内部所有对象的析构函数，再断开所有对象的关联关系。</P>
-//
-// @method
-// @param o:object:Object 要释放的对象
-// @history 090607 MAOCY 创建
-//==========================================================
-function RMemory_free(o){
-   this.dispose(o);
-   this.unlink(o);
-}
-
-//==========================================================
 // <T>释放一个页面对象。</T>
 //
 // @method
@@ -200,16 +268,4 @@ function RMemory_release(){
    o.free(o.objects);
    o.free(o.instances);
    o.refresh();
-}
-
-//==========================================================
-// <T>强制释放当前内存中所有对象实例。</T>
-//
-// @method
-// @history 090627 MAOCY 创建
-//==========================================================
-function RMemory_refresh(){
-   if(RContext.optionGarbage){
-      CollectGarbage();
-   }
 }

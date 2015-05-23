@@ -90,9 +90,9 @@ function FWglLayout_dispose(){
    var o = this;
    var c = o._graphicContext;
    // 释放对象
-   var n = o._native;
-   if(n){
-      c._nativeLayout.deleteVertexArrayOES(n);
+   var layout = o._native;
+   if(layout){
+      c._nativeLayout.deleteVertexArrayOES(layout);
       o._native = null;
    }
    // 父处理

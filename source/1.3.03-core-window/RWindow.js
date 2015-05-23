@@ -12,15 +12,20 @@ var RWindow = new function RWindow(){
    o._optionSelect     = true;
    // @attribute
    o._statusEnable     = true;
+   o._disableDeep      = 0;
    // @attribute
    o._localStorage     = null;
    o._sessionStorage   = null;
    // @attribute
-   o._mouseEvent       = new SMouseEvent();
-   o._keyEvent         = new SKeyboardEvent();
-   o._resizeEvent      = new SResizeEvent();
-   o._orientationEvent = new SEvent();
-   o._disableDeep      = 0;
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
+   // @attribute
+   o._eventMouse       = new SMouseEvent();
+   o._eventKey         = new SKeyboardEvent();
+   o._eventResize      = new SResizeEvent();
+   o._eventOrientation = new SEvent();
+   o._eventUnload      = new SEvent();
    //..........................................................
    // @html
    o._hWindow          = null;
@@ -73,39 +78,13 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   o.appendElement     = RWindow_appendElement;
    // @method
    o.redirect          = RWindow_redirect;
    o.historyForward    = RWindow_historyForward;
    o.historyBack       = RWindow_historyBack;
-
-
-
-
-   //..........................................................
-   // @attribute
-   //o._builder          = null;
-   //o.inMoving          = false;
-   //o.inSizing          = false;
-   //..........................................................
-   // @html
-   //o._hShadow           = null;
-   //..........................................................
-   // @event
-   //o.onUnload          = RWindow_onUnload;
-   //o.onResize          = RWindow_onResize;
-   //..........................................................
    // @method
-   //o.panel             = RWindow_panel;
-   //o.screenPos         = RWindow_screenPos;
-   //o.clientPos         = RWindow_clientPos;
-   //o.offsetPos         = RWindow_offsetPos;
-   //o.showShadow        = RWindow_showShadow;
-   //o.moveCenter        = RWindow_moveCenter;
-   //o.appendControl     = RWindow_appendControl;
-   //o.appendElement     = RWindow_appendElement;
-   //o.appendContainer   = RWindow_appendContainer;
-   //o.containerTop      = RWindow_containerTop;
-   //o.dispose           = RWindow_dispose;
+   o.dispose           = RWindow_dispose;
    return o;
 }
 
@@ -120,7 +99,7 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseDown.process(e);
 }
@@ -136,7 +115,7 @@ function RWindow_ohMouseMove(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseMove.process(e);
 }
@@ -152,7 +131,7 @@ function RWindow_ohMouseUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseUp.process(e);
 }
@@ -168,7 +147,7 @@ function RWindow_ohMouseWheel(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseWheel.process(e);
 }
@@ -177,73 +156,123 @@ function RWindow_ohMouseWheel(p){
 // <T>键盘按下处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param hEvent:htmlEvent 事件
 //==========================================================
-function RWindow_ohKeyDown(p){
+function RWindow_ohKeyDown(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyDown.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyDown.process(event);
+//   RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
+//   var s = e.srcElement ? e.srcElement : e.target;
+//   var t = s.tagName;
+//   if(EKeyCode.BackSpace == e.keyCode){
+//      // 禁止在非输入框内输入退格键
+//      if('INPUT' == t){
+//         if(s.readOnly || 'checkbox' == s.type){
+//            return RKey.eventClear(e);
+//         }
+//      }else if('TEXTAREA' == t){
+//         if(s.readOnly){
+//            return RKey.eventClear(e);
+//         }
+//      }else{
+//         return RKey.eventClear(e);
+//      }
+//   }
+//   // 纷发按键消息
+//   o.__keyDownEvent.attach(e);
+//   o.lsnsKeyDown.process(o.__keyDownEvent);
+//   // 处理回车键
+//   if(EKeyCode.Enter == e.keyCode){
+//      if('INPUT' == t){
+//         if(REvent.process(s, e)){
+//            RKey.eventClear(e);
+//         }
+//      }
+//   }
 }
 
 //==========================================================
 // <T>键盘抬起处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param hEvent:htmlEvent 事件
 //==========================================================
-function RWindow_ohKeyUp(p){
+function RWindow_ohKeyUp(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyUp.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyUp.process(event);
 }
 
 //==========================================================
 // <T>键盘点击处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param hEvent:htmlEvent 事件
 //==========================================================
-function RWindow_ohKeyPress(p){
+function RWindow_ohKeyPress(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyPress.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyPress.process(event);
 }
 
 //==========================================================
 // <T>改变大小处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param event:htmlEvent 事件
 //==========================================================
-function RWindow_ohResize(p){
+function RWindow_ohResize(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._resizeEvent;
-   e.attachEvent(p);
-   o.lsnsResize.process(e);
+   // 接收事件
+   var event = o._eventResize;
+   event.attachEvent(hEvent);
+   o.lsnsResize.process(event);
+//   var o = this;
+//   var h = o._hDisablePanel;
+//   if(h){
+//      if('block' == h.style.display){
+//         var s = h.style;
+//         var hd = o.hDocument;
+//         s.pixelLeft = 0;
+//         s.pixelTop = 0
+//         s.pixelWidth = hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth;
+//         s.pixelHeight = hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight;
+//      }
+//   }
+//   // 根据窗口大小，不发送重复事件
+//   if(o.oldBodyWidth == o._hContainer.offsetWidth && o.oldBodyHeight == o._hContainer.offsetHeight){
+//      return;
+//   }
+//   o.oldBodyWidth = o._hContainer.offsetWidth;
+//   o.oldBodyHeight = o._hContainer.offsetHeight;
+//   // 通知所有控件，窗口改变大小
+//   o.onResize();
+//   o.lsnsResize.process(e);
 }
 
 //==========================================================
 // <T>选取处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param event:htmlEvent 事件
 //==========================================================
-function RWindow_ohSelect(p){
+function RWindow_ohSelect(event){
    return RWindow._optionSelect;
 }
 
@@ -251,19 +280,19 @@ function RWindow_ohSelect(p){
 // <T>选取处理。</T>
 //
 // @method
-// @param p:event:htmlEvent 事件
+// @param hEvent:htmlEvent 事件
 //==========================================================
-function RWindow_ohOrientation(p){
+function RWindow_ohOrientation(hEvent){
    var o = RWindow;
-   var e = o._orientationEvent;
+   var event = o._eventOrientation;
    if((window.orientation == 180) || (window.orientation == 0)){
-      e.orientationCd = EOrientation.Vertical;
+      event.orientationCd = EOrientation.Vertical;
    }else if((window.orientation == 90) || (window.orientation == -90)){
-      e.orientationCd = EOrientation.Horizontal;
+      event.orientationCd = EOrientation.Horizontal;
    }else{
       throw new TError(o, 'Unknown orientation mode.');
    }
-   o.lsnsOrientation.process(e);
+   o.lsnsOrientation.process(event);
 }
 
 //==========================================================
@@ -273,6 +302,12 @@ function RWindow_ohOrientation(p){
 // @param event:htmlEvent 事件
 //==========================================================
 function RWindow_ohUnload(event){
+   var o = RWindow;
+   // 释放处理
+   var event = o._eventUnload;
+   o.lsnsUnload.process(event);
+   // 释放窗口
+   RWindow.dispose();
 }
 
 //==========================================================
@@ -280,12 +315,12 @@ function RWindow_ohUnload(event){
 // <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
 //
 // @method
-// @param w:window:<Window> 窗口对象
+// @param hHtml:<Window> 窗口对象
 //==========================================================
-function RWindow_connect(w){
+function RWindow_connect(hHtml){
    var o = this;
    // 设置属性
-   var hWindow = o._hWindow = w;
+   var hWindow = o._hWindow = hHtml;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    // 关联鼠标事件
@@ -496,6 +531,17 @@ function RWindow_setEnable(v, f){
 }
 
 //==========================================================
+// <T>追加页面元素。</T>
+//
+// @method
+// @param hPanel:HtmlTag 页面元素
+//==========================================================
+function RWindow_appendElement(hPanel){
+   RAssert.debugNotNull(control);
+   this._hContainer.appendChild(hPanel);
+}
+
+//==========================================================
 // <T>跳转到指定地址。</T>
 //
 // @method
@@ -520,303 +566,48 @@ function RWindow_historyForward(){
 function RWindow_historyBack(){
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//==========================================================
-// <T>卸载窗口时进行处理。</T>
-//
-// @method
-//==========================================================
-function RWindow_onUnload(){
-   RMemory.release();
-}
-
-//==========================================================
-// <T>窗口大小改变时进行处理。</T>
-// <P>重新调整禁止层的大小。</P>
-//
-// @method
-//==========================================================
-function RWindow_onResize(){
-   var o = this;
-   var h = o._hDisablePanel;
-   if(h){
-      if('block' == h.style.display){
-         var s = h.style;
-         var hd = o.hDocument;
-         s.pixelLeft = 0;
-         s.pixelTop = 0
-         s.pixelWidth = hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth;
-         s.pixelHeight = hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight;
-      }
-   }
-}
-
-//==========================================================
-// <T>关联当前窗口。</T>
-// <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
-//
-// @method
-// @param w:window:<Window> 窗口对象
-//==========================================================
-function RWindow_connect2(w){
-   var o = this;
-   o.hWindow = w;
-   var hd = o.hDocument = w.document;
-   var hb = o._hContainer = o.hContainer = hd.body;
-   // 关联窗口的加载和卸载事件
-   //o.processLoad = hb.onload;
-   //hb.onload = function(){
-      //o.lsnsLoad.process(o, o.hWindow.event);
-      //if(o.processLoad){
-         //o.processLoad();
-      //}
-   //};
-   o.processUnload = hb.onunload;
-   hb.onunload = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsUnload.process(e);
-      o.onUnload();
-   };
-   hb.onmouseover = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseOver.process(e);
-   };
-   hb.onmousewheel = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseWheel.process(e);
-   };
-   // 关联窗口的所有键盘事件
-   hb.onkeydown = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
-      var s = e.srcElement ? e.srcElement : e.target;
-      var t = s.tagName;
-      if(EKeyCode.BackSpace == e.keyCode){
-         // 禁止在非输入框内输入退格键
-         if('INPUT' == t){
-            if(s.readOnly || 'checkbox' == s.type){
-               return RKey.eventClear(e);
-            }
-         }else if('TEXTAREA' == t){
-            if(s.readOnly){
-               return RKey.eventClear(e);
-            }
-         }else{
-            return RKey.eventClear(e);
-         }
-      }
-      // 纷发按键消息
-      o.__keyDownEvent.attach(e);
-      o.lsnsKeyDown.process(o.__keyDownEvent);
-      // 处理回车键
-      if(EKeyCode.Enter == e.keyCode){
-         if('INPUT' == t){
-            if(REvent.process(s, e)){
-               RKey.eventClear(e);
-            }
-         }
-      }
-   };
-   hb.onkeyup = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsKeyUp.process(e);
-   };
-   hb.onkeypress = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.debug(o, 'Window key press. (key_code={1})', e.keyCode);
-      o.lsnsKeyPress.process(e);
-   };
-   // 关联窗口的改变大小事件
-   hb.onresize = function(e){
-      if(!e){
-         e = w.event;
-      }
-      // 根据窗口大小，不发送重复事件
-      if(o.oldBodyWidth == o._hContainer.offsetWidth && o.oldBodyHeight == o._hContainer.offsetHeight){
-         return;
-      }
-      o.oldBodyWidth = o._hContainer.offsetWidth;
-      o.oldBodyHeight = o._hContainer.offsetHeight;
-      // 通知所有控件，窗口改变大小
-      o.onResize();
-      o.lsnsResize.process(e);
-   };
-}
-
-//==========================================================
-// <T>获得窗口关联的层对象。</T>
-//
-// @method
-// @param t:type:String 类型名称
-// @return <Html> 页面元素对象
-//==========================================================
-function RWindow_panel(t){
-   var o = this;
-   if(EPanel.Disable == t){
-      // 获得禁止操作的面板
-      var h = o._hDisablePanel;
-      if(!h){
-         h = o._hDisablePanel = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Disable');
-         var hi = RBuilder.append(h, 'IMG')
-         hi.src = RRes.iconPath('#ctl.RWindow_Loading');
-         hi.style.margin = document.body.offsetHeight / 2;
-         h.style.zIndex = ELayer.Disable;
-      }
-      return h;
-   }
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_screenPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.screenX;
-      p.y = e.screenY;
-      return p;
-   }
-   return new TPoint(e.screenX, e.screenY);
-}
-
-//==========================================================
-// position
-//==========================================================
-function RWindow_clientPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.clientX;
-      p.y = e.clientY;
-      return p;
-   }
-   return new TPoint(e.clientX, e.clientY);
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_offsetPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.offsetX;
-      p.y = e.offsetY;
-      return p;
-   }
-   return new TPoint(e.offsetX, e.offsetY);
-}
-
-//==========================================================
-// x, y, width, height, flag
-//==========================================================
-function RWindow_showShadow(v, r){
-   var o = this;
-   if(!o._hShadow){
-      o._hShadow = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Shadow');
-      o._hShadow.style.zIndex = ELayer.Shadow;
-   }
-   var st = o._hShadow.style;
-   if(v == false){
-      st.display = 'none';
-   }else{
-      st.display = 'block';
-      st.pixelLeft = r.left+3;
-      st.pixelTop = r.top+3;
-      st.pixelWidth = r.width();
-      st.pixelHeight = r.height();
-   }
-}
-//==========================================================
-//
-//==========================================================
-function RWindow_moveCenter(h){
-   var o = this;
-   if(h){
-      h.style.pixelLeft = Math.max(parseInt((o._hContainer.offsetWidth - h.offsetWidth)/2), 0);
-      h.style.pixelTop = Math.max(parseInt((o._hContainer.offsetHeight - h.offsetHeight)/2), 0) + o._hContainer.scrollTop;
-   }
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_appendControl(ctl){
-   this._hContainer.appendChild(ctl.hPanel);
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_appendElement(h){
-   this._hContainer.appendChild(h);
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_appendContainer(h){
-   this.hContainer.appendChild(h);
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_containerTop(h){
-   var o = this;
-   var hc = o.hContainer;
-   var r = RHtml.top(h) + h.offsetHeight;
-   if('auto' == hc.currentStyle.overflow){
-      r -= RHtml.top(hc);
-   }
-   return r - hc.scrollTop;
-}
-
 //==========================================================
 // <T>释放窗口所有对象。</T>
 //==========================================================
 function RWindow_dispose(){
    var o = this;
-   o._hContainer.onload = null;
-   o._hContainer.onunload = null;
-   o._hContainer.onmousedown = null;
-   o._hContainer.onmouseup = null;
-   o._hContainer.onmousemove = null;
-   o._hContainer.onmouseover = null;
-   o._hContainer.onmousewheel = null;
-   o._hContainer.onkeydown = null;
-   o._hContainer.onkeyup = null;
-   o._hContainer.onkeypress = null;
-   o._hContainer.onresize = null;
-   o._hContainer = RHtml.free(o._hContainer);
+   // 设置属性
+   var hWindow = o._hWindow;
+   var hDocument = o._hDocument;
+   var hContainer = o._hContainer;
+   // 关联鼠标事件
+   if(RBrowser.supportHtml5()){
+      hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.removeEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.removeEventListener('keydown', o.ohKeyDown, true);
+      hContainer.removeEventListener('keyup', o.ohKeyUp, true);
+      hContainer.removeEventListener('keypress', o.ohKeyPress, true);
+      hWindow.removeEventListener('orientationchange', o.ohOrientation);
+   }else{
+      hContainer.onmousedown = null;
+      hContainer.onmousemove = null;
+      hContainer.onmouseup = null;
+      hContainer.onmousewheel = null;
+      hContainer.onkeydown = null;
+      hContainer.onkeyup = null;
+      hContainer.onkeypress = null;
+   }
+   hContainer.onresize = null;
+   hContainer.onselectstart = null;
+   hContainer.onunload = null;
+   // @attribute
+   o._localStorage = RObject.dispose(o._localStorage);
+   o._sessionStorage = RObject.dispose(o._sessionStorage);
+   // @attribute
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
-   o._hDisablePanel = null;
-   o._hDisableImage = null;
-   o._hShadow = null;
+   // @attribute
+   o._eventMouse = RObject.dispose(o._eventMouse);
+   o._eventKey = RObject.dispose(o._eventKey);
+   o._eventResize = RObject.dispose(o._eventResize);
+   o._eventOrientation = RObject.dispose(o._eventOrientation);
+   o._eventUnload = RObject.dispose(o._eventUnload);
 }
-

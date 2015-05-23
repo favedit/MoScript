@@ -1924,29 +1924,6 @@ function RArray_nameMaxLength(a){
    }
    return r;
 }
-var RAssert = new function RAssert(){
-   var o = this;
-   o.isTrue     = RAssert_isTrue;
-   o.isFalse    = RAssert_isFalse;
-   o.debugBegin = RAssert_empty;
-   o.debug      = RAssert_empty;
-   o.debugEnd   = RAssert_empty;
-   o.debugTrue  = RAssert_isTrue;
-   o.debugFalse = RAssert_isFalse;
-   return o;
-}
-function RAssert_empty(){
-}
-function RAssert_isTrue(p){
-   if(!p){
-      throw new TError(p, 'Assert failure.');
-   }
-}
-function RAssert_isFalse(a){
-   if(p){
-      throw new TError(p, 'Assert failure.');
-   }
-}
 var RBoolean = new function RBoolean(){
    var o = this;
    o.format   = RBoolean_format;
@@ -3782,22 +3759,6 @@ function RObject_release(item){
          item[n] = null;
       }
    }
-}
-var RRandom = new function(){
-   var o = this;
-   o._seed = (new Date()).getTime();
-   o.get  = RRandom_get;
-   o.rand = RRandom_rand;
-   RMemory.register('RRandom', o);
-   return o;
-}
-function RRandom_get(){
-   var o = this;
-   o._seed = (o._seed * 9301 + 49297) % 233280;
-   return o._seed/(233280.0);
-}
-function RRandom_rand(n){
-   return Math.ceil(this.get()*n);
 }
 var RRect = new function(){
    var o = this;

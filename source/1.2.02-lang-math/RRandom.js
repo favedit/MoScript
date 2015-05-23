@@ -1,6 +1,10 @@
-﻿//===========================================================
+﻿//==========================================================
+// <T>随机数管理器。</T>
 //
-//===========================================================
+// @reference
+// @author maocy
+// @version 150523
+//==========================================================
 var RRandom = new function(){
    var o = this;
    //..........................................................
@@ -9,13 +13,14 @@ var RRandom = new function(){
    // @define
    o.get  = RRandom_get;
    o.rand = RRandom_rand;
-   // Construct
-   RMemory.register('RRandom', o);
    return o;
 }
 
 //===========================================================
+// <T>获得一个随机数。</T>
 //
+// @method
+// @return 随机数
 //===========================================================
 function RRandom_get(){
    var o = this;
@@ -24,8 +29,14 @@ function RRandom_get(){
 }
 
 //===========================================================
+// <T>根据种子获得一个随机数。</T>
 //
+// @method
+// @param seed:Number 种子
+// @return 随机数
 //===========================================================
-function RRandom_rand(n){
-   return Math.ceil(this.get()*n);
+function RRandom_rand(seed){
+   var o = this;
+   var value = o.get() * seed;
+   return Math.ceil(value);
 }

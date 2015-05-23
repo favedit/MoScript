@@ -231,6 +231,11 @@ function FG3dContext(o){
    o._blendSourceCd      = 0;
    o._blendTargetCd      = 0;
    o._program            = null;
+   o._storePrograms      = null;
+   o._storeLayouts       = null;
+   o._storeBuffers       = null;
+   o._storeTextures      = null;
+   o._storeTargets       = null;
    o.construct           = FG3dContext_construct;
    o.linkCanvas          = FG3dContext_linkCanvas;
    o.size                = FG3dContext_size;
@@ -268,6 +273,11 @@ function FG3dContext_construct(){
    o._size = new SSize2();
    o._statistics = RClass.create(FG3dStatistics);
    RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
+   o._storePrograms = new TObjects();
+   o._storeLayouts = new TObjects();
+   o._storeBuffers = new TObjects();
+   o._storeTextures = new TObjects();
+   o._storeTargets = new TObjects();
 }
 function FG3dContext_linkCanvas(h){
    var o = this;
@@ -287,6 +297,51 @@ function FG3dContext_prepare(){
 }
 function FG3dContext_dispose(){
    var o = this;
+   var programs = o._storePrograms;
+   if(programs){
+      var count = programs.count();
+      for(var i = 0; i < count; i++){
+         var program = programs.at(i);
+         program.dispose();
+      }
+      o._storePrograms = RObject.dispose(programs);
+   }
+   var layouts = o._storeLayouts;
+   if(layouts){
+      var count = layouts.count();
+      for(var i = 0; i < count; i++){
+         var layout = layouts.at(i);
+         layout.dispose();
+      }
+      o._storeLayouts = RObject.dispose(layouts);
+   }
+   var buffers = o._storeBuffers;
+   if(buffers){
+      var count = buffers.count();
+      for(var i = 0; i < count; i++){
+         var buffer = buffers.at(i);
+         buffer.dispose();
+      }
+      o._storeBuffers = RObject.dispose(buffers);
+   }
+   var textures = o._storeTextures;
+   if(textures){
+      var count = textures.count();
+      for(var i = 0; i < count; i++){
+         var texture = textures.at(i);
+         texture.dispose();
+      }
+      o._storeTextures = RObject.dispose(textures);
+   }
+   var targets = o._storeTargets;
+   if(targets){
+      var count = targets.count();
+      for(var i = 0; i < count; i++){
+         var target = targets.at(i);
+         target.dispose();
+      }
+      o._storeTargets = RObject.dispose(targets);
+   }
    o._program = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
@@ -483,6 +538,7 @@ function FG3dProgram(o){
    o.setParameter4     = FG3dProgram_setParameter4;
    o.setSampler        = FG3dProgram_setSampler;
    o.upload            = RMethod.virtual(o, 'upload');
+   o.dispose           = FG3dProgram_dispose;
    return o;
 }
 function FG3dProgram_hasAttribute(){
@@ -612,6 +668,13 @@ function FG3dProgram_setSampler(pn, pt){
       throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
    }
    o._graphicContext.bindTexture(p._slot, p._index, pt);
+}
+function FG3dProgram_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   o._vertexShader = RObject.dispose(o._vertexShader);
+   o._fragmentShader = RObject.dispose(o._fragmentShader);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);

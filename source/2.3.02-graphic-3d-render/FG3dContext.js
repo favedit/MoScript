@@ -23,6 +23,12 @@ function FG3dContext(o){
    o._blendSourceCd      = 0;
    o._blendTargetCd      = 0;
    o._program            = null;
+   // @attribute
+   o._storePrograms      = null;
+   o._storeLayouts       = null;
+   o._storeBuffers       = null;
+   o._storeTextures      = null;
+   o._storeTargets       = null;
    //..........................................................
    // @method
    o.construct           = FG3dContext_construct;
@@ -76,6 +82,12 @@ function FG3dContext_construct(){
    o._size = new SSize2();
    o._statistics = RClass.create(FG3dStatistics);
    RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
+   // 设置属性
+   o._storePrograms = new TObjects();
+   o._storeLayouts = new TObjects();
+   o._storeBuffers = new TObjects();
+   o._storeTextures = new TObjects();
+   o._storeTargets = new TObjects();
 }
 
 //==========================================================
@@ -135,6 +147,58 @@ function FG3dContext_prepare(){
 //==========================================================
 function FG3dContext_dispose(){
    var o = this;
+   // 释放程序集合
+   var programs = o._storePrograms;
+   if(programs){
+      var count = programs.count();
+      for(var i = 0; i < count; i++){
+         var program = programs.at(i);
+         program.dispose();
+      }
+      o._storePrograms = RObject.dispose(programs);
+   }
+   // 释放布局集合
+   var layouts = o._storeLayouts;
+   if(layouts){
+      var count = layouts.count();
+      for(var i = 0; i < count; i++){
+         var layout = layouts.at(i);
+         layout.dispose();
+      }
+      o._storeLayouts = RObject.dispose(layouts);
+   }
+   // 释放顶点缓冲集合
+   var buffers = o._storeBuffers;
+   if(buffers){
+      var count = buffers.count();
+      for(var i = 0; i < count; i++){
+         var buffer = buffers.at(i);
+         buffer.dispose();
+      }
+      o._storeBuffers = RObject.dispose(buffers);
+   }
+   // 释放像素缓冲集合
+   var textures = o._storeTextures;
+   if(textures){
+      var count = textures.count();
+      for(var i = 0; i < count; i++){
+         var texture = textures.at(i);
+         texture.dispose();
+      }
+      o._storeTextures = RObject.dispose(textures);
+   }
+   // 释放目标集合
+   var targets = o._storeTargets;
+   if(targets){
+      var count = targets.count();
+      for(var i = 0; i < count; i++){
+         var target = targets.at(i);
+         target.dispose();
+      }
+      o._storeTargets = RObject.dispose(targets);
+   }
+   // 释放属性
    o._program = null;
+   // 父处理
    o.__base.FGraphicContext.dispose.call(o);
 }

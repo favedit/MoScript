@@ -2094,18 +2094,51 @@ function FG3dViewport_set(l, t, w, h){
 }
 var REngine3d = new function REngine3d(){
    var o = this;
-   o.contexts = new TObjects();
+   o._setuped      = false;
+   o._contexts     = null;
+   o.onUnload      = REngine3d_onUnload;
+   o.setup         = REngine3d_setup;
+   o.contexts      = REngine3d_contexts;
    o.createContext = REngine3d_createContext;
+   o.dispose       = REngine3d_dispose;
    return o;
 }
-function REngine3d_createContext(c, h, a){
+function REngine3d_onUnload(event){
    var o = this;
-   var r = RClass.create(c);
-   if(a){
-      r._optionAlpha = a.alpha;
-      r._optionAntialias = a.antialias;
+   o.dispose();
+}
+function REngine3d_setup(){
+   var o = this;
+   if(!o._setuped){
+      o._contexts = new TObjects();
+      RWindow.lsnsUnload.register(o, o.onUnload);
+      o._setuped = true;
    }
-   r.linkCanvas(h);
-   o.contexts.push(r);
-   return r;
+}
+function REngine3d_contexts(){
+   return this._contexts;
+}
+function REngine3d_createContext(clazz, hCanvas, attributes){
+   var o = this;
+   o.setup();
+   var context = RClass.create(clazz);
+   if(context){
+      context._optionAlpha = attributes.alpha;
+      context._optionAntialias = attributes.antialias;
+   }
+   context.linkCanvas(hCanvas);
+   o._contexts.push(context);
+   return context;
+}
+function REngine3d_dispose(){
+   var o = this;
+   var contexts = o._contexts;
+   if(contexts){
+      var count = contexts.count();
+      for(var i = 0; i < count; i++){
+         var context = contexts.at(i);
+         context.dispose();
+      }
+      o._contexts = RObject.dispose(contexts);
+   }
 }

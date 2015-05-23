@@ -2903,3 +2903,20 @@ function RMath_sign(value){
    }
    return 0;
 }
+var RRandom = new function(){
+   var o = this;
+   o._seed = (new Date()).getTime();
+   o.get  = RRandom_get;
+   o.rand = RRandom_rand;
+   return o;
+}
+function RRandom_get(){
+   var o = this;
+   o._seed = (o._seed * 9301 + 49297) % 233280;
+   return o._seed/(233280.0);
+}
+function RRandom_rand(seed){
+   var o = this;
+   var value = o.get() * seed;
+   return Math.ceil(value);
+}

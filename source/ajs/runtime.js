@@ -79,20 +79,6 @@ function RRuntime_className(value){
    }
    return null;
 }
-function SLooperEntry(){
-   var o = this;
-   o.prior   = null;
-   o.next    = null;
-   o.value   = null;
-   o.dispose = SLooperEntry_dispose;
-   return o;
-}
-function SLooperEntry_dispose(){
-   var o = this;
-   o.prior = null;
-   o.next = null;
-   o.value = null;
-}
 function TArray(){
    var o = this;
    o._length  = 0;
@@ -522,203 +508,6 @@ function TList_dump(){
    if(c > 0){
       for(var n = 0; n < c; n++){
          r.append(' [', o._memory[n], ']');
-      }
-   }
-   return r.toString();
-}
-function TLooper(){
-   var o = this;
-   o._count             = 0;
-   o._recordCount       = 0;
-   o._current           = null;
-   o._unused            = null;
-   o.innerCreate        = TLooper_innerCreate;
-   o.innerFree          = TLooper_innerFree;
-   o.innerPush          = TLooper_innerPush;
-   o.innerRemove        = TLooper_innerRemove;
-   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
-   o.innerRemoveValue   = TLooper_innerRemoveValue;
-   o.isEmpty            = TLooper_isEmpty;
-   o.count              = TLooper_count;
-   o.record             = TLooper_record;
-   o.unrecord           = TLooper_unrecord;
-   o.contains           = TLooper_contains;
-   o.current            = TLooper_current;
-   o.next               = TLooper_next;
-   o.push               = TLooper_push;
-   o.pushUnique         = TLooper_pushUnique;
-   o.removeCurrent      = TLooper_removeCurrent;
-   o.remove             = TLooper_remove;
-   o.clear              = TLooper_clear;
-   o.dispose            = TLooper_dispose;
-   o.dump               = TLooper_dump;
-   return o;
-}
-function TLooper_innerCreate(){
-   var o = this;
-   var e = o._unused;
-   if(e == null){
-      e = new SLooperEntry();
-   }else{
-      o._unused = e.next;
-   }
-   return e;
-}
-function TLooper_innerFree(p){
-   var o = this;
-   p.next = o._unused;
-   o._unused = p;
-}
-function TLooper_innerPush(p){
-   var o = this;
-   var ec = o._current;
-   if(ec){
-      var ep = ec.prior;
-      p.prior = ep;
-      p.next = ec;
-      ep.next = p;
-      ec.prior = p;
-   }else{
-      p.prior = p;
-      p.next = p;
-      o._current = p;
-   }
-   o._count++;
-}
-function TLooper_innerRemove(p){
-   var o = this;
-   var ep = p.prior;
-   var en = p.next;
-   ep.next = en;
-   en.prior = ep;
-   o._count--;
-   if(o._count > 0){
-      o._current = en;
-   }else{
-      o._current = null;
-   }
-   o.innerFree(p);
-}
-function TLooper_innerRemoveCurrent(){
-   var o = this;
-   var r = null;
-   if(o._count > 0){
-      r = o._current.value;
-      o.innerRemove(o._current);
-   }
-   return r;
-}
-function TLooper_innerRemoveValue(p){
-   if(o._count > 0){
-      if(o._current.value == p){
-         o.innerRemoveCurrent();
-         return;
-      }
-      var ec = o._current;
-      var en = ec.next;
-      while(en != ec){
-         if(en.value == p){
-            o.innerRemove(en);
-            o._current = ec;
-            return;
-         }
-         en = en.next;
-      }
-   }
-}
-function TLooper_isEmpty(v){
-   return this._count == 0;
-}
-function TLooper_count(){
-   return this._count;
-}
-function TLooper_record(){
-   this._recordCount = this._count;
-}
-function TLooper_unrecord(v){
-   this._recordCount = -1;
-}
-function TLooper_contains(p){
-   var o = this;
-   if(o._current){
-      var c = o._count;
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         if(e.value == p){
-            return true;
-         }
-         e = e.next;
-      }
-   }
-   return false;
-}
-function TLooper_current(){
-   var e = this._current;
-   return e ? e.value : null;
-}
-function TLooper_next(){
-   var o = this;
-   if(o._current){
-      o._current = o._current.next;
-   }
-   var c = o._recordCount;
-   if(c > 0){
-      o._recordCount--;
-   }else if(c == 0){
-      return null;
-   }
-   return o._current ? o._current.value : null;
-}
-function TLooper_push(p){
-   var o = this;
-   var e = o.innerCreate();
-   e.value = p;
-   o.innerPush(e);
-}
-function TLooper_pushUnique(p){
-   var o = this;
-   if(!o.contains(p)){
-      o.push(p);
-   }
-}
-function TLooper_removeCurrent(){
-   return this.innerRemoveCurrent();
-}
-function TLooper_remove(p){
-   this.innerRemoveValue(p);
-}
-function TLooper_clear(){
-   var o = this;
-   var c = o._current;
-   if(c){
-      c.prior.next = null;
-      c.prior = o._unused;
-      o._unused = c;
-      o._current = null;
-   }
-   o._count = 0;
-}
-function TLooper_dispose(){
-   var o = this;
-   o.clear();
-   var e = o._unused;
-   while(e){
-      var n = e.next;
-      e.dispose();
-      e = n;
-   }
-   o._unused = null;
-}
-function TLooper_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(this), ': ', c);
-   if(c > 0){
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         r.append(' [', e.value, ']');
-         e = e.next;
       }
    }
    return r.toString();
@@ -1340,49 +1129,113 @@ function TStrings_unpack(p){
       }
    }
 }
-var RGlobal = new function RGlobal(){
+var RAssert = new function RAssert(){
    var o = this;
-   o.instances = new TDictionary();
-   o.get       = RGlobal_get;
-   o.set       = RGlobal_set;
-   o.globalGet = RGlobal_globalGet;
-   o.globalSet = RGlobal_globalSet;
+   o.isTrue        = RAssert_isTrue;
+   o.isFalse       = RAssert_isFalse;
+   o.debugBegin    = RAssert_empty;
+   o.debug         = RAssert_empty;
+   o.debugEnd      = RAssert_empty;
+   o.debugTrue     = RAssert_debugTrue;
+   o.debugFalse    = RAssert_debugFalse;
+   o.debugNull     = RAssert_debugNull;
+   o.debugNotNull  = RAssert_debugNotNull;
+   o.debugEmpty    = RAssert_debugEmpty;
+   o.debugNotEmpty = RAssert_debugNotEmpty;
    return o;
 }
-function RGlobal_get(n){
-   return this.instances.get(n);
+function RAssert_empty(){
 }
-function RGlobal_set(n, v){
-   this.instances.set(n, v);
-}
-function RGlobal_globalGet(n){
-   if(top.RGlobal){
-      return top.RGlobal.get(n);
+function RAssert_isTrue(value){
+   if(!value){
+      throw new TError(this, 'Assert ture failure.');
    }
-   return this.instances.get(n);
 }
-function RGlobal_globalSet(n, v){
-   if(top.RGlobal){
-      top.RGlobal.set(n, v);
-   }else{
-      this.instances.set(n, v);
+function RAssert_isFalse(value){
+   if(value){
+      throw new TError(this, 'Assert false failure.');
+   }
+}
+function RAssert_debugTrue(value){
+   if(!value){
+      throw new TError(this, 'Assert true failure.');
+   }
+}
+function RAssert_debugFalse(value){
+   if(value){
+      throw new TError(this, 'Assert false failure.');
+   }
+}
+function RAssert_debugNull(value){
+   if(value != null){
+      throw new TError(this, 'Assert null failure.');
+   }
+}
+function RAssert_debugNotNull(value){
+   if(value == null){
+      throw new TError(this, 'Assert not null failure.');
+   }
+}
+function RAssert_debugEmpty(value){
+   if(value != null){
+      throw new TError(this, 'Assert empty failure.');
+   }
+}
+function RAssert_debugNotEmpty(value){
+   if(value == null){
+      throw new TError(this, 'Assert not empty failure.');
    }
 }
 var RMemory = new function RMemory(){
    var o = this;
-   o.objects       = new Array();
-   o.instances     = new Object();
-   o.isObject      = RMemory_isObject;
-   o.create        = RMemory_create;
-   o.register      = RMemory_register;
-   o.disposeObject = RMemory_disposeObject;
-   o.dispose       = RMemory_dispose;
-   o.unlink        = RMemory_unlink;
+   o._entryUnused  = null;;
+   o._pools        = new Object();
+   o.entryAlloc    = RMemory_entryAlloc;
+   o.entryFree     = RMemory_entryFree;
+   o.alloc         = RMemory_alloc;
    o.free          = RMemory_free;
-   o.freeHtml      = RMemory_freeHtml;
-   o.release       = RMemory_release;
    o.refresh       = RMemory_refresh;
    return o;
+}
+function RMemory_entryAlloc(){
+   var o = this;
+   var entry = null;
+   var unused = o._entryUnused;
+   if(unused){
+      entry = unused;
+      o._entryUnused = unused.next;
+   }else{
+      entry = new SMemoryPoolEntry();
+   }
+   return entry;
+}
+function RMemory_entryFree(entry){
+   var o = this;
+   RAssert.debugNotNull(entry);
+   entry.next = o._entryUnused;
+   o._entryUnused = entry;
+}
+function RMemory_alloc(clazz){
+   var o = this;
+   RAssert.debugNotNull(clazz);
+   var className = RRuntime.className(clazz);
+   var pools = o._pools;
+   var pool = pools[className];
+   if(!pool){
+      pool = new TMemoryPool();
+      pool._constructor = clazz;
+      pools[className] = pool;
+   }
+   return pool.alloc();
+}
+function RMemory_free(value){
+   RAssert.debugNotNull(value);
+   var pool = value.__pool;
+   RAssert.debugNotNull(pool);
+   pool.free(value);
+}
+function RMemory_refresh(){
+   CollectGarbage();
 }
 function RMemory_isObject(o){
    var t = typeof(o);
@@ -1421,10 +1274,6 @@ function RMemory_unlink(o){
       }
    }
 }
-function RMemory_free(o){
-   this.dispose(o);
-   this.unlink(o);
-}
 function RMemory_freeHtml(h){
    if(h){
       h.removeNode(true);
@@ -1436,8 +1285,294 @@ function RMemory_release(){
    o.free(o.instances);
    o.refresh();
 }
-function RMemory_refresh(){
-   if(RContext.optionGarbage){
-      CollectGarbage();
+function SMemoryPoolEntry(){
+   var o = this;
+   o.next    = null;
+   o.value   = null;
+   o.dispose = SMemoryPoolEntry_dispose;
+   return o;
+}
+function SMemoryPoolEntry_dispose(){
+   var o = this;
+   var value = o.value;
+   if(value){
+      value.__pool = null;
+      value.dispose();
+   }
+   o.next = null;
+   o.value = null;
+}
+function TMemoryPool(){
+   var o = this;
+   o._constructor = null;
+   o._unused      = null;
+   o._createCount = 0;
+   o._allocCount  = 0;
+   o._freeCount   = 0;
+   o.alloc        = TMemoryPool_alloc;
+   o.free         = TMemoryPool_free;
+   o.dispose      = TMemoryPool_dispose;
+   o.dump         = TMemoryPool_dump
+   return o;
+}
+function TMemoryPool_alloc(){
+   var o = this;
+   var value = null;
+   var unused = o._unused;
+   if(unused){
+      value = unused.value;
+      o._unused = unused.next;
+      RMemory.entryFree(unused);
+   }else{
+      value = new o._constructor();
+      value.__pool = o;
+      o._createCount++;
+   }
+   o._allocCount++;
+   return value;
+}
+function TMemoryPool_free(value){
+   var o = this;
+   RAssert.debugNotNull(value);
+   var entry = RMemory.entryAlloc();
+   entry.value = value;
+   entry.next = o._unused;
+   o._unused = entry;
+   o._freeCount++;
+}
+function TMemoryPool_dispose(){
+   var o = this;
+   var entry = o._unused;
+   while(entry){
+      var current = entry;
+      entry = current.next;
+      current.dispose();
+      RMemory.entryFree(current);
+   }
+}
+function TMemoryPool_dump(){
+   var o = this;
+   var source = new TString();
+   source.append('Pool:');
+   source.append('create=', o._createCount);
+   source.append(', alloc=', o._allocCount);
+   source.append(', free=', o._freeCount);
+   return source.flush();
+}
+function SLooperEntry(){
+   var o = this;
+   o.prior   = null;
+   o.next    = null;
+   o.value   = null;
+   o.dispose = SLooperEntry_dispose;
+   return o;
+}
+function SLooperEntry_dispose(){
+   var o = this;
+   o.prior = null;
+   o.next = null;
+   o.value = null;
+}
+function TLooper(){
+   var o = this;
+   o._count             = 0;
+   o._recordCount       = 0;
+   o._current           = null;
+   o.innerPush          = TLooper_innerPush;
+   o.innerRemove        = TLooper_innerRemove;
+   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
+   o.innerRemoveValue   = TLooper_innerRemoveValue;
+   o.isEmpty            = TLooper_isEmpty;
+   o.count              = TLooper_count;
+   o.record             = TLooper_record;
+   o.unrecord           = TLooper_unrecord;
+   o.contains           = TLooper_contains;
+   o.current            = TLooper_current;
+   o.next               = TLooper_next;
+   o.push               = TLooper_push;
+   o.pushUnique         = TLooper_pushUnique;
+   o.removeCurrent      = TLooper_removeCurrent;
+   o.remove             = TLooper_remove;
+   o.clear              = TLooper_clear;
+   o.dispose            = TLooper_dispose;
+   o.dump               = TLooper_dump;
+   return o;
+}
+function TLooper_innerPush(entry){
+   var o = this;
+   var current = o._current;
+   if(current){
+      var prior = current.prior;
+      entry.prior = prior;
+      entry.next = current;
+      prior.next = entry;
+      current.prior = entry;
+   }else{
+      entry.prior = entry;
+      entry.next = entry;
+      o._current = entry;
+   }
+   o._count++;
+}
+function TLooper_innerRemove(entry){
+   var o = this;
+   var prior = entry.prior;
+   var next = entry.next;
+   prior.next = next;
+   next.prior = prior;
+   o._count--;
+   if(o._count > 0){
+      o._current = next;
+   }else{
+      o._current = null;
+   }
+   RMemory.free(entry);
+}
+function TLooper_innerRemoveCurrent(){
+   var o = this;
+   var value = null;
+   if(o._count > 0){
+      var current = o._current;
+      value = current.value;
+      o.innerRemove(current);
+   }
+   return value;
+}
+function TLooper_innerRemoveValue(value){
+   if(o._count > 0){
+      if(o._current.value == value){
+         o.innerRemoveCurrent();
+         return;
+      }
+      var current = o._current;
+      var entry = current.next;
+      while(entry != current){
+         if(entry.value == value){
+            o.innerRemove(entry);
+            o._current = current;
+            return;
+         }
+         entry = entry.next;
+      }
+   }
+}
+function TLooper_isEmpty(){
+   return this._count == 0;
+}
+function TLooper_count(){
+   return this._count;
+}
+function TLooper_record(){
+   this._recordCount = this._count;
+}
+function TLooper_unrecord(v){
+   this._recordCount = -1;
+}
+function TLooper_contains(value){
+   var o = this;
+   if(o._current){
+      var entry = o._current;
+      var count = o._count;
+      for(var i = 0; i < count; i++){
+         if(entry.value == value){
+            return true;
+         }
+         entry = entry.next;
+      }
+   }
+   return false;
+}
+function TLooper_current(){
+   var entry = this._current;
+   return entry ? entry.value : null;
+}
+function TLooper_next(){
+   var o = this;
+   if(o._current){
+      o._current = o._current.next;
+   }
+   var c = o._recordCount;
+   if(c > 0){
+      o._recordCount--;
+   }else if(c == 0){
+      return null;
+   }
+   return o._current ? o._current.value : null;
+}
+function TLooper_push(value){
+   var o = this;
+   var entry = RMemory.alloc(SLooperEntry);
+   entry.value = value;
+   o.innerPush(entry);
+}
+function TLooper_pushUnique(value){
+   var o = this;
+   if(!o.contains(value)){
+      o.push(value);
+   }
+}
+function TLooper_removeCurrent(){
+   return this.innerRemoveCurrent();
+}
+function TLooper_remove(p){
+   this.innerRemoveValue(p);
+}
+function TLooper_clear(){
+   var o = this;
+   var entry = o._current;
+   if(entry){
+      entry.prior.next = null;
+      while(entry){
+         var next = entry.next;
+         RMemory.free(next);
+         entry = next;
+      }
+   }
+   o._count = 0;
+   o._current = null;
+}
+function TLooper_dispose(){
+   this.clear();
+}
+function TLooper_dump(){
+   var o = this;
+   var count = o._count;
+   var result = new TString();
+   result.append(RClass.name(this), ': ', count);
+   if(count > 0){
+      var entry = o._current;
+      for(var i = 0; i < count; i++){
+         result.append(' [', entry.value, ']');
+         entry = entry.next;
+      }
+   }
+   return result.flush();
+}
+var RGlobal = new function RGlobal(){
+   var o = this;
+   o.instances = new TDictionary();
+   o.get       = RGlobal_get;
+   o.set       = RGlobal_set;
+   o.globalGet = RGlobal_globalGet;
+   o.globalSet = RGlobal_globalSet;
+   return o;
+}
+function RGlobal_get(n){
+   return this.instances.get(n);
+}
+function RGlobal_set(n, v){
+   this.instances.set(n, v);
+}
+function RGlobal_globalGet(n){
+   if(top.RGlobal){
+      return top.RGlobal.get(n);
+   }
+   return this.instances.get(n);
+}
+function RGlobal_globalSet(n, v){
+   if(top.RGlobal){
+      top.RGlobal.set(n, v);
+   }else{
+      this.instances.set(n, v);
    }
 }

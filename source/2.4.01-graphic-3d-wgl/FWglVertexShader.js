@@ -7,7 +7,7 @@
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
    // @attribute
-   o._native = null;
+   o._native      = null;
    //..........................................................
    // @method
    o.setup        = FWglVertexShader_setup;
@@ -27,8 +27,9 @@ function FWglVertexShader(o){
 function FWglVertexShader_setup(){
    var o = this;
    o.__base.FG3dVertexShader.setup.call(o);
-   var g = o._graphicContext._native;
-   o._native = g.createShader(g.VERTEX_SHADER);
+   // 创建对象
+   var graphic = o._graphicContext._native;
+   o._native = graphic.createShader(graphic.VERTEX_SHADER);
 }
 
 //==========================================================
@@ -39,12 +40,15 @@ function FWglVertexShader_setup(){
 //==========================================================
 function FWglVertexShader_targetSource(){
    var o = this;
-   var c = o._graphicContext;
-   var cp = c.capability();
-   if(cp.optionShaderSource){
-      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   var source = null;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   if(capability.optionShaderSource){
+      source = context._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }else{
+      source = o._source;
    }
-   return o._source;
+   return source;
 }
 
 //==========================================================
@@ -79,11 +83,11 @@ function FWglVertexShader_upload(source){
 //==========================================================
 function FWglVertexShader_dispose(){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    // 释放对象
-   var n = o._native;
-   if(n){
-      c._native.deleteShader(n);
+   var shader = o._native;
+   if(shader){
+      context._native.deleteShader(shader);
       o._native = null;
    }
    // 父处理

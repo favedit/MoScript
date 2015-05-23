@@ -12,11 +12,8 @@ function TLooper(){
    o._count             = 0;
    o._recordCount       = 0;
    o._current           = null;
-   o._unused            = null;
    //..........................................................
    // @method
-   o.innerCreate        = TLooper_innerCreate;
-   o.innerFree          = TLooper_innerFree;
    o.innerPush          = TLooper_innerPush;
    o.innerRemove        = TLooper_innerRemove;
    o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
@@ -40,53 +37,24 @@ function TLooper(){
 }
 
 //==========================================================
-// <T>内部创建一个节点。</T>
-//
-// @method
-// @return SLooperEntry 节点
-//==========================================================
-function TLooper_innerCreate(){
-   var o = this;
-   var entry = o._unused;
-   if(entry == null){
-      entry = new SLooperEntry();
-   }else{
-      o._unused = entry.next;
-   }
-   return entry;
-}
-
-//==========================================================
-// <T>内部释放一个节点。</T>
+// <T>内部增加一个节点。</T>
 //
 // @method
 // @param entry:SLooperEntry 节点
 //==========================================================
-function TLooper_innerFree(entry){
+function TLooper_innerPush(entry){
    var o = this;
-   p.next = o._unused;
-   o._unused = entry;
-}
-
-//==========================================================
-// <T>内部增加一个节点。</T>
-//
-// @method
-// @param p:entry:SLooperEntry 节点
-//==========================================================
-function TLooper_innerPush(p){
-   var o = this;
-   var ec = o._current;
-   if(ec){
-      var ep = ec.prior;
-      p.prior = ep;
-      p.next = ec;
-      ep.next = p;
-      ec.prior = p;
+   var current = o._current;
+   if(current){
+      var prior = current.prior;
+      entry.prior = prior;
+      entry.next = current;
+      prior.next = entry;
+      current.prior = entry;
    }else{
-      p.prior = p;
-      p.next = p;
-      o._current = p;
+      entry.prior = entry;
+      entry.next = entry;
+      o._current = entry;
    }
    o._count++;
 }
@@ -95,24 +63,24 @@ function TLooper_innerPush(p){
 // <T>内部移除一个节点。</T>
 //
 // @method
-// @param p:entry:SLooperEntry 节点
+// @param entry:SLooperEntry 节点
 //==========================================================
-function TLooper_innerRemove(p){
+function TLooper_innerRemove(entry){
    var o = this;
    // 删除入口
-   var ep = p.prior;
-   var en = p.next;
-   ep.next = en;
-   en.prior = ep;
+   var prior = entry.prior;
+   var next = entry.next;
+   prior.next = next;
+   next.prior = prior;
    // 设置数据
    o._count--;
    if(o._count > 0){
-      o._current = en;
+      o._current = next;
    }else{
       o._current = null;
    }
    // 释放入口
-   o.innerFree(p);
+   RMemory.free(entry);
 }
 
 //==========================================================
@@ -123,40 +91,41 @@ function TLooper_innerRemove(p){
 //==========================================================
 function TLooper_innerRemoveCurrent(){
    var o = this;
-   var r = null;
+   var value = null;
    if(o._count > 0){
       // 获得内容
-      r = o._current.value;
+      var current = o._current;
+      value = current.value;
       // 移除节点
-      o.innerRemove(o._current);
+      o.innerRemove(current);
    }
-   return r;
+   return value;
 }
 
 //==========================================================
 // <T>内部移除指定对象的节点。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param value:Object 对象
 //==========================================================
-function TLooper_innerRemoveValue(p){
+function TLooper_innerRemoveValue(value){
    if(o._count > 0){
       // 删除首个对象
-      if(o._current.value == p){
+      if(o._current.value == value){
          o.innerRemoveCurrent();
          return;
       }
       // 删除其他对象
-      var ec = o._current;
-      var en = ec.next;
-      while(en != ec){
-         if(en.value == p){
-            o.innerRemove(en);
+      var current = o._current;
+      var entry = current.next;
+      while(entry != current){
+         if(entry.value == value){
+            o.innerRemove(entry);
             // 重置到原始位置
-            o._current = ec;
+            o._current = current;
             return;
          }
-         en = en.next;
+         entry = entry.next;
       }
    }
 }
@@ -167,7 +136,7 @@ function TLooper_innerRemoveValue(p){
 // @method
 // @return 是否为空
 //==========================================================
-function TLooper_isEmpty(v){
+function TLooper_isEmpty(){
    return this._count == 0;
 }
 
@@ -203,19 +172,19 @@ function TLooper_unrecord(v){
 // <T>判断是否含有指定对象。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param value:Object 对象
 // @return Boolean 是否含有
 //==========================================================
-function TLooper_contains(p){
+function TLooper_contains(value){
    var o = this;
    if(o._current){
-      var c = o._count;
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         if(e.value == p){
+      var entry = o._current;
+      var count = o._count;
+      for(var i = 0; i < count; i++){
+         if(entry.value == value){
             return true;
          }
-         e = e.next;
+         entry = entry.next;
       }
    }
    return false;
@@ -228,8 +197,8 @@ function TLooper_contains(p){
 // @return Object 对象
 //==========================================================
 function TLooper_current(){
-   var e = this._current;
-   return e ? e.value : null;
+   var entry = this._current;
+   return entry ? entry.value : null;
 }
 
 //==========================================================
@@ -259,25 +228,25 @@ function TLooper_next(){
 // <T>增加一个对象到尾部。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param value:Object 对象
 //==========================================================
-function TLooper_push(p){
+function TLooper_push(value){
    var o = this;
-   var e = o.innerCreate();
-   e.value = p;
-   o.innerPush(e);
+   var entry = RMemory.alloc(SLooperEntry);
+   entry.value = value;
+   o.innerPush(entry);
 }
 
 //==========================================================
 // <T>插入一个唯一内容到尾部。</T>
 //
 // @method
-// @param p:value:Object 对象
+// @param value:Object 对象
 //==========================================================
-function TLooper_pushUnique(p){
+function TLooper_pushUnique(value){
    var o = this;
-   if(!o.contains(p)){
-      o.push(p);
+   if(!o.contains(value)){
+      o.push(value);
    }
 }
 
@@ -308,14 +277,19 @@ function TLooper_remove(p){
 //==========================================================
 function TLooper_clear(){
    var o = this;
-   var c = o._current;
-   if(c){
-      c.prior.next = null;
-      c.prior = o._unused;
-      o._unused = c;
-      o._current = null;
+   // 释放所有节点
+   var entry = o._current;
+   if(entry){
+      entry.prior.next = null;
+      while(entry){
+         var next = entry.next;
+         RMemory.free(next);
+         entry = next;
+      }
    }
+   // 释放属性
    o._count = 0;
+   o._current = null;
 }
 
 //==========================================================
@@ -324,17 +298,7 @@ function TLooper_clear(){
 // @method
 //==========================================================
 function TLooper_dispose(){
-   var o = this;
-   // 清空处理
-   o.clear();
-   // 释放所有节点
-   var e = o._unused;
-   while(e){
-      var n = e.next;
-      e.dispose();
-      e = n;
-   }
-   o._unused = null;
+   this.clear();
 }
 
 //==========================================================
@@ -345,15 +309,15 @@ function TLooper_dispose(){
 //==========================================================
 function TLooper_dump(){
    var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(this), ': ', c);
-   if(c > 0){
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         r.append(' [', e.value, ']');
-         e = e.next;
+   var count = o._count;
+   var result = new TString();
+   result.append(RClass.name(this), ': ', count);
+   if(count > 0){
+      var entry = o._current;
+      for(var i = 0; i < count; i++){
+         result.append(' [', entry.value, ']');
+         entry = entry.next;
       }
    }
-   return r.toString();
+   return result.flush();
 }

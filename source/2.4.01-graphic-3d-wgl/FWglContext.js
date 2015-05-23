@@ -371,11 +371,12 @@ function FWglContext_recordEnd(){
 //==========================================================
 function FWglContext_createProgram(){
    var o = this;
-   var r = RClass.create(FWglProgram);
-   r.linkGraphicContext(o);
-   r.setup();
+   var program = RClass.create(FWglProgram);
+   program.linkGraphicContext(o);
+   program.setup();
+   o._storePrograms.push(program);
    o._statistics._programTotal++;
-   return r;
+   return program;
 }
 
 //==========================================================
@@ -386,13 +387,14 @@ function FWglContext_createProgram(){
 //==========================================================
 function FWglContext_createLayout(){
    var o = this;
-   var r = RClass.create(FWglLayout);
-   r.linkGraphicContext(o);
+   var layout = RClass.create(FWglLayout);
+   layout.linkGraphicContext(o);
    if(o._capability.optionLayout){
-      r.setup();
+      layout.setup();
    }
+   o._storeLayouts.push(layout);
    o._statistics._layoutTotal++;
-   return r;
+   return layout;
 }
 
 //==========================================================
@@ -404,14 +406,10 @@ function FWglContext_createLayout(){
 //==========================================================
 function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = null;
-   if(clazz){
-      buffer = RClass.create(clazz);
-   }else{
-      buffer = RClass.create(FWglVertexBuffer);
-   }
+   var buffer = RClass.create(clazz ? clazz : FWglVertexBuffer);
    buffer.linkGraphicContext(o);
    buffer.setup();
+   o._storeBuffers.push(buffer);
    o._statistics._vertexBufferTotal++;
    return buffer;
 }
@@ -425,14 +423,10 @@ function FWglContext_createVertexBuffer(clazz){
 //==========================================================
 function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = null;
-   if(clazz){
-      buffer = RClass.create(clazz);
-   }else{
-      buffer = RClass.create(FWglIndexBuffer);
-   }
+   var buffer = RClass.create(clazz ? clazz : FWglIndexBuffer);
    buffer.linkGraphicContext(o);
    buffer.setup();
+   o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
 }
@@ -445,11 +439,12 @@ function FWglContext_createIndexBuffer(clazz){
 //==========================================================
 function FWglContext_createFlatTexture(){
    var o = this;
-   var r = RClass.create(FWglFlatTexture);
-   r.linkGraphicContext(o);
-   r.setup();
+   var texture = RClass.create(FWglFlatTexture);
+   texture.linkGraphicContext(o);
+   texture.setup();
+   o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
-   return r;
+   return texture;
 }
 
 //==========================================================
@@ -460,11 +455,12 @@ function FWglContext_createFlatTexture(){
 //==========================================================
 function FWglContext_createCubeTexture(){
    var o = this;
-   var r = RClass.create(FWglCubeTexture);
-   r.linkGraphicContext(o);
-   r.setup();
+   var texture = RClass.create(FWglCubeTexture);
+   texture.linkGraphicContext(o);
+   texture.setup();
+   o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
-   return r;
+   return texture;
 }
 
 //==========================================================
@@ -475,89 +471,90 @@ function FWglContext_createCubeTexture(){
 //==========================================================
 function FWglContext_createRenderTarget(){
    var o = this;
-   var r = RClass.create(FWglRenderTarget);
-   r.linkGraphicContext(o);
-   r.setup();
+   var target = RClass.create(FWglRenderTarget);
+   target.linkGraphicContext(o);
+   target.setup();
+   o._storeTargets.push(target);
    o._statistics._targetTotal++;
-   return r;
+   return target;
 }
 
 //==========================================================
 // <T>设置视角大小。</T>
 //
-// @param l:left:Integer 左位置
-// @param t:top:Integer 上位置
-// @param w:width:Integer 宽度
-// @param h:height:Integer 高度
+// @param left:Integer 左位置
+// @param top:Integer 上位置
+// @param width:Integer 宽度
+// @param height:Integer 高度
 //==========================================================
-function FWglContext_setViewport(l, t, w, h){
+function FWglContext_setViewport(left, top, width, height){
    var o = this;
-   o._size.set(w, h);
-   o._native.viewport(l, t, w, h);
+   o._size.set(width, height);
+   o._native.viewport(left, top, width, height);
 }
 
 //==========================================================
 // <T>设置填充模式。</T>
 //
-// @param p:fillModeCd:EG3dFillMode 填充模式
+// @param fillModeCd:EG3dFillMode 填充模式
 //==========================================================
-function FWglContext_setFillMode(p){
+function FWglContext_setFillMode(fillModeCd){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查状态
-   if(o._fillModeCd == p){
-      return;
+   if(o._fillModeCd == fillModeCd){
+      return false;
    }
    o._statistics._frameFillModeCount++;
    //..........................................................
    // 设置开关
-   switch(p){
+   switch(fillModeCd){
       case EG3dFillMode.Point:
-         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         graphic.polygonMode(graphic.FRONT_AND_BACK, graphic.POINT);
          break;
       case EG3dFillMode.Line:
-         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         graphic.polygonMode(graphic.FRONT_AND_BACK, graphic.LINE);
          break;
       case EG3dFillMode.Face:
-         g.polygonMode(g.FRONT, g.FILL);
+         graphic.polygonMode(graphic.FRONT, graphic.FILL);
          break;
       default:
-         throw new TError('Invalid parameter. (fill_mode={1})', p);
+         throw new TError('Invalid parameter. (fill_mode={1})', fillModeCd);
    }
-   o._fillModeCd = p;
+   o._fillModeCd = fillModeCd;
    return true;
 }
 
 //==========================================================
 // <T>设置深度模式。</T>
 //
-// @param f:depthFlag:Boolean 深度开关
-// @param v:depthCd:EG3dDepthMode 深度模式
+// @param depthFlag:Boolean 深度开关
+// @param depthCd:EG3dDepthMode 深度模式
 // @return 处理结果
 //==========================================================
-function FWglContext_setDepthMode(f, v){
+function FWglContext_setDepthMode(depthFlag, depthCd){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查状态
-   if((o._optionDepth == f) && (o._depthModeCd == v)){
-      return true;
+   if((o._optionDepth == depthFlag) && (o._depthModeCd == depthCd)){
+      return false;
    }
    o._statistics._frameDepthModeCount++;
    //..........................................................
    // 设置开关
-   if(o._optionDepth != f){
-      if(f){
-         g.enable(g.DEPTH_TEST);
+   if(o._optionDepth != depthFlag){
+      if(depthFlag){
+         graphic.enable(graphic.DEPTH_TEST);
       }else{
-         g.disable(g.DEPTH_TEST);
+         graphic.disable(graphic.DEPTH_TEST);
       }
-      o._optionDepth = f;
+      o._optionDepth = depthFlag;
    }
    // 设置内容
-   if(f && (o._depthModeCd != v)){
-      var r = RWglUtility.convertDepthMode(g, v);
-      g.depthFunc(r);
-      o._depthModeCd = v;
+   if(depthFlag && (o._depthModeCd != depthCd)){
+      var depthCode = RWglUtility.convertDepthMode(graphic, depthCd);
+      graphic.depthFunc(depthCode);
+      o._depthModeCd = depthCd;
    }
    return true;
 }
@@ -565,33 +562,33 @@ function FWglContext_setDepthMode(f, v){
 //==========================================================
 // <T>设置剪裁模式。</T>
 //
-// @param f:cullFlag:Boolean 剪裁开关
-// @param v:cullCd:EG3dCullMode 剪裁模式
+// @param cullFlag:Boolean 剪裁开关
+// @param cullCd:EG3dCullMode 剪裁模式
 // @return 处理结果
 //==========================================================
-function FWglContext_setCullingMode(f, v){
+function FWglContext_setCullingMode(cullFlag, cullCd){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查状态
-   if((o._optionCull == f) && (o._cullModeCd == v)){
-      return true;
+   if((o._optionCull == cullFlag) && (o._cullModeCd == cullCd)){
+      return false;
    }
    o._statistics._frameCullModeCount++;
    //..........................................................
    // 设置开关
-   if(o._optionCull != f){
-      if(f){
-         g.enable(g.CULL_FACE);
+   if(o._optionCull != cullFlag){
+      if(cullFlag){
+         graphic.enable(graphic.CULL_FACE);
       }else{
-         g.disable(g.CULL_FACE);
+         graphic.disable(graphic.CULL_FACE);
       }
-      o._optionCull = f;
+      o._optionCull = cullFlag;
    }
    // 设置内容
-   if(f && (o._cullModeCd != v)){
-      var r = RWglUtility.convertCullMode(g, v);
-      g.cullFace(r);
-      o._cullModeCd = v;
+   if(cullFlag && (o._cullModeCd != cullCd)){
+      var cullValue = RWglUtility.convertCullMode(graphic, cullCd);
+      graphic.cullFace(cullValue);
+      o._cullModeCd = cullCd;
    }
    return true;
 }
@@ -599,38 +596,38 @@ function FWglContext_setCullingMode(f, v){
 //==========================================================
 // <T>设置融合方式。</T>
 //
-// @param f:blendFlag:Boolean 剪裁开关
-// @param vs:sourceCd:EG3dBlendMode 来源融合模式
-// @param vt:tagetCd:EG3dBlendMode 目标融合模式
+// @param blendFlag:Boolean 剪裁开关
+// @param sourceCd:EG3dBlendMode 来源融合模式
+// @param tagetCd:EG3dBlendMode 目标融合模式
 // @return 处理结果
 //==========================================================
-function FWglContext_setBlendFactors(f, vs, vt){
+function FWglContext_setBlendFactors(blendFlag, sourceCd, tagetCd){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查状态
-   if((o._statusBlend == f) && (o._blendSourceCd == vs) && (o._blendTargetCd == vt)){
-      return true;
+   if((o._statusBlend == blendFlag) && (o._blendSourceCd == sourceCd) && (o._blendTargetCd == tagetCd)){
+      return false;
    }
    o._statistics._frameBlendModeCount++;
    //..........................................................
    // 设置开关
-   if(o._statusBlend != f){
-      if(f){
-         g.enable(g.BLEND);
+   if(o._statusBlend != blendFlag){
+      if(blendFlag){
+         graphic.enable(graphic.BLEND);
       }else{
-         g.disable(g.BLEND);
+         graphic.disable(graphic.BLEND);
          o._blendSourceCd = 0;
          o._blendTargetCd = 0;
       }
-      o._statusBlend = f;
+      o._statusBlend = blendFlag;
    }
    // 设置效果
-   if(f && ((o._blendSourceCd != vs) || (o._blendTargetCd != vt))){
-      var gs = RWglUtility.convertBlendFactors(g, vs);
-      var gt = RWglUtility.convertBlendFactors(g, vt);
-      g.blendFunc(gs, gt);
-      o._blendSourceCd = vs;
-      o._blendTargetCd = vt;
+   if(blendFlag && ((o._blendSourceCd != sourceCd) || (o._blendTargetCd != tagetCd))){
+      var sourceValue = RWglUtility.convertBlendFactors(graphic, sourceCd);
+      var tagetValue = RWglUtility.convertBlendFactors(graphic, tagetCd);
+      graphic.blendFunc(sourceValue, tagetValue);
+      o._blendSourceCd = sourceCd;
+      o._blendTargetCd = tagetCd;
    }
    return true;
 }
@@ -638,317 +635,309 @@ function FWglContext_setBlendFactors(f, vs, vt){
 //==========================================================
 // <T>设置有效区域。</T>
 //
-// @param l:left:Integer 左位置
-// @param t:top:Integer 上位置
-// @param w:width:Integer 宽度
-// @param h:height:Integer 高度
-// @return 处理结果
+// @param left:Integer 左位置
+// @param top:Integer 上位置
+// @param width:Integer 宽度
+// @param height:Integer 高度
 //==========================================================
-function FWglContext_setScissorRectangle(l, t, w, h){
-   this._native.scissor(l, t, w, h);
+function FWglContext_setScissorRectangle(left, top, width, height){
+   this._native.scissor(left, top, width, height);
 }
 
 //==========================================================
 // <T>设置渲染目标。</T>
 //
 // @method
-// @param p:renderTarget:FG3dRenderTarget 渲染目标
+// @param renderTarget:FG3dRenderTarget 渲染目标
 //==========================================================
-function FWglContext_setRenderTarget(p){
+function FWglContext_setRenderTarget(renderTarget){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查是否需要切换
-   if(o._activeRenderTarget == p){
+   if(o._activeRenderTarget == renderTarget){
       return;
    }
    o._statistics._frameTargetCount++;
    //............................................................
    // 设置程序
-   var r = true;
-   if(p == null){
+   var result = true;
+   if(renderTarget == null){
       // 解除渲染目标
-      g.bindFramebuffer(g.FRAMEBUFFER, null);
-      r = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
-      if(!r){
-         return r;
+      graphic.bindFramebuffer(graphic.FRAMEBUFFER, null);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
+      if(!result){
+         return result;
       }
       // 修改视角
-      g.viewport(0, 0, o._size.width, o._size.height);
+      graphic.viewport(0, 0, o._size.width, o._size.height);
    }else{
       // 绑定渲染目标
-      g.bindFramebuffer(g.FRAMEBUFFER, p._native);
-      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", p._native);
-      if(!r){
-         return r;
+      graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._native);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._native);
+      if(!result){
+         return result;
       }
       // 修改视角
-      var s = p.size();
-      g.viewport(0, 0, s.width, s.height);
+      var size = renderTarget.size();
+      graphic.viewport(0, 0, size.width, size.height);
    }
-   o._activeRenderTarget = p;
+   o._activeRenderTarget = renderTarget;
+   return result;
 }
 
 //==========================================================
 // <T>设置渲染程序。</T>
 //
-// @param p:program:FG3dProgram 渲染程序
+// @param program:FG3dProgram 渲染程序
 //==========================================================
-function FWglContext_setProgram(p){
+function FWglContext_setProgram(program){
    var o = this;
-   var g = o._native;
+   var graphic = o._native;
    // 检查参数
-   if(o._program == p){
+   if(o._program == program){
       return;
    }
    o._statistics._frameProgramCount++;
    //............................................................
    // 设置程序
-   if(p){
-      g.useProgram(p._native);
+   if(program){
+      graphic.useProgram(program._native);
    }else{
-      g.useProgram(null);
+      graphic.useProgram(null);
    }
-   o._program = p;
+   o._program = program;
    // 检查错误
-   return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
+   return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", program, program._native);
 }
 
 //==========================================================
 // <T>绑定常量数据。</T>
 //
-// @param psc:shaderCd:EG3dShader 渲染器类型
-// @param psl:slot:Integer 插槽
-// @param pdf:formatCd:EG3dParameterFormat 数据类型
-// @param pdt:data:Float32Array 数据
-// @param pdc:count:Integer 数据个数
+// @param shaderCd:EG3dShader 渲染器类型
+// @param slot:Integer 插槽
+// @param formatCd:EG3dParameterFormat 数据类型
+// @param data:Float32Array 数据
+// @param count:Integer 数据个数
 // @return Boolean 处理结果
 //==========================================================
-function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
+function FWglContext_bindConst(shaderCd, slot, formatCd, data, count){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameConstCount++;
    //............................................................
    // 修改数据
-   switch(pdf){
+   switch(formatCd){
       case EG3dParameterFormat.Float1:{
          // 修改数据
-         g.uniform1fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
+         graphic.uniform1fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
          // 检查错误
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         result = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float2:{
          // 修改数据
-         g.uniform2fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
+         graphic.uniform2fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
          // 检查错误
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         result = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float3:{
          // 修改数据
-         g.uniform3fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
+         graphic.uniform3fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
          // 检查错误
-         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         result = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float4:{
          // 修改数据
-         g.uniform4fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
+         graphic.uniform4fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
          // 检查错误
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         result = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
          // 修改数据
-         var dt = o._data9;
-         dt[ 0] = pdt[ 0];
-         dt[ 1] = pdt[ 4];
-         dt[ 2] = pdt[ 8];
-         dt[ 3] = pdt[ 1];
-         dt[ 4] = pdt[ 5];
-         dt[ 5] = pdt[ 9];
-         dt[ 6] = pdt[ 2];
-         dt[ 7] = pdt[ 6];
-         dt[ 8] = pdt[10];
-         g.uniformMatrix3fv(psl, g.FALSE, dt);
-         o._statistics._frameConstLength += dt.byteLength;
+         var bytes = o._data9;
+         bytes[ 0] = data[ 0];
+         bytes[ 1] = data[ 4];
+         bytes[ 2] = data[ 8];
+         bytes[ 3] = data[ 1];
+         bytes[ 4] = data[ 5];
+         bytes[ 5] = data[ 9];
+         bytes[ 6] = data[ 2];
+         bytes[ 7] = data[ 6];
+         bytes[ 8] = data[10];
+         graphic.uniformMatrix3fv(slot, graphic.FALSE, bytes);
+         o._statistics._frameConstLength += bytes.byteLength;
          // 检查错误
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
-         break;
-      }
-      case EG3dParameterFormat.Float4x3:{
-         // 修改数据
-         g.uniform4fv(psl, g.FALSE, pd);
-         o._statistics._frameConstLength += dt.byteLength;
-         // 检查错误
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         result = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
          // 修改数据
-         var d = null;
-         if(pdt.constructor == Float32Array){
-            d = pdt;
-         }else if(pdt.writeData){
-            d = o._data16;
-            pdt.writeData(d, 0);
+         var bytes = null;
+         if(data.constructor == Float32Array){
+            bytes = data;
+         }else if(data.writeData){
+            bytes = o._data16;
+            data.writeData(bytes, 0);
          }else{
             throw new TError('Unknown data type.');
          }
-         g.uniformMatrix4fv(psl, g.FALSE, d);
-         o._statistics._frameConstLength += d.byteLength;
+         graphic.uniformMatrix4fv(slot, graphic.FALSE, bytes);
+         o._statistics._frameConstLength += bytes.byteLength;
          // 检查错误
-         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
+         result = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
+      default:{
+         throw new TError(o, 'Unknown format type. (format_cd={1})', formatCd);
+      }
    }
-   return r;
+   return result;
 }
 
 //==========================================================
 // <T>绑定顶点缓冲。</T>
 //
-// @param s:slot:Integer 插槽
-// @param b:vertexBuffer:FG3dVertexBuffer 顶点缓冲
-// @param i:offset:Integer 偏移位置
-// @param f:formatCd:String 格式
+// @param slot:Integer 插槽
+// @param vertexBuffer:FG3dVertexBuffer 顶点缓冲
+// @param offset:Integer 偏移位置
+// @param formatCd:String 格式
 //==========================================================
-function FWglContext_bindVertexBuffer(s, b, i, f){
+function FWglContext_bindVertexBuffer(slot, vertexBuffer, offset, formatCd){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameBufferCount++;
    //............................................................
    // 录制模式
    if(o._statusRecord){
-      var l = new SG3dLayoutBuffer();
-      l.slot = s;
-      l.buffer = b;
-      l.index = i;
-      l.formatCd = f;
-      o._recordBuffers.push(l);
+      var layout = new SG3dLayoutBuffer();
+      layout.slot = slot;
+      layout.buffer = vertexBuffer;
+      layout.index = offset;
+      layout.formatCd = formatCd;
+      o._recordBuffers.push(layout);
    }
    //............................................................
    // 设定顶点流
-   var n = null;
-   if(b != null){
-      n = b._native;
+   var handle = null;
+   if(vertexBuffer != null){
+      handle = vertexBuffer._native;
    }
-   g.bindBuffer(g.ARRAY_BUFFER, n);
+   graphic.bindBuffer(graphic.ARRAY_BUFFER, handle);
    // 检查错误
-   r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
-   if(!r){
-      return r;
+   result = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", handle);
+   if(!result){
+      return result;
    }
    //............................................................
    // 激活顶点流
-   if(b != null){
-      g.enableVertexAttribArray(s);
-      r = o.checkError("enableVertexAttribArray", "Enable vertex attribute array. (slot=%d)", s);
-      if(!r){
-         return r;
+   if(vertexBuffer){
+      graphic.enableVertexAttribArray(slot);
+      result = o.checkError("enableVertexAttribArray", "Enable vertex attribute array. (slot=%d)", slot);
+      if(!result){
+         return result;
       }
    }else{
-      g.disableVertexAttribArray(s);
-      r = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", s);
-      return r;
+      graphic.disableVertexAttribArray(slot);
+      result = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", slot);
+      return result;
    }
    //............................................................
    // 设置顶点流
-   var bs = b._stride;
-   switch(f){
+   var stride = vertexBuffer._stride;
+   switch(formatCd){
       case EG3dAttributeFormat.Float1:
-         g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 1, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float2:
-         g.vertexAttribPointer(s, 2, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 2, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float3:
-         g.vertexAttribPointer(s, 3, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 3, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float4:
-         g.vertexAttribPointer(s, 4, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Byte4:
-         g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, false, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, false, stride, offset);
          break;
       case EG3dAttributeFormat.Byte4Normal:
-         g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, true, stride, offset);
          break;
       default:
          throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
          break;
    }
    // 检查错误
-   r = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", s, f);
-   return r;
+   result = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", slot, formatCd);
+   return result;
 }
 
 //==========================================================
 // <T>绑定纹理。</T>
 //
-// @param ps:slot:Object 插槽
-// @param pi:index:Integer 索引
-// @param pt:texture:FG3dTexture 纹理
+// @param slot:Object 插槽
+// @param index:Integer 索引
+// @param texture:FG3dTexture 纹理
 // @return 处理结果
 //==========================================================
-function FWglContext_bindTexture(ps, pi, pt){
+function FWglContext_bindTexture(slot, index, texture){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameTextureCount++;
    //............................................................
    // 录制模式
    if(o._statusRecord){
-      var l = new SG3dLayoutSampler();
-      l.slot = ps;
-      l.index = pi;
-      l.texture = pt;
-      o._recordSamplers.push(l);
+      var layout = new SG3dLayoutSampler();
+      layout.slot = slot;
+      layout.index = index;
+      layout.texture = texture;
+      o._recordSamplers.push(layout);
    }
    //............................................................
    // 激活纹理
-   if(o._activeTextureSlot != ps){
-      g.uniform1i(ps, pi);
-      g.activeTexture(g.TEXTURE0 + pi);
-      r = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", ps, pi);
-      if(!r){
-         return r;
+   if(o._activeTextureSlot != slot){
+      graphic.uniform1i(slot, index);
+      graphic.activeTexture(graphic.TEXTURE0 + index);
+      result = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", slot, index);
+      if(!result){
+         return result;
       }
-      o._activeTextureSlot = ps;
+      o._activeTextureSlot = slot;
    }
    //............................................................
    // 空纹理处理
-   if(pt == null){
-      g.bindTexture(g.TEXTURE_2D, null);
-      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
-      return r;
+   if(texture == null){
+      graphic.bindTexture(graphic.TEXTURE_2D, null);
+      result = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", slot);
+      return result;
    }
    //............................................................
    // 绑定纹理
-   var gt = null;
-   var gn = pt._native;
-   switch(pt.textureCd()){
+   var handle = texture._native;
+   switch(texture.textureCd()){
       case EG3dTexture.Flat2d:{
-         gt = g.TEXTURE_2D;
-         g.bindTexture(g.TEXTURE_2D, pt._native);
-         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", gn);
-         if(!r){
-            return r;
+         graphic.bindTexture(graphic.TEXTURE_2D, handle);
+         result = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", handle);
+         if(!result){
+            return result;
          }
          break;
       }
       case EG3dTexture.Cube:{
-         gt = g.TEXTURE_CUBE_MAP;
-         g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", gn);
-         if(!r){
-            return r;
+         graphic.bindTexture(graphic.TEXTURE_CUBE_MAP, handle);
+         result = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", handle);
+         if(!result){
+            return result;
          }
          break;
       }
@@ -957,54 +946,53 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   return r;
+   return result;
 }
 
 //==========================================================
 // <T>清空内容。</T>
 //
-// @param r:red:Float 红色
-// @param g:green:Float 绿色
-// @param b:blue:Float 蓝色
-// @param a:alpha:Float 透明
-// @param d:depth:Float 深度
+// @param red:Float 红色
+// @param green:Float 绿色
+// @param blue:Float 蓝色
+// @param alpha:Float 透明
+// @param depth:Float 深度
 //==========================================================
-function FWglContext_clear(r, g, b, a, d){
+function FWglContext_clear(red, green, blue, alpha, depth){
    var o = this;
-   var c = o._native;
-   c.clearColor(r, g, b, a);
-   c.clearDepth(d);
-   c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearColor(red, green, blue, alpha);
+   graphic.clearDepth(depth);
+   graphic.clear(graphic.COLOR_BUFFER_BIT | graphic.DEPTH_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
 
 //==========================================================
 // <T>清空颜色内容。</T>
 //
-// @param r:red:Float 红色
-// @param g:green:Float 绿色
-// @param b:blue:Float 蓝色
-// @param a:alpha:Float 透明
-// @param d:depth:Float 深度
+// @param red:Float 红色
+// @param green:Float 绿色
+// @param blue:Float 蓝色
+// @param alpha:Float 透明
 //==========================================================
-function FWglContext_clearColor(r, g, b, a){
+function FWglContext_clearColor(red, green, blue, alpha){
    var o = this;
-   var c = o._native;
-   c.clearColor(r, g, b, a);
-   c.clear(c.COLOR_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearColor(red, green, blue, alpha);
+   graphic.clear(graphic.COLOR_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
 
 //==========================================================
 // <T>清空深度内容。</T>
 //
-// @param d:depth:Float 深度
+// @param depth:Float 深度
 //==========================================================
-function FWglContext_clearDepth(d){
+function FWglContext_clearDepth(depth){
    var o = this;
-   var c = o._native;
-   c.clearDepth(d);
-   c.clear(c.DEPTH_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearDepth(depth);
+   graphic.clear(graphic.DEPTH_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
 
@@ -1020,7 +1008,8 @@ function FWglContext_clearDepth(d){
 function FWglContext_readPixels(left, top, width, height){
    var o = this;
    var graphic = o._native;
-   var data = new Uint8Array(4 * width * height);
+   var length = 4 * width * height;
+   var data = new Uint8Array(length);
    graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
    return data;
 }
@@ -1096,11 +1085,11 @@ function FWglContext_present(){
 //==========================================================
 // <T>检查执行错误。</T>
 //
-// @param c:code:String 代码
-// @param m:message:String 消息
-// @param p1:parameter1:String 参数1
+// @param code:String 代码
+// @param message:String 消息
+// @param parameter1:String 参数1
 //==========================================================
-function FWglContext_checkError(c, m, p1){
+function FWglContext_checkError(code, message, parameter1){
    var o = this;
    // 检查运行模式
    if(!o._capability.optionDebug){
@@ -1110,43 +1099,43 @@ function FWglContext_checkError(c, m, p1){
       return true;
    }
    // 获得错误原因
-   var g = o._native;
-   var r = false;
-   var e = null;
-   var es = null;
+   var graphic = o._native;
+   var result = false;
+   var error = null;
+   var errorInfo = null;
    while(true){
       // 获得错误
-      e = g.getError();
-      if(e == g.NO_ERROR){
-         r = true;
+      error = graphic.getError();
+      if(error == graphic.NO_ERROR){
+         result = true;
          break;
       }
       // 获得原因
-      switch(e){
-         case g.INVALID_OPERATION:
-            es = "Invalid operation.";
+      switch(error){
+         case graphic.INVALID_OPERATION:
+            errorInfo = "Invalid operation.";
             break;
-         case g.INVALID_ENUM:
-            es = "Invalid enum.";
+         case graphic.INVALID_ENUM:
+            errorInfo = "Invalid enum.";
             break;
-         case g.INVALID_VALUE:
-            es = "Invalid value.";
+         case graphic.INVALID_VALUE:
+            errorInfo = "Invalid value.";
             break;
-         case g.INVALID_FRAMEBUFFER_OPERATION:
-            es = "Invalid paramebuffer opeartion."; 
+         case graphic.INVALID_FRAMEBUFFER_OPERATION:
+            errorInfo = "Invalid paramebuffer opeartion."; 
             break;
-         case g.OUT_OF_MEMORY:
-            es = "Out of memory.";
+         case graphic.OUT_OF_MEMORY:
+            errorInfo = "Out of memory.";
             break;
          default:
-            es = "Unknown"; 
+            errorInfo = "Unknown"; 
             break;
       }
    }
    //............................................................
    // 输出错误信息
-   if(!r){
-      RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', e, es);
+   if(!result){
+      RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
    }
-   return r;
+   return result;
 }

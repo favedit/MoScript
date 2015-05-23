@@ -79,20 +79,6 @@ function RRuntime_className(value){
    }
    return null;
 }
-function SLooperEntry(){
-   var o = this;
-   o.prior   = null;
-   o.next    = null;
-   o.value   = null;
-   o.dispose = SLooperEntry_dispose;
-   return o;
-}
-function SLooperEntry_dispose(){
-   var o = this;
-   o.prior = null;
-   o.next = null;
-   o.value = null;
-}
 function TArray(){
    var o = this;
    o._length  = 0;
@@ -522,203 +508,6 @@ function TList_dump(){
    if(c > 0){
       for(var n = 0; n < c; n++){
          r.append(' [', o._memory[n], ']');
-      }
-   }
-   return r.toString();
-}
-function TLooper(){
-   var o = this;
-   o._count             = 0;
-   o._recordCount       = 0;
-   o._current           = null;
-   o._unused            = null;
-   o.innerCreate        = TLooper_innerCreate;
-   o.innerFree          = TLooper_innerFree;
-   o.innerPush          = TLooper_innerPush;
-   o.innerRemove        = TLooper_innerRemove;
-   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
-   o.innerRemoveValue   = TLooper_innerRemoveValue;
-   o.isEmpty            = TLooper_isEmpty;
-   o.count              = TLooper_count;
-   o.record             = TLooper_record;
-   o.unrecord           = TLooper_unrecord;
-   o.contains           = TLooper_contains;
-   o.current            = TLooper_current;
-   o.next               = TLooper_next;
-   o.push               = TLooper_push;
-   o.pushUnique         = TLooper_pushUnique;
-   o.removeCurrent      = TLooper_removeCurrent;
-   o.remove             = TLooper_remove;
-   o.clear              = TLooper_clear;
-   o.dispose            = TLooper_dispose;
-   o.dump               = TLooper_dump;
-   return o;
-}
-function TLooper_innerCreate(){
-   var o = this;
-   var e = o._unused;
-   if(e == null){
-      e = new SLooperEntry();
-   }else{
-      o._unused = e.next;
-   }
-   return e;
-}
-function TLooper_innerFree(p){
-   var o = this;
-   p.next = o._unused;
-   o._unused = p;
-}
-function TLooper_innerPush(p){
-   var o = this;
-   var ec = o._current;
-   if(ec){
-      var ep = ec.prior;
-      p.prior = ep;
-      p.next = ec;
-      ep.next = p;
-      ec.prior = p;
-   }else{
-      p.prior = p;
-      p.next = p;
-      o._current = p;
-   }
-   o._count++;
-}
-function TLooper_innerRemove(p){
-   var o = this;
-   var ep = p.prior;
-   var en = p.next;
-   ep.next = en;
-   en.prior = ep;
-   o._count--;
-   if(o._count > 0){
-      o._current = en;
-   }else{
-      o._current = null;
-   }
-   o.innerFree(p);
-}
-function TLooper_innerRemoveCurrent(){
-   var o = this;
-   var r = null;
-   if(o._count > 0){
-      r = o._current.value;
-      o.innerRemove(o._current);
-   }
-   return r;
-}
-function TLooper_innerRemoveValue(p){
-   if(o._count > 0){
-      if(o._current.value == p){
-         o.innerRemoveCurrent();
-         return;
-      }
-      var ec = o._current;
-      var en = ec.next;
-      while(en != ec){
-         if(en.value == p){
-            o.innerRemove(en);
-            o._current = ec;
-            return;
-         }
-         en = en.next;
-      }
-   }
-}
-function TLooper_isEmpty(v){
-   return this._count == 0;
-}
-function TLooper_count(){
-   return this._count;
-}
-function TLooper_record(){
-   this._recordCount = this._count;
-}
-function TLooper_unrecord(v){
-   this._recordCount = -1;
-}
-function TLooper_contains(p){
-   var o = this;
-   if(o._current){
-      var c = o._count;
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         if(e.value == p){
-            return true;
-         }
-         e = e.next;
-      }
-   }
-   return false;
-}
-function TLooper_current(){
-   var e = this._current;
-   return e ? e.value : null;
-}
-function TLooper_next(){
-   var o = this;
-   if(o._current){
-      o._current = o._current.next;
-   }
-   var c = o._recordCount;
-   if(c > 0){
-      o._recordCount--;
-   }else if(c == 0){
-      return null;
-   }
-   return o._current ? o._current.value : null;
-}
-function TLooper_push(p){
-   var o = this;
-   var e = o.innerCreate();
-   e.value = p;
-   o.innerPush(e);
-}
-function TLooper_pushUnique(p){
-   var o = this;
-   if(!o.contains(p)){
-      o.push(p);
-   }
-}
-function TLooper_removeCurrent(){
-   return this.innerRemoveCurrent();
-}
-function TLooper_remove(p){
-   this.innerRemoveValue(p);
-}
-function TLooper_clear(){
-   var o = this;
-   var c = o._current;
-   if(c){
-      c.prior.next = null;
-      c.prior = o._unused;
-      o._unused = c;
-      o._current = null;
-   }
-   o._count = 0;
-}
-function TLooper_dispose(){
-   var o = this;
-   o.clear();
-   var e = o._unused;
-   while(e){
-      var n = e.next;
-      e.dispose();
-      e = n;
-   }
-   o._unused = null;
-}
-function TLooper_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(this), ': ', c);
-   if(c > 0){
-      var e = o._current;
-      for(var i = 0; i < c; i++){
-         r.append(' [', e.value, ']');
-         e = e.next;
       }
    }
    return r.toString();
@@ -1340,49 +1129,113 @@ function TStrings_unpack(p){
       }
    }
 }
-var RGlobal = new function RGlobal(){
+var RAssert = new function RAssert(){
    var o = this;
-   o.instances = new TDictionary();
-   o.get       = RGlobal_get;
-   o.set       = RGlobal_set;
-   o.globalGet = RGlobal_globalGet;
-   o.globalSet = RGlobal_globalSet;
+   o.isTrue        = RAssert_isTrue;
+   o.isFalse       = RAssert_isFalse;
+   o.debugBegin    = RAssert_empty;
+   o.debug         = RAssert_empty;
+   o.debugEnd      = RAssert_empty;
+   o.debugTrue     = RAssert_debugTrue;
+   o.debugFalse    = RAssert_debugFalse;
+   o.debugNull     = RAssert_debugNull;
+   o.debugNotNull  = RAssert_debugNotNull;
+   o.debugEmpty    = RAssert_debugEmpty;
+   o.debugNotEmpty = RAssert_debugNotEmpty;
    return o;
 }
-function RGlobal_get(n){
-   return this.instances.get(n);
+function RAssert_empty(){
 }
-function RGlobal_set(n, v){
-   this.instances.set(n, v);
-}
-function RGlobal_globalGet(n){
-   if(top.RGlobal){
-      return top.RGlobal.get(n);
+function RAssert_isTrue(value){
+   if(!value){
+      throw new TError(this, 'Assert ture failure.');
    }
-   return this.instances.get(n);
 }
-function RGlobal_globalSet(n, v){
-   if(top.RGlobal){
-      top.RGlobal.set(n, v);
-   }else{
-      this.instances.set(n, v);
+function RAssert_isFalse(value){
+   if(value){
+      throw new TError(this, 'Assert false failure.');
+   }
+}
+function RAssert_debugTrue(value){
+   if(!value){
+      throw new TError(this, 'Assert true failure.');
+   }
+}
+function RAssert_debugFalse(value){
+   if(value){
+      throw new TError(this, 'Assert false failure.');
+   }
+}
+function RAssert_debugNull(value){
+   if(value != null){
+      throw new TError(this, 'Assert null failure.');
+   }
+}
+function RAssert_debugNotNull(value){
+   if(value == null){
+      throw new TError(this, 'Assert not null failure.');
+   }
+}
+function RAssert_debugEmpty(value){
+   if(value != null){
+      throw new TError(this, 'Assert empty failure.');
+   }
+}
+function RAssert_debugNotEmpty(value){
+   if(value == null){
+      throw new TError(this, 'Assert not empty failure.');
    }
 }
 var RMemory = new function RMemory(){
    var o = this;
-   o.objects       = new Array();
-   o.instances     = new Object();
-   o.isObject      = RMemory_isObject;
-   o.create        = RMemory_create;
-   o.register      = RMemory_register;
-   o.disposeObject = RMemory_disposeObject;
-   o.dispose       = RMemory_dispose;
-   o.unlink        = RMemory_unlink;
+   o._entryUnused  = null;;
+   o._pools        = new Object();
+   o.entryAlloc    = RMemory_entryAlloc;
+   o.entryFree     = RMemory_entryFree;
+   o.alloc         = RMemory_alloc;
    o.free          = RMemory_free;
-   o.freeHtml      = RMemory_freeHtml;
-   o.release       = RMemory_release;
    o.refresh       = RMemory_refresh;
    return o;
+}
+function RMemory_entryAlloc(){
+   var o = this;
+   var entry = null;
+   var unused = o._entryUnused;
+   if(unused){
+      entry = unused;
+      o._entryUnused = unused.next;
+   }else{
+      entry = new SMemoryPoolEntry();
+   }
+   return entry;
+}
+function RMemory_entryFree(entry){
+   var o = this;
+   RAssert.debugNotNull(entry);
+   entry.next = o._entryUnused;
+   o._entryUnused = entry;
+}
+function RMemory_alloc(clazz){
+   var o = this;
+   RAssert.debugNotNull(clazz);
+   var className = RRuntime.className(clazz);
+   var pools = o._pools;
+   var pool = pools[className];
+   if(!pool){
+      pool = new TMemoryPool();
+      pool._constructor = clazz;
+      pools[className] = pool;
+   }
+   return pool.alloc();
+}
+function RMemory_free(value){
+   RAssert.debugNotNull(value);
+   var pool = value.__pool;
+   RAssert.debugNotNull(pool);
+   pool.free(value);
+}
+function RMemory_refresh(){
+   CollectGarbage();
 }
 function RMemory_isObject(o){
    var t = typeof(o);
@@ -1421,10 +1274,6 @@ function RMemory_unlink(o){
       }
    }
 }
-function RMemory_free(o){
-   this.dispose(o);
-   this.unlink(o);
-}
 function RMemory_freeHtml(h){
    if(h){
       h.removeNode(true);
@@ -1436,9 +1285,295 @@ function RMemory_release(){
    o.free(o.instances);
    o.refresh();
 }
-function RMemory_refresh(){
-   if(RContext.optionGarbage){
-      CollectGarbage();
+function SMemoryPoolEntry(){
+   var o = this;
+   o.next    = null;
+   o.value   = null;
+   o.dispose = SMemoryPoolEntry_dispose;
+   return o;
+}
+function SMemoryPoolEntry_dispose(){
+   var o = this;
+   var value = o.value;
+   if(value){
+      value.__pool = null;
+      value.dispose();
+   }
+   o.next = null;
+   o.value = null;
+}
+function TMemoryPool(){
+   var o = this;
+   o._constructor = null;
+   o._unused      = null;
+   o._createCount = 0;
+   o._allocCount  = 0;
+   o._freeCount   = 0;
+   o.alloc        = TMemoryPool_alloc;
+   o.free         = TMemoryPool_free;
+   o.dispose      = TMemoryPool_dispose;
+   o.dump         = TMemoryPool_dump
+   return o;
+}
+function TMemoryPool_alloc(){
+   var o = this;
+   var value = null;
+   var unused = o._unused;
+   if(unused){
+      value = unused.value;
+      o._unused = unused.next;
+      RMemory.entryFree(unused);
+   }else{
+      value = new o._constructor();
+      value.__pool = o;
+      o._createCount++;
+   }
+   o._allocCount++;
+   return value;
+}
+function TMemoryPool_free(value){
+   var o = this;
+   RAssert.debugNotNull(value);
+   var entry = RMemory.entryAlloc();
+   entry.value = value;
+   entry.next = o._unused;
+   o._unused = entry;
+   o._freeCount++;
+}
+function TMemoryPool_dispose(){
+   var o = this;
+   var entry = o._unused;
+   while(entry){
+      var current = entry;
+      entry = current.next;
+      current.dispose();
+      RMemory.entryFree(current);
+   }
+}
+function TMemoryPool_dump(){
+   var o = this;
+   var source = new TString();
+   source.append('Pool:');
+   source.append('create=', o._createCount);
+   source.append(', alloc=', o._allocCount);
+   source.append(', free=', o._freeCount);
+   return source.flush();
+}
+function SLooperEntry(){
+   var o = this;
+   o.prior   = null;
+   o.next    = null;
+   o.value   = null;
+   o.dispose = SLooperEntry_dispose;
+   return o;
+}
+function SLooperEntry_dispose(){
+   var o = this;
+   o.prior = null;
+   o.next = null;
+   o.value = null;
+}
+function TLooper(){
+   var o = this;
+   o._count             = 0;
+   o._recordCount       = 0;
+   o._current           = null;
+   o.innerPush          = TLooper_innerPush;
+   o.innerRemove        = TLooper_innerRemove;
+   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
+   o.innerRemoveValue   = TLooper_innerRemoveValue;
+   o.isEmpty            = TLooper_isEmpty;
+   o.count              = TLooper_count;
+   o.record             = TLooper_record;
+   o.unrecord           = TLooper_unrecord;
+   o.contains           = TLooper_contains;
+   o.current            = TLooper_current;
+   o.next               = TLooper_next;
+   o.push               = TLooper_push;
+   o.pushUnique         = TLooper_pushUnique;
+   o.removeCurrent      = TLooper_removeCurrent;
+   o.remove             = TLooper_remove;
+   o.clear              = TLooper_clear;
+   o.dispose            = TLooper_dispose;
+   o.dump               = TLooper_dump;
+   return o;
+}
+function TLooper_innerPush(entry){
+   var o = this;
+   var current = o._current;
+   if(current){
+      var prior = current.prior;
+      entry.prior = prior;
+      entry.next = current;
+      prior.next = entry;
+      current.prior = entry;
+   }else{
+      entry.prior = entry;
+      entry.next = entry;
+      o._current = entry;
+   }
+   o._count++;
+}
+function TLooper_innerRemove(entry){
+   var o = this;
+   var prior = entry.prior;
+   var next = entry.next;
+   prior.next = next;
+   next.prior = prior;
+   o._count--;
+   if(o._count > 0){
+      o._current = next;
+   }else{
+      o._current = null;
+   }
+   RMemory.free(entry);
+}
+function TLooper_innerRemoveCurrent(){
+   var o = this;
+   var value = null;
+   if(o._count > 0){
+      var current = o._current;
+      value = current.value;
+      o.innerRemove(current);
+   }
+   return value;
+}
+function TLooper_innerRemoveValue(value){
+   if(o._count > 0){
+      if(o._current.value == value){
+         o.innerRemoveCurrent();
+         return;
+      }
+      var current = o._current;
+      var entry = current.next;
+      while(entry != current){
+         if(entry.value == value){
+            o.innerRemove(entry);
+            o._current = current;
+            return;
+         }
+         entry = entry.next;
+      }
+   }
+}
+function TLooper_isEmpty(){
+   return this._count == 0;
+}
+function TLooper_count(){
+   return this._count;
+}
+function TLooper_record(){
+   this._recordCount = this._count;
+}
+function TLooper_unrecord(v){
+   this._recordCount = -1;
+}
+function TLooper_contains(value){
+   var o = this;
+   if(o._current){
+      var entry = o._current;
+      var count = o._count;
+      for(var i = 0; i < count; i++){
+         if(entry.value == value){
+            return true;
+         }
+         entry = entry.next;
+      }
+   }
+   return false;
+}
+function TLooper_current(){
+   var entry = this._current;
+   return entry ? entry.value : null;
+}
+function TLooper_next(){
+   var o = this;
+   if(o._current){
+      o._current = o._current.next;
+   }
+   var c = o._recordCount;
+   if(c > 0){
+      o._recordCount--;
+   }else if(c == 0){
+      return null;
+   }
+   return o._current ? o._current.value : null;
+}
+function TLooper_push(value){
+   var o = this;
+   var entry = RMemory.alloc(SLooperEntry);
+   entry.value = value;
+   o.innerPush(entry);
+}
+function TLooper_pushUnique(value){
+   var o = this;
+   if(!o.contains(value)){
+      o.push(value);
+   }
+}
+function TLooper_removeCurrent(){
+   return this.innerRemoveCurrent();
+}
+function TLooper_remove(p){
+   this.innerRemoveValue(p);
+}
+function TLooper_clear(){
+   var o = this;
+   var entry = o._current;
+   if(entry){
+      entry.prior.next = null;
+      while(entry){
+         var next = entry.next;
+         RMemory.free(next);
+         entry = next;
+      }
+   }
+   o._count = 0;
+   o._current = null;
+}
+function TLooper_dispose(){
+   this.clear();
+}
+function TLooper_dump(){
+   var o = this;
+   var count = o._count;
+   var result = new TString();
+   result.append(RClass.name(this), ': ', count);
+   if(count > 0){
+      var entry = o._current;
+      for(var i = 0; i < count; i++){
+         result.append(' [', entry.value, ']');
+         entry = entry.next;
+      }
+   }
+   return result.flush();
+}
+var RGlobal = new function RGlobal(){
+   var o = this;
+   o.instances = new TDictionary();
+   o.get       = RGlobal_get;
+   o.set       = RGlobal_set;
+   o.globalGet = RGlobal_globalGet;
+   o.globalSet = RGlobal_globalSet;
+   return o;
+}
+function RGlobal_get(n){
+   return this.instances.get(n);
+}
+function RGlobal_set(n, v){
+   this.instances.set(n, v);
+}
+function RGlobal_globalGet(n){
+   if(top.RGlobal){
+      return top.RGlobal.get(n);
+   }
+   return this.instances.get(n);
+}
+function RGlobal_globalSet(n, v){
+   if(top.RGlobal){
+      top.RGlobal.set(n, v);
+   }else{
+      this.instances.set(n, v);
    }
 }
 function AAnnotation(n){
@@ -3367,29 +3502,6 @@ function RArray_nameMaxLength(a){
    }
    return r;
 }
-var RAssert = new function RAssert(){
-   var o = this;
-   o.isTrue     = RAssert_isTrue;
-   o.isFalse    = RAssert_isFalse;
-   o.debugBegin = RAssert_empty;
-   o.debug      = RAssert_empty;
-   o.debugEnd   = RAssert_empty;
-   o.debugTrue  = RAssert_isTrue;
-   o.debugFalse = RAssert_isFalse;
-   return o;
-}
-function RAssert_empty(){
-}
-function RAssert_isTrue(p){
-   if(!p){
-      throw new TError(p, 'Assert failure.');
-   }
-}
-function RAssert_isFalse(a){
-   if(p){
-      throw new TError(p, 'Assert failure.');
-   }
-}
 var RBoolean = new function RBoolean(){
    var o = this;
    o.format   = RBoolean_format;
@@ -5225,22 +5337,6 @@ function RObject_release(item){
          item[n] = null;
       }
    }
-}
-var RRandom = new function(){
-   var o = this;
-   o._seed = (new Date()).getTime();
-   o.get  = RRandom_get;
-   o.rand = RRandom_rand;
-   RMemory.register('RRandom', o);
-   return o;
-}
-function RRandom_get(){
-   var o = this;
-   o._seed = (o._seed * 9301 + 49297) % 233280;
-   return o._seed/(233280.0);
-}
-function RRandom_rand(n){
-   return Math.ceil(this.get()*n);
 }
 var RRect = new function(){
    var o = this;
@@ -8768,6 +8864,23 @@ function RMath_sign(value){
       return -1;
    }
    return 0;
+}
+var RRandom = new function(){
+   var o = this;
+   o._seed = (new Date()).getTime();
+   o.get  = RRandom_get;
+   o.rand = RRandom_rand;
+   return o;
+}
+function RRandom_get(){
+   var o = this;
+   o._seed = (o._seed * 9301 + 49297) % 233280;
+   return o._seed/(233280.0);
+}
+function RRandom_rand(seed){
+   var o = this;
+   var value = o.get() * seed;
+   return Math.ceil(value);
 }
 function AStyle(n, s){
    var o = this;
@@ -14257,13 +14370,17 @@ var RWindow = new function RWindow(){
    var o = this;
    o._optionSelect     = true;
    o._statusEnable     = true;
+   o._disableDeep      = 0;
    o._localStorage     = null;
    o._sessionStorage   = null;
-   o._mouseEvent       = new SMouseEvent();
-   o._keyEvent         = new SKeyboardEvent();
-   o._resizeEvent      = new SResizeEvent();
-   o._orientationEvent = new SEvent();
-   o._disableDeep      = 0;
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
+   o._eventMouse       = new SMouseEvent();
+   o._eventKey         = new SKeyboardEvent();
+   o._eventResize      = new SResizeEvent();
+   o._eventOrientation = new SEvent();
+   o._eventUnload      = new SEvent();
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
@@ -14305,9 +14422,11 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   o.appendElement     = RWindow_appendElement;
    o.redirect          = RWindow_redirect;
    o.historyForward    = RWindow_historyForward;
    o.historyBack       = RWindow_historyBack;
+   o.dispose           = RWindow_dispose;
    return o;
 }
 function RWindow_ohMouseDown(p){
@@ -14315,7 +14434,7 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseDown.process(e);
 }
@@ -14324,7 +14443,7 @@ function RWindow_ohMouseMove(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseMove.process(e);
 }
@@ -14333,7 +14452,7 @@ function RWindow_ohMouseUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseUp.process(e);
 }
@@ -14342,66 +14461,70 @@ function RWindow_ohMouseWheel(p){
    if(!p){
       p = o._hWindow.event;
    }
-   var e = o._mouseEvent;
+   var e = o._eventMouse;
    e.attachEvent(p);
    o.lsnsMouseWheel.process(e);
 }
-function RWindow_ohKeyDown(p){
+function RWindow_ohKeyDown(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyDown.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyDown.process(event);
 }
-function RWindow_ohKeyUp(p){
+function RWindow_ohKeyUp(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyUp.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyUp.process(event);
 }
-function RWindow_ohKeyPress(p){
+function RWindow_ohKeyPress(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._keyEvent;
-   e.attachEvent(p);
-   o.lsnsKeyPress.process(e);
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyPress.process(event);
 }
-function RWindow_ohResize(p){
+function RWindow_ohResize(hEvent){
    var o = RWindow;
-   if(!p){
-      p = o._hWindow.event;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
    }
-   var e = o._resizeEvent;
-   e.attachEvent(p);
-   o.lsnsResize.process(e);
+   var event = o._eventResize;
+   event.attachEvent(hEvent);
+   o.lsnsResize.process(event);
 }
-function RWindow_ohSelect(p){
+function RWindow_ohSelect(event){
    return RWindow._optionSelect;
 }
-function RWindow_ohOrientation(p){
+function RWindow_ohOrientation(hEvent){
    var o = RWindow;
-   var e = o._orientationEvent;
+   var event = o._eventOrientation;
    if((window.orientation == 180) || (window.orientation == 0)){
-      e.orientationCd = EOrientation.Vertical;
+      event.orientationCd = EOrientation.Vertical;
    }else if((window.orientation == 90) || (window.orientation == -90)){
-      e.orientationCd = EOrientation.Horizontal;
+      event.orientationCd = EOrientation.Horizontal;
    }else{
       throw new TError(o, 'Unknown orientation mode.');
    }
-   o.lsnsOrientation.process(e);
+   o.lsnsOrientation.process(event);
 }
 function RWindow_ohUnload(event){
+   var o = RWindow;
+   var event = o._eventUnload;
+   o.lsnsUnload.process(event);
+   RWindow.dispose();
 }
-function RWindow_connect(w){
+function RWindow_connect(hHtml){
    var o = this;
-   var hWindow = o._hWindow = w;
+   var hWindow = o._hWindow = hHtml;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    if(RBrowser.supportHtml5()){
@@ -14526,213 +14649,52 @@ function RWindow_setEnable(v, f){
    }
    o._statusEnable = v;
 }
+function RWindow_appendElement(hPanel){
+   RAssert.debugNotNull(control);
+   this._hContainer.appendChild(hPanel);
+}
 function RWindow_redirect(){
 }
 function RWindow_historyForward(){
 }
 function RWindow_historyBack(){
 }
-function RWindow_onUnload(){
-   RMemory.release();
-}
-function RWindow_onResize(){
-   var o = this;
-   var h = o._hDisablePanel;
-   if(h){
-      if('block' == h.style.display){
-         var s = h.style;
-         var hd = o.hDocument;
-         s.pixelLeft = 0;
-         s.pixelTop = 0
-         s.pixelWidth = hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth;
-         s.pixelHeight = hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight;
-      }
-   }
-}
-function RWindow_connect2(w){
-   var o = this;
-   o.hWindow = w;
-   var hd = o.hDocument = w.document;
-   var hb = o._hContainer = o.hContainer = hd.body;
-   o.processUnload = hb.onunload;
-   hb.onunload = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsUnload.process(e);
-      o.onUnload();
-   };
-   hb.onmouseover = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseOver.process(e);
-   };
-   hb.onmousewheel = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseWheel.process(e);
-   };
-   hb.onkeydown = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
-      var s = e.srcElement ? e.srcElement : e.target;
-      var t = s.tagName;
-      if(EKeyCode.BackSpace == e.keyCode){
-         if('INPUT' == t){
-            if(s.readOnly || 'checkbox' == s.type){
-               return RKey.eventClear(e);
-            }
-         }else if('TEXTAREA' == t){
-            if(s.readOnly){
-               return RKey.eventClear(e);
-            }
-         }else{
-            return RKey.eventClear(e);
-         }
-      }
-      o.__keyDownEvent.attach(e);
-      o.lsnsKeyDown.process(o.__keyDownEvent);
-      if(EKeyCode.Enter == e.keyCode){
-         if('INPUT' == t){
-            if(REvent.process(s, e)){
-               RKey.eventClear(e);
-            }
-         }
-      }
-   };
-   hb.onkeyup = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsKeyUp.process(e);
-   };
-   hb.onkeypress = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.debug(o, 'Window key press. (key_code={1})', e.keyCode);
-      o.lsnsKeyPress.process(e);
-   };
-   hb.onresize = function(e){
-      if(!e){
-         e = w.event;
-      }
-      if(o.oldBodyWidth == o._hContainer.offsetWidth && o.oldBodyHeight == o._hContainer.offsetHeight){
-         return;
-      }
-      o.oldBodyWidth = o._hContainer.offsetWidth;
-      o.oldBodyHeight = o._hContainer.offsetHeight;
-      o.onResize();
-      o.lsnsResize.process(e);
-   };
-}
-function RWindow_panel(t){
-   var o = this;
-   if(EPanel.Disable == t){
-      var h = o._hDisablePanel;
-      if(!h){
-         h = o._hDisablePanel = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Disable');
-         var hi = RBuilder.append(h, 'IMG')
-         hi.src = RRes.iconPath('#ctl.RWindow_Loading');
-         hi.style.margin = document.body.offsetHeight / 2;
-         h.style.zIndex = ELayer.Disable;
-      }
-      return h;
-   }
-}
-function RWindow_screenPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.screenX;
-      p.y = e.screenY;
-      return p;
-   }
-   return new TPoint(e.screenX, e.screenY);
-}
-function RWindow_clientPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.clientX;
-      p.y = e.clientY;
-      return p;
-   }
-   return new TPoint(e.clientX, e.clientY);
-}
-function RWindow_offsetPos(p){
-   var e = this.hWindow.event;
-   if(p){
-      p.x = e.offsetX;
-      p.y = e.offsetY;
-      return p;
-   }
-   return new TPoint(e.offsetX, e.offsetY);
-}
-function RWindow_showShadow(v, r){
-   var o = this;
-   if(!o._hShadow){
-      o._hShadow = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Shadow');
-      o._hShadow.style.zIndex = ELayer.Shadow;
-   }
-   var st = o._hShadow.style;
-   if(v == false){
-      st.display = 'none';
-   }else{
-      st.display = 'block';
-      st.pixelLeft = r.left+3;
-      st.pixelTop = r.top+3;
-      st.pixelWidth = r.width();
-      st.pixelHeight = r.height();
-   }
-}
-function RWindow_moveCenter(h){
-   var o = this;
-   if(h){
-      h.style.pixelLeft = Math.max(parseInt((o._hContainer.offsetWidth - h.offsetWidth)/2), 0);
-      h.style.pixelTop = Math.max(parseInt((o._hContainer.offsetHeight - h.offsetHeight)/2), 0) + o._hContainer.scrollTop;
-   }
-}
-function RWindow_appendControl(ctl){
-   this._hContainer.appendChild(ctl.hPanel);
-}
-function RWindow_appendElement(h){
-   this._hContainer.appendChild(h);
-}
-function RWindow_appendContainer(h){
-   this.hContainer.appendChild(h);
-}
-function RWindow_containerTop(h){
-   var o = this;
-   var hc = o.hContainer;
-   var r = RHtml.top(h) + h.offsetHeight;
-   if('auto' == hc.currentStyle.overflow){
-      r -= RHtml.top(hc);
-   }
-   return r - hc.scrollTop;
-}
 function RWindow_dispose(){
    var o = this;
-   o._hContainer.onload = null;
-   o._hContainer.onunload = null;
-   o._hContainer.onmousedown = null;
-   o._hContainer.onmouseup = null;
-   o._hContainer.onmousemove = null;
-   o._hContainer.onmouseover = null;
-   o._hContainer.onmousewheel = null;
-   o._hContainer.onkeydown = null;
-   o._hContainer.onkeyup = null;
-   o._hContainer.onkeypress = null;
-   o._hContainer.onresize = null;
-   o._hContainer = RHtml.free(o._hContainer);
+   var hWindow = o._hWindow;
+   var hDocument = o._hDocument;
+   var hContainer = o._hContainer;
+   if(RBrowser.supportHtml5()){
+      hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.removeEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.removeEventListener('keydown', o.ohKeyDown, true);
+      hContainer.removeEventListener('keyup', o.ohKeyUp, true);
+      hContainer.removeEventListener('keypress', o.ohKeyPress, true);
+      hWindow.removeEventListener('orientationchange', o.ohOrientation);
+   }else{
+      hContainer.onmousedown = null;
+      hContainer.onmousemove = null;
+      hContainer.onmouseup = null;
+      hContainer.onmousewheel = null;
+      hContainer.onkeydown = null;
+      hContainer.onkeyup = null;
+      hContainer.onkeypress = null;
+   }
+   hContainer.onresize = null;
+   hContainer.onselectstart = null;
+   hContainer.onunload = null;
+   o._localStorage = RObject.dispose(o._localStorage);
+   o._sessionStorage = RObject.dispose(o._sessionStorage);
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
-   o._hDisablePanel = null;
-   o._hDisableImage = null;
-   o._hShadow = null;
+   o._eventMouse = RObject.dispose(o._eventMouse);
+   o._eventKey = RObject.dispose(o._eventKey);
+   o._eventResize = RObject.dispose(o._eventResize);
+   o._eventOrientation = RObject.dispose(o._eventOrientation);
+   o._eventUnload = RObject.dispose(o._eventUnload);
 }
 var RXml = new function RXml(){
    var o = this;
@@ -17353,20 +17315,53 @@ function FG3dViewport_set(l, t, w, h){
 }
 var REngine3d = new function REngine3d(){
    var o = this;
-   o.contexts = new TObjects();
+   o._setuped      = false;
+   o._contexts     = null;
+   o.onUnload      = REngine3d_onUnload;
+   o.setup         = REngine3d_setup;
+   o.contexts      = REngine3d_contexts;
    o.createContext = REngine3d_createContext;
+   o.dispose       = REngine3d_dispose;
    return o;
 }
-function REngine3d_createContext(c, h, a){
+function REngine3d_onUnload(event){
    var o = this;
-   var r = RClass.create(c);
-   if(a){
-      r._optionAlpha = a.alpha;
-      r._optionAntialias = a.antialias;
+   o.dispose();
+}
+function REngine3d_setup(){
+   var o = this;
+   if(!o._setuped){
+      o._contexts = new TObjects();
+      RWindow.lsnsUnload.register(o, o.onUnload);
+      o._setuped = true;
    }
-   r.linkCanvas(h);
-   o.contexts.push(r);
-   return r;
+}
+function REngine3d_contexts(){
+   return this._contexts;
+}
+function REngine3d_createContext(clazz, hCanvas, attributes){
+   var o = this;
+   o.setup();
+   var context = RClass.create(clazz);
+   if(context){
+      context._optionAlpha = attributes.alpha;
+      context._optionAntialias = attributes.antialias;
+   }
+   context.linkCanvas(hCanvas);
+   o._contexts.push(context);
+   return context;
+}
+function REngine3d_dispose(){
+   var o = this;
+   var contexts = o._contexts;
+   if(contexts){
+      var count = contexts.count();
+      for(var i = 0; i < count; i++){
+         var context = contexts.at(i);
+         context.dispose();
+      }
+      o._contexts = RObject.dispose(contexts);
+   }
 }
 var EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -17601,6 +17596,11 @@ function FG3dContext(o){
    o._blendSourceCd      = 0;
    o._blendTargetCd      = 0;
    o._program            = null;
+   o._storePrograms      = null;
+   o._storeLayouts       = null;
+   o._storeBuffers       = null;
+   o._storeTextures      = null;
+   o._storeTargets       = null;
    o.construct           = FG3dContext_construct;
    o.linkCanvas          = FG3dContext_linkCanvas;
    o.size                = FG3dContext_size;
@@ -17638,6 +17638,11 @@ function FG3dContext_construct(){
    o._size = new SSize2();
    o._statistics = RClass.create(FG3dStatistics);
    RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
+   o._storePrograms = new TObjects();
+   o._storeLayouts = new TObjects();
+   o._storeBuffers = new TObjects();
+   o._storeTextures = new TObjects();
+   o._storeTargets = new TObjects();
 }
 function FG3dContext_linkCanvas(h){
    var o = this;
@@ -17657,6 +17662,51 @@ function FG3dContext_prepare(){
 }
 function FG3dContext_dispose(){
    var o = this;
+   var programs = o._storePrograms;
+   if(programs){
+      var count = programs.count();
+      for(var i = 0; i < count; i++){
+         var program = programs.at(i);
+         program.dispose();
+      }
+      o._storePrograms = RObject.dispose(programs);
+   }
+   var layouts = o._storeLayouts;
+   if(layouts){
+      var count = layouts.count();
+      for(var i = 0; i < count; i++){
+         var layout = layouts.at(i);
+         layout.dispose();
+      }
+      o._storeLayouts = RObject.dispose(layouts);
+   }
+   var buffers = o._storeBuffers;
+   if(buffers){
+      var count = buffers.count();
+      for(var i = 0; i < count; i++){
+         var buffer = buffers.at(i);
+         buffer.dispose();
+      }
+      o._storeBuffers = RObject.dispose(buffers);
+   }
+   var textures = o._storeTextures;
+   if(textures){
+      var count = textures.count();
+      for(var i = 0; i < count; i++){
+         var texture = textures.at(i);
+         texture.dispose();
+      }
+      o._storeTextures = RObject.dispose(textures);
+   }
+   var targets = o._storeTargets;
+   if(targets){
+      var count = targets.count();
+      for(var i = 0; i < count; i++){
+         var target = targets.at(i);
+         target.dispose();
+      }
+      o._storeTargets = RObject.dispose(targets);
+   }
    o._program = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
@@ -17853,6 +17903,7 @@ function FG3dProgram(o){
    o.setParameter4     = FG3dProgram_setParameter4;
    o.setSampler        = FG3dProgram_setSampler;
    o.upload            = RMethod.virtual(o, 'upload');
+   o.dispose           = FG3dProgram_dispose;
    return o;
 }
 function FG3dProgram_hasAttribute(){
@@ -17982,6 +18033,13 @@ function FG3dProgram_setSampler(pn, pt){
       throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
    }
    o._graphicContext.bindTexture(p._slot, p._index, pt);
+}
+function FG3dProgram_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   o._vertexShader = RObject.dispose(o._vertexShader);
+   o._fragmentShader = RObject.dispose(o._fragmentShader);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);
@@ -19142,388 +19200,380 @@ function FWglContext_recordEnd(){
 }
 function FWglContext_createProgram(){
    var o = this;
-   var r = RClass.create(FWglProgram);
-   r.linkGraphicContext(o);
-   r.setup();
+   var program = RClass.create(FWglProgram);
+   program.linkGraphicContext(o);
+   program.setup();
+   o._storePrograms.push(program);
    o._statistics._programTotal++;
-   return r;
+   return program;
 }
 function FWglContext_createLayout(){
    var o = this;
-   var r = RClass.create(FWglLayout);
-   r.linkGraphicContext(o);
+   var layout = RClass.create(FWglLayout);
+   layout.linkGraphicContext(o);
    if(o._capability.optionLayout){
-      r.setup();
+      layout.setup();
    }
+   o._storeLayouts.push(layout);
    o._statistics._layoutTotal++;
-   return r;
+   return layout;
 }
 function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = null;
-   if(clazz){
-      buffer = RClass.create(clazz);
-   }else{
-      buffer = RClass.create(FWglVertexBuffer);
-   }
+   var buffer = RClass.create(clazz ? clazz : FWglVertexBuffer);
    buffer.linkGraphicContext(o);
    buffer.setup();
+   o._storeBuffers.push(buffer);
    o._statistics._vertexBufferTotal++;
    return buffer;
 }
 function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = null;
-   if(clazz){
-      buffer = RClass.create(clazz);
-   }else{
-      buffer = RClass.create(FWglIndexBuffer);
-   }
+   var buffer = RClass.create(clazz ? clazz : FWglIndexBuffer);
    buffer.linkGraphicContext(o);
    buffer.setup();
+   o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
 }
 function FWglContext_createFlatTexture(){
    var o = this;
-   var r = RClass.create(FWglFlatTexture);
-   r.linkGraphicContext(o);
-   r.setup();
+   var texture = RClass.create(FWglFlatTexture);
+   texture.linkGraphicContext(o);
+   texture.setup();
+   o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
-   return r;
+   return texture;
 }
 function FWglContext_createCubeTexture(){
    var o = this;
-   var r = RClass.create(FWglCubeTexture);
-   r.linkGraphicContext(o);
-   r.setup();
+   var texture = RClass.create(FWglCubeTexture);
+   texture.linkGraphicContext(o);
+   texture.setup();
+   o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
-   return r;
+   return texture;
 }
 function FWglContext_createRenderTarget(){
    var o = this;
-   var r = RClass.create(FWglRenderTarget);
-   r.linkGraphicContext(o);
-   r.setup();
+   var target = RClass.create(FWglRenderTarget);
+   target.linkGraphicContext(o);
+   target.setup();
+   o._storeTargets.push(target);
    o._statistics._targetTotal++;
-   return r;
+   return target;
 }
-function FWglContext_setViewport(l, t, w, h){
+function FWglContext_setViewport(left, top, width, height){
    var o = this;
-   o._size.set(w, h);
-   o._native.viewport(l, t, w, h);
+   o._size.set(width, height);
+   o._native.viewport(left, top, width, height);
 }
-function FWglContext_setFillMode(p){
+function FWglContext_setFillMode(fillModeCd){
    var o = this;
-   var g = o._native;
-   if(o._fillModeCd == p){
-      return;
+   var graphic = o._native;
+   if(o._fillModeCd == fillModeCd){
+      return false;
    }
    o._statistics._frameFillModeCount++;
-   switch(p){
+   switch(fillModeCd){
       case EG3dFillMode.Point:
-         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         graphic.polygonMode(graphic.FRONT_AND_BACK, graphic.POINT);
          break;
       case EG3dFillMode.Line:
-         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         graphic.polygonMode(graphic.FRONT_AND_BACK, graphic.LINE);
          break;
       case EG3dFillMode.Face:
-         g.polygonMode(g.FRONT, g.FILL);
+         graphic.polygonMode(graphic.FRONT, graphic.FILL);
          break;
       default:
-         throw new TError('Invalid parameter. (fill_mode={1})', p);
+         throw new TError('Invalid parameter. (fill_mode={1})', fillModeCd);
    }
-   o._fillModeCd = p;
+   o._fillModeCd = fillModeCd;
    return true;
 }
-function FWglContext_setDepthMode(f, v){
+function FWglContext_setDepthMode(depthFlag, depthCd){
    var o = this;
-   var g = o._native;
-   if((o._optionDepth == f) && (o._depthModeCd == v)){
-      return true;
+   var graphic = o._native;
+   if((o._optionDepth == depthFlag) && (o._depthModeCd == depthCd)){
+      return false;
    }
    o._statistics._frameDepthModeCount++;
-   if(o._optionDepth != f){
-      if(f){
-         g.enable(g.DEPTH_TEST);
+   if(o._optionDepth != depthFlag){
+      if(depthFlag){
+         graphic.enable(graphic.DEPTH_TEST);
       }else{
-         g.disable(g.DEPTH_TEST);
+         graphic.disable(graphic.DEPTH_TEST);
       }
-      o._optionDepth = f;
+      o._optionDepth = depthFlag;
    }
-   if(f && (o._depthModeCd != v)){
-      var r = RWglUtility.convertDepthMode(g, v);
-      g.depthFunc(r);
-      o._depthModeCd = v;
+   if(depthFlag && (o._depthModeCd != depthCd)){
+      var depthCode = RWglUtility.convertDepthMode(graphic, depthCd);
+      graphic.depthFunc(depthCode);
+      o._depthModeCd = depthCd;
    }
    return true;
 }
-function FWglContext_setCullingMode(f, v){
+function FWglContext_setCullingMode(cullFlag, cullCd){
    var o = this;
-   var g = o._native;
-   if((o._optionCull == f) && (o._cullModeCd == v)){
-      return true;
+   var graphic = o._native;
+   if((o._optionCull == cullFlag) && (o._cullModeCd == cullCd)){
+      return false;
    }
    o._statistics._frameCullModeCount++;
-   if(o._optionCull != f){
-      if(f){
-         g.enable(g.CULL_FACE);
+   if(o._optionCull != cullFlag){
+      if(cullFlag){
+         graphic.enable(graphic.CULL_FACE);
       }else{
-         g.disable(g.CULL_FACE);
+         graphic.disable(graphic.CULL_FACE);
       }
-      o._optionCull = f;
+      o._optionCull = cullFlag;
    }
-   if(f && (o._cullModeCd != v)){
-      var r = RWglUtility.convertCullMode(g, v);
-      g.cullFace(r);
-      o._cullModeCd = v;
+   if(cullFlag && (o._cullModeCd != cullCd)){
+      var cullValue = RWglUtility.convertCullMode(graphic, cullCd);
+      graphic.cullFace(cullValue);
+      o._cullModeCd = cullCd;
    }
    return true;
 }
-function FWglContext_setBlendFactors(f, vs, vt){
+function FWglContext_setBlendFactors(blendFlag, sourceCd, tagetCd){
    var o = this;
-   var g = o._native;
-   if((o._statusBlend == f) && (o._blendSourceCd == vs) && (o._blendTargetCd == vt)){
-      return true;
+   var graphic = o._native;
+   if((o._statusBlend == blendFlag) && (o._blendSourceCd == sourceCd) && (o._blendTargetCd == tagetCd)){
+      return false;
    }
    o._statistics._frameBlendModeCount++;
-   if(o._statusBlend != f){
-      if(f){
-         g.enable(g.BLEND);
+   if(o._statusBlend != blendFlag){
+      if(blendFlag){
+         graphic.enable(graphic.BLEND);
       }else{
-         g.disable(g.BLEND);
+         graphic.disable(graphic.BLEND);
          o._blendSourceCd = 0;
          o._blendTargetCd = 0;
       }
-      o._statusBlend = f;
+      o._statusBlend = blendFlag;
    }
-   if(f && ((o._blendSourceCd != vs) || (o._blendTargetCd != vt))){
-      var gs = RWglUtility.convertBlendFactors(g, vs);
-      var gt = RWglUtility.convertBlendFactors(g, vt);
-      g.blendFunc(gs, gt);
-      o._blendSourceCd = vs;
-      o._blendTargetCd = vt;
+   if(blendFlag && ((o._blendSourceCd != sourceCd) || (o._blendTargetCd != tagetCd))){
+      var sourceValue = RWglUtility.convertBlendFactors(graphic, sourceCd);
+      var tagetValue = RWglUtility.convertBlendFactors(graphic, tagetCd);
+      graphic.blendFunc(sourceValue, tagetValue);
+      o._blendSourceCd = sourceCd;
+      o._blendTargetCd = tagetCd;
    }
    return true;
 }
-function FWglContext_setScissorRectangle(l, t, w, h){
-   this._native.scissor(l, t, w, h);
+function FWglContext_setScissorRectangle(left, top, width, height){
+   this._native.scissor(left, top, width, height);
 }
-function FWglContext_setRenderTarget(p){
+function FWglContext_setRenderTarget(renderTarget){
    var o = this;
-   var g = o._native;
-   if(o._activeRenderTarget == p){
+   var graphic = o._native;
+   if(o._activeRenderTarget == renderTarget){
       return;
    }
    o._statistics._frameTargetCount++;
-   var r = true;
-   if(p == null){
-      g.bindFramebuffer(g.FRAMEBUFFER, null);
-      r = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
-      if(!r){
-         return r;
+   var result = true;
+   if(renderTarget == null){
+      graphic.bindFramebuffer(graphic.FRAMEBUFFER, null);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
+      if(!result){
+         return result;
       }
-      g.viewport(0, 0, o._size.width, o._size.height);
+      graphic.viewport(0, 0, o._size.width, o._size.height);
    }else{
-      g.bindFramebuffer(g.FRAMEBUFFER, p._native);
-      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", p._native);
-      if(!r){
-         return r;
+      graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._native);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._native);
+      if(!result){
+         return result;
       }
-      var s = p.size();
-      g.viewport(0, 0, s.width, s.height);
+      var size = renderTarget.size();
+      graphic.viewport(0, 0, size.width, size.height);
    }
-   o._activeRenderTarget = p;
+   o._activeRenderTarget = renderTarget;
+   return result;
 }
-function FWglContext_setProgram(p){
+function FWglContext_setProgram(program){
    var o = this;
-   var g = o._native;
-   if(o._program == p){
+   var graphic = o._native;
+   if(o._program == program){
       return;
    }
    o._statistics._frameProgramCount++;
-   if(p){
-      g.useProgram(p._native);
+   if(program){
+      graphic.useProgram(program._native);
    }else{
-      g.useProgram(null);
+      graphic.useProgram(null);
    }
-   o._program = p;
-   return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
+   o._program = program;
+   return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", program, program._native);
 }
-function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
+function FWglContext_bindConst(shaderCd, slot, formatCd, data, count){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameConstCount++;
-   switch(pdf){
+   switch(formatCd){
       case EG3dParameterFormat.Float1:{
-         g.uniform1fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         graphic.uniform1fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
+         result = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float2:{
-         g.uniform2fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         graphic.uniform2fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
+         result = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float3:{
-         g.uniform3fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
-         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         graphic.uniform3fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
+         result = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float4:{
-         g.uniform4fv(psl, pdt);
-         o._statistics._frameConstLength += pdt.byteLength;
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         graphic.uniform4fv(slot, data);
+         o._statistics._frameConstLength += data.byteLength;
+         result = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
-         var dt = o._data9;
-         dt[ 0] = pdt[ 0];
-         dt[ 1] = pdt[ 4];
-         dt[ 2] = pdt[ 8];
-         dt[ 3] = pdt[ 1];
-         dt[ 4] = pdt[ 5];
-         dt[ 5] = pdt[ 9];
-         dt[ 6] = pdt[ 2];
-         dt[ 7] = pdt[ 6];
-         dt[ 8] = pdt[10];
-         g.uniformMatrix3fv(psl, g.FALSE, dt);
-         o._statistics._frameConstLength += dt.byteLength;
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
-         break;
-      }
-      case EG3dParameterFormat.Float4x3:{
-         g.uniform4fv(psl, g.FALSE, pd);
-         o._statistics._frameConstLength += dt.byteLength;
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
+         var bytes = o._data9;
+         bytes[ 0] = data[ 0];
+         bytes[ 1] = data[ 4];
+         bytes[ 2] = data[ 8];
+         bytes[ 3] = data[ 1];
+         bytes[ 4] = data[ 5];
+         bytes[ 5] = data[ 9];
+         bytes[ 6] = data[ 2];
+         bytes[ 7] = data[ 6];
+         bytes[ 8] = data[10];
+         graphic.uniformMatrix3fv(slot, graphic.FALSE, bytes);
+         o._statistics._frameConstLength += bytes.byteLength;
+         result = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         var d = null;
-         if(pdt.constructor == Float32Array){
-            d = pdt;
-         }else if(pdt.writeData){
-            d = o._data16;
-            pdt.writeData(d, 0);
+         var bytes = null;
+         if(data.constructor == Float32Array){
+            bytes = data;
+         }else if(data.writeData){
+            bytes = o._data16;
+            data.writeData(bytes, 0);
          }else{
             throw new TError('Unknown data type.');
          }
-         g.uniformMatrix4fv(psl, g.FALSE, d);
-         o._statistics._frameConstLength += d.byteLength;
-         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
+         graphic.uniformMatrix4fv(slot, graphic.FALSE, bytes);
+         o._statistics._frameConstLength += bytes.byteLength;
+         result = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", shaderCd, slot, data, count);
          break;
       }
+      default:{
+         throw new TError(o, 'Unknown format type. (format_cd={1})', formatCd);
+      }
    }
-   return r;
+   return result;
 }
-function FWglContext_bindVertexBuffer(s, b, i, f){
+function FWglContext_bindVertexBuffer(slot, vertexBuffer, offset, formatCd){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameBufferCount++;
    if(o._statusRecord){
-      var l = new SG3dLayoutBuffer();
-      l.slot = s;
-      l.buffer = b;
-      l.index = i;
-      l.formatCd = f;
-      o._recordBuffers.push(l);
+      var layout = new SG3dLayoutBuffer();
+      layout.slot = slot;
+      layout.buffer = vertexBuffer;
+      layout.index = offset;
+      layout.formatCd = formatCd;
+      o._recordBuffers.push(layout);
    }
-   var n = null;
-   if(b != null){
-      n = b._native;
+   var handle = null;
+   if(vertexBuffer != null){
+      handle = vertexBuffer._native;
    }
-   g.bindBuffer(g.ARRAY_BUFFER, n);
-   r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
-   if(!r){
-      return r;
+   graphic.bindBuffer(graphic.ARRAY_BUFFER, handle);
+   result = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", handle);
+   if(!result){
+      return result;
    }
-   if(b != null){
-      g.enableVertexAttribArray(s);
-      r = o.checkError("enableVertexAttribArray", "Enable vertex attribute array. (slot=%d)", s);
-      if(!r){
-         return r;
+   if(vertexBuffer){
+      graphic.enableVertexAttribArray(slot);
+      result = o.checkError("enableVertexAttribArray", "Enable vertex attribute array. (slot=%d)", slot);
+      if(!result){
+         return result;
       }
    }else{
-      g.disableVertexAttribArray(s);
-      r = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", s);
-      return r;
+      graphic.disableVertexAttribArray(slot);
+      result = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", slot);
+      return result;
    }
-   var bs = b._stride;
-   switch(f){
+   var stride = vertexBuffer._stride;
+   switch(formatCd){
       case EG3dAttributeFormat.Float1:
-         g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 1, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float2:
-         g.vertexAttribPointer(s, 2, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 2, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float3:
-         g.vertexAttribPointer(s, 3, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 3, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Float4:
-         g.vertexAttribPointer(s, 4, g.FLOAT, false, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.FLOAT, false, stride, offset);
          break;
       case EG3dAttributeFormat.Byte4:
-         g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, false, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, false, stride, offset);
          break;
       case EG3dAttributeFormat.Byte4Normal:
-         g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
+         graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, true, stride, offset);
          break;
       default:
          throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
          break;
    }
-   r = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", s, f);
-   return r;
+   result = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", slot, formatCd);
+   return result;
 }
-function FWglContext_bindTexture(ps, pi, pt){
+function FWglContext_bindTexture(slot, index, texture){
    var o = this;
-   var g = o._native;
-   var r = true;
+   var graphic = o._native;
+   var result = true;
    o._statistics._frameTextureCount++;
    if(o._statusRecord){
-      var l = new SG3dLayoutSampler();
-      l.slot = ps;
-      l.index = pi;
-      l.texture = pt;
-      o._recordSamplers.push(l);
+      var layout = new SG3dLayoutSampler();
+      layout.slot = slot;
+      layout.index = index;
+      layout.texture = texture;
+      o._recordSamplers.push(layout);
    }
-   if(o._activeTextureSlot != ps){
-      g.uniform1i(ps, pi);
-      g.activeTexture(g.TEXTURE0 + pi);
-      r = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", ps, pi);
-      if(!r){
-         return r;
+   if(o._activeTextureSlot != slot){
+      graphic.uniform1i(slot, index);
+      graphic.activeTexture(graphic.TEXTURE0 + index);
+      result = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", slot, index);
+      if(!result){
+         return result;
       }
-      o._activeTextureSlot = ps;
+      o._activeTextureSlot = slot;
    }
-   if(pt == null){
-      g.bindTexture(g.TEXTURE_2D, null);
-      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
-      return r;
+   if(texture == null){
+      graphic.bindTexture(graphic.TEXTURE_2D, null);
+      result = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", slot);
+      return result;
    }
-   var gt = null;
-   var gn = pt._native;
-   switch(pt.textureCd()){
+   var handle = texture._native;
+   switch(texture.textureCd()){
       case EG3dTexture.Flat2d:{
-         gt = g.TEXTURE_2D;
-         g.bindTexture(g.TEXTURE_2D, pt._native);
-         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", gn);
-         if(!r){
-            return r;
+         graphic.bindTexture(graphic.TEXTURE_2D, handle);
+         result = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", handle);
+         if(!result){
+            return result;
          }
          break;
       }
       case EG3dTexture.Cube:{
-         gt = g.TEXTURE_CUBE_MAP;
-         g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", gn);
-         if(!r){
-            return r;
+         graphic.bindTexture(graphic.TEXTURE_CUBE_MAP, handle);
+         result = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", handle);
+         if(!result){
+            return result;
          }
          break;
       }
@@ -19532,34 +19582,35 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   return r;
+   return result;
 }
-function FWglContext_clear(r, g, b, a, d){
+function FWglContext_clear(red, green, blue, alpha, depth){
    var o = this;
-   var c = o._native;
-   c.clearColor(r, g, b, a);
-   c.clearDepth(d);
-   c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearColor(red, green, blue, alpha);
+   graphic.clearDepth(depth);
+   graphic.clear(graphic.COLOR_BUFFER_BIT | graphic.DEPTH_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
-function FWglContext_clearColor(r, g, b, a){
+function FWglContext_clearColor(red, green, blue, alpha){
    var o = this;
-   var c = o._native;
-   c.clearColor(r, g, b, a);
-   c.clear(c.COLOR_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearColor(red, green, blue, alpha);
+   graphic.clear(graphic.COLOR_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
-function FWglContext_clearDepth(d){
+function FWglContext_clearDepth(depth){
    var o = this;
-   var c = o._native;
-   c.clearDepth(d);
-   c.clear(c.DEPTH_BUFFER_BIT);
+   var graphic = o._native;
+   graphic.clearDepth(depth);
+   graphic.clear(graphic.DEPTH_BUFFER_BIT);
    o._statistics._frameClearCount++;
 }
 function FWglContext_readPixels(left, top, width, height){
    var o = this;
    var graphic = o._native;
-   var data = new Uint8Array(4 * width * height);
+   var length = 4 * width * height;
+   var data = new Uint8Array(length);
    graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
    return data;
 }
@@ -19599,7 +19650,7 @@ function FWglContext_drawTriangles(indexBuffer, offset, count){
 }
 function FWglContext_present(){
 }
-function FWglContext_checkError(c, m, p1){
+function FWglContext_checkError(code, message, parameter1){
    var o = this;
    if(!o._capability.optionDebug){
       return true;
@@ -19607,41 +19658,41 @@ function FWglContext_checkError(c, m, p1){
    if(!RRuntime.isDebug()){
       return true;
    }
-   var g = o._native;
-   var r = false;
-   var e = null;
-   var es = null;
+   var graphic = o._native;
+   var result = false;
+   var error = null;
+   var errorInfo = null;
    while(true){
-      e = g.getError();
-      if(e == g.NO_ERROR){
-         r = true;
+      error = graphic.getError();
+      if(error == graphic.NO_ERROR){
+         result = true;
          break;
       }
-      switch(e){
-         case g.INVALID_OPERATION:
-            es = "Invalid operation.";
+      switch(error){
+         case graphic.INVALID_OPERATION:
+            errorInfo = "Invalid operation.";
             break;
-         case g.INVALID_ENUM:
-            es = "Invalid enum.";
+         case graphic.INVALID_ENUM:
+            errorInfo = "Invalid enum.";
             break;
-         case g.INVALID_VALUE:
-            es = "Invalid value.";
+         case graphic.INVALID_VALUE:
+            errorInfo = "Invalid value.";
             break;
-         case g.INVALID_FRAMEBUFFER_OPERATION:
-            es = "Invalid paramebuffer opeartion.";
+         case graphic.INVALID_FRAMEBUFFER_OPERATION:
+            errorInfo = "Invalid paramebuffer opeartion.";
             break;
-         case g.OUT_OF_MEMORY:
-            es = "Out of memory.";
+         case graphic.OUT_OF_MEMORY:
+            errorInfo = "Out of memory.";
             break;
          default:
-            es = "Unknown";
+            errorInfo = "Unknown";
             break;
       }
    }
-   if(!r){
-      RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', e, es);
+   if(!result){
+      RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
    }
-   return r;
+   return result;
 }
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
@@ -19820,17 +19871,20 @@ function FWglFragmentShader(o){
 function FWglFragmentShader_setup(){
    var o = this;
    o.__base.FG3dFragmentShader.setup.call(o);
-   var g = o._graphicContext._native;
-   o._native = g.createShader(g.FRAGMENT_SHADER);
+   var graphic = o._graphicContext._native;
+   o._native = graphic.createShader(graphic.FRAGMENT_SHADER);
 }
 function FWglFragmentShader_targetSource(){
    var o = this;
-   var c = o._graphicContext;
-   var cp = c.capability();
-   if(cp.optionShaderSource){
-      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   var source = null;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   if(capability.optionShaderSource){
+      source = context._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }else{
+      source = o._source;
    }
-   return o._source;
+   return source;
 }
 function FWglFragmentShader_upload(source){
    var o = this;
@@ -19850,10 +19904,10 @@ function FWglFragmentShader_upload(source){
 }
 function FWglFragmentShader_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._native;
-   if(n){
-      c._native.deleteShader(n);
+   var context = o._graphicContext;
+   var shader = o._native;
+   if(shader){
+      context._native.deleteShader(shader);
       o._native = null;
    }
    o.__base.FG3dFragmentShader.dispose.call(o);
@@ -19959,9 +20013,9 @@ function FWglLayout_deactive(){
 function FWglLayout_dispose(){
    var o = this;
    var c = o._graphicContext;
-   var n = o._native;
-   if(n){
-      c._nativeLayout.deleteVertexArrayOES(n);
+   var layout = o._native;
+   if(layout){
+      c._nativeLayout.deleteVertexArrayOES(layout);
       o._native = null;
    }
    o.__base.FG3dLayout.dispose.call(o);
@@ -20125,13 +20179,13 @@ function FWglProgram_link(){
 }
 function FWglProgram_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._native;
-   if(n){
-      c._native.deleteProgram(n);
+   var context = o._graphicContext;
+   var handle = o._native;
+   if(handle){
+      context._native.deleteProgram(handle);
       o._native = null;
    }
-   o.__base.FProgram3d.dispose.call(o);
+   o.__base.FG3dProgram.dispose.call(o);
 }
 function FWglRenderTarget(o){
    o = RClass.inherits(this, o, FG3dRenderTarget);
@@ -20283,7 +20337,7 @@ function FWglVertexBuffer_dispose(){
 }
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
-   o._native = null;
+   o._native      = null;
    o.setup        = FWglVertexShader_setup;
    o.targetSource = FWglVertexShader_targetSource;
    o.upload       = FWglVertexShader_upload;
@@ -20293,17 +20347,20 @@ function FWglVertexShader(o){
 function FWglVertexShader_setup(){
    var o = this;
    o.__base.FG3dVertexShader.setup.call(o);
-   var g = o._graphicContext._native;
-   o._native = g.createShader(g.VERTEX_SHADER);
+   var graphic = o._graphicContext._native;
+   o._native = graphic.createShader(graphic.VERTEX_SHADER);
 }
 function FWglVertexShader_targetSource(){
    var o = this;
-   var c = o._graphicContext;
-   var cp = c.capability();
-   if(cp.optionShaderSource){
-      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   var source = null;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   if(capability.optionShaderSource){
+      source = context._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }else{
+      source = o._source;
    }
-   return o._source;
+   return source;
 }
 function FWglVertexShader_upload(source){
    var o = this;
@@ -20323,10 +20380,10 @@ function FWglVertexShader_upload(source){
 }
 function FWglVertexShader_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._native;
-   if(n){
-      c._native.deleteShader(n);
+   var context = o._graphicContext;
+   var shader = o._native;
+   if(shader){
+      context._native.deleteShader(shader);
       o._native = null;
    }
    o.__base.FG3dVertexShader.dispose.call(o);
