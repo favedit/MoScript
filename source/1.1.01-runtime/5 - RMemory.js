@@ -14,7 +14,6 @@ var RMemory = new function RMemory(){
    //..........................................................
    // @method
    o.isObject      = RMemory_isObject;
-   o.alloc         = RMemory_alloc;
    o.create        = RMemory_create;
    o.register      = RMemory_register;
    o.disposeObject = RMemory_disposeObject;
@@ -40,20 +39,6 @@ var RMemory = new function RMemory(){
 function RMemory_isObject(o){
    var t = typeof(o);
    return ('boolean' != t) && ('number' != t) && ('string' != t) && ('date' != t) && ('function' != t) && (o instanceof Object);
-}
-
-//==========================================================
-// <T>从内存中创建一个类对象的实例。</T>
-//
-// @method
-// @param c:class:Function 类的构造函数
-// @return Object 类对象的实例
-// @history 090607 MAOCY 创建
-//==========================================================
-function RMemory_alloc(c){
-   var o = new c();
-   this.objects.push(o);
-   return o;
 }
 
 //==========================================================

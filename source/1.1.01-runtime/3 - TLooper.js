@@ -47,25 +47,25 @@ function TLooper(){
 //==========================================================
 function TLooper_innerCreate(){
    var o = this;
-   var e = o._unused;
-   if(e == null){
-      e = new SLooperEntry();
+   var entry = o._unused;
+   if(entry == null){
+      entry = new SLooperEntry();
    }else{
-      o._unused = e.next;
+      o._unused = entry.next;
    }
-   return e;
+   return entry;
 }
 
 //==========================================================
 // <T>内部释放一个节点。</T>
 //
 // @method
-// @param p:entry:SLooperEntry 节点
+// @param entry:SLooperEntry 节点
 //==========================================================
-function TLooper_innerFree(p){
+function TLooper_innerFree(entry){
    var o = this;
    p.next = o._unused;
-   o._unused = p;
+   o._unused = entry;
 }
 
 //==========================================================

@@ -1,3 +1,6 @@
+var MO = new function MO(){
+   return this;
+}
 var ELogger = new function ELogger(){
    var o = this;
    o.Debug = 'D';
@@ -9,15 +12,15 @@ var ELogger = new function ELogger(){
 }
 var EProcess = new function EProcess(){
    var o = this;
-   o.Debug = 1;
+   o.Debug   = 1;
    o.Release = 2;
    return o;
 }
 var EScope = new function EScope(){
    var o = this;
-   o.Local = 1;
+   o.Local   = 1;
    o.Session = 2;
-   o.Global = 3;
+   o.Global  = 3;
    return o;
 }
 var RRuntime = new function RRuntime(){
@@ -37,41 +40,41 @@ function RRuntime_isDebug(){
 function RRuntime_isRelease(){
    return (this._processCd == EProcess.Release);
 }
-function RRuntime_setProcessCd(p){
-   this._processCd = p;
+function RRuntime_setProcessCd(processCd){
+   this._processCd = processCd;
 }
-function RRuntime_nvl(v, d){
-   return (v != null) ? v : d;
+function RRuntime_nvl(value, defaultValue){
+   return (value != null) ? value : defaultValue;
 }
-function RRuntime_subString(v, b, e){
-   if(v == null){
-      return v;
+function RRuntime_subString(value, begin, end){
+   if(value == null){
+      return value;
    }
-   var l = 0;
-   if(b != null){
-      var f = v.indexOf(b);
-      if(f != -1){
-         l = f + b.length;
+   var left = 0;
+   if(begin != null){
+      var find = value.indexOf(begin);
+      if(find != -1){
+         left = find + begin.length;
       }
    }
-   var r = v.length;
-   if(e != null){
-      var f = v.indexOf(e, l);
-      if(f != -1){
-         r = f;
+   var right = value.length;
+   if(end != null){
+      var find = value.indexOf(end, length);
+      if(find != -1){
+         right = find;
       }
    }
-   return v.substring(l, r);
+   return value.substring(left, right);
 }
-function RRuntime_className(v){
+function RRuntime_className(value){
    var o = this;
-   if(v){
-      if(typeof(v) == 'function'){
-         return o.subString(v.toString(), 'function ', '(');
+   if(value){
+      if(typeof(value) == 'function'){
+         return o.subString(value.toString(), 'function ', '(');
       }
-      var c = v.constructor;
-      if(c){
-         return o.subString(c.toString(), 'function ', '(');
+      var clazz = value.constructor;
+      if(clazz){
+         return o.subString(clazz.toString(), 'function ', '(');
       }
    }
    return null;

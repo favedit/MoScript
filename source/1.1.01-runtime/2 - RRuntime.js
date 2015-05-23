@@ -46,21 +46,21 @@ function RRuntime_isRelease(){
 // <T>设置运行模式。</T>
 //
 // @method
-// @param p:processCd:EProcess 运行模式
+// @param processCd:EProcess 运行模式
 //==========================================================
-function RRuntime_setProcessCd(p){
-   this._processCd = p;
+function RRuntime_setProcessCd(processCd){
+   this._processCd = processCd;
 }
 
 //==========================================================
 // <T>获得非空对象。</T>
 //
-// @param v:value:Object 对象A
-// @param d:default:Object 对象B
+// @param value:Object 对象
+// @param defaultValue:Object 默认对象
 // @return Object 非空对象
 //==========================================================
-function RRuntime_nvl(v, d){
-   return (v != null) ? v : d;
+function RRuntime_nvl(value, defaultValue){
+   return (value != null) ? value : defaultValue;
 }
 
 //==========================================================
@@ -69,50 +69,50 @@ function RRuntime_nvl(v, d){
 // <P>结束字符串不存在的话，截取到字符串的最终位置。</P>
 //
 // @method
-// @param v:value:String 字符传对象
-// @param b:begin:String 起始字符串
-// @param e:end:String 结束字符串
+// @param value:String 字符传对象
+// @param begin:String 起始字符串
+// @param end:String 结束字符串
 // @return String 截取后的部分字符串
 //==========================================================
-function RRuntime_subString(v, b, e){
-   if(v == null){
-      return v;
+function RRuntime_subString(value, begin, end){
+   if(value == null){
+      return value;
    }
-   var l = 0;
-   if(b != null){
-      var f = v.indexOf(b);
-      if(f != -1){
-         l = f + b.length;
+   var left = 0;
+   if(begin != null){
+      var find = value.indexOf(begin);
+      if(find != -1){
+         left = find + begin.length;
       }
    }
-   var r = v.length;
-   if(e != null){
-      var f = v.indexOf(e, l);
-      if(f != -1){
-         r = f;
+   var right = value.length;
+   if(end != null){
+      var find = value.indexOf(end, length);
+      if(find != -1){
+         right = find;
       }
    }
-   return v.substring(l, r);
+   return value.substring(left, right);
 }
 
 //==========================================================
 // <T>获得对象实例的类名称。</T>
 //
 // @method
-// @param v:value:Object 函数对象
+// @param value:Object 函数对象
 // @return String 类名称
 //==========================================================
-function RRuntime_className(v){
+function RRuntime_className(value){
    var o = this;
-   if(v){
+   if(value){
       // 如果对象是函数的情况
-      if(typeof(v) == 'function'){
-         return o.subString(v.toString(), 'function ', '(');
+      if(typeof(value) == 'function'){
+         return o.subString(value.toString(), 'function ', '(');
       }
       // 如果对象是普通对象的情况
-      var c = v.constructor;
-      if(c){
-         return o.subString(c.toString(), 'function ', '(');
+      var clazz = value.constructor;
+      if(clazz){
+         return o.subString(clazz.toString(), 'function ', '(');
       }
    }
    return null;
