@@ -2398,7 +2398,7 @@ function REngine3d_createContext(clazz, hCanvas, attributes){
    var o = this;
    o.setup();
    var context = RClass.create(clazz);
-   if(context){
+   if(attributes){
       context._optionAlpha = attributes.alpha;
       context._optionAntialias = attributes.antialias;
    }

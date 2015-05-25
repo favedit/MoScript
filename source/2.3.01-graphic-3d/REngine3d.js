@@ -33,8 +33,7 @@ var REngine3d = new function REngine3d(){
 // @param event:SEvent 事件
 //==========================================================
 function REngine3d_onUnload(event){
-   var o = this;
-   o.dispose();
+   this.dispose();
 }
 
 //==========================================================
@@ -78,11 +77,12 @@ function REngine3d_createContext(clazz, hCanvas, attributes){
    o.setup();
    // 创建类对象
    var context = RClass.create(clazz);
-   if(context){
+   if(attributes){
       context._optionAlpha = attributes.alpha;
       context._optionAntialias = attributes.antialias;
    }
    context.linkCanvas(hCanvas);
+   // 保存环境
    o._contexts.push(context);
    return context;
 }
