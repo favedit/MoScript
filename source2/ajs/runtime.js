@@ -19,6 +19,13 @@ MO.EProcess = new function EProcess(){
    o.Debug   = 2;
    return o;
 }
+MO.EScope = new function EScope(){
+   var o = this;
+   o.Local   = 1;
+   o.Session = 2;
+   o.Global  = 3;
+   return o;
+}
 with(MO){
    MO.RRuntime = function RRuntime(){
       var o = this;
@@ -838,6 +845,7 @@ with(MO){
    MO.RMemory_refresh = function RMemory_refresh(){
       CollectGarbage();
    }
+   MO.Memory = new RMemory();
 }
 with(MO){
    MO.SMemoryPoolEntry = function SMemoryPoolEntry(){
@@ -911,4 +919,221 @@ with(MO){
       info.append(', free=', this._freeCount);
       return info.flush();
    }
+}
+with(MO){
+   MO.SLooperEntry = function SLooperEntry(){
+      var o = this;
+      o.prior   = null;
+      o.next    = null;
+      o.value   = null;
+      o.dispose = SLooperEntry_dispose;
+      return o;
+   }
+   MO.SLooperEntry_dispose = function SLooperEntry_dispose(){
+      this.prior = null;
+      this.next = null;
+      this.value = null;
+   }
+}
+with(MO){
+   MO.TLooper = function TLooper(){
+      var o = this;
+      o._count             = 0;
+      o._recordCount       = 0;
+      o._current           = null;
+      o.innerPush          = TLooper_innerPush;
+      o.innerRemove        = TLooper_innerRemove;
+      o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
+      o.innerRemoveValue   = TLooper_innerRemoveValue;
+      o.isEmpty            = TLooper_isEmpty;
+      o.count              = TLooper_count;
+      o.record             = TLooper_record;
+      o.unrecord           = TLooper_unrecord;
+      o.contains           = TLooper_contains;
+      o.current            = TLooper_current;
+      o.next               = TLooper_next;
+      o.push               = TLooper_push;
+      o.pushUnique         = TLooper_pushUnique;
+      o.removeCurrent      = TLooper_removeCurrent;
+      o.remove             = TLooper_remove;
+      o.clear              = TLooper_clear;
+      o.dispose            = TLooper_dispose;
+      o.dump               = TLooper_dump;
+      return o;
+   }
+   MO.TLooper_innerPush = function TLooper_innerPush(entry){
+      var current = this._current;
+      if(current){
+         var prior = current.prior;
+         entry.prior = prior;
+         entry.next = current;
+         prior.next = entry;
+         current.prior = entry;
+      }else{
+         entry.prior = entry;
+         entry.next = entry;
+         this._current = entry;
+      }
+      this._count++;
+   }
+   MO.TLooper_innerRemove = function TLooper_innerRemove(entry){
+      var prior = entry.prior;
+      var next = entry.next;
+      prior.next = next;
+      next.prior = prior;
+      this._count--;
+      if(this._count > 0){
+         this._current = next;
+      }else{
+         this._current = null;
+      }
+      RMemory.free(entry);
+   }
+   MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
+      var value = null;
+      if(this._count > 0){
+         var current = this._current;
+         value = current.value;
+         this.innerRemove(current);
+      }
+      return value;
+   }
+   MO.TLooper_innerRemoveValue = function TLooper_innerRemoveValue(value){
+      if(this._count > 0){
+         if(this._current.value == value){
+            this.innerRemoveCurrent();
+            return;
+         }
+         var current = this._current;
+         var entry = current.next;
+         while(entry != current){
+            if(entry.value == value){
+               this.innerRemove(entry);
+               this._current = current;
+               return;
+            }
+            entry = entry.next;
+         }
+      }
+   }
+   MO.TLooper_isEmpty = function TLooper_isEmpty(){
+      return this._count == 0;
+   }
+   MO.TLooper_count = function TLooper_count(){
+      return this._count;
+   }
+   MO.TLooper_record = function TLooper_record(){
+      this._recordCount = this._count;
+   }
+   MO.TLooper_unrecord = function TLooper_unrecord(v){
+      this._recordCount = -1;
+   }
+   MO.TLooper_contains = function TLooper_contains(value){
+      if(this._current){
+         var entry = this._current;
+         var count = this._count;
+         for(var i = 0; i < count; i++){
+            if(entry.value == value){
+               return true;
+            }
+            entry = entry.next;
+         }
+      }
+      return false;
+   }
+   MO.TLooper_current = function TLooper_current(){
+      var entry = this._current;
+      return entry ? entry.value : null;
+   }
+   MO.TLooper_next = function TLooper_next(){
+      if(this._current){
+         this._current = this._current.next;
+      }
+      var c = this._recordCount;
+      if(c > 0){
+         this._recordCount--;
+      }else if(c == 0){
+         return null;
+      }
+      return this._current ? this._current.value : null;
+   }
+   MO.TLooper_push = function TLooper_push(value){
+      var entry = RMemory.alloc(SLooperEntry);
+      entry.value = value;
+      this.innerPush(entry);
+   }
+   MO.TLooper_pushUnique = function TLooper_pushUnique(value){
+      if(!this.contains(value)){
+         this.push(value);
+      }
+   }
+   MO.TLooper_removeCurrent = function TLooper_removeCurrent(){
+      return this.innerRemoveCurrent();
+   }
+   MO.TLooper_remove = function TLooper_remove(p){
+      this.innerRemoveValue(p);
+   }
+   MO.TLooper_clear = function TLooper_clear(){
+      var entry = this._current;
+      if(entry){
+         entry.prior.next = null;
+         while(entry){
+            var next = entry.next;
+            MO.Memory.free(next);
+            entry = next;
+         }
+      }
+      this._count = 0;
+      this._current = null;
+   }
+   MO.TLooper_dispose = function TLooper_dispose(){
+      this.clear();
+   }
+   MO.TLooper_dump = function TLooper_dump(){
+      var count = this._count;
+      var info = new TString();
+      info.append(RClass.name(this), ': ', count);
+      if(count > 0){
+         var entry = this._current;
+         for(var i = 0; i < count; i++){
+            info.append(' [', entry.value, ']');
+            entry = entry.next;
+         }
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.RGlobal = function RGlobal(){
+      var o = this;
+      o._instances = new TDictionary();
+      o.get       = RGlobal_get;
+      o.set       = RGlobal_set;
+      o.globalGet = RGlobal_globalGet;
+      o.globalSet = RGlobal_globalSet;
+      return o;
+   }
+   MO.RGlobal_get = function RGlobal_get(name){
+      return this._instances.get(name);
+   }
+   MO.RGlobal_set = function RGlobal_set(name, value){
+      this._instances.set(name, value);
+   }
+   MO.RGlobal_globalGet = function RGlobal_globalGet(name){
+      var value = null;
+      if(top.MO.Global){
+         value = top.MO.Global.get(name);
+      }else{
+         value = this._instances.get(name);
+      }
+      return value;
+   }
+   MO.RGlobal_globalSet = function RGlobal_globalSet(name, value){
+      if(top.MO.Global){
+         top.MO.Global.set(name, value);
+      }else{
+         this._instances.set(name, value);
+      }
+   }
+   MO.Global = new RGlobal();
 }

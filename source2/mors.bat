@@ -17,6 +17,6 @@
 @REM "%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\demo.js --js_output_file ajs\release\mo-demo.js
 @REM "%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\me.js   --js_output_file ajs\release\mo-engine.js
 @REM "%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\mo.js    --js_output_file ajs\release\mo.js
-"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\runtime.js    --js_output_file ajs\release\runtime.js
+"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\mo-lang.js    --js_output_file ajs\release\mo-lang.js
 
 @REM COPY /Y E:\Microbject\MoScript\source\ajs\release\* E:\Microbject\MoCloud\mp-cloud-content\webroot\engine\ajs\

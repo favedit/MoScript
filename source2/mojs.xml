@@ -3,9 +3,9 @@
    <!-- 路径合并 -->
   <PathMergerCollection comment='N'>
      <PathMerger source='/1.1.01-runtime'                 target='/ajs/runtime.js'/>
-      <!--
      <PathMerger source='/1.2.01-lang'                    target='/ajs/lang.js'/>
      <PathMerger source='/1.2.02-lang-math'               target='/ajs/lang-math.js'/>
+      <!--
      <PathMerger source='/1.3.01-core'                    target='/ajs/core.js'/>
      <PathMerger source='/1.3.02-core-template'           target='/ajs/core-template.js'/>
      <PathMerger source='/1.3.03-core-window'             target='/ajs/core-window.js'/>
@@ -93,11 +93,13 @@
    </PathMergerCollection>
    <!-- 文件合并 -->
    <FileMergerCollection>
-      <!--
-      <FileMerger target='/ajs/mo-core.js'>
+      <FileMerger target='/ajs/mo-lang.js'>
         <File source='/ajs/runtime.js'/>
         <File source='/ajs/lang.js'/>
         <File source='/ajs/lang-math.js'/>
+     </FileMerger>
+      <!--
+      <FileMerger target='/ajs/mo-core.js'>
         <File source='/ajs/core.js'/>
         <File source='/ajs/core-template.js'/>
         <File source='/ajs/console.js'/>
