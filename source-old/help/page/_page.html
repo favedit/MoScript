@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../company/acs/control.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.window/FPageSheet.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FPageControl.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var pages = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+		form.doAction('doUpdate');
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function doBack(){
+	alert('Back');
+}
+function _load(){
+	RGlobal.setContext('cn','../../..','/company');
+	RLog.connect(_log);
+
+	//RDump.dump(_id3, RClass.create(FComponent))
+	//RDump.dump(_id3, _id1)
+	//RDump.dump(_id3, RClass.create(FColumnEdit))
+
+	pages = RControl.fromXml(xPageBar, _idp);
+	//pages.sheet('psInsert').addSelectListener(doBack);
+
+	//form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');*/
+	//form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, toolbar.components.value(0))
+	//RDump.dump(pages, _id0)
+}
+</SCRIPT>
+
+<XML ID="xPageBar">
+<PageControl name="pgcPages" label="分页控件">
+	<PageSheet name="psChildList" label="组织列表">
+		<WebTable name="logic.person.module.CatalogList" label="模块组织列表" dataset_order="DISPLAY_ORDER" dataset="person.module.catalog" form_name="logic.person.module.CatalogForm">
+			<Column name="colOuid" label="编号" width="60" label_width="80" data_name="OUID" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			<Column name="colOver" label="版本" width="60" label_width="80" data_name="OVER" disp_access="SIUD" edit_access="IU" valid_access="IU"/>
+			<ColumnCheck name="colIsValid" label="有效性" width="60" label_width="80" data_name="IS_VALID"/>
+			<ColumnEdit name="colDisplayOrder" label="显示顺序" width="60" label_width="80" data_name="DISPLAY_ORDER" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			<Column name="colName" label="名称" width="160" label_width="80" data_name="NAME" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			<Column name="colLabel" label="中文名称" label_width="80" data_name="LABEL" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+		</WebTable>
+	</PageSheet>
+	<PageSheet name="psChildList2" label="组织列表2">
+		<WebTable name="logic.person.module.CatalogList" label="模块组织列表" dataset_order="DISPLAY_ORDER" dataset="person.module.catalog" form_name="logic.person.module.CatalogForm">
+			<ColumnCheck name="colIsValid" label="有效性" width="60" label_width="80" data_name="IS_VALID"/>
+			<ColumnEdit name="colDisplayOrder" label="显示顺序" width="60" label_width="80" data_name="DISPLAY_ORDER" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			<Column name="colName" label="名称" width="160" label_width="80" data_name="NAME" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			<Column name="colLabel" label="中文名称" label_width="80" data_name="LABEL" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+		</WebTable>
+	</PageSheet>
+</PageControl>
+
+<!--<PageBar>
+		<PageSheet name='psBack'   caption='Back'   icon='tool.back'/>
+		<PageSheet name='psInsert' caption='Insert' icon='tool.insert' icon_disable='tool.insertd'/>
+		<PageSheet name='psUpdate' caption='Update' icon='tool.update' icon_disable='tool.insertd'/>
+		<PageSheet name='psDelete' caption='Delete' icon='tool.delete' icon_disable='tool.insertd'/>
+	</PageBar> -->
+</XML>
+
+<BODY onload='_load()'>
+
+<DIV id='_idp'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_log'></DIV><br>
+</BODY>
+
+</HTML>

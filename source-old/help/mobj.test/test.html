@@ -1,0 +1,56 @@
+<SCRIPT language='javascript' src='mobj.js'></SCRIPT>
+<INPUT id='id'>
+<SCRIPT>
+function TMouseEvent(h, n, c, p){
+	var o = this;
+	// Attribute
+	o.hSource   = h;
+	o.eventName = n;
+	o.control   = c;
+	o.onProcess = p;
+	// Method
+	o.ohEvent   = TMouseEvent_ohEvent;
+	o.construct = TMouseEvent_construct;
+	o.process   = TMouseEvent_process;
+	return o;
+}
+// ------------------------------------------------------------
+function TMouseEvent_ohEvent(){
+	var o = this.link;
+	if(RClass.isClass(o, TMouseEvent)){
+		o.process();
+	}
+}
+// ------------------------------------------------------------
+function TMouseEvent_construct(){
+	var o = this;
+	o.hSource.link = this;
+	o.hSource[o.eventName] = o.ohEvent;
+}
+// ------------------------------------------------------------
+// config, value
+function TMouseEvent_process(){
+	var o = this;
+	RConsole.find(FEventConsole).add(o.control, o.onProcess);
+	return;
+
+	if(o.onProcess){
+		if(o.control){
+			o.onProcess.call(o.control);
+		}else{
+			o.onProcess();
+		}
+	}
+}
+
+function test(){
+}
+function test2(){
+	alert(RClass.name(this));
+}
+var n = new test();
+
+var e = new TMouseEvent(id, 'onmousedown', n, test2);
+e.construct();
+//id['onmousedown'] = oe;
+</SCRIPT>

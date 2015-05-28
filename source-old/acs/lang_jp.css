@@ -1,0 +1,76 @@
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+body
+	{
+	font-size:9pt;
+	font-family:"MS Gothic";
+	scrollbar-face-color:#BBBBBB;
+	scrollbar-highlight-color:#FFFFFF;
+	scrollbar-shadow-color:#999999;
+	scrollbar-3dlight-color:#999999;
+	scrollbar-arrow-color:#666666;
+	scrollbar-track-color:#F0F0F0;
+	scrollbar-darkshadow-color:#FFFFFF;
+	}
+
+/* ------------------------------------------------------ */
+/* Href                                                   */
+/* ------------------------------------------------------ */
+a
+	{
+	text-decoration:none;
+	color :blue;
+	}
+a:hover
+	{
+	text-decoration:underline;
+	}
+
+/* ------------------------------------------------------ */
+/* Text                                                   */
+/* ------------------------------------------------------ */
+td
+	{
+	font-family:"MS Gothic"; font-size:9pt;
+	}
+div
+	{
+	font-family:"MS Gothic"; font-size:9pt;
+	}
+span
+	{
+	font-family:"MS Gothic"; font-size:9pt;
+	}
+
+/* ------------------------------------------------------ */
+/* Input                                                  */
+/* ------------------------------------------------------ */
+input
+	{
+	font-family:"MS Gothic";
+	font-size:9pt; border:1px solid #999999;
+	}
+select
+	{
+	font-family:"MS Gothic";
+	font-size:9pt; border:1px solid #999999;
+	}
+textarea
+	{
+	font-family:"MS Gothic"; font-size:9pt;
+	border:1px solid #999999;
+	}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+.bodyCatalog
+	{
+	margin:0; padding:0;
+	}
+.bodyMain
+	{
+	margin:0; padding:0;
+	background-color:#FFFFDD;
+	}

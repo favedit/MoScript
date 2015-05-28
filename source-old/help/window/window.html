@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<TITLE>Popup Example</TITLE>
+
+<LINK rel="stylesheet" href='../../../company/acs/control.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.pop/FPop.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.pop/MPopBorder.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function load_(){
+	//MSizeable
+	var win = RClass.create(FPop);
+	win.show();
+	//IDump.dump(_id1, cls);
+	//var win = new FWindow(null, true);
+
+	//var win = IClass.create(FWindow, true);
+	//IDump.dump(_id1, win);
+
+	//IClass.reset();
+	//IClass.create(FWindow);
+
+	//var win = IClass.create(FWindow);
+
+	//var wc = IConsole.find(IWindowConsole);
+	//var win = wc.create('tblCurrency', window);
+	//var win = wc.create('tblCurrency', window);
+
+	/*var bdr = IClass.create(FBorder);
+	bdr.linkHtml(window);
+	bdr.build();
+
+	var bdr = IClass.create(FBorder);
+	bdr.linkHtml(window);
+	bdr.build();*/
+
+	//bdr.resize(200, 200);
+	//_id4.innerText = bdr.hBorder.outerHTML;
+
+	//IDump.dump(_id1, win);
+	//IDump.dump(_id2, wc);
+	//IDump.dump(document, _id2, IConsole.find(IMoveConsole));
+}
+</SCRIPT>
+
+<BODY onload='load_()'>
+<DIV id='_idx' nowrap style='height:26px'></DIV><HR>
+<DIV id='_id0' nowrap></DIV><HR>
+<DIV id='_id1' nowrap></DIV><HR>
+<DIV id='_id2' nowrap></DIV><HR>
+</BODY>
+
+</HTML>

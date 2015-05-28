@@ -1,0 +1,32 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../ajs/mo.js?version=5'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+   RWindow.connect(window);
+
+   var hCanvas = document.getElementById('_canvas');
+   context = REngine3d.createContext(FWglContext, hCanvas);
+
+   RDump.dump(RBrowser, _dump);
+   RDump.dump(context.capability(), _dump);
+   RDump.dump(context.parameters(), _dump);
+   RDump.dump(context.extensions(), _dump);
+   RDump.dump(context, _dump);
+}
+</SCRIPT>
+<BODY scroll='auto' onload='_load()'>
+<CANVAS id="_canvas" width="800" height="10">您的浏览器不支持HTML5</CANVAS>
+<DIV id='_dump'></DIV><br>
+</BODY>
+
+</HTML>

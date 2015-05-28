@@ -1,0 +1,242 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<LINK rel='stylesheet' href='../../acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../ent/acs/control.css' type='text/css'>
+<SCRIPT src="../../../ajs/mobj.js"></SCRIPT>
+
+<SCRIPT src="../../../ajs/4-ctl.form/FCheck.js"></SCRIPT>
+
+<!-- Script -------------------------------------------------->
+<SCRIPT>
+var go = false;
+var action = 'update';
+var form = null;
+var toolbar = null;
+var searchBox = null;
+function doRefresh(){
+	fmMain.action = '';
+	fmMain.submit();
+}
+function doSelectRow(row){
+	var ds = row.table;
+	if(ds && ds.isLov){return;}
+	if(go){return;}else{go = true};
+	var pack = new TAttrs();
+	pack.set('ouid', row.ouid());
+	pack.set('over', row.over());
+	fmMain.form_name.value = row.table.formName;
+	fmMain.form_action.value = EAction.Update;
+	fmMain.form_search.value = pack.pack();
+	fmMain.action = "/eUIS/ent/apl/form/WebForm.wa?do=update";
+	fmMain.submit();
+}
+function doBack(){
+	fmMain.action = "/eUIS/ent/apl/form/WebForm.wa?do=back";
+	fmMain.submit();
+}
+function doFetch(){
+	RConsole.find(FFocusConsole).findClass(MDataset).dsFetch();
+}
+function doSearch(){
+	RConsole.find(FFocusConsole).findClass(MDataset).doSearch();
+}
+function doLov(){
+	var fc = RConsole.find(FFocusConsole).findClass(MListView);
+	if(fc){
+		fc.doListView();
+	}
+}
+function doInsert(){
+	var ds = RConsole.find(FFocusConsole).findClass(MDataset);
+	var ps = ds.topControl(FPageSheet);
+	fmMain.form_name.value = ds.getFormName();
+	fmMain.form_action.value = EAction.Insert;
+	fmMain.action = "/eUIS/ent/apl/form/WebForm.wa?do=insert";
+	if(ps && ps.formLink){
+		var pds = ds.topControl(MDataset);
+		var attrs = new TAttrs();
+		pds.saveValue(attrs, EStore.Name);
+		var fl = RPack.unpackLink(ps.formLink, attrs);
+		fmMain.form_parent.value = fl.pack();
+		fmMain.submit();
+	}else{
+		fmMain.submit();
+	}
+}
+function doUpdate(){
+   var dc = RConsole.find(FFocusConsole).findClass(MDataset);
+   if(RClass.isClass(dc, FForm)){
+      dc.dsUpdate();
+   }else if(RClass.isClass(dc, FTable)){
+      if(dc.dsIsChanged()){
+         dc.dsUpdate();
+      }else{
+         doSelectRow();
+      }
+   }
+}
+function doDelete(){
+	var fs = new TAttrs();
+	var dc = RConsole.find(FFocusConsole).findClass(MDataset);
+	if(RClass.isClass(dc, FForm)){
+		fs.set('ouid', dc.dsGet('ouid'));
+		fs.set('over', dc.dsGet('over'));
+	}else if(RClass.isClass(dc, FTable)){
+		var rs = dc.findSelRows();
+		if(!rs.isEmpty()){
+			var r = rs.get(0);
+			fs.set('ouid', r.ouid());
+			fs.set('over', r.over());
+		}
+	}
+	if(!fs.isEmpty()){
+		fmMain.form_name.value = dc.getFormName();
+		fmMain.form_action.value = EAction.Delete;
+		fmMain.form_search.value = fs.pack();
+		fmMain.action = "/eUIS/ent/apl/form/WebForm.wa?do=delete";
+		fmMain.submit();
+	}
+}
+function doInsertSave(){
+	var da = new FDataAction();
+	da.service = 'insert@logic.dataset';
+	da.invoke(form); 
+}
+function doUpdateSave(){
+	var da = new FDataAction();
+	da.service = 'update@logic.dataset';
+	da.invoke(form); 
+}
+function doDeleteSave(){
+	var da = new FDataAction();
+	da.service = 'delete@logic.dataset';
+	da.invoke(form); 
+}
+function doMovePage(action){
+	var dc = RConsole.find(FFocusConsole).findClass(MDataset);
+	if(RClass.isClass(dc, FTable)){
+		form.dsMovePage(action);
+	}
+}
+function doPrintPdf(){
+	var dc = RConsole.find(FFocusConsole).findClass(MDataset);
+	if(RClass.isClass(dc, MForm)){
+		var uri = "/eUIS/public.pdf.wv?do=build&form_name=" + dc.getFormName();
+		RHtml.popup(uri, 800, 600);
+	}
+}
+function _load(){
+    RGlobal.setContext('cn','../../..','');
+	RWindow.connect(window);
+	// Build toolbar
+	//toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	var dc = RConsole.find(FDatasetConsole);
+	// Build form
+	form = RControl.fromXml(xForm, _id_form);
+	if(RClass.isClass(form, FTable) || RClass.isClass(form, FForm)){
+		if(RClass.isClass(form, FTable)){
+			var formParent = fmMain.form_parent.value;
+			var parentPack = new TAttrs();
+			parentPack.unpack(formParent);
+		}
+		if(RClass.isClass(form, FForm)){
+			//debugger
+			form.setMode(REnum.encode(EMode, action));
+		}
+		//form.setAction(REnum.encode(EAction, action));
+		form.loadDatasets(RXml.makeNode(xValue));
+	}
+	top.document.title = form.label;
+	form.focus();
+	// Listen events
+	var lsnConsole = RConsole.find(FListenerConsole);
+	lsnConsole.register(MDataset, EDataAction.EndUpdate, form, doBack);
+	lsnConsole.register(FTable, ETableAction.RowClick, form, doSelectRow);
+	lsnConsole.register(FTable, ETableAction.RowDblClick, form, doSelectRow);
+	lsnConsole.register(FTable, ETableAction.GoInsert, form, doInsert);
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+<Environment form_name="logic.common.AreaForm"/>
+</XML>
+<!-- ToolBar ------------------------------------------------->
+<XML ID="xToolBar">
+<DsToolBar width='100%'>
+
+	<ToolButton name='btnBack' type='back' label='返回' icon='tool.back' icon_disable='tool.fetchd' action='doBack()'/>
+	<ToolButtonSplit/>
+
+	<ToolButton name='btnFetch' type='fetch' label='查询' icon='tool.fetch' icon_disable='tool.fetchd' hotkey='F2' action='doFetch()'/>
+	<ToolButton name='btnSearch' type='search' label='搜索' icon='tool.search' icon_disable='tool.searchd' hotkey='F3' action='doSearch()'/>
+	<ToolButton name='btnLov' type='lov' label='选取'  icon='tool.view' icon_disable='tool.viewd' hotkey='F4' action='doLov()'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnInsert' type='insert' label='新建' icon='tool.insert' icon_disable='tool.insertd' hotkey='F5' action='doInsert()'/>
+	<ToolButton name='btnUpdate' type='update' label='更新' icon='tool.save' icon_disable='tool.saved' hotkey='F8' action='doUpdate()'/>
+	<ToolButton name='btnDelete' type='delete' label='删除' icon='tool.delete' icon_disable='tool.deleted' hotkey='F6' action='doDelete()'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnFirst' type='first' icon='tool.ds-first' action='doMovePage(EDataAction.First)'/>
+	<ToolButton name='btnPrior' type='prior' icon='tool.ds-prior' action='doMovePage(EDataAction.Prior)'/>
+	<ToolButton name='btnNext' type='next' icon='tool.ds-next' action='doMovePage(EDataAction.Next)'/>
+	<ToolButton name='btnLast' type='last' icon='tool.ds-last' action='doMovePage(EDataAction.Last)'/>
+	<ToolButtonSplit/>
+	<ToolButtonMenu name='btnAction' type='action' label='操作'  icon='tool.action' icon_disable='tool.actiond' hotkey='F12'>
+		<MenuButton name='miPrintPdf' type='first' label='打印-PDF' icon='file.pdf' action='doPrintPdf()'/>
+	</ToolButtonMenu>
+</DsToolBar>
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML ID="xForm"><WebForm name="logic.common.AreaForm" label="地区信息表单" is_valid="Y" disp_access="SPLIUDT" dataset="common.area" edit_access="IUD">
+	<Check width="110" label_width="80" name="ovld" label="有效性" is_valid="Y" nowrap="Y" disp_access="SLUD" data_name="ovld" label_type="H" edit_access="IU" valid_access="IU"/>
+</WebForm></XML>
+<XML ID="xSearch">14ouid122214over223I2008110310222900000000</XML>
+<XML ID="xParent"></XML>
+<XML ID="xOrder"></XML>
+<XML ID="xValue"><Configuration>
+	<Dataset name="logic.common.AreaForm" page="0" page_size="20" page_count="1" total="1">
+		<Row id_rownum="1" ouid="22" ovld="N" over="I2008110310222900000000" country_id="32" country_label="中国" name="华东地区" full_name="华 东 地 区" label="华东地区" code="" note=""/>
+	</Dataset>
+</Configuration></XML>
+<!-- Body begin ---------------------------------------------->
+<BODY onload="__bodyLoad()" onunload="__bodyUnload()" scroll="no" onload="_load()" class="bodyMain">
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+
+<!-- Hidden begin -------------------------------------------->
+<INPUT type="hidden" name="form_name" value="logic.common.AreaForm" class="comEdit">
+<INPUT type="hidden" name="form_action" class="comEdit">
+<INPUT type="hidden" name="form_parent" class="comEdit">
+<INPUT type="hidden" name="form_search" value="14ouid122214over223I2008110310222900000000" class="comEdit">
+<INPUT type="hidden" name="form_order" class="comEdit">
+<INPUT type="hidden" name="ouid" class="comEdit">
+<INPUT type="hidden" name="over" class="comEdit">
+<!-- Hidden end ---------------------------------------------->
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%' height='100%'>
+<TR>
+<TD height='24'>
+<!-- Toolbar begin ------------------------------------------->
+<DIV id='_id_toolbar'></DIV>
+<!-- Toolbar end --------------------------------------------->
+</TD>
+</TR>
+<TR><TD style='padding:0; overflow:auto'>
+<!-- Form begin ---------------------------------------------->
+<DIV style='padding:8;width:100%;height:100%;overflow:auto'>
+	<DIV id='_id_form'></DIV>
+</DIV>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+</FORM>
+<SCRIPT language='javascript'>
+function __bodyLoad(){
+
+_load()}
+function __bodyUnload(){}
+</SCRIPT>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>
+

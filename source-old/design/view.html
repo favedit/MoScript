@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<LINK rel="stylesheet" href='../acs/mobile.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js?v16'></SCRIPT>
+<SCRIPT>
+var canvas = null;
+var playing = true;
+//------------------------------------------------------------
+function onSceneLoad(event){
+   // 监听时间
+   var space = event.space;
+   space.addEnterFrameListener(null, onEnterFrame);
+   // 打开播放
+   canvas.switchPlay(true);
+   canvas.switchMovie(true);
+}
+//------------------------------------------------------------
+function onKeydown(p){
+   var e = window.event;
+   var c = e.keyCode;
+   if(c == EKeyCode.Space){
+      playing = !playing;
+      canvas.switchPlay(playing);
+      canvas.switchMovie(playing);
+   }
+}
+//------------------------------------------------------------
+function doCanvasAction(p, f){
+   canvas.doAction(window.event, p, f);
+}
+//------------------------------------------------------------
+function onResize(){
+   canvas.resize();
+}
+//------------------------------------------------------------
+function onLoad(){
+   // 环境设置
+   RRuntime.setProcessCd(EProcess.Release);
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+   // 获得场景代码
+   var url = window.location.toString();
+   var find = url.indexOf('code=');
+   var code = null;
+   if(find != -1){
+      code = url.substring(find + 5);
+   }
+   if(RString.isEmpty(code)){
+      throw new TFatal(this, 'Scnee code is empty.');
+   }
+   // 设置资源获取方式
+   RConsole.find(FE3sVendorConsole).setup('net');
+   // 创建场景画板
+   canvas = canvas = RClass.create(FE3dSceneCanvas);
+   canvas._scaleRate = 1;
+   canvas._optionAlpha = false;
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   canvas.loadByCode(code);
+   canvas.addLoadListener(null, onSceneLoad);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onresize='onResize()' onkeydown='onKeydown()'>
+   <DIV style='position:absolute; left:1em; top:1em;'>
+      <IMG src='../ars/picture/fullscreen.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
+   </DIV>
+   <DIV style='position:absolute; right:1em; top:1em;'>
+      <IMG src='../ars/picture/play.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("play")' ontouchstart='doCanvasAction("play")'>
+   </DIV>
+   <DIV style='position:absolute; left:1em; bottom:1em;'>
+      <TABLE>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("up", true)' onmouseup='doCanvasAction("up", false)' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
+         </TR>
+         <TR>
+            <TD height='0.5em'></TD>
+         </TR>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("down", true)' onmouseup='doCanvasAction("down", false)' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
+         </TR>
+      </TABLE>
+   </DIV>
+   <DIV style='position:absolute; right:1em; bottom:1em;'>
+      <TABLE>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
+         </TR>
+         <TR>
+            <TD height='0.5em'></TD>
+         </TR>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("back", true)' onmouseup='doCanvasAction("back", false)' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
+         </TR>
+      </TABLE>
+   </DIV>
+</BODY>
+</HTML>

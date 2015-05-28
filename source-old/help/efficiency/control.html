@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>简写CSS圆角</title>
+<style type="text/css">
+.l1{ margin:0 2px; background:#24C2DB; height:1px; width:100%; overflow:hidden; }
+.l2{ margin:0 1px; background:#CFF6F6; height:1px; display:block; overflow:hidden; border-left:1px solid #24C2DB;border-right:1px solid #24C2DB; border-width:1px; }
+.l3{ background:#f1ffff; display:block;overflow:hidden; border-left:1px solid #24C2DB;border-right:1px solid #24C2DB;}
+.l4{ background:#f1ffff; display:block;overflow:hidden; border-left:1px solid #CFF6F6;border-right:1px solid #CFF6F6;}
+.l5{ margin:0 1px; background:#FFFFFF; height:1px; display:block; overflow:hidden; border-left:1px solid #24C2DB;border-right:1px solid #24C2DB; border-width:1px; }
+
+</style>
+</head>
+<body>
+
+<TABLE width='100%' cellspacing='0' cellpadding='0'>
+<TR><TD><B class="l1"></TD></TR>
+<TR><TD><B class="l2"></TD></TR>
+<TR><TD class="l2"></TD></TR>
+<TR><TD class="l1"></TD></TR>
+</TABLE>
+
+<BR>
+
+<DIV class="l1"></DIV>
+
+<b class="l2"></b>
+<DIV class="l3" width='100%'>
+<DIV class="l4" width='100%'>
+
+<TABLE border='0' width='100%' cellspacing='0' style='table-layout:fixed'>
+<TR>
+<TD width=1 bgcolor='red'></TD>
+<TD>简写CSS圆角</TD>
+</TR></TABLE>
+
+</DIV>
+</DIV>
+
+<b class="l5"></b>
+<b class="l1"></b>
+
+</body>
+</html>

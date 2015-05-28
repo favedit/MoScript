@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<LINK rel="stylesheet" href='../acs/mobile.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT>
+var canvas = null;
+var playing = true;
+var space = null;
+var playerEntity = null;
+//------------------------------------------------------------
+function onSpaceEnterFrame(event){
+   if(!playerEntity){
+      return;
+   }
+   var clipCode = 'idle';
+   var timer = space.timer();
+   var frameSpan = timer.spanSecond();
+   //..........................................................
+   var moveRate = frameSpan * 6;
+   var rotationRate = frameSpan * 3;
+   // 按键前后移动
+   var focusForward = RKeyboard.isPress(EStageKey.FocusForward);
+   var focusBack = RKeyboard.isPress(EStageKey.FocusBack);
+   if(focusForward && !focusBack){
+      clipCode = 'walk';
+      playerEntity.moveForward(moveRate);
+   }
+   if(!focusForward && focusBack){
+      clipCode = 'walk';
+      playerEntity.moveForward(-moveRate);
+   }
+   // 按键左右旋转
+   var focusLeft = RKeyboard.isPress(EStageKey.FocusLeft);
+   var focusRight = RKeyboard.isPress(EStageKey.FocusRight);
+   if(focusLeft && !focusRight){
+      playerEntity.moveRotation(-rotationRate);
+   }
+   if(!focusLeft && focusRight){
+      playerEntity.moveRotation(rotationRate);
+   }
+   playerEntity.selectClip(clipCode);
+   playerEntity.update();
+}
+//------------------------------------------------------------
+function onDisplayLoaded(event){
+   var display = event;
+   // 创建动画信息
+   var animation = display.animations().first();
+   var idleClip = RClass.create(FE3dSceneAnimationClip);
+   idleClip.setCode('idle');
+   idleClip.setRange(0, 10);
+   idleClip.setPlayRate(1.5);
+   animation.pushClip(idleClip);
+   var walkClip = RClass.create(FE3dSceneAnimationClip);
+   walkClip.setCode('walk');
+   walkClip.setRange(11, 44);
+   walkClip.setPlayRate(4);
+   animation.pushClip(walkClip);
+   animation.selectClip('idle');
+   // 创建实体
+   var matrix = display.matrix();
+   playerEntity = RClass.create(FGmPlayerEntity);
+   playerEntity.location().set(matrix.tx, matrix.tz, matrix.ty);
+   playerEntity.scale().set(matrix.sx, matrix.sz, matrix.sy);
+   playerEntity.pushDisplay(display);
+}
+//------------------------------------------------------------
+function onSpaceLoaded(event){
+   space = event.space;
+   //canvas.switchPlay(playing);
+   //canvas.switchMovie(playing);
+   space.addEnterFrameListener(null, onSpaceEnterFrame);
+   var layer = space.layers().get('space');
+   var display = layer.findDisplay('pvw.show.skeleton.001');
+   display.addLoadListener(null, onDisplayLoaded);
+}
+//------------------------------------------------------------
+function onKeydown(p){
+   var e = window.event;
+   var c = e.keyCode;
+   if(c == EKeyCode.Space){
+      playing = !playing;
+      canvas.switchPlay(playing);
+      canvas.switchMovie(playing);
+   }
+}
+//------------------------------------------------------------
+function doCanvasAction(p, f){
+   canvas.doAction(window.event, p, f);
+}
+//------------------------------------------------------------
+function onResize(){
+   canvas.resize();
+}
+//------------------------------------------------------------
+function onLoad(){
+   // 环境设置
+   RRuntime.setProcessCd(EProcess.Release);
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+   // 设置资源获取方式
+   RConsole.find(FE3sVendorConsole).setup('net');
+   // 创建场景画板
+   canvas = RClass.create(FE3dSceneCanvas);
+   canvas._scaleRate = 1;
+   canvas._optionAlpha = false;
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   canvas.loadByCode('pvw.show.skeleton.01');
+   canvas.addLoadListener(null, onSpaceLoaded);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onresize='onResize()' onkeydown='onKeydown()'>
+   <DIV style='position:absolute; left:1em; top:1em;'>
+      <IMG src='../ars/picture/fullscreen.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
+   </DIV>
+   <DIV style='position:absolute; right:1em; top:1em;'>
+      <IMG src='../ars/picture/play.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("play")' ontouchstart='doCanvasAction("play")'>
+   </DIV>
+   <DIV style='position:absolute; left:1em; bottom:1em;'>
+      <TABLE>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("up", true)' onmouseup='doCanvasAction("up", false)' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
+         </TR>
+         <TR>
+            <TD height='0.5em'></TD>
+         </TR>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("down", true)' onmouseup='doCanvasAction("down", false)' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
+         </TR>
+      </TABLE>
+   </DIV>
+   <DIV style='position:absolute; right:1em; bottom:1em;'>
+      <TABLE>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;'onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
+         </TR>
+         <TR>
+            <TD height='0.5em'></TD>
+         </TR>
+         <TR>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("back", true)' onmouseup='doCanvasAction("back", false)' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
+         </TR>
+      </TABLE>
+   </DIV>
+</BODY>
+</HTML>

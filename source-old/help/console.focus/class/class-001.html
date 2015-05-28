@@ -1,0 +1,71 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='control.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../1-lang/RBuilder.js'></SCRIPT>
+
+<SCRIPT>
+function FClassA(o){
+	o = RClass.inherits(this, o);
+	o.varA = 1;
+	o.test = function FClassA_Test(){};
+	return o;
+}
+function FClassB(o){
+	o = RClass.inherits(this, o, FClassA);
+	o.varA = 2;
+	o.varB = 2;
+	o.test = function FClassB_Test(){};
+	return o;
+}
+function MClassA(o){
+	o = RClass.inherits(this, o);
+	//o.varC = 3;
+	o.test = function MClassA_Test(){};
+	return o;
+}
+function MClassB(o){
+	o = RClass.inherits(this, o, MClassA);
+	o.mvarB = 3;
+	o.test = function MClassB_Test(){};
+	return o;
+}
+function FClassC(o){
+	o = RClass.inherits(this, o, FClassB, MClassB);
+	o.varB = 3;
+	o.varC = 4;
+	o.test = function FClassC_Test(){};
+	return o;
+}
+function MClassC(o){
+	o = RClass.inherits(this, o, MClassB);
+	o.mvarC = 3;
+	o.test = function MClassC_Test(){};
+	return o;
+}
+function FClassD(o){
+	o = RClass.inherits(this, o, FClassC, MClassC);
+	o.varB = 3;
+	o.varC = 4;
+	o.test = function FClassD_Test(){};
+	return o;
+}
+
+function _load(){
+	RLog.connect(_msg);
+
+	var o = RClass.create(FClassD);
+	RDump.dump(o, _dump);
+
+}
+</SCRIPT>
+
+<BODY onload='_load()'>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

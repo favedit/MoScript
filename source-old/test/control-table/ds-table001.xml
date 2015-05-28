@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+	<Dataset name='logic.base.tbwCountry'>
+		<Row ouid='101' type='String' name="cn" code="080" full_name="Chinese" over="19491001" is_valid="Y" note="ZhongGuo"/>
+		<Row ouid='102' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="N" note="RiBen"/>
+		<Row ouid='103' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="Y" note="RiBen"/>
+	</Dataset>
+
+</Config>
+

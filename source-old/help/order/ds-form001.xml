@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+	<Dataset name='node.type'>
+		<Row oid='1' type='String' name="cn" code="080" full_name="Chinese" create_date="19491001" is_valid="Y" note="ZhongGuo"/>
+		<Row oid='2' type='Boolean' name="jp" code="081" full_name="Japanese" create_date="39491001" is_valid="Y" note="RiBen"/>
+		<Row oid='3' type='Date' name="en" code="010" full_name="English" create_date="20491001" is_valid="Y" note="MeiGuo"/>
+	</Dataset>
+
+</Config>
+

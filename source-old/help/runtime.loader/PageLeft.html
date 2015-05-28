@@ -1,0 +1,21 @@
+<SCRIPT src='../../runtime.s.js'></SCRIPT>
+
+<SCRIPT>
+function onLoadedAll(){
+   var _log = top._log;
+   _log.innerText += '\n All left page loaded.';
+}
+function _load(){
+   top.RLoader.loaded('frame.catalog');
+   top.RLoader.wait(new TInvoke(RLoader, onLoadedAll), 'frame.all');
+   //
+   var _log = top._log;
+   _log.innerText += '\n Left page loaded.';
+}
+function _unload(){
+   var _log = top._log;
+   _log.innerText += '\n Left page unloaded.';
+}
+</SCRIPT>
+<BODY bgcolor='#FF88FF' onload='_load()' onload='_unload()'>
+</BODY>

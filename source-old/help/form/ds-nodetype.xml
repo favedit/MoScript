@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+	<Dataset name='system.form.frmColumn'>
+		<Row oid='1' name="tfName1" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='2' name="tfName2" width="200" nowrap2="N" />
+		<Row oid='3' name="tfName3" width="200" />
+		<Row oid='4' name="tfName4" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='5' name="tfName5" width="200" nowrap2="N" />
+		<Row oid='6' name="tfName6" width="200" />
+		<Row oid='7' name="tfName7" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='8' name="tfName8" width="200" nowrap2="N" />
+		<Row oid='9' name="tfName9" width="200" />
+		<Row oid='10' name="tfNam10" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='11' name="tfNam11" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='12' name="tfNam12" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='13' name="tfNam13" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='14' name="tfNam14" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='15' name="tfNam15" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='16' name="tfNam16" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='17' name="tfNam17" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		<Row oid='18' name="tfNam18" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+	</Dataset>
+
+</Config>
+

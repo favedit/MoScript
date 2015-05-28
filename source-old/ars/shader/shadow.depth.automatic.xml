@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='Y' source='SrcAlpha' target='OneMinusSrcAlpha'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_camera'       format='Float4'/>
+   <Parameter name='vc_model_matrix' format='Float4x4'/>
+   <Parameter name='vc_view_matrix'  format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <Parameter name='fc_camera'       format='Float4'/>
+   <Parameter name='fc_alpha'        format='Float4'/>
+   <!--=====================================================-->
+   <Attribute name='va_position' linker='position' format='Float4'/>
+   <Attribute name='va_coord'    linker='coord'    format='Float2'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'    linker='Diffuse'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 变换矩阵声明
+      uniform vec4 vc_camera;
+      uniform mat4 vc_model_matrix;
+      uniform mat4 vc_view_matrix;
+      uniform mat4 vc_vp_matrix;
+      //..........................................................
+      // 属性流声明
+      attribute vec3 va_position;
+      <shader:true source='vertex.attribute.coord'>
+      attribute vec2 va_coord;
+      </shader:true>
+      //..........................................................
+      // 属性流声明
+      varying vec4 v_position;
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 逻辑处理
+      void main(){
+         // 计算模型坐标
+         vec4 modelPosition = vec4(va_position, 1.0) * vc_model_matrix;
+         // 计算最终坐标
+         gl_Position = modelPosition * vc_vp_matrix;
+         // 计算视角坐标
+         vec4 viewPosition = modelPosition * vc_view_matrix;
+         float depth = ((viewPosition.z / viewPosition.w) - vc_camera.z) * vc_camera.w;
+         depth = max(depth, 0.0);
+         depth = min(depth, 1.0);
+         vec4 result = vec4(depth, depth, depth, depth) * vec4(1.0, 64.0, 64.0 * 64.0, 64.0 * 64.0 * 64.0);
+         result = fract(result);
+         vec4 temp = result.yzww * vec4(1.0 / 64.0, 1.0 / 64.0, 1.0 / 64.0, 0.0);
+         result = result - temp;
+         v_position = result;
+         // 设置纹理
+         <shader:true source='vertex.attribute.coord'>
+         v_coord = va_coord;
+         </shader:true>
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision highp float;
+      #endif
+      //..........................................................
+      // 声明常量
+      uniform vec4 fc_camera;
+      uniform vec4 fc_alpha;
+      //..........................................................
+      // 声明插值器
+      varying vec4 v_position;
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 声明取样器
+      <shader:true source='support.ambient.sampler'>
+      uniform sampler2D fs_diffuse;
+      </shader:true>
+      //..........................................................
+      // 逻辑处理
+      void main(void){
+         //............................................................
+         // 计算环境颜色
+         <shader:true source='support.ambient'>
+         <shader:true source='support.ambient.sampler'>
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         //if(color.a < fc_alpha.x){
+         //   discard;
+         //}
+         </shader:true>
+         </shader:true>
+         //............................................................
+         // 返回颜色
+         //gl_FragColor = v_position;
+         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }
+   ]]></Source>
+</Configuration>

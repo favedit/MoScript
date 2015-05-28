@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../system/acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../system/acs/lang_cn.css' type="text/css" media="all"/>
+</HEAD>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../1-lang/RLog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/EColor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/FDropEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MBorder.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MDropable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/RBorder.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/RWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/FFocusConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/FLoggerConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FDataControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FDataEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FCalendar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FCalendarEditor.js'></SCRIPT>
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function doAction(action){
+	if(action == 'update'){
+		form.dsUpdate('#update.xml');
+	}
+	//RConsole.find(FDatasetConsole).doAction(action);
+}
+function doMove(action){
+	RConsole.find(FDatasetConsole).movePosition(action);
+}
+function omo(){
+	alert(this);
+}
+function _load(){
+   RGlobal.setContext('jp', '../../../system', '');
+	RWindow.connect(window);
+	//RConsole.find(FLoggerConsole).connect();
+	form = RControl.fromXml(xForm, _id_form);
+	form.setAction(EAction.Update);
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+<Environment form_name="design.webform.ColumnForm" sel_type="columnedit" sel_form="logic.common.LanguageList" sel_control="BQAAAO3oJVsYAQAA"/>
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'>
+<Calendar width="260" label_width="80" edit_width="160"
+	name="createDate" label="创建时间" is_valid="Y" disp_access="SPLIUD"
+	data_name="CREATE_DATE" edit_access="IU"/>
+</XML>
+<!-- Value --------------------------------------------------->
+<XML ID="xValue">
+<ColumnEdit name="colIsValid" label="有效" type="ColumnEdit" width="40" data_name="IS_VALID" data_type="bool" disp_access="_L___" disp_list="Y" edit_access="IU" edit_insert="Y" edit_update="Y" valid_access="IU" valid_insert="Y" valid_update="Y"/>
+</XML>
+<!-- Body begin ---------------------------------------------->
+<BODY onunload="__bodyUnload()" scroll="no" onload="_load()" class="bodyMain2">
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%'>
+<TR><TD style='padding:8' valign='top'>
+<!-- Form begin ---------------------------------------------->
+<DIV id='_id_form' style='width:100%;height:100%;overflow:visible'></DIV><br>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+
+</FORM>
+<SCRIPT language='javascript'>
+function __bodyLoad(){
+_load()}
+function __bodyUnload(){}
+</SCRIPT>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>

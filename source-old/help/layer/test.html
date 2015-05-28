@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='acs/control.css' type='text/css'>
+<SCRIPT src="ajs/mobj.js"></SCRIPT>
+</HEAD>
+
+<BODY id='idb' bgcolor='#FFFFDD' style='border:1 solid red;margin:0;padding:0;'>
+
+<SPAN id='id_sel' style='background-color:blue; height:2; width:40;' onclick='show()'></SPAN>
+
+<SPAN id='id_bd' style='background-color:#FFFFFF; left:2; top:15; margin:0; padding:4; border:6 solid red; height:100; width:200; overflow:auto'>
+
+<SPAN id='idv' style='background-color:#666666; left:1; top:1; margin:4; padding:6; border:2 solid red; height:40; width:30; position:absolute; overflow:auto'>
+HelloHelloHelloHelloHello<BR>
+HelloHelloHelloHelloHello<BR>
+</SPAN>
+
+</SPAN>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+</BODY>
+</HTML>
+
+<SCRIPT>
+function show(){
+	RDump.dump(idv)
+}
+</SCRIPT>

@@ -1,0 +1,78 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../system/acs/control.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FPageTab.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FPageBar.js'></SCRIPT>
+</HEAD>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var pages = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+		form.doAction('doUpdate');
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function doBack(){
+	alert('Back');
+}
+function _load(){
+	RGlobal.setContext('cn','../../..','/company');
+
+	pages = RControl.fromXml(xPageBar, _idp);
+	//pages.sheet('psInsert').addSelectListener(doBack);
+
+	//form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');*/
+	//form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, toolbar.components.value(0))
+	//RDump.dump(pages, _id0)
+}
+</SCRIPT>
+
+<XML ID="xPageBar">
+<PageBar name="pgcPages" label="分页控件">
+	<PageTab name="psChildList" label="组织列表"/>
+	<PageTab name="psChildList2" label="组织列表2"/>
+</PageBar>
+
+<!--<PageBar>
+		<PageSheet name='psBack'   caption='Back'   icon='tool.back'/>
+		<PageSheet name='psInsert' caption='Insert' icon='tool.insert' icon_disable='tool.insertd'/>
+		<PageSheet name='psUpdate' caption='Update' icon='tool.update' icon_disable='tool.insertd'/>
+		<PageSheet name='psDelete' caption='Delete' icon='tool.delete' icon_disable='tool.insertd'/>
+	</PageBar> -->
+</XML>
+
+<BODY onload='_load()'>
+
+<DIV id='_idp'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_log'></DIV><br>
+</BODY>
+
+</HTML>

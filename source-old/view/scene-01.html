@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-design.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../3.3.1-engine-3d/FE3dSceneCanvas.js'></SCRIPT>
+<SCRIPT>
+// http://localhost:92/script2/design/template.html
+var canvas = null;
+var display = null;
+function onEnterFrame(){
+   var m = display.matrix();
+   m.ry -= 0.004;
+   m.updateForce();
+}
+function onSceneLoad(c, s){
+   s.lsnsEnterFrame.register(null, onEnterFrame);
+   //var l = s.layers().get('space');
+   var l = s.layers().get('map');
+   display = l.displays().get(0);
+}
+function onLoad(){
+   // 环境设置
+   RRuntime.processCd = EProcess.Debug;
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+   // 创建画板
+   var c = canvas = RClass.create(FE3dSceneCanvas);
+   c.build(document);
+   c.setPanel(document.body);
+   //c.load('pvw.show.item.001');
+   //c.load('pvw.show.item.009');
+   //c.load('pvw.sc.car.01.001');
+   //c.load('pvw.show.skeleton.01');
+   c.load('pvw.sc.house.01.scene');
+   c.addLoadListener(null, onSceneLoad);
+   //RDump.dump(w, document.body);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='overflow:hidden;' onload='onLoad()'></BODY>
+</HTML>

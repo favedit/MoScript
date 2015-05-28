@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<html xmlns:t ="urn:schemas-microsoft-com:time" >
+<?IMPORT namespace="t" implementation="#default#time2">
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../acs/lang_jp.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/TRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/TDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/RClass.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../base/MDesign.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MDropable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FComponent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FFocusEditor.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../core/RCss.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/RHtml.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/RWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FDesignConsole.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelectEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCalendar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCalendarEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPicker.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPickerEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FListItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FListBox.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPanel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function _dump(o){
+	RDump.dump(_id3, o);
+}
+function doOrder(action){
+	form.doAction('daSaveOrder');
+}
+function doDesign(){
+	toolbar.button('btnOrder').enable(this.down);
+	form.design(EDesign.Move, this.down);
+}
+function doDesignUpdate(){
+	var x = RControl.store(form);
+	alert(x.dump())
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RLog.connect(_log);
+	RWindow.connect(window);
+	RCss.connect();
+
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	toolbar.button('btnDesign').addClickListener(doDesign);
+	toolbar.button('btnOrder').disable();
+
+	form = RControl.fromXml(xForm, _id_form);
+	form.loadValue(RXml.makeNode(xValue))
+	form.dsFetch('#ds-form001.xml');
+
+	//RConsole.find(FDesignConsole).setFlag(EDesign.Move, true);
+	//debugger
+
+	//form.setAction(EAction.Design, EDesign.Move, true);
+	//RControl.setAction(EAction.Design, EDesign.Move, true);
+
+	//debugger
+	//Debug.writeln("The value of counter is");
+
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, RClass.find(FControl))
+	//RDump.dump(_id3, form.components.get('tfName'))
+	//RDump.dump(form.component('lstOrder').component('lsi001'))
+	//RDump.dump(form.component('lstOrder'))
+	//RDump.dump(RCss)
+	//RDump.dump(_id3, toolbar)
+}
+</SCRIPT>
+
+<XML ID="xToolBar">
+	<ToolBar width='100%' disp_access='D'>
+<!--
+		<ToolButton name='btnRefresh' caption='Refresh' icon='tool.refresh'/>
+-->
+		<ToolButton name='btnBack'         caption='Back'    icon='tool.back'/>
+		<ToolButtonSplit/>
+		<ToolButtonCheck name='btnDesign' caption='Design' icon='tool.design' icon_disable='tool.deleted'/>
+		<ToolButton name='btnOrder' caption='Order'  icon='tool.update' icon_disable='tool.deleted' action='doOrder()'/>
+<!--
+  		<ToolButtonSplit/>
+		<ToolButtonDrop name='btnActions'  caption='Action'  icon='tool.action' icon_disable='tool.insertd'/>
+		<ToolButtonSplit/>
+		<ToolButton name='btnUpdateDesign'  caption='Update Design'  icon='tool.update' icon_disable='tool.updated' action='doDesignUpdate()'/>
+-->
+	</ToolBar>
+</XML>
+
+<XML ID="xForm">
+<WebForm name="lstOrder">
+	<DataAction name='daSaveOrder' service='saveOrder@#ds-form001.xml'/>
+	<ListBox name='lstOrder' width='400'>
+		<ListItem name='lsi001' label='a12'/>
+		<ListItem name='lsi002' label='a123'/>
+		<ListItem name='lsi003' label='a1234'/>
+		<ListItem name='lsi004' label='b12'/>
+		<ListItem name='lsi005' label='b123'/>
+		<ListItem name='lsi006' label='b1234'/>
+		<ListItem name='lsi007' label='c12'/>
+		<ListItem name='lsi008' label='c123'/>
+		<ListItem name='lsi009' label='c1234'/>
+		<ListItem name='lsi010' label='d12'/>
+		<ListItem name='lsi011' label='d123'/>
+		<ListItem name='lsi012' label='d1234'/>
+	</ListBox>
+</WebForm>
+</XML>
+<XML ID="xValue"/>
+
+<BODY onload='_load()' style='padding:0; margin:8; background-color:#FFFFFF' scroll='auto'>
+
+<DIV id='_id_toolbar'></DIV>
+<BR>
+<DIV id='_id_form' style='height:150;overflow:auto2'></DIV><BR>
+
+<DIV id='_log' style='height:100;overflow:auto'></DIV><br>
+<DIV id='_dump'></DIV><br>
+</BODY>
+
+<t:animate 
+	targetElement="_id_toolbar2" 
+	attributeName="left" 
+	begin="0"
+	from="00"
+	to="-500"
+	dur="10"
+	repeatcount="indefinite"
+/>
+
+</HTML>

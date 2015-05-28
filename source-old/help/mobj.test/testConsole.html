@@ -1,0 +1,36 @@
+<html>
+<LINK rel='stylesheet' href='../acs/control.css' type='text/css'>
+<SCRIPT language='javascript' src='mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='3-core/FActiveConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='3-core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='3-core/FFocusConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='3-core/FEventConsole.js'></SCRIPT>
+<body onload="_onload()" style="scroll: no">
+
+<!-- Form --------------------------------------------------->
+<XML id='xForm'>
+<Timer width="260" label_width="80" edit_width="160" name="countryId" label="系统时间" serverDate="124"/>
+</XML>
+<div id ='_active'><table></table></div>
+<div id ='_timer'></div>
+<script language='javascript'>
+   //-----------------------------------------------------------------
+var hTb = _active.childNodes[0];
+function ActiveConsoleFun(){
+    var d = new TDate();
+    ds = RDate.formatDate(d,RDate.DisplayFormat);
+ 	hTb.insertRow().insertCell().innerHTML = ds;
+ 	RLog.debug(this, 'ActiveConsoleFun' + RClass.dump(this));
+ 	//this.status = EActive.Cancel;
+}
+function _onload() {
+   RWindow.connect();
+   RConsole.find(FLoggerConsole).connect();
+   var t = new TActive(null, ActiveConsoleFun);
+   t.count = 4000;
+   t.interval = 1000;
+   var cs = RConsole.find(FActiveConsole).push(t);
+}
+</script>
+</body>
+</html>

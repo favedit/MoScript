@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+	<Result>Update OK</Result>
+	<Messages>
+	</Messages>
+	<Dataset name='node.type'>
+		<Row oid='1' type='String' name="CN" code="086" full_name="ZhonGGG" create_date="19491001" is_valid="N" note="ZG"/>
+	</Dataset>
+
+</Config>
+

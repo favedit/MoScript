@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3.3.05-engine-3d-instance/FE3dSphere.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+// http://localhost:92/script/test/engine3d/sphere.html
+var canvas = null;
+var sphere = null;
+function onEnterFrame(){
+   //canvas.onEnterFrame();
+   sphere.matrix().ry += 0.002;
+   sphere.matrix().setScaleAll(4);
+   sphere.matrix().update();
+}
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.setContentPath('/script');
+   RApplication.initialize();
+
+   canvas = RClass.create(FE3dSimpleCanvas);
+   canvas.build(_hCanvas);
+   canvas.setPanel(_hCanvas);
+   var context = canvas.graphicContext();
+
+   var stage = RClass.create(FE3dSimpleStage);
+   stage.linkGraphicContext(context);
+   stage.selectTechnique(context, FE3dGeneralTechnique);
+   stage.region().backgroundColor().set(1.0, 0.5, 0.5, 1);
+   canvas._activeSpace = stage;
+
+   var camera = stage.region().camera();
+   camera.position().set(0, 0, -10);
+   camera.lookAt(0, 0, 1);
+
+   var projection = camera.projection();
+   projection.size().assign(context.size());
+   projection.update();
+
+   sphere = RClass.create(FE3dSphere);
+   sphere.linkGraphicContext(context);
+   sphere.setSplitCount(36);
+   sphere.setup();
+
+   stage.spriteLayer().pushRenderable(sphere);
+   stage.addEnterFrameListener(null, onEnterFrame);
+
+   RStage.register('stage', stage);
+   RStage.start();
+
+   RDump.dump(context, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_hCanvas' style='width:600px;height:300px;border:1px solid #CCCCCC'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

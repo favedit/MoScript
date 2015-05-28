@@ -1,0 +1,35 @@
+<SCRIPT src='../../0-runtime/0 - Common.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/1 - ESpace.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TArray.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TAttributes.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TInvoke.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TLoaderListener.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TListener.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TListeners.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TMap.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TSpaceStore.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TString.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TClass.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/3 - MoJS.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/3 - Runtime.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RLoader.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RWindow.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RClass.sc.js'></SCRIPT>
+<SCRIPT src='../../1-lang/RArray.sc.js'></SCRIPT>
+
+<SCRIPT>
+function onLoaded(){
+   alert(this);
+};
+function _load(){
+   debugger
+   //RLoader.load('mobj', '../../logic/FLgSpliter.js');
+   //RLoader.wait(new TInvoke(RLoader, onLoaded), 'mobj');
+}
+</SCRIPT>
+
+<BODY onload='_load()'>
+<INPUT type='button' value='Popup' onclick='show()'></INPUT>
+<DIV id='id_info'></DIV>
+<DIV id='id_log'></DIV>
+</BODY>

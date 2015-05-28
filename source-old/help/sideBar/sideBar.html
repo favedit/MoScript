@@ -1,0 +1,30 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<LINK rel='stylesheet' href='../../../acs/control.css' type='text/css'>
+<script src = '../../mobj.js'></script>
+<script src = '../../4-ctl.window/FSideBar.sc.js'></script>
+<script src = '../../4-ctl.window/FSideButton.sc.js'></script>
+</head>
+<script>
+function _onload(){
+   var xform   = RXml.makeNode(xForm);
+   var sideBar = RControl.fromNode(xform, dd);
+   sideBar.selectByIndex(5);
+}
+</script>
+<XML ID="xForm">
+<SideBar name="logic.person.role.catalog.CatalogList" label="人员_角色目录列表" >
+   <SideButton name="ouid" label="编号" />
+   <SideButton name="over" label="版本" />
+   <SideButton name="ovld" label="有效性" />
+   <SideButton name="viewId" label="视角标识" />
+</SideBar>
+</XML>
+<body onload='_onload()' style='margin:0' scroll='no'>
+<table width='100%' height='100%' bgcolor='#FFFFF0'>
+<tr><td id='dd'></td></tr>
+</table>
+</body>
+</html>

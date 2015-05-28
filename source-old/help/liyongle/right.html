@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<LINK rel="stylesheet" href='control.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../1-lang/RBuilder.js'></SCRIPT>
+</head>
+<script>
+function  ShowClass(args){
+	document.getElementById("_dump").innerHTML="";
+	RLog.connect(_msg);
+	var ob = new Object(args);
+	var o = RClass.create(args);
+	RDump.dump(o, _dump);
+}
+</script>
+<body>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</body>
+</html>

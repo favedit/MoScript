@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='Y' source='SrcAlpha' target='OneMinusSrcAlpha'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_model_matrix'        format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'           format='Float4x4'/>
+   <Parameter name='vc_camera_position'     format='Float3'/>
+   <Parameter name='vc_light_direction'     format='Float3'/>
+   <Parameter name='vc_bone_matrix'         format='Float4x4'/>
+   <Parameter name='fc_camera_position'     format='Float3'/>
+   <Parameter name='fc_light_direction'     format='Float3'/>
+   <Parameter name='fc_color'               format='Float4'/>
+   <Parameter name='fc_alpha'               format='Float4'/>
+   <Parameter name='fc_vertex_color'        format='Float4'/>
+   <Parameter name='fc_ambient_color'       format='Float4'/>
+   <Parameter name='fc_diffuse_color'       format='Float4'/>
+   <Parameter name='fc_specular_color'      format='Float4'/>
+   <Parameter name='fc_specular'            format='Float4'/>
+   <Parameter name='fc_specular_view_color' format='Float4'/>
+   <Parameter name='fc_specular_view'       format='Float4'/>
+   <Parameter name='fc_reflect_color'       format='Float4'/>
+   <!--=====================================================-->
+   <Attribute name='va_instance'    linker='instance'    format='Float1'/>
+   <Attribute name='va_position'    linker='position'    format='Float4'/>
+   <Attribute name='va_color'       linker='color'       format='Byte4Normal'/>
+   <Attribute name='va_coord'       linker='coord'       format='Float2'/>
+   <Attribute name='va_normal'      linker='normal'      format='Float3'/>
+   <Attribute name='va_binormal'    linker='binormal'    format='Float3'/>
+   <Attribute name='va_tangent'     linker='tangent'     format='Float3'/>
+   <Attribute name='va_bone_index'  linker='bone_index'  format='Byte4'/>
+   <Attribute name='va_bone_weight' linker='bone_weight' format='Byte4Normal'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'     linker='Diffuse'/>
+   <Sampler name='fs_normal'      linker='Normal'/>
+   <Sampler name='fs_specular'    linker='SpecularLevel'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 变换矩阵声明
+      <shader:false source='support.instance'>
+      uniform mat4 vc_model_matrix;
+      uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
+      </shader:false>
+      <shader:true source='support.instance'>
+      uniform mat4 vc_model_matrix[<shader:write source='instance.count'/>];
+      uniform mat4 vc_bone_matrix[<shader:write source='instance.bone.count'/>];
+      </shader:true>
+      uniform mat4 vc_vp_matrix;
+      uniform vec3 vc_camera_position;
+      uniform vec3 vc_light_direction;
+      //..........................................................
+      // 属性流声明
+      <shader:true source='support.instance'>
+      attribute float va_instance;
+      </shader:true>
+      attribute vec3 va_position;
+      <shader:true source='vertex.attribute.color'>
+      attribute vec4 va_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+      attribute vec2 va_coord;
+      </shader:true>
+      <shader:true source='vertex.attribute.normal'>
+      attribute vec3 va_normal;
+      <shader:true source='vertex.attribute.normal.full'>
+      attribute vec3 va_binormal;
+      attribute vec3 va_tangent;
+      </shader:true>
+      </shader:true>
+      <shader:true source='support.skeleton'>
+      attribute vec4 va_bone_index;
+      attribute vec4 va_bone_weight;
+      </shader:true>
+      //..........................................................
+      // 属性流声明
+      varying vec4 v_model_position;
+      <shader:true source='vertex.attribute.color'>
+      varying vec4 v_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      <shader:true source='vertex.attribute.normal'>
+      varying vec3 v_normal;
+      <shader:true source='support.dump'>
+      varying vec3 v_camera_ts;
+      varying vec3 v_light_ts;
+      </shader:true>
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(){
+         // 获得输入坐标
+         vec4 inputPosition = vec4(va_position, 1.0);
+         // 计算骨骼坐标
+         vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         // 计算模型坐标
+         <shader:true source='support.instance'>
+         vec4 modelPosition = position * vc_model_matrix[int(va_instance)];
+         modelPosition.w = 1.0;
+         </shader:true>
+         <shader:false source='support.instance'>
+         vec4 modelPosition = position * vc_model_matrix;
+         </shader:false>
+         // 计算最终坐标
+         gl_Position = modelPosition * vc_vp_matrix;
+         v_model_position = modelPosition;
+         // 设置颜色
+         <shader:true source='vertex.attribute.color'>
+         v_color = va_color;
+         </shader:true>
+         // 设置纹理
+         <shader:true source='vertex.attribute.coord'>
+         v_coord = va_coord;
+         </shader:true>
+         // 设置法线
+         <shader:true source='vertex.attribute.normal'>
+         <shader:true source='support.instance'>
+         vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(vc_model_matrix));
+         </shader:true>
+         <shader:false source='support.instance'>
+         vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(vc_model_matrix));
+         </shader:false>
+         v_normal = normal;
+         // 设置法线空间
+         <shader:true source='support.dump'>
+         <shader:true source='support.instance'>
+         vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 tangent = normalize((va_tangent - 0.5) * 2.0 * mat3(vc_model_matrix));
+         </shader:true>
+         <shader:false source='support.instance'>
+         vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 tangent = normalize((va_tangent - 0.5) * 2.0 * mat3(vc_model_matrix));
+         </shader:false>
+         mat3 matrixTs = mat3(tangent, binormal, normal);
+         vec3 cameraDirection = vc_camera_position - modelPosition.xyz;
+         v_camera_ts = normalize(cameraDirection * matrixTs);
+         v_light_ts = normalize(vc_light_direction * matrixTs);
+         </shader:true>
+         </shader:true>
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision highp float;
+      #endif
+      //..........................................................
+      // 声明常量
+      uniform vec3 fc_camera_position;
+      uniform vec3 fc_light_direction;
+      uniform vec4 fc_color;
+      uniform vec4 fc_alpha;
+      <shader:true source='vertex.attribute.color'>
+      uniform vec4 fc_vertex_color;
+      </shader:true>
+      <shader:true source='support.ambient'>
+      uniform vec4 fc_ambient_color;
+      </shader:true>
+      <shader:true source='support.diffuse'>
+      uniform vec4 fc_diffuse_color;
+      </shader:true>
+      <shader:true source='support.specular'>
+      uniform vec4 fc_specular_color;
+      uniform vec4 fc_specular;
+      </shader:true>
+      <shader:true source='support.specular.view'>
+      uniform vec4 fc_specular_view_color;
+      uniform vec4 fc_specular_view;
+      </shader:true>
+      <shader:true source='support.environment'>
+      uniform vec4 fc_reflect_color;
+      </shader:true>
+      //..........................................................
+      // 声明插值器
+      varying vec4 v_model_position;
+      varying vec4 v_position;
+      <shader:true source='vertex.attribute.color'>
+      varying vec4 v_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      <shader:true source='vertex.attribute.normal'>
+      varying vec3 v_normal;
+      <shader:true source='support.diffuse.dump'>
+      varying vec3 v_camera_ts;
+      varying vec3 v_light_ts;
+      </shader:true>
+      </shader:true>
+      //..........................................................
+      // 声明取样器
+      <shader:true source='support.ambient.sampler'>
+      uniform sampler2D fs_diffuse;
+      </shader:true>
+      <shader:true source='support.diffuse.dump'>
+      uniform sampler2D fs_normal;
+      </shader:true>
+      <shader:true source='support.specular'>
+      uniform sampler2D fs_specular;
+      </shader:true>
+      <shader:true source='support.light'>
+      uniform sampler2D fs_light;
+      </shader:true>
+      <shader:true source='support.environment'>
+      uniform samplerCube fs_environment;
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(void){
+         vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         //............................................................
+         // 计算环境颜色
+         <shader:true source='support.ambient'>
+         <shader:true source='support.ambient.sampler'>
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         if(color.a < fc_alpha.x){
+            discard;
+         }
+         </shader:true>
+         <shader:false source='support.ambient.sampler'>
+         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+         </shader:false>
+         result.rgb += color.xyz * fc_ambient_color.rgb;
+         </shader:true>
+         //............................................................
+         // 计算散射颜色
+         <shader:true source='support.diffuse'>
+         <shader:true source='support.diffuse.dump'>
+         vec4 normal = texture2D(fs_normal, v_coord);
+         //normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         float normalFactor = dot(normal.xyz, -v_light_ts);
+         </shader:true>
+         <shader:true source='support.diffuse.normal'>
+         float normalFactor = dot(v_normal, -fc_light_direction);
+         </shader:true>
+         normalFactor = max(normalFactor, 0.0);
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
+         </shader:true>
+         //............................................................
+         <shader:true source='support.specular|support.environment'>
+         vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
+         </shader:true>
+         //............................................................
+         // 计算高光颜色
+         <shader:true source='support.specular'>
+         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+         float specularFactor = dot(cameraDirection, reflectionDirection);
+         <shader:true source='support.specular.level'>
+         specularFactor *= normal.w;
+         </shader:true>
+         specularFactor = max(specularFactor, fc_specular.x);
+         specularFactor = min(specularFactor, 1.0);
+         specularFactor = pow(specularFactor, fc_specular.y);
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
+         </shader:true>
+         //............................................................
+         <shader:true source='support.environment'>
+         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 
+         vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
+         <shader:true source='support.light'>
+         vec4 light = texture2D(fs_light, v_coord);
+         environmentColor *= light.g;
+         </shader:true>
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb;
+         </shader:true>
+         //............................................................
+         // 计算颜色
+         <shader:true source='vertex.attribute.color'>
+         vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
+         vertexColor = vertexColor / (fc_color.y - fc_color.x);
+         vertexColor = (vertexColor - fc_color.w) * fc_color.z;
+         vertexColor += 1.0;
+         result.rgb *= vertexColor.rgb;
+         </shader:true>
+         <shader:true source='support.alpha'>
+         result.a = color.a * fc_alpha.z;
+         </shader:true>
+         //............................................................
+         gl_FragColor = result;
+      }
+   ]]></Source>
+</Configuration>

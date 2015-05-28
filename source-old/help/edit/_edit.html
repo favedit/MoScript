@@ -1,0 +1,71 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../_.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../2 - base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2 - base/FTextEditor.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../3 - core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3 - core/FFocusConsole.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+function _load(){
+	RGlobal.context = '../..';
+
+   //RDump.dump(_id3, RClass.find(FColumnEdit))
+   //RDump.dump(_id3, _id1)
+   //RDump.dump(_id3, RClass.create(FColumnEdit))
+
+   form = RClass.create(FEdit);
+   form.linkPanel(_idp);
+   form.construct();
+   //form.loadDocument(RXml.build(oMetaData.XMLDocument));
+
+	RDump.dump(_id3, form)
+}
+</SCRIPT>
+
+<XML ID="oMetaData">
+	<Form insert_able='Y' update_able='Y' delete_able='Y'>
+		<Edit name='edit'/>
+	</Form>
+</XML>
+
+<BODY onload='_load()'>
+
+<input type='BUTTON' value='Insert' onclick='form.doInsert()'></input> | 
+<input type='BUTTON' value='Update' onclick='form.doUpdate()'></input> | 
+<input type='BUTTON' value='Delete' onclick='form.doDelete()'></input>
+
+<HR>
+
+<DIV id='_idp'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

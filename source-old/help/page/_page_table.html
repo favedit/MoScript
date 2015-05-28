@@ -1,0 +1,176 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../_.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/TXmlNode.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/RHtml.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/TRect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/RInt.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/RRect.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../base/FComponent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FContainer.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/RControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FTextEditor.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../MSelectListener.js'></SCRIPT>
+<SCRIPT language='javascript' src='../MColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../TItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSplit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPanel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPageSheet.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPageBar.js'></SCRIPT>
+
+<SCRIPT>
+var pages = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+		form.doAction('doUpdate');
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function doBack(){
+	alert('Back');
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../../..');
+	RLog.link(_log);
+
+	//RDump.dump(_id3, RClass.create(FComponent))
+	//RDump.dump(_id3, _id1)
+	//RDump.dump(_id3, RClass.create(FColumnEdit))
+
+	RLog.debug(this, 'Build begin');
+	pages = RControl.fromXml(xPageBar, _idp);
+	RLog.debug(this, 'Build eng');
+	//pages.sheet('psInsert').addSelectListener(doBack);
+
+	//form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');*/
+	//form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, pages.components.value(0))
+	//RDump.dump(_id0, pages)
+}
+</SCRIPT>
+
+<XML ID="xPageBar">
+	<PageBar height='300'>
+		<PageSheet name='psBack'   caption='Back'   icon='tool.back'>
+			<Table insert_able='Y' update_able='Y' delete_able='Y'>
+				<PrepareAction name='doPrepare' service='prepare.xml' />
+				<DataAction    name='doUpdate'  service='update.xml' />
+				<ColumnEdit   name='type'   data_name='type'   width='80' icon='tool.insert' caption='種類' edit_insert='Y' edit_update='N'/>
+				<ColumnEdit   name='label'  data_name='label'  width='80' icon='tool.update' caption='名前' edit_update='Y'/>
+				<Column       name='update' data_name='update' width='80' caption='更新日時' edit_update='N'/>
+				<Column       name='user'   data_name='user'   width='80' caption='更新者' edit_update='N'/>
+				<ColumnEdit   name='check'  data_name='check'  width='80' caption='チェックアウト先' edit_insert='Y' edit_update='Y'/>
+				<Row type='table' label='表紙1' update='2007/12/21 19:08' user='Murakami, Takao X'/>
+				<Row type='table' label='表紙2' update='2007/12/21 19:08' user='Murakami, Takao X' check='check'/>
+			</Table>
+		</PageSheet>
+		<PageSheet name='psInsert' caption='Insert' icon='tool.insert' icon_disable='tool.insertd'>
+			<DataAction name="doSave" service="system.design.form" />
+			<Edit name="tfName" label="Name" label_width="80" data_name="name" data_type="string" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+			<Split name="gpLine1"  label='Display - A' height="8"/>
+			<Edit name="tfLabel" width="300" nowrap="Y" label="Label" label_width="80" data_name="label" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="60" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" />
+			<Select name="tfType" width="200" nowrap="N" label="Type" label_width="80" data_name="type" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="100" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" edit_refer="system.form.fieldType" />
+			<Check name="tfDispInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="disp_insert" />
+			<Check name="tfDispUpdate" width="200" nowrap="Y" label="Update" label_width="80" data_name="disp_update" />
+			<Check name="tfDispDelete" width="200" nowrap="N" label="Delete" label_width="80" data_name="disp_delete" />
+			<Split name="gpLine2"  label='Data' height="8"/>
+			<Edit name="tfDataName" width="200" nowrap="Y" label="Data Name" label_width="80" data_name="data_name" edit_width="100" />
+			<Select name="tfDataType" width="200" nowrap="N" label="Data Type" label_width="80" data_name="data_type" edit_type="combo" edit_width="100" edit_refer="system.form.dataType" />
+			<Select name="tfEditType" width="200" nowrap="Y" label="Edit Type" label_width="80" data_name="edit_type" edit_type="combo" edit_width="100" edit_refer="system.form.editType" />
+			<Edit name="tfEditRefer" width="200" nowrap="N" label="Edit Refer" label_width="80" data_name="edit_refer" edit_type="combo" edit_width="100" />
+			<Check name="tfEditInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="edit_insert" />
+			<Check name="tfEditUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="edit_update" />
+			<Check name="tfValidInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="valid_insert" />
+			<Check name="tfValidUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="valid_update" />
+		</PageSheet>
+		<PageSheet name='psUpdate' caption='Update' icon='tool.update' icon_disable='tool.insertd'>
+			<DataAction name="doSave" service="system.design.form" />
+			<Edit name="tfName" label="Name" label_width="80" data_name="name" data_type="string" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+			<Split name="gpLine1"  label='Display - A' height="8"/>
+			<Edit name="tfLabel" width="300" nowrap="Y" label="Label" label_width="80" data_name="label" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="60" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" />
+			<Select name="tfType" width="200" nowrap="N" label="Type" label_width="80" data_name="type" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="100" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" edit_refer="system.form.fieldType" />
+			<Check name="tfDispInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="disp_insert" />
+			<Check name="tfDispUpdate" width="200" nowrap="Y" label="Update" label_width="80" data_name="disp_update" />
+			<Check name="tfDispDelete" width="200" nowrap="N" label="Delete" label_width="80" data_name="disp_delete" />
+			<Split name="gpLine2"  label='Data' height="8"/>
+			<Edit name="tfDataName" width="200" nowrap="Y" label="Data Name" label_width="80" data_name="data_name" edit_width="100" />
+			<Select name="tfDataType" width="200" nowrap="N" label="Data Type" label_width="80" data_name="data_type" edit_type="combo" edit_width="100" edit_refer="system.form.dataType" />
+			<Select name="tfEditType" width="200" nowrap="Y" label="Edit Type" label_width="80" data_name="edit_type" edit_type="combo" edit_width="100" edit_refer="system.form.editType" />
+			<Edit name="tfEditRefer" width="200" nowrap="N" label="Edit Refer" label_width="80" data_name="edit_refer" edit_type="combo" edit_width="100" />
+			<Check name="tfEditInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="edit_insert" />
+			<Check name="tfEditUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="edit_update" />
+			<Check name="tfValidInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="valid_insert" />
+			<Check name="tfValidUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="valid_update" />
+		</PageSheet>
+		<PageSheet name='psDelete' caption='Delete' icon='tool.delete' icon_disable='tool.insertd'>
+			<DataAction name="doSave" service="system.design.form" />
+			<Edit name="tfName" label="Name" label_width="80" data_name="name" data_type="string" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+			<Split name="gpLine1"  label='Display - A' height="8"/>
+			<Edit name="tfLabel" width="300" nowrap="Y" label="Label" label_width="80" data_name="label" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="60" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" />
+			<Select name="tfType" width="200" nowrap="N" label="Type" label_width="80" data_name="type" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="100" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" edit_refer="system.form.fieldType" />
+			<Check name="tfDispInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="disp_insert" />
+			<Check name="tfDispUpdate" width="200" nowrap="Y" label="Update" label_width="80" data_name="disp_update" />
+			<Check name="tfDispDelete" width="200" nowrap="N" label="Delete" label_width="80" data_name="disp_delete" />
+			<Split name="gpLine2"  label='Data' height="8"/>
+			<Edit name="tfDataName" width="200" nowrap="Y" label="Data Name" label_width="80" data_name="data_name" edit_width="100" />
+			<Select name="tfDataType" width="200" nowrap="N" label="Data Type" label_width="80" data_name="data_type" edit_type="combo" edit_width="100" edit_refer="system.form.dataType" />
+			<Select name="tfEditType" width="200" nowrap="Y" label="Edit Type" label_width="80" data_name="edit_type" edit_type="combo" edit_width="100" edit_refer="system.form.editType" />
+			<Edit name="tfEditRefer" width="200" nowrap="N" label="Edit Refer" label_width="80" data_name="edit_refer" edit_type="combo" edit_width="100" />
+			<Check name="tfEditInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="edit_insert" />
+			<Check name="tfEditUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="edit_update" />
+			<Check name="tfValidInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="valid_insert" />
+			<Check name="tfValidUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="valid_update" />
+		</PageSheet>
+	</PageBar>
+</XML>
+
+<BODY onload='_load()'>
+
+<DIV id='_idp'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_log'></DIV><br>
+</BODY>
+
+</HTML>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TreeView>
+   <TreeNode type='table' icon='control.ctl' label='COM_COUNTRY' child='Y' note='国家' table='ComCountry' field='Mao'/>
+   <TreeNode type='table' icon='control.ctl' label='COM_AREA' note='地区' table='ComCountry' field='Mao'>
+      <TreeNode type='field' label='Mao' table='ComCountry' field='Mao'/>
+      <TreeNode type='field' label='Yang'/>
+   </TreeNode>
+   <TreeNode type='table' icon='control.clrpicker' label='COM_PROVINCE' note='省份' child='Y'/>
+   <TreeNode type='table' icon='control.ds-field' label='COM_CITY' note='城市' child='Y'/>
+</TreeView>

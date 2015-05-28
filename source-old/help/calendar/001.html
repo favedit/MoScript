@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>Calendar Example</TITLE>
+<LINK rel='stylesheet' href='/eUIS/system/acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='/eUIS/system/acs/lang_cn.css' type='text/css'>
+<LINK rel='stylesheet' href='/eUIS/system/acs/site_cn.css' type='text/css'>
+<SCRIPT src='../../runtime.js'></SCRIPT>
+<SCRIPT src='FCalendarBox.js'></SCRIPT>
+<SCRIPT src='FCalendarDay.js'></SCRIPT>
+<SCRIPT>
+RContext.contextPath = '/eUIS';
+RContext.contextTag = '/system';
+RContext.themeId = '00';
+RContext.languageId = 'cn';
+RContext.uriIcon = '/system/ars/icon';
+RContext.uriPicture = '/system/ars/pic';
+</SCRIPT>
+<STYLE>
+.FCalendarDay_BorderTop
+   {
+   overflow:hidden;
+   width:100%;
+   height:1px;
+   margin:0 2px;
+   background:#CCCCCC;
+   }
+.FCalendarDay_BorderBefore{
+   display:block;
+   overflow:hidden;
+   height:1px;
+   margin:0 1px;
+   border-left:1px solid #CCCCCC;
+   border-right:1px solid #EEEEEE;
+   background:#FFFFFF;
+   }
+.FCalendarDay_BorderPanel{
+   border-left:1px solid #CCCCCC;
+   border-right:1px solid #EEEEEE;
+   }
+.FCalendarDay_BorderAfter{
+   display:block;
+   overflow:hidden;
+   height:1px;
+   margin:0 1px;
+   border-left:1px solid #EEEEEE;
+   border-right:1px solid #EEEEEE;
+   background:#FFFFFF;
+   }
+.FCalendarDay_BorderBottom{
+   display:block;
+   overflow:hidden;
+   height:1px;
+   margin:0 2px;
+   background:#EEEEEE;
+   }
+</STYLE>
+
+</HEAD>
+
+<SCRIPT>
+function _onloadAll(){
+   MoJS.initialize();
+   var cb = RControl.create(FCalendarBox);
+   cb.setPanel(id_calendar);
+   cb.selectMonth(2008, 7);
+   // 主页面加载完毕
+   RWindow.setEnable(true);
+}
+//----------------------------------------------------------
+function _onload(){
+   RWindow.connect(window);
+   RWindow.setEnable(false, true);
+   RLoader.loadJs('mobj');
+   RLoader.waitJs(new TInvoke(null, _onloadAll), 'mobj');
+}
+</SCRIPT>
+
+<BODY disable onload='_onload()'>
+
+<DIV id='id_calendar'></DIV>
+</BODY>
+
+</HTML>

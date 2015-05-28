@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../acs/lang_jp.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/RHtml.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../TItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSplit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FPanel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../MColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEmpty.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function doUpdate(){
+	form.doAction('doSave');
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RLog.link(_log);
+	RWindow.connect(window);
+
+   //RDump.dump(_id3, RClass.find(FForm))
+   //RDump.dump(_id3, _id1)
+   //RDump.dump(_id3, RClass.create(FColumnEdit))
+
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	toolbar.component('btnUpdate').addClickListener(doUpdate);
+
+	form = RControl.fromXml(xForm, _id_form);
+	//alert(RXml.makeNode(xValue))
+	//form.loadValue(RXml.makeNode(xValue))
+
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, form.component('tbList'))
+	//RDump.dump(_id3, form)
+	//RDump.dump(_id3, document.body)
+}
+</SCRIPT>
+
+<XML ID="xToolBar">
+	<ToolBar>
+		<ToolButton name='btnRefresh' caption='Refresh' icon='tool.refresh'/>
+		<ToolButton name='btnBack'    caption='Back'    icon='tool.back'/>
+		<ToolButtonSplit/>
+		<ToolButton name='btnInsert'  caption='Insert'  icon='tool.insert' icon_disable='tool.insertd'/>
+		<ToolButton name='btnUpdate'  caption='Update'  icon='tool.update' icon_disable='tool.updated'/>
+		<ToolButton name='btnDelete'  caption='Delete'  icon='tool.delete' icon_disable='tool.deleted'/>
+		<ToolButtonSplit/>
+		<ToolButtonDrop name='btnActions'  caption='Action'  icon='sys.action' icon_disable='tool.insertd'/>
+	</ToolBar>
+</XML>
+
+<XML ID="xForm">
+<WebForm name="system.form.frmField" type="form" action="/system/design/webform/WebForm.wa?type=field" dataset="com.navigator.node.type" edit_search="N" edit_insert="Y" edit_update="Y" edit_delete="Y">
+	<DataAction name="doSave" service="system.design.form" />
+	<Edit name="tfName" label="Name" label_width="80" edit_width="140" data_name="name" data_type="string" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+	<Split name="gpDisplay" label='Display' height="8"/>
+	<Edit name="tfLabel" width="200" nowrap="Y" label="Label" label_width="80" data_name="label" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="60" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" />
+
+	<Select name="tfType" width="200" nowrap="N" label="Type" label_width="80" data_name="type" disp_insert="N" disp_update="N" disp_delete="N" edit_type="edit" edit_width="100" edit_insert="N" edit_update="N" valid_insert="N" valid_update="N" edit_refer="system.form.fieldType" />
+	<Check name="tfDispInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="disp_insert" />
+	<Check name="tfDispUpdate" width="200" nowrap="Y" label="Update" label_width="80" data_name="disp_update" />
+	<Check name="tfDispDelete" width="200" nowrap="N" label="Delete" label_width="80" data_name="disp_delete" />
+	<Split name="gpLine2" label='Data' height="8"/>
+	<Edit name="tfDataName" width="200" nowrap="Y" label="Data Name" label_width="80" data_name="data_name" edit_width="100" />
+	<Select name="tfDataType" width="200" nowrap="N" label="Data Type" label_width="80" data_name="data_type" edit_type="combo" edit_width="100" edit_refer="system.form.dataType" />
+	<Split name="gpLine3" label='Edit' height="8"/>
+	<Select name="tfEditType" width="200" nowrap="Y" label="Edit Type" label_width="80" data_name="edit_type" edit_type="combo" edit_width="100" edit_refer="system.form.editType" />
+	<Edit name="tfEditRefer" width="200" nowrap="N" label="Edit Refer" label_width="80" data_name="edit_refer" edit_type="combo" edit_width="100" />
+	<Check name="tfEditInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="edit_insert" />
+	<Check name="tfEditUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="edit_update" />
+	<Check name="tfValidInsert" width="200" nowrap="Y" label="Insert" label_width="80" data_name="valid_insert" />
+	<Check name="tfValidUpdate" width="200" nowrap="N" label="Update" label_width="80" data_name="valid_update" />
+
+	<Table name='tbList' insert_able='Y' update_able='Y' delete_able='Y'>
+		<PrepareAction name='doPrepare' service='prepare.xml' />
+		<DataAction    name='doUpdate'  service='update.xml' />
+
+		<ColumnEdit   name='type'   data_name='type'   width='50' align='center' icon='tool.update' caption='種類' edit_insert='Y' edit_update='N'/>
+		<ColumnEdit   name='label'  data_name='label'  width='250' icon='tool.insert' caption='名前' edit_update='Y'/>
+		<Column       name='update' data_name='update' width='100' align='center' caption='更新日時' edit_update='N'/>
+		<Column       name='user'   data_name='user'   width='100' align='center' caption='更新者' edit_update='N'/>
+		<ColumnEdit   name='check'  data_name='check'  width='120' caption='チェックアウト先' edit_insert='Y' edit_update='Y'/>
+
+		<Row type='table' label='表紙1' update='2007/12/21 19:08' user='Murakami, Takao X'/>
+		<Row type='table' label='表紙2' update='2007/12/21 19:08' user='Murakami, Takao X' check='check'/>
+	</Table>
+</WebForm>
+</XML>
+
+<XML ID="xValue">
+	<Config>
+		<Dataset name='system.form.frmField'>
+			<Edit name="tfName" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		</Dataset>
+		<Dataset name='tbList'>
+			<Edit name="tfName" width="200" nowrap="N" label="Name" label_width="80" data_name="name" disp_insert="Y" disp_update="Y" disp_delete="Y" edit_type="edit" edit_width="100" edit_insert="Y" edit_update="Y" valid_insert="N" valid_update="N" />
+		</Dataset>
+	</Config>
+</XML>
+
+<BODY id='_id_body' style='margin:0; padding-right:6; padding-bottom:6;'onload='_load()'>
+
+<DIV id='_id_toolbar'></DIV>
+<HR>
+<DIV id='_id_form'></DIV>
+<HR>
+
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_log'></DIV><br>
+</BODY>
+
+</HTML>

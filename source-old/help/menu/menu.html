@@ -1,0 +1,36 @@
+<HTML>
+<HEAD>
+<TITLE>Popup Example</TITLE>
+
+<LINK rel="stylesheet" href='menu.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../client.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../work/FPopupItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../work/FPopupMenu.js'></SCRIPT>
+<SCRIPT language='javascript' src='../work/FMenuItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../work/FMenuBar.js'></SCRIPT>
+
+<SCRIPT>
+function load_(){
+	IGlobal.context = '../..';
+
+	var mb = IClass.create(FMenuBar);
+	mb.linkHtml(window, _id0);
+	mb.connect();
+
+	IDump.dump(document, _id3, mb);
+}
+</SCRIPT>
+
+
+</HEAD>
+
+<BODY onload='load_()'>
+<DIV id='_id0' nowrap></DIV><HR>
+<DIV id='_id1' nowrap></DIV><HR>
+<DIV id='_id2' nowrap></DIV><HR>
+<DIV id='_id3' nowrap></DIV><HR>
+</BODY>
+
+</HTML>
