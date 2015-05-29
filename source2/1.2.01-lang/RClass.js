@@ -9,9 +9,9 @@
    MO.RClass = function RClass(){
       var o = this;
       //..........................................................
-      // @attribute Boolean 运行模式
-      o.codes          = new Array();
-      o.classes        = new Object();
+      // @attribute
+      o._codes         = new Array();
+      o._classes       = new Object();
       //..........................................................
       // @method
       o.isBase         = RClass_isBase;
@@ -271,7 +271,7 @@
    // @return Integer 编号
    //==========================================================
    MO.RClass_code = function RClass_code(v){
-      var c = this.codes;
+      var c = this._codes;
       var l = c.length;
       for(var n = 0; n < l; n++){
          if(c[n] == v){
@@ -343,7 +343,7 @@
       var r = null;
       if(n != null){
          var o = this;
-         r = o.classes[n];
+         r = o._classes[n];
          if(!r){
             r = o.createClass(n);
             o.build(r);
@@ -372,7 +372,7 @@
             RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
-      return o.classes[n];
+      return o._classes[n];
    }
 
    //==========================================================
@@ -387,7 +387,7 @@
    MO.RClass_register = function RClass_register(v, a, r){
       // 注册描述
       var n = RMethod.name(v.constructor);
-      this.classes[n].register(a);
+      this._classes[n].register(a);
       // 返回内容
       var v = a.value();
       return (v != null) ? v : r;
@@ -417,7 +417,7 @@
    //==========================================================
    MO.RClass_createClass = function RClass_createClass(n){
       var o = this;
-      var c = o.classes[n] = new TClass();
+      var c = o._classes[n] = new TClass();
       c.name = n;
       c.base = o.createBase(n);
       c.clazz = new c.base.constructor();
@@ -660,5 +660,5 @@
    }
    //..........................................................
    // 实例化内容
-   MO.Class = new RClass();
+   MO.RClass = new RClass();
 }

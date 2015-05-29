@@ -146,5 +146,6 @@
    }
    //..........................................................
    // 实例化内容
-   MO.Runtime = new RRuntime();
+   MO.RRuntime = new RRuntime();
+   MO.Runtime = MO.RRuntime;
 }

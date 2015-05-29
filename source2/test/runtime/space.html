@@ -3,7 +3,7 @@
 <TITLE>Stage3d Example</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
-<SCRIPT language='javascript' src='../../ajs/mo-lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -17,9 +17,11 @@ function _load(){
    //console.log(a.isEmpty == b.isEmpty);
    //var a = new MO.Runtime.constructor();
    //var b = new MO.Runtime.constructor();
-   //for(var n in mo.Runtime){
-   //   console.log(n + ' - ' + mo.Runtime[n]);
-   //}
+   var count = 0;
+   for(var name in MO){
+      count++;
+   }
+   console.log('Count = ' + count);
    debugger;
 }
 </SCRIPT>

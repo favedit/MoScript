@@ -2026,7 +2026,7 @@ with(MO){
       }
       return value ? valueTrue : valueFalse;
    }
-   MO.Boolean = new RBoolean();
+   MO.RBoolean = new RBoolean();
 }
 with(MO){
    MO.RByte = function RByte(){
@@ -2039,7 +2039,7 @@ with(MO){
          po[poi++] = pi[pii++];
       }
    }
-   MO.Byte = new RByte();
+   MO.RByte = new RByte();
 }
 with(MO){
    MO.RChar = function RChar(){
@@ -2054,13 +2054,13 @@ with(MO){
    MO.RChar_toString = function RChar_toString(v){
       return v;
    }
-   MO.Char = new RChar();
+   MO.RChar = new RChar();
 }
 with(MO){
    MO.RClass = function RClass(){
       var o = this;
-      o.codes          = new Array();
-      o.classes        = new Object();
+      o._codes         = new Array();
+      o._classes       = new Object();
       o.isBase         = RClass_isBase;
       o.isBaseName     = RClass_isBaseName;
       o.isBaseDataName = RClass_isBaseDataName;
@@ -2215,7 +2215,7 @@ with(MO){
       }
    }
    MO.RClass_code = function RClass_code(v){
-      var c = this.codes;
+      var c = this._codes;
       var l = c.length;
       for(var n = 0; n < l; n++){
          if(c[n] == v){
@@ -2257,7 +2257,7 @@ with(MO){
       var r = null;
       if(n != null){
          var o = this;
-         r = o.classes[n];
+         r = o._classes[n];
          if(!r){
             r = o.createClass(n);
             o.build(r);
@@ -2277,11 +2277,11 @@ with(MO){
             RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
-      return o.classes[n];
+      return o._classes[n];
    }
    MO.RClass_register = function RClass_register(v, a, r){
       var n = RMethod.name(v.constructor);
-      this.classes[n].register(a);
+      this._classes[n].register(a);
       var v = a.value();
       return (v != null) ? v : r;
    }
@@ -2294,7 +2294,7 @@ with(MO){
    }
    MO.RClass_createClass = function RClass_createClass(n){
       var o = this;
-      var c = o.classes[n] = new TClass();
+      var c = o._classes[n] = new TClass();
       c.name = n;
       c.base = o.createBase(n);
       c.clazz = new c.base.constructor();
@@ -2460,7 +2460,7 @@ with(MO){
       }
       return t + '@' + o.code(v);
    }
-   MO.Class = new RClass();
+   MO.RClass = new RClass();
 }
 with(MO){
    MO.RConsole = function RConsole(){
@@ -2595,7 +2595,7 @@ with(MO){
       }
       o._consoles = null;
    }
-   MO.Console = new RConsole();
+   MO.RConsole = new RConsole();
 }
 with(MO){
    MO.RConst = function RConst(){
@@ -2612,7 +2612,7 @@ with(MO){
       o.identity4x4  = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
       return o;
    }
-   MO.Const = new RConst();
+   MO.RConst = new RConst();
 }
 with(MO){
    MO.RDate = function RDate(){
@@ -3030,7 +3030,7 @@ with(MO){
       ar[1] = v;
       return ar;
    }
-   MO.Date = new RDate();
+   MO.RDate = new RDate();
 }
 with(MO){
    MO.REnum = function REnum(){
@@ -3082,7 +3082,7 @@ with(MO){
       }
       return r;
    }
-   MO.Enum = new REnum();
+   MO.REnum = new REnum();
 }
 with(MO){
    MO.RFile = function RFile(){
@@ -3150,7 +3150,7 @@ with(MO){
       }
       return '';
    }
-   MO.File = new RFile();
+   MO.RFile = new RFile();
 }
 with(MO){
    MO.RFloat = function RFloat(){
@@ -3274,7 +3274,7 @@ with(MO){
          po[poi++] = pi[pii++];
       }
    }
-   MO.Float = new RFloat();
+   MO.RFloat = new RFloat();
 }
 with(MO){
    MO.RHex = function RHex(){
@@ -3301,7 +3301,7 @@ with(MO){
       }
       return l ? RString.lpad(r, l, this.PAD) : r;
    }
-   MO.Hex = new RHex();
+   MO.RHex = new RHex();
 }
 with(MO){
    MO.RInstance = function RInstance(){

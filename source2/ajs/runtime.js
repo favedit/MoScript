@@ -92,7 +92,136 @@ with(MO){
       }
       return null;
    }
-   MO.Runtime = new RRuntime();
+   MO.RRuntime = new RRuntime();
+   MO.Runtime = MO.RRuntime;
+}
+with(MO){
+   MO.TArray = function TArray(){
+      var o = this;
+      o._length  = 0;
+      o._memory  = new Array();
+      o.isEmpty  = TArray_isEmpty;
+      o.length   = TArray_length;
+      o.memory   = TArray_memory;
+      o.contains = TArray_contains;
+      o.indexOf  = TArray_indexOf;
+      o.get      = TArray_get;
+      o.set      = TArray_set;
+      o.push     = TArray_push;
+      o.swap     = TArray_swap;
+      o.sort     = TArray_sort;
+      o.erase    = TArray_erase;
+      o.remove   = TArray_remove;
+      o.compress = TArray_compress;
+      o.clear    = TArray_clear;
+      o.dispose  = TArray_dispose;
+      o.dump     = TArray_dump;
+      return o;
+   }
+   MO.TArray_isEmpty = function TArray_isEmpty(){
+      return this._length == 0;
+   }
+   MO.TArray_length = function TArray_length(){
+      return this._length;
+   }
+   MO.TArray_memory = function TArray_memory(){
+      return this._memory;
+   }
+   MO.TArray_contains = function TArray_contains(v){
+      return this.indexOf(v) != -1;
+   }
+   MO.TArray_indexOf = function TArray_indexOf(v){
+      var o = this;
+      var c = o._length;
+      for(var n = 0; n < c; n++){
+         if(o._memory[n] == v){
+            return n;
+         }
+      }
+      return -1;
+   }
+   MO.TArray_get = function TArray_get(n){
+      return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
+   }
+   MO.TArray_set = function TArray_set(n, v){
+      if((n >= 0) && (n < this._length)){
+         this._memory[n] = v;
+      }
+   }
+   MO.TArray_push = function TArray_push(){
+      var count = arguments.length;
+      for(var i = 0; i < count; i++){
+         this._memory[this._length++] = arguments[i];
+      }
+   }
+   MO.TArray_swap = function TArray_swap(l, r){
+      if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
+         var v = this._memory[l];
+         this._memory[l] = this._memory[r];
+         this._memory[r] = v;
+      }
+   }
+   MO.TArray_sort = function TArray_sort(){
+      this._memory.sort();
+   }
+   MO.TArray_erase = function TArray_erase(i){
+      var v = null;
+      if((i >= 0) && (i < c)){
+         var o = this;
+         o._length--;
+         v = o._memory[i];
+         for(var n = i; n < c; n++){
+            o._memory[n] = o._memory[n + 1];
+         }
+      }
+      return v;
+   }
+   MO.TArray_remove = function TArray_remove(v){
+      if(v != null){
+         var o = this;
+         var n = 0;
+         var c = o._length;
+         for(var i = n; i < c; i++){
+            if(o._memory[i] != v){
+               o._memory[n++] = o._memory[i];
+            }
+         }
+         o._length = n;
+      }
+      return v;
+   }
+   MO.TArray_compress = function TArray_compress(){
+      var o = this;
+      var c = o._length;
+      var l = 0;
+      for(var n = 0; n < c; n++){
+         var v = o._memory[n];
+         if(v != null){
+            o._memory[l++] = v;
+         }
+      }
+      o._length = l;
+   }
+   MO.TArray_clear = function TArray_clear(){
+      this._length = 0;
+   }
+   MO.TArray_dispose = function TArray_dispose(){
+      var o = this;
+      o._length = 0;
+      o._memory = null;
+   }
+   MO.TArray_dump = function TArray_dump(){
+      var o = this;
+      var r = new TString();
+      var c = o._length;
+      r.append(RRuntime.className(o), ':', c);
+      if(c > 0){
+         for(var i = 0; i < c; i++){
+            r.append(' [', o._memory[i], ']');
+         }
+      }
+      return r.flush();
+   }
 }
 with(MO){
    MO.TAttributes = function TAttributes(){
@@ -794,6 +923,7 @@ with(MO){
          throw new Error('Assert not empty failure.');
       }
    }
+   MO.RAssert = new RAssert();
 }
 with(MO){
    MO.RMemory = function RMemory(){
@@ -845,7 +975,7 @@ with(MO){
    MO.RMemory_refresh = function RMemory_refresh(){
       CollectGarbage();
    }
-   MO.Memory = new RMemory();
+   MO.RMemory = new RMemory();
 }
 with(MO){
    MO.SMemoryPoolEntry = function SMemoryPoolEntry(){
@@ -1135,5 +1265,5 @@ with(MO){
          this._instances.set(name, value);
       }
    }
-   MO.Global = new RGlobal();
+   MO.RGlobal = new RGlobal();
 }

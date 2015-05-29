@@ -131,4 +131,7 @@
          throw new Error('Assert not empty failure.');
       }
    }
+   //..........................................................
+   // 实例化内容
+   MO.RAssert = new RAssert();
 }

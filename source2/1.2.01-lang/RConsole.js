@@ -215,5 +215,5 @@ with(MO){
    }
    //..........................................................
    // 实例化内容
-   MO.Console = new RConsole();
+   MO.RConsole = new RConsole();
 }

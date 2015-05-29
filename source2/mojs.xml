@@ -5,12 +5,12 @@
      <PathMerger source='/1.1.01-runtime'                 target='/ajs/runtime.js'/>
      <PathMerger source='/1.2.01-lang'                    target='/ajs/lang.js'/>
      <PathMerger source='/1.2.02-lang-math'               target='/ajs/lang-math.js'/>
-      <!--
      <PathMerger source='/1.3.01-core'                    target='/ajs/core.js'/>
      <PathMerger source='/1.3.02-core-template'           target='/ajs/core-template.js'/>
      <PathMerger source='/1.3.03-core-window'             target='/ajs/core-window.js'/>
      <PathMerger source='/1.4.01-console'                 target='/ajs/console.js'/>
 
+      <!--
      <PathMerger source='/2.1.01-graphic'                 target='/ajs/graphic.js'/>
      <PathMerger source='/2.2.01-graphic-2d'              target='/ajs/graphic-2d.js'/>
      <PathMerger source='/2.2.02-graphic-2d-render'       target='/ajs/graphic-2d-render.js'/>
@@ -98,12 +98,12 @@
         <File source='/ajs/lang.js'/>
         <File source='/ajs/lang-math.js'/>
      </FileMerger>
-      <!--
       <FileMerger target='/ajs/mo-core.js'>
         <File source='/ajs/core.js'/>
         <File source='/ajs/core-template.js'/>
         <File source='/ajs/console.js'/>
      </FileMerger>
+      <!--
      <FileMerger target='/ajs/mo-graphic.js'>
         <File source='/ajs/graphic.js'/>
         <File source='/ajs/graphic-2d.js'/>
@@ -220,5 +220,10 @@
         <File source='/ajs/demo.js'/>
      </FileMerger>
       -->
+     <FileMerger target='/ajs/mo.js'>
+        <File source='/ajs/mo-lang.js'/>
+        <File source='/ajs/mo-core.js'/>
+        <File source='/ajs/core-window.js'/>
+     </FileMerger>
   </FileMergerCollection>
 </Configuration>
