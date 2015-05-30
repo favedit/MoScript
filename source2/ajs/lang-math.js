@@ -2690,7 +2690,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.SValue3 = function SValue4(x, y, z, w){
+   MO.SValue4 = function SValue4(x, y, z, w){
       var o = this;
       o.x           = RRuntime.nvl(x, 0);
       o.y           = RRuntime.nvl(y, 0);

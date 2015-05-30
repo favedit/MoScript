@@ -1,0 +1,76 @@
+with(MO){
+   //==========================================================
+   // <T>纵向布局控件。</T>
+   //
+   //  hPanel <TABLE>
+   // ┌------------------------------------┐
+   // │Control-1                           │
+   // ├------------------------------------┤
+   // │Control-2                           │
+   // ├------------------------------------┤
+   // │Control-3                           │
+   // └------------------------------------┘
+   //
+   // @class
+   // @author maocy
+   // @version 150420
+   //==========================================================
+   MO.FUiLayoutVertical = function FUiLayoutVertical(o){
+      o = RClass.inherits(this, o, FUiContainer);
+      //..........................................................
+      // @style
+      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+      //..........................................................
+      // @html
+      o._hLine       = null;
+      //..........................................................
+      // @event
+      o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
+      //..........................................................
+      // @method
+      o.appendChild  = FUiLayoutVertical_appendChild;
+      // @method
+      o.dispose      = FUiLayoutVertical_dispose;
+      return o;
+   }
+
+   //==========================================================
+   // <T>创建面板处理。</T>
+   //
+   // @method
+   // @return event:TProcessEvent 处理事件
+   //==========================================================
+   MO.FUiLayoutVertical_onBuildPanel = function FUiLayoutVertical_onBuildPanel(event){
+      var o = this;
+      o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
+   }
+
+   //==========================================================
+   // <T>追加一个控件容器。</T>
+   //
+   // @method
+   // @return control:FControl 控件
+   //==========================================================
+   MO.FUiLayoutVertical_appendChild = function FUiLayoutVertical_appendChild(control){
+      var o = this;
+      // 追加子控件
+      var hCell = RBuilder.appendTableRowCell(o._hPanel);
+      hCell.appendChild(control._hPanel);
+      // 设置高度
+      var height = control.size().height;
+      if(height){
+         hCell.style.height = height + 'px';
+      }
+   }
+
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FUiLayoutVertical_dispose = function FUiLayoutVertical_dispose(){
+      var o = this;
+      // 父处理
+      o.__base.FUiContainer.dispose.call(o);
+   }
+}

@@ -3,28 +3,27 @@
 <TITLE>Stage3d Example</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
-<SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
 function _load(){
-   RRuntime.processCd = EProcess.Debug;
-   RBrowser.construct();
-   RBrowser.setContentPath('../..');
-   RWindow.connect(window);
+   with(MO){
+      RRuntime.processCd = EProcess.Debug;
+      RBrowser.construct();
+      RBrowser.setContentPath('../..');
+      RWindow.connect(window);
 
-   var hCanvas = document.getElementById('_canvas');
-   context = REngine3d.createContext(FWglContext, hCanvas);
+      var hCanvas = document.getElementById('_canvas');
+      context = REngine3d.createContext(FWglContext, hCanvas);
 
-   RDump.dump(RBrowser, _dump);
-   RDump.dump(context.capability(), _dump);
-   RDump.dump(context.parameters(), _dump);
-   RDump.dump(context.extensions(), _dump);
-   RDump.dump(context, _dump);
+      RDump.dump(RBrowser, _dump);
+      RDump.dump(context.capability(), _dump);
+      RDump.dump(context.parameters(), _dump);
+      RDump.dump(context.extensions(), _dump);
+      RDump.dump(context, _dump);
+   }
 }
 </SCRIPT>
 <BODY scroll='auto' onload='_load()'>

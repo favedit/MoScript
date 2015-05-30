@@ -165,7 +165,7 @@ with(MO){
       switch(s){
          case EScope.Global:
             // 从顶层对象重新创建
-            r = top.RConsole.createByName(n);
+            r = top.MO.RConsole.createByName(n);
             RGlobal.set(o.ConsolePreFix + n, r);
             // 在本地保存当前对象
             o._consoles.set(n, r);

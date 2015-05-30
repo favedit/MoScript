@@ -7,7 +7,7 @@
    // @author maocy
    // @version 141230
    //==========================================================
-   MO.FObjectPool = function FObject(o){
+   MO.FObject = function FObject(o){
       if(!o){o = this;}
       //..........................................................
       // @attribute

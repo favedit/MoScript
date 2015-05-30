@@ -42,7 +42,7 @@
          RMemory.entryFree(unused);
       }else{
          value = new this._constructor();
-         value.__pool = o;
+         value.__pool = this;
          this._createCount++;
       }
       this._allocCount++;

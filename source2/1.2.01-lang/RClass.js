@@ -412,17 +412,17 @@
    // <T>创建一个类对象。</T>
    //
    // @method
-   // @param n:name:String 类名称
+   // @param className:String 类名称
    // @return TClass 类对象
    //==========================================================
-   MO.RClass_createClass = function RClass_createClass(n){
+   MO.RClass_createClass = function RClass_createClass(className){
       var o = this;
-      var c = o._classes[n] = new TClass();
-      c.name = n;
-      c.base = o.createBase(n);
-      c.clazz = new c.base.constructor();
-      eval(n)(c.clazz);
-      return c;
+      var clazz = o._classes[className] = new TClass();
+      clazz.name = className;
+      clazz.base = o.createBase(className);
+      clazz.clazz = new clazz.base.constructor();
+      eval(className)(clazz.clazz);
+      return clazz;
    }
 
    //==========================================================

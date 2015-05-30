@@ -66,7 +66,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.FDisplayContainer = function MResourceData(o){
+   MO.MResourceData = function MResourceData(o){
       o = RClass.inherits(this, o);
       o._ready          = false;
       o._guid           = null;

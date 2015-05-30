@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150507
    //==========================================================
-   MO.FDisplayContainer = function MResourceData(o){
+   MO.MResourceData = function MResourceData(o){
       o = RClass.inherits(this, o);
       //..........................................................
       // @attribute

@@ -1018,7 +1018,7 @@ with(MO){
          RMemory.entryFree(unused);
       }else{
          value = new this._constructor();
-         value.__pool = o;
+         value.__pool = this;
          this._createCount++;
       }
       this._allocCount++;
@@ -2908,7 +2908,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.FObjectPool = function FObject(o){
+   MO.FObject = function FObject(o){
       if(!o){o = this;}
       o.__class   = null;
       o.__hash    = 0;
@@ -3561,14 +3561,14 @@ with(MO){
       }
       return null;
    }
-   MO.RClass_createClass = function RClass_createClass(n){
+   MO.RClass_createClass = function RClass_createClass(className){
       var o = this;
-      var c = o._classes[n] = new TClass();
-      c.name = n;
-      c.base = o.createBase(n);
-      c.clazz = new c.base.constructor();
-      eval(n)(c.clazz);
-      return c;
+      var clazz = o._classes[className] = new TClass();
+      clazz.name = className;
+      clazz.base = o.createBase(className);
+      clazz.clazz = new clazz.base.constructor();
+      eval(className)(clazz.clazz);
+      return clazz;
    }
    MO.RClass_create = function RClass_create(n){
       var o = this;
@@ -3829,7 +3829,7 @@ with(MO){
       var s = c.instance.scopeCd();
       switch(s){
          case EScope.Global:
-            r = top.RConsole.createByName(n);
+            r = top.MO.RConsole.createByName(n);
             RGlobal.set(o.ConsolePreFix + n, r);
             o._consoles.set(n, r);
             break;
@@ -8477,7 +8477,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.SValue3 = function SValue4(x, y, z, w){
+   MO.SValue4 = function SValue4(x, y, z, w){
       var o = this;
       o.x           = RRuntime.nvl(x, 0);
       o.y           = RRuntime.nvl(y, 0);

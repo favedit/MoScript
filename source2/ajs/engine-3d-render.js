@@ -849,7 +849,7 @@ with(MO){
    MO.FE3rMaterial_visible = function FE3rMaterial_visible(){
       return this._visible;
    }
-   MO.FE3rMaterial_findBitmap = function FE3rMaterial_setVisible(visible){
+   MO.FE3rMaterial_setVisible = function FE3rMaterial_setVisible(visible){
       this._visible = visible;
    }
    MO.FE3rMaterial_findBitmap = function FE3rMaterial_findBitmap(code){

@@ -10,7 +10,7 @@
    // @author maocy
    // @version 150208
    //==========================================================
-   MO.SValue3 = function SValue4(x, y, z, w){
+   MO.SValue4 = function SValue4(x, y, z, w){
       var o = this;
       //..........................................................
       // @attribute

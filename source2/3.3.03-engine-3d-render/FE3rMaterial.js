@@ -50,7 +50,7 @@ with(MO){
    // @method
    // @param visible:Boolean 可见性
    //==========================================================
-   MO.FE3rMaterial_findBitmap = function FE3rMaterial_setVisible(visible){
+   MO.FE3rMaterial_setVisible = function FE3rMaterial_setVisible(visible){
       this._visible = visible;
    }
 
