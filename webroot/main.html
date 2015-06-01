@@ -1,0 +1,18 @@
+<script>
+var domain = 'http://localhost';
+var url = domain + '/score.html';
+var myPopup = window.open(domain + '/score.html','myWindow');
+setInterval(
+   function(){
+	   var message = 'Hello!  The time is: ' + (new Date().getTime());
+   	console.log('blog.local:  sending message:  ' + message);
+	   myPopup.postMessage(message, domain);
+   }, 1000);
+
+function doClick(){
+   var test = window.open('score.html', '_test');
+   alert(test.doHelp);
+   //test._info.innerHTML = '123';
+}
+</script>
+<input type='button' onclick='doClick()' value='Test'/>
