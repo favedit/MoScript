@@ -67,7 +67,6 @@
       <PathMerger source='/6.3.07-design-template'         target='/ajs/design-template.js'/>
       <PathMerger source='/6.3.08-design-scene'            target='/ajs/design-scene.js'/>
 
-      <!--
       <PathMerger source='/6.4.01-design-private'          target='/ajs/design-private.js'/>
       <PathMerger source='/6.4.11-design-private-solution' target='/ajs/design-private-solution.js'/>
       <PathMerger source='/6.4.12-design-private-project'  target='/ajs/design-private-project.js'/>
@@ -89,7 +88,6 @@
       <PathMerger source='/6.5.26-design-share-scene'      target='/ajs/design-share-scene.js'/>
 
       <PathMerger source='/8.1.01-demo'                    target='/ajs/demo.js'/>
-      -->
    </PathMergerCollection>
    <!-- 文件合并 -->
    <FileMergerCollection>
@@ -172,7 +170,6 @@
          <File source='/ajs/design-template.js'/>
          <File source='/ajs/design-scene.js'/>
       </FileMerger>
-      <!--
       <FileMerger target='/ajs/mo-design-private.js'>
          <File source='/ajs/design-private.js'/>
          <File source='/ajs/design-private-solution.js'/>
@@ -195,20 +192,18 @@
          <File source='/ajs/design-share-template.js'/>
          <File source='/ajs/design-share-scene.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo.js'>
+      <FileMerger target='/ajs/mo-design-logic.js'>
          <File source='/ajs/mo-design-private.js'/>
          <File source='/ajs/mo-design-share.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-engine-server.js'>
+      <FileMerger target='/ajs/me.js'>
+         <File source='/ajs/mo-lang.js'/>
          <File source='/ajs/mo-core.js'/>
+         <File source='/ajs/mo-window.js'/>
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
-         <File source='/ajs/engine-3d-server.js'/>
+         <File source='/ajs/mo-game.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-demo.js'>
-         <File source='/ajs/demo.js'/>
-      </FileMerger>
-      -->
       <FileMerger target='/ajs/mo.js'>
          <File source='/ajs/mo-lang.js'/>
          <File source='/ajs/mo-core.js'/>
@@ -218,14 +213,16 @@
          <File source='/ajs/mo-game.js'/>
          <File source='/ajs/mo-control.js'/>
          <File source='/ajs/mo-design.js'/>
+         <File source='/ajs/mo-design-logic.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/me.js'>
-         <File source='/ajs/mo-lang.js'/>
+      <FileMerger target='/ajs/mo-es.js'>
          <File source='/ajs/mo-core.js'/>
-         <File source='/ajs/mo-window.js'/>
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
-         <File source='/ajs/mo-game.js'/>
+         <File source='/ajs/engine-3d-server.js'/>
+      </FileMerger>
+      <FileMerger target='/ajs/mo-demo.js'>
+         <File source='/ajs/demo.js'/>
       </FileMerger>
    </FileMergerCollection>
 </Configuration>
