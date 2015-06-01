@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150319
 //==========================================================
-var EUiDataStore = new function EUiDataStore(){
+MO.EUiDataStore = new function EUiDataStore(){
    var o = this;
    // @member
    o.Full     = 0;

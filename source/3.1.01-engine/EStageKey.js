@@ -5,28 +5,28 @@
 // @author maocy
 // @version 141230
 //===========================================================
-var EStageKey = new function EStageKey(){
+MO.EStageKey = new function EStageKey(){
    var o = this;
    // @attribute Integer 前进
-   o.Forward       = EKeyCode.W;
+   o.Forward       = MO.EKeyCode.W;
    // @attribute Integer 后退
-   o.Back          = EKeyCode.S;
+   o.Back          = MO.EKeyCode.S;
    // @attribute Integer 左转
-   o.Up            = EKeyCode.Q;
+   o.Up            = MO.EKeyCode.Q;
    // @attribute Integer 右转
-   o.Down          = EKeyCode.E;
+   o.Down          = MO.EKeyCode.E;
    // @attribute Integer 左转
-   o.RotationLeft  = EKeyCode.A;
+   o.RotationLeft  = MO.EKeyCode.A;
    // @attribute Integer 右转
-   o.RotationRight = EKeyCode.D;
+   o.RotationRight = MO.EKeyCode.D;
    // @attribute Integer 上转
-   o.RotationUp    = EKeyCode.Z;
+   o.RotationUp    = MO.EKeyCode.Z;
    // @attribute Integer 下转
-   o.RotationDown  = EKeyCode.X;
+   o.RotationDown  = MO.EKeyCode.X;
    // @attribute 焦点对象
-   o.FocusForward  = EKeyCode.I;
-   o.FocusBack     = EKeyCode.K;
-   o.FocusLeft     = EKeyCode.J;
-   o.FocusRight    = EKeyCode.L;
+   o.FocusForward  = MO.EKeyCode.I;
+   o.FocusBack     = MO.EKeyCode.K;
+   o.FocusLeft     = MO.EKeyCode.J;
+   o.FocusRight    = MO.EKeyCode.L;
    return o;
 }

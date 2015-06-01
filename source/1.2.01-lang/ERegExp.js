@@ -6,7 +6,7 @@
 // @author maochunyang
 // @version 1.0.1
 //===========================================================
-var ERegExp = new function ERegExp(){
+MO.ERegExp = new function ERegExp(){
    var o = this;
    // 整数
    o.I  = /^-?[1-9]\d*|0$/;

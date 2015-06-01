@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150506
 //==========================================================
-var EUiDock = new function EUiDock(){
+MO.EUiDock = new function EUiDock(){
    var o = this;
    // @attribute
    o.None   = 'none';

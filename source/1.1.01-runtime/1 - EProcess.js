@@ -5,11 +5,13 @@
 // @author maocy
 // @version 141226
 //==========================================================
-var EProcess = new function EProcess(){
+MO.EProcess = new function EProcess(){
    var o = this;
-   // @member 调试模式
-   o.Debug   = 1;
+   // @member 优化模式
+   o.Release = 0;
    // @member 运行模式
-   o.Release = 2;
+   o.Process = 1;
+   // @member 调试模式
+   o.Debug   = 2;
    return o;
 }

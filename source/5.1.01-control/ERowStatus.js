@@ -5,7 +5,7 @@
 // @author maochunyang
 // @version 1.0.1
 //===========================================================
-var ERowStatus = new function ERowStatusFace(){
+MO.ERowStatus = new function ERowStatusFace(){
    var o = this;
    ///@attribute String 行状态为普通，即该行当前无操作
    o.Normal = 'N';

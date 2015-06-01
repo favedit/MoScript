@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-var EGridDisplay = new function EGridDisplayFace(){
+MO.EGridDisplay = new function EGridDisplayFace(){
    var o = this;
    // @member
    o.Title     = 'T';

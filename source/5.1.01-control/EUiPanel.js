@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-var EPanel = new function EPanel(){
+MO.EPanel = new function EPanel(){
    var o = this;
    // @attribute
    o.Container = 0;

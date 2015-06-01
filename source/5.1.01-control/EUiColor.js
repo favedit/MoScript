@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-var EUiColor = new function EUiColor(){
+MO.EUiColor = new function EUiColor(){
    var o = this;
    //..........................................................
    // @attribute

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-var EHttpStatus = new function EHttpStatus(){
+MO.EHttpStatus = new function EHttpStatus(){
    var o = this;
    // @attribute Integer 未初始化
    o.Uninitialized = 0;

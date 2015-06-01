@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150228
 //==========================================================
-var EUiPosition = new function EUiPosition(){
+MO.EUiPosition = new function EUiPosition(){
    var o = this;
    // Attribute
    o.Left   = 'left';

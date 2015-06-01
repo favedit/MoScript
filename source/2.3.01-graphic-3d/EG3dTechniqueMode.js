@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150226
 //==========================================================
-var EG3dTechniqueMode = new function EG3dTechniqueMode(){
+MO.EG3dTechniqueMode = new function EG3dTechniqueMode(){
    var o = this;
    o.Color         = 'color';
    o.Ambient       = 'ambient';

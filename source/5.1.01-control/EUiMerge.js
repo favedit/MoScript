@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150228
 //==========================================================
-var EUiMerge = new function EUiMerge(){
+MO.EUiMerge = new function EUiMerge(){
    var o = this;
    // @attribute
    o.Append   = 'append';

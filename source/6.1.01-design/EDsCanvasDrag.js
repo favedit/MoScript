@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150203
 //==========================================================
-var EDsCanvasDrag = new function EDsCanvasDrag(){
+MO.EDsCanvasDrag = new function EDsCanvasDrag(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

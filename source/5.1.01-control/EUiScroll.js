@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-var EUiScroll = new function EUiScroll(){
+MO.EUiScroll = new function EUiScroll(){
    var o = this;
    // @member 没有
    o.None           = 'N';

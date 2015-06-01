@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150224
 //==========================================================
-var EUiLayer = new function EUiLayer(){
+MO.EUiLayer = new function EUiLayer(){
    var o = this;
    // Attribute
    o.Default = 20000;

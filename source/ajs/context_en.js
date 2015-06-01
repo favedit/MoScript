@@ -1,4 +1,4 @@
-RContext.initialize({
+MO.RContext.initialize({
    'RMsg' :
       {
       'fatal' : 'Fatal',

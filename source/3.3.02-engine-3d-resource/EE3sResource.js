@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150415
 //==========================================================
-var EE3sResource = new function EE3sResource(){
+MO.EE3sResource = new function EE3sResource(){
    var o = this;
    o.Unknown  = 'Unknown';
    o.Bitmap   = 'Bitmap';

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141229
  //===========================================================
-var EFrustumPlane = new function EFrustumPlane(){
+MO.EFrustumPlane = new function EFrustumPlane(){
    var o = this;
    // 近平面
    o.Near = 0;

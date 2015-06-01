@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-var EUiDataMode = new function EUiDataMode(){
+MO.EUiDataMode = new function EUiDataMode(){
    var o = this;
    o.Insert = 'insert';
    o.Update = 'update';

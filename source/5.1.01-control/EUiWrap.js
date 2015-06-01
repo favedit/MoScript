@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-var EUiWrap = new function EUiWrap(){
+MO.EUiWrap = new function EUiWrap(){
    var o = this;
    // @attribute
    o.NextLine = 0;

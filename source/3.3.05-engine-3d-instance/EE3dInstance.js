@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150114
 //==========================================================
-var EE3dInstance = new function EE3dInstance(){
+MO.EE3dInstance = new function EE3dInstance(){
    var o = this;
    //..........................................................
    // @member

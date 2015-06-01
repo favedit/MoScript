@@ -1,62 +1,39 @@
 <HTML>
 <HEAD>
 <TITLE>Class Example</TITLE>
-<LINK rel="stylesheet" href='../../../acs/lang_cn.css' type="text/css" media="all"/>
-<SCRIPT language='javascript' src='../../../1-runtime/1 - ELogger.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../1-runtime/1 - EProcess.js'></SCRIPT>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/release/mo.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../../../1-runtime/2 - RRuntime.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../../1-runtime/3 - TArray.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../1-runtime/3 - TAttributes.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../1-runtime/3 - TMap.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../1-runtime/3 - TString.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../../2-lang/RArray.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/RClass.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/RInteger.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/RMethod.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/RString.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/TClass.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../2-lang/TClassBase.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../../3-base/EBrowser.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/RBrowser.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/RBuilder.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/RDump.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/RHtml.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/RMessage.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../../3-base/TDumpItem.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
 function FClassA(o){
-	o = RClass.inherits(this, o);
+	o = MO.RClass.inherits(this, o);
 	o.varA = 1;
 	o.test = function FClassA_Test(){};
 	return o;
 }
 function FClassB(o){
-	o = RClass.inherits(this, o, FClassA);
+	o = MO.RClass.inherits(this, o, FClassA);
 	o.varA = 2;
 	o.varB = 2;
 	o.test = function FClassB_Test(){};
 	return o;
 }
 function MClassA(o){
-	o = RClass.inherits(this, o);
+	o = MO.RClass.inherits(this, o);
 	//o.varC = 3;
 	o.test = function MClassA_Test(){};
 	return o;
 }
 function MClassB(o){
-	o = RClass.inherits(this, o, MClassA);
+	o = MO.RClass.inherits(this, o, MClassA);
 	o.mvarB = 3;
 	o.test = function MClassB_Test(){};
 	return o;
 }
 function FClassC(o){
-	o = RClass.inherits(this, o, FClassB, MClassB);
+	o = MO.RClass.inherits(this, o, FClassB, MClassB);
 	o.varB = 3;
 	o.varC = 4;
 	o.test = function FClassC_Test(){};
@@ -64,14 +41,14 @@ function FClassC(o){
 	return o;
 }
 function MClassC(o){
-	o = RClass.inherits(this, o, MClassB);
+	o = MO.RClass.inherits(this, o, MClassB);
 	o.mvarC = 3;
 	o.test = function MClassC_Test(){};
-   o.test2 = RMethod.virtual(o, 'test2');
+   o.test2 = MO.RMethod.virtual(o, 'test2');
 	return o;
 }
 function FClassD(o){
-	o = RClass.inherits(this, o, FClassC, MClassC);
+	o = MO.RClass.inherits(this, o, FClassC, MClassC);
 	o.varB = 3;
 	o.varC = 4;
 	o.test = function FClassD_Test(){};
@@ -80,22 +57,24 @@ function FClassD(o){
 }
 
 function _load(){
-   RRuntime.processCd = EProcess.Debug;
-   RBrowser.construct();
-   //var names = new Array();
-   //alert(names.length);
-   //debugger
-   //var ca = RClass.create(FClassA);
-   //RDump.dump(ca, _dump);
+   with(MO){
+      RRuntime.processCd = EProcess.Debug;
+      RBrowser.construct();
+      //var names = new Array();
+      //alert(names.length);
+      //debugger
+      //var ca = RClass.create(FClassA);
+      //RDump.dump(ca, _dump);
 
-	//RLogger.connect(_msg);
-	var cd = RClass.create(FClassD);
-	RDump.dump(cd, _dump);
-   //var s = new TAttributes();
-   //alert(s.dump());
+   	//RLogger.connect(_msg);
+   	var cd = RClass.create(FClassD);
+   	RDump.dump(cd, _dump);
+      //var s = new TAttributes();
+      //alert(s.dump());
 
-   //RDump.dump(RRuntime, _dump);
-   //RDump.dump(RDump, _dump);
+      //RDump.dump(RRuntime, _dump);
+      //RDump.dump(RDump, _dump);
+   }
 }
 </SCRIPT>
 

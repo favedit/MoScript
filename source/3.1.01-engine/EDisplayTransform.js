@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-var EDisplayTransform = new function EDisplayTransform(){
+MO.EDisplayTransform = new function EDisplayTransform(){
    var o = this;
    // @attribute 相机位置
    o.CameraPosition     = 'camera.position';

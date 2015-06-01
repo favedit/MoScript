@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-var EUiDirection = new function EUiDirection(){
+MO.EUiDirection = new function EUiDirection(){
    var o = this;
    // @member 横向
    o.Horizontal = 'H';

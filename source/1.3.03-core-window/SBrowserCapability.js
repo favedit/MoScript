@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150316
 //==========================================================
-function SBrowserCapability(){
+MO.SBrowserCapability = function SBrowserCapability(){
    var o = this;
    //..........................................................
    // @attribute Boolean 支持进程

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150210
 //==========================================================
-var EDsFrame = new function EDsFrame(){
+MO.EDsFrame = new function EDsFrame(){
    var o = this;
    // @member 共通属性页面
    o.CommonSpacePropertyFrame      = 'resource.common.property.SpaceFrame';

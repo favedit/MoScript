@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150121
 //==========================================================
-var EMouseCursor = new function EMouseCursor(){
+MO.EMouseCursor = new function EMouseCursor(){
    var o = this;
    // @member 水平大小
    o.HSize = 'E-resize';

@@ -6,5 +6,7 @@
 // @version 150228
 //==========================================================
 var MO = new function MO(){
-   return this;
+   var o = this;
+   o.version = '0.2.0';
+   return o;
 }

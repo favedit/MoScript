@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150112
 //==========================================================
-var EDataType = new function EDataType(){
+MO.EDataType = new function EDataType(){
    var o = this;
    //..........................................................
    // @member 未知

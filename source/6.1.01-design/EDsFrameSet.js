@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150210
 //==========================================================
-var EDsFrameSet = new function EDsFrameSet(){
+MO.EDsFrameSet = new function EDsFrameSet(){
    var o = this;
    // @member 私有框架页面
    o.PrivateSolutionFrameSet = 'resource.private.solution.FrameSet';

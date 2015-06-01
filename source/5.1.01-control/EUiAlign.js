@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-var EUiAlign = new function EUiAlign(){
+MO.EUiAlign = new function EUiAlign(){
    var o = this;
    // @attribute
    o.Left        = 'left';

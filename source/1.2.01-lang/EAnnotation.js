@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-var EAnnotation = new function EAnnotation(){
+MO.EAnnotation = new function EAnnotation(){
    var o = this;
    // @attribute 属性
    o.Property  = 'property';

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-var EG3dBlendMode = new function EG3dBlendMode(){
+MO.EG3dBlendMode = new function EG3dBlendMode(){
    var o = this;
    // @member 0
    o.Zero             = 0;

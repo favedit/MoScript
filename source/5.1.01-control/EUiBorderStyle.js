@@ -4,7 +4,7 @@
 // @enum
 // @history 091105 创建
 //==========================================================
-var EUiBorderStyle = new function EUiBorderStyle(){
+MO.EUiBorderStyle = new function EUiBorderStyle(){
    var o = this;
    //..........................................................
    // @member

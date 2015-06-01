@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-var EEventInvoke = new function EEventInvoke(){
+MO.EEventInvoke = new function EEventInvoke(){
    var o = this;
    // @attribute 未知
    o.Unknown = 0;

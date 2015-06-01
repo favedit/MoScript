@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-var EUiDataAction = new function EUiDataAction(){
+MO.EUiDataAction = new function EUiDataAction(){
    var o = this;
    o.Fetch     = 'fetch';
    o.Search    = 'search';

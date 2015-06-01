@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-var EUiLabelPosition = new function EUiLabelPosition(){
+MO.EUiLabelPosition = new function EUiLabelPosition(){
    var o = this;
    // @attribute
    o.Left   = 'left';

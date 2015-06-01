@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150114
 //==========================================================
-var EGmEntityAction = new function EGmEntityAction(){
+MO.EGmEntityAction = new function EGmEntityAction(){
    var o = this;
    o.Unknown  = 0;
    o.ClipPlay = 1;

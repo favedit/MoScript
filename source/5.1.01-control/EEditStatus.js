@@ -5,7 +5,7 @@
  * @author maochunyang
  * @version 1.0.1
  **************************************************************/
-function EEditStatusFace(o){
+MO.EEditStatus = new function EEditStatus(o){
    if(!o){o=this;}
    // Attribute
    o.Blur   = 0;
@@ -13,4 +13,3 @@ function EEditStatusFace(o){
    o.Ok     = 2;
    return o;
 }
-var EEditStatus = new EEditStatusFace();

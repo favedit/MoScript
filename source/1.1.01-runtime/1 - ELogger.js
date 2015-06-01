@@ -5,17 +5,17 @@
 // @author maocy
 // @version 141226
 //==========================================================
-var ELogger = new function ELogger(){
+MO.ELogger = new function ELogger(){
    var o = this;
    // @member 调试模式
-   o.Debug = 'D';
+   o.Debug = 0;
    // @member 调试模式
-   o.Info  = 'I';
+   o.Info  = 1;
    // @member 调试模式
-   o.Warn  = 'W';
+   o.Warn  = 2;
    // @member 调试模式
-   o.Error = 'E';
+   o.Error = 3;
    // @member 调试模式
-   o.Fatal = 'F';
+   o.Fatal = 4;
    return o;
 }

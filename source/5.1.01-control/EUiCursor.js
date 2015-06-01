@@ -4,7 +4,7 @@
 // @enum
 // @history 091125 MAOCY 创建
 //==========================================================
-var EUiCursor = new function EUiCursor(){
+MO.EUiCursor = new function EUiCursor(){
    var o = this;
    o.Default   = 'default';
    o.Auto      = 'auto';

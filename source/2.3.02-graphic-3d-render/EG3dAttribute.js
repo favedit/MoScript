@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150114
 //==========================================================
-var EG3dAttribute = new function EG3dAttribute(){
+MO.EG3dAttribute = new function EG3dAttribute(){
    var o = this;
    o.Position   = 'position';
    o.Color      = 'color';

@@ -5,11 +5,11 @@
 // @author maocy
 // @version 141231
  //===========================================================
-var EEndian = new function EEndian(){
+MO.EEndian = new function EEndian(){
    var o = this;
-   ///@attribute Integer 大头在前
+   // @attribute Integer 大头在前
    o.Big    = 0;
-   ///@attribute Integer 小头在前
+   // @attribute Integer 小头在前
    o.Little = 1;
    return o;
 }

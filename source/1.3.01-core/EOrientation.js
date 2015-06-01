@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150213
 //==========================================================
-var EOrientation = new function EOrientation(){
+MO.EOrientation = new function EOrientation(){
    var o = this;
    // @member
    o.Unknown = 0;

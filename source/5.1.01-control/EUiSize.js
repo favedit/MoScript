@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-var EUiSize = new function EUiSize(){
+MO.EUiSize = new function EUiSize(){
    var o = this;
    // @attribute 普通
    o.Normal     = 0

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150104
 //==========================================================
-var EHttpContent = new function EHttpContent(){
+MO.EHttpContent = new function EHttpContent(){
    var o = this;
    // @member 二进制
    o.Binary = 1;

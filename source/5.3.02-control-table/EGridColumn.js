@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-var EGridColumn = new function EGridColumn(){
+MO.EGridColumn = new function EGridColumn(){
    var o = this;
    // Attribute
    o.None = 0;

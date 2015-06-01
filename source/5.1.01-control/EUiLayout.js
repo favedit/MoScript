@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-var EUiLayout = new function EUiLayout(){
+MO.EUiLayout = new function EUiLayout(){
    var o = this;
    // @member 显示
    o.Display = 'P';

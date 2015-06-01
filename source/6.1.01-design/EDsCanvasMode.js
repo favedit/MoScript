@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150203
 //==========================================================
-var EDsCanvasMode = new function EDsCanvasMode(){
+MO.EDsCanvasMode = new function EDsCanvasMode(){
    var o = this;
    // @member 未知
    o.Unknown   = 0;

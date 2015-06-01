@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150409
 //==========================================================
-var EUiDialog = new function EUiDialog(){
+MO.EUiDialog = new function EUiDialog(){
    var o = this;
    // @attribute 确认
    o.Confirm = 1;

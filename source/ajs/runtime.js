@@ -1,479 +1,198 @@
 var MO = new function MO(){
-   return this;
-}
-var ELogger = new function ELogger(){
    var o = this;
-   o.Debug = 'D';
-   o.Info  = 'I';
-   o.Warn  = 'W';
-   o.Error = 'E';
-   o.Fatal = 'F';
+   o.version = '0.2.0';
    return o;
 }
-var EProcess = new function EProcess(){
+MO.ELogger = new function ELogger(){
    var o = this;
-   o.Debug   = 1;
-   o.Release = 2;
+   o.Debug = 0;
+   o.Info  = 1;
+   o.Warn  = 2;
+   o.Error = 3;
+   o.Fatal = 4;
    return o;
 }
-var EScope = new function EScope(){
+MO.EProcess = new function EProcess(){
+   var o = this;
+   o.Release = 0;
+   o.Process = 1;
+   o.Debug   = 2;
+   return o;
+}
+MO.EScope = new function EScope(){
    var o = this;
    o.Local   = 1;
    o.Session = 2;
    o.Global  = 3;
    return o;
 }
-var RRuntime = new function RRuntime(){
-   var o = this;
-   o._processCd   = EProcess.Release;
-   o.isDebug      = RRuntime_isDebug;
-   o.isRelease    = RRuntime_isRelease;
-   o.setProcessCd = RRuntime_setProcessCd;
-   o.nvl          = RRuntime_nvl;
-   o.subString    = RRuntime_subString;
-   o.className    = RRuntime_className;
-   return o;
-}
-function RRuntime_isDebug(){
-   return (this._processCd == EProcess.Debug);
-}
-function RRuntime_isRelease(){
-   return (this._processCd == EProcess.Release);
-}
-function RRuntime_setProcessCd(processCd){
-   this._processCd = processCd;
-}
-function RRuntime_nvl(value, defaultValue){
-   return (value != null) ? value : defaultValue;
-}
-function RRuntime_subString(value, begin, end){
-   if(value == null){
-      return value;
-   }
-   var left = 0;
-   if(begin != null){
-      var find = value.indexOf(begin);
-      if(find != -1){
-         left = find + begin.length;
-      }
-   }
-   var right = value.length;
-   if(end != null){
-      var find = value.indexOf(end, length);
-      if(find != -1){
-         right = find;
-      }
-   }
-   return value.substring(left, right);
-}
-function RRuntime_className(value){
-   var o = this;
-   if(value){
-      if(typeof(value) == 'function'){
-         return o.subString(value.toString(), 'function ', '(');
-      }
-      var clazz = value.constructor;
-      if(clazz){
-         return o.subString(clazz.toString(), 'function ', '(');
-      }
-   }
-   return null;
-}
-function TArray(){
-   var o = this;
-   o._length  = 0;
-   o._memory  = new Array();
-   o.isEmpty  = TArray_isEmpty;
-   o.length   = TArray_length;
-   o.memory   = TArray_memory;
-   o.contains = TArray_contains;
-   o.indexOf  = TArray_indexOf;
-   o.get      = TArray_get;
-   o.set      = TArray_set;
-   o.push     = TArray_push;
-   o.swap     = TArray_swap;
-   o.sort     = TArray_sort;
-   o.erase    = TArray_erase;
-   o.remove   = TArray_remove;
-   o.compress = TArray_compress;
-   o.clear    = TArray_clear;
-   o.dispose  = TArray_dispose;
-   o.dump     = TArray_dump;
-   return o;
-}
-function TArray_isEmpty(){
-   return this._length == 0;
-}
-function TArray_length(){
-   return this._length;
-}
-function TArray_memory(){
-   return this._memory;
-}
-function TArray_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TArray_indexOf(v){
-   var o = this;
-   var c = o._length;
-   for(var n = 0; n < c; n++){
-      if(o._memory[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TArray_get(n){
-   return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
-}
-function TArray_set(n, v){
-   if((n >= 0) && (n < this._length)){
-      this._memory[n] = v;
-   }
-}
-function TArray_push(){
-   var count = arguments.length;
-   for(var i = 0; i < count; i++){
-      this._memory[this._length++] = arguments[i];
-   }
-}
-function TArray_swap(l, r){
-   if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
-      var v = this._memory[l];
-      this._memory[l] = this._memory[r];
-      this._memory[r] = v;
-   }
-}
-function TArray_sort(){
-   this._memory.sort();
-}
-function TArray_erase(i){
-   var v = null;
-   if((i >= 0) && (i < c)){
+with(MO){
+   MO.RRuntime = function RRuntime(){
       var o = this;
-      o._length--;
-      v = o._memory[i];
-      for(var n = i; n < c; n++){
-         o._memory[n] = o._memory[n + 1];
-      }
+      o.processCd    = EProcess.Release;
+      o.isDebug      = RRuntime_isDebug;
+      o.isProcess    = RRuntime_isProcess;
+      o.isRelease    = RRuntime_isRelease;
+      o.setProcessCd = RRuntime_setProcessCd;
+      o.empty        = RRuntime_empty;
+      o.nvl          = RRuntime_nvl;
+      o.subString    = RRuntime_subString;
+      o.className    = RRuntime_className;
+      return o;
    }
-   return v;
+   MO.RRuntime_isDebug = function RRuntime_isDebug(){
+      return (this._processCd == EProcess.Debug);
+   }
+   MO.RRuntime_isProcess = function RRuntime_isProcess(){
+      return (this._processCd == EProcess.Process);
+   }
+   MO.RRuntime_isRelease = function RRuntime_isRelease(){
+      return (this._processCd == EProcess.Release);
+   }
+   MO.RRuntime_setProcessCd = function RRuntime_setProcessCd(processCd){
+      this._processCd = processCd;
+   }
+   MO.RRuntime_empty = function RRuntime_empty(){
+   }
+   MO.RRuntime_nvl = function RRuntime_nvl(value, defaultValue){
+      return (value != null) ? value : defaultValue;
+   }
+   MO.RRuntime_subString = function RRuntime_subString(value, begin, end){
+      if(value == null){
+         return value;
+      }
+      var left = 0;
+      if(begin != null){
+         var find = value.indexOf(begin);
+         if(find != -1){
+            left = find + begin.length;
+         }
+      }
+      var right = value.length;
+      if(end != null){
+         var find = value.indexOf(end, length);
+         if(find != -1){
+            right = find;
+         }
+      }
+      if(left >= right){
+         return '';
+      }
+      return value.substring(left, right);
+   }
+   MO.RRuntime_className = function RRuntime_className(value){
+      if(value){
+         if(typeof(value) == 'function'){
+            return this.subString(value.toString(), 'function ', '(');
+         }
+         var clazz = value.constructor;
+         if(clazz){
+            return this.subString(clazz.toString(), 'function ', '(');
+         }
+      }
+      return null;
+   }
+   MO.RRuntime = new RRuntime();
+   MO.Runtime = MO.RRuntime;
 }
-function TArray_remove(v){
-   if(v != null){
+with(MO){
+   MO.TArray = function TArray(){
       var o = this;
-      var n = 0;
+      o._length  = 0;
+      o._memory  = new Array();
+      o.isEmpty  = TArray_isEmpty;
+      o.length   = TArray_length;
+      o.memory   = TArray_memory;
+      o.contains = TArray_contains;
+      o.indexOf  = TArray_indexOf;
+      o.get      = TArray_get;
+      o.set      = TArray_set;
+      o.push     = TArray_push;
+      o.swap     = TArray_swap;
+      o.sort     = TArray_sort;
+      o.erase    = TArray_erase;
+      o.remove   = TArray_remove;
+      o.compress = TArray_compress;
+      o.clear    = TArray_clear;
+      o.dispose  = TArray_dispose;
+      o.dump     = TArray_dump;
+      return o;
+   }
+   MO.TArray_isEmpty = function TArray_isEmpty(){
+      return this._length == 0;
+   }
+   MO.TArray_length = function TArray_length(){
+      return this._length;
+   }
+   MO.TArray_memory = function TArray_memory(){
+      return this._memory;
+   }
+   MO.TArray_contains = function TArray_contains(v){
+      return this.indexOf(v) != -1;
+   }
+   MO.TArray_indexOf = function TArray_indexOf(v){
+      var o = this;
       var c = o._length;
-      for(var i = n; i < c; i++){
-         if(o._memory[i] != v){
-            o._memory[n++] = o._memory[i];
+      for(var n = 0; n < c; n++){
+         if(o._memory[n] == v){
+            return n;
          }
       }
-      o._length = n;
+      return -1;
    }
-   return v;
-}
-function TArray_compress(){
-   var o = this;
-   var c = o._length;
-   var l = 0;
-   for(var n = 0; n < c; n++){
-      var v = o._memory[n];
-      if(v != null){
-         o._memory[l++] = v;
+   MO.TArray_get = function TArray_get(n){
+      return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
+   }
+   MO.TArray_set = function TArray_set(n, v){
+      if((n >= 0) && (n < this._length)){
+         this._memory[n] = v;
       }
    }
-   o._length = l;
-}
-function TArray_clear(){
-   this._length = 0;
-}
-function TArray_dispose(){
-   var o = this;
-   o._length = 0;
-   o._memory = null;
-}
-function TArray_dump(){
-   var o = this;
-   var r = new TString();
-   var c = o._length;
-   r.append(RRuntime.className(o), ':', c);
-   if(c > 0){
-      for(var i = 0; i < c; i++){
-         r.append(' [', o._memory[i], ']');
+   MO.TArray_push = function TArray_push(){
+      var count = arguments.length;
+      for(var i = 0; i < count; i++){
+         this._memory[this._length++] = arguments[i];
       }
    }
-   return r.flush();
-}
-function TAttributes(){
-   var o = this;
-   TDictionary.call(o);
-   o.join   = TAttributes_join;
-   o.split  = TAttributes_split;
-   o.pack   = TAttributes_pack;
-   o.unpack = TAttributes_unpack;
-   o.dump   = TAttributes_dump;
-   return o;
-}
-function TAttributes_join(n, v){
-   var o = this;
-   var r = new TString();
-   if(!n){
-      n = '=';
-   }
-   if(!v){
-      v = ',';
-   }
-   var c = o.count;
-   for(var i = 0; i < c; i++){
-      if(i > 0){
-         r.append(v);
-      }
-      r.append(o.names[i]);
-      r.append(n);
-      r.append(o.values[i]);
-   }
-   return r.toString();
-}
-function TAttributes_split(s, n, v){
-   var o = this;
-   var ss = s.split(v);
-   var c = ss.length;
-   for(var i = 0; i < c; i++){
-      var ln = ss[i];
-      if(ln.length){
-         var sb = ln.split(n);
-         if(sb.length == 2){
-            o.set(RString.trim(sb[0]), RString.trim(sb[1]));
-         }else{
-            o.set(RString.trim(ln), '');
-         }
+   MO.TArray_swap = function TArray_swap(l, r){
+      if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
+         var v = this._memory[l];
+         this._memory[l] = this._memory[r];
+         this._memory[r] = v;
       }
    }
-}
-function TAttributes_pack(){
-   var o = this;
-   var p = new TString();
-   var c = o.count;
-   for(var n = 0; n < c; n++){
-      var l = o.names[n].length;
-      p.append(l.toString().length, l, o.names[n]);
-      if(o.values[n] != null){
-         var v = o.values[n] + '';
-         l = v.length;
-         p.append(l.toString().length, l, v);
-      }else{
-         p.append('0');
-      }
+   MO.TArray_sort = function TArray_sort(){
+      this._memory.sort();
    }
-   return p.toString();
-}
-function TAttributes_unpack(p){
-   if(p && p.length){
-      var o = this;
-      var n = null;
+   MO.TArray_erase = function TArray_erase(i){
       var v = null;
-      var f = 0;
-      o.count = 0;
-      var pl = p.length;
-      while(f < pl){
-         var ll = parseInt(p.substr(f++, 1));
-         var l = parseInt(p.substr(f, ll));
-         n = p.substr(f + ll, l);
-         f += ll + l;
-         ll = parseInt(p.substr(f++, 1));
-         if(ll == 0){
-            v = null;
-         }else{
-            l = parseInt(p.substr(f, ll));
-            v = p.substr(f + ll, l);
-            f += ll + l;
+      if((i >= 0) && (i < c)){
+         var o = this;
+         o._length--;
+         v = o._memory[i];
+         for(var n = i; n < c; n++){
+            o._memory[n] = o._memory[n + 1];
          }
-         o.set(n, v);
       }
+      return v;
    }
-}
-function TAttributes_dump(){
-   var o = this;
-   var r = new TString();
-   var c = o._count;
-   r.append(RRuntime.className(o), ' : ', c);
-   if(c > 0){
-      r.append(' (');
-      for(var i = 0; i < c; i++){
-         if(i > 0){
-            r.append(', ');
-         }
-         r.append(o._names[i], '=', o._values[i]);
-      }
-      r.append(')');
-   }
-   return r.flush();
-}
-function TDictionary(){
-   var o = this;
-   TMap.call(o);
-   o.dump = TDictionary_dump;
-   return o;
-}
-function TDictionary_dump(){
-   var o = this;
-   var r = new TString();
-   var c = o._count;
-   r.append(RRuntime.className(o), ': ', c);
-   if(c > 0){
-      r.append(' {\n');
-      for(var i = 0; i < c; i++){
-         r.append('   ', o._names[i], '=[', o._values[i], ']\n');
-      }
-      r.append('}');
-   }
-   return r.flush();
-}
-function TList(){
-   var o = this;
-   o._count     = 0;
-   o._memory    = new Array();
-   o.isEmpty    = TList_isEmpty;
-   o.contains   = TList_contains;
-   o.indexOf    = TList_indexOf;
-   o.first      = TList_first;
-   o.last       = TList_last;
-   o.get        = TList_get;
-   o.set        = TList_set;
-   o.append     = TList_append;
-   o.insert     = TList_insert;
-   o.push       = TList_push;
-   o.pushUnique = TList_pushUnique;
-   o.pop        = TList_pop;
-   o.swap       = TList_swap;
-   o.sort       = TList_sort;
-   o.erase      = TList_erase;
-   o.remove     = TList_remove;
-   o.clear      = TList_clear;
-   o.compress   = TList_compress;
-   o.pack       = TList_pack;
-   o.dispose    = TList_dispose;
-   o.dump       = TList_dump;
-   return o;
-}
-function TList_isEmpty(){
-   return (this._count == 0);
-}
-function TList_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TList_indexOf(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._memory[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TList_first(){
-   var o = this;
-   return o._count ? this._memory[0] : null;
-}
-function TList_last(){
-   var o = this;
-   return o._count ? this._memory[o._count - 1] : null;
-}
-function TList_get(n){
-   return ((n >= 0) && (n < this._count)) ? this._memory[n] : null;
-}
-function TList_set(n, v){
-   if((n >= 0) && (n < this._count)){
-      this._memory[n] = v;
-   }
-}
-function TList_append(v){
-   var o = this;
-   var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
-   }
-}
-function TList_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._memory[n] = o._memory[n - 1];
-      }
-      o._memory[i] = v;
-   }
-}
-function TList_push(v){
-   var n = this._count++;
-   this._memory[n] = v;
-   return n;
-}
-function TList_pushUnique(v){
-   var o = this;
-   for(var n = o._count-1; n >= 0; n--){
-      if(o._memory[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._memory[n] = v;
-   return n;
-}
-function TList_pop(){
-   var o = this;
-   if(o._count){
-      return o._memory[--o._count];
-   }
-}
-function TList_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._memory[l];
-      o._memory[l] = this._memory[r];
-      o._memory[r] = v;
-   }
-}
-function TList_sort(){
-   this._memory.sort();
-}
-function TList_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._memory[n];
-      var c = --o._count;
-      for(var i = n; i < c; i++){
-         o._memory[i] = o._memory[i+1];
-      }
-   }
-   return v;
-}
-function TList_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
+   MO.TArray_remove = function TArray_remove(v){
+      if(v != null){
+         var o = this;
          var n = 0;
+         var c = o._length;
          for(var i = n; i < c; i++){
             if(o._memory[i] != v){
                o._memory[n++] = o._memory[i];
             }
          }
-         o._count = n;
+         o._length = n;
       }
+      return v;
    }
-   return v;
-}
-function TList_clear(){
-   this._count = 0;
-}
-function TList_compress(){
-   var o = this;
-   var c = o._count;
-   if(c > 0){
+   MO.TArray_compress = function TArray_compress(){
+      var o = this;
+      var c = o._length;
       var l = 0;
       for(var n = 0; n < c; n++){
          var v = o._memory[n];
@@ -481,1098 +200,1080 @@ function TList_compress(){
             o._memory[l++] = v;
          }
       }
-      o._count = l;
+      o._length = l;
    }
-}
-function TList_pack(){
-   var o = this;
-   var ss = new TStrings();
-   for(var n = 0; n < o._count; n++){
-      ss.push(o.get(n).pack());
+   MO.TArray_clear = function TArray_clear(){
+      this._length = 0;
    }
-   return ss.pack();
-}
-function TList_dispose(){
-   var o = this;
-   o._count = 0;
-   for(var n in o._memory){
-      delete o._memory[n];
-   }
-   o._memory = null;
-}
-function TList_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(o), ':', c);
-   if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._memory[n], ']');
-      }
-   }
-   return r.toString();
-}
-function TMap(){
-   var o = this;
-   o._count        = 0;
-   o._table        = new Object();
-   o._names        = new Array();
-   o._values       = new Array();
-   o.isEmpty       = TMap_isEmpty;
-   o.count         = TMap_count;
-   o.contains      = TMap_contains;
-   o.containsValue = TMap_containsValue;
-   o.indexOf       = TMap_indexOf;
-   o.indexOfValue  = TMap_indexOfValue;
-   o.first         = TMap_first;
-   o.last          = TMap_last;
-   o.nameAt        = TMap_nameAt;
-   o.name          = TMap_name;
-   o.valueAt       = TMap_valueAt;
-   o.at            = TMap_valueAt;
-   o.value         = TMap_value;
-   o.setValueAt    = TMap_setValueAt;
-   o.setValue      = TMap_setValue;
-   o.get           = TMap_get;
-   o.set           = TMap_set;
-   o.assign        = TMap_assign;
-   o.append        = TMap_append;
-   o.insert        = TMap_insert;
-   o.remove        = TMap_remove;
-   o.removeName    = TMap_removeName;
-   o.removeValue   = TMap_removeValue;
-   o.rebuild       = TMap_rebuild;
-   o.clear         = TMap_clear;
-   o.toString      = TMap_toString;
-   o.dispose       = TMap_dispose;
-   o.dump          = TMap_dump;
-   return o;
-}
-function TMap_isEmpty(){
-   return (this._count == 0);
-}
-function TMap_count(){
-   return this._count;
-}
-function TMap_contains(n){
-   if(n != null){
-      var i = this._table[n.toString().toLowerCase()]
-      if(i != null){
-         return true;
-      }
-   }
-   return false;
-}
-function TMap_containsValue(v){
-   var i = this.indexOfValue(v);
-   return (i != -1);
-}
-function TMap_indexOf(n){
-   if(n != null){
-      var i = this._table[n.toString().toLowerCase()];
-      if(i != null){
-         return i;
-      }
-   }
-   return -1;
-}
-function TMap_indexOfValue(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._values[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TMap_first(){
-   var o = this;
-   if(o._count > 0){
-      return o._values[0];
-   }
-   return null;
-}
-function TMap_last(){
-   var o = this;
-   if(o._count > 0){
-      return o._values[o._count - 1];
-   }
-   return null;
-}
-function TMap_nameAt(n){
-   return this._names[n];
-}
-function TMap_name(n){
-   return ((n >= 0) && (n < this._count)) ? this._names[n] : null;
-}
-function TMap_valueAt(n){
-   return this._values[n];
-}
-function TMap_value(n){
-   return ((n >= 0) && (n < this._count)) ? this._values[n] : null;
-}
-function TMap_setValueAt(n, v){
-   this._values[n] = v;
-}
-function TMap_setValue(n, v){
-   if((n >= 0) && (n < this._count)){
-      this._values[n] = v;
-   }
-}
-function TMap_get(n, v){
-   if(n != null){
+   MO.TArray_dispose = function TArray_dispose(){
       var o = this;
-      var i = o._table[n.toString().toLowerCase()];
-      if(i != null){
-         return o._values[i];
-      }
-   }
-   return v;
-}
-function TMap_set(n, v){
-   if(n != null){
-      var o = this;
-      var l = n.toString().toLowerCase();
-      var i = o._table[l];
-      if((i == null) || (i >= o._count)){
-         i = o._count++;
-         o._names[i] = n;
-         o._table[l] = i;
-      }
-      o._values[i] = v;
-   }
-}
-function TMap_assign(m){
-   this.clear();
-   this.append(m);
-}
-function TMap_append(m){
-   if(m){
-      var c = m._count;
-      for(var n = 0; n < c; n++){
-         this.set(m.name(n), m.value(n));
-      }
-   }
-}
-function TMap_insert(i, n, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var p = c; p > i; p--){
-         o._names[p] = o._names[p - 1];
-         o._values[p] = o._values[p - 1];
-      }
-      o._names[i] = n;
-      o._values[i] = v;
-      o._count++;
-      o.rebuild();
-   }
-}
-function TMap_remove(i){
-   var o = this;
-   var r = null;
-   var c = o._count;
-   if((i >= 0) && (i < c)){
-      r = o._values[i];
-      for(var p = i; p < c; p++){
-         o._names[p] = o._names[p + 1];
-         o._values[p] = o._values[p + 1];
-      }
-      o._count--;
-      o.rebuild();
-   }
-   return r;
-}
-function TMap_removeName(n){
-   var o = this;
-   var i = o.indexOf(n);
-   if(i != -1){
-      return o.remove(i);
-   }
-   return null;
-}
-function TMap_removeValue(v){
-   var o = this;
-   var i = 0;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      var s = o._values[n];
-      if(v != s){
-         if(i != n){
-            o._names[i] = o._names[n];
-            o._values[i] = s;
-         }
-         i++;
-      }
-   }
-   o._count = i;
-   o.rebuild();
-}
-function TMap_rebuild(){
-   var o = this;
-   var t = o._table;
-   for(var n in t){
-      delete t[n];
-   }
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      var v = o._names[n] + '';
-      t[v.toLowerCase()] = n;
-   }
-}
-function TMap_clear(){
-   var o = this;
-   o._count = 0;
-   for(var n in o._table){
-      delete o._table[n];
-   }
-}
-function TMap_toString(){
-   return this.dump().toString();
-}
-function TMap_dispose(){
-   var o = this;
-   o._count = 0;
-   var t = o._table;
-   if(t){
-      for(var i in t){
-         t[i] = null;
-      }
-      o._table = null;
-   }
-   var n = o._names;
-   if(n){
-      for(var i = n.length - 1; i >= 0; i--){
-         n[i] = null;
-      }
-      o._names = null;
-   }
-   var v = o._values;
-   if(v){
-      for(var i = v.length - 1; i >= 0; i--){
-         v[i] = null;
-      }
-      o._values = null;
-   }
-}
-function TMap_dump(){
-   var o = this;
-   var r = new TString();
-   var c = o._count;
-   r.appendLine(RRuntime.className(o), ': ', c);
-   if(c > 0){
-      r.append(' {');
-      for(var i = 0; i < c; i++){
-         r.appendLine(o._names[i], '=[', o._values[i], ']');
-      }
-      r.append('}');
-   }
-   return r.flush();
-}
-function TObjects(){
-   var o = this;
-   o._count     = 0;
-   o._items     = new Array();
-   o.isEmpty    = TObjects_isEmpty;
-   o.count      = TObjects_count;
-   o.items      = TObjects_items;
-   o.contains   = TObjects_contains;
-   o.indexOf    = TObjects_indexOf;
-   o.first      = TObjects_first;
-   o.last       = TObjects_last;
-   o.getAt      = TObjects_getAt;
-   o.at         = TObjects_getAt;
-   o.get        = TObjects_get;
-   o.setAt      = TObjects_setAt;
-   o.set        = TObjects_set;
-   o.assign     = TObjects_assign;
-   o.append     = TObjects_append;
-   o.insert     = TObjects_insert;
-   o.shift      = TObjects_shift;
-   o.unshift    = TObjects_unshift;
-   o.pop        = TObjects_pop;
-   o.push       = TObjects_push;
-   o.pushUnique = TObjects_pushUnique;
-   o.swap       = TObjects_swap;
-   o.sort       = TObjects_sort;
-   o.erase      = TObjects_erase;
-   o.remove     = TObjects_remove;
-   o.clear      = TObjects_clear;
-   o.dispose    = TObjects_dispose;
-   o.dump       = TObjects_dump;
-   return o;
-}
-function TObjects_isEmpty(){
-   return (this._count == 0);
-}
-function TObjects_count(){
-   return this._count;
-}
-function TObjects_items(){
-   return this._items;
-}
-function TObjects_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TObjects_indexOf(v){
-   var o = this;
-   var c = o._count;
-   var s = o._items;
-   for(var i = 0; i < c; i++){
-      if(s[i] == v){
-         return i;
-      }
-   }
-   return -1;
-}
-function TObjects_first(){
-   var o = this;
-   return o._count ? this._items[0] : null;
-}
-function TObjects_last(){
-   var o = this;
-   return o._count ? this._items[o._count - 1] : null;
-}
-function TObjects_getAt(n){
-   return this._items[n];
-}
-function TObjects_get(n){
-   var o = this;
-   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
-}
-function TObjects_setAt(n, v){
-   this._items[n] = v;
-}
-function TObjects_set(n, v){
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      o._items[n] = v;
-   }
-}
-function TObjects_assign(p){
-   var o = this;
-   var c = o._count = p._count;
-   for(var i = 0; i < c; i++){
-      o._items[i] = p._items[i];
-   }
-}
-function TObjects_append(v){
-   var o = this;
-   var c = v._count;
-   for(var i = 0; i < c; i++){
-      o.push(v.get(i));
-   }
-}
-function TObjects_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._items[n] = o._items[n - 1];
-      }
-      o._items[i] = v;
-   }
-}
-function TObjects_shift(){
-   return this.erase(0);
-}
-function TObjects_unshift(p){
-   return this.insert(0, p);
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
-}
-function TObjects_push(v){
-   var o = this;
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_pushUnique(v){
-   var o = this;
-   for(var n = o._count - 1; n >= 0; n--){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var s = o._items;
-      var v = s[l];
-      s[l] = s[r];
-      s[r] = v;
-   }
-}
-function TObjects_sort(p){
-   var o = this;
-   var s = o._items;
-   if(s.length != o._count){
-      s.length = o._count;
-   }
-   s.sort(p);
-}
-function TObjects_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._items[n];
-      var c = --o._count;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         s[i] = s[i+1];
-      }
-      s[c] = null;
-   }
-   return v;
-}
-function TObjects_remove(v){
-   var o = this;
-   var c = o._count;
-   if(c){
-      var n = 0;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         if(s[i] != v){
-            s[n++] = s[i];
-         }
-      }
-      for(var i = n; i < c; i++){
-         s[i] = null;
-      }
-      o._count = n;
-   }
-   return v;
-}
-function TObjects_clear(){
-   var o = this;
-   o._count = 0;
-}
-function TObjects_dispose(){
-   var o = this;
-   for(var n in o._items){
-      o._items[n] = null;
-   }
-   o._count = 0;
-   o._items = null;
-}
-function TObjects_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RRuntime.className(o), ':', c);
-   if(c > 0){
-      for(var i = 0; i < c; i++){
-         r.append(' [', o._items[i], ']');
-      }
-   }
-   return r.flush();
-}
-function TString(){
-   var o = this;
-   o._count       = 0;
-   o._memory      = new Array();
-   o.isEmpty      = TString_isEmpty;
-   o.assign       = TString_assign;
-   o.append       = TString_append;
-   o.appendIf     = TString_appendIf;
-   o.appendLine   = TString_appendLine;
-   o.appendRepeat = TString_appendRepeat;
-   o.push         = TString_push;
-   o.clear        = TString_clear;
-   o.toString     = TString_toString;
-   o.flush        = TString_flush;
-   o.dispose      = TString_dispose;
-   o.dump         = TString_dump;
-   return o;
-}
-function TString_isEmpty(){
-   return this._count == 0;
-}
-function TString_assign(v){
-   var o = this;
-   var a = arguments;
-   var c = a.length;
-   o._count = 0;
-   for(var i = 0; i < c; i++){
-      var v = a[n];
-      if(v != null){
-         o._memory[o._count++] = v;
-      }
-   }
-}
-function TString_append(v){
-   var o = this;
-   var a = arguments;
-   var c = a.length;
-   for(var i = 0; i < c; i++){
-      var v = a[i];
-      if(v != null){
-         o._memory[o._count++] = v;
-      }
-   }
-}
-function TString_appendIf(f, v){
-   var o = this;
-   if(f){
-      var a = arguments;
-      var c = a.length;
-      for(var i = 1; i < c; i++){
-         var v = a[i];
-         if(v != null){
-            o._memory[o._count++] = v;
-         }
-      }
-   }
-}
-function TString_appendRepeat(v, c){
-   var o = this;
-   for(var i = 0; i < c; i++){
-      o._memory[o._count++] = v;
-   }
-}
-function TString_appendLine(v){
-   var o = this;
-   var a = arguments;
-   var c = a.length;
-   for(var i = 0; i < c; i++){
-      var v = a[i];
-      if(v != null){
-         o._memory[o._count++] = v;
-      }
-   }
-   o._memory[o._count++] = '\r\n';
-}
-function TString_push(v){
-   var o = this;
-   var a = arguments;
-   var c = a.length;
-   for(var i = 0; i < c; i++){
-      var v = a[i];
-      if(v != null){
-         o._memory[o._count++] = v;
-      }
-   }
-}
-function TString_clear(){
-   this._count = 0;
-}
-function TString_toString(){
-   var o = this;
-   var r = o._memory;
-   if(o._memory.length != o._count){
-      r = o._memory.slice(0, o._count);
-   }
-   return r.join('');
-}
-function TString_flush(){
-   var o = this;
-   var r = o.toString();
-   o.dispose();
-   return r;
-}
-function TString_dispose(){
-   var o = this;
-   o._count = 0;
-   var m = o._memory;
-   if(m){
-      for(var i = m.length - 1; i >= 0; i--){
-         m[i] = null;
-      }
+      o._length = 0;
       o._memory = null;
    }
-}
-function TString_dump(){
-   var o = this;
-   var s = o.toString();
-   return RRuntime.className(o) + ':' + s.length + '[' + s + ']';
-}
-function TStrings(){
-   var o = this;
-   TList(o);
-   o.pack   = TStrings_pack;
-   o.unpack = TStrings_unpack;
-   return o;
-}
-function TStrings_pack(){
-   var o = this;
-   var r = new TString();
-   var c = o.count;
-   for(var n = 0; n < c; n++){
-      var s = o.get(n);
-      var sl = s.length.toString();
-      var sll = sl.length;
-      sa = sll + sl + s;
-      r.append(sa);
-   }
-   return r.flush();
-}
-function TStrings_unpack(p){
-   var o = this;
-   if(!RString.isEmpty(p)){
-      var c = p.length;
-      for(var n = 0; n < c;){
-         var ll = parseInt(p.charAt(n++));
-         var l = parseInt(p.substr(n, ll));
-         n += ll;
-         var s = p.substr(n, l);
-         n += l;
-         o.push(s);
-      }
-   }
-}
-var RAssert = new function RAssert(){
-   var o = this;
-   o.isTrue        = RAssert_isTrue;
-   o.isFalse       = RAssert_isFalse;
-   o.debugBegin    = RAssert_empty;
-   o.debug         = RAssert_empty;
-   o.debugEnd      = RAssert_empty;
-   o.debugTrue     = RAssert_debugTrue;
-   o.debugFalse    = RAssert_debugFalse;
-   o.debugNull     = RAssert_debugNull;
-   o.debugNotNull  = RAssert_debugNotNull;
-   o.debugEmpty    = RAssert_debugEmpty;
-   o.debugNotEmpty = RAssert_debugNotEmpty;
-   return o;
-}
-function RAssert_empty(){
-}
-function RAssert_isTrue(value){
-   if(!value){
-      throw new TError(this, 'Assert ture failure.');
-   }
-}
-function RAssert_isFalse(value){
-   if(value){
-      throw new TError(this, 'Assert false failure.');
-   }
-}
-function RAssert_debugTrue(value){
-   if(!value){
-      throw new TError(this, 'Assert true failure.');
-   }
-}
-function RAssert_debugFalse(value){
-   if(value){
-      throw new TError(this, 'Assert false failure.');
-   }
-}
-function RAssert_debugNull(value){
-   if(value != null){
-      throw new TError(this, 'Assert null failure.');
-   }
-}
-function RAssert_debugNotNull(value){
-   if(value == null){
-      throw new TError(this, 'Assert not null failure.');
-   }
-}
-function RAssert_debugEmpty(value){
-   if(value != null){
-      throw new TError(this, 'Assert empty failure.');
-   }
-}
-function RAssert_debugNotEmpty(value){
-   if(value == null){
-      throw new TError(this, 'Assert not empty failure.');
-   }
-}
-var RMemory = new function RMemory(){
-   var o = this;
-   o._entryUnused  = null;;
-   o._pools        = new Object();
-   o.entryAlloc    = RMemory_entryAlloc;
-   o.entryFree     = RMemory_entryFree;
-   o.alloc         = RMemory_alloc;
-   o.free          = RMemory_free;
-   o.refresh       = RMemory_refresh;
-   return o;
-}
-function RMemory_entryAlloc(){
-   var o = this;
-   var entry = null;
-   var unused = o._entryUnused;
-   if(unused){
-      entry = unused;
-      o._entryUnused = unused.next;
-   }else{
-      entry = new SMemoryPoolEntry();
-   }
-   return entry;
-}
-function RMemory_entryFree(entry){
-   var o = this;
-   RAssert.debugNotNull(entry);
-   entry.next = o._entryUnused;
-   o._entryUnused = entry;
-}
-function RMemory_alloc(clazz){
-   var o = this;
-   RAssert.debugNotNull(clazz);
-   var className = RRuntime.className(clazz);
-   var pools = o._pools;
-   var pool = pools[className];
-   if(!pool){
-      pool = new TMemoryPool();
-      pool._constructor = clazz;
-      pools[className] = pool;
-   }
-   return pool.alloc();
-}
-function RMemory_free(value){
-   RAssert.debugNotNull(value);
-   var pool = value.__pool;
-   RAssert.debugNotNull(pool);
-   pool.free(value);
-}
-function RMemory_refresh(){
-   CollectGarbage();
-}
-function RMemory_isObject(o){
-   var t = typeof(o);
-   return ('boolean' != t) && ('number' != t) && ('string' != t) && ('date' != t) && ('function' != t) && (o instanceof Object);
-}
-function RMemory_create(c){
-   var o = new c();
-   this.objects.push(o);
-   return o;
-}
-function RMemory_register(n, o){
-   if(this.isObject(o)){
-      this.objects.push(o);
-      this.instances[n] = o;
-   }
-}
-function RMemory_disposeObject(o){
-}
-function RMemory_dispose(o){
-   if(null != o && this.isObject(o)){
-      if(!o._disposed){
-         o._disposed = true;
-         if(o.dispose instanceof Function){
-            o.dispose();
+   MO.TArray_dump = function TArray_dump(){
+      var o = this;
+      var r = new TString();
+      var c = o._length;
+      r.append(RRuntime.className(o), ':', c);
+      if(c > 0){
+         for(var i = 0; i < c; i++){
+            r.append(' [', o._memory[i], ']');
          }
-         this.disposeObject(o);
       }
+      return r.flush();
    }
 }
-function RMemory_unlink(o){
-   for(var n in o){
-      var v = o[n];
-      o[n] = null;
-      if(null != v && this.isObject(v)){
-         this.unlink(o);
+with(MO){
+   MO.TAttributes = function TAttributes(){
+      var o = this;
+      TDictionary.call(o);
+      o.join   = TAttributes_join;
+      o.split  = TAttributes_split;
+      o.pack   = TAttributes_pack;
+      o.unpack = TAttributes_unpack;
+      o.dump   = TAttributes_dump;
+      return o;
+   }
+   MO.TAttributes_join = function TAttributes_join(name, value){
+      var source = new TString();
+      if(!name){
+         name = '=';
       }
-   }
-}
-function RMemory_freeHtml(h){
-   if(h){
-      h.removeNode(true);
-   }
-}
-function RMemory_release(){
-   var o = this;
-   o.free(o.objects);
-   o.free(o.instances);
-   o.refresh();
-}
-function SMemoryPoolEntry(){
-   var o = this;
-   o.next    = null;
-   o.value   = null;
-   o.dispose = SMemoryPoolEntry_dispose;
-   return o;
-}
-function SMemoryPoolEntry_dispose(){
-   var o = this;
-   var value = o.value;
-   if(value){
-      value.__pool = null;
-      value.dispose();
-   }
-   o.next = null;
-   o.value = null;
-}
-function TMemoryPool(){
-   var o = this;
-   o._constructor = null;
-   o._unused      = null;
-   o._createCount = 0;
-   o._allocCount  = 0;
-   o._freeCount   = 0;
-   o.alloc        = TMemoryPool_alloc;
-   o.free         = TMemoryPool_free;
-   o.dispose      = TMemoryPool_dispose;
-   o.dump         = TMemoryPool_dump
-   return o;
-}
-function TMemoryPool_alloc(){
-   var o = this;
-   var value = null;
-   var unused = o._unused;
-   if(unused){
-      value = unused.value;
-      o._unused = unused.next;
-      RMemory.entryFree(unused);
-   }else{
-      value = new o._constructor();
-      value.__pool = o;
-      o._createCount++;
-   }
-   o._allocCount++;
-   return value;
-}
-function TMemoryPool_free(value){
-   var o = this;
-   RAssert.debugNotNull(value);
-   var entry = RMemory.entryAlloc();
-   entry.value = value;
-   entry.next = o._unused;
-   o._unused = entry;
-   o._freeCount++;
-}
-function TMemoryPool_dispose(){
-   var o = this;
-   var entry = o._unused;
-   while(entry){
-      var current = entry;
-      entry = current.next;
-      current.dispose();
-      RMemory.entryFree(current);
-   }
-}
-function TMemoryPool_dump(){
-   var o = this;
-   var source = new TString();
-   source.append('Pool:');
-   source.append('create=', o._createCount);
-   source.append(', alloc=', o._allocCount);
-   source.append(', free=', o._freeCount);
-   return source.flush();
-}
-function SLooperEntry(){
-   var o = this;
-   o.prior   = null;
-   o.next    = null;
-   o.value   = null;
-   o.dispose = SLooperEntry_dispose;
-   return o;
-}
-function SLooperEntry_dispose(){
-   var o = this;
-   o.prior = null;
-   o.next = null;
-   o.value = null;
-}
-function TLooper(){
-   var o = this;
-   o._count             = 0;
-   o._recordCount       = 0;
-   o._current           = null;
-   o.innerPush          = TLooper_innerPush;
-   o.innerRemove        = TLooper_innerRemove;
-   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
-   o.innerRemoveValue   = TLooper_innerRemoveValue;
-   o.isEmpty            = TLooper_isEmpty;
-   o.count              = TLooper_count;
-   o.record             = TLooper_record;
-   o.unrecord           = TLooper_unrecord;
-   o.contains           = TLooper_contains;
-   o.current            = TLooper_current;
-   o.next               = TLooper_next;
-   o.push               = TLooper_push;
-   o.pushUnique         = TLooper_pushUnique;
-   o.removeCurrent      = TLooper_removeCurrent;
-   o.remove             = TLooper_remove;
-   o.clear              = TLooper_clear;
-   o.dispose            = TLooper_dispose;
-   o.dump               = TLooper_dump;
-   return o;
-}
-function TLooper_innerPush(entry){
-   var o = this;
-   var current = o._current;
-   if(current){
-      var prior = current.prior;
-      entry.prior = prior;
-      entry.next = current;
-      prior.next = entry;
-      current.prior = entry;
-   }else{
-      entry.prior = entry;
-      entry.next = entry;
-      o._current = entry;
-   }
-   o._count++;
-}
-function TLooper_innerRemove(entry){
-   var o = this;
-   var prior = entry.prior;
-   var next = entry.next;
-   prior.next = next;
-   next.prior = prior;
-   o._count--;
-   if(o._count > 0){
-      o._current = next;
-   }else{
-      o._current = null;
-   }
-   RMemory.free(entry);
-}
-function TLooper_innerRemoveCurrent(){
-   var o = this;
-   var value = null;
-   if(o._count > 0){
-      var current = o._current;
-      value = current.value;
-      o.innerRemove(current);
-   }
-   return value;
-}
-function TLooper_innerRemoveValue(value){
-   if(o._count > 0){
-      if(o._current.value == value){
-         o.innerRemoveCurrent();
-         return;
+      if(!value){
+         value = ',';
       }
-      var current = o._current;
-      var entry = current.next;
-      while(entry != current){
-         if(entry.value == value){
-            o.innerRemove(entry);
-            o._current = current;
-            return;
-         }
-         entry = entry.next;
-      }
-   }
-}
-function TLooper_isEmpty(){
-   return this._count == 0;
-}
-function TLooper_count(){
-   return this._count;
-}
-function TLooper_record(){
-   this._recordCount = this._count;
-}
-function TLooper_unrecord(v){
-   this._recordCount = -1;
-}
-function TLooper_contains(value){
-   var o = this;
-   if(o._current){
-      var entry = o._current;
-      var count = o._count;
+      var count = this._count;
       for(var i = 0; i < count; i++){
-         if(entry.value == value){
+         if(i > 0){
+            source.append(value);
+         }
+         source.append(this.names[i]);
+         source.append(name);
+         source.append(this.values[i]);
+      }
+      return source.flush();
+   }
+   MO.TAttributes_split = function TAttributes_split(source, name, value){
+      var items = source.split(value);
+      var count = items.length;
+      for(var i = 0; i < count; i++){
+         var item = items[i];
+         if(item.length){
+            var codes = item.split(name);
+            if(codes.length == 2){
+               this.set(RString.trim(codes[0]), RString.trim(codes[1]));
+            }else{
+               this.set(RString.trim(item), '');
+            }
+         }
+      }
+   }
+   MO.TAttributes_pack = function TAttributes_pack(){
+      var source = new TString();
+      var count = this._count;
+      for(var i = 0; i < count; i++){
+         var name = this.names[i];
+         var value = this.values[i];
+         var nameLength = name.length;
+         source.append(nameLength.toString().length, nameLength, name);
+         if(value != null){
+            var value = value + '';
+            var valueLength = value.length;
+            source.append(valueLength.toString().length, valueLength, value);
+         }else{
+            source.append('0');
+         }
+      }
+      return source.flush();
+   }
+   MO.TAttributes_unpack = function TAttributes_unpack(source){
+      this.count = 0;
+      var position = 0;
+      var sourceLength = source.length;
+      while(position < sourceLength){
+         var lengthLength = parseInt(source.substr(position++, 1));
+         var length = parseInt(source.substr(position, lengthLength));
+         var name = source.substr(position + lengthLength, length);
+         position += lengthLength + length;
+         lengthLength = parseInt(source.substr(position++, 1));
+         var value = null;
+         if(lengthLength > 0){
+            length = parseInt(source.substr(position, lengthLength));
+            value = source.substr(position + lengthLength, length);
+            position += lengthLength + length;
+         }
+         this.set(name, value);
+      }
+   }
+   MO.TAttributes_dump = function TAttributes_dump(){
+      var info = new TString();
+      var count = this._count;
+      info.append(RRuntime.className(o), ' : ', count);
+      if(count > 0){
+         info.append(' (');
+         for(var i = 0; i < count; i++){
+            if(i > 0){
+               info.append(', ');
+            }
+            info.append(this._names[i], '=', this._values[i]);
+         }
+         info.append(')');
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.TDictionary = function TDictionary(){
+      var o = this;
+      TMap.call(o);
+      o.dump = TDictionary_dump;
+      return o;
+   }
+   MO.TDictionary_dump = function TDictionary_dump(){
+      var info = new TString();
+      var count = this._count;
+      info.append(RRuntime.className(o), ': ', count);
+      if(count > 0){
+         info.append(' {\n');
+         for(var i = 0; i < count; i++){
+            info.append('   ', this._names[i], '=[', this._values[i], ']\n');
+         }
+         info.append('}');
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.TMap = function TMap(){
+      var o = this;
+      o._count        = 0;
+      o._table        = new Object();
+      o._names        = new Array();
+      o._values       = new Array();
+      o.isEmpty       = TMap_isEmpty;
+      o.count         = TMap_count;
+      o.contains      = TMap_contains;
+      o.containsValue = TMap_containsValue;
+      o.indexOf       = TMap_indexOf;
+      o.indexOfValue  = TMap_indexOfValue;
+      o.first         = TMap_first;
+      o.last          = TMap_last;
+      o.nameAt        = TMap_nameAt;
+      o.name          = TMap_name;
+      o.valueAt       = TMap_valueAt;
+      o.at            = TMap_valueAt;
+      o.value         = TMap_value;
+      o.setValueAt    = TMap_setValueAt;
+      o.setValue      = TMap_setValue;
+      o.get           = TMap_get;
+      o.set           = TMap_set;
+      o.assign        = TMap_assign;
+      o.append        = TMap_append;
+      o.insert        = TMap_insert;
+      o.remove        = TMap_remove;
+      o.removeName    = TMap_removeName;
+      o.removeValue   = TMap_removeValue;
+      o.rebuild       = TMap_rebuild;
+      o.clear         = TMap_clear;
+      o.toString      = TMap_toString;
+      o.dispose       = TMap_dispose;
+      o.dump          = TMap_dump;
+      return o;
+   }
+   MO.TMap_isEmpty = function TMap_isEmpty(){
+      return (this._count == 0);
+   }
+   MO.TMap_count = function TMap_count(){
+      return this._count;
+   }
+   MO.TMap_contains = function TMap_contains(name){
+      if(name != null){
+         var index = this._table[name.toString().toLowerCase()]
+         if(index != null){
             return true;
          }
-         entry = entry.next;
       }
+      return false;
    }
-   return false;
-}
-function TLooper_current(){
-   var entry = this._current;
-   return entry ? entry.value : null;
-}
-function TLooper_next(){
-   var o = this;
-   if(o._current){
-      o._current = o._current.next;
+   MO.TMap_containsValue = function TMap_containsValue(value){
+      var index = this.indexOfValue(value);
+      return (index != -1);
    }
-   var c = o._recordCount;
-   if(c > 0){
-      o._recordCount--;
-   }else if(c == 0){
+   MO.TMap_indexOf = function TMap_indexOf(name){
+      if(name != null){
+         var index = this._table[name.toString().toLowerCase()];
+         if(index != null){
+            return index;
+         }
+      }
+      return -1;
+   }
+   MO.TMap_indexOfValue = function TMap_indexOfValue(value){
+      var count = this._count;
+      for(var i = 0; i < count; i++){
+         if(this._values[n] == value){
+            return n;
+         }
+      }
+      return -1;
+   }
+   MO.TMap_first = function TMap_first(){
+      if(this._count > 0){
+         return this._values[0];
+      }
       return null;
    }
-   return o._current ? o._current.value : null;
-}
-function TLooper_push(value){
-   var o = this;
-   var entry = RMemory.alloc(SLooperEntry);
-   entry.value = value;
-   o.innerPush(entry);
-}
-function TLooper_pushUnique(value){
-   var o = this;
-   if(!o.contains(value)){
-      o.push(value);
+   MO.TMap_last = function TMap_last(){
+      if(this._count > 0){
+         return this._values[this._count - 1];
+      }
+      return null;
    }
-}
-function TLooper_removeCurrent(){
-   return this.innerRemoveCurrent();
-}
-function TLooper_remove(p){
-   this.innerRemoveValue(p);
-}
-function TLooper_clear(){
-   var o = this;
-   var entry = o._current;
-   if(entry){
-      entry.prior.next = null;
-      while(entry){
-         var next = entry.next;
-         RMemory.free(next);
-         entry = next;
+   MO.TMap_nameAt = function TMap_nameAt(index){
+      return this._names[index];
+   }
+   MO.TMap_name = function TMap_name(index){
+      return ((index >= 0) && (index < this._count)) ? this._names[index] : null;
+   }
+   MO.TMap_valueAt = function TMap_valueAt(index){
+      return this._values[index];
+   }
+   MO.TMap_value = function TMap_value(index){
+      return ((index >= 0) && (index < this._count)) ? this._values[index] : null;
+   }
+   MO.TMap_setValueAt = function TMap_setValueAt(index, value){
+      this._values[index] = value;
+   }
+   MO.TMap_setValue = function TMap_setValue(index, value){
+      if((index >= 0) && (index < this._count)){
+         this._values[index] = value;
       }
    }
-   o._count = 0;
-   o._current = null;
-}
-function TLooper_dispose(){
-   this.clear();
-}
-function TLooper_dump(){
-   var o = this;
-   var count = o._count;
-   var result = new TString();
-   result.append(RClass.name(this), ': ', count);
-   if(count > 0){
-      var entry = o._current;
+   MO.TMap_get = function TMap_get(name, defaultValue){
+      if(name != null){
+         var i = this._table[name.toString().toLowerCase()];
+         if(i != null){
+            return this._values[i];
+         }
+      }
+      return defaultValue;
+   }
+   MO.TMap_set = function TMap_set(name, value){
+      if(name != null){
+         var code = name.toString().toLowerCase();
+         var index = this._table[code];
+         if((index == null) || (index >= this._count)){
+            index = this._count++;
+            this._names[index] = name;
+            this._table[code] = index;
+         }
+         this._values[index] = value;
+      }
+   }
+   MO.TMap_assign = function TMap_assign(map){
+      this.clear();
+      this.append(map);
+   }
+   MO.TMap_append = function TMap_append(map){
+      if(map){
+         var count = map.count();
+         for(var i = 0; i < count; i++){
+            var name = map.nameAt(i);
+            var value = map.valueAt(i);
+            this.set(name, value);
+         }
+      }
+   }
+   MO.TMap_insert = function TMap_insert(index, name, value){
+      var count = this._count;
+      if((index >= 0) && (index <= count)){
+         for(var i = count; i > index; i--){
+            this._names[i] = this._names[i - 1];
+            this._values[i] = this._values[i - 1];
+         }
+         this._names[index] = name;
+         this._values[index] = value;
+         this._count++;
+         this.rebuild();
+      }
+   }
+   MO.TMap_remove = function TMap_remove(index){
+      var value = null;
+      var count = this._count;
+      if((index >= 0) && (index < count)){
+         value = this._values[index];
+         for(var i = index; i < count; i++){
+            this._names[i] = this._names[i + 1];
+            this._values[i] = this._values[i + 1];
+         }
+         this._count--;
+         this.rebuild();
+      }
+      return value;
+   }
+   MO.TMap_removeName = function TMap_removeName(name){
+      var index = this.indexOf(name);
+      if(index != -1){
+         return this.remove(index);
+      }
+      return null;
+   }
+   MO.TMap_removeValue = function TMap_removeValue(value){
+      var index = 0;
+      var count = this._count;
       for(var i = 0; i < count; i++){
-         result.append(' [', entry.value, ']');
-         entry = entry.next;
+         var find = this._values[i];
+         if(find != value){
+            if(index != i){
+               this._names[index] = this._names[i];
+               this._values[index] = find;
+            }
+            index++;
+         }
+      }
+      this._count = index;
+      this.rebuild();
+   }
+   MO.TMap_rebuild = function TMap_rebuild(){
+      var table = this._table;
+      for(var name in table){
+         delete table[name];
+      }
+      var count = this._count;
+      for(var i = 0; i < count; i++){
+         var code = this._names[i].toLowerCase();
+         table[code] = i;
       }
    }
-   return result.flush();
-}
-var RGlobal = new function RGlobal(){
-   var o = this;
-   o.instances = new TDictionary();
-   o.get       = RGlobal_get;
-   o.set       = RGlobal_set;
-   o.globalGet = RGlobal_globalGet;
-   o.globalSet = RGlobal_globalSet;
-   return o;
-}
-function RGlobal_get(n){
-   return this.instances.get(n);
-}
-function RGlobal_set(n, v){
-   this.instances.set(n, v);
-}
-function RGlobal_globalGet(n){
-   if(top.RGlobal){
-      return top.RGlobal.get(n);
+   MO.TMap_clear = function TMap_clear(){
+      this._count = 0;
+      for(var name in this._table){
+         delete this._table[name];
+      }
    }
-   return this.instances.get(n);
-}
-function RGlobal_globalSet(n, v){
-   if(top.RGlobal){
-      top.RGlobal.set(n, v);
-   }else{
-      this.instances.set(n, v);
+   MO.TMap_toString = function TMap_toString(){
+      return this.dump().toString();
    }
+   MO.TMap_disposeAll = function TMap_disposeAll(){
+   }
+   MO.TMap_dispose = function TMap_dispose(flag){
+      if(flag){
+         var count = this._count;
+         var values = this._values;
+         for(var i = 0; i < count; i++){
+            var value = values[i];
+            values[i] = RObject.dispose(value);
+         }
+      }
+      var table = this._table;
+      if(table){
+         for(var name in table){
+            table[name] = null;
+         }
+         this._table = null;
+      }
+      var names = this._names;
+      if(names){
+         for(var i = names.length - 1; i >= 0; i--){
+            names[i] = null;
+         }
+         this._names = null;
+      }
+      var values = this._values;
+      if(values){
+         for(var i = values.length - 1; i >= 0; i--){
+            values[i] = null;
+         }
+         this._values = null;
+      }
+      this._count = 0;
+   }
+   MO.TMap_dump = function TMap_dump(){
+      var info = new TString();
+      var count = this._count;
+      info.appendLine(RRuntime.className(o), ': ', count);
+      if(count > 0){
+         info.append(' {');
+         for(var i = 0; i < count; i++){
+            info.appendLine(this._names[i], '=[', this._values[i], ']');
+         }
+         info.append('}');
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.TObjects = function TObjects(){
+      var o = this;
+      o._count     = 0;
+      o._items     = new Array();
+      o.isEmpty    = TObjects_isEmpty;
+      o.count      = TObjects_count;
+      o.items      = TObjects_items;
+      o.contains   = TObjects_contains;
+      o.indexOf    = TObjects_indexOf;
+      o.first      = TObjects_first;
+      o.last       = TObjects_last;
+      o.getAt      = TObjects_getAt;
+      o.at         = TObjects_getAt;
+      o.get        = TObjects_get;
+      o.setAt      = TObjects_setAt;
+      o.set        = TObjects_set;
+      o.assign     = TObjects_assign;
+      o.append     = TObjects_append;
+      o.insert     = TObjects_insert;
+      o.shift      = TObjects_shift;
+      o.unshift    = TObjects_unshift;
+      o.pop        = TObjects_pop;
+      o.push       = TObjects_push;
+      o.pushUnique = TObjects_pushUnique;
+      o.swap       = TObjects_swap;
+      o.sort       = TObjects_sort;
+      o.erase      = TObjects_erase;
+      o.remove     = TObjects_remove;
+      o.clear      = TObjects_clear;
+      o.dispose    = TObjects_dispose;
+      o.dump       = TObjects_dump;
+      return o;
+   }
+   MO.TObjects_isEmpty = function TObjects_isEmpty(){
+      return (this._count == 0);
+   }
+   MO.TObjects_count = function TObjects_count(){
+      return this._count;
+   }
+   MO.TObjects_items = function TObjects_items(){
+      return this._items;
+   }
+   MO.TObjects_contains = function TObjects_contains(value){
+      return this.indexOf(value) != -1;
+   }
+   MO.TObjects_indexOf = function TObjects_indexOf(value){
+      var count = this._count;
+      var items = this._items;
+      for(var i = 0; i < count; i++){
+         if(items[i] == value){
+            return i;
+         }
+      }
+      return -1;
+   }
+   MO.TObjects_first = function TObjects_first(){
+      return this._count ? this._items[0] : null;
+   }
+   MO.TObjects_last = function TObjects_last(){
+      return this._count ? this._items[this._count - 1] : null;
+   }
+   MO.TObjects_getAt = function TObjects_getAt(index){
+      return this._items[index];
+   }
+   MO.TObjects_get = function TObjects_get(index){
+      return ((index >= 0) && (index < this._count)) ? this._items[index] : null;
+   }
+   MO.TObjects_setAt = function TObjects_setAt(index, value){
+      this._items[index] = value;
+   }
+   MO.TObjects_set = function TObjects_set(index, value){
+      if((index >= 0) && (index < this._count)){
+         this._items[index] = value;
+      }
+   }
+   MO.TObjects_assign = function TObjects_assign(values){
+      var count = this._count = values._count;
+      for(var i = 0; i < count; i++){
+         this._items[i] = values._items[i];
+      }
+   }
+   MO.TObjects_append = function TObjects_append(values){
+      var count = values._count;
+      for(var i = 0; i < count; i++){
+         this.push(values.at(i));
+      }
+   }
+   MO.TObjects_insert = function TObjects_insert(index, value){
+      var count = this._count;
+      if((index >= 0) && (index <= count)){
+         for(var i = count; i > index; i--){
+            this._items[i] = this._items[i - 1];
+         }
+         this._items[index] = value;
+      }
+   }
+   MO.TObjects_shift = function TObjects_shift(){
+      return this.erase(0);
+   }
+   MO.TObjects_unshift = function TObjects_unshift(value){
+      return this.insert(0, value);
+   }
+   MO.TObjects_pop = function TObjects_pop(){
+      if(this._count){
+         return this._items[--this._count];
+      }
+   }
+   MO.TObjects_push = function TObjects_push(value){
+      var index = this._count++;
+      this._items[index] = value;
+      return index;
+   }
+   MO.TObjects_pushUnique = function TObjects_pushUnique(value){
+      for(var i = this._count - 1; i >= 0; i--){
+         if(this._items[i] == value){
+            return i;
+         }
+      }
+      var index = this._count++;
+      this._items[index] = value;
+      return index;
+   }
+   MO.TObjects_swap = function TObjects_swap(left, right){
+      if((left >= 0) && (left < this._count) && (right >= 0) && (right < this._count) && (left != right)){
+         var items = this._items;
+         var value = items[left];
+         items[left] = items[right];
+         items[right] = value;
+      }
+   }
+   MO.TObjects_sort = function TObjects_sort(callback){
+      var items = this._items;
+      if(items.length != this._count){
+         items.length = this._count;
+      }
+      items.sort(callback);
+   }
+   MO.TObjects_erase = function TObjects_erase(index){
+      var value = null;
+      if((index >= 0) && (index < this._count)){
+         value = this._items[index];
+         var count = --this._count;
+         var items = this._items;
+         for(var i = index; i < count; i++){
+            items[i] = items[i+1];
+         }
+         items[count] = null;
+      }
+      return value;
+   }
+   MO.TObjects_remove = function TObjects_remove(value){
+      var count = this._count;
+      if(count){
+         var index = 0;
+         var items = this._items;
+         for(var i = index; i < count; i++){
+            if(items[i] != value){
+               items[index++] = items[i];
+            }
+         }
+         for(var i = index; i < count; i++){
+            items[i] = null;
+         }
+         this._count = index;
+      }
+      return value;
+   }
+   MO.TObjects_clear = function TObjects_clear(){
+      this._count = 0;
+   }
+   MO.TObjects_dispose = function TObjects_dispose(){
+      for(var name in this._items){
+         this._items[name] = null;
+      }
+      this._count = 0;
+      this._items = null;
+   }
+   MO.TObjects_dump = function TObjects_dump(){
+      var count = this._count;
+      var info = new TString();
+      info.append(RRuntime.className(o), ':', count);
+      if(count){
+         for(var i = 0; i < count; i++){
+            info.append(' [', this._items[i], ']');
+         }
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.TString = function TString(){
+      var o = this;
+      o._count       = 0;
+      o._memory      = new Array();
+      o.isEmpty      = TString_isEmpty;
+      o.assign       = TString_assign;
+      o.append       = TString_append;
+      o.appendIf     = TString_appendIf;
+      o.appendArray  = TString_appendArray;
+      o.appendLine   = TString_appendLine;
+      o.appendRepeat = TString_appendRepeat;
+      o.push         = TString_push;
+      o.clear        = TString_clear;
+      o.toString     = TString_toString;
+      o.flush        = TString_flush;
+      o.dispose      = TString_dispose;
+      o.dump         = TString_dump;
+      return o;
+   }
+   MO.TString_isEmpty = function TString_isEmpty(){
+      return this._count == 0;
+   }
+   MO.TString_assign = function TString_assign(){
+      this.clear();
+      this.appendArray(arguments, 0, arguments.length);
+   }
+   MO.TString_append = function TString_append(v){
+      this.appendArray(arguments, 0, arguments.length);
+   }
+   MO.TString_appendIf = function TString_appendIf(flag){
+      if(flag){
+         this.appendArray(arguments, 1, arguments.length - 1);
+      }
+   }
+   MO.TString_appendArray = function TString_appendArray(values, offset, count){
+      for(var i = 0; i < count; i++){
+         var value = values[offset++];
+         if(value != null){
+            this._memory[this._count++] = value;
+         }
+      }
+   }
+   MO.TString_appendRepeat = function TString_appendRepeat(value, count){
+      for(var i = 0; i < count; i++){
+         this._memory[this._count++] = value;
+      }
+   }
+   MO.TString_appendLine = function TString_appendLine(){
+      this.appendArray(arguments, 0, arguments.length);
+      this._memory[this._count++] = '\r\n';
+   }
+   MO.TString_push = function TString_push(){
+      this.appendArray(arguments, 0, arguments.length);
+   }
+   MO.TString_clear = function TString_clear(){
+      this._count = 0;
+   }
+   MO.TString_toString = function TString_toString(){
+      var memory = this._memory;
+      if(memory.length != this._count){
+         memory = memory.slice(0, this._count);
+      }
+      return memory.join('');
+   }
+   MO.TString_flush = function TString_flush(){
+      var result = this.toString();
+      this.dispose();
+      return result;
+   }
+   MO.TString_dispose = function TString_dispose(){
+      this._count = 0;
+      var memory = this._memory;
+      if(memory){
+         for(var i = memory.length - 1; i >= 0; i--){
+            memory[i] = null;
+         }
+         this._memory = null;
+      }
+   }
+   MO.TString_dump = function TString_dump(){
+      var source = this.toString();
+      return RRuntime.className(o) + ':' + source.length + '[' + source + ']';
+   }
+}
+with(MO){
+   MO.RAssert = function RAssert(){
+      var o = this;
+      o.isTrue        = RAssert_isTrue;
+      o.isFalse       = RAssert_isFalse;
+      o.debugBegin    = MO.Runtime.empty;
+      o.debug         = MO.Runtime.empty;
+      o.debugEnd      = MO.Runtime.empty;
+      o.debugTrue     = RAssert_debugTrue;
+      o.debugFalse    = RAssert_debugFalse;
+      o.debugNull     = RAssert_debugNull;
+      o.debugNotNull  = RAssert_debugNotNull;
+      o.debugEmpty    = RAssert_debugEmpty;
+      o.debugNotEmpty = RAssert_debugNotEmpty;
+      return o;
+   }
+   MO.RAssert_isTrue = function RAssert_isTrue(value){
+      if(!value){
+         throw new Error('Assert ture failure.');
+      }
+   }
+   MO.RAssert_isFalse = function RAssert_isFalse(value){
+      if(value){
+         throw new Error('Assert false failure.');
+      }
+   }
+   MO.RAssert_debugTrue = function RAssert_debugTrue(value){
+      if(!value){
+         throw new Error('Assert true failure.');
+      }
+   }
+   MO.RAssert_debugFalse = function RAssert_debugFalse(value){
+      if(value){
+         throw new Error('Assert false failure.');
+      }
+   }
+   MO.RAssert_debugNull = function RAssert_debugNull(value){
+      if(value != null){
+         throw new Error('Assert null failure.');
+      }
+   }
+   MO.RAssert_debugNotNull = function RAssert_debugNotNull(value){
+      if(value == null){
+         throw new Error('Assert not null failure.');
+      }
+   }
+   MO.RAssert_debugEmpty = function RAssert_debugEmpty(value){
+      if(value != null){
+         throw new Error('Assert empty failure.');
+      }
+   }
+   MO.RAssert_debugNotEmpty = function RAssert_debugNotEmpty(value){
+      if(value == null){
+         throw new Error('Assert not empty failure.');
+      }
+   }
+   MO.RAssert = new RAssert();
+}
+with(MO){
+   MO.RMemory = function RMemory(){
+      var o = this;
+      o._entryUnused = null;;
+      o._pools       = new Object();
+      o.entryAlloc   = RMemory_entryAlloc;
+      o.entryFree    = RMemory_entryFree;
+      o.alloc        = RMemory_alloc;
+      o.free         = RMemory_free;
+      o.refresh      = RMemory_refresh;
+      return o;
+   }
+   MO.RMemory_entryAlloc = function RMemory_entryAlloc(){
+      var entry = null;
+      var unused = this._entryUnused;
+      if(unused){
+         entry = unused;
+         this._entryUnused = unused.next;
+      }else{
+         entry = new SMemoryPoolEntry();
+      }
+      return entry;
+   }
+   MO.RMemory_entryFree = function RMemory_entryFree(entry){
+      RAssert.debugNotNull(entry);
+      entry.next = this._entryUnused;
+      this._entryUnused = entry;
+   }
+   MO.RMemory_alloc = function RMemory_alloc(clazz){
+      RAssert.debugNotNull(clazz);
+      var className = RRuntime.className(clazz);
+      var pools = this._pools;
+      var pool = pools[className];
+      if(!pool){
+         pool = new TMemoryPool();
+         pool._constructor = clazz;
+         pools[className] = pool;
+      }
+      var value = pool.alloc();
+      return value;
+   }
+   MO.RMemory_free = function RMemory_free(value){
+      RAssert.debugNotNull(value);
+      var pool = value.__pool;
+      RAssert.debugNotNull(pool);
+      pool.free(value);
+   }
+   MO.RMemory_refresh = function RMemory_refresh(){
+      CollectGarbage();
+   }
+   MO.RMemory = new RMemory();
+}
+with(MO){
+   MO.SMemoryPoolEntry = function SMemoryPoolEntry(){
+      var o = this;
+      o.next    = null;
+      o.value   = null;
+      o.dispose = SMemoryPoolEntry_dispose;
+      return o;
+   }
+   MO.SMemoryPoolEntry_dispose = function SMemoryPoolEntry_dispose(){
+      var value = this.value;
+      if(value){
+         value.__pool = null;
+         value.dispose();
+      }
+      this.next = null;
+      this.value = null;
+   }
+}
+with(MO){
+   MO.TMemoryPool = function TMemoryPool(){
+      var o = this;
+      o._constructor = null;
+      o._unused      = null;
+      o._createCount = 0;
+      o._allocCount  = 0;
+      o._freeCount   = 0;
+      o.alloc        = TMemoryPool_alloc;
+      o.free         = TMemoryPool_free;
+      o.dispose      = TMemoryPool_dispose;
+      o.dump         = TMemoryPool_dump
+      return o;
+   }
+   MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
+      var value = null;
+      var unused = this._unused;
+      if(unused){
+         value = unused.value;
+         this._unused = unused.next;
+         RMemory.entryFree(unused);
+      }else{
+         value = new this._constructor();
+         value.__pool = this;
+         this._createCount++;
+      }
+      this._allocCount++;
+      return value;
+   }
+   MO.TMemoryPool_free = function TMemoryPool_free(value){
+      RAssert.debugNotNull(value);
+      var entry = RMemory.entryAlloc();
+      entry.value = value;
+      entry.next = this._unused;
+      this._unused = entry;
+      this._freeCount++;
+   }
+   MO.TMemoryPool_dispose = function TMemoryPool_dispose(){
+      var entry = this._unused;
+      while(entry){
+         var current = entry;
+         entry = current.next;
+         current.dispose();
+         RMemory.entryFree(current);
+      }
+   }
+   MO.TMemoryPool_dump = function TMemoryPool_dump(){
+      var info = new TString();
+      info.append('Pool:');
+      info.append('create=', this._createCount);
+      info.append(', alloc=', this._allocCount);
+      info.append(', free=', this._freeCount);
+      return info.flush();
+   }
+}
+with(MO){
+   MO.SLooperEntry = function SLooperEntry(){
+      var o = this;
+      o.prior   = null;
+      o.next    = null;
+      o.value   = null;
+      o.dispose = SLooperEntry_dispose;
+      return o;
+   }
+   MO.SLooperEntry_dispose = function SLooperEntry_dispose(){
+      this.prior = null;
+      this.next = null;
+      this.value = null;
+   }
+}
+with(MO){
+   MO.TLooper = function TLooper(){
+      var o = this;
+      o._count             = 0;
+      o._recordCount       = 0;
+      o._current           = null;
+      o.innerPush          = TLooper_innerPush;
+      o.innerRemove        = TLooper_innerRemove;
+      o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
+      o.innerRemoveValue   = TLooper_innerRemoveValue;
+      o.isEmpty            = TLooper_isEmpty;
+      o.count              = TLooper_count;
+      o.record             = TLooper_record;
+      o.unrecord           = TLooper_unrecord;
+      o.contains           = TLooper_contains;
+      o.current            = TLooper_current;
+      o.next               = TLooper_next;
+      o.push               = TLooper_push;
+      o.pushUnique         = TLooper_pushUnique;
+      o.removeCurrent      = TLooper_removeCurrent;
+      o.remove             = TLooper_remove;
+      o.clear              = TLooper_clear;
+      o.dispose            = TLooper_dispose;
+      o.dump               = TLooper_dump;
+      return o;
+   }
+   MO.TLooper_innerPush = function TLooper_innerPush(entry){
+      var current = this._current;
+      if(current){
+         var prior = current.prior;
+         entry.prior = prior;
+         entry.next = current;
+         prior.next = entry;
+         current.prior = entry;
+      }else{
+         entry.prior = entry;
+         entry.next = entry;
+         this._current = entry;
+      }
+      this._count++;
+   }
+   MO.TLooper_innerRemove = function TLooper_innerRemove(entry){
+      var prior = entry.prior;
+      var next = entry.next;
+      prior.next = next;
+      next.prior = prior;
+      this._count--;
+      if(this._count > 0){
+         this._current = next;
+      }else{
+         this._current = null;
+      }
+      RMemory.free(entry);
+   }
+   MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
+      var value = null;
+      if(this._count > 0){
+         var current = this._current;
+         value = current.value;
+         this.innerRemove(current);
+      }
+      return value;
+   }
+   MO.TLooper_innerRemoveValue = function TLooper_innerRemoveValue(value){
+      if(this._count > 0){
+         if(this._current.value == value){
+            this.innerRemoveCurrent();
+            return;
+         }
+         var current = this._current;
+         var entry = current.next;
+         while(entry != current){
+            if(entry.value == value){
+               this.innerRemove(entry);
+               this._current = current;
+               return;
+            }
+            entry = entry.next;
+         }
+      }
+   }
+   MO.TLooper_isEmpty = function TLooper_isEmpty(){
+      return this._count == 0;
+   }
+   MO.TLooper_count = function TLooper_count(){
+      return this._count;
+   }
+   MO.TLooper_record = function TLooper_record(){
+      this._recordCount = this._count;
+   }
+   MO.TLooper_unrecord = function TLooper_unrecord(v){
+      this._recordCount = -1;
+   }
+   MO.TLooper_contains = function TLooper_contains(value){
+      if(this._current){
+         var entry = this._current;
+         var count = this._count;
+         for(var i = 0; i < count; i++){
+            if(entry.value == value){
+               return true;
+            }
+            entry = entry.next;
+         }
+      }
+      return false;
+   }
+   MO.TLooper_current = function TLooper_current(){
+      var entry = this._current;
+      return entry ? entry.value : null;
+   }
+   MO.TLooper_next = function TLooper_next(){
+      if(this._current){
+         this._current = this._current.next;
+      }
+      var c = this._recordCount;
+      if(c > 0){
+         this._recordCount--;
+      }else if(c == 0){
+         return null;
+      }
+      return this._current ? this._current.value : null;
+   }
+   MO.TLooper_push = function TLooper_push(value){
+      var entry = RMemory.alloc(SLooperEntry);
+      entry.value = value;
+      this.innerPush(entry);
+   }
+   MO.TLooper_pushUnique = function TLooper_pushUnique(value){
+      if(!this.contains(value)){
+         this.push(value);
+      }
+   }
+   MO.TLooper_removeCurrent = function TLooper_removeCurrent(){
+      return this.innerRemoveCurrent();
+   }
+   MO.TLooper_remove = function TLooper_remove(p){
+      this.innerRemoveValue(p);
+   }
+   MO.TLooper_clear = function TLooper_clear(){
+      var entry = this._current;
+      if(entry){
+         entry.prior.next = null;
+         while(entry){
+            var next = entry.next;
+            MO.Memory.free(next);
+            entry = next;
+         }
+      }
+      this._count = 0;
+      this._current = null;
+   }
+   MO.TLooper_dispose = function TLooper_dispose(){
+      this.clear();
+   }
+   MO.TLooper_dump = function TLooper_dump(){
+      var count = this._count;
+      var info = new TString();
+      info.append(RClass.name(this), ': ', count);
+      if(count > 0){
+         var entry = this._current;
+         for(var i = 0; i < count; i++){
+            info.append(' [', entry.value, ']');
+            entry = entry.next;
+         }
+      }
+      return info.flush();
+   }
+}
+with(MO){
+   MO.RGlobal = function RGlobal(){
+      var o = this;
+      o._instances = new TDictionary();
+      o.get       = RGlobal_get;
+      o.set       = RGlobal_set;
+      o.globalGet = RGlobal_globalGet;
+      o.globalSet = RGlobal_globalSet;
+      return o;
+   }
+   MO.RGlobal_get = function RGlobal_get(name){
+      return this._instances.get(name);
+   }
+   MO.RGlobal_set = function RGlobal_set(name, value){
+      this._instances.set(name, value);
+   }
+   MO.RGlobal_globalGet = function RGlobal_globalGet(name){
+      var value = null;
+      if(top.MO.Global){
+         value = top.MO.Global.get(name);
+      }else{
+         value = this._instances.get(name);
+      }
+      return value;
+   }
+   MO.RGlobal_globalSet = function RGlobal_globalSet(name, value){
+      if(top.MO.Global){
+         top.MO.Global.set(name, value);
+      }else{
+         this._instances.set(name, value);
+      }
+   }
+   MO.RGlobal = new RGlobal();
 }
