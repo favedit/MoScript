@@ -12017,22 +12017,22 @@ with(MO){
       id[i++] = vi++;
       id[i++] = vi++;
       o._vertexCount = vc;
-      var vb = o._vertexPositionBuffer = c.createVertexBuffer();
-      vb._name = 'position';
-      vb._formatCd = EG3dAttributeFormat.Float3;
-      vb.upload(vd, 4 * 3, vc);
-      o._vertexBuffers.set(vb._name, vb);
-      var vb = o._vertexColorBuffer = c.createVertexBuffer();
-      vb._name = 'color';
-      vb._formatCd = EG3dAttributeFormat.Byte4Normal;
-      vb.upload(vcd, 4, vc);
-      o._vertexBuffers.set(vb._name, vb);
-      var ib = o._indexBuffer = c.createIndexBuffer();
-      ib._fillMode = EG3dFillMode.Line;
-      ib.upload(id, it);
-      var mi = o.material().info();
-      mi.effectCode = 'control';
-      mi.ambientColor.set(1, 1, 1, 1);
+      var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      buffer.upload(vd, 4 * 3, vc);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+      buffer.upload(vcd, 4, vc);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._indexBuffer = c.createIndexBuffer();
+      buffer.setFillModeCd(EG3dFillMode.Line);
+      buffer.upload(id, it);
+      var materialInfo = o.material().info();
+      materialInfo.effectCode = 'control';
+      materialInfo.ambientColor.set(1, 1, 1, 1);
    }
 }
 with(MO){
