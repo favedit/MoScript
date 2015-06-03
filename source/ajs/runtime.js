@@ -26,8 +26,13 @@ MO.EScope = new function EScope(){
    o.Global  = 3;
    return o;
 }
-MO.RRuntime = function RRuntime(){
+MO.RSingleton = function RSingleton(){
    var o = this;
+   o._singleton = true;
+   return o;
+}
+MO.RRuntime = function RRuntime(){
+   var o = MO.RSingleton.call(this);
    o._processCd = MO.EProcess.Release;
    return o;
 }
@@ -866,116 +871,99 @@ with(MO){
       return MO.Runtime.className(o) + ':' + source.length + '[' + source + ']';
    }
 }
-with(MO){
-   MO.RAssert = function RAssert(){
-      var o = this;
-      o.isTrue        = RAssert_isTrue;
-      o.isFalse       = RAssert_isFalse;
-      o.debugBegin    = MO.Runtime.empty;
-      o.debug         = MO.Runtime.empty;
-      o.debugEnd      = MO.Runtime.empty;
-      o.debugTrue     = RAssert_debugTrue;
-      o.debugFalse    = RAssert_debugFalse;
-      o.debugNull     = RAssert_debugNull;
-      o.debugNotNull  = RAssert_debugNotNull;
-      o.debugEmpty    = RAssert_debugEmpty;
-      o.debugNotEmpty = RAssert_debugNotEmpty;
-      return o;
-   }
-   MO.RAssert_isTrue = function RAssert_isTrue(value){
-      if(!value){
-         throw new Error('Assert ture failure.');
-      }
-   }
-   MO.RAssert_isFalse = function RAssert_isFalse(value){
-      if(value){
-         throw new Error('Assert false failure.');
-      }
-   }
-   MO.RAssert_debugTrue = function RAssert_debugTrue(value){
-      if(!value){
-         throw new Error('Assert true failure.');
-      }
-   }
-   MO.RAssert_debugFalse = function RAssert_debugFalse(value){
-      if(value){
-         throw new Error('Assert false failure.');
-      }
-   }
-   MO.RAssert_debugNull = function RAssert_debugNull(value){
-      if(value != null){
-         throw new Error('Assert null failure.');
-      }
-   }
-   MO.RAssert_debugNotNull = function RAssert_debugNotNull(value){
-      if(value == null){
-         throw new Error('Assert not null failure.');
-      }
-   }
-   MO.RAssert_debugEmpty = function RAssert_debugEmpty(value){
-      if(value != null){
-         throw new Error('Assert empty failure.');
-      }
-   }
-   MO.RAssert_debugNotEmpty = function RAssert_debugNotEmpty(value){
-      if(value == null){
-         throw new Error('Assert not empty failure.');
-      }
-   }
-   MO.RAssert = new RAssert();
+MO.RAssert = function RAssert(){
+   var o = MO.RSingleton.call(this);
+   o.debugBegin = MO.Runtime.empty;
+   o.debug      = MO.Runtime.empty;
+   o.debugEnd   = MO.Runtime.empty;
+   return o;
 }
-with(MO){
-   MO.RMemory = function RMemory(){
-      var o = this;
-      o._entryUnused = null;;
-      o._pools       = new Object();
-      o.entryAlloc   = RMemory_entryAlloc;
-      o.entryFree    = RMemory_entryFree;
-      o.alloc        = RMemory_alloc;
-      o.free         = RMemory_free;
-      o.refresh      = RMemory_refresh;
-      return o;
+MO.RAssert.prototype.isTrue = function RAssert_isTrue(value){
+   if(!value){
+      throw new Error('Assert ture failure.');
    }
-   MO.RMemory_entryAlloc = function RMemory_entryAlloc(){
-      var entry = null;
-      var unused = this._entryUnused;
-      if(unused){
-         entry = unused;
-         this._entryUnused = unused.next;
-      }else{
-         entry = new SMemoryPoolEntry();
-      }
-      return entry;
-   }
-   MO.RMemory_entryFree = function RMemory_entryFree(entry){
-      RAssert.debugNotNull(entry);
-      entry.next = this._entryUnused;
-      this._entryUnused = entry;
-   }
-   MO.RMemory_alloc = function RMemory_alloc(clazz){
-      RAssert.debugNotNull(clazz);
-      var className = MO.Runtime.className(clazz);
-      var pools = this._pools;
-      var pool = pools[className];
-      if(!pool){
-         pool = new TMemoryPool();
-         pool._constructor = clazz;
-         pools[className] = pool;
-      }
-      var value = pool.alloc();
-      return value;
-   }
-   MO.RMemory_free = function RMemory_free(value){
-      RAssert.debugNotNull(value);
-      var pool = value.__pool;
-      RAssert.debugNotNull(pool);
-      pool.free(value);
-   }
-   MO.RMemory_refresh = function RMemory_refresh(){
-      CollectGarbage();
-   }
-   MO.RMemory = new RMemory();
 }
+MO.RAssert.prototype.isFalse = function RAssert_isFalse(value){
+   if(value){
+      throw new Error('Assert false failure.');
+   }
+}
+MO.RAssert.prototype.debugTrue = function RAssert_debugTrue(value){
+   if(!value){
+      throw new Error('Assert true failure.');
+   }
+}
+MO.RAssert.prototype.debugFalse = function RAssert_debugFalse(value){
+   if(value){
+      throw new Error('Assert false failure.');
+   }
+}
+MO.RAssert.prototype.debugNull = function RAssert_debugNull(value){
+   if(value != null){
+      throw new Error('Assert null failure.');
+   }
+}
+MO.RAssert.prototype.debugNotNull = function RAssert_debugNotNull(value){
+   if(value == null){
+      throw new Error('Assert not null failure.');
+   }
+}
+MO.RAssert.prototype.debugEmpty = function RAssert_debugEmpty(value){
+   if(value != null){
+      throw new Error('Assert empty failure.');
+   }
+}
+MO.RAssert.prototype.debugNotEmpty = function RAssert_debugNotEmpty(value){
+   if(value == null){
+      throw new Error('Assert not empty failure.');
+   }
+}
+MO.Assert = new MO.RAssert();
+MO.RMemory = function RMemory(){
+   var o = MO.RSingleton.call(this);
+   o._entryUnused = null;;
+   o._pools       = new Object();
+   return o;
+}
+MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
+   var entry = null;
+   var unused = this._entryUnused;
+   if(unused){
+      entry = unused;
+      this._entryUnused = unused.next;
+   }else{
+      entry = new MO.SMemoryPoolEntry();
+   }
+   return entry;
+}
+MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
+   MO.Assert.debugNotNull(entry);
+   entry.next = this._entryUnused;
+   this._entryUnused = entry;
+}
+MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
+   MO.Assert.debugNotNull(clazz);
+   var className = MO.Runtime.className(clazz);
+   var pools = this._pools;
+   var pool = pools[className];
+   if(!pool){
+      pool = new MO.TMemoryPool();
+      pool._constructor = clazz;
+      pools[className] = pool;
+   }
+   var value = pool.alloc();
+   return value;
+}
+MO.RMemory.prototype.free = function RMemory_free(value){
+   MO.Assert.debugNotNull(value);
+   var pool = value.__pool;
+   MO.Assert.debugNotNull(pool);
+   pool.free(value);
+}
+MO.RMemory.prototype.refresh = function RMemory_refresh(){
+   CollectGarbage();
+}
+MO.Memory = new MO.RMemory();
 with(MO){
    MO.SMemoryPoolEntry = function SMemoryPoolEntry(){
       var o = this;
@@ -1014,7 +1002,7 @@ with(MO){
       if(unused){
          value = unused.value;
          this._unused = unused.next;
-         RMemory.entryFree(unused);
+         MO.Memory.entryFree(unused);
       }else{
          value = new this._constructor();
          value.__pool = this;
@@ -1024,8 +1012,8 @@ with(MO){
       return value;
    }
    MO.TMemoryPool_free = function TMemoryPool_free(value){
-      RAssert.debugNotNull(value);
-      var entry = RMemory.entryAlloc();
+      MO.Assert.debugNotNull(value);
+      var entry = MO.Memory.entryAlloc();
       entry.value = value;
       entry.next = this._unused;
       this._unused = entry;
@@ -1037,7 +1025,7 @@ with(MO){
          var current = entry;
          entry = current.next;
          current.dispose();
-         RMemory.entryFree(current);
+         MO.Memory.entryFree(current);
       }
    }
    MO.TMemoryPool_dump = function TMemoryPool_dump(){
@@ -1116,7 +1104,7 @@ with(MO){
       }else{
          this._current = null;
       }
-      RMemory.free(entry);
+      MO.Memory.free(entry);
    }
    MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
       var value = null;
@@ -1187,7 +1175,7 @@ with(MO){
       return this._current ? this._current.value : null;
    }
    MO.TLooper_push = function TLooper_push(value){
-      var entry = RMemory.alloc(SLooperEntry);
+      var entry = MO.Memory.alloc(SLooperEntry);
       entry.value = value;
       this.innerPush(entry);
    }
@@ -1232,37 +1220,31 @@ with(MO){
       return info.flush();
    }
 }
-with(MO){
-   MO.RGlobal = function RGlobal(){
-      var o = this;
-      o._instances = new TDictionary();
-      o.get       = RGlobal_get;
-      o.set       = RGlobal_set;
-      o.globalGet = RGlobal_globalGet;
-      o.globalSet = RGlobal_globalSet;
-      return o;
+MO.RGlobal = function RGlobal(){
+   var o = MO.RSingleton.call(this);
+   o._instances = new MO.TDictionary();
+   return o;
+}
+MO.RGlobal.prototype.get = function RGlobal_get(name){
+   return this._instances.get(name);
+}
+MO.RGlobal.prototype.set = function RGlobal_set(name, value){
+   this._instances.set(name, value);
+}
+MO.RGlobal.prototype.globalGet = function RGlobal_globalGet(name){
+   var value = null;
+   if(top.MO.Global){
+      value = top.MO.Global.get(name);
+   }else{
+      value = this._instances.get(name);
    }
-   MO.RGlobal_get = function RGlobal_get(name){
-      return this._instances.get(name);
-   }
-   MO.RGlobal_set = function RGlobal_set(name, value){
+   return value;
+}
+MO.RGlobal.prototype.globalSet = function RGlobal_globalSet(name, value){
+   if(top.MO.Global){
+      top.MO.Global.set(name, value);
+   }else{
       this._instances.set(name, value);
    }
-   MO.RGlobal_globalGet = function RGlobal_globalGet(name){
-      var value = null;
-      if(top.MO.Global){
-         value = top.MO.Global.get(name);
-      }else{
-         value = this._instances.get(name);
-      }
-      return value;
-   }
-   MO.RGlobal_globalSet = function RGlobal_globalSet(name, value){
-      if(top.MO.Global){
-         top.MO.Global.set(name, value);
-      }else{
-         this._instances.set(name, value);
-      }
-   }
-   MO.RGlobal = new RGlobal();
 }
+MO.Global = new MO.RGlobal();

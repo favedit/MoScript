@@ -79,7 +79,7 @@
          this._current = null;
       }
       // 释放入口
-      RMemory.free(entry);
+      MO.Memory.free(entry);
    }
 
    //==========================================================
@@ -227,7 +227,7 @@
    // @param value:Object 对象
    //==========================================================
    MO.TLooper_push = function TLooper_push(value){
-      var entry = RMemory.alloc(SLooperEntry);
+      var entry = MO.Memory.alloc(SLooperEntry);
       entry.value = value;
       this.innerPush(entry);
    }

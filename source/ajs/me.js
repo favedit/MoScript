@@ -26,8 +26,13 @@ MO.EScope = new function EScope(){
    o.Global  = 3;
    return o;
 }
-MO.RRuntime = function RRuntime(){
+MO.RSingleton = function RSingleton(){
    var o = this;
+   o._singleton = true;
+   return o;
+}
+MO.RRuntime = function RRuntime(){
+   var o = MO.RSingleton.call(this);
    o._processCd = MO.EProcess.Release;
    return o;
 }
@@ -866,116 +871,99 @@ with(MO){
       return MO.Runtime.className(o) + ':' + source.length + '[' + source + ']';
    }
 }
-with(MO){
-   MO.RAssert = function RAssert(){
-      var o = this;
-      o.isTrue        = RAssert_isTrue;
-      o.isFalse       = RAssert_isFalse;
-      o.debugBegin    = MO.Runtime.empty;
-      o.debug         = MO.Runtime.empty;
-      o.debugEnd      = MO.Runtime.empty;
-      o.debugTrue     = RAssert_debugTrue;
-      o.debugFalse    = RAssert_debugFalse;
-      o.debugNull     = RAssert_debugNull;
-      o.debugNotNull  = RAssert_debugNotNull;
-      o.debugEmpty    = RAssert_debugEmpty;
-      o.debugNotEmpty = RAssert_debugNotEmpty;
-      return o;
-   }
-   MO.RAssert_isTrue = function RAssert_isTrue(value){
-      if(!value){
-         throw new Error('Assert ture failure.');
-      }
-   }
-   MO.RAssert_isFalse = function RAssert_isFalse(value){
-      if(value){
-         throw new Error('Assert false failure.');
-      }
-   }
-   MO.RAssert_debugTrue = function RAssert_debugTrue(value){
-      if(!value){
-         throw new Error('Assert true failure.');
-      }
-   }
-   MO.RAssert_debugFalse = function RAssert_debugFalse(value){
-      if(value){
-         throw new Error('Assert false failure.');
-      }
-   }
-   MO.RAssert_debugNull = function RAssert_debugNull(value){
-      if(value != null){
-         throw new Error('Assert null failure.');
-      }
-   }
-   MO.RAssert_debugNotNull = function RAssert_debugNotNull(value){
-      if(value == null){
-         throw new Error('Assert not null failure.');
-      }
-   }
-   MO.RAssert_debugEmpty = function RAssert_debugEmpty(value){
-      if(value != null){
-         throw new Error('Assert empty failure.');
-      }
-   }
-   MO.RAssert_debugNotEmpty = function RAssert_debugNotEmpty(value){
-      if(value == null){
-         throw new Error('Assert not empty failure.');
-      }
-   }
-   MO.RAssert = new RAssert();
+MO.RAssert = function RAssert(){
+   var o = MO.RSingleton.call(this);
+   o.debugBegin = MO.Runtime.empty;
+   o.debug      = MO.Runtime.empty;
+   o.debugEnd   = MO.Runtime.empty;
+   return o;
 }
-with(MO){
-   MO.RMemory = function RMemory(){
-      var o = this;
-      o._entryUnused = null;;
-      o._pools       = new Object();
-      o.entryAlloc   = RMemory_entryAlloc;
-      o.entryFree    = RMemory_entryFree;
-      o.alloc        = RMemory_alloc;
-      o.free         = RMemory_free;
-      o.refresh      = RMemory_refresh;
-      return o;
+MO.RAssert.prototype.isTrue = function RAssert_isTrue(value){
+   if(!value){
+      throw new Error('Assert ture failure.');
    }
-   MO.RMemory_entryAlloc = function RMemory_entryAlloc(){
-      var entry = null;
-      var unused = this._entryUnused;
-      if(unused){
-         entry = unused;
-         this._entryUnused = unused.next;
-      }else{
-         entry = new SMemoryPoolEntry();
-      }
-      return entry;
-   }
-   MO.RMemory_entryFree = function RMemory_entryFree(entry){
-      RAssert.debugNotNull(entry);
-      entry.next = this._entryUnused;
-      this._entryUnused = entry;
-   }
-   MO.RMemory_alloc = function RMemory_alloc(clazz){
-      RAssert.debugNotNull(clazz);
-      var className = MO.Runtime.className(clazz);
-      var pools = this._pools;
-      var pool = pools[className];
-      if(!pool){
-         pool = new TMemoryPool();
-         pool._constructor = clazz;
-         pools[className] = pool;
-      }
-      var value = pool.alloc();
-      return value;
-   }
-   MO.RMemory_free = function RMemory_free(value){
-      RAssert.debugNotNull(value);
-      var pool = value.__pool;
-      RAssert.debugNotNull(pool);
-      pool.free(value);
-   }
-   MO.RMemory_refresh = function RMemory_refresh(){
-      CollectGarbage();
-   }
-   MO.RMemory = new RMemory();
 }
+MO.RAssert.prototype.isFalse = function RAssert_isFalse(value){
+   if(value){
+      throw new Error('Assert false failure.');
+   }
+}
+MO.RAssert.prototype.debugTrue = function RAssert_debugTrue(value){
+   if(!value){
+      throw new Error('Assert true failure.');
+   }
+}
+MO.RAssert.prototype.debugFalse = function RAssert_debugFalse(value){
+   if(value){
+      throw new Error('Assert false failure.');
+   }
+}
+MO.RAssert.prototype.debugNull = function RAssert_debugNull(value){
+   if(value != null){
+      throw new Error('Assert null failure.');
+   }
+}
+MO.RAssert.prototype.debugNotNull = function RAssert_debugNotNull(value){
+   if(value == null){
+      throw new Error('Assert not null failure.');
+   }
+}
+MO.RAssert.prototype.debugEmpty = function RAssert_debugEmpty(value){
+   if(value != null){
+      throw new Error('Assert empty failure.');
+   }
+}
+MO.RAssert.prototype.debugNotEmpty = function RAssert_debugNotEmpty(value){
+   if(value == null){
+      throw new Error('Assert not empty failure.');
+   }
+}
+MO.Assert = new MO.RAssert();
+MO.RMemory = function RMemory(){
+   var o = MO.RSingleton.call(this);
+   o._entryUnused = null;;
+   o._pools       = new Object();
+   return o;
+}
+MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
+   var entry = null;
+   var unused = this._entryUnused;
+   if(unused){
+      entry = unused;
+      this._entryUnused = unused.next;
+   }else{
+      entry = new MO.SMemoryPoolEntry();
+   }
+   return entry;
+}
+MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
+   MO.Assert.debugNotNull(entry);
+   entry.next = this._entryUnused;
+   this._entryUnused = entry;
+}
+MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
+   MO.Assert.debugNotNull(clazz);
+   var className = MO.Runtime.className(clazz);
+   var pools = this._pools;
+   var pool = pools[className];
+   if(!pool){
+      pool = new MO.TMemoryPool();
+      pool._constructor = clazz;
+      pools[className] = pool;
+   }
+   var value = pool.alloc();
+   return value;
+}
+MO.RMemory.prototype.free = function RMemory_free(value){
+   MO.Assert.debugNotNull(value);
+   var pool = value.__pool;
+   MO.Assert.debugNotNull(pool);
+   pool.free(value);
+}
+MO.RMemory.prototype.refresh = function RMemory_refresh(){
+   CollectGarbage();
+}
+MO.Memory = new MO.RMemory();
 with(MO){
    MO.SMemoryPoolEntry = function SMemoryPoolEntry(){
       var o = this;
@@ -1014,7 +1002,7 @@ with(MO){
       if(unused){
          value = unused.value;
          this._unused = unused.next;
-         RMemory.entryFree(unused);
+         MO.Memory.entryFree(unused);
       }else{
          value = new this._constructor();
          value.__pool = this;
@@ -1024,8 +1012,8 @@ with(MO){
       return value;
    }
    MO.TMemoryPool_free = function TMemoryPool_free(value){
-      RAssert.debugNotNull(value);
-      var entry = RMemory.entryAlloc();
+      MO.Assert.debugNotNull(value);
+      var entry = MO.Memory.entryAlloc();
       entry.value = value;
       entry.next = this._unused;
       this._unused = entry;
@@ -1037,7 +1025,7 @@ with(MO){
          var current = entry;
          entry = current.next;
          current.dispose();
-         RMemory.entryFree(current);
+         MO.Memory.entryFree(current);
       }
    }
    MO.TMemoryPool_dump = function TMemoryPool_dump(){
@@ -1116,7 +1104,7 @@ with(MO){
       }else{
          this._current = null;
       }
-      RMemory.free(entry);
+      MO.Memory.free(entry);
    }
    MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
       var value = null;
@@ -1187,7 +1175,7 @@ with(MO){
       return this._current ? this._current.value : null;
    }
    MO.TLooper_push = function TLooper_push(value){
-      var entry = RMemory.alloc(SLooperEntry);
+      var entry = MO.Memory.alloc(SLooperEntry);
       entry.value = value;
       this.innerPush(entry);
    }
@@ -1232,40 +1220,34 @@ with(MO){
       return info.flush();
    }
 }
-with(MO){
-   MO.RGlobal = function RGlobal(){
-      var o = this;
-      o._instances = new TDictionary();
-      o.get       = RGlobal_get;
-      o.set       = RGlobal_set;
-      o.globalGet = RGlobal_globalGet;
-      o.globalSet = RGlobal_globalSet;
-      return o;
+MO.RGlobal = function RGlobal(){
+   var o = MO.RSingleton.call(this);
+   o._instances = new MO.TDictionary();
+   return o;
+}
+MO.RGlobal.prototype.get = function RGlobal_get(name){
+   return this._instances.get(name);
+}
+MO.RGlobal.prototype.set = function RGlobal_set(name, value){
+   this._instances.set(name, value);
+}
+MO.RGlobal.prototype.globalGet = function RGlobal_globalGet(name){
+   var value = null;
+   if(top.MO.Global){
+      value = top.MO.Global.get(name);
+   }else{
+      value = this._instances.get(name);
    }
-   MO.RGlobal_get = function RGlobal_get(name){
-      return this._instances.get(name);
-   }
-   MO.RGlobal_set = function RGlobal_set(name, value){
+   return value;
+}
+MO.RGlobal.prototype.globalSet = function RGlobal_globalSet(name, value){
+   if(top.MO.Global){
+      top.MO.Global.set(name, value);
+   }else{
       this._instances.set(name, value);
    }
-   MO.RGlobal_globalGet = function RGlobal_globalGet(name){
-      var value = null;
-      if(top.MO.Global){
-         value = top.MO.Global.get(name);
-      }else{
-         value = this._instances.get(name);
-      }
-      return value;
-   }
-   MO.RGlobal_globalSet = function RGlobal_globalSet(name, value){
-      if(top.MO.Global){
-         top.MO.Global.set(name, value);
-      }else{
-         this._instances.set(name, value);
-      }
-   }
-   MO.RGlobal = new RGlobal();
 }
+MO.Global = new MO.RGlobal();
 with(MO){
    MO.AAnnotation = function AAnnotation(name){
       var o = this;
@@ -1300,6 +1282,90 @@ with(MO){
       o.name       = name;
       o.linker     = linker;
       return o;
+   }
+}
+with(MO){
+   MO.AGetSet = function AGetSet(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = AGetSet_code;
+      o.build         = AGetSet_build;
+      o.load          = AGetSet_load;
+      o.save          = AGetSet_save;
+      o.toString      = AGetSet_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.AGetSet_code = function AGetSet_code(){
+      return this._linker;
+   }
+   MO.AGetSet_build = function AGetSet_build(){
+   }
+   MO.AGetSet_load = function AGetSet_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.AGetSet_save = function AGetSet_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.AGetSet_toString = function AGetSet_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
+with(MO){
+   MO.AGetter = function AGetter(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = AGetter_code;
+      o.build         = AGetter_build;
+      o.load          = AGetter_load;
+      o.save          = AGetter_save;
+      o.toString      = AGetter_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.AGetter_code = function AGetter_code(){
+      return this._linker;
+   }
+   MO.AGetter_build = function AGetter_build(){
+   }
+   MO.AGetter_load = function AGetter_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.AGetter_save = function AGetter_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.AGetter_toString = function AGetter_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
    }
 }
 with(MO){
@@ -1354,8 +1420,93 @@ with(MO){
       return '<' + this._annotationCd + ',linker=' + this._linker + '>';
    }
 }
+with(MO){
+   MO.ASetter = function ASetter(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = ASetter_code;
+      o.build         = ASetter_build;
+      o.load          = ASetter_load;
+      o.save          = ASetter_save;
+      o.toString      = ASetter_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.ASetter_code = function ASetter_code(){
+      return this._linker;
+   }
+   MO.ASetter_build = function ASetter_build(){
+   }
+   MO.ASetter_load = function ASetter_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.ASetter_save = function ASetter_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.ASetter_toString = function ASetter_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
+with(MO){
+   MO.ASource = function ASource(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = false;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = ASource_code;
+      o.build         = ASource_build;
+      o.load          = ASource_load;
+      o.save          = ASource_save;
+      o.toString      = ASource_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.ASource_code = function ASource_code(){
+      return this._linker;
+   }
+   MO.ASource_build = function ASource_build(){
+   }
+   MO.ASource_load = function ASource_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.ASource_save = function ASource_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.ASource_toString = function ASource_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
+   o.Source    = 'source';
    o.Property  = 'property';
    o.Event     = 'enum';
    o.Event     = 'event';
@@ -1437,6 +1588,13 @@ MO.EResult = new function EResult(){
    o.Finish   = 3;
    o.Failure  = -1;
    o.Cancel   = -2;
+   return o;
+}
+MO.ESource = new function ESource(){
+   var o = this;
+   o.Get    = 'get';
+   o.Set    = 'set';
+   o.GetSet = 'getset';
    return o;
 }
 with(MO){
@@ -3816,7 +3974,7 @@ with(MO){
       }else{
          return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
-      var r = RGlobal.get(o.ConsolePreFix + n);
+      var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
          return r;
       }
@@ -3829,7 +3987,7 @@ with(MO){
       switch(s){
          case EScope.Global:
             r = top.MO.RConsole.createByName(n);
-            RGlobal.set(o.ConsolePreFix + n, r);
+            MO.Global.set(o.ConsolePreFix + n, r);
             o._consoles.set(n, r);
             break;
          case EScope.Local:
@@ -14668,7 +14826,7 @@ with(MO){
       o._statusEnable = v;
    }
    MO.RWindow_appendElement = function RWindow_appendElement(hPanel){
-      RAssert.debugNotNull(control);
+      MO.Assert.debugNotNull(control);
       this._hContainer.appendChild(hPanel);
    }
    MO.RWindow_redirect = function RWindow_redirect(){

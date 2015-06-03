@@ -39,7 +39,7 @@
          value = unused.value;
          this._unused = unused.next;
          // 释放节点
-         RMemory.entryFree(unused);
+         MO.Memory.entryFree(unused);
       }else{
          value = new this._constructor();
          value.__pool = this;
@@ -56,8 +56,8 @@
    // @param FObject 对象
    //==========================================================
    MO.TMemoryPool_free = function TMemoryPool_free(value){
-      RAssert.debugNotNull(value);
-      var entry = RMemory.entryAlloc();
+      MO.Assert.debugNotNull(value);
+      var entry = MO.Memory.entryAlloc();
       entry.value = value;
       entry.next = this._unused;
       this._unused = entry;
@@ -76,7 +76,7 @@
          entry = current.next;
          current.dispose();
          // 释放节点
-         RMemory.entryFree(current);
+         MO.Memory.entryFree(current);
       }
    }
 

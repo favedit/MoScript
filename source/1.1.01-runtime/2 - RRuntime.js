@@ -6,7 +6,7 @@
 // @version 141226
 //==========================================================
 MO.RRuntime = function RRuntime(){
-   var o = this;
+   var o = MO.RSingleton.call(this);
    //..........................................................
    // @attribute
    o._processCd = MO.EProcess.Release;

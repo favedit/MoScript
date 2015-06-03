@@ -538,7 +538,7 @@
    // @param hPanel:HtmlTag 页面元素
    //==========================================================
    MO.RWindow_appendElement = function RWindow_appendElement(hPanel){
-      RAssert.debugNotNull(control);
+      MO.Assert.debugNotNull(control);
       this._hContainer.appendChild(hPanel);
    }
 

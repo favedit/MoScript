@@ -7,6 +7,8 @@
 //===========================================================
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
+   // @attribute 代码
+   o.Source    = 'source';
    // @attribute 属性
    o.Property  = 'property';
    // @attribute 枚举v

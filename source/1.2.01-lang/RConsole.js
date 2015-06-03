@@ -150,7 +150,7 @@ with(MO){
          return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
       // 查找全局控制台
-      var r = RGlobal.get(o.ConsolePreFix + n);
+      var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
          return r;
       }
@@ -166,7 +166,7 @@ with(MO){
          case EScope.Global:
             // 从顶层对象重新创建
             r = top.MO.RConsole.createByName(n);
-            RGlobal.set(o.ConsolePreFix + n, r);
+            MO.Global.set(o.ConsolePreFix + n, r);
             // 在本地保存当前对象
             o._consoles.set(n, r);
             break;

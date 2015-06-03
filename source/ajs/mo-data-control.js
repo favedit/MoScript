@@ -1203,7 +1203,7 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      RAssert.debugTrue(RClass.isClass(p, MUiDataContainer));
+      MO.Assert.debugTrue(RClass.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');

@@ -2017,7 +2017,7 @@ with(MO){
       o._statusEnable = v;
    }
    MO.RWindow_appendElement = function RWindow_appendElement(hPanel){
-      RAssert.debugNotNull(control);
+      MO.Assert.debugNotNull(control);
       this._hContainer.appendChild(hPanel);
    }
    MO.RWindow_redirect = function RWindow_redirect(){

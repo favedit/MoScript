@@ -35,6 +35,90 @@ with(MO){
    }
 }
 with(MO){
+   MO.AGetSet = function AGetSet(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = AGetSet_code;
+      o.build         = AGetSet_build;
+      o.load          = AGetSet_load;
+      o.save          = AGetSet_save;
+      o.toString      = AGetSet_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.AGetSet_code = function AGetSet_code(){
+      return this._linker;
+   }
+   MO.AGetSet_build = function AGetSet_build(){
+   }
+   MO.AGetSet_load = function AGetSet_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.AGetSet_save = function AGetSet_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.AGetSet_toString = function AGetSet_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
+with(MO){
+   MO.AGetter = function AGetter(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = AGetter_code;
+      o.build         = AGetter_build;
+      o.load          = AGetter_load;
+      o.save          = AGetter_save;
+      o.toString      = AGetter_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.AGetter_code = function AGetter_code(){
+      return this._linker;
+   }
+   MO.AGetter_build = function AGetter_build(){
+   }
+   MO.AGetter_load = function AGetter_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.AGetter_save = function AGetter_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.AGetter_toString = function AGetter_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
+with(MO){
    MO.ALinker = function ALinker(name, linker){
       var o = this;
       o.inherit    = true;
@@ -86,8 +170,93 @@ with(MO){
       return '<' + this._annotationCd + ',linker=' + this._linker + '>';
    }
 }
+with(MO){
+   MO.ASetter = function ASetter(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = true;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = ASetter_code;
+      o.build         = ASetter_build;
+      o.load          = ASetter_load;
+      o.save          = ASetter_save;
+      o.toString      = ASetter_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.ASetter_code = function ASetter_code(){
+      return this._linker;
+   }
+   MO.ASetter_build = function ASetter_build(){
+   }
+   MO.ASetter_load = function ASetter_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.ASetter_save = function ASetter_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.ASetter_toString = function ASetter_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
+with(MO){
+   MO.ASource = function ASource(name, linker){
+      var o = this;
+      AAnnotation.call(o, name);
+      o._inherit      = false;
+      o._annotationCd = EAnnotation.Source;
+      o._linker       = null;
+      o._force        = false;
+      o.code          = ASource_code;
+      o.build         = ASource_build;
+      o.load          = ASource_load;
+      o.save          = ASource_save;
+      o.toString      = ASource_toString;
+      var code = null;
+      if(linker == null){
+         if(RString.startsWith(name, '_')){
+            code = name.substring(1);
+         }else{
+            code = name;
+         }
+         code = RString.toUnderline(code);
+      }else{
+         code = linker;
+      }
+      o._linker = code;
+      return o;
+   }
+   MO.ASource_code = function ASource_code(){
+      return this._linker;
+   }
+   MO.ASource_build = function ASource_build(){
+   }
+   MO.ASource_load = function ASource_load(v, x){
+      v[this._name] = x.get(this._linker);
+   }
+   MO.ASource_save = function ASource_save(v, x){
+      x.set(this._linker, v[this._name]);
+   }
+   MO.ASource_toString = function ASource_toString(){
+      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   }
+}
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
+   o.Source    = 'source';
    o.Property  = 'property';
    o.Event     = 'enum';
    o.Event     = 'event';
@@ -169,6 +338,13 @@ MO.EResult = new function EResult(){
    o.Finish   = 3;
    o.Failure  = -1;
    o.Cancel   = -2;
+   return o;
+}
+MO.ESource = new function ESource(){
+   var o = this;
+   o.Get    = 'get';
+   o.Set    = 'set';
+   o.GetSet = 'getset';
    return o;
 }
 with(MO){
@@ -2548,7 +2724,7 @@ with(MO){
       }else{
          return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
-      var r = RGlobal.get(o.ConsolePreFix + n);
+      var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
          return r;
       }
@@ -2561,7 +2737,7 @@ with(MO){
       switch(s){
          case EScope.Global:
             r = top.MO.RConsole.createByName(n);
-            RGlobal.set(o.ConsolePreFix + n, r);
+            MO.Global.set(o.ConsolePreFix + n, r);
             o._consoles.set(n, r);
             break;
          case EScope.Local:
