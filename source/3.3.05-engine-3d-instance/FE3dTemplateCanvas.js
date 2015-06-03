@@ -15,7 +15,7 @@ with(MO){
       o._captureRotation    = null;
       //..........................................................
       // @event
-      o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+      o.onEnterFrame        = FE3dTemplateCanvas_onEnterFrame;
       // @event
       o.onMouseCaptureStart = FE3dTemplateCanvas_onMouseCaptureStart;
       o.onMouseCapture      = FE3dTemplateCanvas_onMouseCapture;
@@ -28,9 +28,8 @@ with(MO){
       // @method
       o.construct           = FE3dTemplateCanvas_construct;
       // @method
-      o.build               = FE3dTemplateCanvas_build;
-      o.load                = FE3dTemplateCanvas_load;
-      o.setPanel            = FE3dTemplateCanvas_setPanel;
+      o.loadByGuid          = FE3dTemplateCanvas_loadByGuid;
+      o.loadByCode          = FE3dTemplateCanvas_loadByCode;
       // @method
       o.dispose             = FE3dTemplateCanvas_dispose;
       return o;
@@ -119,7 +118,7 @@ with(MO){
       }
       // 选取物件
       var r = o._activeTemplate.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o._capturePosition.set(p.clientX, p.clientY);
       o._captureRotation.assign(s.camera()._rotation);
@@ -163,17 +162,16 @@ with(MO){
    //==========================================================
    MO.FE3dTemplateCanvas_onResize = function FE3dTemplateCanvas_onResize(){
       var o = this;
-      // 获得大小
-      var hp = o._hPanel;
-      var w = hp.offsetWidth;
-      var h = hp.offsetHeight;
-      // 设置大小
-      var hc = o._hCanvas;
-      hc.width = w;
-      hc.height = h;
-      // 设置范围
-      var c = o._context;
-      c.setViewport(0, 0, w, h);
+      o.__base.FE3dCanvas.onResize.call(o, event);
+      // 获得相机信息
+      var c = o._graphicContext;
+      var cs = c.size();
+      var s = o._activeSpace;
+      if(s){
+         var rp = s.camera().projection();
+         rp.size().set(cs.width, cs.height);
+         rp.update();
+      }
    }
 
    //==========================================================
@@ -184,7 +182,7 @@ with(MO){
    //==========================================================
    MO.FE3dTemplateCanvas_onTemplateLoad = function FE3dTemplateCanvas_onTemplateLoad(p){
       var o = this;
-      var c = o._context;
+      var c = o._graphicContext;
       var s = o._activeTemplate;
       // 设置投影
       var cs = c.size();
@@ -202,32 +200,10 @@ with(MO){
    //==========================================================
    MO.FE3dTemplateCanvas_construct = function FE3dTemplateCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FE3dCanvas.construct.call(o);
       o._rotation = new SVector3();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
-   }
-
-   //==========================================================
-   // <T>构建处理。</T>
-   //
-   // @method
-   // @param p:document:HtmlTag 页面元素
-   //==========================================================
-   MO.FE3dTemplateCanvas_build = function FE3dTemplateCanvas_build(p){
-      var o = this;
-      // 创建画板
-      var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
-      h.__linker = o;
-      // 创建渲染环境
-      var c = o._context = REngine3d.createContext(FWglContext, h);
-      // 启动处理
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(1000 / 60);
-      // 监听大小改变
-      RWindow.lsnsResize.register(o, o.onResize);
-      // 注册鼠标捕捉监听
-      RConsole.find(FMouseConsole).register(o);
    }
 
    //==========================================================
@@ -235,16 +211,16 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dTemplateCanvas_load = function FE3dTemplateCanvas_load(p){
+   MO.FE3dTemplateCanvas_loadByGuid = function FE3dTemplateCanvas_loadByGuid(p){
       var o = this;
-      var c = o._context;
+      var c = o._graphicContext;
       // 收集场景
       var sc = RConsole.find(FE3dSceneConsole);
       if(o._activeTemplate != null){
          sc.free(o._activeTemplate);
       }
       // 监听加载完成
-      var s = sc.alloc(o._context, p);
+      var s = sc.alloc(o, p);
       s.addLoadListener(o, o.onTemplateLoad);
       s.selectTechnique(c, FG3dGeneralTechnique);
       o._stage = o._activeTemplate = s;
@@ -252,19 +228,25 @@ with(MO){
    }
 
    //==========================================================
-   // <T>设置面板处理。</T>
+   // <T>加载模板处理。</T>
    //
    // @method
+   // @param code:String 代码
    //==========================================================
-   MO.FE3dTemplateCanvas_setPanel = function FE3dTemplateCanvas_setPanel(p){
+   MO.FE3dTemplateCanvas_loadByCode = function FE3dTemplateCanvas_loadByCode(code){
       var o = this;
-      var c = o._context;
-      var hc = o._hCanvas;
-      // 放入父容器
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
-      // 改变大小
-      o.onResize();
+      var context = o._graphicContext;
+      // 收集场景
+      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      if(o._activeTemplate != null){
+         templateConsole.free(o._activeTemplate);
+      }
+      // 监听加载完成
+      var template = templateConsole.allocByCode(context, code);
+      template.addLoadListener(o, o.onTemplateLoad);
+      template.selectTechnique(context, FE3dGeneralTechnique);
+      o._stage = o._activeTemplate = template;
+      RStage.register('stage.template', template);
    }
 
    //==========================================================
@@ -281,6 +263,6 @@ with(MO){
          o._rotation = null;
       }
       // 父处理
-      o.__base.FObject.dispose.call(o);
+      o.__base.FE3dCanvas.dispose.call(o);
    }
 }
