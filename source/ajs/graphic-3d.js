@@ -1355,7 +1355,7 @@ with(MO){
          return x;
       }
       var u = RBrowser.contentPath(o._path + p + ".xml");
-      if(RRuntime.isDebug()){
+      if(MO.Runtime.isDebug()){
          u += '?' + RDate.format();
       }
       x = RClass.create(FXmlConnection).send(u);

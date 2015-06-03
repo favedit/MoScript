@@ -2244,7 +2244,7 @@ with(MO){
       return null;
    }
    MO.RClass_inherits = function RClass_inherits(s, p){
-      var r = RRuntime.nvl(p, s);
+      var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
       var c = a.length;
@@ -2421,7 +2421,7 @@ with(MO){
          }
       }
       c.build();
-      if(RRuntime.isRelease()){
+      if(MO.Runtime.isRelease()){
          for(var n in c.instance){
             var v = c.instance[n];
             if(v == null){
@@ -3837,7 +3837,7 @@ with(MO){
    }
    MO.RObject_free = function RObject_free(item){
       if(item){
-         if(RRuntime.isDebug()){
+         if(MO.Runtime.isDebug()){
             for(var name in item){
                if((name == '__base') || (name == '__inherits') || (name == '__class')){
                   item[name] = null;

@@ -33,6 +33,7 @@ with(MO){
       o.define      = FG3dProgramParameter_define;
       o.attachData  = FG3dProgramParameter_attachData;
       o.loadConfig  = FG3dProgramParameter_loadConfig;
+      o.dispose     = FG3dProgramParameter_dispose;
       return o;
    }
 
@@ -111,5 +112,18 @@ with(MO){
       o._linker = p.get('linker');
       o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
       o._define = p.get('define');
+   }
+
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FG3dProgramParameter_dispose = function FG3dProgramParameter_dispose(){
+      var o = this;
+      o._slot = null;
+      o._memory = null;
+      // 父处理
+      o.__base.FObject.dispose.call(o);
    }
 }

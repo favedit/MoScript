@@ -1096,7 +1096,7 @@ with(MO){
       if(!o._capability.optionDebug){
          return true;
       }
-      if(!RRuntime.isDebug()){
+      if(!MO.Runtime.isDebug()){
          return true;
       }
       // 获得错误原因

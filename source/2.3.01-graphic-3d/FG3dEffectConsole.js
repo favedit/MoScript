@@ -295,7 +295,7 @@
       }
       // 生成地址
       var u = RBrowser.contentPath(o._path + p + ".xml");
-      if(RRuntime.isDebug()){
+      if(MO.Runtime.isDebug()){
          u += '?' + RDate.format();
       }
       // 获得网络数据

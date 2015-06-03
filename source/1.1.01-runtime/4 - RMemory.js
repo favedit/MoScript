@@ -61,7 +61,7 @@
    MO.RMemory_alloc = function RMemory_alloc(clazz){
       // 获得类名
       RAssert.debugNotNull(clazz);
-      var className = RRuntime.className(clazz);
+      var className = MO.Runtime.className(clazz);
       // 获得缓冲池
       var pools = this._pools;
       var pool = pools[className];

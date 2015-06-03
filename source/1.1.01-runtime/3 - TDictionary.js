@@ -24,7 +24,7 @@
    MO.TDictionary_dump = function TDictionary_dump(){
       var info = new TString();
       var count = this._count;
-      info.append(RRuntime.className(o), ': ', count);
+      info.append(MO.Runtime.className(o), ': ', count);
       if(count > 0){
          info.append(' {\n');
          for(var i = 0; i < count; i++){

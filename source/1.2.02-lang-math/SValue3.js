@@ -13,9 +13,9 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
       //..........................................................
       // @method
       o.isEmpty     = SValue3_isEmpty;

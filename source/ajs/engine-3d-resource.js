@@ -3140,7 +3140,7 @@ with(MO){
    MO.FE3sVendor_makeUrl = function FE3sVendor_makeUrl(){
       var o = this;
       var r = o.makeSource();
-      if(RRuntime.isDebug()){
+      if(MO.Runtime.isDebug()){
          if(r.indexOf('?') == -1){
             r += '?';
          }else{

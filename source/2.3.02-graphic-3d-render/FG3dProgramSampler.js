@@ -30,6 +30,7 @@ with(MO){
       o.linker      = FG3dProgramSampler_linker;
       o.formatCd    = FG3dProgramSampler_formatCd;
       o.loadConfig  = FG3dProgramSampler_loadConfig;
+      o.dispose     = FG3dProgramSampler_dispose;
       return o;
    }
 
@@ -75,5 +76,17 @@ with(MO){
       o._linker = p.get('linker');
       o._bind = RBoolean.parse(p.get('bind', 'Y'));
       o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
+   }
+
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FG3dProgramSampler_dispose = function FG3dProgramSampler_dispose(){
+      var o = this;
+      o._slot = null;
+      // 父处理
+      o.__base.FObject.dispose.call(o);
    }
 }

@@ -135,9 +135,9 @@ with(MO){
    //==========================================================
    MO.FWglProgram_link = function FWglProgram_link(){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
-      var r = false;
+      var context = o._graphicContext;
+      var g = context._native;
+      var result = false;
       // 关联处理
       var pn = o._native;
       g.linkProgram(pn);
@@ -167,67 +167,67 @@ with(MO){
       //............................................................
       // 结束处理
       g.finish();
-      r = c.checkError("finish", "Finish program link faliure. (program_id={1})", pn);
-      if(!r){
-         return r;
+      result = context.checkError("finish", "Finish program link faliure. (program_id={1})", pn);
+      if(!result){
+         return result;
       }
       //............................................................
       // 关联常量集合
       if(o.hasParameter()){
-         var pc = o._parameters.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._parameters.value(n);
-            var i = g.getUniformLocation(pn, p.name());
-            r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._parameters.count();
+         for(var n = 0; n < count; n++){
+            var parameter = o._parameters.at(n);
+            var handle = g.getUniformLocation(pn, parameter.name());
+            result = context.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, parameter.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != null){
-               p._statusUsed = true;
+            parameter._slot = handle;
+            if(handle != null){
+               parameter._statusUsed = true;
             }
          }
       }
       // 关联属性集合
       if(o.hasAttribute()){
-         var pc = o._attributes.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._attributes.value(n);
-            var i = g.getAttribLocation(pn, p.name());
-            r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._attributes.count();
+         for(var n = 0; n < count; n++){
+            var attribute = o._attributes.at(n);
+            var handle = g.getAttribLocation(pn, attribute.name());
+            result = context.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, attribute.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != -1){
-               p._statusUsed = true;
+            attribute._slot = handle;
+            if(handle != -1){
+               attribute._statusUsed = true;
             }
          }
       }
       // 关联取样器集合
       if(o.hasSampler()){
-         var pc = o._samplers.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._samplers.value(n);
-            var i = g.getUniformLocation(pn, p.name());
-            r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._samplers.count();
+         for(var n = 0; n < count; n++){
+            var sampler = o._samplers.at(n);
+            var handle = g.getUniformLocation(pn, sampler.name());
+            result = context.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, sampler.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != null){
-               p._statusUsed = true;
+            sampler._slot = handle;
+            if(handle != null){
+               sampler._statusUsed = true;
             }
          }
          var si = 0;
-         for(var n = 0; n < pc; n++){
-            var p = o._samplers.value(n);
-            if(p._statusUsed){
-               p._index = si++;
+         for(var n = 0; n < count; n++){
+            var sampler = o._samplers.value(n);
+            if(sampler._statusUsed){
+               sampler._index = si++;
             }
          }
       }
-      return r;
+      return result;
    }
 
    //==========================================================

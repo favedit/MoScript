@@ -1647,7 +1647,7 @@ with(MO){
          return x;
       }
       var u = RBrowser.contentPath(o._path + p + ".xml");
-      if(RRuntime.isDebug()){
+      if(MO.Runtime.isDebug()){
          u += '?' + RDate.format();
       }
       x = RClass.create(FXmlConnection).send(u);
@@ -3208,12 +3208,13 @@ with(MO){
       o._name       = null;
       o._linker     = null;
       o._statusUsed = false;
-      o._slot       = -1;
+      o._slot       = null;
       o._index      = -1;
       o._formatCd   = EG3dAttributeFormat.Unknown;
       o.name        = FG3dProgramAttribute_name;
       o.linker      = FG3dProgramAttribute_linker;
       o.loadConfig  = FG3dProgramAttribute_loadConfig;
+      o.dispose     = FG3dProgramAttribute_dispose;
       return o;
    }
    MO.FG3dProgramAttribute_name = function FG3dProgramAttribute_name(){
@@ -3227,6 +3228,11 @@ with(MO){
       o._name = p.get('name');
       o._linker = p.get('linker');
       o._formatCd = REnum.encode(EG3dAttributeFormat, p.get('format'));
+   }
+   MO.FG3dProgramAttribute_dispose = function FG3dProgramAttribute_dispose(){
+      var o = this;
+      o._slot = null;
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
@@ -3246,6 +3252,7 @@ with(MO){
       o.define      = FG3dProgramParameter_define;
       o.attachData  = FG3dProgramParameter_attachData;
       o.loadConfig  = FG3dProgramParameter_loadConfig;
+      o.dispose     = FG3dProgramParameter_dispose;
       return o;
    }
    MO.FG3dProgramParameter_name = function FG3dProgramParameter_name(){
@@ -3286,6 +3293,12 @@ with(MO){
       o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
       o._define = p.get('define');
    }
+   MO.FG3dProgramParameter_dispose = function FG3dProgramParameter_dispose(){
+      var o = this;
+      o._slot = null;
+      o._memory = null;
+      o.__base.FObject.dispose.call(o);
+   }
 }
 with(MO){
    MO.FG3dProgramSampler = function FG3dProgramSampler(o){
@@ -3302,6 +3315,7 @@ with(MO){
       o.linker      = FG3dProgramSampler_linker;
       o.formatCd    = FG3dProgramSampler_formatCd;
       o.loadConfig  = FG3dProgramSampler_loadConfig;
+      o.dispose     = FG3dProgramSampler_dispose;
       return o;
    }
    MO.FG3dProgramSampler_name = function FG3dProgramSampler_name(){
@@ -3319,6 +3333,11 @@ with(MO){
       o._linker = p.get('linker');
       o._bind = RBoolean.parse(p.get('bind', 'Y'));
       o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
+   }
+   MO.FG3dProgramSampler_dispose = function FG3dProgramSampler_dispose(){
+      var o = this;
+      o._slot = null;
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
@@ -4845,7 +4864,7 @@ with(MO){
       if(!o._capability.optionDebug){
          return true;
       }
-      if(!RRuntime.isDebug()){
+      if(!MO.Runtime.isDebug()){
          return true;
       }
       var graphic = o._native;
@@ -5302,9 +5321,9 @@ with(MO){
    }
    MO.FWglProgram_link = function FWglProgram_link(){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
-      var r = false;
+      var context = o._graphicContext;
+      var g = context._native;
+      var result = false;
       var pn = o._native;
       g.linkProgram(pn);
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
@@ -5321,63 +5340,63 @@ with(MO){
          var pi = g.getProgramInfoLog(pn);
       }
       g.finish();
-      r = c.checkError("finish", "Finish program link faliure. (program_id={1})", pn);
-      if(!r){
-         return r;
+      result = context.checkError("finish", "Finish program link faliure. (program_id={1})", pn);
+      if(!result){
+         return result;
       }
       if(o.hasParameter()){
-         var pc = o._parameters.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._parameters.value(n);
-            var i = g.getUniformLocation(pn, p.name());
-            r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._parameters.count();
+         for(var n = 0; n < count; n++){
+            var parameter = o._parameters.at(n);
+            var handle = g.getUniformLocation(pn, parameter.name());
+            result = context.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, parameter.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != null){
-               p._statusUsed = true;
+            parameter._slot = handle;
+            if(handle != null){
+               parameter._statusUsed = true;
             }
          }
       }
       if(o.hasAttribute()){
-         var pc = o._attributes.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._attributes.value(n);
-            var i = g.getAttribLocation(pn, p.name());
-            r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._attributes.count();
+         for(var n = 0; n < count; n++){
+            var attribute = o._attributes.at(n);
+            var handle = g.getAttribLocation(pn, attribute.name());
+            result = context.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, attribute.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != -1){
-               p._statusUsed = true;
+            attribute._slot = handle;
+            if(handle != -1){
+               attribute._statusUsed = true;
             }
          }
       }
       if(o.hasSampler()){
-         var pc = o._samplers.count();
-         for(var n = 0; n < pc; n++){
-            var p = o._samplers.value(n);
-            var i = g.getUniformLocation(pn, p.name());
-            r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
-            if(!r){
-               return r;
+         var count = o._samplers.count();
+         for(var n = 0; n < count; n++){
+            var sampler = o._samplers.at(n);
+            var handle = g.getUniformLocation(pn, sampler.name());
+            result = context.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, sampler.name(), handle);
+            if(!result){
+               return result;
             }
-            p._slot = i;
-            if(i != null){
-               p._statusUsed = true;
+            sampler._slot = handle;
+            if(handle != null){
+               sampler._statusUsed = true;
             }
          }
          var si = 0;
-         for(var n = 0; n < pc; n++){
-            var p = o._samplers.value(n);
-            if(p._statusUsed){
-               p._index = si++;
+         for(var n = 0; n < count; n++){
+            var sampler = o._samplers.value(n);
+            if(sampler._statusUsed){
+               sampler._index = si++;
             }
          }
       }
-      return r;
+      return result;
    }
    MO.FWglProgram_dispose = function FWglProgram_dispose(){
       var o = this;

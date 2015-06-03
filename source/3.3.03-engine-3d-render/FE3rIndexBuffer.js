@@ -6,11 +6,11 @@ with(MO){
    // @author maocy
    // @history 150512
    //==========================================================
-   MO.FE3rVertexBuffer = function FE3rVertexBuffer(o){
+   MO.FE3rIndexBuffer = function FE3rIndexBuffer(o){
       o = RClass.inherits(this, o, FWglVertexBuffer, MLinkerResource);
       //..........................................................
       // @method
-      o.dispose = FE3rVertexBuffer_dispose;
+      o.dispose = FE3rIndexBuffer_dispose;
       return o;
    }
 
@@ -19,7 +19,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3rVertexBuffer_dispose = function FE3rVertexBuffer_dispose(){
+   MO.FE3rIndexBuffer_dispose = function FE3rIndexBuffer_dispose(){
       var o = this;
       o.__base.MLinkerResource.dispose.call(o);
       o.__base.FWglVertexBuffer.dispose.call(o);

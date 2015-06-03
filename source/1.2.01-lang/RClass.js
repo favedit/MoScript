@@ -321,7 +321,7 @@
    // @return Object 含有类继承关系的对象实例
    //==========================================================
    MO.RClass_inherits = function RClass_inherits(s, p){
-      var r = RRuntime.nvl(p, s);
+      var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
       var c = a.length;
@@ -594,7 +594,7 @@
       c.build();
       //..........................................................
       // 删除类中所有空属性
-      if(RRuntime.isRelease()){
+      if(MO.Runtime.isRelease()){
          for(var n in c.instance){
             var v = c.instance[n];
             if(v == null){

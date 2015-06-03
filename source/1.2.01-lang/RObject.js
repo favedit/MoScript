@@ -107,7 +107,7 @@
    //==========================================================
    MO.RObject_free = function RObject_free(item){
       if(item){
-         if(RRuntime.isDebug()){
+         if(MO.Runtime.isDebug()){
             // 调试模式
             for(var name in item){
                // 基础类型

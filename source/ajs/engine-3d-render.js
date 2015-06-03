@@ -2146,6 +2146,6 @@ with(MO){
    MO.FE3rVertexBuffer_dispose = function FE3rVertexBuffer_dispose(){
       var o = this;
       o.__base.MLinkerResource.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
+      o.__base.FWglVertexBuffer.dispose.call(o);
    }
 }

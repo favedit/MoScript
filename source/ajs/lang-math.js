@@ -2600,9 +2600,9 @@ with(MO){
 with(MO){
    MO.SValue3 = function SValue3(x, y, z){
       var o = this;
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
       o.isEmpty     = SValue3_isEmpty;
       o.assign      = SValue3_assign;
       o.setMin      = SValue3_setMin;
@@ -2692,10 +2692,10 @@ with(MO){
 with(MO){
    MO.SValue4 = function SValue4(x, y, z, w){
       var o = this;
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
-      o.w           = RRuntime.nvl(w, 1);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
+      o.w           = MO.Runtime.nvl(w, 1);
       o.assign      = SValue4_assign;
       o.set         = SValue4_set;
       o.absolute    = SValue4_absolute;

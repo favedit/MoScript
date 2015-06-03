@@ -243,7 +243,7 @@
       var o = this;
       var r = new TString();
       var c = o._length;
-      r.append(RRuntime.className(o), ':', c);
+      r.append(MO.Runtime.className(o), ':', c);
       if(c > 0){
          for(var i = 0; i < c; i++){
             r.append(' [', o._memory[i], ']');

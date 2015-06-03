@@ -26,75 +26,64 @@ MO.EScope = new function EScope(){
    o.Global  = 3;
    return o;
 }
-with(MO){
-   MO.RRuntime = function RRuntime(){
-      var o = this;
-      o.processCd    = EProcess.Release;
-      o.isDebug      = RRuntime_isDebug;
-      o.isProcess    = RRuntime_isProcess;
-      o.isRelease    = RRuntime_isRelease;
-      o.setProcessCd = RRuntime_setProcessCd;
-      o.empty        = RRuntime_empty;
-      o.nvl          = RRuntime_nvl;
-      o.subString    = RRuntime_subString;
-      o.className    = RRuntime_className;
-      return o;
-   }
-   MO.RRuntime_isDebug = function RRuntime_isDebug(){
-      return (this._processCd == EProcess.Debug);
-   }
-   MO.RRuntime_isProcess = function RRuntime_isProcess(){
-      return (this._processCd == EProcess.Process);
-   }
-   MO.RRuntime_isRelease = function RRuntime_isRelease(){
-      return (this._processCd == EProcess.Release);
-   }
-   MO.RRuntime_setProcessCd = function RRuntime_setProcessCd(processCd){
-      this._processCd = processCd;
-   }
-   MO.RRuntime_empty = function RRuntime_empty(){
-   }
-   MO.RRuntime_nvl = function RRuntime_nvl(value, defaultValue){
-      return (value != null) ? value : defaultValue;
-   }
-   MO.RRuntime_subString = function RRuntime_subString(value, begin, end){
-      if(value == null){
-         return value;
-      }
-      var left = 0;
-      if(begin != null){
-         var find = value.indexOf(begin);
-         if(find != -1){
-            left = find + begin.length;
-         }
-      }
-      var right = value.length;
-      if(end != null){
-         var find = value.indexOf(end, length);
-         if(find != -1){
-            right = find;
-         }
-      }
-      if(left >= right){
-         return '';
-      }
-      return value.substring(left, right);
-   }
-   MO.RRuntime_className = function RRuntime_className(value){
-      if(value){
-         if(typeof(value) == 'function'){
-            return this.subString(value.toString(), 'function ', '(');
-         }
-         var clazz = value.constructor;
-         if(clazz){
-            return this.subString(clazz.toString(), 'function ', '(');
-         }
-      }
-      return null;
-   }
-   MO.RRuntime = new RRuntime();
-   MO.Runtime = MO.RRuntime;
+MO.RRuntime = function RRuntime(){
+   var o = this;
+   o._processCd = MO.EProcess.Release;
+   return o;
 }
+MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
+   return (this._processCd == MO.EProcess.Debug);
+}
+MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
+   return (this._processCd == MO.EProcess.Process);
+}
+MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
+   return (this._processCd == MO.EProcess.Release);
+}
+MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
+   this._processCd = processCd;
+}
+MO.RRuntime.prototype.empty = function RRuntime_empty(){
+}
+MO.RRuntime.prototype.nvl = function RRuntime_nvl(value, defaultValue){
+   return (value != null) ? value : defaultValue;
+}
+MO.RRuntime.prototype.subString = function RRuntime_subString(value, begin, end){
+   if(value == null){
+      return value;
+   }
+   var left = 0;
+   if(begin != null){
+      var find = value.indexOf(begin);
+      if(find != -1){
+         left = find + begin.length;
+      }
+   }
+   var right = value.length;
+   if(end != null){
+      var find = value.indexOf(end, length);
+      if(find != -1){
+         right = find;
+      }
+   }
+   if(left >= right){
+      return '';
+   }
+   return value.substring(left, right);
+}
+MO.RRuntime.prototype.className = function RRuntime_className(value){
+   if(value){
+      if(typeof(value) == 'function'){
+         return this.subString(value.toString(), 'function ', '(');
+      }
+      var clazz = value.constructor;
+      if(clazz){
+         return this.subString(clazz.toString(), 'function ', '(');
+      }
+   }
+   return null;
+}
+MO.Runtime = new MO.RRuntime();
 with(MO){
    MO.TArray = function TArray(){
       var o = this;
@@ -214,7 +203,7 @@ with(MO){
       var o = this;
       var r = new TString();
       var c = o._length;
-      r.append(RRuntime.className(o), ':', c);
+      r.append(MO.Runtime.className(o), ':', c);
       if(c > 0){
          for(var i = 0; i < c; i++){
             r.append(' [', o._memory[i], ']');
@@ -308,7 +297,7 @@ with(MO){
    MO.TAttributes_dump = function TAttributes_dump(){
       var info = new TString();
       var count = this._count;
-      info.append(RRuntime.className(o), ' : ', count);
+      info.append(MO.Runtime.className(o), ' : ', count);
       if(count > 0){
          info.append(' (');
          for(var i = 0; i < count; i++){
@@ -332,7 +321,7 @@ with(MO){
    MO.TDictionary_dump = function TDictionary_dump(){
       var info = new TString();
       var count = this._count;
-      info.append(RRuntime.className(o), ': ', count);
+      info.append(MO.Runtime.className(o), ': ', count);
       if(count > 0){
          info.append(' {\n');
          for(var i = 0; i < count; i++){
@@ -591,7 +580,7 @@ with(MO){
    MO.TMap_dump = function TMap_dump(){
       var info = new TString();
       var count = this._count;
-      info.appendLine(RRuntime.className(o), ': ', count);
+      info.appendLine(MO.Runtime.className(o), ': ', count);
       if(count > 0){
          info.append(' {');
          for(var i = 0; i < count; i++){
@@ -783,7 +772,7 @@ with(MO){
    MO.TObjects_dump = function TObjects_dump(){
       var count = this._count;
       var info = new TString();
-      info.append(RRuntime.className(o), ':', count);
+      info.append(MO.Runtime.className(o), ':', count);
       if(count){
          for(var i = 0; i < count; i++){
             info.append(' [', this._items[i], ']');
@@ -874,7 +863,7 @@ with(MO){
    }
    MO.TString_dump = function TString_dump(){
       var source = this.toString();
-      return RRuntime.className(o) + ':' + source.length + '[' + source + ']';
+      return MO.Runtime.className(o) + ':' + source.length + '[' + source + ']';
    }
 }
 with(MO){
@@ -965,7 +954,7 @@ with(MO){
    }
    MO.RMemory_alloc = function RMemory_alloc(clazz){
       RAssert.debugNotNull(clazz);
-      var className = RRuntime.className(clazz);
+      var className = MO.Runtime.className(clazz);
       var pools = this._pools;
       var pool = pools[className];
       if(!pool){
@@ -3523,7 +3512,7 @@ with(MO){
       return null;
    }
    MO.RClass_inherits = function RClass_inherits(s, p){
-      var r = RRuntime.nvl(p, s);
+      var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
       var c = a.length;
@@ -3700,7 +3689,7 @@ with(MO){
          }
       }
       c.build();
-      if(RRuntime.isRelease()){
+      if(MO.Runtime.isRelease()){
          for(var n in c.instance){
             var v = c.instance[n];
             if(v == null){
@@ -5116,7 +5105,7 @@ with(MO){
    }
    MO.RObject_free = function RObject_free(item){
       if(item){
-         if(RRuntime.isDebug()){
+         if(MO.Runtime.isDebug()){
             for(var name in item){
                if((name == '__base') || (name == '__inherits') || (name == '__class')){
                   item[name] = null;
@@ -8400,9 +8389,9 @@ with(MO){
 with(MO){
    MO.SValue3 = function SValue3(x, y, z){
       var o = this;
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
       o.isEmpty     = SValue3_isEmpty;
       o.assign      = SValue3_assign;
       o.setMin      = SValue3_setMin;
@@ -8492,10 +8481,10 @@ with(MO){
 with(MO){
    MO.SValue4 = function SValue4(x, y, z, w){
       var o = this;
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
-      o.w           = RRuntime.nvl(w, 1);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
+      o.w           = MO.Runtime.nvl(w, 1);
       o.assign      = SValue4_assign;
       o.set         = SValue4_set;
       o.absolute    = SValue4_absolute;

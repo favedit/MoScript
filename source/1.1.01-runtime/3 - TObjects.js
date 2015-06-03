@@ -389,7 +389,7 @@
    MO.TObjects_dump = function TObjects_dump(){
       var count = this._count;
       var info = new TString();
-      info.append(RRuntime.className(o), ':', count);
+      info.append(MO.Runtime.className(o), ':', count);
       if(count){
          for(var i = 0; i < count; i++){
             info.append(' [', this._items[i], ']');

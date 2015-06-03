@@ -23,7 +23,7 @@ with(MO){
    MO.FDrAbsResourceConsole_makeServiceUrl = function FDrAbsResourceConsole_makeServiceUrl(action){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=' + action);
-      if(RRuntime.isDebug()){
+      if(MO.Runtime.isDebug()){
          url += '&date=' + RDate.format();
       }
       return url;

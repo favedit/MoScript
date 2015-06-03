@@ -187,6 +187,6 @@
    //==========================================================
    MO.TString_dump = function TString_dump(){
       var source = this.toString();
-      return RRuntime.className(o) + ':' + source.length + '[' + source + ']';
+      return MO.Runtime.className(o) + ':' + source.length + '[' + source + ']';
    }
 }

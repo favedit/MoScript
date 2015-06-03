@@ -136,7 +136,7 @@
    MO.TAttributes_dump = function TAttributes_dump(){
       var info = new TString();
       var count = this._count;
-      info.append(RRuntime.className(o), ' : ', count);
+      info.append(MO.Runtime.className(o), ' : ', count);
       if(count > 0){
          info.append(' (');
          for(var i = 0; i < count; i++){

@@ -706,12 +706,13 @@ with(MO){
       o._name       = null;
       o._linker     = null;
       o._statusUsed = false;
-      o._slot       = -1;
+      o._slot       = null;
       o._index      = -1;
       o._formatCd   = EG3dAttributeFormat.Unknown;
       o.name        = FG3dProgramAttribute_name;
       o.linker      = FG3dProgramAttribute_linker;
       o.loadConfig  = FG3dProgramAttribute_loadConfig;
+      o.dispose     = FG3dProgramAttribute_dispose;
       return o;
    }
    MO.FG3dProgramAttribute_name = function FG3dProgramAttribute_name(){
@@ -725,6 +726,11 @@ with(MO){
       o._name = p.get('name');
       o._linker = p.get('linker');
       o._formatCd = REnum.encode(EG3dAttributeFormat, p.get('format'));
+   }
+   MO.FG3dProgramAttribute_dispose = function FG3dProgramAttribute_dispose(){
+      var o = this;
+      o._slot = null;
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
@@ -744,6 +750,7 @@ with(MO){
       o.define      = FG3dProgramParameter_define;
       o.attachData  = FG3dProgramParameter_attachData;
       o.loadConfig  = FG3dProgramParameter_loadConfig;
+      o.dispose     = FG3dProgramParameter_dispose;
       return o;
    }
    MO.FG3dProgramParameter_name = function FG3dProgramParameter_name(){
@@ -784,6 +791,12 @@ with(MO){
       o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
       o._define = p.get('define');
    }
+   MO.FG3dProgramParameter_dispose = function FG3dProgramParameter_dispose(){
+      var o = this;
+      o._slot = null;
+      o._memory = null;
+      o.__base.FObject.dispose.call(o);
+   }
 }
 with(MO){
    MO.FG3dProgramSampler = function FG3dProgramSampler(o){
@@ -800,6 +813,7 @@ with(MO){
       o.linker      = FG3dProgramSampler_linker;
       o.formatCd    = FG3dProgramSampler_formatCd;
       o.loadConfig  = FG3dProgramSampler_loadConfig;
+      o.dispose     = FG3dProgramSampler_dispose;
       return o;
    }
    MO.FG3dProgramSampler_name = function FG3dProgramSampler_name(){
@@ -817,6 +831,11 @@ with(MO){
       o._linker = p.get('linker');
       o._bind = RBoolean.parse(p.get('bind', 'Y'));
       o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
+   }
+   MO.FG3dProgramSampler_dispose = function FG3dProgramSampler_dispose(){
+      var o = this;
+      o._slot = null;
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){

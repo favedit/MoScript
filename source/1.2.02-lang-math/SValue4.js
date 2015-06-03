@@ -14,10 +14,10 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.x           = RRuntime.nvl(x, 0);
-      o.y           = RRuntime.nvl(y, 0);
-      o.z           = RRuntime.nvl(z, 0);
-      o.w           = RRuntime.nvl(w, 1);
+      o.x           = MO.Runtime.nvl(x, 0);
+      o.y           = MO.Runtime.nvl(y, 0);
+      o.z           = MO.Runtime.nvl(z, 0);
+      o.w           = MO.Runtime.nvl(w, 1);
       //..........................................................
       // @method
       o.assign      = SValue4_assign;
