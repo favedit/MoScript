@@ -6527,64 +6527,66 @@ MO.EG3dTexture = new function EG3dTexture(){
    o.Cube= 3;
    return o;
 }
-with(MO){
-   MO.SG3dContextCapability = function SG3dContextCapability(){
-      var o = this;
-      o.vendor                 = null;
-      o.version                = null;
-      o.shaderVersion          = null;
-      o.optionDebug            = false;
-      o.optionInstance         = false;
-      o.optionLayout           = false;
-      o.optionMaterialMap      = false;
-      o.optionIndex32          = false;
-      o.optionShaderSource     = false;
-      o.mergeCount             = 0;
-      o.attributeCount         = null;
-      o.vertexCount            = 65536;
-      o.vertexConst            = null;
-      o.fragmentConst          = null;
-      o.varyingCount           = null;
-      o.samplerCount           = null;
-      o.samplerSize            = null;
-      o.samplerCompressRgb     = null;
-      o.samplerCompressRgba    = null;
-      o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
-      o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
-      return o;
+MO.SG3dContextCapability = function SG3dContextCapability(){
+   var o = this;
+   o.vendor              = null;
+   o.version             = null;
+   o.shaderVersion       = null;
+   o.optionDebug         = false;
+   o.optionInstance      = false;
+   o.optionLayout        = false;
+   o.optionMaterialMap   = false;
+   o.optionIndex32       = false;
+   o.optionShaderSource  = false;
+   o.mergeCount          = 0;
+   o.attributeCount      = null;
+   o.vertexCount         = 65536;
+   o.vertexConst         = null;
+   o.fragmentConst       = null;
+   o.varyingCount        = null;
+   o.samplerCount        = null;
+   o.samplerSize         = null;
+   o.samplerCompressRgb  = null;
+   o.samplerCompressRgba = null;
+   o.shader              = null;
+   return o;
+}
+MO.SG3dContextCapability.prototype.calculateBoneCount = function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
+   var o = this;
+   var rb = 0;
+   var bi = boneCount % 4;
+   if(bi != 0){
+      rb = boneCount + 4 - bi;
+   }else{
+      rb = boneCount;
    }
-   MO.SG3dContextCapability_calculateBoneCount = function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
-      var o = this;
-      var rb = 0;
-      var bi = boneCount % 4;
-      if(bi != 0){
-         rb = boneCount + 4 - bi;
-      }else{
-         rb = boneCount;
-      }
-      var r = 0;
-      var ib = (o.vertexConst - 16) / 4;
-      if(rb > ib){
-         r = ib;
-      }else{
-         r = rb;
-      }
-      return r;
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
    }
-   MO.SG3dContextCapability_calculateInstanceCount = function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
-      var o = this;
-      var cr = (4 * boneCount) + 4;
-      var ib = (o.vertexConst - 16) / cr;
-      var r = cl;
-      if(vertexCount > 0){
-         var iv = o.vertexCount / vertexCount;
-         r = Math.min(ib, iv);
-      }
-      if(r > 64){
-         r = 64;
-      }
-      return r;
+   return r;
+}
+MO.SG3dContextCapability.prototype.calculateInstanceCount = function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
+   var o = this;
+   var cr = (4 * boneCount) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   if(vertexCount > 0){
+      var iv = o.vertexCount / vertexCount;
+      r = Math.min(ib, iv);
    }
+   if(r > 64){
+      r = 64;
+   }
+   return r;
+}
+MO.SG3dContextCapability.prototype.dispose = function SG3dContextCapability_dispose(){
+   var o = this;
+   o.shader = null;
+   MO.RObject.free(o);
 }
 with(MO){
    MO.SG3dLayoutBuffer = function SG3dLayoutBuffer(){
@@ -6756,6 +6758,12 @@ with(MO){
          o._storeTargets = RObject.dispose(targets);
       }
       o._program = null;
+      o._size = RObject.dispose(o._size);
+      o._capability = RObject.dispose(o._capability);
+      o._statistics = RObject.dispose(o._statistics);
+      o._native = null;
+      o._nativeInstance = null;
+      o._nativeLayout = null;
       o.__base.FGraphicContext.dispose.call(o);
    }
 }
@@ -8043,6 +8051,7 @@ with(MO){
       o._native             = null;
       o._nativeInstance     = null;
       o._nativeLayout       = null;
+      o._nativeSamplerS3tc  = null;
       o._nativeDebugShader  = null;
       o._activeRenderTarget = null;
       o._activeTextureSlot  = null;
@@ -8086,6 +8095,7 @@ with(MO){
       o.drawTriangles       = FWglContext_drawTriangles;
       o.present             = FWglContext_present;
       o.checkError          = FWglContext_checkError;
+      o.dispose             = FWglContext_dispose;
       return o;
    }
    MO.FWglContext_construct = function FWglContext_construct(){
@@ -8097,76 +8107,78 @@ with(MO){
       o._recordBuffers = new TObjects();
       o._recordSamplers = new TObjects();
    }
-   MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(h){
+   MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var o = this;
-      o.__base.FG3dContext.linkCanvas.call(o, h)
-      o._hCanvas = h;
-      if(h.getContext){
-         var a = new Object();
-         a.alpha = o._optionAlpha;
-         a.antialias = o._optionAntialias;
-         var n = h.getContext('experimental-webgl', a);
-         if(n == null){
-            n = h.getContext('webgl', a);
+      o.__base.FG3dContext.linkCanvas.call(o, hCanvas)
+      o._hCanvas = hCanvas;
+      if(hCanvas.getContext){
+         var parameters = new Object();
+         parameters.alpha = o._optionAlpha;
+         parameters.antialias = o._optionAntialias;
+         var handle = hCanvas.getContext('experimental-webgl', parameters);
+         if(handle == null){
+            handle = hCanvas.getContext('webgl', parameters);
          }
-         if(n == null){
+         if(handle == null){
             throw new TError("Current browser can't support WebGL technique.");
          }
-         o._native = n;
-         o._contextAttributes = n.getContextAttributes();
+         o._native = handle;
+         o._contextAttributes = handle.getContextAttributes();
+      }else{
+         throw new TError("Canvas can't support WebGL technique.");
       }
-      var g = o._native;
-      o.setViewport(0, 0, h.width, h.height);
+      var handle = o._native;
+      o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       var c = o._capability;
-      c.vendor = g.getParameter(g.VENDOR);
-      c.version = g.getParameter(g.VERSION);
-      c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
-      c.attributeCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
-      c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
-      c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
-      c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
-      c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
-      c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
-      var e = o._nativeInstance = g.getExtension('ANGLE_instanced_arrays');
+      c.vendor = handle.getParameter(handle.VENDOR);
+      c.version = handle.getParameter(handle.VERSION);
+      c.shaderVersion = handle.getParameter(handle.SHADING_LANGUAGE_VERSION);
+      c.attributeCount = handle.getParameter(handle.MAX_VERTEX_ATTRIBS);
+      c.vertexConst = handle.getParameter(handle.MAX_VERTEX_UNIFORM_VECTORS);
+      c.varyingCount = handle.getParameter(handle.MAX_VARYING_VECTORS);
+      c.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
+      c.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+      c.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
+      var e = o._nativeInstance = handle.getExtension('ANGLE_instanced_arrays');
       if(e){
          c.optionInstance = true;
       }
       c.mergeCount = parseInt((c.vertexConst - 32) / 4);
-      var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
+      var e = o._nativeLayout = handle.getExtension('OES_vertex_array_object');
       if(e){
          c.optionLayout = true;
       }
-      var e = g.getExtension('OES_element_index_uint');
+      var e = handle.getExtension('OES_element_index_uint');
       if(e){
          c.optionIndex32 = true;
       }
-      var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+      var e = o._nativeSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
       if(e){
          c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
          c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       var s = c.shader = new Object();
-      var sv = s.vertexPrecision = new Object();
-      if(g.getShaderPrecisionFormat){
-         sv.floatLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_FLOAT);
-         sv.floatMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_FLOAT);
-         sv.floatHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_FLOAT);
-         sv.intLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_INT);
-         sv.intMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_INT);
-         sv.intHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_INT);
+      var vertexPrecision = s.vertexPrecision = new Object();
+      if(handle.getShaderPrecisionFormat){
+         vertexPrecision.floatLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_FLOAT);
+         vertexPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_FLOAT);
+         vertexPrecision.floatHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_FLOAT);
+         vertexPrecision.intLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_INT);
+         vertexPrecision.intMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_INT);
+         vertexPrecision.intHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_INT);
       }
-      var sf = s.fragmentPrecision = new Object();
-      if(g.getShaderPrecisionFormat){
-         sf.floatLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_FLOAT);
-         sf.floatMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_FLOAT);
-         sf.floatHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
-         sf.intLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_INT);
-         sf.intMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_INT);
-         sf.intHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_INT);
+      var fragmentPrecision = s.fragmentPrecision = new Object();
+      if(handle.getShaderPrecisionFormat){
+         fragmentPrecision.floatLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_FLOAT);
+         fragmentPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_FLOAT);
+         fragmentPrecision.floatHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_FLOAT);
+         fragmentPrecision.intLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_INT);
+         fragmentPrecision.intMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_INT);
+         fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
-      var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+      var e = o._nativeDebugShader = handle.getExtension('WEBGL_debug_shaders');
       if(e){
          c.optionShaderSource = true;
       }
@@ -8804,6 +8816,17 @@ with(MO){
          RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
+   }
+   MO.FWglContext_dispose = function FWglContext_dispose(){
+      var o = this;
+      o._data9 = null;
+      o._data16 = null;
+      o._recordBuffers = RObject.dispose(o._recordBuffers);
+      o._recordSamplers = RObject.dispose(o._recordSamplers);
+      o._contextAttributes = null;
+      o._nativeSamplerS3tc = null;
+      o._nativeDebugShader = null;
+      o.__base.FG3dContext.dispose.call(o);
    }
 }
 with(MO){
@@ -15553,7 +15576,7 @@ with(MO){
       instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
       var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
       o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-      var indexBuffer = o._indexBuffer = gc.createIndexBuffer();
+      var indexBuffer = o._indexBuffer = gc.createIndexBuffer(FE3rIndexBuffer);
       if(gp.optionIndex32){
          indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
          indexBuffer._data = new Uint32Array(indexTotal);
@@ -15765,7 +15788,7 @@ with(MO){
          var dataCount = streamResource.dataCount();
          var data = streamResource.data();
          if((code == 'index16') || (code == 'index32')){
-            var buffer = o._indexBuffer = context.createIndexBuffer();
+            var buffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
             buffer._resource = streamResource;
             var dataCd = streamResource.elementDataCd();
             if(dataCd == EDataType.Uint16){
@@ -15822,6 +15845,18 @@ with(MO){
       }
       o.loadResource(o._resource);
       return true;
+   }
+}
+with(MO){
+   MO.FE3rIndexBuffer = function FE3rIndexBuffer(o){
+      o = RClass.inherits(this, o, FWglIndexBuffer, MLinkerResource);
+      o.dispose = FE3rIndexBuffer_dispose;
+      return o;
+   }
+   MO.FE3rIndexBuffer_dispose = function FE3rIndexBuffer_dispose(){
+      var o = this;
+      o.__base.MLinkerResource.dispose.call(o);
+      o.__base.FWglIndexBuffer.dispose.call(o);
    }
 }
 with(MO){

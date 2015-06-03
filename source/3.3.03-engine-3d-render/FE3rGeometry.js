@@ -222,7 +222,7 @@ with(MO){
          var data = streamResource.data();
          if((code == 'index16') || (code == 'index32')){
             // 创建索引缓冲
-            var buffer = o._indexBuffer = context.createIndexBuffer();
+            var buffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
             buffer._resource = streamResource;
             var dataCd = streamResource.elementDataCd();
             if(dataCd == EDataType.Uint16){

@@ -7,7 +7,7 @@ with(MO){
    // @history 150512
    //==========================================================
    MO.FE3rIndexBuffer = function FE3rIndexBuffer(o){
-      o = RClass.inherits(this, o, FWglVertexBuffer, MLinkerResource);
+      o = RClass.inherits(this, o, FWglIndexBuffer, MLinkerResource);
       //..........................................................
       // @method
       o.dispose = FE3rIndexBuffer_dispose;
@@ -22,6 +22,6 @@ with(MO){
    MO.FE3rIndexBuffer_dispose = function FE3rIndexBuffer_dispose(){
       var o = this;
       o.__base.MLinkerResource.dispose.call(o);
-      o.__base.FWglVertexBuffer.dispose.call(o);
+      o.__base.FWglIndexBuffer.dispose.call(o);
    }
 }

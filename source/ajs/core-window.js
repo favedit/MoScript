@@ -273,6 +273,7 @@ with(MO){
       o.set       = FWindowStorage_set;
       o.remove    = FWindowStorage_remove;
       o.clear     = FWindowStorage_clear;
+      o.dispose   = FWindowStorage_dispose;
       o.innerDump = FWindowStorage_innerDump;
       return o;
    }
@@ -293,6 +294,11 @@ with(MO){
    }
    MO.FWindowStorage_clear = function FWindowStorage_clear(){
       this._storage.clear();
+   }
+   MO.FWindowStorage_dispose = function FWindowStorage_dispose(){
+      var o = this;
+      o._storage  = null;
+      o.__base.FObject.dispose.call(o);
    }
    MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
       var o = this;

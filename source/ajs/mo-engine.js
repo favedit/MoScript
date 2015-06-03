@@ -5926,7 +5926,7 @@ with(MO){
       instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
       var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
       o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-      var indexBuffer = o._indexBuffer = gc.createIndexBuffer();
+      var indexBuffer = o._indexBuffer = gc.createIndexBuffer(FE3rIndexBuffer);
       if(gp.optionIndex32){
          indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
          indexBuffer._data = new Uint32Array(indexTotal);
@@ -6138,7 +6138,7 @@ with(MO){
          var dataCount = streamResource.dataCount();
          var data = streamResource.data();
          if((code == 'index16') || (code == 'index32')){
-            var buffer = o._indexBuffer = context.createIndexBuffer();
+            var buffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
             buffer._resource = streamResource;
             var dataCd = streamResource.elementDataCd();
             if(dataCd == EDataType.Uint16){
@@ -6195,6 +6195,18 @@ with(MO){
       }
       o.loadResource(o._resource);
       return true;
+   }
+}
+with(MO){
+   MO.FE3rIndexBuffer = function FE3rIndexBuffer(o){
+      o = RClass.inherits(this, o, FWglIndexBuffer, MLinkerResource);
+      o.dispose = FE3rIndexBuffer_dispose;
+      return o;
+   }
+   MO.FE3rIndexBuffer_dispose = function FE3rIndexBuffer_dispose(){
+      var o = this;
+      o.__base.MLinkerResource.dispose.call(o);
+      o.__base.FWglIndexBuffer.dispose.call(o);
    }
 }
 with(MO){

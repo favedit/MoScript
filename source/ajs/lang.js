@@ -3871,14 +3871,15 @@ with(MO){
    }
    MO.RObject_release = function RObject_release(item){
       if(item){
-         for(var n in p){
-            var value = item[n];
+         for(var name in item){
+            var value = item[name];
             if(typeof(value) == 'Object'){
-               RObject.release(value)
+               this.release(value)
             }
             item[n] = null;
          }
       }
+      return null;
    }
    MO.RObject = new RObject();
 }

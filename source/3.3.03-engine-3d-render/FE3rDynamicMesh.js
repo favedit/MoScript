@@ -228,7 +228,7 @@ with(MO){
       var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
       o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
       // 创建索引流
-      var indexBuffer = o._indexBuffer = gc.createIndexBuffer();
+      var indexBuffer = o._indexBuffer = gc.createIndexBuffer(FE3rIndexBuffer);
       if(gp.optionIndex32){
          indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
          indexBuffer._data = new Uint32Array(indexTotal);

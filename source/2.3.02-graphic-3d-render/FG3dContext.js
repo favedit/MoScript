@@ -200,6 +200,13 @@ with(MO){
       }
       // 释放属性
       o._program = null;
+      o._size = RObject.dispose(o._size);
+      o._capability = RObject.dispose(o._capability);
+      o._statistics = RObject.dispose(o._statistics);
+      // 释放属性
+      o._native = null;
+      o._nativeInstance = null;
+      o._nativeLayout = null;
       // 父处理
       o.__base.FGraphicContext.dispose.call(o);
    }

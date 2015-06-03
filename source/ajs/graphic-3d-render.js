@@ -123,64 +123,66 @@ MO.EG3dTexture = new function EG3dTexture(){
    o.Cube= 3;
    return o;
 }
-with(MO){
-   MO.SG3dContextCapability = function SG3dContextCapability(){
-      var o = this;
-      o.vendor                 = null;
-      o.version                = null;
-      o.shaderVersion          = null;
-      o.optionDebug            = false;
-      o.optionInstance         = false;
-      o.optionLayout           = false;
-      o.optionMaterialMap      = false;
-      o.optionIndex32          = false;
-      o.optionShaderSource     = false;
-      o.mergeCount             = 0;
-      o.attributeCount         = null;
-      o.vertexCount            = 65536;
-      o.vertexConst            = null;
-      o.fragmentConst          = null;
-      o.varyingCount           = null;
-      o.samplerCount           = null;
-      o.samplerSize            = null;
-      o.samplerCompressRgb     = null;
-      o.samplerCompressRgba    = null;
-      o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
-      o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
-      return o;
+MO.SG3dContextCapability = function SG3dContextCapability(){
+   var o = this;
+   o.vendor              = null;
+   o.version             = null;
+   o.shaderVersion       = null;
+   o.optionDebug         = false;
+   o.optionInstance      = false;
+   o.optionLayout        = false;
+   o.optionMaterialMap   = false;
+   o.optionIndex32       = false;
+   o.optionShaderSource  = false;
+   o.mergeCount          = 0;
+   o.attributeCount      = null;
+   o.vertexCount         = 65536;
+   o.vertexConst         = null;
+   o.fragmentConst       = null;
+   o.varyingCount        = null;
+   o.samplerCount        = null;
+   o.samplerSize         = null;
+   o.samplerCompressRgb  = null;
+   o.samplerCompressRgba = null;
+   o.shader              = null;
+   return o;
+}
+MO.SG3dContextCapability.prototype.calculateBoneCount = function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
+   var o = this;
+   var rb = 0;
+   var bi = boneCount % 4;
+   if(bi != 0){
+      rb = boneCount + 4 - bi;
+   }else{
+      rb = boneCount;
    }
-   MO.SG3dContextCapability_calculateBoneCount = function SG3dContextCapability_calculateBoneCount(boneCount, vertexCount){
-      var o = this;
-      var rb = 0;
-      var bi = boneCount % 4;
-      if(bi != 0){
-         rb = boneCount + 4 - bi;
-      }else{
-         rb = boneCount;
-      }
-      var r = 0;
-      var ib = (o.vertexConst - 16) / 4;
-      if(rb > ib){
-         r = ib;
-      }else{
-         r = rb;
-      }
-      return r;
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
    }
-   MO.SG3dContextCapability_calculateInstanceCount = function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
-      var o = this;
-      var cr = (4 * boneCount) + 4;
-      var ib = (o.vertexConst - 16) / cr;
-      var r = cl;
-      if(vertexCount > 0){
-         var iv = o.vertexCount / vertexCount;
-         r = Math.min(ib, iv);
-      }
-      if(r > 64){
-         r = 64;
-      }
-      return r;
+   return r;
+}
+MO.SG3dContextCapability.prototype.calculateInstanceCount = function SG3dContextCapability_calculateInstanceCount(boneCount, vertexCount){
+   var o = this;
+   var cr = (4 * boneCount) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   if(vertexCount > 0){
+      var iv = o.vertexCount / vertexCount;
+      r = Math.min(ib, iv);
    }
+   if(r > 64){
+      r = 64;
+   }
+   return r;
+}
+MO.SG3dContextCapability.prototype.dispose = function SG3dContextCapability_dispose(){
+   var o = this;
+   o.shader = null;
+   MO.RObject.free(o);
 }
 with(MO){
    MO.SG3dLayoutBuffer = function SG3dLayoutBuffer(){
@@ -352,6 +354,12 @@ with(MO){
          o._storeTargets = RObject.dispose(targets);
       }
       o._program = null;
+      o._size = RObject.dispose(o._size);
+      o._capability = RObject.dispose(o._capability);
+      o._statistics = RObject.dispose(o._statistics);
+      o._native = null;
+      o._nativeInstance = null;
+      o._nativeLayout = null;
       o.__base.FGraphicContext.dispose.call(o);
    }
 }

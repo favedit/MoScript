@@ -13,7 +13,9 @@ with(MO){
       o._native             = null;
       o._nativeInstance     = null;
       o._nativeLayout       = null;
+      o._nativeSamplerS3tc  = null;
       o._nativeDebugShader  = null;
+      // @attribute
       o._activeRenderTarget = null;
       o._activeTextureSlot  = null;
       // @attribute
@@ -69,6 +71,7 @@ with(MO){
       o.present             = FWglContext_present;
       // @method
       o.checkError          = FWglContext_checkError;
+      o.dispose             = FWglContext_dispose;
       return o;
    }
 
@@ -91,90 +94,92 @@ with(MO){
    // <T>关联页面画布标签。</T>
    //
    // @method
-   // @param h:hCanvas:HtmlCanvasTag 页面画布标签
+   // @param hCanvas:HtmlCanvasTag 页面画布标签
    //==========================================================
-   MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(h){
+   MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var o = this;
-      o.__base.FG3dContext.linkCanvas.call(o, h)
+      o.__base.FG3dContext.linkCanvas.call(o, hCanvas)
       // 获得环境
-      o._hCanvas = h;
-      if(h.getContext){
+      o._hCanvas = hCanvas;
+      if(hCanvas.getContext){
          // 设置参数
-         var a = new Object();
-         a.alpha = o._optionAlpha;
-         a.antialias = o._optionAntialias;
-         //a.premultipliedAlpha = false;
+         var parameters = new Object();
+         parameters.alpha = o._optionAlpha;
+         parameters.antialias = o._optionAntialias;
+         //parameters.premultipliedAlpha = false;
          // 初始化对象
-         var n = h.getContext('experimental-webgl', a);
-         if(n == null){
-            n = h.getContext('webgl', a);
+         var handle = hCanvas.getContext('experimental-webgl', parameters);
+         if(handle == null){
+            handle = hCanvas.getContext('webgl', parameters);
          }
-         if(n == null){
+         if(handle == null){
             throw new TError("Current browser can't support WebGL technique.");
          }
-         o._native = n;
-         o._contextAttributes = n.getContextAttributes();
+         o._native = handle;
+         o._contextAttributes = handle.getContextAttributes();
+      }else{
+         throw new TError("Canvas can't support WebGL technique.");
       }
-      var g = o._native;
+      var handle = o._native;
       // 设置状态
-      o.setViewport(0, 0, h.width, h.height);
+      o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       // 获得渲染信息
       var c = o._capability;
-      c.vendor = g.getParameter(g.VENDOR);
-      c.version = g.getParameter(g.VERSION);
-      c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
-      c.attributeCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
-      c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
-      c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
-      c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
-      c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
-      c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
+      c.vendor = handle.getParameter(handle.VENDOR);
+      c.version = handle.getParameter(handle.VERSION);
+      c.shaderVersion = handle.getParameter(handle.SHADING_LANGUAGE_VERSION);
+      c.attributeCount = handle.getParameter(handle.MAX_VERTEX_ATTRIBS);
+      c.vertexConst = handle.getParameter(handle.MAX_VERTEX_UNIFORM_VECTORS);
+      c.varyingCount = handle.getParameter(handle.MAX_VARYING_VECTORS);
+      c.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
+      c.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+      c.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
       // 测试实例绘制支持
-      var e = o._nativeInstance = g.getExtension('ANGLE_instanced_arrays');
+      var e = o._nativeInstance = handle.getExtension('ANGLE_instanced_arrays');
       if(e){
          c.optionInstance = true;
       }
       c.mergeCount = parseInt((c.vertexConst - 32) / 4);
       // 测试顶点布局支持
-      var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
+      var e = o._nativeLayout = handle.getExtension('OES_vertex_array_object');
       if(e){
          c.optionLayout = true;
       }
       // 测试32位索引支持
-      var e = g.getExtension('OES_element_index_uint');
+      var e = handle.getExtension('OES_element_index_uint');
       if(e){
          c.optionIndex32 = true;
       }
       // 测试纹理压缩支持
-      var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+      var e = o._nativeSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
       if(e){
          c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
          c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       // 测定渲染精度
       var s = c.shader = new Object();
-      var sv = s.vertexPrecision = new Object();
-      if(g.getShaderPrecisionFormat){
-         sv.floatLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_FLOAT);
-         sv.floatMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_FLOAT);
-         sv.floatHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_FLOAT);
-         sv.intLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_INT);
-         sv.intMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_INT);
-         sv.intHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_INT);
+      var vertexPrecision = s.vertexPrecision = new Object();
+      if(handle.getShaderPrecisionFormat){
+         vertexPrecision.floatLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_FLOAT);
+         vertexPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_FLOAT);
+         vertexPrecision.floatHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_FLOAT);
+         vertexPrecision.intLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_INT);
+         vertexPrecision.intMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_INT);
+         vertexPrecision.intHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_INT);
       }
-      var sf = s.fragmentPrecision = new Object();
-      if(g.getShaderPrecisionFormat){
-         sf.floatLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_FLOAT);
-         sf.floatMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_FLOAT);
-         sf.floatHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
-         sf.intLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_INT);
-         sf.intMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_INT);
-         sf.intHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_INT);
+      var fragmentPrecision = s.fragmentPrecision = new Object();
+      if(handle.getShaderPrecisionFormat){
+         fragmentPrecision.floatLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_FLOAT);
+         fragmentPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_FLOAT);
+         fragmentPrecision.floatHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_FLOAT);
+         fragmentPrecision.intLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_INT);
+         fragmentPrecision.intMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_INT);
+         fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
       // 测试调试渲染器支持
-      var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+      var e = o._nativeDebugShader = handle.getExtension('WEBGL_debug_shaders');
       if(e){
          c.optionShaderSource = true;
       }
@@ -1139,5 +1144,26 @@ with(MO){
          RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
+   }
+
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FWglContext_dispose = function FWglContext_dispose(){
+      var o = this;
+      // 释放属性
+      o._data9 = null;
+      o._data16 = null;
+      // 释放属性
+      o._recordBuffers = RObject.dispose(o._recordBuffers);
+      o._recordSamplers = RObject.dispose(o._recordSamplers);
+      // 释放属性
+      o._contextAttributes = null;
+      o._nativeSamplerS3tc = null;
+      o._nativeDebugShader = null;
+      // 父处理
+      o.__base.FG3dContext.dispose.call(o);
    }
 }
