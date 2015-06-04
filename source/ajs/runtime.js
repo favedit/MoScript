@@ -1,8 +1,13 @@
-var MO = new function MO(){
+var RMO = function RMO(){
    var o = this;
    o.version = '0.2.0';
    return o;
 }
+RMO.prototype.initialize = function RMO_initialize(){
+}
+RMO.prototype.release = function RMO_release(){
+}
+MO = new RMO();
 MO.ELogger = new function ELogger(){
    var o = this;
    o.Debug = 0;

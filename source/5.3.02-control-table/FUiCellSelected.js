@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FCellSelected = function FCellSelected(o){
+   MO.FUiCellSelected = function FUiCellSelected(o){
       o = RClass.inherits(this, o, FCell);
       //..........................................................
       // @property
@@ -19,19 +19,19 @@ with(MO){
       o._hSelected = null;
       //..........................................................
       // @event
-      o.onBuild    = FCellSelected_onBuild;
+      o.onBuild    = FUiCellSelected_onBuild;
       // @event
-      o.onSelected = FCellSelected_onSelected;
+      o.onSelected = FUiCellSelected_onSelected;
 
 
       // @method
-      //o.buildForm     = FCellSelected_buildForm;
-      //o.refreshStyle  = FCellSelected_refreshStyle;
+      //o.buildForm     = FUiCellSelected_buildForm;
+      //o.refreshStyle  = FUiCellSelected_refreshStyle;
       //o.isDataChanged = RMethod.emptyFalse;
       //o.get           = RMethod.empty;
       //o.reget         = RMethod.empty;
       //o.set           = RMethod.empty;
-      //o.dispose       = FCellSelected_dispose;
+      //o.dispose       = FUiCellSelected_dispose;
       return o;
    }
 
@@ -41,7 +41,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FCellSelected_onBuild = function FCellSelected_onBuild(p){
+   MO.FUiCellSelected_onBuild = function FUiCellSelected_onBuild(p){
       var o = this;
       o.__base.FCell.onBuild.call(o, p)
       // 创建底板
@@ -58,7 +58,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FCellSelected_onSelected = function FCellSelected_onSelected(p){
+   MO.FUiCellSelected_onSelected = function FUiCellSelected_onSelected(p){
       var o = this;
       //var r = o.parent.row;
       //var t = o.parent.table;
@@ -81,7 +81,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FCellSelected_refreshStyle = function FCellSelected_refreshStyle(){
+   MO.FUiCellSelected_refreshStyle = function FUiCellSelected_refreshStyle(){
       var o = this;
       var r = o.row;
       var t = r.table;
@@ -105,7 +105,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCellSelected_dispose = function FCellSelected_dispose(){
+   MO.FUiCellSelected_dispose = function FUiCellSelected_dispose(){
       var o = this;
       o.base.FCellEditControl.dispose.call(o);
       o._hSelected = null;

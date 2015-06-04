@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumnEdit = function FColumnEdit(o){
-      o = RClass.inherits(this, o, FColumnEditControl, MPropertyEdit);
+   MO.FUiColumnEdit = function FUiColumnEdit(o){
+      o = RClass.inherits(this, o, FUiColumnEditControl, MPropertyEdit);
       //..........................................................
       // @attribute
       o._cellClass     = FCellEdit;
@@ -18,29 +18,29 @@ with(MO){
       //o.hasDropArea    = true;
       //..........................................................
       // @event
-      //o.onCellMouseEnter = FColumnEdit_onCellMouseEnter;
-      //o.onCellMouseLeave = FColumnEdit_onCellMouseLeave;
-      //o.onListClick      = FColumnEdit_onListClick;
-      //o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FColumnEdit_onZoomClick);
-      //o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FColumnEdit_onZoomHover);
-      //o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FColumnEdit_onZoomLeave);
+      //o.onCellMouseEnter = FUiColumnEdit_onCellMouseEnter;
+      //o.onCellMouseLeave = FUiColumnEdit_onCellMouseLeave;
+      //o.onListClick      = FUiColumnEdit_onListClick;
+      //o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FUiColumnEdit_onZoomClick);
+      //o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FUiColumnEdit_onZoomHover);
+      //o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FUiColumnEdit_onZoomLeave);
 
       return o;
    }
    //==========================================================
-   MO.FColumnEdit_onCellMouseEnter = function FColumnEdit_onCellMouseEnter(s, e){
+   MO.FUiColumnEdit_onCellMouseEnter = function FUiColumnEdit_onCellMouseEnter(s, e){
       //if(s.hLovImage){
          //s.hLovImage.style.display = 'block';
       //}
    }
    //==========================================================
-   MO.FColumnEdit_onCellMouseLeave = function FColumnEdit_onCellMouseLeave(s, e){
+   MO.FUiColumnEdit_onCellMouseLeave = function FUiColumnEdit_onCellMouseLeave(s, e){
       //if(s.hLovImage){
          //s.hLovImage.style.display = 'none';
       //}
    }
    //==========================================================
-   MO.FColumnEdit_onListClick = function FColumnEdit_onListClick(s, e){
+   MO.FUiColumnEdit_onListClick = function FUiColumnEdit_onListClick(s, e){
       var o = this;
       o.table.__focusCell = s;
       var cvs = s.row.saveRow().toAttributes();
@@ -48,17 +48,17 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumnEdit_onZoomHover = function FColumnEdit_onZoomHover(s, e){
+   MO.FUiColumnEdit_onZoomHover = function FUiColumnEdit_onZoomHover(s, e){
       s.hEdit.style.color='black';
    }
 
    //==========================================================
-   MO.FColumnEdit_onZoomLeave = function FColumnEdit_onZoomLeave(s, e){
+   MO.FUiColumnEdit_onZoomLeave = function FUiColumnEdit_onZoomLeave(s, e){
       s.hEdit.style.color='blue';
    }
 
    //==========================================================
-   MO.FColumnEdit_onZoomClick = function FColumnEdit_onZoomClick(s, e){
+   MO.FUiColumnEdit_onZoomClick = function FUiColumnEdit_onZoomClick(s, e){
       var o = this;
       // 选择行处理
       o.table.clickRow(s.row);

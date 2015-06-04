@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FCell = function FCell(o){
+   MO.FUiCell = function FUiCell(o){
       o = RClass.inherits(this, o, FControl, MEditValue, MDataValue);
       //..........................................................
       // @style
@@ -26,12 +26,12 @@ with(MO){
       //o._hEditPanel  = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FCell_onBuildPanel;
-      o.onBuild      = FCell_onBuild;
+      o.onBuildPanel = FUiCell_onBuildPanel;
+      o.onBuild      = FUiCell_onBuild;
       //..........................................................
       // @process
-      o.oeDataLoad   = FCell_oeDataLoad;
-      o.oeDataSave   = FCell_oeDataSave;
+      o.oeDataLoad   = FUiCell_oeDataLoad;
+      o.oeDataSave   = FUiCell_oeDataSave;
 
 
 
@@ -44,19 +44,19 @@ with(MO){
       //o.hDrop        = null;
       //..........................................................
       // @method
-      //o.doFocus      = FCell_doFocus;
-      //o.doBlur       = FCell_doBlur;
+      //o.doFocus      = FUiCell_doFocus;
+      //o.doBlur       = FUiCell_doBlur;
       //..........................................................
       // @method
-      //o.descriptor   = FCell_descriptor;
-      //o.text         = FCell_text;
-      //o.setText      = FCell_setText;
-      //o.focus        = FCell_focus;
-      //o.setVisible   = FCell_setVisible;
+      //o.descriptor   = FUiCell_descriptor;
+      //o.text         = FUiCell_text;
+      //o.setText      = FUiCell_setText;
+      //o.focus        = FUiCell_focus;
+      //o.setVisible   = FUiCell_setVisible;
       //o.setEditStyle = RMethod.empty;
-      //o.refreshStyle = FCell_refreshStyle;
-      //o.dispose      = FCell_dispose;
-      //o.dump         = FCell_dump;
+      //o.refreshStyle = FUiCell_refreshStyle;
+      //o.dispose      = FUiCell_dispose;
+      //o.dump         = FUiCell_dump;
       return o;
    }
 
@@ -66,7 +66,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FCell_onBuildPanel = function FCell_onBuildPanel(p){
+   MO.FUiCell_onBuildPanel = function FUiCell_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.create(p, 'TD', o.styleName('Panel'));
    }
@@ -77,7 +77,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FCell_onBuild = function FCell_onBuild(p){
+   MO.FUiCell_onBuild = function FUiCell_onBuild(p){
       var o = this;
       o.__base.FControl.onBuild.call(o, p)
       // 创建底板
@@ -110,7 +110,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 处理事件
    //==========================================================
-   MO.FCell_oeDataLoad = function FCell_oeDataLoad(p){
+   MO.FUiCell_oeDataLoad = function FUiCell_oeDataLoad(p){
       var o = this;
       var c = o._column;
       var ds = p.source;
@@ -126,7 +126,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 处理事件
    //==========================================================
-   MO.FCell_oeDataSave = function FCell_oeDataSave(p){
+   MO.FUiCell_oeDataSave = function FUiCell_oeDataSave(p){
       var o = this;
       var c = o._column;
       var ds = p.source;
@@ -157,7 +157,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCell_doFocus = function FCell_doFocus(){
+   MO.FUiCell_doFocus = function FUiCell_doFocus(){
       var o = this;
       o._table.__focusCell = o;
       if(o._column.isEditAble(o)){
@@ -176,7 +176,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCell_doBlur = function FCell_doBlur(){
+   MO.FUiCell_doBlur = function FUiCell_doBlur(){
       var o = this;
       if(o._column.isEditAble(o)){
          var hs = o._hPanel.style;
@@ -194,7 +194,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCell_descriptor = function FCell_descriptor(){
+   MO.FUiCell_descriptor = function FUiCell_descriptor(){
       return this._column;
    }
 
@@ -204,7 +204,7 @@ with(MO){
    // @method
    // @return 数据内容
    //==========================================================
-   MO.FCell_text = function FCell_text(){
+   MO.FUiCell_text = function FUiCell_text(){
       var o = this;
       var c = o._column;
       if(EEditFormat.Html == c.editFormat){
@@ -223,7 +223,7 @@ with(MO){
    // @method
    // @param t:text:String 数据内容
    //==========================================================
-   MO.FCell_setText = function FCell_setText(t){
+   MO.FUiCell_setText = function FUiCell_setText(t){
       // 判断显示方式
       var o = this;
       var c = o._column;
@@ -242,7 +242,7 @@ with(MO){
    // @method
    // @param s:select:Boolean 是否选中数据内容
    //==========================================================
-   MO.FCell_focus = function FCell_focus(s){
+   MO.FUiCell_focus = function FUiCell_focus(s){
       var o = this;
       var h = o._hEdit;
       if(h){
@@ -260,7 +260,7 @@ with(MO){
    // @method
    // @param v:visible:Boolean 可见性
    //==========================================================
-   MO.FCell_setVisible = function FCell_setVisible(v){
+   MO.FUiCell_setVisible = function FUiCell_setVisible(v){
       this._hPanel.style.display = v ? 'block' : 'none';
    }
 
@@ -269,7 +269,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCell_refreshStyle = function FCell_refreshStyle(){
+   MO.FUiCell_refreshStyle = function FUiCell_refreshStyle(){
       var o = this;
       var t = o._table;
       var r = o._row;
@@ -304,7 +304,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCell_dispose = function FCell_dispose(){
+   MO.FUiCell_dispose = function FUiCell_dispose(){
       var o = this;
       o.base.FControl.dispose.call(o);
       RMemory.freeHtml(o._hPanel);
@@ -325,7 +325,7 @@ with(MO){
    // @method
    // @return TString 调试信息
    //==========================================================
-   MO.FCell_dump = function FCell_dump(s){
+   MO.FUiCell_dump = function FUiCell_dump(s){
       var o = this;
       s = RString.nvlStr(s);
       s.append(RClass.dump(o), '[');

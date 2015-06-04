@@ -28,26 +28,26 @@ with(MO){
    // │└------------┴------------------------------------┘│
    // └------------------------------------------------------┘
    //
-   // @class FGridControl
+   // @class FUiGridControl
    // @history 091022 MAOCY 创建
    //==========================================================
-   MO.FGrid = function FGrid(o) {
-      o = RClass.inherits(this, o, FGridControl);
+   MO.FUiGrid = function FUiGrid(o) {
+      o = RClass.inherits(this, o, FUiGridControl);
       //..........................................................
       // @event
-      o.onResizeAfter = FGrid_onResizeAfter;
-      o.onBuildData   = FGrid_onBuildData;
+      o.onResizeAfter = FUiGrid_onResizeAfter;
+      o.onBuildData   = FUiGrid_onBuildData;
       //..........................................................
       // @process
-      o.oeResize      = FGrid_oeResize;
-      o.oeRefresh     = FGrid_oeRefresh;
+      o.oeResize      = FUiGrid_oeResize;
+      o.oeRefresh     = FUiGrid_oeRefresh;
       //..........................................................
       // @method
-      o.pushColumn    = FGrid_pushColumn;
+      o.pushColumn    = FUiGrid_pushColumn;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FGrid_onResizeAfter = function FGrid_onResizeAfter(){
+   MO.FUiGrid_onResizeAfter = function FUiGrid_onResizeAfter(){
       var o = this;
       var hdp = o.hDataPanel;
       var hfp = o.hFixPanel;
@@ -60,7 +60,7 @@ with(MO){
       o.hColumnPanel.style.pixelHeight = hdp.offsetHeight - hfp.offsetHeight - sh + 1;
    }
    //==========================================================
-   MO.FGrid_onBuildData = function FGrid_onBuildData(){
+   MO.FUiGrid_onBuildData = function FUiGrid_onBuildData(){
       // 建立固定区(Layer:2)
       var hfp = o.hFixPanel = RBuilder.appendDiv(hbp);
       hfp.style.zIndex = 2;
@@ -106,7 +106,7 @@ with(MO){
       o.attachEvent('onDataScroll', o.hDataPanel, o.onDataScroll);
    }
    // ------------------------------------------------------------
-   MO.FGrid_oeResize = function FGrid_oeResize(e){
+   MO.FUiGrid_oeResize = function FUiGrid_oeResize(e){
       var o = this;
       // 检查是否尺寸改变
       var h = o.hPanel;
@@ -143,9 +143,9 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FGrid_oeRefresh = function FGrid_oeRefresh(e){
+   MO.FUiGrid_oeRefresh = function FUiGrid_oeRefresh(e){
       var o = this;
-      o.base.FGridControl.oeRefresh.call(o, e);
+      o.base.FUiGridControl.oeRefresh.call(o, e);
       if(e.isAfter()){
          // 计算初始化宽度
          var hcf = o.hTitleForm;
@@ -202,7 +202,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FGrid_pushColumn = function FGrid_pushColumn(c){
+   MO.FUiGrid_pushColumn = function FUiGrid_pushColumn(c){
       var o = this;
       // 为固定列的情况
       if(c.dispFixed){

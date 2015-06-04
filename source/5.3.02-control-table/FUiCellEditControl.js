@@ -16,7 +16,7 @@ with(MO){
    // @author maocy
    // @version 150125
    //==========================================================
-   MO.FCellEditControl = function FCellEditControl(o){
+   MO.FUiCellEditControl = function FUiCellEditControl(o){
       o = RClass.inherits(this, o, FCell);
       //..........................................................
       // @html
@@ -24,11 +24,11 @@ with(MO){
       //o._hEdit       = null;
       //..........................................................
       // @event
-      o.onBuildIcon  = FCellEditControl_onBuildIcon;
-      o.onBuildEdit  = FCellEditControl_onBuildEdit;
+      o.onBuildIcon  = FUiCellEditControl_onBuildIcon;
+      o.onBuildEdit  = FUiCellEditControl_onBuildEdit;
       o.onBuildDrop  = RMethod.empty;
-      o.onBuildForm  = FCellEditControl_onBuildForm;
-      o.onBuild      = FCellEditControl_onBuild;
+      o.onBuildForm  = FUiCellEditControl_onBuildForm;
+      o.onBuild      = FUiCellEditControl_onBuild;
       //..........................................................
       /// @style
       //o.stEditable   = RClass.register(o, new TStyle('Readonly'));
@@ -39,10 +39,10 @@ with(MO){
       //o.stEditSelect = RClass.register(o, new TStyle('EditReadonlySelect'));
       //..........................................................
       // @method
-      //o.getEditRange = FCellEditControl_getEditRange;
-      //o.select       = FCellEditControl_select;
-      //o.setVisible   = FCellEditControl_setVisible;
-      //o.refreshStyle = FCellEditControl_refreshStyle;
+      //o.getEditRange = FUiCellEditControl_getEditRange;
+      //o.select       = FUiCellEditControl_select;
+      //o.setVisible   = FUiCellEditControl_setVisible;
+      //o.refreshStyle = FUiCellEditControl_refreshStyle;
       return o;
    }
 
@@ -52,7 +52,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FCellEditControl_onBuildIcon = function FCellEditControl_onBuildIcon(p){
+   MO.FUiCellEditControl_onBuildIcon = function FUiCellEditControl_onBuildIcon(p){
       var o = this;
       o.hIcon = RBuilder.append(o.hIconPanel, 'IMG');
    }
@@ -63,7 +63,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FCellEditControl_onBuildEdit = function FCellEditControl_onBuildEdit(p){
+   MO.FUiCellEditControl_onBuildEdit = function FUiCellEditControl_onBuildEdit(p){
       var o = this;
       var c = o._column;
       // 建立文本输入框
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FCellEditControl_onBuildForm = function FCellEditControl_onBuildForm(p){
+   MO.FUiCellEditControl_onBuildForm = function FUiCellEditControl_onBuildForm(p){
       var o = this;
       var c = o._column;
       // 拥有图标区或下拉区的控件，才允许建立表格底板
@@ -131,7 +131,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FCellEditControl_onBuild = function FCellEditControl_onBuild(p){
+   MO.FUiCellEditControl_onBuild = function FUiCellEditControl_onBuild(p){
       var o = this;
       o.__base.FCell.onBuild.call(o, p)
       // 创建布局
@@ -149,7 +149,7 @@ with(MO){
 
 
    // ------------------------------------------------------------
-   MO.FCellEditControl_getEditRange = function FCellEditControl_getEditRange(){
+   MO.FUiCellEditControl_getEditRange = function FUiCellEditControl_getEditRange(){
       var o = this;
       var hc = o.hPanel;
       var p = RHtml.offsetPosition(hc);
@@ -165,7 +165,7 @@ with(MO){
    // @param v:value:Boolean 是否选中
    // @see FColumnEditable.isEditable
    //==========================================================
-   MO.FCellEditControl_select = function FCellEditControl_select(v){
+   MO.FUiCellEditControl_select = function FUiCellEditControl_select(v){
       var o = this;
       var a = o.descriptor().isEditAble(o.row);
       if(v){
@@ -190,7 +190,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCellEditControl_setVisible = function FCellEditControl_setVisible(v){
+   MO.FUiCellEditControl_setVisible = function FUiCellEditControl_setVisible(v){
       var o = this;
       o.hPanel.style.display = v ? 'block' : 'none';
       if(v){
@@ -204,7 +204,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FCellEditControl_refreshStyle = function FCellEditControl_refreshStyle(){
+   MO.FUiCellEditControl_refreshStyle = function FUiCellEditControl_refreshStyle(){
       var o = this;
       var t = o.table;
       var c = o.column;

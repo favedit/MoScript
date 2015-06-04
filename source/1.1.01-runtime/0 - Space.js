@@ -5,8 +5,31 @@
 // @author maocy
 // @version 150228
 //==========================================================
-var MO = new function MO(){
+var RMO = function RMO(){
    var o = this;
    o.version = '0.2.0';
    return o;
 }
+
+//==========================================================
+// <T>根据名称存储一个对象。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:Object 对象
+//==========================================================
+RMO.prototype.initialize = function RMO_initialize(){
+}
+
+//==========================================================
+// <T>根据名称存储一个对象。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:Object 对象
+//==========================================================
+RMO.prototype.release = function RMO_release(){
+}
+//..........................................................
+// 实例化内容
+MO = new RMO();

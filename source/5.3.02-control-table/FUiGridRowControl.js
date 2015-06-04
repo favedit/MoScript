@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150125
    //==========================================================
-   MO.FGridRowControl = function FGridRowControl(o){
+   MO.FUiGridRowControl = function FUiGridRowControl(o){
       o = RClass.inherits(this, o, FContainer, MDataContainer);
       //..........................................................
       // @attribute TDictionary 单元格字典
@@ -23,19 +23,19 @@ with(MO){
       o._statusCell    = null;
       //..........................................................
       // @event
-      o.onBuildPanel   = FGridRowControl_onBuildPanel;
-      o.onBuild        = FGridRowControl_onBuild;
+      o.onBuildPanel   = FUiGridRowControl_onBuildPanel;
+      o.onBuild        = FUiGridRowControl_onBuild;
       //..........................................................
       // @method
-      o.construct      = FGridRowControl_construct;
+      o.construct      = FUiGridRowControl_construct;
       // @method
-      o.loadRow        = FGridRowControl_loadRow;
-      o.saveRow        = FGridRowControl_saveRow;
+      o.loadRow        = FUiGridRowControl_loadRow;
+      o.saveRow        = FUiGridRowControl_saveRow;
       // @method
-      o.setVisible     = FGridRowControl_setVisible;
+      o.setVisible     = FUiGridRowControl_setVisible;
       // @method
-      o.appendChild    = FGridRowControl_appendChild;
-      o.push           = FGridRowControl_push;
+      o.appendChild    = FUiGridRowControl_appendChild;
+      o.push           = FUiGridRowControl_push;
 
 
       //..........................................................
@@ -65,31 +65,31 @@ with(MO){
       //o.builded          = false;
       //..........................................................
       // @method
-      //o.build            = FGridRowControl_build;
-      //o.buildChildren    = FGridRowControl_buildChildren;
-      //o.isDataChanged    = FGridRowControl_isDataChanged;
-      //o.isVisible        = FGridRowControl_isVisible;
-      //o.getIndex         = FGridRowControl_getIndex;
-      //o.getId            = FGridRowControl_getId;
-      //o.getVersion       = FGridRowControl_getVersion;
-      //o.getStatus        = FGridRowControl_getStatus;
-      //o.cell             = FGridRowControl_cell;
-      //o.get              = FGridRowControl_get;
-      //o.reget            = FGridRowControl_reget;
-      //o.set              = FGridRowControl_set;
-      //o.loadValue        = FGridRowControl_loadValue;
-      //o.saveValue        = FGridRowControl_saveValue;
-      //o.recordValue      = FGridRowControl_recordValue;
-      //o.toAttributes     = FGridRowControl_toAttributes;
-      //o.toDeepAttributes = FGridRowControl_toDeepAttributes;
-      //o.select           = FGridRowControl_select;
-      //o.extend           = FGridRowControl_extend;
-      //o.doInsert         = FGridRowControl_doInsert;
-      //o.doDelete         = FGridRowControl_doDelete;
-      //o.refresh          = FGridRowControl_refresh;
+      //o.build            = FUiGridRowControl_build;
+      //o.buildChildren    = FUiGridRowControl_buildChildren;
+      //o.isDataChanged    = FUiGridRowControl_isDataChanged;
+      //o.isVisible        = FUiGridRowControl_isVisible;
+      //o.getIndex         = FUiGridRowControl_getIndex;
+      //o.getId            = FUiGridRowControl_getId;
+      //o.getVersion       = FUiGridRowControl_getVersion;
+      //o.getStatus        = FUiGridRowControl_getStatus;
+      //o.cell             = FUiGridRowControl_cell;
+      //o.get              = FUiGridRowControl_get;
+      //o.reget            = FUiGridRowControl_reget;
+      //o.set              = FUiGridRowControl_set;
+      //o.loadValue        = FUiGridRowControl_loadValue;
+      //o.saveValue        = FUiGridRowControl_saveValue;
+      //o.recordValue      = FUiGridRowControl_recordValue;
+      //o.toAttributes     = FUiGridRowControl_toAttributes;
+      //o.toDeepAttributes = FUiGridRowControl_toDeepAttributes;
+      //o.select           = FUiGridRowControl_select;
+      //o.extend           = FUiGridRowControl_extend;
+      //o.doInsert         = FUiGridRowControl_doInsert;
+      //o.doDelete         = FUiGridRowControl_doDelete;
+      //o.refresh          = FUiGridRowControl_refresh;
       //o.refreshSize      = RMethod.empty;
-      //o.refreshStyle     = FGridRowControl_refreshStyle;
-      //o.dump             = FGridRowControl_dump;
+      //o.refreshStyle     = FUiGridRowControl_refreshStyle;
+      //o.dump             = FUiGridRowControl_dump;
       return o;
    }
 
@@ -99,7 +99,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FGridRowControl_onBuildPanel = function FGridRowControl_onBuildPanel(p){
+   MO.FUiGridRowControl_onBuildPanel = function FUiGridRowControl_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
    }
@@ -110,7 +110,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FGridRowControl_onBuild = function FGridRowControl_onBuild(p){
+   MO.FUiGridRowControl_onBuild = function FUiGridRowControl_onBuild(p){
       var o = this;
       o.__base.FContainer.onBuild.call(o, p)
       // 建立行对象
@@ -137,7 +137,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRowControl_construct = function FGridRowControl_construct(){
+   MO.FUiGridRowControl_construct = function FUiGridRowControl_construct(){
       var o = this;
       o.__base.FContainer.construct.call(o);
       // 构造属性
@@ -157,7 +157,7 @@ with(MO){
    // @method
    // @param p:row:TRow 数据行
    //==========================================================
-   MO.FGridRowControl_loadRow = function FGridRowControl_loadRow(p){
+   MO.FUiGridRowControl_loadRow = function FUiGridRowControl_loadRow(p){
       var o = this;
       var ds = RClass.create(FDataSource);
       ds.selectRow(p);
@@ -176,7 +176,7 @@ with(MO){
    // @method
    // @param p:row:FGridRow 数据行
    //==========================================================
-   MO.FGridRowControl_saveRow = function FGridRowControl_saveRow(p){
+   MO.FUiGridRowControl_saveRow = function FUiGridRowControl_saveRow(p){
       var o = this;
       //if(!r){
       //   r = new TRow();
@@ -196,7 +196,7 @@ with(MO){
    // @method
    // @param p:visible:Boolean 是否显示
    //==========================================================
-   MO.FGridRowControl_setVisible = function FGridRowControl_setVisible(p){
+   MO.FUiGridRowControl_setVisible = function FUiGridRowControl_setVisible(p){
       var o = this;
       o._visible = p;
       // 设置控件底板的可见性
@@ -212,7 +212,7 @@ with(MO){
    // @method
    // @return p:control:FControl 控件
    //==========================================================
-   MO.FGridRowControl_appendChild = function FGridRowControl_appendChild(p){
+   MO.FUiGridRowControl_appendChild = function FUiGridRowControl_appendChild(p){
       var o = this;
       o.__base.FContainer.appendChild.call(o, p);
       // 增加单元格
@@ -228,7 +228,7 @@ with(MO){
    // @method
    // @param p:component:FComponent 组件
    //==========================================================
-   MO.FGridRowControl_push = function FGridRowControl_push(p){
+   MO.FUiGridRowControl_push = function FUiGridRowControl_push(p){
       var o = this;
       o.__base.FContainer.push.call(o, p);
       // 设置单元格信息
@@ -262,7 +262,7 @@ with(MO){
 
 
    //==========================================================
-   MO.FGridRowControl_buildChildren = function FGridRowControl_buildChildren(){
+   MO.FUiGridRowControl_buildChildren = function FUiGridRowControl_buildChildren(){
       var o = this;
       var t = o.table;
       // 建立固定行对象
@@ -294,7 +294,7 @@ with(MO){
    //    <L value='true'>变化过</L>
    //    <L value='false'>未变化</L>
    //==========================================================
-   MO.FGridRowControl_isDataChanged = function FGridRowControl_isDataChanged(){
+   MO.FUiGridRowControl_isDataChanged = function FUiGridRowControl_isDataChanged(){
       var o = this;
       var cs = o._cells;
       for(var n=cs.count-1; n>=0; n--){
@@ -314,13 +314,13 @@ with(MO){
    // <L value='true'>变化过</L>
    // <L value='false'>未变化</L>
    //==========================================================
-   MO.FGridRowControl_isVisible = function FGridRowControl_isVisible(){
+   MO.FUiGridRowControl_isVisible = function FUiGridRowControl_isVisible(){
    	var o = this;
    	return o._visible;
    }
 
    //==========================================================
-   MO.FGridRowControl_getIndex = function FGridRowControl_getIndex(){
+   MO.FUiGridRowControl_getIndex = function FUiGridRowControl_getIndex(){
       return this._hPanel.rowIndex;
    }
 
@@ -330,7 +330,7 @@ with(MO){
    // @method
    // @return String 唯一标识
    //==========================================================
-   MO.FGridRowControl_getId = function FGridRowControl_getId(){
+   MO.FUiGridRowControl_getId = function FUiGridRowControl_getId(){
       var c = this._cells.get('ouid');
       return c ? c.reget() : '';
    }
@@ -341,7 +341,7 @@ with(MO){
    // @method
    // @return String 对象版本
    //==========================================================
-   MO.FGridRowControl_getVersion = function FGridRowControl_getVersion(){
+   MO.FUiGridRowControl_getVersion = function FUiGridRowControl_getVersion(){
       var c = this._cells.get('over');
       return c ? c.reget() : '';
    }
@@ -352,7 +352,7 @@ with(MO){
    // @method
    // @return FCellStatus 对状态单元格对象
    //==========================================================
-   MO.FGridRowControl_getStatus = function FGridRowControl_getStatus(){
+   MO.FUiGridRowControl_getStatus = function FUiGridRowControl_getStatus(){
       return this._statusCell;
    }
 
@@ -362,7 +362,7 @@ with(MO){
    // @method
    // @return String 对象版本
    //==========================================================
-   MO.FGridRowControl_cell = function FGridRowControl_cell(n){
+   MO.FUiGridRowControl_cell = function FUiGridRowControl_cell(n){
       return this._cells.value(n);
    }
 
@@ -373,7 +373,7 @@ with(MO){
    // @param n:name:String 字段名称
    // @return String 数据内容
    //==========================================================
-   MO.FGridRowControl_get = function FGridRowControl_get(n){
+   MO.FUiGridRowControl_get = function FUiGridRowControl_get(n){
       return this._cells.get(n).get();
    }
 
@@ -384,7 +384,7 @@ with(MO){
    // @param n:name:String 字段名称
    // @return String 数据内容
    //==========================================================
-   MO.FGridRowControl_reget = function FGridRowControl_reget(n){
+   MO.FUiGridRowControl_reget = function FUiGridRowControl_reget(n){
       return this._cells.get(n).reget();
    }
 
@@ -395,32 +395,32 @@ with(MO){
    // @param n:name:String 字段名称
    // @param v:value:String 数据内容
    //==========================================================
-   MO.FGridRowControl_set = function FGridRowControl_set(n, v){
+   MO.FUiGridRowControl_set = function FUiGridRowControl_set(n, v){
       this._cells.get(n).set(v);
    }
    //==========================================================
    // value
-   MO.FGridRowControl_loadValue = function FGridRowControl_loadValue(v){
+   MO.FUiGridRowControl_loadValue = function FUiGridRowControl_loadValue(v){
       this.loadRow(v);
    }
    //==========================================================
    // value
-   MO.FGridRowControl_saveValue = function FGridRowControl_saveValue(v){
+   MO.FUiGridRowControl_saveValue = function FUiGridRowControl_saveValue(v){
       this.saveRow(v);
    }
 
    //==========================================================
-   MO.FGridRowControl_recordValue = function FGridRowControl_recordValue(){
+   MO.FUiGridRowControl_recordValue = function FUiGridRowControl_recordValue(){
       // 记录数据
       this.process(this._recordProcess);
    }
 
    //==========================================================
-   MO.FGridRowControl_toAttributes = function FGridRowControl_toAttributes(v){
+   MO.FUiGridRowControl_toAttributes = function FUiGridRowControl_toAttributes(v){
       this.saveRow(v);
    }
    //==========================================================
-   MO.FGridRowControl_toDeepAttributes = function FGridRowControl_toDeepAttributes(r){
+   MO.FUiGridRowControl_toDeepAttributes = function FUiGridRowControl_toDeepAttributes(r){
       var o = this;
       // 获得所有父数据对象
       var ts = new TList();
@@ -456,7 +456,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRowControl_select = function FGridRowControl_select(v){
+   MO.FUiGridRowControl_select = function FUiGridRowControl_select(v){
       var o = this;
       o.isSelect = v;
       // 设置背景颜色
@@ -466,7 +466,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FGridRowControl_extend = function FGridRowControl_extend(v){
+   MO.FUiGridRowControl_extend = function FUiGridRowControl_extend(v){
       var o = this;
       var rs = o._rows;
       if(rs && rs.count){
@@ -485,7 +485,7 @@ with(MO){
       o.extended = v;
    }
    //==========================================================
-   MO.FGridRowControl_doInsert = function FGridRowControl_doInsert(){
+   MO.FUiGridRowControl_doInsert = function FUiGridRowControl_doInsert(){
       var o = this;
       if(!o.row){
          o.row = new TRow();
@@ -494,7 +494,7 @@ with(MO){
       o.table.setDataStatus(o, ERowStatus.Insert);
    }
    //==========================================================
-   MO.FGridRowControl_doDelete = function FGridRowControl_doDelete(){
+   MO.FUiGridRowControl_doDelete = function FUiGridRowControl_doDelete(){
       var o = this;
       o.status = ERowStatus.Delete;
       o.table.setDataStatus(o, ERowStatus.Delete);
@@ -505,7 +505,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRowControl_refresh = function FGridRowControl_refresh(){
+   MO.FUiGridRowControl_refresh = function FUiGridRowControl_refresh(){
       var o = this;
       o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
    }
@@ -515,7 +515,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRowControl_refreshStyle = function FGridRowControl_refreshStyle(){
+   MO.FUiGridRowControl_refreshStyle = function FUiGridRowControl_refreshStyle(){
       var o = this;
       var cs = o._cells;
       if(cs){
@@ -532,7 +532,7 @@ with(MO){
    // @param d:dump:TString 调试信息
    // @return 调试信息
    //==========================================================
-   MO.FGridRowControl_dump = function FGridRowControl_dump(s){
+   MO.FUiGridRowControl_dump = function FUiGridRowControl_dump(s){
       var o = this;
       s = RString.nvlStr(s);
       s.append(RClass.dump(o), '[');

@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumnStatus = function FColumnStatus(o){
+   MO.FUiColumnStatus = function FUiColumnStatus(o){
       o = RClass.inherits(this, o, FColumnEditControl);
       //..........................................................
       // @property
@@ -18,11 +18,11 @@ with(MO){
       o._cellClass        = FCellStatus;
       //..........................................................
       // @event
-      o.onBuildSearchForm = FColumnStatus_onBuildSearchForm;
-      o.onBuild           = FColumnStatus_onBuild;
+      o.onBuildSearchForm = FUiColumnStatus_onBuildSearchForm;
+      o.onBuild           = FUiColumnStatus_onBuild;
       //..........................................................
       // @method
-      o.createCell        = FColumnStatus_createCell;
+      o.createCell        = FUiColumnStatus_createCell;
 
 
 
@@ -49,10 +49,10 @@ with(MO){
       //o._styleIconLock        = RClass.register(o, new AStyleIcon('_styleIconLock'));
       //..........................................................
       // @event
-      //o.onCellClick           = FColumnStatus_onCellClick;
+      //o.onCellClick           = FUiColumnStatus_onCellClick;
       //..........................................................
       // @method
-      //o.setDataStatus         = FColumnStatus_setDataStatus;
+      //o.setDataStatus         = FUiColumnStatus_setDataStatus;
       /// @property
       //o._dispList           = true;
       /// @event
@@ -70,10 +70,10 @@ with(MO){
       //o.lsnsHeadClick       = new TListeners();
       //o.lsnsRowDblClick     = new TListeners();
       // Html Event
-      //o.ohCellMdclk         = FColumnStatus_ohCellMdclk;
+      //o.ohCellMdclk         = FUiColumnStatus_ohCellMdclk;
       // @event
       // @methos
-      //o.dispose             = FColumnStatus_dispose;
+      //o.dispose             = FUiColumnStatus_dispose;
       return o;
    }
 
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumnStatus_onBuildSearchForm = function FColumnStatus_onBuildSearchForm(p){
+   MO.FUiColumnStatus_onBuildSearchForm = function FUiColumnStatus_onBuildSearchForm(p){
       var o = this;
       var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
       hf.height = 18;
@@ -92,7 +92,7 @@ with(MO){
       var hc = RBuilder.appendTableCell(hfl);
       hc.align = 'center';
       //o._hSearchIcon = RBuilder.appendIcon(hc, o.styleIcon('Search'));
-      //o._hSearchIcon.title = RContext.get('FColumnStatus:Search');
+      //o._hSearchIcon.title = RContext.get('FUiColumnStatus:Search');
    }
 
    //==========================================================
@@ -101,7 +101,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FColumnStatus_onBuild = function FColumnStatus_onBuild(p){
+   MO.FUiColumnStatus_onBuild = function FUiColumnStatus_onBuild(p){
       var o = this;
       var r = o.__base.FColumnEditControl.onBuild.call(o, p);
       var h = o._hPanel;
@@ -119,7 +119,7 @@ with(MO){
    // @param p:row:FRow 表格行
    // @return FCell 单元格
    //==========================================================
-   MO.FColumnStatus_createCell = function FColumnStatus_createCell(p){
+   MO.FUiColumnStatus_createCell = function FUiColumnStatus_createCell(p){
       var o = this;
       var c = o.__base.FColumnEditControl.createCell.call(o, p);
       if(p){
@@ -139,7 +139,7 @@ with(MO){
    // @param s:sender:FControl �ؼ�����
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FColumnStatus_onCellClick = function FColumnStatus_onCellClick(s, e){
+   MO.FUiColumnStatus_onCellClick = function FUiColumnStatus_onCellClick(s, e){
       // �����¼�
       if(this.table.callEvent('onTableRowDoubleClick', s.row)){
          return;
@@ -156,7 +156,7 @@ with(MO){
    // @param s:status:EDataStatus ״̬
    //==========================================================
    // row, status
-   MO.FColumnStatus_setDataStatus = function FColumnStatus_setDataStatus(r, s){
+   MO.FUiColumnStatus_setDataStatus = function FUiColumnStatus_setDataStatus(r, s){
       var o = this;
       var t = o.table;
       var c = r.getStatus();
@@ -180,13 +180,13 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FColumnStatus_ohCellMdclk = function FColumnStatus_ohCellMdclk(){
+   MO.FUiColumnStatus_ohCellMdclk = function FUiColumnStatus_ohCellMdclk(){
       var tab = this.lnkCol.table;
       tab.insertRow(this.lnkRow.rowIndex());
    }
 
    // ------------------------------------------------------------
-   MO.FColumnStatus_dispose = function FColumnStatus_dispose(){
+   MO.FUiColumnStatus_dispose = function FUiColumnStatus_dispose(){
       var o = this;
       o.__base.FColumnEditControl.dispose.call(o);
       o._hSelect = null;

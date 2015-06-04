@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumnEmpty = function FColumnEmpty(o){
+   MO.FUiColumnEmpty = function FUiColumnEmpty(o){
       o = RClass.inherits(this, o, FColumn);
       // @attribute
       o._dispList         = true;

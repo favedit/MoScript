@@ -1,8 +1,13 @@
-var MO = new function MO(){
+var RMO = function RMO(){
    var o = this;
    o.version = '0.2.0';
    return o;
 }
+RMO.prototype.initialize = function RMO_initialize(){
+}
+RMO.prototype.release = function RMO_release(){
+}
+MO = new RMO();
 MO.ELogger = new function ELogger(){
    var o = this;
    o.Debug = 0;
@@ -1463,13 +1468,13 @@ with(MO){
    }
 }
 with(MO){
-   MO.ASource = function ASource(name, linker){
+   MO.ASource = function ASource(name, typeCd){
       var o = this;
       AAnnotation.call(o, name);
       o._inherit      = false;
       o._annotationCd = EAnnotation.Source;
       o._linker       = null;
-      o._force        = false;
+      o._typeCd       = typeCd;
       o.code          = ASource_code;
       o.build         = ASource_build;
       o.load          = ASource_load;

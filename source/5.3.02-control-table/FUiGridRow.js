@@ -6,28 +6,28 @@ with(MO){
    // @author maocy
    // @version 150125
    //==========================================================
-   MO.FGridRow = function FGridRow(o){
-      o = RClass.inherits(this, o, FGridRowControl);
+   MO.FUiGridRow = function FUiGridRow(o){
+      o = RClass.inherits(this, o, FUiGridRowControl);
       //..........................................................
       // @html 行对象<TR>
       o._hFixPanel   = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FGridRow_onBuildPanel;
+      o.onBuildPanel = FUiGridRow_onBuildPanel;
       //..........................................................
       // @method
-      o.setVisible   = FGridRow_setVisible;
+      o.setVisible   = FUiGridRow_setVisible;
       // @method
-      o.appendChild  = FGridRow_appendChild;
+      o.appendChild  = FUiGridRow_appendChild;
       // @method
-      o.dispose      = FGridRow_dispose;
+      o.dispose      = FUiGridRow_dispose;
 
 
       //..........................................................
       /// @method 建立内容
-      //o.select       = FGridRow_select;
-      //o.refreshSize  = FGridRow_refreshSize;
-      //o.refreshStyle = FGridRow_refreshStyle;
+      //o.select       = FUiGridRow_select;
+      //o.refreshSize  = FUiGridRow_refreshSize;
+      //o.refreshStyle = FUiGridRow_refreshStyle;
       return o;
    }
 
@@ -37,9 +37,9 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FGridRow_onBuildPanel = function FGridRow_onBuildPanel(p){
+   MO.FUiGridRow_onBuildPanel = function FUiGridRow_onBuildPanel(p){
       var o = this;
-      o.__base.FGridRowControl.onBuildPanel.call(o, p);
+      o.__base.FUiGridRowControl.onBuildPanel.call(o, p);
       // 建立固定行对象
       o._hFixPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
    }
@@ -51,7 +51,7 @@ with(MO){
    // @param e:event:TEventProcess 事件处理
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FGridRow_setVisible = function FGridRow_setVisible(p){
+   MO.FUiGridRow_setVisible = function FUiGridRow_setVisible(p){
       var o = this;
       o._visible = p;
       // 设置控件底板的可见性
@@ -71,9 +71,9 @@ with(MO){
    // @method
    // @return p:control:FControl 控件
    //==========================================================
-   MO.FGridRow_appendChild = function FGridRow_appendChild(p){
+   MO.FUiGridRow_appendChild = function FUiGridRow_appendChild(p){
       var o = this;
-      o.__base.FGridRowControl.appendChild.call(o, p);
+      o.__base.FUiGridRowControl.appendChild.call(o, p);
       // 增加单元格
       var c = p._column;
       if(c._optionFixed){
@@ -86,14 +86,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRow_dispose = function FGridRow_dispose(){
+   MO.FUiGridRow_dispose = function FUiGridRow_dispose(){
       var o = this;
       var h = o._hFixPanel;
       if(h){
          RMemory.free(h);
          o._hFixPanel = null;
       }
-      o.__base.FGridRowControl.dispose.call(o);
+      o.__base.FUiGridRowControl.dispose.call(o);
    }
 
 
@@ -113,7 +113,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRow_select = function FGridRow_select(v){
+   MO.FUiGridRow_select = function FUiGridRow_select(v){
       var o = this;
       o.isSelect = v;
       // 设置背景颜色
@@ -129,7 +129,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRow_refreshSize = function FGridRow_refreshSize(){
+   MO.FUiGridRow_refreshSize = function FUiGridRow_refreshSize(){
       this.hPanel.style.pixelHeight = this._hFixPanel.offsetHeight;
    }
 
@@ -138,7 +138,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGridRow_refreshStyle = function FGridRow_refreshStyle(){
+   MO.FUiGridRow_refreshStyle = function FUiGridRow_refreshStyle(){
       var o = this;
       if(o.hPanel.offsetHeight > o._hFixPanel.offsetHeight){
          o._hFixPanel.style.pixelHeight = o.hPanel.offsetHeight;
@@ -149,6 +149,6 @@ with(MO){
       if(o.table.isLov){
          o._hFixPanel.style.cursor = 'hand';
       }
-      o.__base.FGridRowControl.refreshStyle.call(o);
+      o.__base.FUiGridRowControl.refreshStyle.call(o);
    }
 }

@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumnButton = function FColumnButton(o){
+   MO.FUiColumnButton = function FUiColumnButton(o){
       o = RClass.inherits(this, o, FColumn);
       //..........................................................
       // @attribute

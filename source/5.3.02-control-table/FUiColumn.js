@@ -23,7 +23,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumn = function FColumn(o){
+   MO.FUiColumn = function FUiColumn(o){
       //o = RClass.inherits(this, o, FControl, MEditDescriptor, MDisplay);
       o = RClass.inherits(this, o, FControl, MDataField);
       //..........................................................
@@ -56,15 +56,15 @@ with(MO){
       o._hSearchEdit       = null;
       //..........................................................
       // @event
-      o.onBuildLabel       = FColumn_onBuildLabel;
+      o.onBuildLabel       = FUiColumn_onBuildLabel;
       o.onBuildSearchIcon  = RMethod.empty;
-      o.onBuildSearchEdit  = FColumn_onBuildSearchEdit;
+      o.onBuildSearchEdit  = FUiColumn_onBuildSearchEdit;
       o.onBuildSearchDrop  = RMethod.empty;
-      o.onBuildSearchForm  = FColumn_onBuildSearchForm;
-      o.onBuildSearch      = FColumn_onBuildSearch;
-      o.onBuildTotal       = FColumn_onBuildTotal;
-      o.onBuildPanel       = FColumn_onBuildPanel;
-      o.onBuild            = FColumn_onBuild;
+      o.onBuildSearchForm  = FUiColumn_onBuildSearchForm;
+      o.onBuildSearch      = FUiColumn_onBuildSearch;
+      o.onBuildTotal       = FUiColumn_onBuildTotal;
+      o.onBuildPanel       = FUiColumn_onBuildPanel;
+      o.onBuild            = FUiColumn_onBuild;
       // @event
       o.onSearchEnter      = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
       o.onSearchClick      = RClass.register(o, new AEventClick('onSearchClick'));
@@ -74,7 +74,7 @@ with(MO){
       // @process
       //..........................................................
       // @method
-      o.createCell         = FColumn_createCell;
+      o.createCell         = FUiColumn_createCell;
 
 
 
@@ -131,39 +131,39 @@ with(MO){
       //o._hFixPanel         = null;
       //..........................................................
       // @event
-      //o.onCellMouseEnter  = RClass.register(o, new AEventMouseEnter('onCellMouseEnter'), FColumn_onCellMouseEnter);
-      //o.onCellMouseLeave  = RClass.register(o, new AEventMouseLeave('onCellMouseLeave'), FColumn_onCellMouseLeave);
-      //o.onCellMouseDown   = RClass.register(o, new AEventMouseDown('onCellMouseDown'), FColumn_onCellMouseDown);
-      //o.onCellClick       = RClass.register(o, new AEventClick('onCellClick'), FColumn_onCellClick);
-      //o.onCellDoubleClick = RClass.register(o, new AEventDoubleClick('onCellDoubleClick'), FColumn_onCellDoubleClick);
-      //o.onCellKeyDown     = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FColumn_onCellKeyDown);
+      //o.onCellMouseEnter  = RClass.register(o, new AEventMouseEnter('onCellMouseEnter'), FUiColumn_onCellMouseEnter);
+      //o.onCellMouseLeave  = RClass.register(o, new AEventMouseLeave('onCellMouseLeave'), FUiColumn_onCellMouseLeave);
+      //o.onCellMouseDown   = RClass.register(o, new AEventMouseDown('onCellMouseDown'), FUiColumn_onCellMouseDown);
+      //o.onCellClick       = RClass.register(o, new AEventClick('onCellClick'), FUiColumn_onCellClick);
+      //o.onCellDoubleClick = RClass.register(o, new AEventDoubleClick('onCellDoubleClick'), FUiColumn_onCellDoubleClick);
+      //o.onCellKeyDown     = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FUiColumn_onCellKeyDown);
       // @event
-      //o.onDataKeyDown     = FColumn_onDataKeyDown;
-      //o.onDataChanged     = FColumn_onDataChanged;
+      //o.onDataKeyDown     = FUiColumn_onDataKeyDown;
+      //o.onDataChanged     = FUiColumn_onDataChanged;
       // @event
-      //o.onEditBegin       = FColumn_onEditBegin;
-      //o.onEditEnd         = FColumn_onEditEnd;
-      //o.onEditChanged     = FColumn_onEditChanged;
+      //o.onEditBegin       = FUiColumn_onEditBegin;
+      //o.onEditEnd         = FUiColumn_onEditEnd;
+      //o.onEditChanged     = FUiColumn_onEditChanged;
       //..........................................................
       // @event
-      //o.onHeadMouseDown   = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FColumn_onHeadMouseDown);
+      //o.onHeadMouseDown   = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiColumn_onHeadMouseDown);
       //..........................................................
       // @process
-      //o.oeMode            = FColumn_oeMode;
-      //o.oeRefresh         = FColumn_oeRefresh;
+      //o.oeMode            = FUiColumn_oeMode;
+      //o.oeRefresh         = FUiColumn_oeRefresh;
       //..........................................................
       // @method
-      //o.createMoveable    = FColumn_createMoveable;
-      //o.searchValue       = FColumn_searchValue;
-      //o.setStyleStatus    = FColumn_setStyleStatus;
-      //o.cell              = FColumn_cell;
-      //o.equalsValue       = FColumn_equalsValue;
-      //o.setWidth          = FColumn_setWidth;
-      //o.setVisible        = FColumn_setVisible;
-      //o.moveCellFocus     = FColumn_moveCellFocus;
-      //o.getEditRange      = FColumn_getEditRange;
-      //o.dispose           = FColumn_dispose;
-      //o.dump              = FColumn_dump;
+      //o.createMoveable    = FUiColumn_createMoveable;
+      //o.searchValue       = FUiColumn_searchValue;
+      //o.setStyleStatus    = FUiColumn_setStyleStatus;
+      //o.cell              = FUiColumn_cell;
+      //o.equalsValue       = FUiColumn_equalsValue;
+      //o.setWidth          = FUiColumn_setWidth;
+      //o.setVisible        = FUiColumn_setVisible;
+      //o.moveCellFocus     = FUiColumn_moveCellFocus;
+      //o.getEditRange      = FUiColumn_getEditRange;
+      //o.dispose           = FUiColumn_dispose;
+      //o.dump              = FUiColumn_dump;
       return o;
    }
 
@@ -173,7 +173,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildLabel = function FColumn_onBuildLabel(p){
+   MO.FUiColumn_onBuildLabel = function FUiColumn_onBuildLabel(p){
       var o = this;
       var hr = o._hFormLine;
       // 建立图标区
@@ -196,9 +196,9 @@ with(MO){
       hl.innerHTML = RString.nvl(o.label());
       // 建立排序区
       var hsp = o._hSortPanel = RBuilder.appendTableCell(hr);
-      var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FColumn));
+      var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FUiColumn));
       hsu.style.display = 'none';
-      var hsu = o._hSortDown = RBuilder.appendIcon(hsp, o.styleIcon('SortDown', FColumn));
+      var hsu = o._hSortDown = RBuilder.appendIcon(hsp, o.styleIcon('SortDown', FUiColumn));
       hsu.style.display = 'none';
       // 如果当前控件支持列表接口
       //if(RClass.isClass(o, MListView)){
@@ -212,7 +212,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildSearchEdit = function FColumn_onBuildSearchEdit(p){
+   MO.FUiColumn_onBuildSearchEdit = function FUiColumn_onBuildSearchEdit(p){
       var o = this;
       var hc = o._hSearchEditPanel = RBuilder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
       var he = o._hSearchEdit = RBuilder.appendEdit(hc, o.styleName('SearchEdit'));
@@ -232,13 +232,13 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildSearchForm = function FColumn_onBuildSearchForm(p){
+   MO.FUiColumn_onBuildSearchForm = function FUiColumn_onBuildSearchForm(p){
       var o = this;
       var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
-      if(RClass.isClass(o, FColumnButton)){
+      if(RClass.isClass(o, FUiColumnButton)){
          o._hSearchPanel.style.backgroundColor = '#EEEFF1';
          o._hSearchPanel.style.borderLeft='1 solid #808080';
          o._hSearchPanel.style.borderTop='1 solid #808080';
@@ -259,7 +259,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildSearch = function FColumn_onBuildSearch(p){
+   MO.FUiColumn_onBuildSearch = function FUiColumn_onBuildSearch(p){
       var o = this;
       // 创建底板
       var h = o._hSearchPanel = RBuilder.create(p, 'TD', o.styleName('SearchPanel'));
@@ -279,7 +279,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildTotal = function FColumn_onBuildTotal(p){
+   MO.FUiColumn_onBuildTotal = function FUiColumn_onBuildTotal(p){
       var o = this;
       // 创建底板
       var h = o._hTotalPanel = RBuilder.create(p, 'TD');
@@ -297,7 +297,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumn_onBuildPanel = function FColumn_onBuildPanel(p) {
+   MO.FUiColumn_onBuildPanel = function FUiColumn_onBuildPanel(p) {
       var o = this;
       o._hPanel = RBuilder.create(p, 'TD', o.styleName('Label'));
    }
@@ -308,7 +308,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FColumn_onBuild = function FColumn_onBuild(p) {
+   MO.FUiColumn_onBuild = function FUiColumn_onBuild(p) {
       var o = this;
       var t = o.table;
       // 设置绝对编辑标志
@@ -363,7 +363,7 @@ with(MO){
    // @param p:row:FRow 表格行
    // @return FCell 单元格
    //==========================================================
-   MO.FColumn_createCell = function FColumn_createCell(p) {
+   MO.FUiColumn_createCell = function FUiColumn_createCell(p) {
       var o = this;
       var c = RClass.create(o._cellClass);
       var t = c._table = o._table;
@@ -396,17 +396,17 @@ with(MO){
 
 
    //==========================================================
-   MO.FColumn_onCellMouseEnter = function FColumn_onCellMouseEnter(s, e){
+   MO.FUiColumn_onCellMouseEnter = function FUiColumn_onCellMouseEnter(s, e){
       this.table.hoverRow(s.row, true);
    }
 
    //==========================================================
-   MO.FColumn_onCellMouseLeave = function FColumn_onCellMouseLeave(s, e){
+   MO.FUiColumn_onCellMouseLeave = function FUiColumn_onCellMouseLeave(s, e){
       this.table.hoverRow(s.row, false);
    }
 
    //==========================================================
-   MO.FColumn_onCellMouseDown = function FColumn_onCellMouseDown(s, e){
+   MO.FUiColumn_onCellMouseDown = function FUiColumn_onCellMouseDown(s, e){
       var o = this;
       var t = s.table;
       var r = s.row;
@@ -425,12 +425,12 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onCellClick = function FColumn_onCellClick(s, e){
+   MO.FUiColumn_onCellClick = function FUiColumn_onCellClick(s, e){
       this.table.clickRow(s.row);
    }
 
    //==========================================================
-   MO.FColumn_onCellDoubleClick = function FColumn_onCellDoubleClick(s, e){
+   MO.FUiColumn_onCellDoubleClick = function FUiColumn_onCellDoubleClick(s, e){
       var o = this;
       var r = s.row;
       if(!o.isEditAble(r)){
@@ -439,7 +439,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onCellKeyDown = function FColumn_onCellKeyDown(s, e, he){
+   MO.FUiColumn_onCellKeyDown = function FUiColumn_onCellKeyDown(s, e, he){
       var o = this;
       if(he){
          o.table.onCellKeyDown(s, e, he);
@@ -447,7 +447,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_oeMode = function FColumn_oeMode(e){
+   MO.FUiColumn_oeMode = function FUiColumn_oeMode(e){
       var o = this;
       if(e.isAfter()){
          var d = false;
@@ -463,7 +463,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_oeRefresh = function FColumn_oeRefresh(e) {
+   MO.FUiColumn_oeRefresh = function FUiColumn_oeRefresh(e) {
       var o = this;
       if(e.isBefore()){
          o.setVisible(o._displayList);
@@ -471,19 +471,19 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onDataKeyDown = function FColumn_onDataKeyDown(s, e) {
+   MO.FUiColumn_onDataKeyDown = function FUiColumn_onDataKeyDown(s, e) {
       var o = this;
       o.__base.MEditDescriptor.onDataKeyDown.call(o, s, e);
    }
 
    //==========================================================
-   MO.FColumn_onDataChanged = function FColumn_onDataChanged(s, e) {
+   MO.FUiColumn_onDataChanged = function FUiColumn_onDataChanged(s, e) {
       var o = this;
       o.table.setDataStatus(s.row, EDataStatus.Update);
    }
 
    //==========================================================
-   MO.FColumn_onEditBegin = function FColumn_onEditBegin(editor) {
+   MO.FUiColumn_onEditBegin = function FUiColumn_onEditBegin(editor) {
       var o = this;
       var row = editor.row;
       o.editor = editor;
@@ -494,7 +494,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onEditEnd = function FColumn_onEditEnd(e) {
+   MO.FUiColumn_onEditEnd = function FUiColumn_onEditEnd(e) {
       var o = this;
       var row = editor.row;
       var text = editor.text();
@@ -506,21 +506,21 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onEditChanged = function FColumn_onEditChanged(cell) {
+   MO.FUiColumn_onEditChanged = function FUiColumn_onEditChanged(cell) {
       cell.row.refresh();
    }
 
    //==========================================================
-   MO.FColumn_onHeadMouseDown = function FColumn_onHeadMouseDown(e) {
+   MO.FUiColumn_onHeadMouseDown = function FUiColumn_onHeadMouseDown(e) {
       var o = this;
       var tbl = o.table;
       var ct = tbl.dsViewer.count;
       var x = e.x;
-      if(!RClass.isClass(o, FColumnButton)){
+      if(!RClass.isClass(o, FUiColumnButton)){
          var l = o._hPanel.offsetWidth;
          var r = l - 6;
          if (x > 0 && x < r) {
-            if (ct > 0 && !RClass.isClass(e.source, FColumnStatus)) {
+            if (ct > 0 && !RClass.isClass(e.source, FUiColumnStatus)) {
                // 设置排序信息
                var cs = tbl.columns;
                var len = cs.count;
@@ -551,12 +551,12 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_onRowClick = function FColumn_onRowClick(s, e){
+   MO.FUiColumn_onRowClick = function FUiColumn_onRowClick(s, e){
       RConsole.find(FListenerConsole).process(FGridControl, EGridAction.RowClick, s.row, s.row);
    }
 
    //==========================================================
-   MO.FColumn_createMoveable = function FColumn_createMoveable(p) {
+   MO.FUiColumn_createMoveable = function FUiColumn_createMoveable(p) {
       var o = this;
       var r = o.cloneMove;
       if (!r) {
@@ -582,7 +582,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_searchValue = function FColumn_searchValue() {
+   MO.FUiColumn_searchValue = function FUiColumn_searchValue() {
       var o = this;
       if(o._hSearchEdit){
          return o._hSearchEdit.value;
@@ -590,7 +590,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_setStyleStatus = function FColumn_setStyleStatus(row, status) {
+   MO.FUiColumn_setStyleStatus = function FUiColumn_setStyleStatus(row, status) {
       var o = this;
       var h = o.cell(row);
       if (h) {
@@ -634,12 +634,12 @@ with(MO){
    // @param r:row:FRow 指定行对象
    // @return FCell 单元格对象
    //==========================================================
-   MO.FColumn_cell = function FColumn_cell(r){
+   MO.FUiColumn_cell = function FUiColumn_cell(r){
       return r.cell(this.index);
    }
 
    //==========================================================
-   MO.FColumn_equalsValue = function FColumn_equalsValue(s, t) {
+   MO.FUiColumn_equalsValue = function FUiColumn_equalsValue(s, t) {
       return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == RString.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
    }
 
@@ -649,14 +649,14 @@ with(MO){
    // @method
    // @param w:width:Number 宽度
    //==========================================================
-   MO.FColumn_setWidth = function FColumn_setWidth(w){
+   MO.FUiColumn_setWidth = function FUiColumn_setWidth(w){
       var o = this;
       o._hPanel.style.pixelWidth = w;
       o._hFixPanel.style.pixelWidth = w;
    }
 
    //==========================================================
-   MO.FColumn_setVisible = function FColumn_setVisible(v){
+   MO.FUiColumn_setVisible = function FUiColumn_setVisible(v){
       var o = this;
       o.isDisplay = v;
       var s = v ? 'block' : 'none';
@@ -667,7 +667,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_moveCellFocus = function FColumn_moveCellFocus(row, p) {
+   MO.FUiColumn_moveCellFocus = function FUiColumn_moveCellFocus(row, p) {
       var o = this;
       var t = o.table;
       // Find move targetCol/row/cell
@@ -693,7 +693,7 @@ with(MO){
             var fr = t.rows.get(n);
             for( var i = fi; i >= 0; i--){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FColumn) && ft._displayList){
+               if(RClass.isClass(ft, FUiColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);
@@ -714,7 +714,7 @@ with(MO){
             var fr = t.rows.get(n);
             for(var i = fi; i < cc; i++){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FColumn) && ft._displayList){
+               if(RClass.isClass(ft, FUiColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);
@@ -735,7 +735,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_getEditRange = function FColumn_getEditRange(){
+   MO.FUiColumn_getEditRange = function FUiColumn_getEditRange(){
       var o = this;
       var hc = o._hSearchPanel;
       var p = RHtml.offsetPosition(hc);
@@ -745,7 +745,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_dispose = function FColumn_dispose(){
+   MO.FUiColumn_dispose = function FUiColumn_dispose(){
       var o = this;
       o.__base.FControl.dispose.call(o);
       RMemory.freeHtml(o._hSearchPanel);
@@ -772,7 +772,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FColumn_dump = function FColumn_dump(s) {
+   MO.FUiColumn_dump = function FUiColumn_dump(s) {
       var o = this;
       s = RString.nvlStr(s);
       s.append(RClass.dump(o), '[');

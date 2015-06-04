@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FCellStatus = function FCellStatus(o){
+   MO.FUiCellStatus = function FUiCellStatus(o){
       o = RClass.inherits(this, o, FCell);
       //..........................................................
       // @property
@@ -16,21 +16,21 @@ with(MO){
       o._hStatus  = null;
       //..........................................................
       // @event
-      o.onBuild   = FCellStatus_onBuild;
+      o.onBuild   = FUiCellStatus_onBuild;
 
 
       //..........................................................
       // @event
-      //o.onStatusEnter = RClass.register(o, new HMouseEnter('onStatusEnter'), FCellStatus_onStatusEnter);
+      //o.onStatusEnter = RClass.register(o, new HMouseEnter('onStatusEnter'), FUiCellStatus_onStatusEnter);
       //..........................................................
       // @method
       //o.isDataChanged = RMethod.emptyFalse;
       //o.get           = RMethod.empty;
       //o.reget         = RMethod.empty;
       //o.set           = RMethod.empty;
-      //o.setIcon       = FCellStatus_setIcon;
-      //o.refreshStyle  = FCellStatus_refreshStyle;
-      //o.dispose       = FCellStatus_dispose;
+      //o.setIcon       = FUiCellStatus_setIcon;
+      //o.refreshStyle  = FUiCellStatus_refreshStyle;
+      //o.dispose       = FUiCellStatus_dispose;
       return o;
    }
 
@@ -40,7 +40,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FCellStatus_onBuild = function FCellStatus_onBuild(p){
+   MO.FUiCellStatus_onBuild = function FUiCellStatus_onBuild(p){
       var o = this;
       o.__base.FCell.onBuild.call(o, p)
       // 创建底板
@@ -69,7 +69,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCellStatus_onStatusEnter = function FCellStatus_onStatusEnter(){
+   MO.FUiCellStatus_onStatusEnter = function FUiCellStatus_onStatusEnter(){
       this.row.table.getRowBar().linkCell(this);
    }
 
@@ -79,7 +79,7 @@ with(MO){
    // @method
    // @param s:statusIcon:String 图锟斤拷
    //==========================================================
-   MO.FCellStatus_setIcon = function FCellStatus_setIcon(s){
+   MO.FUiCellStatus_setIcon = function FUiCellStatus_setIcon(s){
       this._hStatus.src = s;
    }
 
@@ -88,7 +88,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCellStatus_refreshStyle = function FCellStatus_refreshStyle(){
+   MO.FUiCellStatus_refreshStyle = function FUiCellStatus_refreshStyle(){
       var o = this;
       var r = o.row;
       var t = r.table;
@@ -106,7 +106,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FCellStatus_dispose = function FCellStatus_dispose(){
+   MO.FUiCellStatus_dispose = function FUiCellStatus_dispose(){
       var o = this;
       o.base.FCellEditControl.dispose.call(o);
       o._hStatus = null;

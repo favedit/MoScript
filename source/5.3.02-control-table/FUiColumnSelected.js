@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FColumnSelected = function FColumnSelected(o){
+   MO.FUiColumnSelected = function FUiColumnSelected(o){
       o = RClass.inherits(this, o, FColumnEditControl);
       //..........................................................
       // @property
@@ -21,13 +21,13 @@ with(MO){
       o._cellClass        = FCellSelected;
       //..........................................................
       // @event
-      o.onBuildSearchForm = FColumnSelected_onBuildSearchForm;
-      o.onBuild           = FColumnSelected_onBuild;
+      o.onBuildSearchForm = FUiColumnSelected_onBuildSearchForm;
+      o.onBuild           = FUiColumnSelected_onBuild;
       //..........................................................
       // @method
-      o.createCell        = FColumnSelected_createCell;
+      o.createCell        = FUiColumnSelected_createCell;
       // @methos
-      o.dispose           = FColumnSelected_dispose;
+      o.dispose           = FUiColumnSelected_dispose;
 
 
 
@@ -37,8 +37,8 @@ with(MO){
 
       //..........................................................
       // @event
-      //o.onCellClick      = FColumnSelected_onCellClick;
-      //o.onSelectedClick  = FColumnSelected_onSelectedClick;
+      //o.onCellClick      = FUiColumnSelected_onCellClick;
+      //o.onSelectedClick  = FUiColumnSelected_onSelectedClick;
       //..........................................................
       /// @property
       //o._dispList            = true;
@@ -47,7 +47,7 @@ with(MO){
       //o.width               = 20;
       //o.dispSize            = false;
       //o.dispDrag            = false;
-      //o.setVisible          = FColumnSelected_setVisible;
+      //o.setVisible          = FUiColumnSelected_setVisible;
       // Listener
       //o.lsnsHeadClick       = new TListeners();
       //o.lsnsRowDblClick     = new TListeners();
@@ -60,7 +60,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FColumnSelected_onBuildSearchForm = function FColumnSelected_onBuildSearchForm(p){
+   MO.FUiColumnSelected_onBuildSearchForm = function FUiColumnSelected_onBuildSearchForm(p){
       var o = this;
       var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
       hf.width = '100%';
@@ -78,7 +78,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FColumnSelected_onBuild = function FColumnSelected_onBuild(e){
+   MO.FUiColumnSelected_onBuild = function FUiColumnSelected_onBuild(e){
       var o = this;
       var r = o.__base.FColumnEditControl.onBuild.call(o, e);
       var h = o._hPanel;
@@ -96,7 +96,7 @@ with(MO){
    // @param p:row:FRow 表格行
    // @return FCell 单元格
    //==========================================================
-   MO.FColumnSelected_createCell = function FColumnSelected_createCell(p){
+   MO.FUiColumnSelected_createCell = function FUiColumnSelected_createCell(p){
       var o = this;
       var c = o.__base.FColumnEditControl.createCell.call(o, p);
       if(p){
@@ -110,7 +110,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FColumnSelected_dispose = function FColumnSelected_dispose(){
+   MO.FUiColumnSelected_dispose = function FUiColumnSelected_dispose(){
       var o = this;
       o._hSelect = null;
       // 父处理
@@ -132,7 +132,7 @@ with(MO){
    // @param s:sender:FControl �ؼ�����
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FColumnSelected_setVisible = function FColumnSelected_setVisible(){
+   MO.FUiColumnSelected_setVisible = function FUiColumnSelected_setVisible(){
       var o = this;
       var v = o._table._displayColumnSelect ? 'block' : 'none';
       o._hPanel.style.display = v
@@ -149,14 +149,14 @@ with(MO){
    //@param s:sender:FControl �ؼ�����
    //@param e:event:TEvent �¼�����
    //==========================================================
-   MO.FColumnSelected_onCellClick = function FColumnSelected_onCellClick(s, e){
+   MO.FUiColumnSelected_onCellClick = function FUiColumnSelected_onCellClick(s, e){
       return;   
    }
 
    //==========================================================
    //<T>全选或反选</T>
    //==========================================================
-   MO.FColumnSelected_onSelectedClick = function FColumnSelected_onSelectedClick(s, e){
+   MO.FUiColumnSelected_onSelectedClick = function FUiColumnSelected_onSelectedClick(s, e){
       var o = this;
       var c = o.column;
       var rs = c.table.rows;
