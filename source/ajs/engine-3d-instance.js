@@ -71,14 +71,14 @@ with(MO){
    MO.FE3dBitmap_setSize = function FE3dBitmap_setSize(width, height){
       var o = this;
       o._size.set(width, height);
-      o._scale.set(width, height, 1);
+      o._matrix.setScale(width, height, 1);
    }
    MO.FE3dBitmap_renderable = function FE3dBitmap_renderable(p){
       return this._renderable;
    }
    MO.FE3dBitmap_setRenderable = function FE3dBitmap_setRenderable(p){
       var o = this;
-      this._renderable= p;
+      o._renderable= p;
       o._ready = true;
       o.processLoadListener(o);
    }
@@ -174,7 +174,7 @@ with(MO){
 }
 with(MO){
    MO.FE3dBitmapData = function FE3dBitmapData(o){
-      o = RClass.inherits(this, o, FE3rObject);
+      o = RClass.inherits(this, o, FE3dRenderable);
       o._ready            = false;
       o._vertexCount      = 4;
       o._vertexBuffers    = null;
@@ -228,7 +228,7 @@ with(MO){
    }
    MO.FE3dBitmapData_construct = function FE3dBitmapData_construct(){
       var o = this;
-      o.__base.FE3rObject.construct.call(o);
+      o.__base.FE3dRenderable.construct.call(o);
       o._size = new SSize2();
       o._adjustSize = new SSize2();
       o._vertexBuffers = new TDictionary();
@@ -276,20 +276,20 @@ with(MO){
          1, -1, 0,
          0, -1, 0 ];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setName('position');
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(data, 4 * 3, 4);
-      o._vertexBuffers.set(buffer.name(), buffer);
+      o.pushVertexBuffer(buffer);
       var data = [
          0, 1,
          1, 1,
          1, 0,
          0, 0];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setName('coord');
-      buffer._formatCd = EG3dAttributeFormat.Float2;
+      buffer.setCode('coord');
+      buffer.setFormatCd(EG3dAttributeFormat.Float2);
       buffer.upload(data, 4 * 2, 4);
-      o._vertexBuffers.set(buffer.name(), buffer);
+      o.pushVertexBuffer(buffer);
       var data = [0, 1, 2, 0, 2, 3];
       var buffer = o._indexBuffer = context.createIndexBuffer();
       buffer.upload(data, 6);
@@ -315,7 +315,7 @@ with(MO){
       o._indexBuffer = RObject.dispose(o._indexBuffer);
       o._imageTexture = RObject.dispose(o._imageTexture);
       o._textures = RObject.dispose(o._textures);
-      o.__base.FE3rObject.dispose.call(o);
+      o.__base.FE3dRenderable.dispose.call(o);
    }
 }
 with(MO){

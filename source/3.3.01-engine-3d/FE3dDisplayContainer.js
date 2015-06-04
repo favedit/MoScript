@@ -30,7 +30,7 @@ with(MO){
    MO.FE3dDisplayContainer_construct = function FE3dDisplayContainer_construct(){
       var o = this;
       o.__base.FDisplayContainer.construct.call(o);
-      o._outline = new SOutline3();
+      o._outline = new SOutline3d();
    }
 
    //==========================================================

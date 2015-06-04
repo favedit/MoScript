@@ -6,7 +6,7 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FE3dBitmapData = function FE3dBitmapData(o){
-      o = RClass.inherits(this, o, FE3rObject);
+      o = RClass.inherits(this, o, FE3dRenderable);
       //..........................................................
       // @attribute
       o._ready            = false;
@@ -89,7 +89,7 @@ with(MO){
    //==========================================================
    MO.FE3dBitmapData_construct = function FE3dBitmapData_construct(){
       var o = this;
-      o.__base.FE3rObject.construct.call(o);
+      o.__base.FE3dRenderable.construct.call(o);
       // 设置属性
       o._size = new SSize2();
       o._adjustSize = new SSize2();
@@ -223,10 +223,10 @@ with(MO){
          1, -1, 0,
          0, -1, 0 ];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setName('position');
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(data, 4 * 3, 4);
-      o._vertexBuffers.set(buffer.name(), buffer);
+      o.pushVertexBuffer(buffer);
       // 设置颜色数据
       var data = [
          0, 1,
@@ -234,10 +234,10 @@ with(MO){
          1, 0,
          0, 0];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setName('coord');
-      buffer._formatCd = EG3dAttributeFormat.Float2;
+      buffer.setCode('coord');
+      buffer.setFormatCd(EG3dAttributeFormat.Float2);
       buffer.upload(data, 4 * 2, 4);
-      o._vertexBuffers.set(buffer.name(), buffer);
+      o.pushVertexBuffer(buffer);
       // 设置索引数据
       var data = [0, 1, 2, 0, 2, 3];
       var buffer = o._indexBuffer = context.createIndexBuffer();
@@ -281,6 +281,6 @@ with(MO){
       o._imageTexture = RObject.dispose(o._imageTexture);
       o._textures = RObject.dispose(o._textures);
       // 父处理
-      o.__base.FE3rObject.dispose.call(o);
+      o.__base.FE3dRenderable.dispose.call(o);
    }
 }

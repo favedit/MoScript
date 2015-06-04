@@ -1,50 +1,28 @@
-MO.EEaiStage = new function EEaiStage(){
-   var o = this;
-   o.Country     = 1;
-   o.Group       = 2;
-   o.GroupReport = 3;
-   o.Company     = 4;
-   return o;
-}
-var REai = function REai(){
-   var o = this;
-   o.version = '0.1.0';
-   return o;
-}
-REai.prototype.initialize = function REai_initialize(){
-}
-REai.prototype.release = function REai_release(){
-}
-var Eai = new REai();
-MO.FEaiStage = function FEaiStage(o){
-   o = MO.RClass.inherits(this, o, MO.FObject);
-   return o;
-}
-MO.FEaiCompanyStage = function FEaiCompanyStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
-   return o;
-}
-MO.FEaiCountryStage = function FEaiCountryStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
-   return o;
-}
-MO.FEaiGroupReportStage = function FEaiGroupReportStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
-   return o;
-}
-MO.FEaiGroupStage = function FEaiGroupStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
-   return o;
-}
+//==========================================================
+// <T>应用程序。</T>
+//
+// @class
+// @author maocy
+// @history 150604
+//==========================================================
 Eai.REaiApplication = function REaiApplication(){
    var o = MO.RSingleton.call(this);
+   //..........................................................
+   // @attribute
    o._stageCountry     = null;
    o._stageGroup       = null;
    o._stageGroupReport = null;
    o._stageCompany     = null;
+   // @attribute
    o._activeStage      = null;
    return o;
 }
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
 Eai.REaiApplication.prototype.setup = function REaiApplication_setup(){
    var o = this;
    o._stageCountry = MO.RClass.create(MO.FEaiCountryStage);
@@ -52,6 +30,14 @@ Eai.REaiApplication.prototype.setup = function REaiApplication_setup(){
    o._stageGroupReport = MO.RClass.create(MO.FEaiGroupReportStage);
    o._stageCompany = MO.RClass.create(MO.FEaiCompanyStage);
 }
+
+//==========================================================
+// <T>根据枚举查找一个舞台。</T>
+//
+// @method
+// @param stageCd:EEaiStage 舞台枚举
+// @return FEaiStage 舞台
+//==========================================================
 Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(stageCd){
    var o = this;
    switch(stageCd){
@@ -67,18 +53,36 @@ Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(sta
          throw new TError(o, 'Unknown stage type. (stage_cd={1})', stageCd);
    }
 }
+
+//==========================================================
+// <T>根据枚举选中一个舞台。</T>
+//
+// @method
+// @param stageCd:EEaiStage 舞台枚举
+// @return FEaiStage 舞台
+//==========================================================
 Eai.REaiApplication.prototype.selectStage = function REaiApplication_selectStage(stageCd){
    var o = this;
    var stage = o.findStage(stageCd);
    return stage;
 }
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
 Eai.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
    var o = this;
+   // 释放属性
    o._stageCountry = MO.RObject.dispose(o._stageCountry);
    o._stageGroup = MO.RObject.dispose(o._stageGroup);
    o._stageGroupReport = MO.RObject.dispose(o._stageGroupReport);
    o._stageCompany = MO.RObject.dispose(o._stageCompany);
    o._activeStage = null;
+   // 父处理
    o.__base.FUiControl.dispose.call(o);
 }
+//..........................................................
+// 实例化内容
 Eai.Application = new Eai.REaiApplication();

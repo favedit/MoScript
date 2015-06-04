@@ -94,6 +94,8 @@
       <PathMerger source='/7.3.03-eai-group-task'          target='/ajs/eai-group-task.js'/>
       <PathMerger source='/7.4.01-eai-company-report'      target='/ajs/eai-company-report.js'/>
       <PathMerger source='/7.4.02-eai-company-task'        target='/ajs/eai-company-task.js'/>
+      <PathMerger source='/7.5.01-eai-stage'               target='/ajs/eai-stage.js'/>
+      <PathMerger source='/7.6.01-eai-application'         target='/ajs/eai-application.js'/>
 
       <PathMerger source='/8.1.01-demo'                    target='/ajs/demo.js'/>
    </PathMergerCollection>
@@ -237,6 +239,8 @@
          <File source='/ajs/eai-group-task.js'/>
          <File source='/ajs/eai-company-report.js'/>
          <File source='/ajs/eai-company-task.js'/>
+         <File source='/ajs/eai-stage.js'/>
+         <File source='/ajs/eai-application.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-demo.js'>
          <File source='/ajs/demo.js'/>

@@ -92,7 +92,8 @@ with(MO){
    MO.FE3dBitmap_setSize = function FE3dBitmap_setSize(width, height){
       var o = this;
       o._size.set(width, height);
-      o._scale.set(width, height, 1);
+      o._matrix.setScale(width, height, 1);
+      //o._scale.set(width, height, 1);
    }
 
    //==========================================================
@@ -111,7 +112,7 @@ with(MO){
    //==========================================================
    MO.FE3dBitmap_setRenderable = function FE3dBitmap_setRenderable(p){
       var o = this;
-      this._renderable= p;
+      o._renderable= p;
       o._ready = true;
       // 加载完成
       o.processLoadListener(o);
