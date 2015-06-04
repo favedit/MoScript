@@ -25,10 +25,28 @@
       o.points        = new Array(24);
       //..........................................................
       // @method
+      o.assign        = SOutline3d_assign;
       o.update        = SOutline3d_update;
       o.calculateFrom = SOutline3d_calculateFrom;
       o.calculate     = SOutline3d_calculate;
       return o;
+   }
+
+   //============================================================
+   // <T>接收一个三维轮廓。</T>
+   //
+   // @method
+   // @param p:value:SOutline3 三维轮廓
+   //============================================================
+   MO.SOutline3d_assign = function SOutline3d_assign(value){
+      var o = this;
+      MO.SOutline3.call(o, value);
+      o.center.assign(value.center);
+      o.distance.assign(value.distance);
+      o.radius = value.radius;
+      for(var i = 0; i < 24; i++){
+         o.points[i] = value.points[i];
+      }
    }
 
    //============================================================

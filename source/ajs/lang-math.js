@@ -1533,10 +1533,21 @@ with(MO){
       o.distance      = new SPoint3();
       o.radius        = 0;
       o.points        = new Array(24);
+      o.assign        = SOutline3d_assign;
       o.update        = SOutline3d_update;
       o.calculateFrom = SOutline3d_calculateFrom;
       o.calculate     = SOutline3d_calculate;
       return o;
+   }
+   MO.SOutline3d_assign = function SOutline3d_assign(value){
+      var o = this;
+      MO.SOutline3.call(o, value);
+      o.center.assign(value.center);
+      o.distance.assign(value.distance);
+      o.radius = value.radius;
+      for(var i = 0; i < 24; i++){
+         o.points[i] = value.points[i];
+      }
    }
    MO.SOutline3d_update = function SOutline3d_update(){
       var o = this;
