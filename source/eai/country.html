@@ -12,56 +12,100 @@
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
-var canvas = null;
-var display = null;
-var movie = false;
-var uiLayer = null;
+
+var sprite = null;
+//------------------------------------------------------------
+var startTime = null;
+var startDelay = 0;
+var riseDuration = 1200;
+var riseDistance = 2050;
+var fallDuration = 400;
+var fallDistance = 50;
+var blockInterval = 60;
+//------------------------------------------------------------
+var originCenterPoint = null;
 //------------------------------------------------------------
 function onEnterFrame(){
-   //if(display){
-   //   var matrix = display.matrix();
-   //   matrix.ry -= 0.004;
-   //   matrix.updateForce();
-   //}
+	var now = new Date();
+	var timePassed = now.getTime() - startTime.getTime();
+	if (timePassed < startDelay) {
+		return;
+	}
+	else{
+		timePassed -= startDelay;
+	}
+	
+	var idxCap = timePassed / blockInterval;
+	for (var i = 0; i < sprite.renderables().count() && i < idxCap; i++){
+		var renderable = sprite.renderables().at(i);
+		var matrix = renderable.matrix();
+		var risePercentage = (timePassed - blockInterval * i) / riseDuration;
+		var fallPercentage = 0;
+		if (risePercentage > 1) {
+			risePercentage = 1;
+			fallPercentage = (timePassed - blockInterval * i - riseDuration) / fallDuration;
+			if (fallPercentage > 1) {
+				fallPercentage = 1;
+			}
+		}
+		else{
+			
+		}
+		matrix.ty = riseDistance * risePercentage - fallDistance * fallPercentage;
+		matrix.updateForce();
+	}
+	
+	//飞散效果
+	//for (var i = 0;i < sprite.renderables().count();i++){
+	//	var renderable = sprite.renderables().at(i);
+	//	var outline = renderable.calculateOutline();
+	//	var currentCenter = outline.center;
+	//	var direction = new MO.SVector3(0, 0, 0);
+	//	direction = direction.direction(originCenterPoint, currentCenter);
+	//	direction.normalize();
+	//	var matrix = renderable.matrix();
+	//	matrix.tx += direction.x * speed;
+	//	matrix.ty += direction.y * speed;
+	//	matrix.tz += direction.z * speed;
+	//	matrix.updateForce();
+	//}
+	
 }
 //------------------------------------------------------------
 function onTemplateLoad(event){
-   //uiLayer = RClass.create(FDisplayLayer);
-   // 监听时间
+   //监听事件
    var template = event._activeTemplate;
    template.addEnterFrameListener(null, onEnterFrame);
-   
-   var sprite = template.sprite();
-   var matrix = sprite.matrix();
-   matrix.rx = -Math.PI / 2;
-   matrix.updateForce();
-
-   var r1 = sprite.renderables().at(0);
-   var outline = r1.calculateOutline();
-   var matrix = r1.matrix()
-   matrix.setScaleAll(3);
-   matrix.updateForce();
-
-
+   //初始化region
    var region = template.region();
    region.backgroundColor().set(0.2, 0.2, 0.2, 1);
-
+   //设置相机位置视角
    var camera = region.camera();
-
-   var bitmap = MO.RClass.create(MO.FE3dBitmap);
-   bitmap.linkGraphicContext(canvas);
-   bitmap.setSize(100, 100);
-   bitmap.loadUrl('/script/ars/picture/star4.jpg');
-   var matrix = bitmap.matrix();
-   sprite.pushRenderable(bitmap);
-   //camera.setPosition();
-   //camera.lookAt();
-   //camera.update();
-   //var space = event.space;
-   //space.addEnterFrameListener(null, onEnterFrame);
-   // 打开播放
-   //canvas.switchPlay(true);
-   //canvas.switchMovie(true);
+   camera.setPosition(3, 24, -0.5);
+   camera.setDirection(0.02, -0.9, 0.5);
+   //上色
+   sprite = template.sprite();
+   for (var i = 0; i < sprite.renderables().count(); i++){
+		var renderable = sprite.renderables().at(i);
+		var ambientColor = renderable.material().info().ambientColor;
+		var diffuseColor = renderable.material().info().diffuseColor;
+		switch (i % 3) {
+			case 0:
+				ambientColor.red = i * 0.1 / 3;
+				diffuseColor.red = i * 0.1 / 3;
+				break;
+			case 1:
+				ambientColor.green = i * 0.1 / 3;
+				diffuseColor.green = i * 0.1 / 3;
+				break;
+			case 2:
+				ambientColor.blue = i * 0.1 / 3;
+				diffuseColor.blue = i * 0.1 / 3;
+				break;
+		}
+	}
+	//记录开始时间
+	startTime = new Date();
 }
 //------------------------------------------------------------
 function onKeydown(p){
@@ -85,7 +129,7 @@ function onLoad(){
    // 设置资源获取方式
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    // 创建场景画板
-   canvas = canvas = MO.RClass.create(MO.FE3dTemplateCanvas);
+   canvas = MO.RClass.create(MO.FE3dTemplateCanvas);
    canvas._scaleRate = 1;
    canvas._optionAlpha = false;
    canvas.build(document);
