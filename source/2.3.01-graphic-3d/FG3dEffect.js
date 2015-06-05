@@ -82,82 +82,84 @@
    // <T>设置参数。</T>
    //
    // @method
-   // @param pn:name:String 名称
-   // @param pv:value:Object 数据
-   // @param pc:count:Integer 个数
+   // @param name:String 名称
+   // @param value:Object 数据
+   // @param count:Integer 个数
    //==========================================================
-   MO.FG3dEffect_setParameter = function FG3dEffect_setParameter(pn, pv, pc){
-      this._program.setParameter(pn, pv, pc);
+   MO.FG3dEffect_setParameter = function FG3dEffect_setParameter(name, value, count){
+      this._program.setParameter(name, value, count);
    }
 
    //==========================================================
    // <T>设置取样器。</T>
    //
    // @method
-   // @param pn:name:String 名称
-   // @param pt:texture:FG3dTexture 纹理
+   // @param name:String 名称
+   // @param texture:FG3dTexture 纹理
    //==========================================================
-   MO.FG3dEffect_setSampler = function FG3dEffect_setSampler(pn, pt){
-      this._program.setSampler(pn, pt);
+   MO.FG3dEffect_setSampler = function FG3dEffect_setSampler(name, texture){
+      this._program.setSampler(name, texture);
    }
 
    //==========================================================
    // <T>绘制渲染对象。</T>
    //
    // @method
-   // @param pt:tagContext:FTagContext 模板环境
-   // @param pc:effectInfo:SG3dEffectInfo 渲染信息
+   // @param tagContext:FTagContext 模板环境
+   // @param effectInfo:SG3dEffectInfo 渲染信息
    //==========================================================
-   MO.FG3dEffect_buildInfo = function FG3dEffect_buildInfo(f, r){
+   MO.FG3dEffect_buildInfo = function FG3dEffect_buildInfo(tagContext, effectInfo){
    }
 
    //==========================================================
    // <T>绘制渲染对象。</T>
    //
    // @method
-   // @param pg:region:MG3dRegion 渲染区域
-   // @param pr:renderable:MG3dRenderable 渲染对象
+   // @param region:MG3dRegion 渲染区域
+   // @param renderable:MG3dRenderable 渲染对象
    //==========================================================
-   MO.FG3dEffect_drawRenderable = function FG3dEffect_drawRenderable(pg, pr){
+   MO.FG3dEffect_drawRenderable = function FG3dEffect_drawRenderable(region, renderable){
       var o = this;
-      var c = o._graphicContext;
-      var p = o._program;
+      var context = o._graphicContext;
+      var program = o._program;
       // 绑定所有属性流
-      if(p.hasAttribute()){
-         var as = p.attributes();
-         var ac = as.count();
-         for(var n = 0; n < ac; n++){
-            var a = as.value(n);
-            if(a._statusUsed){
-               var vb = r.findVertexBuffer(a._linker);
-               if(!vb){
-                  throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+      if(program.hasAttribute()){
+         var attributes = program.attributes();
+         var attributeCount = attributes.count();
+         for(var i = 0; i < attributeCount; i++){
+            var attribute = attributes.value(i);
+            if(attribute._statusUsed){
+               var linker = attribute._linker;
+               var vertexBuffer = renderable.findVertexBuffer(linker);
+               if(!vertexBuffer){
+                  throw new TError("Can't find renderable vertex buffer. (linker={1})", linker);
                }
-               p.setAttribute(a._name, vb, vb._formatCd);
+               program.setAttribute(attribute._name, vertexBuffer, vertexBuffer._formatCd);
             }
          }
       }
       // 绘制处理
-      var ib = r.indexBuffer();
-      c.drawTriangles(ib, 0, ib.count());
+      var indexBuffer = renderable.indexBuffer();
+      context.drawTriangles(indexBuffer, 0, indexBuffer.count());
    }
 
    //==========================================================
    // <T>绘制渲染集合。</T>
    //
    // @method
-   // @param pg:region:MG3dRegion 渲染区域
-   // @param pr:renderables:TObjects 渲染集合
-   // @param pi:offset:Integer 开始位置
-   // @param pc:count:Integer 总数
+   // @param region:MG3dRegion 渲染区域
+   // @param renderables:TObjects 渲染集合
+   // @param offset:Integer 开始位置
+   // @param count:Integer 总数
    //==========================================================
-   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(pg, pr, pi, pc){
+   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderable, offset, count){
       var o = this;
       // 选择技术
       o._graphicContext.setProgram(o._program);
       // 绘制所有对象
-      for(var i = 0; i < pc; i++){
-         o.drawRenderable(pg, pr.getAt(pi + i));
+      for(var i = 0; i < count; i++){
+         var renderable = renderable.at(offset + i);
+         o.drawRenderable(region, renderable);
       }
    }
 
@@ -166,12 +168,12 @@
    //
    // @method
    // @param region:MG3dRegion 渲染区域
-   // @param pr:renderables:TObjects 渲染集合
-   // @param pi:offset:Integer 开始位置
-   // @param pc:count:Integer 总数
+   // @param renderables:TObjects 渲染集合
+   // @param offset:Integer 开始位置
+   // @param count:Integer 总数
    //==========================================================
-   MO.FG3dEffect_drawGroup = function FG3dEffect_drawGroup(region, pr, pi, pc){
-      this.drawRenderables(region, pr, pi, pc);
+   MO.FG3dEffect_drawGroup = function FG3dEffect_drawGroup(region, renderables, offset, count){
+      this.drawRenderables(region, renderables, offset, count);
    }
 
    //==========================================================
@@ -210,84 +212,84 @@
    // <T>加载配置信息。</T>
    //
    // @method
-   // @param p:node:TXmlNode 配置节点
+   // @param xconfig:TXmlNode 配置节点
    //==========================================================
-   MO.FG3dEffect_loadConfig = function FG3dEffect_loadConfig(p){
+   MO.FG3dEffect_loadConfig = function FG3dEffect_loadConfig(xconfig){
       var o = this;
-      var c = o._graphicContext;
-      var g = o._program = c.createProgram();
+      var context = o._graphicContext;
+      var program = o._program = context.createProgram();
       // 加载配置
-      var xs = p.nodes();
-      var c = xs.count();
-      for(var i = 0; i < c; i++){
-         var x = xs.get(i);
-         if(x.isName('State')){
+      var xnodes = xconfig.nodes();
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.get(i);
+         if(xnode.isName('State')){
             // 设置状态
-            var n = x.get('name');
-            var v = x.get('value');
-            if(n == 'fill_mode'){
-               o._stateFillCd = REnum.parse(EG3dFillMode, v);
-            }else if(n == 'cull_mode'){
-               o._stateCullCd = REnum.parse(EG3dCullMode, v);
-            }else if(n == 'depth_mode'){
+            var name = xnode.get('name');
+            var value = xnode.get('value');
+            if(name == 'fill_mode'){
+               o._stateFillCd = REnum.parse(EG3dFillMode, value);
+            }else if(name == 'cull_mode'){
+               o._stateCullCd = REnum.parse(EG3dCullMode, value);
+            }else if(name == 'depth_mode'){
                o._stateDepth = true;
-               o._stateDepthCd = REnum.parse(EG3dDepthMode, v);
-            }else if(n == 'depth_write'){
-               o._stateDepthWrite = RBoolean.parse(v);
-            }else if(n == 'blend_mode'){
-               o._stateBlend = RBoolean.parse(v);
+               o._stateDepthCd = REnum.parse(EG3dDepthMode, value);
+            }else if(name == 'depth_write'){
+               o._stateDepthWrite = RBoolean.parse(value);
+            }else if(name == 'blend_mode'){
+               o._stateBlend = RBoolean.parse(value);
                if(o._stateBlend){
-                  o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-                  o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+                  o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, xnode.get('source'));
+                  o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, xnode.get('target'));
                }
-            }else if(n == 'alpha_test'){
-               o._stateAlphaTest = RBoolean.parse(v);
+            }else if(name == 'alpha_test'){
+               o._stateAlphaTest = RBoolean.parse(value);
             }
-         }else if(x.isName('Option')){
+         }else if(xnode.isName('Option')){
             // 设置配置
-            var n = x.get('name');
-            var v = x.get('value');
-            if(n == 'shadow'){
-               o._optionShadow = RBoolean.parse(v);
-            }else if(n == 'lightmap'){
-               o._optionLightMap = RBoolean.parse(v);
-            }else if(n == 'fog'){
-               o._optionFog = RBoolean.parse(v);
+            var name = xnode.get('name');
+            var value = xnode.get('value');
+            if(name == 'shadow'){
+               o._optionShadow = RBoolean.parse(value);
+            }else if(name == 'lightmap'){
+               o._optionLightMap = RBoolean.parse(value);
+            }else if(name == 'fog'){
+               o._optionFog = RBoolean.parse(value);
             }
-         }else if(x.isName('Parameter')){
+         }else if(xnode.isName('Parameter')){
             // 设置参数
-            var pp = RClass.create(FG3dProgramParameter);
-            pp.loadConfig(x);
-            g.parameters().set(pp.name(), pp);
-         }else if(x.isName('Attribute')){
+            var parameter = RClass.create(FG3dProgramParameter);
+            parameter.loadConfig(xnode);
+            program.parameters().set(parameter.name(), parameter);
+         }else if(xnode.isName('Attribute')){
             // 设置属性
-            var pa = RClass.create(FG3dProgramAttribute);
-            pa.loadConfig(x);
-            g.attributes().set(pa.name(), pa);
-         }else if(x.isName('Sampler')){
+            var attribute = RClass.create(FG3dProgramAttribute);
+            attribute.loadConfig(xnode);
+            program.attributes().set(attribute.name(), attribute);
+         }else if(xnode.isName('Sampler')){
             // 设置取样
-            var ps = RClass.create(FG3dProgramSampler);
-            ps.loadConfig(x);
-            g.samplers().set(ps.name(), ps);
-         }else if(x.isName('Source')){
+            var sampler = RClass.create(FG3dProgramSampler);
+            sampler.loadConfig(xnode);
+            program.samplers().set(sampler.name(), sampler);
+         }else if(xnode.isName('Source')){
             // 设置代码
-            var st = x.get('name');
-            if(st == 'vertex'){
-               o._vertexSource = x.value();
-            }else if(st == 'fragment'){
-               o._fragmentSource = x.value();
+            var name = xnode.get('name');
+            if(name == 'vertex'){
+               o._vertexSource = xnode.value();
+            }else if(name == 'fragment'){
+               o._fragmentSource = xnode.value();
             }else{
-               throw new TError(o, 'Unknown source type. (name={1})', nt);
+               throw new TError(o, 'Unknown source type. (name={1})', name);
             }
          }else{
-            throw new TError(o, 'Unknown config type. (name={1})', x.name());
+            throw new TError(o, 'Unknown config type. (name={1})', xnode.name());
          }
       }
       // 建立代码模板
-      var vt = o._vertexTemplate = RClass.create(FG3dShaderTemplate);
-      vt.load(o._vertexSource);
-      var ft = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
-      ft.load(o._fragmentSource);
+      var vertexTemplate = o._vertexTemplate = RClass.create(FG3dShaderTemplate);
+      vertexTemplate.load(o._vertexSource);
+      var fragmentTemplate = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
+      fragmentTemplate.load(o._fragmentSource);
    }
 
    //==========================================================
@@ -298,31 +300,31 @@
    //==========================================================
    MO.FG3dEffect_build = function FG3dEffect_build(p){
       var o = this;
-      var g = o._program;
-      var ms = g._parameters
-      var mc = ms.count();
+      var program = o._program;
+      var parameters = program.parameters();
+      var parameterCount = parameters.count();
       // 设置环境
-      var c = RInstance.get(FTagContext);
-      o.buildInfo(c, p);
+      var tagContext = RInstance.get(FTagContext);
+      o.buildInfo(tagContext, p);
       // 生成顶点代码
-      var vs = o._vertexTemplate.parse(c);
-      var vsf = RString.formatLines(vs);
-      g.upload(EG3dShader.Vertex, vsf);
+      var source = o._vertexTemplate.parse(tagContext);
+      var formatSource = RString.formatLines(source);
+      program.upload(EG3dShader.Vertex, formatSource);
       // 生成像素代码
-      var fs = o._fragmentTemplate.parse(c);
-      for(var i = 0; i < mc; i++){
-         var m = ms.value(i);
-         var mn = m.name();
-         var md = m.define();
-         if(md){
-            fs = fs.replace(new RegExp(mn, 'g'), md);
+      var source = o._fragmentTemplate.parse(tagContext);
+      for(var i = 0; i < parameterCount; i++){
+         var parameter = parameters.at(i);
+         var parameterName = parameter.name();
+         var parameterDefine = parameter.define();
+         if(parameterDefine){
+            source = source.replace(new RegExp(parameterName, 'g'), parameterDefine);
          }
       }
-      var fsf = RString.formatLines(fs);
-      g.upload(EG3dShader.Fragment, fsf);
+      var formatSource = RString.formatLines(source);
+      program.upload(EG3dShader.Fragment, formatSource);
       // 编译处理
-      g.build();
-      g.link();
+      program.build();
+      program.link();
    }
 
    //==========================================================
@@ -332,7 +334,7 @@
    //==========================================================
    MO.FG3dEffect_load = function FG3dEffect_load(){
       var o = this;
-      var x = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
-      o.loadConfig(x);
+      var xconfig = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
+      o.loadConfig(xconfig);
    }
 }

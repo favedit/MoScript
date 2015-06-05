@@ -595,15 +595,15 @@ with(MO){
    }
    MO.FStage_process = function FStage_process(){
       var o = this;
-      var t = o._timer;
-      if(!t){
-         t = RClass.create(FTimer);
-         t.setup();
+      var timer = o._timer;
+      if(!timer){
+         timer = RClass.create(FTimer);
+         timer.setup();
       }
       o.processEnterFrameListener(o);
       o.onProcess();
       o.processLeaveFrameListener(o);
-      t.update();
+      timer.update();
    }
    MO.FStage_dispose = function FStage_dispose(){
       var o = this;

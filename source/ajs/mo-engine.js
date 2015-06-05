@@ -595,15 +595,15 @@ with(MO){
    }
    MO.FStage_process = function FStage_process(){
       var o = this;
-      var t = o._timer;
-      if(!t){
-         t = RClass.create(FTimer);
-         t.setup();
+      var timer = o._timer;
+      if(!timer){
+         timer = RClass.create(FTimer);
+         timer.setup();
       }
       o.processEnterFrameListener(o);
       o.onProcess();
       o.processLeaveFrameListener(o);
-      t.update();
+      timer.update();
    }
    MO.FStage_dispose = function FStage_dispose(){
       var o = this;
@@ -1898,12 +1898,12 @@ with(MO){
       if(!technique){
          return;
       }
-      var g = technique._graphicContext;
-      var ss = region._statistics = o._statistics;
-      ss.resetFrame();
-      ss._frame.begin();
-      ss._frameProcess.begin();
-      g.prepare();
+      var context = technique._graphicContext;
+      var statistics = region._statistics = o._statistics;
+      statistics.resetFrame();
+      statistics._frame.begin();
+      statistics._frameProcess.begin();
+      context.prepare();
       technique.updateRegion(region);
       region.prepare();
       region.change();
@@ -1917,8 +1917,8 @@ with(MO){
          region.update();
       }
       RConsole.find(FE3dStageConsole).process(region);
-      ss._frameProcess.end();
-      ss._frameDraw.begin();
+      statistics._frameProcess.end();
+      statistics._frameDraw.begin();
       if(region.isChanged()){
          technique.clear(region.backgroundColor());
          for(var i = 0; i < layerCount; i++){
@@ -1933,8 +1933,8 @@ with(MO){
          }
          technique.present(region);
       }
-      ss._frameDraw.end();
-      ss._frame.end();
+      statistics._frameDraw.end();
+      statistics._frame.end();
    }
    MO.FE3dStage_construct = function FE3dStage_construct(){
       var o = this;
@@ -1942,8 +1942,8 @@ with(MO){
       o._statistics = RClass.create(FE3dStageStatistics);
       RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
       o._allDisplays = new TObjects();
-      var r = o._region = o.createRegion();
-      r._timer = o._timer;
+      var region = o._region = o.createRegion();
+      region._timer = o._timer;
    }
    MO.FE3dStage_createRegion = function FE3dStage_createRegion(){
       return RClass.create(FE3dRegion);
@@ -1969,29 +1969,30 @@ with(MO){
    MO.FE3dStage_technique = function FE3dStage_technique(){
       return this._technique;
    }
-   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(c, p){
+   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(context, clazz){
       var o = this;
       var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
-      var technique = o._technique = techniqueConsole.find(c, p);
+      var technique = o._technique = techniqueConsole.find(context, clazz);
       return technique;
    }
    MO.FE3dStage_region = function FE3dStage_region(){
       return this._region;
    }
-   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(p){
+   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(displays){
       var o = this;
-      var s = o._layers;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.value(i).filterDisplays(p);
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.filterDisplays(displays);
       }
    }
    MO.FE3dStage_allDisplays = function FE3dStage_allDisplays(){
       var o = this;
-      var s = o._allDisplays;
-      s.clear();
-      o.filterDisplays(s);
-      return s;
+      var displays = o._allDisplays;
+      displays.clear();
+      o.filterDisplays(displays);
+      return displays;
    }
 }
 with(MO){

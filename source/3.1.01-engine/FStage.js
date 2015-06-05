@@ -144,10 +144,10 @@ with(MO){
    MO.FStage_process = function FStage_process(){
       var o = this;
       // 设置计时器
-      var t = o._timer;
-      if(!t){
-         t = RClass.create(FTimer);
-         t.setup();
+      var timer = o._timer;
+      if(!timer){
+         timer = RClass.create(FTimer);
+         timer.setup();
       }
       //..........................................................
       // 前处理
@@ -158,7 +158,7 @@ with(MO){
       o.processLeaveFrameListener(o);
       //..........................................................
       // 计时器更新
-      t.update();
+      timer.update();
    }
 
    //==========================================================

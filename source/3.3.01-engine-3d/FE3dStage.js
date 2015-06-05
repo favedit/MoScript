@@ -54,15 +54,15 @@ with(MO){
       if(!technique){
          return;
       }
-      var g = technique._graphicContext;
+      var context = technique._graphicContext;
       // 统计处理
-      var ss = region._statistics = o._statistics;
-      ss.resetFrame();
-      ss._frame.begin();
+      var statistics = region._statistics = o._statistics;
+      statistics.resetFrame();
+      statistics._frame.begin();
       //..........................................................
-      ss._frameProcess.begin();
+      statistics._frameProcess.begin();
       // 更新区域（更新光源相机等特殊处理）
-      g.prepare();
+      context.prepare();
       technique.updateRegion(region);
       // 清空区域
       region.prepare();
@@ -80,9 +80,9 @@ with(MO){
       }
       // 处理所有渲染集合
       RConsole.find(FE3dStageConsole).process(region);
-      ss._frameProcess.end();
+      statistics._frameProcess.end();
       //..........................................................
-      ss._frameDraw.begin();
+      statistics._frameDraw.begin();
       // 处理所有层
       if(region.isChanged()){
          technique.clear(region.backgroundColor());
@@ -101,10 +101,10 @@ with(MO){
          // 绘制处理
          technique.present(region);
       }
-      ss._frameDraw.end();
+      statistics._frameDraw.end();
       //..........................................................
       // 处理完成
-      ss._frame.end();
+      statistics._frame.end();
    }
 
    //==========================================================
@@ -130,8 +130,8 @@ with(MO){
       //var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
       //l.direction().set(0, -1, 0);
       // 创建区域
-      var r = o._region = o.createRegion();
-      r._timer = o._timer;
+      var region = o._region = o.createRegion();
+      region._timer = o._timer;
       //r._camera = c;
       //r._directionalLight = l;
    }
@@ -213,13 +213,13 @@ with(MO){
    // <T>选择渲染技术。</T>
    //
    // @method
-   // @param c:context:FG3dContext 环境
-   // @param p:technique:FG3dTechnique 渲染技术
+   // @param context:FG3dContext 环境
+   // @param clazz:Function 类对象
    //==========================================================
-   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(c, p){
+   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(context, clazz){
       var o = this;
       var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
-      var technique = o._technique = techniqueConsole.find(c, p);
+      var technique = o._technique = techniqueConsole.find(context, clazz);
       return technique;
    }
 
@@ -237,15 +237,16 @@ with(MO){
    // <T>过滤显示集合。</T>
    //
    // @method
-   // @param p:displays:TObjects 显示集合
+   // @param displays:TObjects 显示集合
    //==========================================================
-   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(p){
+   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(displays){
       var o = this;
       // 过滤显示层集合
-      var s = o._layers;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.value(i).filterDisplays(p);
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.filterDisplays(displays);
       }
    }
 
@@ -257,9 +258,9 @@ with(MO){
    //==========================================================
    MO.FE3dStage_allDisplays = function FE3dStage_allDisplays(){
       var o = this;
-      var s = o._allDisplays;
-      s.clear();
-      o.filterDisplays(s);
-      return s;
+      var displays = o._allDisplays;
+      displays.clear();
+      o.filterDisplays(displays);
+      return displays;
    }
 }

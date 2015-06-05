@@ -5208,44 +5208,46 @@ with(MO){
    MO.FG3dEffect_program = function FG3dEffect_program(){
       return this._program;
    }
-   MO.FG3dEffect_setParameter = function FG3dEffect_setParameter(pn, pv, pc){
-      this._program.setParameter(pn, pv, pc);
+   MO.FG3dEffect_setParameter = function FG3dEffect_setParameter(name, value, count){
+      this._program.setParameter(name, value, count);
    }
-   MO.FG3dEffect_setSampler = function FG3dEffect_setSampler(pn, pt){
-      this._program.setSampler(pn, pt);
+   MO.FG3dEffect_setSampler = function FG3dEffect_setSampler(name, texture){
+      this._program.setSampler(name, texture);
    }
-   MO.FG3dEffect_buildInfo = function FG3dEffect_buildInfo(f, r){
+   MO.FG3dEffect_buildInfo = function FG3dEffect_buildInfo(tagContext, effectInfo){
    }
-   MO.FG3dEffect_drawRenderable = function FG3dEffect_drawRenderable(pg, pr){
+   MO.FG3dEffect_drawRenderable = function FG3dEffect_drawRenderable(region, renderable){
       var o = this;
-      var c = o._graphicContext;
-      var p = o._program;
-      if(p.hasAttribute()){
-         var as = p.attributes();
-         var ac = as.count();
-         for(var n = 0; n < ac; n++){
-            var a = as.value(n);
-            if(a._statusUsed){
-               var vb = r.findVertexBuffer(a._linker);
-               if(!vb){
-                  throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+      var context = o._graphicContext;
+      var program = o._program;
+      if(program.hasAttribute()){
+         var attributes = program.attributes();
+         var attributeCount = attributes.count();
+         for(var i = 0; i < attributeCount; i++){
+            var attribute = attributes.value(i);
+            if(attribute._statusUsed){
+               var linker = attribute._linker;
+               var vertexBuffer = renderable.findVertexBuffer(linker);
+               if(!vertexBuffer){
+                  throw new TError("Can't find renderable vertex buffer. (linker={1})", linker);
                }
-               p.setAttribute(a._name, vb, vb._formatCd);
+               program.setAttribute(attribute._name, vertexBuffer, vertexBuffer._formatCd);
             }
          }
       }
-      var ib = r.indexBuffer();
-      c.drawTriangles(ib, 0, ib.count());
+      var indexBuffer = renderable.indexBuffer();
+      context.drawTriangles(indexBuffer, 0, indexBuffer.count());
    }
-   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(pg, pr, pi, pc){
+   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderable, offset, count){
       var o = this;
       o._graphicContext.setProgram(o._program);
-      for(var i = 0; i < pc; i++){
-         o.drawRenderable(pg, pr.getAt(pi + i));
+      for(var i = 0; i < count; i++){
+         var renderable = renderable.at(offset + i);
+         o.drawRenderable(region, renderable);
       }
    }
-   MO.FG3dEffect_drawGroup = function FG3dEffect_drawGroup(region, pr, pi, pc){
-      this.drawRenderables(region, pr, pi, pc);
+   MO.FG3dEffect_drawGroup = function FG3dEffect_drawGroup(region, renderables, offset, count){
+      this.drawRenderables(region, renderables, offset, count);
    }
    MO.FG3dEffect_drawRegion = function FG3dEffect_drawRegion(region, offset, count){
       var o = this;
@@ -5267,103 +5269,103 @@ with(MO){
          o.drawGroup(region, renderabels, offset + groupBegin, groupEnd - groupBegin);
       }
    }
-   MO.FG3dEffect_loadConfig = function FG3dEffect_loadConfig(p){
+   MO.FG3dEffect_loadConfig = function FG3dEffect_loadConfig(xconfig){
       var o = this;
-      var c = o._graphicContext;
-      var g = o._program = c.createProgram();
-      var xs = p.nodes();
-      var c = xs.count();
-      for(var i = 0; i < c; i++){
-         var x = xs.get(i);
-         if(x.isName('State')){
-            var n = x.get('name');
-            var v = x.get('value');
-            if(n == 'fill_mode'){
-               o._stateFillCd = REnum.parse(EG3dFillMode, v);
-            }else if(n == 'cull_mode'){
-               o._stateCullCd = REnum.parse(EG3dCullMode, v);
-            }else if(n == 'depth_mode'){
+      var context = o._graphicContext;
+      var program = o._program = context.createProgram();
+      var xnodes = xconfig.nodes();
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.get(i);
+         if(xnode.isName('State')){
+            var name = xnode.get('name');
+            var value = xnode.get('value');
+            if(name == 'fill_mode'){
+               o._stateFillCd = REnum.parse(EG3dFillMode, value);
+            }else if(name == 'cull_mode'){
+               o._stateCullCd = REnum.parse(EG3dCullMode, value);
+            }else if(name == 'depth_mode'){
                o._stateDepth = true;
-               o._stateDepthCd = REnum.parse(EG3dDepthMode, v);
-            }else if(n == 'depth_write'){
-               o._stateDepthWrite = RBoolean.parse(v);
-            }else if(n == 'blend_mode'){
-               o._stateBlend = RBoolean.parse(v);
+               o._stateDepthCd = REnum.parse(EG3dDepthMode, value);
+            }else if(name == 'depth_write'){
+               o._stateDepthWrite = RBoolean.parse(value);
+            }else if(name == 'blend_mode'){
+               o._stateBlend = RBoolean.parse(value);
                if(o._stateBlend){
-                  o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-                  o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+                  o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, xnode.get('source'));
+                  o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, xnode.get('target'));
                }
-            }else if(n == 'alpha_test'){
-               o._stateAlphaTest = RBoolean.parse(v);
+            }else if(name == 'alpha_test'){
+               o._stateAlphaTest = RBoolean.parse(value);
             }
-         }else if(x.isName('Option')){
-            var n = x.get('name');
-            var v = x.get('value');
-            if(n == 'shadow'){
-               o._optionShadow = RBoolean.parse(v);
-            }else if(n == 'lightmap'){
-               o._optionLightMap = RBoolean.parse(v);
-            }else if(n == 'fog'){
-               o._optionFog = RBoolean.parse(v);
+         }else if(xnode.isName('Option')){
+            var name = xnode.get('name');
+            var value = xnode.get('value');
+            if(name == 'shadow'){
+               o._optionShadow = RBoolean.parse(value);
+            }else if(name == 'lightmap'){
+               o._optionLightMap = RBoolean.parse(value);
+            }else if(name == 'fog'){
+               o._optionFog = RBoolean.parse(value);
             }
-         }else if(x.isName('Parameter')){
-            var pp = RClass.create(FG3dProgramParameter);
-            pp.loadConfig(x);
-            g.parameters().set(pp.name(), pp);
-         }else if(x.isName('Attribute')){
-            var pa = RClass.create(FG3dProgramAttribute);
-            pa.loadConfig(x);
-            g.attributes().set(pa.name(), pa);
-         }else if(x.isName('Sampler')){
-            var ps = RClass.create(FG3dProgramSampler);
-            ps.loadConfig(x);
-            g.samplers().set(ps.name(), ps);
-         }else if(x.isName('Source')){
-            var st = x.get('name');
-            if(st == 'vertex'){
-               o._vertexSource = x.value();
-            }else if(st == 'fragment'){
-               o._fragmentSource = x.value();
+         }else if(xnode.isName('Parameter')){
+            var parameter = RClass.create(FG3dProgramParameter);
+            parameter.loadConfig(xnode);
+            program.parameters().set(parameter.name(), parameter);
+         }else if(xnode.isName('Attribute')){
+            var attribute = RClass.create(FG3dProgramAttribute);
+            attribute.loadConfig(xnode);
+            program.attributes().set(attribute.name(), attribute);
+         }else if(xnode.isName('Sampler')){
+            var sampler = RClass.create(FG3dProgramSampler);
+            sampler.loadConfig(xnode);
+            program.samplers().set(sampler.name(), sampler);
+         }else if(xnode.isName('Source')){
+            var name = xnode.get('name');
+            if(name == 'vertex'){
+               o._vertexSource = xnode.value();
+            }else if(name == 'fragment'){
+               o._fragmentSource = xnode.value();
             }else{
-               throw new TError(o, 'Unknown source type. (name={1})', nt);
+               throw new TError(o, 'Unknown source type. (name={1})', name);
             }
          }else{
-            throw new TError(o, 'Unknown config type. (name={1})', x.name());
+            throw new TError(o, 'Unknown config type. (name={1})', xnode.name());
          }
       }
-      var vt = o._vertexTemplate = RClass.create(FG3dShaderTemplate);
-      vt.load(o._vertexSource);
-      var ft = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
-      ft.load(o._fragmentSource);
+      var vertexTemplate = o._vertexTemplate = RClass.create(FG3dShaderTemplate);
+      vertexTemplate.load(o._vertexSource);
+      var fragmentTemplate = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
+      fragmentTemplate.load(o._fragmentSource);
    }
    MO.FG3dEffect_build = function FG3dEffect_build(p){
       var o = this;
-      var g = o._program;
-      var ms = g._parameters
-      var mc = ms.count();
-      var c = RInstance.get(FTagContext);
-      o.buildInfo(c, p);
-      var vs = o._vertexTemplate.parse(c);
-      var vsf = RString.formatLines(vs);
-      g.upload(EG3dShader.Vertex, vsf);
-      var fs = o._fragmentTemplate.parse(c);
-      for(var i = 0; i < mc; i++){
-         var m = ms.value(i);
-         var mn = m.name();
-         var md = m.define();
-         if(md){
-            fs = fs.replace(new RegExp(mn, 'g'), md);
+      var program = o._program;
+      var parameters = program.parameters();
+      var parameterCount = parameters.count();
+      var tagContext = RInstance.get(FTagContext);
+      o.buildInfo(tagContext, p);
+      var source = o._vertexTemplate.parse(tagContext);
+      var formatSource = RString.formatLines(source);
+      program.upload(EG3dShader.Vertex, formatSource);
+      var source = o._fragmentTemplate.parse(tagContext);
+      for(var i = 0; i < parameterCount; i++){
+         var parameter = parameters.at(i);
+         var parameterName = parameter.name();
+         var parameterDefine = parameter.define();
+         if(parameterDefine){
+            source = source.replace(new RegExp(parameterName, 'g'), parameterDefine);
          }
       }
-      var fsf = RString.formatLines(fs);
-      g.upload(EG3dShader.Fragment, fsf);
-      g.build();
-      g.link();
+      var formatSource = RString.formatLines(source);
+      program.upload(EG3dShader.Fragment, formatSource);
+      program.build();
+      program.link();
    }
    MO.FG3dEffect_load = function FG3dEffect_load(){
       var o = this;
-      var x = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
-      o.loadConfig(x);
+      var xconfig = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
+      o.loadConfig(xconfig);
    }
 }
 with(MO){
@@ -10245,15 +10247,15 @@ with(MO){
    }
    MO.FStage_process = function FStage_process(){
       var o = this;
-      var t = o._timer;
-      if(!t){
-         t = RClass.create(FTimer);
-         t.setup();
+      var timer = o._timer;
+      if(!timer){
+         timer = RClass.create(FTimer);
+         timer.setup();
       }
       o.processEnterFrameListener(o);
       o.onProcess();
       o.processLeaveFrameListener(o);
-      t.update();
+      timer.update();
    }
    MO.FStage_dispose = function FStage_dispose(){
       var o = this;
@@ -11548,12 +11550,12 @@ with(MO){
       if(!technique){
          return;
       }
-      var g = technique._graphicContext;
-      var ss = region._statistics = o._statistics;
-      ss.resetFrame();
-      ss._frame.begin();
-      ss._frameProcess.begin();
-      g.prepare();
+      var context = technique._graphicContext;
+      var statistics = region._statistics = o._statistics;
+      statistics.resetFrame();
+      statistics._frame.begin();
+      statistics._frameProcess.begin();
+      context.prepare();
       technique.updateRegion(region);
       region.prepare();
       region.change();
@@ -11567,8 +11569,8 @@ with(MO){
          region.update();
       }
       RConsole.find(FE3dStageConsole).process(region);
-      ss._frameProcess.end();
-      ss._frameDraw.begin();
+      statistics._frameProcess.end();
+      statistics._frameDraw.begin();
       if(region.isChanged()){
          technique.clear(region.backgroundColor());
          for(var i = 0; i < layerCount; i++){
@@ -11583,8 +11585,8 @@ with(MO){
          }
          technique.present(region);
       }
-      ss._frameDraw.end();
-      ss._frame.end();
+      statistics._frameDraw.end();
+      statistics._frame.end();
    }
    MO.FE3dStage_construct = function FE3dStage_construct(){
       var o = this;
@@ -11592,8 +11594,8 @@ with(MO){
       o._statistics = RClass.create(FE3dStageStatistics);
       RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
       o._allDisplays = new TObjects();
-      var r = o._region = o.createRegion();
-      r._timer = o._timer;
+      var region = o._region = o.createRegion();
+      region._timer = o._timer;
    }
    MO.FE3dStage_createRegion = function FE3dStage_createRegion(){
       return RClass.create(FE3dRegion);
@@ -11619,29 +11621,30 @@ with(MO){
    MO.FE3dStage_technique = function FE3dStage_technique(){
       return this._technique;
    }
-   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(c, p){
+   MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(context, clazz){
       var o = this;
       var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
-      var technique = o._technique = techniqueConsole.find(c, p);
+      var technique = o._technique = techniqueConsole.find(context, clazz);
       return technique;
    }
    MO.FE3dStage_region = function FE3dStage_region(){
       return this._region;
    }
-   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(p){
+   MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(displays){
       var o = this;
-      var s = o._layers;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.value(i).filterDisplays(p);
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.filterDisplays(displays);
       }
    }
    MO.FE3dStage_allDisplays = function FE3dStage_allDisplays(){
       var o = this;
-      var s = o._allDisplays;
-      s.clear();
-      o.filterDisplays(s);
-      return s;
+      var displays = o._allDisplays;
+      displays.clear();
+      o.filterDisplays(displays);
+      return displays;
    }
 }
 with(MO){
