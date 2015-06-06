@@ -3230,18 +3230,16 @@ with(MO){
 }
 with(MO){
    MO.FJsonConsole = function FJsonConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = RClass.inherits(this, o, FHttpConsole);
       o._scopeCd  = EScope.Local;
       o.onLoad    = FJsonConsole_onLoad;
-      o.construct = FJsonConsole_construct;
       o.send      = FJsonConsole_send;
       o.sendAsync = FJsonConsole_sendAsync;
       return o;
    }
-   MO.FJsonConsole_construct = function FJsonConsole_construct(){
-   }
    MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
       var o = this;
+      o.__base.FHttpConsole.onLoad.call(o, connection)
       var source = connection.outputData();
       var content = JSON.parse(source);
       var event = MO.Memory.alloc(SEvent);
@@ -3252,22 +3250,18 @@ with(MO){
    }
    MO.FJsonConsole_send = function FJsonConsole_send(u, d){
       var o = this;
-      var console = RConsole.find(FHttpConsole);
-      var connection = console.alloc();
+      var connection = o.alloc();
       connection._asynchronous = false;
       connection._contentCd = EHttpContent.Text;
-      connection.addLoadListener(o, o.onLoad);
       var result = connection.send(url, data);
       console.free(connection);
       return result;
    }
    MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
       var o = this;
-      debugger
-      var connection = RConsole.find(FHttpConsole).alloc();
+      var connection = o.alloc();
       connection._asynchronous = true;
       connection._contentCd = EHttpContent.Text;
-      connection.addLoadListener(o, o.onLoad);
       connection.send(url, data);
       return connection;
    }

@@ -7,7 +7,7 @@ with(MO){
    // @version 150104
    //==========================================================
    MO.FJsonConsole = function FJsonConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = RClass.inherits(this, o, FHttpConsole);
       //..........................................................
       // @attribute
       o._scopeCd  = EScope.Local;
@@ -16,19 +16,9 @@ with(MO){
       o.onLoad    = FJsonConsole_onLoad;
       //..........................................................
       // @method
-      o.construct = FJsonConsole_construct;
-      // @method
       o.send      = FJsonConsole_send;
       o.sendAsync = FJsonConsole_sendAsync;
       return o;
-   }
-
-   //==========================================================
-   // <T>构造处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FJsonConsole_construct = function FJsonConsole_construct(){
    }
 
    //==========================================================
@@ -38,6 +28,8 @@ with(MO){
    //==========================================================
    MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
       var o = this;
+      o.__base.FHttpConsole.onLoad.call(o, connection)
+      // 处理数据
       var source = connection.outputData();
       var content = JSON.parse(source);
       // 处理事件
@@ -58,11 +50,9 @@ with(MO){
    //==========================================================
    MO.FJsonConsole_send = function FJsonConsole_send(u, d){
       var o = this;
-      var console = RConsole.find(FHttpConsole);
-      var connection = console.alloc();
+      var connection = o.alloc();
       connection._asynchronous = false;
       connection._contentCd = EHttpContent.Text;
-      connection.addLoadListener(o, o.onLoad);
       var result = connection.send(url, data);
       console.free(connection);
       return result;
@@ -79,11 +69,9 @@ with(MO){
    //==========================================================
    MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
       var o = this;
-      debugger
-      var connection = RConsole.find(FHttpConsole).alloc();
+      var connection = o.alloc();
       connection._asynchronous = true;
       connection._contentCd = EHttpContent.Text;
-      connection.addLoadListener(o, o.onLoad);
       connection.send(url, data);
       return connection;
    }

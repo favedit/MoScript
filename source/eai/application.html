@@ -141,6 +141,18 @@ function goPage(){
 //------------------------------------------------------------
 function onOrganizationFetch(event){
    var content = event.content;
+   var collection = content.collection;
+   var count = collection.length;
+   for(var i = 0; i < count; i++){
+      var organization = collection[i];
+      var hRow = MO.Window.Builder.appendTableRow(id_organization);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      hCell.innerHTML = organization.guid;
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      hCell.innerHTML = organization.label;
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      hCell.innerHTML = organization.province_label;
+   }
    //var e = window.event;
    //var c = e.keyCode;
    //if(c == EKeyCode.Space){
@@ -193,12 +205,21 @@ function onLoad(){
 </SCRIPT>
 </HEAD>
 <BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
-   <DIV style='position:absolute; left:5%; top:5%;'>
+   <DIV style='position:absolute; left:5%; top:20px;'>
       <H2 style='color:#FFFFFF' onclick='doOrganizationFetch()'>Organization - Fetch</H2>
       <H2 style='color:#FFFFFF'>Achievement - Group</H2>
       <H2 style='color:#FFFFFF'>Achievement - Sort</H2>
       <H2 style='color:#FFFFFF'>Achievement - Query</H2>
       <H2 style='color:#FFFFFF'>Schedule - Fetch</H2>
+   </DIV>
+   <DIV style='position:absolute; left:30%; top:20px;height:200px;overflow:auto'>
+      <TABLE id='id_organization' width='200px' bgcolor='#999999'>
+         <TR>
+            <TD>Guid</TD>
+            <TD>Label</TD>
+            <TD>Province</TD>
+         </TR>
+      </TABLE>
    </DIV>
    <DIV style='position:absolute; left:90%; top:10%;'>
       <IMG src='../ars/picture/fullscreen.png' style='width:6em; height:6em;' onmousedown='goPage("company")'>

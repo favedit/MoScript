@@ -681,6 +681,8 @@ with(MO){
       return r;
    }
    MO.RBuilder = new RBuilder();
+   MO.Window = new Object();
+   MO.Window.Builder = MO.RBuilder;
 }
 with(MO){
    MO.RContext = function RContext(){
