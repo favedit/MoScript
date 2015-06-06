@@ -1566,23 +1566,23 @@ with(MO){
    }
    MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
       var o = this;
-      var c = o._connection;
+      var connection = o._connection;
       if(o._contentCd == EHttpContent.Binary){
          if(RBrowser.isBrowser(EBrowser.Explorer)){
-            c.setRequestHeader('Accept-Charset', 'x-user-defined');
-            c.responseType = 'arraybuffer';
+            connection.setRequestHeader('Accept-Charset', 'x-user-defined');
+            connection.responseType = 'arraybuffer';
          }else{
-            c.overrideMimeType('text/plain; charset=x-user-defined');
+            connection.overrideMimeType('text/plain; charset=x-user-defined');
             if(o._asynchronous){
-               c.responseType = 'arraybuffer';
+               connection.responseType = 'arraybuffer';
             }
          }
       }else{
-         c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+         connection.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
       }
       if(!RBrowser.isBrowser(EBrowser.Chrome)){
          if(o._contentLength > 0){
-            c.setRequestHeader('content-length', o._contentLength);
+            connection.setRequestHeader('content-length', o._contentLength);
          }
       }
    }
@@ -3263,6 +3263,7 @@ with(MO){
    }
    MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
       var o = this;
+      debugger
       var connection = RConsole.find(FHttpConsole).alloc();
       connection._asynchronous = true;
       connection._contentCd = EHttpContent.Text;

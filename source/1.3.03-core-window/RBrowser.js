@@ -10,41 +10,21 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._capability    = null;
+      o._capability   = null;
       // @attribute
-      o._deviceCd      = MO.EDevice.Unknown;
-      o._softwareCd    = MO.ESoftware.Unknown;
-      o._typeCd        = MO.EBrowser.Unknown;
-      o._supportHtml5  = false;
-      o._hostPath      = '';
-      o._contentPath   = '';
-      //..........................................................
-      // @event
-      o.onLog          = RBrowser_onLog;
-      //..........................................................
-      // @method
-      o.construct      = RBrowser_construct;
-      // @method
-      o.capability     = RBrowser_capability;
-      o.supportHtml5   = RBrowser_supportHtml5;
-      o.hostPath       = RBrowser_hostPath;
-      o.setHostPath    = RBrowser_setHostPath;
-      o.contentPath    = RBrowser_contentPath;
-      o.setContentPath = RBrowser_setContentPath;
-      // @method
-      o.isBrowser      = RBrowser_isBrowser;
-      // @method
-      o.encode         = RBrowser_encode;
-      o.decode         = RBrowser_decode;
-      o.urlEncode      = RBrowser_urlEncode;
-      o.urlDecode      = RBrowser_urlDecode;
+      o._deviceCd     = MO.EDevice.Unknown;
+      o._softwareCd   = MO.ESoftware.Unknown;
+      o._typeCd       = MO.EBrowser.Unknown;
+      o._supportHtml5 = false;
+      o._hostPath     = '';
+      o._contentPath  = '';
       return o;
    }
 
    //===========================================================
    // <T>日志输出处理。</T>
    //===========================================================
-   MO.RBrowser_onLog = function RBrowser_onLog(s, p){
+   MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
       console.log(p);
    }
 
@@ -53,7 +33,7 @@
    //
    // @method
    //===========================================================
-   MO.RBrowser_construct = function RBrowser_construct(){
+   MO.RBrowser.prototype.construct = function RBrowser_construct(){
       var o = this;
       var s = window.navigator.userAgent.toLowerCase();
       // 判断设备类型
@@ -106,7 +86,7 @@
    // @method
    // @return 浏览器环境信息
    //==========================================================
-   MO.RBrowser_capability = function RBrowser_capability(){
+   MO.RBrowser.prototype.capability = function RBrowser_capability(){
       return this._capability;
    }
 
@@ -116,7 +96,7 @@
    // @method
    // @return 是否支持
    //==========================================================
-   MO.RBrowser_supportHtml5 = function RBrowser_supportHtml5(){
+   MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
       return this._supportHtml5;
    }
 
@@ -126,7 +106,7 @@
    // @param p:uri:String 路径
    // @return String 主机路径
    //===========================================================
-   MO.RBrowser_hostPath = function RBrowser_hostPath(p){
+   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(p){
       var o = this;
       if(p){
          return o._hostPath + p;
@@ -139,7 +119,7 @@
    //
    // @param p:host:String 主机路径
    //===========================================================
-   MO.RBrowser_setHostPath = function RBrowser_setHostPath(p){
+   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
       this._hostPath = p;
    }
 
@@ -149,7 +129,7 @@
    // @param p:uri:String 路径
    // @return String 内容路径
    //===========================================================
-   MO.RBrowser_contentPath = function RBrowser_contentPath(p){
+   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(p){
       var o = this;
       if(p){
          return o._contentPath + p;
@@ -162,7 +142,7 @@
    //
    // @param p:path:String 路径
    //===========================================================
-   MO.RBrowser_setContentPath = function RBrowser_setContentPath(p){
+   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(p){
       this._contentPath = p;
    }
 
@@ -172,7 +152,7 @@
    // @param p:value:EBrowser 浏览器类型
    // @return 是否指定浏览器
    //===========================================================
-   MO.RBrowser_isBrowser = function RBrowser_isBrowser(p){
+   MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
       return this._typeCd == p;
    }
 
@@ -182,7 +162,7 @@
    // @param value:String 参数
    // @return 编码字符串
    //===========================================================
-   MO.RBrowser_encode = function RBrowser_encode(value){
+   MO.RBrowser.prototype.encode = function RBrowser_encode(value){
       return escape(value);
    }
 
@@ -192,7 +172,7 @@
    // @param value:String 参数
    // @return 解码字符串
    //===========================================================
-   MO.RBrowser_decode = function RBrowser_decode(value){
+   MO.RBrowser.prototype.decode = function RBrowser_decode(value){
       return unescape(value);
    }
 
@@ -203,7 +183,7 @@
    // @param flag:Boolean 是否全部
    // @return 编码字符串
    //===========================================================
-   MO.RBrowser_urlEncode = function RBrowser_urlEncode(url, flag){
+   MO.RBrowser.prototype.urlEncode = function RBrowser_urlEncode(url, flag){
       if(flag){
          return encodeURIComponent(url);
       }
@@ -217,7 +197,7 @@
    // @param flag:Boolean 是否全部
    // @return 解码字符串
    //===========================================================
-   MO.RBrowser_urlDecode = function RBrowser_urlDecode(url, flag){
+   MO.RBrowser.prototype.urlDecode = function RBrowser_urlDecode(url, flag){
       if(flag){
          return decodeURIComponent(url);
       }

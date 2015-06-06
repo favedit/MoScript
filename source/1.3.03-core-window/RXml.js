@@ -10,23 +10,10 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.httpActiveX      = false;
-      o.httpVendor       = null;
-      o.domActiveX       = false;
-      o.domVendor        = null;
-      //..........................................................
-      // @method
-      o.construct        = RXml_construct;
-      o.isNode           = RXml_isNode;
-      o.createConnection = RXml_createConnection;
-      o.createDocument   = RXml_createDocument;
-      o.formatText       = RXml_formatText;
-      o.buildText        = RXml_buildText;
-      o.buildNode        = RXml_buildNode;
-      o.makeString       = RXml_makeString;
-      o.makeNode         = RXml_makeNode;
-      o.makeDocument     = RXml_makeDocument;
-      o.unpack           = RXml_unpack;
+      o.httpActiveX = false;
+      o.httpVendor  = null;
+      o.domActiveX  = false;
+      o.domVendor   = null;
       //..........................................................
       // @construct
       o.construct();
@@ -38,7 +25,7 @@
    //
    // @method
    //==========================================================
-   MO.RXml_construct = function RXml_construct(){
+   MO.RXml.prototype.construct = function RXml_construct(){
       var o = this;
       var d = window.document;
       //...........................................................
@@ -102,7 +89,7 @@
    // @param n:Node:TNode 节点对象
    // @return Boolean 返回Boolean类型
    //==========================================================
-   MO.RXml_isNode = function RXml_isNode(n){
+   MO.RXml.prototype.isNode = function RXml_isNode(n){
       return RClass.isName(n, 'TNode');
    }
 
@@ -112,7 +99,7 @@
    // @method
    // @return 配置链接
    //==========================================================
-   MO.RXml_createConnection = function RXml_createConnection(){
+   MO.RXml.prototype.createConnection = function RXml_createConnection(){
       var o = this;
       var r = null;
       if(o.httpActiveX){
@@ -133,7 +120,7 @@
    // @method
    // @return 配置链接
    //==========================================================
-   MO.RXml_createDocument = function RXml_createDocument(){
+   MO.RXml.prototype.createDocument = function RXml_createDocument(){
       var o = this;
       var r = null;
       if(o.domActiveX){
@@ -155,7 +142,7 @@
    // @param s:string:String 字符串
    // @return String  替换后的字符串
    //==========================================================
-   MO.RXml_formatText = function RXml_formatText(s){
+   MO.RXml.prototype.formatText = function RXml_formatText(s){
       if(s != null){
          s = s.replace(/\\n/g, '\n');
       }
@@ -170,7 +157,7 @@
    // @param v:value:String 内容
    // @return FString 字符串
    //==========================================================
-   MO.RXml_buildText = function RXml_buildText(s, v){
+   MO.RXml.prototype.buildText = function RXml_buildText(s, v){
       if(v != null){
          v = v.toString();
          var c = v.length;
@@ -212,7 +199,7 @@
    // @see RXml.fromText
    // @see TXmlDoc.create
    //==========================================================
-   MO.RXml_buildNode = function RXml_buildNode(pd, pn, pe){
+   MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
       // 建立属性集合
       var xas = null;
       var eas = pe.attributes;
@@ -269,7 +256,7 @@
    // @param n:Node:TNode 节点对象
    // @return Boolean 返回Boolean类型
    //==========================================================
-   MO.RXml_makeString = function RXml_makeString(s){
+   MO.RXml.prototype.makeString = function RXml_makeString(s){
       var o = this;
       var x = null;
       // 判断浏览器的类型
@@ -291,7 +278,7 @@
    // @param p:document:document 嵌在页面中的配置节点
    // @return TXmlNode 配置节点
    //==========================================================
-   MO.RXml_makeNode = function RXml_makeNode(p){
+   MO.RXml.prototype.makeNode = function RXml_makeNode(p){
       var o = this;
       if(p.documentElement){
          var d = new TXmlDocument();
@@ -319,7 +306,7 @@
    // @param p:document:document 嵌在页面中的配置节点
    // @return TXmlDocument 配置文档
    //==========================================================
-   MO.RXml_makeDocument = function RXml_makeDocument(p){
+   MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
       var d = new TXmlDocument();
       if(p.documentElement){
          RXml.buildNode(d, null, p.documentElement);
@@ -335,7 +322,7 @@
    // @param n:node:TNode 节点对象
    // @return TNode 节点对象
    //==========================================================
-   MO.RXml_unpack = function RXml_unpack(s, n){
+   MO.RXml.prototype.unpack = function RXml_unpack(s, n){
       var o = this;
       if(RString.isEmpty(s)){
          return null;

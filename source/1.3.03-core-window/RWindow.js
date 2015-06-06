@@ -48,44 +48,6 @@
       o.lsnsKeyPress      = new TListeners();
       o.lsnsResize        = new TListeners();
       o.lsnsOrientation   = new TListeners();
-      //..........................................................
-      // @event
-      o.ohMouseDown       = RWindow_ohMouseDown;
-      o.ohMouseMove       = RWindow_ohMouseMove;
-      o.ohMouseUp         = RWindow_ohMouseUp;
-      o.ohMouseWheel      = RWindow_ohMouseWheel;
-      o.ohKeyDown         = RWindow_ohKeyDown;
-      o.ohKeyUp           = RWindow_ohKeyUp;
-      o.ohKeyPress        = RWindow_ohKeyPress;
-      o.ohResize          = RWindow_ohResize;
-      o.ohSelect          = RWindow_ohSelect;
-      o.ohOrientation     = RWindow_ohOrientation;
-      o.ohUnload          = RWindow_ohUnload;
-      //..........................................................
-      // @method
-      o.connect           = RWindow_connect;
-      // @method
-      o.optionSelect      = RWindow_optionSelect;
-      o.setOptionSelect   = RWindow_setOptionSelect;
-      o.setCaption        = RWindow_setCaption;
-      o.setStatus         = RWindow_setStatus;
-      // @method
-      o.storage           = RWindow_storage;
-      // @method
-      o.makeDisablePanel  = RWindow_makeDisablePanel;
-      o.windowEnable      = RWindow_windowEnable;
-      o.windowDisable     = RWindow_windowDisable;
-      o.isEnable          = RWindow_isEnable;
-      o.enable            = RWindow_enable;
-      o.disable           = RWindow_disable;
-      o.setEnable         = RWindow_setEnable;
-      o.appendElement     = RWindow_appendElement;
-      // @method
-      o.redirect          = RWindow_redirect;
-      o.historyForward    = RWindow_historyForward;
-      o.historyBack       = RWindow_historyBack;
-      // @method
-      o.dispose           = RWindow_dispose;
       return o;
    }
 
@@ -95,7 +57,7 @@
    // @method
    // @param p:event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohMouseDown = function RWindow_ohMouseDown(p){
+   MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -111,7 +73,7 @@
    // @method
    // @param p:event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohMouseMove = function RWindow_ohMouseMove(p){
+   MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -127,7 +89,7 @@
    // @method
    // @param p:event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohMouseUp = function RWindow_ohMouseUp(p){
+   MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -143,7 +105,7 @@
    // @method
    // @param p:event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohMouseWheel = function RWindow_ohMouseWheel(p){
+   MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -159,7 +121,7 @@
    // @method
    // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohKeyDown = function RWindow_ohKeyDown(hEvent){
+   MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -203,7 +165,7 @@
    // @method
    // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohKeyUp = function RWindow_ohKeyUp(hEvent){
+   MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -219,7 +181,7 @@
    // @method
    // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohKeyPress = function RWindow_ohKeyPress(hEvent){
+   MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -235,7 +197,7 @@
    // @method
    // @param event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohResize = function RWindow_ohResize(hEvent){
+   MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -273,7 +235,7 @@
    // @method
    // @param event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohSelect = function RWindow_ohSelect(event){
+   MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
       return RWindow._optionSelect;
    }
 
@@ -283,7 +245,7 @@
    // @method
    // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohOrientation = function RWindow_ohOrientation(hEvent){
+   MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
       var o = RWindow;
       var event = o._eventOrientation;
       if((window.orientation == 180) || (window.orientation == 0)){
@@ -302,7 +264,7 @@
    // @method
    // @param event:htmlEvent 事件
    //==========================================================
-   MO.RWindow_ohUnload = function RWindow_ohUnload(event){
+   MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
       var o = RWindow;
       // 释放处理
       var event = o._eventUnload;
@@ -318,7 +280,7 @@
    // @method
    // @param hHtml:<Window> 窗口对象
    //==========================================================
-   MO.RWindow_connect = function RWindow_connect(hHtml){
+   MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       var o = this;
       // 设置属性
       var hWindow = o._hWindow = hHtml;
@@ -354,7 +316,7 @@
    // @method
    // @return Boolean 配置选取
    //==========================================================
-   MO.RWindow_optionSelect = function RWindow_optionSelect(){
+   MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
       return this._optionSelect;
    }
 
@@ -364,7 +326,7 @@
    // @method
    // @param p:select:Boolean 配置选取
    //==========================================================
-   MO.RWindow_setOptionSelect = function RWindow_setOptionSelect(p){
+   MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
       var o = this;
       o._optionSelect = p;
       if(RBrowser.isBrowser(EBrowser.FireFox)){
@@ -378,7 +340,7 @@
    // @method
    // @param p:caption:String 标题
    //==========================================================
-   MO.RWindow_setCaption = function RWindow_setCaption(p){
+   MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
       top.document.title = p;
    }
 
@@ -388,7 +350,7 @@
    // @method
    // @param p:status:String 状态
    //==========================================================
-   MO.RWindow_setStatus = function RWindow_setStatus(p){
+   MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
       window.status = RString.nvl(p);
    }
 
@@ -398,7 +360,7 @@
    // @method
    // @param scopeCd:EScope 范围
    //==========================================================
-   MO.RWindow_storage = function RWindow_storage(scopeCd){
+   MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       var o = this;
       switch(scopeCd){
          case EScope.Local:
@@ -426,7 +388,7 @@
    // @param f:flag:Boolean 是否显示图片层 true : 不显示图片
    // @return <DIV> 页面层
    //==========================================================
-   MO.RWindow_makeDisablePanel = function RWindow_makeDisablePanel(f){
+   MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       var o = this;
       // 创建面板
       var h = o._hDisablePanel;
@@ -451,7 +413,7 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_windowDisable = function RWindow_windowDisable(){
+   MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
       this._hContainer.disabled = true;
    }
 
@@ -460,7 +422,7 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_windowEnable = function RWindow_windowEnable(){
+   MO.RWindow.prototype.windowEnable = function RWindow_windowEnable(){
       this._hContainer.disabled = false;
    }
 
@@ -470,7 +432,7 @@
    // @method
    // @return 是否允许
    //==========================================================
-   MO.RWindow_isEnable = function RWindow_isEnable(){
+   MO.RWindow.prototype.isEnable = function RWindow_isEnable(){
       return this._statusEnable;
    }
 
@@ -479,7 +441,7 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_enable = function RWindow_enable(){
+   MO.RWindow.prototype.enable = function RWindow_enable(){
       var o = this;
       o._disableDeep--;
       if(o._disableDeep == 0){
@@ -492,7 +454,7 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_disable = function RWindow_disable(){
+   MO.RWindow.prototype.disable = function RWindow_disable(){
       var o = this;
       if(o._disableDeep == 0){
          o.setEnable(false);
@@ -506,7 +468,7 @@
    // @method
    // @param v:value:Boolean 是否允许操作
    //==========================================================
-   MO.RWindow_setEnable = function RWindow_setEnable(v, f){
+   MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
       var o = this;
       var h = o.makeDisablePanel(f);
       var st = h.style;
@@ -537,7 +499,7 @@
    // @method
    // @param hPanel:HtmlTag 页面元素
    //==========================================================
-   MO.RWindow_appendElement = function RWindow_appendElement(hPanel){
+   MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
       MO.Assert.debugNotNull(control);
       this._hContainer.appendChild(hPanel);
    }
@@ -548,7 +510,7 @@
    // @method
    // @param url:String 网络地址
    //==========================================================
-   MO.RWindow_redirect = function RWindow_redirect(){
+   MO.RWindow.prototype.redirect = function RWindow_redirect(){
    }
 
    //==========================================================
@@ -556,7 +518,7 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_historyForward = function RWindow_historyForward(){
+   MO.RWindow.prototype.historyForward = function RWindow_historyForward(){
    }
 
    //==========================================================
@@ -564,13 +526,13 @@
    //
    // @method
    //==========================================================
-   MO.RWindow_historyBack = function RWindow_historyBack(){
+   MO.RWindow.prototype.historyBack = function RWindow_historyBack(){
    }
 
    //==========================================================
    // <T>释放窗口所有对象。</T>
    //==========================================================
-   MO.RWindow_dispose = function RWindow_dispose(){
+   MO.RWindow.prototype.dispose = function RWindow_dispose(){
       var o = this;
       // 设置属性
       var hWindow = o._hWindow;

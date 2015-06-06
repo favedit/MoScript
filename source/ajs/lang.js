@@ -3058,43 +3058,45 @@ with(MO){
    }
    MO.REnum.prototype.contains = function REnum_contains(){
    }
-   MO.REnum.prototype.tryEncode = function REnum_tryEncode(e, v, d){
-      if(e != null){
-         for(var n in e){
-            if(n.toLowerCase() == v.toLowerCase()){
-               return e[n];
+   MO.REnum.prototype.tryEncode = function REnum_tryEncode(instance, value, defaultValue){
+      if(instance){
+         for(var name in instance){
+            if(name.toLowerCase() == value.toLowerCase()){
+               return instance[name];
             }
          }
       }
-      return d;
+      return defaultValue;
    }
-   MO.REnum.prototype.encode = function REnum_encode(e, v){
+   MO.REnum.prototype.encode = function REnum_encode(instance, value){
       var o = this;
-      var r = o.tryEncode(e, v);
-      if(r == null){
-         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
+      var result = o.tryEncode(instance, value);
+      if(result == null){
+         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value);
       }
-      return r;
+      return result;
    }
-   MO.REnum.prototype.tryDecode = function REnum_tryDecode(e, v, d){
-      if(e != null){
-         for(var n in e){
-            if(e[n] == v){
-               return n;
+   MO.REnum.prototype.tryDecode = function REnum_tryDecode(instance, value, defaultValue){
+      if(instance){
+         for(var name in instance){
+            if(instance[name] == value){
+               return name;
             }
          }
       }
-      return d;
+      return defaultValue;
    }
-   MO.REnum.prototype.decode = function REnum_decode(e, v){
+   MO.REnum.prototype.decode = function REnum_decode(instance, value){
       var o = this;
-      var r = o.tryDecode(e, v);
-      if(r == null){
-         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
+      var result = o.tryDecode(instance, value);
+      if(result == null){
+         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value);
       }
-      return r;
+      return result;
    }
-   MO.REnum = new REnum();
+   MO.REnum.prototype.parse = MO.REnum.prototype.encode;
+   MO.REnum = new MO.REnum();
+   MO.Enum = MO.REnum
 }
 with(MO){
    MO.RFile = function RFile(){

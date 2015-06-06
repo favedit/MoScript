@@ -148,6 +148,10 @@ function onOrganizationFetch(event){
    //   canvas.switchMovie(movie);
    //}
 }
+function doOrganizationFetch(){
+   var logicConsole = MO.RConsole.find(MO.FEaiLogicConsole);
+   logicConsole.organization().doFetch(null, onOrganizationFetch);
+}
 //------------------------------------------------------------
 function onLoad(){
    // 环境设置
@@ -159,9 +163,6 @@ function onLoad(){
    MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
    Eai.Application.setup();
-   var logicConsole = MO.RConsole.find(MO.FEaiLogicConsole);
-   logicConsole.organization().doFetch(null, onOrganizationFetch);
-   return;
    // 创建画布
    canvas = canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(document);
@@ -192,9 +193,12 @@ function onLoad(){
 </SCRIPT>
 </HEAD>
 <BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
-   <VIDIO style='position:absolute; left:40%; top:10%;'>
-      <H1 style='color:#FFFFFF'>Application</H1>
-   </VIDIO>
+   <DIV style='position:absolute; left:5%; top:5%;'>
+      <H2 style='color:#FFFFFF' onclick='doOrganizationFetch()'>Organization - Fetch</H2>
+      <H2 style='color:#FFFFFF'>Achievement - Group</H2>
+      <H2 style='color:#FFFFFF'>Achievement - Sort</H2>
+      <H2 style='color:#FFFFFF'>Achievement - Query</H2>
+      <H2 style='color:#FFFFFF'>Schedule - Fetch</H2>
    </DIV>
    <DIV style='position:absolute; left:90%; top:10%;'>
       <IMG src='../ars/picture/fullscreen.png' style='width:6em; height:6em;' onmousedown='goPage("company")'>

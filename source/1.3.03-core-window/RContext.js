@@ -10,20 +10,13 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._location     = null;
-      o._contexts     = new Object();
+      o._location   = null;
+      o._contexts   = new Object();
       // @attribute
-      o.contextPath   = null;
-      o.contextTag    = null;
-      o.themeId       = null;
-      o.languageId    = null;
-      //..........................................................
-      // @method
-      o.initialize    = RContext_initialize;
-      o.get           = RContext_get;
-      o.find          = RContext_find;
-      o.location      = RContext_location;
-      o.context       = RContext_context;
+      o.contextPath = null;
+      o.contextTag  = null;
+      o.themeId     = null;
+      o.languageId  = null;
       return o;
    }
 
@@ -35,7 +28,7 @@
    // @param s:source:String 路径
    // @return String 访问路径
    //==========================================================
-   MO.RContext_location = function RContext_location(s){
+   MO.RContext.prototype.location = function RContext_location(s){
       var o = this;
       var r = o._location;
       if(r == null){
@@ -64,7 +57,7 @@
    // @param s:source:String 路径
    // @return String 环境路径
    //==========================================================
-   MO.RContext_context = function RContext_context(s){
+   MO.RContext.prototype.context = function RContext_context(s){
       var o = this;
       if(s != null){
          if(RString.endsWith(s, '.wv')){
@@ -86,7 +79,7 @@
    // @method
    // @param s:source:Object 环境内容
    //==========================================================
-   MO.RContext_initialize = function RContext_initialize(s){
+   MO.RContext.prototype.initialize = function RContext_initialize(s){
       var o = this;
       for(var n in s){
          var ls = s[n];
@@ -105,7 +98,7 @@
    // @param p:path:String 路径
    // @return String 内容
    //==========================================================
-   MO.RContext_get = function RContext_get(p, p1, p2, p3, p4, p5){
+   MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
       var o = this;
       var r = o._contexts[p];
       if(!r){
@@ -122,7 +115,7 @@
    // @param c:name:String 代码
    // @return String 内容
    //==========================================================
-   MO.RContext_find = function RContext_find(s, c){
+   MO.RContext.prototype.find = function RContext_find(s, c){
       var o = this;
       var id = s + ':' + c;
       var r = o._contexts[id];

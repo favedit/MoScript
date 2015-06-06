@@ -22,74 +22,75 @@
    // <T>尝试获得枚举内容。</T>
    //
    // @method
-   // @param e:enum:Object 枚举对象
-   // @param v:value:Object 内容
-   // @param d:default:Object 缺省内容
+   // @param instance:Object 枚举对象
+   // @param value:Object 内容
+   // @param defaultValue:Object 缺省内容
    //============================================================
-   MO.REnum.prototype.tryEncode = function REnum_tryEncode(e, v, d){
-      if(e != null){
-         for(var n in e){
-            if(n.toLowerCase() == v.toLowerCase()){
-               return e[n];
+   MO.REnum.prototype.tryEncode = function REnum_tryEncode(instance, value, defaultValue){
+      if(instance){
+         for(var name in instance){
+            if(name.toLowerCase() == value.toLowerCase()){
+               return instance[name];
             }
          }
       }
-      return d;
+      return defaultValue;
    }
 
    //============================================================
    // <T>获得枚举内容。</T>
    //
    // @method
-   // @param e:enum:Object 枚举对象
-   // @param v:value:Object 内容
-   // @param d:default:Object 缺省内容
+   // @param instance:Object 枚举对象
+   // @param value:Object 内容
    //============================================================
-   MO.REnum.prototype.encode = function REnum_encode(e, v){
+   MO.REnum.prototype.encode = function REnum_encode(instance, value){
       var o = this;
-      var r = o.tryEncode(e, v);
-      if(r == null){
-         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v); 
+      var result = o.tryEncode(instance, value);
+      if(result == null){
+         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value); 
       }
-      return r;
+      return result;
    }
 
    //============================================================
    // <T>尝试获得枚举描述。</T>
    //
    // @method
-   // @param e:enum:Object 枚举对象
-   // @param v:value:Object 描述
-   // @param d:default:Object 缺省描述
+   // @param instance:Object 枚举对象
+   // @param value:Object 描述
+   // @param defaultValue:Object 缺省描述
    //============================================================
-   MO.REnum.prototype.tryDecode = function REnum_tryDecode(e, v, d){
-      if(e != null){
-         for(var n in e){
-            if(e[n] == v){
-               return n;
+   MO.REnum.prototype.tryDecode = function REnum_tryDecode(instance, value, defaultValue){
+      if(instance){
+         for(var name in instance){
+            if(instance[name] == value){
+               return name;
             }
          }
       }
-      return d;
+      return defaultValue;
    }
 
    //============================================================
    // <T>获得枚举描述。</T>
    //
    // @method
-   // @param e:enum:Object 枚举对象
-   // @param v:value:Object 描述
-   // @param d:default:Object 缺省描述
+   // @param instance:Object 枚举对象
+   // @param value:Object 描述
    //============================================================
-   MO.REnum.prototype.decode = function REnum_decode(e, v){
+   MO.REnum.prototype.decode = function REnum_decode(instance, value){
       var o = this;
-      var r = o.tryDecode(e, v);
-      if(r == null){
-         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v); 
+      var result = o.tryDecode(instance, value);
+      if(result == null){
+         throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value); 
       }
-      return r;
+      return result;
    }
    //..........................................................
+   MO.REnum.prototype.parse = MO.REnum.prototype.encode;
+   //..........................................................
    // 实例化内容
-   MO.REnum = new REnum();
+   MO.REnum = new MO.REnum();
+   MO.Enum = MO.REnum
 }

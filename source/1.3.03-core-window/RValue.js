@@ -27,9 +27,6 @@
       o.double16  = null;
       o.double64  = null;
       //..........................................................
-      // @method
-      o.construct = RValue_construct;
-      //..........................................................
       // @construct
       o.construct();
       return o;
@@ -45,7 +42,7 @@
    //    <L value='true'>相等</L>
    //    <L value='false'>不相等</L>
    //==========================================================
-   MO.RValue_construct = function RValue_construct(){
+   MO.RValue.prototype.construct = function RValue_construct(){
       var o = this;
       // 支持类型数组
       if(RBrowser.supportHtml5()){

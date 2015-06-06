@@ -14,17 +14,6 @@
       o.LINE_DOUBLE = '==============================';
       o.LINE_DOT    = '..............................';
       o.LINE_STAR   = '******************************';
-      //..........................................................
-      // @event
-      o.onclick     = RDump_onclick;
-      //..........................................................
-      // @method
-      o.nameInfo    = RDump_nameInfo;
-      o.typeInfo    = RDump_typeInfo;
-      o.dumpInner   = RDump_dumpInner;
-      o.dump        = RDump_dump;
-      o.appendLevel = RDump_appendLevel;
-      o.stack       = RDump_stack;
       return o;
    }
 
@@ -33,7 +22,7 @@
    //
    // @method
    //===========================================================
-   MO.RDump_onclick = function RDump_onclick(){
+   MO.RDump.prototype.onclick = function RDump_onclick(){
       var o = this;
       var d = o.link;
       if(o.link){
@@ -54,7 +43,7 @@
    // @param v:value:Object 对象
    // @return 名称信息
    //===========================================================
-   MO.RDump_nameInfo = function RDump_nameInfo(v){
+   MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
       var t = RClass.typeOf(v);
       switch(t){
          case 'Unknown':
@@ -75,7 +64,7 @@
    // @param t:typeName:Object 类型
    // @return 类型信息
    //===========================================================
-   MO.RDump_typeInfo = function RDump_typeInfo(v, t){
+   MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       // 检查参数
       if(v == null){
          return 'null';
@@ -122,7 +111,7 @@
    // @method
    // @param di:dumpItem:TDumpItem 运行信息项目
    //===========================================================
-   MO.RDump_dumpInner = function RDump_dumpInner(di){
+   MO.RDump.prototype.dumpInner = function RDump_dumpInner(di){
       var hTable  = di.hTable;
       var hParent = di.hParent;
       var hInsRow = di.hRow;
@@ -238,7 +227,7 @@
    // @param value:Object 对象
    // @param hPanel:HtmlTag 页面元素
    //===========================================================
-   MO.RDump_dump = function RDump_dump(value, hPanel){
+   MO.RDump.prototype.dump = function RDump_dump(value, hPanel){
       if(!hPanel){
          hPanel = RBuilder.append(null, 'DIV')
       }
@@ -281,7 +270,7 @@
    // @param r:result:FString 字符串
    // @param l:level:Integer 层次
    //===========================================================
-   MO.RDump_appendLevel = function RDump_appendLevel(r, l){
+   MO.RDump.prototype.appendLevel = function RDump_appendLevel(r, l){
       for(var n = 0; n < l; n++){
          r.append('   ');
       }
@@ -292,7 +281,7 @@
    //
    // @return 堆栈信息
    //===========================================================
-   MO.RDump_stack = function RDump_stack(){
+   MO.RDump.prototype.stack = function RDump_stack(){
       var o = RDump_stack.caller;
       var s = new TString();
       while(o){

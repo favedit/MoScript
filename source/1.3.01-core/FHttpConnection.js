@@ -118,27 +118,27 @@
    //==========================================================
    MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
       var o = this;
-      var c = o._connection;
+      var connection = o._connection;
       // 传输格式
       if(o._contentCd == EHttpContent.Binary){
          // 二进制内容
          if(RBrowser.isBrowser(EBrowser.Explorer)){
-            c.setRequestHeader('Accept-Charset', 'x-user-defined');
-            c.responseType = 'arraybuffer';
+            connection.setRequestHeader('Accept-Charset', 'x-user-defined');
+            connection.responseType = 'arraybuffer';
          }else{
-            c.overrideMimeType('text/plain; charset=x-user-defined');
+            connection.overrideMimeType('text/plain; charset=x-user-defined');
             if(o._asynchronous){
-               c.responseType = 'arraybuffer';
+               connection.responseType = 'arraybuffer';
             }
          }
       }else{
          // 文本内容
-         c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+         connection.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
       }
       // 数据长度
       if(!RBrowser.isBrowser(EBrowser.Chrome)){
          if(o._contentLength > 0){
-            c.setRequestHeader('content-length', o._contentLength);
+            connection.setRequestHeader('content-length', o._contentLength);
          }
       }
    }

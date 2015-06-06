@@ -317,19 +317,16 @@ with(MO){
 with(MO){
    MO.RApplication = function RApplication(){
       var o = this;
-      o._workspaces   = new TDictionary();
-      o.initialize    = RApplication_initialize;
-      o.findWorkspace = RApplication_findWorkspace;
-      o.release       = RApplication_release;
+      o._workspaces = new TDictionary();
       return o;
    }
-   MO.RApplication_initialize = function RApplication_initialize(){
+   MO.RApplication.prototype.initialize = function RApplication_initialize(){
       var o = this;
       RBrowser.construct();
       RWindow.connect(window);
       RKeyboard.construct();
    }
-   MO.RApplication_findWorkspace = function RApplication_findWorkspace(p){
+   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(p){
       var o = this;
       var n = RClass.name(p);
       var ws = o._workspaces;
@@ -340,7 +337,7 @@ with(MO){
       }
       return w;
    }
-   MO.RApplication_release = function RApplication_release(){
+   MO.RApplication.prototype.release = function RApplication_release(){
       try{
          CollectGarbage();
       }catch(e){
@@ -352,32 +349,19 @@ with(MO){
 with(MO){
    MO.RBrowser = function RBrowser(){
       var o = this;
-      o._capability    = null;
-      o._deviceCd      = MO.EDevice.Unknown;
-      o._softwareCd    = MO.ESoftware.Unknown;
-      o._typeCd        = MO.EBrowser.Unknown;
-      o._supportHtml5  = false;
-      o._hostPath      = '';
-      o._contentPath   = '';
-      o.onLog          = RBrowser_onLog;
-      o.construct      = RBrowser_construct;
-      o.capability     = RBrowser_capability;
-      o.supportHtml5   = RBrowser_supportHtml5;
-      o.hostPath       = RBrowser_hostPath;
-      o.setHostPath    = RBrowser_setHostPath;
-      o.contentPath    = RBrowser_contentPath;
-      o.setContentPath = RBrowser_setContentPath;
-      o.isBrowser      = RBrowser_isBrowser;
-      o.encode         = RBrowser_encode;
-      o.decode         = RBrowser_decode;
-      o.urlEncode      = RBrowser_urlEncode;
-      o.urlDecode      = RBrowser_urlDecode;
+      o._capability   = null;
+      o._deviceCd     = MO.EDevice.Unknown;
+      o._softwareCd   = MO.ESoftware.Unknown;
+      o._typeCd       = MO.EBrowser.Unknown;
+      o._supportHtml5 = false;
+      o._hostPath     = '';
+      o._contentPath  = '';
       return o;
    }
-   MO.RBrowser_onLog = function RBrowser_onLog(s, p){
+   MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
       console.log(p);
    }
-   MO.RBrowser_construct = function RBrowser_construct(){
+   MO.RBrowser.prototype.construct = function RBrowser_construct(){
       var o = this;
       var s = window.navigator.userAgent.toLowerCase();
       if(s.indexOf("android") != -1){
@@ -417,48 +401,48 @@ with(MO){
          RLogger.warn(o, 'Browser blob not support.');
       }
    }
-   MO.RBrowser_capability = function RBrowser_capability(){
+   MO.RBrowser.prototype.capability = function RBrowser_capability(){
       return this._capability;
    }
-   MO.RBrowser_supportHtml5 = function RBrowser_supportHtml5(){
+   MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
       return this._supportHtml5;
    }
-   MO.RBrowser_hostPath = function RBrowser_hostPath(p){
+   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(p){
       var o = this;
       if(p){
          return o._hostPath + p;
       }
       return o._hostPath;
    }
-   MO.RBrowser_setHostPath = function RBrowser_setHostPath(p){
+   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
       this._hostPath = p;
    }
-   MO.RBrowser_contentPath = function RBrowser_contentPath(p){
+   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(p){
       var o = this;
       if(p){
          return o._contentPath + p;
       }
       return o._contentPath;
    }
-   MO.RBrowser_setContentPath = function RBrowser_setContentPath(p){
+   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(p){
       this._contentPath = p;
    }
-   MO.RBrowser_isBrowser = function RBrowser_isBrowser(p){
+   MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
       return this._typeCd == p;
    }
-   MO.RBrowser_encode = function RBrowser_encode(value){
+   MO.RBrowser.prototype.encode = function RBrowser_encode(value){
       return escape(value);
    }
-   MO.RBrowser_decode = function RBrowser_decode(value){
+   MO.RBrowser.prototype.decode = function RBrowser_decode(value){
       return unescape(value);
    }
-   MO.RBrowser_urlEncode = function RBrowser_urlEncode(url, flag){
+   MO.RBrowser.prototype.urlEncode = function RBrowser_urlEncode(url, flag){
       if(flag){
          return encodeURIComponent(url);
       }
       return encodeURI(url);
    }
-   MO.RBrowser_urlDecode = function RBrowser_urlDecode(url, flag){
+   MO.RBrowser.prototype.urlDecode = function RBrowser_urlDecode(url, flag){
       if(flag){
          return decodeURIComponent(url);
       }
@@ -468,41 +452,9 @@ with(MO){
 }
 with(MO){
    MO.RBuilder = function RBuilder(){
-      var o = this;
-      o.create             = RBuilder_create;
-      o.createIcon         = RBuilder_createIcon;
-      o.createImage        = RBuilder_createImage;
-      o.createText         = RBuilder_createText;
-      o.createButton       = RBuilder_createButton;
-      o.createCheck        = RBuilder_createCheck;
-      o.createRadio        = RBuilder_createRadio;
-      o.createEdit         = RBuilder_createEdit;
-      o.createFile         = RBuilder_createFile;
-      o.createSpan         = RBuilder_createSpan;
-      o.createDiv          = RBuilder_createDiv;
-      o.createTable        = RBuilder_createTable;
-      o.createTableRow     = RBuilder_createTableRow;
-      o.createTableCell    = RBuilder_createTableCell;
-      o.createFragment     = RBuilder_createFragment;
-      o.append             = RBuilder_append;
-      o.appendIcon         = RBuilder_appendIcon;
-      o.appendImage        = RBuilder_appendImage;
-      o.appendEmpty        = RBuilder_appendEmpty;
-      o.appendText         = RBuilder_appendText;
-      o.appendButton       = RBuilder_appendButton;
-      o.appendCheck        = RBuilder_appendCheck;
-      o.appendRadio        = RBuilder_appendRadio;
-      o.appendEdit         = RBuilder_appendEdit;
-      o.appendFile         = RBuilder_appendFile;
-      o.appendSpan         = RBuilder_appendSpan;
-      o.appendDiv          = RBuilder_appendDiv;
-      o.appendTable        = RBuilder_appendTable;
-      o.appendTableRow     = RBuilder_appendTableRow;
-      o.appendTableRowCell = RBuilder_appendTableRowCell;
-      o.appendTableCell    = RBuilder_appendTableCell;
-      return o;
+      return this;
    }
-   MO.RBuilder_create = function RBuilder_create(h, t, s){
+   MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
       var o = this;
       var d = null;
       if(h.ownerDocument){
@@ -518,7 +470,7 @@ with(MO){
       }
       return h;
    }
-   MO.RBuilder_createIcon = function RBuilder_createIcon(d, s, u, w, h){
+   MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
       var r = this.create(d, 'IMG', RString.nvl(s, 'Tag_Icon'));
       r.align = 'absmiddle';
       if(u){
@@ -532,7 +484,7 @@ with(MO){
       }
       return r;
    }
-   MO.RBuilder_createImage = function RBuilder_createImage(d, s, u, w, h){
+   MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
       var r = this.create(d, 'IMG', u);
       if(u){
          r.src = RResource.imagePath(u);
@@ -545,45 +497,45 @@ with(MO){
       }
       return r;
    }
-   MO.RBuilder_createText = function RBuilder_createText(d, s, v){
+   MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
       var r = this.create(d, 'SPAN', s);
       if(v){
          r.innerHTML = v;
       }
       return r;
    }
-   MO.RBuilder_createButton = function RBuilder_createButton(d, s){
+   MO.RBuilder.prototype.createButton = function RBuilder_createButton(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'button';
       return r;
    }
-   MO.RBuilder_createCheck = function RBuilder_createCheck(d, s){
+   MO.RBuilder.prototype.createCheck = function RBuilder_createCheck(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'checkbox';
       return r;
    }
-   MO.RBuilder_createRadio = function RBuilder_createRadio(d, s){
+   MO.RBuilder.prototype.createRadio = function RBuilder_createRadio(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'radio';
       return r;
    }
-   MO.RBuilder_createEdit = function RBuilder_createEdit(d, s){
+   MO.RBuilder.prototype.createEdit = function RBuilder_createEdit(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'text';
       return r;
    }
-   MO.RBuilder_createFile = function RBuilder_createFile(d, s){
+   MO.RBuilder.prototype.createFile = function RBuilder_createFile(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'file';
       return r;
    }
-   MO.RBuilder_createSpan = function RBuilder_createSpan(d, s){
+   MO.RBuilder.prototype.createSpan = function RBuilder_createSpan(d, s){
       return this.create(d, 'SPAN', s);
    }
-   MO.RBuilder_createDiv = function RBuilder_createDiv(d, s){
+   MO.RBuilder.prototype.createDiv = function RBuilder_createDiv(d, s){
       return this.create(d, 'DIV', s);
    }
-   MO.RBuilder_createTable = function RBuilder_createTable(d, s, b, cs, cp){
+   MO.RBuilder.prototype.createTable = function RBuilder_createTable(d, s, b, cs, cp){
       var h = this.create(d, 'TABLE', s);
       if(b){
          h.border = RInteger.nvl(b);
@@ -592,15 +544,15 @@ with(MO){
       h.cellPadding = RInteger.nvl(cp);
       return h;
    }
-   MO.RBuilder_createTableRow = function RBuilder_createTableRow(d, s){
+   MO.RBuilder.prototype.createTableRow = function RBuilder_createTableRow(d, s){
       var h = this.create(d, 'TR', s);
       return h;
    }
-   MO.RBuilder_createTableCell = function RBuilder_createTableCell(d, s){
+   MO.RBuilder.prototype.createTableCell = function RBuilder_createTableCell(d, s){
       var h = this.create(d, 'TD', s);
       return h;
    }
-   MO.RBuilder_createFragment = function RBuilder_createFragment(document){
+   MO.RBuilder.prototype.createFragment = function RBuilder_createFragment(document){
       var hDocument = null;
       if(document.ownerDocument){
          hDocument = document.ownerDocument;
@@ -613,7 +565,7 @@ with(MO){
       hElement.__fragment = true;
       return hElement;
    }
-   MO.RBuilder_append = function RBuilder_append(p, t, s){
+   MO.RBuilder.prototype.append = function RBuilder_append(p, t, s){
       var r = RBuilder.create(p.ownerDocument, t, s);
       if(p){
          p.appendChild(r);
@@ -622,62 +574,62 @@ with(MO){
       }
       return r;
    }
-   MO.RBuilder_appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
+   MO.RBuilder.prototype.appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
       var r = this.createIcon(p.ownerDocument, s, u, w, h);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendImage = function RBuilder_appendImage(p, s, u, w, h){
+   MO.RBuilder.prototype.appendImage = function RBuilder_appendImage(p, s, u, w, h){
       var r = this.createImage(p.ownerDocument, s, u, w, h);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendEmpty = function RBuilder_appendEmpty(p, w, h){
+   MO.RBuilder.prototype.appendEmpty = function RBuilder_appendEmpty(p, w, h){
       var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendText = function RBuilder_appendText(p, s, v){
+   MO.RBuilder.prototype.appendText = function RBuilder_appendText(p, s, v){
       var r = this.createText(p.ownerDocument, s, v);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendButton = function RBuilder_appendButton(p, s){
+   MO.RBuilder.prototype.appendButton = function RBuilder_appendButton(p, s){
       var r = this.createButton(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendCheck = function RBuilder_appendCheck(p, s){
+   MO.RBuilder.prototype.appendCheck = function RBuilder_appendCheck(p, s){
       var r = this.createCheck(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendRadio = function RBuilder_appendRadio(p, s){
+   MO.RBuilder.prototype.appendRadio = function RBuilder_appendRadio(p, s){
       var r = this.createRadio(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendEdit = function RBuilder_appendEdit(p, s){
+   MO.RBuilder.prototype.appendEdit = function RBuilder_appendEdit(p, s){
       var r = this.createEdit(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendFile = function RBuilder_appendFile(p, s){
+   MO.RBuilder.prototype.appendFile = function RBuilder_appendFile(p, s){
       var r = this.createFile(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendSpan = function RBuilder_appendSpan(p, s){
+   MO.RBuilder.prototype.appendSpan = function RBuilder_appendSpan(p, s){
       var r = this.createSpan(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendDiv = function RBuilder_appendDiv(p, s){
+   MO.RBuilder.prototype.appendDiv = function RBuilder_appendDiv(p, s){
       var r = this.createDiv(p.ownerDocument, s);
       p.appendChild(r);
       return r;
    }
-   MO.RBuilder_appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
+   MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
       var r = this.createTable(p.ownerDocument, s, b, cs, cp);
       if(p){
          p.appendChild(r);
@@ -686,7 +638,7 @@ with(MO){
       }
       return r;
    }
-   MO.RBuilder_appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
+   MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
       var r = null;
       if(i == null){
          if(RBrowser.isBrowser(EBrowser.Explorer)){
@@ -705,13 +657,13 @@ with(MO){
       }
       return r;
    }
-   MO.RBuilder_appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
+   MO.RBuilder.prototype.appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
       var o = this;
       var hr = o.appendTableRow(p, null, null, w);
       var hc = o.appendTableCell(hr, s, null, h);
       return hc;
    }
-   MO.RBuilder_appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
+   MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
       var o = this;
       var r = null;
       if(i == null){
@@ -733,20 +685,15 @@ with(MO){
 with(MO){
    MO.RContext = function RContext(){
       var o = this;
-      o._location     = null;
-      o._contexts     = new Object();
-      o.contextPath   = null;
-      o.contextTag    = null;
-      o.themeId       = null;
-      o.languageId    = null;
-      o.initialize    = RContext_initialize;
-      o.get           = RContext_get;
-      o.find          = RContext_find;
-      o.location      = RContext_location;
-      o.context       = RContext_context;
+      o._location   = null;
+      o._contexts   = new Object();
+      o.contextPath = null;
+      o.contextTag  = null;
+      o.themeId     = null;
+      o.languageId  = null;
       return o;
    }
-   MO.RContext_location = function RContext_location(s){
+   MO.RContext.prototype.location = function RContext_location(s){
       var o = this;
       var r = o._location;
       if(r == null){
@@ -764,7 +711,7 @@ with(MO){
       }
       return r;
    }
-   MO.RContext_context = function RContext_context(s){
+   MO.RContext.prototype.context = function RContext_context(s){
       var o = this;
       if(s != null){
          if(RString.endsWith(s, '.wv')){
@@ -776,7 +723,7 @@ with(MO){
       }
       return o.contextPath;
    }
-   MO.RContext_initialize = function RContext_initialize(s){
+   MO.RContext.prototype.initialize = function RContext_initialize(s){
       var o = this;
       for(var n in s){
          var ls = s[n];
@@ -787,7 +734,7 @@ with(MO){
          }
       }
    }
-   MO.RContext_get = function RContext_get(p, p1, p2, p3, p4, p5){
+   MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
       var o = this;
       var r = o._contexts[p];
       if(!r){
@@ -795,7 +742,7 @@ with(MO){
       }
       return RString.format(r.text, p1, p2, p3, p4, p5)
    }
-   MO.RContext_find = function RContext_find(s, c){
+   MO.RContext.prototype.find = function RContext_find(s, c){
       var o = this;
       var id = s + ':' + c;
       var r = o._contexts[id];
@@ -813,16 +760,9 @@ with(MO){
       o.LINE_DOUBLE = '==============================';
       o.LINE_DOT    = '..............................';
       o.LINE_STAR   = '******************************';
-      o.onclick     = RDump_onclick;
-      o.nameInfo    = RDump_nameInfo;
-      o.typeInfo    = RDump_typeInfo;
-      o.dumpInner   = RDump_dumpInner;
-      o.dump        = RDump_dump;
-      o.appendLevel = RDump_appendLevel;
-      o.stack       = RDump_stack;
       return o;
    }
-   MO.RDump_onclick = function RDump_onclick(){
+   MO.RDump.prototype.onclick = function RDump_onclick(){
       var o = this;
       var d = o.link;
       if(o.link){
@@ -835,7 +775,7 @@ with(MO){
          }
       }
    }
-   MO.RDump_nameInfo = function RDump_nameInfo(v){
+   MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
       var t = RClass.typeOf(v);
       switch(t){
          case 'Unknown':
@@ -847,7 +787,7 @@ with(MO){
       }
       return v;
    }
-   MO.RDump_typeInfo = function RDump_typeInfo(v, t){
+   MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       if(v == null){
          return 'null';
       }
@@ -885,7 +825,7 @@ with(MO){
             return '<Object@' + RClass.code(v) + '>';
       }
    }
-   MO.RDump_dumpInner = function RDump_dumpInner(di){
+   MO.RDump.prototype.dumpInner = function RDump_dumpInner(di){
       var hTable  = di.hTable;
       var hParent = di.hParent;
       var hInsRow = di.hRow;
@@ -984,7 +924,7 @@ with(MO){
       }
       hTable.width = '100%'
    }
-   MO.RDump_dump = function RDump_dump(value, hPanel){
+   MO.RDump.prototype.dump = function RDump_dump(value, hPanel){
       if(!hPanel){
          hPanel = RBuilder.append(null, 'DIV')
       }
@@ -1015,12 +955,12 @@ with(MO){
       di.level = 0;
       this.dumpInner(di);
    }
-   MO.RDump_appendLevel = function RDump_appendLevel(r, l){
+   MO.RDump.prototype.appendLevel = function RDump_appendLevel(r, l){
       for(var n = 0; n < l; n++){
          r.append('   ');
       }
    }
-   MO.RDump_stack = function RDump_stack(){
+   MO.RDump.prototype.stack = function RDump_stack(){
       var o = RDump_stack.caller;
       var s = new TString();
       while(o){
@@ -1040,44 +980,16 @@ with(MO){
       o._nextUid        = 1;
       o._links          = new Object();
       o._clientPosition = new MO.SPoint2();
-      o.uid             = RHtml_uid;
-      o.fullscreen      = RHtml_fullscreen;
-      o.displayGet      = RHtml_displayGet;
-      o.displaySet      = RHtml_displaySet;
-      o.visibleGet      = RHtml_visibleGet;
-      o.visibleSet      = RHtml_visibleSet;
-      o.textGet         = RHtml_textGet;
-      o.textSet         = RHtml_textSet;
-      o.checkGet        = RHtml_checkGet;
-      o.checkSet        = RHtml_checkSet;
-      o.radioGet        = RHtml_radioGet;
-      o.radioSet        = RHtml_radioSet;
-      o.cursorSet       = RHtml_cursorSet;
-      o.linkGet         = RHtml_linkGet;
-      o.linkSet         = RHtml_linkSet;
-      o.clientPosition  = RHtml_clientPosition;
-      o.clientX         = RHtml_clientX;
-      o.clientY         = RHtml_clientY;
-      o.setSize         = RHtml_setSize;
-      o.toText          = RHtml_toText;
-      o.toHtml          = RHtml_toHtml;
-      o.eventSource     = RHtml_eventSource;
-      o.get             = RHtml_get;
-      o.parent          = RHtml_parent;
-      o.searchLinker    = RHtml_searchLinker;
-      o.searchObject    = RHtml_searchObject;
-      o.tableMoveRow    = RHtml_tableMoveRow;
-      o.free            = RHtml_free;
       return o;
    }
-   MO.RHtml_uid = function RHtml_uid(v){
+   MO.RHtml.prototype.uid = function RHtml_uid(v){
       var r = v.__puuid;
       if(r == null){
          r = v.__puuid = RHtml._nextUid++;
       }
       return r;
    }
-   MO.RHtml_fullscreen = function RHtml_fullscreen(h, f){
+   MO.RHtml.prototype.fullscreen = function RHtml_fullscreen(h, f){
       if(f){
          if (h.requestFullscreen){
             h.requestFullscreen();
@@ -1096,7 +1008,7 @@ with(MO){
          }
       }
    }
-   MO.RHtml_displayGet = function RHtml_displayGet(h){
+   MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
       var r = null;
       var s = h.style.display;
       if(RBrowser.isBrowser(EBrowser.Explorer)){
@@ -1106,7 +1018,7 @@ with(MO){
       }
       return r;
    }
-   MO.RHtml_displaySet = function RHtml_displaySet(h, v){
+   MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
       var s = null;
       if(RBrowser.isBrowser(EBrowser.Explorer)){
          s = v ? 'inline' : 'none';
@@ -1115,7 +1027,7 @@ with(MO){
       }
       h.style.display = s;
    }
-   MO.RHtml_visibleGet = function RHtml_visibleGet(h){
+   MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
       var r = null;
       var s = h.style.display;
       if(RBrowser.isBrowser(EBrowser.Explorer)){
@@ -1125,7 +1037,7 @@ with(MO){
       }
       return r;
    }
-   MO.RHtml_visibleSet = function RHtml_visibleSet(h, v){
+   MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
       var s = null;
       if(RBrowser.isBrowser(EBrowser.Explorer)){
          s = v ? '' : 'none';
@@ -1134,7 +1046,7 @@ with(MO){
       }
       h.style.display = s;
    }
-   MO.RHtml_textGet = function RHtml_textGet(h, v){
+   MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
       var r = null;
       if(RBrowser.isBrowser(EBrowser.FireFox)){
          r = h.textContent;
@@ -1143,20 +1055,20 @@ with(MO){
       }
       return r;
    }
-   MO.RHtml_textSet = function RHtml_textSet(h, v){
+   MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
       if(RBrowser.isBrowser(EBrowser.FireFox)){
          h.textContent = v;
       }else{
          h.innerText = v;
       }
    }
-   MO.RHtml_checkGet = function RHtml_checkGet(h){
+   MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
       return RBool.toString(h.checked);
    }
-   MO.RHtml_checkSet = function RHtml_checkSet(h, v){
+   MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
       h.checked = RBool.isTrue(v);
    }
-   MO.RHtml_radioGet = function RHtml_radioGet(hs){
+   MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
       if(hs){
          var c = hs.length;
          for(var n = 0; n < c; n++){
@@ -1168,7 +1080,7 @@ with(MO){
       }
       return null;
    }
-   MO.RHtml_radioSet = function RHtml_radioSet(hs, v){
+   MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
       if(hs){
          var c = hs.length;
          for(var n=0; n < c; n++){
@@ -1180,18 +1092,18 @@ with(MO){
          }
       }
    }
-   MO.RHtml_cursorSet = function RHtml_cursorSet(h, v){
+   MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
       if(h){
          h.style.cursor = v;
       }
    }
-   MO.RHtml_linkGet = function RHtml_linkGet(h, n){
+   MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
       var o = this;
       var u = o.uid(h);
       var i = o._links[u];
       return i ? i.get(n) : null;
    }
-   MO.RHtml_linkSet = function RHtml_linkSet(h, n, v){
+   MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
       var o = this;
       var ls = o._links;
       var u = o.uid(h);
@@ -1202,7 +1114,7 @@ with(MO){
       }
       i.set(n, v);
    }
-   MO.RHtml_clientPosition = function RHtml_clientPosition(hTag, hTop){
+   MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
       var o = this;
       var position = o._clientPosition;
       position.set(0, 0);
@@ -1213,7 +1125,7 @@ with(MO){
       }
       return position;
    }
-   MO.RHtml_clientX = function RHtml_clientX(p, t){
+   MO.RHtml.prototype.clientX = function RHtml_clientX(p, t){
       var r = 0;
       while(p != t){
          r += p.offsetLeft - p.scrollLeft;
@@ -1221,7 +1133,7 @@ with(MO){
       }
       return r;
    }
-   MO.RHtml_clientY = function RHtml_clientY(p, t){
+   MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
       var r = 0;
       while(p != t){
          r += p.offsetTop - p.scrollTop;
@@ -1229,7 +1141,7 @@ with(MO){
       }
       return r;
    }
-   MO.RHtml_setSize = function RHtml_setSize(h, s){
+   MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
       if(s.width){
          h.style.width = s.width + 'px';
       }
@@ -1237,7 +1149,7 @@ with(MO){
          h.style.height = s.height + 'px';
       }
    }
-   MO.RHtml_toText = function RHtml_toText(p){
+   MO.RHtml.prototype.toText = function RHtml_toText(p){
       if(p != null){
          p = p.toString();
          p = p.replace(/&lt;/, '<');
@@ -1247,7 +1159,7 @@ with(MO){
       }
       return p;
    }
-   MO.RHtml_toHtml = function RHtml_toHtml(p){
+   MO.RHtml.prototype.toHtml = function RHtml_toHtml(p){
       if(p != null){
          p = p.toString();
          p = p.replace(/</g, '&lt;');
@@ -1260,13 +1172,13 @@ with(MO){
       }
       return p;
    }
-   MO.RHtml_eventSource = function RHtml_eventSource(p){
+   MO.RHtml.prototype.eventSource = function RHtml_eventSource(p){
       return p.srcElement ? p.srcElement : p.target;
    }
-   MO.RHtml_get = function RHtml_get(name){
+   MO.RHtml.prototype.get = function RHtml_get(name){
       return document.getElementById(name);
    }
-   MO.RHtml_parent = function RHtml_parent(tag, typeName){
+   MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
       if(tag && t){
          typeName = typeName.toLowerCase();
          while(tag){
@@ -1278,7 +1190,7 @@ with(MO){
       }
       return null;
    }
-   MO.RHtml_searchLinker = function RHtml_searchLinker(h, c){
+   MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
       while(h){
          var f = h.__linker;
          if(f){
@@ -1290,7 +1202,7 @@ with(MO){
       }
       return null;
    }
-   MO.RHtml_searchObject = function RHtml_searchObject(h, n){
+   MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
       while(h){
          var f = h[n];
          if(f){
@@ -1300,7 +1212,7 @@ with(MO){
       }
       return null;
    }
-   MO.RHtml_tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
+   MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
       if(ph.tagName != 'TABLE'){
          throw new TError('Html table is invalid.');
       }
@@ -1337,356 +1249,8 @@ with(MO){
       }
       return true;
    }
-   MO.RHtml_free = function RHtml_free(p){
+   MO.RHtml.prototype.free = function RHtml_free(p){
       return null;
-   }
-   MO.RHtml_clone = function RHtml_clone(o, s, t){
-      if(!t){
-         t = s.cloneNode(true);
-      }
-      if(s._pname){
-         o[s._pname] = t;
-      }
-      if(s._ptyName){
-   	  o[s._ptyName] = t;
-      }
-      var e = REvent.find(s).events;
-      t._psource = s;
-      for(var n in e){
-         t[e[n].handle] = s[e[n].handle];
-         if(t[e[n].handle]){
-             RHtml.link(t, '_plink', o);
-         }
-      }
-      var p = s.children;
-      var n = p.length;
-      while(--n >= 0){
-         RHtml_clone(o, p[n], t.children[n]);
-      }
-      return t;
-   }
-   MO.RHtml_offsetPosition = function RHtml_offsetPosition(h, t){
-      var p = new TPoint();
-      while(h != t){
-         p.x += h.offsetLeft - h.scrollLeft;
-         p.y += h.offsetTop - h.scrollTop;
-         if('absolute' != RHtml.currentStyle(h).position){
-         }
-         p.x += h.clientLeft;
-         p.y += h.clientTop;
-         h = h.offsetParent;
-      }
-      return p;
-   }
-   MO.RHtml_offsetX = function RHtml_offsetX(h){
-      var x = 0;
-      while(h){
-         x += h.offsetLeft;
-         h = h.offsetParent;
-      }
-      return x;
-   }
-   MO.RHtml_offsetY = function RHtml_offsetY(h){
-      var y = 0;
-      while(h){
-         y += h.offsetTop;
-         h = h.offsetParent;
-      }
-      return y;
-   }
-   MO.RHtml_bodyWidth = function RHtml_bodyWidth(doc){
-      return doc.all ? doc.body.scrollWidth : doc.documentElement.scrollWidth;
-   }
-   MO.RHtml_bodyHeight = function RHtml_bodyHeight(doc){
-      return doc.all ? doc.body.scrollHeight : doc.documentElement.scrollHeight;
-   }
-   MO.RHtml_frameHeight = function RHtml_frameHeight(f){
-      var hd = f.contentWindow.document;
-      var oh = hd.body.scrollHeight;
-      var sh = hd.documentElement.scrollHeight;
-      return Math.max(oh, sh);
-   }
-   MO.RHtml_scrollWidth = function RHtml_scrollWidth(h){
-      var r = 0;
-      if(h.offsetWidth){
-         r += h.offsetWidth;
-      }
-      if(h.borderTopWidth){
-         r -= parseInt(h.borderLeftWidth);
-      }
-      if(h.borderBottomWidth){
-         r -= parseInt(h.borderRightWidth);
-      }
-      if(h.clientWidth){
-         r -= h.clientWidth;
-      }
-      return r;
-   }
-   MO.RHtml_scrollHeight = function RHtml_scrollHeight(h){
-      var r = 0;
-      if(h.offsetHeight){
-         r += h.offsetHeight;
-      }
-      if(h.borderTopWidth){
-         r -= parseInt(h.borderTopWidth);
-      }
-      if(h.borderBottomWidth){
-         r -= parseInt(h.borderBottomWidth);
-      }
-      if(h.clientHeight){
-         r -= h.clientHeight;
-      }
-      return r;
-   }
-   MO.RHtml_currentStyle = function RHtml_currentStyle(p){
-      if(p.currentStyle){
-         return p.currentStyle;
-      }
-      return window.getComputedStyle(p, null);
-   }
-   MO.RHtml_point = function RHtml_point(o, p){
-      return this.toPoint(new TPoint(), o, p);
-   }
-   MO.RHtml_toPoint = function RHtml_toPoint(r, o, p){
-      if(r && o){
-         p = RObject.nvl(p, window.document.body);
-         var cs = RHtml.currentStyle(o);
-         r.x = -RInt.parse(cs.borderLeftWidth);
-         r.y = -RInt.parse(cs.borderTopWidth);
-         while(o && o != p){
-            r.x += o.offsetLeft - o.scrollLeft;
-            r.y += o.offsetTop - o.scrollTop;
-            if('absolute' != RHtml.currentStyle(o).position){
-               r.x += o.clientLeft;
-               r.y += o.clientTop;
-            }
-            o = o.offsetParent;
-         }
-      }
-      return r;
-   }
-   MO.RHtml_rect = function RHtml_rect(o, p){
-      return this.toRect(new TRect(), o, p);
-   }
-   MO.RHtml_toRect = function RHtml_toRect(r, o, p){
-      if(r && o){
-         p = RObject.nvl(p, window.document.body);
-         var cs = RHtml.currentStyle(o);
-         r.left = -RInt.parse(cs.borderLeftWidth);
-         r.top = -RInt.parse(cs.borderTopWidth);
-         var w = o.offsetWidth; w = o.offsetWidth-1;
-         var h = o.offsetHeight; h = o.offsetHeight-1;
-         while(o && o != p){
-            r.left += o.offsetLeft - o.scrollLeft;
-            r.top += o.offsetTop - o.scrollTop;
-            if('absolute' != RHtml.currentStyle(o).position){
-               r.left += o.clientLeft;
-               r.top += o.clientTop;
-            }
-            o = o.offsetParent;
-         }
-         r.right = r.left + w;
-         r.bottom = r.top + h;
-      }
-      return r;
-   }
-   MO.RHtml_top = function RHtml_top(h){
-      var r = 0;
-      if(h){
-         var cs = RHtml.currentStyle(o);
-         r = -RInteger.parse(cs.borderTopWidth);
-         while(h){
-            r += h.offsetTop - h.scrollTop;
-            if('absolute' != RHtml.currentStyle(o).position){
-               r += h.clientTop;
-            }
-            h = h.offsetParent;
-         }
-      }
-      return r;
-   }
-   MO.RHtml_clientRect = function RHtml_clientRect(o){
-      if(o){
-         var x = 0;
-         var y = 0;
-         var w = o.offsetWidth-1;
-         var h = o.offsetHeight-1;
-         while(o){
-            x += o.offsetLeft;
-            y += o.offsetTop;
-            o = o.offsetParent;
-         }
-         return new TRect(x, y, x+w, y+h);
-      }
-      return null;
-   }
-   MO.RHtml_offsetRect = function RHtml_offsetRect(o){
-      if(o){
-         var x = 0;
-         var y = 0;
-         var w = o.offsetWidth-1;
-         var h = o.offsetHeight-1;
-         while(o){
-            x += o.offsetLeft + o.clientLeft;
-            y += o.offsetTop + o.clientTop;
-            o = o.offsetParent;
-         }
-         return new TRect(x, y, x+w, y+h);
-      }
-      return null;
-   }
-   MO.RHtml_clear = function RHtml_clear(h){
-      if(h){
-         var cns = h.children;
-         if(cns && cns.length){
-            for(var n=cns.length-1; n>=0; n--){
-               var cn = cns[n];
-               if(cn.children && cn.children.length){
-                  this.clear(cn);
-               }
-               h.removeChild(cn);
-            }
-         }
-      }
-   }
-   MO.RHtml_setRect = function RHtml_setRect(h, r){
-      if(h && h.style){
-         var s = h.style;
-         s.left = r.left;
-         s.top = r.top;
-         s.width = r.width();
-         s.height = r.height();
-      }
-   }
-   MO.RHtml_setBounds = function RHtml_setBounds(r, l, t, w, h){
-      if(r && r.style){
-         var s = r.style;
-         if(null != l){
-            s.left = l;
-         }
-         if(null != t){
-            s.top = t;
-         }
-         if(null != w){
-            s.width = w;
-         }
-         if(null != h){
-            s.height = h;
-         }
-      }
-   }
-   MO.RHtml_setPixelRect = function RHtml_setPixelRect(o, r){
-      if(o && o.style){
-         var s = o.style;
-         s.pixelLeft = r.left;
-         s.pixelTop = r.top;
-         s.pixelWidth = r.width();
-         s.pixelHeight = r.height();
-      }
-   }
-   MO.RHtml_setPixelBounds = function RHtml_setPixelBounds(o, l, t, w, h){
-      if(o && o.style){
-         var s = o.style;
-         if(null != l){
-            s.pixelLeft = l;
-         }
-         if(null != t){
-            s.pixelTop = t;
-         }
-         if(null != w){
-            s.pixelWidth = w;
-         }
-         if(null != h){
-            s.pixelHeight = h;
-         }
-      }
-   }
-   MO.RHtml_changeWidth = function RHtml_changeWidth(s, t){
-      if(s && t){
-         var ts = RHtml.currentStyle(t);
-         var tw = parseInt(ts.paddingLeft) + parseInt(ts.paddingRight);
-         t.style.pixelWidth = s.offsetWidth - tw;
-      }
-   }
-   MO.RHtml_showNodes = function RHtml_showNodes(h, o){
-      if(h && h.childNodes){
-         for(var n=0; n<h.childNodes.length; n++){
-            var c = h.childNodes(n);
-            if(c.tagName && c.style){
-               c.style.display = 'block';
-            }else if(c.nodeName == '#text'){
-               c.nodeValue = o[n];
-            }
-         }
-      }
-   }
-   MO.RHtml_hideNodes = function RHtml_hideNodes(h, o){
-      if(h && h.childNodes){
-         for(var n=0; n<h.childNodes.length; n++){
-            var c = h.childNodes(n);
-            if(c.tagName && c.style){
-               c.style.display = 'none';
-            }else if(c.nodeName == '#text'){
-               o[n] = c.nodeValue;
-               c.nodeValue = '';
-            }
-         }
-      }
-   }
-   MO.RHtml_showChildren = function RHtml_showChildren(h){
-      if(h && h.children){
-         for(var n=0; n<h.children.length; n++){
-            var c = h.children(n);
-            if(c.tagName && c.style){
-               c.style.display = 'block';
-            }
-         }
-      }
-   }
-   MO.RHtml_hideChildren = function RHtml_hideChildren(h){
-      if(h && h.children){
-         for(var n=0; n<h.children.length; n++){
-            var c = h.children(n);
-            if(c.tagName && c.style){
-               c.style.display = 'none';
-            }
-         }
-      }
-   }
-   MO.RHtml_posParent = function RHtml_posParent(h){
-      while(h){
-         if('visible' != h.currentStyle.overflow){
-            return h;
-         }
-         h = h.offsetParent;
-      }
-      return null;
-   }
-   MO.RHtml_form = function RHtml_form(h){
-      if(h){
-         var f = this.parent(h, 'FORM');
-         return f ? f : h.ownerDocument.forms[0];
-      }
-      return window.document.forms[0];
-   }
-   MO.RHtml_popup = function RHtml_popup(u, w, h){
-      var l = (screen.width - w)/2;
-      var t = (screen.height - h)/2 - 20;
-      var s = RString.format('left={0},top={1},width={2},height={3},toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=yes,scrollbars=yes,dependent=yes', l, t, w, h);
-      window.open(u, '_blank', s);
-   }
-   MO.RHtml_selectText = function RHtml_selectText(){
-      var ip = document.getElementById(id);
-      ip.select();
-      return document.selection.createRange().text;
-   }
-   MO.getTRNode = function getTRNode(nowTR, sibling) {
-      while(nowTR = nowTR[sibling]){
-         if(nowTR.tagName == 'TR'){
-            break;
-         }
-      }
-      return nowTR;
    }
    MO.RHtml = new RHtml();
 }
@@ -1707,11 +1271,10 @@ with(MO){
       o.double16  = null;
       o.double16  = null;
       o.double64  = null;
-      o.construct = RValue_construct;
       o.construct();
       return o;
    }
-   MO.RValue_construct = function RValue_construct(){
+   MO.RValue.prototype.construct = function RValue_construct(){
       var o = this;
       if(RBrowser.supportHtml5()){
          o.float1 = new Float32Array(1);
@@ -1765,38 +1328,9 @@ with(MO){
       o.lsnsKeyPress      = new TListeners();
       o.lsnsResize        = new TListeners();
       o.lsnsOrientation   = new TListeners();
-      o.ohMouseDown       = RWindow_ohMouseDown;
-      o.ohMouseMove       = RWindow_ohMouseMove;
-      o.ohMouseUp         = RWindow_ohMouseUp;
-      o.ohMouseWheel      = RWindow_ohMouseWheel;
-      o.ohKeyDown         = RWindow_ohKeyDown;
-      o.ohKeyUp           = RWindow_ohKeyUp;
-      o.ohKeyPress        = RWindow_ohKeyPress;
-      o.ohResize          = RWindow_ohResize;
-      o.ohSelect          = RWindow_ohSelect;
-      o.ohOrientation     = RWindow_ohOrientation;
-      o.ohUnload          = RWindow_ohUnload;
-      o.connect           = RWindow_connect;
-      o.optionSelect      = RWindow_optionSelect;
-      o.setOptionSelect   = RWindow_setOptionSelect;
-      o.setCaption        = RWindow_setCaption;
-      o.setStatus         = RWindow_setStatus;
-      o.storage           = RWindow_storage;
-      o.makeDisablePanel  = RWindow_makeDisablePanel;
-      o.windowEnable      = RWindow_windowEnable;
-      o.windowDisable     = RWindow_windowDisable;
-      o.isEnable          = RWindow_isEnable;
-      o.enable            = RWindow_enable;
-      o.disable           = RWindow_disable;
-      o.setEnable         = RWindow_setEnable;
-      o.appendElement     = RWindow_appendElement;
-      o.redirect          = RWindow_redirect;
-      o.historyForward    = RWindow_historyForward;
-      o.historyBack       = RWindow_historyBack;
-      o.dispose           = RWindow_dispose;
       return o;
    }
-   MO.RWindow_ohMouseDown = function RWindow_ohMouseDown(p){
+   MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -1805,7 +1339,7 @@ with(MO){
       e.attachEvent(p);
       o.lsnsMouseDown.process(e);
    }
-   MO.RWindow_ohMouseMove = function RWindow_ohMouseMove(p){
+   MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -1814,7 +1348,7 @@ with(MO){
       e.attachEvent(p);
       o.lsnsMouseMove.process(e);
    }
-   MO.RWindow_ohMouseUp = function RWindow_ohMouseUp(p){
+   MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -1823,7 +1357,7 @@ with(MO){
       e.attachEvent(p);
       o.lsnsMouseUp.process(e);
    }
-   MO.RWindow_ohMouseWheel = function RWindow_ohMouseWheel(p){
+   MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(p){
       var o = RWindow;
       if(!p){
          p = o._hWindow.event;
@@ -1832,7 +1366,7 @@ with(MO){
       e.attachEvent(p);
       o.lsnsMouseWheel.process(e);
    }
-   MO.RWindow_ohKeyDown = function RWindow_ohKeyDown(hEvent){
+   MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -1841,7 +1375,7 @@ with(MO){
       event.attachEvent(hEvent);
       o.lsnsKeyDown.process(event);
    }
-   MO.RWindow_ohKeyUp = function RWindow_ohKeyUp(hEvent){
+   MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -1850,7 +1384,7 @@ with(MO){
       event.attachEvent(hEvent);
       o.lsnsKeyUp.process(event);
    }
-   MO.RWindow_ohKeyPress = function RWindow_ohKeyPress(hEvent){
+   MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -1859,7 +1393,7 @@ with(MO){
       event.attachEvent(hEvent);
       o.lsnsKeyPress.process(event);
    }
-   MO.RWindow_ohResize = function RWindow_ohResize(hEvent){
+   MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
       var o = RWindow;
       if(!hEvent){
          hEvent = o._hWindow.event;
@@ -1868,10 +1402,10 @@ with(MO){
       event.attachEvent(hEvent);
       o.lsnsResize.process(event);
    }
-   MO.RWindow_ohSelect = function RWindow_ohSelect(event){
+   MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
       return RWindow._optionSelect;
    }
-   MO.RWindow_ohOrientation = function RWindow_ohOrientation(hEvent){
+   MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
       var o = RWindow;
       var event = o._eventOrientation;
       if((window.orientation == 180) || (window.orientation == 0)){
@@ -1883,13 +1417,13 @@ with(MO){
       }
       o.lsnsOrientation.process(event);
    }
-   MO.RWindow_ohUnload = function RWindow_ohUnload(event){
+   MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
       var o = RWindow;
       var event = o._eventUnload;
       o.lsnsUnload.process(event);
       RWindow.dispose();
    }
-   MO.RWindow_connect = function RWindow_connect(hHtml){
+   MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       var o = this;
       var hWindow = o._hWindow = hHtml;
       var hDocument = o._hDocument = hWindow.document;
@@ -1916,23 +1450,23 @@ with(MO){
       hContainer.onselectstart = o.ohSelect;
       hContainer.onunload = o.ohUnload;
    }
-   MO.RWindow_optionSelect = function RWindow_optionSelect(){
+   MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
       return this._optionSelect;
    }
-   MO.RWindow_setOptionSelect = function RWindow_setOptionSelect(p){
+   MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
       var o = this;
       o._optionSelect = p;
       if(RBrowser.isBrowser(EBrowser.FireFox)){
          o._hContainer.style.MozUserSelect = p ? '' : 'none';
       }
    }
-   MO.RWindow_setCaption = function RWindow_setCaption(p){
+   MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
       top.document.title = p;
    }
-   MO.RWindow_setStatus = function RWindow_setStatus(p){
+   MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
       window.status = RString.nvl(p);
    }
-   MO.RWindow_storage = function RWindow_storage(scopeCd){
+   MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       var o = this;
       switch(scopeCd){
          case EScope.Local:
@@ -1952,7 +1486,7 @@ with(MO){
       }
       throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
    }
-   MO.RWindow_makeDisablePanel = function RWindow_makeDisablePanel(f){
+   MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       var o = this;
       var h = o._hDisablePanel;
       if(!h){
@@ -1969,30 +1503,30 @@ with(MO){
       RHtml.visibleSet(hi, f);
       return h;
    }
-   MO.RWindow_windowDisable = function RWindow_windowDisable(){
+   MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
       this._hContainer.disabled = true;
    }
-   MO.RWindow_windowEnable = function RWindow_windowEnable(){
+   MO.RWindow.prototype.windowEnable = function RWindow_windowEnable(){
       this._hContainer.disabled = false;
    }
-   MO.RWindow_isEnable = function RWindow_isEnable(){
+   MO.RWindow.prototype.isEnable = function RWindow_isEnable(){
       return this._statusEnable;
    }
-   MO.RWindow_enable = function RWindow_enable(){
+   MO.RWindow.prototype.enable = function RWindow_enable(){
       var o = this;
       o._disableDeep--;
       if(o._disableDeep == 0){
          o.setEnable(true);
       }
    }
-   MO.RWindow_disable = function RWindow_disable(){
+   MO.RWindow.prototype.disable = function RWindow_disable(){
       var o = this;
       if(o._disableDeep == 0){
          o.setEnable(false);
       }
       o._disableDeep++;
    }
-   MO.RWindow_setEnable = function RWindow_setEnable(v, f){
+   MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
       var o = this;
       var h = o.makeDisablePanel(f);
       var st = h.style;
@@ -2016,17 +1550,17 @@ with(MO){
       }
       o._statusEnable = v;
    }
-   MO.RWindow_appendElement = function RWindow_appendElement(hPanel){
+   MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
       MO.Assert.debugNotNull(control);
       this._hContainer.appendChild(hPanel);
    }
-   MO.RWindow_redirect = function RWindow_redirect(){
+   MO.RWindow.prototype.redirect = function RWindow_redirect(){
    }
-   MO.RWindow_historyForward = function RWindow_historyForward(){
+   MO.RWindow.prototype.historyForward = function RWindow_historyForward(){
    }
-   MO.RWindow_historyBack = function RWindow_historyBack(){
+   MO.RWindow.prototype.historyBack = function RWindow_historyBack(){
    }
-   MO.RWindow_dispose = function RWindow_dispose(){
+   MO.RWindow.prototype.dispose = function RWindow_dispose(){
       var o = this;
       var hWindow = o._hWindow;
       var hDocument = o._hDocument;
@@ -2068,25 +1602,14 @@ with(MO){
 with(MO){
    MO.RXml = function RXml(){
       var o = this;
-      o.httpActiveX      = false;
-      o.httpVendor       = null;
-      o.domActiveX       = false;
-      o.domVendor        = null;
-      o.construct        = RXml_construct;
-      o.isNode           = RXml_isNode;
-      o.createConnection = RXml_createConnection;
-      o.createDocument   = RXml_createDocument;
-      o.formatText       = RXml_formatText;
-      o.buildText        = RXml_buildText;
-      o.buildNode        = RXml_buildNode;
-      o.makeString       = RXml_makeString;
-      o.makeNode         = RXml_makeNode;
-      o.makeDocument     = RXml_makeDocument;
-      o.unpack           = RXml_unpack;
+      o.httpActiveX = false;
+      o.httpVendor  = null;
+      o.domActiveX  = false;
+      o.domVendor   = null;
       o.construct();
       return o;
    }
-   MO.RXml_construct = function RXml_construct(){
+   MO.RXml.prototype.construct = function RXml_construct(){
       var o = this;
       var d = window.document;
       if(window.ActiveXObject && !window.XMLHttpRequest){
@@ -2138,10 +1661,10 @@ with(MO){
          alert('Unknown dom vendor.');
       }
    }
-   MO.RXml_isNode = function RXml_isNode(n){
+   MO.RXml.prototype.isNode = function RXml_isNode(n){
       return RClass.isName(n, 'TNode');
    }
-   MO.RXml_createConnection = function RXml_createConnection(){
+   MO.RXml.prototype.createConnection = function RXml_createConnection(){
       var o = this;
       var r = null;
       if(o.httpActiveX){
@@ -2154,7 +1677,7 @@ with(MO){
       }
       return r;
    }
-   MO.RXml_createDocument = function RXml_createDocument(){
+   MO.RXml.prototype.createDocument = function RXml_createDocument(){
       var o = this;
       var r = null;
       if(o.domActiveX){
@@ -2167,13 +1690,13 @@ with(MO){
       }
       return r;
    }
-   MO.RXml_formatText = function RXml_formatText(s){
+   MO.RXml.prototype.formatText = function RXml_formatText(s){
       if(s != null){
          s = s.replace(/\\n/g, '\n');
       }
       return s;
    }
-   MO.RXml_buildText = function RXml_buildText(s, v){
+   MO.RXml.prototype.buildText = function RXml_buildText(s, v){
       if(v != null){
          v = v.toString();
          var c = v.length;
@@ -2204,7 +1727,7 @@ with(MO){
       }
       return s;
    }
-   MO.RXml_buildNode = function RXml_buildNode(pd, pn, pe){
+   MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
       var xas = null;
       var eas = pe.attributes;
       if(eas){
@@ -2249,7 +1772,7 @@ with(MO){
          }
       }
    }
-   MO.RXml_makeString = function RXml_makeString(s){
+   MO.RXml.prototype.makeString = function RXml_makeString(s){
       var o = this;
       var x = null;
       if(o.domActiveX){
@@ -2262,7 +1785,7 @@ with(MO){
       }
       return x;
    }
-   MO.RXml_makeNode = function RXml_makeNode(p){
+   MO.RXml.prototype.makeNode = function RXml_makeNode(p){
       var o = this;
       if(p.documentElement){
          var d = new TXmlDocument();
@@ -2282,14 +1805,14 @@ with(MO){
       }
       return null;
    }
-   MO.RXml_makeDocument = function RXml_makeDocument(p){
+   MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
       var d = new TXmlDocument();
       if(p.documentElement){
          RXml.buildNode(d, null, p.documentElement);
       }
       return d;
    }
-   MO.RXml_unpack = function RXml_unpack(s, n){
+   MO.RXml.prototype.unpack = function RXml_unpack(s, n){
       var o = this;
       if(RString.isEmpty(s)){
          return null;

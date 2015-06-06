@@ -79,6 +79,7 @@ with(MO){
    //==========================================================
    MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
       var o = this;
+      debugger
       var connection = RConsole.find(FHttpConsole).alloc();
       connection._asynchronous = true;
       connection._contentCd = EHttpContent.Text;

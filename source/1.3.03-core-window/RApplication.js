@@ -10,12 +10,7 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._workspaces   = new TDictionary();
-      //..........................................................
-      // @method
-      o.initialize    = RApplication_initialize;
-      o.findWorkspace = RApplication_findWorkspace;
-      o.release       = RApplication_release;
+      o._workspaces = new TDictionary();
       return o;
    }
 
@@ -24,7 +19,7 @@
    //
    // @method
    //==========================================================
-   MO.RApplication_initialize = function RApplication_initialize(){
+   MO.RApplication.prototype.initialize = function RApplication_initialize(){
       var o = this;
       // 构造浏览管理器
       RBrowser.construct();
@@ -41,7 +36,7 @@
    // @param p:class:Function 类名称
    // @return 工作空间
    // =========================================================
-   MO.RApplication_findWorkspace = function RApplication_findWorkspace(p){
+   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(p){
       var o = this;
       var n = RClass.name(p);
       var ws = o._workspaces;
@@ -58,7 +53,7 @@
    //
    // @method
    //==========================================================
-   MO.RApplication_release = function RApplication_release(){
+   MO.RApplication.prototype.release = function RApplication_release(){
       try{
          CollectGarbage();
       }catch(e){

@@ -7,42 +7,7 @@
    // @version 141229
    //==========================================================
    MO.RBuilder = function RBuilder(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.create             = RBuilder_create;
-      o.createIcon         = RBuilder_createIcon;
-      o.createImage        = RBuilder_createImage;
-      o.createText         = RBuilder_createText;
-      o.createButton       = RBuilder_createButton;
-      o.createCheck        = RBuilder_createCheck;
-      o.createRadio        = RBuilder_createRadio;
-      o.createEdit         = RBuilder_createEdit;
-      o.createFile         = RBuilder_createFile;
-      o.createSpan         = RBuilder_createSpan;
-      o.createDiv          = RBuilder_createDiv;
-      o.createTable        = RBuilder_createTable;
-      o.createTableRow     = RBuilder_createTableRow;
-      o.createTableCell    = RBuilder_createTableCell;
-      o.createFragment     = RBuilder_createFragment;
-      // @method
-      o.append             = RBuilder_append;
-      o.appendIcon         = RBuilder_appendIcon;
-      o.appendImage        = RBuilder_appendImage;
-      o.appendEmpty        = RBuilder_appendEmpty;
-      o.appendText         = RBuilder_appendText;
-      o.appendButton       = RBuilder_appendButton;
-      o.appendCheck        = RBuilder_appendCheck;
-      o.appendRadio        = RBuilder_appendRadio;
-      o.appendEdit         = RBuilder_appendEdit;
-      o.appendFile         = RBuilder_appendFile;
-      o.appendSpan         = RBuilder_appendSpan;
-      o.appendDiv          = RBuilder_appendDiv;
-      o.appendTable        = RBuilder_appendTable;
-      o.appendTableRow     = RBuilder_appendTableRow;
-      o.appendTableRowCell = RBuilder_appendTableRowCell;
-      o.appendTableCell    = RBuilder_appendTableCell;
-      return o;
+      return this;
    }
 
    //==========================================================
@@ -54,7 +19,7 @@
    // @param s:styleName:String 样式名称
    // @return HtmlTag 页面对象
    //==========================================================
-   MO.RBuilder_create = function RBuilder_create(h, t, s){
+   MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
       var o = this;
       var d = null;
       if(h.ownerDocument){
@@ -82,7 +47,7 @@
    // @param h:height:Integer 图片宽度
    // @return HtmlImgTag 页面图标对象
    //==========================================================
-   MO.RBuilder_createIcon = function RBuilder_createIcon(d, s, u, w, h){
+   MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
       var r = this.create(d, 'IMG', RString.nvl(s, 'Tag_Icon'));
       r.align = 'absmiddle';
       if(u){
@@ -108,7 +73,7 @@
    // @param h:height:Integer 图片宽度
    // @return HtmlImgTag 页面图片对象
    //==========================================================
-   MO.RBuilder_createImage = function RBuilder_createImage(d, s, u, w, h){
+   MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
       var r = this.create(d, 'IMG', u);
       if(u){
          r.src = RResource.imagePath(u);
@@ -131,7 +96,7 @@
    // @param v:value:String 内容
    // @return HtmlInputTag 页面文本对象
    //==========================================================
-   MO.RBuilder_createText = function RBuilder_createText(d, s, v){
+   MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
       var r = this.create(d, 'SPAN', s);
       if(v){
          r.innerHTML = v;
@@ -147,7 +112,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面复选框对象
    //==========================================================
-   MO.RBuilder_createButton = function RBuilder_createButton(d, s){
+   MO.RBuilder.prototype.createButton = function RBuilder_createButton(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'button';
       return r;
@@ -161,7 +126,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面复选框对象
    //==========================================================
-   MO.RBuilder_createCheck = function RBuilder_createCheck(d, s){
+   MO.RBuilder.prototype.createCheck = function RBuilder_createCheck(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'checkbox';
       return r;
@@ -175,7 +140,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面单选框对象
    //==========================================================
-   MO.RBuilder_createRadio = function RBuilder_createRadio(d, s){
+   MO.RBuilder.prototype.createRadio = function RBuilder_createRadio(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'radio';
       return r;
@@ -189,7 +154,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面编辑框对象
    //==========================================================
-   MO.RBuilder_createEdit = function RBuilder_createEdit(d, s){
+   MO.RBuilder.prototype.createEdit = function RBuilder_createEdit(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'text';
       return r;
@@ -203,7 +168,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面编辑框对象
    //==========================================================
-   MO.RBuilder_createFile = function RBuilder_createFile(d, s){
+   MO.RBuilder.prototype.createFile = function RBuilder_createFile(d, s){
       var r = this.create(d, "INPUT", s);
       r.type = 'file';
       return r;
@@ -217,7 +182,7 @@
    // @param s:style:String 样式名称
    // @return HtmlSpanTag 页面浮动块对象
    //==========================================================
-   MO.RBuilder_createSpan = function RBuilder_createSpan(d, s){
+   MO.RBuilder.prototype.createSpan = function RBuilder_createSpan(d, s){
       return this.create(d, 'SPAN', s);
    }
 
@@ -229,7 +194,7 @@
    // @param s:style:String 样式名称
    // @return HtmlDivTag 页面浮动块对象
    //==========================================================
-   MO.RBuilder_createDiv = function RBuilder_createDiv(d, s){
+   MO.RBuilder.prototype.createDiv = function RBuilder_createDiv(d, s){
       return this.create(d, 'DIV', s);
    }
 
@@ -244,7 +209,7 @@
    // @param cp:cellPadding:Integer 单元格内文字与单元格边框之间的距离
    // @return HtmlTag 表格对象
    //==========================================================
-   MO.RBuilder_createTable = function RBuilder_createTable(d, s, b, cs, cp){
+   MO.RBuilder.prototype.createTable = function RBuilder_createTable(d, s, b, cs, cp){
       var h = this.create(d, 'TABLE', s);
       if(b){
          h.border = RInteger.nvl(b);
@@ -262,7 +227,7 @@
    // @param s:styleName:String 样式名称
    // @return HtmlTrTag 表格行对象
    //==========================================================
-   MO.RBuilder_createTableRow = function RBuilder_createTableRow(d, s){
+   MO.RBuilder.prototype.createTableRow = function RBuilder_createTableRow(d, s){
       var h = this.create(d, 'TR', s);
       return h;
    }
@@ -275,7 +240,7 @@
    // @param s:styleName:String 样式名称
    // @return HtmlTdTag 表格格子对象
    //==========================================================
-   MO.RBuilder_createTableCell = function RBuilder_createTableCell(d, s){
+   MO.RBuilder.prototype.createTableCell = function RBuilder_createTableCell(d, s){
       var h = this.create(d, 'TD', s);
       return h;
    }
@@ -287,7 +252,7 @@
    // @param document:HtmlDocument 页面文档对象
    // @return HtmlTag 表格对象
    //==========================================================
-   MO.RBuilder_createFragment = function RBuilder_createFragment(document){
+   MO.RBuilder.prototype.createFragment = function RBuilder_createFragment(document){
       var hDocument = null;
       if(document.ownerDocument){
          hDocument = document.ownerDocument;
@@ -311,7 +276,7 @@
    // @return HtmlTag 页面对象
    // @see RBuilder.create
    //==========================================================
-   MO.RBuilder_append = function RBuilder_append(p, t, s){
+   MO.RBuilder.prototype.append = function RBuilder_append(p, t, s){
       var r = RBuilder.create(p.ownerDocument, t, s);
       if(p){
          p.appendChild(r);
@@ -332,7 +297,7 @@
    // @param h:height:Integer 图片宽度
    // @return HtmlImgTag 页面图标对象
    //==========================================================
-   MO.RBuilder_appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
+   MO.RBuilder.prototype.appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
       var r = this.createIcon(p.ownerDocument, s, u, w, h);
       p.appendChild(r);
       return r;
@@ -349,7 +314,7 @@
    // @param h:height:Integer 图片宽度
    // @return HtmlImgTag 页面图片对象
    //==========================================================
-   MO.RBuilder_appendImage = function RBuilder_appendImage(p, s, u, w, h){
+   MO.RBuilder.prototype.appendImage = function RBuilder_appendImage(p, s, u, w, h){
       var r = this.createImage(p.ownerDocument, s, u, w, h);
       p.appendChild(r);
       return r;
@@ -364,7 +329,7 @@
    // @param h:height:Integer 图片的显示宽度
    // @return HtmlImgTag 空白页面图标对象
    //==========================================================
-   MO.RBuilder_appendEmpty = function RBuilder_appendEmpty(p, w, h){
+   MO.RBuilder.prototype.appendEmpty = function RBuilder_appendEmpty(p, w, h){
       var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
       p.appendChild(r);
       return r;
@@ -379,7 +344,7 @@
    // @param v:value:String 内容
    // @return HtmlInputTag 页面文本对象
    //==========================================================
-   MO.RBuilder_appendText = function RBuilder_appendText(p, s, v){
+   MO.RBuilder.prototype.appendText = function RBuilder_appendText(p, s, v){
       var r = this.createText(p.ownerDocument, s, v);
       p.appendChild(r);
       return r;
@@ -393,7 +358,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面按钮对象
    //==========================================================
-   MO.RBuilder_appendButton = function RBuilder_appendButton(p, s){
+   MO.RBuilder.prototype.appendButton = function RBuilder_appendButton(p, s){
       var r = this.createButton(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -407,7 +372,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面复选框对象
    //==========================================================
-   MO.RBuilder_appendCheck = function RBuilder_appendCheck(p, s){
+   MO.RBuilder.prototype.appendCheck = function RBuilder_appendCheck(p, s){
       var r = this.createCheck(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -421,7 +386,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面单选框对象
    //==========================================================
-   MO.RBuilder_appendRadio = function RBuilder_appendRadio(p, s){
+   MO.RBuilder.prototype.appendRadio = function RBuilder_appendRadio(p, s){
       var r = this.createRadio(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -435,7 +400,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面编辑框对象
    //==========================================================
-   MO.RBuilder_appendEdit = function RBuilder_appendEdit(p, s){
+   MO.RBuilder.prototype.appendEdit = function RBuilder_appendEdit(p, s){
       var r = this.createEdit(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -449,7 +414,7 @@
    // @param s:style:String 样式名称
    // @return HtmlInputTag 页面编辑框对象
    //==========================================================
-   MO.RBuilder_appendFile = function RBuilder_appendFile(p, s){
+   MO.RBuilder.prototype.appendFile = function RBuilder_appendFile(p, s){
       var r = this.createFile(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -463,7 +428,7 @@
    // @param s:style:String 样式名称
    // @return HtmlSpanTag 页面浮动块对象
    //==========================================================
-   MO.RBuilder_appendSpan = function RBuilder_appendSpan(p, s){
+   MO.RBuilder.prototype.appendSpan = function RBuilder_appendSpan(p, s){
       var r = this.createSpan(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -477,7 +442,7 @@
    // @param s:style:String 样式名称
    // @return HtmlDivTag 页面浮动块对象
    //==========================================================
-   MO.RBuilder_appendDiv = function RBuilder_appendDiv(p, s){
+   MO.RBuilder.prototype.appendDiv = function RBuilder_appendDiv(p, s){
       var r = this.createDiv(p.ownerDocument, s);
       p.appendChild(r);
       return r;
@@ -495,7 +460,7 @@
    // @return HtmlTag 表格对象
    // @see RBuilder.createTable
    //==========================================================
-   MO.RBuilder_appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
+   MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
       var r = this.createTable(p.ownerDocument, s, b, cs, cp);
       if(p){
          p.appendChild(r);
@@ -516,7 +481,7 @@
    // @param h:height:Integer 行高度
    // @return HtmlTrTag 页面行对象
    //==========================================================
-   MO.RBuilder_appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
+   MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
       var r = null;
       if(i == null){
          if(RBrowser.isBrowser(EBrowser.Explorer)){
@@ -546,7 +511,7 @@
    // @param h:height:Integer 行高度
    // @return HtmlTrTag 页面行对象
    //==========================================================
-   MO.RBuilder_appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
+   MO.RBuilder.prototype.appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
       var o = this;
       var hr = o.appendTableRow(p, null, null, w);
       var hc = o.appendTableCell(hr, s, null, h);
@@ -564,7 +529,7 @@
    // @param h:height:Integer 行高度
    // @return HtmlTrTag 页面行对象
    //==========================================================
-   MO.RBuilder_appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
+   MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
       var o = this;
       var r = null;
       if(i == null){
