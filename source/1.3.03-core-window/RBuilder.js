@@ -554,6 +554,5 @@
    //..........................................................
    // 实例化内容
    MO.RBuilder = new RBuilder();
-   MO.Window = new Object();
-   MO.Window.Builder = MO.RBuilder;
+   MO.Builder = MO.RBuilder;
 }

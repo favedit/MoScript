@@ -403,20 +403,23 @@
    // <T>根据一个类函数创建类的实例。</T>
    //
    // @method
-   // @param f:function:Function 函数对象
+   // @param clazz:Function 函数对象
    // @return Object 类对象的实例
    //==========================================================
-   MO.RClass.prototype.create = function RClass_create(n){
+   MO.RClass.prototype.create = function RClass_create(clazz){
       var o = this;
       // 获得类名称
-      var t = typeof(n);
-      if(t == 'function'){
-         n = RMethod.name(n);
-      }else if(t != 'string'){
-         RLogger.fatal(o, null, 'Param is invlid (name={1})', n);
+      var name = null;
+      var typeName = typeof(clazz);
+      if(typeName == 'function'){
+         name = RMethod.name(clazz);
+      }else if(typeName == 'string'){
+         name = clazz;
+      }else{
+         RLogger.fatal(o, null, 'Param is invlid (clazz={1})', clazz);
       }
       // 创建类的实例
-      return o.createByName(n);
+      return o.createByName(name);
    }
 
    //==========================================================

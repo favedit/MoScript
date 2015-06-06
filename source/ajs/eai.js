@@ -11,16 +11,6 @@ MO.EEaiStage = new function EEaiStage(){
    o.Company     = 4;
    return o;
 }
-var REai = function REai(){
-   var o = this;
-   o.version = '0.1.0';
-   return o;
-}
-REai.prototype.initialize = function REai_initialize(){
-}
-REai.prototype.release = function REai_release(){
-}
-var Eai = new REai();
 MO.FEaiStage = function FEaiStage(o){
    o = MO.RClass.inherits(this, o, MO.FObject);
    return o;
@@ -364,7 +354,7 @@ with(MO){
       o.__base.FE3dCanvas.dispose.call(o);
    }
 }
-Eai.REaiApplication = function REaiApplication(){
+MO.REaiApplication = function REaiApplication(){
    var o = MO.RSingleton.call(this);
    o._stageCountry     = null;
    o._stageGroup       = null;
@@ -373,14 +363,14 @@ Eai.REaiApplication = function REaiApplication(){
    o._activeStage      = null;
    return o;
 }
-Eai.REaiApplication.prototype.setup = function REaiApplication_setup(){
+MO.REaiApplication.prototype.setup = function REaiApplication_setup(){
    var o = this;
    o._stageCountry = MO.RClass.create(MO.FEaiCountryStage);
    o._stageGroup = MO.RClass.create(MO.FEaiGroupStage);
    o._stageGroupReport = MO.RClass.create(MO.FEaiGroupReportStage);
    o._stageCompany = MO.RClass.create(MO.FEaiCompanyStage);
 }
-Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(stageCd){
+MO.REaiApplication.prototype.findStage = function REaiApplication_findStage(stageCd){
    var o = this;
    switch(stageCd){
       case MO.EEaiStage.Country:
@@ -395,12 +385,12 @@ Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(sta
          throw new TError(o, 'Unknown stage type. (stage_cd={1})', stageCd);
    }
 }
-Eai.REaiApplication.prototype.selectStage = function REaiApplication_selectStage(stageCd){
+MO.REaiApplication.prototype.selectStage = function REaiApplication_selectStage(stageCd){
    var o = this;
    var stage = o.findStage(stageCd);
    return stage;
 }
-Eai.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
+MO.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
    var o = this;
    o._stageCountry = MO.RObject.dispose(o._stageCountry);
    o._stageGroup = MO.RObject.dispose(o._stageGroup);
@@ -409,4 +399,4 @@ Eai.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
    o._activeStage = null;
    o.__base.FUiControl.dispose.call(o);
 }
-Eai.Application = new Eai.REaiApplication();
+MO.EaiApplication = new MO.REaiApplication();

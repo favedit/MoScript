@@ -145,12 +145,12 @@ function onOrganizationFetch(event){
    var count = collection.length;
    for(var i = 0; i < count; i++){
       var organization = collection[i];
-      var hRow = MO.Window.Builder.appendTableRow(id_organization);
-      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      var hRow = MO.Builder.appendTableRow(id_organization);
+      var hCell = MO.Builder.appendTableCell(hRow);
       hCell.innerHTML = organization.guid;
-      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      var hCell = MO.Builder.appendTableCell(hRow);
       hCell.innerHTML = organization.label;
-      var hCell = MO.Window.Builder.appendTableCell(hRow);
+      var hCell = MO.Builder.appendTableCell(hRow);
       hCell.innerHTML = organization.province_label;
    }
    //var e = window.event;
@@ -174,7 +174,7 @@ function onLoad(){
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
-   Eai.Application.setup();
+   MO.EaiApplication.setup();
    // 创建画布
    canvas = canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(document);
@@ -189,7 +189,6 @@ function onLoad(){
    //camera.position().set(0, 0, -10);
    //camera.lookAt(0, 0, 0);
    //camera.update();
-
 
    var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
    var template = templateConsole.allocByCode(canvas, 'eai.world.china');
@@ -213,7 +212,7 @@ function onLoad(){
       <H2 style='color:#FFFFFF'>Schedule - Fetch</H2>
    </DIV>
    <DIV style='position:absolute; left:30%; top:20px;height:200px;overflow:auto'>
-      <TABLE id='id_organization' width='200px' bgcolor='#999999'>
+      <TABLE id='id_organization' width='800px' bgcolor='#999999'>
          <TR>
             <TD>Guid</TD>
             <TD>Label</TD>

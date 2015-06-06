@@ -3599,15 +3599,18 @@ with(MO){
       eval(className)(clazz.clazz);
       return clazz;
    }
-   MO.RClass.prototype.create = function RClass_create(n){
+   MO.RClass.prototype.create = function RClass_create(clazz){
       var o = this;
-      var t = typeof(n);
-      if(t == 'function'){
-         n = RMethod.name(n);
-      }else if(t != 'string'){
-         RLogger.fatal(o, null, 'Param is invlid (name={1})', n);
+      var name = null;
+      var typeName = typeof(clazz);
+      if(typeName == 'function'){
+         name = RMethod.name(clazz);
+      }else if(typeName == 'string'){
+         name = clazz;
+      }else{
+         RLogger.fatal(o, null, 'Param is invlid (clazz={1})', clazz);
       }
-      return o.createByName(n);
+      return o.createByName(name);
    }
    MO.RClass.prototype.createByName = function RClass_createByName(n){
       var o = this;
@@ -13371,8 +13374,7 @@ with(MO){
       return r;
    }
    MO.RBuilder = new RBuilder();
-   MO.Window = new Object();
-   MO.Window.Builder = MO.RBuilder;
+   MO.Builder = MO.RBuilder;
 }
 with(MO){
    MO.RContext = function RContext(){

@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150604
 //==========================================================
-Eai.REaiApplication = function REaiApplication(){
+MO.REaiApplication = function REaiApplication(){
    var o = MO.RSingleton.call(this);
    //..........................................................
    // @attribute
@@ -23,7 +23,7 @@ Eai.REaiApplication = function REaiApplication(){
 //
 // @method
 //==========================================================
-Eai.REaiApplication.prototype.setup = function REaiApplication_setup(){
+MO.REaiApplication.prototype.setup = function REaiApplication_setup(){
    var o = this;
    o._stageCountry = MO.RClass.create(MO.FEaiCountryStage);
    o._stageGroup = MO.RClass.create(MO.FEaiGroupStage);
@@ -38,7 +38,7 @@ Eai.REaiApplication.prototype.setup = function REaiApplication_setup(){
 // @param stageCd:EEaiStage 舞台枚举
 // @return FEaiStage 舞台
 //==========================================================
-Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(stageCd){
+MO.REaiApplication.prototype.findStage = function REaiApplication_findStage(stageCd){
    var o = this;
    switch(stageCd){
       case MO.EEaiStage.Country:
@@ -61,7 +61,7 @@ Eai.REaiApplication.prototype.findStage = function REaiApplication_findStage(sta
 // @param stageCd:EEaiStage 舞台枚举
 // @return FEaiStage 舞台
 //==========================================================
-Eai.REaiApplication.prototype.selectStage = function REaiApplication_selectStage(stageCd){
+MO.REaiApplication.prototype.selectStage = function REaiApplication_selectStage(stageCd){
    var o = this;
    var stage = o.findStage(stageCd);
    return stage;
@@ -72,7 +72,7 @@ Eai.REaiApplication.prototype.selectStage = function REaiApplication_selectStage
 //
 // @method
 //==========================================================
-Eai.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
+MO.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
    var o = this;
    // 释放属性
    o._stageCountry = MO.RObject.dispose(o._stageCountry);
@@ -85,4 +85,4 @@ Eai.REaiApplication.prototype.dispose = function REaiApplication_dispose(){
 }
 //..........................................................
 // 实例化内容
-Eai.Application = new Eai.REaiApplication();
+MO.EaiApplication = new MO.REaiApplication();
