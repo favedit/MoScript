@@ -7,12 +7,7 @@
    // @version 1.0.1
    //===========================================================
    MO.RRegExp = function RRegExp(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.test      = RRegExp_test;
-      o.testRgexp = RRegExp_testRgexp;
-      return o;
+      return this;
    }
 
    //===========================================================
@@ -23,7 +18,7 @@
    // @param s:string:String 被检测的字符串
    // @return Boolean 返回Boolean类型
    //===========================================================
-   MO.RRegExp_test = function RRegExp_test(r,s){
+   MO.RRegExp.prototype.test = function RRegExp_test(r,s){
       if(r && s != null){
          return r.test(s);
       }
@@ -38,7 +33,7 @@
    // @param s:string:String 被检测的字符串
    // @return Boolean 返回Boolean类型
    //===========================================================
-   MO.RRegExp_testRgexp = function RRegExp_testRgexp(eps,s){
+   MO.RRegExp.prototype.testRgexp = function RRegExp_testRgexp(eps,s){
       if(eps && s){
          var r = new R
          return eps.test(s);

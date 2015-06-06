@@ -13,19 +13,6 @@
       o.Chars     = '0123456789-.%';
       o.NUMBER    = '0123456789-.%';
       o.LEFT_CHAR = '0';
-      //..........................................................
-      // @method
-      o.isFloat   = RFloat_isFloat;
-      o.parse     = RFloat_parse;
-      o.format    = RFloat_format;
-      // @method
-      o.nvl       = RFloat_nvl;
-      o.toRange   = RFloat_toRange;
-      o.sum       = RFloat_sum;
-      o.calculate = RFloat_calculate;
-      o.attach    = RFloat_attach;
-      o.fill      = RFloat_fill;
-      o.copy      = RFloat_copy;
       return o;
    }
 
@@ -36,7 +23,7 @@
    // @param p:value:String 内容
    // @return 是否为浮点数
    //===========================================================
-   MO.RFloat_isFloat = function RFloat_isFloat(p){
+   MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
       return RString.isPattern(p, 'n');
    }
 
@@ -47,7 +34,7 @@
    // @param source:String 内容
    // @return Number 浮点数
    //===========================================================
-   MO.RFloat_parse = function RFloat_parse(source){
+   MO.RFloat.prototype.parse = function RFloat_parse(source){
       // 检查参数
       if(source == null){
          return 0;
@@ -87,7 +74,7 @@
    // @param rp:rightPad:String 小数点右侧补足字符
    // @return String 浮点数
    //===========================================================
-   MO.RFloat_format = function RFloat_format(v, l, lp, r, rp){
+   MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
       var o = this;
       // 校正参数
       if(l == null){
@@ -125,7 +112,7 @@
    // @param d:default:Number 缺省浮点数
    // @return Number 浮点数
    //===========================================================
-   MO.RFloat_nvl = function RFloat_nvl(v, d){
+   MO.RFloat.prototype.nvl = function RFloat_nvl(v, d){
       return v ? v : (d ? d : 0);
    }
 
@@ -138,7 +125,7 @@
    // @param a:max:Number 最大浮点数
    // @return Number 浮点数
    //===========================================================
-   MO.RFloat_toRange = function RFloat_toRange(v, i, a){
+   MO.RFloat.prototype.toRange = function RFloat_toRange(v, i, a){
       if(v == null){
          v = 0;
       }
@@ -152,7 +139,7 @@
    // @param p:values:Number 浮点数集合
    // @return Number 浮点数
    //===========================================================
-   MO.RFloat_sum = function RFloat_sum(){
+   MO.RFloat.prototype.sum = function RFloat_sum(){
       var a = arguments;
       var r = 0;
       for(var i = a.length -1 ; i >= 0; i--){
@@ -172,7 +159,7 @@
    // @param d:default:Number 缺省浮点数
    // @return Number 浮点数
    //===========================================================
-   MO.RFloat_calculate = function RFloat_calculate(f,a,b){
+   MO.RFloat.prototype.calculate = function RFloat_calculate(f,a,b){
      var a = RFloat.nvl(a);
      var b = RFloat.nvl(b);
      a = parseFloat(a);
@@ -193,7 +180,7 @@
    // @param c:count:Integer 总数
    // @return 是否相等
    //===========================================================
-   MO.RFloat_attach = function RFloat_attach(t, s, c){
+   MO.RFloat.prototype.attach = function RFloat_attach(t, s, c){
       var r = false;
       for(var i = 0; i < c; i++){
          if(t[i] != s[i]){
@@ -213,7 +200,7 @@
    // @param c:count:Integer 总数
    // @param v:value:Float 数据
    //===========================================================
-   MO.RFloat_fill = function RFloat_fill(d, i, c, v){
+   MO.RFloat.prototype.fill = function RFloat_fill(d, i, c, v){
       for(var n = 0; n < c; n++){
          d[i++] = v;
       }
@@ -229,7 +216,7 @@
    // @param pii:inputIndex:Integer 输入位置
    // @param pc:count:Integer 总数
    //===========================================================
-   MO.RFloat_copy = function RFloat_copy(po, poi, pi, pii, pc){
+   MO.RFloat.prototype.copy = function RFloat_copy(po, poi, pi, pii, pc){
       for(var i = 0; i < pc; i++){
          po[poi++] = pi[pii++];
       }

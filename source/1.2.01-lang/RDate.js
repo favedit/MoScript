@@ -20,23 +20,6 @@
       o.DaySeconds    = 1000// 60// 60// 24;
       o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
       o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
-      //..........................................................
-      // @method
-      o.nvl           = RDate_nvl;
-      o.make          = RDate_make;
-      o.format        = RDate_format;
-      o.formatDate    = RDate_formatDate;
-      o.formatText    = RDate_formatText;
-      o.monthDays     = RDate_monthDays;
-      o.splitFormat   = RDate_splitFormat;
-      o.makeDate      = RDate_makeDate;
-      o.checkItems    = RDate_checkItems;
-      o.check         = RDate_check;
-      o.parse         = RDate_parse;
-      o.splitDate     = RDate_splitDate;
-      o.splitTime     = RDate_splitTime;
-      o.autoParse     = RDate_autoParse;
-      o.getFormat     = RDate_getFormat;
       return o;
    }
 
@@ -47,11 +30,11 @@
    // @param o:object:Object 日期对象
    // @param r:right:Integer 第二个对象的索引值
    //===========================================================
-   MO.RDate_nvl = function RDate_nvl(o){
+   MO.RDate.prototype.nvl = function RDate_nvl(o){
       return o ? o : new TDate();
    }
 
-   MO.RDate_make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
+   MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
       return new TDate(new Date(yyyy, mm, dd));
    }
 
@@ -62,7 +45,7 @@
    // @param fmt:format:String 格式化模板
    // @see TDate.formatDate
    //===========================================================
-   MO.RDate_format = function RDate_format(fmt){
+   MO.RDate.prototype.format = function RDate_format(fmt){
       return this.formatDate(new TDate(), fmt);
    }
 
@@ -73,7 +56,7 @@
    //@param fmt:format:String 格式化模板
    //@see TDate.formatDate
    //===========================================================
-   MO.RDate_formatText = function RDate_formatText(v, f){
+   MO.RDate.prototype.formatText = function RDate_formatText(v, f){
       if(!v){
          return false;
       }
@@ -104,7 +87,7 @@
    // @param fmt:format:String 格式化模板
    // 
    //===========================================================
-   MO.RDate_formatDate = function RDate_formatDate(date, fmt){
+   MO.RDate.prototype.formatDate = function RDate_formatDate(date, fmt){
       if(!date){return '';}
       fmt = fmt ? fmt.toLowerCase() : this.DataFormat;
       fmt = fmt.replace(/yyyy/g, RInteger.format(date.year, 4));
@@ -125,7 +108,7 @@
    // @param fmt:format:String 格式化模板
    // 
    //===========================================================
-   MO.RDate_monthDays = function RDate_monthDays(year, month){
+   MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
       if(!year || !month){return 0;}
       year = parseInt(year);
       month = parseInt(month);
@@ -141,7 +124,7 @@
    // @param v:value:String 时间字符串
    // @return String 返回格式化后的字符串
    //===========================================================
-   MO.RDate_splitFormat = function RDate_splitFormat(v, f){
+   MO.RDate.prototype.splitFormat = function RDate_splitFormat(v, f){
       if(!v){
          return false;
       }
@@ -191,7 +174,7 @@
    // @param items:items:String 检查的项目
    // @return boolean 
    //===========================================================
-   MO.RDate_checkItems = function RDate_checkItems(items){
+   MO.RDate.prototype.checkItems = function RDate_checkItems(items){
       if(!items){
          return false;
       }
@@ -230,7 +213,7 @@
    // @param format:format:String 格式化字符串
    // @return boolean 
    //===========================================================
-   MO.RDate_check = function RDate_check(value, format){
+   MO.RDate.prototype.check = function RDate_check(value, format){
       return this.checkItems(this.splitFormat(value, format));
    }
 
@@ -242,7 +225,7 @@
    // @param da:date:Date ???
    // @return TDate 返回日期时间
    //===========================================================
-   MO.RDate_makeDate = function RDate_makeDate(date, da){
+   MO.RDate.prototype.makeDate = function RDate_makeDate(date, da){
       var d = new Date(RInteger.parse(da.year), RInteger.parse(da.month)-1, RInteger.parse(da.day), RInteger.parse(da.hour), RInteger.parse(da.minute), RInteger.parse(da.second), RInteger.parse(da.ms));
       if(date){
          date.setDate(d);
@@ -259,7 +242,7 @@
    // @param value:value:Date ???
    // @return TDate 返回日期时间
    //===========================================================
-   MO.RDate_parse = function RDate_parse(date, value, format){
+   MO.RDate.prototype.parse = function RDate_parse(date, value, format){
       if(!format){
          format = this.DataFormat;
       }
@@ -277,7 +260,7 @@
    // @param da:date:Date ???
    // @param value:value:Date ???
    //===========================================================
-   MO.RDate_splitDate = function RDate_splitDate(da, value){
+   MO.RDate.prototype.splitDate = function RDate_splitDate(da, value){
       if(!value){ return; }
       var arDate = null;
       if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
@@ -324,7 +307,7 @@
    // @param format:format:String 格式化字符串
    // @return boolean 
    //===========================================================
-   MO.RDate_splitTime = function RDate_splitTime(da, value){
+   MO.RDate.prototype.splitTime = function RDate_splitTime(da, value){
       if(!value){ return; }
       if(value.indexOf(':') != -1){
          var ar = value.split(':');
@@ -357,7 +340,7 @@
    // @param format:format:String 格式化字符串
    // @return boolean 
    //===========================================================
-   MO.RDate_autoParse = function RDate_autoParse(d, v){
+   MO.RDate.prototype.autoParse = function RDate_autoParse(d, v){
       //debugger;
       if(!v){
          return null;
@@ -390,7 +373,7 @@
    // @method
    // @return string 
    //===========================================================
-   MO.RDate_getFormat = function RDate_getFormat(value){
+   MO.RDate.prototype.getFormat = function RDate_getFormat(value){
       var o = this;
       var da = new Object();
       var f = '';

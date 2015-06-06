@@ -7,19 +7,7 @@
    // @version 141230
    //============================================================
    MO.REnum = function REnum(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.contains  = REnum_contains;
-      // @method
-      o.tryEncode = REnum_tryEncode;
-      o.encode    = REnum_encode;
-      o.tryDecode = REnum_tryDecode;
-      o.decode    = REnum_decode;
-      // @method
-      o.parse     = REnum_encode;
-      o.format    = REnum_decode;
-      return o;
+      return this;
    }
 
    //============================================================
@@ -27,7 +15,7 @@
    //
    // @method
    //============================================================
-   MO.REnum_contains = function REnum_contains(){
+   MO.REnum.prototype.contains = function REnum_contains(){
    }
 
    //============================================================
@@ -38,7 +26,7 @@
    // @param v:value:Object 内容
    // @param d:default:Object 缺省内容
    //============================================================
-   MO.REnum_tryEncode = function REnum_tryEncode(e, v, d){
+   MO.REnum.prototype.tryEncode = function REnum_tryEncode(e, v, d){
       if(e != null){
          for(var n in e){
             if(n.toLowerCase() == v.toLowerCase()){
@@ -57,7 +45,7 @@
    // @param v:value:Object 内容
    // @param d:default:Object 缺省内容
    //============================================================
-   MO.REnum_encode = function REnum_encode(e, v){
+   MO.REnum.prototype.encode = function REnum_encode(e, v){
       var o = this;
       var r = o.tryEncode(e, v);
       if(r == null){
@@ -74,7 +62,7 @@
    // @param v:value:Object 描述
    // @param d:default:Object 缺省描述
    //============================================================
-   MO.REnum_tryDecode = function REnum_tryDecode(e, v, d){
+   MO.REnum.prototype.tryDecode = function REnum_tryDecode(e, v, d){
       if(e != null){
          for(var n in e){
             if(e[n] == v){
@@ -93,7 +81,7 @@
    // @param v:value:Object 描述
    // @param d:default:Object 缺省描述
    //============================================================
-   MO.REnum_decode = function REnum_decode(e, v){
+   MO.REnum.prototype.decode = function REnum_decode(e, v){
       var o = this;
       var r = o.tryDecode(e, v);
       if(r == null){

@@ -1933,29 +1933,16 @@ with(MO){
 with(MO){
    MO.RArray = function RArray(){
       var o = this;
-      o.array1        = new Array(1);
-      o.array2        = new Array(2);
-      o.array3        = new Array(3);
-      o.array4        = new Array(4);
-      o.array9        = new Array(9);
-      o.array12       = new Array(12);
-      o.array16       = new Array(16);
-      o.equals        = RArray_equals;
-      o.count         = RArray_count;
-      o.contains      = RArray_contains;
-      o.find          = RArray_find;
-      o.search        = RArray_search;
-      o.reverse       = RArray_reverse;
-      o.copy          = RArray_copy;
-      o.move          = RArray_move;
-      o.remove        = RArray_remove;
-      o.sortPartition = RArray_sortPartition;
-      o.sortArray     = RArray_sortArray;
-      o.sort          = RArray_sort;
-      o.nameMaxLength = RArray_nameMaxLength;
+      o.array1  = new Array(1);
+      o.array2  = new Array(2);
+      o.array3  = new Array(3);
+      o.array4  = new Array(4);
+      o.array9  = new Array(9);
+      o.array12 = new Array(12);
+      o.array16 = new Array(16);
       return o;
    }
-   MO.RArray_equals = function RArray_equals(s, t){
+   MO.RArray.prototype.equals = function RArray_equals(s, t){
       if(s && t){
          if(s.length == t.length){
             var c = s.length;
@@ -1969,14 +1956,14 @@ with(MO){
       }
       return false;
    }
-   MO.RArray_count = function RArray_count(a){
+   MO.RArray.prototype.count = function RArray_count(a){
       var c = 0;
       for(var n in a){
          n++;
       }
       return c;
    }
-   MO.RArray_contains = function RArray_contains(a, v){
+   MO.RArray.prototype.contains = function RArray_contains(a, v){
       var c = a.length;
       for(var n = 0; n < c; n++){
          if(a[n] == v){
@@ -1985,7 +1972,7 @@ with(MO){
       }
       return false;
    }
-   MO.RArray_find = function RArray_find(a, v){
+   MO.RArray.prototype.find = function RArray_find(a, v){
       var c = a.length;
       for(var n = 0; n < c; n++){
          if(a[n] == v){
@@ -1994,7 +1981,7 @@ with(MO){
       }
       return -1;
    }
-   MO.RArray_search = function RArray_search(a, v){
+   MO.RArray.prototype.search = function RArray_search(a, v){
       for(var n in a){
          if(a[n] == v){
             return n;
@@ -2002,7 +1989,7 @@ with(MO){
       }
       return null;
    }
-   MO.RArray_reverse = function RArray_reverse(a, s, e){
+   MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
       var c = (e + 1 - s) >> 1;
       for(var n = 0; n < c; n++){
          var t = a[s + n];
@@ -2010,12 +1997,12 @@ with(MO){
          a[e - n] = t;
       }
    }
-   MO.RArray_copy = function RArray_copy(s, t){
+   MO.RArray.prototype.copy = function RArray_copy(s, t){
       for(var n in s){
          t[n] = s[n];
       }
    }
-   MO.RArray_move = function RArray_move(a, f, c, t){
+   MO.RArray.prototype.move = function RArray_move(a, f, c, t){
       if(f > t){
          for(var n = 0; n < c; n++){
             a[t - n] = a[f + n];
@@ -2026,10 +2013,10 @@ with(MO){
          }
       }
    }
-   MO.RArray_remove = function RArray_remove(a, n){
+   MO.RArray.prototype.remove = function RArray_remove(a, n){
       return a.slice(0, n).concat(a.slice(n + 1));
    }
-   MO.RArray_sortPartition = function RArray_sortPartition(a, l, r){
+   MO.RArray.prototype.sortPartition = function RArray_sortPartition(a, l, r){
       var s = l;
       var e = r + 1;
       var t = a[s];
@@ -2049,7 +2036,7 @@ with(MO){
       a[e] = t;
       return e;
    }
-   MO.RArray_sortArray = function RArray_sortArray(a, s, e){
+   MO.RArray.prototype.sortArray = function RArray_sortArray(a, s, e){
       if(s < e){
          var o = this;
          var p = o.sortPartition(a, s, e);
@@ -2057,7 +2044,7 @@ with(MO){
          o.sortArray(a, p + 1, e);
       }
    }
-   MO.RArray_sort = function RArray_sort(a, t){
+   MO.RArray.prototype.sort = function RArray_sort(a, t){
       var o = this;
       var c = a.length - 1;
       o.sortArray(a, 0, c);
@@ -2066,7 +2053,7 @@ with(MO){
       }
       return a;
    }
-   MO.RArray_nameMaxLength = function RArray_nameMaxLength(a){
+   MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
       var r = 0;
       for(var n in a){
          var l = n.length;
@@ -2080,16 +2067,12 @@ with(MO){
 }
 with(MO){
    MO.RBoolean = function RBoolean(){
-      var o = this;
-      o.format   = RBoolean_format;
-      o.parse    = RBoolean_parse;
-      o.toString = RBoolean_toString;
-      return o;
+      return this;
    }
-   MO.RBoolean_format = function RBoolean_format(v){
+   MO.RBoolean.prototype.format = function RBoolean_format(v){
       return v ? EBoolean.True : EBoolean.False;
    }
-   MO.RBoolean_parse = function RBoolean_parse(v){
+   MO.RBoolean.prototype.parse = function RBoolean_parse(v){
       if(v != null){
          if(v.constructor == Boolean){
             return v;
@@ -2103,7 +2086,7 @@ with(MO){
       }
       return false;
    }
-   MO.RBoolean_toString = function RBoolean_toString(value, valueTrue, valueFalse){
+   MO.RBoolean.prototype.toString = function RBoolean_toString(value, valueTrue, valueFalse){
       if(valueTrue == null){
          valueTrue = EBoolean.True;
       }
@@ -2116,11 +2099,9 @@ with(MO){
 }
 with(MO){
    MO.RByte = function RByte(){
-      var o = this;
-      o.copy = RByte_copy;
-      return o;
+      return this;
    }
-   MO.RByte_copy = function RByte_copy(po, poi, pi, pii, pc){
+   MO.RByte.prototype.copy = function RByte_copy(po, poi, pi, pii, pc){
       for(var i = 0; i < pc; i++){
          po[poi++] = pi[pii++];
       }
@@ -2129,15 +2110,12 @@ with(MO){
 }
 with(MO){
    MO.RChar = function RChar(){
-      var o = this;
-      o.parse    = RChar_parse;
-      o.toString = RChar_toString;
-      return o;
+      return this;
    }
-   MO.RChar_parse = function RChar_parse(n){
+   MO.RChar.prototype.parse = function RChar_parse(n){
       return String.fromCharCode(n);
    }
-   MO.RChar_toString = function RChar_toString(v){
+   MO.RChar.prototype.toString = function RChar_toString(v){
       return v;
    }
    MO.RChar = new RChar();
@@ -2533,16 +2511,9 @@ with(MO){
       o._registers     = new TObjects();
       o._consoles      = new TDictionary();
       o._localConsoles = new TDictionary();
-      o.initialize     = RConsole_initialize;
-      o.register       = RConsole_register;
-      o.create         = RConsole_create;
-      o.createByName   = RConsole_createByName;
-      o.get            = RConsole_get;
-      o.find           = RConsole_find;
-      o.release        = RConsole_release;
       return o;
    }
-   MO.RConsole_initialize = function RConsole_initialize(){
+   MO.RConsole.prototype.initialize = function RConsole_initialize(){
       var o = this;
       var rs = o._registers;
       var c = rs.count;
@@ -2553,10 +2524,10 @@ with(MO){
          }
       }
    }
-   MO.RConsole_register = function RConsole_register(p){
+   MO.RConsole.prototype.register = function RConsole_register(p){
       this._registers.push(p);
    }
-   MO.RConsole_create = function RConsole_create(n){
+   MO.RConsole.prototype.create = function RConsole_create(n){
       var r = null;
       if(n){
          r = RClass.create(n);
@@ -2576,7 +2547,7 @@ with(MO){
       }
       return r;
    }
-   MO.RConsole_createByName = function RConsole_createByName(n){
+   MO.RConsole.prototype.createByName = function RConsole_createByName(n){
       var r = null;
       if(n){
          r = RClass.createByName(n);
@@ -2596,13 +2567,13 @@ with(MO){
       }
       return r;
    }
-   MO.RConsole_get = function RConsole_get(v){
+   MO.RConsole.prototype.get = function RConsole_get(v){
       var o = this;
       var n = RClass.name(v);
       var r = o._consoles.get(n);
       return r;
    }
-   MO.RConsole_find = function RConsole_find(v){
+   MO.RConsole.prototype.find = function RConsole_find(v){
       var o = this;
       var n = null;
       if(v.constructor = String){
@@ -2639,7 +2610,7 @@ with(MO){
       RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
       return r;
    }
-   MO.RConsole_release = function RConsole_release(){
+   MO.RConsole.prototype.release = function RConsole_release(){
       var o = this;
       if(o._registers){
          o._registers.dispose();
@@ -2691,33 +2662,18 @@ with(MO){
       o.DaySeconds    = 1000// 60// 60// 24;
       o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
       o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
-      o.nvl           = RDate_nvl;
-      o.make          = RDate_make;
-      o.format        = RDate_format;
-      o.formatDate    = RDate_formatDate;
-      o.formatText    = RDate_formatText;
-      o.monthDays     = RDate_monthDays;
-      o.splitFormat   = RDate_splitFormat;
-      o.makeDate      = RDate_makeDate;
-      o.checkItems    = RDate_checkItems;
-      o.check         = RDate_check;
-      o.parse         = RDate_parse;
-      o.splitDate     = RDate_splitDate;
-      o.splitTime     = RDate_splitTime;
-      o.autoParse     = RDate_autoParse;
-      o.getFormat     = RDate_getFormat;
       return o;
    }
-   MO.RDate_nvl = function RDate_nvl(o){
+   MO.RDate.prototype.nvl = function RDate_nvl(o){
       return o ? o : new TDate();
    }
-   MO.RDate_make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
+   MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
       return new TDate(new Date(yyyy, mm, dd));
    }
-   MO.RDate_format = function RDate_format(fmt){
+   MO.RDate.prototype.format = function RDate_format(fmt){
       return this.formatDate(new TDate(), fmt);
    }
-   MO.RDate_formatText = function RDate_formatText(v, f){
+   MO.RDate.prototype.formatText = function RDate_formatText(v, f){
       if(!v){
          return false;
       }
@@ -2736,7 +2692,7 @@ with(MO){
       v = v.substring(2);
       return f;
    }
-   MO.RDate_formatDate = function RDate_formatDate(date, fmt){
+   MO.RDate.prototype.formatDate = function RDate_formatDate(date, fmt){
       if(!date){return '';}
       fmt = fmt ? fmt.toLowerCase() : this.DataFormat;
       fmt = fmt.replace(/yyyy/g, RInteger.format(date.year, 4));
@@ -2749,14 +2705,14 @@ with(MO){
       fmt = fmt.replace(/ms/g, RInteger.format(date.ms, 3));
       return fmt;
    }
-   MO.RDate_monthDays = function RDate_monthDays(year, month){
+   MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
       if(!year || !month){return 0;}
       year = parseInt(year);
       month = parseInt(month);
       this.MonthDays[2] = (((year%4 == 0) || (year%400 == 0)) && (year%100 != 0)) ? 29 : 28 ;
       return this.MonthDays[month];
    }
-   MO.RDate_splitFormat = function RDate_splitFormat(v, f){
+   MO.RDate.prototype.splitFormat = function RDate_splitFormat(v, f){
       if(!v){
          return false;
       }
@@ -2798,7 +2754,7 @@ with(MO){
       }
       return a;
    }
-   MO.RDate_checkItems = function RDate_checkItems(items){
+   MO.RDate.prototype.checkItems = function RDate_checkItems(items){
       if(!items){
          return false;
       }
@@ -2828,10 +2784,10 @@ with(MO){
       }
       return true;
    }
-   MO.RDate_check = function RDate_check(value, format){
+   MO.RDate.prototype.check = function RDate_check(value, format){
       return this.checkItems(this.splitFormat(value, format));
    }
-   MO.RDate_makeDate = function RDate_makeDate(date, da){
+   MO.RDate.prototype.makeDate = function RDate_makeDate(date, da){
       var d = new Date(RInteger.parse(da.year), RInteger.parse(da.month)-1, RInteger.parse(da.day), RInteger.parse(da.hour), RInteger.parse(da.minute), RInteger.parse(da.second), RInteger.parse(da.ms));
       if(date){
          date.setDate(d);
@@ -2839,7 +2795,7 @@ with(MO){
       }
       return new TDate(d);
    }
-   MO.RDate_parse = function RDate_parse(date, value, format){
+   MO.RDate.prototype.parse = function RDate_parse(date, value, format){
       if(!format){
          format = this.DataFormat;
       }
@@ -2849,7 +2805,7 @@ with(MO){
       }
       return null;
    }
-   MO.RDate_splitDate = function RDate_splitDate(da, value){
+   MO.RDate.prototype.splitDate = function RDate_splitDate(da, value){
       if(!value){ return; }
       var arDate = null;
       if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
@@ -2887,7 +2843,7 @@ with(MO){
          da.year = RInteger.parse(value);
       }
    }
-   MO.RDate_splitTime = function RDate_splitTime(da, value){
+   MO.RDate.prototype.splitTime = function RDate_splitTime(da, value){
       if(!value){ return; }
       if(value.indexOf(':') != -1){
          var ar = value.split(':');
@@ -2911,7 +2867,7 @@ with(MO){
          da.hour = RInteger.parse(value.substr(0, 2));
       }
    }
-   MO.RDate_autoParse = function RDate_autoParse(d, v){
+   MO.RDate.prototype.autoParse = function RDate_autoParse(d, v){
       if(!v){
          return null;
       }
@@ -2936,7 +2892,7 @@ with(MO){
       }
       return o.checkItems(items) ? o.makeDate(d, items) : null ;
    }
-   MO.RDate_getFormat = function RDate_getFormat(value){
+   MO.RDate.prototype.getFormat = function RDate_getFormat(value){
       var o = this;
       var da = new Object();
       var f = '';
@@ -3098,19 +3054,11 @@ with(MO){
 }
 with(MO){
    MO.REnum = function REnum(){
-      var o = this;
-      o.contains  = REnum_contains;
-      o.tryEncode = REnum_tryEncode;
-      o.encode    = REnum_encode;
-      o.tryDecode = REnum_tryDecode;
-      o.decode    = REnum_decode;
-      o.parse     = REnum_encode;
-      o.format    = REnum_decode;
-      return o;
+      return this;
    }
-   MO.REnum_contains = function REnum_contains(){
+   MO.REnum.prototype.contains = function REnum_contains(){
    }
-   MO.REnum_tryEncode = function REnum_tryEncode(e, v, d){
+   MO.REnum.prototype.tryEncode = function REnum_tryEncode(e, v, d){
       if(e != null){
          for(var n in e){
             if(n.toLowerCase() == v.toLowerCase()){
@@ -3120,7 +3068,7 @@ with(MO){
       }
       return d;
    }
-   MO.REnum_encode = function REnum_encode(e, v){
+   MO.REnum.prototype.encode = function REnum_encode(e, v){
       var o = this;
       var r = o.tryEncode(e, v);
       if(r == null){
@@ -3128,7 +3076,7 @@ with(MO){
       }
       return r;
    }
-   MO.REnum_tryDecode = function REnum_tryDecode(e, v, d){
+   MO.REnum.prototype.tryDecode = function REnum_tryDecode(e, v, d){
       if(e != null){
          for(var n in e){
             if(e[n] == v){
@@ -3138,7 +3086,7 @@ with(MO){
       }
       return d;
    }
-   MO.REnum_decode = function REnum_decode(e, v){
+   MO.REnum.prototype.decode = function REnum_decode(e, v){
       var o = this;
       var r = o.tryDecode(e, v);
       if(r == null){
@@ -3151,16 +3099,11 @@ with(MO){
 with(MO){
    MO.RFile = function RFile(){
       var o = this;
-      o.pictures  = ['jpg', 'png', 'gif', 'bmp'];
-      o.knowns    = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
-      o.inPicture = RFile_inPicture;
-      o.isPicture = RFile_isPicture;
-      o.isKnown   = RFile_isKnown;
-      o.name      = RFile_name;
-      o.extension = RFile_extension;
+      o.pictures = ['jpg', 'png', 'gif', 'bmp'];
+      o.knowns   = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
       return o;
    }
-   MO.RFile_inPicture = function RFile_inPicture(v){
+   MO.RFile.prototype.inPicture = function RFile_inPicture(v){
       var o = this;
       if(v){
          v = v.toLowerCase();
@@ -3171,10 +3114,10 @@ with(MO){
          }
       }
    }
-   MO.RFile_isPicture = function RFile_isPicture(v){
+   MO.RFile.prototype.isPicture = function RFile_isPicture(v){
       return this.inPicture(this.extension(v));
    }
-   MO.RFile_isKnown = function RFile_isKnown(v){
+   MO.RFile.prototype.isKnown = function RFile_isKnown(v){
       var o = this;
       v = o.extension(v).toLowerCase();
       for(var n in o.knowns){
@@ -3184,7 +3127,7 @@ with(MO){
       }
       return false;
    }
-   MO.RFile_name = function RFile_name(value){
+   MO.RFile.prototype.name = function RFile_name(value){
       if(value){
          value = value.replace(/\\/g, '/');
          var p1 = value.lastIndexOf('/');
@@ -3199,7 +3142,7 @@ with(MO){
       }
       return '';
    }
-   MO.RFile_extension = function RFile_extension(v){
+   MO.RFile.prototype.extension = function RFile_extension(v){
       if(v){
          v = v.replace(/\\/g, '/');
          var p1 = v.lastIndexOf('/');
@@ -3222,22 +3165,12 @@ with(MO){
       o.Chars     = '0123456789-.%';
       o.NUMBER    = '0123456789-.%';
       o.LEFT_CHAR = '0';
-      o.isFloat   = RFloat_isFloat;
-      o.parse     = RFloat_parse;
-      o.format    = RFloat_format;
-      o.nvl       = RFloat_nvl;
-      o.toRange   = RFloat_toRange;
-      o.sum       = RFloat_sum;
-      o.calculate = RFloat_calculate;
-      o.attach    = RFloat_attach;
-      o.fill      = RFloat_fill;
-      o.copy      = RFloat_copy;
       return o;
    }
-   MO.RFloat_isFloat = function RFloat_isFloat(p){
+   MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
       return RString.isPattern(p, 'n');
    }
-   MO.RFloat_parse = function RFloat_parse(source){
+   MO.RFloat.prototype.parse = function RFloat_parse(source){
       if(source == null){
          return 0;
       }
@@ -3260,7 +3193,7 @@ with(MO){
       }
       return isNaN(result) ? 0 : result;
    }
-   MO.RFloat_format = function RFloat_format(v, l, lp, r, rp){
+   MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
       var o = this;
       if(l == null){
          l = 0;
@@ -3287,16 +3220,16 @@ with(MO){
       var fr = RString.rpad(sr, r, rp);
       return fl + '.' + fr;
    }
-   MO.RFloat_nvl = function RFloat_nvl(v, d){
+   MO.RFloat.prototype.nvl = function RFloat_nvl(v, d){
       return v ? v : (d ? d : 0);
    }
-   MO.RFloat_toRange = function RFloat_toRange(v, i, a){
+   MO.RFloat.prototype.toRange = function RFloat_toRange(v, i, a){
       if(v == null){
          v = 0;
       }
       return Math.min(Math.max(v, i), a);
    }
-   MO.RFloat_sum = function RFloat_sum(){
+   MO.RFloat.prototype.sum = function RFloat_sum(){
       var a = arguments;
       var r = 0;
       for(var i = a.length -1 ; i >= 0; i--){
@@ -3307,7 +3240,7 @@ with(MO){
       }
       return r;
    }
-   MO.RFloat_calculate = function RFloat_calculate(f,a,b){
+   MO.RFloat.prototype.calculate = function RFloat_calculate(f,a,b){
      var a = RFloat.nvl(a);
      var b = RFloat.nvl(b);
      a = parseFloat(a);
@@ -3318,7 +3251,7 @@ with(MO){
         return (a - b).toString();
      }
    }
-   MO.RFloat_attach = function RFloat_attach(t, s, c){
+   MO.RFloat.prototype.attach = function RFloat_attach(t, s, c){
       var r = false;
       for(var i = 0; i < c; i++){
          if(t[i] != s[i]){
@@ -3328,12 +3261,12 @@ with(MO){
       }
       return r;
    }
-   MO.RFloat_fill = function RFloat_fill(d, i, c, v){
+   MO.RFloat.prototype.fill = function RFloat_fill(d, i, c, v){
       for(var n = 0; n < c; n++){
          d[i++] = v;
       }
    }
-   MO.RFloat_copy = function RFloat_copy(po, poi, pi, pii, pc){
+   MO.RFloat.prototype.copy = function RFloat_copy(po, poi, pi, pii, pc){
       for(var i = 0; i < pc; i++){
          po[poi++] = pi[pii++];
       }
@@ -3343,20 +3276,17 @@ with(MO){
 with(MO){
    MO.RHex = function RHex(){
       var o = this;
-      o.NUMBER  = '0x123456789ABCDEF';
-      o.PAD     = '0';
-      o.isValid = RHex_isValid;
-      o.parse   = RHex_parse;
-      o.format  = RHex_format;
+      o.NUMBER = '0x123456789ABCDEF';
+      o.PAD    = '0';
       return o;
    }
-   MO.RHex_isValid = function RHex_isValid(p){
+   MO.RHex.prototype.isValid = function RHex_isValid(p){
       return RString.isPattern(p, this.NUMBER);
    }
-   MO.RHex_parse = function RHex_parse(p){
+   MO.RHex.prototype.parse = function RHex_parse(p){
       return p ? parseInt('0x' + p) : '0';
    }
-   MO.RHex_format = function RHex_format(v, l){
+   MO.RHex.prototype.format = function RHex_format(v, l){
       var r = null;
       if(v){
          r = v.toString(16);
@@ -3371,13 +3301,9 @@ with(MO){
    MO.RInstance = function RInstance(){
       var o = this;
       o._pools = new TDictionary();
-      o.pool   = RInstance_pool;
-      o.get    = RInstance_get;
-      o.alloc  = RInstance_alloc;
-      o.free   = RInstance_free;
       return o;
    }
-   MO.RInstance_pool = function RInstance_pool(p){
+   MO.RInstance.prototype.pool = function RInstance_pool(p){
       var o = this;
       var n = RClass.name(p);
       var v = o._pools.get(n);
@@ -3387,13 +3313,13 @@ with(MO){
       }
       return v;
    }
-   MO.RInstance_get = function RInstance_get(p){
+   MO.RInstance.prototype.get = function RInstance_get(p){
       return this.pool(p).instance(p);
    }
-   MO.RInstance_alloc = function RInstance_alloc(n){
+   MO.RInstance.prototype.alloc = function RInstance_alloc(n){
       return this.pool(p).alloc(p);
    }
-   MO.RInstance_free = function RInstance_free(n){
+   MO.RInstance.prototype.free = function RInstance_free(n){
       this.pool(p).free(p);
    }
    MO.RInstance = new RInstance();
@@ -3406,28 +3332,15 @@ with(MO){
       o.LEFT_CHAR  = '0';
       o.MAX_UINT16 = 65535;
       o.MAX_UINT32 = 4294967295;
-      o.isInt      = RInteger_isInt;
-      o.isInteger  = RInteger_isInt;
-      o.nvl        = RInteger_nvl;
-      o.strideByte = RInteger_strideByte;
-      o.strideBit  = RInteger_strideBit;
-      o.parse      = RInteger_parse;
-      o.format     = RInteger_format;
-      o.toRange    = RInteger_toRange;
-      o.pow2       = RInteger_pow2;
-      o.sum        = RInteger_sum;
-      o.calculate  = RInteger_calculate;
-      o.copy       = RInteger_copy;
-      o.toString   = RInteger_toString;
       return o;
    }
-   MO.RInteger_isInt = function RInteger_isInt(v){
+   MO.RInteger.prototype.isInt = function RInteger_isInt(v){
       return RString.isPattern(v, 'n');
    }
-   MO.RInteger_nvl = function RInteger_nvl(v, d){
+   MO.RInteger.prototype.nvl = function RInteger_nvl(v, d){
       return v ? v : (d ? d : 0);
    }
-   MO.RInteger_strideByte = function RInteger_strideByte(value){
+   MO.RInteger.prototype.strideByte = function RInteger_strideByte(value){
       if(value > 65535){
          return 4;
       }else if(value > 255){
@@ -3436,7 +3349,7 @@ with(MO){
          return 1;
       }
    }
-   MO.RInteger_strideBit = function RInteger_strideBit(value){
+   MO.RInteger.prototype.strideBit = function RInteger_strideBit(value){
       if(value > 65535){
          return 32;
       }else if(value > 255){
@@ -3445,7 +3358,7 @@ with(MO){
          return 8;
       }
    }
-   MO.RInteger_parse = function RInteger_parse(v, d){
+   MO.RInteger.prototype.parse = function RInteger_parse(v, d){
       if(d == null){
          d = 0;
       }
@@ -3465,7 +3378,7 @@ with(MO){
       var r = (v.length > 0) ? parseInt(v) : d;
       return isNaN(r) ? d : r;
    }
-   MO.RInteger_format = function RInteger_format(v, l, p){
+   MO.RInteger.prototype.format = function RInteger_format(v, l, p){
       if(!p){
          p = this.LEFT_CHAR;
       }
@@ -3475,7 +3388,7 @@ with(MO){
       }
       return v;
    }
-   MO.RInteger_toRange = function RInteger_toRange(value, min, max){
+   MO.RInteger.prototype.toRange = function RInteger_toRange(value, min, max){
       if(value == null){
          value = 0;
       }
@@ -3490,7 +3403,7 @@ with(MO){
       }
       return value;
    }
-   MO.RInteger_pow2 = function RInteger_pow2(value){
+   MO.RInteger.prototype.pow2 = function RInteger_pow2(value){
       if(value > 4096){
          return 8192;
       }else if(value > 2048){
@@ -3520,7 +3433,7 @@ with(MO){
       }
       return 1;
    }
-   MO.RInteger_sum = function RInteger_sum(){
+   MO.RInteger.prototype.sum = function RInteger_sum(){
       var r = 0;
       var a = arguments;
       var c = a.length;
@@ -3531,7 +3444,7 @@ with(MO){
       }
       return r;
    }
-   MO.RInteger_calculate = function RInteger_calculate(f, a, b){
+   MO.RInteger.prototype.calculate = function RInteger_calculate(f, a, b){
       var a = RInteger.parse(a);
       var b = RInteger.parse(b);
       var r = '';
@@ -3546,58 +3459,46 @@ with(MO){
       }
       return r.toString();
    }
-   MO.RInteger_copy = function RInteger_copy(po, poi, pi, pii, pc){
+   MO.RInteger.prototype.copy = function RInteger_copy(po, poi, pi, pii, pc){
       for(var i = 0; i < pc; i++){
          po[poi++] = pi[pii++];
       }
    }
-   MO.RInteger_toString = function RInteger_toString(p){
+   MO.RInteger.prototype.toString = function RInteger_toString(p){
       return (p == null) ? '0' : p.toString();
    }
    MO.RInteger = new RInteger();
 }
-with(MO){
-   MO.RJson = function RJson(){
-      var o = this;
-      o.parse    = RJson_parse;
-      o.toString = RJson_toString;
-      return o;
-   }
-   MO.RJson_parse = function RJson_parse(value, clazz){
-      var result = null;
-      try{
-         result = JSON.parse(value)
-      }catch(e){
-         if(clazz){
-            result = new clazz();
-         }
-      }
-      return result;
-   }
-   MO.RJson_toString = function RJson_toString(value){
-      return JSON.stringify(value);
-   }
-   MO.RJson = new RJson();
+MO.RJson = function RJson(){
+   return this;
 }
+MO.RJson.prototype.parse = function RJson_parse(value, clazz){
+   var result = null;
+   try{
+      result = JSON.parse(value)
+   }catch(e){
+      if(clazz){
+         result = new clazz();
+      }
+   }
+   return result;
+}
+MO.RJson.prototype.toString = function RJson_toString(value){
+   return JSON.stringify(value);
+}
+MO.Json = new MO.RJson();
 with(MO){
    MO.RLogger = function RLogger(){
       var o = this;
       o._statusError = false;
       o._labelLength = 40;
       o.lsnsOutput   = new TListeners();
-      o.output       = RLogger_output;
-      o.debug        = RLogger_debug;
-      o.info         = RLogger_info;
-      o.warn         = RLogger_warn;
-      o.error        = RLogger_error;
-      o.fatal        = RLogger_fatal;
-      o.show         = RLogger_show;
       return o;
    }
-   MO.RLogger_output = function RLogger_output(s, p){
+   MO.RLogger.prototype.output = function RLogger_output(s, p){
       this.lsnsOutput.process(s, p);
    }
-   MO.RLogger_debug = function RLogger_debug(sf, ms, pm){
+   MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
       var n = RMethod.name(RLogger_debug.caller);
       n = n.replace('_', '.');
@@ -3621,7 +3522,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger_info = function RLogger_info(sf, ms, pm){
+   MO.RLogger.prototype.info = function RLogger_info(sf, ms, pm){
       var o = this;
       var n = RMethod.name(RLogger_info.caller);
       n = n.replace('_', '.');
@@ -3645,7 +3546,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger_warn = function RLogger_warn(sf, ms, pm){
+   MO.RLogger.prototype.warn = function RLogger_warn(sf, ms, pm){
       var o = this;
       var n = RMethod.name(RLogger_warn.caller);
       n = n.replace('_', '.');
@@ -3669,7 +3570,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger_error = function RLogger_error(sf, ms, pm){
+   MO.RLogger.prototype.error = function RLogger_error(sf, ms, pm){
       var o = this;
       var n = RMethod.name(RLogger_error.caller);
       n = n.replace('_', '.');
@@ -3693,7 +3594,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger_fatal = function RLogger_fatal(sf, er, ms, pm){
+   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, pm){
       var o = this;
       if(o._statusError){
          return;
@@ -3740,7 +3641,7 @@ with(MO){
       var text = m.toString();
       throw new Error(text);
    }
-   MO.RLogger_show = function RLogger_show(sf, ms, pm){
+   MO.RLogger.prototype.show = function RLogger_show(sf, ms, pm){
       var o = this;
       var n = RMethod.name(RLogger_show.caller);
       n = n.replace('_', '.');
@@ -3869,20 +3770,13 @@ with(MO){
 with(MO){
    MO.RObject = function RObject(){
       var o = this;
-      o._hash   = 1;
-      o.nextId  = RObject_nextId;
-      o.nvl     = RObject_nvl;
-      o.clone   = RObject_clone;
-      o.copy    = RObject_copy;
-      o.free    = RObject_free;
-      o.dispose = RObject_dispose;
-      o.release = RObject_release;
+      o._hash = 1;
       return o;
    }
-   MO.RObject_nextId = function RObject_nextId(v){
+   MO.RObject.prototype.nextId = function RObject_nextId(v){
       return this._hash++;
    }
-   MO.RObject_nvl = function RObject_nvl(v){
+   MO.RObject.prototype.nvl = function RObject_nvl(v){
       var a = arguments;
       var c = a.length;
       for(var n = 0; n < c; n++){
@@ -3892,7 +3786,7 @@ with(MO){
       }
       return null;
    }
-   MO.RObject_clone = function RObject_clone(o){
+   MO.RObject.prototype.clone = function RObject_clone(o){
       var r = new o.constructor();
       for(var n in o){
          var v = o[n];
@@ -3905,7 +3799,7 @@ with(MO){
       }
       return r;
    }
-   MO.RObject_copy = function RObject_copy(s, t){
+   MO.RObject.prototype.copy = function RObject_copy(s, t){
       if((s != null) && (t != null)){
          for(var n in s){
             var v = s[n];
@@ -3921,7 +3815,7 @@ with(MO){
          }
       }
    }
-   MO.RObject_free = function RObject_free(item){
+   MO.RObject.prototype.free = function RObject_free(item){
       if(item){
          if(MO.Runtime.isDebug()){
             for(var name in item){
@@ -3944,7 +3838,7 @@ with(MO){
          }
       }
    }
-   MO.RObject_dispose = function RObject_dispose(item, flag){
+   MO.RObject.prototype.dispose = function RObject_dispose(item, flag){
       if(item){
          if(!item.__dispose){
             item.dispose(flag);
@@ -3955,7 +3849,7 @@ with(MO){
       }
       return null;
    }
-   MO.RObject_release = function RObject_release(item){
+   MO.RObject.prototype.release = function RObject_release(item){
       if(item){
          for(var name in item){
             var value = item[name];
@@ -3971,23 +3865,19 @@ with(MO){
 }
 with(MO){
    MO.RRect = function RRect(){
-      var o = this;
-      o.nvl    = RRect_nvl;
-      o.pack   = RRect_pack;
-      o.unpack = RRect_unpack;
-      return o;
+      return this;
    }
-   MO.RRect_nvl = function RRect_nvl(rect){
+   MO.RRect.prototype.nvl = function RRect_nvl(rect){
       return rect ? rect : new TRect();
    }
-   MO.RRect_pack = function RRect_pack(rect){
+   MO.RRect.prototype.pack = function RRect_pack(rect){
       var pack = null;
       if(rect){
          pack = rect.left + ',' + rect.top + ',' + rect.right + ',' + rect.bottom;
       }
       return pack;
    }
-   MO.RRect_unpack = function RRect_unpack(pack, rect){
+   MO.RRect.prototype.unpack = function RRect_unpack(pack, rect){
       rect = this.nvl(rect);
       if(pack){
          var items = pack.split(',');
@@ -4004,18 +3894,15 @@ with(MO){
 }
 with(MO){
    MO.RRegExp = function RRegExp(){
-      var o = this;
-      o.test      = RRegExp_test;
-      o.testRgexp = RRegExp_testRgexp;
-      return o;
+      return this;
    }
-   MO.RRegExp_test = function RRegExp_test(r,s){
+   MO.RRegExp.prototype.test = function RRegExp_test(r,s){
       if(r && s != null){
          return r.test(s);
       }
       return false;
    }
-   MO.RRegExp_testRgexp = function RRegExp_testRgexp(eps,s){
+   MO.RRegExp.prototype.testRgexp = function RRegExp_testRgexp(eps,s){
       if(eps && s){
          var r = new R
          return eps.test(s);
@@ -4026,15 +3913,12 @@ with(MO){
 }
 with(MO){
    MO.RSet = function RSet(){
-      var o = this;
-      o.contains       = RSet_contains;
-      o.containsString = RSet_containsString;
-      return o;
+      return this;
    }
-   MO.RSet_contains = function RSet_contains(v, d){
+   MO.RSet.prototype.contains = function RSet_contains(v, d){
       return (v & d) == d;
    }
-   MO.RSet_containsString = function RSet_containsString(v, d){
+   MO.RSet.prototype.containsString = function RSet_containsString(v, d){
       if((v != null) && (s != null)){
          return v.indexOf(s) != -1;
       }
@@ -4045,71 +3929,31 @@ with(MO){
 with(MO){
    MO.RString = function RString(){
       var o = this;
-      o.EMPTY        = '';
-      o.SPACE        = '   ';
-      o.PAD          = ' ';
-      o.TRIM         = ' \t\r\n';
-      o.LOWER        = 'abcdefghijklmnopqrstuvwxyz';
-      o.UPPER        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      o.CodeLowerA   = 'a'.charCodeAt(0);
-      o.CodeLowerZ   = 'z'.charCodeAt(0);
-      o.CodeUpperA   = 'A'.charCodeAt(0);
-      o.CodeUpperZ   = 'Z'.charCodeAt(0);
-      o.isEmpty      = RString_isEmpty;
-      o.isBlank      = RString_isBlank;
-      o.isAnsi       = RString_isAnsi;
-      o.isDbcs       = RString_isDbcs;
-      o.isPattern    = RString_isPattern;
-      o.inChars      = RString_inChars;
-      o.contains     = RString_contains;
-      o.equals       = RString_equals;
-      o.startsWith   = RString_startsWith;
-      o.endsWith     = RString_endsWith;
-      o.findChars    = RString_findChars;
-      o.inRange      = RString_inRange;
-      o.nvl          = RString_nvl;
-      o.nvlString    = RString_nvlString;
-      o.empty        = RString_empty;
-      o.firstUpper   = RString_firstUpper;
-      o.firstLower   = RString_firstLower;
-      o.firstLine    = RString_firstLine;
-      o.format       = RString_format;
-      o.formatLines  = RString_formatLines;
-      o.repeat       = RString_repeat;
-      o.pad          = RString_pad;
-      o.lpad         = RString_lpad;
-      o.rpad         = RString_rpad;
-      o.trim         = RString_trim;
-      o.ltrim        = RString_ltrim;
-      o.rtrim        = RString_rtrim;
-      o.mid          = RString_mid;
-      o.toLine       = RString_toLine;
-      o.toUnderline  = RString_toUnderline;
-      o.toLower      = RString_toLower;
-      o.toUpper      = RString_toUpper;
-      o.split        = RString_split;
-      o.splitTwo     = RString_splitTwo;
-      o.splitParts   = RString_splitParts;
-      o.splitPattern = RString_splitPattern;
-      o.replace      = RString_replace;
-      o.replaceChar  = RString_replaceChar;
-      o.remove       = RString_remove;
-      o.removeChars  = RString_removeChars;
+      o.EMPTY      = '';
+      o.SPACE      = '   ';
+      o.PAD        = ' ';
+      o.TRIM       = ' \t\r\n';
+      o.LOWER      = 'abcdefghijklmnopqrstuvwxyz';
+      o.UPPER      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      o.CodeLowerA = 'a'.charCodeAt(0);
+      o.CodeLowerZ = 'z'.charCodeAt(0);
+      o.CodeUpperA = 'A'.charCodeAt(0);
+      o.CodeUpperZ = 'Z'.charCodeAt(0);
       return o;
    }
-   MO.RString_isEmpty = function RString_isEmpty(v){
+   MO.RString.prototype.isEmpty = function RString_isEmpty(v){
       if(v != null){
          return (v.length == 0);
       }
       return true;
    }
-   MO.RString_isBlank = function RString_isBlank(v){
+   MO.RString.prototype.isBlank = function RString_isBlank(v){
       if(v != null){
          return (v.trim().length == 0);
       }
       return true;
    }
-   MO.RString_isAnsi = function RString_isAnsi(v){
+   MO.RString.prototype.isAnsi = function RString_isAnsi(v){
       if(v != null){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -4121,7 +3965,7 @@ with(MO){
       }
       return false;
    }
-   MO.RString_isDbcs = function RString_isDbcs(v){
+   MO.RString.prototype.isDbcs = function RString_isDbcs(v){
       if(v == null){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -4133,7 +3977,7 @@ with(MO){
       }
       return false;
    }
-   MO.RString_isPattern = function RString_isPattern(v, p){
+   MO.RString.prototype.isPattern = function RString_isPattern(v, p){
       if(v != null){
          var o = this;
          if(p == null){
@@ -4153,7 +3997,7 @@ with(MO){
       }
       return false;
    }
-   MO.RString_inChars = function RString_inChars(v, p){
+   MO.RString.prototype.inChars = function RString_inChars(v, p){
       var o = this;
       var b = o.findChars(p, v);
       if(b != -1){
@@ -4161,13 +4005,13 @@ with(MO){
       }
       return false;
    }
-   MO.RString_contains = function RString_contains(v, s){
+   MO.RString.prototype.contains = function RString_contains(v, s){
       if((v != null) && (s != null)){
          return (v.toString().indexOf(s) != -1);
       }
       return false;
    }
-   MO.RString_equals = function RString_equals(s, t, f){
+   MO.RString.prototype.equals = function RString_equals(s, t, f){
       if(s == null){
          s = '';
       }else if(s.constructor != String){
@@ -4184,20 +4028,20 @@ with(MO){
          return (s.toLowerCase() == t.toLowerCase());
       }
    }
-   MO.RString_startsWith = function RString_startsWith(v, s){
+   MO.RString.prototype.startsWith = function RString_startsWith(v, s){
       if(s == null){
          return true;
       }
       return (v != null) ? (v.indexOf(s) == 0) : false;
    }
-   MO.RString_endsWith = function RString_endsWith(v, s){
+   MO.RString.prototype.endsWith = function RString_endsWith(v, s){
       if(s == null){
          return true;
       }
       var n = (v != null) ? v.indexOf(s) : -1;
       return (n != -1) ? (n == (v.length - s.length)) : false;
    }
-   MO.RString_findChars = function RString_findChars(v, s){
+   MO.RString.prototype.findChars = function RString_findChars(v, s){
       if((v != null) && (s != null)){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -4208,7 +4052,7 @@ with(MO){
       }
       return -1;
    }
-   MO.RString_inRange = function RString_inRange(v, rs, f){
+   MO.RString.prototype.inRange = function RString_inRange(v, rs, f){
       if(v && rs){
          if(!f){
             v = v.toLowerCase();
@@ -4231,7 +4075,7 @@ with(MO){
       }
       return false;
    }
-   MO.RString_nvl = function RString_nvl(v, d){
+   MO.RString.prototype.nvl = function RString_nvl(v, d){
       if(v != null){
          var s = null;
          if(v.constructor != String){
@@ -4248,13 +4092,13 @@ with(MO){
       }
       return this.EMPTY;
    }
-   MO.RString_nvlString = function RString_nvlString(p){
+   MO.RString.prototype.nvlString = function RString_nvlString(p){
       if(p == null){
          p = new TString();
       }
       return p;
    }
-   MO.RString_empty = function RString_empty(v){
+   MO.RString.prototype.empty = function RString_empty(v){
       if(v != null){
          var s = null;
          if(v.constructor != String){
@@ -4268,13 +4112,13 @@ with(MO){
       }
       return null;
    }
-   MO.RString_firstUpper = function RString_firstUpper(v){
+   MO.RString.prototype.firstUpper = function RString_firstUpper(v){
       return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
    }
-   MO.RString_firstLower = function RString_firstLower(){
+   MO.RString.prototype.firstLower = function RString_firstLower(){
       return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
    }
-   MO.RString_firstLine = function RString_firstLine(v){
+   MO.RString.prototype.firstLine = function RString_firstLine(v){
       if(v){
          var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
          if(-1 != n){
@@ -4284,7 +4128,7 @@ with(MO){
       }
       return '';
    }
-   MO.RString_format = function RString_format(s, p){
+   MO.RString.prototype.format = function RString_format(s, p){
       var a = arguments;
       var c = a.length;
       for(var n = 1; n < c; n++){
@@ -4298,7 +4142,7 @@ with(MO){
       }
       return s;
    }
-   MO.RString_formatLines = function RString_formatLines(p){
+   MO.RString.prototype.formatLines = function RString_formatLines(p){
       var o = this;
       p = p.replace(/\\r/g, '');
       var ls = p.split('\n');
@@ -4317,10 +4161,10 @@ with(MO){
       }
       return r.toString();
    }
-   MO.RString_repeat = function RString_repeat(v, c){
+   MO.RString.prototype.repeat = function RString_repeat(v, c){
       return new Array(c + 1).join(v);
    }
-   MO.RString_pad = function RString_pad(v, l, p){
+   MO.RString.prototype.pad = function RString_pad(v, l, p){
       v = (v != null) ? v.toString() : this.EMPTY;
       var n = l - v.length;
       if(n > 0){
@@ -4332,7 +4176,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_lpad = function RString_lpad(v, l, p){
+   MO.RString.prototype.lpad = function RString_lpad(v, l, p){
       var o = this;
       v = (v != null) ? v.toString() : o.EMPTY;
       var n = l - v.length;
@@ -4346,7 +4190,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_rpad = function RString_rpad(v, l, p){
+   MO.RString.prototype.rpad = function RString_rpad(v, l, p){
       var o = this;
       v = (v != null) ? v.toString() : o.EMPTY;
       var n = l - v.length;
@@ -4358,7 +4202,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_trim = function RString_trim(v, ts){
+   MO.RString.prototype.trim = function RString_trim(v, ts){
       var o = this;
       v = o.nvl(v);
       ts = o.nvl(ts, o.TRIM);
@@ -4382,7 +4226,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_ltrim = function RString_ltrim(v, ts){
+   MO.RString.prototype.ltrim = function RString_ltrim(v, ts){
       var o = this;
       v = o.nvl(value);
       ts = o.nvl(trims, o.TRIM);
@@ -4398,7 +4242,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_rtrim = function RString_rtrim(v, ts){
+   MO.RString.prototype.rtrim = function RString_rtrim(v, ts){
       var o = this;
       v = o.nvl(v);
       ts = o.nvl(ts, o.TRIM);
@@ -4413,7 +4257,7 @@ with(MO){
       }
       return v;
    }
-   MO.RString_mid = function RString_mid(v, b, e){
+   MO.RString.prototype.mid = function RString_mid(v, b, e){
       if(v == null){
          return v;
       }
@@ -4433,10 +4277,10 @@ with(MO){
       }
       return v.substring(l, r);
    }
-   MO.RString_toLine = function RString_toLine(v){
+   MO.RString.prototype.toLine = function RString_toLine(v){
       return v.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
    }
-   MO.RString_toUnderline = function RString_toUnderline(v){
+   MO.RString.prototype.toUnderline = function RString_toUnderline(v){
       var r = null;
       if(v){
          var s = new TString();
@@ -4456,16 +4300,16 @@ with(MO){
       }
       return r;
    }
-   MO.RString_toLower = function RString_toLower(v){
+   MO.RString.prototype.toLower = function RString_toLower(v){
       return (v != null) ? v.toLowerCase() : this.EMPTY;
    }
-   MO.RString_toUpper = function RString_toUpper(v){
+   MO.RString.prototype.toUpper = function RString_toUpper(v){
       return (v != null) ? v.toUpperCase() : this.EMPTY;
    }
-   MO.RString_split = function RString_split(s, p){
+   MO.RString.prototype.split = function RString_split(s, p){
       return (s && p) ? s.split(p) : null;
    }
-   MO.RString_splitTwo = function RString_splitTwo(s, p){
+   MO.RString.prototype.splitTwo = function RString_splitTwo(s, p){
       if(s && p){
          var r = new Array();
          var n = s.indexOf(p);
@@ -4479,7 +4323,7 @@ with(MO){
       }
       return null;
    }
-   MO.RString_splitParts = function RString_splitParts(s, p){
+   MO.RString.prototype.splitParts = function RString_splitParts(s, p){
       var o = this;
       var b = new Array();
       var k = 0;
@@ -4497,7 +4341,7 @@ with(MO){
       }
       return b;
    }
-   MO.RString_splitPattern = function RString_splitPattern(s, p){
+   MO.RString.prototype.splitPattern = function RString_splitPattern(s, p){
       var r = new Array();
       if(s){
          var sl = s.length;
@@ -4526,10 +4370,10 @@ with(MO){
       }
       return r;
    }
-   MO.RString_replace = function RString_replace(v, s, t){
+   MO.RString.prototype.replace = function RString_replace(v, s, t){
       return v.replace(new RegExp(s, 'g'), t);
    }
-   MO.RString_replaceChar = function RString_replaceChar(v, s, t){
+   MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
       if(v != null){
          var c = v.length;
          var r = new Array();
@@ -4545,10 +4389,10 @@ with(MO){
       }
       return v;
    }
-   MO.RString_remove = function RString_remove(s, t){
+   MO.RString.prototype.remove = function RString_remove(s, t){
       return s.replace(t, '');
    }
-   MO.RString_removeChars = function RString_removeChars(v, s){
+   MO.RString.prototype.removeChars = function RString_removeChars(v, s){
       if(v != null){
          var c = v.length;
          var r = new Array();
@@ -4571,26 +4415,21 @@ with(MO){
       o._startTime = 0;
       o._lastTime  = 0;
       o._count     = 0;
-      o.setup      = RTimer_setup;
-      o.now        = RTimer_now;
-      o.current    = RTimer_current;
-      o.rate       = RTimer_rate;
-      o.update     = RTimer_update;
       return o;
    }
-   MO.RTimer_setup = function RTimer_setup(){
+   MO.RTimer.prototype.setup = function RTimer_setup(){
       var o = this;
       var n = new Date().getTime();
       o._startTime = n;
       o._lastTime = n;
    }
-   MO.RTimer_now = function RTimer_now(){
+   MO.RTimer.prototype.now = function RTimer_now(){
       return new Date().getTime();
    }
-   MO.RTimer_current = function RTimer_current(){
+   MO.RTimer.prototype.current = function RTimer_current(){
       return this._lastTime;
    }
-   MO.RTimer_rate = function RTimer_rate(){
+   MO.RTimer.prototype.rate = function RTimer_rate(){
       var o = this;
       if(o._count == 0){
          return 0;
@@ -4599,7 +4438,7 @@ with(MO){
       var c = o._count * 1000 / t;
       return parseInt(c);
    }
-   MO.RTimer_update = function RTimer_update(){
+   MO.RTimer.prototype.update = function RTimer_update(){
       var o = this;
       o._count++;
       o._lastTime = new Date().getTime();

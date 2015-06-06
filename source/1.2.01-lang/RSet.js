@@ -7,12 +7,7 @@
    // @version 141231
    //============================================================
    MO.RSet = function RSet(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.contains       = RSet_contains;
-      o.containsString = RSet_containsString;
-      return o;
+      return this;
    }
 
    //===========================================================
@@ -22,7 +17,7 @@
    // @param d:data:Integer 数据
    // @return Boolean 是否含有
    //===========================================================
-   MO.RSet_contains = function RSet_contains(v, d){
+   MO.RSet.prototype.contains = function RSet_contains(v, d){
       return (v & d) == d;
    }
 
@@ -33,7 +28,7 @@
    // @param d:data:String 数据
    // @return Boolean 是否含有
    //===========================================================
-   MO.RSet_containsString = function RSet_containsString(v, d){
+   MO.RSet.prototype.containsString = function RSet_containsString(v, d){
       if((v != null) && (s != null)){
          return v.indexOf(s) != -1;
       }

@@ -15,15 +15,6 @@
       //..........................................................
       // @listener
       o.lsnsOutput   = new TListeners();
-      //..........................................................
-      // @method
-      o.output       = RLogger_output;
-      o.debug        = RLogger_debug;
-      o.info         = RLogger_info;
-      o.warn         = RLogger_warn;
-      o.error        = RLogger_error;
-      o.fatal        = RLogger_fatal;
-      o.show         = RLogger_show;
       return o;
    }
 
@@ -33,7 +24,7 @@
    // @method
    // @param p:value:Object 消息内容
    //==========================================================
-   MO.RLogger_output = function RLogger_output(s, p){
+   MO.RLogger.prototype.output = function RLogger_output(s, p){
       this.lsnsOutput.process(s, p);
    }
 
@@ -45,7 +36,7 @@
    // @param ms:message:String 消息内容
    // @param pm:params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger_debug = function RLogger_debug(sf, ms, pm){
+   MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
       // 获得函数名称
       var n = RMethod.name(RLogger_debug.caller);
@@ -82,7 +73,7 @@
    // @param ms:message:String 消息内容
    // @param pm:params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger_info = function RLogger_info(sf, ms, pm){
+   MO.RLogger.prototype.info = function RLogger_info(sf, ms, pm){
       var o = this;
       // 获得函数名称
       var n = RMethod.name(RLogger_info.caller);
@@ -116,7 +107,7 @@
    //
    // @method
    //==========================================================
-   MO.RLogger_warn = function RLogger_warn(sf, ms, pm){
+   MO.RLogger.prototype.warn = function RLogger_warn(sf, ms, pm){
       var o = this;
       // 获得函数名称
       var n = RMethod.name(RLogger_warn.caller);
@@ -150,7 +141,7 @@
    //
    // @method
    //==========================================================
-   MO.RLogger_error = function RLogger_error(sf, ms, pm){
+   MO.RLogger.prototype.error = function RLogger_error(sf, ms, pm){
       var o = this;
       // 获得函数名称
       var n = RMethod.name(RLogger_error.caller);
@@ -188,7 +179,7 @@
    // @param ms:message:String 消息内容
    // @param pm:params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger_fatal = function RLogger_fatal(sf, er, ms, pm){
+   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, pm){
       var o = this;
       // 检查是否已经弹出过错误
       if(o._statusError){
@@ -247,7 +238,7 @@
    // @param ms:message:String 消息内容
    // @param pm:params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger_show = function RLogger_show(sf, ms, pm){
+   MO.RLogger.prototype.show = function RLogger_show(sf, ms, pm){
       var o = this;
       // 获得函数名称
       var n = RMethod.name(RLogger_show.caller);

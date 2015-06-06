@@ -7,13 +7,7 @@
    // @version 141229
    //==========================================================
    MO.RBoolean = function RBoolean(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.format   = RBoolean_format;
-      o.parse    = RBoolean_parse;
-      o.toString = RBoolean_toString;
-      return o;
+      return this;
    }
 
    //==========================================================
@@ -23,7 +17,7 @@
    // @param v:value:Boolean 
    // @return String 字符串
    //==========================================================
-   MO.RBoolean_format = function RBoolean_format(v){
+   MO.RBoolean.prototype.format = function RBoolean_format(v){
       return v ? EBoolean.True : EBoolean.False;
    }
 
@@ -34,7 +28,7 @@
    // @param v:value:String 
    // @return Boolean 
    //==========================================================
-   MO.RBoolean_parse = function RBoolean_parse(v){
+   MO.RBoolean.prototype.parse = function RBoolean_parse(v){
       if(v != null){
          if(v.constructor == Boolean){
             return v;
@@ -58,7 +52,7 @@
    // @param valueFalse:String 假字符串
    // @return String 字符串
    //==========================================================
-   MO.RBoolean_toString = function RBoolean_toString(value, valueTrue, valueFalse){
+   MO.RBoolean.prototype.toString = function RBoolean_toString(value, valueTrue, valueFalse){
       if(valueTrue == null){
          valueTrue = EBoolean.True;
       }

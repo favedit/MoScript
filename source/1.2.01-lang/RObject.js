@@ -10,18 +10,7 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._hash   = 1;
-      //..........................................................
-      // @method
-      o.nextId  = RObject_nextId;
-      o.nvl     = RObject_nvl;
-      // @method
-      o.clone   = RObject_clone;
-      o.copy    = RObject_copy;
-      // @method
-      o.free    = RObject_free;
-      o.dispose = RObject_dispose;
-      o.release = RObject_release;
+      o._hash = 1;
       return o;
    }
 
@@ -31,7 +20,7 @@
    // @method
    // @return Integer 编号
    //==========================================================
-   MO.RObject_nextId = function RObject_nextId(v){
+   MO.RObject.prototype.nextId = function RObject_nextId(v){
       return this._hash++;
    }
 
@@ -42,7 +31,7 @@
    // @param v:values:Object[] 对象集合
    // @return Object 非空对象
    //==========================================================
-   MO.RObject_nvl = function RObject_nvl(v){
+   MO.RObject.prototype.nvl = function RObject_nvl(v){
       var a = arguments;
       var c = a.length;
       for(var n = 0; n < c; n++){
@@ -60,7 +49,7 @@
    // @param v:value:Object 对象
    // @return Object 克隆对象
    //==========================================================
-   MO.RObject_clone = function RObject_clone(o){
+   MO.RObject.prototype.clone = function RObject_clone(o){
       var r = new o.constructor();
       for(var n in o){
          var v = o[n];
@@ -81,7 +70,7 @@
    // @param s:source:Object 来源对象
    // @param t:target:Object 目标对象
    //==========================================================
-   MO.RObject_copy = function RObject_copy(s, t){
+   MO.RObject.prototype.copy = function RObject_copy(s, t){
       if((s != null) && (t != null)){
          for(var n in s){
             var v = s[n];
@@ -105,7 +94,7 @@
    // @method
    // @param item:Object 对象
    //==========================================================
-   MO.RObject_free = function RObject_free(item){
+   MO.RObject.prototype.free = function RObject_free(item){
       if(item){
          if(MO.Runtime.isDebug()){
             // 调试模式
@@ -140,7 +129,7 @@
    // @param item:Object 对象
    // @param flag:Boolean 标志
    //==========================================================
-   MO.RObject_dispose = function RObject_dispose(item, flag){
+   MO.RObject.prototype.dispose = function RObject_dispose(item, flag){
       if(item){
          if(!item.__dispose){
             item.dispose(flag);
@@ -159,7 +148,7 @@
    // @method
    // @param item:Object 对象
    //==========================================================
-   MO.RObject_release = function RObject_release(item){
+   MO.RObject.prototype.release = function RObject_release(item){
       if(item){
          for(var name in item){
             var value = item[name];

@@ -10,59 +10,16 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.EMPTY        = '';
-      o.SPACE        = '   ';
-      o.PAD          = ' ';
-      o.TRIM         = ' \t\r\n';
-      o.LOWER        = 'abcdefghijklmnopqrstuvwxyz';
-      o.UPPER        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      o.CodeLowerA   = 'a'.charCodeAt(0);
-      o.CodeLowerZ   = 'z'.charCodeAt(0);
-      o.CodeUpperA   = 'A'.charCodeAt(0);
-      o.CodeUpperZ   = 'Z'.charCodeAt(0);
-      //..........................................................
-      // @method
-      o.isEmpty      = RString_isEmpty;
-      o.isBlank      = RString_isBlank;
-      o.isAnsi       = RString_isAnsi;
-      o.isDbcs       = RString_isDbcs;
-      o.isPattern    = RString_isPattern;
-      o.inChars      = RString_inChars;
-      // @method
-      o.contains     = RString_contains;
-      o.equals       = RString_equals;
-      o.startsWith   = RString_startsWith;
-      o.endsWith     = RString_endsWith;
-      o.findChars    = RString_findChars;
-      o.inRange      = RString_inRange;
-      o.nvl          = RString_nvl;
-      o.nvlString    = RString_nvlString;
-      o.empty        = RString_empty;
-      o.firstUpper   = RString_firstUpper;
-      o.firstLower   = RString_firstLower;
-      o.firstLine    = RString_firstLine;
-      o.format       = RString_format;
-      o.formatLines  = RString_formatLines;
-      o.repeat       = RString_repeat;
-      o.pad          = RString_pad;
-      o.lpad         = RString_lpad;
-      o.rpad         = RString_rpad;
-      o.trim         = RString_trim;
-      o.ltrim        = RString_ltrim;
-      o.rtrim        = RString_rtrim;
-      o.mid          = RString_mid;
-      o.toLine       = RString_toLine;
-      o.toUnderline  = RString_toUnderline;
-      o.toLower      = RString_toLower;
-      o.toUpper      = RString_toUpper;
-      o.split        = RString_split;
-      o.splitTwo     = RString_splitTwo;
-      o.splitParts   = RString_splitParts;
-      o.splitPattern = RString_splitPattern;
-      o.replace      = RString_replace;
-      o.replaceChar  = RString_replaceChar;
-      o.remove       = RString_remove;
-      o.removeChars  = RString_removeChars;
+      o.EMPTY      = '';
+      o.SPACE      = '   ';
+      o.PAD        = ' ';
+      o.TRIM       = ' \t\r\n';
+      o.LOWER      = 'abcdefghijklmnopqrstuvwxyz';
+      o.UPPER      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      o.CodeLowerA = 'a'.charCodeAt(0);
+      o.CodeLowerZ = 'z'.charCodeAt(0);
+      o.CodeUpperA = 'A'.charCodeAt(0);
+      o.CodeUpperZ = 'Z'.charCodeAt(0);
       return o;
    }
 
@@ -75,7 +32,7 @@
    //    <L value='true'>为空</L>
    //    <L value='false'>非空</L>
    //==========================================================
-   MO.RString_isEmpty = function RString_isEmpty(v){
+   MO.RString.prototype.isEmpty = function RString_isEmpty(v){
       if(v != null){
          return (v.length == 0);
       }
@@ -91,7 +48,7 @@
    //    <L value='true'>为空</L>
    //   <L value='false'>非空</L>
    //==========================================================
-   MO.RString_isBlank = function RString_isBlank(v){
+   MO.RString.prototype.isBlank = function RString_isBlank(v){
       if(v != null){
          return (v.trim().length == 0);
       }
@@ -108,7 +65,7 @@
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.RString_isAnsi = function RString_isAnsi(v){
+   MO.RString.prototype.isAnsi = function RString_isAnsi(v){
       if(v != null){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -131,7 +88,7 @@
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.RString_isDbcs = function RString_isDbcs(v){
+   MO.RString.prototype.isDbcs = function RString_isDbcs(v){
       if(v == null){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -161,7 +118,7 @@
    //    <L value='true'>匹配</L>
    //    <L value='false'>不匹配</L>
    //==========================================================
-   MO.RString_isPattern = function RString_isPattern(v, p){
+   MO.RString.prototype.isPattern = function RString_isPattern(v, p){
       if(v != null){
          var o = this;
          // 展开模板内容
@@ -201,7 +158,7 @@
    //    <L value='true'>匹配</L>
    //    <L value='false'>不匹配</L>
    //==========================================================
-   MO.RString_inChars = function RString_inChars(v, p){
+   MO.RString.prototype.inChars = function RString_inChars(v, p){
       var o = this;
       var b = o.findChars(p, v);
       if(b != -1){
@@ -220,7 +177,7 @@
    //    <L value='true'>包含</L>
    //    <L value='false'>不包含</L>
    //==========================================================
-   MO.RString_contains = function RString_contains(v, s){
+   MO.RString.prototype.contains = function RString_contains(v, s){
       if((v != null) && (s != null)){
          return (v.toString().indexOf(s) != -1);
       }
@@ -236,7 +193,7 @@
    // @param f:boolean:Boolean 是否忽略大小写(默认为忽略大小写)
    // @return Boolean 是否相等
    //==========================================================
-   MO.RString_equals = function RString_equals(s, t, f){
+   MO.RString.prototype.equals = function RString_equals(s, t, f){
       // 获得参数
       if(s == null){
          s = '';
@@ -266,7 +223,7 @@
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.RString_startsWith = function RString_startsWith(v, s){
+   MO.RString.prototype.startsWith = function RString_startsWith(v, s){
       if(s == null){
          return true;
       }
@@ -283,7 +240,7 @@
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.RString_endsWith = function RString_endsWith(v, s){
+   MO.RString.prototype.endsWith = function RString_endsWith(v, s){
       if(s == null){
          return true;
       }
@@ -299,7 +256,7 @@
    // @param s:search:String 字符列表
    // @return Integer 位置索引
    //==========================================================
-   MO.RString_findChars = function RString_findChars(v, s){
+   MO.RString.prototype.findChars = function RString_findChars(v, s){
       if((v != null) && (s != null)){
          var c = v.length;
          for(var n = 0; n < c; n++){
@@ -322,7 +279,7 @@
    //    <L value='true'>含有</L>
    //    <L value='false'>不含有</L>
    //==========================================================
-   MO.RString_inRange = function RString_inRange(v, rs, f){
+   MO.RString.prototype.inRange = function RString_inRange(v, rs, f){
       if(v && rs){
          if(!f){
             v = v.toLowerCase();
@@ -354,7 +311,7 @@
    // @param d:default:String 缺省字符串
    // @return String 非空字符串
    //==========================================================
-   MO.RString_nvl = function RString_nvl(v, d){
+   MO.RString.prototype.nvl = function RString_nvl(v, d){
       if(v != null){
          var s = null;
          if(v.constructor != String){
@@ -379,7 +336,7 @@
    // @param p:value:String 字符串对象
    // @return String 非空字符串对象
    //==========================================================
-   MO.RString_nvlString = function RString_nvlString(p){
+   MO.RString.prototype.nvlString = function RString_nvlString(p){
       if(p == null){
          p = new TString();
       }
@@ -393,7 +350,7 @@
    // @param v:value:String 字符串
    // @return String 空字符串
    //==========================================================
-   MO.RString_empty = function RString_empty(v){
+   MO.RString.prototype.empty = function RString_empty(v){
       if(v != null){
          var s = null;
          if(v.constructor != String){
@@ -415,7 +372,7 @@
    // @param v:value:String 字符串
    // @return String 首字母是大写的字符串
    //==========================================================
-   MO.RString_firstUpper = function RString_firstUpper(v){
+   MO.RString.prototype.firstUpper = function RString_firstUpper(v){
       return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
    }
 
@@ -426,7 +383,7 @@
    // @param v:value:String 字符串
    // @return String 首字母是小写的字符串
    //==========================================================
-   MO.RString_firstLower = function RString_firstLower(){
+   MO.RString.prototype.firstLower = function RString_firstLower(){
       return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
    }
 
@@ -437,7 +394,7 @@
    // @param v:value:String 字符串
    // @return String 第一行字符串
    //==========================================================
-   MO.RString_firstLine = function RString_firstLine(v){
+   MO.RString.prototype.firstLine = function RString_firstLine(v){
       if(v){
          var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
          if(-1 != n){
@@ -456,7 +413,7 @@
    // @param p:parameters:Object... 参数字符
    // @return String 格式化后的字符串
    //==========================================================
-   MO.RString_format = function RString_format(s, p){
+   MO.RString.prototype.format = function RString_format(s, p){
       var a = arguments;
       var c = a.length;
       for(var n = 1; n < c; n++){
@@ -478,7 +435,7 @@
    // @param s:source:String 字符串
    // @return String 字符串
    //==========================================================
-   MO.RString_formatLines = function RString_formatLines(p){
+   MO.RString.prototype.formatLines = function RString_formatLines(p){
       var o = this;
       p = p.replace(/\\r/g, '');
       var ls = p.split('\n');
@@ -506,7 +463,7 @@
    // @param c:count:Integer 重复的次数
    // @return String 重复后的字符串
    //==========================================================
-   MO.RString_repeat = function RString_repeat(v, c){
+   MO.RString.prototype.repeat = function RString_repeat(v, c){
       return new Array(c + 1).join(v);
    }
 
@@ -519,7 +476,7 @@
    // @param p:pad:String 补齐字符(默认为空格字符)
    // @return Boolean 补齐长度的字符串
    //==========================================================
-   MO.RString_pad = function RString_pad(v, l, p){
+   MO.RString.prototype.pad = function RString_pad(v, l, p){
       v = (v != null) ? v.toString() : this.EMPTY;
       var n = l - v.length;
       if(n > 0){
@@ -541,7 +498,7 @@
    // @param p:pad:String 补齐字符(默认为空格字符)
    // @return Boolean 补齐长度的字符串
    //==========================================================
-   MO.RString_lpad = function RString_lpad(v, l, p){
+   MO.RString.prototype.lpad = function RString_lpad(v, l, p){
       var o = this;
       v = (v != null) ? v.toString() : o.EMPTY;
       var n = l - v.length;
@@ -565,7 +522,7 @@
    // @param p:pad:String 补齐字符(默认为空格字符)
    // @return Boolean 补齐长度的字符串
    //==========================================================
-   MO.RString_rpad = function RString_rpad(v, l, p){
+   MO.RString.prototype.rpad = function RString_rpad(v, l, p){
       var o = this;
       v = (v != null) ? v.toString() : o.EMPTY;
       var n = l - v.length;
@@ -586,7 +543,7 @@
    // @param ts:trims:String 要去除的字符串
    // @return String 去掉开始和结尾的空格和非显示字符的字符串
    //==========================================================
-   MO.RString_trim = function RString_trim(v, ts){
+   MO.RString.prototype.trim = function RString_trim(v, ts){
       var o = this;
       v = o.nvl(v);
       ts = o.nvl(ts, o.TRIM);
@@ -619,7 +576,7 @@
    // @param ts:trims:String 要去除的字符串
    // @return String 去掉开始的空格和非显示字符的字符串
    //==========================================================
-   MO.RString_ltrim = function RString_ltrim(v, ts){
+   MO.RString.prototype.ltrim = function RString_ltrim(v, ts){
       var o = this;
       v = o.nvl(value);
       ts = o.nvl(trims, o.TRIM);
@@ -644,7 +601,7 @@
    // @param ts:trims:String 要去除的字符串
    // @return String 去掉结尾的空格和非显示字符的字符串
    //==========================================================
-   MO.RString_rtrim = function RString_rtrim(v, ts){
+   MO.RString.prototype.rtrim = function RString_rtrim(v, ts){
       var o = this;
       v = o.nvl(v);
       ts = o.nvl(ts, o.TRIM);
@@ -671,7 +628,7 @@
    // @param e:end:String 结束字符串
    // @return String 截取后的部分字符串
    //==========================================================
-   MO.RString_mid = function RString_mid(v, b, e){
+   MO.RString.prototype.mid = function RString_mid(v, b, e){
       if(v == null){
          return v;
       }
@@ -699,7 +656,7 @@
    // @param v:value:String 字符串
    // @return String 行字符串
    //==========================================================
-   MO.RString_toLine = function RString_toLine(v){
+   MO.RString.prototype.toLine = function RString_toLine(v){
       return v.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
    }
 
@@ -710,7 +667,7 @@
    // @param v:value:String 字符串
    // @return String 字符串
    //===========================================================
-   MO.RString_toUnderline = function RString_toUnderline(v){
+   MO.RString.prototype.toUnderline = function RString_toUnderline(v){
       var r = null;
       if(v){
          var s = new TString();
@@ -738,7 +695,7 @@
    // @param v:value:String 字符串
    // @return String 小写字符串
    //==========================================================
-   MO.RString_toLower = function RString_toLower(v){
+   MO.RString.prototype.toLower = function RString_toLower(v){
       return (v != null) ? v.toLowerCase() : this.EMPTY;
    }
 
@@ -749,7 +706,7 @@
    // @param v:value:String 字符串
    // @return String 大写字符串
    //==========================================================
-   MO.RString_toUpper = function RString_toUpper(v){
+   MO.RString.prototype.toUpper = function RString_toUpper(v){
       return (v != null) ? v.toUpperCase() : this.EMPTY;
    }
 
@@ -761,7 +718,7 @@
    // @param p:split:String 分割字符串
    // @return String 分割后的字符串数组
    //==========================================================
-   MO.RString_split = function RString_split(s, p){
+   MO.RString.prototype.split = function RString_split(s, p){
       return (s && p) ? s.split(p) : null;
    }
 
@@ -773,7 +730,7 @@
    // @param p:split:String 分割字符
    // @return String 分割后的字符串数组
    //==========================================================
-   MO.RString_splitTwo = function RString_splitTwo(s, p){
+   MO.RString.prototype.splitTwo = function RString_splitTwo(s, p){
       if(s && p){
          var r = new Array();
          var n = s.indexOf(p);
@@ -796,7 +753,7 @@
    //@param p:value:Array 要截取的参照字符的组合
    //@return Array 截取的字符数组
    //==========================================================
-   MO.RString_splitParts = function RString_splitParts(s, p){
+   MO.RString.prototype.splitParts = function RString_splitParts(s, p){
       var o = this;
       var b = new Array();
       var k = 0;
@@ -823,7 +780,7 @@
    //@param p:value:Array 要截取的参照字符的组合
    //@return Array 截取的字符数组
    //==========================================================
-   MO.RString_splitPattern = function RString_splitPattern(s, p){
+   MO.RString.prototype.splitPattern = function RString_splitPattern(s, p){
       var r = new Array();
       if(s){
          var sl = s.length;
@@ -862,7 +819,7 @@
    // @param t:target:String 目标字符串
    // @return String 字符串
    //==========================================================
-   MO.RString_replace = function RString_replace(v, s, t){
+   MO.RString.prototype.replace = function RString_replace(v, s, t){
       return v.replace(new RegExp(s, 'g'), t);
    }
 
@@ -875,7 +832,7 @@
    // @param t:targetChar:String 目标字符
    // @return String 字符串
    //==========================================================
-   MO.RString_replaceChar = function RString_replaceChar(v, s, t){
+   MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
       if(v != null){
          var c = v.length;
          var r = new Array();
@@ -900,7 +857,7 @@
    // @param t:target:String 目标字符串
    // @return String 删除后的字符串
    //==========================================================
-   MO.RString_remove = function RString_remove(s, t){
+   MO.RString.prototype.remove = function RString_remove(s, t){
       return s.replace(t, '');
    }
 
@@ -912,7 +869,7 @@
    // @param s:value:String 字符集合
    // @return String 删除后的字符串
    //==========================================================
-   MO.RString_removeChars = function RString_removeChars(v, s){
+   MO.RString.prototype.removeChars = function RString_removeChars(v, s){
       if(v != null){
          var c = v.length;
          var r = new Array();

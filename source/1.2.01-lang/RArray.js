@@ -10,28 +10,13 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.array1        = new Array(1);
-      o.array2        = new Array(2);
-      o.array3        = new Array(3);
-      o.array4        = new Array(4);
-      o.array9        = new Array(9);
-      o.array12       = new Array(12);
-      o.array16       = new Array(16);
-      //..........................................................
-      // @method
-      o.equals        = RArray_equals;
-      o.count         = RArray_count;
-      o.contains      = RArray_contains;
-      o.find          = RArray_find;
-      o.search        = RArray_search;
-      o.reverse       = RArray_reverse;
-      o.copy          = RArray_copy;
-      o.move          = RArray_move;
-      o.remove        = RArray_remove;
-      o.sortPartition = RArray_sortPartition;
-      o.sortArray     = RArray_sortArray;
-      o.sort          = RArray_sort;
-      o.nameMaxLength = RArray_nameMaxLength;
+      o.array1  = new Array(1);
+      o.array2  = new Array(2);
+      o.array3  = new Array(3);
+      o.array4  = new Array(4);
+      o.array9  = new Array(9);
+      o.array12 = new Array(12);
+      o.array16 = new Array(16);
       return o;
    }
 
@@ -45,7 +30,7 @@
    //    <L value='true'>相等</L>
    //    <L value='false'>不相等</L>
    //==========================================================
-   MO.RArray_equals = function RArray_equals(s, t){
+   MO.RArray.prototype.equals = function RArray_equals(s, t){
       if(s && t){
          if(s.length == t.length){
             var c = s.length;
@@ -67,7 +52,7 @@
    // @param a:object:Object 对象
    // @return Integer 数据总数
    //==========================================================
-   MO.RArray_count = function RArray_count(a){
+   MO.RArray.prototype.count = function RArray_count(a){
       var c = 0;
       for(var n in a){
          n++;
@@ -85,7 +70,7 @@
    //    <L value='true'>含有</L>
    //    <L value='false'>不含有</L>
    //==========================================================
-   MO.RArray_contains = function RArray_contains(a, v){
+   MO.RArray.prototype.contains = function RArray_contains(a, v){
       var c = a.length;
       for(var n = 0; n < c; n++){
          if(a[n] == v){
@@ -103,7 +88,7 @@
    // @param v:value:Object 对象名
    // @return Integer 索引位置
    //==========================================================
-   MO.RArray_find = function RArray_find(a, v){
+   MO.RArray.prototype.find = function RArray_find(a, v){
       var c = a.length;
       for(var n = 0; n < c; n++){
          if(a[n] == v){
@@ -121,7 +106,7 @@
    // @param v:value:Object 对象名
    // @return Object 没有找到返回-1
    //==========================================================
-   MO.RArray_search = function RArray_search(a, v){
+   MO.RArray.prototype.search = function RArray_search(a, v){
       for(var n in a){
          if(a[n] == v){
             return n;
@@ -138,7 +123,7 @@
    // @param s:start:Integer 开始位置
    // @param e:end:Integer 结束位置
    //==========================================================
-   MO.RArray_reverse = function RArray_reverse(a, s, e){
+   MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
       var c = (e + 1 - s) >> 1;
       for(var n = 0; n < c; n++){
          var t = a[s + n];
@@ -154,7 +139,7 @@
    // @param s:source:Object 源数组 
    // @param t:target:Object 目标数组
    //==========================================================
-   MO.RArray_copy = function RArray_copy(s, t){
+   MO.RArray.prototype.copy = function RArray_copy(s, t){
       for(var n in s){
          t[n] = s[n];
       }
@@ -169,7 +154,7 @@
    // @param c:count:Integer 复制总数
    // @param t:target:Integer 目标位置
    //==========================================================
-   MO.RArray_move = function RArray_move(a, f, c, t){
+   MO.RArray.prototype.move = function RArray_move(a, f, c, t){
       if(f > t){
          for(var n = 0; n < c; n++){
             a[t - n] = a[f + n];
@@ -189,7 +174,7 @@
    // @param n:index:Integer 索引位置
    // @return Array 删除后的数组对象
    //==========================================================
-   MO.RArray_remove = function RArray_remove(a, n){
+   MO.RArray.prototype.remove = function RArray_remove(a, n){
       return a.slice(0, n).concat(a.slice(n + 1));
    }
 
@@ -202,7 +187,7 @@
    // @param r:right:Integer 右边位置
    // @return Integer 排序结束位置
    //==========================================================
-   MO.RArray_sortPartition = function RArray_sortPartition(a, l, r){ 
+   MO.RArray.prototype.sortPartition = function RArray_sortPartition(a, l, r){ 
       var s = l;
       var e = r + 1;
       var t = a[s];
@@ -231,7 +216,7 @@
    // @param s:start:Integer 开始位置
    // @param e:end:Integer 结束位置
    //==========================================================
-   MO.RArray_sortArray = function RArray_sortArray(a, s, e){
+   MO.RArray.prototype.sortArray = function RArray_sortArray(a, s, e){
       if(s < e){
          var o = this;
          var p = o.sortPartition(a, s, e);
@@ -249,7 +234,7 @@
    //    <L value='true'>降序排列</L>
    //    <L value='false'>升序排列</L>
    //==========================================================
-   MO.RArray_sort = function RArray_sort(a, t){
+   MO.RArray.prototype.sort = function RArray_sort(a, t){
       var o = this;
       var c = a.length - 1;
       o.sortArray(a, 0, c);
@@ -266,7 +251,7 @@
    // @param a:array:Object 对象名
    // @return Integer 字符串长度
    //==========================================================
-   MO.RArray_nameMaxLength = function RArray_nameMaxLength(a){
+   MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
       var r = 0;
       for(var n in a){
          var l = n.length;

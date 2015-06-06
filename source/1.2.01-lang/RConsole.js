@@ -16,15 +16,6 @@ with(MO){
       o._registers     = new TObjects();
       o._consoles      = new TDictionary();
       o._localConsoles = new TDictionary();
-      //..........................................................
-      // @method
-      o.initialize     = RConsole_initialize;
-      o.register       = RConsole_register;
-      o.create         = RConsole_create;
-      o.createByName   = RConsole_createByName;
-      o.get            = RConsole_get;
-      o.find           = RConsole_find;
-      o.release        = RConsole_release;
       return o;
    }
 
@@ -33,7 +24,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RConsole_initialize = function RConsole_initialize(){
+   MO.RConsole.prototype.initialize = function RConsole_initialize(){
       var o = this;
       var rs = o._registers;
       var c = rs.count;
@@ -51,7 +42,7 @@ with(MO){
    // @method
    // @param p:console:TConsole 类名称
    //==========================================================
-   MO.RConsole_register = function RConsole_register(p){
+   MO.RConsole.prototype.register = function RConsole_register(p){
       this._registers.push(p);
    }
 
@@ -63,7 +54,7 @@ with(MO){
    // @param n:name:String 类名称
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole_create = function RConsole_create(n){
+   MO.RConsole.prototype.create = function RConsole_create(n){
       var r = null;
       if(n){
          // 创建对象实例
@@ -92,7 +83,7 @@ with(MO){
    // @param v:value:Object 类名称/类函数
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole_createByName = function RConsole_createByName(n){
+   MO.RConsole.prototype.createByName = function RConsole_createByName(n){
       var r = null;
       if(n){
          // 创建对象实例
@@ -122,7 +113,7 @@ with(MO){
    // @param v:value:Object 类名称/类函数
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole_get = function RConsole_get(v){
+   MO.RConsole.prototype.get = function RConsole_get(v){
       var o = this;
       // 获得名称
       var n = RClass.name(v);
@@ -138,7 +129,7 @@ with(MO){
    // @param v:value:Object 类名称/类函数
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole_find = function RConsole_find(v){
+   MO.RConsole.prototype.find = function RConsole_find(v){
       var o = this;
       // 获得名称
       var n = null;
@@ -190,7 +181,7 @@ with(MO){
    // @param n:name:Object 类名称，类函数
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole_release = function RConsole_release(){
+   MO.RConsole.prototype.release = function RConsole_release(){
       var o = this;
       // 释放注册信息
       if(o._registers){

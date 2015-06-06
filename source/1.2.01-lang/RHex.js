@@ -10,13 +10,8 @@
       var o = this;
       //..........................................................
       // @define
-      o.NUMBER  = '0x123456789ABCDEF';
-      o.PAD     = '0';
-      //..........................................................
-      // @method
-      o.isValid = RHex_isValid;
-      o.parse   = RHex_parse;
-      o.format  = RHex_format;
+      o.NUMBER = '0x123456789ABCDEF';
+      o.PAD    = '0';
       return o;
    }
 
@@ -27,7 +22,7 @@
    // @param p:value:Object 内容
    // @return Boolean 是否有效
    //===========================================================
-   MO.RHex_isValid = function RHex_isValid(p){
+   MO.RHex.prototype.isValid = function RHex_isValid(p){
       return RString.isPattern(p, this.NUMBER);
    }
 
@@ -38,7 +33,7 @@
    // @param p:value:Object 内容
    // @return String 内容
    //===========================================================
-   MO.RHex_parse = function RHex_parse(p){
+   MO.RHex.prototype.parse = function RHex_parse(p){
       return p ? parseInt('0x' + p) : '0';
    }
 
@@ -50,7 +45,7 @@
    // @param l:length:Integer 长度
    // @return String 内容
    //===========================================================
-   MO.RHex_format = function RHex_format(v, l){
+   MO.RHex.prototype.format = function RHex_format(v, l){
       var r = null;
       if(v){
          r = v.toString(16);

@@ -15,21 +15,6 @@
       o.LEFT_CHAR  = '0';
       o.MAX_UINT16 = 65535;
       o.MAX_UINT32 = 4294967295;
-      //..........................................................
-      // @method
-      o.isInt      = RInteger_isInt;
-      o.isInteger  = RInteger_isInt;
-      o.nvl        = RInteger_nvl;
-      o.strideByte = RInteger_strideByte;
-      o.strideBit  = RInteger_strideBit;
-      o.parse      = RInteger_parse;
-      o.format     = RInteger_format;
-      o.toRange    = RInteger_toRange;
-      o.pow2       = RInteger_pow2;
-      o.sum        = RInteger_sum;
-      o.calculate  = RInteger_calculate;
-      o.copy       = RInteger_copy;
-      o.toString   = RInteger_toString;
       return o;
    }
 
@@ -40,7 +25,7 @@
    // @param v:value:String 待检验的字符串
    // @return Boolean 是否整数
    //==========================================================
-   MO.RInteger_isInt = function RInteger_isInt(v){
+   MO.RInteger.prototype.isInt = function RInteger_isInt(v){
       return RString.isPattern(v, 'n');
    }
 
@@ -52,7 +37,7 @@
    // @param d:default:Integer 默认内容
    // @return Integer 非空内容
    //==========================================================
-   MO.RInteger_nvl = function RInteger_nvl(v, d){
+   MO.RInteger.prototype.nvl = function RInteger_nvl(v, d){
       return v ? v : (d ? d : 0);
    }
 
@@ -62,7 +47,7 @@
    // @param value 整数
    // @return 字节宽
    //============================================================
-   MO.RInteger_strideByte = function RInteger_strideByte(value){
+   MO.RInteger.prototype.strideByte = function RInteger_strideByte(value){
       if(value > 65535){
          return 4;
       }else if(value > 255){
@@ -78,7 +63,7 @@
    // @param value 整数
    // @return 位宽
    //============================================================
-   MO.RInteger_strideBit = function RInteger_strideBit(value){
+   MO.RInteger.prototype.strideBit = function RInteger_strideBit(value){
       if(value > 65535){
          return 32;
       }else if(value > 255){
@@ -95,7 +80,7 @@
    // @param value:value:String 待转换的字符串
    // @return int 转换后的整型值 
    //==========================================================
-   MO.RInteger_parse = function RInteger_parse(v, d){
+   MO.RInteger.prototype.parse = function RInteger_parse(v, d){
       // 设置默认值
       if(d == null){
          d = 0;
@@ -130,7 +115,7 @@
    // @param p:pad:String 补足字符串
    // @return String 格式化内容
    //==========================================================
-   MO.RInteger_format = function RInteger_format(v, l, p){
+   MO.RInteger.prototype.format = function RInteger_format(v, l, p){
       if(!p){
          p = this.LEFT_CHAR;
       }
@@ -150,7 +135,7 @@
    // @param max:Integer 最大数字
    // @return Integer 数字
    //==========================================================
-   MO.RInteger_toRange = function RInteger_toRange(value, min, max){
+   MO.RInteger.prototype.toRange = function RInteger_toRange(value, min, max){
       if(value == null){
          value = 0;
       }
@@ -173,7 +158,7 @@
    // @param value:Integer 数字
    // @return Integer 数字
    //==========================================================
-   MO.RInteger_pow2 = function RInteger_pow2(value){
+   MO.RInteger.prototype.pow2 = function RInteger_pow2(value){
       if(value > 4096){
          return 8192;
       }else if(value > 2048){
@@ -211,7 +196,7 @@
    // @param a:arguments:Object[] 参数集合
    // @return Integer 合计数字
    //==========================================================
-   MO.RInteger_sum = function RInteger_sum(){
+   MO.RInteger.prototype.sum = function RInteger_sum(){
       var r = 0;
       var a = arguments;
       var c = a.length;
@@ -232,7 +217,7 @@
    // @param b:value2:String 参数2
    // @return String 计算内容
    //==========================================================
-   MO.RInteger_calculate = function RInteger_calculate(f, a, b){
+   MO.RInteger.prototype.calculate = function RInteger_calculate(f, a, b){
       var a = RInteger.parse(a);
       var b = RInteger.parse(b);
       var r = '';
@@ -258,7 +243,7 @@
    // @param pii:inputIndex:Integer 输入位置
    // @param pc:count:Integer 总数
    //===========================================================
-   MO.RInteger_copy = function RInteger_copy(po, poi, pi, pii, pc){
+   MO.RInteger.prototype.copy = function RInteger_copy(po, poi, pi, pii, pc){
       for(var i = 0; i < pc; i++){
          po[poi++] = pi[pii++];
       }
@@ -271,7 +256,7 @@
    // @param p:value:Integer 数值
    // @return String 字符串
    //==========================================================
-   MO.RInteger_toString = function RInteger_toString(p){
+   MO.RInteger.prototype.toString = function RInteger_toString(p){
       return (p == null) ? '0' : p.toString();
    }
    //..........................................................

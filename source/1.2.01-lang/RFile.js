@@ -10,23 +10,15 @@
       var o = this;
       //..........................................................
       // @define
-      o.pictures  = ['jpg', 'png', 'gif', 'bmp'];
-      o.knowns    = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
-      //..........................................................
-      // @method
-      o.inPicture = RFile_inPicture;
-      o.isPicture = RFile_isPicture;
-      o.isKnown   = RFile_isKnown;
-      // @method
-      o.name      = RFile_name;
-      o.extension = RFile_extension;
+      o.pictures = ['jpg', 'png', 'gif', 'bmp'];
+      o.knowns   = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
       return o;
    }
 
    //==========================================================
    //
    //==========================================================
-   MO.RFile_inPicture = function RFile_inPicture(v){
+   MO.RFile.prototype.inPicture = function RFile_inPicture(v){
       var o = this;
       if(v){
          v = v.toLowerCase();
@@ -41,14 +33,14 @@
    //==========================================================
    //
    //==========================================================
-   MO.RFile_isPicture = function RFile_isPicture(v){
+   MO.RFile.prototype.isPicture = function RFile_isPicture(v){
       return this.inPicture(this.extension(v));
    }
 
    //==========================================================
    //
    //==========================================================
-   MO.RFile_isKnown = function RFile_isKnown(v){
+   MO.RFile.prototype.isKnown = function RFile_isKnown(v){
       var o = this;
       v = o.extension(v).toLowerCase();
       for(var n in o.knowns){
@@ -65,7 +57,7 @@
    // @param v:value:String 内容
    // @return String 名称
    //=========================================================
-   MO.RFile_name = function RFile_name(value){
+   MO.RFile.prototype.name = function RFile_name(value){
       if(value){
          value = value.replace(/\\/g, '/');
          // 获得路径中文件名称部分
@@ -90,7 +82,7 @@
    // @param v:value:String 内容
    // @return String 后缀名
    //=========================================================
-   MO.RFile_extension = function RFile_extension(v){
+   MO.RFile.prototype.extension = function RFile_extension(v){
       if(v){
          v = v.replace(/\\/g, '/');
          // 获得路径中文件名称部分

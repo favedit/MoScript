@@ -11,12 +11,6 @@
       //..........................................................
       // @attribute
       o._pools = new TDictionary();
-      //..........................................................
-      // @method
-      o.pool   = RInstance_pool;
-      o.get    = RInstance_get;
-      o.alloc  = RInstance_alloc;
-      o.free   = RInstance_free;
       return o;
    }
 
@@ -27,7 +21,7 @@
    // @param p:class:Object 类对象
    // @return 实例缓冲池
    //==========================================================
-   MO.RInstance_pool = function RInstance_pool(p){
+   MO.RInstance.prototype.pool = function RInstance_pool(p){
       var o = this;
       var n = RClass.name(p);
       var v = o._pools.get(n);
@@ -45,7 +39,7 @@
    // @param p:class:Object 类对象
    // @return 实例
    //==========================================================
-   MO.RInstance_get = function RInstance_get(p){
+   MO.RInstance.prototype.get = function RInstance_get(p){
       return this.pool(p).instance(p);
    }
 
@@ -56,7 +50,7 @@
    // @param p:class:Object 类对象
    // @return 实例
    //==========================================================
-   MO.RInstance_alloc = function RInstance_alloc(n){
+   MO.RInstance.prototype.alloc = function RInstance_alloc(n){
       return this.pool(p).alloc(p);
    }
 
@@ -66,7 +60,7 @@
    // @method
    // @param p:class:Object 类对象
    //==========================================================
-   MO.RInstance_free = function RInstance_free(n){
+   MO.RInstance.prototype.free = function RInstance_free(n){
       this.pool(p).free(p);
    }
    //..........................................................

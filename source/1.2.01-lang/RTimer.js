@@ -13,13 +13,6 @@
       o._startTime = 0;
       o._lastTime  = 0;
       o._count     = 0;
-      //..........................................................
-      // @method
-      o.setup      = RTimer_setup;
-      o.now        = RTimer_now;
-      o.current    = RTimer_current;
-      o.rate       = RTimer_rate;
-      o.update     = RTimer_update;
       return o;
    }
 
@@ -28,7 +21,7 @@
    //
    // @method
    //===========================================================
-   MO.RTimer_setup = function RTimer_setup(){
+   MO.RTimer.prototype.setup = function RTimer_setup(){
       var o = this;
       var n = new Date().getTime();
       o._startTime = n;
@@ -41,7 +34,7 @@
    // @method
    // @return Number 时刻
    //===========================================================
-   MO.RTimer_now = function RTimer_now(){
+   MO.RTimer.prototype.now = function RTimer_now(){
       return new Date().getTime();
    }
 
@@ -51,7 +44,7 @@
    // @method
    // @return Number 时间
    //===========================================================
-   MO.RTimer_current = function RTimer_current(){
+   MO.RTimer.prototype.current = function RTimer_current(){
       return this._lastTime;
    }
 
@@ -61,7 +54,7 @@
    // @method
    // @return Number 速率
    //===========================================================
-   MO.RTimer_rate = function RTimer_rate(){
+   MO.RTimer.prototype.rate = function RTimer_rate(){
       var o = this;
       if(o._count == 0){
          return 0;
@@ -76,7 +69,7 @@
    //
    // @method
    //===========================================================
-   MO.RTimer_update = function RTimer_update(){
+   MO.RTimer.prototype.update = function RTimer_update(){
       var o = this;
       o._count++;
       o._lastTime = new Date().getTime();

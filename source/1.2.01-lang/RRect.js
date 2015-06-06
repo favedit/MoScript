@@ -3,26 +3,20 @@
    // RRectFace
    //============================================================
    MO.RRect = function RRect(){
-      var o = this;
-      //..........................................................
-      // @method
-      o.nvl    = RRect_nvl;
-      o.pack   = RRect_pack;
-      o.unpack = RRect_unpack;
-      return o;
+      return this;
    }
 
    //===========================================================
    //
    //===========================================================
-   MO.RRect_nvl = function RRect_nvl(rect){
+   MO.RRect.prototype.nvl = function RRect_nvl(rect){
       return rect ? rect : new TRect();
    }
 
    //===========================================================
    //
    //===========================================================
-   MO.RRect_pack = function RRect_pack(rect){
+   MO.RRect.prototype.pack = function RRect_pack(rect){
       var pack = null;
       if(rect){
          pack = rect.left + ',' + rect.top + ',' + rect.right + ',' + rect.bottom;
@@ -33,7 +27,7 @@
    //===========================================================
    //
    //===========================================================
-   MO.RRect_unpack = function RRect_unpack(pack, rect){
+   MO.RRect.prototype.unpack = function RRect_unpack(pack, rect){
       rect = this.nvl(rect);
       if(pack){
          var items = pack.split(',');
