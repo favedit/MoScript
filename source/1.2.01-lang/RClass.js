@@ -353,18 +353,20 @@
    // <T>注册一个属性到类对象中。</T>
    //
    // @method
-   // @param v:value:Object 实例对象
-   // @param a:annotation:Annotation 标签对象
-   // @param r:result:Object 结果对象
+   // @param instance:Object 实例对象
+   // @param annotation:Annotation 标签对象
+   // @param defaultValue:Object 结果对象
    // @return Object 结果对象
    //==========================================================
-   MO.RClass.prototype.register = function RClass_register(v, a, r){
+   MO.RClass.prototype.register = function RClass_register(instance, annotation, defaultValue){
+      var o = this;
       // 注册描述
-      var n = RMethod.name(v.constructor);
-      this._classes[n].register(a);
+      var name = RMethod.name(instance.constructor);
+      var clazz = o._classes[name];
+      clazz.register(annotation);
       // 返回内容
-      var v = a.value();
-      return (v != null) ? v : r;
+      var value = annotation.value();
+      return (defaultValue != null) ? defaultValue : value;
    }
 
    //==========================================================

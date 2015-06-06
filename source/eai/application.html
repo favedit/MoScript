@@ -174,7 +174,7 @@ function onLoad(){
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
-   MO.EaiApplication.setup();
+   MO.Eai.Application.selectStage(MO.EEaiStage.Scene);
    // 创建画布
    canvas = canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(document);

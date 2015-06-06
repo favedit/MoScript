@@ -1,11 +1,11 @@
 //==========================================================
-// <T>舞台基类。</T>
+// <T>国家舞台。</T>
 //
 // @class
 // @author maocy
 // @history 150604
 //==========================================================
-MO.FEaiStage = function FEaiStage(o){
-   o = MO.RClass.inherits(this, o, MO.FObject);
+MO.FEaiLoginStage = function FEaiLoginStage(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiStage);
    return o;
 }

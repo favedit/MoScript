@@ -3577,11 +3577,13 @@ with(MO){
       }
       return o._classes[n];
    }
-   MO.RClass.prototype.register = function RClass_register(v, a, r){
-      var n = RMethod.name(v.constructor);
-      this._classes[n].register(a);
-      var v = a.value();
-      return (v != null) ? v : r;
+   MO.RClass.prototype.register = function RClass_register(instance, annotation, defaultValue){
+      var o = this;
+      var name = RMethod.name(instance.constructor);
+      var clazz = o._classes[name];
+      clazz.register(annotation);
+      var value = annotation.value();
+      return (defaultValue != null) ? defaultValue : value;
    }
    MO.RClass.prototype.createBase = function RClass_createBase(n){
       if(n){
@@ -20424,6 +20426,52 @@ with(MO){
       var o = this;
       o._compressData = null;
       o._data = null;
+   }
+}
+with(MO){
+   MO.FApplication = function FApplication(o){
+      o = RClass.inherits(this, o, FComponent);
+      o._activeStage    = RClass.register(o, new AGetter('_activeStage'));
+      o._stages         = RClass.register(o, new AGetter('_stages'));
+      o.construct       = FApplication_construct;
+      o.registerStage   = FApplication_registerStage;
+      o.unregisterStage = FApplication_unregisterStage;
+      o.selectStage     = FApplication_selectStage;
+      o.dispose         = FApplication_dispose;
+      return o;
+   }
+   MO.FApplication_construct = function FApplication_construct(){
+      var o = this;
+      o.__base.FComponent.construct.call(o);
+      o._stages = new TDictionary();
+   }
+   MO.FApplication_registerStage = function FApplication_registerStage(stage){
+      var o = this;
+      var code = stage.code();
+      o._stages.set(code, stage);
+   }
+   MO.FApplication_unregisterStage = function FApplication_unregisterStage(stage){
+      var o = this;
+      var code = stage.code();
+      o._stages.set(code, null);
+   }
+   MO.FApplication_selectStage = function FApplication_selectStage(code){
+      var o = this;
+      var stage = o._stages.get(code);
+      if(o._activeStage != stage){
+         if(o._activeStage){
+            o._activeStage.deactive();
+         }
+         stage.active();
+         o._activeStage = stage;
+      }
+      return stage;
+   }
+   MO.FApplication_dispose = function FApplication_dispose(){
+      var o = this;
+      o._stages = RObject.dispose(o._stages, true);
+      o._activeStage = null;
+      o.__base.FComponent.dispose.call(o);
    }
 }
 with(MO){

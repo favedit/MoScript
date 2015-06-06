@@ -3577,11 +3577,13 @@ with(MO){
       }
       return o._classes[n];
    }
-   MO.RClass.prototype.register = function RClass_register(v, a, r){
-      var n = RMethod.name(v.constructor);
-      this._classes[n].register(a);
-      var v = a.value();
-      return (v != null) ? v : r;
+   MO.RClass.prototype.register = function RClass_register(instance, annotation, defaultValue){
+      var o = this;
+      var name = RMethod.name(instance.constructor);
+      var clazz = o._classes[name];
+      clazz.register(annotation);
+      var value = annotation.value();
+      return (defaultValue != null) ? defaultValue : value;
    }
    MO.RClass.prototype.createBase = function RClass_createBase(n){
       if(n){

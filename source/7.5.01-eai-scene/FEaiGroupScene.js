@@ -1,11 +1,11 @@
 //==========================================================
-// <T>公司舞台。</T>
+// <T>集团舞台。</T>
 //
 // @class
 // @author maocy
 // @history 150604
 //==========================================================
-MO.FEaiCompanyStage = function FEaiCompanyStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
+MO.FEaiGroupScene = function FEaiGroupScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
    return o;
 }
