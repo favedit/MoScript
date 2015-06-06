@@ -7,7 +7,7 @@
    // @version 150104
    //==========================================================
    MO.FHttpConnection = function FHttpConnection(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
+      o = RClass.inherits(this, o, FObject, MListenerLoad, MListenerProcess);
       //..........................................................
       // @attribute
       o._asynchronous        = false;

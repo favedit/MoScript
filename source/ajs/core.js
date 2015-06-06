@@ -906,14 +906,18 @@ with(MO){
       o = RClass.inherits(this, o, MListener);
       o.addProcessListener     = MListenerProcess_addProcessListener;
       o.removeProcessListener  = MListenerProcess_removeProcessListener;
+      o.clearProcessListeners  = MListenerProcess_clearProcessListeners;
       o.processProcessListener = MListenerProcess_processProcessListener;
       return o;
    }
-   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(w, m){
-      return this.addListener(EEvent.Process, w, m);
+   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(owner, process){
+      return this.addListener(EEvent.Process, owner, process);
    }
-   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(w, m){
-      this.removeListener(EEvent.Process, w, m);
+   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(owner, process){
+      this.removeListener(EEvent.Process, owner, process);
+   }
+   MO.MListenerProcess_clearProcessListeners = function MListenerProcess_clearProcessListeners(){
+      this.clearListeners(EEvent.Process);
    }
    MO.MListenerProcess_processProcessListener = function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
       this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
@@ -1033,8 +1037,8 @@ with(MO){
    }
    MO.SEvent_dispose = function SEvent_dispose(){
       var o = this;
-      for(var n in o){
-         o[n] = null;
+      for(var name in o){
+         o[name] = null;
       }
    }
 }
@@ -1492,7 +1496,7 @@ with(MO){
 }
 with(MO){
    MO.FHttpConnection = function FHttpConnection(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
+      o = RClass.inherits(this, o, FObject, MListenerLoad, MListenerProcess);
       o._asynchronous        = false;
       o._methodCd            = EHttpMethod.Get;
       o._contentCd           = EHttpContent.Binary;

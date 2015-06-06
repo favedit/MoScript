@@ -37,8 +37,8 @@
    //==========================================================
    MO.SEvent_dispose = function SEvent_dispose(){
       var o = this;
-      for(var n in o){
-         o[n] = null;
+      for(var name in o){
+         o[name] = null;
       }
    }
 }

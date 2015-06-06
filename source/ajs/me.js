@@ -964,6 +964,9 @@ MO.RMemory.prototype.free = function RMemory_free(value){
    var pool = value.__pool;
    MO.Assert.debugNotNull(pool);
    pool.free(value);
+   if(value.dispose){
+      value.dispose();
+   }
 }
 MO.RMemory.prototype.refresh = function RMemory_refresh(){
    CollectGarbage();
@@ -1292,85 +1295,29 @@ with(MO){
 with(MO){
    MO.AGetSet = function AGetSet(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = AGetSet_code;
-      o.build         = AGetSet_build;
-      o.load          = AGetSet_load;
-      o.save          = AGetSet_save;
-      o.toString      = AGetSet_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.GetSet, linker);
+      o.build = AGetSet_build;
       return o;
    }
-   MO.AGetSet_code = function AGetSet_code(){
-      return this._linker;
-   }
-   MO.AGetSet_build = function AGetSet_build(){
-   }
-   MO.AGetSet_load = function AGetSet_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.AGetSet_save = function AGetSet_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.AGetSet_toString = function AGetSet_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.AGetSet_build = function AGetSet_build(clazz, instance){
+      var o = this;
+      var getName = o._code;
+      instance[getName] = RMethod.makePropertyGet(o._name, getName);
+      var setName = 'set' + o._linker;
+      instance[setName] = RMethod.makePropertySet(o._name, setName);
    }
 }
 with(MO){
    MO.AGetter = function AGetter(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = AGetter_code;
-      o.build         = AGetter_build;
-      o.load          = AGetter_load;
-      o.save          = AGetter_save;
-      o.toString      = AGetter_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.Get, linker);
+      o.build = AGetter_build;
       return o;
    }
-   MO.AGetter_code = function AGetter_code(){
-      return this._linker;
-   }
-   MO.AGetter_build = function AGetter_build(){
-   }
-   MO.AGetter_load = function AGetter_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.AGetter_save = function AGetter_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.AGetter_toString = function AGetter_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.AGetter_build = function AGetter_build(clazz, instance){
+      var o = this;
+      var getName = o._code;
+      instance[getName] = RMethod.makePropertyGet(o._name, getName);
    }
 }
 with(MO){
@@ -1428,82 +1375,40 @@ with(MO){
 with(MO){
    MO.ASetter = function ASetter(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = ASetter_code;
-      o.build         = ASetter_build;
-      o.load          = ASetter_load;
-      o.save          = ASetter_save;
-      o.toString      = ASetter_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.Set, linker);
+      o.build = ASetter_build;
       return o;
    }
-   MO.ASetter_code = function ASetter_code(){
-      return this._linker;
-   }
-   MO.ASetter_build = function ASetter_build(){
-   }
-   MO.ASetter_load = function ASetter_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.ASetter_save = function ASetter_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.ASetter_toString = function ASetter_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.ASetter_build = function ASetter_build(clazz, instance){
+      var o = this;
+      var setName = 'set' + o._linker;
+      instance[setName] = RMethod.makePropertySet(o._name, setName);
    }
 }
 with(MO){
-   MO.ASource = function ASource(name, typeCd){
+   MO.ASource = function ASource(name, typeCd, linker){
       var o = this;
       AAnnotation.call(o, name);
       o._inherit      = false;
       o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
       o._typeCd       = typeCd;
-      o.code          = ASource_code;
+      o._code         = null;
+      o._linker       = null;
       o.build         = ASource_build;
-      o.load          = ASource_load;
-      o.save          = ASource_save;
       o.toString      = ASource_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
+      var name = o._name;
+      if(RString.startsWith(name, '_')){
+         name = name.substring(1);
       }
-      o._linker = code;
+      o._code = name;
+      if(linker == null){
+         o._linker = RString.firstUpper(name);
+      }else{
+         o._linker = linker;
+      }
       return o;
    }
-   MO.ASource_code = function ASource_code(){
-      return this._linker;
-   }
    MO.ASource_build = function ASource_build(){
-   }
-   MO.ASource_load = function ASource_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.ASource_save = function ASource_save(v, x){
-      x.set(this._linker, v[this._name]);
    }
    MO.ASource_toString = function ASource_toString(){
       return '<' + this._annotationCd + ',linker=' + this._linker + '>';
@@ -1796,20 +1701,28 @@ with(MO){
    }
    MO.TClass_build = function TClass_build(){
       var o = this;
-      for(var n in o.instance){
-         var v = o.instance[n];
-         if(v != null){
-            if((v.constructor == Function) && v.__virtual){
+      var instance = o.instance;
+      for(var name in instance){
+         var value = instance[name];
+         if(value != null){
+            if((value.constructor == Function) && value.__virtual){
                o._abstract = true;
                break;
             }
          }
       }
-      var ps = o._annotations[EAnnotation.Property];
-      if(ps){
-         for(var n in ps){
-            var p = ps[n];
-            p.build(o.instance);
+      var properties = o._annotations[EAnnotation.Property];
+      if(properties){
+         for(var name in properties){
+            var property = properties[name];
+            property.build(instance);
+         }
+      }
+      var sources = o._annotations[EAnnotation.Source];
+      if(sources){
+         for(var name in sources){
+            var source = sources[name];
+            source.build(o, instance);
          }
       }
    }
@@ -3490,105 +3403,81 @@ with(MO){
 with(MO){
    MO.RClass = function RClass(){
       var o = this;
-      o._codes         = new Array();
-      o._classes       = new Object();
-      o.isBase         = RClass_isBase;
-      o.isBaseName     = RClass_isBaseName;
-      o.isBaseDataName = RClass_isBaseDataName;
-      o.isBaseType     = RClass_isBaseType;
-      o.isBaseDataType = RClass_isBaseDataType;
-      o.isName         = RClass_isName;
-      o.isClass        = RClass_isClass;
-      o.typeOf         = RClass_typeOf;
-      o.safeTypeOf     = RClass_safeTypeOf;
-      o.checkClass     = RClass_checkClass;
-      o.code           = RClass_code;
-      o.name           = RClass_name;
-      o.inherits       = RClass_inherits;
-      o.forName        = RClass_forName;
-      o.find           = RClass_find;
-      o.register       = RClass_register;
-      o.createBase     = RClass_createBase;
-      o.createClass    = RClass_createClass;
-      o.create         = RClass_create;
-      o.createByName   = RClass_createByName;
-      o.innerCopy      = RClass_innerCopy;
-      o.build          = RClass_build;
-      o.free           = RClass_free;
-      o.dump           = RClass_dump;
+      o._codes   = new Array();
+      o._classes = new Object();
       return o;
    }
-   MO.RClass_isBase = function RClass_isBase(v){
-      if(v != null){
-         var n = typeof(v);
-         return RClass.isBaseName(n);
+   MO.RClass.prototype.isBase = function RClass_isBase(value){
+      if(value != null){
+         var typeName = typeof(value);
+         return RClass.isBaseName(typeName);
       }
       return false;
    }
-   MO.RClass_isBaseName = function RClass_isBaseName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseName = function RClass_isBaseName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
+         }else if(typeName == 'string'){
             return true;
-         }else if(n == 'function'){
+         }else if(typeName == 'function'){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isBaseDataName = function RClass_isBaseDataName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseDataName = function RClass_isBaseDataName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
-            return true;
-         }
-      }
-      return false;
-   }
-   MO.RClass_isBaseType = function RClass_isBaseType(c){
-      if(c != null){
-         if(c == Boolean){
-            return true;
-         }else if(c == Number){
-            return true;
-         }else if(c == Date){
-            return true;
-         }else if(c == String){
-            return true;
-         }else if(c == Function){
+         }else if(typeName == 'string'){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isBaseDataType = function RClass_isBaseDataType(c){
-      if(c != null){
-         if(c == Boolean){
+   MO.RClass.prototype.isBaseType = function RClass_isBaseType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
             return true;
-         }else if(c == Number){
+         }else if(clazz == Number){
             return true;
-         }else if(c == Date){
+         }else if(clazz == Date){
             return true;
-         }else if(c == String){
+         }else if(clazz == String){
+            return true;
+         }else if(clazz == Function){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isName = function RClass_isName(v, n){
-      return (this.name(v) == n);
+   MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
+            return true;
+         }else if(clazz == Number){
+            return true;
+         }else if(clazz == Date){
+            return true;
+         }else if(clazz == String){
+            return true;
+         }
+      }
+      return false;
    }
-   MO.RClass_isClass = function RClass_isClass(v, c){
+   MO.RClass.prototype.isName = function RClass_isName(value, name){
+      return (this.name(value) == name);
+   }
+   MO.RClass.prototype.isClass = function RClass_isClass(v, c){
       if(v && c){
          var o = this;
          var n = o.name(c);
@@ -3600,13 +3489,13 @@ with(MO){
       }
       return false;
    }
-   MO.RClass_typeOf = function RClass_typeOf(o){
+   MO.RClass.prototype.typeOf = function RClass_typeOf(o){
       if(o && o.constructor){
          return RString.mid(o.constructor.toString(), 'function ', '(');
       }
       return 'Null';
    }
-   MO.RClass_safeTypeOf = function RClass_safeTypeOf(v, safe){
+   MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
       if(v == null){
          return 'Null';
       }
@@ -3640,12 +3529,12 @@ with(MO){
       }
       return 'Unknown';
    }
-   MO.RClass_checkClass = function RClass_checkClass(v, c){
+   MO.RClass.prototype.checkClass = function RClass_checkClass(v, c){
       if(!this.isClass(v, c)){
          throw new Error('Invalid class ' + o.name(o) + '<>' + o.name(c));
       }
    }
-   MO.RClass_code = function RClass_code(v){
+   MO.RClass.prototype.code = function RClass_code(v){
       var c = this._codes;
       var l = c.length;
       for(var n = 0; n < l; n++){
@@ -3656,7 +3545,7 @@ with(MO){
       c[l] = v;
       return l;
    }
-   MO.RClass_name = function RClass_name(v){
+   MO.RClass.prototype.name = function RClass_name(v){
       if(v){
          if(v.__name){
             return v.__name;
@@ -3674,7 +3563,7 @@ with(MO){
       }
       return null;
    }
-   MO.RClass_inherits = function RClass_inherits(s, p){
+   MO.RClass.prototype.inherits = function RClass_inherits(s, p){
       var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
@@ -3684,7 +3573,7 @@ with(MO){
       }
       return r;
    }
-   MO.RClass_forName = function RClass_forName(n){
+   MO.RClass.prototype.forName = function RClass_forName(n){
       var r = null;
       if(n != null){
          var o = this;
@@ -3696,7 +3585,7 @@ with(MO){
       }
       return r;
    }
-   MO.RClass_find = function RClass_find(v){
+   MO.RClass.prototype.find = function RClass_find(v){
       var o = this;
       var n = null;
       if(v != null){
@@ -3710,20 +3599,20 @@ with(MO){
       }
       return o._classes[n];
    }
-   MO.RClass_register = function RClass_register(v, a, r){
+   MO.RClass.prototype.register = function RClass_register(v, a, r){
       var n = RMethod.name(v.constructor);
       this._classes[n].register(a);
       var v = a.value();
       return (v != null) ? v : r;
    }
-   MO.RClass_createBase = function RClass_createBase(n){
+   MO.RClass.prototype.createBase = function RClass_createBase(n){
       if(n){
          var s = 'function ' + n + '(){return this;} new ' + n + '();';
          return eval(s);
       }
       return null;
    }
-   MO.RClass_createClass = function RClass_createClass(className){
+   MO.RClass.prototype.createClass = function RClass_createClass(className){
       var o = this;
       var clazz = o._classes[className] = new TClass();
       clazz.name = className;
@@ -3732,7 +3621,7 @@ with(MO){
       eval(className)(clazz.clazz);
       return clazz;
    }
-   MO.RClass_create = function RClass_create(n){
+   MO.RClass.prototype.create = function RClass_create(n){
       var o = this;
       var t = typeof(n);
       if(t == 'function'){
@@ -3742,7 +3631,7 @@ with(MO){
       }
       return o.createByName(n);
    }
-   MO.RClass_createByName = function RClass_createByName(n){
+   MO.RClass.prototype.createByName = function RClass_createByName(n){
       var o = this;
       var c = o.forName(n);
       if(!c){
@@ -3750,7 +3639,7 @@ with(MO){
       }
       return c.newInstance();
    }
-   MO.RClass_innerCopy = function RClass_innerCopy(s, t){
+   MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
       if((s != null) && (t != null)){
          for(var n in s){
             var v = s[n];
@@ -3780,8 +3669,9 @@ with(MO){
          }
       }
    }
-   MO.RClass_build = function RClass_build(c){
-      var sbs = c.clazz.__inherits;
+   MO.RClass.prototype.build = function RClass_build(clazz){
+      var o = this;
+      var sbs = clazz.clazz.__inherits;
       if(sbs && (sbs.constructor == Array)){
          var finded = false;
          var sbl = sbs.length;
@@ -3789,14 +3679,14 @@ with(MO){
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(this, null, 'Parent class is too many. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
-               c.parent = RClass.forName(name);
+               clazz.parent = RClass.forName(name);
                finded = true;
             }
          }
       }
-      var o = c.instance = new c.base.constructor();
+      var instance = clazz.instance = new clazz.base.constructor();
       if(sbs && (sbs.constructor == Array)){
          var sbl = sbs.length;
          for(var i = 0; i < sbl; i++){
@@ -3804,29 +3694,29 @@ with(MO){
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(this, null, 'Parent class is not exists. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
-               RClass.innerCopy(m.instance, o);
-               c.assign(m);
+               RClass.innerCopy(m.instance, instance);
+               clazz.assign(m);
             }
          }
       }
-      if(c.parent){
-         this.innerCopy(c.parent.instance, o);
-         c.assign(c.parent);
+      if(clazz.parent){
+         o.innerCopy(clazz.parent.instance, instance);
+         clazz.assign(clazz.parent);
       }
-      if(!o.__base){
-         o.__base = new TClassBase();
+      if(!instance.__base){
+         instance.__base = new TClassBase();
       }
-      o.__base[c.name] = new c.base.constructor();
-      var cf = c.clazz;
-      for(var n in cf){
-         if(n != '__base'){
-            if((cf[n] == null) && (o[n] == null)){
-               o[n] = null;
-            }else if(cf[n] != null){
-               if((o[n] == null) || ((o[n] != null) && cf[n] != o[n])){
-                  o[n] = cf[n];
+      instance.__base[clazz.name] = new clazz.base.constructor();
+      var cf = clazz.clazz;
+      for(var name in cf){
+         if(name != '__base'){
+            if((cf[name] == null) && (instance[name] == null)){
+               instance[name] = null;
+            }else if(cf[name] != null){
+               if((instance[name] == null) || ((instance[name] != null) && cf[name] != instance[name])){
+                  instance[name] = cf[name];
                }
             }
          }
@@ -3836,38 +3726,38 @@ with(MO){
          for(var i = 0; i < sbl; i++){
             var name = sbs[i];
             var bcls = RClass.forName(name);
-            var base = o.__base[name] = new bcls.base.constructor();
+            var base = instance.__base[name] = new bcls.base.constructor();
             var cf = bcls.instance;
-            for(var n in cf){
-               if(n != '__base'){
-                  var cfn = cf[n];
-                  var ofn = o[n];
+            for(var name in cf){
+               if(name != '__base'){
+                  var cfn = cf[name];
+                  var ofn = instance[name];
                   if((cfn != null) && (ofn != null) && (cfn != ofn)){
                      if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                        base[n] = cf[n];
+                        base[name] = cf[name];
                      }
                   }
                }
             }
          }
       }
-      c.build();
+      clazz.build();
       if(MO.Runtime.isRelease()){
-         for(var n in c.instance){
-            var v = c.instance[n];
-            if(v == null){
-               delete c.instance[n];
+         for(var name in clazz.instance){
+            var value = clazz.instance[name];
+            if(value == null){
+               delete clazz.instance[name];
             }
          }
       }
    }
-   MO.RClass_free = function RClass_free(o){
+   MO.RClass.prototype.free = function RClass_free(o){
       var c = o.__class;
       if(c){
          c.free(o);
       }
    }
-   MO.RClass_dump = function RClass_dump(v){
+   MO.RClass.prototype.dump = function RClass_dump(v){
       var o = this;
       if(v == null){
          return '@null';
@@ -3892,6 +3782,7 @@ with(MO){
       return t + '@' + o.code(v);
    }
    MO.RClass = new RClass();
+   MO.Class = MO.RClass;
 }
 with(MO){
    MO.RConsole = function RConsole(){
@@ -5136,32 +5027,26 @@ with(MO){
 with(MO){
    MO.RMethod = function RMethod(){
       var o = this;
-      o._virtuals  = new Object();
-      o.isFunction = RMethod_isFunction;
-      o.isEmpty    = RMethod_isEmpty;
-      o.isVirtual  = RMethod_isVirtual;
-      o.name       = RMethod_name;
-      o.fullName   = RMethod_fullName;
-      o.empty      = RMethod_empty;
-      o.emptyTrue  = RMethod_emptyTrue;
-      o.emptyFalse = RMethod_emptyFalse;
-      o.emptyCall  = RMethod_emptyCall;
-      o.virtual    = RMethod_virtual;
+      o._virtuals   = new Object();
+      o._properties = new Object();
+      return o;
+   }
+   MO.RMethod.prototype.construct = function RMethod_construct(){
+      var o = this;
       o.empty.__empty = true;
       o.emptyTrue.__empty = true;
       o.emptyFalse.__empty = true;
-      return o;
    }
-   MO.RMethod_isFunction = function RMethod_isFunction(v){
+   MO.RMethod.prototype.isFunction = function RMethod_isFunction(v){
       return typeof(v) == 'function';
    }
-   MO.RMethod_isEmpty = function RMethod_isEmpty(v){
+   MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(v){
       return (v && v.__empty);
    }
-   MO.RMethod_isVirtual = function RMethod_isVirtual(v){
+   MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(v){
       return (v && v.__virtual);
    }
-   MO.RMethod_name = function RMethod_name(value){
+   MO.RMethod.prototype.name = function RMethod_name(value){
       if(value){
          if(typeof(value) == 'function'){
             if(value.__name){
@@ -5174,7 +5059,7 @@ with(MO){
       }
       return null;
    }
-   MO.RMethod_fullName = function RMethod_fullName(p){
+   MO.RMethod.prototype.fullName = function RMethod_fullName(p){
       if(p){
          if(p.constructor == Function){
             if(p.__fullname){
@@ -5187,29 +5072,57 @@ with(MO){
       }
       return null;
    }
-   MO.RMethod_empty = function RMethod_empty(){
+   MO.RMethod.prototype.empty = function RMethod_empty(){
    }
-   MO.RMethod_emptyTrue = function RMethod_emptyTrue(){
+   MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
       return true;
    }
-   MO.RMethod_emptyFalse = function RMethod_emptyFalse(){
+   MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
       return false;
    }
-   MO.RMethod_emptyCall = function RMethod_emptyCall(){
+   MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
    }
-   MO.RMethod_virtual = function RMethod_virtual(v, m){
+   MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
       var o = this;
-      var n = RClass.name(v) + '.' + m;
-      if(o._virtuals[n]){
-         return o._virtuals[n];
+      var method = null;
+      var code = RClass.name(value) + '.' + name;
+      if(o._virtuals[code]){
+         method = o._virtuals[code];
+      }else{
+         var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+         method = new Function(source);
+         method.__virtual = true;
+         method.__name = code;
+         o._virtuals[code] = method;
       }
-      var f = function(){throw new Error('Virtual method be called.(' + n + ')');};
-      f.__virtual = true;
-      f.__name = n;
-      o._virtuals[n] = f;
-      return f;
+      return method;
+   }
+   MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
+      var o = this;
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         var source = 'return this.'+ name +';';
+         method = new Function(source);
+         o._properties[methodName] = method;
+      }
+      return method;
+   }
+   MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
+      var o = this;
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         var source = 'this.'+ name +'=value;';
+         method = new Function('value', source);
+         o._properties[methodName] = method;
+      }
+      return method;
    }
    MO.RMethod = new RMethod();
+   MO.RMethod.construct();
 }
 with(MO){
    MO.RObject = function RObject(){
@@ -9829,14 +9742,18 @@ with(MO){
       o = RClass.inherits(this, o, MListener);
       o.addProcessListener     = MListenerProcess_addProcessListener;
       o.removeProcessListener  = MListenerProcess_removeProcessListener;
+      o.clearProcessListeners  = MListenerProcess_clearProcessListeners;
       o.processProcessListener = MListenerProcess_processProcessListener;
       return o;
    }
-   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(w, m){
-      return this.addListener(EEvent.Process, w, m);
+   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(owner, process){
+      return this.addListener(EEvent.Process, owner, process);
    }
-   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(w, m){
-      this.removeListener(EEvent.Process, w, m);
+   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(owner, process){
+      this.removeListener(EEvent.Process, owner, process);
+   }
+   MO.MListenerProcess_clearProcessListeners = function MListenerProcess_clearProcessListeners(){
+      this.clearListeners(EEvent.Process);
    }
    MO.MListenerProcess_processProcessListener = function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
       this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
@@ -9956,8 +9873,8 @@ with(MO){
    }
    MO.SEvent_dispose = function SEvent_dispose(){
       var o = this;
-      for(var n in o){
-         o[n] = null;
+      for(var name in o){
+         o[name] = null;
       }
    }
 }
@@ -10415,7 +10332,7 @@ with(MO){
 }
 with(MO){
    MO.FHttpConnection = function FHttpConnection(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
+      o = RClass.inherits(this, o, FObject, MListenerLoad, MListenerProcess);
       o._asynchronous        = false;
       o._methodCd            = EHttpMethod.Get;
       o._contentCd           = EHttpContent.Binary;
@@ -11911,6 +11828,62 @@ with(MO){
    }
 }
 with(MO){
+   MO.FEnvironment = function FEnvironment(o){
+      o = RClass.inherits(this, o, FObject);
+      o._name  = RClass.register(o, new AGetSet('_name'));
+      o._value = RClass.register(o, new AGetSet('_value'));
+      o.set    = FEnvironment_set;
+      return o;
+   }
+   MO.FEnvironment_set = function FEnvironment_set(name, value){
+      var o = this;
+      o._name = name;
+      o._value = value;
+   }
+}
+with(MO){
+   MO.FEnvironmentConsole = function FEnvironmentConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd      = EScope.Local;
+      o._environments = null;
+      o.construct     = FEnvironmentConsole_construct;
+      o.register      = FEnvironmentConsole_register;
+      o.registerValue = FEnvironmentConsole_registerValue;
+      o.find          = FEnvironmentConsole_find;
+      o.findValue     = FEnvironmentConsole_findValue;
+      return o;
+   }
+   MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._environments = new TDictionary();
+   }
+   MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
+      var o = this;
+      var name = environment.name();
+      o._environments.set(name, environment);
+   }
+   MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
+      var o = this;
+      var environment = MO.RClass.create(MO.FEnvironment);
+      environment.set(name, value);
+      o._environments.set(name, environment);
+      return environment;
+   }
+   MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
+      return this._environments.get(name);
+   }
+   MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
+      var o = this;
+      var value = null;
+      var environment = o._environments.get(name);
+      if(environment){
+         value = environment.value();
+      }
+      return value;
+   }
+}
+with(MO){
    MO.FEvent = function FEvent(o){
       o = RClass.inherits(this, o, FObject);
       o._owner      = null;
@@ -12024,13 +11997,15 @@ with(MO){
       o.onLoad    = FHttpConsole_onLoad;
       o.construct = FHttpConsole_construct;
       o.alloc     = FHttpConsole_alloc;
+      o.free      = FHttpConsole_free;
       o.send      = FHttpConsole_send;
+      o.sendAsync = FHttpConsole_sendAsync;
       o.dispose   = FHttpConsole_dispose;
       return o;
    }
-   MO.FHttpConsole_onLoad = function FHttpConsole_onLoad(p){
+   MO.FHttpConsole_onLoad = function FHttpConsole_onLoad(connection){
       var o = this;
-      o._pool.free(p);
+      o._pool.free(connection);
    }
    MO.FHttpConsole_construct = function FHttpConsole_construct(){
       var o = this;
@@ -12039,20 +12014,31 @@ with(MO){
    }
    MO.FHttpConsole_alloc = function FHttpConsole_alloc(){
       var o = this;
-      var p = o._pool;
-      if(!p.hasFree()){
-         var c = RClass.create(FHttpConnection);
-         c._asynchronous = true;
-         o._pool.push(c);
+      var pool = o._pool;
+      if(!pool.hasFree()){
+         var connection = RClass.create(FHttpConnection);
+         connection._asynchronous = true;
+         o._pool.push(connection);
       }
-      var c = p.alloc();
-      c.clearLoadListeners();
-      c.addLoadListener(o, o.onLoad);
-      return c;
+      var connection = pool.alloc();
+      connection.clearLoadListeners();
+      connection.clearProcessListeners();
+      connection.addLoadListener(o, o.onLoad);
+      return connection;
+   }
+   MO.FHttpConsole_free = function FHttpConsole_free(connection){
+      this._pool.free(connection);
    }
    MO.FHttpConsole_send = function FHttpConsole_send(url, data){
       var o = this;
       var connection = o.alloc();
+      connection.send(url, data);
+      return connection;
+   }
+   MO.FHttpConsole_sendAsync = function FHttpConsole_sendAsync(url, data){
+      var o = this;
+      var connection = o.alloc();
+      connection._asynchronous = true;
       connection.send(url, data);
       return connection;
    }
@@ -12076,6 +12062,49 @@ with(MO){
    }
    MO.FIdleConsole_construct = function FIdleConsole_construct(){
       var o = this;
+   }
+}
+with(MO){
+   MO.FJsonConsole = function FJsonConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd  = EScope.Local;
+      o.onLoad    = FJsonConsole_onLoad;
+      o.construct = FJsonConsole_construct;
+      o.send      = FJsonConsole_send;
+      o.sendAsync = FJsonConsole_sendAsync;
+      return o;
+   }
+   MO.FJsonConsole_construct = function FJsonConsole_construct(){
+   }
+   MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
+      var o = this;
+      var source = connection.outputData();
+      var content = JSON.parse(source);
+      var event = MO.Memory.alloc(SEvent);
+      event.connection = connection;
+      event.content = content;
+      connection.processProcessListener(event);
+      MO.Memory.free(event);
+   }
+   MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+      var o = this;
+      var console = RConsole.find(FHttpConsole);
+      var connection = console.alloc();
+      connection._asynchronous = false;
+      connection._contentCd = EHttpContent.Text;
+      connection.addLoadListener(o, o.onLoad);
+      var result = connection.send(url, data);
+      console.free(connection);
+      return result;
+   }
+   MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
+      var o = this;
+      var connection = RConsole.find(FHttpConsole).alloc();
+      connection._asynchronous = true;
+      connection._contentCd = EHttpContent.Text;
+      connection.addLoadListener(o, o.onLoad);
+      connection.send(url, data);
+      return connection;
    }
 }
 with(MO){
@@ -12763,39 +12792,39 @@ with(MO){
    }
    MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
       var o = this;
-      var a = null;
-      var cs = o._connections;
-      for(var n = cs.count - 1; n >= 0; n--){
-         var c = cs.get(n);
-         if(c._statusFree){
-            a = c;
+      var alloc = null;
+      var connections = o._connections;
+      for(var n = connections.count - 1; n >= 0; n--){
+         var connection = connections.get(n);
+         if(connection._statusFree){
+            alloc = connection;
             break;
          }
       }
-      if(!a){
-         a = RClass.create(FXmlConnection);
-         cs.push(a);
-         a.onLoad = o.onLoad;
+      if(!alloc){
+         alloc = RClass.create(FXmlConnection);
+         connections.push(alloc);
+         alloc.onLoad = o.onLoad;
       }
-      a._statusFree = false;
-      a.clearLoadListeners();
-      return a;
+      alloc._statusFree = false;
+      alloc.clearLoadListeners();
+      return alloc;
    }
    MO.FXmlConsole_send = function FXmlConsole_send(u, d){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = false;
-      var r = c.send(u, d);
-      c._statusFree = true;
+      var connection = o.alloc();
+      connection._asynchronous = false;
+      var r = connection.send(u, d);
+      connection._statusFree = true;
       return r;
    }
    MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      c.send(u, d);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      connection.send(u, d);
+      return connection;
    }
    MO.FXmlConsole_load = function FXmlConsole_load(u, d, p){
       var o = this;
@@ -12803,11 +12832,11 @@ with(MO){
       if(v){
          return v;
       }
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      v = c._cache = RClass.create(FXmlData);
-      c.send(u, d);
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      v = connection._cache = RClass.create(FXmlData);
+      connection.send(u, d);
       o._caches.set(u, v);
       return v;
    }
@@ -12816,11 +12845,11 @@ with(MO){
       if(p.constructor != SXmlEvent){
          throw new TError('Parameter type is invalid.');
       }
-      var c = o.alloc();
-      c._asynchronous = true;
-      c.send(p.url, p.inputDocument);
-      c.addLoadListener(p, p.process);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection.send(p.url, p.inputDocument);
+      connection.addLoadListener(p, p.process);
+      return connection;
    }
 }
 MO.EBrowser = new function EBrowser(){
@@ -17702,6 +17731,20 @@ MO.EG3dDepthMode = new function EG3dDepthMode(){
    o.Always = 7;
    return o;
 }
+MO.EG3dDrawMode = new function EG3dDrawMode(){
+   var o = this;
+   o.Unknown = 0;
+   o.Points = 1;
+   o.Lines = 2;
+   o.LineStrip = 3;
+   o.LineLoop = 4;
+   o.Triangles = 5;
+   o.TriangleStrip = 6;
+   o.TriangleFan = 7;
+   o.Quads = 8;
+   o.QuadStrip = 9;
+   return o;
+}
 MO.EG3dFillMode = new function EG3dFillMode(){
    var o = this;
    o.Unknown = 0;
@@ -18064,12 +18107,12 @@ with(MO){
       o = RClass.inherits(this, o, FG3dBuffer);
       o._strideCd     = EG3dIndexStride.Uint16;
       o._count        = 0;
-      o._fillModeCd   = EG3dFillMode.Face;
+      o._drawModeCd   = EG3dDrawMode.Triangles;
       o._lineWidth    = 1;
       o.strideCd      = FG3dIndexBuffer_strideCd;
       o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
-      o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
-      o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+      o.drawModeCd    = FG3dIndexBuffer_drawModeCd;
+      o.setDrawModeCd = FG3dIndexBuffer_setDrawModeCd;
       o.lineWidth     = FG3dIndexBuffer_lineWidth;
       o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
       o.count         = FG3dIndexBuffer_count;
@@ -18082,11 +18125,11 @@ with(MO){
    MO.FG3dIndexBuffer_setStrideCd = function FG3dIndexBuffer_setStrideCd(strideCd){
       this._strideCd = strideCd;
    }
-   MO.FG3dIndexBuffer_fillModeCd = function FG3dIndexBuffer_fillModeCd(){
-      return this._fillModeCd;
+   MO.FG3dIndexBuffer_drawModeCd = function FG3dIndexBuffer_drawModeCd(){
+      return this._drawModeCd;
    }
-   MO.FG3dIndexBuffer_setFillModeCd = function FG3dIndexBuffer_setFillModeCd(fillModeCd){
-      this._fillModeCd = fillModeCd;
+   MO.FG3dIndexBuffer_setDrawModeCd = function FG3dIndexBuffer_setDrawModeCd(drawModeCd){
+      this._drawModeCd = drawModeCd;
    }
    MO.FG3dIndexBuffer_lineWidth = function FG3dIndexBuffer_lineWidth(){
       return this._lineWidth;
@@ -19994,20 +20037,32 @@ with(MO){
       if(!result){
           return result;
       }
-      var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
-      if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
-         graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
-      }else{
-         graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
+      var strideCd = indexBuffer.strideCd();
+      var strideValue = RWglUtility.convertIndexStride(graphic, strideCd);
+      var offsetValue = 0;
+      switch(strideCd){
+         case EG3dIndexStride.Uint16:
+            offsetValue = offset << 1;
+            break;
+         case EG3dIndexStride.Uint32:
+            offsetValue = offset << 2;
+            break;
       }
+      var drawModeCd = indexBuffer.drawModeCd();
+      var drawModeValue = RWglUtility.convertDrawMode(graphic, drawModeCd);
+      switch(drawModeCd){
+         case EG3dDrawMode.Line:
+            break;
+      }
+      graphic.drawElements(drawModeValue, count, strideValue, offsetValue);
       o._statistics._frameTriangleCount += count;
       o._statistics._frameDrawCount++;
-      result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+      result = o.checkError("drawElements", "Draw triangles failure. (index={1}, offset={2}, count={3})", indexBuffer, offset, count);
       if(!result){
           return result;
       }
       graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
-      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index={1}, offset={2}, count={3})", indexBuffer, offset, count);
       if(!result){
           return result;
       }
@@ -20785,108 +20840,124 @@ with(MO){
 }
 with(MO){
    MO.RWglUtility = function RWglUtility(){
-      var o = this;
-      o.convertFillMode      = RWglUtility_convertFillMode;
-      o.convertCullMode      = RWglUtility_convertCullMode;
-      o.convertDepthMode     = RWglUtility_convertDepthMode;
-      o.convertBlendFactors  = RWglUtility_convertBlendFactors;
-      o.convertIndexStride   = RWglUtility_convertIndexStride;
-      o.convertSamplerFilter = RWglUtility_convertSamplerFilter;
-      return o;
+      return this;
    }
-   MO.RWglUtility_convertFillMode = function RWglUtility_convertFillMode(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertFillMode = function RWglUtility_convertFillMode(graphic, fillCd){
+      switch(fillCd){
          case EG3dFillMode.Point:
-            return g.POINT;
+            return graphic.POINT;
          case EG3dFillMode.Line:
-            return g.LINE;
+            return graphic.LINE;
          case EG3dFillMode.Face:
-            return g.FILL;
+            return graphic.FILL;
       }
-      throw new TError(this, "Convert fill mode failure. (fill_cd={1})", v);
+      throw new TError(this, "Convert fill mode failure. (fill_cd={1})", fillCd);
    }
-   MO.RWglUtility_convertCullMode = function RWglUtility_convertCullMode(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertDrawMode = function RWglUtility_convertDrawMode(graphic, drawCd){
+      switch(drawCd){
+         case EG3dDrawMode.Point:
+            return graphic.POINTS;
+         case EG3dDrawMode.Lines:
+            return graphic.LINES;
+         case EG3dDrawMode.LineStrip:
+            return graphic.LINE_STRIP;
+         case EG3dDrawMode.LineLoop:
+            return graphic.LINE_LOOP;
+         case EG3dDrawMode.Triangles:
+            return graphic.TRIANGLES;
+         case EG3dDrawMode.TriangleStrip:
+            return graphic.TRIANGLE_STRIP;
+         case EG3dDrawMode.TriangleFan:
+            return graphic.TRIANGLE_FAN;
+         case EG3dDrawMode.Quads:
+            return graphic.QUADS;
+         case EG3dDrawMode.QuadStrip:
+            return graphic.QUAD_STRIP;
+      }
+      throw new TError(this, "Convert draw mode failure. (draw_cd={1})", drawCd);
+   }
+   MO.RWglUtility.prototype.convertCullMode = function RWglUtility_convertCullMode(graphic, cullCd){
+      switch(cullCd){
          case EG3dCullMode.Front:
-            return g.FRONT;
+            return graphic.FRONT;
          case EG3dCullMode.Back:
-            return g.BACK;
+            return graphic.BACK;
          case EG3dCullMode.Both:
-            return g.FRONT_AND_BACK;
+            return graphic.FRONT_AND_BACK;
       }
-      throw new TError(this, "Convert cull mode failure. (cull_cd={1})", v);
+      throw new TError(this, "Convert cull mode failure. (cull_cd={1})", cullCd);
    }
-   MO.RWglUtility_convertDepthMode = function RWglUtility_convertDepthMode(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertDepthMode = function RWglUtility_convertDepthMode(graphic, depthCd){
+      switch(depthCd){
          case EG3dDepthMode.Equal:
-            return g.EQUAL;
+            return graphic.EQUAL;
          case EG3dDepthMode.NotEqual:
-            return g.NOTEQUAL;
+            return graphic.NOTEQUAL;
          case EG3dDepthMode.Less:
-            return g.LESS;
+            return graphic.LESS;
          case EG3dDepthMode.LessEqual:
-            return g.LEQUAL;
+            return graphic.LEQUAL;
          case EG3dDepthMode.Greater:
-            return g.GREATER;
+            return graphic.GREATER;
          case EG3dDepthMode.GreaterEqual:
-            return g.GEQUAL;
+            return graphic.GEQUAL;
          case EG3dDepthMode.Always:
-            return g.ALWAYS;
+            return graphic.ALWAYS;
       }
-      throw new TError(this, "Convert depth mode failure. (depth_cd={1})", v);
+      throw new TError(this, "Convert depth mode failure. (depth_cd={1})", depthCd);
    }
-   MO.RWglUtility_convertBlendFactors = function RWglUtility_convertBlendFactors(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertBlendFactors = function RWglUtility_convertBlendFactors(graphic, blendCd){
+      switch(blendCd){
          case EG3dBlendMode.Zero:
-            return g.ZERO;
+            return graphic.ZERO;
          case EG3dBlendMode.One:
-            return g.ONE;
+            return graphic.ONE;
          case EG3dBlendMode.SrcColor:
-            return g.SRC_COLOR;
+            return graphic.SRC_COLOR;
          case EG3dBlendMode.OneMinusSrcColor:
-            return g.ONE_MINUS_SRC_COLOR;
+            return graphic.ONE_MINUS_SRC_COLOR;
          case EG3dBlendMode.DstColor:
-            return g.DST_COLOR;
+            return graphic.DST_COLOR;
          case EG3dBlendMode.OneMinusDstColor:
-            return g.ONE_MINUS_DST_COLOR;
+            return graphic.ONE_MINUS_DST_COLOR;
          case EG3dBlendMode.SrcAlpha:
-            return g.SRC_ALPHA;
+            return graphic.SRC_ALPHA;
          case EG3dBlendMode.OneMinusSrcAlpha:
-            return g.ONE_MINUS_SRC_ALPHA;
+            return graphic.ONE_MINUS_SRC_ALPHA;
          case EG3dBlendMode.DstAlpha:
-            return g.DST_ALPHA;
+            return graphic.DST_ALPHA;
          case EG3dBlendMode.OneMinusDstAlpha:
-            return g.ONE_MINUS_DST_ALPHA;
+            return graphic.ONE_MINUS_DST_ALPHA;
          case EG3dBlendMode.SrcAlphaSaturate:
-            return g.SRC_ALPHA_SATURATE;
+            return graphic.SRC_ALPHA_SATURATE;
       }
-      throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
+      throw new TError(this, "Convert blend factors failure. (blend_cd={1})", blendCd);
    }
-   MO.RWglUtility_convertIndexStride = function RWglUtility_convertIndexStride(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertIndexStride = function RWglUtility_convertIndexStride(graphic, strideCd){
+      switch(strideCd){
          case EG3dIndexStride.Uint16:
-            return g.UNSIGNED_SHORT;
+            return graphic.UNSIGNED_SHORT;
          case EG3dIndexStride.Uint32:
-            return g.UNSIGNED_INT;
+            return graphic.UNSIGNED_INT;
       }
-      throw new TError(this, "Convert index stride failure. (stride_cd={1})", v);
+      throw new TError(this, "Convert index stride failure. (stride_cd={1})", strideCd);
    }
-   MO.RWglUtility_convertSamplerFilter = function RWglUtility_convertSamplerFilter(g, v){
-      switch(v){
+   MO.RWglUtility.prototype.convertSamplerFilter = function RWglUtility_convertSamplerFilter(graphic, filterCd){
+      switch(filterCd){
          case EG3dSamplerFilter.Unknown:
             return 0;
          case EG3dSamplerFilter.Nearest:
-            return g.NEAREST;
+            return graphic.NEAREST;
          case EG3dSamplerFilter.Linear:
-            return g.LINEAR;
+            return graphic.LINEAR;
          case EG3dSamplerFilter.Repeat:
-            return g.REPEAT;
+            return graphic.REPEAT;
          case EG3dSamplerFilter.ClampToEdge:
-            return g.CLAMP_TO_EDGE;
+            return graphic.CLAMP_TO_EDGE;
          case EG3dSamplerFilter.ClampToBorder:
-            return g.CLAMP_TO_BORDER;
+            return graphic.CLAMP_TO_BORDER;
       }
-      throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", v);
+      throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", filterCd);
    }
    MO.RWglUtility = new RWglUtility();
 }

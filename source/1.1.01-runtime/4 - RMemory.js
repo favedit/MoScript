@@ -77,6 +77,10 @@ MO.RMemory.prototype.free = function RMemory_free(value){
    var pool = value.__pool;
    MO.Assert.debugNotNull(pool);
    pool.free(value);
+   // 释放资源
+   if(value.dispose){
+      value.dispose();
+   }
 }
 
 //==========================================================

@@ -13,14 +13,14 @@ with(MO){
       o._strideCd     = EG3dIndexStride.Uint16;
       o._count        = 0;
       // @attribute
-      o._fillModeCd   = EG3dFillMode.Face;
+      o._drawModeCd   = EG3dDrawMode.Triangles;
       o._lineWidth    = 1;
       //..........................................................
       // @method
       o.strideCd      = FG3dIndexBuffer_strideCd;
       o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
-      o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
-      o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+      o.drawModeCd    = FG3dIndexBuffer_drawModeCd;
+      o.setDrawModeCd = FG3dIndexBuffer_setDrawModeCd;
       o.lineWidth     = FG3dIndexBuffer_lineWidth;
       o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
       o.count         = FG3dIndexBuffer_count;
@@ -50,23 +50,23 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得填充模式。</T>
+   // <T>获得绘制模式。</T>
    //
    // @method
-   // @return EG3dFillMode 填充模式
+   // @return EG3dDrawMode 填充模式
    //==========================================================
-   MO.FG3dIndexBuffer_fillModeCd = function FG3dIndexBuffer_fillModeCd(){
-      return this._fillModeCd;
+   MO.FG3dIndexBuffer_drawModeCd = function FG3dIndexBuffer_drawModeCd(){
+      return this._drawModeCd;
    }
 
    //==========================================================
-   // <T>设置填充模式。</T>
+   // <T>设置绘制模式。</T>
    //
    // @method
-   // @param fillModeCd:EG3dFillMode 填充模式
+   // @param drawModeCd:EG3dDrawMode 填充模式
    //==========================================================
-   MO.FG3dIndexBuffer_setFillModeCd = function FG3dIndexBuffer_setFillModeCd(fillModeCd){
-      this._fillModeCd = fillModeCd;
+   MO.FG3dIndexBuffer_setDrawModeCd = function FG3dIndexBuffer_setDrawModeCd(drawModeCd){
+      this._drawModeCd = drawModeCd;
    }
 
    //==========================================================

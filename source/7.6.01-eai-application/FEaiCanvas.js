@@ -34,6 +34,7 @@ with(MO){
       o.construct           = FEaiCanvas_construct;
       // @method
       o.build               = FEaiCanvas_build;
+      o.setPanel            = FEaiCanvas_setPanel;
       o.loadByGuid          = FEaiCanvas_loadByGuid;
       o.loadByCode          = FEaiCanvas_loadByCode;
       // @method
@@ -48,13 +49,13 @@ with(MO){
    //==========================================================
    MO.FEaiCanvas_onEnterFrame = function FEaiCanvas_onEnterFrame(){
       var o = this;
-      var s = o._activeTemplate;
-      if(!s){
+      var stage = o._stage;
+      if(!stage){
          return;
       }
       //..........................................................
       // 按键处理
-      var c = s.camera();
+      var c = stage.camera();
       var d = 0.5;
       var r = 0.05;
       var kw = RKeyboard.isPress(EKeyCode.W);
@@ -97,7 +98,7 @@ with(MO){
       if(o._optionRotation){
          var r = o._rotation;
          // 旋转所有层
-         var ls = s.layers();
+         var ls = stage.layers();
          var c = ls.count();
          for(var i = 0; i < c; i++){
             var l = ls.value(i);
@@ -224,6 +225,28 @@ with(MO){
       var stage = o._stage = MO.RClass.create(MO.FEaiStage);
       stage.linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
+      // 注册舞台
+      RStage.register('eai.stage', stage);
+   }
+
+   //==========================================================
+   // <T>加载模板处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCanvas_setPanel = function FEaiCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
+      // 设置相机投影
+      var stage = o._stage;
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+      // 注册舞台
       RStage.register('eai.stage', stage);
    }
 

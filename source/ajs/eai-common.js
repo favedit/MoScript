@@ -1,3 +1,8 @@
+MO.EEaiConstant = new function EEaiConstant(){
+   var o = this;
+   o.ServiceHost = "eai.logic.service";
+   return o;
+}
 MO.EEaiStage = new function EEaiStage(){
    var o = this;
    o.Country     = 1;

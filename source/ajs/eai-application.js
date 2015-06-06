@@ -15,6 +15,7 @@ with(MO){
       o.onTemplateLoad      = FEaiCanvas_onTemplateLoad;
       o.construct           = FEaiCanvas_construct;
       o.build               = FEaiCanvas_build;
+      o.setPanel            = FEaiCanvas_setPanel;
       o.loadByGuid          = FEaiCanvas_loadByGuid;
       o.loadByCode          = FEaiCanvas_loadByCode;
       o.dispose             = FEaiCanvas_dispose;
@@ -22,11 +23,11 @@ with(MO){
    }
    MO.FEaiCanvas_onEnterFrame = function FEaiCanvas_onEnterFrame(){
       var o = this;
-      var s = o._activeTemplate;
-      if(!s){
+      var stage = o._stage;
+      if(!stage){
          return;
       }
-      var c = s.camera();
+      var c = stage.camera();
       var d = 0.5;
       var r = 0.05;
       var kw = RKeyboard.isPress(EKeyCode.W);
@@ -64,7 +65,7 @@ with(MO){
       c.update();
       if(o._optionRotation){
          var r = o._rotation;
-         var ls = s.layers();
+         var ls = stage.layers();
          var c = ls.count();
          for(var i = 0; i < c; i++){
             var l = ls.value(i);
@@ -138,6 +139,19 @@ with(MO){
       var stage = o._stage = MO.RClass.create(MO.FEaiStage);
       stage.linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
+      RStage.register('eai.stage', stage);
+   }
+   MO.FEaiCanvas_setPanel = function FEaiCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
+      var stage = o._stage;
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
       RStage.register('eai.stage', stage);
    }
    MO.FEaiCanvas_loadByGuid = function FEaiCanvas_loadByGuid(p){

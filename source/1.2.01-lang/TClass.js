@@ -232,12 +232,13 @@
    //==========================================================
    MO.TClass_build = function TClass_build(){
       var o = this;
+      var instance = o.instance;
       //..........................................................
       // 检查类中是否存在虚函数
-      for(var n in o.instance){
-         var v = o.instance[n];
-         if(v != null){
-            if((v.constructor == Function) && v.__virtual){
+      for(var name in instance){
+         var value = instance[name];
+         if(value != null){
+            if((value.constructor == Function) && value.__virtual){
                o._abstract = true;
                break;
             }
@@ -245,11 +246,20 @@
       }
       //..........................................................
       // 初始化属性对象
-      var ps = o._annotations[EAnnotation.Property];
-      if(ps){
-         for(var n in ps){
-            var p = ps[n];
-            p.build(o.instance);
+      var properties = o._annotations[EAnnotation.Property];
+      if(properties){
+         for(var name in properties){
+            var property = properties[name];
+            property.build(instance);
+         }
+      }
+      //..........................................................
+      // 生成自动函数
+      var sources = o._annotations[EAnnotation.Source];
+      if(sources){
+         for(var name in sources){
+            var source = sources[name];
+            source.build(o, instance);
          }
       }
    }

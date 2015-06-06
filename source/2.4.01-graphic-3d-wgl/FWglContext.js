@@ -1038,42 +1038,48 @@ with(MO){
       if(count == null){
          count = indexBuffer.count();
       }
-      // 绘制索引流
+      // 设置索引流
       graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
       result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
       if(!result){
           return result;
       }
-      var strideCd = RWglUtility.convertIndexStride(graphic, indexBuffer.strideCd());
-      //GL_POINTS,  
-      //GL_LINE_STRIP,  
-      //GL_LINE_LOOP,  
-      //GL_LINES,  
-      //GL_TRIANGLE_STRIP,  
-      //GL_TRIANGLE_FAN,  
-      //GL_TRIANGLES,  
-      //GL_QUAD_STRIP,  
-      //GL_QUADS, 
-      if(indexBuffer.fillModeCd() == EG3dFillMode.Line){
-         //if(indexBuffer._lineWidth){
-            //graphic.lineWidth(indexBuffer._lineWidth);
-         //}
-         //graphic.enable(graphic.BLEND);
-         //graphic.enable(graphic.LINE_SMOOTH);
-         //graphic.hint(graphic.LINE_SMOOTH_HINT, graphic.FASTEST);
-         //graphic.blendFunc(graphic.SRC_ALPHA, graphic.ONE_MINUS_SRC_ALPHA); 
-         graphic.drawElements(graphic.LINES, count, strideCd, 2 * offset);
-      }else{
-         graphic.drawElements(graphic.TRIANGLES, count, strideCd, 2 * offset);
+      // 计算位宽
+      var strideCd = indexBuffer.strideCd();
+      var strideValue = RWglUtility.convertIndexStride(graphic, strideCd);
+      var offsetValue = 0;
+      switch(strideCd){
+         case EG3dIndexStride.Uint16:
+            offsetValue = offset << 1;
+            break;
+         case EG3dIndexStride.Uint32:
+            offsetValue = offset << 2;
+            break;
       }
+      // 绘制处理
+      var drawModeCd = indexBuffer.drawModeCd();
+      var drawModeValue = RWglUtility.convertDrawMode(graphic, drawModeCd);
+      switch(drawModeCd){
+         case EG3dDrawMode.Line:
+            //if(indexBuffer._lineWidth){
+               //graphic.lineWidth(indexBuffer._lineWidth);
+            //}
+            //graphic.enable(graphic.BLEND);
+            //graphic.enable(graphic.LINE_SMOOTH);
+            //graphic.hint(graphic.LINE_SMOOTH_HINT, graphic.FASTEST);
+            //graphic.blendFunc(graphic.SRC_ALPHA, graphic.ONE_MINUS_SRC_ALPHA); 
+            break;
+      }
+      graphic.drawElements(drawModeValue, count, strideValue, offsetValue);
       o._statistics._frameTriangleCount += count;
       o._statistics._frameDrawCount++;
-      result = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+      result = o.checkError("drawElements", "Draw triangles failure. (index={1}, offset={2}, count={3})", indexBuffer, offset, count);
       if(!result){
           return result;
       }
+      // 清空索引流
       graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, null);
-      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d)", indexBuffer, offset, count);
+      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index={1}, offset={2}, count={3})", indexBuffer, offset, count);
       if(!result){
           return result;
       }

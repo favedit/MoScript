@@ -964,6 +964,9 @@ MO.RMemory.prototype.free = function RMemory_free(value){
    var pool = value.__pool;
    MO.Assert.debugNotNull(pool);
    pool.free(value);
+   if(value.dispose){
+      value.dispose();
+   }
 }
 MO.RMemory.prototype.refresh = function RMemory_refresh(){
    CollectGarbage();
@@ -1292,85 +1295,29 @@ with(MO){
 with(MO){
    MO.AGetSet = function AGetSet(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = AGetSet_code;
-      o.build         = AGetSet_build;
-      o.load          = AGetSet_load;
-      o.save          = AGetSet_save;
-      o.toString      = AGetSet_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.GetSet, linker);
+      o.build = AGetSet_build;
       return o;
    }
-   MO.AGetSet_code = function AGetSet_code(){
-      return this._linker;
-   }
-   MO.AGetSet_build = function AGetSet_build(){
-   }
-   MO.AGetSet_load = function AGetSet_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.AGetSet_save = function AGetSet_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.AGetSet_toString = function AGetSet_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.AGetSet_build = function AGetSet_build(clazz, instance){
+      var o = this;
+      var getName = o._code;
+      instance[getName] = RMethod.makePropertyGet(o._name, getName);
+      var setName = 'set' + o._linker;
+      instance[setName] = RMethod.makePropertySet(o._name, setName);
    }
 }
 with(MO){
    MO.AGetter = function AGetter(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = AGetter_code;
-      o.build         = AGetter_build;
-      o.load          = AGetter_load;
-      o.save          = AGetter_save;
-      o.toString      = AGetter_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.Get, linker);
+      o.build = AGetter_build;
       return o;
    }
-   MO.AGetter_code = function AGetter_code(){
-      return this._linker;
-   }
-   MO.AGetter_build = function AGetter_build(){
-   }
-   MO.AGetter_load = function AGetter_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.AGetter_save = function AGetter_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.AGetter_toString = function AGetter_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.AGetter_build = function AGetter_build(clazz, instance){
+      var o = this;
+      var getName = o._code;
+      instance[getName] = RMethod.makePropertyGet(o._name, getName);
    }
 }
 with(MO){
@@ -1428,82 +1375,40 @@ with(MO){
 with(MO){
    MO.ASetter = function ASetter(name, linker){
       var o = this;
-      AAnnotation.call(o, name);
-      o._inherit      = true;
-      o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
-      o._force        = false;
-      o.code          = ASetter_code;
-      o.build         = ASetter_build;
-      o.load          = ASetter_load;
-      o.save          = ASetter_save;
-      o.toString      = ASetter_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
-      }
-      o._linker = code;
+      ASource.call(o, name, ESource.Set, linker);
+      o.build = ASetter_build;
       return o;
    }
-   MO.ASetter_code = function ASetter_code(){
-      return this._linker;
-   }
-   MO.ASetter_build = function ASetter_build(){
-   }
-   MO.ASetter_load = function ASetter_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.ASetter_save = function ASetter_save(v, x){
-      x.set(this._linker, v[this._name]);
-   }
-   MO.ASetter_toString = function ASetter_toString(){
-      return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+   MO.ASetter_build = function ASetter_build(clazz, instance){
+      var o = this;
+      var setName = 'set' + o._linker;
+      instance[setName] = RMethod.makePropertySet(o._name, setName);
    }
 }
 with(MO){
-   MO.ASource = function ASource(name, typeCd){
+   MO.ASource = function ASource(name, typeCd, linker){
       var o = this;
       AAnnotation.call(o, name);
       o._inherit      = false;
       o._annotationCd = EAnnotation.Source;
-      o._linker       = null;
       o._typeCd       = typeCd;
-      o.code          = ASource_code;
+      o._code         = null;
+      o._linker       = null;
       o.build         = ASource_build;
-      o.load          = ASource_load;
-      o.save          = ASource_save;
       o.toString      = ASource_toString;
-      var code = null;
-      if(linker == null){
-         if(RString.startsWith(name, '_')){
-            code = name.substring(1);
-         }else{
-            code = name;
-         }
-         code = RString.toUnderline(code);
-      }else{
-         code = linker;
+      var name = o._name;
+      if(RString.startsWith(name, '_')){
+         name = name.substring(1);
       }
-      o._linker = code;
+      o._code = name;
+      if(linker == null){
+         o._linker = RString.firstUpper(name);
+      }else{
+         o._linker = linker;
+      }
       return o;
    }
-   MO.ASource_code = function ASource_code(){
-      return this._linker;
-   }
    MO.ASource_build = function ASource_build(){
-   }
-   MO.ASource_load = function ASource_load(v, x){
-      v[this._name] = x.get(this._linker);
-   }
-   MO.ASource_save = function ASource_save(v, x){
-      x.set(this._linker, v[this._name]);
    }
    MO.ASource_toString = function ASource_toString(){
       return '<' + this._annotationCd + ',linker=' + this._linker + '>';
@@ -1796,20 +1701,28 @@ with(MO){
    }
    MO.TClass_build = function TClass_build(){
       var o = this;
-      for(var n in o.instance){
-         var v = o.instance[n];
-         if(v != null){
-            if((v.constructor == Function) && v.__virtual){
+      var instance = o.instance;
+      for(var name in instance){
+         var value = instance[name];
+         if(value != null){
+            if((value.constructor == Function) && value.__virtual){
                o._abstract = true;
                break;
             }
          }
       }
-      var ps = o._annotations[EAnnotation.Property];
-      if(ps){
-         for(var n in ps){
-            var p = ps[n];
-            p.build(o.instance);
+      var properties = o._annotations[EAnnotation.Property];
+      if(properties){
+         for(var name in properties){
+            var property = properties[name];
+            property.build(instance);
+         }
+      }
+      var sources = o._annotations[EAnnotation.Source];
+      if(sources){
+         for(var name in sources){
+            var source = sources[name];
+            source.build(o, instance);
          }
       }
    }
@@ -3490,105 +3403,81 @@ with(MO){
 with(MO){
    MO.RClass = function RClass(){
       var o = this;
-      o._codes         = new Array();
-      o._classes       = new Object();
-      o.isBase         = RClass_isBase;
-      o.isBaseName     = RClass_isBaseName;
-      o.isBaseDataName = RClass_isBaseDataName;
-      o.isBaseType     = RClass_isBaseType;
-      o.isBaseDataType = RClass_isBaseDataType;
-      o.isName         = RClass_isName;
-      o.isClass        = RClass_isClass;
-      o.typeOf         = RClass_typeOf;
-      o.safeTypeOf     = RClass_safeTypeOf;
-      o.checkClass     = RClass_checkClass;
-      o.code           = RClass_code;
-      o.name           = RClass_name;
-      o.inherits       = RClass_inherits;
-      o.forName        = RClass_forName;
-      o.find           = RClass_find;
-      o.register       = RClass_register;
-      o.createBase     = RClass_createBase;
-      o.createClass    = RClass_createClass;
-      o.create         = RClass_create;
-      o.createByName   = RClass_createByName;
-      o.innerCopy      = RClass_innerCopy;
-      o.build          = RClass_build;
-      o.free           = RClass_free;
-      o.dump           = RClass_dump;
+      o._codes   = new Array();
+      o._classes = new Object();
       return o;
    }
-   MO.RClass_isBase = function RClass_isBase(v){
-      if(v != null){
-         var n = typeof(v);
-         return RClass.isBaseName(n);
+   MO.RClass.prototype.isBase = function RClass_isBase(value){
+      if(value != null){
+         var typeName = typeof(value);
+         return RClass.isBaseName(typeName);
       }
       return false;
    }
-   MO.RClass_isBaseName = function RClass_isBaseName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseName = function RClass_isBaseName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
+         }else if(typeName == 'string'){
             return true;
-         }else if(n == 'function'){
+         }else if(typeName == 'function'){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isBaseDataName = function RClass_isBaseDataName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseDataName = function RClass_isBaseDataName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
-            return true;
-         }
-      }
-      return false;
-   }
-   MO.RClass_isBaseType = function RClass_isBaseType(c){
-      if(c != null){
-         if(c == Boolean){
-            return true;
-         }else if(c == Number){
-            return true;
-         }else if(c == Date){
-            return true;
-         }else if(c == String){
-            return true;
-         }else if(c == Function){
+         }else if(typeName == 'string'){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isBaseDataType = function RClass_isBaseDataType(c){
-      if(c != null){
-         if(c == Boolean){
+   MO.RClass.prototype.isBaseType = function RClass_isBaseType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
             return true;
-         }else if(c == Number){
+         }else if(clazz == Number){
             return true;
-         }else if(c == Date){
+         }else if(clazz == Date){
             return true;
-         }else if(c == String){
+         }else if(clazz == String){
+            return true;
+         }else if(clazz == Function){
             return true;
          }
       }
       return false;
    }
-   MO.RClass_isName = function RClass_isName(v, n){
-      return (this.name(v) == n);
+   MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
+            return true;
+         }else if(clazz == Number){
+            return true;
+         }else if(clazz == Date){
+            return true;
+         }else if(clazz == String){
+            return true;
+         }
+      }
+      return false;
    }
-   MO.RClass_isClass = function RClass_isClass(v, c){
+   MO.RClass.prototype.isName = function RClass_isName(value, name){
+      return (this.name(value) == name);
+   }
+   MO.RClass.prototype.isClass = function RClass_isClass(v, c){
       if(v && c){
          var o = this;
          var n = o.name(c);
@@ -3600,13 +3489,13 @@ with(MO){
       }
       return false;
    }
-   MO.RClass_typeOf = function RClass_typeOf(o){
+   MO.RClass.prototype.typeOf = function RClass_typeOf(o){
       if(o && o.constructor){
          return RString.mid(o.constructor.toString(), 'function ', '(');
       }
       return 'Null';
    }
-   MO.RClass_safeTypeOf = function RClass_safeTypeOf(v, safe){
+   MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
       if(v == null){
          return 'Null';
       }
@@ -3640,12 +3529,12 @@ with(MO){
       }
       return 'Unknown';
    }
-   MO.RClass_checkClass = function RClass_checkClass(v, c){
+   MO.RClass.prototype.checkClass = function RClass_checkClass(v, c){
       if(!this.isClass(v, c)){
          throw new Error('Invalid class ' + o.name(o) + '<>' + o.name(c));
       }
    }
-   MO.RClass_code = function RClass_code(v){
+   MO.RClass.prototype.code = function RClass_code(v){
       var c = this._codes;
       var l = c.length;
       for(var n = 0; n < l; n++){
@@ -3656,7 +3545,7 @@ with(MO){
       c[l] = v;
       return l;
    }
-   MO.RClass_name = function RClass_name(v){
+   MO.RClass.prototype.name = function RClass_name(v){
       if(v){
          if(v.__name){
             return v.__name;
@@ -3674,7 +3563,7 @@ with(MO){
       }
       return null;
    }
-   MO.RClass_inherits = function RClass_inherits(s, p){
+   MO.RClass.prototype.inherits = function RClass_inherits(s, p){
       var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
@@ -3684,7 +3573,7 @@ with(MO){
       }
       return r;
    }
-   MO.RClass_forName = function RClass_forName(n){
+   MO.RClass.prototype.forName = function RClass_forName(n){
       var r = null;
       if(n != null){
          var o = this;
@@ -3696,7 +3585,7 @@ with(MO){
       }
       return r;
    }
-   MO.RClass_find = function RClass_find(v){
+   MO.RClass.prototype.find = function RClass_find(v){
       var o = this;
       var n = null;
       if(v != null){
@@ -3710,20 +3599,20 @@ with(MO){
       }
       return o._classes[n];
    }
-   MO.RClass_register = function RClass_register(v, a, r){
+   MO.RClass.prototype.register = function RClass_register(v, a, r){
       var n = RMethod.name(v.constructor);
       this._classes[n].register(a);
       var v = a.value();
       return (v != null) ? v : r;
    }
-   MO.RClass_createBase = function RClass_createBase(n){
+   MO.RClass.prototype.createBase = function RClass_createBase(n){
       if(n){
          var s = 'function ' + n + '(){return this;} new ' + n + '();';
          return eval(s);
       }
       return null;
    }
-   MO.RClass_createClass = function RClass_createClass(className){
+   MO.RClass.prototype.createClass = function RClass_createClass(className){
       var o = this;
       var clazz = o._classes[className] = new TClass();
       clazz.name = className;
@@ -3732,7 +3621,7 @@ with(MO){
       eval(className)(clazz.clazz);
       return clazz;
    }
-   MO.RClass_create = function RClass_create(n){
+   MO.RClass.prototype.create = function RClass_create(n){
       var o = this;
       var t = typeof(n);
       if(t == 'function'){
@@ -3742,7 +3631,7 @@ with(MO){
       }
       return o.createByName(n);
    }
-   MO.RClass_createByName = function RClass_createByName(n){
+   MO.RClass.prototype.createByName = function RClass_createByName(n){
       var o = this;
       var c = o.forName(n);
       if(!c){
@@ -3750,7 +3639,7 @@ with(MO){
       }
       return c.newInstance();
    }
-   MO.RClass_innerCopy = function RClass_innerCopy(s, t){
+   MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
       if((s != null) && (t != null)){
          for(var n in s){
             var v = s[n];
@@ -3780,8 +3669,9 @@ with(MO){
          }
       }
    }
-   MO.RClass_build = function RClass_build(c){
-      var sbs = c.clazz.__inherits;
+   MO.RClass.prototype.build = function RClass_build(clazz){
+      var o = this;
+      var sbs = clazz.clazz.__inherits;
       if(sbs && (sbs.constructor == Array)){
          var finded = false;
          var sbl = sbs.length;
@@ -3789,14 +3679,14 @@ with(MO){
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(this, null, 'Parent class is too many. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
-               c.parent = RClass.forName(name);
+               clazz.parent = RClass.forName(name);
                finded = true;
             }
          }
       }
-      var o = c.instance = new c.base.constructor();
+      var instance = clazz.instance = new clazz.base.constructor();
       if(sbs && (sbs.constructor == Array)){
          var sbl = sbs.length;
          for(var i = 0; i < sbl; i++){
@@ -3804,29 +3694,29 @@ with(MO){
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(this, null, 'Parent class is not exists. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
-               RClass.innerCopy(m.instance, o);
-               c.assign(m);
+               RClass.innerCopy(m.instance, instance);
+               clazz.assign(m);
             }
          }
       }
-      if(c.parent){
-         this.innerCopy(c.parent.instance, o);
-         c.assign(c.parent);
+      if(clazz.parent){
+         o.innerCopy(clazz.parent.instance, instance);
+         clazz.assign(clazz.parent);
       }
-      if(!o.__base){
-         o.__base = new TClassBase();
+      if(!instance.__base){
+         instance.__base = new TClassBase();
       }
-      o.__base[c.name] = new c.base.constructor();
-      var cf = c.clazz;
-      for(var n in cf){
-         if(n != '__base'){
-            if((cf[n] == null) && (o[n] == null)){
-               o[n] = null;
-            }else if(cf[n] != null){
-               if((o[n] == null) || ((o[n] != null) && cf[n] != o[n])){
-                  o[n] = cf[n];
+      instance.__base[clazz.name] = new clazz.base.constructor();
+      var cf = clazz.clazz;
+      for(var name in cf){
+         if(name != '__base'){
+            if((cf[name] == null) && (instance[name] == null)){
+               instance[name] = null;
+            }else if(cf[name] != null){
+               if((instance[name] == null) || ((instance[name] != null) && cf[name] != instance[name])){
+                  instance[name] = cf[name];
                }
             }
          }
@@ -3836,38 +3726,38 @@ with(MO){
          for(var i = 0; i < sbl; i++){
             var name = sbs[i];
             var bcls = RClass.forName(name);
-            var base = o.__base[name] = new bcls.base.constructor();
+            var base = instance.__base[name] = new bcls.base.constructor();
             var cf = bcls.instance;
-            for(var n in cf){
-               if(n != '__base'){
-                  var cfn = cf[n];
-                  var ofn = o[n];
+            for(var name in cf){
+               if(name != '__base'){
+                  var cfn = cf[name];
+                  var ofn = instance[name];
                   if((cfn != null) && (ofn != null) && (cfn != ofn)){
                      if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                        base[n] = cf[n];
+                        base[name] = cf[name];
                      }
                   }
                }
             }
          }
       }
-      c.build();
+      clazz.build();
       if(MO.Runtime.isRelease()){
-         for(var n in c.instance){
-            var v = c.instance[n];
-            if(v == null){
-               delete c.instance[n];
+         for(var name in clazz.instance){
+            var value = clazz.instance[name];
+            if(value == null){
+               delete clazz.instance[name];
             }
          }
       }
    }
-   MO.RClass_free = function RClass_free(o){
+   MO.RClass.prototype.free = function RClass_free(o){
       var c = o.__class;
       if(c){
          c.free(o);
       }
    }
-   MO.RClass_dump = function RClass_dump(v){
+   MO.RClass.prototype.dump = function RClass_dump(v){
       var o = this;
       if(v == null){
          return '@null';
@@ -3892,6 +3782,7 @@ with(MO){
       return t + '@' + o.code(v);
    }
    MO.RClass = new RClass();
+   MO.Class = MO.RClass;
 }
 with(MO){
    MO.RConsole = function RConsole(){
@@ -5136,32 +5027,26 @@ with(MO){
 with(MO){
    MO.RMethod = function RMethod(){
       var o = this;
-      o._virtuals  = new Object();
-      o.isFunction = RMethod_isFunction;
-      o.isEmpty    = RMethod_isEmpty;
-      o.isVirtual  = RMethod_isVirtual;
-      o.name       = RMethod_name;
-      o.fullName   = RMethod_fullName;
-      o.empty      = RMethod_empty;
-      o.emptyTrue  = RMethod_emptyTrue;
-      o.emptyFalse = RMethod_emptyFalse;
-      o.emptyCall  = RMethod_emptyCall;
-      o.virtual    = RMethod_virtual;
+      o._virtuals   = new Object();
+      o._properties = new Object();
+      return o;
+   }
+   MO.RMethod.prototype.construct = function RMethod_construct(){
+      var o = this;
       o.empty.__empty = true;
       o.emptyTrue.__empty = true;
       o.emptyFalse.__empty = true;
-      return o;
    }
-   MO.RMethod_isFunction = function RMethod_isFunction(v){
+   MO.RMethod.prototype.isFunction = function RMethod_isFunction(v){
       return typeof(v) == 'function';
    }
-   MO.RMethod_isEmpty = function RMethod_isEmpty(v){
+   MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(v){
       return (v && v.__empty);
    }
-   MO.RMethod_isVirtual = function RMethod_isVirtual(v){
+   MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(v){
       return (v && v.__virtual);
    }
-   MO.RMethod_name = function RMethod_name(value){
+   MO.RMethod.prototype.name = function RMethod_name(value){
       if(value){
          if(typeof(value) == 'function'){
             if(value.__name){
@@ -5174,7 +5059,7 @@ with(MO){
       }
       return null;
    }
-   MO.RMethod_fullName = function RMethod_fullName(p){
+   MO.RMethod.prototype.fullName = function RMethod_fullName(p){
       if(p){
          if(p.constructor == Function){
             if(p.__fullname){
@@ -5187,29 +5072,57 @@ with(MO){
       }
       return null;
    }
-   MO.RMethod_empty = function RMethod_empty(){
+   MO.RMethod.prototype.empty = function RMethod_empty(){
    }
-   MO.RMethod_emptyTrue = function RMethod_emptyTrue(){
+   MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
       return true;
    }
-   MO.RMethod_emptyFalse = function RMethod_emptyFalse(){
+   MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
       return false;
    }
-   MO.RMethod_emptyCall = function RMethod_emptyCall(){
+   MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
    }
-   MO.RMethod_virtual = function RMethod_virtual(v, m){
+   MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
       var o = this;
-      var n = RClass.name(v) + '.' + m;
-      if(o._virtuals[n]){
-         return o._virtuals[n];
+      var method = null;
+      var code = RClass.name(value) + '.' + name;
+      if(o._virtuals[code]){
+         method = o._virtuals[code];
+      }else{
+         var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+         method = new Function(source);
+         method.__virtual = true;
+         method.__name = code;
+         o._virtuals[code] = method;
       }
-      var f = function(){throw new Error('Virtual method be called.(' + n + ')');};
-      f.__virtual = true;
-      f.__name = n;
-      o._virtuals[n] = f;
-      return f;
+      return method;
+   }
+   MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
+      var o = this;
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         var source = 'return this.'+ name +';';
+         method = new Function(source);
+         o._properties[methodName] = method;
+      }
+      return method;
+   }
+   MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
+      var o = this;
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         var source = 'this.'+ name +'=value;';
+         method = new Function('value', source);
+         o._properties[methodName] = method;
+      }
+      return method;
    }
    MO.RMethod = new RMethod();
+   MO.RMethod.construct();
 }
 with(MO){
    MO.RObject = function RObject(){

@@ -203,6 +203,62 @@ with(MO){
    }
 }
 with(MO){
+   MO.FEnvironment = function FEnvironment(o){
+      o = RClass.inherits(this, o, FObject);
+      o._name  = RClass.register(o, new AGetSet('_name'));
+      o._value = RClass.register(o, new AGetSet('_value'));
+      o.set    = FEnvironment_set;
+      return o;
+   }
+   MO.FEnvironment_set = function FEnvironment_set(name, value){
+      var o = this;
+      o._name = name;
+      o._value = value;
+   }
+}
+with(MO){
+   MO.FEnvironmentConsole = function FEnvironmentConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd      = EScope.Local;
+      o._environments = null;
+      o.construct     = FEnvironmentConsole_construct;
+      o.register      = FEnvironmentConsole_register;
+      o.registerValue = FEnvironmentConsole_registerValue;
+      o.find          = FEnvironmentConsole_find;
+      o.findValue     = FEnvironmentConsole_findValue;
+      return o;
+   }
+   MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._environments = new TDictionary();
+   }
+   MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
+      var o = this;
+      var name = environment.name();
+      o._environments.set(name, environment);
+   }
+   MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
+      var o = this;
+      var environment = MO.RClass.create(MO.FEnvironment);
+      environment.set(name, value);
+      o._environments.set(name, environment);
+      return environment;
+   }
+   MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
+      return this._environments.get(name);
+   }
+   MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
+      var o = this;
+      var value = null;
+      var environment = o._environments.get(name);
+      if(environment){
+         value = environment.value();
+      }
+      return value;
+   }
+}
+with(MO){
    MO.FEvent = function FEvent(o){
       o = RClass.inherits(this, o, FObject);
       o._owner      = null;
@@ -316,13 +372,15 @@ with(MO){
       o.onLoad    = FHttpConsole_onLoad;
       o.construct = FHttpConsole_construct;
       o.alloc     = FHttpConsole_alloc;
+      o.free      = FHttpConsole_free;
       o.send      = FHttpConsole_send;
+      o.sendAsync = FHttpConsole_sendAsync;
       o.dispose   = FHttpConsole_dispose;
       return o;
    }
-   MO.FHttpConsole_onLoad = function FHttpConsole_onLoad(p){
+   MO.FHttpConsole_onLoad = function FHttpConsole_onLoad(connection){
       var o = this;
-      o._pool.free(p);
+      o._pool.free(connection);
    }
    MO.FHttpConsole_construct = function FHttpConsole_construct(){
       var o = this;
@@ -331,20 +389,31 @@ with(MO){
    }
    MO.FHttpConsole_alloc = function FHttpConsole_alloc(){
       var o = this;
-      var p = o._pool;
-      if(!p.hasFree()){
-         var c = RClass.create(FHttpConnection);
-         c._asynchronous = true;
-         o._pool.push(c);
+      var pool = o._pool;
+      if(!pool.hasFree()){
+         var connection = RClass.create(FHttpConnection);
+         connection._asynchronous = true;
+         o._pool.push(connection);
       }
-      var c = p.alloc();
-      c.clearLoadListeners();
-      c.addLoadListener(o, o.onLoad);
-      return c;
+      var connection = pool.alloc();
+      connection.clearLoadListeners();
+      connection.clearProcessListeners();
+      connection.addLoadListener(o, o.onLoad);
+      return connection;
+   }
+   MO.FHttpConsole_free = function FHttpConsole_free(connection){
+      this._pool.free(connection);
    }
    MO.FHttpConsole_send = function FHttpConsole_send(url, data){
       var o = this;
       var connection = o.alloc();
+      connection.send(url, data);
+      return connection;
+   }
+   MO.FHttpConsole_sendAsync = function FHttpConsole_sendAsync(url, data){
+      var o = this;
+      var connection = o.alloc();
+      connection._asynchronous = true;
       connection.send(url, data);
       return connection;
    }
@@ -368,6 +437,49 @@ with(MO){
    }
    MO.FIdleConsole_construct = function FIdleConsole_construct(){
       var o = this;
+   }
+}
+with(MO){
+   MO.FJsonConsole = function FJsonConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd  = EScope.Local;
+      o.onLoad    = FJsonConsole_onLoad;
+      o.construct = FJsonConsole_construct;
+      o.send      = FJsonConsole_send;
+      o.sendAsync = FJsonConsole_sendAsync;
+      return o;
+   }
+   MO.FJsonConsole_construct = function FJsonConsole_construct(){
+   }
+   MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
+      var o = this;
+      var source = connection.outputData();
+      var content = JSON.parse(source);
+      var event = MO.Memory.alloc(SEvent);
+      event.connection = connection;
+      event.content = content;
+      connection.processProcessListener(event);
+      MO.Memory.free(event);
+   }
+   MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+      var o = this;
+      var console = RConsole.find(FHttpConsole);
+      var connection = console.alloc();
+      connection._asynchronous = false;
+      connection._contentCd = EHttpContent.Text;
+      connection.addLoadListener(o, o.onLoad);
+      var result = connection.send(url, data);
+      console.free(connection);
+      return result;
+   }
+   MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
+      var o = this;
+      var connection = RConsole.find(FHttpConsole).alloc();
+      connection._asynchronous = true;
+      connection._contentCd = EHttpContent.Text;
+      connection.addLoadListener(o, o.onLoad);
+      connection.send(url, data);
+      return connection;
    }
 }
 with(MO){
@@ -1055,39 +1167,39 @@ with(MO){
    }
    MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
       var o = this;
-      var a = null;
-      var cs = o._connections;
-      for(var n = cs.count - 1; n >= 0; n--){
-         var c = cs.get(n);
-         if(c._statusFree){
-            a = c;
+      var alloc = null;
+      var connections = o._connections;
+      for(var n = connections.count - 1; n >= 0; n--){
+         var connection = connections.get(n);
+         if(connection._statusFree){
+            alloc = connection;
             break;
          }
       }
-      if(!a){
-         a = RClass.create(FXmlConnection);
-         cs.push(a);
-         a.onLoad = o.onLoad;
+      if(!alloc){
+         alloc = RClass.create(FXmlConnection);
+         connections.push(alloc);
+         alloc.onLoad = o.onLoad;
       }
-      a._statusFree = false;
-      a.clearLoadListeners();
-      return a;
+      alloc._statusFree = false;
+      alloc.clearLoadListeners();
+      return alloc;
    }
    MO.FXmlConsole_send = function FXmlConsole_send(u, d){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = false;
-      var r = c.send(u, d);
-      c._statusFree = true;
+      var connection = o.alloc();
+      connection._asynchronous = false;
+      var r = connection.send(u, d);
+      connection._statusFree = true;
       return r;
    }
    MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      c.send(u, d);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      connection.send(u, d);
+      return connection;
    }
    MO.FXmlConsole_load = function FXmlConsole_load(u, d, p){
       var o = this;
@@ -1095,11 +1207,11 @@ with(MO){
       if(v){
          return v;
       }
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      v = c._cache = RClass.create(FXmlData);
-      c.send(u, d);
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      v = connection._cache = RClass.create(FXmlData);
+      connection.send(u, d);
       o._caches.set(u, v);
       return v;
    }
@@ -1108,10 +1220,10 @@ with(MO){
       if(p.constructor != SXmlEvent){
          throw new TError('Parameter type is invalid.');
       }
-      var c = o.alloc();
-      c._asynchronous = true;
-      c.send(p.url, p.inputDocument);
-      c.addLoadListener(p, p.process);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection.send(p.url, p.inputDocument);
+      connection.addLoadListener(p, p.process);
+      return connection;
    }
 }

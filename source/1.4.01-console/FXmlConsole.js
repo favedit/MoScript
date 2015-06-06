@@ -64,25 +64,25 @@ with(MO){
    MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
       var o = this;
       // 查找一个未使用的节点链接
-      var a = null;
-      var cs = o._connections;
-      for(var n = cs.count - 1; n >= 0; n--){
-         var c = cs.get(n);
-         if(c._statusFree){
-            a = c;
+      var alloc = null;
+      var connections = o._connections;
+      for(var n = connections.count - 1; n >= 0; n--){
+         var connection = connections.get(n);
+         if(connection._statusFree){
+            alloc = connection;
             break;
          }
       }
       // 没有未使用的时候，创建一个新的节点链接
-      if(!a){
-         a = RClass.create(FXmlConnection);
-         cs.push(a);
-         a.onLoad = o.onLoad;
+      if(!alloc){
+         alloc = RClass.create(FXmlConnection);
+         connections.push(alloc);
+         alloc.onLoad = o.onLoad;
       }
       // 设置
-      a._statusFree = false;
-      a.clearLoadListeners();
-      return a;
+      alloc._statusFree = false;
+      alloc.clearLoadListeners();
+      return alloc;
    }
 
    //==========================================================
@@ -95,10 +95,10 @@ with(MO){
    //==========================================================
    MO.FXmlConsole_send = function FXmlConsole_send(u, d){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = false;
-      var r = c.send(u, d);
-      c._statusFree = true;
+      var connection = o.alloc();
+      connection._asynchronous = false;
+      var r = connection.send(u, d);
+      connection._statusFree = true;
       return r;
    }
 
@@ -113,11 +113,11 @@ with(MO){
    //==========================================================
    MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
       var o = this;
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      c.send(u, d);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      connection.send(u, d);
+      return connection;
    }
 
    //==========================================================
@@ -137,11 +137,11 @@ with(MO){
          return v;
       }
       // 加载缓冲数据
-      var c = o.alloc();
-      c._asynchronous = true;
-      c._parameters = p;
-      v = c._cache = RClass.create(FXmlData);
-      c.send(u, d);
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection._parameters = p;
+      v = connection._cache = RClass.create(FXmlData);
+      connection.send(u, d);
       // 记住缓冲数据
       o._caches.set(u, v);
       return v;
@@ -160,10 +160,10 @@ with(MO){
          throw new TError('Parameter type is invalid.');
       }
       // 发送内容
-      var c = o.alloc();
-      c._asynchronous = true;
-      c.send(p.url, p.inputDocument);
-      c.addLoadListener(p, p.process);
-      return c;
+      var connection = o.alloc();
+      connection._asynchronous = true;
+      connection.send(p.url, p.inputDocument);
+      connection.addLoadListener(p, p.process);
+      return connection;
    }
 }

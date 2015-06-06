@@ -10,34 +10,8 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._codes         = new Array();
-      o._classes       = new Object();
-      //..........................................................
-      // @method
-      o.isBase         = RClass_isBase;
-      o.isBaseName     = RClass_isBaseName;
-      o.isBaseDataName = RClass_isBaseDataName;
-      o.isBaseType     = RClass_isBaseType;
-      o.isBaseDataType = RClass_isBaseDataType;
-      o.isName         = RClass_isName;
-      o.isClass        = RClass_isClass;
-      o.typeOf         = RClass_typeOf;
-      o.safeTypeOf     = RClass_safeTypeOf;
-      o.checkClass     = RClass_checkClass;
-      o.code           = RClass_code;
-      o.name           = RClass_name;
-      o.inherits       = RClass_inherits;
-      o.forName        = RClass_forName;
-      o.find           = RClass_find;
-      o.register       = RClass_register;
-      o.createBase     = RClass_createBase;
-      o.createClass    = RClass_createClass;
-      o.create         = RClass_create;
-      o.createByName   = RClass_createByName;
-      o.innerCopy      = RClass_innerCopy;
-      o.build          = RClass_build;
-      o.free           = RClass_free;
-      o.dump           = RClass_dump;
+      o._codes   = new Array();
+      o._classes = new Object();
       return o;
    }
 
@@ -45,13 +19,13 @@
    // <T>判断某个对象是否为基础类型。</T>
    //
    // @method
-   // @param v:value:Object 对象
+   // @param value:Object 对象
    // @return Boolean 是否基础类型
    //==========================================================
-   MO.RClass_isBase = function RClass_isBase(v){
-      if(v != null){
-         var n = typeof(v);
-         return RClass.isBaseName(n);
+   MO.RClass.prototype.isBase = function RClass_isBase(value){
+      if(value != null){
+         var typeName = typeof(value);
+         return RClass.isBaseName(typeName);
       }
       return false;
    }
@@ -60,20 +34,20 @@
    // <T>判断某个名称是否为基础类型。</T>
    //
    // @method
-   // @param n:typeName:String 名称
+   // @param typeName:String 名称
    // @return Boolean 是否基础类型
    //==========================================================
-   MO.RClass_isBaseName = function RClass_isBaseName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseName = function RClass_isBaseName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
+         }else if(typeName == 'string'){
             return true;
-         }else if(n == 'function'){
+         }else if(typeName == 'function'){
             return true;
          }
       }
@@ -84,18 +58,18 @@
    // <T>判断某个名称是否为基础数据类型。</T>
    //
    // @method
-   // @param n:typeName:String 名称
+   // @param typeName:String 名称
    // @return Boolean 是否基础数据类型
    //==========================================================
-   MO.RClass_isBaseDataName = function RClass_isBaseDataName(n){
-      if(n != null){
-         if(n == 'boolean'){
+   MO.RClass.prototype.isBaseDataName = function RClass_isBaseDataName(typeName){
+      if(typeName != null){
+         if(typeName == 'boolean'){
             return true;
-         }else if(n == 'number'){
+         }else if(typeName == 'number'){
             return true;
-         }else if(n == 'date'){
+         }else if(typeName == 'date'){
             return true;
-         }else if(n == 'string'){
+         }else if(typeName == 'string'){
             return true;
          }
       }
@@ -106,20 +80,20 @@
    // <T>判断某个类型是否为基础类型。</T>
    //
    // @method
-   // @param c:class:Object 类型
+   // @param clazz:Object 类型
    // @return Boolean 是否基础类型
    //==========================================================
-   MO.RClass_isBaseType = function RClass_isBaseType(c){
-      if(c != null){
-         if(c == Boolean){
+   MO.RClass.prototype.isBaseType = function RClass_isBaseType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
             return true;
-         }else if(c == Number){
+         }else if(clazz == Number){
             return true;
-         }else if(c == Date){
+         }else if(clazz == Date){
             return true;
-         }else if(c == String){
+         }else if(clazz == String){
             return true;
-         }else if(c == Function){
+         }else if(clazz == Function){
             return true;
          }
       }
@@ -130,18 +104,18 @@
    // <T>判断某个类型是否为基础数据类型。</T>
    //
    // @method
-   // @param c:class:Object 类型
+   // @param clazz:Object 类型
    // @return Boolean 是否基础数据类型
    //==========================================================
-   MO.RClass_isBaseDataType = function RClass_isBaseDataType(c){
-      if(c != null){
-         if(c == Boolean){
+   MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
+      if(clazz != null){
+         if(clazz == Boolean){
             return true;
-         }else if(c == Number){
+         }else if(clazz == Number){
             return true;
-         }else if(c == Date){
+         }else if(clazz == Date){
             return true;
-         }else if(c == String){
+         }else if(clazz == String){
             return true;
          }
       }
@@ -152,14 +126,14 @@
    // <T>判断某个实例的类名是指定名称。</T>
    //
    // @method
-   // @param v:value:Object 实例对象
-   // @param n:name:String 类名称
+   // @param value:Object 实例对象
+   // @param name:String 类名称
    // @return Boolean
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.RClass_isName = function RClass_isName(v, n){
-      return (this.name(v) == n);
+   MO.RClass.prototype.isName = function RClass_isName(value, name){
+      return (this.name(value) == name);
    }
 
    //==========================================================
@@ -172,7 +146,7 @@
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //=========================================================
-   MO.RClass_isClass = function RClass_isClass(v, c){
+   MO.RClass.prototype.isClass = function RClass_isClass(v, c){
       if(v && c){
          var o = this;
          var n = o.name(c);
@@ -192,7 +166,7 @@
    // @param v:value:Object 对象实例
    // @return String 类型名称
    //==========================================================
-   MO.RClass_typeOf = function RClass_typeOf(o){
+   MO.RClass.prototype.typeOf = function RClass_typeOf(o){
       if(o && o.constructor){
          return RString.mid(o.constructor.toString(), 'function ', '(');
       }
@@ -207,7 +181,7 @@
    // @param safe:safe:String 安全类型
    // @return String 类型名称字符串
    //==========================================================
-   MO.RClass_safeTypeOf = function RClass_safeTypeOf(v, safe){
+   MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
       // 空对象的情况
       if(v == null){
          return 'Null';
@@ -257,7 +231,7 @@
    // @param v:value:Object 实例对象
    // @param c:constructor:Fcuntion 类函数
    //==========================================================
-   MO.RClass_checkClass = function RClass_checkClass(v, c){
+   MO.RClass.prototype.checkClass = function RClass_checkClass(v, c){
       if(!this.isClass(v, c)){
          throw new Error('Invalid class ' + o.name(o) + '<>' + o.name(c));
       }
@@ -270,7 +244,7 @@
    // @param v:value:Object 对象实例
    // @return Integer 编号
    //==========================================================
-   MO.RClass_code = function RClass_code(v){
+   MO.RClass.prototype.code = function RClass_code(v){
       var c = this._codes;
       var l = c.length;
       for(var n = 0; n < l; n++){
@@ -289,7 +263,7 @@
    // @param v:value:Object 函数对象
    // @return String 类名称
    //==========================================================
-   MO.RClass_name = function RClass_name(v){
+   MO.RClass.prototype.name = function RClass_name(v){
       if(v){
          // 如果对象是标准类的情况
          if(v.__name){
@@ -320,7 +294,7 @@
    // @param c:classes:Function... 继承类函数的列表
    // @return Object 含有类继承关系的对象实例
    //==========================================================
-   MO.RClass_inherits = function RClass_inherits(s, p){
+   MO.RClass.prototype.inherits = function RClass_inherits(s, p){
       var r = MO.Runtime.nvl(p, s);
       r.__inherits = new Array();
       var a = arguments;
@@ -339,7 +313,7 @@
    // @param n:name:String 类名称
    // @return String 类对象的实例
    //==========================================================
-   MO.RClass_forName = function RClass_forName(n){
+   MO.RClass.prototype.forName = function RClass_forName(n){
       var r = null;
       if(n != null){
          var o = this;
@@ -360,7 +334,7 @@
    // @param v:value:Object 类名称或类函数
    // @return String 类对象的实例
    //==========================================================
-   MO.RClass_find = function RClass_find(v){
+   MO.RClass.prototype.find = function RClass_find(v){
       var o = this;
       var n = null;
       if(v != null){
@@ -384,7 +358,7 @@
    // @param r:result:Object 结果对象
    // @return Object 结果对象
    //==========================================================
-   MO.RClass_register = function RClass_register(v, a, r){
+   MO.RClass.prototype.register = function RClass_register(v, a, r){
       // 注册描述
       var n = RMethod.name(v.constructor);
       this._classes[n].register(a);
@@ -400,7 +374,7 @@
    // @param n:name:String 类名称
    // @return Object 基类对象
    //==========================================================
-   MO.RClass_createBase = function RClass_createBase(n){
+   MO.RClass.prototype.createBase = function RClass_createBase(n){
       if(n){
          var s = 'function ' + n + '(){return this;} new ' + n + '();';
          return eval(s);
@@ -415,7 +389,7 @@
    // @param className:String 类名称
    // @return TClass 类对象
    //==========================================================
-   MO.RClass_createClass = function RClass_createClass(className){
+   MO.RClass.prototype.createClass = function RClass_createClass(className){
       var o = this;
       var clazz = o._classes[className] = new TClass();
       clazz.name = className;
@@ -432,7 +406,7 @@
    // @param f:function:Function 函数对象
    // @return Object 类对象的实例
    //==========================================================
-   MO.RClass_create = function RClass_create(n){
+   MO.RClass.prototype.create = function RClass_create(n){
       var o = this;
       // 获得类名称
       var t = typeof(n);
@@ -452,7 +426,7 @@
    // @param n:name:String 类名称
    // @return Object 类对象的实例
    //==========================================================
-   MO.RClass_createByName = function RClass_createByName(n){
+   MO.RClass.prototype.createByName = function RClass_createByName(n){
       var o = this;
       // 获得类对象
       var c = o.forName(n);
@@ -470,7 +444,7 @@
    // @param s:source:Object 类实例
    // @param t:target:Object 指定实例
    //==========================================================
-   MO.RClass_innerCopy = function RClass_innerCopy(s, t){
+   MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
       if((s != null) && (t != null)){
          for(var n in s){
             var v = s[n];
@@ -507,11 +481,12 @@
    // <T>根据类名查找一个类对象。</T>
    //
    // @method
-   // @param c:class:Object 对象
+   // @param clazz:Object 对象
    //==========================================================
-   MO.RClass_build = function RClass_build(c){
+   MO.RClass.prototype.build = function RClass_build(clazz){
+      var o = this;
       // 找到当前类的父名称，即以字母(F)开头的类
-      var sbs = c.clazz.__inherits;
+      var sbs = clazz.clazz.__inherits;
       if(sbs && (sbs.constructor == Array)){
          var finded = false;
          var sbl = sbs.length;
@@ -519,16 +494,16 @@
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(this, null, 'Parent class is too many. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
-               c.parent = RClass.forName(name);
+               clazz.parent = RClass.forName(name);
                finded = true;
             }
          }
       }
       //..........................................................
       // 用基类创建一个实例，当前实例只有当前类里声明的函数，没有任何继承关系
-      var o = c.instance = new c.base.constructor();
+      var instance = clazz.instance = new clazz.base.constructor();
       // 复制除了以(F)开头的实类以外，所有基类信息到当前实例中
       if(sbs && (sbs.constructor == Array)){
          var sbl = sbs.length;
@@ -537,32 +512,32 @@
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(this, null, 'Parent class is not exists. (name={1})', name);
+                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
-               RClass.innerCopy(m.instance, o);
-               c.assign(m);
+               RClass.innerCopy(m.instance, instance);
+               clazz.assign(m);
             }
          }
       }
       // 复制父类到当前实例中
-      if(c.parent){
-         this.innerCopy(c.parent.instance, o);
-         c.assign(c.parent);
+      if(clazz.parent){
+         o.innerCopy(clazz.parent.instance, instance);
+         clazz.assign(clazz.parent);
       }
       // 检查基类对象是否存在，如果不存在建立一个基类对象
-      if(!o.__base){
-         o.__base = new TClassBase();
+      if(!instance.__base){
+         instance.__base = new TClassBase();
       }
       // 为基容器对象(base)中创建一个当前类的空实例
-      o.__base[c.name] = new c.base.constructor();
-      var cf = c.clazz;
-      for(var n in cf){
-         if(n != '__base'){
-            if((cf[n] == null) && (o[n] == null)){
-               o[n] = null;
-            }else if(cf[n] != null){
-               if((o[n] == null) || ((o[n] != null) && cf[n] != o[n])){
-                  o[n] = cf[n];
+      instance.__base[clazz.name] = new clazz.base.constructor();
+      var cf = clazz.clazz;
+      for(var name in cf){
+         if(name != '__base'){
+            if((cf[name] == null) && (instance[name] == null)){
+               instance[name] = null;
+            }else if(cf[name] != null){
+               if((instance[name] == null) || ((instance[name] != null) && cf[name] != instance[name])){
+                  instance[name] = cf[name];
                }
             }
          }
@@ -574,15 +549,15 @@
          for(var i = 0; i < sbl; i++){
             var name = sbs[i];
             var bcls = RClass.forName(name);
-            var base = o.__base[name] = new bcls.base.constructor();
+            var base = instance.__base[name] = new bcls.base.constructor();
             var cf = bcls.instance;
-            for(var n in cf){
-               if(n != '__base'){
-                  var cfn = cf[n];
-                  var ofn = o[n];
+            for(var name in cf){
+               if(name != '__base'){
+                  var cfn = cf[name];
+                  var ofn = instance[name];
                   if((cfn != null) && (ofn != null) && (cfn != ofn)){
                      if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                        base[n] = cf[n];
+                        base[name] = cf[name];
                      }
                   }
                }
@@ -591,14 +566,14 @@
       }
       //..........................................................
       // 构建类对象
-      c.build();
+      clazz.build();
       //..........................................................
       // 删除类中所有空属性
       if(MO.Runtime.isRelease()){
-         for(var n in c.instance){
-            var v = c.instance[n];
-            if(v == null){
-               delete c.instance[n];
+         for(var name in clazz.instance){
+            var value = clazz.instance[name];
+            if(value == null){
+               delete clazz.instance[name];
             }
          }
       }
@@ -612,7 +587,7 @@
    //@param v:value:Object 数据内容
    //@return String 调试信息
    //==========================================================
-   MO.RClass_free = function RClass_free(o){
+   MO.RClass.prototype.free = function RClass_free(o){
       var c = o.__class;
       if(c){
          c.free(o);
@@ -627,7 +602,7 @@
    // @param v:value:Object 数据内容
    // @return String 调试信息
    //==========================================================
-   MO.RClass_dump = function RClass_dump(v){
+   MO.RClass.prototype.dump = function RClass_dump(v){
       var o = this;
       // 对象为空的情况
       if(v == null){
@@ -661,4 +636,5 @@
    //..........................................................
    // 实例化内容
    MO.RClass = new RClass();
+   MO.Class = MO.RClass;
 }

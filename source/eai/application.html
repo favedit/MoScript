@@ -15,12 +15,13 @@
 var canvas = null;
 var display = null;
 var movie = false;
+var templateSprite = null;
 var uiLayer = null;
 //------------------------------------------------------------
 function onEnterFrame(){
-   //if(display){
-   //   var matrix = display.matrix();
-   //   matrix.ry -= 0.004;
+   //if(templateSprite){
+   //   var matrix = templateSprite.matrix();
+   //   matrix.ry -= 0.008;
    //   matrix.updateForce();
    //}
 }
@@ -29,13 +30,72 @@ function onTemplateLoad(event){
    //uiLayer = RClass.create(FDisplayLayer);
    // 监听时间
    var template = event;
-   var sprite = template.sprite();
+   var sprite = templateSprite = template.sprite();
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      var indexBuffer = renderable.indexBuffer();
+      indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   }
    var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
    matrix.rx = -Math.PI / 2;
    matrix.updateForce();
 
    var stage = canvas._stage;
    stage.mapLayer().pushDisplay(sprite);
+
+   //template.addEnterFrameListener(null, onEnterFrame);
+
+   //var r1 = sprite.renderables().at(0);
+   //var outline = r1.calculateOutline();
+   //var matrix = r1.matrix()
+   //matrix.setScaleAll(3);
+   //matrix.updateForce();
+   //var stage = canvas._stage;
+   //var region = template.region();
+   //region.backgroundColor().set(1, 1, 1, 1);
+
+   //var camera = region.camera();
+
+   //var bitmap = MO.RClass.create(MO.FE3dBitmap);
+   //bitmap.linkGraphicContext(canvas);
+   //bitmap.setSize(100, 100);
+   //bitmap.loadUrl('/script/ars/picture/star4.jpg');
+   //var matrix = bitmap.matrix();
+   //sprite.pushRenderable(bitmap);
+   //camera.setPosition();
+   //camera.lookAt();
+   //camera.update();
+   //var space = event.space;
+   //space.addEnterFrameListener(null, onEnterFrame);
+   // 打开播放
+   //canvas.switchPlay(true);
+   //canvas.switchMovie(true);
+}
+//------------------------------------------------------------
+function onTemplateBorderLoad(event){
+   //uiLayer = RClass.create(FDisplayLayer);
+   // 监听时间
+   var template = event;
+   var sprite = templateSprite = template.sprite();
+   var renderables = sprite.renderables();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      var indexBuffer = renderable.indexBuffer();
+      indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   }
+   var matrix = sprite.matrix();
+   //matrix.tx = -4;
+   //matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+
+   var stage = canvas._stage;
+   //stage.mapLayer().pushDisplay(sprite);
 
    //template.addEnterFrameListener(null, onEnterFrame);
 
@@ -79,24 +139,53 @@ function goPage(){
    window.location = 'company.html';
 }
 //------------------------------------------------------------
+function onOrganizationFetch(event){
+   var content = event.content;
+   debugger
+   //var e = window.event;
+   //var c = e.keyCode;
+   //if(c == EKeyCode.Space){
+   //   movie = !movie;
+   //   canvas.switchMovie(movie);
+   //}
+}
+//------------------------------------------------------------
 function onLoad(){
    // 环境设置
    MO.Runtime.setProcessCd(MO.EProcess.Release);
    MO.RApplication.initialize();
    MO.RBrowser.setContentPath('..');
-   // 设置资源获取方式
+   // 设置环境
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
    Eai.Application.setup();
+   var logicConsole = MO.RConsole.find(MO.FEaiLogicConsole);
+   logicConsole.organization().doFetch(null, onOrganizationFetch);
+   return;
    // 创建画布
    canvas = canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(document);
    canvas.setPanel(document.body);
-   
+   canvas._stage.addEnterFrameListener(null, onEnterFrame);
+   // 设置
    //var stage = canvas._stage;
+   //var camera = stage.region().camera();
+   //var projection = camera.projection();
+   //projection.size().set(canvas._hCanvas.offsetWidth, canvas._hCanvas.offsetHeight);
+   //projection.update();
+   //camera.position().set(0, 0, -10);
+   //camera.lookAt(0, 0, 0);
+   //camera.update();
+
+
    var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
    var template = templateConsole.allocByCode(canvas, 'eai.world.china');
    template.addLoadListener(null, onTemplateLoad);
+
+   //var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
+   //var templateBorder = templateConsole.allocByCode(canvas, 'eai.world.china.border');
+   //templateBorder.addLoadListener(null, onTemplateBorderLoad);
 
    //canvas.loadByCode('eai.world.china');
    //canvas.addLoadListener(null, onTemplateLoad);

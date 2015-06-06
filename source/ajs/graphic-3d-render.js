@@ -56,6 +56,20 @@ MO.EG3dDepthMode = new function EG3dDepthMode(){
    o.Always = 7;
    return o;
 }
+MO.EG3dDrawMode = new function EG3dDrawMode(){
+   var o = this;
+   o.Unknown = 0;
+   o.Points = 1;
+   o.Lines = 2;
+   o.LineStrip = 3;
+   o.LineLoop = 4;
+   o.Triangles = 5;
+   o.TriangleStrip = 6;
+   o.TriangleFan = 7;
+   o.Quads = 8;
+   o.QuadStrip = 9;
+   return o;
+}
 MO.EG3dFillMode = new function EG3dFillMode(){
    var o = this;
    o.Unknown = 0;
@@ -418,12 +432,12 @@ with(MO){
       o = RClass.inherits(this, o, FG3dBuffer);
       o._strideCd     = EG3dIndexStride.Uint16;
       o._count        = 0;
-      o._fillModeCd   = EG3dFillMode.Face;
+      o._drawModeCd   = EG3dDrawMode.Triangles;
       o._lineWidth    = 1;
       o.strideCd      = FG3dIndexBuffer_strideCd;
       o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
-      o.fillModeCd    = FG3dIndexBuffer_fillModeCd;
-      o.setFillModeCd = FG3dIndexBuffer_setFillModeCd;
+      o.drawModeCd    = FG3dIndexBuffer_drawModeCd;
+      o.setDrawModeCd = FG3dIndexBuffer_setDrawModeCd;
       o.lineWidth     = FG3dIndexBuffer_lineWidth;
       o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
       o.count         = FG3dIndexBuffer_count;
@@ -436,11 +450,11 @@ with(MO){
    MO.FG3dIndexBuffer_setStrideCd = function FG3dIndexBuffer_setStrideCd(strideCd){
       this._strideCd = strideCd;
    }
-   MO.FG3dIndexBuffer_fillModeCd = function FG3dIndexBuffer_fillModeCd(){
-      return this._fillModeCd;
+   MO.FG3dIndexBuffer_drawModeCd = function FG3dIndexBuffer_drawModeCd(){
+      return this._drawModeCd;
    }
-   MO.FG3dIndexBuffer_setFillModeCd = function FG3dIndexBuffer_setFillModeCd(fillModeCd){
-      this._fillModeCd = fillModeCd;
+   MO.FG3dIndexBuffer_setDrawModeCd = function FG3dIndexBuffer_setDrawModeCd(drawModeCd){
+      this._drawModeCd = drawModeCd;
    }
    MO.FG3dIndexBuffer_lineWidth = function FG3dIndexBuffer_lineWidth(){
       return this._lineWidth;

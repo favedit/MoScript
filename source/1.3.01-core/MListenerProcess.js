@@ -12,6 +12,7 @@ with(MO){
       // @method
       o.addProcessListener     = MListenerProcess_addProcessListener;
       o.removeProcessListener  = MListenerProcess_removeProcessListener;
+      o.clearProcessListeners  = MListenerProcess_clearProcessListeners;
       // @method
       o.processProcessListener = MListenerProcess_processProcessListener;
       return o;
@@ -21,22 +22,31 @@ with(MO){
    // <T>注册一个处理监听器。</T>
    //
    // @method
-   // @param w:owner:String 拥有者
-   // @param m:method:Function 函数
+   // @param owner:String 拥有者
+   // @param process:Function 处理函数
    //==========================================================
-   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(w, m){
-      return this.addListener(EEvent.Process, w, m);
+   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(owner, process){
+      return this.addListener(EEvent.Process, owner, process);
    }
 
    //==========================================================
    // <T>注销一个处理监听器。</T>
    //
    // @method
-   // @param w:owner:String 拥有者
-   // @param m:method:Function 函数
+   // @param owner:String 拥有者
+   // @param process:Function 处理函数
    //==========================================================
-   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(w, m){
-      this.removeListener(EEvent.Process, w, m);
+   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(owner, process){
+      this.removeListener(EEvent.Process, owner, process);
+   }
+
+   //==========================================================
+   // <T>清空处理监听器。</T>
+   //
+   // @method
+   //==========================================================
+   MO.MListenerProcess_clearProcessListeners = function MListenerProcess_clearProcessListeners(){
+      this.clearListeners(EEvent.Process);
    }
 
    //==========================================================

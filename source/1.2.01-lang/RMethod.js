@@ -10,24 +10,8 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._virtuals  = new Object();
-      //..........................................................
-      // @method
-      o.isFunction = RMethod_isFunction;
-      o.isEmpty    = RMethod_isEmpty;
-      o.isVirtual  = RMethod_isVirtual;
-      o.name       = RMethod_name;
-      o.fullName   = RMethod_fullName;
-      o.empty      = RMethod_empty;
-      o.emptyTrue  = RMethod_emptyTrue;
-      o.emptyFalse = RMethod_emptyFalse;
-      o.emptyCall  = RMethod_emptyCall;
-      o.virtual    = RMethod_virtual;
-      //..........................................................
-      // @construct
-      o.empty.__empty = true;
-      o.emptyTrue.__empty = true;
-      o.emptyFalse.__empty = true;
+      o._virtuals   = new Object();
+      o._properties = new Object();
       return o;
    }
 
@@ -38,7 +22,21 @@
    // @param v:value:Object 函数对象
    // @return Boolean 否是为函数
    //==========================================================
-   MO.RMethod_isFunction = function RMethod_isFunction(v){
+   MO.RMethod.prototype.construct = function RMethod_construct(){
+      var o = this;
+      o.empty.__empty = true;
+      o.emptyTrue.__empty = true;
+      o.emptyFalse.__empty = true;
+   }
+
+   //==========================================================
+   // <T>测试对象是否是为函数。</T>
+   //
+   // @method
+   // @param v:value:Object 函数对象
+   // @return Boolean 否是为函数
+   //==========================================================
+   MO.RMethod.prototype.isFunction = function RMethod_isFunction(v){
       return typeof(v) == 'function';
    }
 
@@ -49,7 +47,7 @@
    // @param v:value:Object 函数对象
    // @return Boolean 否是为空函数
    //==========================================================
-   MO.RMethod_isEmpty = function RMethod_isEmpty(v){
+   MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(v){
       return (v && v.__empty);
    }
 
@@ -60,7 +58,7 @@
    // @param v:value:Object 函数对象
    // @return Boolean 否是为虚函数
    //==========================================================
-   MO.RMethod_isVirtual = function RMethod_isVirtual(v){
+   MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(v){
       return (v && v.__virtual);
    }
 
@@ -71,7 +69,7 @@
    // @param value:Function 函数对象
    // @return String 字符串名称
    //==========================================================
-   MO.RMethod_name = function RMethod_name(value){
+   MO.RMethod.prototype.name = function RMethod_name(value){
       if(value){
          if(typeof(value) == 'function'){
             if(value.__name){
@@ -92,7 +90,7 @@
    // @param p:value:Function 函数对象
    // @return String 字符串名称
    //==========================================================
-   MO.RMethod_fullName = function RMethod_fullName(p){
+   MO.RMethod.prototype.fullName = function RMethod_fullName(p){
       if(p){
          if(p.constructor == Function){
             if(p.__fullname){
@@ -111,7 +109,7 @@
    //
    // @method
    //==========================================================
-   MO.RMethod_empty = function RMethod_empty(){
+   MO.RMethod.prototype.empty = function RMethod_empty(){
    }
 
    //==========================================================
@@ -120,7 +118,7 @@
    // @method
    // @return Boolean 真值
    //==========================================================
-   MO.RMethod_emptyTrue = function RMethod_emptyTrue(){
+   MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
       return true;
    }
 
@@ -130,7 +128,7 @@
    // @method
    // @return Boolean 假值
    //==========================================================
-   MO.RMethod_emptyFalse = function RMethod_emptyFalse(){
+   MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
       return false;
    }
 
@@ -140,7 +138,32 @@
    // @method
    // @return Boolean 假值
    //==========================================================
-   MO.RMethod_emptyCall = function RMethod_emptyCall(){
+   MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
+   }
+
+   //==========================================================
+   // <T>创建一个虚函数。</T>
+   //
+   // @method
+   // @param value:Object 对象实例
+   // @param name:String 函数名称
+   // @return Function 虚函数
+   //==========================================================
+   MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
+      var o = this;
+      var method = null;
+      var code = RClass.name(value) + '.' + name;
+      if(o._virtuals[code]){
+         method = o._virtuals[code];
+      }else{
+         // 创建虚函数对象
+         var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+         method = new Function(source);
+         method.__virtual = true;
+         method.__name = code;
+         o._virtuals[code] = method;
+      }
+      return method;
    }
 
    //==========================================================
@@ -151,20 +174,43 @@
    // @param m:method:String 函数名称
    // @return Function 虚函数
    //==========================================================
-   MO.RMethod_virtual = function RMethod_virtual(v, m){
+   MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
       var o = this;
-      var n = RClass.name(v) + '.' + m;
-      if(o._virtuals[n]){
-         return o._virtuals[n];
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         // 创建虚函数对象
+         var source = 'return this.'+ name +';';
+         method = new Function(source);
+         o._properties[methodName] = method;
       }
-      // 创建虚函数对象
-      var f = function(){throw new Error('Virtual method be called.(' + n + ')');};
-      f.__virtual = true;
-      f.__name = n;
-      o._virtuals[n] = f;
-      return f;
+      return method;
+   }
+
+   //==========================================================
+   // <T>创建一个虚函数。</T>
+   //
+   // @method
+   // @param v:value:Object 对象实例
+   // @param m:method:String 函数名称
+   // @return Function 虚函数
+   //==========================================================
+   MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
+      var o = this;
+      var method = null;
+      if(o._properties[methodName]){
+         method = o._properties[methodName];
+      }else{
+         // 创建虚函数对象
+         var source = 'this.'+ name +'=value;';
+         method = new Function('value', source);
+         o._properties[methodName] = method;
+      }
+      return method;
    }
    //..........................................................
    // 实例化内容
    MO.RMethod = new RMethod();
+   MO.RMethod.construct();
 }
