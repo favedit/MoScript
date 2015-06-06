@@ -131,10 +131,13 @@ with(MO){
       var o = this;
       var stage = o._stages.get(code);
       if(o._activeStage != stage){
-         if(o._activeStage){
-            o._activeStage.deactive();
+         var activeStage = o._activeStage;
+         if(activeStage){
+            RStage.unregister(activeStage);
+            activeStage.deactive();
          }
          stage.active();
+         RStage.register(stage.code(), stage);
          o._activeStage = stage;
       }
       return stage;
@@ -629,6 +632,7 @@ with(MO){
 with(MO){
    MO.FStage = function FStage(o){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
+      o._code             = 'stage';
       o._statusActive     = false;
       o._timer            = RClass.register(o, AGetter('_timer'));
       o._layers           = RClass.register(o, AGetter('_layers'));

@@ -71,12 +71,15 @@ with(MO){
       var o = this;
       var stage = o._stages.get(code);
       if(o._activeStage != stage){
-         // 取消舞台
-         if(o._activeStage){
-            o._activeStage.deactive();
+         // 注销舞台
+         var activeStage = o._activeStage;
+         if(activeStage){
+            RStage.unregister(activeStage);
+            activeStage.deactive();
          }
          // 激活舞台
          stage.active();
+         RStage.register(stage.code(), stage);
          o._activeStage = stage;
       }
       return stage;

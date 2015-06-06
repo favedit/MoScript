@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
       //..........................................................
       // @attribute
+      o._code             = 'stage';
       o._statusActive     = false;
       o._timer            = RClass.register(o, AGetter('_timer'));
       o._layers           = RClass.register(o, AGetter('_layers'));
