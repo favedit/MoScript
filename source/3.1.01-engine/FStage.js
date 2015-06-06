@@ -10,25 +10,29 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
       //..........................................................
       // @attribute
-      o._statusActive   = false;
-      o._layers         = null;
-      o._timer          = null;
+      o._statusActive     = false;
+      o._timer            = RClass.register(o, AGetter('_timer'));
+      o._layers           = RClass.register(o, AGetter('_layers'));
+      o._scenes           = RClass.register(o, AGetter('_scenes'));
+      o._activeScene      = RClass.register(o, AGetter('_activeScene'));
       //..........................................................
       // @event
-      o.onProcess       = FStage_onProcess;
+      o.onProcess         = FStage_onProcess;
       //..........................................................
       // @method
-      o.construct       = FStage_construct;
+      o.construct         = FStage_construct;
       // @method
-      o.timer           = FStage_timer;
-      o.registerLayer   = FStage_registerLayer;
-      o.unregisterLayer = FStage_unregisterLayer;
-      o.layers          = FStage_layers;
-      o.active          = FStage_active;
-      o.deactive        = FStage_deactive;
-      o.process         = FStage_process;
+      o.registerLayer     = FStage_registerLayer;
+      o.unregisterLayer   = FStage_unregisterLayer;
+      o.active            = FStage_active;
+      o.deactive          = FStage_deactive;
       // @method
-      o.dispose         = FStage_dispose;
+      o.selectScene       = FStage_selectScene;
+      o.selectSceneByCode = FStage_selectSceneByCode;
+      // @method
+      o.process           = FStage_process;
+      // @method
+      o.dispose           = FStage_dispose;
       return o;
    }
 
@@ -40,10 +44,11 @@ with(MO){
    MO.FStage_onProcess = function FStage_onProcess(){
       var o = this;
       // 舞台处理
-      var s = o._layers;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).process();
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.process();
       }
    }
 
@@ -58,28 +63,19 @@ with(MO){
       // 设置变量
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
-   }
-
-   //==========================================================
-   // <T>获得计时器。</T>
-   //
-   // @method
-   // @return FTimer 计时器
-   //==========================================================
-   MO.FStage_timer = function FStage_timer(){
-      return this._timer;
+      o._scenes = new TDictionary();
    }
 
    //==========================================================
    // <T>注册一个显示层。</T>
    //
    // @method
-   // @param n:name:String 名称
-   // @param l:layer:FDisplayLayer 显示层
+   // @param code:String 名称
+   // @param layer:FDisplayLayer 显示层
    //==========================================================
-   MO.FStage_registerLayer = function FStage_registerLayer(n, l){
-      l.setCode(n);
-      this._layers.set(n, l);
+   MO.FStage_registerLayer = function FStage_registerLayer(code, layer){
+      layer.setCode(code);
+      this._layers.set(code, layer);
    }
 
    //==========================================================
@@ -88,18 +84,8 @@ with(MO){
    // @method
    // @param n:name:String 名称
    //==========================================================
-   MO.FStage_unregisterLayer = function FStage_unregisterLayer(n){
-      this._layers.set(n, null);
-   }
-
-   //==========================================================
-   // <T>获得层次集合。</T>
-   //
-   // @method
-   // @return TDictionary 层次集合
-   //==========================================================
-   MO.FStage_layers = function FStage_layers(){
-      return this._layers;
+   MO.FStage_unregisterLayer = function FStage_unregisterLayer(code){
+      this._layers.set(code, null);
    }
 
    //==========================================================
@@ -112,10 +98,11 @@ with(MO){
       // 设置状态
       o._statusActive = true;
       // 层集合处理
-      var ls = o._layers;
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).active();
+      var layers = o._layers;
+      var count = ls.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.active();
       }
    }
 
@@ -127,13 +114,51 @@ with(MO){
    MO.FStage_deactive = function FStage_deactive(){
       var o = this;
       // 层集合处理
-      var ls = o._layers;
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).deactive();
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.deactive();
       }
       // 设置状态
       o._statusActive = false;
+   }
+
+   //==========================================================
+   // <T>选择场景。</T>
+   //
+   // @method
+   // @param scene:String 代码
+   //==========================================================
+   MO.FStage_selectScene = function FStage_selectScene(scene){
+      var o = this;
+      // 层集合处理
+      if(o._activeScene == scene){
+         return;
+      }
+      // 注销场景
+      if(o._activeScene){
+         o._activeScene.deactive();
+         o._activeScene = null;
+      }
+      // 激活场景
+      if(scene){
+         scene.active();
+         o._activeScene = scene;
+      }
+   }
+
+   //==========================================================
+   // <T>选择场景。</T>
+   //
+   // @method
+   // @param code:String 代码
+   //==========================================================
+   MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
+      var o = this;
+      var scene = o._scene.get(code);
+      o.selectScene(scene);
+      return scene;
    }
 
    //==========================================================

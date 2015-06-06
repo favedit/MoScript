@@ -20905,29 +20905,82 @@ with(MO){
    }
 }
 with(MO){
+   MO.FScene = function FScene(o){
+      o = RClass.inherits(this, o, FComponent);
+      o._statusActive   = false;
+      o._layers         = RClass.register(o, AGetter('_layers'));
+      o.construct       = FScene_construct;
+      o.registerLayer   = FScene_registerLayer;
+      o.unregisterLayer = FScene_unregisterLayer;
+      o.active          = FScene_active;
+      o.deactive        = FScene_deactive;
+      o.dispose         = FScene_dispose;
+      return o;
+   }
+   MO.FScene_construct = function FScene_construct(){
+      var o = this;
+      o.__base.FComponent.construct.call(o);
+      o._layers = new TDictionary();
+   }
+   MO.FScene_registerLayer = function FScene_registerLayer(code, layer){
+      layer.setCode(code);
+      this._layers.set(code, layer);
+   }
+   MO.FScene_unregisterLayer = function FScene_unregisterLayer(code){
+      this._layers.set(code, null);
+   }
+   MO.FScene_active = function FScene_active(){
+      var o = this;
+      o._statusActive = true;
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.active();
+      }
+   }
+   MO.FScene_deactive = function FScene_deactive(){
+      var o = this;
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.deactive();
+      }
+      o._statusActive = false;
+   }
+   MO.FScene_dispose = function FScene_dispose(){
+      var o = this;
+      o.__base.FComponent.dispose.call(o);
+   }
+}
+with(MO){
    MO.FStage = function FStage(o){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
-      o._statusActive   = false;
-      o._layers         = null;
-      o._timer          = null;
-      o.onProcess       = FStage_onProcess;
-      o.construct       = FStage_construct;
-      o.timer           = FStage_timer;
-      o.registerLayer   = FStage_registerLayer;
-      o.unregisterLayer = FStage_unregisterLayer;
-      o.layers          = FStage_layers;
-      o.active          = FStage_active;
-      o.deactive        = FStage_deactive;
-      o.process         = FStage_process;
-      o.dispose         = FStage_dispose;
+      o._statusActive     = false;
+      o._timer            = RClass.register(o, AGetter('_timer'));
+      o._layers           = RClass.register(o, AGetter('_layers'));
+      o._scenes           = RClass.register(o, AGetter('_scenes'));
+      o._activeScene      = RClass.register(o, AGetter('_activeScene'));
+      o.onProcess         = FStage_onProcess;
+      o.construct         = FStage_construct;
+      o.registerLayer     = FStage_registerLayer;
+      o.unregisterLayer   = FStage_unregisterLayer;
+      o.active            = FStage_active;
+      o.deactive          = FStage_deactive;
+      o.selectScene       = FStage_selectScene;
+      o.selectSceneByCode = FStage_selectSceneByCode;
+      o.process           = FStage_process;
+      o.dispose           = FStage_dispose;
       return o;
    }
    MO.FStage_onProcess = function FStage_onProcess(){
       var o = this;
-      var s = o._layers;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).process();
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.process();
       }
    }
    MO.FStage_construct = function FStage_construct(){
@@ -20935,37 +20988,54 @@ with(MO){
       o.__base.FComponent.construct.call(o);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
+      o._scenes = new TDictionary();
    }
-   MO.FStage_timer = function FStage_timer(){
-      return this._timer;
+   MO.FStage_registerLayer = function FStage_registerLayer(code, layer){
+      layer.setCode(code);
+      this._layers.set(code, layer);
    }
-   MO.FStage_registerLayer = function FStage_registerLayer(n, l){
-      l.setCode(n);
-      this._layers.set(n, l);
-   }
-   MO.FStage_unregisterLayer = function FStage_unregisterLayer(n){
-      this._layers.set(n, null);
-   }
-   MO.FStage_layers = function FStage_layers(){
-      return this._layers;
+   MO.FStage_unregisterLayer = function FStage_unregisterLayer(code){
+      this._layers.set(code, null);
    }
    MO.FStage_active = function FStage_active(){
       var o = this;
       o._statusActive = true;
-      var ls = o._layers;
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).active();
+      var layers = o._layers;
+      var count = ls.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.active();
       }
    }
    MO.FStage_deactive = function FStage_deactive(){
       var o = this;
-      var ls = o._layers;
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).deactive();
+      var layers = o._layers;
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         layer.deactive();
       }
       o._statusActive = false;
+   }
+   MO.FStage_selectScene = function FStage_selectScene(scene){
+      var o = this;
+      if(o._activeScene == scene){
+         return;
+      }
+      if(o._activeScene){
+         o._activeScene.deactive();
+         o._activeScene = null;
+      }
+      if(scene){
+         scene.active();
+         o._activeScene = scene;
+      }
+   }
+   MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
+      var o = this;
+      var scene = o._scene.get(code);
+      o.selectScene(scene);
+      return scene;
    }
    MO.FStage_process = function FStage_process(){
       var o = this;
