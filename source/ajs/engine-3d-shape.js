@@ -304,7 +304,7 @@ with(MO){
       buffer.upload(vcd, 4, vc);
       o.pushVertexBuffer(buffer);
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
       buffer.upload(id, it);
       var materialInfo = o.material().info();
       materialInfo.effectCode = 'control';

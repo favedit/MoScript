@@ -2373,7 +2373,7 @@ with(MO){
       if(!object){
          var storge = RWindow.storage(EScope.Local);
          var value = storge.get(o._storageCode);
-         object = o._storageObject = RJson.parse(value, Object);
+         object = o._storageObject = MO.Json.parse(value, Object);
       }
       if(object){
          var value = object[name];
@@ -2404,7 +2404,7 @@ with(MO){
       var object = o._storageObject;
       if(object){
          var storge = RWindow.storage(EScope.Local);
-         var value = RJson.toString(object);
+         var value = MO.Json.toString(object);
          storge.set(o._storageCode, value);
       }
    }
@@ -2843,19 +2843,13 @@ with(MO){
 with(MO){
    MO.FUiComponent = function FUiComponent(o){
       o = RClass.inherits(this, o, FObject, MProperty, MClone);
-      o._name         = RClass.register(o, new APtyString('_name'));
-      o._label        = RClass.register(o, new APtyString('_label'));
+      o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
+      o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       o._parent       = null;
       o._components   = null;
-      o._tag          = null;
+      o._tag          = RClass.register(o, new AGetSet('_tag'));
       o.oeInitialize  = FUiComponent_oeInitialize;
       o.oeRelease     = FUiComponent_oeRelease;
-      o.name          = FUiComponent_name;
-      o.setName       = FUiComponent_setName;
-      o.label         = FUiComponent_label;
-      o.setLabel      = FUiComponent_setLabel;
-      o.tag           = FUiComponent_tag;
-      o.setTag        = FUiComponent_setTag;
       o.isParent      = FUiComponent_isParent;
       o.topComponent  = FUiComponent_topComponent;
       o.hasComponent  = FUiComponent_hasComponent;
@@ -2878,24 +2872,6 @@ with(MO){
    }
    MO.FUiComponent_oeRelease = function FUiComponent_oeRelease(e){
       return EEventStatus.Continue;
-   }
-   MO.FUiComponent_name = function FUiComponent_name(){
-      return this._name;
-   }
-   MO.FUiComponent_setName = function FUiComponent_setName(p){
-      this._name = p;
-   }
-   MO.FUiComponent_label = function FUiComponent_label(){
-      return this._label;
-   }
-   MO.FUiComponent_setLabel = function FUiComponent_setLabel(p){
-      this._label = p;
-   }
-   MO.FUiComponent_tag = function FUiComponent_tag(){
-      return this._tag;
-   }
-   MO.FUiComponent_setTag = function FUiComponent_setTag(p){
-      this._tag = p;
    }
    MO.FUiComponent_isParent = function FUiComponent_isParent(p){
       while(p){

@@ -108,11 +108,14 @@ with(MO){
          parameters.antialias = o._optionAntialias;
          //parameters.premultipliedAlpha = false;
          // 初始化对象
-         var handle = hCanvas.getContext('experimental-webgl', parameters);
-         if(handle == null){
+         var handle = hCanvas.getContext('experimental-webgl2', parameters);
+         if(!handle){
+            handle = hCanvas.getContext('experimental-webgl', parameters);
+         }
+         if(!handle){
             handle = hCanvas.getContext('webgl', parameters);
          }
-         if(handle == null){
+         if(!handle){
             throw new TError("Current browser can't support WebGL technique.");
          }
          o._native = handle;

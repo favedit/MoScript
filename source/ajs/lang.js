@@ -345,30 +345,30 @@ with(MO){
       as[c] = p;
       o._attributes[n] = p;
    }
-   MO.TClass_assign = function TClass_assign(c){
+   MO.TClass_assign = function TClass_assign(clazz){
       var o = this;
-      for(var an in c._annotations){
-         var ls = o._annotations[an];
-         if(!ls){
-            ls = o._annotations[an] = new Object();
+      for(var annotationName in clazz._annotations){
+         var annotations = o._annotations[annotationName];
+         if(!annotations){
+            annotations = o._annotations[annotationName] = new Object();
          }
-         var as = c._annotations[an];
-         for(var n in as){
-            var a = as[n];
-            if(!a._duplicate){
-               if(ls[n]){
-                  throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
+         var clazzAnnotations = clazz._annotations[annotationName];
+         for(var name in clazzAnnotations){
+            var annotation = clazzAnnotations[name];
+            if(!annotation._duplicate){
+               if(annotations[name]){
+                  throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
                }
             }
-            if(a._inherit){
-               ls[n] = a;
+            if(annotation._inherit){
+               annotations[name] = annotation;
             }
          }
       }
-      for(var n in c._attributes){
-         var a = c._attributes[n];
-         if(a.construct != Function){
-            o._attributes[n] = c._attributes[n];
+      for(var name in clazz._attributes){
+         var attribute = clazz._attributes[name];
+         if(attribute.construct != Function){
+            o._attributes[name] = clazz._attributes[name];
          }
       }
    }
@@ -2293,17 +2293,17 @@ with(MO){
       }
       return r;
    }
-   MO.RClass.prototype.forName = function RClass_forName(n){
-      var r = null;
-      if(n != null){
-         var o = this;
-         r = o._classes[n];
-         if(!r){
-            r = o.createClass(n);
-            o.build(r);
+   MO.RClass.prototype.forName = function RClass_forName(name){
+      var o = this;
+      var clazz = null;
+      if(name){
+         clazz = o._classes[name];
+         if(!clazz){
+            clazz = o.createClass(name);
+            o.build(clazz);
          }
       }
-      return r;
+      return clazz;
    }
    MO.RClass.prototype.find = function RClass_find(v){
       var o = this;
@@ -2319,11 +2319,21 @@ with(MO){
       }
       return o._classes[n];
    }
-   MO.RClass.prototype.register = function RClass_register(instance, annotation, defaultValue){
+   MO.RClass.prototype.register = function RClass_register(instance, annotations, defaultValue){
       var o = this;
       var name = RMethod.name(instance.constructor);
       var clazz = o._classes[name];
-      clazz.register(annotation);
+      var annotation = null;
+      if(annotations.constructor == Array){
+         var count = annotations.length;
+         for(var i = 0; i < count; i++){
+            annotation = annotations[i];
+            clazz.register(annotation);
+         }
+      }else{
+         annotation = annotations;
+         clazz.register(annotation);
+      }
       var value = annotation.value();
       return (defaultValue != null) ? defaultValue : value;
    }

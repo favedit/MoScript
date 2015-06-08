@@ -179,7 +179,7 @@ with(MO){
       o.pushVertexBuffer(buffer);
       // 上传索引数据
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
       buffer.upload(id, it);
       //..........................................................
       // 设置材质

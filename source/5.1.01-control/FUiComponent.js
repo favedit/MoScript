@@ -16,28 +16,21 @@
       o = RClass.inherits(this, o, FObject, MProperty, MClone);
       //..........................................................
       // @property String 名称
-      o._name         = RClass.register(o, new APtyString('_name'));
+      o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       // @property String 标签
-      o._label        = RClass.register(o, new APtyString('_label'));
+      o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       //..........................................................
       // @attribute FUiComponent 父组件
       o._parent       = null;
       // @attribute TDictionary 组件字典
       o._components   = null;
       // @attribute Object 附加数据
-      o._tag          = null;
+      o._tag          = RClass.register(o, new AGetSet('_tag'));
       //..........................................................
       // @process
       o.oeInitialize  = FUiComponent_oeInitialize;
       o.oeRelease     = FUiComponent_oeRelease;
       //..........................................................
-      // @method
-      o.name          = FUiComponent_name;
-      o.setName       = FUiComponent_setName;
-      o.label         = FUiComponent_label;
-      o.setLabel      = FUiComponent_setLabel;
-      o.tag           = FUiComponent_tag;
-      o.setTag        = FUiComponent_setTag;
       // @method
       o.isParent      = FUiComponent_isParent;
       o.topComponent  = FUiComponent_topComponent;
@@ -81,66 +74,6 @@
    //==========================================================
    MO.FUiComponent_oeRelease = function FUiComponent_oeRelease(e){
       return EEventStatus.Continue;
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return String 名称
-   //==========================================================
-   MO.FUiComponent_name = function FUiComponent_name(){
-      return this._name;
-   }
-
-   //==========================================================
-   // <T>设置名称。</T>
-   //
-   // @method
-   // @param p:name:String 名称
-   //==========================================================
-   MO.FUiComponent_setName = function FUiComponent_setName(p){
-      this._name = p;
-   }
-
-   //==========================================================
-   // <T>获得标签。</T>
-   //
-   // @method
-   // @return String 标签
-   //==========================================================
-   MO.FUiComponent_label = function FUiComponent_label(){
-      return this._label;
-   }
-
-   //==========================================================
-   // <T>设置标签。</T>
-   //
-   // @method
-   // @param p:label:String 标签
-   //==========================================================
-   MO.FUiComponent_setLabel = function FUiComponent_setLabel(p){
-      this._label = p;
-   }
-
-   //==========================================================
-   // <T>获得附加数据。</T>
-   //
-   // @method
-   // @return Object 附加数据
-   //==========================================================
-   MO.FUiComponent_tag = function FUiComponent_tag(){
-      return this._tag;
-   }
-
-   //==========================================================
-   // <T>设置附加数据。</T>
-   //
-   // @method
-   // @param p:tag:Object 附加数据
-   //==========================================================
-   MO.FUiComponent_setTag = function FUiComponent_setTag(p){
-      this._tag = p;
    }
 
    //==========================================================

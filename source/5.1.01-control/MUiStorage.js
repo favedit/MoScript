@@ -39,7 +39,7 @@ with(MO){
       if(!object){
          var storge = RWindow.storage(EScope.Local);
          var value = storge.get(o._storageCode);
-         object = o._storageObject = RJson.parse(value, Object);
+         object = o._storageObject = MO.Json.parse(value, Object);
       }
       if(object){
          var value = object[name];
@@ -92,7 +92,7 @@ with(MO){
       var object = o._storageObject;
       if(object){
          var storge = RWindow.storage(EScope.Local);
-         var value = RJson.toString(object);
+         var value = MO.Json.toString(object);
          storge.set(o._storageCode, value);
       }
    }

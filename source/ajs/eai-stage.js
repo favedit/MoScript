@@ -5,6 +5,7 @@ with(MO){
       o._stageLogin   = RClass.register(o, new AGetter('_stageLogin'));
       o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
       o.construct     = FEaiApplication_construct;
+      o.setup         = FEaiApplication_setup;
       o.dispose       = FEaiApplication_dispose;
       return o;
    }
@@ -14,6 +15,9 @@ with(MO){
       o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
       o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
       o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+   }
+   MO.FEaiApplication_setup = function FEaiApplication_setup(){
+      var o = this;
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;

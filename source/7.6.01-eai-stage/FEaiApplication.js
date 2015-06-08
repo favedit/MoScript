@@ -17,6 +17,8 @@ with(MO){
       // @method
       o.construct     = FEaiApplication_construct;
       // @method
+      o.setup         = FEaiApplication_setup;
+      // @method
       o.dispose       = FEaiApplication_dispose;
       return o;
    }
@@ -33,6 +35,15 @@ with(MO){
       o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
       o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
       o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+   }
+
+   //==========================================================
+   // <T>配置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiApplication_setup = function FEaiApplication_setup(){
+      var o = this;
    }
 
    //==========================================================

@@ -12,10 +12,10 @@ with(MO){
       // @attribute
       o._code             = 'stage';
       o._statusActive     = false;
-      o._timer            = RClass.register(o, AGetter('_timer'));
-      o._layers           = RClass.register(o, AGetter('_layers'));
-      o._scenes           = RClass.register(o, AGetter('_scenes'));
-      o._activeScene      = RClass.register(o, AGetter('_activeScene'));
+      o._timer            = RClass.register(o, new AGetter('_timer'));
+      o._layers           = RClass.register(o, new AGetter('_layers'));
+      o._scenes           = RClass.register(o, new AGetter('_scenes'));
+      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
       //..........................................................
       // @event
       o.onProcess         = FStage_onProcess;

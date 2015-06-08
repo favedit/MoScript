@@ -75,38 +75,40 @@
    // <T>当前类接收其他类所有的描述信息。</T>
    //
    // @method
-   // @param c:class:TClass 类对象
+   // @param clazz:TClass 类对象
    //==========================================================
-   MO.TClass_assign = function TClass_assign(c){
+   MO.TClass_assign = function TClass_assign(clazz){
       var o = this;
       //..........................................................
       // 复制描述器
-      for(var an in c._annotations){
+      for(var annotationName in clazz._annotations){
          // 在自己当前对象内查找描述的类型容器
-         var ls = o._annotations[an];
-         if(!ls){
-            ls = o._annotations[an] = new Object();
+         var annotations = o._annotations[annotationName];
+         if(!annotations){
+            annotations = o._annotations[annotationName] = new Object();
          }
          // 复制指定对象内的类型到自己对象内
-         var as = c._annotations[an];
-         for(var n in as){
-            var a = as[n];
-            if(!a._duplicate){
-               if(ls[n]){
-                  throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
+         var clazzAnnotations = clazz._annotations[annotationName];
+         for(var name in clazzAnnotations){
+            var annotation = clazzAnnotations[name];
+            // 检查重复
+            if(!annotation._duplicate){
+               if(annotations[name]){
+                  throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
                }
             }
-            if(a._inherit){
-               ls[n] = a;
+            // 复制描述器
+            if(annotation._inherit){
+               annotations[name] = annotation;
             }
          }
       }
       //..........................................................
       // 复制属性集合
-      for(var n in c._attributes){
-         var a = c._attributes[n];
-         if(a.construct != Function){
-            o._attributes[n] = c._attributes[n];
+      for(var name in clazz._attributes){
+         var attribute = clazz._attributes[name];
+         if(attribute.construct != Function){
+            o._attributes[name] = clazz._attributes[name];
          }
       }
    }

@@ -68,11 +68,14 @@ with(MO){
          var parameters = new Object();
          parameters.alpha = o._optionAlpha;
          parameters.antialias = o._optionAntialias;
-         var handle = hCanvas.getContext('experimental-webgl', parameters);
-         if(handle == null){
+         var handle = hCanvas.getContext('experimental-webgl2', parameters);
+         if(!handle){
+            handle = hCanvas.getContext('experimental-webgl', parameters);
+         }
+         if(!handle){
             handle = hCanvas.getContext('webgl', parameters);
          }
-         if(handle == null){
+         if(!handle){
             throw new TError("Current browser can't support WebGL technique.");
          }
          o._native = handle;

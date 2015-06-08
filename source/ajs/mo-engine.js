@@ -634,10 +634,10 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
       o._code             = 'stage';
       o._statusActive     = false;
-      o._timer            = RClass.register(o, AGetter('_timer'));
-      o._layers           = RClass.register(o, AGetter('_layers'));
-      o._scenes           = RClass.register(o, AGetter('_scenes'));
-      o._activeScene      = RClass.register(o, AGetter('_activeScene'));
+      o._timer            = RClass.register(o, new AGetter('_timer'));
+      o._layers           = RClass.register(o, new AGetter('_layers'));
+      o._scenes           = RClass.register(o, new AGetter('_scenes'));
+      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
       o.onProcess         = FStage_onProcess;
       o.construct         = FStage_construct;
       o.registerLayer     = FStage_registerLayer;
@@ -12156,7 +12156,7 @@ with(MO){
       buffer.upload(vcd, 4, vc);
       o.pushVertexBuffer(buffer);
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
       buffer.upload(id, it);
       var materialInfo = o.material().info();
       materialInfo.effectCode = 'control';

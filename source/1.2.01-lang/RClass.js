@@ -310,20 +310,20 @@
    // <P>如果类不存在，则尝试创建并初始化这个类对象。</P>
    //
    // @method
-   // @param n:name:String 类名称
+   // @param name:String 类名称
    // @return String 类对象的实例
    //==========================================================
-   MO.RClass.prototype.forName = function RClass_forName(n){
-      var r = null;
-      if(n != null){
-         var o = this;
-         r = o._classes[n];
-         if(!r){
-            r = o.createClass(n);
-            o.build(r);
+   MO.RClass.prototype.forName = function RClass_forName(name){
+      var o = this;
+      var clazz = null;
+      if(name){
+         clazz = o._classes[name];
+         if(!clazz){
+            clazz = o.createClass(name);
+            o.build(clazz);
          }
       }
-      return r;
+      return clazz;
    }
 
    //==========================================================
@@ -354,16 +354,26 @@
    //
    // @method
    // @param instance:Object 实例对象
-   // @param annotation:Annotation 标签对象
+   // @param annotations:Annotation 标签对象
    // @param defaultValue:Object 结果对象
    // @return Object 结果对象
    //==========================================================
-   MO.RClass.prototype.register = function RClass_register(instance, annotation, defaultValue){
+   MO.RClass.prototype.register = function RClass_register(instance, annotations, defaultValue){
       var o = this;
       // 注册描述
       var name = RMethod.name(instance.constructor);
       var clazz = o._classes[name];
-      clazz.register(annotation);
+      var annotation = null;
+      if(annotations.constructor == Array){
+         var count = annotations.length;
+         for(var i = 0; i < count; i++){
+            annotation = annotations[i];
+            clazz.register(annotation);
+         }
+      }else{
+         annotation = annotations;
+         clazz.register(annotation);
+      }
       // 返回内容
       var value = annotation.value();
       return (defaultValue != null) ? defaultValue : value;
