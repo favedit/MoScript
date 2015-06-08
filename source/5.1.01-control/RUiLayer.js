@@ -11,10 +11,6 @@ with(MO){
       //..........................................................
       // @attribute
       o._layers = new Array();
-      //..........................................................
-      // @member
-      o.next    = RUiLayer_next;
-      o.free    = RUiLayer_free;
       return o;
    }
 
@@ -25,7 +21,7 @@ with(MO){
    // @param p:typeCd:EUiLayer 层类型
    // @return Integer 层数
    //==========================================================
-   MO.RUiLayer_next = function RUiLayer_next(p){
+   MO.RUiLayer.prototype.next = function RUiLayer_next(p){
       var o = this;
       var n = RInteger.nvl(p, EUiLayer.Default);
       var c = RInteger.nvl(o._layers[n], n);
@@ -41,7 +37,7 @@ with(MO){
    // @param l:layer:Integer 层数据
    // @return Integer 层数
    //==========================================================
-   MO.RUiLayer_free = function RUiLayer_free(p, l){
+   MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
       var o = this;
       var n = RInteger.nvl(p, EUiLayer.Default);
       var c = RInteger.nvl(o._layers[n], n);

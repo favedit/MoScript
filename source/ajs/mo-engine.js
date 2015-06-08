@@ -744,18 +744,10 @@ with(MO){
       o._stages        = null;
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;
-      o.onProcess      = RStage_onProcess;
-      o.construct      = RStage_construct;
-      o.register       = RStage_register;
-      o.unregister     = RStage_unregister;
-      o.active         = RStage_active;
-      o.process        = RStage_process;
-      o.deactive       = RStage_deactive;
-      o.start          = RStage_start;
       o.construct();
       return o;
    }
-   MO.RStage_onProcess = function RStage_onProcess(event){
+   MO.RStage.prototype.onProcess = function RStage_onProcess(event){
       var o = this;
       if(!o._active){
          return;
@@ -776,12 +768,12 @@ with(MO){
          alert(e);
       }
    }
-   MO.RStage_construct = function RStage_construct(){
+   MO.RStage.prototype.construct = function RStage_construct(){
       var o = this;
       o.lsnsEnterFrame = new TListeners();
       o.lsnsLeaveFrame = new TListeners();
    }
-   MO.RStage_register = function RStage_register(name, stage){
+   MO.RStage.prototype.register = function RStage_register(name, stage){
       var o = this;
       var stages = o._stages;
       if(!stages){
@@ -789,10 +781,10 @@ with(MO){
       }
       stages.set(name , stage);
    }
-   MO.RStage_unregister = function RStage_unregister(stage){
+   MO.RStage.prototype.unregister = function RStage_unregister(stage){
       this._stages.removeValue(stage);
    }
-   MO.RStage_active = function RStage_active(){
+   MO.RStage.prototype.active = function RStage_active(){
       var o = this;
       var stages = o._stages;
       if(stages){
@@ -803,10 +795,10 @@ with(MO){
          }
       }
    }
-   MO.RStage_process = function RStage_process(){
+   MO.RStage.prototype.process = function RStage_process(){
       this.onProcess();
    }
-   MO.RStage_deactive = function RStage_deactive(){
+   MO.RStage.prototype.deactive = function RStage_deactive(){
       var o = this;
       var stages = o._stages;
       if(stages){
@@ -817,7 +809,7 @@ with(MO){
          }
       }
    }
-   MO.RStage_start = function RStage_start(interval){
+   MO.RStage.prototype.start = function RStage_start(interval){
       var o = this;
       if(o._started){
          return;
@@ -2206,11 +2198,9 @@ with(MO){
    MO.RE3dEngine = function RE3dEngine(){
       var o = this;
       o._setuped = false;
-      o.onSetup  = RE3dEngine_onSetup;
-      o.setup    = RE3dEngine_setup;
       return o;
    }
-   MO.RE3dEngine_onSetup = function RE3dEngine_onSetup(){
+   MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
@@ -2232,7 +2222,7 @@ with(MO){
       effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
       effectConsole.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
    }
-   MO.RE3dEngine_setup = function RE3dEngine_setup(){
+   MO.RE3dEngine.prototype.setup = function RE3dEngine_setup(){
       var o = this;
       if(!o._setuped){
          o.onSetup();

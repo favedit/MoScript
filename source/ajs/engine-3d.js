@@ -569,11 +569,9 @@ with(MO){
    MO.RE3dEngine = function RE3dEngine(){
       var o = this;
       o._setuped = false;
-      o.onSetup  = RE3dEngine_onSetup;
-      o.setup    = RE3dEngine_setup;
       return o;
    }
-   MO.RE3dEngine_onSetup = function RE3dEngine_onSetup(){
+   MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
@@ -595,7 +593,7 @@ with(MO){
       effectConsole.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
       effectConsole.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
    }
-   MO.RE3dEngine_setup = function RE3dEngine_setup(){
+   MO.RE3dEngine.prototype.setup = function RE3dEngine_setup(){
       var o = this;
       if(!o._setuped){
          o.onSetup();

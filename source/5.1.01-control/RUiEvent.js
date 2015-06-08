@@ -19,28 +19,11 @@ with(MO){
       //..........................................................
       // @attribute 存储所有关联过事件的控件
       o._objects  = new Array();
-      //..........................................................
-      // @event
-      o.ohEvent   = RUiEvent_ohEvent;
-      //..........................................................
-      // @event
-      o.onProcess = RUiEvent_onProcess;
-      //..........................................................
-      // @method
-      o.find      = RUiEvent_find;
-      o.process   = RUiEvent_process;
-      // @method
-      o.release   = RUiEvent_release;
-
 
 
       // Attribute
       o.current   = 0;
       o.events    = new Array();
-      // Method
-      o.nvl       = RUiEvent_nvl;
-      o.alloc     = RUiEvent_alloc;
-      o.free      = RUiEvent_free;
       return o;
    }
 
@@ -50,7 +33,7 @@ with(MO){
    // @method
    // @param e:event:Event 事件对象
    //==========================================================
-   MO.RUiEvent_ohEvent = function RUiEvent_ohEvent(e){
+   MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
       RUiEvent.process(this, e ? e : window.event);
    }
 
@@ -60,7 +43,7 @@ with(MO){
    // @method
    // @param e:event:Event 事件对象
    //==========================================================
-   MO.RUiEvent_onProcess = function RUiEvent_onProcess(e){
+   MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
       // 当前this指向EventHandle对象
       var e = this;
       var ea = e.annotation;
@@ -81,7 +64,7 @@ with(MO){
    // @method
    // @param p:html:HtmlTag 页面元素
    // =========================================================
-   MO.RUiEvent_find = function RUiEvent_find(p){
+   MO.RUiEvent.prototype.find = function RUiEvent_find(p){
       var u = RHtml.uid(p);
       var es = this._objects;
       var e = es[u];
@@ -99,7 +82,7 @@ with(MO){
    // @param hs:htmlSource:<Html> 发出者对象
    // @param he:htmlEvent:<Event> 事件对象
    // =========================================================
-   MO.RUiEvent_process = function RUiEvent_process(hs, he){
+   MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
       var o = this;
       // 检查参数
       if(!hs || !he){
@@ -156,7 +139,7 @@ with(MO){
    // @param hs:htmlSource:<Html> 发出者对象
    // @param he:htmlEvent:<Event> 事件对象
    // =========================================================
-   MO.RUiEvent_release = function RUiEvent_release(){
+   MO.RUiEvent.prototype.release = function RUiEvent_release(){
       var o = this;
       // 释放对象集合
       var v = o._objects;
@@ -179,7 +162,7 @@ with(MO){
 
 
    // ------------------------------------------------------------
-   MO.RUiEvent_nvl = function RUiEvent_nvl(event, sender, code){
+   MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
       if(!event){
          event = new TEvent();
       }
@@ -189,7 +172,7 @@ with(MO){
    }
    // ------------------------------------------------------------
    // sender, code
-   MO.RUiEvent_alloc = function RUiEvent_alloc(s, c){
+   MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
       var e = null;
       var es = this.events;
       // 查找一个未被使用的事件对象
@@ -210,7 +193,7 @@ with(MO){
       return e;
    }
    // ------------------------------------------------------------
-   MO.RUiEvent_free = function RUiEvent_free(e){
+   MO.RUiEvent.prototype.free = function RUiEvent_free(e){
       e.inUsing = false;
    }
    //..........................................................

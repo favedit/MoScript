@@ -10,45 +10,18 @@ with(MO){
       var o = this;
       //..........................................................
       // @property
-      o.PREFIX             = 'FUi';
-      //..........................................................
-      // @attribute
-      //..........................................................
-      // @method
-      o.newInstance        = RUiControl_newInstance;
-      o.attachEvent        = RUiControl_attachEvent;
-      // @method
-      o.innerCreate        = RUiControl_innerCreate;
-      o.create             = RUiControl_create;
-      o.innerbuild         = RUiControl_innerbuild;
-      o.build              = RUiControl_build;
-      // @method
-      o.setStyleScroll     = RUiControl_setStyleScroll;
+      o.PREFIX    = 'FUi';
 
 
       //..........................................................
       // @attribute
-      o.inMoving           = false;
-      o.inSizing           = false;
-      o.inDesign           = false;
+      o.inMoving  = false;
+      o.inSizing  = false;
+      o.inDesign  = false;
       // @attribute 存放所有的控件
-      o.instances          = new TObjects();
-      o.events             = new TMap();
-      o.controls           = new TMap();
-      //..........................................................
-      // @member
-      o.linkEvent          = RUiControl_linkEvent;
-      o.find               = RUiControl_find;
-      o.fromNode           = RUiControl_fromNode;
-      o.fromXml            = RUiControl_fromXml;
-      o.toNode             = RUiControl_toNode;
-      o.toXml              = RUiControl_toXml;
-      o.store              = RUiControl_store;
-      o.htmlControl        = RUiControl_htmlControl;
-      o.psDesign           = RUiControl_psDesign;
-      o.psMode             = RUiControl_psMode;
-      o.isInfo             = RUiControl_isInfo;
-      o.isGroup            = RUiControl_isGroup;
+      o.instances = new TObjects();
+      o.events    = new TMap();
+      o.controls  = new TMap();
       return o;
    }
 
@@ -59,7 +32,7 @@ with(MO){
    // @param p:name:String 名称
    // @return FComponent 控件
    //==========================================================
-   MO.RUiControl_newInstance = function RUiControl_newInstance(p){
+   MO.RUiControl.prototype.newInstance = function RUiControl_newInstance(p){
       var o = this;
       var r = null;
       if(p){
@@ -106,7 +79,7 @@ with(MO){
    // @param m:method:Function 处理函数
    // @param u:capture:Boolean 是否捕捉
    //==========================================================
-   MO.RUiControl_attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
+   MO.RUiControl.prototype.attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
       var o = this;
       var e = null;
       var p = c[n];
@@ -142,7 +115,7 @@ with(MO){
    // @param pa:attributes:Object 参数集合
    // @return FUiControl 控件对象
    //===========================================================
-   MO.RUiControl_innerCreate = function RUiControl_innerCreate(pc, px, pa){
+   MO.RUiControl.prototype.innerCreate = function RUiControl_innerCreate(pc, px, pa){
       var o = this;
       // 检查参数
       if((pc == null) || (px == null)){
@@ -185,7 +158,7 @@ with(MO){
    // @param pa:attributes:Object 属性集合
    // @return FUiControl 控件对象
    //===========================================================
-   MO.RUiControl_create = function RUiControl_create(pc, px, pa){
+   MO.RUiControl.prototype.create = function RUiControl_create(pc, px, pa){
       var o = this;
       // 获得控件
       var c = null;
@@ -235,7 +208,7 @@ with(MO){
    // @param px:config:TXmlNode 配置节点
    // @param pa:attribute:Object 属性集合
    //===========================================================
-   MO.RUiControl_innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
+   MO.RUiControl.prototype.innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
       var o = this;
       // 检查参数
       if((pc == null) || (px == null)){
@@ -300,7 +273,7 @@ with(MO){
    // @param a:attribute:Object 属性集合
    // @param h:panel:HtmlTag 页面元素
    //===========================================================
-   MO.RUiControl_build = function RUiControl_build(c, x, a, h){
+   MO.RUiControl.prototype.build = function RUiControl_build(c, x, a, h){
       var o = this;
       // 创建控件对象
       if(!c){
@@ -318,7 +291,7 @@ with(MO){
    // @param h:html:HtmlTag 页面元素
    // @param c:scrollCd:EUiScroll 滚动枚举
    //===========================================================
-   MO.RUiControl_setStyleScroll = function RUiControl_setStyleScroll(h, c){
+   MO.RUiControl.prototype.setStyleScroll = function RUiControl_setStyleScroll(h, c){
       var s = h.style;
       switch(c){
          case EUiScroll.None:
@@ -362,7 +335,7 @@ with(MO){
    // n:name:String 注册过的事件名称
    // h:html:HTML 注册过的事件名称
    // m:method:Function 即时处理函数
-   MO.RUiControl_linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
+   MO.RUiControl.prototype.linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
       var o = this;
       var p = tc[n];
       if(!RMethod.isEmpty(p) || m){
@@ -389,7 +362,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.RUiControl_find = function RUiControl_find(c){
+   MO.RUiControl.prototype.find = function RUiControl_find(c){
       var o = this;
       var r = null;
       if(c){
@@ -416,7 +389,7 @@ with(MO){
    // @param hPanel:hPanel:HTML   生成控件后要放置的位置
    // @return Object 控件对象
    //===========================================================
-   MO.RUiControl_fromNode = function RUiControl_fromNode(x, h){
+   MO.RUiControl.prototype.fromNode = function RUiControl_fromNode(x, h){
       if(x){
          return this.create(x, h);
       }
@@ -430,7 +403,7 @@ with(MO){
    // @param hPanel:hPanel:HTML   生成控件后要放置的位置
    // @return Object 控件对象
    //===========================================================
-   MO.RUiControl_fromXml = function RUiControl_fromXml(xml, hPanel, mode){
+   MO.RUiControl.prototype.fromXml = function RUiControl_fromXml(xml, hPanel, mode){
       var c = null;
       var x = RXml.makeNode(xml);
       if(x){
@@ -445,7 +418,7 @@ with(MO){
    // @method
    // @return TNode 配置节点
    //===========================================================
-   MO.RUiControl_toNode = function RUiControl_toNode(){
+   MO.RUiControl.prototype.toNode = function RUiControl_toNode(){
    }
 
    //===========================================================
@@ -454,7 +427,7 @@ with(MO){
    // @method
    // @return String 配置字符串
    //===========================================================
-   MO.RUiControl_toXml = function RUiControl_toXml(){
+   MO.RUiControl.prototype.toXml = function RUiControl_toXml(){
    }
 
    //===========================================================
@@ -464,7 +437,7 @@ with(MO){
    // @author maochunyang
    // @version 1.0.1
    //===========================================================
-   MO.RUiControl_store = function RUiControl_store(o, type){
+   MO.RUiControl.prototype.store = function RUiControl_store(o, type){
       var x = new TNode();
       x.name = RClass.name(o).substr(1);
       if(RClass.isClass(o, FContainer)){
@@ -483,7 +456,7 @@ with(MO){
    // @version 1.0.1
    //===========================================================
    // element, class
-   MO.RUiControl_htmlControl = function RUiControl_htmlControl(e, c){
+   MO.RUiControl.prototype.htmlControl = function RUiControl_htmlControl(e, c){
       if(c){
          while(e){
             var o = RHtml.linkGet(e, 'control');
@@ -512,7 +485,7 @@ with(MO){
    // @version 1.0.1
    //===========================================================
    // action
-   MO.RUiControl_psDesign = function RUiControl_psDesign(action, mode, flag, params){
+   MO.RUiControl.prototype.psDesign = function RUiControl_psDesign(action, mode, flag, params){
       var cs = this.instances;
       if(cs && cs.count){
          var l = cs.count;
@@ -522,7 +495,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.RUiControl_psMode = function RUiControl_psMode(action, mode, flag, params){
+   MO.RUiControl.prototype.psMode = function RUiControl_psMode(action, mode, flag, params){
       var cs = this.instances;
       if(cs && cs.count){
          var l = cs.count;
@@ -533,12 +506,12 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.RUiControl_isInfo = function RUiControl_isInfo(v){
+   MO.RUiControl.prototype.isInfo = function RUiControl_isInfo(v){
       return v ? (0 == v.indexOf('C#')) : false;
    }
 
    //------------------------------------------------------------
-   MO.RUiControl_isGroup = function RUiControl_isGroup(v){
+   MO.RUiControl.prototype.isGroup = function RUiControl_isGroup(v){
       return v ? (0 == v.indexOf('G#')) : false;
    }
    //..........................................................

@@ -11,12 +11,6 @@ with(MO){
       //..........................................................
       // @attribtue
       o._setuped = false;
-      //..........................................................
-      // @event
-      o.onSetup  = RE3dEngine_onSetup;
-      //..........................................................
-      // @method
-      o.setup    = RE3dEngine_setup;
       return o;
    }
 
@@ -25,7 +19,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RE3dEngine_onSetup = function RE3dEngine_onSetup(){
+   MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
       var effectConsole = RConsole.find(FG3dEffectConsole);
       // 选取效果器
       effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
@@ -57,7 +51,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RE3dEngine_setup = function RE3dEngine_setup(){
+   MO.RE3dEngine.prototype.setup = function RE3dEngine_setup(){
       var o = this;
       if(!o._setuped){
          o.onSetup();

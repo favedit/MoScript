@@ -11,11 +11,6 @@ with(MO){
       //..........................................................
       // @attribute
       o._services = new TDictionary();
-      //..........................................................
-      // @method
-      o.url       = RUiService_url;
-      o.makeUrl   = RUiService_makeUrl;
-      o.parse     = RUiService_parse;
       return o;
    }
 
@@ -26,7 +21,7 @@ with(MO){
    // @param p:name:String 名称
    // @return String 服务地址
    //===========================================================
-   MO.RUiService_url = function RUiService_url(p){
+   MO.RUiService.prototype.url = function RUiService_url(p){
       if(RString.startsWith(p, 'http://')){
          return p;
       }
@@ -47,7 +42,7 @@ with(MO){
    // @param p:source:String 来源
    // @return SServiceInfo 服务信息
    //===========================================================
-   MO.RUiService_makeUrl = function RUiService_makeUrl(s, a){
+   MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
       return this.url(s) + '?action=' + a;
    }
 
@@ -58,7 +53,7 @@ with(MO){
    // @param p:source:String 来源
    // @return SServiceInfo 服务信息
    //===========================================================
-   MO.RUiService_parse = function RUiService_parse(p){
+   MO.RUiService.prototype.parse = function RUiService_parse(p){
       var o = this;
       var s = null;
       var ss = o._services;

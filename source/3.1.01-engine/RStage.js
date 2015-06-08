@@ -19,18 +19,6 @@ with(MO){
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;
       //..........................................................
-      // @event
-      o.onProcess      = RStage_onProcess;
-      //..........................................................
-      // @method
-      o.construct      = RStage_construct;
-      o.register       = RStage_register;
-      o.unregister     = RStage_unregister;
-      o.active         = RStage_active;
-      o.process        = RStage_process;
-      o.deactive       = RStage_deactive;
-      o.start          = RStage_start;
-      //..........................................................
       // @construct
       o.construct();
       return o;
@@ -41,7 +29,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RStage_onProcess = function RStage_onProcess(event){
+   MO.RStage.prototype.onProcess = function RStage_onProcess(event){
       var o = this;
       // 检查参数
       if(!o._active){
@@ -73,7 +61,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RStage_construct = function RStage_construct(){
+   MO.RStage.prototype.construct = function RStage_construct(){
       var o = this;
       o.lsnsEnterFrame = new TListeners();
       o.lsnsLeaveFrame = new TListeners();
@@ -86,7 +74,7 @@ with(MO){
    // @param name:String 名称
    // @param stage:FStage 舞台
    //==========================================================
-   MO.RStage_register = function RStage_register(name, stage){
+   MO.RStage.prototype.register = function RStage_register(name, stage){
       var o = this;
       var stages = o._stages;
       if(!stages){
@@ -101,7 +89,7 @@ with(MO){
    // @method
    // @param stage:FStage 舞台
    //==========================================================
-   MO.RStage_unregister = function RStage_unregister(stage){
+   MO.RStage.prototype.unregister = function RStage_unregister(stage){
       this._stages.removeValue(stage);
    }
 
@@ -110,7 +98,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RStage_active = function RStage_active(){
+   MO.RStage.prototype.active = function RStage_active(){
       var o = this;
       var stages = o._stages;
       if(stages){
@@ -127,7 +115,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RStage_process = function RStage_process(){
+   MO.RStage.prototype.process = function RStage_process(){
       this.onProcess();
    }
 
@@ -136,7 +124,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RStage_deactive = function RStage_deactive(){
+   MO.RStage.prototype.deactive = function RStage_deactive(){
       var o = this;
       var stages = o._stages;
       if(stages){
@@ -154,7 +142,7 @@ with(MO){
    // @method
    // @param interval:Integer 执行间隔
    //==========================================================
-   MO.RStage_start = function RStage_start(interval){
+   MO.RStage.prototype.start = function RStage_start(interval){
       var o = this;
       // 检查是否已经启动
       if(o._started){

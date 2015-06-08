@@ -3201,7 +3201,7 @@ with(MO){
 with(MO){
    MO.FUiControl = function FUiControl(o){
       o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding, MUiMargin);
-      o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
+      o._wrapCd        = RClass.register(o, [new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine), new AGetSet('_wrapCd')]);
       o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
       o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
       o._hint          = RClass.register(o, new APtyString('_hint'));
@@ -3228,8 +3228,6 @@ with(MO){
       o.construct      = FUiControl_construct;
       o.topControl     = FUiControl_topControl;
       o.panel          = FUiControl_panel;
-      o.wrapCd         = FUiControl_wrapCd;
-      o.setWrapCd      = FUiControl_setWrapCd;
       o.isVisible      = FUiControl_isVisible;
       o.setVisible     = FUiControl_setVisible;
       o.show           = FUiControl_show;
@@ -3352,12 +3350,6 @@ with(MO){
             return o._hPanel;
       }
       return null;
-   }
-   MO.FUiControl_wrapCd = function FUiControl_wrapCd(){
-      return this._wrapCd;
-   }
-   MO.FUiControl_setWrapCd = function FUiControl_setWrapCd(wrapCd){
-      this._wrapCd = wrapCd;
    }
    MO.FUiControl_isVisible = function FUiControl_isVisible(){
       return this._statusVisible;
@@ -3556,35 +3548,16 @@ with(MO){
 with(MO){
    MO.RUiControl = function RUiControl(){
       var o = this;
-      o.PREFIX             = 'FUi';
-      o.newInstance        = RUiControl_newInstance;
-      o.attachEvent        = RUiControl_attachEvent;
-      o.innerCreate        = RUiControl_innerCreate;
-      o.create             = RUiControl_create;
-      o.innerbuild         = RUiControl_innerbuild;
-      o.build              = RUiControl_build;
-      o.setStyleScroll     = RUiControl_setStyleScroll;
-      o.inMoving           = false;
-      o.inSizing           = false;
-      o.inDesign           = false;
-      o.instances          = new TObjects();
-      o.events             = new TMap();
-      o.controls           = new TMap();
-      o.linkEvent          = RUiControl_linkEvent;
-      o.find               = RUiControl_find;
-      o.fromNode           = RUiControl_fromNode;
-      o.fromXml            = RUiControl_fromXml;
-      o.toNode             = RUiControl_toNode;
-      o.toXml              = RUiControl_toXml;
-      o.store              = RUiControl_store;
-      o.htmlControl        = RUiControl_htmlControl;
-      o.psDesign           = RUiControl_psDesign;
-      o.psMode             = RUiControl_psMode;
-      o.isInfo             = RUiControl_isInfo;
-      o.isGroup            = RUiControl_isGroup;
+      o.PREFIX    = 'FUi';
+      o.inMoving  = false;
+      o.inSizing  = false;
+      o.inDesign  = false;
+      o.instances = new TObjects();
+      o.events    = new TMap();
+      o.controls  = new TMap();
       return o;
    }
-   MO.RUiControl_newInstance = function RUiControl_newInstance(p){
+   MO.RUiControl.prototype.newInstance = function RUiControl_newInstance(p){
       var o = this;
       var r = null;
       if(p){
@@ -3617,7 +3590,7 @@ with(MO){
       }
       return r;
    }
-   MO.RUiControl_attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
+   MO.RUiControl.prototype.attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
       var o = this;
       var e = null;
       var p = c[n];
@@ -3637,7 +3610,7 @@ with(MO){
       }
       return e;
    }
-   MO.RUiControl_innerCreate = function RUiControl_innerCreate(pc, px, pa){
+   MO.RUiControl.prototype.innerCreate = function RUiControl_innerCreate(pc, px, pa){
       var o = this;
       if((pc == null) || (px == null)){
          return;
@@ -3658,7 +3631,7 @@ with(MO){
          }
       }
    }
-   MO.RUiControl_create = function RUiControl_create(pc, px, pa){
+   MO.RUiControl.prototype.create = function RUiControl_create(pc, px, pa){
       var o = this;
       var c = null;
       if(pc){
@@ -3669,7 +3642,7 @@ with(MO){
       o.innerCreate(c, px, pa);
       return c;
    }
-   MO.RUiControl_innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
+   MO.RUiControl.prototype.innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
       var o = this;
       if((pc == null) || (px == null)){
          return;
@@ -3708,7 +3681,7 @@ with(MO){
          pc.builded(ph);
       }
    }
-   MO.RUiControl_build = function RUiControl_build(c, x, a, h){
+   MO.RUiControl.prototype.build = function RUiControl_build(c, x, a, h){
       var o = this;
       if(!c){
          c = RUiControl.newInstance(x);
@@ -3716,7 +3689,7 @@ with(MO){
       o.innerbuild(c, c, x, a, h);
       return c;
    }
-   MO.RUiControl_setStyleScroll = function RUiControl_setStyleScroll(h, c){
+   MO.RUiControl.prototype.setStyleScroll = function RUiControl_setStyleScroll(h, c){
       var s = h.style;
       switch(c){
          case EUiScroll.None:
@@ -3745,7 +3718,7 @@ with(MO){
             throw new TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
       }
    }
-   MO.RUiControl_linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
+   MO.RUiControl.prototype.linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
       var o = this;
       var p = tc[n];
       if(!RMethod.isEmpty(p) || m){
@@ -3765,7 +3738,7 @@ with(MO){
          return e;
       }
    }
-   MO.RUiControl_find = function RUiControl_find(c){
+   MO.RUiControl.prototype.find = function RUiControl_find(c){
       var o = this;
       var r = null;
       if(c){
@@ -3783,12 +3756,12 @@ with(MO){
       }
       return r;
    }
-   MO.RUiControl_fromNode = function RUiControl_fromNode(x, h){
+   MO.RUiControl.prototype.fromNode = function RUiControl_fromNode(x, h){
       if(x){
          return this.create(x, h);
       }
    }
-   MO.RUiControl_fromXml = function RUiControl_fromXml(xml, hPanel, mode){
+   MO.RUiControl.prototype.fromXml = function RUiControl_fromXml(xml, hPanel, mode){
       var c = null;
       var x = RXml.makeNode(xml);
       if(x){
@@ -3796,11 +3769,11 @@ with(MO){
       }
       return c;
    }
-   MO.RUiControl_toNode = function RUiControl_toNode(){
+   MO.RUiControl.prototype.toNode = function RUiControl_toNode(){
    }
-   MO.RUiControl_toXml = function RUiControl_toXml(){
+   MO.RUiControl.prototype.toXml = function RUiControl_toXml(){
    }
-   MO.RUiControl_store = function RUiControl_store(o, type){
+   MO.RUiControl.prototype.store = function RUiControl_store(o, type){
       var x = new TNode();
       x.name = RClass.name(o).substr(1);
       if(RClass.isClass(o, FContainer)){
@@ -3810,7 +3783,7 @@ with(MO){
       }
       return x;
    }
-   MO.RUiControl_htmlControl = function RUiControl_htmlControl(e, c){
+   MO.RUiControl.prototype.htmlControl = function RUiControl_htmlControl(e, c){
       if(c){
          while(e){
             var o = RHtml.linkGet(e, 'control');
@@ -3830,7 +3803,7 @@ with(MO){
       }
       return null;
    }
-   MO.RUiControl_psDesign = function RUiControl_psDesign(action, mode, flag, params){
+   MO.RUiControl.prototype.psDesign = function RUiControl_psDesign(action, mode, flag, params){
       var cs = this.instances;
       if(cs && cs.count){
          var l = cs.count;
@@ -3839,7 +3812,7 @@ with(MO){
          }
       }
    }
-   MO.RUiControl_psMode = function RUiControl_psMode(action, mode, flag, params){
+   MO.RUiControl.prototype.psMode = function RUiControl_psMode(action, mode, flag, params){
       var cs = this.instances;
       if(cs && cs.count){
          var l = cs.count;
@@ -3848,10 +3821,10 @@ with(MO){
          }
       }
    }
-   MO.RUiControl_isInfo = function RUiControl_isInfo(v){
+   MO.RUiControl.prototype.isInfo = function RUiControl_isInfo(v){
       return v ? (0 == v.indexOf('C#')) : false;
    }
-   MO.RUiControl_isGroup = function RUiControl_isGroup(v){
+   MO.RUiControl.prototype.isGroup = function RUiControl_isGroup(v){
       return v ? (0 == v.indexOf('G#')) : false;
    }
    MO.RUiControl = new RUiControl();
@@ -3860,22 +3833,14 @@ with(MO){
    MO.RUiEvent = function RUiEvent(){
       var o = this;
       o._objects  = new Array();
-      o.ohEvent   = RUiEvent_ohEvent;
-      o.onProcess = RUiEvent_onProcess;
-      o.find      = RUiEvent_find;
-      o.process   = RUiEvent_process;
-      o.release   = RUiEvent_release;
       o.current   = 0;
       o.events    = new Array();
-      o.nvl       = RUiEvent_nvl;
-      o.alloc     = RUiEvent_alloc;
-      o.free      = RUiEvent_free;
       return o;
    }
-   MO.RUiEvent_ohEvent = function RUiEvent_ohEvent(e){
+   MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
       RUiEvent.process(this, e ? e : window.event);
    }
-   MO.RUiEvent_onProcess = function RUiEvent_onProcess(e){
+   MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
       var e = this;
       var ea = e.annotation;
       if(ea._logger){
@@ -3887,7 +3852,7 @@ with(MO){
          e.onProcess.call(e.source, e);
       }
    }
-   MO.RUiEvent_find = function RUiEvent_find(p){
+   MO.RUiEvent.prototype.find = function RUiEvent_find(p){
       var u = RHtml.uid(p);
       var es = this._objects;
       var e = es[u];
@@ -3897,7 +3862,7 @@ with(MO){
       }
       return e;
    }
-   MO.RUiEvent_process = function RUiEvent_process(hs, he){
+   MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
       var o = this;
       if(!hs || !he){
          return;
@@ -3929,7 +3894,7 @@ with(MO){
       }
       return false;
    }
-   MO.RUiEvent_release = function RUiEvent_release(){
+   MO.RUiEvent.prototype.release = function RUiEvent_release(){
       var o = this;
       var v = o._objects;
       if(v){
@@ -3937,7 +3902,7 @@ with(MO){
          o._objects = null;
       }
    }
-   MO.RUiEvent_nvl = function RUiEvent_nvl(event, sender, code){
+   MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
       if(!event){
          event = new TEvent();
       }
@@ -3945,7 +3910,7 @@ with(MO){
       event.code = code;
       return event;
    }
-   MO.RUiEvent_alloc = function RUiEvent_alloc(s, c){
+   MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
       var e = null;
       var es = this.events;
       for(var n=0; n<es.length; n++){
@@ -3962,7 +3927,7 @@ with(MO){
       e.code = c;
       return e;
    }
-   MO.RUiEvent_free = function RUiEvent_free(e){
+   MO.RUiEvent.prototype.free = function RUiEvent_free(e){
       e.inUsing = false;
    }
    MO.RUiEvent = new RUiEvent();
@@ -3971,18 +3936,16 @@ with(MO){
    MO.RUiLayer = function RUiLayer(){
       var o = this;
       o._layers = new Array();
-      o.next    = RUiLayer_next;
-      o.free    = RUiLayer_free;
       return o;
    }
-   MO.RUiLayer_next = function RUiLayer_next(p){
+   MO.RUiLayer.prototype.next = function RUiLayer_next(p){
       var o = this;
       var n = RInteger.nvl(p, EUiLayer.Default);
       var c = RInteger.nvl(o._layers[n], n);
       o._layers[n] = ++c;
       return c;
    }
-   MO.RUiLayer_free = function RUiLayer_free(p, l){
+   MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
       var o = this;
       var n = RInteger.nvl(p, EUiLayer.Default);
       var c = RInteger.nvl(o._layers[n], n);
@@ -3998,12 +3961,9 @@ with(MO){
    MO.RUiService = function RUiService(){
       var o = this;
       o._services = new TDictionary();
-      o.url       = RUiService_url;
-      o.makeUrl   = RUiService_makeUrl;
-      o.parse     = RUiService_parse;
       return o;
    }
-   MO.RUiService_url = function RUiService_url(p){
+   MO.RUiService.prototype.url = function RUiService_url(p){
       if(RString.startsWith(p, 'http://')){
          return p;
       }
@@ -4015,10 +3975,10 @@ with(MO){
       }
       return p + '.ws';
    }
-   MO.RUiService_makeUrl = function RUiService_makeUrl(s, a){
+   MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
       return this.url(s) + '?action=' + a;
    }
-   MO.RUiService_parse = function RUiService_parse(p){
+   MO.RUiService.prototype.parse = function RUiService_parse(p){
       var o = this;
       var s = null;
       var ss = o._services;
