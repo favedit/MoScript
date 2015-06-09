@@ -75,11 +75,11 @@
    //==========================================================
    MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(p){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
+      var context = o._graphicContext;
+      var handle = context.handle();
       // 设置渲染目标
-      c.setRenderTarget(o._renderTarget);
-      c.clear(0, 0, 0, 0, 1, 1);
+      context.setRenderTarget(o._renderTarget);
+      context.clear(0, 0, 0, 0, 1, 1);
       //..........................................................
       // 绘制处理
       var rs = p.allRenderables();
@@ -90,7 +90,7 @@
       for(var i = 0; i < rc; i++){
          var r = rs.get(i);
          var e = r.activeEffect();
-         c.setProgram(e.program());
+         context.setProgram(e.program());
          var d = r.display();
          if(!d){
             e.drawRenderable(p, r, i);
@@ -99,11 +99,11 @@
          }
       }
       // 绘制界面处理
-      c.clearDepth(1);
+      context.clearDepth(1);
       for(var i = 0; i < rc; i++){
          var r = rs.get(i);
          var e = r.activeEffect();
-         c.setProgram(e.program());
+         context.setProgram(e.program());
          var d = r.display();
          if(d && d._optionFace){
             e.drawRenderable(p, r, i);
@@ -111,7 +111,7 @@
       }
       //..........................................................
       // 读取输出
-      g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
+      handle.readPixels(0, 0, 1, 1, handle.RGBA, handle.UNSIGNED_BYTE, o._data);
       var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
       o._selectRenderable = null;
       if(v != 0){

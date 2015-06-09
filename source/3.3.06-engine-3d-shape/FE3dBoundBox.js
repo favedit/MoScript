@@ -29,7 +29,7 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       //..........................................................
       // @attribute
-      o._outline              = null;
+      o._outline              = RClass.create(o, new AGetter('_outline'));
       o._rate                 = 0.2;
       // @attribute
       o._vertexPositionBuffer = null;
@@ -37,8 +37,6 @@ with(MO){
       //..........................................................
       // @method
       o.construct             = FE3dBoundBox_construct;
-      // @method
-      o.outline               = FE3dBoundBox_outline;
       // @method
       o.setup                 = FE3dBoundBox_setup;
       o.upload                = FE3dBoundBox_upload;
@@ -56,16 +54,6 @@ with(MO){
       // 设置属性
       o._material = RClass.create(FE3dMaterial);
       o._outline = new SOutline3();
-   }
-
-   //==========================================================
-   // <T>获得轮廓。</T>
-   //
-   // @method
-   // @return SOutline 轮廓
-   //==========================================================
-   MO.FE3dBoundBox_outline = function FE3dBoundBox_outline(){
-      return this._outline;
    }
 
    //==========================================================
@@ -104,9 +92,10 @@ with(MO){
          28, 18, 28, 26, 28, 29,
          31, 19, 31, 27, 31, 30 ];
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
-      // buffer.setLineWidth(1);
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
+      buffer.setLineWidth(1);
       buffer.upload(indexData, 48);
+      o.pushIndexBuffer(buffer);
       //..........................................................
       // 更新处理
       o.update();

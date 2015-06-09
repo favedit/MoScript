@@ -10,16 +10,11 @@ with(MO){
       //..........................................................
       // @attribute
       o._ready            = false;
-      o._vertexCount      = 4;
-      o._vertexBuffers    = null;
-      o._indexBuffer      = null;
-      o._indexBuffers     = null;
-      o._material         = null;
-      o._textures         = null;
       // @attribute
       o._image            = null;
-      o._size             = null;
-      o._adjustSize       = null;
+      o._imageTexture     = null;
+      o._size             = RClass.register(o, new AGetter('_size'));
+      o._adjustSize       = RClass.register(o, new AGetter('_adjustSize'));
       //..........................................................
       // @event
       o.onImageLoad       = FE3dBitmapData_onImageLoad;
@@ -28,18 +23,6 @@ with(MO){
       o.construct         = FE3dBitmapData_construct;
       // @method
       o.testReady         = FE3dBitmapData_testReady;
-      // @method
-      o.size              = FE3dBitmapData_size;
-      o.adjustSize        = FE3dBitmapData_adjustSize;
-      // @method
-      o.vertexCount       = FE3dBitmapData_vertexCount;
-      o.findVertexBuffer  = FE3dBitmapData_findVertexBuffer;
-      o.vertexBuffers     = FE3dBitmapData_vertexBuffers;
-      o.indexBuffer       = FE3dBitmapData_indexBuffer;
-      o.indexBuffers      = FE3dBitmapData_indexBuffers;
-      o.material          = FE3dBitmapData_material;
-      o.findTexture       = FE3dBitmapData_findTexture;
-      o.textures          = FE3dBitmapData_textures;
       // @method
       o.setup             = FE3dBitmapData_setup;
       o.loadUrl           = FE3dBitmapData_loadUrl;
@@ -57,6 +40,7 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       var image = event.sender;
+      // 设置大小
       var size = image.size();
       var width = size.width;
       var height = size.height;
@@ -70,10 +54,7 @@ with(MO){
       var context2d = canvas.context();
       context2d.drawImage(image, 0, 0);
       // 创建纹理
-      var texture = o._imageTexture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      texture.upload(canvas);
-      o._textures.set('diffuse', texture);
+      o._imageTexture.upload(canvas);
       // 释放画板
       canvasConsole.free(canvas);
       // 释放位图
@@ -108,107 +89,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得大小。</T>
-   //
-   // @method
-   // @return SSize2 大小
-   //==========================================================
-   MO.FE3dBitmapData_size = function FE3dBitmapData_size(){
-      return this._size;
-   }
-
-   //==========================================================
-   // <T>获得调整大小。</T>
-   //
-   // @method
-   // @return SSize2 调整大小
-   //==========================================================
-   MO.FE3dBitmapData_adjustSize = function FE3dBitmapData_adjustSize(){
-      return this._adjustSize;
-   }
-
-   //==========================================================
-   // <T>获得顶点总数。</T>
-   //
-   // @method
-   // @return Integer 顶点总数
-   //==========================================================
-   MO.FE3dBitmapData_vertexCount = function FE3dBitmapData_vertexCount(){
-      return this._vertexCount;
-   }
-
-   //==========================================================
-   // <T>查找顶点缓冲。</T>
-   //
-   // @method
-   // @param code:String 代码
-   //==========================================================
-   MO.FE3dBitmapData_findVertexBuffer = function FE3dBitmapData_findVertexBuffer(code){
-      return this._vertexBuffers.get(code);
-   }
-
-   //==========================================================
-   // <T>获得顶点缓冲集合。</T>
-   //
-   // @method
-   // @return TObjects 顶点缓冲集合
-   //==========================================================
-   MO.FE3dBitmapData_vertexBuffers = function FE3dBitmapData_vertexBuffers(){
-      return this._vertexBuffers;
-   }
-
-   //==========================================================
-   // <T>获得索引缓冲。</T>
-   //
-   // @method
-   // @return FG3dIndexBuffer 索引缓冲
-   //==========================================================
-   MO.FE3dBitmapData_indexBuffer = function FE3dBitmapData_indexBuffer(){
-      return this._indexBuffer;
-   }
-
-   //==========================================================
-   // <T>获得索引缓冲集合。</T>
-   //
-   // @method
-   // @return TObjects 索引缓冲集合
-   //==========================================================
-   MO.FE3dBitmapData_indexBuffers = function FE3dBitmapData_indexBuffers(){
-      return this._indexBuffers;
-   }
-
-   //==========================================================
-   // <T>获得材质。</T>
-   //
-   // @method
-   // @return FRsMaterial 材质
-   //==========================================================
-   MO.FE3dBitmapData_material = function FE3dBitmapData_material(){
-      return this._material;
-   }
-
-   //==========================================================
-   // <T>根据名称查找纹理。</T>
-   //
-   // @method
-   // @param p:name:String 名称
-   // @return FG3dIndexBuffer 纹理
-   //==========================================================
-   MO.FE3dBitmapData_findTexture = function FE3dBitmapData_findTexture(p){
-      return this._textures.get(p);
-   }
-
-   //==========================================================
-   // <T>获得纹理集合。</T>
-   //
-   // @method
-   // @return TDictionary 纹理集合
-   //==========================================================
-   MO.FE3dBitmapData_textures = function FE3dBitmapData_textures(){
-      return this._textures;
-   }
-
-   //==========================================================
    // <T>加载处理。</T>
    //
    // @method
@@ -227,7 +107,7 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      // 设置颜色数据
+      // 设置纹理数据
       var data = [
          0, 1,
          1, 1,
@@ -240,8 +120,13 @@ with(MO){
       o.pushVertexBuffer(buffer);
       // 设置索引数据
       var data = [0, 1, 2, 0, 2, 3];
-      var buffer = o._indexBuffer = context.createIndexBuffer();
+      var buffer = context.createIndexBuffer();
       buffer.upload(data, 6);
+      o.pushIndexBuffer(buffer);
+      // 创建纹理
+      var texture = o._imageTexture = context.createFlatTexture();
+      texture.setOptionFlipY(true);
+      o._textures.set('diffuse', texture);
    }
 
    //==========================================================
@@ -251,13 +136,6 @@ with(MO){
    //==========================================================
    MO.FE3dBitmapData_loadUrl = function FE3dBitmapData_loadUrl(url){
       var o = this;
-      // 释放纹理
-      var texture = o._imageTexture;
-      if(texture){
-         texture.dispose();
-         o._imageTexture = null;
-         o._textures.clear();
-      }
       // 加载图片
       var image = RClass.create(FImage);
       image.addLoadListener(o, o.onImageLoad);

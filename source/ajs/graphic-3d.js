@@ -227,18 +227,13 @@ with(MO){
    MO.MG3dRenderable = function MG3dRenderable(o){
       o = RClass.inherits(this, o, MGraphicRenderable);
       o._optionMerge   = false;
-      o._currentMatrix = null;
-      o._matrix        = null;
-      o._material      = null;
-      o._activeInfo    = null;
+      o._currentMatrix = RClass.register(o, new AGetter('_currentMatrix'));
+      o._matrix        = RClass.register(o, new AGetter('_matrix'));
+      o._material      = RClass.register(o, new AGetSet('_material'));
+      o._activeInfo    = RClass.register(o, new AGetter('_activeInfo'));
       o._infos         = null;
       o.construct      = MG3dRenderable_construct;
-      o.currentMatrix  = MG3dRenderable_currentMatrix;
-      o.matrix         = MG3dRenderable_matrix;
-      o.material       = MG3dRenderable_material;
-      o.setMaterial    = MG3dRenderable_setMaterial;
       o.activeEffect   = MG3dRenderable_activeEffect;
-      o.activeInfo     = MG3dRenderable_activeInfo;
       o.effectFind     = MG3dRenderable_effectFind;
       o.effectSet      = MG3dRenderable_effectSet;
       o.infos          = MG3dRenderable_infos;
@@ -254,18 +249,9 @@ with(MO){
       o._currentMatrix = new SMatrix3d();
       o._matrix = new SMatrix3d();
    }
-   MO.MG3dRenderable_currentMatrix = function MG3dRenderable_currentMatrix(){
-      return this._currentMatrix;
-   }
-   MO.MG3dRenderable_matrix = function MG3dRenderable_matrix(){
-      return this._matrix;
-   }
    MO.MG3dRenderable_activeEffect = function MG3dRenderable_activeEffect(){
       var info = this._activeInfo;
       return info ? info.effect : null;
-   }
-   MO.MG3dRenderable_activeInfo = function MG3dRenderable_activeInfo(){
-      return this._activeInfo;
    }
    MO.MG3dRenderable_effectFind = function MG3dRenderable_effectFind(code){
       var o = this;
@@ -315,12 +301,6 @@ with(MO){
             infos.at(i).reset();
          }
       }
-   }
-   MO.MG3dRenderable_material = function MG3dRenderable_material(){
-      return this._material;
-   }
-   MO.MG3dRenderable_setMaterial = function MG3dRenderable_setMaterial(material){
-      this._material = material;
    }
    MO.MG3dRenderable_dispose = function MG3dRenderable_dispose(){
       var o = this;
@@ -1848,15 +1828,11 @@ with(MO){
 with(MO){
    MO.FG3dTechnique = function FG3dTechnique(o){
       o = RClass.inherits(this, o, FG3dObject);
-      o._code           = null;
-      o._activeMode     = null;
-      o._modes          = null;
-      o._passes         = null;
+      o._code           = RClass.register(o, new AGetter('_code'));
+      o._activeMode     = RClass.register(o, new AGetter('_activeMode'));
+      o._modes          = RClass.register(o, new AGetter('_modes'));
+      o._passes         = RClass.register(o, new AGetter('_passes'));
       o.construct       = FG3dTechnique_construct;
-      o.code            = FG3dTechnique_code;
-      o.activeMode      = FG3dTechnique_activeMode;
-      o.modes           = FG3dTechnique_modes;
-      o.passes          = FG3dTechnique_passes;
       o.registerMode    = FG3dTechnique_registerMode;
       o.selectMode      = FG3dTechnique_selectMode;
       o.updateRegion    = RMethod.empty;
@@ -1871,18 +1847,6 @@ with(MO){
       o.__base.FG3dObject.construct.call(o);
       o._modes = new TObjects();
       o._passes = new TObjects();
-   }
-   MO.FG3dTechnique_code = function FG3dTechnique_code(){
-      return this._code;
-   }
-   MO.FG3dTechnique_activeMode = function FG3dTechnique_activeMode(){
-      return this._activeMode;
-   }
-   MO.FG3dTechnique_modes = function FG3dTechnique_modes(){
-      return this._modes;
-   }
-   MO.FG3dTechnique_passes = function FG3dTechnique_passes(){
-      return this._passes;
    }
    MO.FG3dTechnique_registerMode = function FG3dTechnique_registerMode(p){
       var o = this;
@@ -1981,15 +1945,12 @@ with(MO){
 with(MO){
    MO.FG3dTechniquePass = function FG3dTechniquePass(o){
       o = RClass.inherits(this, o, FG3dObject);
-      o._fullCode       = null;
-      o._code           = null;
+      o._fullCode       = RClass.register(o, new AGetSet('_fullCode'));
+      o._code           = RClass.register(o, new AGetter('_code'));
       o._index          = null;
       o._finish         = false;
       o._materialMap    = null;
       o.setup           = FG3dTechniquePass_setup;
-      o.fullCode        = FG3dTechniquePass_fullCode;
-      o.setFullCode     = FG3dTechniquePass_setFullCode;
-      o.code            = FG3dTechniquePass_code;
       o.activeEffects   = FG3dTechniquePass_activeEffects;
       o.sortRenderables = FG3dTechniquePass_sortRenderables;
       o.drawRegion      = FG3dTechniquePass_drawRegion;
@@ -2000,15 +1961,6 @@ with(MO){
       var m = o._materialMap = RClass.create(FG3dMaterialMap);
       m.linkGraphicContext(o);
       m.setup(EG3dMaterialMap.Count, 32);
-   }
-   MO.FG3dTechniquePass_fullCode = function FG3dTechniquePass_fullCode(){
-      return this._fullCode;
-   }
-   MO.FG3dTechniquePass_setFullCode = function FG3dTechniquePass_setFullCode(p){
-      this._fullCode = p;
-   }
-   MO.FG3dTechniquePass_code = function FG3dTechniquePass_code(){
-      return this._code;
    }
    MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderables(s, t){
       var ms = s.material().info();

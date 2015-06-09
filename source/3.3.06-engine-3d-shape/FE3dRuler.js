@@ -124,9 +124,10 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       o.pushVertexBuffer(buffer);
       // 创建索引缓冲
-      var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
-      buffer.setLineWidth(1);
+      var indexBuffer = o._indexBuffer = context.createIndexBuffer();
+      indexBuffer.setFillModeCd(EG3dFillMode.Line);
+      indexBuffer.setLineWidth(1);
+      o.pushIndexBuffer(indexBuffer);
       //..........................................................
       // 更新数据
       o.upload();
@@ -229,6 +230,6 @@ with(MO){
       // 更新数据
       o._vertexPositionBuffer.upload(positions.memory(), 4 * 3, vertexCount);
       o._vertexColorBuffer.upload(colors.memory(), 1 * 4, vertexCount);
-      o._indexBuffer.upload(indexs.memory(), indexs.length());
+      indexBuffer.upload(indexs.memory(), indexs.length());
    }
 }

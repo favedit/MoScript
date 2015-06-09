@@ -9,15 +9,13 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       //..........................................................
       // @attribute
-      o._renderable      = null;
+      o._renderable      = RClass.register(o, AGetSet('_renderable'));
       o._activeTrack     = null;
       //..........................................................
       // @method
-      o.renderable       = FE3dMeshRenderable_renderable;
       o.vertexCount      = FE3dMeshRenderable_vertexCount;
       o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
       o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
-      o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
       o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
       o.findTexture      = FE3dMeshRenderable_findTexture;
       o.textures         = FE3dMeshRenderable_textures;
@@ -29,16 +27,6 @@ with(MO){
       // @method
       o.dispose          = FE3dMeshRenderable_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得渲染对象。</T>
-   //
-   // @method
-   // @return FE3rMesh 渲染对象
-   //==========================================================
-   MO.FE3dMeshRenderable_renderable = function FE3dMeshRenderable_renderable(){
-      return this._renderable;
    }
 
    //==========================================================
@@ -77,16 +65,6 @@ with(MO){
    //==========================================================
    MO.FE3dMeshRenderable_vertexBuffers = function FE3dMeshRenderable_vertexBuffers(){
       return this._renderable.vertexBuffers();
-   }
-
-   //==========================================================
-   // <T>获得索引缓冲。</T>
-   //
-   // @method
-   // @return FG3dIndexBuffer 索引缓冲
-   //==========================================================
-   MO.FE3dMeshRenderable_indexBuffer = function FE3dMeshRenderable_indexBuffer(){
-      return this._renderable.indexBuffer();
    }
 
    //==========================================================

@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dFragmentShader);
       //..........................................................
       // @attribute
-      o._native      = null;
+      o._handle      = null;
       //..........................................................
       // @method
       o.setup        = FWglFragmentShader_setup;
@@ -30,8 +30,8 @@ with(MO){
       var o = this;
       o.__base.FG3dFragmentShader.setup.call(o);
       // 创建对象
-      var graphic = o._graphicContext._native;
-      o._native = graphic.createShader(graphic.FRAGMENT_SHADER);
+      var graphic = o._graphicContext._handle;
+      o._handle = graphic.createShader(graphic.FRAGMENT_SHADER);
    }
 
    //==========================================================
@@ -46,7 +46,7 @@ with(MO){
       var context = o._graphicContext;
       var capability = context.capability();
       if(capability.optionShaderSource){
-         source = context._nativeDebugShader.getTranslatedShaderSource(o._native);
+         source = context._handleDebugShader.getTranslatedShaderSource(o._handle);
       }else{
          source = o._source;
       }
@@ -61,8 +61,8 @@ with(MO){
    //==========================================================
    MO.FWglFragmentShader_upload = function FWglFragmentShader_upload(source){
       var o = this;
-      var graphic = o._graphicContext._native;
-      var shader = o._native;
+      var graphic = o._graphicContext._handle;
+      var shader = o._handle;
       // 上传代码
       graphic.shaderSource(shader, source);
       // 编译处理
@@ -71,7 +71,7 @@ with(MO){
       if(!result){
          var info = graphic.getShaderInfoLog(shader);
          graphic.deleteShader(shader); 
-         o._native = null;
+         o._handle = null;
          throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
       }
       o._source = source;
@@ -87,10 +87,10 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       // 释放对象
-      var shader = o._native;
+      var shader = o._handle;
       if(shader){
-         context._native.deleteShader(shader);
-         o._native = null;
+         context._handle.deleteShader(shader);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dFragmentShader.dispose.call(o);

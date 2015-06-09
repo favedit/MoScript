@@ -9,9 +9,9 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute 名称
-      o._name       = null;
+      o._name       = RClass.register(o, new AGetter('_name'));
       // @attribute 关联名称
-      o._linker     = null;
+      o._linker     = RClass.register(o, new AGetter('_linker'));
       // @attribute 使用标志
       o._statusUsed = false;
       // @attribute 插槽
@@ -22,44 +22,23 @@ with(MO){
       o._formatCd   = EG3dAttributeFormat.Unknown;
       //..........................................................
       // @method
-      o.name        = FG3dProgramAttribute_name;
-      o.linker      = FG3dProgramAttribute_linker;
       o.loadConfig  = FG3dProgramAttribute_loadConfig;
+      // @method
       o.dispose     = FG3dProgramAttribute_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return String 名称
-   //==========================================================
-   MO.FG3dProgramAttribute_name = function FG3dProgramAttribute_name(){
-      return this._name;
-   }
-
-   //==========================================================
-   // <T>获得关联名称。</T>
-   //
-   // @method
-   // @return String 关联名称
-   //==========================================================
-   MO.FG3dProgramAttribute_linker = function FG3dProgramAttribute_linker(){
-      return this._linker;
    }
 
    //==========================================================
    // <T>从配置节点钟加载信息。</T>
    //
    // @method
-   // @param p:config:TNode 配置节点
+   // @param xconfig:TNode 配置节点
    //==========================================================
-   MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(p){
+   MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(xconfig){
       var o = this;
-      o._name = p.get('name');
-      o._linker = p.get('linker');
-      o._formatCd = REnum.encode(EG3dAttributeFormat, p.get('format'));
+      o._name = xconfig.get('name');
+      o._linker = xconfig.get('linker');
+      o._formatCd = REnum.encode(EG3dAttributeFormat, xconfig.get('format'));
    }
 
    //==========================================================

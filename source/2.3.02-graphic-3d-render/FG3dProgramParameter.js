@@ -9,13 +9,13 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute 名称
-      o._name       = null;
+      o._name       = RClass.register(o, new AGetter('_name'));
       // @attribute 关联名称
-      o._linker     = null;
+      o._linker     = RClass.register(o, new AGetter('_linker'));
       // @attribute 格式
       o._formatCd   = EG3dParameterFormat.Unknown;
       // @attribute 关联名称
-      o._define     = null;
+      o._define     = RClass.register(o, new AGetter('_define'));
       // @attribute 使用标志
       o._statusUsed = false;
       // @attribute 插槽
@@ -28,90 +28,58 @@ with(MO){
       o._memory     = null;
       //..........................................................
       // @method
-      o.name        = FG3dProgramParameter_name;
-      o.linker      = FG3dProgramParameter_linker;
-      o.define      = FG3dProgramParameter_define;
       o.attachData  = FG3dProgramParameter_attachData;
       o.loadConfig  = FG3dProgramParameter_loadConfig;
+      // @method
       o.dispose     = FG3dProgramParameter_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return String 名称
-   //==========================================================
-   MO.FG3dProgramParameter_name = function FG3dProgramParameter_name(){
-      return this._name;
-   }
-
-   //==========================================================
-   // <T>获得关联名称。</T>
-   //
-   // @method
-   // @return String 关联名称
-   //==========================================================
-   MO.FG3dProgramParameter_linker = function FG3dProgramParameter_linker(){
-      return this._linker;
-   }
-
-   //==========================================================
-   // <T>获得定义。</T>
-   //
-   // @method
-   // @return String 定义
-   //==========================================================
-   MO.FG3dProgramParameter_define = function FG3dProgramParameter_define(){
-      return this._define;
    }
 
    //==========================================================
    // <T>接收数据，返回是否发生变更。</T>
    //
    // @method
-   // @param p:value:Object 数据
+   // @param value:Object 数据
    // @return Boolean 是否变更
    //==========================================================
-   MO.FG3dProgramParameter_attachData = function FG3dProgramParameter_attachData(p){
+   MO.FG3dProgramParameter_attachData = function FG3dProgramParameter_attachData(value){
       var o = this;
-      var r = false;
+      var result = false;
       // 检查参数类型
-      var c = p.constructor;
-      if(c == SMatrix3d){
+      var clazz = value.constructor;
+      if(clazz == SMatrix3d){
          // 矩阵数据
-         var m = o._memory;
-         if(!m){
-            m = o._memory = new Float32Array(16);
+         var memory = o._memory;
+         if(!memory){
+            memory = o._memory = new Float32Array(16);
          }
-         r = RFloat.attach(m, p._data, 16);
-      }else if(c == Float32Array){
+         result = RFloat.attach(memory, value._data, 16);
+      }else if(clazz == Float32Array){
          // 浮点数据
-         var l = p.length;
-         var m = o._memory;
-         if(!m){
-            m = o._memory = new Float32Array(l);
+         var length = value.length;
+         var memory = o._memory;
+         if(!memory){
+            memory = o._memory = new Float32Array(length);
          }
-         r = RFloat.attach(m, p, l);
+         result = RFloat.attach(memory, value, length);
       }else{
          throw new TError(o, 'Unknown data type.');
       }
-      return r;
+      return result;
    }
 
    //==========================================================
    // <T>从配置节点钟加载信息。</T>
    //
    // @method
-   // @param p:config:TNode 配置节点
+   // @param xconfig:TNode 配置节点
    //==========================================================
-   MO.FG3dProgramParameter_loadConfig = function FG3dProgramParameter_loadConfig(p){
+   MO.FG3dProgramParameter_loadConfig = function FG3dProgramParameter_loadConfig(xconfig){
       var o = this;
-      o._name = p.get('name');
-      o._linker = p.get('linker');
-      o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
-      o._define = p.get('define');
+      o._name = xconfig.get('name');
+      o._linker = xconfig.get('linker');
+      o._formatCd = REnum.encode(EG3dParameterFormat, xconfig.get('format'));
+      o._define = xconfig.get('define');
    }
 
    //==========================================================

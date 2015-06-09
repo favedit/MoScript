@@ -61,7 +61,7 @@ with(MO){
    //==========================================================
    MO.FE3dDimensional_setup = function FE3dDimensional_setup(){
       var o = this;
-      var c = o._graphicContext;
+      var context = o._graphicContext;
       // 设置变量
       var cw = o._cellSize.width;
       var ch = o._cellSize.height;
@@ -166,21 +166,22 @@ with(MO){
       //..........................................................
       o._vertexCount = vc;
       // 上传顶点数据
-      var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(vd, 4 * 3, vc);
       o.pushVertexBuffer(buffer);
       // 上传颜色数据
-      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       buffer.upload(vcd, 4, vc);
       o.pushVertexBuffer(buffer);
       // 上传索引数据
-      var buffer = o._indexBuffer = c.createIndexBuffer();
+      var buffer = context.createIndexBuffer();
       buffer.setDrawModeCd(EG3dDrawMode.Lines);
       buffer.upload(id, it);
+      o.pushIndexBuffer(buffer);
       //..........................................................
       // 设置材质
       var materialInfo = o.material().info();

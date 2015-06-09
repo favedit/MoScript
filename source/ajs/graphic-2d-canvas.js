@@ -1,7 +1,7 @@
 with(MO){
    MO.FG2dCanvasContext = function FG2dCanvasContext(o){
       o = RClass.inherits(this, o, FG2dContext);
-      o._native       = null;
+      o._handle       = null;
       o.construct     = FG2dCanvasContext_construct;
       o.linkCanvas    = FG2dCanvasContext_linkCanvas;
       o.clear         = FG2dCanvasContext_clear;
@@ -21,64 +21,65 @@ with(MO){
       var o = this;
       o.__base.FG2dContext.linkCanvas.call(o, hCanvas);
       if(hCanvas.getContext){
-         var graphic = hCanvas.getContext('2d');
-         if(!graphic){
+         var handle = hCanvas.getContext('2d');
+         if(!handle){
             throw new TError(o, "Current browser can't support Context2D technique.");
          }
-         o._native = graphic;
+         o._handle = handle;
       }
       o._hCanvas = hCanvas;
    }
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d){
       var o = this;
-      var g = o._native;
+      var handle = o._handle;
       var size = o._size;
-      g.clearRect(0, 0, size.width, size.height);
+      handle.clearRect(0, 0, size.width, size.height);
    }
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
       var o = this;
-      var g = o._native;
-      g.strokeStyle = color;
-      g.lineWidth = lineWidth;
-      g.moveTo(x1, y1);
-      g.lineTo(x2, y2);
-      g.stroke();
+      var handle = o._handle;
+      handle.strokeStyle = color;
+      handle.lineWidth = lineWidth;
+      handle.moveTo(x1, y1);
+      handle.lineTo(x2, y2);
+      handle.stroke();
    }
    MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth){
       var o = this;
-      var g = o._native;
-      g.strokeStyle = color;
-      g.lineWidth = lineWidth;
-      g.strokeRect(x, y, width, height);
+      var handle = o._handle;
+      handle.strokeStyle = color;
+      handle.lineWidth = lineWidth;
+      handle.strokeRect(x, y, width, height);
    }
    MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color){
       var o = this;
-      var g = o._native;
-      g.fillStyle = color;
-      g.fillText(text, x, y);
+      var handle = o._handle;
+      handle.fillStyle = color;
+      handle.fillText(text, x, y);
    }
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(data, x, y){
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y){
       var o = this;
-      var g = o._native;
-      var pixels = null
-      if(data.tagName == 'IMG'){
-         pixels = data;
-      }else if(RClass.isClass(data, FImage)){
-         pixels = data.image();
+      var handle = o._handle;
+      var size = o._size;
+      var data = null
+      if(content.tagName == 'IMG'){
+         data = content;
+      }else if(RClass.isClass(content, FImage)){
+         data = content.image();
       }else{
-         throw new TError(o, 'Unknown data type');
+         throw new TError(o, 'Unknown content type');
       }
-      g.drawImage(pixels, x, y, o._size.width, o._size.height);
+      handle.drawImage(data, x, y, size.width, size.height);
    }
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
       var o = this;
-      var g = o._native;
-      g.fillStyle = color;
-      g.fillRect(x, y, width, height);
+      var handle = o._handle;
+      handle.fillStyle = color;
+      handle.fillRect(x, y, width, height);
    }
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes(){
       var o = this;
-      var s = o._size;
-      return o._native.getImageData(0, 0, s.width, s.height);
+      var size = o._size;
+      return o._handle.getImageData(0, 0, size.width, size.height);
    }
 }

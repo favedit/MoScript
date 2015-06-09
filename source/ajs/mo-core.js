@@ -1352,13 +1352,11 @@ with(MO){
 with(MO){
    MO.FDataStream = function FDataStream(o){
       o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
-      o._length   = 0;
-      o._memory   = null;
+      o._length   = RClass.register(o, new AGetter('_length'), 0);
+      o._memory   = RClass.register(o, new AGetter('_memory'));
       o._viewer   = null;
       o.construct = FDataStream_construct;
-      o.length    = FDataStream_length;
       o.setLength = FDataStream_setLength;
-      o.memory    = FDataStream_memory;
       o.flip      = FDataStream_flip;
       o.dispose   = FDataStream_dispose;
       return o;
@@ -1367,17 +1365,11 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
    }
-   MO.FDataStream_length = function FDataStream_length(){
-      return this._length;
-   }
-   MO.FDataStream_setLength = function FDataStream_setLength(p){
+   MO.FDataStream_setLength = function FDataStream_setLength(length){
       var o = this;
-      o._length = p;
-      o._memory = new ArrayBuffer(p);
+      o._length = length;
+      o._memory = new ArrayBuffer(length);
       o._viewer = new DataView(o._memory);
-   }
-   MO.FDataStream_memory = function FDataStream_memory(){
-      return this._memory;
    }
    MO.FDataStream_flip = function FDataStream_flip(){
       var o = this;
@@ -1414,18 +1406,15 @@ with(MO){
    MO.FFileReader = function FFileReader(o){
       o = RClass.inherits(this, o, FObject, MListenerLoad);
       o._reader        = null;
-      o._fileName      = null;
-      o._length        = 0;
-      o._data          = null;
+      o._fileName      = RClass.register(o, new AGetter('_fileName'));
+      o._length        = RClass.register(o, new AGetter('_length'), 0);
+      o._data          = RClass.register(o, new AGetter('_data'));
       o._statusLoading = false;
       o.ohloadStart    = FFileReader_ohLoadStart;
       o.ohLoad         = FFileReader_ohLoad;
       o.ohLoadEnd      = FFileReader_ohLoadEnd;
       o.ohProgress     = FFileReader_ohProgress;
       o.construct      = FFileReader_construct;
-      o.fileName       = FFileReader_fileName;
-      o.length         = FFileReader_length;
-      o.data           = FFileReader_data;
       o.loadFile       = FFileReader_loadFile;
       o.dispose        = FFileReader_dispose;
       return o;
@@ -1462,15 +1451,6 @@ with(MO){
       reader.onload = o.ohLoad;
       reader.onloadend = o.ohLoadEnd;
       reader.onprogress = o.ohProgress;
-   }
-   MO.FFileReader_fileName = function FFileReader_fileName(){
-      return this._fileName;
-   }
-   MO.FFileReader_length = function FFileReader_length(){
-      return this._length;
-   }
-   MO.FFileReader_data = function FFileReader_data(){
-      return this._data;
    }
    MO.FFileReader_loadFile = function FFileReader_loadFile(file){
       var o = this;

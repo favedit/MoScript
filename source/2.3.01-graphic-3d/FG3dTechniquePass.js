@@ -9,8 +9,8 @@
       o = RClass.inherits(this, o, FG3dObject);
       //..........................................................
       // @attribute
-      o._fullCode       = null;
-      o._code           = null;
+      o._fullCode       = RClass.register(o, new AGetSet('_fullCode'));
+      o._code           = RClass.register(o, new AGetter('_code'));
       o._index          = null;
       o._finish         = false;
       // @attribute
@@ -18,9 +18,6 @@
       //..........................................................
       // @method
       o.setup           = FG3dTechniquePass_setup;
-      o.fullCode        = FG3dTechniquePass_fullCode;
-      o.setFullCode     = FG3dTechniquePass_setFullCode;
-      o.code            = FG3dTechniquePass_code;
       o.activeEffects   = FG3dTechniquePass_activeEffects;
       o.sortRenderables = FG3dTechniquePass_sortRenderables;
       o.drawRegion      = FG3dTechniquePass_drawRegion;
@@ -38,36 +35,6 @@
       var m = o._materialMap = RClass.create(FG3dMaterialMap);
       m.linkGraphicContext(o);
       m.setup(EG3dMaterialMap.Count, 32);
-   }
-
-   //==========================================================
-   // <T>获得全代码。</T>
-   //
-   // @method
-   // @return String 全代码
-   //==========================================================
-   MO.FG3dTechniquePass_fullCode = function FG3dTechniquePass_fullCode(){
-      return this._fullCode;
-   }
-
-   //==========================================================
-   // <T>设置全代码。</T>
-   //
-   // @method
-   // @return p:fullCode:String 全代码
-   //==========================================================
-   MO.FG3dTechniquePass_setFullCode = function FG3dTechniquePass_setFullCode(p){
-      this._fullCode = p;
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   MO.FG3dTechniquePass_code = function FG3dTechniquePass_code(){
-      return this._code;
    }
 
    //==========================================================

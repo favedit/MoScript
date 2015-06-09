@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dFlatTexture);
       //..........................................................
       // @attribute
-      o._native    = null;
+      o._handle    = null;
       //..........................................................
       // @method
       o.setup      = FWglFlatTexture_setup;
@@ -32,9 +32,9 @@ with(MO){
    //==========================================================
    MO.FWglFlatTexture_setup = function FWglFlatTexture_setup(){
       var o = this;
-      var g = o._graphicContext._native;
+      var g = o._graphicContext._handle;
       o.__base.FG3dFlatTexture.setup.call(o);
-      o._native = g.createTexture();
+      o._handle = g.createTexture();
    }
 
    //==========================================================
@@ -45,8 +45,8 @@ with(MO){
    //==========================================================
    MO.FWglFlatTexture_isValid = function FWglFlatTexture_isValid(){
       var o = this;
-      var g = o._graphicContext._native;
-      return g.isTexture(o._native);
+      var g = o._graphicContext._handle;
+      return g.isTexture(o._handle);
    }
 
    //==========================================================
@@ -65,9 +65,9 @@ with(MO){
    //==========================================================
    MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
       var o = this;
-      var g = o._graphicContext._native;
+      var g = o._graphicContext._handle;
       // 绑定数据
-      g.bindTexture(g.TEXTURE_2D, o._native);
+      g.bindTexture(g.TEXTURE_2D, o._handle);
       // 生成MIP
       g.generateMipmap(g.TEXTURE_2D);
    }
@@ -76,31 +76,31 @@ with(MO){
    // <T>上传数据内容。</T>
    //
    // @method
-   // @param d:data:Array 数据
-   // @param w:width:Integer 宽度
-   // @param h:height:Integer 高度
+   // @param content:Array 内容
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
    //==========================================================
-   MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(d, w, h){
+   MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, width, height){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
+      var context = o._graphicContext;
+      var handle = context._handle;
       // 检查参数
-      var m = null;
-      if(d.constructor == ArrayBuffer){
-         m = new Uint8Array(d);
-      }else if(d.constructor == Uint8Array){
-         m = d;
+      var data = null;
+      if(content.constructor == ArrayBuffer){
+         data = new Uint8Array(content);
+      }else if(content.constructor == Uint8Array){
+         data = content;
       }else{
-         throw new TError('Invalid data format.');
+         throw new TError('Invalid content format.');
       }
       // 设置属性
-      o.width = w;
-      o.height = h;
+      o.width = width;
+      o.height = height;
       // 绑定数据
-      g.bindTexture(g.TEXTURE_2D, o._native);
+      handle.bindTexture(handle.TEXTURE_2D, o._handle);
       // 上传内容
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
-      o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, width, height, 0, handle.RGBA, handle.UNSIGNED_BYTE, data);
+      o._statusLoad = context.checkError("texImage2D", "Upload content failure.");
       // 更新处理
       o.update();
    }
@@ -113,9 +113,9 @@ with(MO){
    //==========================================================
    MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(data){
       var o = this;
-      var c = o._graphicContext;
-      var cp = c.capability();
-      var g = c._native;
+      var context = o._graphicContext;
+      var capability = context.capability();
+      var handle = context._handle;
       // 检查参数
       var pixels = null;
       //var format = null;
@@ -124,9 +124,9 @@ with(MO){
       }else if(RClass.isClass(data, FImage)){
          pixels = data.image();
          //if(image.optionAlpha()){
-         //   format = cp.samplerCompressRgba;
+         //   format = capability.samplerCompressRgba;
          //}else{
-         //   format = cp.samplerCompressRgb;
+         //   format = capability.samplerCompressRgb;
          //}
       }else if(RClass.isClass(data, MCanvasObject)){
          pixels = data.htmlCanvas();
@@ -134,21 +134,21 @@ with(MO){
          throw new TError('Invalid image format.');
       }
       // 绑定数据
-      g.bindTexture(g.TEXTURE_2D, o._native);
+      handle.bindTexture(handle.TEXTURE_2D, o._handle);
       // 设置上下反转
       if(o._optionFlipY){
-         g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
+         handle.pixelStorei(handle.UNPACK_FLIP_Y_WEBGL, true);
       }
       // 上传内容
       //if(f){
-         //g.compressedTexImage2D(g.TEXTURE_2D, 0, f, p.size().width, p.size().height, 0, m);
+         //handle.compressedTexImage2D(handle.TEXTURE_2D, 0, f, p.size().width, p.size().height, 0, m);
       //}else{
-         //g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
+         //handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, m);
       //}
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, pixels);
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, pixels);
       // 更新处理
       o.update();
-      o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
+      o._statusLoad = context.checkError("texImage2D", "Upload image failure.");
    }
 
    //==========================================================
@@ -160,8 +160,8 @@ with(MO){
       var o = this;
       o.__base.FG3dFlatTexture.update.call(o);
       // 绑定数据
-      var g = o._graphicContext._native;
-      g.bindTexture(g.TEXTURE_2D, o._native);
+      var g = o._graphicContext._handle;
+      g.bindTexture(g.TEXTURE_2D, o._handle);
       // 设置过滤器
       var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
       if(c){
@@ -188,12 +188,12 @@ with(MO){
    //==========================================================
    MO.FWglFlatTexture_dispose = function FWglFlatTexture_dispose(){
       var o = this;
-      var c = o._graphicContext;
+      var context = o._graphicContext;
       // 释放对象
-      var n = o._native;
-      if(n){
-         c._native.deleteTexture(n);
-         o._native = null;
+      var handle = o._handle;
+      if(handle){
+         context._handle.deleteTexture(handle);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dFlatTexture.dispose.call(o);

@@ -36,11 +36,11 @@ function onTemplateLoad(event){
    matrix.rx = -Math.PI / 2;
    matrix.updateForce();
 
-   var r1 = sprite.renderables().at(0);
-   var outline = r1.calculateOutline();
-   var matrix = r1.matrix()
-   matrix.setScaleAll(3);
-   matrix.updateForce();
+   //var r1 = sprite.renderables().at(0);
+   //var outline = r1.calculateOutline();
+   //var matrix = r1.matrix()
+   //matrix.setScaleAll(3);
+   //matrix.updateForce();
 
 
    var region = template.region();
@@ -79,6 +79,7 @@ function doCanvasAction(p, f){
 //------------------------------------------------------------
 function onLoad(){
    // 环境设置
+   MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Release);
    MO.RApplication.initialize();
    MO.RBrowser.setContentPath('..');
@@ -93,7 +94,7 @@ function onLoad(){
    canvas.loadByCode('eai.world.china');
    canvas.addLoadListener(null, onTemplateLoad);
    // 初始化应用
-   MO.Eai.Application.setup();
+   MO.Eai.setup();
 }
 </SCRIPT>
 </HEAD>

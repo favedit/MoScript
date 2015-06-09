@@ -39,12 +39,11 @@ with(MO){
 with(MO){
    MO.FE3dBoundBox = function FE3dBoundBox(o){
       o = RClass.inherits(this, o, FE3dRenderable);
-      o._outline              = null;
+      o._outline              = RClass.create(o, new AGetter('_outline'));
       o._rate                 = 0.2;
       o._vertexPositionBuffer = null;
       o._vertexColorBuffer    = null;
       o.construct             = FE3dBoundBox_construct;
-      o.outline               = FE3dBoundBox_outline;
       o.setup                 = FE3dBoundBox_setup;
       o.upload                = FE3dBoundBox_upload;
       return o;
@@ -54,9 +53,6 @@ with(MO){
       o.__base.FE3dRenderable.construct.call(o);
       o._material = RClass.create(FE3dMaterial);
       o._outline = new SOutline3();
-   }
-   MO.FE3dBoundBox_outline = function FE3dBoundBox_outline(){
-      return this._outline;
    }
    MO.FE3dBoundBox_setup = function FE3dBoundBox_setup(){
       var o = this;
@@ -85,8 +81,10 @@ with(MO){
          28, 18, 28, 26, 28, 29,
          31, 19, 31, 27, 31, 30 ];
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
+      buffer.setLineWidth(1);
       buffer.upload(indexData, 48);
+      o.pushIndexBuffer(buffer);
       o.update();
       var info = o.material().info();
       info.effectCode = 'control';
@@ -163,8 +161,9 @@ with(MO){
           1.0,  1.0,  1.0,
           1.0, -1.0,  1.0,
          -1.0, -1.0,  1.0 ];
-      o.vertexPositionBuffer = p.createVertexBuffer();
-      o.vertexPositionBuffer.upload(vp, 4 * 3, 8);
+      var buffer = o.vertexPositionBuffer = p.createVertexBuffer();
+      buffer.upload(vp, 4 * 3, 8);
+      o.pushVertexBuffer(buffer);
       var vc = [
          0.0, 1.0, 0.0, 1.0,
          1.0, 0.0, 0.0, 1.0,
@@ -174,8 +173,9 @@ with(MO){
          1.0, 0.0, 1.0, 1.0,
          1.0, 0.0, 1.0, 1.0,
          0.0, 0.0, 1.0, 1.0 ];
-      o.vertexColorBuffer = p.createVertexBuffer();
-      o.vertexColorBuffer.upload(vc, 4 * 4, 8);
+      var buffer = o.vertexColorBuffer = p.createVertexBuffer();
+      buffer.upload(vc, 4 * 4, 8);
+      o.pushVertexBuffer(buffer);
       var id = [
          0, 1, 2, 0, 2, 3,
          1, 5, 6, 1, 6, 2,
@@ -183,8 +183,9 @@ with(MO){
          4, 0, 3, 4, 3, 7,
          0, 4, 5, 0, 5, 1,
          3, 2, 6, 3, 6, 7  ];
-      o.indexBuffer = context.createIndexBuffer();
-      o.indexBuffer.upload(id, 36);
+      var buffer = context.createIndexBuffer();
+      buffer.upload(id, 36);
+      o.pushIndexBuffer(buffer);
       var mi = o.material().info();
       mi.effectCode = 'control';
       mi.ambientColor.set(1, 1, 1, 1);
@@ -214,7 +215,7 @@ with(MO){
    }
    MO.FE3dDimensional_setup = function FE3dDimensional_setup(){
       var o = this;
-      var c = o._graphicContext;
+      var context = o._graphicContext;
       var cw = o._cellSize.width;
       var ch = o._cellSize.height;
       var sw = o._size.width;
@@ -293,19 +294,20 @@ with(MO){
       id[i++] = vi++;
       id[i++] = vi++;
       o._vertexCount = vc;
-      var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(vd, 4 * 3, vc);
       o.pushVertexBuffer(buffer);
-      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       buffer.upload(vcd, 4, vc);
       o.pushVertexBuffer(buffer);
-      var buffer = o._indexBuffer = c.createIndexBuffer();
+      var buffer = context.createIndexBuffer();
       buffer.setDrawModeCd(EG3dDrawMode.Lines);
       buffer.upload(id, it);
+      o.pushIndexBuffer(buffer);
       var materialInfo = o.material().info();
       materialInfo.effectCode = 'control';
       materialInfo.ambientColor.set(1, 1, 1, 1);
@@ -333,18 +335,21 @@ with(MO){
           1.0,  1.0, 0.0,
           1.0, -1.0, 0.0,
          -1.0, -1.0, 0.0 ];
-      o._vertexPositionBuffer = p.createVertexBuffer();
-      o._vertexPositionBuffer.upload(vp, 4 * 3, 4);
+      var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
+      buffer.upload(vp, 4 * 3, 4);
+      o.pushVertexBuffer(buffer);
       var vc = [
          0.0, 1.0, 0.0, 1.0,
          1.0, 0.0, 0.0, 1.0,
          1.0, 0.0, 0.0, 1.0,
          0.0, 0.0, 0.0, 1.0 ];
-      o._vertexColorBuffer = p.createVertexBuffer();
-      o._vertexColorBuffer.upload(vc, 4 * 4, 4);
+      var buffer = o._vertexColorBuffer = p.createVertexBuffer();
+      buffer.upload(vc, 4 * 4, 4);
+      o.pushVertexBuffer(buffer);
       var id = [0, 1, 2, 0, 2, 3];
-      o._indexBuffer = context.createIndexBuffer();
-      o._indexBuffer.upload(id, 6);
+      var buffer = context.createIndexBuffer();
+      buffer.upload(id, 6);
+      o.pushIndexBuffer(buffer);
    }
 }
 with(MO){
@@ -405,9 +410,10 @@ with(MO){
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       o.pushVertexBuffer(buffer);
-      var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.setFillModeCd(EG3dFillMode.Line);
-      buffer.setLineWidth(1);
+      var indexBuffer = o._indexBuffer = context.createIndexBuffer();
+      indexBuffer.setFillModeCd(EG3dFillMode.Line);
+      indexBuffer.setLineWidth(1);
+      o.pushIndexBuffer(indexBuffer);
       o.upload();
       o.update();
       var info = o.material().info();
@@ -483,7 +489,7 @@ with(MO){
       }
       o._vertexPositionBuffer.upload(positions.memory(), 4 * 3, vertexCount);
       o._vertexColorBuffer.upload(colors.memory(), 1 * 4, vertexCount);
-      o._indexBuffer.upload(indexs.memory(), indexs.length());
+      indexBuffer.upload(indexs.memory(), indexs.length());
    }
 }
 with(MO){
@@ -607,15 +613,15 @@ with(MO){
       }
       o._vertexCount = count;
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer._name = 'position';
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
-      o._vertexBuffers.set(buffer._name, buffer);
+      o.pushVertexBuffer(buffer);
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer._name = 'normal';
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('normal');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
-      o._vertexBuffers.set(buffer._name, buffer);
+      o.pushVertexBuffer(buffer);
       var indexes = new TArray();
       for(var rz = 0; rz < cz; rz++){
          for(var r = 0; r < cr; r++){
@@ -631,8 +637,9 @@ with(MO){
             }
          }
       }
-      var ib = o._indexBuffer = context.createIndexBuffer();
-      ib.upload(new Uint16Array(indexes.memory()), indexes.length());
+      var buffer = context.createIndexBuffer();
+      buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+      o.pushIndexBuffer(buffer);
       o.update();
       var info = o.material().info();
       info.ambientColor.set(0.2, 0.2, 0.2, 1);

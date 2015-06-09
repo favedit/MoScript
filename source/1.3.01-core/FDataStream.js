@@ -9,16 +9,14 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
       //..........................................................
       // @attribute
-      o._length   = 0;
-      o._memory   = null;
+      o._length   = RClass.register(o, new AGetter('_length'), 0);
+      o._memory   = RClass.register(o, new AGetter('_memory'));
       o._viewer   = null;
       //..........................................................
       // @method
       o.construct = FDataStream_construct;
       // @method
-      o.length    = FDataStream_length;
       o.setLength = FDataStream_setLength;
-      o.memory    = FDataStream_memory;
       // @method
       o.flip      = FDataStream_flip;
       // @method
@@ -38,36 +36,16 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得长度。</T>
-   //
-   // @method
-   // @return Integer 长度
-   //==========================================================
-   MO.FDataStream_length = function FDataStream_length(){
-      return this._length;
-   }
-
-   //==========================================================
    // <T>设置长度。</T>
    //
    // @method
-   // @param p:length:Integer 长度
+   // @param length:Integer 长度
    //==========================================================
-   MO.FDataStream_setLength = function FDataStream_setLength(p){
+   MO.FDataStream_setLength = function FDataStream_setLength(length){
       var o = this;
-      o._length = p;
-      o._memory = new ArrayBuffer(p);
+      o._length = length;
+      o._memory = new ArrayBuffer(length);
       o._viewer = new DataView(o._memory);
-   }
-
-   //==========================================================
-   // <T>获得内存。</T>
-   //
-   // @method
-   // @return ArrayBuffer 内存
-   //==========================================================
-   MO.FDataStream_memory = function FDataStream_memory(){
-      return this._memory;
    }
 
    //==========================================================

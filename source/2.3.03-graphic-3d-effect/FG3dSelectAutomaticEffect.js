@@ -20,36 +20,41 @@
    // <T>绘制渲染对象。</T>
    //
    // @method
-   // @param pg:region:FG3dRegion 渲染区域
-   // @param pr:renderable:FG3dRenderable 渲染对象
-   // @param pi:index:Integer 索引位置
+   // @param region:FG3dRegion 渲染区域
+   // @param renderable:FG3dRenderable 渲染对象
+   // @param index:Integer 索引位置
    //==========================================================
-   MO.FG3dSelectAutomaticEffect_drawRenderable = function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
+   MO.FG3dSelectAutomaticEffect_drawRenderable = function FG3dSelectAutomaticEffect_drawRenderable(region, renderable, index){
       var o = this;
-      var c = o._graphicContext;
-      var s = c.size();
-      var p = o._program;
-      var sx = pg._selectX;
-      var sy = pg._selectY;
+      var context = o._graphicContext;
+      var size = context.size();
+      var program = o._program;
+      var selectX = region._selectX;
+      var selectY = region._selectY;
       // 绑定材质
-      var m = pr.material();
-      var mi = m.info();
-      o.bindMaterial(m);
+      var material = renderable.material();
+      var materialInfo = material.info();
+      o.bindMaterial(material);
       // 绑定所有属性流
-      p.setParameter('vc_model_matrix', pr.currentMatrix());
-      p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-      p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
+      program.setParameter('vc_model_matrix', renderable.currentMatrix());
+      program.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+      program.setParameter4('vc_offset', size.width, size.height, 1 - (selectX / size.width) * 2, (selectY / size.height) * 2 - 1);
       // 设置材质
-      var i = pi + 1;
+      var i = index + 1;
       var i1 = i  & 0xFF;
       var i2 = (i >> 8) & 0xFF;
       var i3 = (i >> 16) & 0xFF;
-      p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
+      program.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, materialInfo.alphaBase);
       // 绑定所有属性流
-      o.bindAttributes(pr);
+      o.bindAttributes(renderable);
       // 绑定所有取样器
-      o.bindSamplers(pr);
+      o.bindSamplers(renderable);
       // 绘制处理
-      c.drawTriangles(pr.indexBuffer());
+      var indexBuffers = renderable.indexBuffers();
+      var count = indexBuffers.count();
+      for(var i = 0; i < count; i++){
+         var indexBuffer = indexBuffers.at(i);
+         context.drawTriangles(indexBuffer);
+      }
    }
 }

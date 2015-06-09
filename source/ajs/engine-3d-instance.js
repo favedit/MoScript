@@ -21,15 +21,12 @@ with(MO){
       o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
       o._ready           = false;
       o._size            = null;
-      o._renderable      = null;
       o.construct        = FE3dBitmap_construct;
       o.testReady        = FE3dBitmap_testReady;
       o.size             = FE3dBitmap_size;
       o.setSize          = FE3dBitmap_setSize;
-      o.renderable       = FE3dBitmap_renderable;
-      o.setRenderable    = FE3dBitmap_setRenderable;
+      o.setBitmapData    = FE3dBitmap_setBitmapData;
       o.vertexBuffers    = FE3dBitmap_vertexBuffers;
-      o.indexBuffer      = FE3dBitmap_indexBuffer;
       o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
       o.findTexture      = FE3dBitmap_findTexture;
       o.textures         = FE3dBitmap_textures;
@@ -73,20 +70,12 @@ with(MO){
       o._size.set(width, height);
       o._matrix.setScale(width, height, 1);
    }
-   MO.FE3dBitmap_renderable = function FE3dBitmap_renderable(p){
-      return this._renderable;
-   }
-   MO.FE3dBitmap_setRenderable = function FE3dBitmap_setRenderable(p){
+   MO.FE3dBitmap_setBitmapData = function FE3dBitmap_setBitmapData(bitmapData){
       var o = this;
-      o._renderable= p;
-      o._ready = true;
-      o.processLoadListener(o);
+      o._renderable = bitmapData;
    }
    MO.FE3dBitmap_vertexBuffers = function FE3dBitmap_vertexBuffers(){
       return this._renderable.vertexBuffers();
-   }
-   MO.FE3dBitmap_indexBuffer = function FE3dBitmap_indexBuffer(){
-      return this._renderable.indexBuffer();
    }
    MO.FE3dBitmap_findVertexBuffer = function FE3dBitmap_findVertexBuffer(p){
       return this._renderable.findVertexBuffer(p);
@@ -176,28 +165,13 @@ with(MO){
    MO.FE3dBitmapData = function FE3dBitmapData(o){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._ready            = false;
-      o._vertexCount      = 4;
-      o._vertexBuffers    = null;
-      o._indexBuffer      = null;
-      o._indexBuffers     = null;
-      o._material         = null;
-      o._textures         = null;
       o._image            = null;
-      o._size             = null;
-      o._adjustSize       = null;
+      o._imageTexture     = null;
+      o._size             = RClass.register(o, new AGetter('_size'));
+      o._adjustSize       = RClass.register(o, new AGetter('_adjustSize'));
       o.onImageLoad       = FE3dBitmapData_onImageLoad;
       o.construct         = FE3dBitmapData_construct;
       o.testReady         = FE3dBitmapData_testReady;
-      o.size              = FE3dBitmapData_size;
-      o.adjustSize        = FE3dBitmapData_adjustSize;
-      o.vertexCount       = FE3dBitmapData_vertexCount;
-      o.findVertexBuffer  = FE3dBitmapData_findVertexBuffer;
-      o.vertexBuffers     = FE3dBitmapData_vertexBuffers;
-      o.indexBuffer       = FE3dBitmapData_indexBuffer;
-      o.indexBuffers      = FE3dBitmapData_indexBuffers;
-      o.material          = FE3dBitmapData_material;
-      o.findTexture       = FE3dBitmapData_findTexture;
-      o.textures          = FE3dBitmapData_textures;
       o.setup             = FE3dBitmapData_setup;
       o.loadUrl           = FE3dBitmapData_loadUrl;
       o.dispose           = FE3dBitmapData_dispose;
@@ -218,10 +192,7 @@ with(MO){
       var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
       var context2d = canvas.context();
       context2d.drawImage(image, 0, 0);
-      var texture = o._imageTexture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      texture.upload(canvas);
-      o._textures.set('diffuse', texture);
+      o._imageTexture.upload(canvas);
       canvasConsole.free(canvas);
       image.dispose();
       o._ready = true;
@@ -236,36 +207,6 @@ with(MO){
    }
    MO.FE3dBitmapData_testReady = function FE3dBitmapData_testReady(){
       return this._ready;
-   }
-   MO.FE3dBitmapData_size = function FE3dBitmapData_size(){
-      return this._size;
-   }
-   MO.FE3dBitmapData_adjustSize = function FE3dBitmapData_adjustSize(){
-      return this._adjustSize;
-   }
-   MO.FE3dBitmapData_vertexCount = function FE3dBitmapData_vertexCount(){
-      return this._vertexCount;
-   }
-   MO.FE3dBitmapData_findVertexBuffer = function FE3dBitmapData_findVertexBuffer(code){
-      return this._vertexBuffers.get(code);
-   }
-   MO.FE3dBitmapData_vertexBuffers = function FE3dBitmapData_vertexBuffers(){
-      return this._vertexBuffers;
-   }
-   MO.FE3dBitmapData_indexBuffer = function FE3dBitmapData_indexBuffer(){
-      return this._indexBuffer;
-   }
-   MO.FE3dBitmapData_indexBuffers = function FE3dBitmapData_indexBuffers(){
-      return this._indexBuffers;
-   }
-   MO.FE3dBitmapData_material = function FE3dBitmapData_material(){
-      return this._material;
-   }
-   MO.FE3dBitmapData_findTexture = function FE3dBitmapData_findTexture(p){
-      return this._textures.get(p);
-   }
-   MO.FE3dBitmapData_textures = function FE3dBitmapData_textures(){
-      return this._textures;
    }
    MO.FE3dBitmapData_setup = function FE3dBitmapData_setup(){
       var o = this;
@@ -291,17 +232,15 @@ with(MO){
       buffer.upload(data, 4 * 2, 4);
       o.pushVertexBuffer(buffer);
       var data = [0, 1, 2, 0, 2, 3];
-      var buffer = o._indexBuffer = context.createIndexBuffer();
+      var buffer = context.createIndexBuffer();
       buffer.upload(data, 6);
+      o.pushIndexBuffer(buffer);
+      var texture = o._imageTexture = context.createFlatTexture();
+      texture.setOptionFlipY(true);
+      o._textures.set('diffuse', texture);
    }
    MO.FE3dBitmapData_loadUrl = function FE3dBitmapData_loadUrl(url){
       var o = this;
-      var texture = o._imageTexture;
-      if(texture){
-         texture.dispose();
-         o._imageTexture = null;
-         o._textures.clear();
-      }
       var image = RClass.create(FImage);
       image.addLoadListener(o, o.onImageLoad);
       image.loadUrl(url);
@@ -665,13 +604,11 @@ with(MO){
 with(MO){
    MO.FE3dMeshRenderable = function FE3dMeshRenderable(o){
       o = RClass.inherits(this, o, FE3dRenderable);
-      o._renderable      = null;
+      o._renderable      = RClass.register(o, AGetSet('_renderable'));
       o._activeTrack     = null;
-      o.renderable       = FE3dMeshRenderable_renderable;
       o.vertexCount      = FE3dMeshRenderable_vertexCount;
       o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
       o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
-      o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
       o.indexBuffers     = FE3dMeshRenderable_indexBuffers;
       o.findTexture      = FE3dMeshRenderable_findTexture;
       o.textures         = FE3dMeshRenderable_textures;
@@ -681,9 +618,6 @@ with(MO){
       o.update           = FE3dMeshRenderable_update;
       o.dispose          = FE3dMeshRenderable_dispose;
       return o;
-   }
-   MO.FE3dMeshRenderable_renderable = function FE3dMeshRenderable_renderable(){
-      return this._renderable;
    }
    MO.FE3dMeshRenderable_vertexCount = function FE3dMeshRenderable_vertexCount(){
       return this._renderable.vertexCount();
@@ -698,9 +632,6 @@ with(MO){
    }
    MO.FE3dMeshRenderable_vertexBuffers = function FE3dMeshRenderable_vertexBuffers(){
       return this._renderable.vertexBuffers();
-   }
-   MO.FE3dMeshRenderable_indexBuffer = function FE3dMeshRenderable_indexBuffer(){
-      return this._renderable.indexBuffer();
    }
    MO.FE3dMeshRenderable_indexBuffers = function FE3dMeshRenderable_indexBuffers(){
       return this._renderable.indexBuffers();

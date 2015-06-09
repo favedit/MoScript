@@ -1716,12 +1716,8 @@ with(MO){
 with(MO){
    MO.FConsole = function FConsole(o){
       o = RClass.inherits(this, o, FObject);
-      o._scopeCd = EScope.Global;
-      o.scopeCd  = FConsole_scopeCd;
+      o._scopeCd = RClass.register(o, new AGetter('_scopeCd'), EScope.Global);
       return o;
-   }
-   MO.FConsole_scopeCd = function FConsole_scopeCd(){
-      return this._scopeCd;
    }
 }
 with(MO){
@@ -1886,12 +1882,10 @@ with(MO){
       o._beginTime  = 0;
       o._endTime    = 0;
       o._stopTime   = 0;
-      o._span       = 0;
-      o._spanSecond = 0;
+      o._span       = RClass.register(o, new AGetter('_span'), 0);
+      o._spanSecond = RClass.register(o, new AGetter('_spanSecond'), 0);
       o.setup       = FTimer_setup;
       o.current     = FTimer_current;
-      o.span        = FTimer_span;
-      o.spanSecond  = FTimer_spanSecond;
       o.rate        = FTimer_rate;
       o.update      = FTimer_update;
       return o;
@@ -1905,12 +1899,6 @@ with(MO){
    }
    MO.FTimer_current = function FTimer_current(){
       return this._lastTime;
-   }
-   MO.FTimer_span = function FTimer_span(){
-      return this._span;
-   }
-   MO.FTimer_spanSecond = function FTimer_spanSecond(){
-      return this._spanSecond;
    }
    MO.FTimer_rate = function FTimer_rate(){
       var o = this;
@@ -2284,14 +2272,13 @@ with(MO){
       return null;
    }
    MO.RClass.prototype.inherits = function RClass_inherits(s, p){
-      var r = MO.Runtime.nvl(p, s);
-      r.__inherits = new Array();
-      var a = arguments;
-      var c = a.length;
-      for(var i = 2; i < c; i++){
-         r.__inherits.push(RMethod.name(a[i]));
+      var base = MO.Runtime.nvl(p, s);
+      base.__inherits = new Array();
+      var count = arguments.length;
+      for(var i = 2; i < count; i++){
+         base.__inherits.push(RMethod.name(arguments[i]));
       }
-      return r;
+      return base;
    }
    MO.RClass.prototype.forName = function RClass_forName(name){
       var o = this;

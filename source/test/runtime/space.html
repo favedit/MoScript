@@ -16,12 +16,14 @@ function _load(){
    //console.log(a.isEmpty == b.isEmpty);
    //var a = new MO.Runtime.constructor();
    //var b = new MO.Runtime.constructor();
-   var count = 0;
-   for(var name in MO){
-      count++;
-   }
-   console.log('Count = ' + count);
+   MO.initialize();
+
    var runtime = MO.Runtime;
+   runtime.setProcessCd(MO.EProcess.Debug);
+
+   var info = MO.info;
+   console.log('Count = ' + info.count);
+   var reader = MO.Class.create(MO.FFileReader);
    debugger;
 }
 </SCRIPT>

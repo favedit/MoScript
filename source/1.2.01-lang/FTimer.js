@@ -17,14 +17,12 @@
       o._endTime    = 0;
       o._stopTime   = 0;
       // @attribute
-      o._span       = 0;
-      o._spanSecond = 0;
+      o._span       = RClass.register(o, new AGetter('_span'), 0);
+      o._spanSecond = RClass.register(o, new AGetter('_spanSecond'), 0);
       //..........................................................
       // @method
       o.setup       = FTimer_setup;
       o.current     = FTimer_current;
-      o.span        = FTimer_span;
-      o.spanSecond  = FTimer_spanSecond;
       o.rate        = FTimer_rate;
       o.update      = FTimer_update;
       return o;
@@ -51,26 +49,6 @@
    //===========================================================
    MO.FTimer_current = function FTimer_current(){
       return this._lastTime;
-   }
-
-   //===========================================================
-   // <T>获得经过毫秒间隔。</T>
-   //
-   // @method
-   // @return Number 毫秒间隔
-   //===========================================================
-   MO.FTimer_span = function FTimer_span(){
-      return this._span;
-   }
-
-   //===========================================================
-   // <T>获得经过秒间隔。</T>
-   //
-   // @method
-   // @return Number 秒间隔
-   //===========================================================
-   MO.FTimer_spanSecond = function FTimer_spanSecond(){
-      return this._spanSecond;
    }
 
    //===========================================================

@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dProgram);
       //..........................................................
       // @attribute
-      o._native        = null;
+      o._handle        = null;
       //..........................................................
       // @method
       o.setup          = FWglProgram_setup;
@@ -33,7 +33,7 @@ with(MO){
    MO.FWglProgram_setup = function FWglProgram_setup(){
       var o = this;
       var c = g = o._graphicContext;
-      o._native = c._native.createProgram();
+      o._handle = c._handle.createProgram();
    }
 
    //==========================================================
@@ -44,13 +44,13 @@ with(MO){
    //==========================================================
    MO.FWglProgram_vertexShader = function FWglProgram_vertexShader(){
       var o = this;
-      var s = o._vertexShader;
-      if(!s){
-         s = o._vertexShader = RClass.create(FWglVertexShader);
-         s.linkGraphicContext(o);
-         s.setup();
+      var shader = o._vertexShader;
+      if(!shader){
+         shader = o._vertexShader = RClass.create(FWglVertexShader);
+         shader.linkGraphicContext(o);
+         shader.setup();
       }
-      return s;
+      return shader;
    }
 
    //==========================================================
@@ -61,28 +61,28 @@ with(MO){
    //==========================================================
    MO.FWglProgram_fragmentShader = function FWglProgram_fragmentShader(){
       var o = this;
-      var s = o._fragmentShader;
-      if(!s){
-         s = o._fragmentShader = RClass.create(FWglFragmentShader);
-         s.linkGraphicContext(o);
-         s.setup();
+      var shader = o._fragmentShader;
+      if(!shader){
+         shader = o._fragmentShader = RClass.create(FWglFragmentShader);
+         shader.linkGraphicContext(o);
+         shader.setup();
       }
-      return s;
+      return shader;
    }
 
    //==========================================================
    // <T>上传内容处理。</T>
    //
    // @method
-   // @param t:shaderCd:EG3dShader 渲染程序类型
-   // @param s:source:String 渲染代码
+   // @param shaderCd:EG3dShader 渲染程序类型
+   // @param source:String 渲染代码
    //==========================================================
-   MO.FWglProgram_upload = function FWglProgram_upload(t, s){
+   MO.FWglProgram_upload = function FWglProgram_upload(shaderCd, source){
       var o = this;
-      if(t == EG3dShader.Vertex){
-         o.vertexShader().upload(s);
-      }else if(t == EG3dShader.Fragment){
-         o.fragmentShader().upload(s);
+      if(shaderCd == EG3dShader.Vertex){
+         o.vertexShader().upload(source);
+      }else if(shaderCd == EG3dShader.Fragment){
+         o.fragmentShader().upload(source);
       }else{
          throw new Error('Unknown type');
       }
@@ -95,34 +95,34 @@ with(MO){
    //==========================================================
    MO.FWglProgram_build = function FWglProgram_build(){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
-      var pn = o._native;
+      var context = o._graphicContext;
+      var g = context._handle;
+      var pn = o._handle;
       // 设置顶点渲染器
-      var vs = o.vertexShader();
-      g.attachShader(pn, vs._native);
-      var r = c.checkError("attachShader", "Attach shader failure. (program_id=%d, shader_id=%d)", pn, vs._native);
-      if(!r){
-         return r;
+      var vertexShader = o.vertexShader();
+      g.attachShader(pn, vertexShader._handle);
+      var result = context.checkError("attachShader", "Attach shader failure. (program_id=%d, shader_id=%d)", pn, vertexShader._handle);
+      if(!result){
+         return result;
       }
       // 设置顶点渲染器
-      var fs = o.fragmentShader();
-      g.attachShader(pn, fs._native);
-      var r = c.checkError("attachShader", "Attach shader failure. (program_id=%d, shader_id=%d)", pn, fs._native);
-      if(!r){
-         return r;
+      var fragmentShader = o.fragmentShader();
+      g.attachShader(pn, fragmentShader._handle);
+      var result = context.checkError("attachShader", "Attach shader failure. (program_id=%d, shader_id=%d)", pn, fragmentShader._handle);
+      if(!result){
+         return result;
       }
       // 设置属性集合
       if(o.hasAttribute()){
-         var as = o.attributes();
-         var ac = as.count();
+         var attributes = o.attributes();
+         var ac = attributes.count();
          for(var n = 0; n < ac; n++){
-            var a = as.value(n);
-            var an = a.name();
-            g.bindAttribLocation(pn, n, an);
-            r = c.checkError("bindAttribLocation", "Bind attribute location. (program_id=%d, slot=%d, name=%s)", pn, n, an);
-            if(!r){
-               return r;
+            var attribute = attributes.at(n);
+            var attributeName = attribute.name();
+            g.bindAttribLocation(pn, n, attributeName);
+            result = context.checkError("bindAttribLocation", "Bind attribute location. (program_id=%d, slot=%d, name=%s)", pn, n, attributeName);
+            if(!result){
+               return result;
             }
          }
       }
@@ -136,10 +136,10 @@ with(MO){
    MO.FWglProgram_link = function FWglProgram_link(){
       var o = this;
       var context = o._graphicContext;
-      var g = context._native;
+      var g = context._handle;
       var result = false;
       // 关联处理
-      var pn = o._native;
+      var pn = o._handle;
       g.linkProgram(pn);
       // 获得结果
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
@@ -147,8 +147,8 @@ with(MO){
          var pi = g.getProgramInfoLog(pn);
          RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          // 释放程序
-         g.deleteProgram(o._native);
-         o._native = null;
+         g.deleteProgram(o._handle);
+         o._handle = null;
          return false;
       }
       //............................................................
@@ -160,8 +160,8 @@ with(MO){
          var pi = g.getProgramInfoLog(pn);
          //RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
          // 释放程序
-         //g.deleteProgram(o._native);
-         //o._native = null;
+         //g.deleteProgram(o._handle);
+         //o._handle = null;
          //return false;
       }
       //............................................................
@@ -239,10 +239,10 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       // 释放对象
-      var handle = o._native;
+      var handle = o._handle;
       if(handle){
-         context._native.deleteProgram(handle);
-         o._native = null;
+         context._handle.deleteProgram(handle);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dProgram.dispose.call(o);

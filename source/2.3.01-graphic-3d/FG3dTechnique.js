@@ -9,18 +9,13 @@
       o = RClass.inherits(this, o, FG3dObject);
       //..........................................................
       // @attribute
-      o._code           = null;
-      o._activeMode     = null;
-      o._modes          = null;
-      o._passes         = null;
+      o._code           = RClass.register(o, new AGetter('_code'));
+      o._activeMode     = RClass.register(o, new AGetter('_activeMode'));
+      o._modes          = RClass.register(o, new AGetter('_modes'));
+      o._passes         = RClass.register(o, new AGetter('_passes'));
       //..........................................................
       // @method
       o.construct       = FG3dTechnique_construct;
-      // @method
-      o.code            = FG3dTechnique_code;
-      o.activeMode      = FG3dTechnique_activeMode;
-      o.modes           = FG3dTechnique_modes;
-      o.passes          = FG3dTechnique_passes;
       // @method
       o.registerMode    = FG3dTechnique_registerMode;
       o.selectMode      = FG3dTechnique_selectMode;
@@ -43,46 +38,6 @@
       o.__base.FG3dObject.construct.call(o);
       o._modes = new TObjects();
       o._passes = new TObjects();
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return String 名称
-   //==========================================================
-   MO.FG3dTechnique_code = function FG3dTechnique_code(){
-      return this._code;
-   }
-
-   //==========================================================
-   // <T>获得活动模式。</T>
-   //
-   // @method
-   // @return FG3dTechniqueMode 模式
-   //==========================================================
-   MO.FG3dTechnique_activeMode = function FG3dTechnique_activeMode(){
-      return this._activeMode;
-   }
-
-   //==========================================================
-   // <T>获得模式集合。</T>
-   //
-   // @method
-   // @return TObjects 模式集合
-   //==========================================================
-   MO.FG3dTechnique_modes = function FG3dTechnique_modes(){
-      return this._modes;
-   }
-
-   //==========================================================
-   // <T>获得过程集合。</T>
-   //
-   // @method
-   // @return TObjects 过程集合
-   //==========================================================
-   MO.FG3dTechnique_passes = function FG3dTechnique_passes(){
-      return this._passes;
    }
 
    //==========================================================

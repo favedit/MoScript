@@ -437,8 +437,11 @@ with(MO){
             }
             context.drawTriangles(indexBuffer);
          }
+      }else if(indexCount == 1){
+         var indexBuffer = indexBuffers.first();
+         context.drawTriangles(indexBuffer);
       }else{
-         context.drawTriangles(renderable.indexBuffer());
+         throw new TError(o, 'Index buffer is not found.');
       }
       if(o._supportLayout){
          layout.deactive();
@@ -452,27 +455,32 @@ with(MO){
       o.drawRenderable = FG3dSelectAutomaticEffect_drawRenderable;
       return o;
    }
-   MO.FG3dSelectAutomaticEffect_drawRenderable = function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
+   MO.FG3dSelectAutomaticEffect_drawRenderable = function FG3dSelectAutomaticEffect_drawRenderable(region, renderable, index){
       var o = this;
-      var c = o._graphicContext;
-      var s = c.size();
-      var p = o._program;
-      var sx = pg._selectX;
-      var sy = pg._selectY;
-      var m = pr.material();
-      var mi = m.info();
-      o.bindMaterial(m);
-      p.setParameter('vc_model_matrix', pr.currentMatrix());
-      p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-      p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
-      var i = pi + 1;
+      var context = o._graphicContext;
+      var size = context.size();
+      var program = o._program;
+      var selectX = region._selectX;
+      var selectY = region._selectY;
+      var material = renderable.material();
+      var materialInfo = material.info();
+      o.bindMaterial(material);
+      program.setParameter('vc_model_matrix', renderable.currentMatrix());
+      program.setParameter('vc_vp_matrix', region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+      program.setParameter4('vc_offset', size.width, size.height, 1 - (selectX / size.width) * 2, (selectY / size.height) * 2 - 1);
+      var i = index + 1;
       var i1 = i  & 0xFF;
       var i2 = (i >> 8) & 0xFF;
       var i3 = (i >> 16) & 0xFF;
-      p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
-      o.bindAttributes(pr);
-      o.bindSamplers(pr);
-      c.drawTriangles(pr.indexBuffer());
+      program.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, materialInfo.alphaBase);
+      o.bindAttributes(renderable);
+      o.bindSamplers(renderable);
+      var indexBuffers = renderable.indexBuffers();
+      var count = indexBuffers.count();
+      for(var i = 0; i < count; i++){
+         var indexBuffer = indexBuffers.at(i);
+         context.drawTriangles(indexBuffer);
+      }
    }
 }
 with(MO){
@@ -512,17 +520,17 @@ with(MO){
    }
    MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(p){
       var o = this;
-      var c = o._graphicContext;
-      var g = c._native;
-      c.setRenderTarget(o._renderTarget);
-      c.clear(0, 0, 0, 0, 1, 1);
+      var context = o._graphicContext;
+      var handle = context.handle();
+      context.setRenderTarget(o._renderTarget);
+      context.clear(0, 0, 0, 0, 1, 1);
       var rs = p.allRenderables();
       o.activeEffects(p, rs);
       var rc = rs.count();
       for(var i = 0; i < rc; i++){
          var r = rs.get(i);
          var e = r.activeEffect();
-         c.setProgram(e.program());
+         context.setProgram(e.program());
          var d = r.display();
          if(!d){
             e.drawRenderable(p, r, i);
@@ -530,17 +538,17 @@ with(MO){
             e.drawRenderable(p, r, i);
          }
       }
-      c.clearDepth(1);
+      context.clearDepth(1);
       for(var i = 0; i < rc; i++){
          var r = rs.get(i);
          var e = r.activeEffect();
-         c.setProgram(e.program());
+         context.setProgram(e.program());
          var d = r.display();
          if(d && d._optionFace){
             e.drawRenderable(p, r, i);
          }
       }
-      g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
+      handle.readPixels(0, 0, 1, 1, handle.RGBA, handle.UNSIGNED_BYTE, o._data);
       var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
       o._selectRenderable = null;
       if(v != 0){

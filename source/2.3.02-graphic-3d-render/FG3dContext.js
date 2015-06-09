@@ -11,9 +11,9 @@ with(MO){
       // @attribute
       o._optionAlpha        = true;
       o._optionAntialias    = false;
-      o._size               = null;
-      o._capability         = null;
-      o._statistics         = null;
+      o._size               = RClass.register(o, new AGetter('_size'));
+      o._capability         = RClass.register(o, new AGetter('_capability'));
+      o._statistics         = RClass.register(o, new AGetter('_statistics'));
       // @attribute
       o._fillModeCd         = EG3dFillMode.Face;
       o._optionDepth        = false;
@@ -36,10 +36,7 @@ with(MO){
       // @method
       o.linkCanvas          = FG3dContext_linkCanvas;
       // @method
-      o.size                = FG3dContext_size;
-      o.capability          = FG3dContext_capability;
-      o.statistics          = FG3dContext_statistics;
-      // @method
+      o.createObject        = FG3dContext_createObject;
       o.createProgram       = RMethod.virtual(o, 'createProgram');
       o.createLayout        = RMethod.virtual(o, 'createLayout');
       o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
@@ -103,33 +100,18 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得尺寸。</T>
+   // <T>创建环境对象。</T>
    //
    // @method
-   // @return SSize2 尺寸
+   // @param clazz:Function 类对象
+   // @return MGraphicObject 环境对象
    //==========================================================
-   MO.FG3dContext_size = function FG3dContext_size(){
-      return this._size;
-   }
-
-   //==========================================================
-   // <T>获得环境信息。</T>
-   //
-   // @method
-   // @return SG3dContextCapability 环境信息
-   //==========================================================
-   MO.FG3dContext_capability = function FG3dContext_capability(){
-      return this._capability;
-   }
-
-   //==========================================================
-   // <T>获得统计信息。</T>
-   //
-   // @method
-   // @return FG3dStatistics 统计信息
-   //==========================================================
-   MO.FG3dContext_statistics = function FG3dContext_statistics(){
-      return this._statistics;
+   MO.FG3dContext_createObject = function FG3dContext_createObject(clazz){
+      var o = this;
+      var instance = RClass.create(clazz);
+      instance.linkGraphicContext(o);
+      instance.setup();
+      return instance;
    }
 
    //============================================================

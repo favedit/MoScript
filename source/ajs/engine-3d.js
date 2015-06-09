@@ -185,37 +185,27 @@ with(MO){
 with(MO){
    MO.FE3dRenderable = function FE3dRenderable(o){
       o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
-      o._display           = null;
+      o._display           = RClass.register(o, new AGetSet('_display'));
       o._outline           = null;
       o._outlineVisible    = true;
       o._calculateMatrix   = null;
-      o._vertexCount       = 0;
-      o._vertexBuffers     = null;
-      o._indexBuffer       = null;
-      o._indexBuffers      = null;
-      o._materialReference = null;
-      o._materials         = null;
-      o._bones             = null;
-      o._textures          = null;
+      o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
+      o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
+      o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
+      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materials         = RClass.register(o, new AGetter('_materials'));
+      o._bones             = RClass.register(o, new AGetter('_bones'));
+      o._textures          = RClass.register(o, new AGetter('_textures'));
       o.construct          = FE3dRenderable_construct;
       o.setup              = RMethod.empty;
       o.testReady          = RMethod.emptyTrue;
       o.testVisible        = FE3dRenderable_testVisible;
-      o.display            = FE3dRenderable_display;
-      o.setDisplay         = FE3dRenderable_setDisplay;
-      o.vertexCount        = FE3dRenderable_vertexCount;
       o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
-      o.vertexBuffers      = FE3dRenderable_vertexBuffers;
       o.pushVertexBuffer   = FE3dRenderable_pushVertexBuffer;
-      o.indexBuffer        = FE3dRenderable_indexBuffer;
-      o.indexBuffers       = FE3dRenderable_indexBuffers;
-      o.materialReference  = FE3dRenderable_materialReference;
-      o.materials          = FE3dRenderable_materials;
+      o.pushIndexBuffer    = FE3dRenderable_pushIndexBuffer;
       o.pushMaterial       = FE3dRenderable_pushMaterial;
-      o.bones              = FE3dRenderable_bones;
       o.findTexture        = FE3dRenderable_findTexture;
       o.pushTexture        = FE3dRenderable_pushTexture;
-      o.textures           = FE3dRenderable_textures;
       o.processDelay       = RMethod.empty;
       o.update             = FE3dRenderable_update;
       o.remove             = FE3dRenderable_remove;
@@ -251,20 +241,8 @@ with(MO){
       }
       return true;
    }
-   MO.FE3dRenderable_display = function FE3dRenderable_display(){
-      return this._display;
-   }
-   MO.FE3dRenderable_setDisplay = function FE3dRenderable_setDisplay(p){
-      this._display = p;
-   }
-   MO.FE3dRenderable_vertexCount = function FE3dRenderable_vertexCount(){
-      return this._vertexCount;
-   }
    MO.FE3dRenderable_findVertexBuffer = function FE3dRenderable_findVertexBuffer(code){
       return this._vertexBuffers.get(code);
-   }
-   MO.FE3dRenderable_vertexBuffers = function FE3dRenderable_vertexBuffers(){
-      return this._vertexBuffers;
    }
    MO.FE3dRenderable_pushVertexBuffer = function FE3dRenderable_pushVertexBuffer(buffer){
       var o = this;
@@ -278,11 +256,13 @@ with(MO){
       }
       buffers.set(code, buffer);
    }
-   MO.FE3dRenderable_materialReference = function FE3dRenderable_materialReference(){
-      return this._materialReference;
-   }
-   MO.FE3dRenderable_materials = function FE3dRenderable_materials(){
-      return this._materials;
+   MO.FE3dRenderable_pushIndexBuffer = function FE3dRenderable_pushIndexBuffer(buffer){
+      var o = this;
+      var buffers = o._indexBuffers;
+      if(!buffers){
+         buffers =  o._indexBuffers = new TObjects();
+      }
+      buffers.push(buffer);
    }
    MO.FE3dRenderable_pushMaterial = function FE3dRenderable_pushMaterial(material){
       var o = this;
@@ -292,20 +272,8 @@ with(MO){
       }
       materials.push(material);
    }
-   MO.FE3dRenderable_indexBuffer = function FE3dRenderable_indexBuffer(){
-      return this._indexBuffer;
-   }
-   MO.FE3dRenderable_indexBuffers = function FE3dRenderable_indexBuffers(){
-      return this._indexBuffers;
-   }
-   MO.FE3dRenderable_bones = function FE3dRenderable_bones(){
-      return this._bones;
-   }
-   MO.FE3dRenderable_findTexture = function FE3dRenderable_findTexture(p){
-      return this._textures.get(p);
-   }
-   MO.FE3dRenderable_textures = function FE3dRenderable_textures(){
-      return this._textures;
+   MO.FE3dRenderable_findTexture = function FE3dRenderable_findTexture(name){
+      return this._textures.get(name);
    }
    MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture){
       var o = this;

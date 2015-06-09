@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dCubeTexture);
       //..........................................................
       // @attribute
-      o._native    = null;
+      o._handle    = null;
       //..........................................................
       // @method
       o.setup      = FWglCubeTexture_setup;
@@ -30,9 +30,9 @@ with(MO){
    //==========================================================
    MO.FWglCubeTexture_setup = function FWglCubeTexture_setup(){
       var o = this;
-      var g = o._graphicContext._native;
+      var g = o._graphicContext._handle;
       o.__base.FG3dCubeTexture.setup.call(o);
-      o._native = g.createTexture();
+      o._handle = g.createTexture();
    }
 
    //==========================================================
@@ -43,8 +43,8 @@ with(MO){
    //==========================================================
    MO.FWglCubeTexture_isValid = function FWglCubeTexture_isValid(){
       var o = this;
-      var g = o._graphicContext._native;
-      return g.isTexture(o._native);
+      var g = o._graphicContext._handle;
+      return g.isTexture(o._handle);
    }
 
    //==========================================================
@@ -54,9 +54,9 @@ with(MO){
    //==========================================================
    MO.FWglCubeTexture_makeMipmap = function FWglCubeTexture_makeMipmap(){
       var o = this;
-      var g = o._graphicContext._native;
+      var g = o._graphicContext._handle;
       // 绑定数据
-      g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+      g.bindTexture(g.TEXTURE_CUBE_MAP, o._handle);
       // 生成MIP
       g.generateMipmap(g.TEXTURE_CUBE_MAP);
    }
@@ -70,9 +70,9 @@ with(MO){
    MO.FWglCubeTexture_upload = function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
       var o = this;
       var c = o._graphicContext;
-      var g = c._native;
+      var g = c._handle;
       // 绑定数据
-      g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+      g.bindTexture(g.TEXTURE_CUBE_MAP, o._handle);
       // 上传内容
       g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x1.image());
       g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x2.image());
@@ -95,8 +95,8 @@ with(MO){
       var o = this;
       o.__base.FG3dCubeTexture.update.call(o);
       // 绑定数据
-      var g = o._graphicContext._native;
-      g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+      var g = o._graphicContext._handle;
+      g.bindTexture(g.TEXTURE_CUBE_MAP, o._handle);
       // 设置过滤器
       var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
       if(c){
@@ -125,10 +125,10 @@ with(MO){
       var o = this;
       var c = o._graphicContext;
       // 释放对象
-      var n = o._native;
+      var n = o._handle;
       if(n){
-         c._native.deleteTexture(n);
-         o._native = null;
+         c._handle.deleteTexture(n);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dCubeTexture.dispose.call(o);

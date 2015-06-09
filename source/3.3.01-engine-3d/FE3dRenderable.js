@@ -9,22 +9,21 @@ with(MO){
       o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject, MLinkerResource);
       //..........................................................
       // @attribute
-      o._display           = null;
+      o._display           = RClass.register(o, new AGetSet('_display'));
       // @attribute
       o._outline           = null;
       o._outlineVisible    = true;
       // @attribute
       o._calculateMatrix   = null;
       // @attribute
-      o._vertexCount       = 0;
-      o._vertexBuffers     = null;
-      o._indexBuffer       = null;
-      o._indexBuffers      = null;
+      o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
+      o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
+      o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
       // @attribute
-      o._materialReference = null;
-      o._materials         = null;
-      o._bones             = null;
-      o._textures          = null;
+      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materials         = RClass.register(o, new AGetter('_materials'));
+      o._bones             = RClass.register(o, new AGetter('_bones'));
+      o._textures          = RClass.register(o, new AGetter('_textures'));
       //..........................................................
       // @method
       o.construct          = FE3dRenderable_construct;
@@ -34,25 +33,14 @@ with(MO){
       o.testReady          = RMethod.emptyTrue;
       o.testVisible        = FE3dRenderable_testVisible;
       // @method
-      o.display            = FE3dRenderable_display;
-      o.setDisplay         = FE3dRenderable_setDisplay;
-      // @method
-      o.vertexCount        = FE3dRenderable_vertexCount;
       o.findVertexBuffer   = FE3dRenderable_findVertexBuffer;
-      o.vertexBuffers      = FE3dRenderable_vertexBuffers;
       o.pushVertexBuffer   = FE3dRenderable_pushVertexBuffer;
-      o.indexBuffer        = FE3dRenderable_indexBuffer;
-      o.indexBuffers       = FE3dRenderable_indexBuffers;
+      o.pushIndexBuffer    = FE3dRenderable_pushIndexBuffer;
       // @method
-      o.materialReference  = FE3dRenderable_materialReference;
-      o.materials          = FE3dRenderable_materials;
       o.pushMaterial       = FE3dRenderable_pushMaterial;
-      // @method
-      o.bones              = FE3dRenderable_bones;
       // @method
       o.findTexture        = FE3dRenderable_findTexture;
       o.pushTexture        = FE3dRenderable_pushTexture;
-      o.textures           = FE3dRenderable_textures;
       // @method
       o.processDelay       = RMethod.empty;
       o.update             = FE3dRenderable_update;
@@ -109,36 +97,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得显示对象。</T>
-   //
-   // @method
-   // @return FDisplay 显示对象
-   //==========================================================
-   MO.FE3dRenderable_display = function FE3dRenderable_display(){
-      return this._display;
-   }
-
-   //==========================================================
-   // <T>设置显示对象。</T>
-   //
-   // @method
-   // @param p:display:FDisplay 显示对象
-   //==========================================================
-   MO.FE3dRenderable_setDisplay = function FE3dRenderable_setDisplay(p){
-      this._display = p;
-   }
-
-   //==========================================================
-   // <T>获得顶点个数。</T>
-   //
-   // @method
-   // @return Integer 顶点个数
-   //==========================================================
-   MO.FE3dRenderable_vertexCount = function FE3dRenderable_vertexCount(){
-      return this._vertexCount;
-   }
-
-   //==========================================================
    // <T>根据代码查找顶点缓冲。</T>
    //
    // @method
@@ -147,16 +105,6 @@ with(MO){
    //==========================================================
    MO.FE3dRenderable_findVertexBuffer = function FE3dRenderable_findVertexBuffer(code){
       return this._vertexBuffers.get(code);
-   }
-
-   //==========================================================
-   // <T>获得顶点缓冲集合。</T>
-   //
-   // @method
-   // @return TObjects 顶点缓冲集合
-   //==========================================================
-   MO.FE3dRenderable_vertexBuffers = function FE3dRenderable_vertexBuffers(){
-      return this._vertexBuffers;
    }
 
    //==========================================================
@@ -182,23 +130,20 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得材质引用。</T>
+   // <T>增加一个索引缓冲。</T>
    //
    // @method
-   // @return FObject 材质引用
+   // @return buffer:FG3dIndexBuffer 顶点缓冲
    //==========================================================
-   MO.FE3dRenderable_materialReference = function FE3dRenderable_materialReference(){
-      return this._materialReference;
-   }
-
-   //==========================================================
-   // <T>获得材质集合。</T>
-   //
-   // @method
-   // @return TObjects 材质集合
-   //==========================================================
-   MO.FE3dRenderable_materials = function FE3dRenderable_materials(){
-      return this._materials;
+   MO.FE3dRenderable_pushIndexBuffer = function FE3dRenderable_pushIndexBuffer(buffer){
+      var o = this;
+      // 获得集合
+      var buffers = o._indexBuffers;
+      if(!buffers){
+         buffers =  o._indexBuffers = new TObjects();
+      }
+      // 设置缓冲
+      buffers.push(buffer);
    }
 
    //==========================================================
@@ -217,54 +162,14 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得索引缓冲。</T>
-   //
-   // @method
-   // @return FG3dIndexBuffer 索引缓冲
-   //==========================================================
-   MO.FE3dRenderable_indexBuffer = function FE3dRenderable_indexBuffer(){
-      return this._indexBuffer;
-   }
-
-   //==========================================================
-   // <T>获得索引缓冲集合。</T>
-   //
-   // @method
-   // @return TObjects 索引缓冲集合
-   //==========================================================
-   MO.FE3dRenderable_indexBuffers = function FE3dRenderable_indexBuffers(){
-      return this._indexBuffers;
-   }
-
-   //==========================================================
-   // <T>获得骨头集合。</T>
-   //
-   // @method
-   // @return TObjects 骨头集合
-   //==========================================================
-   MO.FE3dRenderable_bones = function FE3dRenderable_bones(){
-      return this._bones;
-   }
-
-   //==========================================================
    // <T>根据名称查找纹理。</T>
    //
    // @method
-   // @param p:name:String 名称
+   // @param name:String 名称
    // @return FRenderIndexBuffer 纹理
    //==========================================================
-   MO.FE3dRenderable_findTexture = function FE3dRenderable_findTexture(p){
-      return this._textures.get(p);
-   }
-
-   //==========================================================
-   // <T>获得纹理集合。</T>
-   //
-   // @method
-   // @return TDictionary 纹理集合
-   //==========================================================
-   MO.FE3dRenderable_textures = function FE3dRenderable_textures(){
-      return this._textures;
+   MO.FE3dRenderable_findTexture = function FE3dRenderable_findTexture(name){
+      return this._textures.get(name);
    }
 
    //==========================================================

@@ -37,19 +37,22 @@ with(MO){
           1.0,  1.0, 0.0,
           1.0, -1.0, 0.0,
          -1.0, -1.0, 0.0 ];
-      o._vertexPositionBuffer = p.createVertexBuffer();
-      o._vertexPositionBuffer.upload(vp, 4 * 3, 4);
+      var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
+      buffer.upload(vp, 4 * 3, 4);
+      o.pushVertexBuffer(buffer);
       // 设置颜色数据
       var vc = [
          0.0, 1.0, 0.0, 1.0,
          1.0, 0.0, 0.0, 1.0,
          1.0, 0.0, 0.0, 1.0,
          0.0, 0.0, 0.0, 1.0 ];
-      o._vertexColorBuffer = p.createVertexBuffer();
-      o._vertexColorBuffer.upload(vc, 4 * 4, 4);
+      var buffer = o._vertexColorBuffer = p.createVertexBuffer();
+      buffer.upload(vc, 4 * 4, 4);
+      o.pushVertexBuffer(buffer);
       // 设置索引数据
       var id = [0, 1, 2, 0, 2, 3];
-      o._indexBuffer = context.createIndexBuffer();
-      o._indexBuffer.upload(id, 6);
+      var buffer = context.createIndexBuffer();
+      buffer.upload(id, 6);
+      o.pushIndexBuffer(buffer);
    }
 }

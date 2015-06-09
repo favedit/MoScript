@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FG2dContext);
       //..........................................................
       // @attribute
-      o._native       = null;
+      o._handle       = null;
       //..........................................................
       // @method
       o.construct     = FG2dCanvasContext_construct;
@@ -49,11 +49,11 @@ with(MO){
       // 获得环境
       if(hCanvas.getContext){
          // 初始化对象
-         var graphic = hCanvas.getContext('2d');
-         if(!graphic){
+         var handle = hCanvas.getContext('2d');
+         if(!handle){
             throw new TError(o, "Current browser can't support Context2D technique.");
          }
-         o._native = graphic;
+         o._handle = handle;
       }
       o._hCanvas = hCanvas;
    }
@@ -69,9 +69,9 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d){
       var o = this;
-      var g = o._native;
+      var handle = o._handle;
       var size = o._size;
-      g.clearRect(0, 0, size.width, size.height);
+      handle.clearRect(0, 0, size.width, size.height);
    }
 
    //==========================================================
@@ -87,12 +87,12 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
       var o = this;
-      var g = o._native;
-      g.strokeStyle = color;
-      g.lineWidth = lineWidth;
-      g.moveTo(x1, y1);
-      g.lineTo(x2, y2);
-      g.stroke();
+      var handle = o._handle;
+      handle.strokeStyle = color;
+      handle.lineWidth = lineWidth;
+      handle.moveTo(x1, y1);
+      handle.lineTo(x2, y2);
+      handle.stroke();
    }
 
    //==========================================================
@@ -108,10 +108,10 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth){
       var o = this;
-      var g = o._native;
-      g.strokeStyle = color;
-      g.lineWidth = lineWidth;
-      g.strokeRect(x, y, width, height);
+      var handle = o._handle;
+      handle.strokeStyle = color;
+      handle.lineWidth = lineWidth;
+      handle.strokeRect(x, y, width, height);
    }
 
    //==========================================================
@@ -124,36 +124,39 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color){
       var o = this;
-      var g = o._native;
-      //g.font = "italic 200 36px/2 Unknown Font, sans-serif"; 
-      //g.strokeStyle = "blue";
-      //g.fillStyle = "red";
-      //g.lineWidth = "10";
-      //g.strokeText(text, x, y);
-      g.fillStyle = color;
-      g.fillText(text, x, y);
+      var handle = o._handle;
+      //handle.font = "italic 200 36px/2 Unknown Font, sans-serif"; 
+      //handle.strokeStyle = "blue";
+      //handle.fillStyle = "red";
+      //handle.lineWidth = "10";
+      //handle.strokeText(text, x, y);
+      handle.fillStyle = color;
+      handle.fillText(text, x, y);
    }
 
    //==========================================================
    // <T>绘制图像。</T>
    //
    // @method
-   // @param m:image:Object 图像
+   // @param content:Object 图像内容
+   // @param x:Integer 横向位置
+   // @param y:Integer 纵向位置
    //==========================================================
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(data, x, y){
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y){
       var o = this;
-      var g = o._native;
+      var handle = o._handle;
+      var size = o._size;
       // 获得数据
-      var pixels = null
-      if(data.tagName == 'IMG'){
-         pixels = data;
-      }else if(RClass.isClass(data, FImage)){
-         pixels = data.image();
+      var data = null
+      if(content.tagName == 'IMG'){
+         data = content;
+      }else if(RClass.isClass(content, FImage)){
+         data = content.image();
       }else{
-         throw new TError(o, 'Unknown data type');
+         throw new TError(o, 'Unknown content type');
       }
       // 绘制位图
-      g.drawImage(pixels, x, y, o._size.width, o._size.height);
+      handle.drawImage(data, x, y, size.width, size.height);
    }
 
    //==========================================================
@@ -169,9 +172,9 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
       var o = this;
-      var g = o._native;
-      g.fillStyle = color;
-      g.fillRect(x, y, width, height);
+      var handle = o._handle;
+      handle.fillStyle = color;
+      handle.fillRect(x, y, width, height);
    }
 
    //==========================================================
@@ -182,7 +185,7 @@ with(MO){
    //==========================================================
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes(){
       var o = this;
-      var s = o._size;
-      return o._native.getImageData(0, 0, s.width, s.height);
+      var size = o._size;
+      return o._handle.getImageData(0, 0, size.width, size.height);
    }
 }

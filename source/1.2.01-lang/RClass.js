@@ -289,20 +289,19 @@
    // <T>指定当前对象继承自其他类。</T>
    //
    // @method
-   // @param s:self:Object 当前对象
-   // @param p:parent:Object 父类传递对象
-   // @param c:classes:Function... 继承类函数的列表
+   // @param self:Object 当前对象
+   // @param parent:Object 父类传递对象
+   // @param classes:Function... 继承类函数的列表
    // @return Object 含有类继承关系的对象实例
    //==========================================================
    MO.RClass.prototype.inherits = function RClass_inherits(s, p){
-      var r = MO.Runtime.nvl(p, s);
-      r.__inherits = new Array();
-      var a = arguments;
-      var c = a.length;
-      for(var i = 2; i < c; i++){
-         r.__inherits.push(RMethod.name(a[i]));
+      var base = MO.Runtime.nvl(p, s);
+      base.__inherits = new Array();
+      var count = arguments.length;
+      for(var i = 2; i < count; i++){
+         base.__inherits.push(RMethod.name(arguments[i]));
       }
-      return r;
+      return base;
    }
 
    //==========================================================

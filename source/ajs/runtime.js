@@ -1,13 +1,26 @@
-var RMO = function RMO(){
+var MO = new function MoSpace(){
    var o = this;
    o.version = '0.2.0';
+   o.info    = new Object();
    return o;
 }
-RMO.prototype.initialize = function RMO_initialize(){
+MO.initialize = function RMO_initialize(){
+   var o = this;
+   var info = o.info;
+   var count = 0;
+   for(var name in this){
+      var value = this[name];
+      if(value){
+         if(value.constructor == Function){
+            value.__name = name;
+         }
+      }
+      count++;
+   }
+   info.count = count;
 }
-RMO.prototype.release = function RMO_release(){
+MO.release = function RMO_release(){
 }
-MO = new RMO();
 MO.ELogger = new function ELogger(){
    var o = this;
    o.Debug = 0;

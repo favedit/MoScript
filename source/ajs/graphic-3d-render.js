@@ -244,9 +244,9 @@ with(MO){
       o = RClass.inherits(this, o, FGraphicContext);
       o._optionAlpha        = true;
       o._optionAntialias    = false;
-      o._size               = null;
-      o._capability         = null;
-      o._statistics         = null;
+      o._size               = RClass.register(o, new AGetter('_size'));
+      o._capability         = RClass.register(o, new AGetter('_capability'));
+      o._statistics         = RClass.register(o, new AGetter('_statistics'));
       o._fillModeCd         = EG3dFillMode.Face;
       o._optionDepth        = false;
       o._optionCull         = false;
@@ -263,9 +263,7 @@ with(MO){
       o._storeTargets       = null;
       o.construct           = FG3dContext_construct;
       o.linkCanvas          = FG3dContext_linkCanvas;
-      o.size                = FG3dContext_size;
-      o.capability          = FG3dContext_capability;
-      o.statistics          = FG3dContext_statistics;
+      o.createObject        = FG3dContext_createObject;
       o.createProgram       = RMethod.virtual(o, 'createProgram');
       o.createLayout        = RMethod.virtual(o, 'createLayout');
       o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
@@ -308,14 +306,12 @@ with(MO){
       var o = this;
       o._size.set(h.width, h.height);
    }
-   MO.FG3dContext_size = function FG3dContext_size(){
-      return this._size;
-   }
-   MO.FG3dContext_capability = function FG3dContext_capability(){
-      return this._capability;
-   }
-   MO.FG3dContext_statistics = function FG3dContext_statistics(){
-      return this._statistics;
+   MO.FG3dContext_createObject = function FG3dContext_createObject(clazz){
+      var o = this;
+      var instance = RClass.create(clazz);
+      instance.linkGraphicContext(o);
+      instance.setup();
+      return instance;
    }
    MO.FG3dContext_prepare = function FG3dContext_prepare(){
       this._statistics.resetFrame();
@@ -395,30 +391,18 @@ with(MO){
 with(MO){
    MO.FG3dFlatTexture = function FG3dFlatTexture(o){
       o = RClass.inherits(this, o, FG3dTexture);
-      o._optionFlipY   = false;
-      o._size          = null;
-      o.construct      = FG3dFlatTexture_construct;
-      o.optionFlipY    = FG3dFlatTexture_optionFlipY;
-      o.setOptionFlipY = FG3dFlatTexture_setOptionFlipY;
-      o.size           = FG3dFlatTexture_size;
-      o.uploadData     = RMethod.virtual(o, 'uploadData');
-      o.upload         = RMethod.virtual(o, 'upload');
-      o.update         = RMethod.empty;
+      o._optionFlipY = RClass.register(o, new AGetSet('_optionFlipY'), false);
+      o._size        = RClass.register(o, new AGetter('_size'));
+      o.construct    = FG3dFlatTexture_construct;
+      o.uploadData   = RMethod.virtual(o, 'uploadData');
+      o.upload       = RMethod.virtual(o, 'upload');
+      o.update       = RMethod.empty;
       return o;
    }
    MO.FG3dFlatTexture_construct = function FG3dFlatTexture_construct(){
       var o = this;
       o.__base.FG3dTexture.construct();
       o._textureCd = EG3dTexture.Flat2d;
-   }
-   MO.FG3dFlatTexture_optionFlipY = function FG3dFlatTexture_optionFlipY(){
-      return this._optionFlipY;
-   }
-   MO.FG3dFlatTexture_setOptionFlipY = function FG3dFlatTexture_setOptionFlipY(flag){
-      this._optionFlipY = flag;
-   }
-   MO.FG3dFlatTexture_size = function FG3dFlatTexture_size(){
-      return this._size;
    }
 }
 with(MO){
@@ -430,40 +414,12 @@ with(MO){
 with(MO){
    MO.FG3dIndexBuffer = function FG3dIndexBuffer(o){
       o = RClass.inherits(this, o, FG3dBuffer);
-      o._strideCd     = EG3dIndexStride.Uint16;
-      o._count        = 0;
-      o._drawModeCd   = EG3dDrawMode.Triangles;
-      o._lineWidth    = 1;
-      o.strideCd      = FG3dIndexBuffer_strideCd;
-      o.setStrideCd   = FG3dIndexBuffer_setStrideCd;
-      o.drawModeCd    = FG3dIndexBuffer_drawModeCd;
-      o.setDrawModeCd = FG3dIndexBuffer_setDrawModeCd;
-      o.lineWidth     = FG3dIndexBuffer_lineWidth;
-      o.setLineWidth  = FG3dIndexBuffer_setLineWidth;
-      o.count         = FG3dIndexBuffer_count;
-      o.upload        = RMethod.virtual(o, 'upload');
+      o._strideCd   = RClass.register(o, new AGetSet('_strideCd'), EG3dIndexStride.Uint16);
+      o._count      = RClass.register(o, new AGetter('_count'), 0);
+      o._drawModeCd = RClass.register(o, new AGetSet('_drawModeCd'), EG3dDrawMode.Triangles);
+      o._lineWidth  = RClass.register(o, new AGetSet('_lineWidth'), 1);
+      o.upload      = RMethod.virtual(o, 'upload');
       return o;
-   }
-   MO.FG3dIndexBuffer_strideCd = function FG3dIndexBuffer_strideCd(){
-      return this._strideCd;
-   }
-   MO.FG3dIndexBuffer_setStrideCd = function FG3dIndexBuffer_setStrideCd(strideCd){
-      this._strideCd = strideCd;
-   }
-   MO.FG3dIndexBuffer_drawModeCd = function FG3dIndexBuffer_drawModeCd(){
-      return this._drawModeCd;
-   }
-   MO.FG3dIndexBuffer_setDrawModeCd = function FG3dIndexBuffer_setDrawModeCd(drawModeCd){
-      this._drawModeCd = drawModeCd;
-   }
-   MO.FG3dIndexBuffer_lineWidth = function FG3dIndexBuffer_lineWidth(){
-      return this._lineWidth;
-   }
-   MO.FG3dIndexBuffer_setLineWidth = function FG3dIndexBuffer_setLineWidth(lineWidth){
-      this._lineWidth = lineWidth;
-   }
-   MO.FG3dIndexBuffer_count = function FG3dIndexBuffer_count(){
-      return this._count;
    }
 }
 with(MO){
@@ -725,29 +681,21 @@ with(MO){
 with(MO){
    MO.FG3dProgramAttribute = function FG3dProgramAttribute(o){
       o = RClass.inherits(this, o, FObject);
-      o._name       = null;
-      o._linker     = null;
+      o._name       = RClass.register(o, new AGetter('_name'));
+      o._linker     = RClass.register(o, new AGetter('_linker'));
       o._statusUsed = false;
       o._slot       = null;
       o._index      = -1;
       o._formatCd   = EG3dAttributeFormat.Unknown;
-      o.name        = FG3dProgramAttribute_name;
-      o.linker      = FG3dProgramAttribute_linker;
       o.loadConfig  = FG3dProgramAttribute_loadConfig;
       o.dispose     = FG3dProgramAttribute_dispose;
       return o;
    }
-   MO.FG3dProgramAttribute_name = function FG3dProgramAttribute_name(){
-      return this._name;
-   }
-   MO.FG3dProgramAttribute_linker = function FG3dProgramAttribute_linker(){
-      return this._linker;
-   }
-   MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(p){
+   MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(xconfig){
       var o = this;
-      o._name = p.get('name');
-      o._linker = p.get('linker');
-      o._formatCd = REnum.encode(EG3dAttributeFormat, p.get('format'));
+      o._name = xconfig.get('name');
+      o._linker = xconfig.get('linker');
+      o._formatCd = REnum.encode(EG3dAttributeFormat, xconfig.get('format'));
    }
    MO.FG3dProgramAttribute_dispose = function FG3dProgramAttribute_dispose(){
       var o = this;
@@ -758,60 +706,48 @@ with(MO){
 with(MO){
    MO.FG3dProgramParameter = function FG3dProgramParameter(o){
       o = RClass.inherits(this, o, FObject);
-      o._name       = null;
-      o._linker     = null;
+      o._name       = RClass.register(o, new AGetter('_name'));
+      o._linker     = RClass.register(o, new AGetter('_linker'));
       o._formatCd   = EG3dParameterFormat.Unknown;
-      o._define     = null;
+      o._define     = RClass.register(o, new AGetter('_define'));
       o._statusUsed = false;
       o._slot       = null;
       o._size       = 0;
       o._buffer     = null;
       o._memory     = null;
-      o.name        = FG3dProgramParameter_name;
-      o.linker      = FG3dProgramParameter_linker;
-      o.define      = FG3dProgramParameter_define;
       o.attachData  = FG3dProgramParameter_attachData;
       o.loadConfig  = FG3dProgramParameter_loadConfig;
       o.dispose     = FG3dProgramParameter_dispose;
       return o;
    }
-   MO.FG3dProgramParameter_name = function FG3dProgramParameter_name(){
-      return this._name;
-   }
-   MO.FG3dProgramParameter_linker = function FG3dProgramParameter_linker(){
-      return this._linker;
-   }
-   MO.FG3dProgramParameter_define = function FG3dProgramParameter_define(){
-      return this._define;
-   }
-   MO.FG3dProgramParameter_attachData = function FG3dProgramParameter_attachData(p){
+   MO.FG3dProgramParameter_attachData = function FG3dProgramParameter_attachData(value){
       var o = this;
-      var r = false;
-      var c = p.constructor;
-      if(c == SMatrix3d){
-         var m = o._memory;
-         if(!m){
-            m = o._memory = new Float32Array(16);
+      var result = false;
+      var clazz = value.constructor;
+      if(clazz == SMatrix3d){
+         var memory = o._memory;
+         if(!memory){
+            memory = o._memory = new Float32Array(16);
          }
-         r = RFloat.attach(m, p._data, 16);
-      }else if(c == Float32Array){
-         var l = p.length;
-         var m = o._memory;
-         if(!m){
-            m = o._memory = new Float32Array(l);
+         result = RFloat.attach(memory, value._data, 16);
+      }else if(clazz == Float32Array){
+         var length = value.length;
+         var memory = o._memory;
+         if(!memory){
+            memory = o._memory = new Float32Array(length);
          }
-         r = RFloat.attach(m, p, l);
+         result = RFloat.attach(memory, value, length);
       }else{
          throw new TError(o, 'Unknown data type.');
       }
-      return r;
+      return result;
    }
-   MO.FG3dProgramParameter_loadConfig = function FG3dProgramParameter_loadConfig(p){
+   MO.FG3dProgramParameter_loadConfig = function FG3dProgramParameter_loadConfig(xconfig){
       var o = this;
-      o._name = p.get('name');
-      o._linker = p.get('linker');
-      o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
-      o._define = p.get('define');
+      o._name = xconfig.get('name');
+      o._linker = xconfig.get('linker');
+      o._formatCd = REnum.encode(EG3dParameterFormat, xconfig.get('format'));
+      o._define = xconfig.get('define');
    }
    MO.FG3dProgramParameter_dispose = function FG3dProgramParameter_dispose(){
       var o = this;
@@ -823,36 +759,24 @@ with(MO){
 with(MO){
    MO.FG3dProgramSampler = function FG3dProgramSampler(o){
       o = RClass.inherits(this, o, FObject);
-      o._name       = null;
-      o._linker     = null;
+      o._name       = RClass.register(o, new AGetter('_name'));
+      o._linker     = RClass.register(o, new AGetter('_linker'));
       o._statusUsed = false;
-      o._formatCd   = EG3dTexture.Flat2d;
+      o._formatCd   = RClass.register(o, new AGetter('_formatCd'), EG3dTexture.Flat2d);
       o._bind       = true;
       o._slot       = -1;
       o._index      = 0;
       o._source     = null;
-      o.name        = FG3dProgramSampler_name;
-      o.linker      = FG3dProgramSampler_linker;
-      o.formatCd    = FG3dProgramSampler_formatCd;
       o.loadConfig  = FG3dProgramSampler_loadConfig;
       o.dispose     = FG3dProgramSampler_dispose;
       return o;
    }
-   MO.FG3dProgramSampler_name = function FG3dProgramSampler_name(){
-      return this._name;
-   }
-   MO.FG3dProgramSampler_linker = function FG3dProgramSampler_linker(){
-      return this._linker;
-   }
-   MO.FG3dProgramSampler_formatCd = function FG3dProgramSampler_formatCd(){
-      return this._formatCd;
-   }
-   MO.FG3dProgramSampler_loadConfig = function FG3dProgramSampler_loadConfig(p){
+   MO.FG3dProgramSampler_loadConfig = function FG3dProgramSampler_loadConfig(xconfig){
       var o = this;
-      o._name = p.get('name');
-      o._linker = p.get('linker');
-      o._bind = RBoolean.parse(p.get('bind', 'Y'));
-      o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
+      o._name = xconfig.get('name');
+      o._linker = xconfig.get('linker');
+      o._bind = RBoolean.parse(xconfig.get('bind', 'Y'));
+      o._formatCd = REnum.encode(EG3dTexture, xconfig.get('format', 'Flat2d'));
    }
    MO.FG3dProgramSampler_dispose = function FG3dProgramSampler_dispose(){
       var o = this;
@@ -897,13 +821,9 @@ with(MO){
 with(MO){
    MO.FG3dShader = function FG3dShader(o){
       o = RClass.inherits(this, o, FG3dObject);
-      o._source = null;
-      o.source  = FG3dShader_source;
+      o._source = RClass.register(o, new AGetter('_source'));
       o.upload  = RMethod.virtual(o, 'upload');
       return o;
-   }
-   MO.FG3dShader_source = function FG3dShader_source(){
-      return this._source;
    }
 }
 with(MO){
@@ -962,41 +882,21 @@ with(MO){
 with(MO){
    MO.FG3dTexture = function FG3dTexture(o){
       o = RClass.inherits(this, o, FG3dObject);
-      o._textureCd   = EG3dTexture.Unknown;
-      o._filterMinCd = EG3dSamplerFilter.Linear;
-      o._filterMagCd = EG3dSamplerFilter.Linear;
-      o._wrapS       = EG3dSamplerFilter.Unknown;
-      o._wrapT       = EG3dSamplerFilter.Unknown;
+      o._textureCd   = RClass.register(o, new AGetter('_textureCd'), EG3dTexture.Unknown);
+      o._filterMinCd = RClass.register(o, new AGetSet('_filterMinCd'), EG3dSamplerFilter.Linear);
+      o._filterMagCd = RClass.register(o, new AGetSet('_filterMagCd'), EG3dSamplerFilter.Linear);
+      o._wrapS       = RClass.register(o, new AGetSet('_wrapS'), EG3dSamplerFilter.Unknown);
+      o._wrapT       = RClass.register(o, new AGetSet('_wrapT'), EG3dSamplerFilter.Unknown);
       o._statusLoad  = false;
       o.isValid      = RMethod.virtual(o, 'isValid');
-      o.textureCd    = FG3dTexture_textureCd;
-      o.filterMinCd  = FG3dTexture_filterMinCd;
-      o.filterMagCd  = FG3dTexture_filterMagCd;
       o.setFilterCd  = FG3dTexture_setFilterCd;
-      o.wrapS        = FG3dTexture_wrapS;
-      o.wrapT        = FG3dTexture_wrapT;
       o.setWrapCd    = FG3dTexture_setWrapCd;
       return o;
-   }
-   MO.FG3dTexture_textureCd = function FG3dTexture_textureCd(){
-      return this._textureCd;
-   }
-   MO.FG3dTexture_filterMinCd = function FG3dTexture_filterMinCd(){
-      return this._filterMinCd;
-   }
-   MO.FG3dTexture_filterMagCd = function FG3dTexture_filterMagCd(){
-      return this._filterMagCd;
    }
    MO.FG3dTexture_setFilterCd = function FG3dTexture_setFilterCd(minCd, magCd){
       var o = this;
       o._filterMinCd = minCd;
       o._filterMagCd = magCd;
-   }
-   MO.FG3dTexture_wrapS = function FG3dTexture_wrapS(){
-      return this._wrapS;
-   }
-   MO.FG3dTexture_wrapT = function FG3dTexture_wrapT(){
-      return this._wrapT;
    }
    MO.FG3dTexture_setWrapCd = function FG3dTexture_setWrapCd(wrapS, wrapT){
       var o = this;
@@ -1007,35 +907,11 @@ with(MO){
 with(MO){
    MO.FG3dVertexBuffer = function FG3dVertexBuffer(o){
       o = RClass.inherits(this, o, FG3dBuffer);
-      o._formatCd   = EG3dAttributeFormat.Unknown;
-      o._stride     = 0;
-      o._count      = 0;
-      o.formatCd    = FG3dVertexBuffer_formatCd;
-      o.setFormatCd = FG3dVertexBuffer_setFormatCd;
-      o.stride      = FG3dVertexBuffer_stride;
-      o.setStride   = FG3dVertexBuffer_setStride;
-      o.count       = FG3dVertexBuffer_count;
-      o.setCount    = FG3dVertexBuffer_setCount;
-      o.upload      = RMethod.virtual(o, 'upload');
+      o._formatCd = RClass.register(o, new AGetSet('_formatCd'), EG3dAttributeFormat.Unknown);
+      o._stride   = RClass.register(o, new AGetSet('_stride'), 0);
+      o._count    = RClass.register(o, new AGetSet('_count'), 0);
+      o.upload    = RMethod.virtual(o, 'upload');
       return o;
-   }
-   MO.FG3dVertexBuffer_formatCd = function FG3dVertexBuffer_formatCd(){
-      return this._formatCd;
-   }
-   MO.FG3dVertexBuffer_setFormatCd = function FG3dVertexBuffer_setFormatCd(formatCd){
-      this._formatCd = formatCd;
-   }
-   MO.FG3dVertexBuffer_stride = function FG3dVertexBuffer_stride(){
-      return this._stride;
-   }
-   MO.FG3dVertexBuffer_setStride = function FG3dVertexBuffer_setStride(stride){
-      this._stride = stride;
-   }
-   MO.FG3dVertexBuffer_count = function FG3dVertexBuffer_count(){
-      return this._count;
-   }
-   MO.FG3dVertexBuffer_setCount = function FG3dVertexBuffer_setCount(count){
-      this._count = count;
    }
 }
 with(MO){

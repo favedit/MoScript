@@ -10,11 +10,11 @@ with(MO){
       o = RClass.inherits(this, o, FG3dContext);
       //..........................................................
       // @attribute
-      o._native             = null;
-      o._nativeInstance     = null;
-      o._nativeLayout       = null;
-      o._nativeSamplerS3tc  = null;
-      o._nativeDebugShader  = null;
+      o._handle             = RClass.register(o, new AGetter('_handle'));
+      o._handleInstance     = null;
+      o._handleLayout       = null;
+      o._handleSamplerS3tc  = null;
+      o._handleDebugShader  = null;
       // @attribute
       o._activeRenderTarget = null;
       o._activeTextureSlot  = null;
@@ -118,51 +118,51 @@ with(MO){
          if(!handle){
             throw new TError("Current browser can't support WebGL technique.");
          }
-         o._native = handle;
+         o._handle = handle;
          o._contextAttributes = handle.getContextAttributes();
       }else{
          throw new TError("Canvas can't support WebGL technique.");
       }
-      var handle = o._native;
+      var handle = o._handle;
       // 设置状态
       o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       // 获得渲染信息
-      var c = o._capability;
-      c.vendor = handle.getParameter(handle.VENDOR);
-      c.version = handle.getParameter(handle.VERSION);
-      c.shaderVersion = handle.getParameter(handle.SHADING_LANGUAGE_VERSION);
-      c.attributeCount = handle.getParameter(handle.MAX_VERTEX_ATTRIBS);
-      c.vertexConst = handle.getParameter(handle.MAX_VERTEX_UNIFORM_VECTORS);
-      c.varyingCount = handle.getParameter(handle.MAX_VARYING_VECTORS);
-      c.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
-      c.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
-      c.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
+      var capability = o._capability;
+      capability.vendor = handle.getParameter(handle.VENDOR);
+      capability.version = handle.getParameter(handle.VERSION);
+      capability.shaderVersion = handle.getParameter(handle.SHADING_LANGUAGE_VERSION);
+      capability.attributeCount = handle.getParameter(handle.MAX_VERTEX_ATTRIBS);
+      capability.vertexConst = handle.getParameter(handle.MAX_VERTEX_UNIFORM_VECTORS);
+      capability.varyingCount = handle.getParameter(handle.MAX_VARYING_VECTORS);
+      capability.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
+      capability.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+      capability.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
       // 测试实例绘制支持
-      var e = o._nativeInstance = handle.getExtension('ANGLE_instanced_arrays');
+      var e = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
       if(e){
-         c.optionInstance = true;
+         capability.optionInstance = true;
       }
-      c.mergeCount = parseInt((c.vertexConst - 32) / 4);
+      capability.mergeCount = parseInt((capability.vertexConst - 32) / 4);
       // 测试顶点布局支持
-      var e = o._nativeLayout = handle.getExtension('OES_vertex_array_object');
+      var e = o._handleLayout = handle.getExtension('OES_vertex_array_object');
       if(e){
-         c.optionLayout = true;
+         capability.optionLayout = true;
       }
       // 测试32位索引支持
       var e = handle.getExtension('OES_element_index_uint');
       if(e){
-         c.optionIndex32 = true;
+         capability.optionIndex32 = true;
       }
       // 测试纹理压缩支持
-      var e = o._nativeSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
+      var e = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
       if(e){
-         c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
-         c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+         capability.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
+         capability.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       // 测定渲染精度
-      var s = c.shader = new Object();
+      var s = capability.shader = new Object();
       var vertexPrecision = s.vertexPrecision = new Object();
       if(handle.getShaderPrecisionFormat){
          vertexPrecision.floatLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_FLOAT);
@@ -182,9 +182,9 @@ with(MO){
          fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
       // 测试调试渲染器支持
-      var e = o._nativeDebugShader = handle.getExtension('WEBGL_debug_shaders');
+      var e = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
       if(e){
-         c.optionShaderSource = true;
+         capability.optionShaderSource = true;
       }
    }
 
@@ -197,12 +197,12 @@ with(MO){
    MO.FWglContext_parameters = function FWglContext_parameters(){
       var o = this;
       // 获得属性
-      var r = o._parameters;
-      if(r){
-         return r;
+      var parameters = o._parameters;
+      if(parameters){
+         return parameters;
       }
       // 获得参数
-      var ns =['ACTIVE_TEXTURE',
+      var names =['ACTIVE_TEXTURE',
          'ALIASED_LINE_WIDTH_RANGE',
          'ALIASED_POINT_SIZE_RANGE',
          'ALPHA_BITS',
@@ -289,22 +289,22 @@ with(MO){
          'VENDOR',
          'VERSION',
          'VIEWPORT'];
-      var g = o._native;
-      var c = ns.length;
-      r = new Object();
-      for(var i = 0; i < c; i++){
-         var n = ns[i];
-         r[n] = g.getParameter(g[n]);
+      var handle = o._handle;
+      var count = names.length;
+      parameters = new Object();
+      for(var i = 0; i < count; i++){
+         var name = names[i];
+         parameters[name] = handle.getParameter(handle[name]);
       }
       // 获得调试信息
-      var e = g.getExtension('WEBGL_debug_renderer_info');
-      if(e){
-         r['UNMASKED_RENDERER_WEBGL'] = g.getParameter(e.UNMASKED_RENDERER_WEBGL);
-         r['UNMASKED_VENDOR_WEBGL'] = g.getParameter(e.UNMASKED_VENDOR_WEBGL);
+      var extension = handle.getExtension('WEBGL_debug_renderer_info');
+      if(extension){
+         parameters['UNMASKED_RENDERER_WEBGL'] = handle.getParameter(extension.UNMASKED_RENDERER_WEBGL);
+         parameters['UNMASKED_VENDOR_WEBGL'] = handle.getParameter(extension.UNMASKED_VENDOR_WEBGL);
       }
       // 设置参数
-      o._parameters = r;
-      return r;
+      o._parameters = parameters;
+      return parameters;
    }
 
    //==========================================================
@@ -316,19 +316,19 @@ with(MO){
    MO.FWglContext_extensions = function FWglContext_extensions(){
       var o = this;
       // 获得属性
-      var r = o._extensions;
-      if(!r){
-         r = o._extensions = new Object();
+      var extensions = o._extensions;
+      if(!extensions){
+         extensions = o._extensions = new Object();
          // 获得参数
-         var g = o._native;
-         var s = g.getSupportedExtensions();
-         var c = s.length;
-         for(var i = 0; i < c; i++){
-            var n = s[i];
-            r[n] = g.getExtension(n);
+         var handle = o._handle;
+         var extensionNames = handle.getSupportedExtensions();
+         var count = extensionNames.length;
+         for(var i = 0; i < count; i++){
+            var extensionName = extensionNames[i];
+            extensions[name] = handle.getExtension(extensionName);
          }
       }
-      return r;
+      return extensions;
    }
 
    //==========================================================
@@ -499,7 +499,7 @@ with(MO){
    MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
       var o = this;
       o._size.set(width, height);
-      o._native.viewport(left, top, width, height);
+      o._handle.viewport(left, top, width, height);
    }
 
    //==========================================================
@@ -509,7 +509,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查状态
       if(o._fillModeCd == fillModeCd){
          return false;
@@ -543,7 +543,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setDepthMode = function FWglContext_setDepthMode(depthFlag, depthCd){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查状态
       if((o._optionDepth == depthFlag) && (o._depthModeCd == depthCd)){
          return false;
@@ -577,7 +577,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setCullingMode = function FWglContext_setCullingMode(cullFlag, cullCd){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查状态
       if((o._optionCull == cullFlag) && (o._cullModeCd == cullCd)){
          return false;
@@ -612,7 +612,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setBlendFactors = function FWglContext_setBlendFactors(blendFlag, sourceCd, tagetCd){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查状态
       if((o._statusBlend == blendFlag) && (o._blendSourceCd == sourceCd) && (o._blendTargetCd == tagetCd)){
          return false;
@@ -650,7 +650,7 @@ with(MO){
    // @param height:Integer 高度
    //==========================================================
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._native.scissor(left, top, width, height);
+      this._handle.scissor(left, top, width, height);
    }
 
    //==========================================================
@@ -661,7 +661,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查是否需要切换
       if(o._activeRenderTarget == renderTarget){
          return;
@@ -681,8 +681,8 @@ with(MO){
          graphic.viewport(0, 0, o._size.width, o._size.height);
       }else{
          // 绑定渲染目标
-         graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._native);
-         result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._native);
+         graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._handle);
+         result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._handle);
          if(!result){
             return result;
          }
@@ -701,7 +701,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_setProgram = function FWglContext_setProgram(program){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       // 检查参数
       if(o._program == program){
          return;
@@ -710,13 +710,13 @@ with(MO){
       //............................................................
       // 设置程序
       if(program){
-         graphic.useProgram(program._native);
+         graphic.useProgram(program._handle);
       }else{
          graphic.useProgram(null);
       }
       o._program = program;
       // 检查错误
-      return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", program, program._native);
+      return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", program, program._handle);
    }
 
    //==========================================================
@@ -731,7 +731,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_bindConst = function FWglContext_bindConst(shaderCd, slot, formatCd, data, count){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       var result = true;
       o._statistics._frameConstCount++;
       //............................................................
@@ -821,7 +821,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_bindVertexBuffer = function FWglContext_bindVertexBuffer(slot, vertexBuffer, offset, formatCd){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       var result = true;
       o._statistics._frameBufferCount++;
       //............................................................
@@ -838,7 +838,7 @@ with(MO){
       // 设定顶点流
       var handle = null;
       if(vertexBuffer != null){
-         handle = vertexBuffer._native;
+         handle = vertexBuffer._handle;
       }
       graphic.bindBuffer(graphic.ARRAY_BUFFER, handle);
       // 检查错误
@@ -900,7 +900,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_bindTexture = function FWglContext_bindTexture(slot, index, texture){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       var result = true;
       o._statistics._frameTextureCount++;
       //............................................................
@@ -932,7 +932,7 @@ with(MO){
       }
       //............................................................
       // 绑定纹理
-      var handle = texture._native;
+      var handle = texture._handle;
       switch(texture.textureCd()){
          case EG3dTexture.Flat2d:{
             graphic.bindTexture(graphic.TEXTURE_2D, handle);
@@ -969,7 +969,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_clear = function FWglContext_clear(red, green, blue, alpha, depth){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       graphic.clearColor(red, green, blue, alpha);
       graphic.clearDepth(depth);
       graphic.clear(graphic.COLOR_BUFFER_BIT | graphic.DEPTH_BUFFER_BIT);
@@ -986,7 +986,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_clearColor = function FWglContext_clearColor(red, green, blue, alpha){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       graphic.clearColor(red, green, blue, alpha);
       graphic.clear(graphic.COLOR_BUFFER_BIT);
       o._statistics._frameClearCount++;
@@ -999,7 +999,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_clearDepth = function FWglContext_clearDepth(depth){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       graphic.clearDepth(depth);
       graphic.clear(graphic.DEPTH_BUFFER_BIT);
       o._statistics._frameClearCount++;
@@ -1016,7 +1016,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_readPixels = function FWglContext_readPixels(left, top, width, height){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       var length = 4 * width * height;
       var data = new Uint8Array(length);
       graphic.readPixels(left, top, width, height, graphic.RGBA, graphic.UNSIGNED_BYTE, data);
@@ -1032,7 +1032,7 @@ with(MO){
    //==========================================================
    MO.FWglContext_drawTriangles = function FWglContext_drawTriangles(indexBuffer, offset, count){
       var o = this;
-      var graphic = o._native;
+      var graphic = o._handle;
       var result = true;
       // 设置参数
       if(offset == null){
@@ -1042,8 +1042,8 @@ with(MO){
          count = indexBuffer.count();
       }
       // 设置索引流
-      graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._native);
-      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._native);
+      graphic.bindBuffer(graphic.ELEMENT_ARRAY_BUFFER, indexBuffer._handle);
+      result = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", indexBuffer, offset, count, indexBuffer._handle);
       if(!result){
           return result;
       }
@@ -1114,7 +1114,7 @@ with(MO){
          return true;
       }
       // 获得错误原因
-      var graphic = o._native;
+      var graphic = o._handle;
       var result = false;
       var error = null;
       var errorInfo = null;
@@ -1170,8 +1170,8 @@ with(MO){
       o._recordSamplers = RObject.dispose(o._recordSamplers);
       // 释放属性
       o._contextAttributes = null;
-      o._nativeSamplerS3tc = null;
-      o._nativeDebugShader = null;
+      o._handleSamplerS3tc = null;
+      o._handleDebugShader = null;
       // 父处理
       o.__base.FG3dContext.dispose.call(o);
    }

@@ -231,13 +231,10 @@ MO.FEaiSceneStage = function FEaiSceneStage(o){
 with(MO){
    MO.FEaiStage = function FEaiStage(o){
       o = RClass.inherits(this, o, FE3dStage);
-      o._mapLayer    = null;
-      o._spriteLayer = null;
-      o._faceLayer   = null;
+      o._mapLayer    = RClass.register(o, new AGetter('_mapLayer'));
+      o._spriteLayer = RClass.register(o, new AGetter('_spriteLayer'));
+      o._faceLayer   = RClass.register(o, new AGetter('_faceLayer'));
       o.construct    = FEaiStage_construct;
-      o.mapLayer     = FEaiStage_mapLayer;
-      o.spriteLayer  = FEaiStage_spriteLayer;
-      o.faceLayer    = FEaiStage_faceLayer;
       o.active       = FEaiStage_active;
       o.deactive     = FEaiStage_deactive;
       return o;
@@ -251,15 +248,6 @@ with(MO){
       o.registerLayer('SpriteLayer', layer);
       var layer = o._faceLayer = RClass.create(FDisplayLayer);
       o.registerLayer('FaceLayer', layer);
-   }
-   MO.FEaiStage_mapLayer = function FEaiStage_mapLayer(){
-      return this._mapLayer;
-   }
-   MO.FEaiStage_spriteLayer = function FEaiStage_spriteLayer(){
-      return this._spriteLayer;
-   }
-   MO.FEaiStage_faceLayer = function FEaiStage_faceLayer(){
-      return this._faceLayer;
    }
    MO.FEaiStage_active = function FEaiStage_active(){
       var o = this;

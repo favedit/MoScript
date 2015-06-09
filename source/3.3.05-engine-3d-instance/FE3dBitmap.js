@@ -11,7 +11,6 @@ with(MO){
       // @attribute
       o._ready           = false;
       o._size            = null;
-      o._renderable      = null;
       //..........................................................
       // @method
       o.construct        = FE3dBitmap_construct;
@@ -19,10 +18,8 @@ with(MO){
       o.testReady        = FE3dBitmap_testReady;
       o.size             = FE3dBitmap_size;
       o.setSize          = FE3dBitmap_setSize;
-      o.renderable       = FE3dBitmap_renderable;
-      o.setRenderable    = FE3dBitmap_setRenderable;
+      o.setBitmapData    = FE3dBitmap_setBitmapData;
       o.vertexBuffers    = FE3dBitmap_vertexBuffers;
-      o.indexBuffer      = FE3dBitmap_indexBuffer;
       o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
       o.findTexture      = FE3dBitmap_findTexture;
       o.textures         = FE3dBitmap_textures;
@@ -99,23 +96,11 @@ with(MO){
    //==========================================================
    // <T>加载渲染对象。</T>
    //
-   // @param p:renderable:FE3dBitmap 渲染对象
+   // @param bitmapData:FE3dBitmapData 渲染对象
    //==========================================================
-   MO.FE3dBitmap_renderable = function FE3dBitmap_renderable(p){
-      return this._renderable;
-   }
-
-   //==========================================================
-   // <T>加载渲染对象。</T>
-   //
-   // @param p:renderable:FE3dBitmap 渲染对象
-   //==========================================================
-   MO.FE3dBitmap_setRenderable = function FE3dBitmap_setRenderable(p){
+   MO.FE3dBitmap_setBitmapData = function FE3dBitmap_setBitmapData(bitmapData){
       var o = this;
-      o._renderable= p;
-      o._ready = true;
-      // 加载完成
-      o.processLoadListener(o);
+      o._renderable = bitmapData;
    }
 
    //==========================================================
@@ -126,16 +111,6 @@ with(MO){
    //==========================================================
    MO.FE3dBitmap_vertexBuffers = function FE3dBitmap_vertexBuffers(){
       return this._renderable.vertexBuffers();
-   }
-
-   //==========================================================
-   // <T>获得索引缓冲。</T>
-   //
-   // @method
-   // @return FG3dIndexBuffer 索引缓冲
-   //==========================================================
-   MO.FE3dBitmap_indexBuffer = function FE3dBitmap_indexBuffer(){
-      return this._renderable.indexBuffer();
    }
 
    //==========================================================

@@ -12,9 +12,9 @@
       // @attribute
       o._reader        = null;
       // @attribute
-      o._fileName      = null;
-      o._length        = 0;
-      o._data          = null;
+      o._fileName      = RClass.register(o, new AGetter('_fileName'));
+      o._length        = RClass.register(o, new AGetter('_length'), 0);
+      o._data          = RClass.register(o, new AGetter('_data'));
       // @attribute
       o._statusLoading = false;
       //..........................................................
@@ -26,10 +26,6 @@
       //..........................................................
       // @method
       o.construct      = FFileReader_construct;
-      // @method
-      o.fileName       = FFileReader_fileName;
-      o.length         = FFileReader_length;
-      o.data           = FFileReader_data;
       // @method
       o.loadFile       = FFileReader_loadFile;
       // @method
@@ -101,36 +97,6 @@
       reader.onload = o.ohLoad;
       reader.onloadend = o.ohLoadEnd;
       reader.onprogress = o.ohProgress;
-   }
-
-   //==========================================================
-   // <T>获得文件名称。</T>
-   //
-   // @method
-   // @rturn String 文件名称
-   //==========================================================
-   MO.FFileReader_fileName = function FFileReader_fileName(){
-      return this._fileName;
-   }
-
-   //==========================================================
-   // <T>获得数据长度。</T>
-   //
-   // @method
-   // @rturn Integer 数据长度
-   //==========================================================
-   MO.FFileReader_length = function FFileReader_length(){
-      return this._length;
-   }
-
-   //==========================================================
-   // <T>获得数据。</T>
-   //
-   // @method
-   // @return ArrayBuffer 数据
-   //==========================================================
-   MO.FFileReader_data = function FFileReader_data(){
-      return this._data;
    }
 
    //==========================================================

@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dLayout);
       //..........................................................
       // @attribute
-      o._native  = null;
+      o._handle  = null;
       //..........................................................
       // @method
       o.setup    = FWglLayout_setup;
@@ -35,7 +35,7 @@ with(MO){
       o.__base.FG3dLayout.setup.call(o);
       // 创建层
       var c = o._graphicContext;
-      o._native = c._nativeLayout.createVertexArrayOES();
+      o._handle = c._handleLayout.createVertexArrayOES();
    }
 
    //==========================================================
@@ -46,7 +46,7 @@ with(MO){
    MO.FWglLayout_bind = function FWglLayout_bind(){
       var o = this;
       var c = o._graphicContext;
-      c._nativeLayout.bindVertexArrayOES(o._native);
+      c._handleLayout.bindVertexArrayOES(o._handle);
    }
 
    //==========================================================
@@ -57,7 +57,7 @@ with(MO){
    MO.FWglLayout_unbind = function FWglLayout_unbind(){
       var o = this;
       var c = o._graphicContext;
-      c._nativeLayout.bindVertexArrayOES(null);
+      c._handleLayout.bindVertexArrayOES(null);
    }
 
    //==========================================================
@@ -68,7 +68,7 @@ with(MO){
    MO.FWglLayout_active = function FWglLayout_active(){
       var o = this;
       var c = o._graphicContext;
-      c._nativeLayout.bindVertexArrayOES(o._native);
+      c._handleLayout.bindVertexArrayOES(o._handle);
    }
 
    //==========================================================
@@ -79,7 +79,7 @@ with(MO){
    MO.FWglLayout_deactive = function FWglLayout_deactive(){
       var o = this;
       var c = o._graphicContext;
-      c._nativeLayout.bindVertexArrayOES(null);
+      c._handleLayout.bindVertexArrayOES(null);
    }
 
    //==========================================================
@@ -91,10 +91,10 @@ with(MO){
       var o = this;
       var c = o._graphicContext;
       // 释放对象
-      var layout = o._native;
+      var layout = o._handle;
       if(layout){
-         c._nativeLayout.deleteVertexArrayOES(layout);
-         o._native = null;
+         c._handleLayout.deleteVertexArrayOES(layout);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dLayout.dispose.call(o);

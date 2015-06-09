@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dVertexBuffer);
       //..........................................................
       // @attribute
-      o._native = null;
+      o._handle = null;
       //..........................................................
       // @method
       o.setup   = FWglVertexBuffer_setup;
@@ -29,8 +29,8 @@ with(MO){
    MO.FWglVertexBuffer_setup = function FWglVertexBuffer_setup(){
       var o = this;
       o.__base.FG3dVertexBuffer.setup.call(o);
-      var graphic = o._graphicContext._native;
-      o._native = graphic.createBuffer();
+      var graphic = o._graphicContext._handle;
+      o._handle = graphic.createBuffer();
    }
 
    //==========================================================
@@ -41,8 +41,8 @@ with(MO){
    //==========================================================
    MO.FWglVertexBuffer_isValid = function FWglVertexBuffer_isValid(){
       var o = this;
-      var graphic = o._graphicContext._native;
-      return graphic.isBuffer(o._native);
+      var graphic = o._graphicContext._handle;
+      return graphic.isBuffer(o._handle);
    }
 
    //==========================================================
@@ -56,7 +56,7 @@ with(MO){
    MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count){
       var o = this;
       var context = o._graphicContext;
-      var graphics = context._native;
+      var graphics = context._handle;
       // 设置数据
       o._stride = stride;
       o._count = count;
@@ -85,7 +85,7 @@ with(MO){
          throw new TError(o, 'Upload vertex data type is invalid. (data={1})', data);
       }
       // 绑定数据
-      graphics.bindBuffer(graphics.ARRAY_BUFFER, o._native);
+      graphics.bindBuffer(graphics.ARRAY_BUFFER, o._handle);
       context.checkError('bindBuffer', 'Bindbuffer');
       // 上传数据
       graphics.bufferData(graphics.ARRAY_BUFFER, arrays, graphics.STATIC_DRAW);
@@ -101,10 +101,10 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       // 释放对象
-      var buffer = o._native;
+      var buffer = o._handle;
       if(buffer){
-         context._native.deleteBuffer(buffer);
-         o._native = null;
+         context._handle.deleteBuffer(buffer);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dVertexBuffer.dispose.call(o);

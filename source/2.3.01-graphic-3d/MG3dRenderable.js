@@ -11,25 +11,18 @@ with(MO){
       // @attribute
       o._optionMerge   = false;
       // @attribute
-      o._currentMatrix = null;
-      o._matrix        = null;
+      o._currentMatrix = RClass.register(o, new AGetter('_currentMatrix'));
+      o._matrix        = RClass.register(o, new AGetter('_matrix'));
       // @attribute
-      o._material      = null;
+      o._material      = RClass.register(o, new AGetSet('_material'));
       // @attribute
-      o._activeInfo    = null;
+      o._activeInfo    = RClass.register(o, new AGetter('_activeInfo'));
       o._infos         = null;
       //..........................................................
       // @method
       o.construct      = MG3dRenderable_construct;
       // @method
-      o.currentMatrix  = MG3dRenderable_currentMatrix;
-      o.matrix         = MG3dRenderable_matrix;
-      // @method
-      o.material       = MG3dRenderable_material;
-      o.setMaterial    = MG3dRenderable_setMaterial;
-      // @method
       o.activeEffect   = MG3dRenderable_activeEffect;
-      o.activeInfo     = MG3dRenderable_activeInfo;
       o.effectFind     = MG3dRenderable_effectFind;
       o.effectSet      = MG3dRenderable_effectSet;
       o.infos          = MG3dRenderable_infos;
@@ -56,26 +49,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得当前矩阵。</T>
-   //
-   // @method
-   // @return 当前矩阵
-   //==========================================================
-   MO.MG3dRenderable_currentMatrix = function MG3dRenderable_currentMatrix(){
-      return this._currentMatrix;
-   }
-
-   //==========================================================
-   // <T>获得矩阵。</T>
-   //
-   // @method
-   // @return 矩阵
-   //==========================================================
-   MO.MG3dRenderable_matrix = function MG3dRenderable_matrix(){
-      return this._matrix;
-   }
-
-   //==========================================================
    // <T>获得激活效果器。</T>
    //
    // @method
@@ -84,16 +57,6 @@ with(MO){
    MO.MG3dRenderable_activeEffect = function MG3dRenderable_activeEffect(){
       var info = this._activeInfo;
       return info ? info.effect : null;
-   }
-
-   //==========================================================
-   // <T>获得激活信息。</T>
-   //
-   // @method
-   // @return SG3dRenderableInfo 信息
-   //==========================================================
-   MO.MG3dRenderable_activeInfo = function MG3dRenderable_activeInfo(){
-      return this._activeInfo;
    }
 
    //==========================================================
@@ -180,26 +143,6 @@ with(MO){
             infos.at(i).reset();
          }
       }
-   }
-
-   //==========================================================
-   // <T>获得材质。</T>
-   //
-   // @method
-   // @return FG3dMaterial 材质
-   //==========================================================
-   MO.MG3dRenderable_material = function MG3dRenderable_material(){
-      return this._material;
-   }
-
-   //==========================================================
-   // <T>获得材质。</T>
-   //
-   // @method
-   // @param material:FG3dMaterial 材质
-   //==========================================================
-   MO.MG3dRenderable_setMaterial = function MG3dRenderable_setMaterial(material){
-      this._material = material;
    }
 
    //==========================================================

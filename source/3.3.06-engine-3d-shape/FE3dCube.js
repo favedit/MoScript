@@ -44,8 +44,9 @@ with(MO){
           1.0,  1.0,  1.0,
           1.0, -1.0,  1.0,
          -1.0, -1.0,  1.0 ];
-      o.vertexPositionBuffer = p.createVertexBuffer();
-      o.vertexPositionBuffer.upload(vp, 4 * 3, 8);
+      var buffer = o.vertexPositionBuffer = p.createVertexBuffer();
+      buffer.upload(vp, 4 * 3, 8);
+      o.pushVertexBuffer(buffer);
       // 设置颜色数据
       var vc = [
          0.0, 1.0, 0.0, 1.0,
@@ -56,8 +57,9 @@ with(MO){
          1.0, 0.0, 1.0, 1.0,
          1.0, 0.0, 1.0, 1.0,
          0.0, 0.0, 1.0, 1.0 ];
-      o.vertexColorBuffer = p.createVertexBuffer();
-      o.vertexColorBuffer.upload(vc, 4 * 4, 8);
+      var buffer = o.vertexColorBuffer = p.createVertexBuffer();
+      buffer.upload(vc, 4 * 4, 8);
+      o.pushVertexBuffer(buffer);
       // 设置索引数据
       var id = [
          0, 1, 2, 0, 2, 3,
@@ -66,8 +68,9 @@ with(MO){
          4, 0, 3, 4, 3, 7,
          0, 4, 5, 0, 5, 1,
          3, 2, 6, 3, 6, 7  ];
-      o.indexBuffer = context.createIndexBuffer();
-      o.indexBuffer.upload(id, 36);
+      var buffer = context.createIndexBuffer();
+      buffer.upload(id, 36);
+      o.pushIndexBuffer(buffer);
       //..........................................................
       // 设置材质
       var mi = o.material().info();

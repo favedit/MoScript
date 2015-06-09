@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FG3dIndexBuffer);
       //..........................................................
       // @attribute
-      o._native = null;
+      o._handle = null;
       //..........................................................
       // @method
       o.setup   = FWglIndexBuffer_setup;
@@ -30,7 +30,7 @@ with(MO){
    MO.FWglIndexBuffer_setup = function FWglIndexBuffer_setup(){
       var o = this;
       o.__base.FG3dIndexBuffer.setup.call(o);
-      o._native = o._graphicContext._native.createBuffer();
+      o._handle = o._graphicContext._handle.createBuffer();
    }
 
    //==========================================================
@@ -41,8 +41,8 @@ with(MO){
    //==========================================================
    MO.FWglIndexBuffer_isValid = function FWglIndexBuffer_isValid(){
       var o = this;
-      var g = o._graphicContext._native;
-      return g.isBuffer(o._native);
+      var g = o._graphicContext._handle;
+      return g.isBuffer(o._handle);
    }
 
    //==========================================================
@@ -55,7 +55,7 @@ with(MO){
    MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(pd, pc){
       var o = this;
       var c = o._graphicContext;
-      var g = c._native;
+      var g = c._handle;
       // 设置数据
       o._count = pc;
       // 获得数据
@@ -82,7 +82,7 @@ with(MO){
          throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
       }
       // 上传数据
-      g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
+      g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._handle);
       c.checkError('bindBuffer', 'Bind buffer failure.');
       g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
       c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
@@ -97,10 +97,10 @@ with(MO){
       var o = this;
       var c = o._graphicContext;
       // 释放对象
-      var n = o._native;
+      var n = o._handle;
       if(n){
-         c._native.deleteBuffer(n);
-         o._native = null;
+         c._handle.deleteBuffer(n);
+         o._handle = null;
       }
       // 父处理
       o.__base.FG3dIndexBuffer.dispose.call(o);

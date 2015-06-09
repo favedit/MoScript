@@ -90,15 +90,15 @@ with(MO){
       o._vertexCount = count;
       // 创建顶点缓冲
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer._name = 'position';
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
-      o._vertexBuffers.set(buffer._name, buffer);
+      o.pushVertexBuffer(buffer);
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer._name = 'normal';
-      buffer._formatCd = EG3dAttributeFormat.Float3;
+      buffer.setCode('normal');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
-      o._vertexBuffers.set(buffer._name, buffer);
+      o.pushVertexBuffer(buffer);
       //..........................................................
       // 计算索引
       var indexes = new TArray();
@@ -117,10 +117,11 @@ with(MO){
          }
       }
       // 创建索引缓冲
-      var ib = o._indexBuffer = context.createIndexBuffer();
+      var buffer = context.createIndexBuffer();
       //ib._fillMode = EG3dFillMode.Line;
       //ib._lineWidth = 1;
-      ib.upload(new Uint16Array(indexes.memory()), indexes.length());
+      buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+      o.pushIndexBuffer(buffer);
       //..........................................................
       // 更新处理
       o.update();

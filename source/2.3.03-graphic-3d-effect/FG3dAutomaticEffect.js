@@ -576,8 +576,11 @@
             }
             context.drawTriangles(indexBuffer);
          }
+      }else if(indexCount == 1){
+         var indexBuffer = indexBuffers.first();
+         context.drawTriangles(indexBuffer);
       }else{
-         context.drawTriangles(renderable.indexBuffer());
+         throw new TError(o, 'Index buffer is not found.');
       }
       // 取消绑定取样器集合（TODO：不执行也正确）
       // layout.unbindSamplers();
