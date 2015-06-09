@@ -109,27 +109,28 @@ with(MO){
    // <T>上传图片内容。</T>
    //
    // @method
-   // @param data:Object 数据
+   // @param content:Object 内容
    //==========================================================
-   MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(data){
+   MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
       var o = this;
       var context = o._graphicContext;
       var capability = context.capability();
       var handle = context._handle;
       // 检查参数
-      var pixels = null;
+      var data = null;
       //var format = null;
-      if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
-         pixels = data;
-      }else if(RClass.isClass(data, FImage)){
-         pixels = data.image();
+      var tagName = content.tagName;
+      if((tagName == 'IMG') || (tagName == 'VIDEO') || (tagName == 'CANVAS')){
+         data = content;
+      }else if(RClass.isClass(content, FImage)){
+         data = content.image();
          //if(image.optionAlpha()){
          //   format = capability.samplerCompressRgba;
          //}else{
          //   format = capability.samplerCompressRgb;
          //}
-      }else if(RClass.isClass(data, MCanvasObject)){
-         pixels = data.htmlCanvas();
+      }else if(RClass.isClass(content, MCanvasObject)){
+         data = content.htmlCanvas();
       }else{
          throw new TError('Invalid image format.');
       }
@@ -145,7 +146,7 @@ with(MO){
       //}else{
          //handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, m);
       //}
-      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, pixels);
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
       // 更新处理
       o.update();
       o._statusLoad = context.checkError("texImage2D", "Upload image failure.");

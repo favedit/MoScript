@@ -918,18 +918,19 @@ with(MO){
       o._statusLoad = context.checkError("texImage2D", "Upload content failure.");
       o.update();
    }
-   MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(data){
+   MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
       var o = this;
       var context = o._graphicContext;
       var capability = context.capability();
       var handle = context._handle;
-      var pixels = null;
-      if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
-         pixels = data;
-      }else if(RClass.isClass(data, FImage)){
-         pixels = data.image();
-      }else if(RClass.isClass(data, MCanvasObject)){
-         pixels = data.htmlCanvas();
+      var data = null;
+      var tagName = content.tagName;
+      if((tagName == 'IMG') || (tagName == 'VIDEO') || (tagName == 'CANVAS')){
+         data = content;
+      }else if(RClass.isClass(content, FImage)){
+         data = content.image();
+      }else if(RClass.isClass(content, MCanvasObject)){
+         data = content.htmlCanvas();
       }else{
          throw new TError('Invalid image format.');
       }
@@ -937,7 +938,7 @@ with(MO){
       if(o._optionFlipY){
          handle.pixelStorei(handle.UNPACK_FLIP_Y_WEBGL, true);
       }
-      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, pixels);
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
       o.update();
       o._statusLoad = context.checkError("texImage2D", "Upload image failure.");
    }
@@ -1075,10 +1076,11 @@ with(MO){
    }
    MO.FWglIndexBuffer_dispose = function FWglIndexBuffer_dispose(){
       var o = this;
-      var c = o._graphicContext;
-      var n = o._handle;
-      if(n){
-         c._handle.deleteBuffer(n);
+      var context = o._graphicContext;
+      o._resource = null;
+      var handle = o._handle;
+      if(handle){
+         c._handle.deleteBuffer(handle);
          o._handle = null;
       }
       o.__base.FG3dIndexBuffer.dispose.call(o);
@@ -1446,6 +1448,7 @@ with(MO){
    MO.FWglVertexBuffer_dispose = function FWglVertexBuffer_dispose(){
       var o = this;
       var context = o._graphicContext;
+      o._resource = null;
       var buffer = o._handle;
       if(buffer){
          context._handle.deleteBuffer(buffer);

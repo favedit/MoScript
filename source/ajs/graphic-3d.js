@@ -953,7 +953,7 @@ with(MO){
    MO.FG3dEffect = function FG3dEffect(o){
       o = RClass.inherits(this, o, FG3dObject);
       o._ready              = null;
-      o._code               = null;
+      o._code               = RClass.register(o, new AGetter('_code'));
       o._stateFillCd        = EG3dFillMode.Face;
       o._stateCullCd        = EG3dCullMode.Front;
       o._stateDepth         = true;
@@ -966,13 +966,11 @@ with(MO){
       o._optionShadow       = false;
       o._optionLightMap     = false;
       o._optionFog          = false;
-      o._program            = null;
+      o._program            = RClass.register(o, new AGetter('_program'));
       o._vertexTemplate     = null;
       o._fragmentTemplate   = null;
       o.setup               = RMethod.empty;
       o.testReady           = FG3dEffect_testReady;
-      o.code                = FG3dEffect_code;
-      o.program             = FG3dEffect_program;
       o.setParameter        = FG3dEffect_setParameter;
       o.setSampler          = FG3dEffect_setSampler;
       o.drawRenderable      = FG3dEffect_drawRenderable;
@@ -987,12 +985,6 @@ with(MO){
    }
    MO.FG3dEffect_testReady = function FG3dEffect_testReady(){
       return this._ready;
-   }
-   MO.FG3dEffect_code = function FG3dEffect_code(){
-      return this._code;
-   }
-   MO.FG3dEffect_program = function FG3dEffect_program(){
-      return this._program;
    }
    MO.FG3dEffect_setParameter = function FG3dEffect_setParameter(name, value, count){
       this._program.setParameter(name, value, count);
@@ -1024,11 +1016,11 @@ with(MO){
       var indexBuffer = renderable.indexBuffer();
       context.drawTriangles(indexBuffer, 0, indexBuffer.count());
    }
-   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderable, offset, count){
+   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderables, offset, count){
       var o = this;
       o._graphicContext.setProgram(o._program);
       for(var i = 0; i < count; i++){
-         var renderable = renderable.at(offset + i);
+         var renderable = renderables.at(offset + i);
          o.drawRenderable(region, renderable);
       }
    }
@@ -2004,23 +1996,23 @@ with(MO){
          }
       }
    }
-   MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(p){
+   MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
       var o = this;
-      var rs = p.renderables();
-      var c = rs.count();
-      if(c == 0){
+      var renderables = region.renderables();
+      var count = renderables.count();
+      if(count == 0){
          return;
       }
-      p._statistics._frameDrawSort.begin();
-      o.activeEffects(p, rs);
-      rs.sort(o.sortRenderables);
-      p._statistics._frameDrawSort.end();
-      var cb = o._graphicContext.capability();
-      if(cb.optionMaterialMap){
+      region._statistics._frameDrawSort.begin();
+      o.activeEffects(region, renderables);
+      renderables.sort(o.sortRenderables);
+      region._statistics._frameDrawSort.end();
+      var capability = o._graphicContext.capability();
+      if(capability.optionMaterialMap){
          var mm = o._materialMap;
-         mm.resize(EG3dMaterialMap.Count, c);
-         for(var i = 0; i < c; i++){
-            var r = rs.get(i);
+         mm.resize(EG3dMaterialMap.Count, count);
+         for(var i = 0; i < count; i++){
+            var r = renderables.get(i);
             r._materialId = i;
             var m = r.material();
             var mi = m.info();
@@ -2031,21 +2023,21 @@ with(MO){
             mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
          }
          mm.update();
-         p._materialMap = mm;
+         region._materialMap = mm;
       }
-      for(var n = 0; n < c; ){
-         var gb = n;
-         var ge = c;
-         var ga = rs.getAt(gb).activeEffect();
-         for(var i = n; i < c; i++){
-            var a = rs.getAt(i).activeEffect();
-            if(ga != a){
-               ge = i;
+      for(var n = 0; n < count; ){
+         var groupBegin = n;
+         var groupEnd = count;
+         var effect = renderables.at(groupBegin).activeEffect();
+         for(var i = n; i < count; i++){
+            var activeEffect = renderables.at(i).activeEffect();
+            if(effect != activeEffect){
+               groupEnd = i;
                break;
             }
             n++;
          }
-         ga.drawRegion(p, gb, ge - gb);
+         effect.drawRegion(region, groupBegin, groupEnd - groupBegin);
       }
    }
 }

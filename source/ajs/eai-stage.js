@@ -164,6 +164,7 @@ with(MO){
       o.__base.FE3dCanvas.build.call(o, hPanel);
       var stage = o._stage = MO.RClass.create(MO.FEaiStage);
       stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
       RStage.register('eai.stage', stage);
    }

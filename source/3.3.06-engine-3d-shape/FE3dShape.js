@@ -5,7 +5,7 @@ with(MO){
    // @author maocy
    // @history 150106
    //==========================================================
-   MO.FE3dBitmap = function FE3dBitmap(o){
+   MO.FE3dShape = function FE3dShape(o){
       o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
       //..........................................................
       // @attribute
@@ -13,21 +13,22 @@ with(MO){
       o._size            = null;
       //..........................................................
       // @method
-      o.construct        = FE3dBitmap_construct;
+      o.construct        = FE3dShape_construct;
       // @method
-      o.testReady        = FE3dBitmap_testReady;
-      o.size             = FE3dBitmap_size;
-      o.setSize          = FE3dBitmap_setSize;
-      o.setBitmapData    = FE3dBitmap_setBitmapData;
-      o.vertexBuffers    = FE3dBitmap_vertexBuffers;
-      o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
-      o.findTexture      = FE3dBitmap_findTexture;
-      o.textures         = FE3dBitmap_textures;
-      o.processLoad      = FE3dBitmap_processLoad;
-      o.process          = FE3dBitmap_process;
-      o.loadUrl          = FE3dBitmap_loadUrl;
+      o.testReady        = FE3dShape_testReady;
+      o.size             = FE3dShape_size;
+      o.setSize          = FE3dShape_setSize;
+      o.setBitmapData    = FE3dShape_setBitmapData;
+      o.vertexBuffers    = FE3dShape_vertexBuffers;
+      o.material         = FE3dShape_material;
+      o.findVertexBuffer = FE3dShape_findVertexBuffer;
+      o.findTexture      = FE3dShape_findTexture;
+      o.textures         = FE3dShape_textures;
+      o.processLoad      = FE3dShape_processLoad;
+      o.process          = FE3dShape_process;
+      o.loadUrl          = FE3dShape_loadUrl;
       // @method
-      o.dispose          = FE3dBitmap_dispose;
+      o.dispose          = FE3dShape_dispose;
       return o;
    }
 
@@ -36,11 +37,11 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dBitmap_construct = function FE3dBitmap_construct(){
+   MO.FE3dShape_construct = function FE3dShape_construct(){
       var o = this;
       o.__base.FE3dMeshRenderable.construct.call(o);
       // 设置属性
-      o._material = RClass.create(FE3dMaterial);
+      //o._material = RClass.create(FE3dMaterial);
       o._size = new SSize2();
    }
 
@@ -49,11 +50,12 @@ with(MO){
    //
    // @return 是否准备好
    //==========================================================
-   MO.FE3dBitmap_testReady = function FE3dBitmap_testReady(){
+   MO.FE3dShape_testReady = function FE3dShape_testReady(){
       var o = this;
       if(!o._ready){
          var renderable = o._renderable;
          if(renderable){
+            // 检查是否准备好
             o._ready = renderable.testReady();
             if(o._ready){
                var size = renderable.size();
@@ -66,6 +68,8 @@ with(MO){
                o.processLoadListener(event);
                event.dispose();
             }
+            // 设置材质引用
+            o._materialReference = renderable;
          }
       }
       return o._ready;
@@ -76,7 +80,7 @@ with(MO){
    //
    // @return SSize2 大小
    //==========================================================
-   MO.FE3dBitmap_size = function FE3dBitmap_size(){
+   MO.FE3dShape_size = function FE3dShape_size(){
       return this._size;
    }
 
@@ -86,7 +90,7 @@ with(MO){
    // @param width:Number 宽度
    // @param height:Number 高度
    //==========================================================
-   MO.FE3dBitmap_setSize = function FE3dBitmap_setSize(width, height){
+   MO.FE3dShape_setSize = function FE3dShape_setSize(width, height){
       var o = this;
       o._size.set(width, height);
       o._matrix.setScale(width, height, 1);
@@ -96,9 +100,9 @@ with(MO){
    //==========================================================
    // <T>加载渲染对象。</T>
    //
-   // @param bitmapData:FE3dBitmapData 渲染对象
+   // @param bitmapData:FE3dShapeData 渲染对象
    //==========================================================
-   MO.FE3dBitmap_setBitmapData = function FE3dBitmap_setBitmapData(bitmapData){
+   MO.FE3dShape_setBitmapData = function FE3dShape_setBitmapData(bitmapData){
       var o = this;
       o._renderable = bitmapData;
    }
@@ -109,8 +113,18 @@ with(MO){
    // @method
    // @return TObjects 顶点缓冲集合
    //==========================================================
-   MO.FE3dBitmap_vertexBuffers = function FE3dBitmap_vertexBuffers(){
+   MO.FE3dShape_vertexBuffers = function FE3dShape_vertexBuffers(){
       return this._renderable.vertexBuffers();
+   }
+
+   //==========================================================
+   // <T>查找材质。</T>
+   //
+   // @method
+   // @return FE3dMaterial 材质
+   //==========================================================
+   MO.FE3dShape_material = function FE3dShape_material(){
+      return this._renderable.material();
    }
 
    //==========================================================
@@ -119,7 +133,7 @@ with(MO){
    // @method
    // @param p:name:String 名称
    //==========================================================
-   MO.FE3dBitmap_findVertexBuffer = function FE3dBitmap_findVertexBuffer(p){
+   MO.FE3dShape_findVertexBuffer = function FE3dShape_findVertexBuffer(p){
       return this._renderable.findVertexBuffer(p);
    }
 
@@ -130,7 +144,7 @@ with(MO){
    // @param p:name:String 名称
    // @return FRenderIndexBuffer 纹理
    //==========================================================
-   MO.FE3dBitmap_findTexture = function FE3dBitmap_findTexture(p){
+   MO.FE3dShape_findTexture = function FE3dShape_findTexture(p){
       return this._renderable.findTexture(p);
    }
 
@@ -140,7 +154,7 @@ with(MO){
    // @method
    // @return TDictionary 纹理集合
    //==========================================================
-   MO.FE3dBitmap_textures = function FE3dBitmap_textures(){
+   MO.FE3dShape_textures = function FE3dShape_textures(){
       return this._renderable.textures();
    }
 
@@ -149,7 +163,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dBitmap_processLoad = function FE3dBitmap_processLoad(){
+   MO.FE3dShape_processLoad = function FE3dShape_processLoad(){
       var o = this;
       //if(!o._renderable.testReady()){
       //   return false;
@@ -163,7 +177,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dBitmap_process = function FE3dBitmap_process(){
+   MO.FE3dShape_process = function FE3dShape_process(){
       var o = this;
       o.__base.FE3dMeshRenderable.process.call(o);
    }
@@ -173,10 +187,10 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dBitmap_loadUrl = function FE3dBitmap_loadUrl(url){
+   MO.FE3dShape_loadUrl = function FE3dShape_loadUrl(url){
       var o = this;
       var context = o._graphicContext;
-      o._renderable = RConsole.find(FE3dBitmapConsole).loadUrl(context, url);
+      o._renderable = RConsole.find(FE3dShapeConsole).loadUrl(context, url);
       o._ready = false;
    }
 
@@ -185,7 +199,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dBitmap_dispose = function FE3dBitmap_dispose(){
+   MO.FE3dShape_dispose = function FE3dShape_dispose(){
       var o = this;
       // 清空属性
       o._material = RObject.dispoe(o._material);

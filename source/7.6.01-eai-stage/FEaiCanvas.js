@@ -224,6 +224,7 @@ with(MO){
       // 创建舞台
       var stage = o._stage = MO.RClass.create(MO.FEaiStage);
       stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
       // 注册舞台
       RStage.register('eai.stage', stage);

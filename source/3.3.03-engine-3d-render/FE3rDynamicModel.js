@@ -89,33 +89,33 @@ with(MO){
    //==========================================================
    MO.FE3rDynamicModel_build = function FE3rDynamicModel_build(){
       var o = this;
-      var rs = o._renderables;
-      var ms = o._meshes;
+      var renderables = o._renderables;
+      var meshes = o._meshes;
       // 生成渲染对象
-      var rc = rs.count();
-      if(rc > 0){
+      var count = renderables.count();
+      if(count > 0){
          // 创建动态网格
-         var mr = o.createMesh();
+         var mesh = o.createMesh();
          // 增加到动态网格中
-         for(var i = 0; i < rc; i++){
-            var r = rs.getAt(i);
-            if(!mr.mergeRenderable(r)){
-               mr = o.createMesh();
-               if(!mr.mergeRenderable(r)){
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            if(!mesh.mergeRenderable(renderable)){
+               mesh = o.createMesh();
+               if(!mesh.mergeRenderable(renderable)){
                   throw new TError(o, 'Merge renderable failure.');
                }
             }
          }
       }
       // 生成渲染对象
-      var mx = 0;
-      var mc = ms.count();
-      for(var i = 0; i < mc; i++){
-         var m = ms.getAt(i);
-         m.build();
-         mx = Math.max(mx, m.mergeCount());
+      var mergeMax = 0;
+      var count = meshes.count();
+      for(var i = 0; i < count; i++){
+         var mesh = meshes.at(i);
+         mesh.build();
+         mergeMax = Math.max(mergeMax, mesh.mergeCount());
       }
-      o._mergeMaxCount = mx;
+      o._mergeMaxCount = mergeMax;
    }
 
    //==========================================================

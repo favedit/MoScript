@@ -95,11 +95,13 @@ with(MO){
    //==========================================================
    MO.FWglIndexBuffer_dispose = function FWglIndexBuffer_dispose(){
       var o = this;
-      var c = o._graphicContext;
+      var context = o._graphicContext;
+      // TODO：待优化
+      o._resource = null;
       // 释放对象
-      var n = o._handle;
-      if(n){
-         c._handle.deleteBuffer(n);
+      var handle = o._handle;
+      if(handle){
+         c._handle.deleteBuffer(handle);
          o._handle = null;
       }
       // 父处理

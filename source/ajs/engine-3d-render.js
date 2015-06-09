@@ -422,7 +422,7 @@ with(MO){
    }
    MO.FE3rDynamicMesh_syncVertexBuffer = function FE3rDynamicMesh_syncVertexBuffer(renderableBuffer){
       var o = this;
-      var resource = renderableBuffer.resource();
+      var resource = renderableBuffer._resource;
       var code = resource.code();
       var buffer = o._vertexBuffers.get(code);
       if(!buffer){
@@ -456,18 +456,19 @@ with(MO){
       }
       return buffer;
    }
-   MO.FE3rDynamicMesh_mergeRenderable = function FE3rDynamicMesh_mergeRenderable(p){
+   MO.FE3rDynamicMesh_mergeRenderable = function FE3rDynamicMesh_mergeRenderable(renderable){
       var o = this;
-      var c = o._graphicContext;
-      var cp = c.capability();
-      var vc = p.vertexCount();
-      var ic = p.indexBuffer().count();
-      var mc = cp.mergeCount;
+      var context = o._graphicContext;
+      var capability = context.capability();
+      var vertexCount = renderable.vertexCount();
+      var indexBuffer = renderable.indexBuffers().first();
+      var indexCount = indexBuffer.count();
+      var mc = capability.mergeCount;
       if(o._mergeRenderables.count() >= mc){
          return false;
       }
-      var vt = o._vertexTotal + vc;
-      if(cp.optionIndex32){
+      var vt = o._vertexTotal + vertexCount;
+      if(capability.optionIndex32){
          if(vt > RInteger.MAX_UINT32){
             return false;
          }
@@ -476,24 +477,24 @@ with(MO){
             return false;
          }
       }
-      o._vertexTotal += vc;
-      o._indexTotal += ic;
-      o._mergeRenderables.push(p);
+      o._vertexTotal += vertexCount;
+      o._indexTotal += indexCount;
+      o._mergeRenderables.push(renderable);
       return true;
    }
-   MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
+   MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffer(renderable, code, vertexBuffer, resource){
       var o = this;
-      var vp = o._vertexPosition;
-      var vd = b._data;
-      var c = rs._dataCount;
-      switch(bc){
+      var position = o._vertexPosition;
+      var data = vertexBuffer._data;
+      var dataCount = resource._dataCount;
+      switch(code){
          case 'position':
-            var d = new Float32Array(rs._data);
-            RFloat.copy(vd, 3 * vp, d, 0, 3 * c);
+            var d = new Float32Array(resource._data);
+            RFloat.copy(data, 3 * position, d, 0, 3 * dataCount);
             break;
          case 'coord':
-            var d = new Float32Array(rs._data);
-            RFloat.copy(vd, 2 * vp, d, 0, 2 * c);
+            var d = new Float32Array(resource._data);
+            RFloat.copy(data, 2 * position, d, 0, 2 * dataCount);
             break;
          case 'color':
          case "normal":
@@ -501,43 +502,43 @@ with(MO){
          case "tangent":
          case "bone_index":
          case "bone_weight":
-            var d = new Uint8Array(rs._data);
-            RByte.copy(vd, 4 * vp, d, 0, 4 * c);
+            var d = new Uint8Array(resource._data);
+            RByte.copy(data, 4 * position, d, 0, 4 * dataCount);
             break;
          default:
             throw new TError("Unknown code");
       }
    }
-   MO.FE3rDynamicMesh_mergeIndexBuffer = function FE3rDynamicMesh_mergeIndexBuffer(ir){
+   MO.FE3rDynamicMesh_mergeIndexBuffer = function FE3rDynamicMesh_mergeIndexBuffer(resource){
       var o = this;
       var vp = o._vertexPosition;
       var ip = o._indexPosition;
       var id = o._indexBuffer._data;
-      var rd = new Uint16Array(ir._data);
-      var rc = 3 * ir._dataCount;
+      var rd = new Uint16Array(resource._data);
+      var rc = 3 * resource._dataCount;
       for(var i = 0; i < rc; i++){
          id[ip++] = vp + rd[i]
       }
    }
    MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
       var o = this;
-      var gc = o._graphicContext;
-      var gp = gc.capability();
+      var context = o._graphicContext;
+      var capability = context.capability();
       var vertexTotal = o._vertexTotal;
       var indexTotal = o._indexTotal;
       var rs = o._mergeRenderables;
       var rc = rs.count();
       var rf = rs.first();
-      o._material = rf._material;
-      o._textures = rf._textures;
+      o._material = rf.material();
+      o._textures = rf.textures();
       var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
       instanceVertexBuffer.setCode('instance');
       instanceVertexBuffer.setStride(4);
       instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
       var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
       o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-      var indexBuffer = o._indexBuffer = gc.createIndexBuffer(FE3rIndexBuffer);
-      if(gp.optionIndex32){
+      var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
+      if(capability.optionIndex32){
          indexBuffer.setStrideCd(EG3dIndexStride.Uint32);
          indexBuffer._data = new Uint32Array(indexTotal);
       }else{
@@ -545,23 +546,24 @@ with(MO){
          indexBuffer._data = new Uint16Array(indexTotal);
       }
       indexBuffer._count = indexTotal;
+      o.pushIndexBuffer(indexBuffer);
       for(var i = 0; i < rc; i++){
-         var r = rs.getAt(i);
-         var vc = r.vertexCount();
-         var vertexBuffers = r.vertexBuffers();
+         var renderable = rs.getAt(i);
+         var vc = renderable.vertexCount();
+         var vertexBuffers = renderable.vertexBuffers();
          var vertexBufferCount = vertexBuffers.count();
          for(var vbi = 0; vbi < vertexBufferCount; vbi++){
             var vb = vertexBuffers.at(vbi);
-            var vbr = vb._resource;
-            var vbrc = vbr._code
+            var vertexBufferResource = vb._resource;
+            var vbrc = vertexBufferResource.code();
             var vertexBuffer = o.syncVertexBuffer(vb);
-            o.mergeVertexBuffer(r, vbrc, vertexBuffer, vbr);
+            o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
          }
          RFloat.fill(vdi, o._vertexPosition, vc, i);
-         var ib = r.indexBuffer();
-         var ic = ib.count();
-         var ir = ib._resource;
-         o.mergeIndexBuffer(ir);
+         var indexBuffer = renderable.indexBuffers().first();
+         var ic = indexBuffer.count();
+         var indexBufferResource = indexBuffer._resource;
+         o.mergeIndexBuffer(indexBufferResource);
          o._vertexPosition += vc;
          o._indexPosition += ic;
       }
@@ -617,29 +619,29 @@ with(MO){
    }
    MO.FE3rDynamicModel_build = function FE3rDynamicModel_build(){
       var o = this;
-      var rs = o._renderables;
-      var ms = o._meshes;
-      var rc = rs.count();
-      if(rc > 0){
-         var mr = o.createMesh();
-         for(var i = 0; i < rc; i++){
-            var r = rs.getAt(i);
-            if(!mr.mergeRenderable(r)){
-               mr = o.createMesh();
-               if(!mr.mergeRenderable(r)){
+      var renderables = o._renderables;
+      var meshes = o._meshes;
+      var count = renderables.count();
+      if(count > 0){
+         var mesh = o.createMesh();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            if(!mesh.mergeRenderable(renderable)){
+               mesh = o.createMesh();
+               if(!mesh.mergeRenderable(renderable)){
                   throw new TError(o, 'Merge renderable failure.');
                }
             }
          }
       }
-      var mx = 0;
-      var mc = ms.count();
-      for(var i = 0; i < mc; i++){
-         var m = ms.getAt(i);
-         m.build();
-         mx = Math.max(mx, m.mergeCount());
+      var mergeMax = 0;
+      var count = meshes.count();
+      for(var i = 0; i < count; i++){
+         var mesh = meshes.at(i);
+         mesh.build();
+         mergeMax = Math.max(mergeMax, mesh.mergeCount());
       }
-      o._mergeMaxCount = mx;
+      o._mergeMaxCount = mergeMax;
    }
    MO.FE3rDynamicModel_update = function FE3rDynamicModel_update(p){
       var o = this;

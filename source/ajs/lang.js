@@ -470,45 +470,45 @@ with(MO){
    }
    MO.TClass_newInstance = function TClass_newInstance(){
       var o = this;
-      var r = o.alloc();
-      if(!r){
+      var instance = o.alloc();
+      if(!instance){
          if(o._abstract){
-            var s = new TString();
-            for(var n in o.instance){
-               var v = o.instance[n];
-               if(RMethod.isVirtual(v)){
-                  if(!s.isEmpty()){
-                     s.append(',');
+            var message = new TString();
+            for(var name in o.instance){
+               var value = o.instance[name];
+               if(RMethod.isVirtual(value)){
+                  if(!message.isEmpty()){
+                     message.append(',');
                   }
-                  s.append(v._name);
+                  message.append(value._name);
                }
             }
-            return RLogger.fatal(o, null, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, s);
+            throw new TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
          }
-         var ro = o.instance;
-         if(!ro){
+         var template = o.instance;
+         if(!template){
             return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
-         r = new ro.constructor();
-         for(var n in ro){
-            var v = ro[n];
-            if(v != null){
-               if((n == '__base') || (n == '__inherits')){
-                  r[n] = ro[n];
+         instance = new template.constructor();
+         for(var name in template){
+            var value = template[name];
+            if(value != null){
+               if((name == '__base') || (name == '__inherits')){
+                  instance[name] = template[name];
                   continue;
                }
-               if(!RClass.isBase(v)){
-                  v = RObject.clone(v);
+               if(!RClass.isBase(value)){
+                  value = RObject.clone(value);
                }
             }
-            r[n] = v;
+            instance[name] = value;
          }
-         r.__class = o;
-         if(r.construct){
-            r.construct();
+         instance.__class = o;
+         if(instance.construct){
+            instance.construct();
          }
       }
-      return r;
+      return instance;
    }
    MO.TClass_alloc = function TClass_alloc(){
       var o = this;
@@ -2342,24 +2342,24 @@ with(MO){
    }
    MO.RClass.prototype.create = function RClass_create(clazz){
       var o = this;
-      var name = null;
+      var className = null;
       var typeName = typeof(clazz);
       if(typeName == 'function'){
-         name = RMethod.name(clazz);
+         className = RMethod.name(clazz);
       }else if(typeName == 'string'){
-         name = clazz;
+         className = clazz;
       }else{
-         RLogger.fatal(o, null, 'Param is invlid (clazz={1})', clazz);
+         throw new TError(o, 'Param is invlid (clazz={1})', clazz);
       }
-      return o.createByName(name);
+      return o.createByName(className);
    }
-   MO.RClass.prototype.createByName = function RClass_createByName(n){
+   MO.RClass.prototype.createByName = function RClass_createByName(className){
       var o = this;
-      var c = o.forName(n);
-      if(!c){
-         RLogger.fatal(o, null, 'Cant find class. (name={1})', c);
+      var clazz = o.forName(className);
+      if(!clazz){
+         throw new TError(o, 'Cant find class. (name={1})', clazz);
       }
-      return c.newInstance();
+      return clazz.newInstance();
    }
    MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
       if((s != null) && (t != null)){

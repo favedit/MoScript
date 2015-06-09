@@ -12,22 +12,28 @@
 var canvas = null;
 var stage = null;
 var layer = null;
-var bitmaps = null;
+var videoData = null;
+var videos = null;
 var tick = 0;
 //----------------------------------------------------------
 function onEnterFrame(){
-   var count = bitmaps.count();
+   var count = videos.count();
    for(var i = 0; i < count; i++){
-      var bitmap = bitmaps.at(i);
+      var bitmap = videos.at(i);
       var matrix = bitmap.matrix();
-      var x = i % 20;
-      var y = parseInt(i / 20);
-      matrix.tx = x - 8;
-      matrix.ty = y - 5;
-      matrix.ry += 0.01 * y;
+      var x = i % 10;
+      var y = parseInt(i / 10);
+      matrix.sx = 2;
+      matrix.sz = 4;
+      matrix.tx = 2 * x - 9;
+      matrix.ty = 1 * y - 4;
+      matrix.ry += 0.002 * y;
       matrix.updateForce();
-      //matrix.setScaleAll(4);
    }
+   //if(id_video.canplay){
+      //videoData._imageTexture.upload(id_video);
+   //}
+   videoData.process();
 }
 var TestA = function(){
   //var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
@@ -54,20 +60,27 @@ function _load(){
    var context = canvas.graphicContext();
    stage = canvas._stage;
    stage.addEnterFrameListener(null, onEnterFrame);
+   //stage.region().backgroundColor().set(1, 1, 1, 1);
    layer = stage.spriteLayer();
    // 创建图片
-   bitmaps = new MO.TObjects();
+   videos = new MO.TObjects();
    if(false){
-      var bitmap = context.createObject(MO.FE3dBitmap);
-      bitmap.loadUrl('../../ars/picture/star3.png');
+      videoData = context.createObject(MO.FE3dVideoData);
+      videoData.loadUrl('../../ars/video/Test.mp4');
+      var video = context.createObject(MO.FE3dVideo);
+      video.setVideoData(videoData);
+      layer.pushRenderable(video);
+
+      //var video = context.createObject(MO.FE3dVideo);
+      //video.loadUrl('../../ars/video/Test.mp4');
    }else{
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('../../ars/picture/star3.png');
-      for(var i = 0; i < 400; i++){
-         var bitmap = context.createObject(MO.FE3dBitmap);
-         bitmap.setBitmapData(bitmapData);
-         bitmaps.push(bitmap);
-         layer.pushRenderable(bitmap);
+      videoData = context.createObject(MO.FE3dVideoData);
+      videoData.loadUrl('../../ars/video/Test.mp4');
+      for(var i = 0; i < 100; i++){
+         var video = context.createObject(MO.FE3dVideo);
+         video.setVideoData(videoData);
+         videos.push(video);
+         layer.pushRenderable(video);
       }
    }
 }

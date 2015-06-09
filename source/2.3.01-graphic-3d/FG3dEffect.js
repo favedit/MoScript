@@ -10,7 +10,7 @@
       //..........................................................
       // @attribute
       o._ready              = null;
-      o._code               = null;
+      o._code               = RClass.register(o, new AGetter('_code'));
       // @attribute
       o._stateFillCd        = EG3dFillMode.Face;
       o._stateCullCd        = EG3dCullMode.Front;
@@ -26,15 +26,13 @@
       o._optionLightMap     = false;
       o._optionFog          = false;
       // @attribute
-      o._program            = null;
+      o._program            = RClass.register(o, new AGetter('_program'));
       o._vertexTemplate     = null;
       o._fragmentTemplate   = null;
       //..........................................................
       // @method
       o.setup               = RMethod.empty;
       o.testReady           = FG3dEffect_testReady;
-      o.code                = FG3dEffect_code;
-      o.program             = FG3dEffect_program;
       o.setParameter        = FG3dEffect_setParameter;
       o.setSampler          = FG3dEffect_setSampler;
       o.drawRenderable      = FG3dEffect_drawRenderable;
@@ -56,26 +54,6 @@
    //==========================================================
    MO.FG3dEffect_testReady = function FG3dEffect_testReady(){
       return this._ready;
-   }
-
-   //==========================================================
-   // <T>获得代码。</T>
-   //
-   // @method
-   // @return String 代码
-   //==========================================================
-   MO.FG3dEffect_code = function FG3dEffect_code(){
-      return this._code;
-   }
-
-   //==========================================================
-   // <T>获得渲染程序。</T>
-   //
-   // @method
-   // @return FG3dProgram 渲染程序
-   //==========================================================
-   MO.FG3dEffect_program = function FG3dEffect_program(){
-      return this._program;
    }
 
    //==========================================================
@@ -152,13 +130,13 @@
    // @param offset:Integer 开始位置
    // @param count:Integer 总数
    //==========================================================
-   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderable, offset, count){
+   MO.FG3dEffect_drawRenderables = function FG3dEffect_drawRenderables(region, renderables, offset, count){
       var o = this;
       // 选择技术
       o._graphicContext.setProgram(o._program);
       // 绘制所有对象
       for(var i = 0; i < count; i++){
-         var renderable = renderable.at(offset + i);
+         var renderable = renderables.at(offset + i);
          o.drawRenderable(region, renderable);
       }
    }

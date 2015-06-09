@@ -420,35 +420,35 @@
    MO.RClass.prototype.create = function RClass_create(clazz){
       var o = this;
       // 获得类名称
-      var name = null;
+      var className = null;
       var typeName = typeof(clazz);
       if(typeName == 'function'){
-         name = RMethod.name(clazz);
+         className = RMethod.name(clazz);
       }else if(typeName == 'string'){
-         name = clazz;
+         className = clazz;
       }else{
-         RLogger.fatal(o, null, 'Param is invlid (clazz={1})', clazz);
+         throw new TError(o, 'Param is invlid (clazz={1})', clazz);
       }
       // 创建类的实例
-      return o.createByName(name);
+      return o.createByName(className);
    }
 
    //==========================================================
    // <T>根据一个类名称创建类的实例。</T>
    //
    // @method
-   // @param n:name:String 类名称
+   // @param className:String 类名称
    // @return Object 类对象的实例
    //==========================================================
-   MO.RClass.prototype.createByName = function RClass_createByName(n){
+   MO.RClass.prototype.createByName = function RClass_createByName(className){
       var o = this;
       // 获得类对象
-      var c = o.forName(n);
-      if(!c){
-         RLogger.fatal(o, null, 'Cant find class. (name={1})', c);
+      var clazz = o.forName(className);
+      if(!clazz){
+         throw new TError(o, 'Cant find class. (name={1})', clazz);
       }
       // 创建类的实例
-      return c.newInstance();
+      return clazz.newInstance();
    }
 
    //==========================================================

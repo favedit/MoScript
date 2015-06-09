@@ -102,32 +102,32 @@
    // <T>绘制区域处理。</T>
    //
    // @method
-   // @param p:region:FG3dRetion 区域
+   // @param region:FG3dRetion 区域
    //==========================================================
-   MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(p){
+   MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
       var o = this;
       // 获得渲染集合
-      var rs = p.renderables();
-      var c = rs.count();
-      if(c == 0){
+      var renderables = region.renderables();
+      var count = renderables.count();
+      if(count == 0){
          return;
       }
       //..........................................................
-      p._statistics._frameDrawSort.begin();
+      region._statistics._frameDrawSort.begin();
       // 激活效果器
-      o.activeEffects(p, rs);
+      o.activeEffects(region, renderables);
       // 控件排序
-      rs.sort(o.sortRenderables);
-      p._statistics._frameDrawSort.end();
+      renderables.sort(o.sortRenderables);
+      region._statistics._frameDrawSort.end();
       //..........................................................
       // 材质映射
-      var cb = o._graphicContext.capability();
-      if(cb.optionMaterialMap){
+      var capability = o._graphicContext.capability();
+      if(capability.optionMaterialMap){
          var mm = o._materialMap;
-         mm.resize(EG3dMaterialMap.Count, c);
-         //var mm = p.materialMap();
-         for(var i = 0; i < c; i++){
-            var r = rs.get(i);
+         mm.resize(EG3dMaterialMap.Count, count);
+         //var mm = region.materialMap();
+         for(var i = 0; i < count; i++){
+            var r = renderables.get(i);
             r._materialId = i;
             var m = r.material();
             var mi = m.info();
@@ -138,25 +138,25 @@
             mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
          }
          mm.update();
-         p._materialMap = mm;
+         region._materialMap = mm;
       }
       //..........................................................
       // 根据效果类型进行分组
-      for(var n = 0; n < c; ){
+      for(var n = 0; n < count; ){
          // 获得分组
-         var gb = n;
-         var ge = c;
-         var ga = rs.getAt(gb).activeEffect();
-         for(var i = n; i < c; i++){
-            var a = rs.getAt(i).activeEffect();
-            if(ga != a){
-               ge = i;
+         var groupBegin = n;
+         var groupEnd = count;
+         var effect = renderables.at(groupBegin).activeEffect();
+         for(var i = n; i < count; i++){
+            var activeEffect = renderables.at(i).activeEffect();
+            if(effect != activeEffect){
+               groupEnd = i;
                break;
             }
             n++;
          }
          // 绘制当前渲染组
-         ga.drawRegion(p, gb, ge - gb);
+         effect.drawRegion(region, groupBegin, groupEnd - groupBegin);
       }
    }
 }

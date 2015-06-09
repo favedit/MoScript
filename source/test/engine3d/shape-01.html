@@ -12,14 +12,14 @@
 var canvas = null;
 var stage = null;
 var layer = null;
-var bitmaps = null;
+var shapes = null;
 var tick = 0;
 //----------------------------------------------------------
 function onEnterFrame(){
-   var count = bitmaps.count();
+   var count = shapes.count();
    for(var i = 0; i < count; i++){
-      var bitmap = bitmaps.at(i);
-      var matrix = bitmap.matrix();
+      var shape = shapes.at(i);
+      var matrix = shape.matrix();
       var x = i % 20;
       var y = parseInt(i / 20);
       matrix.tx = x - 8;
@@ -56,18 +56,18 @@ function _load(){
    stage.addEnterFrameListener(null, onEnterFrame);
    layer = stage.spriteLayer();
    // 创建图片
-   bitmaps = new MO.TObjects();
+   shapes = new MO.TObjects();
    if(false){
-      var bitmap = context.createObject(MO.FE3dBitmap);
-      bitmap.loadUrl('../../ars/picture/star3.png');
+      var shape = context.createObject(MO.FE3dShape);
+      shape.loadUrl('../../ars/picture/star3.png');
    }else{
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('../../ars/picture/star3.png');
+      var shapeData = context.createObject(MO.FE3dShapeData);
+      shapeData.loadUrl('../../ars/picture/star3.png');
       for(var i = 0; i < 400; i++){
-         var bitmap = context.createObject(MO.FE3dBitmap);
-         bitmap.setBitmapData(bitmapData);
-         bitmaps.push(bitmap);
-         layer.pushRenderable(bitmap);
+         var shape = context.createObject(MO.FE3dShape);
+         shape.setShapeData(shapeData);
+         shapes.push(shape);
+         layer.pushRenderable(shape);
       }
    }
 }

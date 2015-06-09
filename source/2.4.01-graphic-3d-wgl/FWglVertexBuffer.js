@@ -100,6 +100,8 @@ with(MO){
    MO.FWglVertexBuffer_dispose = function FWglVertexBuffer_dispose(){
       var o = this;
       var context = o._graphicContext;
+      // TODO：待优化
+      o._resource = null;
       // 释放对象
       var buffer = o._handle;
       if(buffer){

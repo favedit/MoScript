@@ -276,50 +276,50 @@
    MO.TClass_newInstance = function TClass_newInstance(){
       var o = this;
       // 检测要实例化的类是否为虚类
-      var r = o.alloc();
-      if(!r){
+      var instance = o.alloc();
+      if(!instance){
          // 判断是否为虚类
          if(o._abstract){
-            var s = new TString();
-            for(var n in o.instance){
-               var v = o.instance[n];
-               if(RMethod.isVirtual(v)){
-                  if(!s.isEmpty()){
-                     s.append(',');
+            var message = new TString();
+            for(var name in o.instance){
+               var value = o.instance[name];
+               if(RMethod.isVirtual(value)){
+                  if(!message.isEmpty()){
+                     message.append(',');
                   }
-                  s.append(v._name);
+                  message.append(value._name);
                }
             }
-            return RLogger.fatal(o, null, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, s);
+            throw new TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
          }
          // 同一个类的实例中全部共享base对象，中间不能存私有树据。
-         var ro = o.instance;
-         if(!ro){
+         var template = o.instance;
+         if(!template){
             return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
-         r = new ro.constructor();
-         for(var n in ro){
-            var v = ro[n];
-            if(v != null){
+         instance = new template.constructor();
+         for(var name in template){
+            var value = template[name];
+            if(value != null){
                // 特殊属性处理
-               if((n == '__base') || (n == '__inherits')){
-                  r[n] = ro[n];
+               if((name == '__base') || (name == '__inherits')){
+                  instance[name] = template[name];
                   continue;
                }
                // 递归创建所有子对象
-               if(!RClass.isBase(v)){
-                  v = RObject.clone(v);
+               if(!RClass.isBase(value)){
+                  value = RObject.clone(value);
                }
             }
-            r[n] = v;
+            instance[name] = value;
          }
          // 初始化对象
-         r.__class = o;
-         if(r.construct){
-            r.construct();
+         instance.__class = o;
+         if(instance.construct){
+            instance.construct();
          }
       }
-      return r;
+      return instance;
    }
 
    //==========================================================
