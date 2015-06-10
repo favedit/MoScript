@@ -212,6 +212,7 @@ with(MO){
       o._handle       = null;
       o.construct     = FG2dCanvasContext_construct;
       o.linkCanvas    = FG2dCanvasContext_linkCanvas;
+      o.setFont       = FG2dCanvasContext_setFont;
       o.clear         = FG2dCanvasContext_clear;
       o.drawLine      = FG2dCanvasContext_drawLine;
       o.drawRectangle = FG2dCanvasContext_drawRectangle;
@@ -236,6 +237,9 @@ with(MO){
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
+   }
+   MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font){
+      this._handle.font = font;
    }
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d){
       var o = this;
@@ -2816,9 +2820,9 @@ with(MO){
       o._size = RObject.dispose(o._size);
       o._capability = RObject.dispose(o._capability);
       o._statistics = RObject.dispose(o._statistics);
-      o._native = null;
-      o._nativeInstance = null;
-      o._nativeLayout = null;
+      o._handleInstance = null;
+      o._handleLayout = null;
+      o._handle = null;
       o.__base.FGraphicContext.dispose.call(o);
    }
 }
@@ -4782,6 +4786,7 @@ with(MO){
       o._recordBuffers = RObject.dispose(o._recordBuffers);
       o._recordSamplers = RObject.dispose(o._recordSamplers);
       o._contextAttributes = null;
+      o._activeTextureSlot = null;
       o._handleSamplerS3tc = null;
       o._handleDebugShader = null;
       o.__base.FG3dContext.dispose.call(o);
@@ -4935,15 +4940,23 @@ with(MO){
    MO.FWglFlatTexture_update = function FWglFlatTexture_update(){
       var o = this;
       o.__base.FG3dFlatTexture.update.call(o);
-      var g = o._graphicContext._handle;
-      g.bindTexture(g.TEXTURE_2D, o._handle);
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, c);
+      var handle = o._graphicContext._handle;
+      handle.bindTexture(handle.TEXTURE_2D, o._handle);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMinCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, code);
       }
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, c);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMagCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, code);
+      }
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapS);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_S, code);
+      }
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapT);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_T, code);
       }
    }
    MO.FWglFlatTexture_dispose = function FWglFlatTexture_dispose(){
@@ -5070,7 +5083,7 @@ with(MO){
       o._resource = null;
       var handle = o._handle;
       if(handle){
-         c._handle.deleteBuffer(handle);
+         context._handle.deleteBuffer(handle);
          o._handle = null;
       }
       o.__base.FG3dIndexBuffer.dispose.call(o);

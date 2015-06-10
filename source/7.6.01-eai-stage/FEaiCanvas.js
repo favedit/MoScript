@@ -247,8 +247,6 @@ with(MO){
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
       camera.update();
-      // 注册舞台
-      RStage.register('eai.stage', stage);
    }
 
    //==========================================================

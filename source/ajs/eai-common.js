@@ -10,3 +10,13 @@ MO.EEaiStage = new function EEaiStage(){
    o.Scene   = 3;
    return o;
 }
+with(MO){
+   MO.FEaiEntity = function FEaiEntity(o){
+      o = RClass.inherits(this, o, FObject);
+      return o;
+   }
+   MO.FEaiEntity_dispose = function FEaiEntity_dispose(){
+      var o = this;
+      o.__base.FObject.dispose.call(o);
+   }
+}

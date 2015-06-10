@@ -367,9 +367,9 @@ with(MO){
       o._size = RObject.dispose(o._size);
       o._capability = RObject.dispose(o._capability);
       o._statistics = RObject.dispose(o._statistics);
-      o._native = null;
-      o._nativeInstance = null;
-      o._nativeLayout = null;
+      o._handleInstance = null;
+      o._handleLayout = null;
+      o._handle = null;
       o.__base.FGraphicContext.dispose.call(o);
    }
 }

@@ -792,6 +792,7 @@ with(MO){
       o._recordBuffers = RObject.dispose(o._recordBuffers);
       o._recordSamplers = RObject.dispose(o._recordSamplers);
       o._contextAttributes = null;
+      o._activeTextureSlot = null;
       o._handleSamplerS3tc = null;
       o._handleDebugShader = null;
       o.__base.FG3dContext.dispose.call(o);
@@ -945,15 +946,23 @@ with(MO){
    MO.FWglFlatTexture_update = function FWglFlatTexture_update(){
       var o = this;
       o.__base.FG3dFlatTexture.update.call(o);
-      var g = o._graphicContext._handle;
-      g.bindTexture(g.TEXTURE_2D, o._handle);
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, c);
+      var handle = o._graphicContext._handle;
+      handle.bindTexture(handle.TEXTURE_2D, o._handle);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMinCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, code);
       }
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, c);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMagCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, code);
+      }
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapS);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_S, code);
+      }
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapT);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_T, code);
       }
    }
    MO.FWglFlatTexture_dispose = function FWglFlatTexture_dispose(){
@@ -1080,7 +1089,7 @@ with(MO){
       o._resource = null;
       var handle = o._handle;
       if(handle){
-         c._handle.deleteBuffer(handle);
+         context._handle.deleteBuffer(handle);
          o._handle = null;
       }
       o.__base.FG3dIndexBuffer.dispose.call(o);

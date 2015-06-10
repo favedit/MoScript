@@ -177,19 +177,20 @@ with(MO){
    //
    // @method
    // @param texture:FG3dTexture 纹理
+   // @param code:String 代码
    //==========================================================
-   MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture){
+   MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, code){
       var o = this;
       var textures = o._textures;
       if(!textures){
          textures = o._textures = new TDictionary();
       }
-      if(texture._name){
-         var code = texture._name;
+      if(code != null){
          textures.set(code, texture);
+      }else if(texture._name){
+         textures.set(texture._name, texture);
       }else{
-         var code = texture.code();
-         textures.set(code, texture);
+         textures.set(texture.code(), texture);
       }
    }
 

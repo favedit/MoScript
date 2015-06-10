@@ -275,18 +275,18 @@ with(MO){
    MO.FE3dRenderable_findTexture = function FE3dRenderable_findTexture(name){
       return this._textures.get(name);
    }
-   MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture){
+   MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, code){
       var o = this;
       var textures = o._textures;
       if(!textures){
          textures = o._textures = new TDictionary();
       }
-      if(texture._name){
-         var code = texture._name;
+      if(code != null){
          textures.set(code, texture);
+      }else if(texture._name){
+         textures.set(texture._name, texture);
       }else{
-         var code = texture.code();
-         textures.set(code, texture);
+         textures.set(texture.code(), texture);
       }
    }
    MO.FE3dRenderable_update = function FE3dRenderable_update(region){

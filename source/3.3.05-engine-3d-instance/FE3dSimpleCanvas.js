@@ -27,6 +27,8 @@ with(MO){
       o._cameraMoveRate        = 0.4;
       o._cameraKeyRotation     = 0.03;
       o._cameraMouseRotation   = 0.005;
+      // @attribute
+      o._stage                 = RClass.register(o, new AGetter('_stage'));
       //..........................................................
       // @event
       o.onEnterFrame           = FE3dSimpleCanvas_onEnterFrame;
@@ -44,6 +46,9 @@ with(MO){
       //..........................................................
       // @method
       o.construct              = FE3dSimpleCanvas_construct;
+      // @method
+      o.build                  = FE3dSimpleCanvas_build;
+      o.setPanel               = FE3dSimpleCanvas_setPanel;
       // @method
       o.switchPlay             = FE3dSimpleCanvas_switchPlay;
       o.switchMovie            = FE3dSimpleCanvas_switchMovie;
@@ -295,6 +300,42 @@ with(MO){
       o._capturePosition = new SPoint2();
       o._captureCameraPosition = new SPoint3();
       o._captureCameraRotation = new SVector3();
+   }
+
+   //==========================================================
+   // <T>构造处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.build.call(o, hPanel);
+      // 创建舞台
+      var stage = o._stage = MO.RClass.create(MO.FE3dSimpleStage);
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, FE3dGeneralTechnique);
+      // 注册舞台
+      RStage.register('simple.stage', stage);
+   }
+
+   //==========================================================
+   // <T>加载模板处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
+      // 设置相机投影
+      var stage = o._stage;
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
    }
 
    //==========================================================

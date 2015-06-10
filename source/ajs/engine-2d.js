@@ -11,6 +11,7 @@ with(MO){
       o.context    = FE2dCanvas_context;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
+      o.reset      = FE2dCanvas_reset;
       o.dispose    = FE2dCanvas_dispose;
       return o;
    }
@@ -46,13 +47,18 @@ with(MO){
       var context = o._context = RClass.create(FG2dCanvasContext);
       context.linkCanvas(hCanvas);
    }
-   MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(p){
+   MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
       var o = this;
-      var c = o._context;
-      var hc = o._hCanvas;
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
+      var context = o._context;
+      var hCanvas = o._hCanvas;
+      o._hPanel = hPanel;
+      hPanel.appendChild(hCanvas);
       o.onResize();
+   }
+   MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
+      var o = this;
+      var context = o._context;
+      context.clear();
    }
    MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
       var o = this;
@@ -82,12 +88,12 @@ with(MO){
       var pools = o._pools;
       var code = width + 'x' + height;
       var canvas = pools.alloc(code);
-      if(canvas){
-         return canvas;
+      if(!canvas){
+         canvas = RClass.create(FE2dCanvas);
+         canvas.size().set(width, height);
+         canvas.build(RWindow._hDocument);
       }
-      canvas = RClass.create(FE2dCanvas);
-      canvas.size().set(width, height);
-      canvas.build(RWindow._hDocument);
+      canvas.reset();
       return canvas;
    }
    MO.FE2dCanvasConsole_free = function FE2dCanvasConsole_free(canvas){

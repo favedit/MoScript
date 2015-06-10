@@ -38,29 +38,16 @@ with(MO){
 }
 with(MO){
    MO.FE3dBitmap = function FE3dBitmap(o){
-      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
-      o._ready           = false;
-      o._size            = null;
-      o.construct        = FE3dBitmap_construct;
-      o.testReady        = FE3dBitmap_testReady;
-      o.size             = FE3dBitmap_size;
-      o.setSize          = FE3dBitmap_setSize;
-      o.setBitmapData    = FE3dBitmap_setBitmapData;
-      o.vertexBuffers    = FE3dBitmap_vertexBuffers;
-      o.material         = FE3dBitmap_material;
-      o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
-      o.findTexture      = FE3dBitmap_findTexture;
-      o.textures         = FE3dBitmap_textures;
-      o.processLoad      = FE3dBitmap_processLoad;
-      o.process          = FE3dBitmap_process;
-      o.loadUrl          = FE3dBitmap_loadUrl;
-      o.dispose          = FE3dBitmap_dispose;
+      o = RClass.inherits(this, o, FE3dFace);
+      o.construct = FE3dBitmap_construct;
+      o.testReady = FE3dBitmap_testReady;
+      o.loadUrl   = FE3dBitmap_loadUrl;
+      o.dispose   = FE3dBitmap_dispose;
       return o;
    }
    MO.FE3dBitmap_construct = function FE3dBitmap_construct(){
       var o = this;
-      o.__base.FE3dMeshRenderable.construct.call(o);
-      o._size = new SSize2();
+      o.__base.FE3dFace.construct.call(o);
    }
    MO.FE3dBitmap_testReady = function FE3dBitmap_testReady(){
       var o = this;
@@ -83,41 +70,6 @@ with(MO){
       }
       return o._ready;
    }
-   MO.FE3dBitmap_size = function FE3dBitmap_size(){
-      return this._size;
-   }
-   MO.FE3dBitmap_setSize = function FE3dBitmap_setSize(width, height){
-      var o = this;
-      o._size.set(width, height);
-      o._matrix.setScale(width, height, 1);
-   }
-   MO.FE3dBitmap_setBitmapData = function FE3dBitmap_setBitmapData(bitmapData){
-      var o = this;
-      o._renderable = bitmapData;
-   }
-   MO.FE3dBitmap_vertexBuffers = function FE3dBitmap_vertexBuffers(){
-      return this._renderable.vertexBuffers();
-   }
-   MO.FE3dBitmap_material = function FE3dBitmap_material(){
-      return this._renderable.material();
-   }
-   MO.FE3dBitmap_findVertexBuffer = function FE3dBitmap_findVertexBuffer(p){
-      return this._renderable.findVertexBuffer(p);
-   }
-   MO.FE3dBitmap_findTexture = function FE3dBitmap_findTexture(p){
-      return this._renderable.findTexture(p);
-   }
-   MO.FE3dBitmap_textures = function FE3dBitmap_textures(){
-      return this._renderable.textures();
-   }
-   MO.FE3dBitmap_processLoad = function FE3dBitmap_processLoad(){
-      var o = this;
-      return true;
-   }
-   MO.FE3dBitmap_process = function FE3dBitmap_process(){
-      var o = this;
-      o.__base.FE3dMeshRenderable.process.call(o);
-   }
    MO.FE3dBitmap_loadUrl = function FE3dBitmap_loadUrl(url){
       var o = this;
       var context = o._graphicContext;
@@ -126,8 +78,7 @@ with(MO){
    }
    MO.FE3dBitmap_dispose = function FE3dBitmap_dispose(){
       var o = this;
-      o._material = RObject.dispoe(o._material);
-      o.__base.FE3dMeshRenderable.dispose.call(o);
+      o.__base.FE3dFace.dispose.call(o);
    }
 }
 with(MO){
@@ -187,18 +138,12 @@ with(MO){
 }
 with(MO){
    MO.FE3dBitmapData = function FE3dBitmapData(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
-      o._ready            = false;
-      o._image            = null;
-      o._imageTexture     = null;
-      o._size             = RClass.register(o, new AGetter('_size'));
-      o._adjustSize       = RClass.register(o, new AGetter('_adjustSize'));
-      o.onImageLoad       = FE3dBitmapData_onImageLoad;
-      o.construct         = FE3dBitmapData_construct;
-      o.testReady         = FE3dBitmapData_testReady;
-      o.setup             = FE3dBitmapData_setup;
-      o.loadUrl           = FE3dBitmapData_loadUrl;
-      o.dispose           = FE3dBitmapData_dispose;
+      o = RClass.inherits(this, o, FE3dFaceData);
+      o._image      = null;
+      o.onImageLoad = FE3dBitmapData_onImageLoad;
+      o.construct   = FE3dBitmapData_construct;
+      o.loadUrl     = FE3dBitmapData_loadUrl;
+      o.dispose     = FE3dBitmapData_dispose;
       return o;
    }
    MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
@@ -216,70 +161,14 @@ with(MO){
       var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
       var context2d = canvas.context();
       context2d.drawImage(image, 0, 0);
-      o._imageTexture.upload(canvas);
+      o._texture.upload(canvas);
       canvasConsole.free(canvas);
       image.dispose();
       o._ready = true;
    }
    MO.FE3dBitmapData_construct = function FE3dBitmapData_construct(){
       var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
-      o._size = new SSize2();
-      o._adjustSize = new SSize2();
-      o._textures = new TDictionary();
-      o._material = RClass.create(FE3dMaterial);
-   }
-   MO.FE3dBitmapData_testReady = function FE3dBitmapData_testReady(){
-      return this._ready;
-   }
-   MO.FE3dBitmapData_setup = function FE3dBitmapData_setup(){
-      var o = this;
-      var context = o._graphicContext;
-      o._vertexCount = 4;
-      var data = [
-         0,  0, 0,
-         1,  0, 0,
-         1, -1, 0,
-         0, -1, 0 ];
-      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setCode('position');
-      buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [
-         0, 1,
-         1, 1,
-         1, 0,
-         0, 0];
-      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setCode('coord');
-      buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
-      var buffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushIndexBuffer(buffer);
-      var texture = o._imageTexture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      o._textures.set('diffuse', texture);
-      o._material._textures = o._textures;
-      o._material.info().optionDouble = true;
+      o.__base.FE3dFaceData.construct.call(o);
    }
    MO.FE3dBitmapData_loadUrl = function FE3dBitmapData_loadUrl(url){
       var o = this;
@@ -290,13 +179,7 @@ with(MO){
    }
    MO.FE3dBitmapData_dispose = function FE3dBitmapData_dispose(){
       var o = this;
-      o._size = RObject.dispose(o._size);
-      o._adjustSize = RObject.dispose(o._adjustSize);
-      o._vertexBuffers = RObject.dispose(o._vertexBuffers);
-      o._indexBuffer = RObject.dispose(o._indexBuffer);
-      o._imageTexture = RObject.dispose(o._imageTexture);
-      o._textures = RObject.dispose(o._textures);
-      o.__base.FE3dRenderable.dispose.call(o);
+      o.__base.FE3dFaceData.dispose.call(o);
    }
 }
 with(MO){
@@ -577,6 +460,146 @@ with(MO){
    }
 }
 with(MO){
+   MO.FE3dFace = function FE3dFace(o){
+      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
+      o._ready           = false;
+      o._size            = RClass.register(o, new AGetter('_ready'));
+      o.construct        = FE3dFace_construct;
+      o.setSize          = FE3dFace_setSize;
+      o.setData          = FE3dFace_setData;
+      o.findVertexBuffer = FE3dFace_findVertexBuffer;
+      o.vertexBuffers    = FE3dFace_vertexBuffers;
+      o.findTexture      = FE3dFace_findTexture;
+      o.textures         = FE3dFace_textures;
+      o.material         = FE3dFace_material;
+      o.processLoad      = FE3dFace_processLoad;
+      o.process          = FE3dFace_process;
+      o.dispose          = FE3dFace_dispose;
+      return o;
+   }
+   MO.FE3dFace_construct = function FE3dFace_construct(){
+      var o = this;
+      o.__base.FE3dMeshRenderable.construct.call(o);
+      o._size = new SSize2();
+   }
+   MO.FE3dFace_setSize = function FE3dFace_setSize(width, height){
+      var o = this;
+      o._size.set(width, height);
+      o._matrix.setScale(width, height, 1);
+   }
+   MO.FE3dFace_setData = function FE3dFace_setData(data){
+      var o = this;
+      o._renderable = data;
+   }
+   MO.FE3dFace_findVertexBuffer = function FE3dFace_findVertexBuffer(p){
+      return this._renderable.findVertexBuffer(p);
+   }
+   MO.FE3dFace_vertexBuffers = function FE3dFace_vertexBuffers(){
+      return this._renderable.vertexBuffers();
+   }
+   MO.FE3dFace_findTexture = function FE3dFace_findTexture(p){
+      return this._renderable.findTexture(p);
+   }
+   MO.FE3dFace_textures = function FE3dFace_textures(){
+      return this._renderable.textures();
+   }
+   MO.FE3dFace_material = function FE3dFace_material(){
+      return this._renderable.material();
+   }
+   MO.FE3dFace_processLoad = function FE3dFace_processLoad(){
+      var o = this;
+      return true;
+   }
+   MO.FE3dFace_process = function FE3dFace_process(){
+      var o = this;
+      o.__base.FE3dMeshRenderable.process.call(o);
+   }
+   MO.FE3dFace_dispose = function FE3dFace_dispose(){
+      var o = this;
+      o._material = RObject.dispoe(o._material);
+      o.__base.FE3dMeshRenderable.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FE3dFaceData = function FE3dFaceData(o){
+      o = RClass.inherits(this, o, FE3dRenderable);
+      o._ready                = false;
+      o._size                 = RClass.register(o, new AGetter('_size'));
+      o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
+      o._vertexPositionBuffer = null;
+      o._vertexCoordBuffer    = null;
+      o._indexBuffer          = null;
+      o._texture              = null;
+      o.construct             = FE3dFaceData_construct;
+      o.testReady             = FE3dFaceData_testReady;
+      o.setup                 = FE3dFaceData_setup;
+      o.dispose               = FE3dFaceData_dispose;
+      return o;
+   }
+   MO.FE3dFaceData_construct = function FE3dFaceData_construct(){
+      var o = this;
+      o.__base.FE3dRenderable.construct.call(o);
+      o._size = new SSize2();
+      o._adjustSize = new SSize2();
+      o._material = RClass.create(FE3dMaterial);
+   }
+   MO.FE3dFaceData_testReady = function FE3dFaceData_testReady(){
+      return this._ready;
+   }
+   MO.FE3dFaceData_setup = function FE3dFaceData_setup(){
+      var o = this;
+      var context = o._graphicContext;
+      o._vertexCount = 4;
+      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      buffer.upload(data, 4 * 3, 4);
+      var stream = RClass.create(FE3sStream);
+      stream.setCode('position');
+      stream._dataCount = 4;
+      stream._data = data;
+      buffer._resource = stream;
+      o.pushVertexBuffer(buffer);
+      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+      buffer.setCode('coord');
+      buffer.setFormatCd(EG3dAttributeFormat.Float2);
+      buffer.upload(data, 4 * 2, 4);
+      var stream = RClass.create(FE3sStream);
+      stream.setCode('coord');
+      stream._dataCount = 4;
+      stream._data = data;
+      buffer._resource = stream;
+      o.pushVertexBuffer(buffer);
+      var data = [0, 1, 2, 0, 2, 3];
+      var buffer = o._indexBuffer = context.createIndexBuffer();
+      buffer.upload(data, 6);
+      var stream = RClass.create(FE3sStream);
+      stream.setCode('index16');
+      stream._dataCount = 2;
+      stream._data = data;
+      buffer._resource = stream;
+      o.pushIndexBuffer(buffer);
+      var texture = o._texture = context.createFlatTexture();
+      texture.setOptionFlipY(true);
+      texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+      o.pushTexture(texture, 'diffuse');
+      o._material.info().optionDouble = true;
+      o._material._textures = o._textures;
+   }
+   MO.FE3dFaceData_dispose = function FE3dFaceData_dispose(){
+      var o = this;
+      o._size = RObject.dispose(o._size);
+      o._adjustSize = RObject.dispose(o._adjustSize);
+      o._texture = RObject.dispose(o._texture);
+      o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);
+      o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
+      o._indexBuffer = RObject.dispose(o._indexBuffer);
+      o.__base.FE3dRenderable.dispose.call(o);
+   }
+}
+with(MO){
    MO.FE3dPolygon = function FE3dPolygon(o){
       o = RClass.inherits(this, o, FE3dRenderable);
       return o;
@@ -829,29 +852,16 @@ with(MO){
 }
 with(MO){
    MO.FE3dShape = function FE3dShape(o){
-      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
-      o._ready           = false;
-      o._size            = null;
-      o.construct        = FE3dShape_construct;
-      o.testReady        = FE3dShape_testReady;
-      o.size             = FE3dShape_size;
-      o.setSize          = FE3dShape_setSize;
-      o.setBitmapData    = FE3dShape_setBitmapData;
-      o.vertexBuffers    = FE3dShape_vertexBuffers;
-      o.material         = FE3dShape_material;
-      o.findVertexBuffer = FE3dShape_findVertexBuffer;
-      o.findTexture      = FE3dShape_findTexture;
-      o.textures         = FE3dShape_textures;
-      o.processLoad      = FE3dShape_processLoad;
-      o.process          = FE3dShape_process;
-      o.loadUrl          = FE3dShape_loadUrl;
-      o.dispose          = FE3dShape_dispose;
+      o = RClass.inherits(this, o, FE3dFace);
+      o.construct = FE3dShape_construct;
+      o.testReady = FE3dShape_testReady;
+      o.loadUrl   = FE3dShape_loadUrl;
+      o.dispose   = FE3dShape_dispose;
       return o;
    }
    MO.FE3dShape_construct = function FE3dShape_construct(){
       var o = this;
-      o.__base.FE3dMeshRenderable.construct.call(o);
-      o._size = new SSize2();
+      o.__base.FE3dFace.construct.call(o);
    }
    MO.FE3dShape_testReady = function FE3dShape_testReady(){
       var o = this;
@@ -874,41 +884,6 @@ with(MO){
       }
       return o._ready;
    }
-   MO.FE3dShape_size = function FE3dShape_size(){
-      return this._size;
-   }
-   MO.FE3dShape_setSize = function FE3dShape_setSize(width, height){
-      var o = this;
-      o._size.set(width, height);
-      o._matrix.setScale(width, height, 1);
-   }
-   MO.FE3dShape_setBitmapData = function FE3dShape_setBitmapData(bitmapData){
-      var o = this;
-      o._renderable = bitmapData;
-   }
-   MO.FE3dShape_vertexBuffers = function FE3dShape_vertexBuffers(){
-      return this._renderable.vertexBuffers();
-   }
-   MO.FE3dShape_material = function FE3dShape_material(){
-      return this._renderable.material();
-   }
-   MO.FE3dShape_findVertexBuffer = function FE3dShape_findVertexBuffer(p){
-      return this._renderable.findVertexBuffer(p);
-   }
-   MO.FE3dShape_findTexture = function FE3dShape_findTexture(p){
-      return this._renderable.findTexture(p);
-   }
-   MO.FE3dShape_textures = function FE3dShape_textures(){
-      return this._renderable.textures();
-   }
-   MO.FE3dShape_processLoad = function FE3dShape_processLoad(){
-      var o = this;
-      return true;
-   }
-   MO.FE3dShape_process = function FE3dShape_process(){
-      var o = this;
-      o.__base.FE3dMeshRenderable.process.call(o);
-   }
    MO.FE3dShape_loadUrl = function FE3dShape_loadUrl(url){
       var o = this;
       var context = o._graphicContext;
@@ -917,8 +892,7 @@ with(MO){
    }
    MO.FE3dShape_dispose = function FE3dShape_dispose(){
       var o = this;
-      o._material = RObject.dispoe(o._material);
-      o.__base.FE3dMeshRenderable.dispose.call(o);
+      o.__base.FE3dFace.dispose.call(o);
    }
 }
 with(MO){
@@ -977,116 +951,43 @@ with(MO){
 }
 with(MO){
    MO.FE3dShapeData = function FE3dShapeData(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
-      o._ready            = false;
-      o._image            = null;
-      o._imageTexture     = null;
-      o._size             = RClass.register(o, new AGetter('_size'));
-      o._adjustSize       = RClass.register(o, new AGetter('_adjustSize'));
-      o.onImageLoad       = FE3dShapeData_onImageLoad;
-      o.construct         = FE3dShapeData_construct;
-      o.testReady         = FE3dShapeData_testReady;
-      o.setup             = FE3dShapeData_setup;
-      o.loadUrl           = FE3dShapeData_loadUrl;
-      o.dispose           = FE3dShapeData_dispose;
+      o = RClass.inherits(this, o, FE3dFaceData);
+      o._graphic      = null;
+      o._texture = null;
+      o.construct     = FE3dShapeData_construct;
+      o.beginDraw     = FE3dShapeData_beginDraw;
+      o.endDraw       = FE3dShapeData_endDraw;
+      o.dispose       = FE3dShapeData_dispose;
       return o;
-   }
-   MO.FE3dShapeData_onImageLoad = function FE3dShapeData_onImageLoad(event){
-      var o = this;
-      var context = o._graphicContext;
-      var image = event.sender;
-      var size = image.size();
-      var width = size.width;
-      var height = size.height;
-      o._size.set(width, height);
-      var adjustWidth = RInteger.pow2(width);
-      var adjustHeight = RInteger.pow2(height);
-      o._adjustSize.set(adjustWidth, adjustHeight);
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-      var context2d = canvas.context();
-      context2d.drawImage(image, 0, 0);
-      o._imageTexture.upload(canvas);
-      canvasConsole.free(canvas);
-      image.dispose();
-      o._ready = true;
    }
    MO.FE3dShapeData_construct = function FE3dShapeData_construct(){
       var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
-      o._size = new SSize2();
-      o._adjustSize = new SSize2();
-      o._textures = new TDictionary();
-      o._material = RClass.create(FE3dMaterial);
+      o.__base.FE3dFaceData.construct.call(o);
    }
-   MO.FE3dShapeData_testReady = function FE3dShapeData_testReady(){
-      return this._ready;
-   }
-   MO.FE3dShapeData_setup = function FE3dShapeData_setup(){
+   MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(url){
       var o = this;
-      var context = o._graphicContext;
-      o._vertexCount = 4;
-      var data = [
-         0,  0, 0,
-         1,  0, 0,
-         1, -1, 0,
-         0, -1, 0 ];
-      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setCode('position');
-      buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [
-         0, 1,
-         1, 1,
-         1, 0,
-         0, 0];
-      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setCode('coord');
-      buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
-      var buffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushIndexBuffer(buffer);
-      var texture = o._imageTexture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      o._textures.set('diffuse', texture);
-      o._material._textures = o._textures;
-      o._material.info().optionDouble = true;
+      var size = o._size;
+      var adjustWidth = RInteger.pow2(size.width);
+      var adjustHeight = RInteger.pow2(size.height);
+      o._adjustSize.set(adjustWidth, adjustHeight);
+      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+      var graphic = o._graphic = canvas.context();
+      return graphic;
    }
-   MO.FE3dShapeData_loadUrl = function FE3dShapeData_loadUrl(url){
+   MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
       var o = this;
-      var image = RClass.create(FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl(url);
-      o._ready = false;
+      var graphic = o._graphic;
+      MO.Assert.debugNotNull(graphic);
+      o._texture.upload(o._canvas);
+      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      canvasConsole.free(graphic);
+      o._graphic = null;
+      o._ready = true;
    }
    MO.FE3dShapeData_dispose = function FE3dShapeData_dispose(){
       var o = this;
-      o._size = RObject.dispose(o._size);
-      o._adjustSize = RObject.dispose(o._adjustSize);
-      o._vertexBuffers = RObject.dispose(o._vertexBuffers);
-      o._indexBuffer = RObject.dispose(o._indexBuffer);
-      o._imageTexture = RObject.dispose(o._imageTexture);
-      o._textures = RObject.dispose(o._textures);
-      o.__base.FE3dRenderable.dispose.call(o);
+      o.__base.FE3dFaceData.dispose.call(o);
    }
 }
 with(MO){
@@ -1175,29 +1076,16 @@ with(MO){
 }
 with(MO){
    MO.FE3dVideo = function FE3dVideo(o){
-      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
-      o._ready           = false;
-      o._size            = null;
-      o.construct        = FE3dVideo_construct;
-      o.testReady        = FE3dVideo_testReady;
-      o.size             = FE3dVideo_size;
-      o.setSize          = FE3dVideo_setSize;
-      o.setVideoData    = FE3dVideo_setVideoData;
-      o.vertexBuffers    = FE3dVideo_vertexBuffers;
-      o.material         = FE3dVideo_material;
-      o.findVertexBuffer = FE3dVideo_findVertexBuffer;
-      o.findTexture      = FE3dVideo_findTexture;
-      o.textures         = FE3dVideo_textures;
-      o.processLoad      = FE3dVideo_processLoad;
-      o.process          = FE3dVideo_process;
-      o.loadUrl          = FE3dVideo_loadUrl;
-      o.dispose          = FE3dVideo_dispose;
+      o = RClass.inherits(this, o, FE3dFace);
+      o.construct = FE3dVideo_construct;
+      o.testReady = FE3dVideo_testReady;
+      o.loadUrl   = FE3dVideo_loadUrl;
+      o.dispose   = FE3dVideo_dispose;
       return o;
    }
    MO.FE3dVideo_construct = function FE3dVideo_construct(){
       var o = this;
-      o.__base.FE3dMeshRenderable.construct.call(o);
-      o._size = new SSize2();
+      o.__base.FE3dFace.construct.call(o);
    }
    MO.FE3dVideo_testReady = function FE3dVideo_testReady(){
       var o = this;
@@ -1215,41 +1103,6 @@ with(MO){
       }
       return o._ready;
    }
-   MO.FE3dVideo_size = function FE3dVideo_size(){
-      return this._size;
-   }
-   MO.FE3dVideo_setSize = function FE3dVideo_setSize(width, height){
-      var o = this;
-      o._size.set(width, height);
-      o._matrix.setScale(width, height, 1);
-   }
-   MO.FE3dVideo_setVideoData = function FE3dVideo_setVideoData(videoData){
-      var o = this;
-      o._renderable = videoData;
-   }
-   MO.FE3dVideo_vertexBuffers = function FE3dVideo_vertexBuffers(){
-      return this._renderable.vertexBuffers();
-   }
-   MO.FE3dVideo_material = function FE3dVideo_material(){
-      return this._renderable.material();
-   }
-   MO.FE3dVideo_findVertexBuffer = function FE3dVideo_findVertexBuffer(p){
-      return this._renderable.findVertexBuffer(p);
-   }
-   MO.FE3dVideo_findTexture = function FE3dVideo_findTexture(p){
-      return this._renderable.findTexture(p);
-   }
-   MO.FE3dVideo_textures = function FE3dVideo_textures(){
-      return this._renderable.textures();
-   }
-   MO.FE3dVideo_processLoad = function FE3dVideo_processLoad(){
-      var o = this;
-      return true;
-   }
-   MO.FE3dVideo_process = function FE3dVideo_process(){
-      var o = this;
-      o.__base.FE3dMeshRenderable.process.call(o);
-   }
    MO.FE3dVideo_loadUrl = function FE3dVideo_loadUrl(url){
       var o = this;
       var context = o._graphicContext;
@@ -1258,8 +1111,7 @@ with(MO){
    }
    MO.FE3dVideo_dispose = function FE3dVideo_dispose(){
       var o = this;
-      o._material = RObject.dispoe(o._material);
-      o.__base.FE3dMeshRenderable.dispose.call(o);
+      o.__base.FE3dFace.dispose.call(o);
    }
 }
 with(MO){
@@ -1319,93 +1171,28 @@ with(MO){
 }
 with(MO){
    MO.FE3dVideoData = function FE3dVideoData(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
-      o._ready            = false;
-      o._image            = null;
-      o._imageTexture     = null;
-      o._size             = RClass.register(o, new AGetter('_size'));
-      o._adjustSize       = RClass.register(o, new AGetter('_adjustSize'));
-      o.onImageLoad       = FE3dVideoData_onImageLoad;
-      o.ohVideoEnded      = FE3dVideoData_ohVideoEnded;
-      o.construct         = FE3dVideoData_construct;
-      o.testReady         = FE3dVideoData_testReady;
-      o.setup             = FE3dVideoData_setup;
-      o.loadUrl           = FE3dVideoData_loadUrl;
-      o.process           = FE3dVideoData_process;
-      o.dispose           = FE3dVideoData_dispose;
+      o = RClass.inherits(this, o, FE3dFaceData);
+      o._hVideo      = null;
+      o.ohVideoLoad  = FE3dVideoData_ohVideoLoad;
+      o.ohVideoEnded = FE3dVideoData_ohVideoEnded;
+      o.construct    = FE3dVideoData_construct;
+      o.loadUrl      = FE3dVideoData_loadUrl;
+      o.process      = FE3dVideoData_process;
+      o.dispose      = FE3dVideoData_dispose;
       return o;
    }
-   MO.FE3dVideoData_onImageLoad = function FE3dVideoData_onImageLoad(event){
+   MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
       var o = this.__linker;
       var hVideo = o._hVideo;
-      hVideo.width = 1024;
-      hVideo.height = 512;
       o._ready = true;
    }
    MO.FE3dVideoData_ohVideoEnded = function FE3dVideoData_ohVideoEnded(){
       var o = this.__linker;
       var hVideo = o._hVideo;
-      debugger
    }
    MO.FE3dVideoData_construct = function FE3dVideoData_construct(){
       var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
-      o._size = new SSize2();
-      o._adjustSize = new SSize2();
-      o._textures = new TDictionary();
-      o._material = RClass.create(FE3dMaterial);
-   }
-   MO.FE3dVideoData_testReady = function FE3dVideoData_testReady(){
-      return this._ready;
-   }
-   MO.FE3dVideoData_setup = function FE3dVideoData_setup(){
-      var o = this;
-      var context = o._graphicContext;
-      o._vertexCount = 4;
-      var data = [
-         0,  0, 0,
-         1,  0, 0,
-         1, -1, 0,
-         0, -1, 0 ];
-      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setCode('position');
-      buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [
-         0, 1,
-         1, 1,
-         1, 0,
-         0, 0];
-      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setCode('coord');
-      buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
-      var buffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
-      var stream = RClass.create(FE3sStream);
-      stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
-      buffer._resource = stream;
-      o.pushIndexBuffer(buffer);
-      var texture = o._imageTexture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      o._textures.set('diffuse', texture);
-      o._material._textures = o._textures;
-      o._material.info().optionDouble = true;
+      o.__base.FE3dFaceData.construct.call(o);
    }
    MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(url){
       var o = this;
@@ -1414,24 +1201,19 @@ with(MO){
       video.autoplay = true;
       video.loop = true;
       video.src = url;
-      video.addEventListener('canplay', o.onImageLoad);
+      video.addEventListener('canplay', o.ohVideoLoad);
       video.load();
       o._ready = false;
    }
    MO.FE3dVideoData_process = function FE3dVideoData_process(){
       var o = this;
       if(o._ready){
-         o._imageTexture.upload(o._hVideo);
+         o._texture.upload(o._hVideo);
       }
    }
    MO.FE3dVideoData_dispose = function FE3dVideoData_dispose(){
       var o = this;
-      o._size = RObject.dispose(o._size);
-      o._adjustSize = RObject.dispose(o._adjustSize);
-      o._vertexBuffers = RObject.dispose(o._vertexBuffers);
-      o._indexBuffer = RObject.dispose(o._indexBuffer);
-      o._imageTexture = RObject.dispose(o._imageTexture);
-      o._textures = RObject.dispose(o._textures);
-      o.__base.FE3dRenderable.dispose.call(o);
+      o._hVideo = null;
+      o.__base.FE3dFaceData.dispose.call(o);
    }
 }

@@ -26,6 +26,7 @@ with(MO){
       o.context    = FE2dCanvas_context;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
+      o.reset      = FE2dCanvas_reset;
       // @method
       o.dispose    = FE2dCanvas_dispose;
       return o;
@@ -110,16 +111,28 @@ with(MO){
    // <T>设置面板处理。</T>
    //
    // @method
+   // @param hPanel:HtmlTag 网页元素
    //==========================================================
-   MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(p){
+   MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
       var o = this;
-      var c = o._context;
-      var hc = o._hCanvas;
+      var context = o._context;
+      var hCanvas = o._hCanvas;
       // 放入父容器
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
+      o._hPanel = hPanel;
+      hPanel.appendChild(hCanvas);
       // 改变大小
       o.onResize();
+   }
+
+   //==========================================================
+   // <T>重置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
+      var o = this;
+      var context = o._context;
+      context.clear();
    }
 
    //==========================================================

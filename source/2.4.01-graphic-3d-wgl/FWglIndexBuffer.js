@@ -101,7 +101,7 @@ with(MO){
       // 释放对象
       var handle = o._handle;
       if(handle){
-         c._handle.deleteBuffer(handle);
+         context._handle.deleteBuffer(handle);
          o._handle = null;
       }
       // 父处理

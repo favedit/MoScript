@@ -17,6 +17,8 @@ with(MO){
       // @method
       o.linkCanvas    = FG2dCanvasContext_linkCanvas;
       // @method
+      o.setFont       = FG2dCanvasContext_setFont;
+      // @method
       o.clear         = FG2dCanvasContext_clear;
       o.drawLine      = FG2dCanvasContext_drawLine;
       o.drawRectangle = FG2dCanvasContext_drawRectangle;
@@ -56,6 +58,15 @@ with(MO){
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
+   }
+
+   //==========================================================
+   // <T>设置字体。</T>
+   //
+   // @param font:String 字体
+   //==========================================================
+   MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font){
+      this._handle.font = font;
    }
 
    //==========================================================

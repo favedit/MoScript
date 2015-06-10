@@ -161,25 +161,25 @@ with(MO){
       var o = this;
       o.__base.FG3dFlatTexture.update.call(o);
       // 绑定数据
-      var g = o._graphicContext._handle;
-      g.bindTexture(g.TEXTURE_2D, o._handle);
+      var handle = o._graphicContext._handle;
+      handle.bindTexture(handle.TEXTURE_2D, o._handle);
       // 设置过滤器
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, c);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMinCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, code);
       }
-      var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
-      if(c){
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, c);
+      var code = RWglUtility.convertSamplerFilter(handle, o._filterMagCd);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, code);
       }
-      //var c = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-      //if(c){
-         //g.texParameteri(gt, g.TEXTURE_WRAP_S, c);
-      //}
-      //var c = RWglUtility.convertSamplerFilter(g, pt.wrapT());
-      //if(c){
-         //g.texParameteri(gt, g.TEXTURE_WRAP_T, c);
-      //}
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapS);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_S, code);
+      }
+      var code = RWglUtility.convertSamplerFilter(handle, o._wrapT);
+      if(code){
+         handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_WRAP_T, code);
+      }
    }
 
    //==========================================================

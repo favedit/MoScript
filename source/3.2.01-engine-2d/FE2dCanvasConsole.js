@@ -48,13 +48,14 @@ with(MO){
       // 查找画板
       var code = width + 'x' + height;
       var canvas = pools.alloc(code);
-      if(canvas){
-         return canvas;
+      if(!canvas){
+         // 创建画板
+         canvas = RClass.create(FE2dCanvas);
+         canvas.size().set(width, height);
+         canvas.build(RWindow._hDocument);
       }
-      // 创建画板
-      canvas = RClass.create(FE2dCanvas);
-      canvas.size().set(width, height);
-      canvas.build(RWindow._hDocument);
+      // 重置处理
+      canvas.reset();
       return canvas;
    }
 

@@ -226,9 +226,6 @@ with(MO){
          var renderable = o.template().sprite().renderables().at(meshIdx);
          var ambientColor = renderable.material().info().ambientColor;
          var diffuseColor = renderable.material().info().diffuseColor;
-         if () {
-            //code
-         }
 		 ambientColor.red = 1 - bc * 0.1;
 		 ambientColor.green = 1 - bc * 0.1;
          ambientColor.blue = 1;

@@ -4,6 +4,7 @@ with(MO){
       o._handle       = null;
       o.construct     = FG2dCanvasContext_construct;
       o.linkCanvas    = FG2dCanvasContext_linkCanvas;
+      o.setFont       = FG2dCanvasContext_setFont;
       o.clear         = FG2dCanvasContext_clear;
       o.drawLine      = FG2dCanvasContext_drawLine;
       o.drawRectangle = FG2dCanvasContext_drawRectangle;
@@ -28,6 +29,9 @@ with(MO){
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
+   }
+   MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font){
+      this._handle.font = font;
    }
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d){
       var o = this;

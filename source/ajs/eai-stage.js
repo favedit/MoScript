@@ -179,7 +179,6 @@ with(MO){
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
       camera.update();
-      RStage.register('eai.stage', stage);
    }
    MO.FEaiCanvas_loadByGuid = function FEaiCanvas_loadByGuid(p){
       var o = this;

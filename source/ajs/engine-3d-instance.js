@@ -1702,6 +1702,7 @@ with(MO){
       o._cameraMoveRate        = 0.4;
       o._cameraKeyRotation     = 0.03;
       o._cameraMouseRotation   = 0.005;
+      o._stage                 = RClass.register(o, new AGetter('_stage'));
       o.onEnterFrame           = FE3dSimpleCanvas_onEnterFrame;
       o.onMouseCaptureStart    = FE3dSimpleCanvas_onMouseCaptureStart;
       o.onMouseCapture         = FE3dSimpleCanvas_onMouseCapture;
@@ -1712,6 +1713,8 @@ with(MO){
       o.onSceneLoad            = FE3dSimpleCanvas_onSceneLoad;
       o.onResize               = FE3dSimpleCanvas_onResize;
       o.construct              = FE3dSimpleCanvas_construct;
+      o.build                  = FE3dSimpleCanvas_build;
+      o.setPanel               = FE3dSimpleCanvas_setPanel;
       o.switchPlay             = FE3dSimpleCanvas_switchPlay;
       o.switchMovie            = FE3dSimpleCanvas_switchMovie;
       o.doAction               = FE3dSimpleCanvas_doAction;
@@ -1872,6 +1875,27 @@ with(MO){
       o._captureCameraPosition = new SPoint3();
       o._captureCameraRotation = new SVector3();
    }
+   MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.build.call(o, hPanel);
+      var stage = o._stage = MO.RClass.create(MO.FE3dSimpleStage);
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, FE3dGeneralTechnique);
+      RStage.register('simple.stage', stage);
+   }
+   MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
+      var stage = o._stage;
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
    MO.FE3dSimpleCanvas_switchPlay = function FE3dSimpleCanvas_switchPlay(p){
       var o = this;
       var s = o._activeSpace;
@@ -1942,55 +1966,37 @@ with(MO){
       o.__base.FE3dCanvas.dispose.call(o);
    }
 }
-with(MO){
-   MO.FE3dSimpleStage = function FE3dSimpleStage(o){
-      o = RClass.inherits(this, o, FE3dStage);
-      o._optionKeyboard = true;
-      o._skyLayer       = null;
-      o._mapLayer       = null;
-      o._spriteLayer    = null;
-      o._faceLayer      = null;
-      o.construct       = FE3dSimpleStage_construct;
-      o.skyLayer        = FE3dSimpleStage_skyLayer;
-      o.mapLayer        = FE3dSimpleStage_mapLayer;
-      o.spriteLayer     = FE3dSimpleStage_spriteLayer;
-      o.faceLayer       = FE3dSimpleStage_faceLayer;
-      o.active          = FE3dSimpleStage_active;
-      o.deactive        = FE3dSimpleStage_deactive;
-      return o;
-   }
-   MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
-      var o = this;
-      o.__base.FE3dStage.construct.call(o);
-      var l = o._skyLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('SkyLayer', l);
-      var l = o._mapLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('MapLayer', l);
-      var l = o._spriteLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('SpriteLayer', l);
-      var l = o._faceLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('FaceLayer', l);
-   }
-   MO.FE3dSimpleStage_skyLayer = function FE3dSimpleStage_skyLayer(){
-      return this._skyLayer;
-   }
-   MO.FE3dSimpleStage_mapLayer = function FE3dSimpleStage_mapLayer(){
-      return this._mapLayer;
-   }
-   MO.FE3dSimpleStage_spriteLayer = function FE3dSimpleStage_spriteLayer(){
-      return this._spriteLayer;
-   }
-   MO.FE3dSimpleStage_faceLayer = function FE3dSimpleStage_faceLayer(){
-      return this._faceLayer;
-   }
-   MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){
-      var o = this;
-      o.__base.FE3dStage.active.call(o);
-   }
-   MO.FE3dSimpleStage_deactive = function FE3dSimpleStage_deactive(){
-      var o = this;
-      o.__base.FE3dStage.deactive.call(o);
-   }
+MO.FE3dSimpleStage = function FE3dSimpleStage(o){
+   o = MO.RClass.inherits(this, o, MO.FE3dStage);
+   o._optionKeyboard = true;
+   o._skyLayer       = MO.RClass.register(o, new MO.AGetter('_skyLayer'));
+   o._mapLayer       = MO.RClass.register(o, new MO.AGetter('_mapLayer'));
+   o._spriteLayer    = MO.RClass.register(o, new MO.AGetter('_spriteLayer'));
+   o._faceLayer      = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
+   o.construct       = MO.FE3dSimpleStage_construct;
+   o.active          = MO.FE3dSimpleStage_active;
+   o.deactive        = MO.FE3dSimpleStage_deactive;
+   return o;
+}
+MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('SkyLayer', layer);
+   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('MapLayer', layer);
+   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('SpriteLayer', layer);
+   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('FaceLayer', layer);
+}
+MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){
+   var o = this;
+   o.__base.FE3dStage.active.call(o);
+}
+MO.FE3dSimpleStage_deactive = function FE3dSimpleStage_deactive(){
+   var o = this;
+   o.__base.FE3dStage.deactive.call(o);
 }
 with(MO){
    MO.FE3dSpace = function FE3dSpace(o){

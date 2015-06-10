@@ -4,7 +4,6 @@
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
 <SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
 </HEAD>
 
@@ -35,11 +34,6 @@ function onEnterFrame(){
    //}
    videoData.process();
 }
-var TestA = function(){
-  //var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
-  //alert('Hi, I\'m in a function named '+fName)
-   alert(arguments.callee.toString())
-}
 //----------------------------------------------------------
 function _load(){
    // 环境设置
@@ -49,18 +43,14 @@ function _load(){
    MO.RBrowser.setContentPath('../..');
    // 设置环境
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
-   MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
-   // 创建场景画板
-   MO.Eai.setup();
-   MO.Eai.Application.selectStage(MO.EEaiStage.Scene);
    // 创建画布
-   canvas = MO.RClass.create(MO.FEaiCanvas);
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
    canvas.build(document);
    canvas.setPanel(document.body);
    var context = canvas.graphicContext();
    stage = canvas._stage;
+   stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
-   //stage.region().backgroundColor().set(1, 1, 1, 1);
    layer = stage.spriteLayer();
    // 创建图片
    videos = new MO.TObjects();
@@ -68,7 +58,7 @@ function _load(){
       videoData = context.createObject(MO.FE3dVideoData);
       videoData.loadUrl('../../ars/video/Test.mp4');
       var video = context.createObject(MO.FE3dVideo);
-      video.setVideoData(videoData);
+      video.setData(videoData);
       layer.pushRenderable(video);
 
       //var video = context.createObject(MO.FE3dVideo);
@@ -78,7 +68,7 @@ function _load(){
       videoData.loadUrl('../../ars/video/Test.mp4');
       for(var i = 0; i < 100; i++){
          var video = context.createObject(MO.FE3dVideo);
-         video.setVideoData(videoData);
+         video.setData(videoData);
          videos.push(video);
          layer.pushRenderable(video);
       }
