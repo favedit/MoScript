@@ -235,6 +235,7 @@
          <File source='/ajs/mo-window.js'/>
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
+         <File source='/ajs/mo-engine-control.js'/>
          <File source='/ajs/mo-game.js'/>
          <File source='/ajs/mo-control.js'/>
          <File source='/ajs/mo-design.js'/>

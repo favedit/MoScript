@@ -236,6 +236,7 @@ with(MO){
       RConsole.find(FUiDesktopConsole).showLoading();
       // 释放网格
       var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+      resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
    }
 

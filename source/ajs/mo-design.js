@@ -9625,6 +9625,7 @@ with(MO){
       var o = this;
       RConsole.find(FUiDesktopConsole).showLoading();
       var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+      resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
    }
    MO.FDsMaterialCanvasContent_dispose = function FDsMaterialCanvasContent_dispose(){

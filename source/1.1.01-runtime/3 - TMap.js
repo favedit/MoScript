@@ -121,10 +121,14 @@
    // @return Integer 索引位置
    //==========================================================
    MO.TMap_indexOfValue = function TMap_indexOfValue(value){
-      var count = this._count;
-      for(var i = 0; i < count; i++){
-         if(this._values[n] == value){
-            return n;
+      var o = this;
+      var count = o._count;
+      if(count > 0){
+         var values = o._values;
+         for(var i = 0; i < count; i++){
+            if(values[i] == value){
+               return i;
+            }
          }
       }
       return -1;
@@ -137,8 +141,9 @@
    // @return Object 内容
    //==========================================================
    MO.TMap_first = function TMap_first(){
-      if(this._count > 0){
-         return this._values[0];
+      var o = this;
+      if(o._count > 0){
+         return o._values[0];
       }
       return null;
    }
@@ -150,8 +155,9 @@
    // @return Object 内容
    //==========================================================
    MO.TMap_last = function TMap_last(){
-      if(this._count > 0){
-         return this._values[this._count - 1];
+      var o = this;
+      if(o._count > 0){
+         return o._values[o._count - 1];
       }
       return null;
    }
@@ -252,15 +258,16 @@
    // @return Object 内容
    //==========================================================
    MO.TMap_set = function TMap_set(name, value){
+      var o = this;
       if(name != null){
          var code = name.toString().toLowerCase();
-         var index = this._table[code];
-         if((index == null) || (index >= this._count)){
-            index = this._count++;
-            this._names[index] = name;
-            this._table[code] = index;
+         var index = o._table[code];
+         if((index == null) || (index >= o._count)){
+            index = o._count++;
+            o._names[index] = name;
+            o._table[code] = index;
          }
-         this._values[index] = value;
+         thiso_values[index] = value;
       }
    }
 
@@ -301,16 +308,17 @@
    // @param value:Object 内容
    //==========================================================
    MO.TMap_insert = function TMap_insert(index, name, value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if((index >= 0) && (index <= count)){
          for(var i = count; i > index; i--){
-            this._names[i] = this._names[i - 1];
-            this._values[i] = this._values[i - 1];
+            o._names[i] = o._names[i - 1];
+            o._values[i] = o._values[i - 1];
          }
-         this._names[index] = name;
-         this._values[index] = value;
-         this._count++;
-         this.rebuild();
+         o._names[index] = name;
+         o._values[index] = value;
+         o._count++;
+         o.rebuild();
       }
    }
 

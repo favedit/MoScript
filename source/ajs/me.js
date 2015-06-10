@@ -421,10 +421,14 @@ with(MO){
       return -1;
    }
    MO.TMap_indexOfValue = function TMap_indexOfValue(value){
-      var count = this._count;
-      for(var i = 0; i < count; i++){
-         if(this._values[n] == value){
-            return n;
+      var o = this;
+      var count = o._count;
+      if(count > 0){
+         var values = o._values;
+         for(var i = 0; i < count; i++){
+            if(values[i] == value){
+               return i;
+            }
          }
       }
       return -1;
