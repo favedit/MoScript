@@ -12,6 +12,7 @@ with(MO){
       // @attribute
       o._code   = 'organization';
       o._dict   = RClass.register(o, new AGetter('_dict'));
+      o._provinceColors = RClass.register(o, new AGetter('_provinceColors'));
       //..........................................................
       // @method
       o.doFetch = FEaiLogicOrganization_doFetch;
@@ -64,6 +65,13 @@ with(MO){
       dict.set(71, 28);
       dict.set(81, -1);
       dict.set(82, -1);
+      //初始化省份颜色
+      var colors = o._provinceColors = new TObjects();
+      colors.push(new SColor4(0.25, 0.50, 0.60));
+      colors.push(new SColor4(0.30, 0.60, 0.75));
+      colors.push(new SColor4(0.35, 0.70, 0.80));
+      colors.push(new SColor4(0.40, 0.75, 0.85));
+      colors.push(new SColor4(0.45, 0.85, 1.00));
    }
 
    //==========================================================

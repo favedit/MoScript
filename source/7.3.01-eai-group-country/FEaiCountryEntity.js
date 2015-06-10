@@ -215,10 +215,13 @@ with(MO){
       }
       
       var logicConsole = MO.RConsole.find(FEaiLogicConsole);
-      var aa = logicConsole.organization();
       var dict = logicConsole.organization().dict();
+      var colors = logicConsole.organization().provinceColors();
       for(var i = 0; i < dict.count(); i++){
          var bc = branchCount[dict.name(i)];
+         if (!bc) {
+            bc = 0;
+         }
          var meshIdx = dict.valueAt(i);
          if (meshIdx < 0) {
             continue;
@@ -226,12 +229,9 @@ with(MO){
          var renderable = o.template().sprite().renderables().at(meshIdx);
          var ambientColor = renderable.material().info().ambientColor;
          var diffuseColor = renderable.material().info().diffuseColor;
-		 ambientColor.red = 1 - bc * 0.1;
-		 ambientColor.green = 1 - bc * 0.1;
-         ambientColor.blue = 1;
-         diffuseColor.red = 1 - bc * 0.1;
-		 diffuseColor.green = 1 - bc * 0.1;
-		 diffuseColor.blue = 1;
+         var colorLv = bc == 0 ? 0 : Math.floor(bc / 5 + 1) > 4 ? 4 : Math.floor(bc / 5 + 1);
+		 ambientColor.assign(colors.at(colorLv));
+         //diffuseColor.assign(colors.at(colorLv));
          renderable.material().update();
       }
       
