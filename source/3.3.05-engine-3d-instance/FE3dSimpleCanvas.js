@@ -315,6 +315,8 @@ with(MO){
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
+      //var faceLayer = stage.faceLayer();
+      //faceLayer.selectTechnique(o, FE3dControlTechnique);
       // 注册舞台
       RStage.register('simple.stage', stage);
    }

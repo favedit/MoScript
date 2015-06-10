@@ -189,7 +189,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Menu button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();

@@ -1279,7 +1279,7 @@ with(MO){
       if(effect == null){
          var effect = o.create(context, code);
          effect.load();
-         RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+         MO.Logger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
          effects.set(code, effect);
       }
       return effect;
@@ -1316,7 +1316,7 @@ with(MO){
             effect._flag = flag;
             effect.load();
             effect.build(o._effectInfo);
-            RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
+            MO.Logger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
          }
          effects.set(flag, effect);
       }

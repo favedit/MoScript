@@ -1430,8 +1430,7 @@ with(MO){
       var reader = o._reader;
       o._statusFree = true;
       if(reader.error){
-         debugger
-         RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
       }else{
          o._length = reader.result.byteLength;
          o._data = reader.result;
@@ -1595,7 +1594,7 @@ with(MO){
       connection.send(o._inputData);
       o.setOutputData();
       o.onConnectionComplete();
-      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
       var o = this;
@@ -1603,7 +1602,7 @@ with(MO){
       connection.open(o._methodCd, o._url, true);
       o.setHeaders(connection, 0);
       connection.send(o._inputData);
-      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_send = function FHttpConnection_send(url, data){
       var o = this;
@@ -3113,7 +3112,7 @@ with(MO){
       t.setInterval(o._interval);
       t.lsnsProcess.register(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -3834,7 +3833,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 5;
+      o._interval    = 10;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;
@@ -5569,7 +5568,7 @@ with(MO){
       if(effect == null){
          var effect = o.create(context, code);
          effect.load();
-         RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+         MO.Logger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
          effects.set(code, effect);
       }
       return effect;
@@ -5606,7 +5605,7 @@ with(MO){
             effect._flag = flag;
             effect.load();
             effect.build(o._effectInfo);
-            RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
+            MO.Logger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
          }
          effects.set(flag, effect);
       }
@@ -8428,7 +8427,14 @@ with(MO){
       return true;
    }
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._handle.scissor(left, top, width, height);
+      var o = this;
+      var handle = o._handle;
+      if((width > 0) && (height > 0)){
+         handle.enable(handle.SCISSOR_TEST);
+         handle.scissor(left, top, width, height);
+      }else{
+         handle.disable(handle.SCISSOR_TEST);
+      }
    }
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){
       var o = this;
@@ -8644,7 +8650,7 @@ with(MO){
             break;
          }
          default:{
-            RLogger.fatal(o, null, "Unknown texture type.");
+            throw new TError(o, 'Unknown texture type.');
             break;
          }
       }
@@ -8768,7 +8774,7 @@ with(MO){
          }
       }
       if(!result){
-         RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
+         MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
    }
@@ -9220,7 +9226,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
+         MO.Logger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          g.deleteProgram(o._handle);
          o._handle = null;
          return false;
@@ -10098,8 +10104,8 @@ with(MO){
    MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
       this._technique = p;
    }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(c, n){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
    }
    MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
       return this._visibleRenderables;
@@ -10373,7 +10379,7 @@ with(MO){
       o._started       = false;
       o._thread        = null;
       o._active        = true;
-      o._interval      = 1000 / 40;
+      o._interval      = 10;
       o._stages        = null;
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;
@@ -10624,7 +10630,7 @@ with(MO){
       }
       stream.flip();
       var span = RTimer.current() - resource._compressStartTick;
-      RLogger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
+      MO.Logger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
       resource.onComplete(stream);
       stream.dispose();
    }
@@ -10951,7 +10957,7 @@ with(MO){
       }
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
       o._console.onPipelineComplete(null, data);
       o._data = null;
       o._statusBusy = false;
@@ -11082,7 +11088,7 @@ with(MO){
       var data = o._data;
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
       o._console.onPipelineComplete(o, data);
       o._data = null;
    }
@@ -12901,7 +12907,7 @@ with(MO){
       var o = this;
       o.__base.FE3sResource.unserialize.call(o, input);
       o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
-      RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
    }
 }
 with(MO){
@@ -13156,7 +13162,7 @@ with(MO){
             renderable.setMesh(mesh);
          }
       }
-      RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
    }
    MO.FE3sModel_saveConfig = function FE3sModel_saveConfig(xconfig){
       var o = this;
@@ -15294,7 +15300,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -15312,7 +15318,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3rBitmap);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -16607,7 +16613,7 @@ with(MO){
          }
          model.build();
          o._dynamicMeshs.set(flag, model);
-         RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
+         MO.Logger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
       }
       model.update();
       return model;
@@ -17183,7 +17189,7 @@ with(MO){
          return texture;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rTextureCube);
       }else{
@@ -17326,7 +17332,8 @@ with(MO){
       program.setParameter('fc_ambient_color', info.ambientColor);
       o.bindAttributes(renderable);
       o.bindSamplers(renderable);
-      context.drawTriangles(renderable.indexBuffer());
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
    }
 }
 with(MO){
@@ -17491,7 +17498,9 @@ with(MO){
    MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
       var o = this;
       var context = o._graphicContext;
-      var size = context.size();
+      var contextSize = context.size();
+      var contextWidth = contextSize.width;
+      var contextHeight = contextSize.height;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -17501,24 +17510,26 @@ with(MO){
          var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
          var index = 0;
          for(var i = 0; i < meshCount; i++){
-            var mesh = meshs.getAt(i);
+            var mesh = meshs.at(i);
             var matrix = mesh.matrix();
-            data[index++] = matrix.sx / size.width * 2;
-            data[index++] = matrix.sy / size.height * 2;
-            data[index++] = matrix.tx / size.width * 2 - 1;
-            data[index++] = 1 - matrix.ty / size.height * 2;
+            data[index++] = matrix.sx / contextWidth * 2;
+            data[index++] = matrix.sy / contextHeight * 2;
+            data[index++] = matrix.tx / contextWidth * 2 - 1;
+            data[index++] = 1 - matrix.ty / contextHeight * 2;
             mesh.currentMatrix().writeData(data, 4 * i);
          }
          program.setParameter('vc_position', data);
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / size.width * 2;
-         var cy = matrix.sy / size.height * 2;
-         var tx = matrix.tx / size.width * 2 - 1;
-         var ty = 1 - matrix.ty / size.height * 2;
+         var cx = matrix.sx / contextWidth * 2;
+         var cy = matrix.sy / contextHeight * 2;
+         var tx = matrix.tx / contextWidth * 2 - 1;
+         var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
+         var size = renderable.size();
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }
-      o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }
 }
 with(MO){
@@ -21036,14 +21047,14 @@ with(MO){
       }
       return result;
    }
-   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(){
+   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(flag){
       var o = this;
       var outline = o._outline;
-      if(outline.isEmpty()){
+      if(outline.isEmpty() || flag){
          var resource = o._resource
          var meshResource = resource.mesh();
          var meshOutline = meshResource.outline();
-         outline.assign(meshOutline);
+         outline.calculateFrom(meshOutline, o._currentMatrix);
       }
       return outline;
    }
@@ -21256,7 +21267,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -21274,7 +21285,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -22069,7 +22080,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -22087,7 +22098,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -22289,7 +22300,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -22307,7 +22318,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dVideoData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();

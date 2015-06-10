@@ -186,7 +186,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -204,7 +204,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3rBitmap);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -1499,7 +1499,7 @@ with(MO){
          }
          model.build();
          o._dynamicMeshs.set(flag, model);
-         RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
+         MO.Logger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
       }
       model.update();
       return model;
@@ -2075,7 +2075,7 @@ with(MO){
          return texture;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rTextureCube);
       }else{

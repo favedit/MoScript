@@ -1061,7 +1061,7 @@ with(MO){
       var o = this;
       o.__base.FE3sResource.unserialize.call(o, input);
       o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
-      RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
    }
 }
 with(MO){
@@ -1316,7 +1316,7 @@ with(MO){
             renderable.setMesh(mesh);
          }
       }
-      RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
    }
    MO.FE3sModel_saveConfig = function FE3sModel_saveConfig(xconfig){
       var o = this;

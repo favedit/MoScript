@@ -397,7 +397,7 @@ with(MO){
          e.build(c._hPanel);
          o._editors.set(l, e);
       }
-      RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+      MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
       e.reset();
       if(RClass.isClass(e, FUiDropEditor)){
          e.linkControl(c);
@@ -408,7 +408,7 @@ with(MO){
    MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
       var o = this;
       if(o._focusEditor){
-         RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+         MO.Logger.debug(o, 'Blur editor {1}', RClass.dump(editor));
          editor = RObject.nvl(editor, o._focusEditor);
          if(editor){
             editor.onEditEnd();
@@ -562,7 +562,7 @@ with(MO){
       o.lsnsFocus = new TListeners();
       o.lsnsBlur = new TListeners();
       o.lsnsFocusClass = new TListeners();
-      RLogger.info(o, 'Add listener for window mouse down and wheel.');
+      MO.Logger.info(o, 'Add listener for window mouse down and wheel.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -598,14 +598,14 @@ with(MO){
       var bc = o._blurControl;
       if(bc != f){
          if(o._blurAble && f && f.testBlur(c)){
-            RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+            MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
             o._blurControl = f;
             f.doBlur(e);
             o.lsnsBlur.process(f);
          }
       }
       if(o._focusAble){
-         RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
          c.doFocus(e);
          o._focusControl = o._activeControl = c;
          o.lsnsFocus.process(c);
@@ -619,12 +619,12 @@ with(MO){
          return;
       }
       if(bc != c && RClass.isClass(c, MUiFocus)){
-         RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
          o._blurControl = c;
          c.doBlur(e);
       }
       if(fc){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
          fc.doBlur(e);
          o._focusControl = null;
       }
@@ -648,14 +648,14 @@ with(MO){
       var n = RClass.name(c);
       if(o._focusClasses[n] != p){
          o._focusClasses[n] = p;
-         RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+         MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
          o.lsnsFocusClass.process(p, c);
       }
    }
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
       var c = RHtml.searchLinker(p, FUiControl);
-      RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+      MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){
             o.blur(c, p);
@@ -877,7 +877,7 @@ with(MO){
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FUiFrameEventConsole_register = function FUiFrameEventConsole_register(po, pc){
       this._events.push(new TEvent(po, null, pc));
@@ -1416,7 +1416,7 @@ with(MO){
    MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
-      RLogger.info(o, 'Add listener for control popup.');
+      MO.Logger.info(o, 'Add listener for control popup.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }

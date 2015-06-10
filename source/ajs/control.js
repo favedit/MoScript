@@ -662,26 +662,6 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
    }
 }
-with(MO){
-   MO.APtyString = function APtyString(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : null;
-      o.build    = APtyString_build;
-      o.toString = APtyString_toString;
-      return o;
-   }
-   MO.APtyString_build = function APtyString_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyString_toString = function APtyString_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
 MO.EEditConfig = new function EEditConfig(){
    var o = this;
    o.Search = 'S';
@@ -1534,7 +1514,7 @@ with(MO){
       var o = this;
       var vt = s._invalidText = o.validText(s.text());
       if(vt){
-         RLogger.debug(this, 'Edit valid failed ({0})', vt);
+         MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
       }else{
          s.commitValue();
       }
@@ -2947,7 +2927,7 @@ with(MO){
          e.invokeCd = EEventInvoke.Before;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -2973,7 +2953,7 @@ with(MO){
          e.invokeCd = EEventInvoke.After;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -3004,11 +2984,7 @@ with(MO){
       o._name = null;
       o._label = null;
       o._tag = null;
-      var cs = o._components
-      if(cs){
-         cs.dispose();
-         o._components = null;
-      }
+      o._components = RObject.dispose(o._components, true);
       o.__base.FObject.dispose.call(o);
    }
    MO.FUiComponent_innerDumpInfo = function FUiComponent_innerDumpInfo(s){
@@ -3844,7 +3820,7 @@ with(MO){
       var e = this;
       var ea = e.annotation;
       if(ea._logger){
-         RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+         MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
       }
       if(e.sender){
          e.onProcess.call(e.source, e.sender, e);
@@ -3882,7 +3858,7 @@ with(MO){
                ea.attach(e, he);
                if(e.ohProcess){
                   if(ea._logger){
-                     RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+                     MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                   }
                   e.ohProcess.call(e.source, e);
                }else if(e.onProcess){

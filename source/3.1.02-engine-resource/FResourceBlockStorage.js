@@ -132,7 +132,7 @@ with(MO){
       // 资源完成处理
       stream.flip();
       var span = RTimer.current() - resource._compressStartTick;
-      RLogger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
+      MO.Logger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
       // 加载资源
       resource.onComplete(stream);
       // 释放数据流

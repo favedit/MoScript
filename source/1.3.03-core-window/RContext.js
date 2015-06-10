@@ -102,7 +102,7 @@
       var o = this;
       var r = o._contexts[p];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (path={1})', p);
+         return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
       }
       return RString.format(r.text, p1, p2, p3, p4, p5)
    }
@@ -120,7 +120,7 @@
       var id = s + ':' + c;
       var r = o._contexts[id];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (id={1})', id);
+         return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
       }
       return r.text;
    }

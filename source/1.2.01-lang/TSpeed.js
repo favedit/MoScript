@@ -78,7 +78,7 @@
    MO.TSpeed_record = function TSpeed_record(){
       var o = this;
       var sp = new Date().getTime() - o.start;
-      RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
+      MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
       o.arguments = null;
       o.start = null;
       o.callerName = null;

@@ -1647,7 +1647,7 @@ with(MO){
       var o = this;
       var r = o._annotations[a];
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
       }
       return r;
    }
@@ -1659,7 +1659,7 @@ with(MO){
          r = as[n];
       }
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
       }
       return r;
    }
@@ -1706,7 +1706,7 @@ with(MO){
          p = p.parent;
       }
       if(!a){
-         RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+         MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
       }
       var sn = p.name + '_' + a.style();
       o.styles[n] = sn;
@@ -1758,7 +1758,7 @@ with(MO){
          }
          var template = o.instance;
          if(!template){
-            return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+            return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
          instance = new template.constructor();
          for(var name in template){
@@ -2317,7 +2317,7 @@ with(MO){
          try{
             o.callback.call(c, p1, p2, p3, p4, p5, p6);
          }catch(e){
-            RLogger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
+            MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
          }
       }
    }
@@ -2932,7 +2932,7 @@ with(MO){
    MO.TSpeed_record = function TSpeed_record(){
       var o = this;
       var sp = new Date().getTime() - o.start;
-      RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
+      MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
       o.arguments = null;
       o.start = null;
       o.callerName = null;
@@ -3572,7 +3572,7 @@ with(MO){
          }else if(v.constructor == Function){
             n = RMethod.name(v);
          }else if(v.constructor != String){
-            RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
+            MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
       return o._classes[n];
@@ -3672,7 +3672,7 @@ with(MO){
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
                clazz.parent = RClass.forName(name);
                finded = true;
@@ -3687,7 +3687,7 @@ with(MO){
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
                RClass.innerCopy(m.instance, instance);
                clazz.assign(m);
@@ -3854,7 +3854,7 @@ with(MO){
       }else if(v.constructor == Function){
          n = v;
       }else{
-         return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
       var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
@@ -3878,9 +3878,9 @@ with(MO){
             o._consoles.set(n, r);
             break;
          default:
-            return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
       }
-      RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
       return r;
    }
    MO.RConsole.prototype.release = function RConsole_release(){
@@ -4940,7 +4940,7 @@ with(MO){
       r.append(ms);
       alert(r.flush());
    }
-   MO.RLogger = new RLogger();
+   MO.Logger = new RLogger();
 }
 with(MO){
    MO.RMethod = function RMethod(){
@@ -10122,8 +10122,7 @@ with(MO){
       var reader = o._reader;
       o._statusFree = true;
       if(reader.error){
-         debugger
-         RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
       }else{
          o._length = reader.result.byteLength;
          o._data = reader.result;
@@ -10287,7 +10286,7 @@ with(MO){
       connection.send(o._inputData);
       o.setOutputData();
       o.onConnectionComplete();
-      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
       var o = this;
@@ -10295,7 +10294,7 @@ with(MO){
       connection.open(o._methodCd, o._url, true);
       o.setHeaders(connection, 0);
       connection.send(o._inputData);
-      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_send = function FHttpConnection_send(url, data){
       var o = this;
@@ -11805,7 +11804,7 @@ with(MO){
       t.setInterval(o._interval);
       t.lsnsProcess.register(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -12526,7 +12525,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 5;
+      o._interval    = 10;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;
@@ -12817,7 +12816,7 @@ with(MO){
    MO.FImage_ohError = function FImage_ohError(p){
       var o = this.__linker;
       var url = o._url;
-      RLogger.error(o, 'Load image failure. (url={1})', url);
+      MO.Logger.error(o, 'Load image failure. (url={1})', url);
    }
    MO.FImage_construct = function FImage_construct(){
       var o = this;
@@ -13026,7 +13025,7 @@ with(MO){
       try{
          CollectGarbage();
       }catch(e){
-         RLogger.error(e);
+        MO.Logger.error(e);
       }
    }
    MO.RApplication = new RApplication();
@@ -13066,9 +13065,9 @@ with(MO){
          return;
       }
       if(o._typeCd == EBrowser.Chrome){
-         RLogger.lsnsOutput.register(o, o.onLog);
+         MO.Logger.lsnsOutput.register(o, o.onLog);
       }
-      RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+      MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
       if(window.applicationCache){
          o._supportHtml5 = true;
       }
@@ -13083,7 +13082,7 @@ with(MO){
          new Blob(["Test"], {'type':'text/plain'});
          capability.blobCreate = true;
       }catch(e){
-         RLogger.warn(o, 'Browser blob not support.');
+         MO.Logger.warn(o, 'Browser blob not support.');
       }
    }
    MO.RBrowser.prototype.capability = function RBrowser_capability(){
@@ -13134,6 +13133,7 @@ with(MO){
       return decodeURI(url);
    }
    MO.RBrowser = new RBrowser();
+   MO.Browser = MO.RBrowser;
 }
 with(MO){
    MO.RBuilder = function RBuilder(){
@@ -13424,7 +13424,7 @@ with(MO){
       var o = this;
       var r = o._contexts[p];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (path={1})', p);
+         return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
       }
       return RString.format(r.text, p1, p2, p3, p4, p5)
    }
@@ -13433,7 +13433,7 @@ with(MO){
       var id = s + ':' + c;
       var r = o._contexts[id];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (id={1})', id);
+         return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
       }
       return r.text;
    }
@@ -13656,7 +13656,7 @@ with(MO){
             s.appendLine();
          }
       }
-      RLogger.debug(this, s);
+      MO.Logger.debug(this, s);
    }
    MO.RDump = new RDump();
 }
@@ -16102,7 +16102,7 @@ with(MO){
       if(effect == null){
          var effect = o.create(context, code);
          effect.load();
-         RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+         MO.Logger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
          effects.set(code, effect);
       }
       return effect;
@@ -16139,7 +16139,7 @@ with(MO){
             effect._flag = flag;
             effect.load();
             effect.build(o._effectInfo);
-            RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
+            MO.Logger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
          }
          effects.set(flag, effect);
       }
@@ -18961,7 +18961,14 @@ with(MO){
       return true;
    }
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._handle.scissor(left, top, width, height);
+      var o = this;
+      var handle = o._handle;
+      if((width > 0) && (height > 0)){
+         handle.enable(handle.SCISSOR_TEST);
+         handle.scissor(left, top, width, height);
+      }else{
+         handle.disable(handle.SCISSOR_TEST);
+      }
    }
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){
       var o = this;
@@ -19177,7 +19184,7 @@ with(MO){
             break;
          }
          default:{
-            RLogger.fatal(o, null, "Unknown texture type.");
+            throw new TError(o, 'Unknown texture type.');
             break;
          }
       }
@@ -19301,7 +19308,7 @@ with(MO){
          }
       }
       if(!result){
-         RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
+         MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
    }
@@ -19753,7 +19760,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
+         MO.Logger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          g.deleteProgram(o._handle);
          o._handle = null;
          return false;
@@ -20631,8 +20638,8 @@ with(MO){
    MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
       this._technique = p;
    }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(c, n){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
    }
    MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
       return this._visibleRenderables;
@@ -20906,7 +20913,7 @@ with(MO){
       o._started       = false;
       o._thread        = null;
       o._active        = true;
-      o._interval      = 1000 / 40;
+      o._interval      = 10;
       o._stages        = null;
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;
@@ -21157,7 +21164,7 @@ with(MO){
       }
       stream.flip();
       var span = RTimer.current() - resource._compressStartTick;
-      RLogger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
+      MO.Logger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
       resource.onComplete(stream);
       stream.dispose();
    }
@@ -21484,7 +21491,7 @@ with(MO){
       }
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
       o._console.onPipelineComplete(null, data);
       o._data = null;
       o._statusBusy = false;
@@ -21615,7 +21622,7 @@ with(MO){
       var data = o._data;
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
       o._console.onPipelineComplete(o, data);
       o._data = null;
    }
@@ -23434,7 +23441,7 @@ with(MO){
       var o = this;
       o.__base.FE3sResource.unserialize.call(o, input);
       o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
-      RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
    }
 }
 with(MO){
@@ -23689,7 +23696,7 @@ with(MO){
             renderable.setMesh(mesh);
          }
       }
-      RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
    }
    MO.FE3sModel_saveConfig = function FE3sModel_saveConfig(xconfig){
       var o = this;
@@ -25827,7 +25834,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -25845,7 +25852,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3rBitmap);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -27140,7 +27147,7 @@ with(MO){
          }
          model.build();
          o._dynamicMeshs.set(flag, model);
-         RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
+         MO.Logger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
       }
       model.update();
       return model;
@@ -27716,7 +27723,7 @@ with(MO){
          return texture;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rTextureCube);
       }else{
@@ -27859,7 +27866,8 @@ with(MO){
       program.setParameter('fc_ambient_color', info.ambientColor);
       o.bindAttributes(renderable);
       o.bindSamplers(renderable);
-      context.drawTriangles(renderable.indexBuffer());
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
    }
 }
 with(MO){
@@ -28024,7 +28032,9 @@ with(MO){
    MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
       var o = this;
       var context = o._graphicContext;
-      var size = context.size();
+      var contextSize = context.size();
+      var contextWidth = contextSize.width;
+      var contextHeight = contextSize.height;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -28034,24 +28044,26 @@ with(MO){
          var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
          var index = 0;
          for(var i = 0; i < meshCount; i++){
-            var mesh = meshs.getAt(i);
+            var mesh = meshs.at(i);
             var matrix = mesh.matrix();
-            data[index++] = matrix.sx / size.width * 2;
-            data[index++] = matrix.sy / size.height * 2;
-            data[index++] = matrix.tx / size.width * 2 - 1;
-            data[index++] = 1 - matrix.ty / size.height * 2;
+            data[index++] = matrix.sx / contextWidth * 2;
+            data[index++] = matrix.sy / contextHeight * 2;
+            data[index++] = matrix.tx / contextWidth * 2 - 1;
+            data[index++] = 1 - matrix.ty / contextHeight * 2;
             mesh.currentMatrix().writeData(data, 4 * i);
          }
          program.setParameter('vc_position', data);
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / size.width * 2;
-         var cy = matrix.sy / size.height * 2;
-         var tx = matrix.tx / size.width * 2 - 1;
-         var ty = 1 - matrix.ty / size.height * 2;
+         var cx = matrix.sx / contextWidth * 2;
+         var cy = matrix.sy / contextHeight * 2;
+         var tx = matrix.tx / contextWidth * 2 - 1;
+         var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
+         var size = renderable.size();
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }
-      o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }
 }
 with(MO){
@@ -31569,14 +31581,14 @@ with(MO){
       }
       return result;
    }
-   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(){
+   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(flag){
       var o = this;
       var outline = o._outline;
-      if(outline.isEmpty()){
+      if(outline.isEmpty() || flag){
          var resource = o._resource
          var meshResource = resource.mesh();
          var meshOutline = meshResource.outline();
-         outline.assign(meshOutline);
+         outline.calculateFrom(meshOutline, o._currentMatrix);
       }
       return outline;
    }
@@ -31789,7 +31801,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -31807,7 +31819,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -32602,7 +32614,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -32620,7 +32632,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -32822,7 +32834,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -32840,7 +32852,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dVideoData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -32895,6 +32907,494 @@ with(MO){
       var o = this;
       o._hVideo = null;
       o.__base.FE3dFaceData.dispose.call(o);
+   }
+}
+with(MO){
+   MO.APtyString = function APtyString(n, l, v){
+      var o = this;
+      AProperty.call(o, n, l);
+      o._value    = v ? v : null;
+      o.build    = APtyString_build;
+      o.toString = APtyString_toString;
+      return o;
+   }
+   MO.APtyString_build = function APtyString_build(v){
+      var o = this;
+      if(v[o._name] == null){
+         v[o._name] = o._value;
+      }
+   }
+   MO.APtyString_toString = function APtyString_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._value;
+   }
+}
+with(MO){
+   MO.MGuiContainer = function MGuiContainer(o){
+      o = RClass.inherits(this, o);
+      o.createChild = MGuiContainer_createChild;
+      o.appendChild = RMethod.empty;
+      o.removeChild = RMethod.empty;
+      return o;
+   }
+   MO.MGuiContainer_createChild = function MGuiContainer_createChild(xconfig){
+      var o = this;
+      var child = RGuiControl.newInstance(xconfig);
+      child._parent = o;
+      return child;
+   }
+}
+with(MO){
+   MO.FGuiComponent = function FGuiComponent(o){
+      o = RClass.inherits(this, o, FComponent, MProperty);
+      o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
+      o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
+      o._components   = null;
+      o._tag          = RClass.register(o, new AGetSet('_tag'));
+      o.isParent      = FGuiComponent_isParent;
+      o.topComponent  = FGuiComponent_topComponent;
+      o.hasComponent  = FGuiComponent_hasComponent;
+      o.findComponent = FGuiComponent_findComponent;
+      o.components    = FGuiComponent_components;
+      o.push          = FGuiComponent_push;
+      o.remove        = FGuiComponent_remove;
+      o.clear         = FGuiComponent_clear;
+      o.dispose       = FGuiComponent_dispose;
+      return o;
+   }
+   MO.FGuiComponent_isParent = function FGuiComponent_isParent(component){
+      while(component){
+         if(component == this){
+            return true;
+         }
+         component = component._parent;
+      }
+   }
+   MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
+      var component = this;
+      if(component){
+         while(RClass.isClass(component._parent, clazz)){
+            component = component._parent;
+         }
+      }else{
+         while(component._parent){
+            component = component._parent;
+         }
+      }
+      return component;
+   }
+   MO.FGuiComponent_hasComponent = function FGuiComponent_hasComponent(){
+      var components = this._components;
+      return components ? !components.isEmpty() : false;
+   }
+   MO.FGuiComponent_findComponent = function FGuiComponent_findComponent(name){
+      var components = this._components;
+      return components ? components.get(name) : null;
+   }
+   MO.FGuiComponent_components = function FGuiComponent_components(){
+      var o = this;
+      var components = o._components;
+      if(components == null){
+         components = new TDictionary();
+         o._components = components;
+      }
+      return components;
+   }
+   MO.FGuiComponent_push = function FGuiComponent_push(component){
+      var o = this;
+      if(RClass.isClass(component, FGuiComponent)){
+         var components = o.components();
+         component._parent = o;
+         if(component._name == null){
+            component._name = component.count();
+         }
+         components.set(component._name, component);
+      }
+   }
+   MO.FGuiComponent_remove = function FGuiComponent_remove(component){
+      var o = this;
+      if(!RClass.isClass(component, FGuiComponent)){
+         throw new TError(o, 'Parameter is not componet. (component={1})', component);
+      }
+      var components = o._components;
+      if(!components.contains(component.name())){
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
+      }
+      components.removeValue(component);
+   }
+   MO.FGuiComponent_clear = function FGuiComponent_clear(p){
+      var o = this;
+      var components = o._components;
+      if(components){
+         components.clear();
+      }
+   }
+   MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
+      var o = this;
+      o._name = null;
+      o._label = null;
+      o._tag = null;
+      o._components = RObject.dispose(o._components, true);
+      o.__base.FComponent.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FGuiContainer = function FGuiContainer(o){
+      o = RClass.inherits(this, o, FGuiControl, MGuiContainer);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiControl = function FGuiControl(o){
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject);
+      o._renderable  = RClass.register(o, new AGetter('_renderable'));
+      o.onPaintBegin = FGuiControl_onPaintBegin;
+      o.onPaintEnd   = FGuiControl_onPaintEnd;
+      o.paint        = FGuiControl_paint;
+      o.build        = FGuiControl_build;
+      o.process      = FGuiControl_process;
+      return o;
+   }
+   MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(graphic){
+      var o = this;
+      graphic.fillRectangle(0, 0, 400, 200, '#00FF00', 1);
+      graphic.drawText('Hello', 10, 10, '#FF0000');
+   }
+   MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(graphic){
+      var o = this;
+   }
+   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
+      var o = this;
+      o.onPaintBegin(graphic);
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(RClass.isClass(component, FGuiControl)){
+               component.paint(graphic);
+            }
+         }
+      }
+      o.onPaintEnd(graphic);
+   }
+   MO.FGuiControl_build = function FGuiControl_build(){
+      var o = this;
+      var renderable = o._renderable;
+      if(!renderable){
+         renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
+      }
+      renderable.setLocation(100, 50);
+      renderable.setSize(400, 200);
+      var graphic = renderable.beginDraw();
+      o.paint(graphic);
+      renderable.endDraw();
+   }
+   MO.FGuiControl_process = function FGuiControl_process(region){
+      var o = this;
+   }
+}
+with(MO){
+   MO.FGuiControlData = function FGuiControlData(o){
+      o = RClass.inherits(this, o, FE3dFaceData);
+      o._graphic    = null;
+      o.construct   = FGuiControlData_construct;
+      o.setup       = FGuiControlData_setup;
+      o.setLocation = FGuiControlData_setLocation;
+      o.setSize     = FGuiControlData_setSize;
+      o.beginDraw   = FGuiControlData_beginDraw;
+      o.endDraw     = FGuiControlData_endDraw;
+      o.dispose     = FGuiControlData_dispose;
+      return o;
+   }
+   MO.FGuiControlData_construct = function FGuiControlData_construct(){
+      var o = this;
+      o.__base.FE3dFaceData.construct.call(o);
+   }
+   MO.FGuiControlData_setup = function FGuiControlData_setup(){
+      var o = this;
+      o.__base.FE3dFaceData.setup.call(o);
+      o._material.info().effectCode = 'flat';
+   }
+   MO.FGuiControlData_setLocation = function FGuiControlData_setLocation(x, y){
+      var o = this;
+      o._matrix.setTranslate(x, y, 0);
+   }
+   MO.FGuiControlData_setSize = function FGuiControlData_setSize(width, height){
+      var o = this;
+      o._size.set(width, height);
+   }
+   MO.FGuiControlData_beginDraw = function FGuiControlData_beginDraw(){
+      var o = this;
+      var size = o._size;
+      var adjustWidth = RInteger.pow2(size.width);
+      var adjustHeight = RInteger.pow2(size.height);
+      o._adjustSize.set(adjustWidth, adjustHeight);
+      o._matrix.setScale(adjustWidth, adjustHeight, 1);
+      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+      var graphic = o._graphic = canvas.context();
+      return graphic;
+   }
+   MO.FGuiControlData_endDraw = function FGuiControlData_endDraw(){
+      var o = this;
+      var graphic = o._graphic;
+      MO.Assert.debugNotNull(graphic);
+      o._texture.upload(o._canvas);
+      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      canvasConsole.free(graphic);
+      o._graphic = null;
+      o._ready = true;
+   }
+   MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
+      var o = this;
+      o.__base.FE3dFaceData.dispose.call(o);
+   }
+}
+with(MO){
+   MO.RGuiControl = function RGuiControl(){
+      var o = this;
+      o.PREFIX    = 'FGui';
+      return o;
+   }
+   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(p){
+      var o = this;
+      var r = null;
+      if(p){
+         var n = null
+         var tn = null;
+         if(p.constructor == String){
+            if(!RString.startsWith(p, o.PREFIX)){
+               n = o.PREFIX + p;
+            }
+         }else if(p.constructor == TXmlNode){
+            n = p.get('type');
+            if(RString.isEmpty(n)){
+               n = p.name();
+               if(!RString.startsWith(n, o.PREFIX)){
+                  n = o.PREFIX + n;
+               }
+            }else{
+               tn = n;
+            }
+         }else{
+            throw new TError(o, 'Unknown parameter. (name={p})', p);
+         }
+         r = RClass.create(n);
+         if(tn){
+            r.__typed = true;
+         }
+      }
+      if(r == null){
+         throw new TError(o, 'Create instance failure. (name={p})', p);
+      }
+      return r;
+   }
+   MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
+      var o = this;
+      var e = null;
+      var p = control[name];
+      if(!RMethod.isEmpty(p) || m){
+         var cz = RClass.find(control.constructor);
+         var a = cz.annotation(EAnnotation.Event, n);
+         e = a.create();
+         e.annotation = a;
+         e.source = control;
+         e.hSource = h;
+         e.ohProcess = m;
+         e.onProcess = p;
+         e.process = RUiEvent.onProcess;
+         RUiEvent.find(h).push(a.linker(), e);
+         RHtml.linkSet(h, '_plink', c);
+         a.bind(h, u);
+      }
+      return e;
+   }
+   MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentControl, control, xconfig, attributes){
+      var o = this;
+      if((control == null) || (xconfig == null)){
+         return;
+      }
+      if(RClass.isClass(control, MProperty)){
+         control.propertyLoad(xconfig);
+      }
+      var linker = xconfig.get('linker');
+      if(linker && parentControl){
+         parentControl[linker] = control;
+      }
+      if(RClass.isClass(control, FGuiControl)){
+      }
+      if(control.__typed){
+         parentControl = control;
+      }
+      if(RClass.isClass(control, MGuiContainer) && xconfig.hasNode()){
+         var nodes = xconfig.nodes();
+         var nodeCount = nodes.count();
+         for(var i = 0; i < nodeCount; i++){
+            var xnode = nodes.at(i);
+            var child = control.createChild(xnode);
+            if(!child){
+               throw new TError('Invalid create child.');
+            }
+            o.innerbuild(parentControl, child, xnode, attributes);
+            control.push(child);
+         }
+      }
+      if(RClass.isClass(control, FGuiControl)){
+      }
+   }
+   MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, attributes){
+      var o = this;
+      if(!control){
+         control = o.newInstance(xconfig);
+      }
+      o.innerbuild(control, control, xconfig, attributes);
+      return control;
+   }
+   MO.RGuiControl = new RGuiControl();
+}
+with(MO){
+   MO.FGuiFrameConsole = function FGuiFrameConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd         = EScope.Local;
+      o._frames          = null;
+      o.construct        = FGuiFrameConsole_construct;
+      o.create           = FGuiFrameConsole_create;
+      o.find             = FGuiFrameConsole_find;
+      o.get              = FGuiFrameConsole_get;
+      o.alloc            = FGuiFrameConsole_alloc;
+      o.free             = FGuiFrameConsole_free;
+      o.dispose          = FGuiFrameConsole_dispose;
+      return o;
+   }
+   MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._frames = new TDictionary();
+   }
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(control, name){
+      var o = this;
+      var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
+      var xframe = describeConsole.load(name);
+      var frame = RGuiControl.build(null, xframe, null, null);
+      return frame;
+   }
+   MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
+      return this._frames.get(name);
+   }
+   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(name){
+      var o = this;
+      var frames = o._frames;
+      var frame = frames.get(name);
+      if(!frame){
+         frame = o.create(null, name);
+         frames.set(name, frame);
+      }
+      return frame;
+   }
+   MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
+   }
+   MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
+      f.setVisible(false);
+      this._freeFrames.push(f);
+   }
+   MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
+      var o = this;
+      o._frames = RObject.dispose(o._frames, true);
+      o.__base.FConsole.construct.call(o);
+   }
+}
+with(MO){
+   MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd     = EScope.Global;
+      o._serviceCode = 'cloud.describe.frame';
+      o._defines     = RClass.register(o, new AGetter('_defines'));
+      o.construct    = FGuiFrameDescribeConsole_construct;
+      o.load         = FGuiFrameDescribeConsole_load;
+      o.dispose      = FGuiFrameDescribeConsole_dispose;
+      return o;
+   }
+   MO.FGuiFrameDescribeConsole_construct = function FGuiFrameDescribeConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._defines = new TDictionary();
+   }
+   MO.FGuiFrameDescribeConsole_load = function FGuiFrameDescribeConsole_load(name){
+      var o = this;
+      var defines = o._defines;
+      var xconfig = defines.get(name);
+      if(xconfig){
+         return xconfig;
+      }
+      var xdocument = new TXmlDocument();
+      var xroot = xdocument.root();
+      xroot.set('action', 'query');
+      var xframe = xroot.create('Frame');
+      xframe.set('name', name);
+      var url = MO.Browser.hostPath('/' + o._serviceCode + '.ws');
+      var xresult = RConsole.find(FXmlConsole).send(url, xdocument);
+      var xframes = xresult.nodes();
+      var count = xframes.count();
+      for(var i = 0; i < count; i++){
+         var xframe = xframes.at(i);
+         var frameName = xframe.get('name');
+         defines.set(frameName, xframe);
+      }
+      var xframe = defines.get(name);
+      if(!xframe){
+         throw new TError(o, 'Unknown frame. (name={1})', name);
+      }
+      return xframe;
+   }
+   MO.FGuiFrameDescribeConsole_dispose = function FGuiFrameDescribeConsole_dispose(){
+      var o = this;
+      o._defines = RObject.dispose(o._defines, true);
+      o.__base.FConsole.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FGuiButton = function FGuiButton(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiPanel = function FGuiPanel(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiPicture = function FGuiPicture(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o._source = RClass.register(o, [new APtyString('_source'), new AGetSet('_source')]);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiGridControl = function FGuiGridControl(o){
+      o = RClass.inherits(this, o, FProcessServer);
+      o._typeName  = null;
+      o._groupName = null;
+      o._name      = null;
+      o.name  = FGuiGridControl_name;
+      return o;
+   }
+   MO.FGuiGridControl_name = function FGuiGridControl_name(){
+      return this._name;
+   }
+}
+with(MO){
+   MO.FGuiBar = function FGuiBar(o){
+      o = RClass.inherits(this, o, FGuiContainer);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiWindow = function FGuiWindow(o){
+      o = RClass.inherits(this, o, FGuiContainer);
+      return o;
    }
 }
 with(MO){

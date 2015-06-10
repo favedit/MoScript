@@ -148,13 +148,13 @@ with(MO){
             var vt = s._invalidText = o.validText(t);
             if(vt){
                s.refreshStyle();
-               //RLogger.debug(o, 'Edit changed event (text=[{0}]->[{1}])', s.dataText, t);
+               //MO.Logger.debug(o, 'Edit changed event (text=[{0}]->[{1}])', s.dataText, t);
                //s.storeText();
                //o.onDataChanged(s, e);
                // o.onEditEnd(s, e);
             }else{
                //s.setEditStyle(EStyle.Invalid);
-               //RLogger.debug(o, 'Edit data invalid (text=[{0}]->[{1}])', s.dataText, t);
+               //MO.Logger.debug(o, 'Edit data invalid (text=[{0}]->[{1}])', s.dataText, t);
                //s.storeText(s, e);
             }
             o.callEvent('onDataChange', o, o.__changedEvent);
@@ -175,7 +175,7 @@ with(MO){
       var vt = s._invalidText = o.validText(s.text());
       if(vt){
          // 校验失败
-         RLogger.debug(this, 'Edit valid failed ({0})', vt);
+         MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
       }else{
          // 校验成功
          s.commitValue();

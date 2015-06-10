@@ -129,7 +129,7 @@
       var event = o._eventKey;
       event.attachEvent(hEvent);
       o.lsnsKeyDown.process(event);
-   //   RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
+   //   MO.Logger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
    //   var s = e.srcElement ? e.srcElement : e.target;
    //   var t = s.tagName;
    //   if(EKeyCode.BackSpace == e.keyCode){

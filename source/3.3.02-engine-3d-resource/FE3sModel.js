@@ -162,7 +162,7 @@ with(MO){
          }
       }
       //..........................................................
-      RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
    }
 
    //==========================================================

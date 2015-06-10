@@ -45,7 +45,7 @@ with(MO){
    //==========================================================
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
+      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
       //if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
          // 存储当前焦点对象，强制失去焦点
          //alert('o._disabled='+o._disabled);

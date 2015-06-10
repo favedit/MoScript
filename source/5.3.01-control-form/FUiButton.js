@@ -267,7 +267,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          // 执行监听信息
          var event = new SClickEvent(o);
          o.processClickListener(event);

@@ -160,7 +160,7 @@ with(MO){
       }
       stream.flip();
       var span = RTimer.current() - resource._compressStartTick;
-      RLogger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
+      MO.Logger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
       resource.onComplete(stream);
       stream.dispose();
    }
@@ -487,7 +487,7 @@ with(MO){
       }
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
       o._console.onPipelineComplete(null, data);
       o._data = null;
       o._statusBusy = false;
@@ -618,7 +618,7 @@ with(MO){
       var data = o._data;
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
       o._console.onPipelineComplete(o, data);
       o._data = null;
    }

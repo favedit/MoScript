@@ -222,7 +222,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -342,7 +342,7 @@ with(MO){
             if(control){
                control.innerCheck(true);
             }else{
-               RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+               MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
             }
          }
       }

@@ -132,7 +132,7 @@ with(MO){
    MO.FImage_ohError = function FImage_ohError(p){
       var o = this.__linker;
       var url = o._url;
-      RLogger.error(o, 'Load image failure. (url={1})', url);
+      MO.Logger.error(o, 'Load image failure. (url={1})', url);
    }
    MO.FImage_construct = function FImage_construct(){
       var o = this;
@@ -341,7 +341,7 @@ with(MO){
       try{
          CollectGarbage();
       }catch(e){
-         RLogger.error(e);
+        MO.Logger.error(e);
       }
    }
    MO.RApplication = new RApplication();
@@ -381,9 +381,9 @@ with(MO){
          return;
       }
       if(o._typeCd == EBrowser.Chrome){
-         RLogger.lsnsOutput.register(o, o.onLog);
+         MO.Logger.lsnsOutput.register(o, o.onLog);
       }
-      RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+      MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
       if(window.applicationCache){
          o._supportHtml5 = true;
       }
@@ -398,7 +398,7 @@ with(MO){
          new Blob(["Test"], {'type':'text/plain'});
          capability.blobCreate = true;
       }catch(e){
-         RLogger.warn(o, 'Browser blob not support.');
+         MO.Logger.warn(o, 'Browser blob not support.');
       }
    }
    MO.RBrowser.prototype.capability = function RBrowser_capability(){
@@ -449,6 +449,7 @@ with(MO){
       return decodeURI(url);
    }
    MO.RBrowser = new RBrowser();
+   MO.Browser = MO.RBrowser;
 }
 with(MO){
    MO.RBuilder = function RBuilder(){
@@ -739,7 +740,7 @@ with(MO){
       var o = this;
       var r = o._contexts[p];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (path={1})', p);
+         return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
       }
       return RString.format(r.text, p1, p2, p3, p4, p5)
    }
@@ -748,7 +749,7 @@ with(MO){
       var id = s + ':' + c;
       var r = o._contexts[id];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (id={1})', id);
+         return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
       }
       return r.text;
    }
@@ -971,7 +972,7 @@ with(MO){
             s.appendLine();
          }
       }
-      RLogger.debug(this, s);
+      MO.Logger.debug(this, s);
    }
    MO.RDump = new RDump();
 }

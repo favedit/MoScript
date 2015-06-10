@@ -1647,7 +1647,7 @@ with(MO){
       var o = this;
       var r = o._annotations[a];
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
       }
       return r;
    }
@@ -1659,7 +1659,7 @@ with(MO){
          r = as[n];
       }
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
       }
       return r;
    }
@@ -1706,7 +1706,7 @@ with(MO){
          p = p.parent;
       }
       if(!a){
-         RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+         MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
       }
       var sn = p.name + '_' + a.style();
       o.styles[n] = sn;
@@ -1758,7 +1758,7 @@ with(MO){
          }
          var template = o.instance;
          if(!template){
-            return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+            return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
          instance = new template.constructor();
          for(var name in template){
@@ -2317,7 +2317,7 @@ with(MO){
          try{
             o.callback.call(c, p1, p2, p3, p4, p5, p6);
          }catch(e){
-            RLogger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
+            MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
          }
       }
    }
@@ -2932,7 +2932,7 @@ with(MO){
    MO.TSpeed_record = function TSpeed_record(){
       var o = this;
       var sp = new Date().getTime() - o.start;
-      RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
+      MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
       o.arguments = null;
       o.start = null;
       o.callerName = null;
@@ -3572,7 +3572,7 @@ with(MO){
          }else if(v.constructor == Function){
             n = RMethod.name(v);
          }else if(v.constructor != String){
-            RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
+            MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
       return o._classes[n];
@@ -3672,7 +3672,7 @@ with(MO){
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
                clazz.parent = RClass.forName(name);
                finded = true;
@@ -3687,7 +3687,7 @@ with(MO){
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
                RClass.innerCopy(m.instance, instance);
                clazz.assign(m);
@@ -3854,7 +3854,7 @@ with(MO){
       }else if(v.constructor == Function){
          n = v;
       }else{
-         return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
       var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
@@ -3878,9 +3878,9 @@ with(MO){
             o._consoles.set(n, r);
             break;
          default:
-            return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
       }
-      RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
       return r;
    }
    MO.RConsole.prototype.release = function RConsole_release(){
@@ -4940,7 +4940,7 @@ with(MO){
       r.append(ms);
       alert(r.flush());
    }
-   MO.RLogger = new RLogger();
+   MO.Logger = new RLogger();
 }
 with(MO){
    MO.RMethod = function RMethod(){
@@ -10122,8 +10122,7 @@ with(MO){
       var reader = o._reader;
       o._statusFree = true;
       if(reader.error){
-         debugger
-         RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
       }else{
          o._length = reader.result.byteLength;
          o._data = reader.result;
@@ -10287,7 +10286,7 @@ with(MO){
       connection.send(o._inputData);
       o.setOutputData();
       o.onConnectionComplete();
-      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
       var o = this;
@@ -10295,7 +10294,7 @@ with(MO){
       connection.open(o._methodCd, o._url, true);
       o.setHeaders(connection, 0);
       connection.send(o._inputData);
-      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_send = function FHttpConnection_send(url, data){
       var o = this;
@@ -11805,7 +11804,7 @@ with(MO){
       t.setInterval(o._interval);
       t.lsnsProcess.register(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -12526,7 +12525,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 5;
+      o._interval    = 10;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;
@@ -12817,7 +12816,7 @@ with(MO){
    MO.FImage_ohError = function FImage_ohError(p){
       var o = this.__linker;
       var url = o._url;
-      RLogger.error(o, 'Load image failure. (url={1})', url);
+      MO.Logger.error(o, 'Load image failure. (url={1})', url);
    }
    MO.FImage_construct = function FImage_construct(){
       var o = this;
@@ -13026,7 +13025,7 @@ with(MO){
       try{
          CollectGarbage();
       }catch(e){
-         RLogger.error(e);
+        MO.Logger.error(e);
       }
    }
    MO.RApplication = new RApplication();
@@ -13066,9 +13065,9 @@ with(MO){
          return;
       }
       if(o._typeCd == EBrowser.Chrome){
-         RLogger.lsnsOutput.register(o, o.onLog);
+         MO.Logger.lsnsOutput.register(o, o.onLog);
       }
-      RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+      MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
       if(window.applicationCache){
          o._supportHtml5 = true;
       }
@@ -13083,7 +13082,7 @@ with(MO){
          new Blob(["Test"], {'type':'text/plain'});
          capability.blobCreate = true;
       }catch(e){
-         RLogger.warn(o, 'Browser blob not support.');
+         MO.Logger.warn(o, 'Browser blob not support.');
       }
    }
    MO.RBrowser.prototype.capability = function RBrowser_capability(){
@@ -13134,6 +13133,7 @@ with(MO){
       return decodeURI(url);
    }
    MO.RBrowser = new RBrowser();
+   MO.Browser = MO.RBrowser;
 }
 with(MO){
    MO.RBuilder = function RBuilder(){
@@ -13424,7 +13424,7 @@ with(MO){
       var o = this;
       var r = o._contexts[p];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (path={1})', p);
+         return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
       }
       return RString.format(r.text, p1, p2, p3, p4, p5)
    }
@@ -13433,7 +13433,7 @@ with(MO){
       var id = s + ':' + c;
       var r = o._contexts[id];
       if(!r){
-         return RLogger.fatal(o, null, 'Can not find context (id={1})', id);
+         return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
       }
       return r.text;
    }
@@ -13656,7 +13656,7 @@ with(MO){
             s.appendLine();
          }
       }
-      RLogger.debug(this, s);
+      MO.Logger.debug(this, s);
    }
    MO.RDump = new RDump();
 }
@@ -16102,7 +16102,7 @@ with(MO){
       if(effect == null){
          var effect = o.create(context, code);
          effect.load();
-         RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+         MO.Logger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
          effects.set(code, effect);
       }
       return effect;
@@ -16139,7 +16139,7 @@ with(MO){
             effect._flag = flag;
             effect.load();
             effect.build(o._effectInfo);
-            RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
+            MO.Logger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
          }
          effects.set(flag, effect);
       }
@@ -18961,7 +18961,14 @@ with(MO){
       return true;
    }
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._handle.scissor(left, top, width, height);
+      var o = this;
+      var handle = o._handle;
+      if((width > 0) && (height > 0)){
+         handle.enable(handle.SCISSOR_TEST);
+         handle.scissor(left, top, width, height);
+      }else{
+         handle.disable(handle.SCISSOR_TEST);
+      }
    }
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){
       var o = this;
@@ -19177,7 +19184,7 @@ with(MO){
             break;
          }
          default:{
-            RLogger.fatal(o, null, "Unknown texture type.");
+            throw new TError(o, 'Unknown texture type.');
             break;
          }
       }
@@ -19301,7 +19308,7 @@ with(MO){
          }
       }
       if(!result){
-         RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
+         MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
    }
@@ -19753,7 +19760,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
+         MO.Logger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          g.deleteProgram(o._handle);
          o._handle = null;
          return false;
@@ -20631,8 +20638,8 @@ with(MO){
    MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
       this._technique = p;
    }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(c, n){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
    }
    MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
       return this._visibleRenderables;
@@ -20906,7 +20913,7 @@ with(MO){
       o._started       = false;
       o._thread        = null;
       o._active        = true;
-      o._interval      = 1000 / 40;
+      o._interval      = 10;
       o._stages        = null;
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;
@@ -21157,7 +21164,7 @@ with(MO){
       }
       stream.flip();
       var span = RTimer.current() - resource._compressStartTick;
-      RLogger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
+      MO.Logger.info(o, 'Process resource storage. (guid={1}, block_count={2}, length={3}, total={4}, tick={5})', resource.guid(), count, o._compressLength, o._dataLength, span);
       resource.onComplete(stream);
       stream.dispose();
    }
@@ -21484,7 +21491,7 @@ with(MO){
       }
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, bufferData.byteLength, span);
       o._console.onPipelineComplete(null, data);
       o._data = null;
       o._statusBusy = false;
@@ -21615,7 +21622,7 @@ with(MO){
       var data = o._data;
       data.completeData(bufferData);
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
       o._console.onPipelineComplete(o, data);
       o._data = null;
    }
@@ -23434,7 +23441,7 @@ with(MO){
       var o = this;
       o.__base.FE3sResource.unserialize.call(o, input);
       o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
-      RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
    }
 }
 with(MO){
@@ -23689,7 +23696,7 @@ with(MO){
             renderable.setMesh(mesh);
          }
       }
-      RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
    }
    MO.FE3sModel_saveConfig = function FE3sModel_saveConfig(xconfig){
       var o = this;
@@ -25827,7 +25834,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -25845,7 +25852,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3rBitmap);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -27140,7 +27147,7 @@ with(MO){
          }
          model.build();
          o._dynamicMeshs.set(flag, model);
-         RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
+         MO.Logger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
       }
       model.update();
       return model;
@@ -27716,7 +27723,7 @@ with(MO){
          return texture;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rTextureCube);
       }else{
@@ -27859,7 +27866,8 @@ with(MO){
       program.setParameter('fc_ambient_color', info.ambientColor);
       o.bindAttributes(renderable);
       o.bindSamplers(renderable);
-      context.drawTriangles(renderable.indexBuffer());
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
    }
 }
 with(MO){
@@ -28024,7 +28032,9 @@ with(MO){
    MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
       var o = this;
       var context = o._graphicContext;
-      var size = context.size();
+      var contextSize = context.size();
+      var contextWidth = contextSize.width;
+      var contextHeight = contextSize.height;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -28034,24 +28044,26 @@ with(MO){
          var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
          var index = 0;
          for(var i = 0; i < meshCount; i++){
-            var mesh = meshs.getAt(i);
+            var mesh = meshs.at(i);
             var matrix = mesh.matrix();
-            data[index++] = matrix.sx / size.width * 2;
-            data[index++] = matrix.sy / size.height * 2;
-            data[index++] = matrix.tx / size.width * 2 - 1;
-            data[index++] = 1 - matrix.ty / size.height * 2;
+            data[index++] = matrix.sx / contextWidth * 2;
+            data[index++] = matrix.sy / contextHeight * 2;
+            data[index++] = matrix.tx / contextWidth * 2 - 1;
+            data[index++] = 1 - matrix.ty / contextHeight * 2;
             mesh.currentMatrix().writeData(data, 4 * i);
          }
          program.setParameter('vc_position', data);
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / size.width * 2;
-         var cy = matrix.sy / size.height * 2;
-         var tx = matrix.tx / size.width * 2 - 1;
-         var ty = 1 - matrix.ty / size.height * 2;
+         var cx = matrix.sx / contextWidth * 2;
+         var cy = matrix.sy / contextHeight * 2;
+         var tx = matrix.tx / contextWidth * 2 - 1;
+         var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
+         var size = renderable.size();
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }
-      o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }
 }
 with(MO){
@@ -31569,14 +31581,14 @@ with(MO){
       }
       return result;
    }
-   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(){
+   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(flag){
       var o = this;
       var outline = o._outline;
-      if(outline.isEmpty()){
+      if(outline.isEmpty() || flag){
          var resource = o._resource
          var meshResource = resource.mesh();
          var meshOutline = meshResource.outline();
-         outline.assign(meshOutline);
+         outline.calculateFrom(meshOutline, o._currentMatrix);
       }
       return outline;
    }
@@ -31789,7 +31801,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -31807,7 +31819,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -32602,7 +32614,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -32620,7 +32632,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -32822,7 +32834,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -32840,7 +32852,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dVideoData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -33919,26 +33931,6 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
    }
 }
-with(MO){
-   MO.APtyString = function APtyString(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : null;
-      o.build    = APtyString_build;
-      o.toString = APtyString_toString;
-      return o;
-   }
-   MO.APtyString_build = function APtyString_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyString_toString = function APtyString_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
 MO.EEditConfig = new function EEditConfig(){
    var o = this;
    o.Search = 'S';
@@ -34791,7 +34783,7 @@ with(MO){
       var o = this;
       var vt = s._invalidText = o.validText(s.text());
       if(vt){
-         RLogger.debug(this, 'Edit valid failed ({0})', vt);
+         MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
       }else{
          s.commitValue();
       }
@@ -36204,7 +36196,7 @@ with(MO){
          e.invokeCd = EEventInvoke.Before;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -36230,7 +36222,7 @@ with(MO){
          e.invokeCd = EEventInvoke.After;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -36261,11 +36253,7 @@ with(MO){
       o._name = null;
       o._label = null;
       o._tag = null;
-      var cs = o._components
-      if(cs){
-         cs.dispose();
-         o._components = null;
-      }
+      o._components = RObject.dispose(o._components, true);
       o.__base.FObject.dispose.call(o);
    }
    MO.FUiComponent_innerDumpInfo = function FUiComponent_innerDumpInfo(s){
@@ -37101,7 +37089,7 @@ with(MO){
       var e = this;
       var ea = e.annotation;
       if(ea._logger){
-         RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+         MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
       }
       if(e.sender){
          e.onProcess.call(e.source, e.sender, e);
@@ -37139,7 +37127,7 @@ with(MO){
                ea.attach(e, he);
                if(e.ohProcess){
                   if(ea._logger){
-                     RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+                     MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                   }
                   e.ohProcess.call(e.source, e);
                }else if(e.onProcess){
@@ -37667,7 +37655,7 @@ with(MO){
          e.build(c._hPanel);
          o._editors.set(l, e);
       }
-      RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+      MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
       e.reset();
       if(RClass.isClass(e, FUiDropEditor)){
          e.linkControl(c);
@@ -37678,7 +37666,7 @@ with(MO){
    MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
       var o = this;
       if(o._focusEditor){
-         RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+         MO.Logger.debug(o, 'Blur editor {1}', RClass.dump(editor));
          editor = RObject.nvl(editor, o._focusEditor);
          if(editor){
             editor.onEditEnd();
@@ -37832,7 +37820,7 @@ with(MO){
       o.lsnsFocus = new TListeners();
       o.lsnsBlur = new TListeners();
       o.lsnsFocusClass = new TListeners();
-      RLogger.info(o, 'Add listener for window mouse down and wheel.');
+      MO.Logger.info(o, 'Add listener for window mouse down and wheel.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -37868,14 +37856,14 @@ with(MO){
       var bc = o._blurControl;
       if(bc != f){
          if(o._blurAble && f && f.testBlur(c)){
-            RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+            MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
             o._blurControl = f;
             f.doBlur(e);
             o.lsnsBlur.process(f);
          }
       }
       if(o._focusAble){
-         RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
          c.doFocus(e);
          o._focusControl = o._activeControl = c;
          o.lsnsFocus.process(c);
@@ -37889,12 +37877,12 @@ with(MO){
          return;
       }
       if(bc != c && RClass.isClass(c, MUiFocus)){
-         RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
          o._blurControl = c;
          c.doBlur(e);
       }
       if(fc){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
          fc.doBlur(e);
          o._focusControl = null;
       }
@@ -37918,14 +37906,14 @@ with(MO){
       var n = RClass.name(c);
       if(o._focusClasses[n] != p){
          o._focusClasses[n] = p;
-         RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+         MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
          o.lsnsFocusClass.process(p, c);
       }
    }
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
       var c = RHtml.searchLinker(p, FUiControl);
-      RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+      MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){
             o.blur(c, p);
@@ -38147,7 +38135,7 @@ with(MO){
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FUiFrameEventConsole_register = function FUiFrameEventConsole_register(po, pc){
       this._events.push(new TEvent(po, null, pc));
@@ -38686,7 +38674,7 @@ with(MO){
    MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
-      RLogger.info(o, 'Add listener for control popup.');
+      MO.Logger.info(o, 'Add listener for control popup.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -39596,7 +39584,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -42510,7 +42498,7 @@ with(MO){
    }
    MO.FUiEditor_onEditChanged = function FUiEditor_onEditChanged(){
       var o = this;
-      RLogger.debug(o, 'Edit changed');
+      MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
       if(g.value == o.value()){
          if(o.changed){
@@ -42525,7 +42513,7 @@ with(MO){
    MO.FUiEditor_onEditEnd = function FUiEditor_onEditEnd(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditEnd){
          o.lsnEditEnd.process(o);
@@ -42574,7 +42562,7 @@ with(MO){
    MO.FUiEditor_editBegin = function FUiEditor_editBegin(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
       }
@@ -42584,7 +42572,7 @@ with(MO){
    MO.FUiEditor_editCancel = function FUiEditor_editCancel(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
@@ -46703,7 +46691,7 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      RLogger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
+      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiColumn_onEditEnd = function FUiColumn_onEditEnd(e) {
       var o = this;
@@ -46713,7 +46701,7 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      RLogger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
+      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiColumn_onEditChanged = function FUiColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -48984,7 +48972,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Menu button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -49469,7 +49457,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -49589,7 +49577,7 @@ with(MO){
             if(control){
                control.innerCheck(true);
             }else{
-               RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+               MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
             }
          }
       }
@@ -53784,7 +53772,7 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      RLogger.debug(this, xdocument.dump());
+      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -55645,7 +55633,7 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      RLogger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
+      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiDataColumn_onEditEnd = function FUiDataColumn_onEditEnd(e) {
       var o = this;
@@ -55655,7 +55643,7 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      RLogger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
+      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiDataColumn_onEditChanged = function FUiDataColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -55910,7 +55898,7 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
+      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){

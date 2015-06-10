@@ -44,6 +44,7 @@
       // 绑定所有取样器
       o.bindSamplers(renderable);
       // 绘制处理
-      context.drawTriangles(renderable.indexBuffer());
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
    }
 }

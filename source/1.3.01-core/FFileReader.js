@@ -61,8 +61,7 @@
       var reader = o._reader;
       o._statusFree = true;
       if(reader.error){
-         debugger
-         RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
       }else{
          // 设置属性
          o._length = reader.result.byteLength;

@@ -48,7 +48,7 @@ with(MO){
       var e = this;
       var ea = e.annotation;
       if(ea._logger){
-         RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+         MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
       }
       if(e.sender){
          e.onProcess.call(e.source, e.sender, e);
@@ -118,7 +118,7 @@ with(MO){
                if(e.ohProcess){
                   // 处理立即事件
                   if(ea._logger){
-                     RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+                     MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                   }
                   e.ohProcess.call(e.source, e);
                }else if(e.onProcess){

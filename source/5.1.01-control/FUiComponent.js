@@ -237,7 +237,7 @@
          e.invokeCd = EEventInvoke.Before;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -267,7 +267,7 @@
          e.invokeCd = EEventInvoke.After;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -324,12 +324,7 @@
       o._name = null;
       o._label = null;
       o._tag = null;
-      // 清空组件集合
-      var cs = o._components
-      if(cs){
-         cs.dispose();
-         o._components = null;
-      }
+      o._components = RObject.dispose(o._components, true);
       // 释放处理
       o.__base.FObject.dispose.call(o);
    }

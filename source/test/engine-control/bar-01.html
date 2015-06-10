@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+//----------------------------------------------------------
+function _load(){
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建画布
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   var context = canvas.graphicContext();
+   stage = canvas._stage;
+   stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   layer = stage.faceLayer();
+   // 获得定义
+   //var frameDescribeConsole = MO.RConsole.find(MO.FGuiFrameDescribeConsole);
+   //var xframe = frameDescribeConsole.load('eai.country.LogoBar');
+   // 获得表单
+   var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
+   var frame = frameConsole.get('eai.country.LogoBar');
+   frame.linkGraphicContext(canvas);
+   frame.build();
+   layer.pushRenderable(frame.renderable());
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+</BODY>
+
+</HTML>

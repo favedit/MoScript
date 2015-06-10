@@ -92,16 +92,17 @@ with(MO){
    // <T>计算轮廓大小。</T>
    //
    // @method
+   // @param flag:Boolean 标志
    // @return SOutline3 轮廓
    //==========================================================
-   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(){
+   MO.FE3dTemplateRenderable_calculateOutline = function FE3dTemplateRenderable_calculateOutline(flag){
       var o = this;
       var outline = o._outline;
-      if(outline.isEmpty()){
+      if(outline.isEmpty() || flag){
          var resource = o._resource
          var meshResource = resource.mesh();
          var meshOutline = meshResource.outline();
-         outline.assign(meshOutline);
+         outline.calculateFrom(meshOutline, o._currentMatrix);
       }
       return outline;
    }

@@ -291,7 +291,7 @@
             s.appendLine();
          }
       }
-      RLogger.debug(this, s);
+      MO.Logger.debug(this, s);
    }
    //..........................................................
    // 实例化内容

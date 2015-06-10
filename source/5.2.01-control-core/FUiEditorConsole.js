@@ -97,7 +97,7 @@ with(MO){
          e.build(c._hPanel);
          o._editors.set(l, e);
       }
-      RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+      MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
       e.reset();
       if(RClass.isClass(e, FUiDropEditor)){
          e.linkControl(c);
@@ -114,7 +114,7 @@ with(MO){
    MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
       var o = this;
       if(o._focusEditor){
-         RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+         MO.Logger.debug(o, 'Blur editor {1}', RClass.dump(editor));
          editor = RObject.nvl(editor, o._focusEditor);
          if(editor){
             editor.onEditEnd();

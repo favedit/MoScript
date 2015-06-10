@@ -62,11 +62,11 @@ with(MO){
    // <T>选择渲染技术。</T>
    //
    // @method
-   // @param c:context:FG3dContext 渲染环境
-   // @param n:name:String 名称
+   // @param context:FG3dContext 渲染环境
+   // @param name:String 名称
    //==========================================================
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(c, n){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
    }
 
    //==========================================================

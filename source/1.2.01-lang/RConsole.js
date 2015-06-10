@@ -138,7 +138,7 @@ with(MO){
       }else if(v.constructor == Function){
          n = v;
       }else{
-         return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
       // 查找全局控制台
       var r = MO.Global.get(o.ConsolePreFix + n);
@@ -168,9 +168,9 @@ with(MO){
             o._consoles.set(n, r);
             break;
          default:
-            return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
       }
-      RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
       return r;
    }
 

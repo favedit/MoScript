@@ -441,7 +441,14 @@ with(MO){
       return true;
    }
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._handle.scissor(left, top, width, height);
+      var o = this;
+      var handle = o._handle;
+      if((width > 0) && (height > 0)){
+         handle.enable(handle.SCISSOR_TEST);
+         handle.scissor(left, top, width, height);
+      }else{
+         handle.disable(handle.SCISSOR_TEST);
+      }
    }
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){
       var o = this;
@@ -657,7 +664,7 @@ with(MO){
             break;
          }
          default:{
-            RLogger.fatal(o, null, "Unknown texture type.");
+            throw new TError(o, 'Unknown texture type.');
             break;
          }
       }
@@ -781,7 +788,7 @@ with(MO){
          }
       }
       if(!result){
-         RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
+         MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
    }
@@ -1233,7 +1240,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
+         MO.Logger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          g.deleteProgram(o._handle);
          o._handle = null;
          return false;

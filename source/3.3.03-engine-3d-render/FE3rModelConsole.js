@@ -264,7 +264,7 @@ with(MO){
          }
          model.build();
          o._dynamicMeshs.set(flag, model);
-         RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
+         MO.Logger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
       }
       model.update();
       return model;

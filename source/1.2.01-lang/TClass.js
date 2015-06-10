@@ -124,7 +124,7 @@
       var o = this;
       var r = o._annotations[a];
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
       }
       return r;
    }
@@ -145,7 +145,7 @@
          r = as[n];
       }
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
       }
       return r;
    }
@@ -219,7 +219,7 @@
       }
       // 如果未注册，则告诉用户错误
       if(!a){
-         RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+         MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
       }
       // 生成样式名称
       var sn = p.name + '_' + a.style();
@@ -295,7 +295,7 @@
          // 同一个类的实例中全部共享base对象，中间不能存私有树据。
          var template = o.instance;
          if(!template){
-            return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+            return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
          instance = new template.constructor();
          for(var name in template){

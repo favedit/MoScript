@@ -662,26 +662,6 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
    }
 }
-with(MO){
-   MO.APtyString = function APtyString(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : null;
-      o.build    = APtyString_build;
-      o.toString = APtyString_toString;
-      return o;
-   }
-   MO.APtyString_build = function APtyString_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyString_toString = function APtyString_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
 MO.EEditConfig = new function EEditConfig(){
    var o = this;
    o.Search = 'S';
@@ -1534,7 +1514,7 @@ with(MO){
       var o = this;
       var vt = s._invalidText = o.validText(s.text());
       if(vt){
-         RLogger.debug(this, 'Edit valid failed ({0})', vt);
+         MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
       }else{
          s.commitValue();
       }
@@ -2947,7 +2927,7 @@ with(MO){
          e.invokeCd = EEventInvoke.Before;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -2973,7 +2953,7 @@ with(MO){
          e.invokeCd = EEventInvoke.After;
          var m = o[e.invoke];
          if(!m){
-            return RLogger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
          }
          var r = m.call(o, e);
          if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
@@ -3004,11 +2984,7 @@ with(MO){
       o._name = null;
       o._label = null;
       o._tag = null;
-      var cs = o._components
-      if(cs){
-         cs.dispose();
-         o._components = null;
-      }
+      o._components = RObject.dispose(o._components, true);
       o.__base.FObject.dispose.call(o);
    }
    MO.FUiComponent_innerDumpInfo = function FUiComponent_innerDumpInfo(s){
@@ -3844,7 +3820,7 @@ with(MO){
       var e = this;
       var ea = e.annotation;
       if(ea._logger){
-         RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+         MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
       }
       if(e.sender){
          e.onProcess.call(e.source, e.sender, e);
@@ -3882,7 +3858,7 @@ with(MO){
                ea.attach(e, he);
                if(e.ohProcess){
                   if(ea._logger){
-                     RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+                     MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                   }
                   e.ohProcess.call(e.source, e);
                }else if(e.onProcess){
@@ -4410,7 +4386,7 @@ with(MO){
          e.build(c._hPanel);
          o._editors.set(l, e);
       }
-      RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+      MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
       e.reset();
       if(RClass.isClass(e, FUiDropEditor)){
          e.linkControl(c);
@@ -4421,7 +4397,7 @@ with(MO){
    MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
       var o = this;
       if(o._focusEditor){
-         RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+         MO.Logger.debug(o, 'Blur editor {1}', RClass.dump(editor));
          editor = RObject.nvl(editor, o._focusEditor);
          if(editor){
             editor.onEditEnd();
@@ -4575,7 +4551,7 @@ with(MO){
       o.lsnsFocus = new TListeners();
       o.lsnsBlur = new TListeners();
       o.lsnsFocusClass = new TListeners();
-      RLogger.info(o, 'Add listener for window mouse down and wheel.');
+      MO.Logger.info(o, 'Add listener for window mouse down and wheel.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -4611,14 +4587,14 @@ with(MO){
       var bc = o._blurControl;
       if(bc != f){
          if(o._blurAble && f && f.testBlur(c)){
-            RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+            MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
             o._blurControl = f;
             f.doBlur(e);
             o.lsnsBlur.process(f);
          }
       }
       if(o._focusAble){
-         RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
          c.doFocus(e);
          o._focusControl = o._activeControl = c;
          o.lsnsFocus.process(c);
@@ -4632,12 +4608,12 @@ with(MO){
          return;
       }
       if(bc != c && RClass.isClass(c, MUiFocus)){
-         RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
          o._blurControl = c;
          c.doBlur(e);
       }
       if(fc){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
          fc.doBlur(e);
          o._focusControl = null;
       }
@@ -4661,14 +4637,14 @@ with(MO){
       var n = RClass.name(c);
       if(o._focusClasses[n] != p){
          o._focusClasses[n] = p;
-         RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+         MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
          o.lsnsFocusClass.process(p, c);
       }
    }
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
       var c = RHtml.searchLinker(p, FUiControl);
-      RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+      MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){
             o.blur(c, p);
@@ -4890,7 +4866,7 @@ with(MO){
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FUiFrameEventConsole_register = function FUiFrameEventConsole_register(po, pc){
       this._events.push(new TEvent(po, null, pc));
@@ -5429,7 +5405,7 @@ with(MO){
    MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
-      RLogger.info(o, 'Add listener for control popup.');
+      MO.Logger.info(o, 'Add listener for control popup.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -6339,7 +6315,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -9253,7 +9229,7 @@ with(MO){
    }
    MO.FUiEditor_onEditChanged = function FUiEditor_onEditChanged(){
       var o = this;
-      RLogger.debug(o, 'Edit changed');
+      MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
       if(g.value == o.value()){
          if(o.changed){
@@ -9268,7 +9244,7 @@ with(MO){
    MO.FUiEditor_onEditEnd = function FUiEditor_onEditEnd(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditEnd){
          o.lsnEditEnd.process(o);
@@ -9317,7 +9293,7 @@ with(MO){
    MO.FUiEditor_editBegin = function FUiEditor_editBegin(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
       }
@@ -9327,7 +9303,7 @@ with(MO){
    MO.FUiEditor_editCancel = function FUiEditor_editCancel(){
       var o = this;
       var s = o._source;
-      RLogger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
@@ -13446,7 +13422,7 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      RLogger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
+      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiColumn_onEditEnd = function FUiColumn_onEditEnd(e) {
       var o = this;
@@ -13456,7 +13432,7 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      RLogger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
+      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiColumn_onEditChanged = function FUiColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -15727,7 +15703,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Menu button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -16212,7 +16188,7 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         RLogger.debug(o, 'Tool button click. (label={1})', o._label);
+         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -16332,7 +16308,7 @@ with(MO){
             if(control){
                control.innerCheck(true);
             }else{
-               RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+               MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
             }
          }
       }

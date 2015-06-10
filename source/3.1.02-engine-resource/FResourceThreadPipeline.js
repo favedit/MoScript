@@ -51,7 +51,7 @@ with(MO){
       data.completeData(bufferData);
       // 输出信息
       var span = RTimer.now() - o._startTime;
-      RLogger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
+      MO.Logger.info(o, 'Process resource data decompress. (guid={1}, block={2}, length={3}, total={4}, tick={5})', data._guid, data._index, o._dataLength, buffer.byteLength, span);
       // 完成处理
       o._console.onPipelineComplete(o, data);
       // 清空数据

@@ -1214,7 +1214,7 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      RLogger.debug(this, xdocument.dump());
+      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -3075,7 +3075,7 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      RLogger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
+      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiDataColumn_onEditEnd = function FUiDataColumn_onEditEnd(e) {
       var o = this;
@@ -3085,7 +3085,7 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      RLogger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
+      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiDataColumn_onEditChanged = function FUiDataColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -3340,7 +3340,7 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
+      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){

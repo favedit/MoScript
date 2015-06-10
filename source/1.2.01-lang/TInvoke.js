@@ -40,7 +40,7 @@
          try{
             o.callback.call(c, p1, p2, p3, p4, p5, p6);
          }catch(e){
-            RLogger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
+            MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
          }
       }
    }

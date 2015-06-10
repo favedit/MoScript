@@ -217,7 +217,7 @@
          // 创建效果器
          var effect = o.create(context, code);
          effect.load();
-         RLogger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
+         MO.Logger.info(o, 'Create effect template. (code={1}, instance={2})', code, effect);
          // 存储效果器
          effects.set(code, effect);
       }
@@ -271,7 +271,7 @@
             effect._flag = flag;
             effect.load();
             effect.build(o._effectInfo);
-            RLogger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
+            MO.Logger.info(o, 'Create effect. (name={1}, instance={2})', effectCode, effect);
          }
          // 存储效果器
          effects.set(flag, effect);

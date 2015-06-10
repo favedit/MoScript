@@ -62,7 +62,7 @@ with(MO){
    MO.FImage_ohError = function FImage_ohError(p){
       var o = this.__linker;
       var url = o._url;
-      RLogger.error(o, 'Load image failure. (url={1})', url);
+      MO.Logger.error(o, 'Load image failure. (url={1})', url);
       //debugger;
    }
 

@@ -465,8 +465,8 @@ with(MO){
    MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
       this._technique = p;
    }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(c, n){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
    }
    MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
       return this._visibleRenderables;
@@ -740,7 +740,7 @@ with(MO){
       o._started       = false;
       o._thread        = null;
       o._active        = true;
-      o._interval      = 1000 / 40;
+      o._interval      = 10;
       o._stages        = null;
       o.lsnsEnterFrame = null;
       o.lsnsLeaveFrame = null;

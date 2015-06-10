@@ -56,10 +56,10 @@
       }
       // 注册输出接口
       if(o._typeCd == EBrowser.Chrome){
-         RLogger.lsnsOutput.register(o, o.onLog);
+         MO.Logger.lsnsOutput.register(o, o.onLog);
       }
       // 输出日志
-      RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+      MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
       // 是否支持HTML5
       if(window.applicationCache){
          o._supportHtml5 = true;
@@ -76,7 +76,7 @@
          new Blob(["Test"], {'type':'text/plain'});
          capability.blobCreate = true;
       }catch(e){
-         RLogger.warn(o, 'Browser blob not support.');
+         MO.Logger.warn(o, 'Browser blob not support.');
       }
    }
 
@@ -206,4 +206,5 @@
    //..........................................................
    // 实例化内容
    MO.RBrowser = new RBrowser();
+   MO.Browser = MO.RBrowser;
 }

@@ -98,7 +98,7 @@ with(MO){
       o.lsnsBlur = new TListeners();
       o.lsnsFocusClass = new TListeners();
       // 增加监听器
-      RLogger.info(o, 'Add listener for window mouse down and wheel.');
+      MO.Logger.info(o, 'Add listener for window mouse down and wheel.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }
@@ -171,7 +171,7 @@ with(MO){
       if(bc != f){
          if(o._blurAble && f && f.testBlur(c)){
             // 失去焦点
-            RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+            MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
             o._blurControl = f;
             f.doBlur(e);
             // 处理监听
@@ -180,7 +180,7 @@ with(MO){
       }
       // 设置新的焦点对象
       if(o._focusAble){
-         RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
          c.doFocus(e);
          o._focusControl = o._activeControl = c;
          // 处理监听
@@ -209,13 +209,13 @@ with(MO){
       // 检查传入对象是否焦点对象
       if(bc != c && RClass.isClass(c, MUiFocus)){
          // 不存在时直接失去焦点
-         RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+         MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
          o._blurControl = c;
          c.doBlur(e);
       }
       // 强制失去原有焦点
       if(fc){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
          fc.doBlur(e);
          o._focusControl = null;
       }
@@ -257,7 +257,7 @@ with(MO){
       if(o._focusClasses[n] != p){
          // 设置类焦点
          o._focusClasses[n] = p;
-         RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+         MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
          // 纷发类焦点事件
          o.lsnsFocusClass.process(p, c);
       }
@@ -272,7 +272,7 @@ with(MO){
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
       var c = RHtml.searchLinker(p, FUiControl);
-      RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+      MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){
             o.blur(c, p);

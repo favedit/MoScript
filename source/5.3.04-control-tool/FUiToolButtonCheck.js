@@ -201,7 +201,7 @@ with(MO){
             if(control){
                control.innerCheck(true);
             }else{
-               RLogger.error("Can't find group default control. (name={1})", o._groupDefault);
+               MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
             }
          }
       }

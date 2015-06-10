@@ -145,7 +145,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.LINK_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
+         MO.Logger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
          // 释放程序
          g.deleteProgram(o._handle);
          o._handle = null;
@@ -158,7 +158,7 @@ with(MO){
       var pr = g.getProgramParameter(pn, g.VALIDATE_STATUS);
       if(!pr){
          var pi = g.getProgramInfoLog(pn);
-         //RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
+         //MO.Logger.fatal(this, null, "Validate program failure. (reason={1})", pi);
          // 释放程序
          //g.deleteProgram(o._handle);
          //o._handle = null;

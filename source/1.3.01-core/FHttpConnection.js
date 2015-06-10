@@ -212,7 +212,7 @@
       connection.send(o._inputData);
       o.setOutputData();
       o.onConnectionComplete();
-      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
    }
 
    //==========================================================
@@ -226,7 +226,7 @@
       connection.open(o._methodCd, o._url, true);
       o.setHeaders(connection, 0);
       connection.send(o._inputData);
-      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
    }
 
    //==========================================================

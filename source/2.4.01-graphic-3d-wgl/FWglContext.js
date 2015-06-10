@@ -650,7 +650,15 @@ with(MO){
    // @param height:Integer 高度
    //==========================================================
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
-      this._handle.scissor(left, top, width, height);
+      var o = this;
+      var handle = o._handle;
+      if((width > 0) && (height > 0)){
+         handle.enable(handle.SCISSOR_TEST);
+         handle.scissor(left, top, width, height);
+      }else{
+         //handle.scissor(left, top, width, height);
+         handle.disable(handle.SCISSOR_TEST);
+      }
    }
 
    //==========================================================
@@ -951,7 +959,7 @@ with(MO){
             break;
          }
          default:{
-            RLogger.fatal(o, null, "Unknown texture type.");
+            throw new TError(o, 'Unknown texture type.');
             break;
          }
       }
@@ -1150,7 +1158,7 @@ with(MO){
       //............................................................
       // 输出错误信息
       if(!result){
-         RLogger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
+         MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
       }
       return result;
    }

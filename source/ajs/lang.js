@@ -376,7 +376,7 @@ with(MO){
       var o = this;
       var r = o._annotations[a];
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
       }
       return r;
    }
@@ -388,7 +388,7 @@ with(MO){
          r = as[n];
       }
       if(!r){
-         RLogger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+         MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
       }
       return r;
    }
@@ -435,7 +435,7 @@ with(MO){
          p = p.parent;
       }
       if(!a){
-         RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+         MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
       }
       var sn = p.name + '_' + a.style();
       o.styles[n] = sn;
@@ -487,7 +487,7 @@ with(MO){
          }
          var template = o.instance;
          if(!template){
-            return RLogger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+            return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
          }
          instance = new template.constructor();
          for(var name in template){
@@ -1046,7 +1046,7 @@ with(MO){
          try{
             o.callback.call(c, p1, p2, p3, p4, p5, p6);
          }catch(e){
-            RLogger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
+            MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
          }
       }
    }
@@ -1661,7 +1661,7 @@ with(MO){
    MO.TSpeed_record = function TSpeed_record(){
       var o = this;
       var sp = new Date().getTime() - o.start;
-      RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
+      MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
       o.arguments = null;
       o.start = null;
       o.callerName = null;
@@ -2301,7 +2301,7 @@ with(MO){
          }else if(v.constructor == Function){
             n = RMethod.name(v);
          }else if(v.constructor != String){
-            RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
+            MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
       return o._classes[n];
@@ -2401,7 +2401,7 @@ with(MO){
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
                clazz.parent = RClass.forName(name);
                finded = true;
@@ -2416,7 +2416,7 @@ with(MO){
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
                RClass.innerCopy(m.instance, instance);
                clazz.assign(m);
@@ -2583,7 +2583,7 @@ with(MO){
       }else if(v.constructor == Function){
          n = v;
       }else{
-         return RLogger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
       }
       var r = MO.Global.get(o.ConsolePreFix + n);
       if(r){
@@ -2607,9 +2607,9 @@ with(MO){
             o._consoles.set(n, r);
             break;
          default:
-            return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
       }
-      RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
       return r;
    }
    MO.RConsole.prototype.release = function RConsole_release(){
@@ -3669,7 +3669,7 @@ with(MO){
       r.append(ms);
       alert(r.flush());
    }
-   MO.RLogger = new RLogger();
+   MO.Logger = new RLogger();
 }
 with(MO){
    MO.RMethod = function RMethod(){

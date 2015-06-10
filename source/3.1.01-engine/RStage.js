@@ -12,7 +12,8 @@ with(MO){
       o._started       = false;
       o._thread        = null;
       o._active        = true;
-      o._interval      = 1000 / 40;
+      //o._interval      = 1000 / 60;
+      o._interval      = 10;
       o._stages        = null;
       //..........................................................
       // @listener

@@ -26,7 +26,9 @@
    MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
       var o = this;
       var context = o._graphicContext;
-      var size = context.size();
+      var contextSize = context.size();
+      var contextWidth = contextSize.width;
+      var contextHeight = contextSize.height;
       var program = o._program;
       // 绑定材质
       var material = renderable.material();
@@ -38,24 +40,32 @@
          var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
          var index = 0;
          for(var i = 0; i < meshCount; i++){
-            var mesh = meshs.getAt(i);
+            var mesh = meshs.at(i);
             var matrix = mesh.matrix();
-            data[index++] = matrix.sx / size.width * 2;
-            data[index++] = matrix.sy / size.height * 2;
-            data[index++] = matrix.tx / size.width * 2 - 1;
-            data[index++] = 1 - matrix.ty / size.height * 2;
+            data[index++] = matrix.sx / contextWidth * 2;
+            data[index++] = matrix.sy / contextHeight * 2;
+            data[index++] = matrix.tx / contextWidth * 2 - 1;
+            data[index++] = 1 - matrix.ty / contextHeight * 2;
             mesh.currentMatrix().writeData(data, 4 * i);
          }
          program.setParameter('vc_position', data);
+         // 绘制处理
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / size.width * 2;
-         var cy = matrix.sy / size.height * 2;
-         var tx = matrix.tx / size.width * 2 - 1;
-         var ty = 1 - matrix.ty / size.height * 2;
+         var cx = matrix.sx / contextWidth * 2;
+         var cy = matrix.sy / contextHeight * 2;
+         var tx = matrix.tx / contextWidth * 2 - 1;
+         var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
+         // 绘制处理
+         var size = renderable.size();
+         //context.setScissorRectangle(matrix.tx, matrix.ty, size.width, size.height);
+         //context.setScissorRectangle(100, 100, 600, 400);
+         //context.setScissorRectangle(matrix.tx, matrix.ty, size.width, size.height);
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+         //context.setScissorRectangle(0, 0, contextWidth, contextHeight);
+         //context.setScissorRectangle();
       }
-      // 绘制处理
-      o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }
 }

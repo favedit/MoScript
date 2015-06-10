@@ -344,7 +344,7 @@ with(MO){
       t.setInterval(o._interval);
       t.lsnsProcess.register(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -1065,7 +1065,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 5;
+      o._interval    = 10;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;

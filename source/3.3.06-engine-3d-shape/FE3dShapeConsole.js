@@ -62,7 +62,7 @@ with(MO){
       }
       // 生成地址
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       // 加载模型
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
@@ -92,7 +92,7 @@ with(MO){
       }
       // 生成地址
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       // 创建渲染位图
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);

@@ -342,7 +342,7 @@
          }else if(v.constructor == Function){
             n = RMethod.name(v);
          }else if(v.constructor != String){
-            RLogger.fatal(o, null, 'Find class failure. (value={1})', v);
+            MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
          }
       }
       return o._classes[n];
@@ -508,7 +508,7 @@
             var name = sbs[i];
             if(RString.startsWith(name, 'F')){
                if(finded){
-                  RLogger.fatal(o, null, 'Parent class is too many. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
                }
                clazz.parent = RClass.forName(name);
                finded = true;
@@ -526,7 +526,7 @@
             if(!RString.startsWith(name, 'F')){
                var m = RClass.forName(name);
                if(m == null){
-                  RLogger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
+                  MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
                }
                RClass.innerCopy(m.instance, instance);
                clazz.assign(m);

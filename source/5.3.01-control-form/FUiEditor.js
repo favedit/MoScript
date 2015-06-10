@@ -70,7 +70,7 @@ with(MO){
    //==========================================================
    MO.FUiEditor_onEditChanged = function FUiEditor_onEditChanged(){
       var o = this;
-      RLogger.debug(o, 'Edit changed');
+      MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
       if(g.value == o.value()){
          if(o.changed){
@@ -94,7 +94,7 @@ with(MO){
       var o = this;
       var s = o._source;
       // 编辑完成
-      RLogger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
       o.hide();
       // 处理完成事件
       if(o.lsnEditEnd){
@@ -196,7 +196,7 @@ with(MO){
       var o = this;
       var s = o._source;
       // 编辑开始
-      RLogger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
       // 处理开始事件
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
@@ -215,7 +215,7 @@ with(MO){
       var o = this;
       var s = o._source;
       // 编辑完成
-      RLogger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
+      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
       o.hide();
       // 处理取消事件
       if(o.lsnEditCancel){

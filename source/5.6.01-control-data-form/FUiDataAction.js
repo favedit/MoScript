@@ -66,7 +66,7 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      RLogger.debug(this, xdocument.dump());
+      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       // 发送数据请求

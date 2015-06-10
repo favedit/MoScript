@@ -43,6 +43,6 @@ with(MO){
       //..........................................................
       // 读取材质
       o._material = RConsole.find(FE3sMaterialConsole).unserialize(input);
-      RLogger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
+      MO.Logger.info(o, "Unserialize material success. (guid={1}, code={2})", o._guid, o._code);
    }
 }

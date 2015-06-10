@@ -109,7 +109,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -127,7 +127,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -922,7 +922,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -940,7 +940,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dBitmapData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
@@ -1142,7 +1142,7 @@ with(MO){
          return bitmap;
       }
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       if(code == 'environment'){
          bitmap = RClass.create(FE3rBitmapCubePack);
       }else{
@@ -1160,7 +1160,7 @@ with(MO){
          return bitmap;
       }
       var loadUrl = RBrowser.contentPath(url);
-      RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+      MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
       var bitmap = RClass.create(FE3dVideoData);
       bitmap.linkGraphicContext(context);
       bitmap.setup();

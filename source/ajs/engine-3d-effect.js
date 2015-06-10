@@ -53,7 +53,8 @@ with(MO){
       program.setParameter('fc_ambient_color', info.ambientColor);
       o.bindAttributes(renderable);
       o.bindSamplers(renderable);
-      context.drawTriangles(renderable.indexBuffer());
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
    }
 }
 with(MO){
@@ -218,7 +219,9 @@ with(MO){
    MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffect_drawRenderable(region, renderable){
       var o = this;
       var context = o._graphicContext;
-      var size = context.size();
+      var contextSize = context.size();
+      var contextWidth = contextSize.width;
+      var contextHeight = contextSize.height;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -228,24 +231,26 @@ with(MO){
          var data = RTypeArray.findTemp(EDataType.Float32, 4 * meshCount);
          var index = 0;
          for(var i = 0; i < meshCount; i++){
-            var mesh = meshs.getAt(i);
+            var mesh = meshs.at(i);
             var matrix = mesh.matrix();
-            data[index++] = matrix.sx / size.width * 2;
-            data[index++] = matrix.sy / size.height * 2;
-            data[index++] = matrix.tx / size.width * 2 - 1;
-            data[index++] = 1 - matrix.ty / size.height * 2;
+            data[index++] = matrix.sx / contextWidth * 2;
+            data[index++] = matrix.sy / contextHeight * 2;
+            data[index++] = matrix.tx / contextWidth * 2 - 1;
+            data[index++] = 1 - matrix.ty / contextHeight * 2;
             mesh.currentMatrix().writeData(data, 4 * i);
          }
          program.setParameter('vc_position', data);
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / size.width * 2;
-         var cy = matrix.sy / size.height * 2;
-         var tx = matrix.tx / size.width * 2 - 1;
-         var ty = 1 - matrix.ty / size.height * 2;
+         var cx = matrix.sx / contextWidth * 2;
+         var cy = matrix.sy / contextHeight * 2;
+         var tx = matrix.tx / contextWidth * 2 - 1;
+         var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
+         var size = renderable.size();
+         o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }
-      o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }
 }
 with(MO){

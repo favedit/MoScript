@@ -35,7 +35,8 @@ function onTemplateLoad(event){
    var count = renderables.count();
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
-      var indexBuffer = renderable.indexBuffer();
+      var indexBuffer = renderable.indexBuffers().first();
+      var outline = renderable.calculateOutline();
       indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
    }
    var matrix = sprite.matrix();
@@ -85,7 +86,7 @@ function onTemplateBorderLoad(event){
    var count = renderables.count();
    for(var i = 0; i < count; i++){
       var renderable = renderables.at(i);
-      var indexBuffer = renderable.indexBuffer();
+      var indexBuffer = renderable.indexBuffer().first();
       indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
    }
    var matrix = sprite.matrix();

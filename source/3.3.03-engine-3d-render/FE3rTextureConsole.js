@@ -108,7 +108,7 @@ with(MO){
       }
       // 生成地址
       var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      RLogger.info(o, 'Load bitmap. (url={1})', url);
+      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
       // 加载模型
       if(code == 'environment'){
          bitmap = RClass.create(FE3rTextureCube);

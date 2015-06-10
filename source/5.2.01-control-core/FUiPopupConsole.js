@@ -57,7 +57,7 @@ with(MO){
       var o = this;
       o.__base.FConsole.construct.call(o);
       // 增加监听器
-      RLogger.info(o, 'Add listener for control popup.');
+      MO.Logger.info(o, 'Add listener for control popup.');
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
    }

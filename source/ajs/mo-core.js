@@ -1430,8 +1430,7 @@ with(MO){
       var reader = o._reader;
       o._statusFree = true;
       if(reader.error){
-         debugger
-         RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
       }else{
          o._length = reader.result.byteLength;
          o._data = reader.result;
@@ -1595,7 +1594,7 @@ with(MO){
       connection.send(o._inputData);
       o.setOutputData();
       o.onConnectionComplete();
-      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
       var o = this;
@@ -1603,7 +1602,7 @@ with(MO){
       connection.open(o._methodCd, o._url, true);
       o.setHeaders(connection, 0);
       connection.send(o._inputData);
-      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
    }
    MO.FHttpConnection_send = function FHttpConnection_send(url, data){
       var o = this;
@@ -3113,7 +3112,7 @@ with(MO){
       t.setInterval(o._interval);
       t.lsnsProcess.register(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -3834,7 +3833,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 5;
+      o._interval    = 10;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;

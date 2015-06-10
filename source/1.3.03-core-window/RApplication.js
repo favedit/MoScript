@@ -57,7 +57,7 @@
       try{
          CollectGarbage();
       }catch(e){
-         RLogger.error(e);
+        MO.Logger.error(e);
       }
    }
    //..........................................................

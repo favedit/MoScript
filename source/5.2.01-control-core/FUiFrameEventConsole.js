@@ -98,7 +98,7 @@ with(MO){
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onProcess);
       RConsole.find(FThreadConsole).start(t);
-      RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
    }
 
    //==========================================================
