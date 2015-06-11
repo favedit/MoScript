@@ -13,5 +13,7 @@ MO.ESource = new function ESource(){
    o.Set    = 'set';
    // @member 获得设置
    o.GetSet = 'getset';
+   // @member 监听器
+   o.Listener = 'listener';
    return o;
 }

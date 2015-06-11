@@ -1,4 +1,25 @@
 with(MO){
+   MO.AListener = function AListener(name, linker){
+      var o = this;
+      ASource.call(o, name, ESource.Listener, linker);
+      o.build = AListener_build;
+      return o;
+   }
+   MO.AListener_build = function AListener_build(clazz, instance){
+      var o = this;
+      var addListener = 'add' + o._linker + 'Listener';
+      instance[addListener] = RListener.makeAddListener(addListener, o._linker);
+      var setListener = 'set' + o._linker + 'Listener';
+      instance[setListener] = RListener.makeSetListener(setListener, o._linker);
+      var removeListener = 'remove' + o._linker + 'Listener';
+      instance[removeListener] = RListener.makeRemoveListener(removeListener, o._linker);
+      var clearListeners = 'clear' + o._linker + 'Listeners';
+      instance[clearListeners] = RListener.makeClearListener(clearListeners, o._linker);
+      var processListener = 'process' + o._linker + 'Listener';
+      instance[processListener] = RListener.makeProcessListener(processListener, o._linker);
+   }
+}
+with(MO){
    MO.AStyle = function AStyle(n, s){
       var o = this;
       AAnnotation.call(o, n);
@@ -79,22 +100,22 @@ with(MO){
 }
 MO.EEvent = new function EEvent(){
    var o = this;
-   o.Unknown     = 0;
-   o.Load        = 1;
-   o.Process     = 2;
-   o.EnterFrame  = 3;
-   o.LeaveFrame  = 4;
-   o.Enter       = 5;
-   o.Leave       = 6;
-   o.Focus       = 7;
-   o.Blur        = 8;
-   o.Click       = 9;
-   o.DoubleClick = 10;
-   o.ItemClick   = 11;
-   o.Selected    = 12;
-   o.DataChanged = 13;
-   o.Result      = 14;
-   o.TouchZoom   = 'touch.zoom';
+   o.Unknown     = 'Unknown';
+   o.Load        = 'Load';
+   o.Process     = 'Process';
+   o.EnterFrame  = 'EnterFrame';
+   o.LeaveFrame  = 'LeaveFrame';
+   o.Enter       = 'Enter';
+   o.Leave       = 'Leave';
+   o.Focus       = 'Focus';
+   o.Blur        = 'Blur';
+   o.Click       = 'Click';
+   o.DoubleClick = 'DoubleClick';
+   o.ItemClick   = 'ItemClick';
+   o.Selected    = 'Selected';
+   o.DataChanged = 'DataChanged';
+   o.Result      = 'Result';
+   o.TouchZoom   = 'TouchZoom';
    return o;
 }
 MO.EHttpContent = new function EHttpContent(){
@@ -1887,6 +1908,74 @@ with(MO){
       return true;
    }
    MO.RKeyboard = new RKeyboard();
+}
+with(MO){
+   MO.RListener = function RListener(){
+      var o = this;
+      o._listeners = new Object();
+      return o;
+   }
+   MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.addListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.setListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.clearListeners(\''+ code +'\');';
+         method = new Function(source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
+         method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener = new RListener();
 }
 with(MO){
    MO.RLoader = function RLoader(){

@@ -247,6 +247,7 @@ MO.ESource = new function ESource(){
    o.Get    = 'get';
    o.Set    = 'set';
    o.GetSet = 'getset';
+   o.Listener = 'listener';
    return o;
 }
 with(MO){

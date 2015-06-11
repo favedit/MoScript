@@ -434,14 +434,16 @@ with(MO){
       return -1;
    }
    MO.TMap_first = function TMap_first(){
-      if(this._count > 0){
-         return this._values[0];
+      var o = this;
+      if(o._count > 0){
+         return o._values[0];
       }
       return null;
    }
    MO.TMap_last = function TMap_last(){
-      if(this._count > 0){
-         return this._values[this._count - 1];
+      var o = this;
+      if(o._count > 0){
+         return o._values[o._count - 1];
       }
       return null;
    }
@@ -455,116 +457,128 @@ with(MO){
       return this._values[index];
    }
    MO.TMap_value = function TMap_value(index){
-      return ((index >= 0) && (index < this._count)) ? this._values[index] : null;
+      var o = this;
+      return ((index >= 0) && (index < o._count)) ? o._values[index] : null;
    }
    MO.TMap_setValueAt = function TMap_setValueAt(index, value){
       this._values[index] = value;
    }
    MO.TMap_setValue = function TMap_setValue(index, value){
-      if((index >= 0) && (index < this._count)){
-         this._values[index] = value;
+      var o = this;
+      if((index >= 0) && (index < o._count)){
+         o._values[index] = value;
       }
    }
    MO.TMap_get = function TMap_get(name, defaultValue){
+      var o = this;
       if(name != null){
-         var i = this._table[name.toString().toLowerCase()];
+         var i = o._table[name.toString().toLowerCase()];
          if(i != null){
-            return this._values[i];
+            return o._values[i];
          }
       }
       return defaultValue;
    }
    MO.TMap_set = function TMap_set(name, value){
+      var o = this;
       if(name != null){
          var code = name.toString().toLowerCase();
-         var index = this._table[code];
-         if((index == null) || (index >= this._count)){
-            index = this._count++;
-            this._names[index] = name;
-            this._table[code] = index;
+         var index = o._table[code];
+         if((index == null) || (index >= o._count)){
+            index = o._count++;
+            o._names[index] = name;
+            o._table[code] = index;
          }
-         this._values[index] = value;
+         o._values[index] = value;
       }
    }
    MO.TMap_assign = function TMap_assign(map){
-      this.clear();
-      this.append(map);
+      var o = this;
+      o.clear();
+      o.append(map);
    }
    MO.TMap_append = function TMap_append(map){
+      var o = this;
       if(map){
          var count = map.count();
          for(var i = 0; i < count; i++){
             var name = map.nameAt(i);
             var value = map.valueAt(i);
-            this.set(name, value);
+            o.set(name, value);
          }
       }
    }
    MO.TMap_insert = function TMap_insert(index, name, value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if((index >= 0) && (index <= count)){
          for(var i = count; i > index; i--){
-            this._names[i] = this._names[i - 1];
-            this._values[i] = this._values[i - 1];
+            o._names[i] = o._names[i - 1];
+            o._values[i] = o._values[i - 1];
          }
-         this._names[index] = name;
-         this._values[index] = value;
-         this._count++;
-         this.rebuild();
+         o._names[index] = name;
+         o._values[index] = value;
+         o._count++;
+         o.rebuild();
       }
    }
    MO.TMap_remove = function TMap_remove(index){
+      var o = this;
       var value = null;
-      var count = this._count;
+      var count = o._count;
       if((index >= 0) && (index < count)){
-         value = this._values[index];
+         value = o._values[index];
          for(var i = index; i < count; i++){
-            this._names[i] = this._names[i + 1];
-            this._values[i] = this._values[i + 1];
+            o._names[i] = o._names[i + 1];
+            o._values[i] = o._values[i + 1];
          }
-         this._count--;
-         this.rebuild();
+         o._count--;
+         o.rebuild();
       }
       return value;
    }
    MO.TMap_removeName = function TMap_removeName(name){
-      var index = this.indexOf(name);
+      var o = this;
+      var index = o.indexOf(name);
       if(index != -1){
-         return this.remove(index);
+         return o.remove(index);
       }
       return null;
    }
    MO.TMap_removeValue = function TMap_removeValue(value){
+      var o = this;
       var index = 0;
-      var count = this._count;
+      var count = o._count;
       for(var i = 0; i < count; i++){
-         var find = this._values[i];
+         var find = o._values[i];
          if(find != value){
             if(index != i){
-               this._names[index] = this._names[i];
-               this._values[index] = find;
+               o._names[index] = o._names[i];
+               o._values[index] = find;
             }
             index++;
          }
       }
-      this._count = index;
-      this.rebuild();
+      o._count = index;
+      o.rebuild();
    }
    MO.TMap_rebuild = function TMap_rebuild(){
-      var table = this._table;
+      var o = this;
+      var table = o._table;
       for(var name in table){
          delete table[name];
       }
-      var count = this._count;
+      var count = o._count;
       for(var i = 0; i < count; i++){
-         var code = this._names[i].toLowerCase();
+         var code = o._names[i].toLowerCase();
          table[code] = i;
       }
    }
    MO.TMap_clear = function TMap_clear(){
-      this._count = 0;
-      for(var name in this._table){
-         delete this._table[name];
+      var o = this;
+      o._count = 0;
+      for(var name in o._table){
+         delete o._table[name];
       }
    }
    MO.TMap_toString = function TMap_toString(){
@@ -573,45 +587,47 @@ with(MO){
    MO.TMap_disposeAll = function TMap_disposeAll(){
    }
    MO.TMap_dispose = function TMap_dispose(flag){
+      var o = this;
       if(flag){
-         var count = this._count;
-         var values = this._values;
+         var count = o._count;
+         var values = o._values;
          for(var i = 0; i < count; i++){
             var value = values[i];
             values[i] = RObject.dispose(value);
          }
       }
-      var table = this._table;
+      var table = o._table;
       if(table){
          for(var name in table){
             table[name] = null;
          }
-         this._table = null;
+         o._table = null;
       }
-      var names = this._names;
+      var names = o._names;
       if(names){
          for(var i = names.length - 1; i >= 0; i--){
             names[i] = null;
          }
-         this._names = null;
+         o._names = null;
       }
-      var values = this._values;
+      var values = o._values;
       if(values){
          for(var i = values.length - 1; i >= 0; i--){
             values[i] = null;
          }
-         this._values = null;
+         o._values = null;
       }
-      this._count = 0;
+      o._count = 0;
    }
    MO.TMap_dump = function TMap_dump(){
+      var o = this;
       var info = new TString();
-      var count = this._count;
+      var count = o._count;
       info.appendLine(MO.Runtime.className(o), ': ', count);
       if(count > 0){
          info.append(' {');
          for(var i = 0; i < count; i++){
-            info.appendLine(this._names[i], '=[', this._values[i], ']');
+            info.appendLine(o._names[i], '=[', o._values[i], ']');
          }
          info.append('}');
       }
@@ -1522,6 +1538,7 @@ MO.ESource = new function ESource(){
    o.Get    = 'get';
    o.Set    = 'set';
    o.GetSet = 'getset';
+   o.Listener = 'listener';
    return o;
 }
 with(MO){

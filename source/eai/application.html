@@ -33,70 +33,21 @@ function onTemplateLoad(event){
    var sprite = templateSprite = template.sprite();
    var renderables = sprite.renderables();
    var count = renderables.count();
-   for(var i = 0; i < count; i++){
-      var renderable = renderables.at(i);
-      var indexBuffer = renderable.indexBuffers().first();
-      var outline = renderable.calculateOutline();
-      indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   }
+   //for(var i = 0; i < count; i++){
+      //var renderable = renderables.at(i);
+      //var indexBuffer = renderable.indexBuffers().first();
+      //var outline = renderable.calculateOutline();
+      //indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   //}
    var matrix = sprite.matrix();
    matrix.tx = -4;
    matrix.ty = -3;
    matrix.rx = -Math.PI / 2;
+   //matrix.setScaleAll(1.01);
    matrix.updateForce();
 
    var stage = canvas._stage;
    stage.mapLayer().pushDisplay(sprite);
-
-   //template.addEnterFrameListener(null, onEnterFrame);
-
-   //var r1 = sprite.renderables().at(0);
-   //var outline = r1.calculateOutline();
-   //var matrix = r1.matrix()
-   //matrix.setScaleAll(3);
-   //matrix.updateForce();
-   //var stage = canvas._stage;
-   //var region = template.region();
-   //region.backgroundColor().set(1, 1, 1, 1);
-
-   //var camera = region.camera();
-
-   //var bitmap = MO.RClass.create(MO.FE3dBitmap);
-   //bitmap.linkGraphicContext(canvas);
-   //bitmap.setSize(100, 100);
-   //bitmap.loadUrl('/script/ars/picture/star4.jpg');
-   //var matrix = bitmap.matrix();
-   //sprite.pushRenderable(bitmap);
-   //camera.setPosition();
-   //camera.lookAt();
-   //camera.update();
-   //var space = event.space;
-   //space.addEnterFrameListener(null, onEnterFrame);
-   // 打开播放
-   //canvas.switchPlay(true);
-   //canvas.switchMovie(true);
-}
-//------------------------------------------------------------
-function onTemplateBorderLoad(event){
-   //uiLayer = RClass.create(FDisplayLayer);
-   // 监听时间
-   var template = event;
-   var sprite = templateSprite = template.sprite();
-   var renderables = sprite.renderables();
-   var count = renderables.count();
-   for(var i = 0; i < count; i++){
-      var renderable = renderables.at(i);
-      var indexBuffer = renderable.indexBuffer().first();
-      indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   }
-   var matrix = sprite.matrix();
-   //matrix.tx = -4;
-   //matrix.ty = -3;
-   matrix.rx = -Math.PI / 2;
-   matrix.updateForce();
-
-   var stage = canvas._stage;
-   //stage.mapLayer().pushDisplay(sprite);
 
    //template.addEnterFrameListener(null, onEnterFrame);
 
@@ -196,10 +147,6 @@ function onLoad(){
    var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
    var template = templateConsole.allocByCode(canvas, 'eai.world.china');
    template.addLoadListener(null, onTemplateLoad);
-
-   //var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
-   //var templateBorder = templateConsole.allocByCode(canvas, 'eai.world.china.border');
-   //templateBorder.addLoadListener(null, onTemplateBorderLoad);
 
    //canvas.loadByCode('eai.world.china');
    //canvas.addLoadListener(null, onTemplateLoad);

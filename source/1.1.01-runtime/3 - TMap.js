@@ -203,7 +203,8 @@
    // @return Object 内容
    //==========================================================
    MO.TMap_value = function TMap_value(index){
-      return ((index >= 0) && (index < this._count)) ? this._values[index] : null;
+      var o = this;
+      return ((index >= 0) && (index < o._count)) ? o._values[index] : null;
    }
 
    //==========================================================
@@ -225,8 +226,9 @@
    // @param value:Object 内容
    //==========================================================
    MO.TMap_setValue = function TMap_setValue(index, value){
-      if((index >= 0) && (index < this._count)){
-         this._values[index] = value;
+      var o = this;
+      if((index >= 0) && (index < o._count)){
+         o._values[index] = value;
       }
    }
 
@@ -240,10 +242,11 @@
    // @return Object 内容
    //==========================================================
    MO.TMap_get = function TMap_get(name, defaultValue){
+      var o = this;
       if(name != null){
-         var i = this._table[name.toString().toLowerCase()];
+         var i = o._table[name.toString().toLowerCase()];
          if(i != null){
-            return this._values[i];
+            return o._values[i];
          }
       }
       return defaultValue;
@@ -267,7 +270,7 @@
             o._names[index] = name;
             o._table[code] = index;
          }
-         thiso_values[index] = value;
+         o._values[index] = value;
       }
    }
 
@@ -278,8 +281,9 @@
    // @param map:TMap 表
    //==========================================================
    MO.TMap_assign = function TMap_assign(map){
-      this.clear();
-      this.append(map);
+      var o = this;
+      o.clear();
+      o.append(map);
    }
 
    //==========================================================
@@ -289,12 +293,13 @@
    // @param map:TMap 表
    //==========================================================
    MO.TMap_append = function TMap_append(map){
+      var o = this;
       if(map){
          var count = map.count();
          for(var i = 0; i < count; i++){
             var name = map.nameAt(i);
             var value = map.valueAt(i);
-            this.set(name, value);
+            o.set(name, value);
          }
       }
    }
@@ -330,16 +335,17 @@
    // @return Object 删除的内容
    //==========================================================
    MO.TMap_remove = function TMap_remove(index){
+      var o = this;
       var value = null;
-      var count = this._count;
+      var count = o._count;
       if((index >= 0) && (index < count)){
-         value = this._values[index];
+         value = o._values[index];
          for(var i = index; i < count; i++){
-            this._names[i] = this._names[i + 1];
-            this._values[i] = this._values[i + 1];
+            o._names[i] = o._names[i + 1];
+            o._values[i] = o._values[i + 1];
          }
-         this._count--;
-         this.rebuild();
+         o._count--;
+         o.rebuild();
       }
       return value;
    }
@@ -352,9 +358,10 @@
    // @return Object 删除的内容
    //==========================================================
    MO.TMap_removeName = function TMap_removeName(name){
-      var index = this.indexOf(name);
+      var o = this;
+      var index = o.indexOf(name);
       if(index != -1){
-         return this.remove(index);
+         return o.remove(index);
       }
       return null;
    }
@@ -366,20 +373,21 @@
    // @param value:Object 内容
    //==========================================================
    MO.TMap_removeValue = function TMap_removeValue(value){
+      var o = this;
       var index = 0;
-      var count = this._count;
+      var count = o._count;
       for(var i = 0; i < count; i++){
-         var find = this._values[i];
+         var find = o._values[i];
          if(find != value){
             if(index != i){
-               this._names[index] = this._names[i];
-               this._values[index] = find;
+               o._names[index] = o._names[i];
+               o._values[index] = find;
             }
             index++;
          }
       }
-      this._count = index;
-      this.rebuild();
+      o._count = index;
+      o.rebuild();
    }
 
    //==========================================================
@@ -388,15 +396,16 @@
    // @method
    //==========================================================
    MO.TMap_rebuild = function TMap_rebuild(){
+      var o = this;
       // 清除对照表数据
-      var table = this._table;
+      var table = o._table;
       for(var name in table){
          delete table[name];
       }
       // 重建对照表数据
-      var count = this._count;
+      var count = o._count;
       for(var i = 0; i < count; i++){
-         var code = this._names[i].toLowerCase();
+         var code = o._names[i].toLowerCase();
          table[code] = i;
       }
    }
@@ -407,10 +416,11 @@
    // @method
    //==========================================================
    MO.TMap_clear = function TMap_clear(){
-      this._count = 0;
+      var o = this;
+      o._count = 0;
       // 清除对照表数据
-      for(var name in this._table){
-         delete this._table[name];
+      for(var name in o._table){
+         delete o._table[name];
       }
    }
 
@@ -439,10 +449,11 @@
    // @param flag:Boolean 标志
    //==========================================================
    MO.TMap_dispose = function TMap_dispose(flag){
+      var o = this;
       // 释放所有数据
       if(flag){
-         var count = this._count;
-         var values = this._values;
+         var count = o._count;
+         var values = o._values;
          for(var i = 0; i < count; i++){
             var value = values[i];
             values[i] = RObject.dispose(value);
@@ -450,31 +461,31 @@
       }
       //..........................................................
       // 清除对照表数据
-      var table = this._table;
+      var table = o._table;
       if(table){
          for(var name in table){
             table[name] = null;
          }
-         this._table = null;
+         o._table = null;
       }
       // 清空名称集合
-      var names = this._names;
+      var names = o._names;
       if(names){
          for(var i = names.length - 1; i >= 0; i--){
             names[i] = null;
          }
-         this._names = null;
+         o._names = null;
       }
       // 清空数据集合
-      var values = this._values;
+      var values = o._values;
       if(values){
          for(var i = values.length - 1; i >= 0; i--){
             values[i] = null;
          }
-         this._values = null;
+         o._values = null;
       }
       // 清空属性
-      this._count = 0;
+      o._count = 0;
    }
 
    //==========================================================
@@ -484,13 +495,14 @@
    // @return String 字符串
    //==========================================================
    MO.TMap_dump = function TMap_dump(){
+      var o = this;
       var info = new TString();
-      var count = this._count;
+      var count = o._count;
       info.appendLine(MO.Runtime.className(o), ': ', count);
       if(count > 0){
          info.append(' {');
          for(var i = 0; i < count; i++){
-            info.appendLine(this._names[i], '=[', this._values[i], ']');
+            info.appendLine(o._names[i], '=[', o._values[i], ']');
          }
          info.append('}');
       }

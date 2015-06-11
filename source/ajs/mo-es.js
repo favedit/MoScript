@@ -1,4 +1,25 @@
 with(MO){
+   MO.AListener = function AListener(name, linker){
+      var o = this;
+      ASource.call(o, name, ESource.Listener, linker);
+      o.build = AListener_build;
+      return o;
+   }
+   MO.AListener_build = function AListener_build(clazz, instance){
+      var o = this;
+      var addListener = 'add' + o._linker + 'Listener';
+      instance[addListener] = RListener.makeAddListener(addListener, o._linker);
+      var setListener = 'set' + o._linker + 'Listener';
+      instance[setListener] = RListener.makeSetListener(setListener, o._linker);
+      var removeListener = 'remove' + o._linker + 'Listener';
+      instance[removeListener] = RListener.makeRemoveListener(removeListener, o._linker);
+      var clearListeners = 'clear' + o._linker + 'Listeners';
+      instance[clearListeners] = RListener.makeClearListener(clearListeners, o._linker);
+      var processListener = 'process' + o._linker + 'Listener';
+      instance[processListener] = RListener.makeProcessListener(processListener, o._linker);
+   }
+}
+with(MO){
    MO.AStyle = function AStyle(n, s){
       var o = this;
       AAnnotation.call(o, n);
@@ -79,22 +100,22 @@ with(MO){
 }
 MO.EEvent = new function EEvent(){
    var o = this;
-   o.Unknown     = 0;
-   o.Load        = 1;
-   o.Process     = 2;
-   o.EnterFrame  = 3;
-   o.LeaveFrame  = 4;
-   o.Enter       = 5;
-   o.Leave       = 6;
-   o.Focus       = 7;
-   o.Blur        = 8;
-   o.Click       = 9;
-   o.DoubleClick = 10;
-   o.ItemClick   = 11;
-   o.Selected    = 12;
-   o.DataChanged = 13;
-   o.Result      = 14;
-   o.TouchZoom   = 'touch.zoom';
+   o.Unknown     = 'Unknown';
+   o.Load        = 'Load';
+   o.Process     = 'Process';
+   o.EnterFrame  = 'EnterFrame';
+   o.LeaveFrame  = 'LeaveFrame';
+   o.Enter       = 'Enter';
+   o.Leave       = 'Leave';
+   o.Focus       = 'Focus';
+   o.Blur        = 'Blur';
+   o.Click       = 'Click';
+   o.DoubleClick = 'DoubleClick';
+   o.ItemClick   = 'ItemClick';
+   o.Selected    = 'Selected';
+   o.DataChanged = 'DataChanged';
+   o.Result      = 'Result';
+   o.TouchZoom   = 'TouchZoom';
    return o;
 }
 MO.EHttpContent = new function EHttpContent(){
@@ -1887,6 +1908,74 @@ with(MO){
       return true;
    }
    MO.RKeyboard = new RKeyboard();
+}
+with(MO){
+   MO.RListener = function RListener(){
+      var o = this;
+      o._listeners = new Object();
+      return o;
+   }
+   MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.addListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.setListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.clearListeners(\''+ code +'\');';
+         method = new Function(source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
+         method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener = new RListener();
 }
 with(MO){
    MO.RLoader = function RLoader(){
@@ -21230,8 +21319,7 @@ with(MO){
    }
    MO.FE3dBitmap_loadUrl = function FE3dBitmap_loadUrl(url){
       var o = this;
-      var context = o._graphicContext;
-      o._renderable = RConsole.find(FE3dBitmapConsole).loadUrl(context, url);
+      o._renderable = RConsole.find(FE3dBitmapConsole).loadDataByUrl(o, url);
       o._ready = false;
    }
    MO.FE3dBitmap_dispose = function FE3dBitmap_dispose(){
@@ -21242,43 +21330,25 @@ with(MO){
 with(MO){
    MO.FE3dBitmapConsole = function FE3dBitmapConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._scopeCd  = EScope.Local;
-      o._bitmaps  = null;
-      o._dataUrl  = '/cloud.resource.bitmap.wv'
-      o.construct = FE3dBitmapConsole_construct;
-      o.bitmaps   = FE3dBitmapConsole_bitmaps;
-      o.load      = FE3dBitmapConsole_load;
-      o.loadUrl   = FE3dBitmapConsole_loadUrl;
+      o._scopeCd       = EScope.Local;
+      o._bitmaps       = RClass.register(o, new AGetter('_bitmaps'));
+      o._bitmapDatas   = RClass.register(o, new AGetter('_bitmapDatas'));
+      o._dataUrl       = '/cloud.resource.bitmap.wv'
+      o.construct      = FE3dBitmapConsole_construct;
+      o.loadByUrl      = FE3dBitmapConsole_loadByUrl;
+      o.loadByGuid     = FE3dBitmapConsole_loadByGuid;
+      o.loadDataByUrl  = FE3dBitmapConsole_loadDataByUrl;
+      o.loadDataByGuid = FE3dBitmapConsole_loadDataByGuid;
+      o.dispose        = FE3dBitmapConsole_dispose;
       return o;
    }
    MO.FE3dBitmapConsole_construct = function FE3dBitmapConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
       o._bitmaps = new TDictionary();
+      o._bitmapDatas = new TDictionary();
    }
-   MO.FE3dBitmapConsole_bitmaps = function FE3dBitmapConsole_bitmaps(){
-      return this._bitmaps;
-   }
-   MO.FE3dBitmapConsole_load = function FE3dBitmapConsole_load(context, guid, code){
-      var o = this;
-      var flag = guid + '|' + code;
-      var bitmap = o._bitmaps.get(flag);
-      if(bitmap){
-         return bitmap;
-      }
-      var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
-      MO.Logger.info(o, 'Load bitmap. (url={1})', url);
-      if(code == 'environment'){
-         bitmap = RClass.create(FE3rBitmapCubePack);
-      }else{
-         bitmap = RClass.create(FE3rBitmapFlatPack);
-      }
-      bitmap.linkGraphicContext(context);
-      bitmap.loadUrl(url);
-      o._bitmaps.set(flag, bitmap);
-      return bitmap;
-   }
-   MO.FE3dBitmapConsole_loadUrl = function FE3dBitmapConsole_loadUrl(context, url){
+   MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, url){
       var o = this;
       var bitmap = o._bitmaps.get(url);
       if(bitmap){
@@ -21286,12 +21356,48 @@ with(MO){
       }
       var loadUrl = RBrowser.contentPath(url);
       MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
-      var bitmap = RClass.create(FE3dBitmapData);
+      var bitmap = RClass.create(FE3dBitmap);
       bitmap.linkGraphicContext(context);
       bitmap.setup();
       bitmap.loadUrl(url);
       o._bitmaps.set(url, bitmap);
       return bitmap;
+   }
+   MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
+      var o = this;
+      MO.Assert.debugNotNull(context);
+      MO.Assert.debugNotNull(guid);
+      var url = RBrowser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
+      return o.loadByUrl(context, url);
+   }
+   MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
+      var o = this;
+      MO.Assert.debugNotNull(context);
+      MO.Assert.debugNotNull(url);
+      var dataUrl = RBrowser.contentPath(url);
+      MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
+      var data = o._bitmapDatas.get(url);
+      if(!data){
+         data = RClass.create(FE3dBitmapData);
+         data.linkGraphicContext(context);
+         data.setup();
+         data.loadUrl(url);
+         o._bitmapDatas.set(url, data);
+      }
+      return data;
+   }
+   MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
+      var o = this;
+      MO.Assert.debugNotNull(context);
+      MO.Assert.debugNotNull(guid);
+      var url = RBrowser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
+      return o.loadDataByUrl(context, url);
+   }
+   MO.FE3dBitmapConsole_dispose = function FE3dBitmapConsole_dispose(){
+      var o = this;
+      o._bitmaps = RObject.dispose(o._bitmaps);
+      o._bitmapDatas = RObject.dispose(o._bitmapDatas);
+      o.__base.FConsole.dispose.call(o);
    }
 }
 with(MO){
@@ -21619,9 +21725,10 @@ with(MO){
 }
 with(MO){
    MO.FE3dFace = function FE3dFace(o){
-      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
+      o = RClass.inherits(this, o, FE3dMeshRenderable, MListener);
       o._ready           = false;
-      o._size            = RClass.register(o, new AGetter('_ready'));
+      o._size            = RClass.register(o, new AGetter('_size'));
+      o._loadListeners   = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
       o.construct        = FE3dFace_construct;
       o.setSize          = FE3dFace_setSize;
       o.setData          = FE3dFace_setData;

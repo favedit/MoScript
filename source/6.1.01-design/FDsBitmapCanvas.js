@@ -223,11 +223,9 @@ with(MO){
       // 释放网格
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
       // 创建位图
-      var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-      bitmap.linkGraphicContext(o);
-      bitmap.setup();
+      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
-      bitmap.addLoadListener(o, o.onLoaded);
+      bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);
       // 设置矩阵
       var matrix = bitmap.matrix();

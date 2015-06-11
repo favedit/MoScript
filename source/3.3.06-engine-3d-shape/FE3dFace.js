@@ -7,11 +7,12 @@ with(MO){
    // @history 150610
    //==========================================================
    MO.FE3dFace = function FE3dFace(o){
-      o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
+      o = RClass.inherits(this, o, FE3dMeshRenderable, MListener);
       //..........................................................
       // @attribute
       o._ready           = false;
-      o._size            = RClass.register(o, new AGetter('_ready'));
+      o._size            = RClass.register(o, new AGetter('_size'));
+      o._loadListeners   = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
       //..........................................................
       // @method
       o.construct        = FE3dFace_construct;
@@ -54,7 +55,6 @@ with(MO){
       var o = this;
       o._size.set(width, height);
       o._matrix.setScale(width, height, 1);
-      //o._scale.set(width, height, 1);
    }
 
    //==========================================================

@@ -66,8 +66,7 @@ with(MO){
    //==========================================================
    MO.FE3dBitmap_loadUrl = function FE3dBitmap_loadUrl(url){
       var o = this;
-      var context = o._graphicContext;
-      o._renderable = RConsole.find(FE3dBitmapConsole).loadUrl(context, url);
+      o._renderable = RConsole.find(FE3dBitmapConsole).loadDataByUrl(o, url);
       o._ready = false;
    }
 

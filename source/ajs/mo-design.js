@@ -344,11 +344,9 @@ with(MO){
       RConsole.find(FUiDesktopConsole).showLoading();
       var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-      var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
-      bitmap.linkGraphicContext(o);
-      bitmap.setup();
+      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
-      bitmap.addLoadListener(o, o.onLoaded);
+      bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);
       var matrix = bitmap.matrix();
       var left = Math.max((size.width - resource.sizeWidth()) / 2, 0);
