@@ -1878,7 +1878,7 @@ with(MO){
    MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
       var o = this;
       o.__base.FE3dCanvas.build.call(o, hPanel);
-      var stage = o._stage = MO.RClass.create(MO.FE3dSimpleStage);
+      var stage = o._stage = o._activeSpace = MO.RClass.create(MO.FE3dSimpleStage);
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);

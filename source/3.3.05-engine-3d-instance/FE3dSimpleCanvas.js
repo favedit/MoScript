@@ -311,7 +311,7 @@ with(MO){
       var o = this;
       o.__base.FE3dCanvas.build.call(o, hPanel);
       // 创建舞台
-      var stage = o._stage = MO.RClass.create(MO.FE3dSimpleStage);
+      var stage = o._stage = o._activeSpace = MO.RClass.create(MO.FE3dSimpleStage);
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);

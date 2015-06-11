@@ -10623,74 +10623,6 @@ with(MO){
    MO.RKeyboard = new RKeyboard();
 }
 with(MO){
-   MO.RListener = function RListener(){
-      var o = this;
-      o._listeners = new Object();
-      return o;
-   }
-   MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.addListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.setListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.clearListeners(\''+ code +'\');';
-         method = new Function(source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
-         method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener = new RListener();
-}
-with(MO){
    MO.RLoader = function RLoader(){
       var o = this;
       o._loading      = new TArray();
@@ -10916,6 +10848,74 @@ with(MO){
       this.confirmResult = v;
    }
    MO.RMessage = new RMessage();
+}
+with(MO){
+   MO.RListener = function RListener(){
+      var o = this;
+      o._listeners = new Object();
+      return o;
+   }
+   MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.addListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.setListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
+         method = new Function('owner', 'callback', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.clearListeners(\''+ code +'\');';
+         method = new Function(source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
+      var o = this;
+      var method = null;
+      if(o._listeners[methodName]){
+         method = o._listeners[methodName];
+      }else{
+         var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
+         method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
+         o._listeners[methodName] = method;
+      }
+      return method;
+   }
+   MO.RListener = new RListener();
 }
 with(MO){
    MO.RResource = function RResource(){
@@ -30454,7 +30454,7 @@ with(MO){
    MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
       var o = this;
       o.__base.FE3dCanvas.build.call(o, hPanel);
-      var stage = o._stage = MO.RClass.create(MO.FE3dSimpleStage);
+      var stage = o._stage = o._activeSpace = MO.RClass.create(MO.FE3dSimpleStage);
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, FE3dGeneralTechnique);
@@ -32154,6 +32154,40 @@ with(MO){
       var mi = o.material().info();
       mi.effectCode = 'control';
       mi.ambientColor.set(1, 1, 1, 1);
+   }
+}
+with(MO){
+   MO.FE3dDataBox = function FE3dDataBox(o){
+      o = RClass.inherits(this, o, FE3dRenderable);
+      o._vertexPositionBuffer = null;
+      o._vertexColorBuffer    = null;
+      o.construct             = FE3dDataBox_construct;
+      o.setup                 = FE3dDataBox_setup;
+      return o;
+   }
+   MO.FE3dDataBox_construct = function FE3dDataBox_construct(){
+      var o = this;
+      o.__base.FE3dRenderable.construct.call(o);
+      o._material = RClass.create(FE3dMaterial);
+   }
+   MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
+      var o = this;
+      var c = o._graphicContext;
+      var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._indexBuffer = c.createIndexBuffer();
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
+      buffer.setLineWidth(1);
+      o.pushIndexBuffer(buffer);
+      var info = o.material().info();
+      info.effectCode = 'control';
+      info.ambientColor.set(1, 1, 1, 1);
    }
 }
 with(MO){

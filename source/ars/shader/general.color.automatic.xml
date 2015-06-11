@@ -344,6 +344,8 @@
             result.a = color.a * fc_alpha.y;
          </shader:true>
          //............................................................
+         //result = texture2D(fs_diffuse, v_coord);
+         //gl_FragColor = vec4(result.rgb, 1.0);
          gl_FragColor = result;
       }
    ]]></Source>

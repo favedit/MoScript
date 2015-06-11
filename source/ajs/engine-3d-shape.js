@@ -355,6 +355,40 @@ with(MO){
    }
 }
 with(MO){
+   MO.FE3dDataBox = function FE3dDataBox(o){
+      o = RClass.inherits(this, o, FE3dRenderable);
+      o._vertexPositionBuffer = null;
+      o._vertexColorBuffer    = null;
+      o.construct             = FE3dDataBox_construct;
+      o.setup                 = FE3dDataBox_setup;
+      return o;
+   }
+   MO.FE3dDataBox_construct = function FE3dDataBox_construct(){
+      var o = this;
+      o.__base.FE3dRenderable.construct.call(o);
+      o._material = RClass.create(FE3dMaterial);
+   }
+   MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
+      var o = this;
+      var c = o._graphicContext;
+      var buffer = o._vertexPositionBuffer = c.createVertexBuffer();
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+      var buffer = o._indexBuffer = c.createIndexBuffer();
+      buffer.setDrawModeCd(EG3dDrawMode.Lines);
+      buffer.setLineWidth(1);
+      o.pushIndexBuffer(buffer);
+      var info = o.material().info();
+      info.effectCode = 'control';
+      info.ambientColor.set(1, 1, 1, 1);
+   }
+}
+with(MO){
    MO.FE3dDimensional = function FE3dDimensional(o){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._cellSize             = null;

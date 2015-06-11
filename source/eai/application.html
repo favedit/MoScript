@@ -33,12 +33,21 @@ function onTemplateLoad(event){
    var sprite = templateSprite = template.sprite();
    var renderables = sprite.renderables();
    var count = renderables.count();
-   //for(var i = 0; i < count; i++){
-      //var renderable = renderables.at(i);
+   var selectRenderable = null;
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      var material = renderable.material();
+      //renderable.setVisible(i == 1);
       //var indexBuffer = renderable.indexBuffers().first();
       //var outline = renderable.calculateOutline();
       //indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   //}
+   }
+
+   //var resource = selectRenderable.resource();
+   //var vertexBuffer = selectRenderable._vertexBuffers._values[1];
+   //var data = vertexBuffer._resource._data;
+   //var array = new Float32Array(data);
+
    var matrix = sprite.matrix();
    matrix.tx = -4;
    matrix.ty = -3;
