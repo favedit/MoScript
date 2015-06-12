@@ -64,7 +64,7 @@ with (MO) {
       handle.fillStyle = color;
       handle.fillText(text, x, y);
    }
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y) {
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height) {
       var o = this;
       var handle = o._handle;
       var size = o._size;
@@ -76,7 +76,7 @@ with (MO) {
       } else {
          throw new TError(o, 'Unknown content type');
       }
-      handle.drawImage(data, x, y, size.width, size.height);
+      handle.drawImage(data, x, y, width, height);
    }
    MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine) {
       var o = this;

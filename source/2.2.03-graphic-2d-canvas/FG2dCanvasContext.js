@@ -156,10 +156,12 @@ with (MO) {
    //
    // @method
    // @param content:Object 图像内容
-   // @param x:Integer 横向位置
-   // @param y:Integer 纵向位置
+   // @param x:Integer 横坐标
+   // @param y:Integer 纵坐标
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
    //==========================================================
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y) {
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height) {
       var o = this;
       var handle = o._handle;
       var size = o._size;
@@ -173,7 +175,7 @@ with (MO) {
          throw new TError(o, 'Unknown content type');
       }
       // 绘制位图
-      handle.drawImage(data, x, y, size.width, size.height);
+      handle.drawImage(data, x, y, width, height);
    }
 
    //==========================================================
