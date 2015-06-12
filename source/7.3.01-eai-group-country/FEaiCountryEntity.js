@@ -17,6 +17,7 @@ with(MO){
       //o._fallDistance        = RClass.register(o, new APtyNumber('_fallDistance'), 50);
       //o._blockInterval       = RClass.register(o, new APtyNumber('_blockInterval'), 60);
       //o._mouseOverRiseHeight = RClass.register(o, new APtyNumber('_mouseOverRiseHeight'), 10);
+      o._cameraDirection     = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay          = RClass.register(o, new AGetSet('_startDelay'), 0);
       o._riseDuration        = RClass.register(o, new AGetSet('_riseDuration'), 1200);
       o._riseDistance        = RClass.register(o, new AGetSet('_riseDistance'), 2050);
@@ -25,6 +26,7 @@ with(MO){
       o._blockInterval       = RClass.register(o, new AGetSet('_blockInterval'), 60);
       o._mouseOverRiseHeight = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 10);
       o._mouseMoveCheckInterval = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
+      o._cameraMoveDuration  = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
       //..........................................................
       // @attribute
       o._template                = RClass.register(o, new AGetSet('_template'));
@@ -33,13 +35,18 @@ with(MO){
       o._mouseOverRiseRenderable = RClass.register(o, new AGetSet('_mouseOverRiseRenderable'));
       o._mouseOverFallArray      = RClass.register(o, new AGetSet('_mouseOverFallArray'));
       o._mouseMoveLastCheck      = RClass.register(o, new AGetSet('_mouseMoveLastCheck'));
+      o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
+      o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
+      o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
       //..........................................................
       // @method
       o.initialize = FEaiCountryEntity_initialize;
       o.introAnime = FEaiCountryEntity_introAnime;
       o.onMouseMove = FEaiCountryEntity_onMouseMove;
+      o.onMouseDown = FEaiCountryEntity_onMouseDown;
       o.mouseOverFallAnime = FEaiCountryEntity_mouseOverFallAnime;
       o.onOrganizationFetch = FEaiCountryEntity_onOrganizationFetch;
+      o.cameraMoveAnime = FEaiCountryEntity_cameraMoveAnime;
       return o;
    }
    
@@ -50,6 +57,9 @@ with(MO){
    //==========================================================
    MO.FEaiCountryEntity_initialize = function FEaiCountryEntity_initialize(template){
       var o = this;
+      o.setCameraDirection(new SVector3(0.02, -0.9, 0.5));
+      o.setCameraFrom(new SPoint3());
+      o.setCameraTo(new SPoint3());
       o.setMouseOverFallArray(new TObjects());
       o.setTemplate(template);
       o.setMouseMoveLastCheck(new Date());
@@ -61,7 +71,13 @@ with(MO){
       //设置相机位置视角
       var camera = region.camera();
       camera.setPosition(3, 24, -0.5);
-      camera.setDirection(0.02, -0.9, 0.5);
+      camera.setDirection(o.cameraDirection().x, o.cameraDirection().y, o.cameraDirection().z);
+      //打开Alpha
+      var sprite = o.template().sprite();
+      for (var i = 0; i < sprite.renderables().count(); i++){
+         var renderable = sprite.renderables().at(i);
+         renderable.material().info().optionAlpha = true;
+      }
       //记录开始时间
       o.setStartTime(new Date());
    }
@@ -75,6 +91,9 @@ with(MO){
       var o = this;
       if (!o.introAnimeDone()) {
          o.introAnime();
+      }
+      else if(o.cameraMoving()) {
+         o.cameraMoveAnime();
       }
       else{
          o.mouseOverFallAnime();
@@ -102,6 +121,10 @@ with(MO){
             listener._owner = this;
             listener._callback = o.onMouseMove;
             RWindow.lsnsMouseMove.push(listener);
+            var listener = new TListener();
+            listener._owner = this;
+            listener._callback = o.onMouseDown;
+            RWindow.lsnsMouseDown.push(listener);
             //获取省份数据
             RConsole.find(FEnvironmentConsole).registerValue(EEaiConstant.ServiceHost, '115.28.82.149');
             var logicConsole = MO.RConsole.find(FEaiLogicConsole);
@@ -112,7 +135,6 @@ with(MO){
       var idxCap = timePassed / o.blockInterval();
       for (var i = 0; i < sprite.renderables().count() && i < idxCap; i++){
          var renderable = sprite.renderables().at(i);
-         var tt = renderable._resource._code;
          var matrix = renderable.matrix();
          var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
          var fallPercentage = 0;
@@ -236,4 +258,71 @@ with(MO){
       }
       
    }
+   
+   //==========================================================
+   // <T>鼠标按下处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event){
+      var o = this;
+      var region = o.template().region();
+      var camera = region.camera();
+      //得到当前鼠标指向的对象
+      //TODO:canvas改到某一Console中
+      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(canvas._graphicContext, FG3dSelectTechnique);
+      var renderable = selectTechnique.test(o.template().region(), event.offsetX, event.offsetY);
+      if (!renderable) {
+         camera.setPosition(3, 24, -0.5);
+         camera.update();
+         return;
+      }
+      
+      var outline = renderable.calculateOutline();
+      var relativeOutline = new SOutline3d();
+      relativeOutline.calculateFrom(outline, camera.matrix());
+      var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
+      var currentCenter = outline.center;
+      var cameraTo = new SPoint3(currentCenter.x - distance * o.cameraDirection().x, currentCenter.y - distance * o.cameraDirection().y, currentCenter.z - distance * o.cameraDirection().z);
+      var cameraPosition = camera.position();
+      
+      o.setStartTime(new Date());
+      o.cameraFrom().assign(cameraPosition);
+      o.cameraTo().assign(cameraTo);
+      o.setCameraMoving(true);
+   }
+   
+   //==========================================================
+   // <T>选取省份后镜头移动动画。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
+      var o = this;
+      var now = new Date();
+      var timePassed = now.getTime() - o.startTime().getTime();
+      var p = timePassed / o.cameraMoveDuration();
+      if (p >= 1) {
+         p = 1;
+         o.setCameraMoving(false);
+      }
+      //p = p*p;
+      //p = p > 0.5 ? 1-2*(1-p)*(1-p) : 2*p*p;
+      p = 1-(1-p)*(1-p);
+      var movingPosition = new SPoint3();
+      movingPosition.slerp(o.cameraFrom(), o.cameraTo(), p);
+      var camera = o.template().region().camera();
+      camera.position().assign(movingPosition);
+      camera.update();
+      
+      var sprite = o.template().sprite();
+      for (var i = 0; i < sprite.renderables().count(); i++){
+         var renderable = sprite.renderables().at(i);
+         if (renderable != o.mouseOverRiseRenderable()) {
+            renderable.material().info().alphaRate = 1.5 - p;
+            renderable.material().update();
+         }
+      }
+   }
+   
 }
