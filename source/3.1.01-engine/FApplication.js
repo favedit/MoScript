@@ -10,17 +10,18 @@ with(MO){
       o = RClass.inherits(this, o, FComponent);
       //..........................................................
       // @attribute
-      o._activeStage    = RClass.register(o, new AGetter('_activeStage'));
-      o._stages         = RClass.register(o, new AGetter('_stages'));
+      o._activeStage      = RClass.register(o, new AGetter('_activeStage'));
+      o._stages           = RClass.register(o, new AGetter('_stages'));
       //..........................................................
       // @method
-      o.construct       = FApplication_construct;
+      o.construct         = FApplication_construct;
       // @method
-      o.registerStage   = FApplication_registerStage;
-      o.unregisterStage = FApplication_unregisterStage;
-      o.selectStage     = FApplication_selectStage;
+      o.registerStage     = FApplication_registerStage;
+      o.unregisterStage   = FApplication_unregisterStage;
+      o.selectStage       = FApplication_selectStage;
+      o.selectStageByCode = FApplication_selectStageByCode;
       // @method
-      o.dispose         = FApplication_dispose;
+      o.dispose           = FApplication_dispose;
       return o;
    }
 
@@ -61,27 +62,41 @@ with(MO){
    }
 
    //==========================================================
-   // <T>根据代码选择舞台。</T>
+   // <T>选择舞台。</T>
    //
    // @method
-   // @param code:String 代码
-   // @return FStage 舞台
+   // @param stage:FStage 舞台
    //==========================================================
-   MO.FApplication_selectStage = function FApplication_selectStage(code){
+   MO.FApplication_selectStage = function FApplication_selectStage(stage){
       var o = this;
-      var stage = o._stages.get(code);
       if(o._activeStage != stage){
          // 注销舞台
          var activeStage = o._activeStage;
          if(activeStage){
             RStage.unregister(activeStage);
             activeStage.deactive();
+            o._activeStage = null;
          }
          // 激活舞台
-         stage.active();
-         RStage.register(stage.code(), stage);
-         o._activeStage = stage;
+         if(stage){
+            stage.active();
+            RStage.register(stage.code(), stage);
+            o._activeStage = stage;
+         }
       }
+   }
+
+   //==========================================================
+   // <T>根据代码选择舞台。</T>
+   //
+   // @method
+   // @param code:String 代码
+   // @return FStage 舞台
+   //==========================================================
+   MO.FApplication_selectStageByCode = function FApplication_selectStageByCode(code){
+      var o = this;
+      var stage = o._stages.get(code);
+      o.selectStage(stage);
       return stage;
    }
 

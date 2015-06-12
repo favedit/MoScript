@@ -186,13 +186,11 @@ with(MO){
    MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
       var o = this;
       var handle = o._handle;
-      //handle.save();
       handle.beginPath();
       handle.strokeStyle = borderLine.color;
       handle.lineWidth = borderLine.width;
-      handle.moveTo(x1, y1);
-      handle.lineTo(x2, y2);
-      //handle.restore();
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.stroke();
    }
 
@@ -213,9 +211,9 @@ with(MO){
       var bottom = rectangle.top + rectangle.height - 1;
       // 绘制边框
       o.drawBorderLine(left, bottom, left, top, border.left);
-      o.drawBorderLine(left, top, right, top, border.top);
+      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
       o.drawBorderLine(right, top, right, bottom, border.right);
-      o.drawBorderLine(right, bottom, left, bottom, border.bottom);
+      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
 
    //==========================================================

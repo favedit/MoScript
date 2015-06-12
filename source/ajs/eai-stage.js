@@ -6,18 +6,30 @@ with(MO){
       o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
       o.construct     = FEaiApplication_construct;
       o.setup         = FEaiApplication_setup;
+      o.selectStage   = FEaiApplication_selectStage;
       o.dispose       = FEaiApplication_dispose;
       return o;
    }
    MO.FEaiApplication_construct = function FEaiApplication_construct(){
       var o = this;
       o.__base.FApplication.construct.call(o);
-      o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
-      o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
-      o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
    }
    MO.FEaiApplication_setup = function FEaiApplication_setup(){
       var o = this;
+      var stage = o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
+      stage.setup();
+      o.registerStage(stage);
+      var stage = o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
+      stage.setup();
+      o.registerStage(stage);
+      var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+      stage.setup();
+      o.registerStage(stage);
+   }
+   MO.FEaiApplication_selectStage = function FEaiApplication_selectStage(code){
+      var o = this;
+      o.__base.FApplication.selectStage.call(o, code);
+      MO.Eai.Canvas.selectStage(o._activeStage);
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;
@@ -29,10 +41,9 @@ with(MO){
       o = RClass.inherits(this, o, FE3dCanvas);
       o._scaleRate          = 1;
       o._optionAlpha        = false;
-      o._activeTemplate     = null;
+      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
       o._capturePosition    = null;
       o._captureRotation    = null;
-      o._stage              = null;
       o.onEnterFrame        = FEaiCanvas_onEnterFrame;
       o.onMouseCaptureStart = FEaiCanvas_onMouseCaptureStart;
       o.onMouseCapture      = FEaiCanvas_onMouseCapture;
@@ -42,6 +53,7 @@ with(MO){
       o.construct           = FEaiCanvas_construct;
       o.build               = FEaiCanvas_build;
       o.setPanel            = FEaiCanvas_setPanel;
+      o.selectStage         = FEaiCanvas_selectStage;
       o.loadByGuid          = FEaiCanvas_loadByGuid;
       o.loadByCode          = FEaiCanvas_loadByCode;
       o.dispose             = FEaiCanvas_dispose;
@@ -49,7 +61,7 @@ with(MO){
    }
    MO.FEaiCanvas_onEnterFrame = function FEaiCanvas_onEnterFrame(){
       var o = this;
-      var stage = o._stage;
+      var stage = o._activeStage;
       if(!stage){
          return;
       }
@@ -104,11 +116,11 @@ with(MO){
    }
    MO.FEaiCanvas_onMouseCaptureStart = function FEaiCanvas_onMouseCaptureStart(p){
       var o = this;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       if(!s){
          return;
       }
-      var r = o._activeTemplate.region();
+      var r = o._activeStage.region();
       var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -116,13 +128,13 @@ with(MO){
    }
    MO.FEaiCanvas_onMouseCapture = function FEaiCanvas_onMouseCapture(p){
       var o = this;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       if(!s){
          return;
       }
       var cx = p.clientX - o._capturePosition.x;
       var cy = p.clientY - o._capturePosition.y;
-      var c = o._activeTemplate.camera();
+      var c = o._activeStage.camera();
       var r = c.rotation();
       var cr = o._captureRotation;
       r.x = cr.x + cy * 0.003;
@@ -135,7 +147,7 @@ with(MO){
       o.__base.FE3dCanvas.onResize.call(o, event);
       var c = o._graphicContext;
       var cs = c.size();
-      var s = o._activeSpace;
+      var s = o._activeStage;
       if(s){
          var rp = s.camera().projection();
          rp.size().set(cs.width, cs.height);
@@ -145,7 +157,7 @@ with(MO){
    MO.FEaiCanvas_onTemplateLoad = function FEaiCanvas_onTemplateLoad(p){
       var o = this;
       var c = o._graphicContext;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       var cs = c.size();
       var rp = s.camera().projection();
       rp.size().set(cs.width, cs.height);
@@ -162,16 +174,16 @@ with(MO){
    MO.FEaiCanvas_build = function FEaiCanvas_build(hPanel){
       var o = this;
       o.__base.FE3dCanvas.build.call(o, hPanel);
-      var stage = o._stage = MO.RClass.create(MO.FEaiStage);
-      stage.linkGraphicContext(o);
-      stage.region().linkGraphicContext(o);
-      stage.selectTechnique(o, FE3dGeneralTechnique);
-      RStage.register('eai.stage', stage);
    }
    MO.FEaiCanvas_setPanel = function FEaiCanvas_setPanel(hPanel){
       var o = this;
       o.__base.FE3dCanvas.setPanel.call(o, hPanel);
-      var stage = o._stage;
+   }
+   MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
+      var o = this;
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, FE3dGeneralTechnique);
       var camera = stage.region().camera();
       var projection = camera.projection();
       projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
@@ -179,31 +191,32 @@ with(MO){
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
       camera.update();
+      o._activeStage = stage;
    }
    MO.FEaiCanvas_loadByGuid = function FEaiCanvas_loadByGuid(p){
       var o = this;
       var c = o._graphicContext;
       var sc = RConsole.find(FE3dSceneConsole);
-      if(o._activeTemplate != null){
-         sc.free(o._activeTemplate);
+      if(o._activeStage != null){
+         sc.free(o._activeStage);
       }
       var s = sc.alloc(o, p);
       s.addLoadListener(o, o.onTemplateLoad);
       s.selectTechnique(c, FG3dGeneralTechnique);
-      o._stage = o._activeTemplate = s;
+      o._activeStage = o._activeStage = s;
       RStage.register('stage3d', s);
    }
    MO.FEaiCanvas_loadByCode = function FEaiCanvas_loadByCode(code){
       var o = this;
       var context = o._graphicContext;
       var templateConsole = RConsole.find(FE3dTemplateConsole);
-      if(o._activeTemplate != null){
-         templateConsole.free(o._activeTemplate);
+      if(o._activeStage != null){
+         templateConsole.free(o._activeStage);
       }
       var template = templateConsole.allocByCode(context, code);
       template.addLoadListener(o, o.onTemplateLoad);
       template.selectTechnique(context, FE3dGeneralTechnique);
-      o._stage = o._activeTemplate = template;
+      o._activeStage = o._activeStage = template;
       RStage.register('stage.template', template);
    }
    MO.FEaiCanvas_dispose = function FEaiCanvas_dispose(){
@@ -218,15 +231,48 @@ with(MO){
 }
 MO.FEaiLoadingStage = function FEaiLoadingStage(o){
    o = MO.RClass.inherits(this, o, MO.FEaiStage);
+   o._code = MO.EEaiStage.Loading;
    return o;
 }
 MO.FEaiLoginStage = function FEaiLoginStage(o){
    o = MO.RClass.inherits(this, o, MO.FEaiStage);
+   o._code = MO.EEaiStage.Login;
    return o;
 }
 MO.FEaiSceneStage = function FEaiSceneStage(o){
    o = MO.RClass.inherits(this, o, MO.FEaiStage);
+   o._code             = MO.EEaiStage.Scene;
+   o._sceneCountry     = null;
+   o._sceneGroup       = null;
+   o._sceneGroupReport = null;
+   o._sceneCompany     = null;
+   o.construct         = MO.FEaiSceneStage_construct;
+   o.setup             = MO.FEaiSceneStage_setup;
+   o.dispose           = MO.FEaiSceneStage_dispose;
    return o;
+}
+MO.FEaiSceneStage_construct = function FEaiSceneStage_construct(){
+   var o = this;
+   o.__base.FEaiStage.construct.call(o);
+}
+MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
+   var o = this;
+   var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   scene.setup();
+   o.registerScene(scene);
+   var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   scene.setup();
+   o.registerScene(scene);
+   var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   scene.setup();
+   o.registerScene(scene);
+   var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   scene.setup();
+   o.registerScene(scene);
+}
+MO.FEaiSceneStage_dispose = function FEaiSceneStage_dispose(){
+   var o = this;
+   o.__base.FEaiStage.dispose.call(o);
 }
 with(MO){
    MO.FEaiStage = function FEaiStage(o){

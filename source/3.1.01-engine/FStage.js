@@ -28,6 +28,8 @@ with(MO){
       o.active            = FStage_active;
       o.deactive          = FStage_deactive;
       // @method
+      o.registerScene     = FStage_registerScene;
+      o.unregisterScene   = FStage_unregisterScene;
       o.selectScene       = FStage_selectScene;
       o.selectSceneByCode = FStage_selectSceneByCode;
       // @method
@@ -100,7 +102,7 @@ with(MO){
       o._statusActive = true;
       // 层集合处理
       var layers = o._layers;
-      var count = ls.count();
+      var count = layers.count();
       for(var i = 0; i < count; i++){
          var layer = layers.at(i);
          layer.active();
@@ -126,6 +128,28 @@ with(MO){
    }
 
    //==========================================================
+   // <T>注册一个场景。</T>
+   //
+   // @method
+   // @param scene:FScene 场景
+   //==========================================================
+   MO.FStage_registerScene = function FStage_registerScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, scene);
+   }
+
+   //==========================================================
+   // <T>注销一个场景。</T>
+   //
+   // @method
+   // @param scene:FScene 场景
+   //==========================================================
+   MO.FStage_unregisterScene = function FStage_unregisterScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, null);
+   }
+
+   //==========================================================
    // <T>选择场景。</T>
    //
    // @method
@@ -134,18 +158,18 @@ with(MO){
    MO.FStage_selectScene = function FStage_selectScene(scene){
       var o = this;
       // 层集合处理
-      if(o._activeScene == scene){
-         return;
-      }
-      // 注销场景
-      if(o._activeScene){
-         o._activeScene.deactive();
-         o._activeScene = null;
-      }
-      // 激活场景
-      if(scene){
-         scene.active();
-         o._activeScene = scene;
+      if(o._activeScene != scene){
+         // 注销场景
+         var activeScene = o._activeScene;
+         if(activeScene){
+            activeScene.deactive();
+            o._activeScene = null;
+         }
+         // 激活场景
+         if(scene){
+            scene.active();
+            o._activeScene = scene;
+         }
       }
    }
 
@@ -157,7 +181,7 @@ with(MO){
    //==========================================================
    MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
       var o = this;
-      var scene = o._scene.get(code);
+      var scene = o._scenes.get(code);
       o.selectScene(scene);
       return scene;
    }

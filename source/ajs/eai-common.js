@@ -3,11 +3,19 @@ MO.EEaiConstant = new function EEaiConstant(){
    o.ServiceHost = "eai.logic.service";
    return o;
 }
+MO.EEaiScene = new function EEaiScene(){
+   var o = this;
+   o.Group       = 'group';
+   o.GroupReport = 'group.report';
+   o.Company     = 'company';
+   o.Country     = 'country';
+   return o;
+}
 MO.EEaiStage = new function EEaiStage(){
    var o = this;
-   o.Loading = 1;
-   o.Login   = 2;
-   o.Scene   = 3;
+   o.Loading = 'loading';
+   o.Login   = 'login';
+   o.Scene   = 'scene';
    return o;
 }
 with(MO){

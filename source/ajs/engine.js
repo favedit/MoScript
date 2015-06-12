@@ -103,13 +103,14 @@ with(MO){
 with(MO){
    MO.FApplication = function FApplication(o){
       o = RClass.inherits(this, o, FComponent);
-      o._activeStage    = RClass.register(o, new AGetter('_activeStage'));
-      o._stages         = RClass.register(o, new AGetter('_stages'));
-      o.construct       = FApplication_construct;
-      o.registerStage   = FApplication_registerStage;
-      o.unregisterStage = FApplication_unregisterStage;
-      o.selectStage     = FApplication_selectStage;
-      o.dispose         = FApplication_dispose;
+      o._activeStage      = RClass.register(o, new AGetter('_activeStage'));
+      o._stages           = RClass.register(o, new AGetter('_stages'));
+      o.construct         = FApplication_construct;
+      o.registerStage     = FApplication_registerStage;
+      o.unregisterStage   = FApplication_unregisterStage;
+      o.selectStage       = FApplication_selectStage;
+      o.selectStageByCode = FApplication_selectStageByCode;
+      o.dispose           = FApplication_dispose;
       return o;
    }
    MO.FApplication_construct = function FApplication_construct(){
@@ -127,19 +128,26 @@ with(MO){
       var code = stage.code();
       o._stages.set(code, null);
    }
-   MO.FApplication_selectStage = function FApplication_selectStage(code){
+   MO.FApplication_selectStage = function FApplication_selectStage(stage){
       var o = this;
-      var stage = o._stages.get(code);
       if(o._activeStage != stage){
          var activeStage = o._activeStage;
          if(activeStage){
             RStage.unregister(activeStage);
             activeStage.deactive();
+            o._activeStage = null;
          }
-         stage.active();
-         RStage.register(stage.code(), stage);
-         o._activeStage = stage;
+         if(stage){
+            stage.active();
+            RStage.register(stage.code(), stage);
+            o._activeStage = stage;
+         }
       }
+   }
+   MO.FApplication_selectStageByCode = function FApplication_selectStageByCode(code){
+      var o = this;
+      var stage = o._stages.get(code);
+      o.selectStage(stage);
       return stage;
    }
    MO.FApplication_dispose = function FApplication_dispose(){
@@ -582,11 +590,13 @@ with(MO){
 with(MO){
    MO.FScene = function FScene(o){
       o = RClass.inherits(this, o, FComponent);
+      o._statusSetup    = false;
       o._statusActive   = false;
       o._layers         = RClass.register(o, AGetter('_layers'));
       o.construct       = FScene_construct;
       o.registerLayer   = FScene_registerLayer;
       o.unregisterLayer = FScene_unregisterLayer;
+      o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
       o.dispose         = FScene_dispose;
@@ -604,8 +614,15 @@ with(MO){
    MO.FScene_unregisterLayer = function FScene_unregisterLayer(code){
       this._layers.set(code, null);
    }
+   MO.FScene_setup = function FScene_setup(){
+      var o = this;
+   }
    MO.FScene_active = function FScene_active(){
       var o = this;
+      if(!o._statusSetup){
+         o.setup();
+         o._statusSetup = true;
+      }
       o._statusActive = true;
       var layers = o._layers;
       var count = layers.count();
@@ -644,6 +661,8 @@ with(MO){
       o.unregisterLayer   = FStage_unregisterLayer;
       o.active            = FStage_active;
       o.deactive          = FStage_deactive;
+      o.registerScene     = FStage_registerScene;
+      o.unregisterScene   = FStage_unregisterScene;
       o.selectScene       = FStage_selectScene;
       o.selectSceneByCode = FStage_selectSceneByCode;
       o.process           = FStage_process;
@@ -677,7 +696,7 @@ with(MO){
       var o = this;
       o._statusActive = true;
       var layers = o._layers;
-      var count = ls.count();
+      var count = layers.count();
       for(var i = 0; i < count; i++){
          var layer = layers.at(i);
          layer.active();
@@ -693,23 +712,31 @@ with(MO){
       }
       o._statusActive = false;
    }
+   MO.FStage_registerScene = function FStage_registerScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, scene);
+   }
+   MO.FStage_unregisterScene = function FStage_unregisterScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, null);
+   }
    MO.FStage_selectScene = function FStage_selectScene(scene){
       var o = this;
-      if(o._activeScene == scene){
-         return;
-      }
-      if(o._activeScene){
-         o._activeScene.deactive();
-         o._activeScene = null;
-      }
-      if(scene){
-         scene.active();
-         o._activeScene = scene;
+      if(o._activeScene != scene){
+         var activeScene = o._activeScene;
+         if(activeScene){
+            activeScene.deactive();
+            o._activeScene = null;
+         }
+         if(scene){
+            scene.active();
+            o._activeScene = scene;
+         }
       }
    }
    MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
       var o = this;
-      var scene = o._scene.get(code);
+      var scene = o._scenes.get(code);
       o.selectScene(scene);
       return scene;
    }

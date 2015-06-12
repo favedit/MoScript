@@ -1,17 +1,42 @@
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code = MO.EEaiScene.Company;
    return o;
 }
 MO.FEaiCountryScene = function FEaiCountryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code            = MO.EEaiScene.Country;
+   o._countryTemplate = null;
+   o.onTemplateLoad   = MO.FEaiCountryScene_onTemplateLoad;
+   o.setup            = MO.FEaiCountryScene_setup;
    return o;
+}
+MO.FEaiCountryScene_onTemplateLoad = function FEaiCountryScene_onTemplateLoad(event){
+   var o = this;
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+   stage.mapLayer().pushDisplay(sprite);
+}
+MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
+   var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');
+   template.addLoadListener(o, o.onTemplateLoad);
 }
 MO.FEaiGroupReportScene = function FEaiGroupReportScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code = MO.EEaiScene.GroupReport;
    return o;
 }
 MO.FEaiGroupScene = function FEaiGroupScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code = MO.EEaiScene.Group;
    return o;
 }
 with(MO){

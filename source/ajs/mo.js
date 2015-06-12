@@ -15008,8 +15008,8 @@ with(MO){
       handle.beginPath();
       handle.strokeStyle = borderLine.color;
       handle.lineWidth = borderLine.width;
-      handle.moveTo(x1, y1);
-      handle.lineTo(x2, y2);
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.stroke();
    }
    MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border){
@@ -15019,11 +15019,11 @@ with(MO){
       var right = rectangle.left + rectangle.width - 1;
       var bottom = rectangle.top + rectangle.height - 1;
       o.drawBorderLine(left, bottom, left, top, border.left);
-      o.drawBorderLine(left, top, right, top, border.top);
+      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
       o.drawBorderLine(right, top, right, bottom, border.right);
-      o.drawBorderLine(right, bottom, left, bottom, border.bottom);
+      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
-   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y){
+   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding){
       var o = this;
    }
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
@@ -20500,13 +20500,14 @@ with(MO){
 with(MO){
    MO.FApplication = function FApplication(o){
       o = RClass.inherits(this, o, FComponent);
-      o._activeStage    = RClass.register(o, new AGetter('_activeStage'));
-      o._stages         = RClass.register(o, new AGetter('_stages'));
-      o.construct       = FApplication_construct;
-      o.registerStage   = FApplication_registerStage;
-      o.unregisterStage = FApplication_unregisterStage;
-      o.selectStage     = FApplication_selectStage;
-      o.dispose         = FApplication_dispose;
+      o._activeStage      = RClass.register(o, new AGetter('_activeStage'));
+      o._stages           = RClass.register(o, new AGetter('_stages'));
+      o.construct         = FApplication_construct;
+      o.registerStage     = FApplication_registerStage;
+      o.unregisterStage   = FApplication_unregisterStage;
+      o.selectStage       = FApplication_selectStage;
+      o.selectStageByCode = FApplication_selectStageByCode;
+      o.dispose           = FApplication_dispose;
       return o;
    }
    MO.FApplication_construct = function FApplication_construct(){
@@ -20524,19 +20525,26 @@ with(MO){
       var code = stage.code();
       o._stages.set(code, null);
    }
-   MO.FApplication_selectStage = function FApplication_selectStage(code){
+   MO.FApplication_selectStage = function FApplication_selectStage(stage){
       var o = this;
-      var stage = o._stages.get(code);
       if(o._activeStage != stage){
          var activeStage = o._activeStage;
          if(activeStage){
             RStage.unregister(activeStage);
             activeStage.deactive();
+            o._activeStage = null;
          }
-         stage.active();
-         RStage.register(stage.code(), stage);
-         o._activeStage = stage;
+         if(stage){
+            stage.active();
+            RStage.register(stage.code(), stage);
+            o._activeStage = stage;
+         }
       }
+   }
+   MO.FApplication_selectStageByCode = function FApplication_selectStageByCode(code){
+      var o = this;
+      var stage = o._stages.get(code);
+      o.selectStage(stage);
       return stage;
    }
    MO.FApplication_dispose = function FApplication_dispose(){
@@ -20979,11 +20987,13 @@ with(MO){
 with(MO){
    MO.FScene = function FScene(o){
       o = RClass.inherits(this, o, FComponent);
+      o._statusSetup    = false;
       o._statusActive   = false;
       o._layers         = RClass.register(o, AGetter('_layers'));
       o.construct       = FScene_construct;
       o.registerLayer   = FScene_registerLayer;
       o.unregisterLayer = FScene_unregisterLayer;
+      o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
       o.dispose         = FScene_dispose;
@@ -21001,8 +21011,15 @@ with(MO){
    MO.FScene_unregisterLayer = function FScene_unregisterLayer(code){
       this._layers.set(code, null);
    }
+   MO.FScene_setup = function FScene_setup(){
+      var o = this;
+   }
    MO.FScene_active = function FScene_active(){
       var o = this;
+      if(!o._statusSetup){
+         o.setup();
+         o._statusSetup = true;
+      }
       o._statusActive = true;
       var layers = o._layers;
       var count = layers.count();
@@ -21041,6 +21058,8 @@ with(MO){
       o.unregisterLayer   = FStage_unregisterLayer;
       o.active            = FStage_active;
       o.deactive          = FStage_deactive;
+      o.registerScene     = FStage_registerScene;
+      o.unregisterScene   = FStage_unregisterScene;
       o.selectScene       = FStage_selectScene;
       o.selectSceneByCode = FStage_selectSceneByCode;
       o.process           = FStage_process;
@@ -21074,7 +21093,7 @@ with(MO){
       var o = this;
       o._statusActive = true;
       var layers = o._layers;
-      var count = ls.count();
+      var count = layers.count();
       for(var i = 0; i < count; i++){
          var layer = layers.at(i);
          layer.active();
@@ -21090,23 +21109,31 @@ with(MO){
       }
       o._statusActive = false;
    }
+   MO.FStage_registerScene = function FStage_registerScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, scene);
+   }
+   MO.FStage_unregisterScene = function FStage_unregisterScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, null);
+   }
    MO.FStage_selectScene = function FStage_selectScene(scene){
       var o = this;
-      if(o._activeScene == scene){
-         return;
-      }
-      if(o._activeScene){
-         o._activeScene.deactive();
-         o._activeScene = null;
-      }
-      if(scene){
-         scene.active();
-         o._activeScene = scene;
+      if(o._activeScene != scene){
+         var activeScene = o._activeScene;
+         if(activeScene){
+            activeScene.deactive();
+            o._activeScene = null;
+         }
+         if(scene){
+            scene.active();
+            o._activeScene = scene;
+         }
       }
    }
    MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
       var o = this;
-      var scene = o._scene.get(code);
+      var scene = o._scenes.get(code);
       o.selectScene(scene);
       return scene;
    }
@@ -32300,8 +32327,6 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       o.pushVertexBuffer(buffer);
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setDrawModeCd(EG3dDrawMode.Lines);
-      buffer.setLineWidth(1);
       o.pushIndexBuffer(buffer);
       var info = o.material().info();
       info.effectCode = 'control';

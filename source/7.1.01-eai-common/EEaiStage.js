@@ -7,8 +7,8 @@
 //==========================================================
 MO.EEaiStage = new function EEaiStage(){
    var o = this;
-   o.Loading = 1;
-   o.Login   = 2;
-   o.Scene   = 3;
+   o.Loading = 'loading';
+   o.Login   = 'login';
+   o.Scene   = 'scene';
    return o;
 }

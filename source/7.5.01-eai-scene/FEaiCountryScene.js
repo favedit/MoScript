@@ -7,5 +7,49 @@
 //==========================================================
 MO.FEaiCountryScene = function FEaiCountryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   //..........................................................
+   // @attribute
+   o._code            = MO.EEaiScene.Country;
+   // @attribute
+   o._countryTemplate = null;
+   //..........................................................
+   // @method
+   o.onTemplateLoad   = MO.FEaiCountryScene_onTemplateLoad;
+   //..........................................................
+   // @method
+   o.setup            = MO.FEaiCountryScene_setup;
    return o;
+}
+
+//==========================================================
+// <T>模板加载处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryScene_onTemplateLoad = function FEaiCountryScene_onTemplateLoad(event){
+   var o = this;
+   // 显示精灵
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   //matrix.setScaleAll(1.01);
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+   stage.mapLayer().pushDisplay(sprite);
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   // 创建国家模板
+   var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
+   var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');
+   template.addLoadListener(o, o.onTemplateLoad);
 }

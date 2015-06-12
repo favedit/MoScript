@@ -380,8 +380,6 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       o.pushVertexBuffer(buffer);
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setDrawModeCd(EG3dDrawMode.Lines);
-      buffer.setLineWidth(1);
       o.pushIndexBuffer(buffer);
       var info = o.material().info();
       info.effectCode = 'control';

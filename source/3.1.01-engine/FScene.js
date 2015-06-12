@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FComponent);
       //..........................................................
       // @attribute
+      o._statusSetup    = false;
       o._statusActive   = false;
       o._layers         = RClass.register(o, AGetter('_layers'));
       //..........................................................
@@ -18,6 +19,7 @@ with(MO){
       // @method
       o.registerLayer   = FScene_registerLayer;
       o.unregisterLayer = FScene_unregisterLayer;
+      o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
       // @method
@@ -60,12 +62,26 @@ with(MO){
    }
 
    //==========================================================
+   // <T>配置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FScene_setup = function FScene_setup(){
+      var o = this;
+   }
+
+   //==========================================================
    // <T>激活处理。</T>
    //
    // @method
    //==========================================================
    MO.FScene_active = function FScene_active(){
       var o = this;
+      // 配置处理
+      if(!o._statusSetup){
+         o.setup();
+         o._statusSetup = true;
+      }
       // 设置状态
       o._statusActive = true;
       // 层集合处理

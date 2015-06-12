@@ -12,12 +12,10 @@ with(MO){
       o._scaleRate          = 1;
       o._optionAlpha        = false;
       // @attribute
-      o._activeTemplate     = null;
+      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
       // @attribute
       o._capturePosition    = null;
       o._captureRotation    = null;
-      // @attribute
-      o._stage              = null;
       //..........................................................
       // @event
       o.onEnterFrame        = FEaiCanvas_onEnterFrame;
@@ -35,6 +33,7 @@ with(MO){
       // @method
       o.build               = FEaiCanvas_build;
       o.setPanel            = FEaiCanvas_setPanel;
+      o.selectStage         = FEaiCanvas_selectStage;
       o.loadByGuid          = FEaiCanvas_loadByGuid;
       o.loadByCode          = FEaiCanvas_loadByCode;
       // @method
@@ -49,7 +48,7 @@ with(MO){
    //==========================================================
    MO.FEaiCanvas_onEnterFrame = function FEaiCanvas_onEnterFrame(){
       var o = this;
-      var stage = o._stage;
+      var stage = o._activeStage;
       if(!stage){
          return;
       }
@@ -119,12 +118,12 @@ with(MO){
    //==========================================================
    MO.FEaiCanvas_onMouseCaptureStart = function FEaiCanvas_onMouseCaptureStart(p){
       var o = this;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       if(!s){
          return;
       }
       // 选取物件
-      var r = o._activeTemplate.region();
+      var r = o._activeStage.region();
       var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -139,13 +138,13 @@ with(MO){
    //==========================================================
    MO.FEaiCanvas_onMouseCapture = function FEaiCanvas_onMouseCapture(p){
       var o = this;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       if(!s){
          return;
       }
       var cx = p.clientX - o._capturePosition.x;
       var cy = p.clientY - o._capturePosition.y;
-      var c = o._activeTemplate.camera();
+      var c = o._activeStage.camera();
       var r = c.rotation();
       var cr = o._captureRotation;
       r.x = cr.x + cy * 0.003;
@@ -173,7 +172,7 @@ with(MO){
       // 获得相机信息
       var c = o._graphicContext;
       var cs = c.size();
-      var s = o._activeSpace;
+      var s = o._activeStage;
       if(s){
          var rp = s.camera().projection();
          rp.size().set(cs.width, cs.height);
@@ -190,7 +189,7 @@ with(MO){
    MO.FEaiCanvas_onTemplateLoad = function FEaiCanvas_onTemplateLoad(p){
       var o = this;
       var c = o._graphicContext;
-      var s = o._activeTemplate;
+      var s = o._activeStage;
       // 设置投影
       var cs = c.size();
       var rp = s.camera().projection();
@@ -222,12 +221,12 @@ with(MO){
       var o = this;
       o.__base.FE3dCanvas.build.call(o, hPanel);
       // 创建舞台
-      var stage = o._stage = MO.RClass.create(MO.FEaiStage);
-      stage.linkGraphicContext(o);
-      stage.region().linkGraphicContext(o);
-      stage.selectTechnique(o, FE3dGeneralTechnique);
+      //var stage = o._activeStage = MO.RClass.create(MO.FEaiStage);
+      //stage.linkGraphicContext(o);
+      //stage.region().linkGraphicContext(o);
+      //stage.selectTechnique(o, FE3dGeneralTechnique);
       // 注册舞台
-      RStage.register('eai.stage', stage);
+      //RStage.register('eai.stage', stage);
    }
 
    //==========================================================
@@ -239,7 +238,21 @@ with(MO){
       var o = this;
       o.__base.FE3dCanvas.setPanel.call(o, hPanel);
       // 设置相机投影
-      var stage = o._stage;
+      //var stage = o._activeStage;
+   }
+
+   //==========================================================
+   // <T>选择舞台。</T>
+   //
+   // @method
+   // @param code:String 代码
+   // @return FStage 舞台
+   //==========================================================
+   MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
+      var o = this;
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, FE3dGeneralTechnique);
       var camera = stage.region().camera();
       var projection = camera.projection();
       projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
@@ -247,6 +260,7 @@ with(MO){
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
       camera.update();
+      o._activeStage = stage;
    }
 
    //==========================================================
@@ -259,14 +273,14 @@ with(MO){
       var c = o._graphicContext;
       // 收集场景
       var sc = RConsole.find(FE3dSceneConsole);
-      if(o._activeTemplate != null){
-         sc.free(o._activeTemplate);
+      if(o._activeStage != null){
+         sc.free(o._activeStage);
       }
       // 监听加载完成
       var s = sc.alloc(o, p);
       s.addLoadListener(o, o.onTemplateLoad);
       s.selectTechnique(c, FG3dGeneralTechnique);
-      o._stage = o._activeTemplate = s;
+      o._activeStage = o._activeStage = s;
       RStage.register('stage3d', s);
    }
 
@@ -281,14 +295,14 @@ with(MO){
       var context = o._graphicContext;
       // 收集场景
       var templateConsole = RConsole.find(FE3dTemplateConsole);
-      if(o._activeTemplate != null){
-         templateConsole.free(o._activeTemplate);
+      if(o._activeStage != null){
+         templateConsole.free(o._activeStage);
       }
       // 监听加载完成
       var template = templateConsole.allocByCode(context, code);
       template.addLoadListener(o, o.onTemplateLoad);
       template.selectTechnique(context, FE3dGeneralTechnique);
-      o._stage = o._activeTemplate = template;
+      o._activeStage = o._activeStage = template;
       RStage.register('stage.template', template);
    }
 

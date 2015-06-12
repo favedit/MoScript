@@ -7,5 +7,8 @@
 //==========================================================
 MO.FEaiLoadingStage = function FEaiLoadingStage(o){
    o = MO.RClass.inherits(this, o, MO.FEaiStage);
+   //..........................................................
+   // @attribute
+   o._code = MO.EEaiStage.Loading;
    return o;
 }

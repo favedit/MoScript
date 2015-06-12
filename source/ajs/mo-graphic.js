@@ -358,8 +358,8 @@ with(MO){
       handle.beginPath();
       handle.strokeStyle = borderLine.color;
       handle.lineWidth = borderLine.width;
-      handle.moveTo(x1, y1);
-      handle.lineTo(x2, y2);
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.stroke();
    }
    MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border){
@@ -369,11 +369,11 @@ with(MO){
       var right = rectangle.left + rectangle.width - 1;
       var bottom = rectangle.top + rectangle.height - 1;
       o.drawBorderLine(left, bottom, left, top, border.left);
-      o.drawBorderLine(left, top, right, top, border.top);
+      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
       o.drawBorderLine(right, top, right, bottom, border.right);
-      o.drawBorderLine(right, bottom, left, bottom, border.bottom);
+      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
-   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y){
+   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding){
       var o = this;
    }
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color){

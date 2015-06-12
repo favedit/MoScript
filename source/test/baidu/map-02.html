@@ -1,0 +1,179 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='http://api.map.baidu.com/api?v=2.0&ak=rGRly5iTwOs6wLHmEc8xQl2y'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../test/baidu/appp.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var map = null;
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+var points = null;
+//----------------------------------------------------------
+function onEnterFrame(){
+}
+//----------------------------------------------------------
+function doBoundary(){
+	var boundary = new BMap.Boundary();
+	var name = document.getElementById("districtName").value;
+	var result = "边界数组: ";
+	boundary.get(name, function(rs){
+		map.clearOverlays();
+		var count = rs.boundaries.length;
+      points = new MO.TObjects();
+		for(var i = 0; i < count; i++){
+			var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor:"#ff0000"});
+			var arr = ply.getPath();
+			result += '<p>数组-' + i + '：' + arr.length + '</p>';
+			for(var k=0; k < arr.length; ++k){
+            var item = arr[k];
+            points.push(new MO.SPoint2(item.lng, item.lat));
+				result += "<p>" + String(item.lng) + ", " + String(item.lat) + "</p>";
+			}
+			map.addOverlay(ply);
+			map.setViewport(ply.getPath());
+		}
+      id_result.style.height = id_data.offsetHeight + 'px';
+		id_result.innerHTML = result;
+      createRenderable();
+	});
+}
+//----------------------------------------------------------
+function createRenderable(){
+   //points = new MO.TObjects();
+   //for(var i = -Math.PI; i < Math.PI; i+=Math.PI/20){
+   //   points.push(new MO.SPoint2(Math.cos(i) * 20, Math.sin(i) * 20));
+   //}
+
+   var count = points.count();
+   var vertexData = new Array();
+   var colorData = new Array();
+   var color2Data = new Array();
+   var indexData = new Array();
+
+   for(var i = 0; i < count; i++){
+      var point = points.at(i);
+      vertexData.push(point.x, point.y, 0);
+      colorData.push(255, 0, 0, 255);
+      color2Data.push(255, 255, 255, 255);
+      indexData.push(i);
+      if(i == count - 1){
+         indexData.push(0);
+      }else{
+         indexData.push(i + 1);
+      }
+   }
+
+
+   var box = MO.RClass.create(MO.FE3dDataBox);
+   box.linkGraphicContext(canvas);
+   box.setup();
+   box._vertexPositionBuffer.upload(new Float32Array(vertexData), 4 * 3, count);
+   box._vertexColorBuffer.upload(new Uint8Array(colorData), 1 * 4, count);
+   //box._indexBuffer.upload(new Uint16Array(indexData), count * 2 - 2);
+   var faceData = cal_index(vertexData);
+   var id = new Array();
+   for(var i = 0; i < faceData.length; i+=3){
+      id.push(faceData[i]);
+      id.push(faceData[i + 1]);
+
+      id.push(faceData[i + 1]);
+      id.push(faceData[i + 2]);
+
+      id.push(faceData[i + 2]);
+      id.push(faceData[i]);
+      //if(i > 3 * 4000){
+      //   break;
+      //}
+   }
+   //box._indexBuffer.upload(new Uint16Array(faceData), faceData.length);
+   box._indexBuffer.upload(new Uint16Array(id), id.length);
+   box._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   box._indexBuffer.setLineWidth(1);
+   box.material().info().optionDouble = true;
+
+   var matrix = box.matrix();
+   matrix.tx = -80;
+   matrix.tz = 80;
+   matrix.sx = 0.8;
+   matrix.sy = 0.8;
+   matrix.sz = 0.8;
+   matrix.updateForce();
+   layer.pushRenderable(box);
+
+   var boxLine = MO.RClass.create(MO.FE3dDataBox);
+   boxLine.linkGraphicContext(canvas);
+   boxLine.setup();
+   boxLine._vertexPositionBuffer.upload(new Float32Array(vertexData), 4 * 3, count);
+   boxLine._vertexColorBuffer.upload(new Uint8Array(color2Data), 1 * 4, count);
+   boxLine._indexBuffer.upload(new Uint16Array(indexData), indexData.length);
+   boxLine._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   boxLine._indexBuffer.setLineWidth(1);
+   var matrix = boxLine.matrix();
+   matrix.tx = -80;
+   matrix.tz = 80;
+   matrix.sx = 0.8;
+   matrix.sy = 0.8;
+   matrix.sz = 0.8;
+   matrix.updateForce();
+   layer.pushRenderable(boxLine);
+}
+//----------------------------------------------------------
+function _load(){
+   // 创建地图
+   map = new BMap.Map("id_container");
+   map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+   map.enableScrollWheelZoom();
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建画布
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(id_canvas);
+   var context = canvas.graphicContext();
+   stage = canvas._stage;
+   stage.region().backgroundColor().set(0.1, 0.1, 0.1, 1);
+   stage.addEnterFrameListener(null, onEnterFrame);
+   layer = stage.spriteLayer();
+   id_button.click();
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<TABLE width='100%' height='100%' border='1px'>
+   <TR>
+      <TD colspan='2' height='40px'>
+         输入省、直辖市或县名称：<input type="text" id="districtName" style="width:80px" value="四川">
+         <INPUT type="button" id='id_button' onclick="doBoundary()" value="轮廓">
+      </TD>
+   </TR>
+   <TR>
+      <TD colspan='2' height='200px'>
+         <DIV id="id_container" style='width:100%;height:100%;'></DIV>
+      </TD>
+   </TR>
+   <TR valign='top'>
+      <TD width='400px' id='id_data'>
+         <div style="padding:0px 0 2px 2px; background-color:#D1EEEE"><b>搜索结果:</b></div>
+         <div id="id_result" name="result" style="overflow:auto;margin-top:5px;"></div>
+      </TD>
+      <TD>
+         <div id="id_canvas" style='width:100%;height:100%'></div>
+      </TD>
+   </TR>
+</TABLE>
+</BODY>  
+</HTML>

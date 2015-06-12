@@ -7,5 +7,8 @@
 //==========================================================
 MO.FEaiGroupScene = function FEaiGroupScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   //..........................................................
+   // @attribute
+   o._code = MO.EEaiScene.Group;
    return o;
 }

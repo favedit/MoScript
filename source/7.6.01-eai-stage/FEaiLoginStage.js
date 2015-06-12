@@ -7,5 +7,8 @@
 //==========================================================
 MO.FEaiLoginStage = function FEaiLoginStage(o){
    o = MO.RClass.inherits(this, o, MO.FEaiStage);
+   //..........................................................
+   // @attribute
+   o._code = MO.EEaiStage.Login;
    return o;
 }

@@ -55,8 +55,8 @@ with(MO){
       //..........................................................
       // 创建索引缓冲
       var buffer = o._indexBuffer = c.createIndexBuffer();
-      buffer.setDrawModeCd(EG3dDrawMode.Lines);
-      buffer.setLineWidth(1);
+      //buffer.setDrawModeCd(EG3dDrawMode.Lines);
+      //buffer.setLineWidth(1);
       o.pushIndexBuffer(buffer);
       //..........................................................
       // 设置材质
