@@ -11,6 +11,7 @@
       <PathMerger source='/1.4.01-console'                 target='/ajs/console.js'/>
 
       <PathMerger source='/2.1.01-graphic'                 target='/ajs/graphic.js'/>
+      <PathMerger source='/2.1.02-graphic-math'            target='/ajs/graphic-math.js'/>
       <PathMerger source='/2.2.01-graphic-2d'              target='/ajs/graphic-2d.js'/>
       <PathMerger source='/2.2.02-graphic-2d-render'       target='/ajs/graphic-2d-render.js'/>
       <PathMerger source='/2.2.03-graphic-2d-canvas'       target='/ajs/graphic-2d-canvas.js'/>
@@ -123,6 +124,7 @@
       </FileMerger>
       <FileMerger target='/ajs/mo-graphic.js'>
          <File source='/ajs/graphic.js'/>
+         <File source='/ajs/graphic-math.js'/>
          <File source='/ajs/graphic-2d.js'/>
          <File source='/ajs/graphic-2d-render.js'/>
          <File source='/ajs/graphic-2d-canvas.js'/>

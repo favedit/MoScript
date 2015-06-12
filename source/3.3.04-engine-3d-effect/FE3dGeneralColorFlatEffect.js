@@ -52,6 +52,7 @@
          // 绘制处理
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
+         // 计算矩阵
          var matrix = renderable.matrix();
          var cx = matrix.sx / contextWidth * 2;
          var cy = matrix.sy / contextHeight * 2;
@@ -60,12 +61,11 @@
          program.setParameter4('vc_position', cx, cy, tx, ty);
          // 绘制处理
          var size = renderable.size();
-         //context.setScissorRectangle(matrix.tx, matrix.ty, size.width, size.height);
-         //context.setScissorRectangle(100, 100, 600, 400);
-         //context.setScissorRectangle(matrix.tx, matrix.ty, size.width, size.height);
+         var clipX = matrix.tx;
+         var clipY = contextHeight - matrix.ty - size.height;
+         context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-         //context.setScissorRectangle(0, 0, contextWidth, contextHeight);
-         //context.setScissorRectangle();
+         context.setScissorRectangle();
       }
    }
 }

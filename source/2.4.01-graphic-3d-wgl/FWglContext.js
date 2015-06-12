@@ -26,6 +26,7 @@ with(MO){
       o._recordBuffers      = null;
       o._recordSamplers     = null;
       // @attribute
+      o._statusScissor      = false;
       o._data9              = null;
       o._data16             = null;
       //..........................................................
@@ -643,6 +644,7 @@ with(MO){
 
    //==========================================================
    // <T>设置有效区域。</T>
+   // <P>剪裁区域的原点坐标是屏幕的左下角。</P>
    //
    // @param left:Integer 左位置
    // @param top:Integer 上位置
@@ -652,12 +654,19 @@ with(MO){
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
       var o = this;
       var handle = o._handle;
-      if((width > 0) && (height > 0)){
-         handle.enable(handle.SCISSOR_TEST);
+      // 设置标志
+      var scissorFlag = (width > 0) && (height > 0);
+      if(o._statusScissor != scissorFlag){
+         if(scissorFlag){
+            handle.enable(handle.SCISSOR_TEST);
+         }else{
+            handle.disable(handle.SCISSOR_TEST);
+         }
+         o._statusScissor = scissorFlag;
+      }
+      // 设置范围
+      if(scissorFlag){
          handle.scissor(left, top, width, height);
-      }else{
-         //handle.scissor(left, top, width, height);
-         handle.disable(handle.SCISSOR_TEST);
       }
    }
 

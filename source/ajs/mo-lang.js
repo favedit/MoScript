@@ -7636,6 +7636,7 @@ with(MO){
       o.set         = SPoint2_set;
       o.serialize   = SPoint2_serialize;
       o.unserialize = SPoint2_unserialize;
+      o.parse       = SPoint2_parse;
       o.toString    = SPoint2_toString;
       o.dispose     = SPoint2_dispose;
       o.dump        = SPoint2_dump;
@@ -7667,6 +7668,16 @@ with(MO){
       var o = this;
       o.x = p.readFloat();
       o.y = p.readFloat();
+   }
+   MO.SPoint2_parse = function SPoint2_parse(source){
+      var o = this;
+      var items = source.split(',')
+      if(items.length == 2){
+         o.x = parseInt(items[0]);
+         o.y = parseInt(items[1]);
+      }else{
+         throw new TError(o, "Parse value failure. (value={1})", source);
+      }
    }
    MO.SPoint2_toString = function SPoint2_toString(){
       var o = this;
@@ -8053,23 +8064,20 @@ with(MO){
    }
 }
 with(MO){
-   MO.SRectangle = function SRectangle(){
+   MO.SRectangle = function SRectangle(left, top, width, height){
       var o = this;
-      o.position    = new SPoint2();
-      o.size        = new SSize2();
-      o.left        = SRectangle_left;
-      o.top         = SRectangle_top;
+      o.left   = RInteger.nvl(left);
+      o.top    = RInteger.nvl(top);
+      o.width  = RInteger.nvl(width);
+      o.height = RInteger.nvl(height);
       o.right       = SRectangle_right;
       o.bottom      = SRectangle_bottom;
-      o.width       = SRectangle_width;
-      o.height      = SRectangle_height;
       o.assign      = SRectangle_assign;
-      o.setPosition = SRectangle_setPosition;
+      o.setLocation = SRectangle_setLocation;
       o.setSize     = SRectangle_setSize;
       o.set         = SRectangle_set;
       o.toString    = SRectangle_toString;
       o.dispose     = SRectangle_dispose;
-      o.dump        = SRectangle_dump;
       return o;
    }
    MO.SRectangle_left = function SRectangle_left(){
@@ -8090,21 +8098,29 @@ with(MO){
    MO.SRectangle_height = function SRectangle_height(){
       return this.size.height;
    }
-   MO.SRectangle_assign = function SRectangle_assign(p){
+   MO.SRectangle_assign = function SRectangle_assign(value){
       var o = this;
-      o.position.assign(p.position);
-      o.size.assign(p.size);
+      o.left = value.left;
+      o.top = value.top;
+      o.width = value.width;
+      o.height = value.height;
    }
-   MO.SRectangle_setPosition = function SRectangle_setPosition(l, t, w, h){
-      this.position.set(l, t);
-   }
-   MO.SRectangle_setSize = function SRectangle_setSize(w, h){
-      this.size.set(w, h);
-   }
-   MO.SRectangle_set = function SRectangle_set(l, t, w, h){
+   MO.SRectangle_setLocation = function SRectangle_setLocation(left, top){
       var o = this;
-      o.position.set(l, t);
-      o.size.set(w, h);
+      o.left = left;
+      o.top = top;
+   }
+   MO.SRectangle_setSize = function SRectangle_setSize(width, height){
+      var o = this;
+      o.width = width;
+      o.height = height;
+   }
+   MO.SRectangle_set = function SRectangle_set(left, top, width, height){
+      var o = this;
+      o.left = left;
+      o.top = top;
+      o.width = width;
+      o.height = height;
    }
    MO.SRectangle_toString = function SRectangle_toString(){
       var o = this;
@@ -8112,12 +8128,10 @@ with(MO){
    }
    MO.SRectangle_dispose = function SRectangle_dispose(){
       var o = this;
-      o.position = o.position.dispose();
-      o.size = o.size.dispose();
-   }
-   MO.SRectangle_dump = function SRectangle_dump(){
-      var o = this;
-      return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
+      o.left = null;
+      o.top = null;
+      o.width = null;
+      o.height = null;
    }
 }
 with(MO){

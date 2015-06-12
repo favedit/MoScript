@@ -7889,7 +7889,11 @@ with(MO){
          var ty = 1 - matrix.ty / contextHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
          var size = renderable.size();
+         var clipX = matrix.tx;
+         var clipY = contextHeight - matrix.ty - size.height;
+         context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+         context.setScissorRectangle();
       }
    }
 }

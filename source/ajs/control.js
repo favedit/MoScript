@@ -570,33 +570,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.APtyPoint2 = function APtyPoint2(n, l, x, y){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._x       = RInteger.nvl(x);
-      o._y       = RInteger.nvl(y);
-      o.load     = APtyPoint2_load;
-      o.save     = APtyPoint2_save;
-      o.toString = APtyPoint2_toString;
-      return o;
-   }
-   MO.APtyPoint2_load = function APtyPoint2_load(v, x){
-      var o = this;
-      v[o._name].parse(x.get(o._linker));
-   }
-   MO.APtyPoint2_save = function APtyPoint2_save(v, x){
-      var o = this;
-      var d = v[o._name];
-      if(!d.isEmpty()){
-         x.set(o._linker, d.toString());
-      }
-   }
-   MO.APtyPoint2_toString = function APtyPoint2_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
-   }
-}
-with(MO){
    MO.APtySet = function APtySet(n, l, s, v){
       var o = this;
       AProperty.call(o, n, l);
@@ -633,33 +606,6 @@ with(MO){
    MO.APtySet_toString = function APtySet_toString(){
       var o = this;
       return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
-   }
-}
-with(MO){
-   MO.APtySize2 = function APtySize2(n, l, w, h){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._width   = RInteger.nvl(w);
-      o._height  = RInteger.nvl(h);
-      o.load     = APtySize2_load;
-      o.save     = APtySize2_save;
-      o.toString = APtySize2_toString;
-      return o;
-   }
-   MO.APtySize2_load = function APtySize2_load(v, x){
-      var o = this;
-      v[o._name].parse(x.get(o._linker));
-   }
-   MO.APtySize2_save = function APtySize2_save(v, x){
-      var o = this;
-      var d = v[o._name];
-      if(!d.isEmpty()){
-         x.set(o._linker, d.toString());
-      }
-   }
-   MO.APtySize2_toString = function APtySize2_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
    }
 }
 MO.EEditConfig = new function EEditConfig(){

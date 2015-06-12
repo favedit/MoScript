@@ -1,25 +1,21 @@
 ﻿with(MO){
    //==========================================================
-   // <T>二维点的属性描述类。</T>
+   // <T>边框的属性描述类。</T>
    //
    // @property
-   // @param n:name:String 名称
-   // @param l:linker:String 关联名称
+   // @param name:String 名称
+   // @param linker:String 关联名称
    // @author maocy
    // @version 150101
    //==========================================================
-   MO.APtyPoint2 = function APtyPoint2(n, l, x, y){
+   MO.APtyBorder = function APtyBorder(name, linker){
       var o = this;
-      AProperty.call(o, n, l);
-      //..........................................................
-      // @attribute
-      o._x       = RInteger.nvl(x);
-      o._y       = RInteger.nvl(y);
+      AProperty.call(o, name, linker);
       //..........................................................
       // @method
-      o.load     = APtyPoint2_load;
-      o.save     = APtyPoint2_save;
-      o.toString = APtyPoint2_toString;
+      o.load     = APtyBorder_load;
+      o.save     = APtyBorder_save;
+      o.toString = APtyBorder_toString;
       return o;
    }
 
@@ -27,26 +23,27 @@
    // <T>加载属性值。</T>
    //
    // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
+   // @param instance:Object 对象
+   // @param xconfig:TNode 节点
    //============================================================
-   MO.APtyPoint2_load = function APtyPoint2_load(v, x){
+   MO.APtyBorder_load = function APtyBorder_load(instance, xconfig){
       var o = this;
-      v[o._name].parse(x.get(o._linker));
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
    }
 
    //============================================================
    // <T>存储属性值。</T>
    //
    // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
+   // @param instance:Object 对象
+   // @param xconfig:TNode 节点
    //============================================================
-   MO.APtyPoint2_save = function APtyPoint2_save(v, x){
+   MO.APtyBorder_save = function APtyBorder_save(instance, xconfig){
       var o = this;
-      var d = v[o._name];
-      if(!d.isEmpty()){
-         x.set(o._linker, d.toString());
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
       }
    }
 
@@ -56,7 +53,7 @@
    // @method
    // @return String 字符串
    //============================================================
-   MO.APtyPoint2_toString = function APtyPoint2_toString(){
+   MO.APtyBorder_toString = function APtyBorder_toString(){
       var o = this;
       return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
    }

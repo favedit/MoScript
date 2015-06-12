@@ -13,6 +13,7 @@ with(MO){
       o._statusRecord       = false;
       o._recordBuffers      = null;
       o._recordSamplers     = null;
+      o._statusScissor      = false;
       o._data9              = null;
       o._data16             = null;
       o.construct           = FWglContext_construct;
@@ -443,11 +444,17 @@ with(MO){
    MO.FWglContext_setScissorRectangle = function FWglContext_setScissorRectangle(left, top, width, height){
       var o = this;
       var handle = o._handle;
-      if((width > 0) && (height > 0)){
-         handle.enable(handle.SCISSOR_TEST);
+      var scissorFlag = (width > 0) && (height > 0);
+      if(o._statusScissor != scissorFlag){
+         if(scissorFlag){
+            handle.enable(handle.SCISSOR_TEST);
+         }else{
+            handle.disable(handle.SCISSOR_TEST);
+         }
+         o._statusScissor = scissorFlag;
+      }
+      if(scissorFlag){
          handle.scissor(left, top, width, height);
-      }else{
-         handle.disable(handle.SCISSOR_TEST);
       }
    }
    MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarget){

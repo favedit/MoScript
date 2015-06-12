@@ -20,6 +20,8 @@
       o.set         = SPoint2_set;
       o.serialize   = SPoint2_serialize;
       o.unserialize = SPoint2_unserialize;
+      // @method
+      o.parse       = SPoint2_parse;
       o.toString    = SPoint2_toString;
       // @method
       o.dispose     = SPoint2_dispose;
@@ -97,6 +99,22 @@
       var o = this;
       o.x = p.readFloat();
       o.y = p.readFloat();
+   }
+
+   //============================================================
+   // <T>解析字符串。</T>
+   //
+   // @param source:String 字符串
+   //============================================================
+   MO.SPoint2_parse = function SPoint2_parse(source){
+      var o = this;
+      var items = source.split(',')
+      if(items.length == 2){
+         o.x = parseInt(items[0]);
+         o.y = parseInt(items[1]);
+      }else{
+         throw new TError(o, "Parse value failure. (value={1})", source);
+      }
    }
 
    //============================================================

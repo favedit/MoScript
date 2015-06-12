@@ -1,4 +1,116 @@
 with(MO){
+   MO.APtyBorder = function APtyBorder(name, linker){
+      var o = this;
+      AProperty.call(o, name, linker);
+      o.load     = APtyBorder_load;
+      o.save     = APtyBorder_save;
+      o.toString = APtyBorder_toString;
+      return o;
+   }
+   MO.APtyBorder_load = function APtyBorder_load(instance, xconfig){
+      var o = this;
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
+   }
+   MO.APtyBorder_save = function APtyBorder_save(instance, xconfig){
+      var o = this;
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
+      }
+   }
+   MO.APtyBorder_toString = function APtyBorder_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
+   }
+}
+with(MO){
+   MO.APtyPadding = function APtyPadding(name, linker, left, top, right, bottom){
+      var o = this;
+      AProperty.call(o, name, linker);
+      o._left    = RInteger.nvl(left);
+      o._top     = RInteger.nvl(top);
+      o._right   = RInteger.nvl(right);
+      o._bottom  = RInteger.nvl(bottom);
+      o.load     = APtyPadding_load;
+      o.save     = APtyPadding_save;
+      o.toString = APtyPadding_toString;
+      return o;
+   }
+   MO.APtyPadding_load = function APtyPadding_load(instance, xconfig){
+      var o = this;
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
+   }
+   MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
+      var o = this;
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
+      }
+   }
+   MO.APtyPadding_toString = function APtyPadding_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+   }
+}
+with(MO){
+   MO.APtyPoint2 = function APtyPoint2(name, linker, x, y){
+      var o = this;
+      AProperty.call(o, name, linker);
+      o._x       = RInteger.nvl(x);
+      o._y       = RInteger.nvl(y);
+      o.load     = APtyPoint2_load;
+      o.save     = APtyPoint2_save;
+      o.toString = APtyPoint2_toString;
+      return o;
+   }
+   MO.APtyPoint2_load = function APtyPoint2_load(instance, xconfig){
+      var o = this;
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
+   }
+   MO.APtyPoint2_save = function APtyPoint2_save(instance, xconfig){
+      var o = this;
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
+      }
+   }
+   MO.APtyPoint2_toString = function APtyPoint2_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
+   }
+}
+with(MO){
+   MO.APtySize2 = function APtySize2(name, linker, width, height){
+      var o = this;
+      AProperty.call(o, name, linker);
+      o._width   = RInteger.nvl(width);
+      o._height  = RInteger.nvl(height);
+      o.load     = APtySize2_load;
+      o.save     = APtySize2_save;
+      o.toString = APtySize2_toString;
+      return o;
+   }
+   MO.APtySize2_load = function APtySize2_load(instance, xconfig){
+      var o = this;
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
+   }
+   MO.APtySize2_save = function APtySize2_save(instance, xconfig){
+      var o = this;
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
+      }
+   }
+   MO.APtySize2_toString = function APtySize2_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
+   }
+}
+with(MO){
    MO.APtyString = function APtyString(n, l, v){
       var o = this;
       AProperty.call(o, n, l);
@@ -18,6 +130,24 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._value;
    }
 }
+MO.MGuiBorder = function MGuiBorder(o){
+   o = MO.RClass.inherits(this, o);
+   o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
+   o._borderOuter = MO.RClass.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
+   o.construct   = MO.MGuiBorder_construct;
+   o.dispose     = MO.MGuiBorder_dispose;
+   return o;
+}
+MO.MGuiBorder_construct = function MGuiBorder_construct(){
+   var o = this;
+   o._borderInner = new MO.SBorder();
+   o._borderOuter = new MO.SBorder();
+}
+MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
+   var o = this;
+   o._borderInner = MO.RObject.dispose(o._borderInner);
+   o._borderOuter = MO.RObject.dispose(o._borderOuter);
+}
 with(MO){
    MO.MGuiContainer = function MGuiContainer(o){
       o = RClass.inherits(this, o);
@@ -32,6 +162,133 @@ with(MO){
       child._parent = o;
       return child;
    }
+}
+MO.MGuiMargin = function MGuiMargin(o){
+   o = MO.RClass.inherits(this, o);
+   o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);
+   o.construct = MO.MGuiMargin_construct;
+   o.setMargin = MO.MGuiMargin_setMargin;
+   o.dispose   = MO.MGuiMargin_dispose;
+   return o;
+}
+MO.MGuiMargin_construct = function MGuiMargin_construct(){
+   var o = this;
+   o._margin = new MO.SPadding();
+}
+MO.MGuiMargin_setMargin = function MGuiMargin_setMargin(left, top, right, bottom){
+   this._margin.set(left, top, right, bottom);
+}
+MO.MGuiMargin_dispose = function MGuiMargin_dispose(){
+   var o = this;
+   o._margin = MO.RObject.dispose(o._margin);
+}
+MO.MGuiPadding = function MGuiPadding(o){
+   o = MO.RClass.inherits(this, o);
+   o._padding   = MO.RClass.register(o, [new MO.APtyPadding('_padding'), new MO.AGetter('_padding')]);
+   o.construct  = MO.MGuiPadding_construct;
+   o.setPadding = MO.MGuiPadding_setPadding;
+   o.dispose    = MO.MGuiPadding_dispose;
+   return o;
+}
+MO.MGuiPadding_construct = function MGuiPadding_construct(){
+   var o = this;
+   o._padding = new MO.SPadding();
+}
+MO.MGuiPadding_setPadding = function MGuiPadding_setPadding(left, top, right, bottom){
+   this._padding.set(left, top, right, bottom);
+}
+MO.MGuiPadding_dispose = function MGuiPadding_dispose(){
+   var o = this;
+   o._padding = MO.RObject.dispose(o._padding);
+}
+with(MO){
+   MO.MGuiSize = function MGuiSize(o){
+      o = RClass.inherits(this, o);
+      o._location   = RClass.register(o, [new APtyPoint2('_location'), new AGetter('_location')]);
+      o._size       = RClass.register(o, [new APtySize2('_size'), new AGetter('_size')]);
+      o.construct   = MGuiSize_construct;
+      o.left        = MGuiSize_left;
+      o.setLeft     = MGuiSize_setLeft;
+      o.top         = MGuiSize_top;
+      o.setTop      = MGuiSize_setTop;
+      o.setLocation = MGuiSize_setLocation;
+      o.width       = MGuiSize_width;
+      o.setWidth    = MGuiSize_setWidth;
+      o.height      = MGuiSize_height;
+      o.setHeight   = MGuiSize_setHeight;
+      o.setSize     = MGuiSize_setSize;
+      o.setBounds   = MGuiSize_setBounds;
+      o.dispose     = MGuiSize_dispose;
+      return o;
+   }
+   MO.MGuiSize_construct = function MGuiSize_construct(){
+      var o = this;
+      o._location = new SPoint2();
+      o._size = new SSize2();
+   }
+   MO.MGuiSize_left = function MGuiSize_left(){
+      return this._location.x;
+   }
+   MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
+      this._location.x = value;
+   }
+   MO.MGuiSize_top = function MGuiSize_top(){
+      return this._location.y;
+   }
+   MO.MGuiSize_setTop = function MGuiSize_setTop(value){
+      this._location.y = value;
+   }
+   MO.MGuiSize_setLocation = function MGuiSize_setLocation(x, y){
+      this._location.set(x, y);
+   }
+   MO.MGuiSize_width = function MGuiSize_width(){
+      return this._size.width;
+   }
+   MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
+      this._size.width = value;
+   }
+   MO.MGuiSize_height = function MGuiSize_height(){
+      return this._size.width;
+   }
+   MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
+      this._size.width = value;
+   }
+   MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
+      this._size.set(width, height);
+   }
+   MO.MGuiSize_setBounds = function MGuiSize_setBounds(left, top, width, height){
+      var o = this;
+      o.setLocation(left, top);
+      o.setSize(width, height);
+   }
+   MO.MGuiSize_dispose = function MGuiSize_dispose(){
+      var o = this;
+      o._location = RObject.dispose(o._location);
+      o._size = RObject.dispose(o._size);
+   }
+}
+MO.SGuiPaintEvent = function SGuiPaintEvent(){
+   var o = this;
+   o.graphic   = null;
+   o.rectangle = new MO.SRectangle();
+   o.dispose   = MO.SGuiPaintEvent_dispose;
+   return o;
+}
+MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
+   var o = this;
+   o.rectangle = MO.RObject.dispose(o.rectangle);
+   return o;
+}
+MO.SGuiUpdateEvent = function SGuiUpdateEvent(){
+   var o = this;
+   o.rectangle = new MO.SRectangle();
+   o.dispose   = MO.SGuiUpdateEvent_dispose;
+   return o;
+}
+MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
+   var o = this;
+   o.rectangle = MO.RObject.dispose(o.rectangle);
+   return o;
 }
 with(MO){
    MO.FGuiComponent = function FGuiComponent(o){
@@ -135,52 +392,124 @@ with(MO){
 }
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject);
-      o._renderable  = RClass.register(o, new AGetter('_renderable'));
-      o.onPaintBegin = FGuiControl_onPaintBegin;
-      o.onPaintEnd   = FGuiControl_onPaintEnd;
-      o.paint        = FGuiControl_paint;
-      o.build        = FGuiControl_build;
-      o.process      = FGuiControl_process;
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o._styleBackcolor       = MO.RClass.register(o, [new MO.APtyString('_styleBackcolor'), new MO.AGetSet('_styleBackcolor')]);
+      o._styleForecolor       = MO.RClass.register(o, [new MO.APtyString('_styleForecolor'), new MO.AGetSet('_styleForecolor')]);
+      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
+      o._clientRectangle = null;
+      o.onUpdate         = FGuiControl_onUpdate;
+      o.onPaintBegin     = FGuiControl_onPaintBegin;
+      o.onPaintEnd       = FGuiControl_onPaintEnd;
+      o.onPaint          = FGuiControl_onPaint;
+      o.construct        = FGuiControl_construct;
+      o.paint            = FGuiControl_paint;
+      o.update           = FGuiControl_update;
+      o.build            = FGuiControl_build;
+      o.process          = FGuiControl_process;
+      o.dispose          = FGuiControl_dispose;
       return o;
    }
-   MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(graphic){
+   MO.FGuiControl_onUpdate = function FGuiControl_onUpdate(event){
       var o = this;
-      graphic.fillRectangle(0, 0, 400, 200, '#00FF00', 1);
-      graphic.drawText('Hello', 10, 10, '#FF0000');
-   }
-   MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(graphic){
-      var o = this;
-   }
-   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
-      var o = this;
-      o.onPaintBegin(graphic);
+      var location = o._location;
+      var size = o._size;
+      var rectangle = event.rectangle;
+      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
       var components = o._components;
       if(components){
          var count = components.count();
          for(var i = 0; i < count; i++){
             var component = components.at(i);
             if(RClass.isClass(component, FGuiControl)){
-               component.paint(graphic);
+               component.onUpdate(event);
             }
          }
       }
-      o.onPaintEnd(graphic);
+   }
+   MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
+      var o = this;
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      if(o._styleBackcolor){
+         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
+      }
+      graphic.drawBorder(o._clientRectangle, o._borderInner);
+      graphic.setFont('microsoft yahei,Arial,sans-serif');
+      graphic.drawText('这是一个测试', 10, 40, '#FF0000');
+   }
+   MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
+      var o = this;
+   }
+   MO.FGuiControl_onPaint = function FGuiControl_onPaint(event){
+      var o = this;
+      o.onPaintBegin(event);
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(RClass.isClass(component, FGuiControl)){
+               component.onPaint(event);
+            }
+         }
+      }
+      o.onPaintEnd(event);
+   }
+   MO.FGuiControl_construct = function FGuiControl_construct(){
+      var o = this;
+      o.__base.FGuiComponent.construct.call(o);
+      o.__base.MGuiSize.construct.call(o);
+      o.__base.MGuiMargin.construct.call(o);
+      o.__base.MGuiPadding.construct.call(o);
+      o.__base.MGuiBorder.construct.call(o);
+      o._clientRectangle = new SRectangle();
+      o._backColor = '#CCCCCC';
+      o._borderInner.left.color = '#FFFFFF';
+   }
+   MO.FGuiControl_update = function FGuiControl_update(){
+      var o = this;
+      var size = o._size;
+      var event = new SGuiPaintEvent();
+      event.rectangle.set(0, 0, size.width, size.height)
+      o.onUpdate(event);
+      event.dispose();
+   }
+   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
+      var o = this;
+      var location = o._location;
+      var size = o._size;
+      var event = new SGuiPaintEvent();
+      event.graphic = graphic;
+      event.rectangle.assign(o._clientRectangle);
+      o.onPaint(event);
+      event.dispose();
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
+      var location = o._location;
+      var size = o._size;
       var renderable = o._renderable;
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
       }
-      renderable.setLocation(100, 50);
-      renderable.setSize(400, 200);
+      renderable.setSize(size.width, size.height);
+      o.update();
       var graphic = renderable.beginDraw();
+      graphic._handle.imageSmoothingEnabled = false;
       o.paint(graphic);
       renderable.endDraw();
    }
    MO.FGuiControl_process = function FGuiControl_process(region){
       var o = this;
+   }
+   MO.FGuiControl_dispose = function FGuiControl_dispose(){
+      var o = this;
+      o._clientRectangle = RObject.dispose(o._clientRectangle);
+      o.__base.MGuiBorder.dispose.call(o);
+      o.__base.MGuiPadding.dispose.call(o);
+      o.__base.MGuiMargin.dispose.call(o);
+      o.__base.MGuiSize.dispose.call(o);
+      o.__base.FGuiComponent.dispose.call(o);
    }
 }
 with(MO){

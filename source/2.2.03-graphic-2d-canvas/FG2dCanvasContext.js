@@ -10,22 +10,28 @@ with(MO){
       o = RClass.inherits(this, o, FG2dContext);
       //..........................................................
       // @attribute
-      o._handle       = null;
+      o._handle        = null;
       //..........................................................
       // @method
-      o.construct     = FG2dCanvasContext_construct;
+      o.construct      = FG2dCanvasContext_construct;
       // @method
-      o.linkCanvas    = FG2dCanvasContext_linkCanvas;
+      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
       // @method
-      o.setFont       = FG2dCanvasContext_setFont;
+      o.setFont        = FG2dCanvasContext_setFont;
       // @method
-      o.clear         = FG2dCanvasContext_clear;
-      o.drawLine      = FG2dCanvasContext_drawLine;
-      o.drawRectangle = FG2dCanvasContext_drawRectangle;
-      o.drawText      = FG2dCanvasContext_drawText;
-      o.drawImage     = FG2dCanvasContext_drawImage;
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
-      o.toBytes       = FG2dCanvasContext_toBytes;
+      o.clear          = FG2dCanvasContext_clear;
+      o.drawLine       = FG2dCanvasContext_drawLine;
+      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawText       = FG2dCanvasContext_drawText;
+      o.drawImage      = FG2dCanvasContext_drawImage;
+      // @method
+      o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
+      o.drawBorder     = FG2dCanvasContext_drawBorder;
+      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
+      // @method
+      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
+      // @method
+      o.toBytes        = FG2dCanvasContext_toBytes;
       return o;
    }
 
@@ -168,6 +174,63 @@ with(MO){
       }
       // 绘制位图
       handle.drawImage(data, x, y, size.width, size.height);
+   }
+
+   //==========================================================
+   // <T>绘制边框线。</T>
+   //
+   // @method
+   // @param rectangle:SRectangle 矩形
+   // @param border:SBorder 边框
+   //==========================================================
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
+      var o = this;
+      var handle = o._handle;
+      //handle.save();
+      handle.beginPath();
+      handle.strokeStyle = borderLine.color;
+      handle.lineWidth = borderLine.width;
+      handle.moveTo(x1, y1);
+      handle.lineTo(x2, y2);
+      //handle.restore();
+      handle.stroke();
+   }
+
+   //==========================================================
+   // <T>绘制边框。</T>
+   //
+   // @method
+   // @param content:Object 图像内容
+   // @param rectangle:SRectangle 矩形
+   // @param border:SBorder 边框
+   //==========================================================
+   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border){
+      var o = this;
+      // 计算位置
+      var left = rectangle.left;
+      var top = rectangle.top;
+      var right = rectangle.left + rectangle.width - 1;
+      var bottom = rectangle.top + rectangle.height - 1;
+      // 绘制边框
+      o.drawBorderLine(left, bottom, left, top, border.left);
+      o.drawBorderLine(left, top, right, top, border.top);
+      o.drawBorderLine(right, top, right, bottom, border.right);
+      o.drawBorderLine(right, bottom, left, bottom, border.bottom);
+   }
+
+   //==========================================================
+   // <T>绘制九宫格图像。</T>
+   //
+   // @method
+   // @param content:Object 图像内容
+   // @param x:Integer 横向位置
+   // @param y:Integer 纵向位置
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
+   // @param padding:SPadding 分割信息
+   //==========================================================
+   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding){
+      var o = this;
    }
 
    //==========================================================

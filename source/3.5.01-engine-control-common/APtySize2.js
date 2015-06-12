@@ -3,22 +3,25 @@
    // <T>二维尺寸的属性描述类。</T>
    //
    // @property
-   // @param n:name:String 名称
-   // @param l:linker:String 关联名称
+   // @param name:String 名称
+   // @param linker:String 关联名称
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
    // @author maocy
    // @version 150101
    //==========================================================
-   MO.APtySize2 = function APtySize2(n, l, w, h){
+   MO.APtySize2 = function APtySize2(name, linker, width, height){
       var o = this;
-      AProperty.call(o, n, l);
+      AProperty.call(o, name, linker);
       //..........................................................
       // @attribute
-      o._width   = RInteger.nvl(w);
-      o._height  = RInteger.nvl(h);
+      o._width   = RInteger.nvl(width);
+      o._height  = RInteger.nvl(height);
       //..........................................................
       // @method
       o.load     = APtySize2_load;
       o.save     = APtySize2_save;
+      // @method
       o.toString = APtySize2_toString;
       return o;
    }
@@ -27,26 +30,27 @@
    // <T>加载属性值。</T>
    //
    // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
+   // @param instance:Object 对象
+   // @param xconfig:TNode 节点
    //============================================================
-   MO.APtySize2_load = function APtySize2_load(v, x){
+   MO.APtySize2_load = function APtySize2_load(instance, xconfig){
       var o = this;
-      v[o._name].parse(x.get(o._linker));
+      var value = xconfig.get(o._linker);
+      instance[o._name].parse(value);
    }
 
    //============================================================
    // <T>存储属性值。</T>
    //
    // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
+   // @param instance:Object 对象
+   // @param xconfig:TNode 节点
    //============================================================
-   MO.APtySize2_save = function APtySize2_save(v, x){
+   MO.APtySize2_save = function APtySize2_save(instance, xconfig){
       var o = this;
-      var d = v[o._name];
-      if(!d.isEmpty()){
-         x.set(o._linker, d.toString());
+      var value = instance[o._name];
+      if(!value.isEmpty()){
+         xconfig.set(o._linker, value.toString());
       }
    }
 

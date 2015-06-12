@@ -13,8 +13,24 @@ var stage = null;
 var layer = null;
 var bitmaps = null;
 var tick = 0;
+
+
+function AAA(){
+   return this;
+}
+AAA.prototype.testA = function AAA_testA(){}
+function BBB(){
+   AAA.call(this);
+   return this;
+}
+BBB.prototype.testB = function BBB_testB(){}
+
+
 //----------------------------------------------------------
 function _load(){
+   //var bbb = new BBB();
+   //debugger
+
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
@@ -38,6 +54,8 @@ function _load(){
    var frame = frameConsole.get('eai.country.LogoBar');
    frame.linkGraphicContext(canvas);
    frame.build();
+   var renderable = frame.renderable();
+   renderable.setLocation(100, 50);
    layer.pushRenderable(frame.renderable());
 }
 </SCRIPT>
