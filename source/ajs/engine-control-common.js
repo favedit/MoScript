@@ -130,6 +130,19 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._value;
    }
 }
+MO.EGuiDock = new function EGuiDock(){
+   var o = this;
+   o.None        = 'none';
+   o.LeftTop     = 'left.top';
+   o.Left        = 'left';
+   o.LeftBottom  = 'left.bottom';
+   o.RightTop    = 'right.top';
+   o.Right       = 'right';
+   o.RightBottom = 'right.bottom';
+   o.Center      = 'center';
+   o.Fill        = 'fill';
+   return o;
+}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
@@ -267,6 +280,37 @@ with(MO){
       o._size = RObject.dispose(o._size);
    }
 }
+with(MO){
+   MO.SGuiDispatchEvent = function SGuiDispatchEvent(owner, invokeName, clazz){
+      var o = this;
+      o.owner    = owner;
+      o.invoke   = invokeName;
+      o.clazz    = RClass.name(clazz);
+      o.invokeCd = EEventInvoke.Unknown;
+      o.isBefore = SGuiDispatchEvent_isBefore;
+      o.isAfter  = SGuiDispatchEvent_isAfter;
+      o.dispose  = SGuiDispatchEvent_dispose;
+      o.dump     = SGuiDispatchEvent_dump;
+      return o;
+   }
+   MO.SGuiDispatchEvent_isBefore = function SGuiDispatchEvent_isBefore(){
+      return this.invokeCd == EEventInvoke.Before;
+   }
+   MO.SGuiDispatchEvent_isAfter = function SGuiDispatchEvent_isAfter(){
+      return this.invokeCd == EEventInvoke.After;
+   }
+   MO.SGuiDispatchEvent_dispose = function SGuiDispatchEvent_dispose(){
+      var o = this;
+      o.owner = null;
+      o.invoke = null;
+      o.clazz = null;
+      o.invokeCd = null;
+   }
+   MO.SGuiDispatchEvent_dump = function SGuiDispatchEvent_dump(){
+      var o = this;
+      return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
+   }
+}
 MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic   = null;
@@ -305,6 +349,7 @@ with(MO){
       o.push          = FGuiComponent_push;
       o.remove        = FGuiComponent_remove;
       o.clear         = FGuiComponent_clear;
+      o.process       = FGuiComponent_process;
       o.dispose       = FGuiComponent_dispose;
       return o;
    }
@@ -318,7 +363,7 @@ with(MO){
    }
    MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
       var component = this;
-      if(component){
+      if(clazz){
          while(RClass.isClass(component._parent, clazz)){
             component = component._parent;
          }
@@ -368,19 +413,57 @@ with(MO){
       }
       components.removeValue(component);
    }
-   MO.FGuiComponent_clear = function FGuiComponent_clear(p){
+   MO.FGuiComponent_clear = function FGuiComponent_clear(){
       var o = this;
       var components = o._components;
       if(components){
          components.clear();
       }
    }
+   MO.FGuiComponent_process = function FGuiComponent_process(event){
+      var o = this;
+      var valid = o.__base[event.clazz];
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      if(RClass.isClass(o, MGuiContainer)){
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
+                  }
+               }
+            }
+         }
+      }
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      return EEventStatus.Continue;
+   }
    MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
       var o = this;
-      o._name = null;
-      o._label = null;
-      o._tag = null;
       o._components = RObject.dispose(o._components, true);
+      o._tag = null;
       o.__base.FComponent.dispose.call(o);
    }
 }
@@ -405,7 +488,11 @@ with(MO){
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
-      o.process          = FGuiControl_process;
+      o.psEnable         = FGuiControl_psEnable;
+      o.psVisible        = FGuiControl_psVisible;
+      o.psResize         = FGuiControl_psResize;
+      o.psRefresh        = FGuiControl_psRefresh;
+      o.psUpdate         = FGuiControl_psUpdate;
       o.dispose          = FGuiControl_dispose;
       return o;
    }
@@ -499,8 +586,37 @@ with(MO){
       o.paint(graphic);
       renderable.endDraw();
    }
-   MO.FGuiControl_process = function FGuiControl_process(region){
+   MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeEnable', FGuiControl)
+      event.enable = enable;
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psVisible = function FGuiControl_psVisible(visible){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeVisible', FGuiControl);
+      event.visible = visible;
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psResize = function FGuiControl_psResize(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeRefresh', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeUpdate', FGuiControl);
+      o.process(event);
+      event.dispose();
    }
    MO.FGuiControl_dispose = function FGuiControl_dispose(){
       var o = this;
@@ -560,13 +676,20 @@ with(MO){
       MO.Assert.debugNotNull(graphic);
       o._texture.upload(o._canvas);
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(graphic);
+      canvasConsole.free(o._canvas);
+      o._canvas = null;
       o._graphic = null;
       o._ready = true;
    }
    MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
       var o = this;
       o.__base.FE3dFaceData.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FGuiFrame = function FGuiFrame(o){
+      o = RClass.inherits(this, o, FGuiContainer);
+      return o;
    }
 }
 with(MO){

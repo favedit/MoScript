@@ -22,6 +22,7 @@ with(MO){
    MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
       var effectConsole = RConsole.find(FG3dEffectConsole);
       // 选取效果器
+      effectConsole.register('select.select.flat', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);

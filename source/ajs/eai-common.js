@@ -18,6 +18,12 @@ MO.EEaiStage = new function EEaiStage(){
    o.Scene   = 'scene';
    return o;
 }
+MO.Eai = new function FEai(){
+   var o = this;
+   o.Application = null;
+   o.Canvas      = null;
+   return o;
+}
 with(MO){
    MO.FEaiEntity = function FEaiEntity(o){
       o = RClass.inherits(this, o, FObject);

@@ -14,6 +14,9 @@ with(MO){
       o._stageLogin   = RClass.register(o, new AGetter('_stageLogin'));
       o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
       //..........................................................
+      // @event
+      o.onProcess     = FEaiApplication_onProcess;
+      //..........................................................
       // @method
       o.construct     = FEaiApplication_construct;
       // @method
@@ -22,6 +25,18 @@ with(MO){
       // @method
       o.dispose       = FEaiApplication_dispose;
       return o;
+   }
+
+   //==========================================================
+   // <T>执行处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiApplication_onProcess = function FEaiApplication_onProcess(){
+      var o = this;
+      //if(o._activeStage){
+      //   o._activeStage.process();
+      //}
    }
 
    //==========================================================
@@ -53,6 +68,8 @@ with(MO){
       var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
       stage.setup();
       o.registerStage(stage);
+      // 注册处理
+      RStage.lsnsEnterFrame.register(o, o.onProcess);
    }
 
    //==========================================================

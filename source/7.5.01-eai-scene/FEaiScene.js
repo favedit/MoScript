@@ -9,19 +9,25 @@ with(MO){
       o = RClass.inherits(this, o, FE3dStage);
       //..........................................................
       // @attribute
-      o._mapLayer    = null;
-      o._spriteLayer = null;
-      o._faceLayer   = null;
+      o._mapLayer       = null;
+      o._spriteLayer    = null;
+      o._faceLayer      = null;
+      // @attribute
+      o._frames         = null;
       //..........................................................
       // @method
-      o.construct    = FEaiScene_construct;
+      o.construct       = FEaiScene_construct;
       // @method
-      o.mapLayer     = FEaiScene_mapLayer;
-      o.spriteLayer  = FEaiScene_spriteLayer;
-      o.faceLayer    = FEaiScene_faceLayer;
+      o.mapLayer        = FEaiScene_mapLayer;
+      o.spriteLayer     = FEaiScene_spriteLayer;
+      o.faceLayer       = FEaiScene_faceLayer;
       // @method
-      o.active       = FEaiScene_active;
-      o.deactive     = FEaiScene_deactive;
+      o.registerFrame   = FEaiScene_registerFrame;
+      o.unregisterFrame = FEaiScene_unregisterFrame;
+      // @method
+      o.active          = FEaiScene_active;
+      o.deactive        = FEaiScene_deactive;
+      o.process         = FEaiScene_process;
       return o;
    }
 
@@ -42,6 +48,8 @@ with(MO){
       // 创建界面层
       var layer = o._faceLayer = RClass.create(FDisplayLayer);
       o.registerLayer('FaceLayer', layer);
+      // 创建界面集合
+      o._frames = new TObjects();
    }
 
    //==========================================================
@@ -92,5 +100,39 @@ with(MO){
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FE3dStage.deactive.call(o);
+   }
+
+   //==========================================================
+   // <T>注册一个页面。</T>
+   //
+   // @method
+   // @param frame:FGuiFrame 页面
+   //==========================================================
+   MO.FEaiScene_registerFrame = function FEaiScene_registerFrame(frame){
+      this._frames.push(frame);
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   // @param frame:FGuiFrame 页面
+   //==========================================================
+   MO.FEaiScene_unregisterFrame = function FEaiScene_unregisterFrame(frame){
+      this._frames.remove(frame);
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiScene_process = function FEaiScene_process(){
+      var o = this;
+      var count = o._frames.count();
+      for(var i = 0; i < count; i++){
+         var frame = o._frames.at(i);
+         frame.psUpdate();
+      }
    }
 }

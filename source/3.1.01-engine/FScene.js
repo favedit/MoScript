@@ -22,6 +22,7 @@ with(MO){
       o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
+      o.process         = FScene_process;
       // @method
       o.dispose         = FScene_dispose;
       return o;

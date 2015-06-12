@@ -5,13 +5,4 @@
 // @author maocy
 // @version 150506
 //==========================================================
-MO.EUiDock = new function EUiDock(){
-   var o = this;
-   // @attribute
-   o.None   = 'none';
-   o.Left   = 'left';
-   o.Right  = 'right';
-   o.Center = 'center';
-   o.Fill   = 'fill';
-   return o;
-}
+MO.EUiDock = MO.EGuiDock;

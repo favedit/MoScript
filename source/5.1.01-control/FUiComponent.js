@@ -97,7 +97,7 @@
    // <P>如果没有指定类，则获得最顶层组件。</P>
    //
    // @method
-   // @param c:class:Class 类
+   // @param class:Class 类
    // @return FUiComponent 组件
    //==========================================================
    MO.FUiComponent_topComponent = function FUiComponent_topComponent(c){
@@ -224,38 +224,38 @@
    //    注意：任何事件调用返回取消状态的话，则跳过后面所有的组件处理，直接返回到最开始的调用函数。</L>
    // </P>
    //
-   // @param e:event:TEventProcess 事件处理对象
+   // @param event:TEventProcess 事件处理对象
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiComponent_process = function FUiComponent_process(e){
+   MO.FUiComponent_process = function FUiComponent_process(event){
       var o = this;
       // 获得对象是否有效
-      var v = o.__base[e.clazz];
+      var valid = o.__base[event.clazz];
       //..........................................................
       // 事件前处理
-      if(v){
-         e.invokeCd = EEventInvoke.Before;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       //..........................................................
       // 处理所有子对象
       if(RClass.isClass(o, MUiContainer)){
-         var ps = o._components;
-         if(ps){
-            var pc = ps.count();
-            if(pc){
-               for(var i = 0; i < pc; i++){
-                  var p = ps.valueAt(i);
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
                   }
                }
             }
@@ -263,15 +263,15 @@
       }
       //..........................................................
       // 事件后处理
-      if(v){
-         e.invokeCd = EEventInvoke.After;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       return EEventStatus.Continue;

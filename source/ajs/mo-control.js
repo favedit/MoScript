@@ -621,22 +621,6 @@ MO.EEditStatus = new function EEditStatus(o){
    o.Ok     = 2;
    return o;
 }
-MO.EEventInvoke = new function EEventInvoke(){
-   var o = this;
-   o.Unknown = 0;
-   o.Before  = 1;
-   o.After   = 2;
-   return o;
-}
-MO.EEventStatus = new function EEventStatus(){
-   var o = this;
-   o.Unknown  = 0;
-   o.Continue = 1;
-   o.Stop     = 2;
-   o.Cancel   = 3;
-   o.Failure  = 4;
-   return o;
-}
 MO.EEventType = new function EEventType(){
    var o = this;
    o.Unknown    = 0;
@@ -750,15 +734,7 @@ MO.EUiDirection = new function EUiDirection(){
    o.Vertical   = 'V';
    return o;
 }
-MO.EUiDock = new function EUiDock(){
-   var o = this;
-   o.None   = 'none';
-   o.Left   = 'left';
-   o.Right  = 'right';
-   o.Center = 'center';
-   o.Fill   = 'fill';
-   return o;
-}
+MO.EUiDock = MO.EGuiDock;
 MO.EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
@@ -2866,44 +2842,44 @@ with(MO){
          s.clear();
       }
    }
-   MO.FUiComponent_process = function FUiComponent_process(e){
+   MO.FUiComponent_process = function FUiComponent_process(event){
       var o = this;
-      var v = o.__base[e.clazz];
-      if(v){
-         e.invokeCd = EEventInvoke.Before;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      var valid = o.__base[event.clazz];
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       if(RClass.isClass(o, MUiContainer)){
-         var ps = o._components;
-         if(ps){
-            var pc = ps.count();
-            if(pc){
-               for(var i = 0; i < pc; i++){
-                  var p = ps.valueAt(i);
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
                   }
                }
             }
          }
       }
-      if(v){
-         e.invokeCd = EEventInvoke.After;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       return EEventStatus.Continue;

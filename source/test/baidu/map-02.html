@@ -62,8 +62,8 @@ function createRenderable(){
    for(var i = 0; i < count; i++){
       var point = points.at(i);
       vertexData.push(point.x, point.y, 0);
-      colorData.push(255, 0, 0, 255);
-      color2Data.push(255, 255, 255, 255);
+      colorData.push(255, 200, 255, 255);
+      color2Data.push(255, 0, 0, 255);
       indexData.push(i);
       if(i == count - 1){
          indexData.push(0);
@@ -80,24 +80,24 @@ function createRenderable(){
    box._vertexColorBuffer.upload(new Uint8Array(colorData), 1 * 4, count);
    //box._indexBuffer.upload(new Uint16Array(indexData), count * 2 - 2);
    var faceData = cal_index(vertexData);
-   var id = new Array();
-   for(var i = 0; i < faceData.length; i+=3){
-      id.push(faceData[i]);
-      id.push(faceData[i + 1]);
+   //var id = new Array();
+   //for(var i = 0; i < faceData.length; i+=3){
+   //   id.push(faceData[i]);
+   //   id.push(faceData[i + 1]);
 
-      id.push(faceData[i + 1]);
-      id.push(faceData[i + 2]);
+    //  id.push(faceData[i + 1]);
+    //  id.push(faceData[i + 2]);
 
-      id.push(faceData[i + 2]);
-      id.push(faceData[i]);
+      //id.push(faceData[i + 2]);
+      //id.push(faceData[i]);
       //if(i > 3 * 4000){
       //   break;
       //}
-   }
-   //box._indexBuffer.upload(new Uint16Array(faceData), faceData.length);
-   box._indexBuffer.upload(new Uint16Array(id), id.length);
-   box._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   box._indexBuffer.setLineWidth(1);
+   //}
+   box._indexBuffer.upload(new Uint16Array(faceData), faceData.length);
+   //box._indexBuffer.upload(new Uint16Array(id), id.length);
+   //box._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   //box._indexBuffer.setLineWidth(1);
    box.material().info().optionDouble = true;
 
    var matrix = box.matrix();
@@ -156,7 +156,7 @@ function _load(){
 <TABLE width='100%' height='100%' border='1px'>
    <TR>
       <TD colspan='2' height='40px'>
-         输入省、直辖市或县名称：<input type="text" id="districtName" style="width:80px" value="四川">
+         输入省、直辖市或县名称：<input type="text" id="districtName" style="width:80px" value="河北">
          <INPUT type="button" id='id_button' onclick="doBoundary()" value="轮廓">
       </TD>
    </TR>

@@ -1,10 +1,3 @@
-MO.Eai = new function FEai(){
-   var o = this;
-   o.Application = null;
-   o.Canvas      = null;
-   o._hPanel     = null;
-   return o;
-}
 MO.Eai.setup = function Eai_setup(hPanel){
    var o = this;
    o._hPanel = hPanel;

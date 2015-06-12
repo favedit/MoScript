@@ -4,11 +4,15 @@ with(MO){
       o._stageLoading = RClass.register(o, new AGetter('_stageLoading'));
       o._stageLogin   = RClass.register(o, new AGetter('_stageLogin'));
       o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
+      o.onProcess     = FEaiApplication_onProcess;
       o.construct     = FEaiApplication_construct;
       o.setup         = FEaiApplication_setup;
       o.selectStage   = FEaiApplication_selectStage;
       o.dispose       = FEaiApplication_dispose;
       return o;
+   }
+   MO.FEaiApplication_onProcess = function FEaiApplication_onProcess(){
+      var o = this;
    }
    MO.FEaiApplication_construct = function FEaiApplication_construct(){
       var o = this;
@@ -25,6 +29,7 @@ with(MO){
       var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
       stage.setup();
       o.registerStage(stage);
+      RStage.lsnsEnterFrame.register(o, o.onProcess);
    }
    MO.FEaiApplication_selectStage = function FEaiApplication_selectStage(code){
       var o = this;
@@ -248,6 +253,7 @@ MO.FEaiSceneStage = function FEaiSceneStage(o){
    o._sceneCompany     = null;
    o.construct         = MO.FEaiSceneStage_construct;
    o.setup             = MO.FEaiSceneStage_setup;
+   o.process           = MO.FEaiSceneStage_process;
    o.dispose           = MO.FEaiSceneStage_dispose;
    return o;
 }
@@ -269,6 +275,10 @@ MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
    var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
    scene.setup();
    o.registerScene(scene);
+}
+MO.FEaiSceneStage_process = function FEaiSceneStage_process(){
+   var o = this;
+   o.__base.FEaiStage.process.call(o);
 }
 MO.FEaiSceneStage_dispose = function FEaiSceneStage_dispose(){
    var o = this;

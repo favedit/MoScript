@@ -20,6 +20,7 @@ MO.FEaiSceneStage = function FEaiSceneStage(o){
    o.construct         = MO.FEaiSceneStage_construct;
    // @method
    o.setup             = MO.FEaiSceneStage_setup;
+   o.process           = MO.FEaiSceneStage_process;
    // @method
    o.dispose           = MO.FEaiSceneStage_dispose;
    return o;
@@ -58,6 +59,16 @@ MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
    var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
    scene.setup();
    o.registerScene(scene);
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiSceneStage_process = function FEaiSceneStage_process(){
+   var o = this;
+   o.__base.FEaiStage.process.call(o);
 }
 
 //==========================================================

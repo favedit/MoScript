@@ -118,6 +118,22 @@ MO.EEvent = new function EEvent(){
    o.TouchZoom   = 'TouchZoom';
    return o;
 }
+MO.EEventInvoke = new function EEventInvoke(){
+   var o = this;
+   o.Unknown = 0;
+   o.Before  = 1;
+   o.After   = 2;
+   return o;
+}
+MO.EEventStatus = new function EEventStatus(){
+   var o = this;
+   o.Unknown  = 0;
+   o.Continue = 1;
+   o.Stop     = 2;
+   o.Cancel   = 3;
+   o.Failure  = 4;
+   return o;
+}
 MO.EHttpContent = new function EHttpContent(){
    var o = this;
    o.Binary = 1;

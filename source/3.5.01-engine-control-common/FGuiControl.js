@@ -30,7 +30,12 @@ with(MO){
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
-      o.process          = FGuiControl_process;
+      // @method
+      o.psEnable         = FGuiControl_psEnable;
+      o.psVisible        = FGuiControl_psVisible;
+      o.psResize         = FGuiControl_psResize;
+      o.psRefresh        = FGuiControl_psRefresh;
+      o.psUpdate         = FGuiControl_psUpdate;
       // @method
       o.dispose          = FGuiControl_dispose;
       return o;
@@ -200,13 +205,77 @@ with(MO){
    }
 
    //==========================================================
-   // <T>逻辑处理。</T>
+   // <T>分发改变控件可操作和禁止的事件。</T>
    //
    // @method
-   // @param region 区域
+   // @param enable:Boolean 是否可操作
    //==========================================================
-   MO.FGuiControl_process = function FGuiControl_process(region){
+   MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeEnable', FGuiControl)
+      event.enable = enable;
+      // 处理消息
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>分发改变控件隐藏和显示的事件。</T>
+   //
+   // @method
+   // @param visible:Boolean 是否可见
+   //==========================================================
+   MO.FGuiControl_psVisible = function FGuiControl_psVisible(visible){
+      var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeVisible', FGuiControl);
+      event.visible = visible;
+      // 处理消息
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>分发改变控件大小的事件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_psResize = function FGuiControl_psResize(){
+      var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      // 处理消息
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>分发控件刷新的事件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
+      var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeRefresh', FGuiControl);
+      // 处理消息
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>分发控件更新的事件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
+      var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeUpdate', FGuiControl);
+      // 处理消息
+      o.process(event);
+      event.dispose();
    }
 
    //==========================================================

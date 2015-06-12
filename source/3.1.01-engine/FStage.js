@@ -202,6 +202,10 @@ with(MO){
       //..........................................................
       // 前处理
       o.processEnterFrameListener(o);
+      // 场景处理
+      if(o._activeScene){
+         o._activeScene.process();
+      }
       // 逻辑处理
       o.onProcess();
       // 后处理

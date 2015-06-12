@@ -12,88 +12,6 @@
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
-var display = null;
-var movie = false;
-var templateSprite = null;
-var uiLayer = null;
-//------------------------------------------------------------
-function onEnterFrame(){
-   //if(templateSprite){
-   //   var matrix = templateSprite.matrix();
-   //   matrix.ry -= 0.008;
-   //   matrix.updateForce();
-   //}
-}
-//------------------------------------------------------------
-function onTemplateLoad(event){
-   //uiLayer = RClass.create(FDisplayLayer);
-   // 监听时间
-   var template = event;
-   var sprite = templateSprite = template.sprite();
-   var renderables = sprite.renderables();
-   var count = renderables.count();
-   var selectRenderable = null;
-   for(var i = 0; i < count; i++){
-      var renderable = renderables.at(i);
-      var material = renderable.material();
-      //renderable.setVisible(i == 1);
-      //var indexBuffer = renderable.indexBuffers().first();
-      //var outline = renderable.calculateOutline();
-      //indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   }
-
-   //var resource = selectRenderable.resource();
-   //var vertexBuffer = selectRenderable._vertexBuffers._values[1];
-   //var data = vertexBuffer._resource._data;
-   //var array = new Float32Array(data);
-
-   var matrix = sprite.matrix();
-   matrix.tx = -4;
-   matrix.ty = -3;
-   matrix.rx = -Math.PI / 2;
-   //matrix.setScaleAll(1.01);
-   matrix.updateForce();
-
-   var stage = MO.Eai.Canvas.activeStage();
-   stage.mapLayer().pushDisplay(sprite);
-
-   //template.addEnterFrameListener(null, onEnterFrame);
-
-   //var r1 = sprite.renderables().at(0);
-   //var outline = r1.calculateOutline();
-   //var matrix = r1.matrix()
-   //matrix.setScaleAll(3);
-   //matrix.updateForce();
-   //var stage = canvas._stage;
-   //var region = template.region();
-   //region.backgroundColor().set(1, 1, 1, 1);
-
-   //var camera = region.camera();
-
-   //var bitmap = MO.RClass.create(MO.FE3dBitmap);
-   //bitmap.linkGraphicContext(canvas);
-   //bitmap.setSize(100, 100);
-   //bitmap.loadUrl('/script/ars/picture/star4.jpg');
-   //var matrix = bitmap.matrix();
-   //sprite.pushRenderable(bitmap);
-   //camera.setPosition();
-   //camera.lookAt();
-   //camera.update();
-   //var space = event.space;
-   //space.addEnterFrameListener(null, onEnterFrame);
-   // 打开播放
-   //canvas.switchPlay(true);
-   //canvas.switchMovie(true);
-}
-//------------------------------------------------------------
-function onKeydown(p){
-   //var e = window.event;
-   //var c = e.keyCode;
-   //if(c == EKeyCode.Space){
-   //   movie = !movie;
-   //   canvas.switchMovie(movie);
-   //}
-}
 //------------------------------------------------------------
 function goPage(){
    window.location = 'company.html';
@@ -138,14 +56,12 @@ function onLoad(){
    MO.Eai.setup(document.body);
    var stage = MO.Eai.Application.selectStageByCode(MO.EEaiStage.Scene);
    var scene = stage.selectSceneByCode(MO.EEaiScene.Country);
-
-   //canvas.loadByCode('eai.world.china');
-   //canvas.addLoadListener(null, onTemplateLoad);
+   //MO.Eai.Application.processResize();
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
-   <DIV style='position:absolute; left:5%; top:20px;'>
+<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()'>
+   <DIV style='position:absolute; left:10px; top:160px;'>
       <H2 style='color:#FFFFFF' onclick='doOrganizationFetch()'>Organization - Fetch</H2>
       <H2 style='color:#FFFFFF'>Achievement - Group</H2>
       <H2 style='color:#FFFFFF'>Achievement - Sort</H2>
@@ -160,9 +76,6 @@ function onLoad(){
             <TD>Province</TD>
          </TR>
       </TABLE>
-   </DIV>
-   <DIV style='position:absolute; left:90%; top:10%;'>
-      <IMG src='../ars/picture/fullscreen.png' style='width:6em; height:6em;' onmousedown='goPage("company")'>
    </DIV>
 </BODY>
 </HTML>

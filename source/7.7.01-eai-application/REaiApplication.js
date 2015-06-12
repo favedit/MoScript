@@ -1,23 +1,4 @@
 //==========================================================
-// <T>EAI空间。</T>
-//
-// @class
-// @author maocy
-// @history 150612
-//==========================================================
-MO.Eai = new function FEai(){
-   var o = this;
-   //..........................................................
-   // @space
-   o.Application = null;
-   o.Canvas      = null;
-   //..........................................................
-   // @attribute
-   o._hPanel     = null;
-   return o;
-}
-
-//==========================================================
 // <T>命名空间。</T>
 //
 // @class
@@ -36,5 +17,4 @@ MO.Eai.setup = function Eai_setup(hPanel){
    canvas.setPanel(hPanel);
    // 配置处理
    o.Application.setup();
-   //canvas._stage.addEnterFrameListener(null, onEnterFrame);
 }

@@ -29,6 +29,8 @@ with(MO){
       o.remove        = FGuiComponent_remove;
       o.clear         = FGuiComponent_clear;
       // @method
+      o.process       = FGuiComponent_process;
+      // @method
       o.dispose       = FGuiComponent_dispose;
       return o;
    }
@@ -59,7 +61,7 @@ with(MO){
    //==========================================================
    MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
       var component = this;
-      if(component){
+      if(clazz){
          while(RClass.isClass(component._parent, clazz)){
             component = component._parent;
          }
@@ -159,12 +161,77 @@ with(MO){
    // 
    // @method
    //==========================================================
-   MO.FGuiComponent_clear = function FGuiComponent_clear(p){
+   MO.FGuiComponent_clear = function FGuiComponent_clear(){
       var o = this;
       var components = o._components;
       if(components){
          components.clear();
       }
+   }
+
+   //==========================================================
+   // <T>遍历子组件进行事件处理。<T>
+   // <P>
+   //    <OL>
+   //       <L>当前组件的事件前处理。
+   //          如果返回值为停止状态，则跳过当前组件的所有子组件的处理，直接返回上一层，继续上一层中同一层的其他组件的处理。</L>
+   //       <L>如果当前组件支持容器接口，则可以进行子组件的事件处理，否则直接返回上一层处理。
+   //          注意：不支持容器接口的对象并不表示没有子组件</L>
+   //       <L>子组件按照存储顺序进行事件处理。</L>
+   //       <L>当前组件的事件后处理。</L>
+   //    </OL>
+   //    注意：任何事件调用返回取消状态的话，则跳过后面所有的组件处理，直接返回到最开始的调用函数。</L>
+   // </P>
+   //
+   // @param event:SDispatchEvent 纷发事件
+   // @return EEventStatus 处理状态
+   //==========================================================
+   MO.FGuiComponent_process = function FGuiComponent_process(event){
+      var o = this;
+      // 获得对象是否有效
+      var valid = o.__base[event.clazz];
+      //..........................................................
+      // 事件前处理
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      //..........................................................
+      // 处理所有子对象
+      if(RClass.isClass(o, MGuiContainer)){
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
+                  }
+               }
+            }
+         }
+      }
+      //..........................................................
+      // 事件后处理
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      return EEventStatus.Continue;
    }
 
    //==========================================================
@@ -175,10 +242,8 @@ with(MO){
    MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
       var o = this;
       // 清空属性
-      o._name = null;
-      o._label = null;
-      o._tag = null;
       o._components = RObject.dispose(o._components, true);
+      o._tag = null;
       // 释放处理
       o.__base.FComponent.dispose.call(o);
    }

@@ -102,7 +102,8 @@ with(MO){
       o._texture.upload(o._canvas);
       // 释放画板
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(graphic);
+      canvasConsole.free(o._canvas);
+      o._canvas = null;
       o._graphic = null;
       o._ready = true;
    }

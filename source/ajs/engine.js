@@ -599,6 +599,7 @@ with(MO){
       o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
+      o.process         = FScene_process;
       o.dispose         = FScene_dispose;
       return o;
    }
@@ -748,6 +749,9 @@ with(MO){
          timer.setup();
       }
       o.processEnterFrameListener(o);
+      if(o._activeScene){
+         o._activeScene.process();
+      }
       o.onProcess();
       o.processLeaveFrameListener(o);
       timer.update();

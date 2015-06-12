@@ -8845,6 +8845,22 @@ MO.EEvent = new function EEvent(){
    o.TouchZoom   = 'TouchZoom';
    return o;
 }
+MO.EEventInvoke = new function EEventInvoke(){
+   var o = this;
+   o.Unknown = 0;
+   o.Before  = 1;
+   o.After   = 2;
+   return o;
+}
+MO.EEventStatus = new function EEventStatus(){
+   var o = this;
+   o.Unknown  = 0;
+   o.Continue = 1;
+   o.Stop     = 2;
+   o.Cancel   = 3;
+   o.Failure  = 4;
+   return o;
+}
 MO.EHttpContent = new function EHttpContent(){
    var o = this;
    o.Binary = 1;
@@ -14922,51 +14938,51 @@ with(MO){
       o.__base.FGraphicContext.dispose.call(o);
    }
 }
-with(MO){
-   MO.FG2dCanvasContext = function FG2dCanvasContext(o){
+with (MO) {
+   MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
       o = RClass.inherits(this, o, FG2dContext);
-      o._handle        = null;
-      o.construct      = FG2dCanvasContext_construct;
-      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
-      o.setFont        = FG2dCanvasContext_setFont;
-      o.clear          = FG2dCanvasContext_clear;
-      o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
-      o.drawText       = FG2dCanvasContext_drawText;
-      o.drawImage      = FG2dCanvasContext_drawImage;
+      o._handle = null;
+      o.construct = FG2dCanvasContext_construct;
+      o.linkCanvas = FG2dCanvasContext_linkCanvas;
+      o.setFont = FG2dCanvasContext_setFont;
+      o.clear = FG2dCanvasContext_clear;
+      o.drawLine = FG2dCanvasContext_drawLine;
+      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawText = FG2dCanvasContext_drawText;
+      o.drawImage = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder     = FG2dCanvasContext_drawBorder;
-      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
-      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
-      o.toBytes        = FG2dCanvasContext_toBytes;
+      o.drawBorder = FG2dCanvasContext_drawBorder;
+      o.drawGridImage = FG2dCanvasContext_drawGridImage;
+      o.fillRectangle = FG2dCanvasContext_fillRectangle;
+      o.toBytes = FG2dCanvasContext_toBytes;
       return o;
    }
-   MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct(){
+   MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
       var o = this;
       o.__base.FG2dContext.construct.call(o);
    }
-   MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas){
+   MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas) {
       var o = this;
       o.__base.FG2dContext.linkCanvas.call(o, hCanvas);
-      if(hCanvas.getContext){
+      if (hCanvas.getContext) {
          var handle = hCanvas.getContext('2d');
-         if(!handle){
+         if (!handle) {
             throw new TError(o, "Current browser can't support Context2D technique.");
          }
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
    }
-   MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font){
+   MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
    }
-   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d){
+   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d) {
       var o = this;
       var handle = o._handle;
       var size = o._size;
       handle.clearRect(0, 0, size.width, size.height);
    }
-   MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
+   MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;
       var handle = o._handle;
       handle.strokeStyle = color;
@@ -14975,34 +14991,34 @@ with(MO){
       handle.lineTo(x2, y2);
       handle.stroke();
    }
-   MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth){
+   MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth) {
       var o = this;
       var handle = o._handle;
       handle.strokeStyle = color;
       handle.lineWidth = lineWidth;
       handle.strokeRect(x, y, width, height);
    }
-   MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color){
+   MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color) {
       var o = this;
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillText(text, x, y);
    }
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y){
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y) {
       var o = this;
       var handle = o._handle;
       var size = o._size;
       var data = null
-      if(content.tagName == 'IMG'){
+      if (content.tagName == 'IMG') {
          data = content;
-      }else if(RClass.isClass(content, FImage)){
+      } else if (RClass.isClass(content, FImage)) {
          data = content.image();
-      }else{
+      } else {
          throw new TError(o, 'Unknown content type');
       }
       handle.drawImage(data, x, y, size.width, size.height);
    }
-   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine) {
       var o = this;
       var handle = o._handle;
       handle.beginPath();
@@ -15012,7 +15028,7 @@ with(MO){
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.stroke();
    }
-   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border){
+   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
       var o = this;
       var left = rectangle.left;
       var top = rectangle.top;
@@ -15023,16 +15039,55 @@ with(MO){
       o.drawBorderLine(right, top, right, bottom, border.right);
       o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
-   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding){
+   MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding) {
       var o = this;
+      var handle = o._handle;
+      var data = null
+      if (RClass.isClass(content, FImage)) {
+         data = content.image();
+      } else {
+         throw new TError(o, 'Unknown content type');
+      }
+      var ssize = content.size();
+      var sx = new Array();
+      sx[0] = 0;
+      sx[1] = padding.left;
+      sx[2] = ssize.width - padding.right;
+      var sy = new Array();
+      sy[0] = 0;
+      sy[1] = padding.top;
+      sy[2] = ssize.height - padding.bottom;
+      var dx = new Array();
+      dx[0] = x;
+      dx[1] = x + padding.left;
+      dx[2] = width - padding.right;
+      var dy = new Array();
+      dy[0] = y;
+      dy[1] = y + padding.top;
+      dy[2] = height - padding.bottom;
+      var w = new Array();
+      w[0] = padding.left;
+      w[1] = width - padding.left - padding.right;
+      w[2] = padding.right;
+      var h = new Array();
+      h[0] = padding.top;
+      h[1] = height - padding.top - padding.bottom;
+      h[2] = padding.bottom;
+      for (var i = 0; i < 9; i++) {
+         var row = Math.floor(i / 3);
+         var column = i % 3;
+         if (h[row] > 0 && w[column] > 0) {
+            handle.drawImage(data, sx[column], sy[row], w[column], h[row], dx[column], dy[row]);
+         }
+      }
    }
-   MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
+   MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
       var o = this;
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
    }
-   MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes(){
+   MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
       var o = this;
       var size = o._size;
       return o._handle.getImageData(0, 0, size.width, size.height);
@@ -20996,6 +21051,7 @@ with(MO){
       o.setup           = FScene_setup;
       o.active          = FScene_active;
       o.deactive        = FScene_deactive;
+      o.process         = FScene_process;
       o.dispose         = FScene_dispose;
       return o;
    }
@@ -21145,6 +21201,9 @@ with(MO){
          timer.setup();
       }
       o.processEnterFrameListener(o);
+      if(o._activeScene){
+         o._activeScene.process();
+      }
       o.onProcess();
       o.processLeaveFrameListener(o);
       timer.update();
@@ -22600,6 +22659,7 @@ with(MO){
    }
    MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
       var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('select.select.flat', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.control', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.automatic', FG3dSelectAutomaticEffect);
       effectConsole.register('select.select.skeleton', FG3dSelectSkeletonEffect);
@@ -33346,6 +33406,19 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._value;
    }
 }
+MO.EGuiDock = new function EGuiDock(){
+   var o = this;
+   o.None        = 'none';
+   o.LeftTop     = 'left.top';
+   o.Left        = 'left';
+   o.LeftBottom  = 'left.bottom';
+   o.RightTop    = 'right.top';
+   o.Right       = 'right';
+   o.RightBottom = 'right.bottom';
+   o.Center      = 'center';
+   o.Fill        = 'fill';
+   return o;
+}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
@@ -33483,6 +33556,37 @@ with(MO){
       o._size = RObject.dispose(o._size);
    }
 }
+with(MO){
+   MO.SGuiDispatchEvent = function SGuiDispatchEvent(owner, invokeName, clazz){
+      var o = this;
+      o.owner    = owner;
+      o.invoke   = invokeName;
+      o.clazz    = RClass.name(clazz);
+      o.invokeCd = EEventInvoke.Unknown;
+      o.isBefore = SGuiDispatchEvent_isBefore;
+      o.isAfter  = SGuiDispatchEvent_isAfter;
+      o.dispose  = SGuiDispatchEvent_dispose;
+      o.dump     = SGuiDispatchEvent_dump;
+      return o;
+   }
+   MO.SGuiDispatchEvent_isBefore = function SGuiDispatchEvent_isBefore(){
+      return this.invokeCd == EEventInvoke.Before;
+   }
+   MO.SGuiDispatchEvent_isAfter = function SGuiDispatchEvent_isAfter(){
+      return this.invokeCd == EEventInvoke.After;
+   }
+   MO.SGuiDispatchEvent_dispose = function SGuiDispatchEvent_dispose(){
+      var o = this;
+      o.owner = null;
+      o.invoke = null;
+      o.clazz = null;
+      o.invokeCd = null;
+   }
+   MO.SGuiDispatchEvent_dump = function SGuiDispatchEvent_dump(){
+      var o = this;
+      return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
+   }
+}
 MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic   = null;
@@ -33521,6 +33625,7 @@ with(MO){
       o.push          = FGuiComponent_push;
       o.remove        = FGuiComponent_remove;
       o.clear         = FGuiComponent_clear;
+      o.process       = FGuiComponent_process;
       o.dispose       = FGuiComponent_dispose;
       return o;
    }
@@ -33534,7 +33639,7 @@ with(MO){
    }
    MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
       var component = this;
-      if(component){
+      if(clazz){
          while(RClass.isClass(component._parent, clazz)){
             component = component._parent;
          }
@@ -33584,19 +33689,57 @@ with(MO){
       }
       components.removeValue(component);
    }
-   MO.FGuiComponent_clear = function FGuiComponent_clear(p){
+   MO.FGuiComponent_clear = function FGuiComponent_clear(){
       var o = this;
       var components = o._components;
       if(components){
          components.clear();
       }
    }
+   MO.FGuiComponent_process = function FGuiComponent_process(event){
+      var o = this;
+      var valid = o.__base[event.clazz];
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      if(RClass.isClass(o, MGuiContainer)){
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
+                  }
+               }
+            }
+         }
+      }
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(callback){
+            var result = callback.call(o, event);
+            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+               return result;
+            }
+         }
+      }
+      return EEventStatus.Continue;
+   }
    MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
       var o = this;
-      o._name = null;
-      o._label = null;
-      o._tag = null;
       o._components = RObject.dispose(o._components, true);
+      o._tag = null;
       o.__base.FComponent.dispose.call(o);
    }
 }
@@ -33621,7 +33764,11 @@ with(MO){
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
-      o.process          = FGuiControl_process;
+      o.psEnable         = FGuiControl_psEnable;
+      o.psVisible        = FGuiControl_psVisible;
+      o.psResize         = FGuiControl_psResize;
+      o.psRefresh        = FGuiControl_psRefresh;
+      o.psUpdate         = FGuiControl_psUpdate;
       o.dispose          = FGuiControl_dispose;
       return o;
    }
@@ -33715,8 +33862,37 @@ with(MO){
       o.paint(graphic);
       renderable.endDraw();
    }
-   MO.FGuiControl_process = function FGuiControl_process(region){
+   MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeEnable', FGuiControl)
+      event.enable = enable;
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psVisible = function FGuiControl_psVisible(visible){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeVisible', FGuiControl);
+      event.visible = visible;
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psResize = function FGuiControl_psResize(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeRefresh', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeUpdate', FGuiControl);
+      o.process(event);
+      event.dispose();
    }
    MO.FGuiControl_dispose = function FGuiControl_dispose(){
       var o = this;
@@ -33776,13 +33952,20 @@ with(MO){
       MO.Assert.debugNotNull(graphic);
       o._texture.upload(o._canvas);
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(graphic);
+      canvasConsole.free(o._canvas);
+      o._canvas = null;
       o._graphic = null;
       o._ready = true;
    }
    MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
       var o = this;
       o.__base.FE3dFaceData.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FGuiFrame = function FGuiFrame(o){
+      o = RClass.inherits(this, o, FGuiContainer);
+      return o;
    }
 }
 with(MO){
@@ -34002,8 +34185,46 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._source = RClass.register(o, [new APtyString('_source'), new AGetSet('_source')]);
+      o._source      = RClass.register(o, [new APtyString('_source'), new AGetSet('_source')]);
+      o._statusPaint = false;
+      o._image       = null;
+      o.onImageLoad  = FGuiPicture_onImageLoad;
+      o.onPaintBegin = FGuiPicture_onPaintBegin;
+      o.oeUpdate     = FGuiPicture_oeUpdate;
       return o;
+   }
+   MO.FGuiPicture_onImageLoad = function FGuiPicture_onImageLoad(event){
+      var o = this;
+      var image = o._image;
+      var topComponent = o.topComponent();
+      topComponent.build();
+      o._statusPaint = true;
+   }
+   MO.FGuiPicture_onPaintBegin = function FGuiPicture_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      if(o._image && o._image.testReady()){
+         var padding = new SPadding();
+         padding.left = 1;
+         padding.top = 1;
+         padding.right = 1;
+         padding.bottom = 1;
+         graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, padding);
+      }
+   }
+   MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
+      var o = this;
+      if(!o._statusPaint){
+         if(o._image == null){
+            var url = o._source.substring(4);
+            var image = o._image = RClass.create(FImage);
+            image.addLoadListener(o, o.onImageLoad);
+            image.loadUrl(url);
+         }
+      }
+      return EEventStatus.Stop;
    }
 }
 with(MO){
@@ -34021,13 +34242,13 @@ with(MO){
 }
 with(MO){
    MO.FGuiBar = function FGuiBar(o){
-      o = RClass.inherits(this, o, FGuiContainer);
+      o = RClass.inherits(this, o, FGuiFrame);
       return o;
    }
 }
 with(MO){
    MO.FGuiWindow = function FGuiWindow(o){
-      o = RClass.inherits(this, o, FGuiContainer);
+      o = RClass.inherits(this, o, FGuiFrame);
       return o;
    }
 }
@@ -35012,22 +35233,6 @@ MO.EEditStatus = new function EEditStatus(o){
    o.Ok     = 2;
    return o;
 }
-MO.EEventInvoke = new function EEventInvoke(){
-   var o = this;
-   o.Unknown = 0;
-   o.Before  = 1;
-   o.After   = 2;
-   return o;
-}
-MO.EEventStatus = new function EEventStatus(){
-   var o = this;
-   o.Unknown  = 0;
-   o.Continue = 1;
-   o.Stop     = 2;
-   o.Cancel   = 3;
-   o.Failure  = 4;
-   return o;
-}
 MO.EEventType = new function EEventType(){
    var o = this;
    o.Unknown    = 0;
@@ -35141,15 +35346,7 @@ MO.EUiDirection = new function EUiDirection(){
    o.Vertical   = 'V';
    return o;
 }
-MO.EUiDock = new function EUiDock(){
-   var o = this;
-   o.None   = 'none';
-   o.Left   = 'left';
-   o.Right  = 'right';
-   o.Center = 'center';
-   o.Fill   = 'fill';
-   return o;
-}
+MO.EUiDock = MO.EGuiDock;
 MO.EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
@@ -37257,44 +37454,44 @@ with(MO){
          s.clear();
       }
    }
-   MO.FUiComponent_process = function FUiComponent_process(e){
+   MO.FUiComponent_process = function FUiComponent_process(event){
       var o = this;
-      var v = o.__base[e.clazz];
-      if(v){
-         e.invokeCd = EEventInvoke.Before;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      var valid = o.__base[event.clazz];
+      if(valid){
+         event.invokeCd = EEventInvoke.Before;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       if(RClass.isClass(o, MUiContainer)){
-         var ps = o._components;
-         if(ps){
-            var pc = ps.count();
-            if(pc){
-               for(var i = 0; i < pc; i++){
-                  var p = ps.valueAt(i);
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
+         var components = o._components;
+         if(components){
+            var count = components.count();
+            if(count){
+               for(var i = 0; i < count; i++){
+                  var component = components.at(i);
+                  var result = component.process(event);
+                  if(result == EEventStatus.Cancel){
+                     return result;
                   }
                }
             }
          }
       }
-      if(v){
-         e.invokeCd = EEventInvoke.After;
-         var m = o[e.invoke];
-         if(!m){
-            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), e.invoke);
+      if(valid){
+         event.invokeCd = EEventInvoke.After;
+         var callback = o[event.invoke];
+         if(!callback){
+            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
          }
-         var r = m.call(o, e);
-         if((r == EEventStatus.Stop) || (r == EEventStatus.Cancel)){
-            return r;
+         var result = callback.call(o, event);
+         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
+            return result;
          }
       }
       return EEventStatus.Continue;

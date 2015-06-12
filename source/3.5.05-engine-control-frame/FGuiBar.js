@@ -7,7 +7,7 @@ with(MO){
    // @version 150610
    //==========================================================
    MO.FGuiBar = function FGuiBar(o){
-      o = RClass.inherits(this, o, FGuiContainer);
+      o = RClass.inherits(this, o, FGuiFrame);
       return o;
    }
 }
