@@ -253,11 +253,11 @@ with (MO) {
       var dx = new Array();
       dx[0] = x;
       dx[1] = x + padding.left;
-      dx[2] = width - padding.right;
+      dx[2] = x + width - padding.right;
       var dy = new Array();
       dy[0] = y;
       dy[1] = y + padding.top;
-      dy[2] = height - padding.bottom;
+      dy[2] = y + height - padding.bottom;
       var sw = new Array();
       sw[0] = padding.left;
       sw[1] = ssize.width - padding.left - padding.right;
