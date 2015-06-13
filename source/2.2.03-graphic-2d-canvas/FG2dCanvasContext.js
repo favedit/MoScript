@@ -161,7 +161,7 @@ with (MO) {
    // @param width:Integer 宽度
    // @param height:Integer 高度
    //==========================================================
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height) {
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height){
       var o = this;
       var handle = o._handle;
       var size = o._size;
@@ -179,13 +179,24 @@ with (MO) {
    }
 
    //==========================================================
+   // <T>绘制图像。</T>
+   //
+   // @method
+   // @param content:Object 图像内容
+   // @param rectangle:SRectangle 矩形
+   //==========================================================
+   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
+      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   }
+
+   //==========================================================
    // <T>绘制边框线。</T>
    //
    // @method
    // @param rectangle:SRectangle 矩形
    // @param border:SBorder 边框
    //==========================================================
-   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine) {
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
       var o = this;
       var handle = o._handle;
       handle.beginPath();

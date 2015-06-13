@@ -10,8 +10,10 @@ with(MO){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       //..........................................................
       // @property
-      o._styleBackcolor       = MO.RClass.register(o, [new MO.APtyString('_styleBackcolor'), new MO.AGetSet('_styleBackcolor')]);
-      o._styleForecolor       = MO.RClass.register(o, [new MO.APtyString('_styleForecolor'), new MO.AGetSet('_styleForecolor')]);
+      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
+      o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
+      o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
+      o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       //..........................................................
       // @attribute
       o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
@@ -79,12 +81,12 @@ with(MO){
       var rectangle = o._clientRectangle;
       // 绘制处理
       if(o._styleBackcolor){
-         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
+         //graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
       //graphic.drawBorder(o._clientRectangle, o._borderOuter);
-      graphic.drawBorder(o._clientRectangle, o._borderInner);
-      graphic.setFont('microsoft yahei,Arial,sans-serif');
-      graphic.drawText('这是一个测试', 10, 40, '#FF0000');
+      //graphic.drawBorder(o._clientRectangle, o._borderInner);
+      //graphic.setFont('microsoft yahei,Arial,sans-serif');
+      //graphic.drawText('这是一个测试', 10, 40, '#FF0000');
    }
 
    //==========================================================

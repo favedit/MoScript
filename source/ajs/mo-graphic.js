@@ -338,7 +338,7 @@ with (MO) {
       handle.fillStyle = color;
       handle.fillText(text, x, y);
    }
-   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height) {
+   MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height){
       var o = this;
       var handle = o._handle;
       var size = o._size;
@@ -352,7 +352,10 @@ with (MO) {
       }
       handle.drawImage(data, x, y, width, height);
    }
-   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine) {
+   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
+      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   }
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
       var o = this;
       var handle = o._handle;
       handle.beginPath();
@@ -394,24 +397,32 @@ with (MO) {
       var dx = new Array();
       dx[0] = x;
       dx[1] = x + padding.left;
-      dx[2] = width - padding.right;
+      dx[2] = x + width - padding.right;
       var dy = new Array();
       dy[0] = y;
       dy[1] = y + padding.top;
-      dy[2] = height - padding.bottom;
-      var w = new Array();
-      w[0] = padding.left;
-      w[1] = width - padding.left - padding.right;
-      w[2] = padding.right;
-      var h = new Array();
-      h[0] = padding.top;
-      h[1] = height - padding.top - padding.bottom;
-      h[2] = padding.bottom;
+      dy[2] = y + height - padding.bottom;
+      var sw = new Array();
+      sw[0] = padding.left;
+      sw[1] = ssize.width - padding.left - padding.right;
+      sw[2] = padding.right;
+      var sh = new Array();
+      sh[0] = padding.top;
+      sh[1] = ssize.height - padding.top - padding.bottom;
+      sh[2] = padding.bottom;
+      var dw = new Array();
+      dw[0] = padding.left;
+      dw[1] = width - padding.left - padding.right;
+      dw[2] = padding.right;
+      var dh = new Array();
+      dh[0] = padding.top;
+      dh[1] = height - padding.top - padding.bottom;
+      dh[2] = padding.bottom;
       for (var i = 0; i < 9; i++) {
-         var row = Math.floor(i / 3);
+         var row = parseInt(i / 3);
          var column = i % 3;
-         if (h[row] > 0 && w[column] > 0) {
-            handle.drawImage(data, sx[column], sy[row], w[column], h[row], dx[column], dy[row]);
+         if (dh[row] > 0 && dw[column] > 0) {
+            handle.drawImage(data, sx[column], sy[row], sw[column], sh[row], dx[column], dy[row], dw[column], dh[row]);
          }
       }
    }

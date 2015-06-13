@@ -39,14 +39,23 @@ with(MO){
    }
    MO.APtyPadding_load = function APtyPadding_load(instance, xconfig){
       var o = this;
+      var name = o._name;
       var value = xconfig.get(o._linker);
-      instance[o._name].parse(value);
+      var padding = instance[name];
+      if(!padding){
+         padding = instance[name] = new SPadding();
+      }
+      padding.parse(value);
    }
    MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
       var o = this;
-      var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
+      var name = o._name;
+      var padding = instance[name];
+      if(padding){
+         if(!padding.isEmpty()){
+            var value = padding.toString()
+            xconfig.set(o._linker, value);
+         }
       }
    }
    MO.APtyPadding_toString = function APtyPadding_toString(){
@@ -476,8 +485,10 @@ with(MO){
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
-      o._styleBackcolor       = MO.RClass.register(o, [new MO.APtyString('_styleBackcolor'), new MO.AGetSet('_styleBackcolor')]);
-      o._styleForecolor       = MO.RClass.register(o, [new MO.APtyString('_styleForecolor'), new MO.AGetSet('_styleForecolor')]);
+      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
+      o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
+      o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
+      o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       o._clientRectangle = null;
       o.onUpdate         = FGuiControl_onUpdate;
@@ -518,11 +529,7 @@ with(MO){
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       if(o._styleBackcolor){
-         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
-      graphic.drawBorder(o._clientRectangle, o._borderInner);
-      graphic.setFont('microsoft yahei,Arial,sans-serif');
-      graphic.drawText('这是一个测试', 10, 40, '#FF0000');
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
       var o = this;
@@ -909,7 +916,6 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._source      = RClass.register(o, [new APtyString('_source'), new AGetSet('_source')]);
       o._statusPaint = false;
       o._image       = null;
       o.onImageLoad  = FGuiPicture_onImageLoad;
@@ -930,19 +936,18 @@ with(MO){
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       if(o._image && o._image.testReady()){
-         var padding = new SPadding();
-         padding.left = 1;
-         padding.top = 1;
-         padding.right = 1;
-         padding.bottom = 1;
-         graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, padding);
+         if(o._backGrid.isEmpty()){
+            graphic.drawImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height);
+         }else{
+            graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, o._backGrid);
+         }
       }
    }
    MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
       var o = this;
       if(!o._statusPaint){
-         if(o._image == null){
-            var url = o._source.substring(4);
+         if(o._image == null && o._backResource){
+            var url = o._backResource.substring(4);
             var image = o._image = RClass.create(FImage);
             image.addLoadListener(o, o.onImageLoad);
             image.loadUrl(url);

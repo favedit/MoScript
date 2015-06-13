@@ -13,7 +13,6 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._source      = RClass.register(o, [new APtyString('_source'), new AGetSet('_source')]);
       o._statusPaint = false;
       o._image       = null;
       o.onImageLoad  = FGuiPicture_onImageLoad;
@@ -34,19 +33,18 @@ with(MO){
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       if(o._image && o._image.testReady()){
-         var padding = new SPadding();
-         padding.left = 1;
-         padding.top = 1;
-         padding.right = 1;
-         padding.bottom = 1;
-         graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, padding);
+         if(o._backGrid.isEmpty()){
+            graphic.drawImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height);
+         }else{
+            graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, o._backGrid);
+         }
       }
    }
    MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
       var o = this;
       if(!o._statusPaint){
-         if(o._image == null){
-            var url = o._source.substring(4);
+         if(o._image == null && o._backResource){
+            var url = o._backResource.substring(4);
             var image = o._image = RClass.create(FImage);
             image.addLoadListener(o, o.onImageLoad);
             image.loadUrl(url);

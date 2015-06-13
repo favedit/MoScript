@@ -1007,44 +1007,44 @@ with(MO){
       o.propertySave   = MProperty_propertySave;
       return o;
    }
-   MO.MProperty_propertyAssign = function MProperty_propertyAssign(p){
+   MO.MProperty_propertyAssign = function MProperty_propertyAssign(value){
       var o = this;
-      var c = RClass.find(o.constructor);
-      var as = c.annotations(EAnnotation.Property);
-      for(var n in as){
-         var a = as[n];
-         if(a.constructor != Function){
-            o[a._name] = p[a._name];
+      var clazz = RClass.find(o.constructor);
+      var annotations = clazz.annotations(EAnnotation.Property);
+      for(var name in annotations){
+         var annotation = annotations[name];
+         if(annotation.constructor != Function){
+            o[annotation._name] = value[annotation._name];
          }
       }
    }
-   MO.MProperty_propertyLoad = function MProperty_propertyLoad(p){
+   MO.MProperty_propertyLoad = function MProperty_propertyLoad(xconfig){
       var o = this;
-      var c = RClass.find(o.constructor);
-      var as = c.annotations(EAnnotation.Property);
-      for(var n in as){
-         var a = as[n];
-         if(a.constructor != Function){
-            if(a._force){
-               a.load(o, p);
+      var clazz = RClass.find(o.constructor);
+      var annotations = clazz.annotations(EAnnotation.Property);
+      for(var name in annotations){
+         var annotation = annotations[name];
+         if(annotation.constructor != Function){
+            if(annotation._force){
+               annotation.load(o, xconfig);
             }else{
-               if(p.contains(a._linker)){
-                  a.load(o, p);
-               }else if(o[a._name] == null){
-                  o[a._name] = a._value;
+               if(xconfig.contains(annotation._linker)){
+                  annotation.load(o, xconfig);
+               }else if(o[annotation._name] == null){
+                  o[annotation._name] = annotation._value;
                }
             }
          }
       }
    }
-   MO.MProperty_propertySave = function MProperty_propertySave(p){
+   MO.MProperty_propertySave = function MProperty_propertySave(xconfig){
       var o = this;
-      var c = RClass.find(o.constructor);
-      var as = c.annotations(EAnnotation.Property);
-      for(var n in as){
-         var a = as[n];
-         if(a.constructor != Function){
-            a.save(o, p);
+      var clazz = RClass.find(o.constructor);
+      var annotations = clazz.annotations(EAnnotation.Property);
+      for(var name in annotations){
+         var annotation = annotations[name];
+         if(annotation.constructor != Function){
+            annotation.save(o, xconfig);
          }
       }
    }

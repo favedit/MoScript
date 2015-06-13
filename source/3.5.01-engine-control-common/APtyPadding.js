@@ -39,8 +39,13 @@
    //============================================================
    MO.APtyPadding_load = function APtyPadding_load(instance, xconfig){
       var o = this;
+      var name = o._name;
       var value = xconfig.get(o._linker);
-      instance[o._name].parse(value);
+      var padding = instance[name];
+      if(!padding){
+         padding = instance[name] = new SPadding();
+      }
+      padding.parse(value);
    }
 
    //============================================================
@@ -52,9 +57,13 @@
    //============================================================
    MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
       var o = this;
-      var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
+      var name = o._name;
+      var padding = instance[name];
+      if(padding){
+         if(!padding.isEmpty()){
+            var value = padding.toString()
+            xconfig.set(o._linker, value);
+         }
       }
    }
 
