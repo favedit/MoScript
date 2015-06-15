@@ -33336,9 +33336,6 @@ with(MO){
    MO.APtyBorder_save = function APtyBorder_save(instance, xconfig){
       var o = this;
       var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
-      }
    }
    MO.APtyBorder_toString = function APtyBorder_toString(){
       var o = this;
@@ -34056,38 +34053,38 @@ with(MO){
       o.PREFIX    = 'FGui';
       return o;
    }
-   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(p){
+   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
       var o = this;
-      var r = null;
-      if(p){
-         var n = null
+      var result = null;
+      if(type){
+         var name = null
          var tn = null;
-         if(p.constructor == String){
-            if(!RString.startsWith(p, o.PREFIX)){
-               n = o.PREFIX + p;
+         if(type.constructor == String){
+            if(!RString.startsWith(type, o.PREFIX)){
+               name = o.PREFIX + type;
             }
-         }else if(p.constructor == TXmlNode){
-            n = p.get('type');
-            if(RString.isEmpty(n)){
-               n = p.name();
-               if(!RString.startsWith(n, o.PREFIX)){
-                  n = o.PREFIX + n;
+         }else if(type.constructor == TXmlNode){
+            name = type.get('type');
+            if(RString.isEmpty(name)){
+               name = type.name();
+               if(!RString.startsWith(name, o.PREFIX)){
+                  name = o.PREFIX + name;
                }
             }else{
-               tn = n;
+               tn = name;
             }
          }else{
-            throw new TError(o, 'Unknown parameter. (name={p})', p);
+            throw new TError(o, 'Unknown parameter. (type={1})', type);
          }
-         r = RClass.create(n);
+         result = RClass.create(name);
          if(tn){
-            r.__typed = true;
+            result.__typed = true;
          }
       }
-      if(r == null){
-         throw new TError(o, 'Create instance failure. (name={p})', p);
+      if(result == null){
+         throw new TError(o, 'Create instance failure. (type={1})', type);
       }
-      return r;
+      return result;
    }
    MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
       var o = this;
@@ -34149,6 +34146,24 @@ with(MO){
       }
       o.innerbuild(control, control, xconfig, attributes);
       return control;
+   }
+   MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
+      var o = this;
+      control.propertySave(xconfig);
+      if(control.hasComponent()){
+         var components = control.components();
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            var className = RClass.name(component);
+            if(RString.startsWith(className, 'FGui')){
+               className = className.substring(4);
+            }
+            var xchild = xconfig.create(className);
+            o.saveConfig(component, xchild);
+         }
+      }
+      return xconfig;
    }
    MO.RGuiControl = new RGuiControl();
 }

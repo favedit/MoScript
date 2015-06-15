@@ -2597,7 +2597,8 @@ with(MO){
       var xdocument = new TXmlDocument();
       var xroot = xdocument.root();
       xroot.set('action', 'update');
-      var xdata = xroot.create('Frame');
+      var xframe = xroot.create('Frame');
+      RGuiControl.saveConfig(frame, xframe);
       return RConsole.find(FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
    }
    MO.FDsSystemFrameMenuBar_onDeleteClick = function FDsSystemFrameMenuBar_onDeleteClick(event){

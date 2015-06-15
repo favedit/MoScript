@@ -63,8 +63,8 @@ with(MO){
       var xroot = xdocument.root();
       xroot.set('action', 'update');
       // 设置资源数据
-      var xdata = xroot.create('Frame');
-      //resource.saveConfig(xdata);
+      var xframe = xroot.create('Frame');
+      RGuiControl.saveConfig(frame, xframe);
       // 发送数据
       return RConsole.find(FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
    }

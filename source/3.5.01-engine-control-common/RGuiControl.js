@@ -18,44 +18,44 @@ with(MO){
    // <T>创建一个实例。</T>
    //
    // @method
-   // @param p:name:String 名称
+   // @param type:Object 类型
    // @return FComponent 控件
    //==========================================================
-   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(p){
+   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
       var o = this;
-      var r = null;
-      if(p){
-         var n = null
+      var result = null;
+      if(type){
+         var name = null
          var tn = null;
-         if(p.constructor == String){
+         if(type.constructor == String){
             // 字符串
-            if(!RString.startsWith(p, o.PREFIX)){
-               n = o.PREFIX + p;
+            if(!RString.startsWith(type, o.PREFIX)){
+               name = o.PREFIX + type;
             }
-         }else if(p.constructor == TXmlNode){
+         }else if(type.constructor == TXmlNode){
             // 配置节点
-            n = p.get('type');
-            if(RString.isEmpty(n)){
-               n = p.name();
-               if(!RString.startsWith(n, o.PREFIX)){
-                  n = o.PREFIX + n;
+            name = type.get('type');
+            if(RString.isEmpty(name)){
+               name = type.name();
+               if(!RString.startsWith(name, o.PREFIX)){
+                  name = o.PREFIX + name;
                }
             }else{
-               tn = n;
+               tn = name;
             }
          }else{
-            throw new TError(o, 'Unknown parameter. (name={p})', p);
+            throw new TError(o, 'Unknown parameter. (type={1})', type);
          }
          // 创建实例
-         r = RClass.create(n);
+         result = RClass.create(name);
          if(tn){
-            r.__typed = true;
+            result.__typed = true;
          }
       }
-      if(r == null){
-         throw new TError(o, 'Create instance failure. (name={p})', p);
+      if(result == null){
+         throw new TError(o, 'Create instance failure. (type={1})', type);
       }
-      return r;
+      return result;
    }
 
    //==========================================================
@@ -177,6 +177,43 @@ with(MO){
       // 内部构造
       o.innerbuild(control, control, xconfig, attributes);
       return control;
+   }
+
+   //===========================================================
+   // <T>根据配置信息构件一个控件。</T>
+   // <P>控件构造顺序：
+   //   <OL>
+   //     <L title='CreateChild'>通过父实例创建实例。</L>
+   //     <L title='Construct'>实例的构造处理。</L>
+   //     <L title='PropertyLoad'>加载配置信息。</L>
+   //     <L title='Build'>构建页面处理。</L>
+   //     <L title='appendChild'>追加到父实例中。</L>
+   //     <L title='setPanel'>将当前控件放在地板上，成为可见控件</L>
+   //   </OL>
+   // </P>
+   //
+   // @method
+   // @param control:FUiControl 控件对象
+   // @param xconfig:TXmlNode 配置节点
+   // @param attributes:Object 属性集合
+   //===========================================================
+   MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
+      var o = this;
+      control.propertySave(xconfig);
+      if(control.hasComponent()){
+         var components = control.components();
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            var className = RClass.name(component);
+            if(RString.startsWith(className, 'FGui')){
+               className = className.substring(4);
+            }
+            var xchild = xconfig.create(className);
+            o.saveConfig(component, xchild);
+         }
+      }
+      return xconfig;
    }
    //..........................................................
    // 实例化内容

@@ -42,9 +42,9 @@
    MO.APtyBorder_save = function APtyBorder_save(instance, xconfig){
       var o = this;
       var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
-      }
+      //if(!value.isEmpty()){
+      //   xconfig.set(o._linker, value.toString());
+      //}
    }
 
    //============================================================
