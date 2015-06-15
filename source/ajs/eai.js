@@ -438,9 +438,7 @@ MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
    var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
-   var frame = o._countryLogoBar = frameConsole.get('eai.country.LogoBar');
-   frame.linkGraphicContext(MO.Eai.Canvas);
-   frame.build();
+   var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
    o.registerFrame(frame);
    var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
    var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');

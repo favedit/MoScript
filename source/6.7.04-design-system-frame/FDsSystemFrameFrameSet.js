@@ -6,14 +6,37 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
-      o = RClass.inherits(this, o, FDsResourceFrameSet);
+      o = RClass.inherits(this, o, FDsFrameSet);
+      //..........................................................
+      // @style
+      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleSpaceContent     = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
+      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       //..........................................................
       // @property
-      o._frameName        = 'system.design.frame.FrameSet';
+      o._frameName            = 'system.design.frame.FrameSet';
+      // @attribute
+      o._frameCatalog         = null;
+      o._frameCatalogToolbar  = null;
+      o._frameCatalogContent  = null;
+      o._frameSearch          = null;
+      o._frameSearchToolbar   = null;
+      o._frameSearchContent   = null;
+      o._framePreview         = null;
+      o._framePreviewToolbar  = null;
+      o._framePreviewContent  = null;
       //..........................................................
       // @process
-      o.onBuilded         = FDsSystemFrameFrameSet_onBuilded;
-      o.onCatalogSelected = FDsSystemFrameFrameSet_onCatalogSelected;
+      o.onBuilded             = FDsSystemFrameFrameSet_onBuilded;
+      o.onCatalogSelected     = FDsSystemFrameFrameSet_onCatalogSelected;
+      //..........................................................
+      // @method
+      o.construct             = FDsSystemFrameFrameSet_construct;
+      // @method
+      o.load                  = FDsSystemFrameFrameSet_load;
+      // @method
+      o.dispose               = FDsSystemFrameFrameSet_dispose;
       return o;
    }
 
@@ -25,22 +48,22 @@ with(MO){
    //==========================================================
    MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
       var o = this;
-      o.__base.FDsResourceFrameSet.onBuilded.call(o, event);
+      o.__base.FDsFrameSet.onBuilded.call(o, event);
       // 设置样式
       o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
       o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameSpaceContent._hPanel.className = o.styleName('List_Content');
-      //o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      //o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+      o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
+      o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+      o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
       //..........................................................
       // 设置分割
-      var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-      f.setAlignCd(EUiAlign.Left);
-      f.setSizeHtml(o._frameCatalog._hPanel);
-      //var f = o._propertySpliter = o.searchControl('propertySpliter');
-      //f.setAlignCd(EUiAlign.Right);
-      //f.setSizeHtml(o._framePreview._hPanel);
+      var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+      spliter.setAlignCd(EUiAlign.Left);
+      spliter.setSizeHtml(o._frameCatalog._hPanel);
+      var spliter = o._propertySpliter = o.searchControl('propertySpliter');
+      spliter.setAlignCd(EUiAlign.Right);
+      spliter.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
       // 设置目录工具栏
       var control = o._catalogToolbar = RClass.create(FDsSystemFrameCatalogToolBar);
@@ -48,7 +71,7 @@ with(MO){
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      // 设置目录栏
+      // 设置目录内容
       var control = o._catalogContent = RClass.create(FDsSystemFrameCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
@@ -56,31 +79,30 @@ with(MO){
       //control.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(control);
       //..........................................................
-      // 设置搜索栏
+      // 设置空间工具栏
       var control = o._spaceToolBar = RClass.create(FDsSystemFrameSpaceToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSpaceToolBar.push(control);
-      // 设置搜索内容
+      // 设置空间内容
       var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameSpaceContent.push(control);
       //..........................................................
-      // 设置画板工具栏
+      // 设置属性工具栏
       var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._framePropertyToolBar.push(control);
-      // 设置画板
+      // 设置属性内容
       var control = o._propertyContent = RClass.create(FDsSystemFramePropertyContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control._toolbar = o._propertyToolbar;
-      control._hParent = f._hPanel;
       control.build(event);
       o._framePropertyContent.push(control);
    }
@@ -137,5 +159,36 @@ with(MO){
       }else{
          throw new TError('Unknown select object type. (value={1})', p);
       }
+   }
+
+   //==========================================================
+   // <T>构造处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
+      var o = this;
+      // 父处理
+      o.__base.FDsFrameSet.construct.call(o);
+   }
+
+   //==========================================================
+   // <T>加载处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(){
+      var o = this;
+   }
+
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
+      var o = this;
+      // 父处理
+      o.__base.FDsFrameSet.dispose.call(o);
    }
 }

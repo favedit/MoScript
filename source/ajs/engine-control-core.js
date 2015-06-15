@@ -17,22 +17,24 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       o._frames = new TDictionary();
    }
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(control, name){
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, control, name){
       var o = this;
       var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
       var xframe = describeConsole.load(name);
       var frame = RGuiControl.build(null, xframe, null, null);
+      frame.linkGraphicContext(context);
+      frame.build();
       return frame;
    }
    MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
       return this._frames.get(name);
    }
-   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(name){
+   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
       var o = this;
       var frames = o._frames;
       var frame = frames.get(name);
       if(!frame){
-         frame = o.create(null, name);
+         frame = o.create(context, null, name);
          frames.set(name, frame);
       }
       return frame;

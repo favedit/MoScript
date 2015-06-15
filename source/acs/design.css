@@ -512,3 +512,31 @@
    background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
 }
+
+/* ------------------------------------------------------ */
+/* FDsSystemFrameFrameSet                                 */
+/* ------------------------------------------------------ */
+.FDsSystemFrameFrameSet_Toolbar_Ground{
+   padding-left: 4px;
+   padding-top: 1px;
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
+   background-color: #AEAEAE;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsSystemFrameFrameSet_Catalog_Content{
+   background: #EEEEEE;
+}
+
+.FDsSystemFrameFrameSet_Space_Content{
+   background: #EEEEEE;
+}
+
+.FDsSystemFrameFrameSet_Property_Content{
+   background: #EEEEEE;
+}
