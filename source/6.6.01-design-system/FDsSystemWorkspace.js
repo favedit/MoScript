@@ -98,41 +98,41 @@ with(MO){
       if(!frameSet){
          if(name == EDsFrameSet.SystemDesignPersistenceFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsSystemDesignPersistenceMenuBar);
+            var menuBar = RClass.create(FDsSystemPersistenceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemDesignPersistenceFrameSet);
+            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemPersistenceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.SystemDesignListFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsSystemDesignListMenuBar);
+            var menuBar = RClass.create(FDsSystemListMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemDesignListFrameSet);
+            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemListFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.SystemDesignTreeFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsSystemDesignTreeMenuBar);
+            var menuBar = RClass.create(FDsSystemTreeMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemDesignTreeFrameSet);
+            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemTreeFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.SystemDesignFrameFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsSystemDesignFrameMenuBar);
+            var menuBar = RClass.create(FDsSystemFrameMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemDesignFrameFrameSet);
+            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemFrameFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

@@ -1,17 +1,16 @@
 with(MO){
    //==========================================================
-   // <T>私有资源列表工具栏。</T>
+   // <T>私有资源目录工具栏。</T>
    //
    // @class
    // @author maocy
    // @history 150422
    //==========================================================
-   MO.FDsSystemDesignFrameListToolBar = function FDsSystemDesignFrameListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+   MO.FDsSystemFrameCatalogToolBar = function FDsSystemFrameCatalogToolBar(o){
+      o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
       //..........................................................
       // @property
-      o._frameName   = 'system.design.frame.ListToolBar';
-      o._storageCode = o._frameName;
+      o._frameName = 'system.design.frame.CatalogToolBar';
       return o;
    }
 }

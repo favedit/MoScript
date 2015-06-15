@@ -5,15 +5,15 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FDsSystemDesignFrameFrameSet = function FDsSystemDesignFrameFrameSet(o){
+   MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
       o = RClass.inherits(this, o, FDsResourceFrameSet);
       //..........................................................
       // @property
       o._frameName        = 'system.design.frame.FrameSet';
       //..........................................................
       // @process
-      o.onBuilded         = FDsSystemDesignFrameFrameSet_onBuilded;
-      o.onCatalogSelected = FDsSystemDesignFrameFrameSet_onCatalogSelected;
+      o.onBuilded         = FDsSystemFrameFrameSet_onBuilded;
+      o.onCatalogSelected = FDsSystemFrameFrameSet_onCatalogSelected;
       return o;
    }
 
@@ -23,7 +23,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FDsSystemDesignFrameFrameSet_onBuilded = function FDsSystemDesignFrameFrameSet_onBuilded(event){
+   MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsResourceFrameSet.onBuilded.call(o, event);
       // 设置样式
@@ -43,13 +43,13 @@ with(MO){
       //f.setSizeHtml(o._framePreview._hPanel);
       //..........................................................
       // 设置目录工具栏
-      var control = o._catalogToolbar = RClass.create(FDsPrivateResourceCatalogToolBar);
+      var control = o._catalogToolbar = RClass.create(FDsSystemFrameCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
       // 设置目录栏
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = RClass.create(FDsSystemFrameCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -57,32 +57,32 @@ with(MO){
       o._frameCatalogContent.push(control);
       //..........................................................
       // 设置搜索栏
-      var control = o._listToolBar = RClass.create(FDsPrivateResourceListToolBar);
+      var control = o._spaceToolBar = RClass.create(FDsSystemFrameSpaceToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSpaceToolBar.push(control);
       // 设置搜索内容
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameSpaceContent.push(control);
       //..........................................................
       // 设置画板工具栏
-      //var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
-      //control._workspace = o._workspace;
-      //control._frameSet = o;
-      //control.buildDefine(p);
-      //o._framePreviewToolbar.push(control);
+      var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
+      control._workspace = o._workspace;
+      control._frameSet = o;
+      control.buildDefine(event);
+      o._framePropertyToolBar.push(control);
       // 设置画板
-      //var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
-      //control._workspace = o._workspace;
-      //control._frameSet = o;
-      //control._toolbar = o._propertyToolbar;
-      //control._hParent = f._hPanel;
-      //control.build(p);
-      //o._framePreviewContent.push(control);
+      var control = o._propertyContent = RClass.create(FDsSystemFramePropertyContent);
+      control._workspace = o._workspace;
+      control._frameSet = o;
+      control._toolbar = o._propertyToolbar;
+      control._hParent = f._hPanel;
+      control.build(event);
+      o._framePropertyContent.push(control);
    }
 
    //==========================================================
@@ -91,7 +91,7 @@ with(MO){
    // @method
    // @param p:value:Object 对象
    //==========================================================
-   MO.FDsSystemDesignFrameFrameSet_onCatalogSelected = function FDsSystemDesignFrameFrameSet_onCatalogSelected(p, pc){
+   MO.FDsSystemFrameFrameSet_onCatalogSelected = function FDsSystemFrameFrameSet_onCatalogSelected(p, pc){
       var o = this;
       var space = o._activeSpace;
       // 隐藏所有属性面板

@@ -42,17 +42,20 @@ with(MO){
    // <T>构建指定表单名称的控件对象，并放置在指定HTML页面ID的位置。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param context:MGraphicContext 绘制环境
+   // @param control:FGuiControl 控件
    // @param name:String 名称
-   // @return FUiFrame 页面控件
+   // @return FGuiFrame 页面控件
    //==========================================================
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(control, name){
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, control, name){
       var o = this;
       // 获得表单定义
       var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
       var xframe = describeConsole.load(name);
       // 构建处理
       var frame = RGuiControl.build(null, xframe, null, null);
+      frame.linkGraphicContext(context);
+      frame.build();
       return frame;
    }
 
@@ -71,16 +74,17 @@ with(MO){
    // <T>根据名称查找表单实例，如果不存在则创建一个。</T>
    //
    // @method
+   // @param context:MGraphicContext 绘制环境
    // @param name:String 名称
-   // @return FUiFrame 页面控件
+   // @return FGuiFrame 页面控件
    //==========================================================
-   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(name){
+   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
       var o = this;
       var frames = o._frames;
       var frame = frames.get(name);
       if(!frame){
          // 创建表单
-         frame = o.create(null, name);
+         frame = o.create(context, null, name);
          frames.set(name, frame);
       }
       return frame;

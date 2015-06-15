@@ -55,9 +55,7 @@ MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
    o.__base.FEaiScene.setup.call(o);
    // 创建标志栏
    var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
-   var frame = o._countryLogoBar = frameConsole.get('eai.country.LogoBar');
-   frame.linkGraphicContext(MO.Eai.Canvas);
-   frame.build();
+   var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
    o.registerFrame(frame);
    // 创建国家模板
    var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);

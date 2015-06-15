@@ -489,3 +489,26 @@
    background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
 }
+
+/* ------------------------------------------------------ */
+/* FDsPrivateWorkspace                                    */
+/* ------------------------------------------------------ */
+.FDsSystemWorkspace_MenuBar_Ground{
+   padding-top: 2px;
+   border-top: 1px solid #DDDDDD;
+   border-bottom: 1px solid #999999;
+   background: #EEEEEE;
+   background: -ms-linear-gradient(top, #EEEEEE, #CCCCCC);
+   background: -moz-linear-gradient(top, #EEEEEE, #CCCCCC);
+   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#CCCCCC));
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#EEEEEE, endColorStr=#CCCCCC);
+}
+
+.FDsSystemWorkspace_StatusBar_Ground{
+   background: #AEAEAE;
+   border-top: 1px solid #999999;
+   background: -ms-linear-gradient(top, #555555, #AEAEAE);
+   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
+}
