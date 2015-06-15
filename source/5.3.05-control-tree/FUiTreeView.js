@@ -22,90 +22,94 @@ with(MO){
       o = RClass.inherits(this, o, FUiContainer);
       //..........................................................
       // @property
-      o._optionCheck       = RClass.register(o, new APtyBoolean('_optionCheck'), false);
-      o._indent            = RClass.register(o, new APtyInteger('_indent'), 16);
+      o._optionCheck        = RClass.register(o, new APtyBoolean('_optionCheck'), false);
+      o._indent             = RClass.register(o, new APtyInteger('_indent'), 16);
       //..........................................................
       // @style
-      o._stylePanel        = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
-      o._styleNodePanel    = RClass.register(o, new AStyle('_styleNodePanel', 'NodePanel'));
-      o._styleNodeForm     = RClass.register(o, new AStyle('_styleNodeForm', 'NodeForm'));
+      o._stylePanel         = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+      o._styleNodePanel     = RClass.register(o, new AStyle('_styleNodePanel', 'NodePanel'));
+      o._styleNodeForm      = RClass.register(o, new AStyle('_styleNodeForm', 'NodeForm'));
       //..........................................................
       // @attribute
-      o._attributes        = null;
-      o._nodeTypes         = null;
-      o._nodeColumns       = null;
-      o._nodeLevels        = null;
-      o._nodes             = null;
-      o._allNodes          = null;
+      o._attributes         = null;
+      o._nodeTypes          = null;
+      o._nodeColumns        = null;
+      o._nodeLevels         = null;
+      o._nodes              = null;
+      o._allNodes           = null;
       // @attribute
-      o._defaultNodeType   = null;
-      o._focusNode         = null;
-      o._loadingNode       = null;
-      o._freeNodes         = null;
+      o._defaultNodeType    = null;
+      o._focusNode          = null;
+      o._loadingNode        = null;
+      o._freeNodes          = null;
       //..........................................................
       // @icon
-      o._iconPlus          = 'control.treeview.plus';
-      o._iconMinus         = 'control.treeview.minus';
-      o._iconNode          = 'control.treeview.node';
-      o._iconLoading       = 'control.treeview.loading';
+      o._iconPlus           = 'control.treeview.plus';
+      o._iconMinus          = 'control.treeview.minus';
+      o._iconNode           = 'control.treeview.node';
+      o._iconLoading        = 'control.treeview.loading';
       //..........................................................
       // @html
-      o._hNodePanel        = null;
-      o._hNodeForm         = null;
-      o._hHeadLine         = null;
-      o._hNodeRows         = null;
+      o._hNodePanel         = null;
+      o._hNodeForm          = null;
+      o._hHeadLine          = null;
+      o._hNodeRows          = null;
       //..........................................................
       // @listener
-      o.lsnsEnter          = new TListeners();
-      o.lsnsLeave          = new TListeners();
-      o.lsnsClick          = new TListeners();
+      o.lsnsEnter           = new TListeners();
+      o.lsnsLeave           = new TListeners();
+      o.lsnsClick           = new TListeners();
+      o._listenersNodeClick = RClass.register(o, new AListener('_listenersNodeClick', EEvent.NodeClick));
       //..........................................................
       // @event
-      o.onBuildPanel       = FUiTreeView_onBuildPanel;
-      o.onBuild            = FUiTreeView_onBuild;
-      o.onClick            = RClass.register(o, new AEventClick('onClick'), FUiTreeView_onClick);
-      o.onNodeCheckClick   = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
+      o.onBuildPanel        = FUiTreeView_onBuildPanel;
+      o.onBuild             = FUiTreeView_onBuild;
+      o.onNodeClick         = FUiTreeView_onNodeClick;
+      o.onClick             = RClass.register(o, new AEventClick('onClick'), FUiTreeView_onClick);
+      o.onNodeCheckClick    = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
       //..........................................................
       // @method
-      o.construct          = FUiTreeView_construct;
+      o.construct           = FUiTreeView_construct;
       // @method
-      o.attributes         = FUiTreeView_attributes;
-      o.nodeTypes          = FUiTreeView_nodeTypes;
-      o.nodeColumns        = FUiTreeView_nodeColumns;
-      o.nodeLevels         = FUiTreeView_nodeLevels;
-      o.hasNode            = FUiTreeView_hasNode;
-      o.focusNode          = FUiTreeView_focusNode;
-      o.nodes              = FUiTreeView_nodes;
+      o.attributes          = FUiTreeView_attributes;
+      o.nodeTypes           = FUiTreeView_nodeTypes;
+      o.nodeColumns         = FUiTreeView_nodeColumns;
+      o.nodeLevels          = FUiTreeView_nodeLevels;
+      o.hasNode             = FUiTreeView_hasNode;
+      o.focusNode           = FUiTreeView_focusNode;
+      o.nodes               = FUiTreeView_nodes;
       // @method
-      o.findType           = FUiTreeView_findType;
-      o.findByName         = FUiTreeView_findByName;
-      o.findByGuid         = FUiTreeView_findByGuid;
+      o.findType            = FUiTreeView_findType;
+      o.findByName          = FUiTreeView_findByName;
+      o.findByGuid          = FUiTreeView_findByGuid;
       // @method
-      o.createChild        = FUiTreeView_createChild;
-      o.createNode         = FUiTreeView_createNode;
-      o.appendChild        = FUiTreeView_appendChild;
-      o.appendNode         = FUiTreeView_appendNode;
-      o.appendNodes        = FUiTreeView_appendNodes;
-      o.selectNode         = FUiTreeView_selectNode;
-      o.push               = FUiTreeView_push;
-      o.removeNode         = FUiTreeView_removeNode;
-      o.removeNodes        = FUiTreeView_removeNodes;
-      o.freeNode           = FUiTreeView_freeNode;
-      o.clearNodes         = FUiTreeView_clearNodes;
+      o.createChild         = FUiTreeView_createChild;
+      o.createNode          = FUiTreeView_createNode;
+      o.appendChild         = FUiTreeView_appendChild;
+      o.appendNode          = FUiTreeView_appendNode;
+      o.appendNodes         = FUiTreeView_appendNodes;
+      o.selectNode          = FUiTreeView_selectNode;
+      o.push                = FUiTreeView_push;
+      o.removeNode          = FUiTreeView_removeNode;
+      o.removeNodes         = FUiTreeView_removeNodes;
+      o.freeNode            = FUiTreeView_freeNode;
+      o.clearNodes          = FUiTreeView_clearNodes;
       // @method
-      o.calculateHeight    = FUiTreeView_calculateHeight;
-      o.fetchChangedChecks = FUiTreeView_fetchChangedChecks;
-      o.extendAuto         = FUiTreeView_extendAuto;
-      o.extendAll          = FUiTreeView_extendAll;
+      o.nodeClick           = FUiTreeView_nodeClick;
       // @method
-      o.loadNode           = RMethod.empty;
-      o.refresh            = FUiTreeView_refresh;
-      o.filterNode         = FUiTreeView_filterNode;
+      o.calculateHeight     = FUiTreeView_calculateHeight;
+      o.fetchChangedChecks  = FUiTreeView_fetchChangedChecks;
+      o.extendAuto          = FUiTreeView_extendAuto;
+      o.extendAll           = FUiTreeView_extendAll;
       // @method
-      o.clearAllNodes      = FUiTreeView_clearAllNodes;
-      o.clear              = FUiTreeView_clear;
+      o.loadNode            = RMethod.empty;
+      o.refresh             = FUiTreeView_refresh;
+      o.filterNode          = FUiTreeView_filterNode;
       // @method
-      o.dispose            = FUiTreeView_dispose;
+      o.clearAllNodes       = FUiTreeView_clearAllNodes;
+      o.clear               = FUiTreeView_clear;
+      // @method
+      o.dispose             = FUiTreeView_dispose;
       return o;
    }
 
@@ -161,6 +165,16 @@ with(MO){
       }
       o.extendAuto();
       //RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.clear));
+   }
+
+   //==========================================================
+   // <T>节点点击事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FUiTreeView_onNodeClick = function FUiTreeView_onNodeClick(event){
+      var o = this;
    }
 
    //==========================================================
@@ -691,6 +705,24 @@ with(MO){
       oNode.imageHTML.src = this.imgEmpty ;
       this._allNodes = nodes;
       return true;
+   }
+
+   //==========================================================
+   // <T>点击目录节点处理。</T>
+   //
+   // @method
+   // @param node:FUiTreeNode 树节点
+   //==========================================================
+   MO.FUiTreeView_nodeClick = function FUiTreeView_nodeClick(node){
+      var o = this;
+      o.lsnsClick.process(o, node);
+      // 分发事件
+      var event = new SEvent();
+      event.tree = o;
+      event.node = node;
+      o.onNodeClick(event);
+      o.processNodeClickListener(event);
+      event.dispose();
    }
 
    //==========================================================

@@ -10,21 +10,15 @@ with(MO){
       o = RClass.inherits(this, o, FUiComponent);
       //..........................................................
       // @oroperty
-      o._code       = RClass.register(o, new APtyString('_code'));
-      o._storage    = RClass.register(o, new APtyString('_storage'));
-      o._icon       = RClass.register(o, new APtyString('_icon'));
-      o._service    = RClass.register(o, new APtyString('_service'));
-      o._action     = RClass.register(o, new APtyString('_action'));
-      o._attributes = RClass.register(o, new APtyAttributes('_attributes'));
+      o._code       = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
+      o._storage    = RClass.register(o, [new APtyString('_storage'), new AGetSet('_storage')]);
+      o._icon       = RClass.register(o, [new APtyString('_icon'), new AGetSet('_icon')]);
+      o._service    = RClass.register(o, [new APtyString('_service'), new AGetSet('_service')]);
+      o._action     = RClass.register(o, [new APtyString('_action'), new AGetSet('_action')]);
+      o._attributes = RClass.register(o, [new APtyAttributes('_attributes'), AGetter('_attributes')]);
       //..........................................................
       // @method
       o.construct   = FUiTreeNodeType_construct;
-      // @method
-      o.code        = FUiTreeNodeType_code;
-      o.storage     = FUiTreeNodeType_storage;
-      o.icon        = FUiTreeNodeType_icon;
-      o.service     = FUiTreeNodeType_service;
-      o.action      = FUiTreeNodeType_action;
       // @method
       o.get         = FUiTreeNodeType_get;
       o.set         = FUiTreeNodeType_set;
@@ -44,78 +38,28 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得代码。</T>
+   // 相应点击节点操作的函数
    //
    // @method
-   // @return String 代码
+   // @param name:String 名称
+   // @return String 内容
    //==========================================================
-   MO.FUiTreeNodeType_code = function FUiTreeNodeType_code(){
-      return this._code;
-   }
-
-   //==========================================================
-   // <T>获得存储类型。</T>
-   //
-   // @method
-   // @return String 存储类型
-   //==========================================================
-   MO.FUiTreeNodeType_storage = function FUiTreeNodeType_storage(){
-      return this._storage;
-   }
-
-   //==========================================================
-   // <T>获得图标。</T>
-   //
-   // @method
-   // @return String 图标
-   //==========================================================
-   MO.FUiTreeNodeType_icon = function FUiTreeNodeType_icon(){
-      return this._icon;
-   }
-
-   //==========================================================
-   // <T>获得服务名称。</T>
-   //
-   // @method
-   // @return String 类型名称
-   //==========================================================
-   MO.FUiTreeNodeType_service = function FUiTreeNodeType_service(){
-      return this._service;
-   }
-
-   //==========================================================
-   // <T>获得命令名称</T>
-   //
-   // @method
-   // @return String 类型名称
-   //==========================================================
-   MO.FUiTreeNodeType_action = function FUiTreeNodeType_action(){
-      return this._action;
+   MO.FUiTreeNodeType_get = function FUiTreeNodeType_get(name){
+      var attributes = this._attributes;
+      return attributes ? attributes.get(name) : null;
    }
 
    //==========================================================
    // 相应点击节点操作的函数
    //
    // @method
-   // @param event:event:TEvent 构建事件
-   // @return EEventStatus 枚举类型
+   // @param name:String 名称
+   // @param value:String 内容
    //==========================================================
-   MO.FUiTreeNodeType_get = function FUiTreeNodeType_get(n){
-      var s = this._attributes;
-      return s ? s.get(n) : null;
-   }
-
-   //==========================================================
-   // 相应点击节点操作的函数
-   //
-   // @method
-   // @param event:event:TEvent 构建事件
-   // @return EEventStatus 枚举类型
-   //==========================================================
-   MO.FUiTreeNodeType_set = function FUiTreeNodeType_set(n, v){
-      var s = this._attributes;
-      if(s){
-         s.set(n, v)
+   MO.FUiTreeNodeType_set = function FUiTreeNodeType_set(name, value){
+      var attributes = this._attributes;
+      if(attributes){
+         attributes.set(name, value)
       }
    }
 

@@ -29,6 +29,8 @@ MO.EEvent = new function EEvent(){
    o.Click       = 'Click';
    // @attribute 双击
    o.DoubleClick = 'DoubleClick';
+   // @attribute 节点点击
+   o.NodeClick   = 'NodeClick';
    // @attribute 项目点击
    o.ItemClick   = 'ItemClick';
    // @attribute 选择

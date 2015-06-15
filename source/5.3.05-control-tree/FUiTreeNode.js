@@ -22,8 +22,8 @@ with(MO){
       o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
       o._typeCode         = RClass.register(o, new APtyString('_typeCode'));
-      o._guid             = RClass.register(o, new APtyString('_guid'));
-      o._code             = RClass.register(o, new APtyString('_code'));
+      o._guid             = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
+      o._code             = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._icon             = RClass.register(o, new APtyString('_icon'));
       o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);
       o._extended         = RClass.register(o, new APtyBoolean('_extended'), false);
@@ -70,10 +70,6 @@ with(MO){
       // @method
       o.construct         = FUiTreeNode_construct;
       // @method
-      o.code              = FUiTreeNode_code;
-      o.setCode           = FUiTreeNode_setCode;
-      o.guid              = FUiTreeNode_guid;
-      o.setGuid           = FUiTreeNode_setGuid;
       o.type              = FUiTreeNode_type;
       o.typeCode          = FUiTreeNode_typeCode;
       o.setTypeCode       = FUiTreeNode_setTypeCode;
@@ -272,7 +268,7 @@ with(MO){
       if(!o._statusLoaded && o._child){
          o.extend(true);
          if(!isImg){
-            tree.lsnsClick.process(tree, o);
+            tree.nodeClick(o);
          }
       }else{
          // 已经是加载过的节点
@@ -288,7 +284,7 @@ with(MO){
            }
          }
          if((isImg && isParent) || (isImg && !o._child) || !isImg){
-            tree.lsnsClick.process(tree, o);
+            tree.nodeClick(o);
          }
       }
    }
@@ -301,46 +297,6 @@ with(MO){
    MO.FUiTreeNode_construct = function FUiTreeNode_construct(){
       var o = this;
       o.__base.FUiContainer.construct.call(o);
-   }
-
-   //==========================================================
-   // <T>获取代码。</T>
-   //
-   // @method
-   // @return String 代码
-   //==========================================================
-   MO.FUiTreeNode_code = function FUiTreeNode_code(){
-      return this._code;
-   }
-
-   //==========================================================
-   // <T>设置代码。</T>
-   //
-   // @method
-   // @param String 代码
-   //==========================================================
-   MO.FUiTreeNode_setCode = function FUiTreeNode_setCode(p){
-      this._code = p;
-   }
-
-   //==========================================================
-   // <T>获取唯一码。</T>
-   //
-   // @method
-   // @return String 唯一码
-   //==========================================================
-   MO.FUiTreeNode_guid = function FUiTreeNode_guid(){
-      return this._guid;
-   }
-
-   //==========================================================
-   // <T>设置唯一码。</T>
-   //
-   // @method
-   // @param String 唯一码
-   //==========================================================
-   MO.FUiTreeNode_setGuid = function FUiTreeNode_setGuid(p){
-      this._guid = p;
    }
 
    //==========================================================
@@ -989,9 +945,9 @@ with(MO){
    //==========================================================
    MO.FUiTreeNode_click = function FUiTreeNode_click(){
       var o = this;
-      var t = o._tree;
-      t.selectNode(o, true);
-      t.lsnsClick.process(t, o);
+      var tree = o._tree;
+      tree.selectNode(o, true);
+      tree.nodeClick(o);
    }
 
    //==========================================================

@@ -7,8 +7,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiNumber2 = function FUiNumber2(o){
-      //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
-      o = RClass.inherits(this, o, FUiEditControl);
+      o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -17,11 +16,19 @@ with(MO){
       o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
       o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
       //..........................................................
+      // @attribute
+      o._innerOriginValue = null;
+      o._innerDataValue   = null;
+      //..........................................................
       // @html
       o._hInput          = null;
       //..........................................................
       // @event
+      o.onBuildEditInput  = FUiNumber3_onBuildEditInput;
       o.onBuildEditValue = FUiNumber2_onBuildEditValue;
+      // @event
+      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiNumber2_onInputKeyPress);
+      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiNumber2_onInputChanged);
       //..........................................................
       // @process
       //o.oeDataLoad       = FUiNumber2_oeDataLoad;
@@ -89,26 +96,44 @@ with(MO){
    }
 
    //==========================================================
-   // <T>建立编辑器内容。</T>
+   // <T>建立编辑器输入。</T>
    //
    // @method
    // @param p:argements:SArgements 参数集合
+   // @param h:html:HtmlTag 页面元素
    //==========================================================
-   MO.FUiNumber2_onBuildEditValue = function FUiNumber2_onBuildEditValue(p){
+   MO.FUiNumber3_onBuildEditInput = function FUiNumber3_onBuildEditInput(p, h){
+      var o = this;
+      o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
+      o.attachEvent('onInputChanged', h, o.onInputChanged);
+   }
+
+   //==========================================================
+   // <T>建立编辑器内容。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FUiNumber2_onBuildEditValue = function FUiNumber2_onBuildEditValue(event){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('InputPanel');
-
+      //..........................................................
+      // 建立改变栏
       var hf = o._hInputForm = RBuilder.appendTable(h);
       var hr = RBuilder.appendTableRow(hf);
-
-      var hc1 = RBuilder.appendTableCell(hr);
-      hc1.style.borderRight = '1px solid #666666';
-      var he1 = o._hInput1 = RBuilder.appendEdit(hc1, o.styleName('Input'));
-      
-      var hc2 = RBuilder.appendTableCell(hr);
-      hc2.style.borderLeft = '1px solid #999999';
-      var he2 = o._hInput2 = RBuilder.appendEdit(hc2, o.styleName('Input'));
+      //..........................................................
+      // 建立输入框1
+      var hCell = RBuilder.appendTableCell(hr);
+      hCell.style.borderRight = '1px solid #666666';
+      var hInput = o._hInput1 = RBuilder.appendEdit(hCell, o.styleName('Input'));
+      o.onBuildEditInput(event, hInput)
+      //..........................................................
+      // 建立输入框2
+      var hCell = RBuilder.appendTableCell(hr);
+      hCell.style.borderLeft = '1px solid #999999';
+      var hInput = o._hInput2 = RBuilder.appendEdit(hCell, o.styleName('Input'));
+      o.onBuildEditInput(event, hInput)
 
       //htb.style.tableLayout = 'fixed';
       //var hr = o.hEdit = htb.insertRow();
@@ -126,6 +151,40 @@ with(MO){
    }
 
    //==========================================================
+   // <T>编辑控件中键盘按下处理。 </T>
+   //
+   // @param p:event:SEvent 事件对象
+   //==========================================================
+   MO.FUiNumber2_onInputKeyPress = function FUiNumber2_onInputKeyPress(p){
+      var o = this;
+      var c = p.keyCode;
+      // 允许输入百分号(%)
+      //if(he.shiftKey && 53 == kc){
+      //   return;
+      //}
+      // 检查输入字符是否为数字，否则给清除输入内容
+      if(!EKeyCode.floatCodes[c]){
+         p.cancel();
+      }
+   }
+
+   //==========================================================
+   // <T>编辑控件中数据修改处理。 </T>
+   //
+   // @param p:event:SEvent 事件对象
+   //==========================================================
+   MO.FUiNumber2_onInputChanged = function FUiNumber2_onInputChanged(p){
+      var o = this;
+      // 内容改变通知
+      o.processDataChangedListener(o);
+      // 检查内容是否变更
+      //var v = o._hInput.value;
+      //if(o._dataDisplay != v){
+      //   o.processDataChangedListener(o);
+      //}
+   }
+
+   //==========================================================
    // <T>构造处理。</T>
    //
    // @method
@@ -134,43 +193,75 @@ with(MO){
       var o = this;
       o.__base.FUiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
+      o._innerOriginValue = new SPoint2();
+      o._innerDataValue = new SPoint2();
    }
 
    //==========================================================
    // <T>获得数据。</T>
    //
    // @method
+   // @param value:Obejct 内容
    // @return String 数据
    //==========================================================
-   MO.FUiNumber2_get = function FUiNumber2_get(p){
+   MO.FUiNumber2_get = function FUiNumber2_get(value){
       var o = this;
-      var r = o.__base.FUiEditControl.get.call(o, p);
-      // 获得显示
-      var h = o._hInput;
-      if(h){
-         r = h.value;
+      o.__base.FUiEditControl.get.call(o, value);
+      var dataValue = o._innerDataValue;
+      // 获得数据1
+      var hInput = o._hInput1;
+      if(hInput){
+         dataValue.x = RFloat.parse(hInput.value);
       }
-      return r;
+      // 获得数据2
+      var hInput = o._hInput2;
+      if(hInput){
+         dataValue.y = RFloat.parse(hInput.value);
+      }
+      return dataValue;
    }
 
    //==========================================================
    // <T>设置数据。</T>
    //
    // @method
-   // @param p:value:String 数据
+   // @param value:Object 数据
    //==========================================================
-   MO.FUiNumber2_set = function FUiNumber2_set(p){
+   MO.FUiNumber2_set = function FUiNumber2_set(value){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
-      // 设置显示
-      var h = o._hInput;
-      if(h){
-         h.value = RString.nvl(p);
+      o.__base.FUiEditControl.set.call(o, value);
+      // 设置数据
+      var originValue = o._innerOriginValue;
+      var vd = o._innerDataValue;
+      if(arguments.length == 1){
+         var value = arguments[0];
+         if(value.constructor == SPoint2){
+            originValue.assign(value);
+            vd.assign(value);
+         }else if(value.constructor == SSize2){
+            originValue.set(value.width, value.height);
+            vd.set(value.width, value.height);
+         }else{
+            throw new TError('Invalid value format.');
+         }
+      }else if(arguments.length == 2){
+         originValue.set(arguments[0], arguments[1]);
+         vd.assign(originValue);
+      }else{
+         throw new TError('Invalid value format.');
       }
-      //o.finded = v;
-      //if(o.hChangeIcon){
-      //   o.hChangeIcon.style.display = 'none';
-      //}
+      // 设置数据1
+      var hInput = o._hInput1;
+      if(hInput){
+         hInput.value = RFloat.format(vd.x, 0, null, 2, null);
+      }
+      // 设置数据2
+      var hInput = o._hInput2;
+      if(hInput){
+         hInput.value = RFloat.format(vd.y, 0, null, 2, null);
+      }
+      // 设置修改状态
+      o.changeSet(false);
    }
 
 

@@ -1770,3 +1770,33 @@ with(MO){
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }
 }
+with(MO){
+   MO.FDsStage = function FDsStage(o){
+      o = RClass.inherits(this, o, FE3dStage);
+      o._mapLayer    = RClass.register(o, new AGetter('_mapLayer'));
+      o._spriteLayer = RClass.register(o, new AGetter('_spriteLayer'));
+      o._faceLayer   = RClass.register(o, new AGetter('_faceLayer'));
+      o.construct    = FDsStage_construct;
+      o.active       = FDsStage_active;
+      o.deactive     = FDsStage_deactive;
+      return o;
+   }
+   MO.FDsStage_construct = function FDsStage_construct(){
+      var o = this;
+      o.__base.FE3dStage.construct.call(o);
+      var layer = o._mapLayer = RClass.create(FDisplayLayer);
+      o.registerLayer('MapLayer', layer);
+      var layer = o._spriteLayer = RClass.create(FDisplayLayer);
+      o.registerLayer('SpriteLayer', layer);
+      var layer = o._faceLayer = RClass.create(FDisplayLayer);
+      o.registerLayer('FaceLayer', layer);
+   }
+   MO.FDsStage_active = function FDsStage_active(){
+      var o = this;
+      o.__base.FE3dStage.active.call(o);
+   }
+   MO.FDsStage_deactive = function FDsStage_deactive(){
+      var o = this;
+      o.__base.FE3dStage.deactive.call(o);
+   }
+}

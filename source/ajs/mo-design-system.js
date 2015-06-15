@@ -196,290 +196,103 @@ with(MO){
    }
 }
 with(MO){
-   MO.FDsSystemFrameCatalogContent = function FDsSystemFrameCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
-      o._iconView             = 'resource.scene.view';
-      o._iconViewNot          = 'resource.scene.viewno';
-      o._displayNodes         = null;
-      o._renderableNodes      = null;
-      o._materialNodes        = null;
-      o.onBuild               = FDsSystemFrameCatalogContent_onBuild;
-      o.onLoadDisplay         = FDsSystemFrameCatalogContent_onLoadDisplay;
-      o.onNodeClick           = FDsSystemFrameCatalogContent_onNodeClick;
-      o.onNodeViewClick       = FDsSystemFrameCatalogContent_onNodeViewClick;
-      o.onNodeViewDoubleClick = FDsSystemFrameCatalogContent_onNodeViewDoubleClick;
-      o.construct             = FDsSystemFrameCatalogContent_construct;
-      o.buildNodeView         = FDsSystemFrameCatalogContent_buildNodeView;
-      o.buildTechnique        = FDsSystemFrameCatalogContent_buildTechnique;
-      o.buildRegion           = FDsSystemFrameCatalogContent_buildRegion;
-      o.buildRenderable       = FDsSystemFrameCatalogContent_buildRenderable;
-      o.buildDisplay          = FDsSystemFrameCatalogContent_buildDisplay;
-      o.buildLayer            = FDsSystemFrameCatalogContent_buildLayer;
-      o.buildSpace            = FDsSystemFrameCatalogContent_buildSpace;
-      o.selectObject          = FDsSystemFrameCatalogContent_selectObject;
-      o.showObject            = FDsSystemFrameCatalogContent_showObject;
-      o.dispose               = FDsSystemFrameCatalogContent_dispose;
+   MO.FDsSystemFrameBarProperty = function FDsSystemFrameBarProperty(o){
+      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o._activeSpace      = null;
+      o._activeRenderable = null;
+      o.onBuilded         = FDsSystemFrameBarProperty_onBuilded;
+      o.onDataChanged     = FDsSystemFrameBarProperty_onDataChanged;
+      o.construct         = FDsSystemFrameBarProperty_construct;
+      o.loadObject        = FDsSystemFrameBarProperty_loadObject;
+      o.dispose           = FDsSystemFrameBarProperty_dispose;
       return o;
    }
-   MO.FDsSystemFrameCatalogContent_onBuild = function FDsSystemFrameCatalogContent_onBuild(p){
+   MO.FDsSystemFrameBarProperty_onBuilded = function FDsSystemFrameBarProperty_onBuilded(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDsSystemFrameControlProperty.onBuilded.call(o, p);
    }
-   MO.FDsSystemFrameCatalogContent_onLoadDisplay = function FDsSystemFrameCatalogContent_onLoadDisplay(p){
+   MO.FDsSystemFrameBarProperty_onDataChanged = function FDsSystemFrameBarProperty_onDataChanged(p){
       var o = this;
-      var n = p._linkNode;
-      o.buildRenderable(n, p);
+      o.__base.FDsSystemFrameControlProperty.onDataChanged.call(o, p);
    }
-   MO.FDsSystemFrameCatalogContent_onNodeClick = function FDsSystemFrameCatalogContent_onNodeClick(tree, node){
+   MO.FDsSystemFrameBarProperty_construct = function FDsSystemFrameBarProperty_construct(){
       var o = this;
-      var linker = node.dataPropertyGet('linker');
-      if(linker){
-         o.selectObject(linker);
-      }
+      o.__base.FDsSystemFrameControlProperty.construct.call(o);
    }
-   MO.FDsSystemFrameCatalogContent_onNodeViewClick = function FDsSystemFrameCatalogContent_onNodeViewClick(event){
+   MO.FDsSystemFrameBarProperty_loadObject = function FDsSystemFrameBarProperty_loadObject(frame, control){
       var o = this;
-      var cell = event.treeNodeCell;
-      var linker = event.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
-         if(event.ctrlKey){
-            var displayNodes = o._displayNodes;
-            var displayCount = displayNodes.count()
-            for(var i = 0; i < displayCount; i++){
-               var displayNode = displayNodes.at(i);
-               var display = displayNode.dataPropertyGet('linker');
-               display._visible = false;
-               displayNode.cell('view').setIcon(o._iconViewNot);
-            }
-            linker.setVisible(true);
-            cell.setIcon(o._iconView);
-         }else{
-            linker.setVisible(!linker.visible());
-            cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
-         }
-      }
-      if(RClass.isClass(linker, FDrawable)){
-         if(event.ctrlKey){
-            var renderableNodes = o._renderableNodes;
-            var renderableCount = renderableNodes.count();
-            for(var i = 0; i < renderableCount; i++){
-               var renderableNode = renderableNodes.at(i);
-               var renderable = renderableNode.dataPropertyGet('linker');
-               renderable._visible = false;
-               renderableNode.cell('view').setIcon(o._iconViewNot);
-            }
-            linker.setVisible(true);
-            cell.setIcon(o._iconView);
-         }else{
-            linker.setVisible(!linker.visible());
-            cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
-         }
-      }
-      if(RClass.isClass(linker, FG3dMaterial)){
-         if(event.ctrlKey){
-            var materialNodes = o._materialNodes;
-            var materialCount = materialNodes.count();
-            for(var i = 0; i < materialCount; i++){
-               var materialNode = materialNodes.at(i);
-               var material = materialNode.dataPropertyGet('linker');
-               material.setVisible(false);
-               materialNode.cell('view').setIcon(o._iconViewNot);
-            }
-            linker.setVisible(true);
-            cell.setIcon(o._iconView);
-         }else{
-            linker.setVisible(!linker.visible());
-            cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
-         }
-      }
+      o.__base.FDsSystemFrameControlProperty.loadObject.call(o, frame, control);
    }
-   MO.FDsSystemFrameCatalogContent_onNodeViewDoubleClick = function FDsSystemFrameCatalogContent_onNodeViewDoubleClick(event){
+   MO.FDsSystemFrameBarProperty_dispose = function FDsSystemFrameBarProperty_dispose(){
       var o = this;
-      var node = event.treeNode;
-      var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
-         var displayNodes = o._displayNodes;
-         var displayCount = displayNodes.count()
-         for(var i = 0; i < displayCount; i++){
-            var displayNode = displayNodes.at(i);
-            var display = displayNode.dataPropertyGet('linker');
-            display.setVisible(true);
-            displayNode.cell('view').setIcon(o._iconView);
-         }
-      }
-      if(RClass.isClass(linker, FDrawable)){
-         var renderableNodes = o._renderableNodes;
-         var renderableCount = renderableNodes.count();
-         for(var i = 0; i < renderableCount; i++){
-            var renderableNode = renderableNodes.at(i);
-            var renderable = renderableNode.dataPropertyGet('linker');
-            renderable.setVisible(true);
-            renderableNode.cell('view').setIcon(o._iconView);
-         }
-      }
-      if(RClass.isClass(linker, FG3dMaterial)){
-         var materialNodes = o._materialNodes;
-         var materialCount = materialNodes.count();
-         for(var i = 0; i < materialCount; i++){
-            var materialNode = materialNodes.at(i);
-            var material = materialNode.dataPropertyGet('linker');
-            material.setVisible(true);
-            materialNode.cell('view').setIcon(o._iconView);
+      o.__base.FDsSystemFrameControlProperty.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FDsSystemFrameButtonProperty = function FDsSystemFrameButtonProperty(o){
+      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o._activeSpace      = null;
+      o._activeRenderable = null;
+      o.onBuilded         = FDsSystemFrameButtonProperty_onBuilded;
+      o.onDataChanged     = FDsSystemFrameButtonProperty_onDataChanged;
+      o.construct         = FDsSystemFrameButtonProperty_construct;
+      o.loadObject        = FDsSystemFrameButtonProperty_loadObject;
+      o.dispose           = FDsSystemFrameButtonProperty_dispose;
+      return o;
+   }
+   MO.FDsSystemFrameButtonProperty_onBuilded = function FDsSystemFrameButtonProperty_onBuilded(p){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.onBuilded.call(o, p);
+   }
+   MO.FDsSystemFrameButtonProperty_onDataChanged = function FDsSystemFrameButtonProperty_onDataChanged(p){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.onDataChanged.call(o, p);
+   }
+   MO.FDsSystemFrameButtonProperty_construct = function FDsSystemFrameButtonProperty_construct(){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.construct.call(o);
+   }
+   MO.FDsSystemFrameButtonProperty_loadObject = function FDsSystemFrameButtonProperty_loadObject(frame, control){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.loadObject.call(o, frame, control);
+   }
+   MO.FDsSystemFrameButtonProperty_dispose = function FDsSystemFrameButtonProperty_dispose(){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FDsSystemFrameCatalogContent = function FDsSystemFrameCatalogContent(o){
+      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o._activeFrame = null;
+      o.onNodeClick  = FDsSystemFrameCatalogContent_onNodeClick;
+      o.construct    = FDsSystemFrameCatalogContent_construct;
+      o.selectObject = FDsSystemFrameCatalogContent_selectObject;
+      o.showObject   = FDsSystemFrameCatalogContent_showObject;
+      o.dispose      = FDsSystemFrameCatalogContent_dispose;
+      return o;
+   }
+   MO.FDsSystemFrameCatalogContent_onNodeClick = function FDsSystemFrameCatalogContent_onNodeClick(event){
+      var o = this;
+      var node = event.node;
+      var nodeType = node.type();
+      var typeCode = node.typeCode();
+      var label = node.label();
+      if(typeCode == 'Button' || typeCode == 'Picture'){
+         var frameName = nodeType.get('property_frame');
+         o._frameSet.loadPropertyFrame(frameName, label);
+      }else{
+         o._frameSet._spaceContent.loadFrame(label);
+         if(typeCode == 'Bar'){
+            var frameName = nodeType.get('property_frame');
+            o._frameSet.loadPropertyFrame(frameName, null);
          }
       }
    }
    MO.FDsSystemFrameCatalogContent_construct = function FDsSystemFrameCatalogContent_construct(){
       var o = this;
       o.__base.FUiDataTreeView.construct.call(o);
-      o._displayNodes = new TObjects();
-      o._renderableNodes = new TObjects();
-      o._materialNodes = new TObjects();
-      o.lsnsClick.register(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.frame');
-   }
-   MO.FDsSystemFrameCatalogContent_buildNodeView = function FDsSystemFrameCatalogContent_buildNodeView(pn, pv){
-      var o = this;
-      var c = pn.cell('view');
-      c.setIcon(o._iconView);
-      c.addClickListener(o, o.onNodeViewClick);
-      c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
-   }
-   MO.FDsSystemFrameCatalogContent_buildTechnique = function FDsSystemFrameCatalogContent_buildTechnique(parentNode, technique){
-      var o = this;
-      var node = o.createNode();
-      node.setTypeCode('technique');
-      node.setLabel('Technique');
-      node.dataPropertySet('linker', technique);
-      parentNode.appendNode(node);
-   }
-   MO.FDsSystemFrameCatalogContent_buildRegion = function FDsSystemFrameCatalogContent_buildRegion(parentNode, region){
-      var o = this;
-      var regionNode = o.createNode();
-      regionNode.setTypeCode('Region');
-      regionNode.setLabel('Region');
-      regionNode.dataPropertySet('linker', region);
-      parentNode.appendNode(regionNode);
-      var cameraNode = o.createNode();
-      cameraNode.setTypeCode('Camera');
-      cameraNode.setLabel('Camera');
-      cameraNode.dataPropertySet('linker', region.camera());
-      regionNode.appendNode(cameraNode);
-      var lightNode = o.createNode();
-      lightNode.setTypeCode('Light');
-      lightNode.setLabel('Light');
-      lightNode.dataPropertySet('linker', region.directionalLight());
-      regionNode.appendNode(lightNode);
-   }
-   MO.FDsSystemFrameCatalogContent_buildRenderable = function FDsSystemFrameCatalogContent_buildRenderable(n, p){
-      var o = this;
-      var s = p.materials();
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            var m = s.value(i);
-            var mr = m.resource();
-            var dn = o.createNode();
-            dn.setLabel(mr.code());
-            dn.setNote(mr.label());
-            dn.setTypeCode('material');
-            dn.dataPropertySet('linker', m);
-            o.buildNodeView(dn, true);
-            o._materialNodes.push(dn);
-            n.appendNode(dn);
-         }
-      }
-      var s = p.animations();
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            var m = s.value(i);
-            var mr = m.resource();
-            var dn = o.createNode();
-            dn.setLabel(mr.code());
-            dn.setNote(mr.label());
-            dn.setTypeCode('animation');
-            dn.dataPropertySet('linker', m);
-            o.buildNodeView(dn, true);
-            n.appendNode(dn);
-         }
-      }
-      var s = p.meshRenderables();
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            var r = s.get(i);
-            var rr = r.resource();
-            var rd = rr.model();
-            var rm = rr.mesh();
-            var dn = o.createNode();
-            dn.setLabel(rm.code());
-            dn.setTypeCode('renderable');
-            dn.dataPropertySet('linker', r);
-            o.buildNodeView(dn, true);
-            o._renderableNodes.push(dn);
-            n.appendNode(dn);
-         }
-      }
-   }
-   MO.FDsSystemFrameCatalogContent_buildDisplay = function FDsSystemFrameCatalogContent_buildDisplay(n, p){
-      var o = this;
-      var s = p.displays();
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            var d = s.get(i);
-            var dr = d.resourceScene();
-            var dn = o.createNode();
-            dn.setLabel(dr.code());
-            dn.setNote(dr.label());
-            dn.setTypeCode('display');
-            dn.dataPropertySet('linker', d);
-            o.buildNodeView(dn, true);
-            o._displayNodes.push(dn);
-            n.appendNode(dn);
-            d.addLoadListener(o, o.onLoadDisplay);
-            d._linkNode = dn;
-         }
-      }
-   }
-   MO.FDsSystemFrameCatalogContent_buildLayer = function FDsSystemFrameCatalogContent_buildLayer(n, p){
-      var o = this;
-      var ns = o.createNode();
-      ns.setLabel('Layers');
-      ns.setTypeCode('layers');
-      ns.dataPropertySet('linker', 'layers');
-      o.buildNodeView(ns, true);
-      n.appendNode(ns);
-      var ds = p.layers();
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var l = ds.value(i);
-         if(RClass.isClass(l, FDisplayUiLayer)){
-            continue;
-         }
-         var lr = l.resource();
-         var nl = o.createNode();
-         nl.setLabel('Layer:' + lr.code());
-         nl.setTypeCode('layer');
-         nl.dataPropertySet('linker', l);
-         o.buildNodeView(nl, true);
-         ns.appendNode(nl);
-         o.buildDisplay(nl, l)
-      }
-   }
-   MO.FDsSystemFrameCatalogContent_buildSpace = function FDsSystemFrameCatalogContent_buildSpace(p){
-      var o = this;
-      var r = p._resource;
-      var nr = o.createNode();
-      nr.setLabel(r.code());
-      nr.setNote(r.label());
-      nr.setTypeCode('scene');
-      nr.dataPropertySet('linker', p);
-      o.appendNode(nr);
-      o.buildTechnique(nr, p.technique())
-      o.buildRegion(nr, p.region());
-      o.buildLayer(nr, p);
-      nr.click();
    }
    MO.FDsSystemFrameCatalogContent_selectObject = function FDsSystemFrameCatalogContent_selectObject(item){
       var o = this;
@@ -503,9 +316,7 @@ with(MO){
    }
    MO.FDsSystemFrameCatalogContent_dispose = function FDsSystemFrameCatalogContent_dispose(){
       var o = this;
-      o._displayNodes = RObject.dispose(o._displayNodes);
-      o._renderableNodes = RObject.dispose(o._renderableNodes);
-      o._materialNodes = RObject.dispose(o._materialNodes);
+      o._activeFrame = null;
       o.__base.FUiDataTreeView.dispose.call(o);
    }
 }
@@ -621,25 +432,71 @@ with(MO){
    }
 }
 with(MO){
+   MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
+      o = RClass.inherits(this, o, FUiForm);
+      o._activeFrame   = null;
+      o._activeControl = null;
+      o.onBuilded         = FDsSystemFrameControlProperty_onBuilded;
+      o.onDataChanged     = FDsSystemFrameControlProperty_onDataChanged;
+      o.construct         = FDsSystemFrameControlProperty_construct;
+      o.loadObject        = FDsSystemFrameControlProperty_loadObject;
+      o.dispose           = FDsSystemFrameControlProperty_dispose;
+      return o;
+   }
+   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(p){
+      var o = this;
+      o.__base.FUiForm.onBuilded.call(o, p);
+      o._controlSize.addDataChangedListener(o, o.onDataChanged);
+   }
+   MO.FDsSystemFrameControlProperty_onDataChanged = function FDsSystemFrameControlProperty_onDataChanged(event){
+      var o  = this;
+      var frame = o._activeFrame;
+      var control = o._activeControl;
+      var size = o._controlSize.get();
+      control.size().set(size.x, size.y);
+      frame.build();
+   }
+   MO.FDsSystemFrameControlProperty_construct = function FDsSystemFrameControlProperty_construct(){
+      var o = this;
+      o.__base.FUiForm.construct.call(o);
+   }
+   MO.FDsSystemFrameControlProperty_loadObject = function FDsSystemFrameControlProperty_loadObject(frame, control){
+      var o = this;
+      o._activeFrame = frame;
+      o._activeControl = control;
+      o._controlType.set(RClass.name(control));
+      o._controlName.set(control.name());
+      o._controlLabel.set(control.label());
+      var location = control.location();
+      o._controlLocation.set(location);
+      var size = control.size();
+      o._controlSize.set(size);
+   }
+   MO.FDsSystemFrameControlProperty_dispose = function FDsSystemFrameControlProperty_dispose(){
+      var o = this;
+      o.__base.FUiForm.dispose.call(o);
+   }
+}
+with(MO){
    MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
       o = RClass.inherits(this, o, FDsFrameSet);
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleSpaceContent     = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
+      o._styleSpaceContent    = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
       o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._frameName            = 'system.design.frame.FrameSet';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
       o._frameCatalogContent  = null;
-      o._frameSearch          = null;
-      o._frameSearchToolbar   = null;
-      o._frameSearchContent   = null;
+      o._frameSpace           = null;
+      o._frameSpaceToolbar    = null;
+      o._frameSpaceContent    = null;
       o._framePreview         = null;
       o._framePreviewToolbar  = null;
       o._framePreviewContent  = null;
       o.onBuilded             = FDsSystemFrameFrameSet_onBuilded;
-      o.onCatalogSelected     = FDsSystemFrameFrameSet_onCatalogSelected;
       o.construct             = FDsSystemFrameFrameSet_construct;
+      o.loadPropertyFrame     = FDsSystemFrameFrameSet_loadPropertyFrame;
       o.load                  = FDsSystemFrameFrameSet_load;
       o.dispose               = FDsSystemFrameFrameSet_dispose;
       return o;
@@ -677,68 +534,35 @@ with(MO){
       var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
       control._workspace = o._workspace;
       control._frameSet = o;
-      control.build(event);
+      control.build(o._frameSpaceContent._hPanel);
       o._frameSpaceContent.push(control);
       var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._framePropertyToolBar.push(control);
-      var control = o._propertyContent = RClass.create(FDsSystemFramePropertyContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control._toolbar = o._propertyToolbar;
-      control.build(event);
-      o._framePropertyContent.push(control);
-   }
-   MO.FDsSystemFrameFrameSet_onCatalogSelected = function FDsSystemFrameFrameSet_onCatalogSelected(p, pc){
-      var o = this;
-      var space = o._activeSpace;
-      var fs = o._propertyFrames;
-      var c = fs.count();
-      for(var i = 0; i < c; i++){
-         var f = fs.value(i);
-         f.hide();
-      }
-      if(RClass.isClass(p, FE3dStage)){
-         var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-         f.show();
-         f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
-         var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
-         var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
-         var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
-         var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
-         var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
-         var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
-         var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else{
-         throw new TError('Unknown select object type. (value={1})', p);
-      }
    }
    MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
       var o = this;
       o.__base.FDsFrameSet.construct.call(o);
+   }
+   MO.FDsSystemFrameFrameSet_loadPropertyFrame = function FDsSystemFrameFrameSet_loadPropertyFrame(propertyFrame, controlName){
+      var o = this;
+      var activeFrame = o._spaceContent._activeFrame;
+      var frames = o._propertyFrames;
+      var count = frames.count();
+      for(var i = 0; i < count; i++){
+         var frame = frames.at(i);
+         frame.hide();
+      }
+      var frame = o.findPropertyFrame(propertyFrame);
+      frame.show();
+      if(controlName){
+         var activeControl = activeFrame.findComponent(controlName);
+         frame.loadObject(activeFrame, activeControl);
+      }else{
+         frame.loadObject(activeFrame, activeFrame);
+      }
    }
    MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(){
       var o = this;
@@ -750,18 +574,69 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameMenuBar = function FDsSystemFrameMenuBar(o){
-      o = RClass.inherits(this, o, FDsResourceMenuBar);
+      o = RClass.inherits(this, o, FUiMenuBar);
       o._frameName      = 'system.design.frame.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsSystemFrameMenuBar_onBuilded;
-      o.onRefreshClick  = FDsSystemFrameMenuBar_onRefreshClick;
+      o.onCreateClick   = FDsSystemFrameMenuBar_onCreateClick;
+      o.onUpdateClick   = FDsSystemFrameMenuBar_onUpdateClick;
+      o.onDeleteClick   = FDsSystemFrameMenuBar_onDeleteClick;
       return o;
    }
    MO.FDsSystemFrameMenuBar_onBuilded = function FDsSystemFrameMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FDsResourceMenuBar.onBuilded.call(o, p);
+      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o._controlCreate.addClickListener(o, o.onCreateClick);
+      o._controlUpdate.addClickListener(o, o.onUpdateClick);
+      o._controlDelete.addClickListener(o, o.onDeleteClick);
    }
-   MO.FDsSystemFrameMenuBar_onRefreshClick = function FDsSystemFrameMenuBar_onRefreshClick(event){
+   MO.FDsSystemFrameMenuBar_onCreateClick = function FDsSystemFrameMenuBar_onCreateClick(event){
+      var o = this;
+   }
+   MO.FDsSystemFrameMenuBar_onUpdateClick = function FDsSystemFrameMenuBar_onUpdateClick(event){
+      var o = this;
+      var frame = o._frameSet._spaceContent._activeFrame;
+      var xdocument = new TXmlDocument();
+      var xroot = xdocument.root();
+      xroot.set('action', 'update');
+      var xdata = xroot.create('Frame');
+      return RConsole.find(FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
+   }
+   MO.FDsSystemFrameMenuBar_onDeleteClick = function FDsSystemFrameMenuBar_onDeleteClick(event){
+      var o = this;
+   }
+}
+with(MO){
+   MO.FDsSystemFramePictureProperty = function FDsSystemFramePictureProperty(o){
+      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o._activeSpace      = null;
+      o._activeRenderable = null;
+      o.onBuilded         = FDsSystemFramePictureProperty_onBuilded;
+      o.onDataChanged     = FDsSystemFramePictureProperty_onDataChanged;
+      o.construct         = FDsSystemFramePictureProperty_construct;
+      o.loadObject        = FDsSystemFramePictureProperty_loadObject;
+      o.dispose           = FDsSystemFramePictureProperty_dispose;
+      return o;
+   }
+   MO.FDsSystemFramePictureProperty_onBuilded = function FDsSystemFramePictureProperty_onBuilded(p){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.onBuilded.call(o, p);
+   }
+   MO.FDsSystemFramePictureProperty_onDataChanged = function FDsSystemFramePictureProperty_onDataChanged(p){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.onDataChanged.call(o, p);
+   }
+   MO.FDsSystemFramePictureProperty_construct = function FDsSystemFramePictureProperty_construct(){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.construct.call(o);
+   }
+   MO.FDsSystemFramePictureProperty_loadObject = function FDsSystemFramePictureProperty_loadObject(frame, control){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.loadObject.call(o, frame, control);
+   }
+   MO.FDsSystemFramePictureProperty_dispose = function FDsSystemFramePictureProperty_dispose(){
+      var o = this;
+      o.__base.FDsSystemFrameControlProperty.dispose.call(o);
    }
 }
 with(MO){
@@ -924,129 +799,192 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
-      o.onBuild        = FDsSystemFrameSpaceContent_onBuild;
-      o.onNodeClick    = FDsSystemFrameSpaceContent_onNodeClick;
-      o.construct      = FDsSystemFrameSpaceContent_construct;
-      o.buildTechnique = FDsSystemFrameSpaceContent_buildTechnique;
-      o.buildRegion    = FDsSystemFrameSpaceContent_buildRegion;
-      o.buildMaterial  = FDsSystemFrameSpaceContent_buildMaterial;
-      o.buildDisplay   = FDsSystemFrameSpaceContent_buildDisplay;
-      o.buildSpace     = FDsSystemFrameSpaceContent_buildSpace;
-      o.dispose        = FDsSystemFrameSpaceContent_dispose;
+      o = RClass.inherits(this, o, FDsCanvas);
+      o._scaleRate          = 1;
+      o._optionAlpha        = false;
+      o._activeFrame        = null;
+      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
+      o._capturePosition    = null;
+      o._captureRotation    = null;
+      o.onEnterFrame        = FDsSystemFrameSpaceContent_onEnterFrame;
+      o.onMouseCaptureStart = FDsSystemFrameSpaceContent_onMouseCaptureStart;
+      o.onMouseCapture      = FDsSystemFrameSpaceContent_onMouseCapture;
+      o.onMouseCaptureStop  = FDsSystemFrameSpaceContent_onMouseCaptureStop;
+      o.onResize            = FDsSystemFrameSpaceContent_onResize;
+      o.onProcess           = FDsSystemFrameSpaceContent_onProcess;
+      o.oeResize            = FDsSystemFrameSpaceContent_oeResize;
+      o.construct           = FDsSystemFrameSpaceContent_construct;
+      o.build               = FDsSystemFrameSpaceContent_build;
+      o.loadFrame           = FDsSystemFrameSpaceContent_loadFrame;
+      o.dispose             = FDsSystemFrameSpaceContent_dispose;
       return o;
    }
-   MO.FDsSystemFrameSpaceContent_onBuild = function FDsSystemFrameSpaceContent_onBuild(p){
+   MO.FDsSystemFrameSpaceContent_onEnterFrame = function FDsSystemFrameSpaceContent_onEnterFrame(){
       var o = this;
-      o.__base.FDsCatalog.onBuild.call(o, p);
-      o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
+      var stage = o._activeStage;
+      if(!stage){
+         return;
+      }
+      var c = stage.camera();
+      var d = 0.5;
+      var r = 0.05;
+      var kw = RKeyboard.isPress(EKeyCode.W);
+      var ks = RKeyboard.isPress(EKeyCode.S);
+      if(kw && !ks){
+         c.doWalk(d);
+      }
+      if(!kw && ks){
+         c.doWalk(-d);
+      }
+      var ka = RKeyboard.isPress(EKeyCode.A);
+      var kd = RKeyboard.isPress(EKeyCode.D);
+      if(ka && !kd){
+         c.doYaw(r);
+      }
+      if(!ka && kd){
+         c.doYaw(-r);
+      }
+      var kq = RKeyboard.isPress(EKeyCode.Q);
+      var ke = RKeyboard.isPress(EKeyCode.E);
+      if(kq && !ke){
+         c.doFly(d);
+      }
+      if(!kq && ke){
+         c.doFly(-d);
+      }
+      var kz = RKeyboard.isPress(EKeyCode.Z);
+      var kw = RKeyboard.isPress(EKeyCode.X);
+      if(kz && !kw){
+         c.doPitch(r);
+      }
+      if(!kz && kw){
+         c.doPitch(-r);
+      }
+      c.update();
+      if(o._optionRotation){
+         var r = o._rotation;
+         var ls = stage.layers();
+         var c = ls.count();
+         for(var i = 0; i < c; i++){
+            var l = ls.value(i);
+            var m = l.matrix();
+            m.setRotation(0, r.y, 0);
+            m.update();
+         }
+         r.y += 0.01;
+      }
    }
-   MO.FDsSystemFrameSpaceContent_onNodeClick = function FDsSystemFrameSpaceContent_onNodeClick(t, n){
+   MO.FDsSystemFrameSpaceContent_onMouseCaptureStart = function FDsSystemFrameSpaceContent_onMouseCaptureStart(p){
       var o = this;
-      var s = n.dataPropertyGet('linker');
-      o.selectObject(s);
+      var s = o._activeStage;
+      if(!s){
+         return;
+      }
+      var r = o._activeStage.region();
+      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var r = st.test(r, p.offsetX, p.offsetY);
+      o._capturePosition.set(p.clientX, p.clientY);
+      o._captureRotation.assign(s.camera()._rotation);
+   }
+   MO.FDsSystemFrameSpaceContent_onMouseCapture = function FDsSystemFrameSpaceContent_onMouseCapture(p){
+      var o = this;
+      var s = o._activeStage;
+      if(!s){
+         return;
+      }
+      var cx = p.clientX - o._capturePosition.x;
+      var cy = p.clientY - o._capturePosition.y;
+      var c = o._activeStage.camera();
+      var r = c.rotation();
+      var cr = o._captureRotation;
+      r.x = cr.x + cy * 0.003;
+      r.y = cr.y + cx * 0.003;
+   }
+   MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceContent_onMouseCaptureStop(p){
+   }
+   MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
+      var o = this;
+      o.__base.FDsCanvas.onResize.call(o, event);
+      var c = o._graphicContext;
+      var cs = c.size();
+      var s = o._activeStage;
+      if(s){
+         var rp = s.camera().projection();
+         rp.size().set(cs.width, cs.height);
+         rp.update();
+      }
+   }
+   MO.FDsSystemFrameSpaceContent_onProcess = function FDsSystemFrameSpaceContent_onProcess(event){
+      var o = this;
+      var frame = o._activeFrame;
+      if(frame){
+         frame.psUpdate();
+      }
+   }
+   MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(p){
+      var o = this;
+      o.__base.FDsCanvas.oeResize.call(o, p);
+      var hp = o._hPanel;
+      var w = hp.offsetWidth;
+      var h = hp.offsetHeight;
+      var s = o._activeSpace;
+      if(s){
+         var cp = s.camera().projection();
+         cp.size().set(w, h);
+         cp.update();
+      }
+      return EEventStatus.Stop;
    }
    MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
       var o = this;
-      o.__base.FDsCatalog.construct.call(o);
+      o.__base.FDsCanvas.construct.call(o);
+      o._rotation = new SVector3();
+      o._capturePosition = new SPoint2();
+      o._captureRotation = new SVector3();
    }
-   MO.FDsSystemFrameSpaceContent_buildTechnique = function FDsSystemFrameSpaceContent_buildTechnique(n, p){
+   MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
       var o = this;
-      var nt = o.createNode();
-      nt.setLabel('Technique');
-      nt.setTypeCode('technique');
-      nt.dataPropertySet('linker', p);
-      n.appendNode(nt);
+      o.__base.FDsCanvas.build.call(o, hPanel);
+      o.setPanel(hPanel);
+      var stage = o._activeStage = MO.RClass.create(MO.FDsStage);
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, FE3dGeneralTechnique);
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+      stage.addEnterFrameListener(o, o.onProcess);
+      RStage.register('design.frame.stage', stage);
    }
-   MO.FDsSystemFrameSpaceContent_buildRegion = function FDsSystemFrameSpaceContent_buildRegion(n, p){
+   MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
       var o = this;
-      var nr = o.createNode();
-      nr.setLabel('Region');
-      nr.setTypeCode('region');
-      nr.dataPropertySet('linker', p);
-      n.appendNode(nr);
-      var nc = o.createNode();
-      nc.setLabel('Camera');
-      nc.setTypeCode('camera');
-      nc.dataPropertySet('linker', p.camera());
-      nr.appendNode(nc);
-      var nl = o.createNode();
-      nl.setLabel('Light');
-      nl.setTypeCode('light');
-      nl.dataPropertySet('linker', p.directionalLight());
-      nr.appendNode(nl);
-   }
-   MO.FDsSystemFrameSpaceContent_buildMaterial = function FDsSystemFrameSpaceContent_buildMaterial(parentNode, material){
-      var o = this;
-      var resource = material.resource();
-      var node = o.createNode();
-      node.setTypeCode('Material');
-      node.setLabel(resource.code());
-      node.setNote(resource.label());
-      node.dataPropertySet('linker', material);
-      parentNode.appendNode(node);
-   }
-   MO.FDsSystemFrameSpaceContent_buildDisplay = function FDsSystemFrameSpaceContent_buildDisplay(parentNode, display){
-      var o = this;
-      var resource = display.resource();
-      var node = o.createNode();
-      node.setTypeCode('Display');
-      node.setLabel(RString.nvl(resource.code(), 'Display'));
-      node.setNote(resource.label());
-      node.dataPropertySet('linker', display);
-      parentNode.appendNode(node);
-      var renderables = display.renderables();
-      var renderableCount = renderables.count();
-      if(renderableCount > 0){
-         for(var i = 0; i < renderableCount; i++){
-            var renderable = renderables.at(i);
-            var renderableResource = renderable.resource();
-            var renderableNode = o.createNode();
-            renderableNode.setTypeCode('Renderable');
-            renderableNode.setLabel(renderableResource.code());
-            renderableNode.setNote(renderableResource.label());
-            renderableNode.dataPropertySet('linker', renderable);
-            node.appendNode(renderableNode);
-         }
+      var context = o._graphicContext;
+      var stage = o._activeStage;
+      var layer = stage.faceLayer();
+      var frame = o._activeFrame;
+      if(frame){
+         var renderable = frame.renderable();
+         layer.removeRenderable(renderable);
+         o._activeFrame = null;
       }
-   }
-   MO.FDsSystemFrameSpaceContent_buildSpace = function FDsSystemFrameSpaceContent_buildSpace(space){
-      var o = this;
-      o.clearAllNodes();
-      var resource = space.resource();
-      var spaceNode = o.createNode();
-      spaceNode.setTypeCode('Space');
-      spaceNode.setLabel(resource.code());
-      spaceNode.setNote(resource.label());
-      spaceNode.dataPropertySet('linker', space);
-      o.appendNode(spaceNode);
-      o.buildTechnique(spaceNode, space.technique())
-      o.buildRegion(spaceNode, space.region());
-      var materialsNode = o.createNode();
-      materialsNode.setTypeCode('Region');
-      materialsNode.setLabel('Materials');
-      spaceNode.appendNode(materialsNode);
-      var materials = space.materials();
-      var materialCount = materials.count();
-      for(var i = 0; i < materialCount; i++){
-         var material = materials.at(i);
-         o.buildMaterial(materialsNode, material);
-      }
-      var displaysNode = o.createNode();
-      displaysNode.setTypeCode('Region');
-      displaysNode.setLabel('Displays');
-      spaceNode.appendNode(displaysNode);
-      var displays = space._sprites;
-      var displayCount = displays.count();
-      for(var i = 0; i < displayCount; i++){
-         var display = displays.at(i);
-         o.buildDisplay(displaysNode, display);
-      }
-      spaceNode.click();
+      var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
+      var frame = o._activeFrame = frameConsole.get(context, code);
+      var renderable = frame.renderable();
+      renderable.setLocation(10, 10);
+      layer.pushRenderable(renderable);
    }
    MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
       var o = this;
-      o.__base.FDsCatalog.dispose.call(o);
+      var v = o._rotation;
+      if(v){
+         v.dispose();
+         o._rotation = null;
+      }
+      o.__base.FDsCanvas.dispose.call(o);
    }
 }
 with(MO){

@@ -414,39 +414,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.APtyBoolean = function APtyBoolean(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : false;
-      o.build    = APtyBoolean_build;
-      o.load     = APtyBoolean_load;
-      o.save     = APtyBoolean_save;
-      o.toString = APtyBoolean_toString;
-      return o;
-   }
-   MO.APtyBoolean_build = function APtyBoolean_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyBoolean_load = function APtyBoolean_load(v, x){
-      var o = this;
-      v[o._name] = RBoolean.parse(x.get(o._linker));
-   }
-   MO.APtyBoolean_save = function APtyBoolean_save(v, x){
-      var o = this;
-      var d = v[o._name];
-      if(d){
-         x.set(o._linker, RBoolean.toString(d));
-      }
-   }
-   MO.APtyBoolean_toString = function APtyBoolean_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
-with(MO){
    MO.APtyConfig = function APtyConfig(n, l){
       var o = this;
       AProperty.call(o, n, l);
@@ -491,36 +458,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.APtyInteger = function APtyInteger(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value   = RInteger.nvl(v);
-      o.build    = APtyInteger_build;
-      o.load     = APtyInteger_load;
-      o.save     = APtyInteger_save;
-      o.toString = APtyInteger_toString;
-      return o;
-   }
-   MO.APtyInteger_build = function APtyInteger_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyInteger_load = function APtyInteger_load(v, x){
-      var o = this;
-      v[o._name] = RInteger.parse(x.get(o._linker));
-   }
-   MO.APtyInteger_save = function APtyInteger_save(v, x){
-      var o = this;
-      x.set(o._linker, RInteger.toString(v[o._name]));
-   }
-   MO.APtyInteger_toString = function APtyInteger_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
-with(MO){
    MO.APtyNumber = function APtyNumber(n, l, v){
       var o = this;
       AProperty.call(o, n, l);
@@ -538,35 +475,6 @@ with(MO){
    MO.APtyNumber_toString = function APtyNumber_toString(){
       var o = this;
       return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
-with(MO){
-   MO.APtyPadding = function APtyPadding(n, l, vl, vt, vr, vb){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._left    = RInteger.nvl(vl);
-      o._top     = RInteger.nvl(vt);
-      o._right   = RInteger.nvl(vr);
-      o._bottom  = RInteger.nvl(vb);
-      o.load     = APtyPadding_load;
-      o.save     = APtyPadding_save;
-      o.toString = APtyPadding_toString;
-      return o;
-   }
-   MO.APtyPadding_load = function APtyPadding_load(v, x){
-      var o = this;
-      v[o._name].parse(x.get(o._linker));
-   }
-   MO.APtyPadding_save = function APtyPadding_save(v, x){
-      var o = this;
-      var d = v[o._name];
-      if(!d.isEmpty()){
-         x.set(o._linker, d.toString());
-      }
-   }
-   MO.APtyPadding_toString = function APtyPadding_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
    }
 }
 with(MO){

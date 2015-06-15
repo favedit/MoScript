@@ -7,7 +7,6 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiNumber3 = function FUiNumber3(o){
-      //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
       o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
       //..........................................................
       // @property
@@ -96,21 +95,21 @@ with(MO){
       o.onBuildEditChange(p);
       //..........................................................
       // 建立输入框1
-      var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hc.style.borderRight = '1px solid #666666';
-      var he = o._hInput1 = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.onBuildEditInput(p, he)
+      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+      hCell.style.borderRight = '1px solid #666666';
+      var hInput = o._hInput1 = RBuilder.appendEdit(hCell, o.styleName('Input'));
+      o.onBuildEditInput(p, hInput)
       // 建立输入框2
-      var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hc.style.borderLeft = '1px solid #999999';
-      hc.style.borderRight = '1px solid #666666';
-      var he = o._hInput2 = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.onBuildEditInput(p, he)
+      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+      hCell.style.borderLeft = '1px solid #999999';
+      hCell.style.borderRight = '1px solid #666666';
+      var hInput = o._hInput2 = RBuilder.appendEdit(hCell, o.styleName('Input'));
+      o.onBuildEditInput(p, hInput)
       // 建立输入框3
-      var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hc.style.borderLeft = '1px solid #999999';
-      var he = o._hInput3 = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.onBuildEditInput(p, he)
+      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+      hCell.style.borderLeft = '1px solid #999999';
+      var hInput = o._hInput3 = RBuilder.appendEdit(hCell, o.styleName('Input'));
+      o.onBuildEditInput(p, hInput)
    }
 
    //==========================================================

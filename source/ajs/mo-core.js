@@ -111,6 +111,7 @@ MO.EEvent = new function EEvent(){
    o.Blur        = 'Blur';
    o.Click       = 'Click';
    o.DoubleClick = 'DoubleClick';
+   o.NodeClick   = 'NodeClick';
    o.ItemClick   = 'ItemClick';
    o.Selected    = 'Selected';
    o.DataChanged = 'DataChanged';

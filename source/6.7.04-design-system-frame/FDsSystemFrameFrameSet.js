@@ -11,7 +11,7 @@ with(MO){
       // @style
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleSpaceContent     = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
+      o._styleSpaceContent    = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
       o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       //..........................................................
       // @property
@@ -20,20 +20,20 @@ with(MO){
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
       o._frameCatalogContent  = null;
-      o._frameSearch          = null;
-      o._frameSearchToolbar   = null;
-      o._frameSearchContent   = null;
+      o._frameSpace           = null;
+      o._frameSpaceToolbar    = null;
+      o._frameSpaceContent    = null;
       o._framePreview         = null;
       o._framePreviewToolbar  = null;
       o._framePreviewContent  = null;
       //..........................................................
       // @process
       o.onBuilded             = FDsSystemFrameFrameSet_onBuilded;
-      o.onCatalogSelected     = FDsSystemFrameFrameSet_onCatalogSelected;
       //..........................................................
       // @method
       o.construct             = FDsSystemFrameFrameSet_construct;
       // @method
+      o.loadPropertyFrame     = FDsSystemFrameFrameSet_loadPropertyFrame;
       o.load                  = FDsSystemFrameFrameSet_load;
       // @method
       o.dispose               = FDsSystemFrameFrameSet_dispose;
@@ -76,7 +76,7 @@ with(MO){
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
-      //control.addSelectedListener(o, o.onCatalogSelected);
+      //control.addSelectedListener(o, o.loadPropertyFrame);
       o._frameCatalogContent.push(control);
       //..........................................................
       // 设置空间工具栏
@@ -89,7 +89,8 @@ with(MO){
       var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
       control._workspace = o._workspace;
       control._frameSet = o;
-      control.build(event);
+      //control._hParent = o._frameSpaceContent._hPanel;
+      control.build(o._frameSpaceContent._hPanel);
       o._frameSpaceContent.push(control);
       //..........................................................
       // 设置属性工具栏
@@ -98,67 +99,6 @@ with(MO){
       control._frameSet = o;
       control.buildDefine(event);
       o._framePropertyToolBar.push(control);
-      // 设置属性内容
-      var control = o._propertyContent = RClass.create(FDsSystemFramePropertyContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control._toolbar = o._propertyToolbar;
-      control.build(event);
-      o._framePropertyContent.push(control);
-   }
-
-   //==========================================================
-   // <T>目录对象选择处理。</T>
-   //
-   // @method
-   // @param p:value:Object 对象
-   //==========================================================
-   MO.FDsSystemFrameFrameSet_onCatalogSelected = function FDsSystemFrameFrameSet_onCatalogSelected(p, pc){
-      var o = this;
-      var space = o._activeSpace;
-      // 隐藏所有属性面板
-      var fs = o._propertyFrames;
-      var c = fs.count();
-      for(var i = 0; i < c; i++){
-         var f = fs.value(i);
-         f.hide();
-      }
-      // 显示选中属性面板
-      if(RClass.isClass(p, FE3dStage)){
-         var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-         f.show();
-         f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
-         var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
-         var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
-         var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
-         var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
-         var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
-         var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
-         var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-         f.show();
-         f.loadObject(space, p);
-      }else{
-         throw new TError('Unknown select object type. (value={1})', p);
-      }
    }
 
    //==========================================================
@@ -170,6 +110,33 @@ with(MO){
       var o = this;
       // 父处理
       o.__base.FDsFrameSet.construct.call(o);
+   }
+
+   //==========================================================
+   // <T>目录对象选择处理。</T>
+   //
+   // @method
+   // @param p:value:Object 对象
+   //==========================================================
+   MO.FDsSystemFrameFrameSet_loadPropertyFrame = function FDsSystemFrameFrameSet_loadPropertyFrame(propertyFrame, controlName){
+      var o = this;
+      var activeFrame = o._spaceContent._activeFrame;
+      // 隐藏所有属性面板
+      var frames = o._propertyFrames;
+      var count = frames.count();
+      for(var i = 0; i < count; i++){
+         var frame = frames.at(i);
+         frame.hide();
+      }
+      // 显示控件信息
+      var frame = o.findPropertyFrame(propertyFrame);
+      frame.show();
+      if(controlName){
+         var activeControl = activeFrame.findComponent(controlName);
+         frame.loadObject(activeFrame, activeControl);
+      }else{
+         frame.loadObject(activeFrame, activeFrame);
+      }
    }
 
    //==========================================================
