@@ -12,8 +12,9 @@ with(MO){
       o._scaleRate          = 1;
       o._optionAlpha        = false;
       // @attribute
-      o._activeFrame        = null;
       o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
+      o._activeFrame        = null;
+      o._activeControls     = null;
       // @attribute
       o._capturePosition    = null;
       o._captureRotation    = null;
@@ -28,6 +29,7 @@ with(MO){
       o.onResize            = FDsSystemFrameSpaceContent_onResize;
       // @event
       o.onProcess           = FDsSystemFrameSpaceContent_onProcess;
+      o.onKeyDown           = FDsSystemFrameSpaceContent_onKeyDown;
       //..........................................................
       o.oeResize            = FDsSystemFrameSpaceContent_oeResize;
       //..........................................................
@@ -35,6 +37,8 @@ with(MO){
       o.construct           = FDsSystemFrameSpaceContent_construct;
       // @method
       o.build               = FDsSystemFrameSpaceContent_build;
+      o.controlAction       = FDsSystemFrameSpaceContent_controlAction;
+      o.selectControl       = FDsSystemFrameSpaceContent_selectControl;
       o.loadFrame           = FDsSystemFrameSpaceContent_loadFrame;
       // @method
       o.dispose             = FDsSystemFrameSpaceContent_dispose;
@@ -195,6 +199,72 @@ with(MO){
    }
 
    //==========================================================
+   // <T>按键按下处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件
+   //==========================================================
+   MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
+      var o = this;
+      var location = control.location();
+      var size = control.size();
+      switch(keyCode){
+         case EKeyCode.A:
+            location.x--;
+            return true;
+         case EKeyCode.W:
+            location.y--;
+            return true;
+         case EKeyCode.D:
+            location.x++;
+            return true;
+         case EKeyCode.S:
+            location.y++;
+            return true;
+         case EKeyCode.J:
+            size.width--;
+            return true;
+         case EKeyCode.I:
+            size.height--;
+            return true;
+         case EKeyCode.L:
+            size.width++;
+            return true;
+         case EKeyCode.K:
+            size.height++;
+            return true;
+      }
+      return false;
+   }
+
+   //==========================================================
+   // <T>按键按下处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件
+   //==========================================================
+   MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
+      var o = this;
+      var keyCode = event.keyCode;
+      var controls = o._activeControls;
+      if(!controls.isEmpty()){
+         // 选中控件处理
+         var changed = false;
+         var count = controls.count();
+         for(var i = 0; i < count; i++){
+            var control = controls.at(i);
+            if(o.controlAction(keyCode, control)){
+               changed = true;
+            }
+         }
+         // 重绘处理
+         if(changed){
+            o._activeFrame.build();
+         }
+      }
+   }
+
+   //==========================================================
    // <T>刷新处理。</T>
    //
    // @method
@@ -226,8 +296,10 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
       o._rotation = new SVector3();
+      o._activeControls = new TObjects();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
+      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
    }
 
    //==========================================================
@@ -243,9 +315,11 @@ with(MO){
       // 创建舞台
       var stage = o._activeStage = MO.RClass.create(MO.FDsStage);
       stage.linkGraphicContext(o);
-      stage.region().linkGraphicContext(o);
+      var region = stage.region();
+      region.linkGraphicContext(o);
+      region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
       stage.selectTechnique(o, FE3dGeneralTechnique);
-      var camera = stage.region().camera();
+      var camera = region.camera();
       var projection = camera.projection();
       projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
       projection.update();
@@ -255,6 +329,19 @@ with(MO){
       stage.addEnterFrameListener(o, o.onProcess);
       // 注册舞台
       RStage.register('design.frame.stage', stage);
+   }
+
+   //==========================================================
+   // <T>选择控件。</T>
+   //
+   // @method
+   // @param control:FGuiControl 控件
+   //==========================================================
+   MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
+      var o = this;
+      var controls = o._activeControls;
+      controls.clear();
+      controls.push(control);
    }
 
    //==========================================================

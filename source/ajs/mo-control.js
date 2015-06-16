@@ -17055,6 +17055,12 @@ with(MO){
       s.append('action=', o.action, ']');
    }
 }
+MO.EUiTreeNodeGroup = new function EUiTreeNodeGroup(){
+   var o = this;
+   o.Container = 'container';
+   o.Item      = 'item';
+   return o;
+}
 with(MO){
    MO.FUiTreeColumn = function FUiTreeColumn(o){
       o = RClass.inherits(this, o, FUiControl);
@@ -17098,7 +17104,8 @@ with(MO){
       o = RClass.inherits(this, o, FUiContainer, MUiDataProperties);
       o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
-      o._typeCode         = RClass.register(o, new APtyString('_typeCode'));
+      o._typeGroup        = RClass.register(o, [new APtyString('_typeGroup'), new AGetSet('_typeGroup')]);
+      o._typeCode         = RClass.register(o, [new APtyString('_typeCode'), new AGetter('_typeCode')]);
       o._guid             = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._code             = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._icon             = RClass.register(o, new APtyString('_icon'));
@@ -17114,10 +17121,10 @@ with(MO){
       o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable'));
       o._styleLabel       = RClass.register(o, new AStyle('_styleLabel'));
       o._styleCell        = RClass.register(o, new AStyle('_styleCell'));
-      o._tree             = null;
-      o._level            = 0;
-      o._nodes            = null;
-      o._cells            = null;
+      o._tree             = RClass.register(o, new AGetSet('_tree'));
+      o._level            = RClass.register(o, new AGetter('_level'), 0);
+      o._nodes            = RClass.register(o, new AGetter('_nodes'));
+      o._cells            = RClass.register(o, new AGetter('_cells'));
       o._statusLinked     = false;
       o._statusDisplay    = true;
       o._statusSelected   = false;
@@ -17135,14 +17142,11 @@ with(MO){
       o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FUiTreeNode_onNodeClick);
       o.construct         = FUiTreeNode_construct;
       o.type              = FUiTreeNode_type;
-      o.typeCode          = FUiTreeNode_typeCode;
       o.setTypeCode       = FUiTreeNode_setTypeCode;
       o.setLabel          = FUiTreeNode_setLabel;
       o.setNote           = FUiTreeNode_setNote;
-      o.level             = FUiTreeNode_level;
       o.setLevel          = FUiTreeNode_setLevel;
       o.cell              = FUiTreeNode_cell;
-      o.cells             = FUiTreeNode_cells;
       o.check             = FUiTreeNode_check;
       o.setCheck          = FUiTreeNode_setCheck;
       o.setImage          = FUiTreeNode_setImage;
@@ -17295,12 +17299,9 @@ with(MO){
       }
       return t.findType(o._typeCode);
    }
-   MO.FUiTreeNode_typeCode = function FUiTreeNode_typeCode(){
-      return this._typeCode;
-   }
-   MO.FUiTreeNode_setTypeCode = function FUiTreeNode_setTypeCode(p){
+   MO.FUiTreeNode_setTypeCode = function FUiTreeNode_setTypeCode(value){
       var o = this;
-      o._typeCode = p;
+      o._typeCode = value;
       o.setIcon();
    }
    MO.FUiTreeNode_setLabel = function FUiTreeNode_setLabel(p){
@@ -17326,22 +17327,16 @@ with(MO){
       o._note = RString.empty(p);
       o.setLabel(o._label);
    }
-   MO.FUiTreeNode_level = function FUiTreeNode_level(){
-      return this._level;
-   }
-   MO.FUiTreeNode_setLevel = function FUiTreeNode_setLevel(p){
+   MO.FUiTreeNode_setLevel = function FUiTreeNode_setLevel(level){
       var o = this;
-      o._level = p;
-      var h = o._hNodePanel;
-      if(h){
-         h.style.paddingLeft = (o._tree._indent * p) + 'px';
+      o._level = level;
+      var hPanel = o._hNodePanel;
+      if(hPanel){
+         hPanel.style.paddingLeft = (o._tree._indent * level) + 'px';
       }
    }
    MO.FUiTreeNode_cell = function FUiTreeNode_cell(p){
       return this._cells.get(p);
-   }
-   MO.FUiTreeNode_cells = function FUiTreeNode_cells(){
-      return this._cells;
    }
    MO.FUiTreeNode_check = function FUiTreeNode_check(){
       return this._checked;

@@ -21,7 +21,8 @@ with(MO){
       // @property
       o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
-      o._typeCode         = RClass.register(o, new APtyString('_typeCode'));
+      o._typeGroup        = RClass.register(o, [new APtyString('_typeGroup'), new AGetSet('_typeGroup')]);
+      o._typeCode         = RClass.register(o, [new APtyString('_typeCode'), new AGetter('_typeCode')]);
       o._guid             = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._code             = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._icon             = RClass.register(o, new APtyString('_icon'));
@@ -41,10 +42,10 @@ with(MO){
       o._styleCell        = RClass.register(o, new AStyle('_styleCell'));
       //..........................................................
       // @attribute
-      o._tree             = null;
-      o._level            = 0;
-      o._nodes            = null;
-      o._cells            = null;
+      o._tree             = RClass.register(o, new AGetSet('_tree'));
+      o._level            = RClass.register(o, new AGetter('_level'), 0);
+      o._nodes            = RClass.register(o, new AGetter('_nodes'));
+      o._cells            = RClass.register(o, new AGetter('_cells'));
       // @attribute
       o._statusLinked     = false;
       o._statusDisplay    = true;
@@ -71,14 +72,11 @@ with(MO){
       o.construct         = FUiTreeNode_construct;
       // @method
       o.type              = FUiTreeNode_type;
-      o.typeCode          = FUiTreeNode_typeCode;
       o.setTypeCode       = FUiTreeNode_setTypeCode;
       o.setLabel          = FUiTreeNode_setLabel;
       o.setNote           = FUiTreeNode_setNote;
-      o.level             = FUiTreeNode_level;
       o.setLevel          = FUiTreeNode_setLevel;
       o.cell              = FUiTreeNode_cell;
-      o.cells             = FUiTreeNode_cells;
       o.check             = FUiTreeNode_check;
       o.setCheck          = FUiTreeNode_setCheck;
       o.setImage          = FUiTreeNode_setImage;
@@ -315,24 +313,14 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获取类型代码。</T>
-   //
-   // @method
-   // @return String 类型代码
-   //==========================================================
-   MO.FUiTreeNode_typeCode = function FUiTreeNode_typeCode(){
-      return this._typeCode;
-   }
-
-   //==========================================================
    // <T>设置类型代码。</T>
    //
    // @method
-   // @param String 类型代码
+   // @param value:String 类型代码
    //==========================================================
-   MO.FUiTreeNode_setTypeCode = function FUiTreeNode_setTypeCode(p){
+   MO.FUiTreeNode_setTypeCode = function FUiTreeNode_setTypeCode(value){
       var o = this;
-      o._typeCode = p;
+      o._typeCode = value;
       o.setIcon();
    }
 
@@ -375,29 +363,19 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获取层次。</T>
-   //
-   // @method
-   // @return Integer 层次
-   //==========================================================
-   MO.FUiTreeNode_level = function FUiTreeNode_level(){
-      return this._level;
-   }
-
-   //==========================================================
    // <T>设置层次。</T>
    //
    // @method
-   // @param p:level:Integer 层次
+   // @param level:Integer 层次
    //==========================================================
-   MO.FUiTreeNode_setLevel = function FUiTreeNode_setLevel(p){
+   MO.FUiTreeNode_setLevel = function FUiTreeNode_setLevel(level){
       var o = this;
       // 设置属性
-      o._level = p;
+      o._level = level;
       // 设置页面
-      var h = o._hNodePanel;
-      if(h){
-         h.style.paddingLeft = (o._tree._indent * p) + 'px';
+      var hPanel = o._hNodePanel;
+      if(hPanel){
+         hPanel.style.paddingLeft = (o._tree._indent * level) + 'px';
       }
    }
 
@@ -410,16 +388,6 @@ with(MO){
    //==========================================================
    MO.FUiTreeNode_cell = function FUiTreeNode_cell(p){
       return this._cells.get(p);
-   }
-
-   //==========================================================
-   // <T>获取格子集合。</T>
-   //
-   // @method
-   // @return TObjects 格子集合
-   //==========================================================
-   MO.FUiTreeNode_cells = function FUiTreeNode_cells(){
-      return this._cells;
    }
 
    //==========================================================

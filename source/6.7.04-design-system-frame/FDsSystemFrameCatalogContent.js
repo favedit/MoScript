@@ -33,18 +33,16 @@ with(MO){
    MO.FDsSystemFrameCatalogContent_onNodeClick = function FDsSystemFrameCatalogContent_onNodeClick(event){
       var o = this;
       var node = event.node;
+      var typeGroup = node.typeGroup();
       var nodeType = node.type();
       var typeCode = node.typeCode();
+      var frameName = nodeType.get('property_frame');
       var label = node.label();
-      if(typeCode == 'Button' || typeCode == 'Picture'){
-         var frameName = nodeType.get('property_frame');
-         o._frameSet.loadPropertyFrame(frameName, label);
-      }else{
-         o._frameSet._spaceContent.loadFrame(label);
-         if(typeCode == 'Bar'){
-            var frameName = nodeType.get('property_frame');
-            o._frameSet.loadPropertyFrame(frameName, null);
-         }
+      if(typeGroup == EUiTreeNodeGroup.Container){
+         o._frameSet.load(label);
+         o._frameSet.selectObject(typeGroup, frameName, null);
+      }else if(typeGroup == EUiTreeNodeGroup.Item){
+         o._frameSet.selectObject(typeGroup, frameName, label);
       }
    }
 

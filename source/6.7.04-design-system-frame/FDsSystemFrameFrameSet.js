@@ -33,7 +33,7 @@ with(MO){
       // @method
       o.construct             = FDsSystemFrameFrameSet_construct;
       // @method
-      o.loadPropertyFrame     = FDsSystemFrameFrameSet_loadPropertyFrame;
+      o.selectObject          = FDsSystemFrameFrameSet_selectObject;
       o.load                  = FDsSystemFrameFrameSet_load;
       // @method
       o.dispose               = FDsSystemFrameFrameSet_dispose;
@@ -76,7 +76,7 @@ with(MO){
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
-      //control.addSelectedListener(o, o.loadPropertyFrame);
+      //control.addSelectedListener(o, o.selectObject);
       o._frameCatalogContent.push(control);
       //..........................................................
       // 设置空间工具栏
@@ -116,9 +116,11 @@ with(MO){
    // <T>目录对象选择处理。</T>
    //
    // @method
-   // @param p:value:Object 对象
+   // @param typeGroup:EUiTreeNodeGroup 类型分组枚举
+   // @param propertyFrame:String 属性名称
+   // @param controlName:String 控件名称
    //==========================================================
-   MO.FDsSystemFrameFrameSet_loadPropertyFrame = function FDsSystemFrameFrameSet_loadPropertyFrame(propertyFrame, controlName){
+   MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
       var o = this;
       var activeFrame = o._spaceContent._activeFrame;
       // 隐藏所有属性面板
@@ -131,11 +133,12 @@ with(MO){
       // 显示控件信息
       var frame = o.findPropertyFrame(propertyFrame);
       frame.show();
-      if(controlName){
+      if(typeGroup == EUiTreeNodeGroup.Container){
+         frame.loadObject(activeFrame, activeFrame);
+      }else{
          var activeControl = activeFrame.findComponent(controlName);
          frame.loadObject(activeFrame, activeControl);
-      }else{
-         frame.loadObject(activeFrame, activeFrame);
+         o._spaceContent.selectControl(activeControl);
       }
    }
 
@@ -144,8 +147,11 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(){
+   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
       var o = this;
+      if(name){
+         o._spaceContent.loadFrame(name);
+      }
    }
 
    //==========================================================

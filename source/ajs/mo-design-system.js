@@ -275,18 +275,16 @@ with(MO){
    MO.FDsSystemFrameCatalogContent_onNodeClick = function FDsSystemFrameCatalogContent_onNodeClick(event){
       var o = this;
       var node = event.node;
+      var typeGroup = node.typeGroup();
       var nodeType = node.type();
       var typeCode = node.typeCode();
+      var frameName = nodeType.get('property_frame');
       var label = node.label();
-      if(typeCode == 'Button' || typeCode == 'Picture'){
-         var frameName = nodeType.get('property_frame');
-         o._frameSet.loadPropertyFrame(frameName, label);
-      }else{
-         o._frameSet._spaceContent.loadFrame(label);
-         if(typeCode == 'Bar'){
-            var frameName = nodeType.get('property_frame');
-            o._frameSet.loadPropertyFrame(frameName, null);
-         }
+      if(typeGroup == EUiTreeNodeGroup.Container){
+         o._frameSet.load(label);
+         o._frameSet.selectObject(typeGroup, frameName, null);
+      }else if(typeGroup == EUiTreeNodeGroup.Item){
+         o._frameSet.selectObject(typeGroup, frameName, label);
       }
    }
    MO.FDsSystemFrameCatalogContent_construct = function FDsSystemFrameCatalogContent_construct(){
@@ -496,7 +494,7 @@ with(MO){
       o._framePreviewContent  = null;
       o.onBuilded             = FDsSystemFrameFrameSet_onBuilded;
       o.construct             = FDsSystemFrameFrameSet_construct;
-      o.loadPropertyFrame     = FDsSystemFrameFrameSet_loadPropertyFrame;
+      o.selectObject          = FDsSystemFrameFrameSet_selectObject;
       o.load                  = FDsSystemFrameFrameSet_load;
       o.dispose               = FDsSystemFrameFrameSet_dispose;
       return o;
@@ -546,7 +544,7 @@ with(MO){
       var o = this;
       o.__base.FDsFrameSet.construct.call(o);
    }
-   MO.FDsSystemFrameFrameSet_loadPropertyFrame = function FDsSystemFrameFrameSet_loadPropertyFrame(propertyFrame, controlName){
+   MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
       var o = this;
       var activeFrame = o._spaceContent._activeFrame;
       var frames = o._propertyFrames;
@@ -557,15 +555,19 @@ with(MO){
       }
       var frame = o.findPropertyFrame(propertyFrame);
       frame.show();
-      if(controlName){
+      if(typeGroup == EUiTreeNodeGroup.Container){
+         frame.loadObject(activeFrame, activeFrame);
+      }else{
          var activeControl = activeFrame.findComponent(controlName);
          frame.loadObject(activeFrame, activeControl);
-      }else{
-         frame.loadObject(activeFrame, activeFrame);
+         o._spaceContent.selectControl(activeControl);
       }
    }
-   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(){
+   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
       var o = this;
+      if(name){
+         o._spaceContent.loadFrame(name);
+      }
    }
    MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
       var o = this;
@@ -803,8 +805,9 @@ with(MO){
       o = RClass.inherits(this, o, FDsCanvas);
       o._scaleRate          = 1;
       o._optionAlpha        = false;
-      o._activeFrame        = null;
       o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
+      o._activeFrame        = null;
+      o._activeControls     = null;
       o._capturePosition    = null;
       o._captureRotation    = null;
       o.onEnterFrame        = FDsSystemFrameSpaceContent_onEnterFrame;
@@ -813,9 +816,12 @@ with(MO){
       o.onMouseCaptureStop  = FDsSystemFrameSpaceContent_onMouseCaptureStop;
       o.onResize            = FDsSystemFrameSpaceContent_onResize;
       o.onProcess           = FDsSystemFrameSpaceContent_onProcess;
+      o.onKeyDown           = FDsSystemFrameSpaceContent_onKeyDown;
       o.oeResize            = FDsSystemFrameSpaceContent_oeResize;
       o.construct           = FDsSystemFrameSpaceContent_construct;
       o.build               = FDsSystemFrameSpaceContent_build;
+      o.controlAction       = FDsSystemFrameSpaceContent_controlAction;
+      o.selectControl       = FDsSystemFrameSpaceContent_selectControl;
       o.loadFrame           = FDsSystemFrameSpaceContent_loadFrame;
       o.dispose             = FDsSystemFrameSpaceContent_dispose;
       return o;
@@ -922,6 +928,56 @@ with(MO){
          frame.psUpdate();
       }
    }
+   MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
+      var o = this;
+      var location = control.location();
+      var size = control.size();
+      switch(keyCode){
+         case EKeyCode.A:
+            location.x--;
+            return true;
+         case EKeyCode.W:
+            location.y--;
+            return true;
+         case EKeyCode.D:
+            location.x++;
+            return true;
+         case EKeyCode.S:
+            location.y++;
+            return true;
+         case EKeyCode.J:
+            size.width--;
+            return true;
+         case EKeyCode.I:
+            size.height--;
+            return true;
+         case EKeyCode.L:
+            size.width++;
+            return true;
+         case EKeyCode.K:
+            size.height++;
+            return true;
+      }
+      return false;
+   }
+   MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
+      var o = this;
+      var keyCode = event.keyCode;
+      var controls = o._activeControls;
+      if(!controls.isEmpty()){
+         var changed = false;
+         var count = controls.count();
+         for(var i = 0; i < count; i++){
+            var control = controls.at(i);
+            if(o.controlAction(keyCode, control)){
+               changed = true;
+            }
+         }
+         if(changed){
+            o._activeFrame.build();
+         }
+      }
+   }
    MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(p){
       var o = this;
       o.__base.FDsCanvas.oeResize.call(o, p);
@@ -940,8 +996,10 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
       o._rotation = new SVector3();
+      o._activeControls = new TObjects();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
+      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
    }
    MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
       var o = this;
@@ -949,9 +1007,11 @@ with(MO){
       o.setPanel(hPanel);
       var stage = o._activeStage = MO.RClass.create(MO.FDsStage);
       stage.linkGraphicContext(o);
-      stage.region().linkGraphicContext(o);
+      var region = stage.region();
+      region.linkGraphicContext(o);
+      region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
       stage.selectTechnique(o, FE3dGeneralTechnique);
-      var camera = stage.region().camera();
+      var camera = region.camera();
       var projection = camera.projection();
       projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
       projection.update();
@@ -960,6 +1020,12 @@ with(MO){
       camera.update();
       stage.addEnterFrameListener(o, o.onProcess);
       RStage.register('design.frame.stage', stage);
+   }
+   MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
+      var o = this;
+      var controls = o._activeControls;
+      controls.clear();
+      controls.push(control);
    }
    MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
       var o = this;
