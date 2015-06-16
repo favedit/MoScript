@@ -514,9 +514,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsSystemFrameFrameSet                                 */
+/* FDsSystemDesignFrameSet                                */
 /* ------------------------------------------------------ */
-.FDsSystemFrameFrameSet_Toolbar_Ground{
+.FDsSystemDesignFrameSet_Toolbar_Ground{
    padding-left: 4px;
    padding-top: 1px;
    padding-bottom: 1px;
@@ -529,14 +529,14 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsSystemFrameFrameSet_Catalog_Content{
+.FDsSystemDesignFrameSet_Catalog_Content{
    background: #EEEEEE;
 }
 
-.FDsSystemFrameFrameSet_Space_Content{
+.FDsSystemDesignFrameSet_Space_Content{
    background: #EEEEEE;
 }
 
-.FDsSystemFrameFrameSet_Property_Content{
+.FDsSystemDesignFrameSet_Property_Content{
    background-color: #777777;
 }

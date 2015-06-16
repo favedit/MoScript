@@ -81,7 +81,7 @@ with(MO){
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
-      hCell.width = '100px';
+      hCell.width = '240px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';
       hCell.appendChild(control._hPanel);
@@ -149,7 +149,7 @@ with(MO){
             frameSet.load();
             break;
          case EDsFrameSet.SystemDesignListFrameSet:
-            frameSet.loadByGuid(guid);
+            frameSet.load();
             break;
          case EDsFrameSet.SystemDesignTreeFrameSet:
             frameSet.load();

@@ -95,6 +95,8 @@
       <PathMerger source='/6.5.26-design-share-scene'        target='/ajs/design-share-scene.js'/>
 
       <PathMerger source='/6.6.01-design-system'             target='/ajs/design-system.js'/>
+      <PathMerger source='/6.6.02-design-system-core'        target='/ajs/design-system-core.js'/>
+      <PathMerger source='/6.6.03-design-system-console'     target='/ajs/design-system-console.js'/>
       <PathMerger source='/6.7.01-design-system-persistence' target='/ajs/design-system-persistence.js'/>
       <PathMerger source='/6.7.02-design-system-list'        target='/ajs/design-system-list.js'/>
       <PathMerger source='/6.7.03-design-system-tree'        target='/ajs/design-system-tree.js'/>
@@ -226,6 +228,8 @@
       </FileMerger>
       <FileMerger target='/ajs/mo-design-system.js'>
          <File source='/ajs/design-system.js'/>
+         <File source='/ajs/design-system-core.js'/>
+         <File source='/ajs/design-system-console.js'/>
          <File source='/ajs/design-system-persistence.js'/>
          <File source='/ajs/design-system-list.js'/>
          <File source='/ajs/design-system-tree.js'/>

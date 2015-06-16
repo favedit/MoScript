@@ -324,31 +324,18 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleSpaceContent    = RClass.register(o, new AStyle('_styleSpaceContent', 'Space_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._frameName            = 'system.design.frame.FrameSet';
-      o._frameCatalog         = null;
-      o._frameCatalogToolbar  = null;
-      o._frameCatalogContent  = null;
-      o._frameSpace           = null;
-      o._frameSpaceToolbar    = null;
-      o._frameSpaceContent    = null;
-      o._framePreview         = null;
-      o._framePreviewToolbar  = null;
-      o._framePreviewContent  = null;
-      o.onBuilded             = FDsSystemFrameFrameSet_onBuilded;
-      o.construct             = FDsSystemFrameFrameSet_construct;
-      o.selectObject          = FDsSystemFrameFrameSet_selectObject;
-      o.load                  = FDsSystemFrameFrameSet_load;
-      o.dispose               = FDsSystemFrameFrameSet_dispose;
+      o = RClass.inherits(this, o, FDsSystemDesignFrameSet);
+      o._frameName   = 'system.design.frame.FrameSet';
+      o.onBuilded    = FDsSystemFrameFrameSet_onBuilded;
+      o.construct    = FDsSystemFrameFrameSet_construct;
+      o.selectObject = FDsSystemFrameFrameSet_selectObject;
+      o.load         = FDsSystemFrameFrameSet_load;
+      o.dispose      = FDsSystemFrameFrameSet_dispose;
       return o;
    }
    MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
       var o = this;
-      o.__base.FDsFrameSet.onBuilded.call(o, event);
+      o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
       o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
       o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
@@ -389,7 +376,7 @@ with(MO){
    }
    MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
       var o = this;
-      o.__base.FDsFrameSet.construct.call(o);
+      o.__base.FDsSystemDesignFrameSet.construct.call(o);
    }
    MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
       var o = this;
@@ -418,7 +405,7 @@ with(MO){
    }
    MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
       var o = this;
-      o.__base.FDsFrameSet.dispose.call(o);
+      o.__base.FDsSystemDesignFrameSet.dispose.call(o);
    }
 }
 with(MO){

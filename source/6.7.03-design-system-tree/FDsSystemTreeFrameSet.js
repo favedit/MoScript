@@ -5,22 +5,22 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
+   MO.FDsSystemTreeFrameSet = function FDsSystemTreeFrameSet(o){
       o = RClass.inherits(this, o, FDsSystemDesignFrameSet);
       //..........................................................
       // @property
-      o._frameName   = 'system.design.frame.FrameSet';
+      o._frameName   = 'system.design.tree.FrameSet';
       //..........................................................
       // @process
-      o.onBuilded    = FDsSystemFrameFrameSet_onBuilded;
+      o.onBuilded    = FDsSystemTreeFrameSet_onBuilded;
       //..........................................................
       // @method
-      o.construct    = FDsSystemFrameFrameSet_construct;
+      o.construct    = FDsSystemTreeFrameSet_construct;
       // @method
-      o.selectObject = FDsSystemFrameFrameSet_selectObject;
-      o.load         = FDsSystemFrameFrameSet_load;
+      o.selectObject = FDsSystemTreeFrameSet_selectObject;
+      o.load         = FDsSystemTreeFrameSet_load;
       // @method
-      o.dispose      = FDsSystemFrameFrameSet_dispose;
+      o.dispose      = FDsSystemTreeFrameSet_dispose;
       return o;
    }
 
@@ -30,14 +30,12 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
+   MO.FDsSystemTreeFrameSet_onBuilded = function FDsSystemTreeFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
       // 设置样式
       o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
-      o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
       o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
       o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
       //..........................................................
@@ -45,40 +43,23 @@ with(MO){
       var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
       spliter.setAlignCd(EUiAlign.Left);
       spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-      spliter.setAlignCd(EUiAlign.Right);
-      spliter.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
       // 设置目录工具栏
-      var control = o._catalogToolbar = RClass.create(FDsSystemFrameCatalogToolBar);
+      var control = o._catalogToolbar = RClass.create(FDsSystemTreeCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
       // 设置目录内容
-      var control = o._catalogContent = RClass.create(FDsSystemFrameCatalogContent);
+      var control = o._catalogContent = RClass.create(FDsSystemTreeCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       //control.addSelectedListener(o, o.selectObject);
       o._frameCatalogContent.push(control);
       //..........................................................
-      // 设置空间工具栏
-      var control = o._spaceToolBar = RClass.create(FDsSystemFrameSpaceToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._frameSpaceToolBar.push(control);
-      // 设置空间内容
-      var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      //control._hParent = o._frameSpaceContent._hPanel;
-      control.build(o._frameSpaceContent._hPanel);
-      o._frameSpaceContent.push(control);
-      //..........................................................
       // 设置属性工具栏
-      var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
+      var control = o._propertyToolbar = RClass.create(FDsSystemTreePropertyToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
@@ -90,7 +71,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
+   MO.FDsSystemTreeFrameSet_construct = function FDsSystemTreeFrameSet_construct(){
       var o = this;
       // 父处理
       o.__base.FDsSystemDesignFrameSet.construct.call(o);
@@ -104,7 +85,7 @@ with(MO){
    // @param propertyFrame:String 属性名称
    // @param controlName:String 控件名称
    //==========================================================
-   MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
+   MO.FDsSystemTreeFrameSet_selectObject = function FDsSystemTreeFrameSet_selectObject(typeGroup, propertyFrame, controlName){
       var o = this;
       var activeFrame = o._spaceContent._activeFrame;
       // 隐藏所有属性面板
@@ -131,7 +112,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
+   MO.FDsSystemTreeFrameSet_load = function FDsSystemTreeFrameSet_load(name){
       var o = this;
       if(name){
          o._spaceContent.loadFrame(name);
@@ -143,7 +124,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
+   MO.FDsSystemTreeFrameSet_dispose = function FDsSystemTreeFrameSet_dispose(){
       var o = this;
       // 父处理
       o.__base.FDsSystemDesignFrameSet.dispose.call(o);
