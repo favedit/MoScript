@@ -13,7 +13,19 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    o.rectangle = new MO.SRectangle();
    //..........................................................
    // @method
+   o.free      = MO.SGuiPaintEvent_free;
    o.dispose   = MO.SGuiPaintEvent_dispose;
+   return o;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
+   var o = this;
+   o.graphic = null;
    return o;
 }
 

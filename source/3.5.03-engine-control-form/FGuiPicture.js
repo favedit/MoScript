@@ -10,7 +10,6 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
-      o._statusPaint = false;
       o._image       = null;
       //..........................................................
       // @method

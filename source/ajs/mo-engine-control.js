@@ -384,7 +384,13 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic   = null;
    o.rectangle = new MO.SRectangle();
+   o.free      = MO.SGuiPaintEvent_free;
    o.dispose   = MO.SGuiPaintEvent_dispose;
+   return o;
+}
+MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
+   var o = this;
+   o.graphic = null;
    return o;
 }
 MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
@@ -406,6 +412,7 @@ MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
 with(MO){
    MO.FGuiComponent = function FGuiComponent(o){
       o = RClass.inherits(this, o, FComponent, MProperty);
+      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       o._components   = null;
@@ -549,13 +556,15 @@ with(MO){
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
+      o._statusPaint     = false;
       o._clientRectangle = null;
+      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       o.onUpdate         = FGuiControl_onUpdate;
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
       o.onPaint          = FGuiControl_onPaint;
       o.construct        = FGuiControl_construct;
+      o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
@@ -617,16 +626,17 @@ with(MO){
       o.__base.MGuiPadding.construct.call(o);
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
-      o._backColor = '#CCCCCC';
-      o._borderInner.left.color = '#FFFFFF';
    }
    MO.FGuiControl_update = function FGuiControl_update(){
       var o = this;
       var size = o._size;
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.rectangle.set(0, 0, size.width, size.height)
       o.onUpdate(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+   MO.FGuiControl_testReady = function FGuiControl_testReady(){
+      return true;
    }
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
       var o = this;
@@ -1038,7 +1048,6 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._statusPaint = false;
       o._image       = null;
       o.onImageLoad  = FGuiPicture_onImageLoad;
       o.onPaintBegin = FGuiPicture_onPaintBegin;

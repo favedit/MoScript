@@ -16,8 +16,10 @@ with(MO){
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       //..........................................................
       // @attribute
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
+      o._statusPaint     = false;
       o._clientRectangle = null;
+      // @attribute
+      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       //..........................................................
       // @event
       o.onUpdate         = FGuiControl_onUpdate;
@@ -29,6 +31,7 @@ with(MO){
       // @method
       o.construct        = FGuiControl_construct;
       // @method
+      o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
@@ -139,8 +142,8 @@ with(MO){
       o.__base.MGuiBorder.construct.call(o);
       // 创建属性
       o._clientRectangle = new SRectangle();
-      o._backColor = '#CCCCCC';
-      o._borderInner.left.color = '#FFFFFF';
+      //o._backColor = '#CCCCCC';
+      //o._borderInner.left.color = '#FFFFFF';
       //o._borderInner.top.color = '#00FF00';
       //o._borderInner.right.color = '#0000FF';
       //o._borderInner.bottom.color = '#FF00FF';
@@ -155,10 +158,20 @@ with(MO){
       var o = this;
       var size = o._size;
       // 更新处理
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.rectangle.set(0, 0, size.width, size.height)
       o.onUpdate(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+
+   //==========================================================
+   // <T>测试是否准备好。</T>
+   //
+   // @method
+   // @return Boolean 是否准备好
+   //==========================================================
+   MO.FGuiControl_testReady = function FGuiControl_testReady(){
+      return true;
    }
 
    //==========================================================

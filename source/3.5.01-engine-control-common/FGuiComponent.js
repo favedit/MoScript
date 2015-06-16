@@ -9,6 +9,8 @@ with(MO){
    MO.FGuiComponent = function FGuiComponent(o){
       o = RClass.inherits(this, o, FComponent, MProperty);
       //..........................................................
+      // @property String 唯一编号
+      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       // @property String 名称
       o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       // @property String 标签

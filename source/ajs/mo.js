@@ -997,8 +997,8 @@ MO.RMemory.prototype.free = function RMemory_free(value){
    var pool = value.__pool;
    MO.Assert.debugNotNull(pool);
    pool.free(value);
-   if(value.dispose){
-      value.dispose();
+   if(value.free){
+      value.free();
    }
 }
 MO.RMemory.prototype.refresh = function RMemory_refresh(){
@@ -33672,7 +33672,13 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic   = null;
    o.rectangle = new MO.SRectangle();
+   o.free      = MO.SGuiPaintEvent_free;
    o.dispose   = MO.SGuiPaintEvent_dispose;
+   return o;
+}
+MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
+   var o = this;
+   o.graphic = null;
    return o;
 }
 MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
@@ -33694,6 +33700,7 @@ MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
 with(MO){
    MO.FGuiComponent = function FGuiComponent(o){
       o = RClass.inherits(this, o, FComponent, MProperty);
+      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       o._components   = null;
@@ -33837,13 +33844,15 @@ with(MO){
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
+      o._statusPaint     = false;
       o._clientRectangle = null;
+      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       o.onUpdate         = FGuiControl_onUpdate;
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
       o.onPaint          = FGuiControl_onPaint;
       o.construct        = FGuiControl_construct;
+      o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
@@ -33905,16 +33914,17 @@ with(MO){
       o.__base.MGuiPadding.construct.call(o);
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
-      o._backColor = '#CCCCCC';
-      o._borderInner.left.color = '#FFFFFF';
    }
    MO.FGuiControl_update = function FGuiControl_update(){
       var o = this;
       var size = o._size;
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.rectangle.set(0, 0, size.width, size.height)
       o.onUpdate(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+   MO.FGuiControl_testReady = function FGuiControl_testReady(){
+      return true;
    }
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
       var o = this;
@@ -34326,7 +34336,6 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._statusPaint = false;
       o._image       = null;
       o.onImageLoad  = FGuiPicture_onImageLoad;
       o.onPaintBegin = FGuiPicture_onPaintBegin;
@@ -73632,8 +73641,49 @@ with(MO){
    }
 }
 with(MO){
-   MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
+   MO.FDsSystemFrameComponentProperty = function FDsSystemFrameComponentProperty(o){
       o = RClass.inherits(this, o, FUiForm);
+      o._activeFrame     = null;
+      o._activeComponent = null;
+      o.onBuilded        = FDsSystemFrameComponentProperty_onBuilded;
+      o.onDataChanged    = FDsSystemFrameComponentProperty_onDataChanged;
+      o.construct        = FDsSystemFrameComponentProperty_construct;
+      o.loadObject       = FDsSystemFrameComponentProperty_loadObject;
+      o.dispose          = FDsSystemFrameComponentProperty_dispose;
+      return o;
+   }
+   MO.FDsSystemFrameComponentProperty_onBuilded = function FDsSystemFrameComponentProperty_onBuilded(p){
+      var o = this;
+      o.__base.FUiForm.onBuilded.call(o, p);
+   }
+   MO.FDsSystemFrameComponentProperty_onDataChanged = function FDsSystemFrameComponentProperty_onDataChanged(event){
+      var o  = this;
+      var frame = o._activeFrame;
+      var control = o._activeControl;
+      var size = o._controlSize.get();
+      control.size().set(size.x, size.y);
+      frame.build();
+   }
+   MO.FDsSystemFrameComponentProperty_construct = function FDsSystemFrameComponentProperty_construct(){
+      var o = this;
+      o.__base.FUiForm.construct.call(o);
+   }
+   MO.FDsSystemFrameComponentProperty_loadObject = function FDsSystemFrameComponentProperty_loadObject(frame, component){
+      var o = this;
+      o._activeFrame = frame;
+      o._activeComponent = component;
+      o._controlType.set(RClass.name(component));
+      o._controlName.set(component.name());
+      o._controlLabel.set(component.label());
+   }
+   MO.FDsSystemFrameComponentProperty_dispose = function FDsSystemFrameComponentProperty_dispose(){
+      var o = this;
+      o.__base.FUiForm.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
+      o = RClass.inherits(this, o, FDsSystemFrameComponentProperty);
       o._activeFrame   = null;
       o._activeControl = null;
       o.onBuilded         = FDsSystemFrameControlProperty_onBuilded;
@@ -73643,13 +73693,14 @@ with(MO){
       o.dispose           = FDsSystemFrameControlProperty_dispose;
       return o;
    }
-   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(p){
+   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(event){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDsSystemFrameComponentProperty.onBuilded.call(o, event);
       o._controlSize.addDataChangedListener(o, o.onDataChanged);
    }
    MO.FDsSystemFrameControlProperty_onDataChanged = function FDsSystemFrameControlProperty_onDataChanged(event){
       var o  = this;
+      o.__base.FDsSystemFrameComponentProperty.onDataChanged.call(o, event);
       var frame = o._activeFrame;
       var control = o._activeControl;
       var size = o._controlSize.get();
@@ -73658,23 +73709,25 @@ with(MO){
    }
    MO.FDsSystemFrameControlProperty_construct = function FDsSystemFrameControlProperty_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDsSystemFrameComponentProperty.construct.call(o);
    }
    MO.FDsSystemFrameControlProperty_loadObject = function FDsSystemFrameControlProperty_loadObject(frame, control){
       var o = this;
+      o.__base.FDsSystemFrameComponentProperty.loadObject.call(o, frame, control);
       o._activeFrame = frame;
       o._activeControl = control;
-      o._controlType.set(RClass.name(control));
-      o._controlName.set(control.name());
-      o._controlLabel.set(control.label());
       var location = control.location();
       o._controlLocation.set(location);
       var size = control.size();
       o._controlSize.set(size);
+      o._controlForeColor.set(control.foreColor());
+      o._controlBackColor.set(control.backColor());
+      o._controlBackResource.set(control.backResource());
+      o._controlBackGrid.set(control.backGrid());
    }
    MO.FDsSystemFrameControlProperty_dispose = function FDsSystemFrameControlProperty_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDsSystemFrameComponentProperty.dispose.call(o);
    }
 }
 with(MO){

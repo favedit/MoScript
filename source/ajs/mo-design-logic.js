@@ -2428,8 +2428,49 @@ with(MO){
    }
 }
 with(MO){
-   MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
+   MO.FDsSystemFrameComponentProperty = function FDsSystemFrameComponentProperty(o){
       o = RClass.inherits(this, o, FUiForm);
+      o._activeFrame     = null;
+      o._activeComponent = null;
+      o.onBuilded        = FDsSystemFrameComponentProperty_onBuilded;
+      o.onDataChanged    = FDsSystemFrameComponentProperty_onDataChanged;
+      o.construct        = FDsSystemFrameComponentProperty_construct;
+      o.loadObject       = FDsSystemFrameComponentProperty_loadObject;
+      o.dispose          = FDsSystemFrameComponentProperty_dispose;
+      return o;
+   }
+   MO.FDsSystemFrameComponentProperty_onBuilded = function FDsSystemFrameComponentProperty_onBuilded(p){
+      var o = this;
+      o.__base.FUiForm.onBuilded.call(o, p);
+   }
+   MO.FDsSystemFrameComponentProperty_onDataChanged = function FDsSystemFrameComponentProperty_onDataChanged(event){
+      var o  = this;
+      var frame = o._activeFrame;
+      var control = o._activeControl;
+      var size = o._controlSize.get();
+      control.size().set(size.x, size.y);
+      frame.build();
+   }
+   MO.FDsSystemFrameComponentProperty_construct = function FDsSystemFrameComponentProperty_construct(){
+      var o = this;
+      o.__base.FUiForm.construct.call(o);
+   }
+   MO.FDsSystemFrameComponentProperty_loadObject = function FDsSystemFrameComponentProperty_loadObject(frame, component){
+      var o = this;
+      o._activeFrame = frame;
+      o._activeComponent = component;
+      o._controlType.set(RClass.name(component));
+      o._controlName.set(component.name());
+      o._controlLabel.set(component.label());
+   }
+   MO.FDsSystemFrameComponentProperty_dispose = function FDsSystemFrameComponentProperty_dispose(){
+      var o = this;
+      o.__base.FUiForm.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
+      o = RClass.inherits(this, o, FDsSystemFrameComponentProperty);
       o._activeFrame   = null;
       o._activeControl = null;
       o.onBuilded         = FDsSystemFrameControlProperty_onBuilded;
@@ -2439,13 +2480,14 @@ with(MO){
       o.dispose           = FDsSystemFrameControlProperty_dispose;
       return o;
    }
-   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(p){
+   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(event){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDsSystemFrameComponentProperty.onBuilded.call(o, event);
       o._controlSize.addDataChangedListener(o, o.onDataChanged);
    }
    MO.FDsSystemFrameControlProperty_onDataChanged = function FDsSystemFrameControlProperty_onDataChanged(event){
       var o  = this;
+      o.__base.FDsSystemFrameComponentProperty.onDataChanged.call(o, event);
       var frame = o._activeFrame;
       var control = o._activeControl;
       var size = o._controlSize.get();
@@ -2454,23 +2496,25 @@ with(MO){
    }
    MO.FDsSystemFrameControlProperty_construct = function FDsSystemFrameControlProperty_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDsSystemFrameComponentProperty.construct.call(o);
    }
    MO.FDsSystemFrameControlProperty_loadObject = function FDsSystemFrameControlProperty_loadObject(frame, control){
       var o = this;
+      o.__base.FDsSystemFrameComponentProperty.loadObject.call(o, frame, control);
       o._activeFrame = frame;
       o._activeControl = control;
-      o._controlType.set(RClass.name(control));
-      o._controlName.set(control.name());
-      o._controlLabel.set(control.label());
       var location = control.location();
       o._controlLocation.set(location);
       var size = control.size();
       o._controlSize.set(size);
+      o._controlForeColor.set(control.foreColor());
+      o._controlBackColor.set(control.backColor());
+      o._controlBackResource.set(control.backResource());
+      o._controlBackGrid.set(control.backGrid());
    }
    MO.FDsSystemFrameControlProperty_dispose = function FDsSystemFrameControlProperty_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDsSystemFrameComponentProperty.dispose.call(o);
    }
 }
 with(MO){

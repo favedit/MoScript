@@ -6,7 +6,7 @@ with(MO){
    // @history 150216
    //==========================================================
    MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDsSystemFrameComponentProperty);
       //..........................................................
       // @attribute
       o._activeFrame   = null;
@@ -29,11 +29,11 @@ with(MO){
    // <T>构建完成处理。</T>
    //
    // @method
-   // @param p:event:TEventProcess 事件处理
+   // @param event:SEvent 事件信息
    //==========================================================
-   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(p){
+   MO.FDsSystemFrameControlProperty_onBuilded = function FDsSystemFrameControlProperty_onBuilded(event){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDsSystemFrameComponentProperty.onBuilded.call(o, event);
       // 关联事件
       o._controlSize.addDataChangedListener(o, o.onDataChanged);
    }
@@ -42,10 +42,11 @@ with(MO){
    // <T>数据改变处理。</T>
    //
    // @method
-   // @param p:event:SEvent 事件
+   // @param event:SEvent 事件信息
    //==========================================================
    MO.FDsSystemFrameControlProperty_onDataChanged = function FDsSystemFrameControlProperty_onDataChanged(event){
       var o  = this;
+      o.__base.FDsSystemFrameComponentProperty.onDataChanged.call(o, event);
       var frame = o._activeFrame;
       var control = o._activeControl;
       // 设置组件属性
@@ -62,7 +63,7 @@ with(MO){
    MO.FDsSystemFrameControlProperty_construct = function FDsSystemFrameControlProperty_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDsSystemFrameComponentProperty.construct.call(o);
    }
 
    //==========================================================
@@ -74,17 +75,20 @@ with(MO){
    //==========================================================
    MO.FDsSystemFrameControlProperty_loadObject = function FDsSystemFrameControlProperty_loadObject(frame, control){
       var o = this;
+      o.__base.FDsSystemFrameComponentProperty.loadObject.call(o, frame, control);
+      // 设置属性
       o._activeFrame = frame;
       o._activeControl = control;
-      // 设置组件属性
-      o._controlType.set(RClass.name(control));
-      o._controlName.set(control.name());
-      o._controlLabel.set(control.label());
       // 设置控件属性
       var location = control.location();
       o._controlLocation.set(location);
       var size = control.size();
       o._controlSize.set(size);
+      // 设置背景属性
+      o._controlForeColor.set(control.foreColor());
+      o._controlBackColor.set(control.backColor());
+      o._controlBackResource.set(control.backResource());
+      o._controlBackGrid.set(control.backGrid());
    }
 
    //==========================================================
@@ -95,6 +99,6 @@ with(MO){
    MO.FDsSystemFrameControlProperty_dispose = function FDsSystemFrameControlProperty_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDsSystemFrameComponentProperty.dispose.call(o);
    }
 }

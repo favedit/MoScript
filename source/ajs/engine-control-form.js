@@ -55,7 +55,6 @@ with(MO){
 with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._statusPaint = false;
       o._image       = null;
       o.onImageLoad  = FGuiPicture_onImageLoad;
       o.onPaintBegin = FGuiPicture_onPaintBegin;
