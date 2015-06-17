@@ -422,7 +422,7 @@ with(MO){
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);
       renderable.setup();
-      renderable.vertexPositionBuffer().upload(boundary.positions(), 4 * 3, vertexTotal);
+      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal);
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal);
       renderable._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
       renderable._indexBuffer.setLineWidth(1);

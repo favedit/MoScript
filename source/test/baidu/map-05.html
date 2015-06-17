@@ -33,7 +33,6 @@ var provinces = [
    {name:'hebei',      label:'河南',         color:'DBECC8'},
    {name:'jiangsu',    label:'江苏',         color:'DBECC8'},
    {name:'sichuan',    label:'四川',         color:'FCFBBB'},
-   {name:'hainan',     label:'海南省',       color:'FCFBBB'},
    {name:'shandong',   label:'山东',         color:'FCFBBB'},
    {name:'liaoning',   label:'辽宁',         color:'FCFBBB'},
 
@@ -55,6 +54,7 @@ var provinces = [
    {name:'shanghai',   label:'上海',         color:'FCFBBB'},
    {name:'chongqing',  label:'重庆市',       color:'FBC5DC'},
    {name:'xianggang',  label:'香港',         color:'C8C1E3'},
+   {name:'hainan',     label:'海南省',       color:'FCFBBB'},
    {name:'taiwan',     label:'台湾',         color:'DBECC8'},
 ];
 var boundary = null;
@@ -183,12 +183,23 @@ function downloadBoundary(){
    MO.Browser.downloadText('data.txt', source);
 }
 //----------------------------------------------------------
+function onFileLoadHaiNan(event){
+   var source = event.outputData();
+   var province = provinces[31];
+   province.loaded = true;
+   province.boundaries = new Array(source);
+   finish = false;
+}
+//----------------------------------------------------------
 function onFileLoad(event){
    var source = event.outputData();
    var province = provinces[32];
    province.loaded = true;
    province.boundaries = new Array(source);
-   finish = false;
+
+   var url = '/script/test/baidu/海南.txt';
+   var connection = MO.RConsole.find(MO.FHttpConsole).fetch(url);
+   connection.addLoadListener(null, onFileLoadHaiNan);
 }
 //----------------------------------------------------------
 function _load(){
