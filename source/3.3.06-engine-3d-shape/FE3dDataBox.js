@@ -10,8 +10,8 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       //..........................................................
       // @attribute
-      o._vertexPositionBuffer = null;
-      o._vertexColorBuffer    = null;
+      o._vertexPositionBuffer = RClass.register(o, new AGetter('_vertexPositionBuffer'));
+      o._vertexColorBuffer    = RClass.register(o, new AGetter('_vertexColorBuffer'));
       //..........................................................
       // @method
       o.construct             = FE3dDataBox_construct;

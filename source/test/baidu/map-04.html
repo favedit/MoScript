@@ -1,0 +1,228 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='http://api.map.baidu.com/api?v=2.0&ak=rGRly5iTwOs6wLHmEc8xQl2y'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../test/baidu/appp.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var map = null;
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+var points = null;
+var provinces = [
+   {name:'guangxi',    label:'广西',         color:'C8C1E3'},
+   {name:'guangdong',  label:'广东',         color:'FBC5DC'},
+   {name:'hunan',      label:'湖南',         color:'DBEDC7'},
+   {name:'guizhou',    label:'贵州',         color:'E7CCAF'},
+   {name:'yunnan',     label:'云南',         color:'DBEDC7'},
+
+   {name:'fujian',     label:'福建',         color:'FEFCBF'},
+   {name:'jiangxi',    label:'江西',         color:'E7CCAF'},
+   {name:'zhejiang',   label:'浙江',         color:'C8C1E3'},
+   {name:'anhui',      label:'安徽',         color:'FBC5DC'},
+   {name:'hubei',      label:'湖北',         color:'C8C1E3'},
+
+   {name:'hebei',      label:'河南',         color:'DBECC8'},
+   {name:'jiangsu',    label:'江苏',         color:'DBECC8'},
+   {name:'sichuan',    label:'四川',         color:'FCFBBB'},
+   {name:'hainan',     label:'海南省',       color:'FCFBBB'},
+   {name:'shandong',   label:'山东',         color:'FCFBBB'},
+   {name:'liaoning',   label:'辽宁',         color:'FCFBBB'},
+
+   {name:'xinjiang',   label:'新疆',         color:'FCFBBB'},
+   {name:'xizang',     label:'西藏',         color:'E7CCAF'},
+   {name:'shaanxi',    label:'陕西',         color:'E7CCAF'},
+   {name:'hebei',      label:'河北',         color:'E7CCAF'},
+   {name:'helongjiang',label:'黑龙江',       color:'E7CCAF'},
+   {name:'ningxia',    label:'宁夏',         color:'FBC5DC'},
+
+   {name:'neimenggu',  label:'内蒙古自治区', color:'DBEDC7'},
+   {name:'qinghai',    label:'青海',         color:'DBEDC7'},
+   {name:'gansu',      label:'甘肃',         color:'C8C1E3'},
+   {name:'shanxi',     label:'山西',         color:'FBC5DC'},
+   {name:'jiling',     label:'吉林省',       color:'C8C1E3'},
+
+   {name:'beijing',    label:'北京',         color:'FBC5DC'},
+   {name:'tianjing',   label:'天津',         color:'C8C1E3'},
+   {name:'shanghai',   label:'上海',         color:'FCFBBB'},
+   {name:'chongqing',  label:'重庆市',       color:'FBC5DC'},
+   {name:'xianggang',  label:'香港',         color:'C8C1E3'},
+];
+var boundary = null;
+var finish = false;
+var sending = false;
+var activeProvinces = null;;
+//----------------------------------------------------------
+function onEnterFrame(){
+   if(finish){
+      return;
+   }
+   if(!sending){
+      for(var i = 0; i < provinces.length; i++){
+         var provincesInfo = provinces[i];
+         if(!provincesInfo.loaded){
+            if(!provincesInfo.sended){
+               return loadBoundary(provincesInfo);
+            }
+         }
+      }
+   }
+   for(var i = 0; i < provinces.length; i++){
+      var provincesInfo = provinces[i];
+      if(!provincesInfo.loaded){
+         return;
+      }
+   }
+   downloadBoundary();
+   finish = true;
+}
+//----------------------------------------------------------
+function loadBoundary(info){
+   sending = true;
+   activeProvinces = info;
+	boundary.get(info.label, function onBoundary(data){
+      var boundaries = data.boundaries;
+      var count = boundaries.length;
+      var data = new MO.TString();
+      data.push(activeProvinces.name + '\n');
+      for(var i = 0; i < count; i++){
+         var boundary = boundaries[i];
+         data.push(boundary);
+         data.push('\n');
+      }
+      activeProvinces.loaded = true;
+      activeProvinces.boundaries = boundaries;
+      activeProvinces.source = data.toString();
+      console.log('Download ' + activeProvinces.name + ' - ' + activeProvinces.label);
+      sending = false;
+   });
+}
+//----------------------------------------------------------
+function convertBoundary(province){
+   var name = province.name;
+   var boundaries = province.boundaries;
+   var datas = province.datas = new Array();
+   var count = boundaries.length;
+   for(var n = 0; n < count; n++){
+      var data = new Object();
+      var boundary = boundaries[n];
+      var points = boundary.split(';');
+      var pointCount = points.length;
+      var vertexData = new Array();
+      var vertexs = new Array();
+      var vertexSource = new MO.TString();
+      for(var i = 0; i < pointCount; i++){
+         var point = points[i].split(', ');
+         if(point.length != 2){
+            throw new MO.TError(this, 'Length invalid.');
+         }
+         var x = parseFloat(point[0]);
+         var y = parseFloat(point[1]);
+         vertexData.push(x, y, 0);
+         var vertexValue = x + ',' + y + ',0';
+         if(vertexs[vertexValue]){
+            console.log(name, i , pointCount, vertexValue);
+            //debugger
+         }
+         vertexs[vertexValue] = true;
+         if(i > 0){
+            vertexSource.push(';');
+         }
+         vertexSource.push(vertexValue);
+      }
+      data.vertexes = vertexData;
+      data.vertexSource = vertexSource.toString();
+      var indexes = data.indexes = cal_index(vertexData);
+      data.indexSource = indexes.join(',');
+      datas.push(data);
+   }
+   //console.log('Convert ' + province.name + ' - ' + province.label);
+}
+//----------------------------------------------------------
+function downloadBoundary(){
+   var result = new MO.TString();
+   var count = provinces.length;
+   for(var i = 0; i < count; i++){
+      var province = provinces[i];
+      result.push('province:' + province.name + '\n');
+      result.push('color:' + province.color + '\n');
+      //convertBoundary(province);
+      var boundaries = province.boundaries;
+      var boundaryCount = boundaries.length;
+      for(var di = 0; di < boundaryCount; di++){
+         var boundary = boundaries[di];
+         result.push('boundary:' + di);
+         result.push('\n');
+         result.push('vertex_source:' + boundary);
+         result.push('\n');
+      }
+   }
+   var source = result.toString();
+   MO.Browser.downloadText('boundary.txt', source);
+}
+//----------------------------------------------------------
+function _load(){
+   // 创建地图
+   map = new BMap.Map("id_container");
+   map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+   map.enableScrollWheelZoom();
+   map.clearOverlays();
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建数据
+   boundary = new BMap.Boundary();
+   for(var i = 0; i < provinces.length; i++){
+      var province = provinces[i];
+      province.sended = false;
+      province.loaded = false;
+   }
+   // 创建画布
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(id_canvas);
+   var context = canvas.graphicContext();
+   stage = canvas._stage;
+   stage.region().backgroundColor().set(0.1, 0.1, 0.1, 1);
+   stage.addEnterFrameListener(null, onEnterFrame);
+   layer = stage.spriteLayer();
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<TABLE width='100%' height='100%' border='1px'>
+   <TR>
+      <TD colspan='2' height='40px'>
+         输入省、直辖市或县名称：<input type="text" id="districtName" style="width:80px" value="河北">
+         <INPUT type="button" id='id_button' onclick="doBoundary()" value="轮廓">
+      </TD>
+   </TR>
+   <TR>
+      <TD colspan='2' height='200px'>
+         <DIV id="id_container" style='width:100%;height:100%;'></DIV>
+      </TD>
+   </TR>
+   <TR valign='top'>
+      <TD width='400px' id='id_data'>
+         <div style="padding:0px 0 2px 2px; background-color:#D1EEEE"><b>搜索结果:</b></div>
+         <div id="id_result" name="result" style="overflow:auto;margin-top:5px;"></div>
+      </TD>
+      <TD>
+         <div id="id_canvas" style='width:100%;height:100%'></div>
+      </TD>
+   </TR>
+</TABLE>
+</BODY>  
+</HTML>

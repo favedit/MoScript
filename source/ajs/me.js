@@ -3282,14 +3282,14 @@ with(MO){
          t[n] = s[n];
       }
    }
-   MO.RArray.prototype.move = function RArray_move(a, f, c, t){
-      if(f > t){
-         for(var n = 0; n < c; n++){
-            a[t - n] = a[f + n];
+   MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
+      if(offset > target){
+         for(var n = 0; n < count; n++){
+            array[target - n] = array[offset + n];
          }
-      }else if(f < t){
-         for(var n = 0; n < c; n++){
-            a[t + c - n - 1] = a[f + c - n - 1];
+      }else if(offset < target){
+         for(var n = 0; n < count; n++){
+            array[target + count - n - 1] = array[offset + count - n - 1];
          }
       }
    }
@@ -3345,6 +3345,19 @@ with(MO){
    }
    MO.RArray = new RArray();
 }
+MO.RBlob = function RBlob(){
+   return this;
+}
+MO.RBlob.prototype.fromText = function RBlob_fromText(value){
+   var length = value.length;
+   var data = new Uint8Array(length);
+   for (var i = 0; i < length; i++) {
+      data[i] = value.charCodeAt(i);
+   }
+   var blob = new Blob([data]);
+   return blob;
+}
+MO.RBlob = new MO.RBlob();
 with(MO){
    MO.RBoolean = function RBoolean(){
       return this;
@@ -11976,6 +11989,7 @@ with(MO){
       o.free      = FHttpConsole_free;
       o.send      = FHttpConsole_send;
       o.sendAsync = FHttpConsole_sendAsync;
+      o.fetch     = FHttpConsole_fetch;
       o.dispose   = FHttpConsole_dispose;
       return o;
    }
@@ -12015,6 +12029,13 @@ with(MO){
       var o = this;
       var connection = o.alloc();
       connection._asynchronous = true;
+      connection.send(url, data);
+      return connection;
+   }
+   MO.FHttpConsole_fetch = function FHttpConsole_fetch(url, data){
+      var o = this;
+      var connection = o.alloc();
+      connection._contentCd = EHttpContent.Text;
       connection.send(url, data);
       return connection;
    }
@@ -13272,6 +13293,18 @@ with(MO){
          return decodeURIComponent(url);
       }
       return decodeURI(url);
+   }
+   MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
+      var link = document.createElement('A');
+      var event = document.createEvent("MouseEvents");
+      event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+      link.dispatchEvent(event);
+   }
+   MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
+      var blob = RBlob.fromText(text);
+      this.downloadBlob(fileName, blob);
    }
    MO.RBrowser = new RBrowser();
    MO.Browser = MO.RBrowser;
@@ -21356,55 +21389,15 @@ with(MO){
 with(MO){
    MO.FResource = function FResource(o){
       o = RClass.inherits(this, o, FObject);
-      o._typeCode     = null;
-      o._type         = null;
+      o._typeCode     = RClass.register(o, new AGetter('_typeCode'));
+      o._type         = RClass.register(o, new AGetter('_type'));
+      o._guid         = RClass.register(o, new AGetSet('_guid'));
+      o._code         = RClass.register(o, new AGetSet('_code'));
+      o._label        = RClass.register(o, new AGetSet('_label'));
+      o._sourceUrl    = RClass.register(o, new AGetSet('_sourceUrl'));
       o._dataCompress = false;
       o._dataBlock    = false;
-      o._guid         = null;
-      o._code         = null;
-      o._label        = null;
-      o._sourceUrl    = null;
-      o.typeCode      = FResource_typeCode;
-      o.type          = FResource_type;
-      o.guid          = FResource_guid;
-      o.setGuid       = FResource_setGuid;
-      o.code          = FResource_code;
-      o.setCode       = FResource_setCode;
-      o.label         = FResource_label;
-      o.setLabel      = FResource_setLabel;
-      o.sourceUrl     = FResource_sourceUrl;
-      o.setSourceUrl  = FResource_setSourceUrl;
       return o;
-   }
-   MO.FResource_typeCode = function FResource_typeCode(){
-      return this._typeCode;
-   }
-   MO.FResource_type = function FResource_type(){
-      return this._type;
-   }
-   MO.FResource_guid = function FResource_guid(){
-      return this._guid;
-   }
-   MO.FResource_setGuid = function FResource_setGuid(p){
-      this._guid = p;
-   }
-   MO.FResource_code = function FResource_code(){
-      return this._code;
-   }
-   MO.FResource_setCode = function FResource_setCode(p){
-      this._code = p;
-   }
-   MO.FResource_label = function FResource_label(){
-      return this._label;
-   }
-   MO.FResource_setLabel = function FResource_setLabel(p){
-      this._label = p;
-   }
-   MO.FResource_sourceUrl = function FResource_sourceUrl(){
-      return this._sourceUrl;
-   }
-   MO.FResource_setSourceUrl = function FResource_setSourceUrl(p){
-      this._sourceUrl = p;
    }
 }
 with(MO){
@@ -24546,11 +24539,9 @@ with(MO){
       o._dataSize   = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._vendor     = null;
+      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
       o.onComplete  = FE3sResource_onComplete;
       o.makeLabel   = FE3sResource_makeLabel;
-      o.vendor      = FE3sResource_vendor;
-      o.setVendor   = FE3sResource_setVendor;
       o.testReady   = FE3sResource_testReady;
       o.unserialize = FE3sResource_unserialize;
       o.saveConfig  = FE3sResource_saveConfig;
@@ -24588,12 +24579,6 @@ with(MO){
          result += ' [' + o._label + ']';
       }
       return result;
-   }
-   MO.FE3sResource_vendor = function FE3sResource_vendor(){
-      return this._vendor;
-   }
-   MO.FE3sResource_setVendor = function FE3sResource_setVendor(p){
-      this._vendor = p;
    }
    MO.FE3sResource_testReady = function FE3sResource_testReady(){
       return this._dataReady;
@@ -32376,8 +32361,8 @@ with(MO){
 with(MO){
    MO.FE3dDataBox = function FE3dDataBox(o){
       o = RClass.inherits(this, o, FE3dRenderable);
-      o._vertexPositionBuffer = null;
-      o._vertexColorBuffer    = null;
+      o._vertexPositionBuffer = RClass.register(o, new AGetter('_vertexPositionBuffer'));
+      o._vertexColorBuffer    = RClass.register(o, new AGetter('_vertexColorBuffer'));
       o.construct             = FE3dDataBox_construct;
       o.setup                 = FE3dDataBox_setup;
       return o;

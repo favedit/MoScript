@@ -24,6 +24,7 @@ with(MO){
       o.free      = FHttpConsole_free;
       o.send      = FHttpConsole_send;
       o.sendAsync = FHttpConsole_sendAsync;
+      o.fetch     = FHttpConsole_fetch;
       // @method
       o.dispose   = FHttpConsole_dispose;
       return o;
@@ -112,6 +113,22 @@ with(MO){
       var o = this;
       var connection = o.alloc();
       connection._asynchronous = true;
+      connection.send(url, data);
+      return connection;
+   }
+
+   //==========================================================
+   // <T>发送一个页面信息，返回页面信息。</T>
+   //
+   // @method
+   // @param url:String 发送地址
+   // @param data:Object 发送数据
+   // @return FHttpConnection 链接对象
+   //==========================================================
+   MO.FHttpConsole_fetch = function FHttpConsole_fetch(url, data){
+      var o = this;
+      var connection = o.alloc();
+      connection._contentCd = EHttpContent.Text;
       connection.send(url, data);
       return connection;
    }

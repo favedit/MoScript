@@ -23,7 +23,6 @@ MO.FEaiCountryScene_onTemplateLoad = function FEaiCountryScene_onTemplateLoad(ev
    matrix.rx = -Math.PI / 2;
    matrix.updateForce();
    var stage = MO.Eai.Canvas.activeStage();
-   stage.mapLayer().pushDisplay(sprite);
 }
 MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
    var o = this;
@@ -31,9 +30,6 @@ MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
    var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
    var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
    o.registerFrame(frame);
-   var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
-   var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');
-   template.addLoadListener(o, o.onTemplateLoad);
 }
 MO.FEaiCountryScene_active = function FEaiCountryScene_active(){
    var o = this;

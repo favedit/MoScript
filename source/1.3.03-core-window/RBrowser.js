@@ -203,6 +203,32 @@
       }
       return decodeURI(url);
    }
+
+   //===========================================================
+   // <T>下载数据块。</T>
+   //
+   // @param fileName:String 文件名称
+   // @param blob:Blob 数据块
+   //===========================================================
+   MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
+      var link = document.createElement('A');
+      var event = document.createEvent("MouseEvents");
+      event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+      link.dispatchEvent(event);
+   }
+
+   //===========================================================
+   // <T>下载数据块。</T>
+   //
+   // @param fileName:String 文件名称
+   // @param text:String 文本内容
+   //===========================================================
+   MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
+      var blob = RBlob.fromText(text);
+      this.downloadBlob(fileName, blob);
+   }
    //..........................................................
    // 实例化内容
    MO.RBrowser = new RBrowser();

@@ -1,4 +1,94 @@
 with(MO){
+   MO.FEaiBoundaryData = function FEaiBoundaryData(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._positionCount = RClass.register(o, new AGetter('_positionCount'));
+      o._positions     = RClass.register(o, new AGetter('_positions'));
+      o._indexes       = RClass.register(o, new AGetter('_indexes'));
+      o.construct      = FEaiBoundaryData_construct;
+      o.unserialize    = FEaiBoundaryData_unserialize;
+      o.dispose        = FEaiBoundaryData_dispose;
+      return o;
+   }
+   MO.FEaiBoundaryData_construct = function FEaiBoundaryData_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+   }
+   MO.FEaiBoundaryData_unserialize = function FEaiBoundaryData_unserialize(input){
+      var o = this;
+      var index = 0;
+      var vertexCount = o._positionCount = input.readInt32();
+      o._positions = new Float32Array(3 * vertexCount);
+      for(var i = 0; i < vertexCount; i++){
+         o._positions[index++] = input.readFloat();
+         o._positions[index++] = input.readFloat();
+         o._positions[index++] = input.readFloat();
+      }
+      var indexCount = input.readInt32();
+      o._indexes = new Uint16Array(indexCount);
+      for(var i = 0; i < indexCount; i++){
+         o._indexes[i] = input.readUint16();
+      }
+   }
+   MO.FEaiBoundaryData_dispose = function FEaiBoundaryData_dispose(){
+      var o = this;
+      o._positions = RObject.dispose(o._positions);
+      o._indexes = null;
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiCountryData = function FEaiCountryData(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._provinces  = RClass.register(o, new AGetter('_provinces'));
+      o.onLoaded    = FEaiCountryData_onLoaded;
+      o.construct   = FEaiCountryData_construct;
+      o.unserialize = FEaiCountryData_unserialize;
+      o.load        = FEaiCountryData_load;
+      o.dispose     = FEaiCountryData_dispose;
+      return o;
+   }
+   MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+      o._provinces = new TDictionary();
+   }
+   MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
+      var o = this;
+      var data = event.outputData();
+      var view = RClass.create(FDataView);
+      view.setEndianCd(true);
+      view.link(data);
+      o.unserialize(view);
+      view.dispose();
+   }
+   MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
+      var o = this;
+      var stage = MO.Eai.Canvas.activeStage();
+      var mapLayer = stage.mapLayer();
+      var spriteLayer = stage.spriteLayer();
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var province = RClass.create(FEaiProvinceData);
+         province.unserialize(input);
+         province.build(MO.Eai.Canvas);
+         mapLayer.pushRenderable(province.faceRenderable());
+         spriteLayer.pushRenderable(province.borderRenderable());
+         o._provinces.set(province.name(), province);
+      }
+   }
+   MO.FEaiCountryData_load = function FEaiCountryData_load(){
+      var o = this;
+      var url = '/script/ars/eai/country.dat';
+      var connection = RConsole.find(FHttpConsole).send(url);
+      connection.addLoadListener(o, o.onLoaded);
+   }
+   MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
+      var o = this;
+      o._provinces = RObject.dispose(o._provinces);
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
    MO.FEaiCountryEntity = function FEaiCountryEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
       o._cameraDirection     = RClass.register(o, new AGetSet('_cameraDirection'));
@@ -228,5 +318,124 @@ with(MO){
             renderable.material().update();
          }
       }
+   }
+}
+with(MO){
+   MO.FEaiProvinceData = function FEaiProvinceData(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._name             = RClass.register(o, new AGetSet('_name'));
+      o._color            = RClass.register(o, new AGetSet('_color'));
+      o._boundaries       = RClass.register(o, new AGetter('_boundaries'));
+      o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
+      o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
+      o.construct         = FEaiProvinceData_construct;
+      o.unserialize       = FEaiProvinceData_unserialize;
+      o.build             = FEaiProvinceData_build;
+      o.dispose           = FEaiProvinceData_dispose;
+      return o;
+   }
+   MO.FEaiProvinceData_construct = function FEaiProvinceData_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+      o._boundaries = new TObjects();
+   }
+   MO.FEaiProvinceData_unserialize = function FEaiProvinceData_unserialize(input){
+      var o = this;
+      o._name = input.readString();
+      o._color = input.readUint32();
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var boundary = RClass.create(FEaiBoundaryData);
+         boundary.unserialize(input);
+         o._boundaries.push(boundary);
+      }
+   }
+   MO.FEaiProvinceData_build = function FEaiProvinceData_build(context){
+      var o = this;
+      var color = o._color;
+      var vertexTotal = 0;
+      var indexTotal = 0;
+      var boundaries = o._boundaries;
+      var count = boundaries.count();
+      for(var i = 0; i < count; i++){
+         var boundary = boundaries.at(i);
+         vertexTotal += boundary.positionCount();
+         indexTotal += boundary.indexes().length;
+      }
+      var vertexStart = 0;
+      var vertexIndex = 0;
+      var faceIndex = 0;
+      var vertexData = new Float32Array(3 * vertexTotal);
+      var faceData = new Uint16Array(indexTotal);
+      var borderIndex = 0;
+      var borderData = new Uint16Array(2 * vertexTotal);
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         var positionTotal = 3 * positionCount;
+         var positions = boundary.positions();
+         for(var i = 0; i < positionTotal; i++){
+            vertexData[vertexIndex++] = positions[i];
+         }
+         var indexes = boundary.indexes();
+         var indexCount = indexes.length;
+         for(var i = 0; i < indexCount; i++){
+            faceData[faceIndex++] = vertexStart + indexes[i];
+         }
+         for(var i = 0; i < positionCount; i++){
+            borderData[borderIndex++] = vertexStart + i;
+            if(i == positionCount - 1){
+               borderData[borderIndex++] = vertexStart;
+            }else{
+               borderData[borderIndex++] = vertexStart + i + 1;
+            }
+         }
+         vertexStart += positionCount;
+      }
+      var colorIndex = 0;
+      var colors = new Uint8Array(4 * vertexTotal);
+      for(var i = 0; i < vertexTotal; i++){
+         colors[colorIndex++] = (color >> 16) & 0x3F;
+         colors[colorIndex++] = (color >>  8) & 0x3F;
+         colors[colorIndex++] = (color      ) & 0x3F;
+         colors[colorIndex++] = 255;
+      }
+      var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
+      renderable.linkGraphicContext(context);
+      renderable.setup();
+      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal);
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal);
+      renderable._indexBuffer.upload(faceData, faceIndex);
+      renderable.material().info().optionDouble = true;
+      var matrix = renderable.matrix();
+      matrix.tx = -20;
+      matrix.ty = -8;
+      matrix.setScale(0.2, 0.25, 0.2);
+      matrix.update();
+      var colorIndex = 0;
+      for(var i = 0; i < vertexTotal; i++){
+         colors[colorIndex++] = 200;
+         colors[colorIndex++] = 200;
+         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 255;
+      }
+      var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
+      renderable.linkGraphicContext(context);
+      renderable.setup();
+      renderable.vertexPositionBuffer().upload(boundary.positions(), 4 * 3, vertexTotal);
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal);
+      renderable._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+      renderable._indexBuffer.setLineWidth(1);
+      renderable._indexBuffer.upload(borderData, borderIndex);
+      var matrix = renderable.matrix();
+      matrix.tx = -20;
+      matrix.ty = -8;
+      matrix.setScale(0.2, 0.25, 0.2);
+      matrix.update();
+   }
+   MO.FEaiProvinceData_dispose = function FEaiProvinceData_dispose(){
+      var o = this;
+      o._boundaries = RObject.dispose(o._boundaries);
+      o.__base.FEaiEntity.dispose.call(o);
    }
 }

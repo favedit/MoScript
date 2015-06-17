@@ -42,7 +42,7 @@ MO.FEaiCountryScene_onTemplateLoad = function FEaiCountryScene_onTemplateLoad(ev
    //matrix.setScaleAll(1.01);
    matrix.updateForce();
    var stage = MO.Eai.Canvas.activeStage();
-   stage.mapLayer().pushDisplay(sprite);
+   //stage.mapLayer().pushDisplay(sprite);
 }
 
 //==========================================================
@@ -58,9 +58,9 @@ MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
    var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
    o.registerFrame(frame);
    // 创建国家模板
-   var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
-   var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');
-   template.addLoadListener(o, o.onTemplateLoad);
+   //var templateConsole = MO.RConsole.find(MO.FE3dTemplateConsole);
+   //var template = o._countryTemplate = templateConsole.allocByCode(MO.Eai.Canvas, 'eai.world.china');
+   //template.addLoadListener(o, o.onTemplateLoad);
 }
 
 //==========================================================

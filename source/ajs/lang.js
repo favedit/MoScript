@@ -1991,14 +1991,14 @@ with(MO){
          t[n] = s[n];
       }
    }
-   MO.RArray.prototype.move = function RArray_move(a, f, c, t){
-      if(f > t){
-         for(var n = 0; n < c; n++){
-            a[t - n] = a[f + n];
+   MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
+      if(offset > target){
+         for(var n = 0; n < count; n++){
+            array[target - n] = array[offset + n];
          }
-      }else if(f < t){
-         for(var n = 0; n < c; n++){
-            a[t + c - n - 1] = a[f + c - n - 1];
+      }else if(offset < target){
+         for(var n = 0; n < count; n++){
+            array[target + count - n - 1] = array[offset + count - n - 1];
          }
       }
    }
@@ -2054,6 +2054,19 @@ with(MO){
    }
    MO.RArray = new RArray();
 }
+MO.RBlob = function RBlob(){
+   return this;
+}
+MO.RBlob.prototype.fromText = function RBlob_fromText(value){
+   var length = value.length;
+   var data = new Uint8Array(length);
+   for (var i = 0; i < length; i++) {
+      data[i] = value.charCodeAt(i);
+   }
+   var blob = new Blob([data]);
+   return blob;
+}
+MO.RBlob = new MO.RBlob();
 with(MO){
    MO.RBoolean = function RBoolean(){
       return this;

@@ -448,6 +448,18 @@ with(MO){
       }
       return decodeURI(url);
    }
+   MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
+      var link = document.createElement('A');
+      var event = document.createEvent("MouseEvents");
+      event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+      link.dispatchEvent(event);
+   }
+   MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
+      var blob = RBlob.fromText(text);
+      this.downloadBlob(fileName, blob);
+   }
    MO.RBrowser = new RBrowser();
    MO.Browser = MO.RBrowser;
 }

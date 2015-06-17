@@ -1843,11 +1843,9 @@ with(MO){
       o._dataSize   = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._vendor     = null;
+      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
       o.onComplete  = FE3sResource_onComplete;
       o.makeLabel   = FE3sResource_makeLabel;
-      o.vendor      = FE3sResource_vendor;
-      o.setVendor   = FE3sResource_setVendor;
       o.testReady   = FE3sResource_testReady;
       o.unserialize = FE3sResource_unserialize;
       o.saveConfig  = FE3sResource_saveConfig;
@@ -1885,12 +1883,6 @@ with(MO){
          result += ' [' + o._label + ']';
       }
       return result;
-   }
-   MO.FE3sResource_vendor = function FE3sResource_vendor(){
-      return this._vendor;
-   }
-   MO.FE3sResource_setVendor = function FE3sResource_setVendor(p){
-      this._vendor = p;
    }
    MO.FE3sResource_testReady = function FE3sResource_testReady(){
       return this._dataReady;

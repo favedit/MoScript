@@ -14,16 +14,13 @@ with(MO){
       o._dataSize   = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._vendor     = null;
+      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
       //..........................................................
       // @event
       o.onComplete  = FE3sResource_onComplete;
       //..........................................................
       // @method
       o.makeLabel   = FE3sResource_makeLabel;
-      // @method
-      o.vendor      = FE3sResource_vendor;
-      o.setVendor   = FE3sResource_setVendor;
       // @method
       o.testReady   = FE3sResource_testReady;
       // @method
@@ -84,26 +81,6 @@ with(MO){
          result += ' [' + o._label + ']';
       }
       return result;
-   }
-
-   //==========================================================
-   // <T>获得资源提供商。</T>
-   //
-   // @method
-   // @return Boolean 资源提供商
-   //==========================================================
-   MO.FE3sResource_vendor = function FE3sResource_vendor(){
-      return this._vendor;
-   }
-
-   //==========================================================
-   // <T>设置资源提供商。</T>
-   //
-   // @method
-   // @param p:vendor:FE3sVendor 资源提供商
-   //==========================================================
-   MO.FE3sResource_setVendor = function FE3sResource_setVendor(p){
-      this._vendor = p;
    }
 
    //==========================================================

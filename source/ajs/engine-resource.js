@@ -30,55 +30,15 @@ with(MO){
 with(MO){
    MO.FResource = function FResource(o){
       o = RClass.inherits(this, o, FObject);
-      o._typeCode     = null;
-      o._type         = null;
+      o._typeCode     = RClass.register(o, new AGetter('_typeCode'));
+      o._type         = RClass.register(o, new AGetter('_type'));
+      o._guid         = RClass.register(o, new AGetSet('_guid'));
+      o._code         = RClass.register(o, new AGetSet('_code'));
+      o._label        = RClass.register(o, new AGetSet('_label'));
+      o._sourceUrl    = RClass.register(o, new AGetSet('_sourceUrl'));
       o._dataCompress = false;
       o._dataBlock    = false;
-      o._guid         = null;
-      o._code         = null;
-      o._label        = null;
-      o._sourceUrl    = null;
-      o.typeCode      = FResource_typeCode;
-      o.type          = FResource_type;
-      o.guid          = FResource_guid;
-      o.setGuid       = FResource_setGuid;
-      o.code          = FResource_code;
-      o.setCode       = FResource_setCode;
-      o.label         = FResource_label;
-      o.setLabel      = FResource_setLabel;
-      o.sourceUrl     = FResource_sourceUrl;
-      o.setSourceUrl  = FResource_setSourceUrl;
       return o;
-   }
-   MO.FResource_typeCode = function FResource_typeCode(){
-      return this._typeCode;
-   }
-   MO.FResource_type = function FResource_type(){
-      return this._type;
-   }
-   MO.FResource_guid = function FResource_guid(){
-      return this._guid;
-   }
-   MO.FResource_setGuid = function FResource_setGuid(p){
-      this._guid = p;
-   }
-   MO.FResource_code = function FResource_code(){
-      return this._code;
-   }
-   MO.FResource_setCode = function FResource_setCode(p){
-      this._code = p;
-   }
-   MO.FResource_label = function FResource_label(){
-      return this._label;
-   }
-   MO.FResource_setLabel = function FResource_setLabel(p){
-      this._label = p;
-   }
-   MO.FResource_sourceUrl = function FResource_sourceUrl(){
-      return this._sourceUrl;
-   }
-   MO.FResource_setSourceUrl = function FResource_setSourceUrl(p){
-      this._sourceUrl = p;
    }
 }
 with(MO){

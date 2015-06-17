@@ -149,19 +149,19 @@
    // <T>复制数组中的一部分内容到指定位置。</T>
    //
    // @method
-   // @param a:array:Array 数组对象
-   // @param f:offset:Integer 开始位置
-   // @param c:count:Integer 复制总数
-   // @param t:target:Integer 目标位置
+   // @param array:Array 数组对象
+   // @param offset:Integer 开始位置
+   // @param count:Integer 复制总数
+   // @param target:Integer 目标位置
    //==========================================================
-   MO.RArray.prototype.move = function RArray_move(a, f, c, t){
-      if(f > t){
-         for(var n = 0; n < c; n++){
-            a[t - n] = a[f + n];
+   MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
+      if(offset > target){
+         for(var n = 0; n < count; n++){
+            array[target - n] = array[offset + n];
          }
-      }else if(f < t){
-         for(var n = 0; n < c; n++){
-            a[t + c - n - 1] = a[f + c - n - 1];
+      }else if(offset < target){
+         for(var n = 0; n < count; n++){
+            array[target + count - n - 1] = array[offset + count - n - 1];
          }
       }
    }

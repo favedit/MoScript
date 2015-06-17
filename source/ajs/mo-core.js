@@ -3249,6 +3249,7 @@ with(MO){
       o.free      = FHttpConsole_free;
       o.send      = FHttpConsole_send;
       o.sendAsync = FHttpConsole_sendAsync;
+      o.fetch     = FHttpConsole_fetch;
       o.dispose   = FHttpConsole_dispose;
       return o;
    }
@@ -3288,6 +3289,13 @@ with(MO){
       var o = this;
       var connection = o.alloc();
       connection._asynchronous = true;
+      connection.send(url, data);
+      return connection;
+   }
+   MO.FHttpConsole_fetch = function FHttpConsole_fetch(url, data){
+      var o = this;
+      var connection = o.alloc();
+      connection._contentCd = EHttpContent.Text;
       connection.send(url, data);
       return connection;
    }
