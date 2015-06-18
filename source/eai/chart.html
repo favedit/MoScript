@@ -1,79 +1,33 @@
 <!DOCTYPE HTML>
 <HTML>
 <HEAD>
-<TITLE>CoolLight Designer</TITLE>
+<TITLE>EAI-Chart</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
 <LINK rel="stylesheet" href='../acs/eai.css' type="text/css" media="all"/>
-
 <SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
-
-var canvas = null;
-var region = null;
-var sprite = null;
-//------------------------------------------------------------
-var country = null;
-var introAnimeDone = false;
-var startTime = null;
-var startDelay = 0;
-var riseDuration = 1200;
-var riseDistance = 2050;
-var fallDuration = 400;
-var fallDistance = 50;
-var blockInterval = 60;
-var mouseOverRiseRenderable = null;
-var mouseOverFallArray = new MO.TObjects();
-var mouseOverRiseHeight = 10;
-//------------------------------------------------------------
-var originCenterPoint = null;
-//------------------------------------------------------------
-function onEnterFrame(){
-}
-//------------------------------------------------------------
-function onKeydown(p){
-   //var e = window.event;
-   //var c = e.keyCode;
-   //if(c == EKeyCode.Space){
-   //   movie = !movie;
-   //   canvas.switchMovie(movie);
-   //}
-}
-//------------------------------------------------------------
-function doCanvasAction(p, f){
-   //canvas.doAction(window.event, p, f);
-}
 //------------------------------------------------------------
 function onLoad(){
    // 环境设置
    MO.initialize();
-   MO.Runtime.setProcessCd(MO.EProcess.Release);
    MO.RApplication.initialize();
    MO.RBrowser.setContentPath('..');
    // 设置资源获取方式
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    // 创建场景画板
    MO.Eai.setup(id_canvas);
-   //canvas = MO.RClass.create(MO.FE3dTemplateCanvas);
-   //canvas._scaleRate = 1;
-   //canvas._optionAlpha = false;
-   //canvas.build(document);
-   //canvas.setPanel(document.body);
-   //var context = canvas.graphicContext();
-   // 创建场景画板
+   // 选择舞台和场景
    var stage = MO.Eai.Application.selectStageByCode(MO.EEaiStage.Chart);
-   var scene = stage.selectSceneByCode(MO.EEaiScene.ChartHistory);
-
-   //country = MO.Class.create(MO.FEaiCountryData);
-   //country.load();
+   stage.selectSceneByCode(MO.EEaiScene.ChartHistory);
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='background-color:#000000;' onload='onLoad()' onkeydown='onKeydown()'>
+<BODY scroll='no' onload='onLoad()'>
 <TABLE width='100%' height='100%' cellpadding='0px' cellmargin='0px' style='border-spacing:0px'>
    <TR>
       <TD height='50px' bgcolor='#0D5AB1'>
@@ -81,18 +35,151 @@ function onLoad(){
             <TR>
                <TD class='Title_Label' width='200px'>LOGO</TD>
                <TD class='Title_Label_Select' width='160px'>发展历程</TD>
-               <TD class='Title_Label' width='160px'>行业历史</TD>
-               <TD class='Title_Label' width='160px'>投资历史</TD>
-               <TD class='Title_Label' width='160px'>用户历史</TD>
+               <TD width='160px'><A class='Title_Label' href='chart-industry.html'>行业历史</A></TD>
+               <TD width='160px'><A class='Title_Label' href='chart-investment.html'>投资历史</A></TD>
+               <TD width='160px'><A class='Title_Label' href='chart-customer.html'>用户历史</A></TD>
             </TR>
          </TABLE>
       </TD>
    </TR>
    <TR>
-      <TD bgcolor='#000000'>
-         <DIV id='id_canvas' style='width:100%;height:100%'/>
+      <TD bgcolor='#000019'>
+         <TABLE width='100%' height='100%' cellpadding='0px' cellmargin='0px'>
+            <TR>
+               <TD>
+                  <DIV id='id_canvas' style='width:100%;height:100%'/>
+               </TD>
+               <TD width='400px' style='padding:10px;' valign='top'>
+                  <TABLE width='100%' height='100%' bgcolor='#000033' cellpadding='0px' cellmargin='0px' style='border:1px solid #000099'>
+                     <TR>
+                        <TD height='50px' align='center' style='color:#FFFFFF;font-size:14pt;font-weight:bold;'>钰诚控股集团</TD>
+                     </TR>
+                     <TR>
+                        <TD valign='top'>
+                           <TABLE width='100%' bgcolor='#0066CC' bordercolor='#FFFFFF' cellspacing='1px' cellpadding='2px' style='border:1px solid #000099'>
+                              <TR bgcolor='#006699'>
+                                 <TD style='color:#EEEEEE;font-size:10pt;'>公司名称</TD>
+                                 <TD width='100px' align='center' style='color:#EEEEEE;font-size:10pt;'>公司地址</TD>
+                                 <TD width='100px' align='center' style='color:#EEEEEE;font-size:10pt;'>成立时间</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                              <TR bgcolor='#003366'>
+                                 <TD class='Grid_Text'>北京第一分公司</TD>
+                                 <TD class='Grid_Text' align='center'>北京</TD>
+                                 <TD class='Grid_Text' align='center'>2015-10</TD>
+                              </TR>
+                           </TABLE>
+                        </TD>
+                     </TR>
+                  </TABLE>
+               </TD>
+            </TR>
+         </TABLE>
       </TD>
    </TR>
 </TABLE>
+<DIV style='position:absolute;left:10%;bottom:20px;width:60%;height:80px;color:#FFFFFF;'>
+<TABLE width='100%'>
+   <TR>
+      <TD width='16' align='right'><IMG src='/script/ars/picture/arrow-left.png'></TD>
+      <TD>
+         <TABLE width='100%' cellspacing='0px' cellpadding='0px'>
+            <TR><TD>
+               <TABLE width='100%' cellspacing='0px' cellpadding='0px'>
+                  <TR>
+                     <TD align='center'>0.1亿</TD>
+                     <TD align='center'>1亿</TD>
+                     <TD align='center'>5亿</TD>
+                     <TD align='center'>20亿</TD>
+                     <TD align='center'>50亿</TD>
+                     <TD align='center'>60亿</TD>
+                     <TD align='center'>68亿</TD>
+                  </TR>
+               </TABLE>
+            </TD></TR>
+            <TR><TD height='1px' bgcolor='#FFFFFF'></TD></TR>
+            <TR><TD>
+               <TABLE width='100%' cellspacing='0px' cellpadding='0px'>
+                  <TR>
+                     <TD align='center'>2014-07</TD>
+                     <TD align='center'>2014-09</TD>
+                     <TD align='center'>2014-11</TD>
+                     <TD align='center'>2015-01</TD>
+                     <TD align='center'>2015-03</TD>
+                     <TD align='center'>2015-05</TD>
+                     <TD align='center'>2015-07</TD>
+                  </TR>
+               </TABLE>
+            </TD></TR>
+         </TABLE>
+      </TD>
+      <TD width='16' align='left'><IMG src='/script/ars/picture/arrow-right.png'></TD>
+   </TR>
+</TABLE>
+</DIV>
 </BODY>
 </HTML>

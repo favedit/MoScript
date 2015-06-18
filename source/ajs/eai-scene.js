@@ -76,6 +76,7 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    o.__base.FEaiScene.active.call(o);
    var stage = MO.Eai.Canvas.activeStage();
    var layer = stage.faceLayer();
+   stage.region().backgroundColor().set(0, 0, 0.1, 1);
 }
 MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive(){
    var o = this;

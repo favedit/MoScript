@@ -395,9 +395,9 @@ with(MO){
       var colorIndex = 0;
       var colors = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0x3F;
-         colors[colorIndex++] = (color >>  8) & 0x3F;
-         colors[colorIndex++] = (color      ) & 0x3F;
+         colors[colorIndex++] = (color >> 16) & 0x1F;
+         colors[colorIndex++] = (color >>  8) & 0x1F;
+         colors[colorIndex++] = (color      ) & 0x1F;
          colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
@@ -414,9 +414,9 @@ with(MO){
       matrix.update();
       var colorIndex = 0;
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 200;
-         colors[colorIndex++] = 200;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x4B;
+         colors[colorIndex++] = 0x59;
+         colors[colorIndex++] = 0x64;
          colors[colorIndex++] = 255;
       }
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);

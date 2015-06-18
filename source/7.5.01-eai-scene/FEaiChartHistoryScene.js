@@ -75,11 +75,7 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    o.__base.FEaiScene.active.call(o);
    var stage = MO.Eai.Canvas.activeStage();
    var layer = stage.faceLayer();
-   // 创建标志栏
-   //var frame = o._countryLogoBar
-   //var renderable = frame.renderable();
-   //renderable.setLocation(10, 10);
-   //layer.pushRenderable(frame.renderable());
+   stage.region().backgroundColor().set(0, 0, 0.1, 1);
 }
 
 //==========================================================
