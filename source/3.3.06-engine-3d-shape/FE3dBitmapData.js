@@ -45,7 +45,7 @@ with(MO){
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
       var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
       var context2d = canvas.context();
-      context2d.drawImage(image, 0, 0);
+      context2d.drawImage(image, 0, 0, width, height);
       // 创建纹理
       o._texture.upload(canvas);
       // 释放画板

@@ -51,6 +51,8 @@ function _load(){
    if(false){
       var bitmap = context.createObject(MO.FE3dBitmap);
       bitmap.loadUrl('../../ars/picture/star3.png');
+      bitmaps.push(bitmap);
+      layer.pushRenderable(bitmap);
    }else{
       var bitmapData = context.createObject(MO.FE3dBitmapData);
       bitmapData.loadUrl('../../ars/picture/star3.png');

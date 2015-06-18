@@ -103,6 +103,7 @@
       <PathMerger source='/6.7.04-design-system-frame'       target='/ajs/design-system-frame.js'/>
 
       <PathMerger source='/7.1.01-eai-common'                target='/ajs/eai-common.js'/>
+      <PathMerger source='/7.1.02-eai-resource'              target='/ajs/eai-resource.js'/>
       <PathMerger source='/7.2.01-eai-console'               target='/ajs/eai-console.js'/>
       <PathMerger source='/7.3.01-eai-group-country'         target='/ajs/eai-group-country.js'/>
       <PathMerger source='/7.3.02-eai-group-report'          target='/ajs/eai-group-report.js'/>
@@ -269,6 +270,7 @@
       </FileMerger>
       <FileMerger target='/ajs/eai.js'>
          <File source='/ajs/eai-common.js'/>
+         <File source='/ajs/eai-resource.js'/>
          <File source='/ajs/eai-console.js'/>
          <File source='/ajs/eai-group-country.js'/>
          <File source='/ajs/eai-group-report.js'/>

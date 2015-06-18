@@ -75,6 +75,28 @@ with(MO){
          spriteLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
       }
+      var context = MO.Eai.Canvas.graphicContext();
+      var bitmapData = context.createObject(MO.FE3dBitmapData);
+      bitmapData.loadUrl('../ars/eai/dot.png');
+      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var citys = cityConsole.citys();
+      var count = citys.count();
+      for(var i = 0; i < count; i++){
+         var city = citys.at(i);
+         var bitmap = context.createObject(MO.FE3dBitmap);
+         bitmap.setData(bitmapData);
+         var material = bitmap.material();
+         material.info().optionAlpha = true;
+         material.info().ambientColor.set(1, 0, 1, 1);
+         var matrix = bitmap.matrix();
+         matrix.tx = city.location().x * 0.2 - 20.2;
+         matrix.ty = city.location().y * 0.25 - 7.9;
+         matrix.sx = 0.4;
+         matrix.sy = 0.4;
+         matrix.sz = 0.4;
+         matrix.update();
+         spriteLayer.pushRenderable(bitmap);
+      }
    }
    MO.FEaiCountryData_load = function FEaiCountryData_load(){
       var o = this;
@@ -395,9 +417,9 @@ with(MO){
       var colorIndex = 0;
       var colors = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0x1F;
-         colors[colorIndex++] = (color >>  8) & 0x1F;
-         colors[colorIndex++] = (color      ) & 0x1F;
+         colors[colorIndex++] = (color >> 16) & 0xFF;
+         colors[colorIndex++] = (color >>  8) & 0xFF;
+         colors[colorIndex++] = (color      ) & 0xFF;
          colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);

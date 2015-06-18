@@ -24,7 +24,7 @@ with(MO){
       o.dispose     = FEaiCountryData_dispose;
       return o;
    }
-   
+
    //==========================================================
    // <T>构造处理。</T>
    //
@@ -36,7 +36,7 @@ with(MO){
       // 创建属性
       o._provinces = new TDictionary();
    }
-   
+
    //==========================================================
    // <T>初始化处理。</T>
    //
@@ -54,7 +54,7 @@ with(MO){
       // 释放资源
       view.dispose();
    }
-   
+
    //==========================================================
    // <T>从输入流反序列化数据。</T>
    //
@@ -75,8 +75,31 @@ with(MO){
          spriteLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
       }
+      // 放入城市
+      var context = MO.Eai.Canvas.graphicContext();
+      var bitmapData = context.createObject(MO.FE3dBitmapData);
+      bitmapData.loadUrl('../ars/eai/dot.png');
+      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var citys = cityConsole.citys();
+      var count = citys.count();
+      for(var i = 0; i < count; i++){
+         var city = citys.at(i);
+         var bitmap = context.createObject(MO.FE3dBitmap);
+         bitmap.setData(bitmapData);
+         var material = bitmap.material();
+         material.info().optionAlpha = true;
+         material.info().ambientColor.set(1, 0, 1, 1);
+         var matrix = bitmap.matrix();
+         matrix.tx = city.location().x * 0.2 - 20.2;
+         matrix.ty = city.location().y * 0.25 - 7.9;
+         matrix.sx = 0.4;
+         matrix.sy = 0.4;
+         matrix.sz = 0.4;
+         matrix.update();
+         spriteLayer.pushRenderable(bitmap);
+      }
    }
-   
+
    //==========================================================
    // <T>初始化处理。</T>
    //
@@ -88,7 +111,7 @@ with(MO){
       var connection = RConsole.find(FHttpConsole).send(url);
       connection.addLoadListener(o, o.onLoaded);
    }
-   
+
    //==========================================================
    // <T>释放处理。</T>
    //
