@@ -113,9 +113,9 @@ with(MO){
       var colorIndex = 0;
       var colors = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0xFF;
-         colors[colorIndex++] = (color >>  8) & 0xFF;
-         colors[colorIndex++] = (color      ) & 0xFF;
+         colors[colorIndex++] = (color >> 16) & 0x1F;
+         colors[colorIndex++] = (color >>  8) & 0x1F;
+         colors[colorIndex++] = (color      ) & 0x1F;
          colors[colorIndex++] = 255;
       }
       // 创建三角面渲染对象

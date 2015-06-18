@@ -25,6 +25,7 @@ function onLoad(){
    MO.RBrowser.setContentPath('..');
    // 设置资源获取方式
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
    MO.Eai.setup(id_canvas);
    var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);

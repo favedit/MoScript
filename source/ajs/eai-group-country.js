@@ -76,24 +76,46 @@ with(MO){
          o._provinces.set(province.name(), province);
       }
       var context = MO.Eai.Canvas.graphicContext();
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('../ars/eai/dot.png');
       var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
+      var dateData = historyConsole.dates().get('20150616');
+      var cityDatas = dateData.citys();
       var citys = cityConsole.citys();
       var count = citys.count();
       for(var i = 0; i < count; i++){
          var city = citys.at(i);
+         var data = cityDatas.get(city.code());
+         var bitmapData = context.createObject(MO.FE3dBitmapData);
+         bitmapData.loadUrl('../ars/eai/dot.png');
          var bitmap = context.createObject(MO.FE3dBitmap);
          bitmap.setData(bitmapData);
          var material = bitmap.material();
          material.info().optionAlpha = true;
-         material.info().ambientColor.set(1, 0, 1, 1);
+         var range = 1;
+         if(data){
+            var total = data.investmentTotal() / 10000000;
+            range = total / 2;
+            if(total > 1){
+               total = 1;
+            }
+            material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
+            console.log(i);
+         }else{
+            material.info().ambientColor.set(0, 0, 0, 1);
+         }
+         if(range < 1){
+            range = 1;
+         }
+         if(range > 2){
+            range = 2;
+         }
          var matrix = bitmap.matrix();
-         matrix.tx = city.location().x * 0.2 - 20.2;
-         matrix.ty = city.location().y * 0.25 - 7.9;
-         matrix.sx = 0.4;
-         matrix.sy = 0.4;
-         matrix.sz = 0.4;
+         matrix.tx = city.location().x * 0.2 - 20.3 + (0.2 * range / 2);
+         matrix.ty = city.location().y * 0.25 - 8 + (0.2 * range / 2);
+         matrix.tz = -0.0001;
+         matrix.sx = 0.2 * range;
+         matrix.sy = 0.2 * range;
+         matrix.sz = 0.2 * range;
          matrix.update();
          spriteLayer.pushRenderable(bitmap);
       }
@@ -417,9 +439,9 @@ with(MO){
       var colorIndex = 0;
       var colors = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0xFF;
-         colors[colorIndex++] = (color >>  8) & 0xFF;
-         colors[colorIndex++] = (color      ) & 0xFF;
+         colors[colorIndex++] = (color >> 16) & 0x1F;
+         colors[colorIndex++] = (color >>  8) & 0x1F;
+         colors[colorIndex++] = (color      ) & 0x1F;
          colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);

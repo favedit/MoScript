@@ -59,15 +59,92 @@ with(MO){
       o.__base.FConsole.dispose.call(o);
    }
 }
+with(MO){
+   MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
+      o = RClass.inherits(this, o, FObject);
+      o._code            = RClass.register(o, new AGetSet('_code'));
+      o._investmentDay   = RClass.register(o, new AGetSet('_investmentDay'));
+      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
+      o.unserialize      = FEaiHistoryCityResource_unserialize;
+      return o;
+   }
+   MO.FEaiHistoryCityResource_unserialize = function FEaiHistoryCityResource_unserialize(input){
+      var o = this;
+      o._code = input.readUint16();
+      o._investmentDay = input.readFloat();
+      o._investmentTotal = input.readFloat();
+   }
+}
+with(MO){
+   MO.FEaiHistoryDateResource = function FEaiHistoryDateResource(o){
+      o = RClass.inherits(this, o, FObject);
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._citys      = RClass.register(o, new AGetter('_citys'));
+      o.construct   = FEaiHistoryDateResource_construct;
+      o.unserialize = FEaiHistoryDateResource_unserialize;
+      o.dispose     = FEaiHistoryDateResource_dispose;
+      return o;
+   }
+   MO.FEaiHistoryDateResource_construct = function FEaiHistoryDateResource_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._citys = new TDictionary();
+   }
+   MO.FEaiHistoryDateResource_unserialize = function FEaiHistoryDateResource_unserialize(input){
+      var o = this;
+      o._code = input.readString();
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var city = RClass.create(FEaiHistoryCityResource);
+         city.unserialize(input);
+         o._citys.set(city.code(), city);
+      }
+   }
+   MO.FEaiHistoryDateResource_dispose = function FEaiHistoryDateResource_dispose(){
+      var o = this;
+      o._citys = RObject.dispose(o._citys);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._dates      = RClass.register(o, new AGetter('_dates'));
+      o.construct   = FEaiHistoryResourceConsole_construct;
+      o.unserialize = FEaiHistoryResourceConsole_unserialize;
+      o.dispose     = FEaiHistoryResourceConsole_dispose;
+      return o;
+   }
+   MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._dates = new TDictionary();
+   }
+   MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_unserialize(input){
+      var o = this;
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var date = RClass.create(FEaiHistoryDateResource);
+         date.unserialize(input);
+         o._dates.set(date.code(), date);
+      }
+   }
+   MO.FEaiHistoryResourceConsole_dispose = function FEaiHistoryResourceConsole_dispose(){
+      var o = this;
+      o._dates = RObject.dispose(o._dates);
+      o.__base.FConsole.dispose.call(o);
+   }
+}
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener);
-   o._loadListeners = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
-   o._cityConsole   = MO.Class.register(o, new MO.AGetter('_cityConsole'));
-   o.onLoad         = MO.FEaiResourceConsole_onLoad;
-   o.construct      = MO.FEaiResourceConsole_construct;
-   o.unserialize    = MO.FEaiResourceConsole_unserialize;
-   o.load           = MO.FEaiResourceConsole_load;
-   o.dispose        = MO.FEaiResourceConsole_dispose;
+   o._loadListeners  = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
+   o._cityConsole    = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._historyConsole = MO.Class.register(o, new MO.AGetter('_historyConsole'));
+   o.onLoad          = MO.FEaiResourceConsole_onLoad;
+   o.construct       = MO.FEaiResourceConsole_construct;
+   o.unserialize     = MO.FEaiResourceConsole_unserialize;
+   o.load            = MO.FEaiResourceConsole_load;
+   o.dispose         = MO.FEaiResourceConsole_dispose;
    return o;
 }
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
@@ -86,10 +163,12 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._cityConsole = MO.RClass.create(MO.FEaiCityResourceConsole);
+   o._historyConsole = MO.RClass.create(MO.FEaiHistoryResourceConsole);
 }
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
    o._cityConsole.unserialize(input);
+   o._historyConsole.unserialize(input);
 }
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
    var o = this;
@@ -100,5 +179,6 @@ MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
    o._cityConsole = RObject.dispose(o._cityConsole);
+   o._historyConsole = RObject.dispose(o._historyConsole);
    o.__base.FConsole.dispose.call(o);
 }
