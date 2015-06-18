@@ -10,5 +10,6 @@ MO.EEaiStage = new function EEaiStage(){
    o.Loading = 'loading';
    o.Login   = 'login';
    o.Scene   = 'scene';
+   o.Chart   = 'chart';
    return o;
 }

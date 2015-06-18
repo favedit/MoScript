@@ -1,3 +1,180 @@
+MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code            = MO.EEaiScene.ChartCustomer;
+   o._countryTemplate = null;
+   o._countryLogoBar  = null;
+   o.onTemplateLoad   = MO.FEaiChartCustomerScene_onTemplateLoad;
+   o.setup            = MO.FEaiChartCustomerScene_setup;
+   o.active           = MO.FEaiChartCustomerScene_active;
+   o.deactive         = MO.FEaiChartCustomerScene_deactive;
+   return o;
+}
+MO.FEaiChartCustomerScene_onTemplateLoad = function FEaiChartCustomerScene_onTemplateLoad(event){
+   var o = this;
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+}
+MO.FEaiChartCustomerScene_setup = function FEaiChartCustomerScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
+   var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
+   o.registerFrame(frame);
+}
+MO.FEaiChartCustomerScene_active = function FEaiChartCustomerScene_active(){
+   var o = this;
+   o.__base.FEaiScene.active.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   var renderable = frame.renderable();
+   renderable.setLocation(10, 10);
+   layer.pushRenderable(frame.renderable());
+}
+MO.FEaiChartCustomerScene_deactive = function FEaiChartCustomerScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   layer.removeRenderable(frame.renderable());
+}
+MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code            = MO.EEaiScene.ChartHistory;
+   o._countryTemplate = null;
+   o._country         = null;
+   o.onTemplateLoad   = MO.FEaiChartHistoryScene_onTemplateLoad;
+   o.setup            = MO.FEaiChartHistoryScene_setup;
+   o.active           = MO.FEaiChartHistoryScene_active;
+   o.deactive         = MO.FEaiChartHistoryScene_deactive;
+   return o;
+}
+MO.FEaiChartHistoryScene_onTemplateLoad = function FEaiChartHistoryScene_onTemplateLoad(event){
+   var o = this;
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+}
+MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var country = o._country = MO.Class.create(MO.FEaiCountryData);
+   country.load();
+}
+MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
+   var o = this;
+   o.__base.FEaiScene.active.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+}
+MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+}
+MO.FEaiChartIndustryScene = function FEaiChartIndustryScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code            = MO.EEaiScene.ChartIndustry;
+   o._countryTemplate = null;
+   o._countryLogoBar  = null;
+   o.onTemplateLoad   = MO.FEaiChartIndustryScene_onTemplateLoad;
+   o.setup            = MO.FEaiChartIndustryScene_setup;
+   o.active           = MO.FEaiChartIndustryScene_active;
+   o.deactive         = MO.FEaiChartIndustryScene_deactive;
+   return o;
+}
+MO.FEaiChartIndustryScene_onTemplateLoad = function FEaiChartIndustryScene_onTemplateLoad(event){
+   var o = this;
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+}
+MO.FEaiChartIndustryScene_setup = function FEaiChartIndustryScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
+   var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
+   o.registerFrame(frame);
+}
+MO.FEaiChartIndustryScene_active = function FEaiChartIndustryScene_active(){
+   var o = this;
+   o.__base.FEaiScene.active.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   var renderable = frame.renderable();
+   renderable.setLocation(10, 10);
+   layer.pushRenderable(frame.renderable());
+}
+MO.FEaiChartIndustryScene_deactive = function FEaiChartIndustryScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   layer.removeRenderable(frame.renderable());
+}
+MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._code            = MO.EEaiScene.ChartInvestment;
+   o._countryTemplate = null;
+   o._countryLogoBar  = null;
+   o.onTemplateLoad   = MO.FEaiChartInvestmentScene_onTemplateLoad;
+   o.setup            = MO.FEaiChartInvestmentScene_setup;
+   o.active           = MO.FEaiChartInvestmentScene_active;
+   o.deactive         = MO.FEaiChartInvestmentScene_deactive;
+   return o;
+}
+MO.FEaiChartInvestmentScene_onTemplateLoad = function FEaiChartInvestmentScene_onTemplateLoad(event){
+   var o = this;
+   var sprite = o._countryTemplate.sprite();
+   var matrix = sprite.matrix();
+   matrix.tx = -4;
+   matrix.ty = -3;
+   matrix.rx = -Math.PI / 2;
+   matrix.updateForce();
+   var stage = MO.Eai.Canvas.activeStage();
+}
+MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
+   var frame = o._countryLogoBar = frameConsole.get(MO.Eai.Canvas, 'eai.country.LogoBar');
+   o.registerFrame(frame);
+}
+MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active(){
+   var o = this;
+   o.__base.FEaiScene.active.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   var renderable = frame.renderable();
+   renderable.setLocation(10, 10);
+   layer.pushRenderable(frame.renderable());
+}
+MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+   var frame = o._countryLogoBar
+   layer.removeRenderable(frame.renderable());
+}
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._code = MO.EEaiScene.Company;

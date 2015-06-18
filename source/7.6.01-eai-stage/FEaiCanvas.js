@@ -34,8 +34,6 @@ with(MO){
       o.build               = FEaiCanvas_build;
       o.setPanel            = FEaiCanvas_setPanel;
       o.selectStage         = FEaiCanvas_selectStage;
-      o.loadByGuid          = FEaiCanvas_loadByGuid;
-      o.loadByCode          = FEaiCanvas_loadByCode;
       // @method
       o.dispose             = FEaiCanvas_dispose;
       return o;
@@ -264,49 +262,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiCanvas_loadByGuid = function FEaiCanvas_loadByGuid(p){
-      var o = this;
-      var c = o._graphicContext;
-      // 收集场景
-      var sc = RConsole.find(FE3dSceneConsole);
-      if(o._activeStage != null){
-         sc.free(o._activeStage);
-      }
-      // 监听加载完成
-      var s = sc.alloc(o, p);
-      s.addLoadListener(o, o.onTemplateLoad);
-      s.selectTechnique(c, FG3dGeneralTechnique);
-      o._activeStage = o._activeStage = s;
-      RStage.register('stage3d', s);
-   }
-
-   //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   // @param code:String 代码
-   //==========================================================
-   MO.FEaiCanvas_loadByCode = function FEaiCanvas_loadByCode(code){
-      var o = this;
-      var context = o._graphicContext;
-      // 收集场景
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
-      if(o._activeStage != null){
-         templateConsole.free(o._activeStage);
-      }
-      // 监听加载完成
-      var template = templateConsole.allocByCode(context, code);
-      template.addLoadListener(o, o.onTemplateLoad);
-      template.selectTechnique(context, FE3dGeneralTechnique);
-      o._activeStage = o._activeStage = template;
-      RStage.register('stage.template', template);
-   }
-
-   //==========================================================
    // <T>释放处理。</T>
    //
    // @method
@@ -314,11 +269,7 @@ with(MO){
    MO.FEaiCanvas_dispose = function FEaiCanvas_dispose(){
       var o = this;
       // 释放旋转
-      var v = o._rotation;
-      if(v){
-         v.dispose();
-         o._rotation = null;
-      }
+      o._rotation = RObject.dispose(o._rotation);
       // 父处理
       o.__base.FE3dCanvas.dispose.call(o);
    }

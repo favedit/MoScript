@@ -13,6 +13,7 @@ with(MO){
       o._stageLoading = RClass.register(o, new AGetter('_stageLoading'));
       o._stageLogin   = RClass.register(o, new AGetter('_stageLogin'));
       o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
+      o._stageChart   = RClass.register(o, new AGetter('_stageChart'));
       //..........................................................
       // @event
       o.onProcess     = FEaiApplication_onProcess;
@@ -66,6 +67,10 @@ with(MO){
       o.registerStage(stage);
       // 创建场景舞台
       var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+      stage.setup();
+      o.registerStage(stage);
+      // 创建表格舞台
+      var stage = o._stageChart = MO.RClass.create(MO.FEaiChartStage);
       stage.setup();
       o.registerStage(stage);
       // 注册处理
