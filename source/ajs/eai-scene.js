@@ -46,71 +46,93 @@ MO.FEaiChartCustomerScene_deactive = function FEaiChartCustomerScene_deactive(){
 }
 MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code      = MO.EEaiScene.ChartHistory;
-   o.onLoadData = MO.FEaiChartHistoryScene_onLoadData;
-   o.setup      = MO.FEaiChartHistoryScene_setup;
-   o.active     = MO.FEaiChartHistoryScene_active;
-   o.deactive   = MO.FEaiChartHistoryScene_deactive;
+   o._code        = MO.EEaiScene.ChartHistory;
+   o._playing     = false;
+   o._startDate   = null;
+   o._endDate     = null;
+   o._currentDate = null;
+   o.onLoadData   = MO.FEaiChartHistoryScene_onLoadData;
+   o.onKeyDown    = MO.FEaiChartHistoryScene_onKeyDown;
+   o.setup        = MO.FEaiChartHistoryScene_setup;
+   o.selectDate   = MO.FEaiChartHistoryScene_selectDate;
+   o.active       = MO.FEaiChartHistoryScene_active;
+   o.process      = MO.FEaiChartHistoryScene_process;
+   o.deactive     = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event){
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var code = o._currentDate.format('YYYYMMDD')
+   o.selectDate(code);
+}
+MO.FEaiChartHistoryScene_onKeyDown = function FEaiChartHistoryScene_onKeyDown(event){
+   var o = this;
+   var keyCode = event.keyCode;
+   if(keyCode == MO.EKeyCode.N){
+      o._currentDate.addDay(-1);
+      var code = o._currentDate.format('YYYYMMDD')
+      o.selectDate(code);
+      console.log(code);
+   }
+   if(keyCode == MO.EKeyCode.M){
+      o._currentDate.addDay(1);
+      var code = o._currentDate.format('YYYYMMDD')
+      o.selectDate(code);
+      console.log(code);
+   }
+   if(keyCode == MO.EKeyCode.L){
+      MO.RDate.autoParse(o._currentDate, '20140701');
+      o._playing = true;
+   }
+}
+MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code){
+   var o = this;
    var context = o.graphicContext();
    var stage = o._activeStage;
    var mapLayer = stage.mapLayer();
    var borderLayer = stage.borderLayer();
    var dataLayer = stage.dataLayer();
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var dateData = historyConsole.dates().get('20150616');
-   var cityDatas = dateData.citys();
-   var citys = cityConsole.citys();
-   var count = citys.count();
-   for(var i = 0; i < count; i++){
-      var city = citys.at(i);
-      var data = cityDatas.get(city.code());
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('../ars/eai/dot.png');
-      var bitmap = context.createObject(MO.FE3dBitmap);
-      bitmap.setData(bitmapData);
-      var material = bitmap.material();
-      material.info().optionAlpha = true;
-      var range = 1;
-      if(data){
-         var total = data.investmentTotal() / 10000000;
-         range = total / 2;
-         if(total > 1){
-            total = 1;
-         }
-         material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
-      }else{
-         material.info().ambientColor.set(0, 0, 0, 1);
+   var dateData = historyConsole.dates().get(code);
+   if(dateData){
+      var cityDatas = dateData.citys();
+      var cityEntities = o._cityEntities;
+      var count = cityEntities.count();
+      for(var i = 0; i < count; i++){
+         var cityEntity = cityEntities.at(i);
+         var data = cityDatas.get(cityEntity.code());
+         cityEntity.update(data);
       }
-      if(range < 1){
-         range = 1;
-      }
-      if(range > 2){
-         range = 2;
-      }
-      var matrix = bitmap.matrix();
-      matrix.tx = city.location().x * 0.2 - 20.3 + (0.2 * range / 2);
-      matrix.ty = city.location().y * 0.25 - 8 + (0.2 * range / 2);
-      matrix.tz = -0.0001;
-      matrix.sx = 0.2 * range;
-      matrix.sy = 0.2 * range;
-      matrix.sz = 0.2 * range;
-      matrix.update();
-      dataLayer.pushRenderable(bitmap);
    }
 }
 MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   o._currentDate = new MO.TDate();
+   o._startDate = new MO.TDate();
+   o._endDate = new MO.TDate();
+   MO.RDate.autoParse(o._currentDate, '20140701');
+   MO.RDate.autoParse(o._startDate, '20140701');
+   MO.RDate.autoParse(o._endDate, '20150616');
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
+}
+MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process(){
+   var o = this;
+   o.__base.FEaiChartScene.process.call(o);
+   if(o._playing){
+      o._currentDate.addDay(1);
+      var code = o._currentDate.format('YYYYMMDD')
+      var endCode = o._endDate.format('YYYYMMDD')
+      o.selectDate(code);
+      if(code == endCode){
+         o._playing = false;
+      }
+   }
 }
 MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive(){
    var o = this;
@@ -210,14 +232,15 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
-   o._countryData = null;
-   o._provinces   = MO.Class.register(o, new MO.AGetter('_provinces'));
-   o.onLoadData   = MO.FEaiChartScene_onLoadData;
-   o.construct    = MO.FEaiChartScene_construct;
-   o.setup        = MO.FEaiChartScene_setup;
-   o.active       = MO.FEaiChartScene_active;
-   o.deactive     = MO.FEaiChartScene_deactive;
-   o.dispose      = MO.FEaiChartScene_dispose;
+   o._countryData      = null;
+   o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   o.onLoadData        = MO.FEaiChartScene_onLoadData;
+   o.construct         = MO.FEaiChartScene_construct;
+   o.setup             = MO.FEaiChartScene_setup;
+   o.active            = MO.FEaiChartScene_active;
+   o.deactive          = MO.FEaiChartScene_deactive;
+   o.dispose           = MO.FEaiChartScene_dispose;
    return o;
 }
 MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
@@ -226,22 +249,37 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var stage = o._activeStage;
    var mapLayer = stage.mapLayer();
    var borderLayer = stage.borderLayer();
+   var dataLayer = stage.dataLayer();
+   var context = MO.Eai.Canvas.graphicContext();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
-      provinceEntity.build(MO.Eai.Canvas);
-      o._provinces.set(provinceData.name(), provinceEntity);
+      provinceEntity.build(context);
+      o._provinceEntities.set(provinceData.name(), provinceEntity);
       mapLayer.pushRenderable(provinceEntity.faceRenderable());
       borderLayer.pushRenderable(provinceEntity.borderRenderable());
+   }
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var citys = cityConsole.citys();
+   var count = citys.count();
+   for(var i = 0; i < count; i++){
+      var city = citys.at(i);
+      var cityLocation = city.location();
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setData(city);
+      cityEntity.build(context);
+      o._cityEntities.set(cityEntity.code(), cityEntity);
+      dataLayer.pushRenderable(cityEntity.renderable());
    }
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
    o.__base.FEaiScene.construct.call(o);
-   o._provinces = new MO.TDictionary();
+   o._provinceEntities = new MO.TDictionary();
+   o._cityEntities = new MO.TDictionary();
 }
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
@@ -268,7 +306,8 @@ MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
-   o._provinces = RObject.dispose(o._provinces);
+   o._provinceEntities = RObject.dispose(o._provinceEntities);
+   o._cityEntities = RObject.dispose(o._cityEntities);
    o.__base.FEaiScene.dispose.call(o);
 }
 MO.FEaiChartStage = function FEaiChartStage(o){

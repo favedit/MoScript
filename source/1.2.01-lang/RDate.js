@@ -50,55 +50,57 @@
    }
 
    //===========================================================
-   //以某个格式格式化时间日期对象
+   // <T>以指定格式格式化时间日期对象。</T>
    //
-   //@method
-   //@param fmt:format:String 格式化模板
-   //@see TDate.formatDate
+   // @method
+   // @param date:TDate 时间
+   // @param format:String 格式
+   // @return String 字符串
    //===========================================================
-   MO.RDate.prototype.formatText = function RDate_formatText(v, f){
+   MO.RDate.prototype.formatText = function RDate_formatText(v, format){
       if(!v){
          return false;
       }
-      f = f.toLowerCase();
+      var value = format.toLowerCase();
       // 替换年份
-      f = f.replace(/yyyy/g, v.substring(0, 4));
+      value = value.replace(/yyyy/g, v.substring(0, 4));
       v = v.substring(4);
       // 替换月份
-      f = f.replace(/mm/g, v.substring(0, 2));
+      value = value.replace(/mm/g, v.substring(0, 2));
       v = v.substring(2);
       // 替换天
-      f = f.replace(/dd/g, v.substring(0, 2));
+      value = value.replace(/dd/g, v.substring(0, 2));
       v = v.substring(2);
       // 替换小时
-      f = f.replace(/hh24/g, v.substring(0, 4));
+      value = value.replace(/hh24/g, v.substring(0, 4));
       v = v.substring(4);
-      f = f.replace(/mi/g, v.substring(0, 2));
+      value = value.replace(/mi/g, v.substring(0, 2));
       v = v.substring(2);
-      f = f.replace(/ss/g, v.substring(0, 2));
+      value = value.replace(/ss/g, v.substring(0, 2));
       v = v.substring(2);
-      return f;
+      return value;
    }
 
    //===========================================================
-   // 以某个格式格式化时间日期对象
+   // <T>以指定格式格式化时间日期对象。</T>
    //
    // @method
-   // @param fmt:format:String 格式化模板
-   // 
+   // @param date:TDate 时间
+   // @param format:String 格式
+   // @return String 字符串
    //===========================================================
-   MO.RDate.prototype.formatDate = function RDate_formatDate(date, fmt){
+   MO.RDate.prototype.formatDate = function RDate_formatDate(date, format){
       if(!date){return '';}
-      fmt = fmt ? fmt.toLowerCase() : this.DataFormat;
-      fmt = fmt.replace(/yyyy/g, RInteger.format(date.year, 4));
-      fmt = fmt.replace(/yy/g, RInteger.format(date.year%100, 2));
-      fmt = fmt.replace(/mm/g, RInteger.format(date.month, 2));
-      fmt = fmt.replace(/dd/g, RInteger.format(date.day, 2));
-      fmt = fmt.replace(/hh24/g, RInteger.format(date.hour, 2));
-      fmt = fmt.replace(/mi/g, RInteger.format(date.minute, 2));
-      fmt = fmt.replace(/ss/g, RInteger.format(date.second, 2));
-      fmt = fmt.replace(/ms/g, RInteger.format(date.ms, 3));
-      return fmt;
+      var value = format ? format.toLowerCase() : this.DataFormat;
+      value = value.replace(/yyyy/g, RInteger.format(date.year, 4));
+      value = value.replace(/yy/g, RInteger.format(date.year % 100, 2));
+      value = value.replace(/mm/g, RInteger.format(date.month, 2));
+      value = value.replace(/dd/g, RInteger.format(date.day, 2));
+      value = value.replace(/hh24/g, RInteger.format(date.hour, 2));
+      value = value.replace(/mi/g, RInteger.format(date.minute, 2));
+      value = value.replace(/ss/g, RInteger.format(date.second, 2));
+      value = value.replace(/ms/g, RInteger.format(date.ms, 3));
+      return value;
    }
 
    //===========================================================
@@ -238,8 +240,9 @@
    // 用时间模板从一个时间类型解析一个时间对象
    //
    // @method
-   // @param date:date:Date ???
-   // @param value:value:Date ???
+   // @param date:date:Date 日期
+   // @param value:value:Date 内容
+   // @param format:String 格式
    // @return TDate 返回日期时间
    //===========================================================
    MO.RDate.prototype.parse = function RDate_parse(date, value, format){
@@ -333,7 +336,7 @@
    }
 
    //===========================================================
-   // ？？？
+   // <T>解析数据到时间对象内。</T>
    //
    // @method
    // @param items:items:String 格式化项目

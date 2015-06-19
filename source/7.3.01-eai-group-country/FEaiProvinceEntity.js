@@ -1,10 +1,10 @@
 with(MO){
    //==========================================================
-   // <T>全国地图实体类</T>
+   // <T>全国省份实体类。</T>
    //
    // @class
-   // @author sunpeng
-   // @history 150606
+   // @author maocy
+   // @history 150619
    //==========================================================
    MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);

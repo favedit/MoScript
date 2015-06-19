@@ -40,6 +40,7 @@
       o.setDate      = TDate_setDate;
       o.now          = TDate_now;
       o.clone        = TDate_clone;
+      o.format       = TDate_format;
       o.dump         = TDate_dump;
       // Construct
       o.refresh();
@@ -188,31 +189,41 @@
    }
 
    //===========================================================
-   // 取得指定指定年月的天数
+   // <T>增加指定月数。<T>
    //
    // @method
-   // @param parent:parent:HTML html容器
-   // @param path:path:String 图片的存放路径
-   // @param css:css:String 显示的样式表
-   // @param width:width:Integer 图片的显示宽度
-   // @param height:height:Integer 图片的显示宽度
-   // @see RBuilder_newImage
-   // @return Object 返回创建的img对象
+   // @param count:Integer 月数
    //===========================================================
-   MO.TDate_addMonth = function TDate_addMonth(n){
-      this.date.setMonth(this.date.getMonth()+parseInt(n));
-      this.refresh();
+   MO.TDate_addMonth = function TDate_addMonth(count){
+      var o = this;
+      o.date.setMonth(o.date.getMonth() + parseInt(count));
+      o.refresh();
    }
-   // ------------------------------------------------------------
-   MO.TDate_addDay = function TDate_addDay(n){
-      this.date.setTime(this.date.getTime()+parseInt(n)*1000*60*60*24);
-      this.refresh();
+
+   //===========================================================
+   // <T>增加指定天数。<T>
+   //
+   // @method
+   // @param count:Integer 月数
+   //===========================================================
+   MO.TDate_addDay = function TDate_addDay(count){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(count) * 1000 * 60 * 60 * 24);
+      o.refresh();
    }
-   //------------------------------------------------------------
-   MO.TDate_addMseconds = function TDate_addMseconds(n){
-      this.date.setTime(this.date.getTime()+parseInt(n));
-      this.refresh();
+
+   //===========================================================
+   // <T>增加指定秒数。<T>
+   //
+   // @method
+   // @param count:Integer 月数
+   //===========================================================
+   MO.TDate_addMseconds = function TDate_addMseconds(count){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(count));
+      o.refresh();
    }
+
    //===========================================================
    // 取得当前时间，并改变相应的时间变量
    //
@@ -254,6 +265,17 @@
       var o = this;
       o.date = new Date();
       o.refresh();
+   }
+
+   //===========================================================
+   // <T>根据指定格式格式化时间。</T>
+   //
+   // @method
+   // @param format 格式
+   // @return String 字符串
+   //===========================================================
+   MO.TDate_format = function TDate_format(format){
+      return RDate.formatDate(this, format);
    }
 
    //===========================================================

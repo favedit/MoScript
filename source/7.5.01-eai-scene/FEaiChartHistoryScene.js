@@ -9,16 +9,23 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code      = MO.EEaiScene.ChartHistory;
+   o._code        = MO.EEaiScene.ChartHistory;
+   o._playing     = false;
+   o._startDate   = null;
+   o._endDate     = null;
+   o._currentDate = null;
    //..........................................................
    // @event
-   o.onLoadData = MO.FEaiChartHistoryScene_onLoadData;
+   o.onLoadData   = MO.FEaiChartHistoryScene_onLoadData;
+   o.onKeyDown    = MO.FEaiChartHistoryScene_onKeyDown;
    //..........................................................
    // @method
-   o.setup      = MO.FEaiChartHistoryScene_setup;
+   o.setup        = MO.FEaiChartHistoryScene_setup;
+   o.selectDate   = MO.FEaiChartHistoryScene_selectDate;
    // @method
-   o.active     = MO.FEaiChartHistoryScene_active;
-   o.deactive   = MO.FEaiChartHistoryScene_deactive;
+   o.active       = MO.FEaiChartHistoryScene_active;
+   o.process      = MO.FEaiChartHistoryScene_process;
+   o.deactive     = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
 
@@ -31,6 +38,45 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event){
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var code = o._currentDate.format('YYYYMMDD')
+   o.selectDate(code);
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_onKeyDown = function FEaiChartHistoryScene_onKeyDown(event){
+   var o = this;
+   var keyCode = event.keyCode;
+   if(keyCode == MO.EKeyCode.N){
+      o._currentDate.addDay(-1);
+      var code = o._currentDate.format('YYYYMMDD')
+      o.selectDate(code);
+      console.log(code);
+   }
+   if(keyCode == MO.EKeyCode.M){
+      o._currentDate.addDay(1);
+      var code = o._currentDate.format('YYYYMMDD')
+      o.selectDate(code);
+      console.log(code);
+   }
+   if(keyCode == MO.EKeyCode.L){
+      MO.RDate.autoParse(o._currentDate, '20140701');
+      o._playing = true;
+   }
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code){
+   var o = this;
    // 构建画面
    var context = o.graphicContext();
    var stage = o._activeStage;
@@ -38,48 +84,17 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var borderLayer = stage.borderLayer();
    var dataLayer = stage.dataLayer();
    // 放入城市
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var dateData = historyConsole.dates().get('20150616');
-   var cityDatas = dateData.citys();
-   var citys = cityConsole.citys();
-   var count = citys.count();
-   for(var i = 0; i < count; i++){
-      var city = citys.at(i);
-      var data = cityDatas.get(city.code());
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('../ars/eai/dot.png');
-      var bitmap = context.createObject(MO.FE3dBitmap);
-      bitmap.setData(bitmapData);
-      var material = bitmap.material();
-      material.info().optionAlpha = true;
-      var range = 1;
-      if(data){
-         var total = data.investmentTotal() / 10000000;
-         range = total / 2;
-         if(total > 1){
-            total = 1;
-         }
-         material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
-         //console.log(i);
-      }else{
-         material.info().ambientColor.set(0, 0, 0, 1);
+   var dateData = historyConsole.dates().get(code);
+   if(dateData){
+      var cityDatas = dateData.citys();
+      var cityEntities = o._cityEntities;
+      var count = cityEntities.count();
+      for(var i = 0; i < count; i++){
+         var cityEntity = cityEntities.at(i);
+         var data = cityDatas.get(cityEntity.code());
+         cityEntity.update(data);
       }
-      if(range < 1){
-         range = 1;
-      }
-      if(range > 2){
-         range = 2;
-      }
-      var matrix = bitmap.matrix();
-      matrix.tx = city.location().x * 0.2 - 20.3 + (0.2 * range / 2);
-      matrix.ty = city.location().y * 0.25 - 8 + (0.2 * range / 2);
-      matrix.tz = -0.0001;
-      matrix.sx = 0.2 * range;
-      matrix.sy = 0.2 * range;
-      matrix.sz = 0.2 * range;
-      matrix.update();
-      dataLayer.pushRenderable(bitmap);
    }
 }
 
@@ -91,6 +106,13 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
 MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   o._currentDate = new MO.TDate();
+   o._startDate = new MO.TDate();
+   o._endDate = new MO.TDate();
+   MO.RDate.autoParse(o._currentDate, '20140701');
+   MO.RDate.autoParse(o._startDate, '20140701');
+   MO.RDate.autoParse(o._endDate, '20150616');
 }
 
 //==========================================================
@@ -101,6 +123,25 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
+}
+
+//==========================================================
+// <T>激活处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process(){
+   var o = this;
+   o.__base.FEaiChartScene.process.call(o);
+   if(o._playing){
+      o._currentDate.addDay(1);
+      var code = o._currentDate.format('YYYYMMDD')
+      var endCode = o._endDate.format('YYYYMMDD')
+      o.selectDate(code);
+      if(code == endCode){
+         o._playing = false;
+      }
+   }
 }
 
 //==========================================================
