@@ -5075,6 +5075,7 @@ with(MO){
    }
    MO.RMethod = new RMethod();
    MO.RMethod.construct();
+   MO.Method = MO.RMethod;
 }
 with(MO){
    MO.RObject = function RObject(){

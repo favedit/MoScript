@@ -45,18 +45,22 @@ MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
    var o = this;
    // 创建国家场景
    var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    // 创建集团场景
    var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    // 创建集团报告场景
    var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    // 创建公司场景
    var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
 }

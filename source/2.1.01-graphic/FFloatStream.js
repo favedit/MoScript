@@ -1,131 +1,108 @@
-with(MO){
-   //==========================================================
-   // <T>图形数据。</T>
-   //
-   // @class
-   // @author maocy
-   // @history 150308
-   //==========================================================
-   MO.FFloatStream = function FFloatStream(o){
-      o = RClass.inherits(this, o, FObject);
-      //..........................................................
-      o._length     = 0;
-      o._memory     = null;
-      o._position   = 0;
-      //..........................................................
-      // @method
-      o.construct   = FFloatStream_construct;
-      // @method
-      o.length      = FFloatStream_length;
-      o.setLength   = FFloatStream_setLength;
-      o.memory      = FFloatStream_memory;
-      // @method
-      o.writeFloat4 = FFloatStream_writeFloat4;
-      o.writeColor4 = FFloatStream_writeColor4;
-      // @method
-      o.reset       = FFloatStream_reset;
-      o.clear       = FFloatStream_clear;
-      // @method
-      o.dispose     = FFloatStream_dispose;
-      return o;
-   }
-
-   //==========================================================
-   // <T>构造处理。</T>
-   //
-   // @author maocy
-   // @history 141230
-   //==========================================================
-   MO.FFloatStream_construct = function FFloatStream_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-   }
-
-   //==========================================================
-   // <T>获得长度。</T>
-   //
+//==========================================================
+// <T>图形数据。</T>
+//
+// @class
+// @author maocy
+// @history 150308
+//==========================================================
+MO.FFloatStream = function FFloatStream(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   //..........................................................
+   o._length     = MO.Class.register(o, new MO.AGetter('_length'), 0);
+   o._memory     = MO.Class.register(o, new MO.AGetter('_memory'), null);
+   o._position   = 0;
+   //..........................................................
    // @method
-   // @return Integer 长度
-   //==========================================================
-   MO.FFloatStream_length = function FFloatStream_length(){
-      return this._length;
-   }
-
-   //==========================================================
-   // <T>设置长度。</T>
-   //
+   o.construct   = MO.FFloatStream_construct;
    // @method
-   // @param p:length:Integer 长度
-   //==========================================================
-   MO.FFloatStream_setLength = function FFloatStream_setLength(p){
-      var o = this;
-      o._length = p;
-      o._memory = new Float32Array(p);
-   }
-
-   //==========================================================
-   // <T>获得内存。</T>
-   //
+   o.setLength   = MO.FFloatStream_setLength;
    // @method
-   // @return ArrayBuffer 内存
-   //==========================================================
-   MO.FFloatStream_memory = function FFloatStream_memory(){
-      return this._memory;
-   }
-
-   //==========================================================
-   // <T>写入4个浮点数。</T>
-   //
+   o.writeFloat4 = MO.FFloatStream_writeFloat4;
+   o.writeColor4 = MO.FFloatStream_writeColor4;
    // @method
-   // @param a:value1:Float 浮点数1
-   // @param b:value2:Float 浮点数2
-   // @param c:value3:Float 浮点数3
-   // @param d:value4:Float 浮点数4
-   //==========================================================
-   MO.FFloatStream_writeFloat4 = function FFloatStream_writeFloat4(a, b, c, d){
-      var o = this;
-      o._memory[o._position++] = a;
-      o._memory[o._position++] = b;
-      o._memory[o._position++] = c;
-      o._memory[o._position++] = d;
-   }
-
-   //==========================================================
-   // <T>写入颜色。</T>
-   //
+   o.reset       = MO.FFloatStream_reset;
+   o.clear       = MO.FFloatStream_clear;
    // @method
-   // @param p:color:SColor4 颜色
-   //==========================================================
-   MO.FFloatStream_writeColor4 = function FFloatStream_writeColor4(p){
-      this.writeFloat4(p.red, p.green, p.blue, p.alpha);
-   }
+   o.dispose     = MO.FFloatStream_dispose;
+   return o;
+}
 
-   //==========================================================
-   // <T>重置处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FFloatStream_reset = function FFloatStream_reset(){
-      this._position = 0;
-   }
+//==========================================================
+// <T>构造处理。</T>
+//
+// @author maocy
+// @history 141230
+//==========================================================
+MO.FFloatStream_construct = function FFloatStream_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
 
-   //==========================================================
-   // <T>清空处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FFloatStream_clear = function FFloatStream_clear(){
-      this._position = 0;
-   }
+//==========================================================
+// <T>设置长度。</T>
+//
+// @method
+// @param length:Integer 长度
+//==========================================================
+MO.FFloatStream_setLength = function FFloatStream_setLength(length){
+   var o = this;
+   o._length = length;
+   o._memory = new Float32Array(length);
+}
 
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @author maocy
-   //==========================================================
-   MO.FFloatStream_dispose = function FFloatStream_dispose(){
-      var o = this;
-      o._memory = null;
-      o.__base.FObject.dispose.call(o);
-   }
+//==========================================================
+// <T>写入4个浮点数。</T>
+//
+// @method
+// @param value1:Float 浮点数1
+// @param value2:Float 浮点数2
+// @param value3:Float 浮点数3
+// @param value4:Float 浮点数4
+//==========================================================
+MO.FFloatStream_writeFloat4 = function FFloatStream_writeFloat4(value1, value2, value3, value4){
+   var o = this;
+   o._memory[o._position++] = value1;
+   o._memory[o._position++] = value2;
+   o._memory[o._position++] = value3;
+   o._memory[o._position++] = value4;
+}
+
+//==========================================================
+// <T>写入颜色。</T>
+//
+// @method
+// @param value:SColor4 颜色
+//==========================================================
+MO.FFloatStream_writeColor4 = function FFloatStream_writeColor4(value){
+   this.writeFloat4(value.red, value.green, value.blue, value.alpha);
+}
+
+//==========================================================
+// <T>重置处理。</T>
+//
+// @method
+//==========================================================
+MO.FFloatStream_reset = function FFloatStream_reset(){
+   this._position = 0;
+}
+
+//==========================================================
+// <T>清空处理。</T>
+//
+// @method
+//==========================================================
+MO.FFloatStream_clear = function FFloatStream_clear(){
+   this._position = 0;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @author maocy
+//==========================================================
+MO.FFloatStream_dispose = function FFloatStream_dispose(){
+   var o = this;
+   o._memory = null;
+   // 父处理
+   o.__base.FObject.dispose.call(o);
 }

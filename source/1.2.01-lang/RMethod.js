@@ -213,4 +213,5 @@
    // 实例化内容
    MO.RMethod = new RMethod();
    MO.RMethod.construct();
+   MO.Method = MO.RMethod;
 }

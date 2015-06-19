@@ -57,20 +57,25 @@ with(MO){
    //==========================================================
    MO.FEaiApplication_setup = function FEaiApplication_setup(){
       var o = this;
+      var context = MO.Eai.Canvas.graphicContext();
       // 创建加载中舞台
       var stage = o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       // 创建登录舞台
       var stage = o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       // 创建场景舞台
       var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       // 创建表格舞台
       var stage = o._stageChart = MO.RClass.create(MO.FEaiChartStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       // 注册处理

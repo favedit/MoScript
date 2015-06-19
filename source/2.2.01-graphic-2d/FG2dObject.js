@@ -1,20 +1,25 @@
 //==========================================================
-// <T>渲染环境。</T>
+// <T>渲染对象。</T>
 //
 // @author maocy
-// @history 150107
+// @history 150212
 //==========================================================
-MO.FGraphicContext = function FGraphicContext(o){
+MO.FG2dObject = function FG2dObject(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    //..........................................................
-   // @attribute
-   o._hCanvas   = null;
-   //..........................................................
    // @method
-   o.linkCanvas = MO.RMethod.virtual(o, 'linkCanvas');
+   o.setup   = MO.FG2dObject_setup;
    // @method
-   o.dispose    = MO.FGraphicContext_dispose;
+   o.dispose = MO.FG2dObject_dispose;
    return o;
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+MO.FG2dObject_setup = function FG2dObject_setup(){
 }
 
 //==========================================================
@@ -22,8 +27,8 @@ MO.FGraphicContext = function FGraphicContext(o){
 //
 // @method
 //==========================================================
-MO.FGraphicContext_dispose = function FGraphicContext_dispose(){
+MO.FG2dObject_dispose = function FG2dObject_dispose(){
    var o = this;
-   o._hCanvas = null;
+   o.__base.MGraphicObject.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

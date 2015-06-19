@@ -21,16 +21,21 @@ with(MO){
    }
    MO.FEaiApplication_setup = function FEaiApplication_setup(){
       var o = this;
+      var context = MO.Eai.Canvas.graphicContext();
       var stage = o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       var stage = o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       var stage = o._stageChart = MO.RClass.create(MO.FEaiChartStage);
+      stage.linkGraphicContext(context);
       stage.setup();
       o.registerStage(stage);
       RStage.lsnsEnterFrame.register(o, o.onProcess);
@@ -226,15 +231,19 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
 MO.FEaiChartStage_setup = function FEaiChartStage_setup(){
    var o = this;
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
 }
@@ -276,15 +285,19 @@ MO.FEaiSceneStage_construct = function FEaiSceneStage_construct(){
 MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
    var o = this;
    var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
    var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   scene.linkGraphicContext(o);
    scene.setup();
    o.registerScene(scene);
 }
