@@ -46,22 +46,18 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    // 创建国家场景
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    // 创建集团场景
    var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    // 创建集团报告场景
    var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    // 创建公司场景
    var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
 }
 

@@ -409,18 +409,19 @@ with(MO){
 }
 with(MO){
    MO.FEaiCountryData = function FEaiCountryData(o){
-      o = RClass.inherits(this, o, FEaiEntity);
-      o._provinces  = RClass.register(o, new AGetter('_provinces'));
-      o.onLoaded    = FEaiCountryData_onLoaded;
-      o.construct   = FEaiCountryData_construct;
-      o.unserialize = FEaiCountryData_unserialize;
-      o.load        = FEaiCountryData_load;
-      o.dispose     = FEaiCountryData_dispose;
+      o = RClass.inherits(this, o, FObject, MListener);
+      o._listenersLoad = RClass.register(o, new AListener('_listenersLoad', EEvent.Load));
+      o._provinces     = RClass.register(o, new AGetter('_provinces'));
+      o.onLoaded       = FEaiCountryData_onLoaded;
+      o.construct      = FEaiCountryData_construct;
+      o.unserialize    = FEaiCountryData_unserialize;
+      o.load           = FEaiCountryData_load;
+      o.dispose        = FEaiCountryData_dispose;
       return o;
    }
    MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
       var o = this;
-      o.__base.FEaiEntity.construct.call(o);
+      o.__base.FObject.construct.call(o);
       o._provinces = new TDictionary();
    }
    MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
@@ -434,19 +435,15 @@ with(MO){
    }
    MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
       var o = this;
-      var stage = MO.Eai.Canvas.activeStage();
-      var mapLayer = stage.mapLayer();
-      var borderLayer = stage.borderLayer();
-      var dataLayer = stage.dataLayer();
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var province = RClass.create(FEaiProvinceData);
          province.unserialize(input);
-         province.build(MO.Eai.Canvas);
-         mapLayer.pushRenderable(province.faceRenderable());
-         borderLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
       }
+      var event = new SEvent(o);
+      o.processLoadListener(event);
+      event.dispose();
    }
    MO.FEaiCountryData_load = function FEaiCountryData_load(){
       var o = this;
@@ -457,7 +454,7 @@ with(MO){
    MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
       var o = this;
       o._provinces = RObject.dispose(o._provinces);
-      o.__base.FEaiEntity.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
@@ -698,11 +695,8 @@ with(MO){
       o._name             = RClass.register(o, new AGetSet('_name'));
       o._color            = RClass.register(o, new AGetSet('_color'));
       o._boundaries       = RClass.register(o, new AGetter('_boundaries'));
-      o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
-      o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       o.construct         = FEaiProvinceData_construct;
       o.unserialize       = FEaiProvinceData_unserialize;
-      o.build             = FEaiProvinceData_build;
       o.dispose           = FEaiProvinceData_dispose;
       return o;
    }
@@ -722,12 +716,33 @@ with(MO){
          o._boundaries.push(boundary);
       }
    }
-   MO.FEaiProvinceData_build = function FEaiProvinceData_build(context){
+   MO.FEaiProvinceData_dispose = function FEaiProvinceData_dispose(){
+      var o = this;
+      o._boundaries = RObject.dispose(o._boundaries);
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._data             = RClass.register(o, new AGetSet('_data'));
+      o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
+      o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
+      o.construct         = FEaiProvinceEntity_construct;
+      o.build             = FEaiProvinceEntity_build;
+      o.dispose           = FEaiProvinceEntity_dispose;
+      return o;
+   }
+   MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+   }
+   MO.FEaiProvinceEntity_build = function FEaiProvinceEntity_build(context){
       var o = this;
       var color = o._color;
       var vertexTotal = 0;
       var indexTotal = 0;
-      var boundaries = o._boundaries;
+      var boundaries = o._data.boundaries();
       var count = boundaries.count();
       for(var i = 0; i < count; i++){
          var boundary = boundaries.at(i);
@@ -805,9 +820,8 @@ with(MO){
       matrix.setScale(0.2, 0.25, 0.2);
       matrix.update();
    }
-   MO.FEaiProvinceData_dispose = function FEaiProvinceData_dispose(){
+   MO.FEaiProvinceEntity_dispose = function FEaiProvinceEntity_dispose(){
       var o = this;
-      o._boundaries = RObject.dispose(o._boundaries);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
@@ -858,46 +872,76 @@ MO.FEaiChartCustomerScene_deactive = function FEaiChartCustomerScene_deactive(){
    layer.removeRenderable(frame.renderable());
 }
 MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiScene);
-   o._code            = MO.EEaiScene.ChartHistory;
-   o._countryTemplate = null;
-   o._country         = null;
-   o.onTemplateLoad   = MO.FEaiChartHistoryScene_onTemplateLoad;
-   o.setup            = MO.FEaiChartHistoryScene_setup;
-   o.active           = MO.FEaiChartHistoryScene_active;
-   o.deactive         = MO.FEaiChartHistoryScene_deactive;
+   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o._code      = MO.EEaiScene.ChartHistory;
+   o.onLoadData = MO.FEaiChartHistoryScene_onLoadData;
+   o.setup      = MO.FEaiChartHistoryScene_setup;
+   o.active     = MO.FEaiChartHistoryScene_active;
+   o.deactive   = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
-MO.FEaiChartHistoryScene_onTemplateLoad = function FEaiChartHistoryScene_onTemplateLoad(event){
+MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event){
    var o = this;
-   var sprite = o._countryTemplate.sprite();
-   var matrix = sprite.matrix();
-   matrix.tx = -4;
-   matrix.ty = -3;
-   matrix.rx = -Math.PI / 2;
-   matrix.updateForce();
-   var stage = MO.Eai.Canvas.activeStage();
+   o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var context = o.graphicContext();
+   var stage = o._activeStage;
+   var mapLayer = stage.mapLayer();
+   var borderLayer = stage.borderLayer();
+   var dataLayer = stage.dataLayer();
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var dateData = historyConsole.dates().get('20150616');
+   var cityDatas = dateData.citys();
+   var citys = cityConsole.citys();
+   var count = citys.count();
+   for(var i = 0; i < count; i++){
+      var city = citys.at(i);
+      var data = cityDatas.get(city.code());
+      var bitmapData = context.createObject(MO.FE3dBitmapData);
+      bitmapData.loadUrl('../ars/eai/dot.png');
+      var bitmap = context.createObject(MO.FE3dBitmap);
+      bitmap.setData(bitmapData);
+      var material = bitmap.material();
+      material.info().optionAlpha = true;
+      var range = 1;
+      if(data){
+         var total = data.investmentTotal() / 10000000;
+         range = total / 2;
+         if(total > 1){
+            total = 1;
+         }
+         material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
+      }else{
+         material.info().ambientColor.set(0, 0, 0, 1);
+      }
+      if(range < 1){
+         range = 1;
+      }
+      if(range > 2){
+         range = 2;
+      }
+      var matrix = bitmap.matrix();
+      matrix.tx = city.location().x * 0.2 - 20.3 + (0.2 * range / 2);
+      matrix.ty = city.location().y * 0.25 - 8 + (0.2 * range / 2);
+      matrix.tz = -0.0001;
+      matrix.sx = 0.2 * range;
+      matrix.sy = 0.2 * range;
+      matrix.sz = 0.2 * range;
+      matrix.update();
+      dataLayer.pushRenderable(bitmap);
+   }
 }
 MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    var o = this;
-   o.__base.FEaiScene.setup.call(o);
-   var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
-   stage.linkGraphicContext(o);
-   stage.region().linkGraphicContext(o);
-   stage.region().backgroundColor().set(0, 0, 0.1, 1);
-   MO.Eai.Canvas.selectStage(stage);
-   var country = o._country = MO.Class.create(MO.FEaiCountryData);
-   country.load();
+   o.__base.FEaiChartScene.setup.call(o);
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
-   o.__base.FEaiScene.active.call(o);
+   o.__base.FEaiChartScene.active.call(o);
 }
 MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive(){
    var o = this;
-   o.__base.FEaiScene.deactive.call(o);
-   var stage = MO.Eai.Canvas.activeStage();
-   var layer = stage.faceLayer();
+   o.__base.FEaiChartScene.deactive.call(o);
 }
 MO.FEaiChartIndustryScene = function FEaiChartIndustryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
@@ -990,6 +1034,69 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
    var layer = stage.faceLayer();
    var frame = o._countryLogoBar
    layer.removeRenderable(frame.renderable());
+}
+MO.FEaiChartScene = function FEaiChartScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._countryData = null;
+   o._provinces   = MO.Class.register(o, new MO.AGetter('_provinces'));
+   o.onLoadData   = MO.FEaiChartScene_onLoadData;
+   o.construct    = MO.FEaiChartScene_construct;
+   o.setup        = MO.FEaiChartScene_setup;
+   o.active       = MO.FEaiChartScene_active;
+   o.deactive     = MO.FEaiChartScene_deactive;
+   o.dispose      = MO.FEaiChartScene_dispose;
+   return o;
+}
+MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
+   var o = this;
+   var countryData = event.sender;
+   var stage = o._activeStage;
+   var mapLayer = stage.mapLayer();
+   var borderLayer = stage.borderLayer();
+   var provincesData = countryData.provinces();
+   var count = provincesData.count();
+   for(var i = 0; i < count; i++){
+      provinceData = provincesData.at(i);
+      var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
+      provinceEntity.setData(provinceData);
+      provinceEntity.build(MO.Eai.Canvas);
+      o._provinces.set(provinceData.name(), provinceEntity);
+      mapLayer.pushRenderable(provinceEntity.faceRenderable());
+      borderLayer.pushRenderable(provinceEntity.borderRenderable());
+   }
+}
+MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
+   var o = this;
+   o.__base.FEaiScene.construct.call(o);
+   o._provinces = new MO.TDictionary();
+}
+MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
+   var o = this;
+   o.__base.FEaiScene.setup.call(o);
+   var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
+   stage.linkGraphicContext(o);
+   stage.region().linkGraphicContext(o);
+   stage.region().backgroundColor().set(0, 0, 0.1, 1);
+   var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
+   country.addLoadListener(o, o.onLoadData);
+   country.load();
+}
+MO.FEaiChartScene_active = function FEaiChartScene_active(){
+   var o = this;
+   o.__base.FEaiScene.active.call(o);
+   var stage = o._activeStage;
+   MO.Eai.Canvas.selectStage(stage);
+}
+MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
+   var stage = MO.Eai.Canvas.activeStage();
+   var layer = stage.faceLayer();
+}
+MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
+   var o = this;
+   o._provinces = RObject.dispose(o._provinces);
+   o.__base.FEaiScene.dispose.call(o);
 }
 MO.FEaiChartStage = function FEaiChartStage(o){
    o = MO.RClass.inherits(this, o, MO.FE3dStage);
@@ -1113,16 +1220,10 @@ with(MO){
 with(MO){
    MO.FEaiApplication = function FEaiApplication(o){
       o = RClass.inherits(this, o, FApplication);
-      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
-      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
-      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
-      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
-      o._thread         = null;
-      o._interval       = 10;
-      o.construct       = FEaiApplication_construct;
-      o.setup           = FEaiApplication_setup;
-      o.selectChapter   = FEaiApplication_selectChapter;
-      o.dispose         = FEaiApplication_dispose;
+      o._thread   = null;
+      o._interval = 10;
+      o.construct = FEaiApplication_construct;
+      o.dispose   = FEaiApplication_dispose;
       return o;
    }
    MO.FEaiApplication_construct = function FEaiApplication_construct(){
@@ -1132,29 +1233,6 @@ with(MO){
       thread.setInterval(o._interval);
       thread.addProcessListener(o, o.process);
       RConsole.find(FThreadConsole).start(thread);
-   }
-   MO.FEaiApplication_setup = function FEaiApplication_setup(){
-      var o = this;
-      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-   }
-   MO.FEaiApplication_selectChapter = function FEaiApplication_selectChapter(code){
-      var o = this;
-      o.__base.FApplication.selectChapter.call(o, code);
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;
@@ -1242,6 +1320,7 @@ with(MO){
       if(!s){
          return;
       }
+      debugger
       var r = o._activeStage.region();
       var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
@@ -1271,6 +1350,7 @@ with(MO){
       var cs = c.size();
       var s = o._activeStage;
       if(s){
+         debugger
          var rp = s.camera().projection();
          rp.size().set(cs.width, cs.height);
          rp.update();
@@ -1317,6 +1397,47 @@ with(MO){
       return o;
    }
 }
+with(MO){
+   MO.FEaiChartApplication = function FEaiChartApplication(o){
+      o = RClass.inherits(this, o, FEaiApplication);
+      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
+      o._thread         = null;
+      o._interval       = 10;
+      o.onLoadResource  = FEaiChartApplication_onLoadResource;
+      o.construct       = FEaiChartApplication_construct;
+      o.setup           = FEaiChartApplication_setup;
+      o.dispose         = FEaiChartApplication_dispose;
+      return o;
+   }
+   MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+      var o = this;
+      var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
+      var scene = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
+   }
+   MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
+      var o = this;
+      o.__base.FEaiApplication.construct.call(o);
+   }
+   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(){
+      var o = this;
+      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
+      resourceConsole.addLoadListener(null, o.onLoadResource);
+      resourceConsole.load();
+   }
+   MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
+      var o = this;
+      o._chapterLoading = RObject.dispose(o._chapterLoading);
+      o._chapterChart = RObject.dispose(o._chapterChart);
+      o.__base.FEaiApplication.dispose.call(o);
+   }
+}
 MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    o._code             = MO.EEaiChapter.Chart;
@@ -1338,19 +1459,15 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
 }
 MO.FEaiChartChapter_process = function FEaiChartChapter_process(){
@@ -1370,6 +1487,57 @@ MO.FEaiLoginChapter = function FEaiLoginChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Login;
    return o;
+}
+with(MO){
+   MO.FEaiPlatformApplication = function FEaiPlatformApplication(o){
+      o = RClass.inherits(this, o, FEaiApplication);
+      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
+      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
+      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
+      o._thread         = null;
+      o._interval       = 10;
+      o.construct       = FEaiPlatformApplication_construct;
+      o.setup           = FEaiPlatformApplication_setup;
+      o.selectChapter   = FEaiPlatformApplication_selectChapter;
+      o.dispose         = FEaiPlatformApplication_dispose;
+      return o;
+   }
+   MO.FEaiPlatformApplication_construct = function FEaiPlatformApplication_construct(){
+      var o = this;
+      o.__base.FEaiApplication.construct.call(o);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.process);
+      RConsole.find(FThreadConsole).start(thread);
+   }
+   MO.FEaiPlatformApplication_setup = function FEaiPlatformApplication_setup(){
+      var o = this;
+      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+   }
+   MO.FEaiPlatformApplication_selectChapter = function FEaiPlatformApplication_selectChapter(code){
+      var o = this;
+      o.__base.FEaiApplication.selectChapter.call(o, code);
+   }
+   MO.FEaiPlatformApplication_dispose = function FEaiPlatformApplication_dispose(){
+      var o = this;
+      o.__base.FEaiApplication.dispose.call(o);
+   }
 }
 MO.FEaiSceneChapter = function FEaiSceneChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
@@ -1415,10 +1583,10 @@ MO.FEaiSceneChapter_dispose = function FEaiSceneChapter_dispose(){
    var o = this;
    o.__base.FEaiChapter.dispose.call(o);
 }
-MO.Eai.setup = function Eai_setup(hPanel){
+MO.Eai.setup = function Eai_setup(clazz, hPanel){
    var o = this;
    o._hPanel = hPanel;
-   var application = o.Application = MO.RClass.create(MO.FEaiApplication);
+   var application = o.Application = MO.RClass.create(clazz);
    var canvas = o.Canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);

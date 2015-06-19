@@ -9,33 +9,30 @@ with(MO){
       o = RClass.inherits(this, o, FStage, MGraphicObject);
       //..........................................................
       // @attribute
-      o._statistics       = null;
+      o._statistics        = RClass.register(o, new AGetter('_statistics'));
       // @attribute
-      o._camera           = null;
-      o._directionalLight = null
-      o._technique        = null;
+      o._directionalLight  = RClass.register(o, new AGetter('_directionalLight'));
+      o._technique         = RClass.register(o, new AGetter('_technique'));
       // @attribute
-      o._region           = null;
-      o._allDisplays      = null;
+      o._region            = RClass.register(o, new AGetter('_region'));
+      o._allDisplays       = null;
       //..........................................................
       // @event
-      o.onProcess         = FE3dStage_onProcess;
+      o.onProcess          = FE3dStage_onProcess;
       //..........................................................
       // @method
-      o.construct         = FE3dStage_construct;
-      o.createRegion      = FE3dStage_createRegion;
-      o.setup             = FE3dStage_setup;
+      o.construct          = FE3dStage_construct;
+      o.createRegion       = FE3dStage_createRegion;
+      o.linkGraphicContext = FE3dStage_linkGraphicContext;
+      o.setup              = FE3dStage_setup;
       // @method
-      o.statistics        = FE3dStage_statistics;
-      o.camera            = FE3dStage_camera;
-      o.projection        = FE3dStage_projection;
-      o.directionalLight  = FE3dStage_directionalLight;
-      o.technique         = FE3dStage_technique;
-      o.selectTechnique   = FE3dStage_selectTechnique;
-      o.region            = FE3dStage_region;
+      o.camera             = FE3dStage_camera;
+      o.projection         = FE3dStage_projection;
+      o.directionalLight   = FE3dStage_directionalLight;
+      o.selectTechnique    = FE3dStage_selectTechnique;
       // @method
-      o.filterDisplays    = FE3dStage_filterDisplays;
-      o.allDisplays       = FE3dStage_allDisplays;
+      o.filterDisplays     = FE3dStage_filterDisplays;
+      o.allDisplays        = FE3dStage_allDisplays;
       return o;
    }
 
@@ -120,20 +117,9 @@ with(MO){
       RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
       // 创建显示集合
       o._allDisplays = new TObjects();
-      // 创建相机
-      //var c = o._camera = RClass.create(FE3dCamera);
-      //c.position().set(0, 0, -100);
-      //c.lookAt(0, 0, 0);
-      //c.update();
-      //c._projection.update();
-      // 创建方向光源
-      //var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
-      //l.direction().set(0, -1, 0);
       // 创建区域
       var region = o._region = o.createRegion();
       region._timer = o._timer;
-      //r._camera = c;
-      //r._directionalLight = l;
    }
 
    //==========================================================
@@ -144,6 +130,22 @@ with(MO){
    //==========================================================
    MO.FE3dStage_createRegion = function FE3dStage_createRegion(){
       return RClass.create(FE3dRegion);
+   }
+
+   //==========================================================
+   // <T>关联图形环境。</T>
+   //
+   // @method
+   // @param context:FGraphicContext 图形环境
+   //==========================================================
+   MO.FE3dStage_linkGraphicContext = function FE3dStage_linkGraphicContext(context){
+      var o = this;
+      o.__base.MGraphicObject.linkGraphicContext.call(o, context);
+      // 创建背景色
+      var region = o._region;
+      if(region){
+         region.linkGraphicContext(context);
+      }
    }
 
    //==========================================================
@@ -160,23 +162,13 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得统计信息。</T>
-   //
-   // @method
-   // @return FG3dStatistics 统计信息
-   //==========================================================
-   MO.FE3dStage_statistics = function FE3dStage_statistics(){
-      return this._statistics;
-   }
-
-   //==========================================================
    // <T>获得相机。</T>
    //
    // @method
    // @return FG3dCamera 相机
    //==========================================================
    MO.FE3dStage_camera = function FE3dStage_camera(){
-      return this._region._camera;
+      return this._region.camera();
    }
 
    //==========================================================
@@ -186,7 +178,7 @@ with(MO){
    // @return FG3dProjection 投影
    //==========================================================
    MO.FE3dStage_projection = function FE3dStage_projection(){
-      return this._region._camera._projection;
+      return this._region.camera().projection();
    }
 
    //==========================================================
@@ -196,17 +188,7 @@ with(MO){
    // @return FG3dDirectionalLight 方向光
    //==========================================================
    MO.FE3dStage_directionalLight = function FE3dStage_directionalLight(){
-      return this._region._directionalLight;
-   }
-
-   //==========================================================
-   // <T>获得渲染技术。</T>
-   //
-   // @method
-   // @return FG3dTechnique 渲染技术
-   //==========================================================
-   MO.FE3dStage_technique = function FE3dStage_technique(){
-      return this._technique;
+      return this._region.directionalLight();
    }
 
    //==========================================================
@@ -221,16 +203,6 @@ with(MO){
       var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
       var technique = o._technique = techniqueConsole.find(context, clazz);
       return technique;
-   }
-
-   //==========================================================
-   // <T>获得渲染区域。</T>
-   //
-   // @method
-   // @return FG3dRegion 区域
-   //==========================================================
-   MO.FE3dStage_region = function FE3dStage_region(){
-      return this._region;
    }
 
    //==========================================================

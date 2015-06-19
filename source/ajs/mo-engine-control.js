@@ -1104,6 +1104,8 @@ with(MO){
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
+      o._mainLineHeight = RClass.register(o, new AGetSet('_endTime'), 10);
+      o._degreeLineHeight = RClass.register(o, new AGetSet('_endTime'), 10);
       o._statusPaint = false;
       o._image       = null;
       o.onPaintBegin = FGuiTimeline_onPaintBegin;
@@ -1118,7 +1120,6 @@ with(MO){
    }
    MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
       var o = this;
-      debugger
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;

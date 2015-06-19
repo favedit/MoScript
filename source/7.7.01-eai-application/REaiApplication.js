@@ -6,11 +6,11 @@
 // @history 150612
 //==========================================================
 // 实例化内容
-MO.Eai.setup = function Eai_setup(hPanel){
+MO.Eai.setup = function Eai_setup(clazz, hPanel){
    var o = this;
    o._hPanel = hPanel;
    // 创建应用
-   var application = o.Application = MO.RClass.create(MO.FEaiApplication);
+   var application = o.Application = MO.RClass.create(clazz);
    // 创建画板
    var canvas = o.Canvas = MO.RClass.create(MO.FEaiCanvas);
    canvas.build(hPanel);

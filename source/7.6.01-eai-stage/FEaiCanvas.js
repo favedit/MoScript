@@ -119,6 +119,7 @@ with(MO){
          return;
       }
       // 选取物件
+      debugger
       var r = o._activeStage.region();
       var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
@@ -170,6 +171,7 @@ with(MO){
       var cs = c.size();
       var s = o._activeStage;
       if(s){
+         debugger
          var rp = s.camera().projection();
          rp.size().set(cs.width, cs.height);
          rp.update();

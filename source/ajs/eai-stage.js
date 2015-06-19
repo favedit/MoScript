@@ -1,16 +1,10 @@
 with(MO){
    MO.FEaiApplication = function FEaiApplication(o){
       o = RClass.inherits(this, o, FApplication);
-      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
-      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
-      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
-      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
-      o._thread         = null;
-      o._interval       = 10;
-      o.construct       = FEaiApplication_construct;
-      o.setup           = FEaiApplication_setup;
-      o.selectChapter   = FEaiApplication_selectChapter;
-      o.dispose         = FEaiApplication_dispose;
+      o._thread   = null;
+      o._interval = 10;
+      o.construct = FEaiApplication_construct;
+      o.dispose   = FEaiApplication_dispose;
       return o;
    }
    MO.FEaiApplication_construct = function FEaiApplication_construct(){
@@ -20,29 +14,6 @@ with(MO){
       thread.setInterval(o._interval);
       thread.addProcessListener(o, o.process);
       RConsole.find(FThreadConsole).start(thread);
-   }
-   MO.FEaiApplication_setup = function FEaiApplication_setup(){
-      var o = this;
-      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
-      chapter.linkGraphicContext(o);
-      chapter.setup();
-      o.registerChapter(chapter);
-   }
-   MO.FEaiApplication_selectChapter = function FEaiApplication_selectChapter(code){
-      var o = this;
-      o.__base.FApplication.selectChapter.call(o, code);
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;
@@ -130,6 +101,7 @@ with(MO){
       if(!s){
          return;
       }
+      debugger
       var r = o._activeStage.region();
       var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
@@ -159,6 +131,7 @@ with(MO){
       var cs = c.size();
       var s = o._activeStage;
       if(s){
+         debugger
          var rp = s.camera().projection();
          rp.size().set(cs.width, cs.height);
          rp.update();
@@ -205,6 +178,47 @@ with(MO){
       return o;
    }
 }
+with(MO){
+   MO.FEaiChartApplication = function FEaiChartApplication(o){
+      o = RClass.inherits(this, o, FEaiApplication);
+      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
+      o._thread         = null;
+      o._interval       = 10;
+      o.onLoadResource  = FEaiChartApplication_onLoadResource;
+      o.construct       = FEaiChartApplication_construct;
+      o.setup           = FEaiChartApplication_setup;
+      o.dispose         = FEaiChartApplication_dispose;
+      return o;
+   }
+   MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+      var o = this;
+      var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
+      var scene = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
+   }
+   MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
+      var o = this;
+      o.__base.FEaiApplication.construct.call(o);
+   }
+   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(){
+      var o = this;
+      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
+      resourceConsole.addLoadListener(null, o.onLoadResource);
+      resourceConsole.load();
+   }
+   MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
+      var o = this;
+      o._chapterLoading = RObject.dispose(o._chapterLoading);
+      o._chapterChart = RObject.dispose(o._chapterChart);
+      o.__base.FEaiApplication.dispose.call(o);
+   }
+}
 MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    o._code             = MO.EEaiChapter.Chart;
@@ -226,19 +240,15 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
    var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
    scene.linkGraphicContext(o);
-   scene.setup();
    o.registerScene(scene);
 }
 MO.FEaiChartChapter_process = function FEaiChartChapter_process(){
@@ -258,6 +268,57 @@ MO.FEaiLoginChapter = function FEaiLoginChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Login;
    return o;
+}
+with(MO){
+   MO.FEaiPlatformApplication = function FEaiPlatformApplication(o){
+      o = RClass.inherits(this, o, FEaiApplication);
+      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
+      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
+      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
+      o._thread         = null;
+      o._interval       = 10;
+      o.construct       = FEaiPlatformApplication_construct;
+      o.setup           = FEaiPlatformApplication_setup;
+      o.selectChapter   = FEaiPlatformApplication_selectChapter;
+      o.dispose         = FEaiPlatformApplication_dispose;
+      return o;
+   }
+   MO.FEaiPlatformApplication_construct = function FEaiPlatformApplication_construct(){
+      var o = this;
+      o.__base.FEaiApplication.construct.call(o);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.process);
+      RConsole.find(FThreadConsole).start(thread);
+   }
+   MO.FEaiPlatformApplication_setup = function FEaiPlatformApplication_setup(){
+      var o = this;
+      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
+   }
+   MO.FEaiPlatformApplication_selectChapter = function FEaiPlatformApplication_selectChapter(code){
+      var o = this;
+      o.__base.FEaiApplication.selectChapter.call(o, code);
+   }
+   MO.FEaiPlatformApplication_dispose = function FEaiPlatformApplication_dispose(){
+      var o = this;
+      o.__base.FEaiApplication.dispose.call(o);
+   }
 }
 MO.FEaiSceneChapter = function FEaiSceneChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);

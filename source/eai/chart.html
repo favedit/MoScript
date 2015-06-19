@@ -11,20 +11,6 @@
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
-//------------------------------------------------------------
-function onLoadData(){
-   // 选择舞台和章节
-   var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
-   var canvas = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
-   var stage = canvas.activeStage();
-   var layer = stage.faceLayer();
-   // 创建场景画板
-   var timeline = MO.RClass.create(MO.FGuiTimeline);
-   timeline.linkGraphicContext(MO.Eai.Canvas);
-   timeline.build();
-   layer.pushRenderable(timeline.renderable());
-}
-//------------------------------------------------------------
 function onLoad(){
    // 环境设置
    MO.initialize();
@@ -34,10 +20,7 @@ function onLoad(){
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
-   MO.Eai.setup(id_canvas);
-   var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
-   resourceConsole.addLoadListener(null, onLoadData);
-   resourceConsole.load();
+   MO.Eai.setup(MO.FEaiChartApplication, id_canvas);
 }
 </SCRIPT>
 </HEAD>

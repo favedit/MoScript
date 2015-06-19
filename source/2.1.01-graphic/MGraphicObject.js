@@ -22,7 +22,7 @@ MO.MGraphicObject = function MGraphicObject(o){
 // <T>关联图形环境。</T>
 //
 // @method
-// @param p:context:FGraphicContext 图形环境
+// @param context:FGraphicContext 图形环境
 //==========================================================
 MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContext(context){
    var o = this;

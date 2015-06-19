@@ -3938,6 +3938,7 @@ with(MO){
       o._consoles = null;
    }
    MO.RConsole = new RConsole();
+   MO.Console = MO.RConsole;
 }
 with(MO){
    MO.RConst = function RConst(){

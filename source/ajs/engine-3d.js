@@ -318,25 +318,22 @@ with(MO){
 with(MO){
    MO.FE3dStage = function FE3dStage(o){
       o = RClass.inherits(this, o, FStage, MGraphicObject);
-      o._statistics       = null;
-      o._camera           = null;
-      o._directionalLight = null
-      o._technique        = null;
-      o._region           = null;
-      o._allDisplays      = null;
-      o.onProcess         = FE3dStage_onProcess;
-      o.construct         = FE3dStage_construct;
-      o.createRegion      = FE3dStage_createRegion;
-      o.setup             = FE3dStage_setup;
-      o.statistics        = FE3dStage_statistics;
-      o.camera            = FE3dStage_camera;
-      o.projection        = FE3dStage_projection;
-      o.directionalLight  = FE3dStage_directionalLight;
-      o.technique         = FE3dStage_technique;
-      o.selectTechnique   = FE3dStage_selectTechnique;
-      o.region            = FE3dStage_region;
-      o.filterDisplays    = FE3dStage_filterDisplays;
-      o.allDisplays       = FE3dStage_allDisplays;
+      o._statistics        = RClass.register(o, new AGetter('_statistics'));
+      o._directionalLight  = RClass.register(o, new AGetter('_directionalLight'));
+      o._technique         = RClass.register(o, new AGetter('_technique'));
+      o._region            = RClass.register(o, new AGetter('_region'));
+      o._allDisplays       = null;
+      o.onProcess          = FE3dStage_onProcess;
+      o.construct          = FE3dStage_construct;
+      o.createRegion       = FE3dStage_createRegion;
+      o.linkGraphicContext = FE3dStage_linkGraphicContext;
+      o.setup              = FE3dStage_setup;
+      o.camera             = FE3dStage_camera;
+      o.projection         = FE3dStage_projection;
+      o.directionalLight   = FE3dStage_directionalLight;
+      o.selectTechnique    = FE3dStage_selectTechnique;
+      o.filterDisplays     = FE3dStage_filterDisplays;
+      o.allDisplays        = FE3dStage_allDisplays;
       return o;
    }
    MO.FE3dStage_onProcess = function FE3dStage_onProcess(){
@@ -399,35 +396,34 @@ with(MO){
    MO.FE3dStage_createRegion = function FE3dStage_createRegion(){
       return RClass.create(FE3dRegion);
    }
+   MO.FE3dStage_linkGraphicContext = function FE3dStage_linkGraphicContext(context){
+      var o = this;
+      o.__base.MGraphicObject.linkGraphicContext.call(o, context);
+      var region = o._region;
+      if(region){
+         region.linkGraphicContext(context);
+      }
+   }
    MO.FE3dStage_setup = function FE3dStage_setup(){
       var o = this;
       o.__base.FStage.construct.call(o);
       o._region.linkGraphicContext(o);
       o._region.setup();
    }
-   MO.FE3dStage_statistics = function FE3dStage_statistics(){
-      return this._statistics;
-   }
    MO.FE3dStage_camera = function FE3dStage_camera(){
-      return this._region._camera;
+      return this._region.camera();
    }
    MO.FE3dStage_projection = function FE3dStage_projection(){
-      return this._region._camera._projection;
+      return this._region.camera().projection();
    }
    MO.FE3dStage_directionalLight = function FE3dStage_directionalLight(){
-      return this._region._directionalLight;
-   }
-   MO.FE3dStage_technique = function FE3dStage_technique(){
-      return this._technique;
+      return this._region.directionalLight();
    }
    MO.FE3dStage_selectTechnique = function FE3dStage_selectTechnique(context, clazz){
       var o = this;
       var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
       var technique = o._technique = techniqueConsole.find(context, clazz);
       return technique;
-   }
-   MO.FE3dStage_region = function FE3dStage_region(){
-      return this._region;
    }
    MO.FE3dStage_filterDisplays = function FE3dStage_filterDisplays(displays){
       var o = this;

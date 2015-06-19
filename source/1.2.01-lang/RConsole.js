@@ -207,4 +207,5 @@ with(MO){
    //..........................................................
    // 实例化内容
    MO.RConsole = new RConsole();
+   MO.Console = MO.RConsole;
 }

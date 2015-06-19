@@ -38,18 +38,19 @@ with(MO){
 }
 with(MO){
    MO.FEaiCountryData = function FEaiCountryData(o){
-      o = RClass.inherits(this, o, FEaiEntity);
-      o._provinces  = RClass.register(o, new AGetter('_provinces'));
-      o.onLoaded    = FEaiCountryData_onLoaded;
-      o.construct   = FEaiCountryData_construct;
-      o.unserialize = FEaiCountryData_unserialize;
-      o.load        = FEaiCountryData_load;
-      o.dispose     = FEaiCountryData_dispose;
+      o = RClass.inherits(this, o, FObject, MListener);
+      o._listenersLoad = RClass.register(o, new AListener('_listenersLoad', EEvent.Load));
+      o._provinces     = RClass.register(o, new AGetter('_provinces'));
+      o.onLoaded       = FEaiCountryData_onLoaded;
+      o.construct      = FEaiCountryData_construct;
+      o.unserialize    = FEaiCountryData_unserialize;
+      o.load           = FEaiCountryData_load;
+      o.dispose        = FEaiCountryData_dispose;
       return o;
    }
    MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
       var o = this;
-      o.__base.FEaiEntity.construct.call(o);
+      o.__base.FObject.construct.call(o);
       o._provinces = new TDictionary();
    }
    MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
@@ -63,19 +64,15 @@ with(MO){
    }
    MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
       var o = this;
-      var stage = MO.Eai.Canvas.activeStage();
-      var mapLayer = stage.mapLayer();
-      var borderLayer = stage.borderLayer();
-      var dataLayer = stage.dataLayer();
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var province = RClass.create(FEaiProvinceData);
          province.unserialize(input);
-         province.build(MO.Eai.Canvas);
-         mapLayer.pushRenderable(province.faceRenderable());
-         borderLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
       }
+      var event = new SEvent(o);
+      o.processLoadListener(event);
+      event.dispose();
    }
    MO.FEaiCountryData_load = function FEaiCountryData_load(){
       var o = this;
@@ -86,7 +83,7 @@ with(MO){
    MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
       var o = this;
       o._provinces = RObject.dispose(o._provinces);
-      o.__base.FEaiEntity.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
@@ -327,11 +324,8 @@ with(MO){
       o._name             = RClass.register(o, new AGetSet('_name'));
       o._color            = RClass.register(o, new AGetSet('_color'));
       o._boundaries       = RClass.register(o, new AGetter('_boundaries'));
-      o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
-      o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       o.construct         = FEaiProvinceData_construct;
       o.unserialize       = FEaiProvinceData_unserialize;
-      o.build             = FEaiProvinceData_build;
       o.dispose           = FEaiProvinceData_dispose;
       return o;
    }
@@ -351,12 +345,33 @@ with(MO){
          o._boundaries.push(boundary);
       }
    }
-   MO.FEaiProvinceData_build = function FEaiProvinceData_build(context){
+   MO.FEaiProvinceData_dispose = function FEaiProvinceData_dispose(){
+      var o = this;
+      o._boundaries = RObject.dispose(o._boundaries);
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._data             = RClass.register(o, new AGetSet('_data'));
+      o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
+      o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
+      o.construct         = FEaiProvinceEntity_construct;
+      o.build             = FEaiProvinceEntity_build;
+      o.dispose           = FEaiProvinceEntity_dispose;
+      return o;
+   }
+   MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+   }
+   MO.FEaiProvinceEntity_build = function FEaiProvinceEntity_build(context){
       var o = this;
       var color = o._color;
       var vertexTotal = 0;
       var indexTotal = 0;
-      var boundaries = o._boundaries;
+      var boundaries = o._data.boundaries();
       var count = boundaries.count();
       for(var i = 0; i < count; i++){
          var boundary = boundaries.at(i);
@@ -434,9 +449,8 @@ with(MO){
       matrix.setScale(0.2, 0.25, 0.2);
       matrix.update();
    }
-   MO.FEaiProvinceData_dispose = function FEaiProvinceData_dispose(){
+   MO.FEaiProvinceEntity_dispose = function FEaiProvinceEntity_dispose(){
       var o = this;
-      o._boundaries = RObject.dispose(o._boundaries);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
