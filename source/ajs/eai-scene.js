@@ -96,6 +96,13 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var dateData = historyConsole.dates().get(code);
    if(dateData){
+      var provincesData = dateData.provinces();
+      var count = provincesData.count();
+      for(var i = 0; i < count; i++){
+         var provinceData = provincesData.at(i);
+         var provinceEntity = o._provinceEntities.get(provinceData.code());
+         provinceEntity.update(provinceData);
+      }
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
@@ -119,9 +126,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   MO.RDate.autoParse(o._currentDate, '20140701');
-   MO.RDate.autoParse(o._startDate, '20140701');
-   MO.RDate.autoParse(o._endDate, '20150618');
+   o._currentDate.parseAuto('20140701');
+   o._startDate.parseAuto('20140701');
+   o._endDate.parseAuto('20150618');
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
@@ -257,14 +264,17 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var borderLayer = stage.borderLayer();
    var dataLayer = stage.dataLayer();
    var context = MO.Eai.Canvas.graphicContext();
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
+      var provinceName = provinceData.name();
+      var province = provinceConsole.findByName(provinceName);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      o._provinceEntities.set(provinceData.name(), provinceEntity);
+      o._provinceEntities.set(province.code(), provinceEntity);
       mapLayer.pushRenderable(provinceEntity.faceRenderable());
       borderLayer.pushRenderable(provinceEntity.borderRenderable());
    }

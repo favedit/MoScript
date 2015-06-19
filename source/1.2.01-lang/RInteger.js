@@ -262,4 +262,5 @@
    //..........................................................
    // 实例化内容
    MO.RInteger = new RInteger();
+   MO.Lang.Integer = MO.RInteger;
 }

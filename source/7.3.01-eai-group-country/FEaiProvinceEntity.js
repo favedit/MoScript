@@ -18,6 +18,7 @@ with(MO){
       o.construct         = FEaiProvinceEntity_construct;
       // @method
       o.build             = FEaiProvinceEntity_build;
+      o.update            = FEaiProvinceEntity_update;
       // @method
       o.dispose           = FEaiProvinceEntity_dispose;
       return o;
@@ -52,6 +53,7 @@ with(MO){
          vertexTotal += boundary.positionCount();
          indexTotal += boundary.indexes().length;
       }
+      o._vertexTotal = vertexTotal;
       // 填充点缓冲
       var vertexStart = 0;
       var vertexIndex = 0;
@@ -88,11 +90,14 @@ with(MO){
          vertexStart += positionCount;
       }
       var colorIndex = 0;
-      var colors = new Uint8Array(4 * vertexTotal);
+      var colors = o.colorsData = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0x1F;
-         colors[colorIndex++] = (color >>  8) & 0x1F;
-         colors[colorIndex++] = (color      ) & 0x1F;
+         //colors[colorIndex++] = (color >> 16) & 0x1F;
+         //colors[colorIndex++] = (color >>  8) & 0x1F;
+         //colors[colorIndex++] = (color      ) & 0x1F;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0
+         colors[colorIndex++] = 0;
          colors[colorIndex++] = 255;
       }
       // 创建三角面渲染对象
@@ -129,6 +134,40 @@ with(MO){
       matrix.ty = -8;
       matrix.setScale(0.2, 0.25, 0.2);
       matrix.update();
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
+   MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
+      var o = this;
+      var investmentTotal = data.investmentTotal();
+      var rate = Math.sqrt(investmentTotal) / 100;
+      if(rate > 255){
+         rate = 255;
+      }
+      var colorIndex = 0;
+      var colors = o.colorsData;
+      for(var i = 0; i < o._vertexTotal; i++){
+         colors[colorIndex++] = rate;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 255;
+      }
+
+      var renderable = o._faceRenderable;
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
+      //var material = renderable.material();
+      //material.info().ambientColor.set(rate, rate, rate, 1);
+      //material.update();
+
+      //var renderable = o._borderRenderable;
+      //var material = renderable.material();
+      //material.info().ambientColor.set(rate, rate, rate, 1);
+      //material.update();
    }
 
    //==========================================================

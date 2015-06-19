@@ -185,30 +185,43 @@ with(MO){
 with(MO){
    MO.FEaiProvinceResourceConsole = function FEaiProvinceResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._provinces  = RClass.register(o, new AGetter('_provinces'));
-      o.construct   = FEaiProvinceResourceConsole_construct;
-      o.unserialize = FEaiProvinceResourceConsole_unserialize;
-      o.dispose     = FEaiProvinceResourceConsole_dispose;
+      o._provinceCodes = RClass.register(o, new AGetter('_provinceCodes'));
+      o._provinceNames = RClass.register(o, new AGetter('_provinceNames'));
+      o.construct      = FEaiProvinceResourceConsole_construct;
+      o.findByCode     = FEaiProvinceResourceConsole_findByCode;
+      o.findByName     = FEaiProvinceResourceConsole_findByName;
+      o.unserialize    = FEaiProvinceResourceConsole_unserialize;
+      o.dispose        = FEaiProvinceResourceConsole_dispose;
       return o;
    }
    MO.FEaiProvinceResourceConsole_construct = function FEaiProvinceResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
-      o._provinces = new TDictionary();
+      o._provinceCodes = new TDictionary();
+      o._provinceNames = new TDictionary();
+   }
+   MO.FEaiProvinceResourceConsole_findByCode = function FEaiProvinceResourceConsole_findByCode(code){
+      return this._provinceCodes.get(code);
+   }
+   MO.FEaiProvinceResourceConsole_findByName = function FEaiProvinceResourceConsole_findByName(name){
+      return this._provinceNames.get(name);
    }
    MO.FEaiProvinceResourceConsole_unserialize = function FEaiProvinceResourceConsole_unserialize(input){
       var o = this;
-      var provinces = o._provinces;
+      var provinceCodes = o._provinceCodes;
+      var provinceNames = o._provinceNames;
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var province = RClass.create(FEaiProvinceResource);
          province.unserialize(input);
-         provinces.set(province.code(), province);
+         provinceCodes.set(province.code(), province);
+         provinceNames.set(province.name(), province);
       }
    }
    MO.FEaiProvinceResourceConsole_dispose = function FEaiProvinceResourceConsole_dispose(){
       var o = this;
-      o._provinces = RObject.dispose(o._provinces);
+      o._provinceCodes = RObject.dispose(o._provinceCodes);
+      o._provinceNames = RObject.dispose(o._provinceNames);
       o.__base.FConsole.dispose.call(o);
    }
 }

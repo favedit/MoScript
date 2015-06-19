@@ -2,6 +2,8 @@ var MO = new function MoSpace(){
    var o = this;
    o.version = '0.2.0';
    o.info    = new Object();
+   o.Lang    = new function MoLangSpace(){return this;}
+   o.Core    = new function MoCoreSpace(){return this;}
    return o;
 }
 MO.initialize = function RMO_initialize(){
@@ -2097,90 +2099,41 @@ with(MO){
       o.monthDays    = TDate_monthDays;
       o.monthWeekDay = TDate_monthWeekDay;
       o.weekDay      = TDate_weekDay;
+      o.refresh      = TDate_refresh;
       o.setYear      = TDate_setYear;
       o.setMonth     = TDate_setMonth;
       o.setDay       = TDate_setDay;
       o.setHour      = TDate_setHour;
       o.setMinute    = TDate_setMinute;
       o.setSecond    = TDate_setSecond;
+      o.setDate      = TDate_setDate;
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
       o.addMseconds  = TDate_addMseconds;
-      o.refresh      = TDate_refresh;
-      o.setDate      = TDate_setDate;
       o.now          = TDate_now;
-      o.clone        = TDate_clone;
+      o.parse        = TDate_parse;
+      o.parseAuto    = TDate_parseAuto;
       o.format       = TDate_format;
+      o.clone        = TDate_clone;
       o.dump         = TDate_dump;
       o.refresh();
       return o;
    }
-   MO.TDate_clone = function TDate_clone(){
-      var d = new Date();
-      d.setTime(this.date.getTime());
-      return new TDate(d);
+   MO.TDate_equals = function TDate_equals(date){
+      return this.date.getTime() == date.date.getTime();
    }
-   MO.TDate_equals = function TDate_equals(d){
-      return this.date.getTime() == d.date.getTime();
+   MO.TDate_isBefore = function TDate_isBefore(date){
+      return this.date.getTime() < date.date.getTime();
    }
-   MO.TDate_isBefore = function TDate_isBefore(d){
-      return this.date.getTime() < d.date.getTime();
-   }
-   MO.TDate_isAfter = function TDate_isAfter(d){
-      return this.date.getTime() > d.date.getTime();
+   MO.TDate_isAfter = function TDate_isAfter(date){
+      return this.date.getTime() > date.date.getTime();
    }
    MO.TDate_monthDays = function TDate_monthDays(){
       return RDate.monthDays(this.year, this.month);
    }
    MO.TDate_monthWeekDay = function TDate_monthWeekDay(){
-      return (8-(this.day-this.weekDay())%7)%7;
-   }
-   MO.TDate_weekDay = function TDate_weekDay(){
-      return this.date.getDay();
-   }
-   MO.TDate_setYear = function TDate_setYear(n){
-      this.date.setFullYear(n);
-      this.refresh();
-   }
-   MO.TDate_setMonth = function TDate_setMonth(n){
-      this.date.setMonth(parseInt(n, 10)-1);
-      this.refresh();
-   }
-   MO.TDate_setDay = function TDate_setDay(n){
-      this.date.setDate(n);
-      this.refresh();
-   }
-   MO.TDate_setHour = function TDate_setHour(n){
-      this.date.setHours(n);
-      this.refresh();
-   }
-   MO.TDate_setMinute = function TDate_setMinute(n){
-      this.date.setMinutes(n);
-      this.refresh();
-   }
-   MO.TDate_setSecond = function TDate_setSecond(n){
-      this.date.setSeconds(n);
-      this.refresh();
-   }
-   MO.TDate_addYear = function TDate_addYear(n){
-      this.date.setFullYear(this.date.getFullYear()+parseInt(n));
-      this.refresh();
-   }
-   MO.TDate_addMonth = function TDate_addMonth(count){
-      var o = this;
-      o.date.setMonth(o.date.getMonth() + parseInt(count));
-      o.refresh();
-   }
-   MO.TDate_addDay = function TDate_addDay(count){
-      var o = this;
-      o.date.setTime(o.date.getTime() + parseInt(count) * 1000 * 60 * 60 * 24);
-      o.refresh();
-   }
-   MO.TDate_addMseconds = function TDate_addMseconds(count){
-      var o = this;
-      o.date.setTime(o.date.getTime() + parseInt(count));
-      o.refresh();
+      return (8 - (this.day - this.weekDay()) % 7) % 7;
    }
    MO.TDate_refresh = function TDate_refresh(){
       var o = this;
@@ -2195,9 +2148,62 @@ with(MO){
          o.ms = d.getMilliseconds();
       }
    }
-   MO.TDate_setDate = function TDate_setDate(d){
+   MO.TDate_weekDay = function TDate_weekDay(){
+      return this.date.getDay();
+   }
+   MO.TDate_setYear = function TDate_setYear(value){
       var o = this;
-      o.date = d;
+      o.date.setFullYear(value);
+      o.refresh();
+   }
+   MO.TDate_setMonth = function TDate_setMonth(value){
+      var o = this;
+      o.date.setMonth(parseInt(value, 10) - 1);
+      o.refresh();
+   }
+   MO.TDate_setDay = function TDate_setDay(value){
+      var o = this;
+      o.date.setDate(value);
+      o.refresh();
+   }
+   MO.TDate_setHour = function TDate_setHour(value){
+      var o = this;
+      o.date.setHours(value);
+      o.refresh();
+   }
+   MO.TDate_setMinute = function TDate_setMinute(value){
+      var o = this;
+      o.date.setMinutes(value);
+      o.refresh();
+   }
+   MO.TDate_setSecond = function TDate_setSecond(value){
+      var o = this;
+      o.date.setSeconds(value);
+      o.refresh();
+   }
+   MO.TDate_setDate = function TDate_setDate(value){
+      var o = this;
+      o.date = value;
+      o.refresh();
+   }
+   MO.TDate_addYear = function TDate_addYear(value){
+      var o = this;
+      o.date.setFullYear(o.date.getFullYear() + parseInt(value));
+      o.refresh();
+   }
+   MO.TDate_addMonth = function TDate_addMonth(value){
+      var o = this;
+      o.date.setMonth(o.date.getMonth() + parseInt(value));
+      o.refresh();
+   }
+   MO.TDate_addDay = function TDate_addDay(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60 * 24);
+      o.refresh();
+   }
+   MO.TDate_addMseconds = function TDate_addMseconds(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value));
       o.refresh();
    }
    MO.TDate_now = function TDate_now(){
@@ -2205,8 +2211,19 @@ with(MO){
       o.date = new Date();
       o.refresh();
    }
+   MO.TDate_parse = function TDate_parse(value, format){
+      return RDate.parse(this, value, format);
+   }
+   MO.TDate_parseAuto = function TDate_parseAuto(value){
+      return RDate.autoParse(this, value);
+   }
    MO.TDate_format = function TDate_format(format){
       return RDate.formatDate(this, format);
+   }
+   MO.TDate_clone = function TDate_clone(){
+      var value = new Date();
+      value.setTime(this.date.getTime());
+      return new TDate(value);
    }
    MO.TDate_dump = function TDate_dump(){
       return RClass.dump(this) + ' ' + RDate.formatDate(this);
@@ -3964,409 +3981,268 @@ with(MO){
    }
    MO.RConst = new RConst();
 }
-with(MO){
-   MO.RDate = function RDate(){
-      var o = this;
-      o.MinYear       = 1800;
-      o.MaxYear       = 2400;
-      o.Pattern       = 'n-: /';
-      o.Chars         = '0123456789-:/';
-      o.DisplayFormat = 'yyyy-mm-dd hh24:mi:ss';
-      o.DataFormat    = 'yyyymmddhh24miss';
-      o.MonthDays     = new Array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-      o.DaySeconds    = 1000// 60// 60// 24;
-      o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
-      o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
-      return o;
+MO.RDate = function RDate(){
+   var o = this;
+   o.MinYear       = 1800;
+   o.MaxYear       = 2400;
+   o.Pattern       = 'n-: /';
+   o.Chars         = '0123456789-:/';
+   o.DisplayFormat = 'yyyy-mm-dd hh24:mi:ss';
+   o.DataFormat    = 'yyyymmddhh24miss';
+   o.MonthDays     = new Array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+   o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
+   o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
+   return o;
+}
+MO.RDate.prototype.nvl = function RDate_nvl(value){
+   return value ? value : new MO.TDate();
+}
+MO.RDate.prototype.format = function RDate_format(format){
+   return this.formatDate(new MO.TDate(), format);
+}
+MO.RDate.prototype.formatText = function RDate_formatText(date, format){
+   if(!date){
+      return false;
    }
-   MO.RDate.prototype.nvl = function RDate_nvl(o){
-      return o ? o : new TDate();
+   var value = format.toLowerCase();
+   value = value.replace(/yyyy/g, date.substring(0, 4));
+   date = date.substring(4);
+   value = value.replace(/mm/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/dd/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/hh24/g, date.substring(0, 4));
+   date = date.substring(4);
+   value = value.replace(/mi/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/ss/g, date.substring(0, 2));
+   date = date.substring(2);
+   return value;
+}
+MO.RDate.prototype.formatDate = function RDate_formatDate(date, format){
+   if(!date){
+      return '';
    }
-   MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
-      return new TDate(new Date(yyyy, mm, dd));
+   var value = format ? format.toLowerCase() : this.DataFormat;
+   value = value.replace(/yyyy/g, MO.Lang.Integer.format(date.year, 4));
+   value = value.replace(/yy/g, MO.Lang.Integer.format(date.year % 100, 2));
+   value = value.replace(/mm/g, MO.Lang.Integer.format(date.month, 2));
+   value = value.replace(/dd/g, MO.Lang.Integer.format(date.day, 2));
+   value = value.replace(/hh24/g, MO.Lang.Integer.format(date.hour, 2));
+   value = value.replace(/mi/g, MO.Lang.Integer.format(date.minute, 2));
+   value = value.replace(/ss/g, MO.Lang.Integer.format(date.second, 2));
+   value = value.replace(/ms/g, MO.Lang.Integer.format(date.ms, 3));
+   return value;
+}
+MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
+   if(!year || !month){
+      return 0;
    }
-   MO.RDate.prototype.format = function RDate_format(fmt){
-      return this.formatDate(new TDate(), fmt);
+   year = parseInt(year);
+   month = parseInt(month);
+   this.MonthDays[2] = (((year % 4 == 0) || (year % 400 == 0)) && (year % 100 != 0)) ? 29 : 28 ;
+   return this.MonthDays[month];
+}
+MO.RDate.prototype.splitFormat = function RDate_splitFormat(value, format){
+   if(!value){
+      return false;
    }
-   MO.RDate.prototype.formatText = function RDate_formatText(v, format){
-      if(!v){
-         return false;
+   format = format.toLowerCase();
+   var items = new Array();
+   while(format.length > 0){
+      if(format.indexOf('yyyy') == 0){
+         items['year'] = value.substring(0, 4);
+         format = format.substring(4);
+         value = value.substring(4);
+      }else if(format.indexOf('mm') == 0){
+         items['month'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('dd') == 0){
+         items['day'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('hh24') == 0){
+         items['hour'] = value.substring(0, 2);
+         format = format.substring(4);
+         value = value.substring(2);
+      }else if(format.indexOf('mi') == 0){
+         items['minute'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('ss') == 0){
+         items['second'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('ms') == 0){
+         items['ms'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(3);
+      }else{
+         format = format.substring(1);
+         value = value.substring(1);
       }
-      var value = format.toLowerCase();
-      value = value.replace(/yyyy/g, v.substring(0, 4));
-      v = v.substring(4);
-      value = value.replace(/mm/g, v.substring(0, 2));
-      v = v.substring(2);
-      value = value.replace(/dd/g, v.substring(0, 2));
-      v = v.substring(2);
-      value = value.replace(/hh24/g, v.substring(0, 4));
-      v = v.substring(4);
-      value = value.replace(/mi/g, v.substring(0, 2));
-      v = v.substring(2);
-      value = value.replace(/ss/g, v.substring(0, 2));
-      v = v.substring(2);
+   }
+   return items;
+}
+MO.RDate.prototype.splitTime = function RDate_splitTime(date, value){
+   if(!value){
+      return;
+   }
+   if(value.indexOf(':') != -1){
+      var items = value.split(':');
+      if(items.length >= 1){
+         date.hour = MO.Lang.Integer.parse(items[0]);
+      }
+      if(items.length >= 2){
+         date.minute = MO.Lang.Integer.parse(items[1]);
+      }
+      if(items.length >= 3){
+         date.second = MO.Lang.Integer.parse(items[2]);
+      }
+   }else if(value.length == 6){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
+      date.second = MO.Lang.Integer.parse(value.substr(4, 2));
+   }else if(value.length == 4){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
+   }else if(value.length == 2){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+   }
+}
+MO.RDate.prototype.splitDate = function RDate_splitDate(date, value){
+   if(!value){
+      return;
+   }
+   if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
+      var items = null;
+      if(value.indexOf('-') != -1){
+         items = value.split('-');
+      }else if(value.indexOf('/') != -1){
+         items = value.split('/');
+      }
+      if(items.length >= 1){
+         date.year = MO.Lang.Integer.parse(items[0]);
+      }
+      if(items.length >= 2){
+         date.month = MO.Lang.Integer.parse(items[1]);
+      }
+      if(items.length >= 3){
+         date.day = MO.Lang.Integer.parse(items[2]);
+      }
+   }else if(value.indexOf(':') != -1){
+      this.splitTime(date, value);
+   }else if(value.length == 14){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
+      date.hour = MO.Lang.Integer.parse(value.substr(8, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(10, 2));
+      date.second = MO.Lang.Integer.parse(value.substr(12, 2));
+   }else if(value.length == 8){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
+   }else if(value.length == 6){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+   }else if(value.length == 4){
+      date.year = MO.Lang.Integer.parse(value);
+   }
+}
+MO.RDate.prototype.checkItems = function RDate_checkItems(items){
+   var o = this;
+   if(!items){
+      return false;
+   }
+   var year = MO.Lang.Integer.parse(items["year"]);
+   if(year < o.MinYear || year > o.MaxYear){
+      return false;
+   }
+   var month = MO.Lang.Integer.parse(items["month"]);
+   if(month < 1 || month > 12){
+      return false;
+   }
+   var day = MO.Lang.Integer.parse(items["day"]);
+   if(day < 1 || day > o.monthDays(year, month)){
+      return false;
+   }
+   var hour = MO.Lang.Integer.parse(items["hour"]);
+   if(hour < 0 || hour > 23){
+      return false;
+   }
+   var second = MO.Lang.Integer.parse(items["second"]);
+   if(second < 0 || second > 59){
+      return false;
+   }
+   var ms = MO.Lang.Integer.parse(items["ms"]);
+   if(ms < 0 || ms > 99){
+      return false;
+   }
+   return true;
+}
+MO.RDate.prototype.check = function RDate_check(value, format){
+   return this.checkItems(this.splitFormat(value, format));
+}
+MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
+   return new MO.TDate(new Date(yyyy, mm, dd));
+}
+MO.RDate.prototype.makeDate = function RDate_makeDate(value, items){
+   var year = MO.Lang.Integer.parse(items.year);
+   var month = MO.Lang.Integer.parse(items.month) - 1;
+   var day = MO.Lang.Integer.parse(items.day);
+   var hour = MO.Lang.Integer.parse(items.hour);
+   var minute = MO.Lang.Integer.parse(items.minute);
+   var second = MO.Lang.Integer.parse(items.second);
+   var ms = MO.Lang.Integer.parse(items.ms);
+   var date = new Date(year, month, day, hour, minute, second, ms);
+   if(value){
+      value.setDate(date);
       return value;
    }
-   MO.RDate.prototype.formatDate = function RDate_formatDate(date, format){
-      if(!date){return '';}
-      var value = format ? format.toLowerCase() : this.DataFormat;
-      value = value.replace(/yyyy/g, RInteger.format(date.year, 4));
-      value = value.replace(/yy/g, RInteger.format(date.year % 100, 2));
-      value = value.replace(/mm/g, RInteger.format(date.month, 2));
-      value = value.replace(/dd/g, RInteger.format(date.day, 2));
-      value = value.replace(/hh24/g, RInteger.format(date.hour, 2));
-      value = value.replace(/mi/g, RInteger.format(date.minute, 2));
-      value = value.replace(/ss/g, RInteger.format(date.second, 2));
-      value = value.replace(/ms/g, RInteger.format(date.ms, 3));
-      return value;
+   return new MO.TDate(date);
+}
+MO.RDate.prototype.parse = function RDate_parse(date, value, format){
+   if(!format){
+      format = this.DataFormat;
    }
-   MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
-      if(!year || !month){return 0;}
-      year = parseInt(year);
-      month = parseInt(month);
-      this.MonthDays[2] = (((year%4 == 0) || (year%400 == 0)) && (year%100 != 0)) ? 29 : 28 ;
-      return this.MonthDays[month];
+   var items = this.splitFormat(value, format);
+   if(this.checkItems(items)){
+      return this.makeDate(date, items);
    }
-   MO.RDate.prototype.splitFormat = function RDate_splitFormat(v, f){
-      if(!v){
-         return false;
-      }
-      f = f.toLowerCase();
-      var a = new Array();
-      while(f.length > 0){
-         if(f.indexOf('yyyy') == 0){
-            a['year'] = v.substring(0, 4);
-            f = f.substring(4);
-            v = v.substring(4);
-         }else if(f.indexOf('mm') == 0){
-            a['month'] = v.substring(0, 2);
-            f = f.substring(2);
-            v = v.substring(2);
-         }else if(f.indexOf('dd') == 0){
-            a['day'] = v.substring(0, 2);
-            f = f.substring(2);
-            v = v.substring(2);
-         }else if(f.indexOf('hh24') == 0){
-            a['hour'] = v.substring(0, 2);
-            f = f.substring(4);
-            v = v.substring(2);
-         }else if(f.indexOf('mi') == 0){
-            a['minute'] = v.substring(0, 2);
-            f = f.substring(2);
-            v = v.substring(2);
-         }else if(f.indexOf('ss') == 0){
-            a['second'] = v.substring(0, 2);
-            f = f.substring(2);
-            v = v.substring(2);
-         }else if(f.indexOf('ms') == 0){
-            a['ms'] = v.substring(0, 2);
-            f = f.substring(2);
-            v = v.substring(3);
-         }else{
-            f = f.substring(1);
-            v = v.substring(1);
-         }
-      }
-      return a;
-   }
-   MO.RDate.prototype.checkItems = function RDate_checkItems(items){
-      if(!items){
-         return false;
-      }
-      var year = RInteger.parse(items["year"]);
-      if(year < this.MinYear || year > this.MaxYear){
-         return false;
-      }
-      var month = RInteger.parse(items["month"]);
-      if(month < 1 || month > 12){
-         return false;
-      }
-      var day = RInteger.parse(items["day"]);
-      if(day < 1 || day > this.monthDays(year, month)){
-         return false;
-      }
-      var hour = RInteger.parse(items["hour"]);
-      if(hour < 0 || hour > 23){
-         return false;
-      }
-      var second = RInteger.parse(items["second"]);
-      if(second < 0 || second > 59){
-         return false;
-      }
-      var ms = RInteger.parse(items["ms"]);
-      if(ms < 0 || ms > 99){
-         return false;
-      }
-      return true;
-   }
-   MO.RDate.prototype.check = function RDate_check(value, format){
-      return this.checkItems(this.splitFormat(value, format));
-   }
-   MO.RDate.prototype.makeDate = function RDate_makeDate(date, da){
-      var d = new Date(RInteger.parse(da.year), RInteger.parse(da.month)-1, RInteger.parse(da.day), RInteger.parse(da.hour), RInteger.parse(da.minute), RInteger.parse(da.second), RInteger.parse(da.ms));
-      if(date){
-         date.setDate(d);
-         return date;
-      }
-      return new TDate(d);
-   }
-   MO.RDate.prototype.parse = function RDate_parse(date, value, format){
-      if(!format){
-         format = this.DataFormat;
-      }
-      var items = this.splitFormat(value, format);
-      if(this.checkItems(items)){
-         return this.makeDate(date, items);
-      }
+   return null;
+}
+MO.RDate.prototype.autoParse = function RDate_autoParse(date, value){
+   if(!value){
       return null;
    }
-   MO.RDate.prototype.splitDate = function RDate_splitDate(da, value){
-      if(!value){ return; }
-      var arDate = null;
-      if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
-         if(value.indexOf('-') != -1){
-            arDate = value.split('-');
-         }else if(value.indexOf('/') != -1){
-            arDate = value.split('/');
-         }
-         if(arDate.length >= 1){
-            da.year = RInteger.parse(arDate[0]);
-         }
-         if(arDate.length >= 2){
-            da.month = RInteger.parse(arDate[1]);
-         }
-         if(arDate.length >= 3){
-            da.day = RInteger.parse(arDate[2]);
-         }
-      }else if(value.indexOf(':') != -1){
-         this.splitTime(da, value);
-      }else if(value.length == 14){
-         da.year = RInteger.parse(value.substr(0, 4));
-         da.month = RInteger.parse(value.substr(4, 2));
-         da.day = RInteger.parse(value.substr(6, 2));
-         da.hour = RInteger.parse(value.substr(8, 2));
-         da.minute = RInteger.parse(value.substr(10, 2));
-         da.second = RInteger.parse(value.substr(12, 2));
-      }else if(value.length == 8){
-         da.year = RInteger.parse(value.substr(0, 4));
-         da.month = RInteger.parse(value.substr(4, 2));
-         da.day = RInteger.parse(value.substr(6, 2));
-      }else if(value.length == 6){
-         da.year = RInteger.parse(value.substr(0, 4));
-         da.month = RInteger.parse(value.substr(4, 2));
-      }else if(value.length == 4){
-         da.year = RInteger.parse(value);
+   var o = this;
+   date = o.nvl(date);
+   var items = new Array();
+   items['year'] = 2000;
+   items['month'] = 1;
+   items['day'] = 1;
+   items['hour'] = 0;
+   items['minute'] = 0;
+   items['second'] = 0;
+   value = MO.Lang.String.trim(value);
+   if(value.indexOf(' ') == -1){
+      o.splitDate(items, value);
+   }else{
+      var valueItems = value.split(' ');
+      if(valueItems.length == 2){
+         o.splitDate(items, valueItems[0]);
+         o.splitTime(items, valueItems[1]);
       }
    }
-   MO.RDate.prototype.splitTime = function RDate_splitTime(da, value){
-      if(!value){ return; }
-      if(value.indexOf(':') != -1){
-         var ar = value.split(':');
-         if(ar.length >= 1){
-            da.hour = RInteger.parse(ar[0]);
-         }
-         if(ar.length >= 2){
-            da.minute = RInteger.parse(ar[1]);
-         }
-         if(ar.length >= 3){
-            da.second = RInteger.parse(ar[2]);
-         }
-      }else if(value.length == 6){
-         da.hour = RInteger.parse(value.substr(0, 2));
-         da.minute = RInteger.parse(value.substr(2, 2));
-         da.second = RInteger.parse(value.substr(4, 2));
-      }else if(value.length == 4){
-         da.hour = RInteger.parse(value.substr(0, 2));
-         da.minute = RInteger.parse(value.substr(2, 2));
-      }else if(value.length == 2){
-         da.hour = RInteger.parse(value.substr(0, 2));
-      }
+   if(o.checkItems(items)){
+      return o.makeDate(date, items);
    }
-   MO.RDate.prototype.autoParse = function RDate_autoParse(d, v){
-      if(!v){
-         return null;
-      }
-      var o = this;
-      d = o.nvl(d);
-      var items = new Array();
-      items['year'] = 2000;
-      items['month'] = 1;
-      items['day'] = 1;
-      items['hour'] = 0;
-      items['minute'] = 0;
-      items['second'] = 0;
-      v = RString.trim(v);
-      if(v.indexOf(' ') == -1){
-         o.splitDate(items, v);
-      }else{
-         var ar = v.split(' ');
-         if(ar.length == 2){
-            o.splitDate(items, ar[0]);
-            o.splitTime(items, ar[1]);
-         }
-      }
-      return o.checkItems(items) ? o.makeDate(d, items) : null ;
-   }
-   MO.RDate.prototype.getFormat = function RDate_getFormat(value){
-      var o = this;
-      var da = new Object();
-      var f = '';
-      var v = '';
-      if(!value){ return; }
-      if(value.indexOf(':') != -1){
-         var as = RString.split(value, ' ');
-         if(as.length == 1){
-            var as1 = RString.split(as[0], ':');
-            if(as1.length == 1){
-               f += 'HH24';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else{
-                  v += as1[0];
-               }
-            }else if(as1.length == 2){
-               f += 'HH24MI';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else if(as1[0].length == 2){
-                  v += as1[0];
-               }
-               if(as1[1].length == 1){
-                  v += ('0'+as1[1]);
-               }else if(as1[1].length == 2){
-                  v += as1[1];
-               }
-            }else if(as1.length == 3){
-               f += 'HH24MISS';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else if(as1[0].length == 2){
-                  v += as1[0];
-               }
-               if(as1[1].length == 1){
-                  v += ('0'+as1[1]);
-               }else if(as1[1].length == 2){
-                  v += as1[1];
-               }
-               if(as1[2].length == 1){
-                  v += ('0'+as1[2]);
-               }else if(as1[2].length == 2){
-                  v += as1[2];
-               }
-            }
-         }else if(as.length == 2){
-            var as0 = RString.split(as[0], '-');
-            if(as0.length == 3){
-               f += 'YYYYMMDD';
-               if(as0[0].length == 4){
-                  v += as0[0];
-               }
-               if(as0[1].length == 1){
-                  v += ('0'+as0[1]);
-               }else if(as0[1].length == 2){
-                  v += as0[1];
-               }
-               if(as0[2].length == 1){
-                  v += ('0'+as0[2]);
-               }else if(as0[2].length == 2){
-                  v += as0[2];
-               }
-            }else if(as0.length == 2){
-               f += 'YYYYMM';
-               if(as0[0].length == 1){
-                  v += as0[0];
-               }
-               if(as0[1].length == 1){
-                  v += ('0'+as0[1]);
-               }else if(as0[1].length == 2){
-                  v += as0[1];
-               }
-            }else if(as0.length == 1){
-               f += 'YYYY';
-               if(as0[0].length == 4){
-                  v += as0[0];
-               }
-            }
-            var as1 = RString.split(as[1], ':');
-            if(as1.length == 1){
-               f += 'HH24';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else{
-                  v += as1[0];
-               }
-            }else if(as1.length == 2){
-               f += 'HH24MI';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else if(as1[0].length == 2){
-                  v += as1[0];
-               }
-               if(as1[1].length == 1){
-                  v += ('0'+as1[1]);
-               }else if(as1[1].length == 2){
-                  v += as1[1];
-               }
-            }else if(as1.length == 3){
-               f += ' HH24MISS';
-               if(as1[0].length == 1){
-                  v += ('0'+as1[0]);
-               }else if(as1[0].length == 2){
-                  v += as1[0];
-               }
-               if(as1[1].length == 1){
-                  v += ('0'+as1[1]);
-               }else if(as1[1].length == 2){
-                  v += as1[1];
-               }
-               if(as1[2].length == 1){
-                  v += ('0'+as1[2]);
-               }else if(as1[2].length == 2){
-                  v += as1[2];
-               }
-            }
-         }
-      }else{
-         var as = RString.split(value, '-');
-         if(as.length == 3){
-            f += 'YYYYMMDD';
-            if(as[0].length == 4){
-               v += as[0];
-            }
-            if(as[1].length == 1){
-               v += ('0'+as[1]);
-            }else if(as[1].length == 2){
-               v += as[1];
-            }
-            if(as[2].length == 1){
-               v += ('0'+as[2]);
-            }else if(as[2].length == 2){
-               v += as[2];
-            }
-         }else if(as.length == 2){
-            f = 'YYYYMM';
-            if(as[0].length == 4){
-               v += as[0];
-            }
-            if(as[1].length == 1){
-               v += ('0'+as[1]);
-            }else if(as[1].length == 2){
-               v += as[1];
-            }
-         }else if(as.length == 1){
-            f += 'YYYY';
-            if(as[0].length == 4){
-               v += as[0];
-            }
-         }
-      }
-      var ar = new Array(2);
-      ar[0] = f;
-      ar[1] = v;
-      return ar;
-   }
-   MO.RDate = new RDate();
+   return null;
 }
+MO.RDate = new MO.RDate();
+MO.Lang.Date = MO.RDate;
 with(MO){
    MO.REnum = function REnum(){
       return this;
@@ -4785,6 +4661,7 @@ with(MO){
       return (p == null) ? '0' : p.toString();
    }
    MO.RInteger = new RInteger();
+   MO.Lang.Integer = MO.RInteger;
 }
 MO.RJson = function RJson(){
    return this;
@@ -5726,6 +5603,7 @@ with(MO){
       return v;
    }
    MO.RString = new RString();
+   MO.Lang.String = MO.RString;
 }
 with(MO){
    MO.RTimer = function RTimer(){

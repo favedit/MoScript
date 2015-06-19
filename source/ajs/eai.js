@@ -226,30 +226,43 @@ with(MO){
 with(MO){
    MO.FEaiProvinceResourceConsole = function FEaiProvinceResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._provinces  = RClass.register(o, new AGetter('_provinces'));
-      o.construct   = FEaiProvinceResourceConsole_construct;
-      o.unserialize = FEaiProvinceResourceConsole_unserialize;
-      o.dispose     = FEaiProvinceResourceConsole_dispose;
+      o._provinceCodes = RClass.register(o, new AGetter('_provinceCodes'));
+      o._provinceNames = RClass.register(o, new AGetter('_provinceNames'));
+      o.construct      = FEaiProvinceResourceConsole_construct;
+      o.findByCode     = FEaiProvinceResourceConsole_findByCode;
+      o.findByName     = FEaiProvinceResourceConsole_findByName;
+      o.unserialize    = FEaiProvinceResourceConsole_unserialize;
+      o.dispose        = FEaiProvinceResourceConsole_dispose;
       return o;
    }
    MO.FEaiProvinceResourceConsole_construct = function FEaiProvinceResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
-      o._provinces = new TDictionary();
+      o._provinceCodes = new TDictionary();
+      o._provinceNames = new TDictionary();
+   }
+   MO.FEaiProvinceResourceConsole_findByCode = function FEaiProvinceResourceConsole_findByCode(code){
+      return this._provinceCodes.get(code);
+   }
+   MO.FEaiProvinceResourceConsole_findByName = function FEaiProvinceResourceConsole_findByName(name){
+      return this._provinceNames.get(name);
    }
    MO.FEaiProvinceResourceConsole_unserialize = function FEaiProvinceResourceConsole_unserialize(input){
       var o = this;
-      var provinces = o._provinces;
+      var provinceCodes = o._provinceCodes;
+      var provinceNames = o._provinceNames;
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var province = RClass.create(FEaiProvinceResource);
          province.unserialize(input);
-         provinces.set(province.code(), province);
+         provinceCodes.set(province.code(), province);
+         provinceNames.set(province.name(), province);
       }
    }
    MO.FEaiProvinceResourceConsole_dispose = function FEaiProvinceResourceConsole_dispose(){
       var o = this;
-      o._provinces = RObject.dispose(o._provinces);
+      o._provinceCodes = RObject.dispose(o._provinceCodes);
+      o._provinceNames = RObject.dispose(o._provinceNames);
       o.__base.FConsole.dispose.call(o);
    }
 }
@@ -527,29 +540,30 @@ with(MO){
       var material = renderable.material();
       var range = 1;
       if(data){
-         var total = data.investmentTotal() / 10000000;
+         var total = Math.sqrt(data.investmentTotal()) / 100;
          range = total / 2;
          if(total > 1){
             total = 1;
          }
-         material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
+         material.info().ambientColor.set(total, 0, total, 1);
       }else{
          material.info().ambientColor.set(0, 0, 0, 1);
       }
       material.update();
+      range = Math.sqrt(range);
       if(range < 1){
          range = 1;
       }
-      if(range > 2){
-         range = 2;
+      if(range > 3){
+         range = 3;
       }
       var matrix = renderable.matrix();
       matrix.tx = location.x * 0.2 - 20.3 + (0.2 * range / 2);
       matrix.ty = location.y * 0.25 - 8 + (0.2 * range / 2);
       matrix.tz = -0.0001;
-      matrix.sx = 0.2 * range;
-      matrix.sy = 0.2 * range;
-      matrix.sz = 0.2 * range;
+      matrix.sx = 0.3 * range;
+      matrix.sy = 0.3 * range;
+      matrix.sz = 0.3 * range;
       matrix.update();
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
@@ -880,6 +894,7 @@ with(MO){
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       o.construct         = FEaiProvinceEntity_construct;
       o.build             = FEaiProvinceEntity_build;
+      o.update            = FEaiProvinceEntity_update;
       o.dispose           = FEaiProvinceEntity_dispose;
       return o;
    }
@@ -899,6 +914,7 @@ with(MO){
          vertexTotal += boundary.positionCount();
          indexTotal += boundary.indexes().length;
       }
+      o._vertexTotal = vertexTotal;
       var vertexStart = 0;
       var vertexIndex = 0;
       var faceIndex = 0;
@@ -930,11 +946,11 @@ with(MO){
          vertexStart += positionCount;
       }
       var colorIndex = 0;
-      var colors = new Uint8Array(4 * vertexTotal);
+      var colors = o.colorsData = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0x1F;
-         colors[colorIndex++] = (color >>  8) & 0x1F;
-         colors[colorIndex++] = (color      ) & 0x1F;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0
+         colors[colorIndex++] = 0;
          colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
@@ -969,6 +985,24 @@ with(MO){
       matrix.ty = -8;
       matrix.setScale(0.2, 0.25, 0.2);
       matrix.update();
+   }
+   MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
+      var o = this;
+      var investmentTotal = data.investmentTotal();
+      var rate = Math.sqrt(investmentTotal) / 100;
+      if(rate > 255){
+         rate = 255;
+      }
+      var colorIndex = 0;
+      var colors = o.colorsData;
+      for(var i = 0; i < o._vertexTotal; i++){
+         colors[colorIndex++] = rate;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 255;
+      }
+      var renderable = o._faceRenderable;
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
    }
    MO.FEaiProvinceEntity_dispose = function FEaiProvinceEntity_dispose(){
       var o = this;
@@ -1073,6 +1107,13 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var dateData = historyConsole.dates().get(code);
    if(dateData){
+      var provincesData = dateData.provinces();
+      var count = provincesData.count();
+      for(var i = 0; i < count; i++){
+         var provinceData = provincesData.at(i);
+         var provinceEntity = o._provinceEntities.get(provinceData.code());
+         provinceEntity.update(provinceData);
+      }
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
@@ -1096,9 +1137,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   MO.RDate.autoParse(o._currentDate, '20140701');
-   MO.RDate.autoParse(o._startDate, '20140701');
-   MO.RDate.autoParse(o._endDate, '20150618');
+   o._currentDate.parseAuto('20140701');
+   o._startDate.parseAuto('20140701');
+   o._endDate.parseAuto('20150618');
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
@@ -1234,14 +1275,17 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var borderLayer = stage.borderLayer();
    var dataLayer = stage.dataLayer();
    var context = MO.Eai.Canvas.graphicContext();
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
+      var provinceName = provinceData.name();
+      var province = provinceConsole.findByName(provinceName);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      o._provinceEntities.set(provinceData.name(), provinceEntity);
+      o._provinceEntities.set(province.code(), provinceEntity);
       mapLayer.pushRenderable(provinceEntity.faceRenderable());
       borderLayer.pushRenderable(provinceEntity.borderRenderable());
    }

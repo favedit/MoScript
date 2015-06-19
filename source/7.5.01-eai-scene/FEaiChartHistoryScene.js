@@ -83,10 +83,18 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var mapLayer = stage.mapLayer();
    var borderLayer = stage.borderLayer();
    var dataLayer = stage.dataLayer();
-   // 放入城市
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var dateData = historyConsole.dates().get(code);
    if(dateData){
+      // 设置省份数据
+      var provincesData = dateData.provinces();
+      var count = provincesData.count();
+      for(var i = 0; i < count; i++){
+         var provinceData = provincesData.at(i);
+         var provinceEntity = o._provinceEntities.get(provinceData.code());
+         provinceEntity.update(provinceData);
+      }
+      // 设置城市数据
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
@@ -116,9 +124,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   MO.RDate.autoParse(o._currentDate, '20140701');
-   MO.RDate.autoParse(o._startDate, '20140701');
-   MO.RDate.autoParse(o._endDate, '20150618');
+   o._currentDate.parseAuto('20140701');
+   o._startDate.parseAuto('20140701');
+   o._endDate.parseAuto('20150618');
 }
 
 //==========================================================

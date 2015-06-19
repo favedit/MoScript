@@ -45,15 +45,18 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var context = MO.Eai.Canvas.graphicContext();
    //..........................................................
    // 创建省份实体
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
+      var provinceName = provinceData.name();
+      var province = provinceConsole.findByName(provinceName);
       // 创建实体
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      o._provinceEntities.set(provinceData.name(), provinceEntity);
+      o._provinceEntities.set(province.code(), provinceEntity);
       // 放入显示层
       mapLayer.pushRenderable(provinceEntity.faceRenderable());
       borderLayer.pushRenderable(provinceEntity.borderRenderable());

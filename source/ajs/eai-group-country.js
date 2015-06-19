@@ -75,29 +75,30 @@ with(MO){
       var material = renderable.material();
       var range = 1;
       if(data){
-         var total = data.investmentTotal() / 10000000;
+         var total = Math.sqrt(data.investmentTotal()) / 100;
          range = total / 2;
          if(total > 1){
             total = 1;
          }
-         material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
+         material.info().ambientColor.set(total, 0, total, 1);
       }else{
          material.info().ambientColor.set(0, 0, 0, 1);
       }
       material.update();
+      range = Math.sqrt(range);
       if(range < 1){
          range = 1;
       }
-      if(range > 2){
-         range = 2;
+      if(range > 3){
+         range = 3;
       }
       var matrix = renderable.matrix();
       matrix.tx = location.x * 0.2 - 20.3 + (0.2 * range / 2);
       matrix.ty = location.y * 0.25 - 8 + (0.2 * range / 2);
       matrix.tz = -0.0001;
-      matrix.sx = 0.2 * range;
-      matrix.sy = 0.2 * range;
-      matrix.sz = 0.2 * range;
+      matrix.sx = 0.3 * range;
+      matrix.sy = 0.3 * range;
+      matrix.sz = 0.3 * range;
       matrix.update();
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
@@ -428,6 +429,7 @@ with(MO){
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       o.construct         = FEaiProvinceEntity_construct;
       o.build             = FEaiProvinceEntity_build;
+      o.update            = FEaiProvinceEntity_update;
       o.dispose           = FEaiProvinceEntity_dispose;
       return o;
    }
@@ -447,6 +449,7 @@ with(MO){
          vertexTotal += boundary.positionCount();
          indexTotal += boundary.indexes().length;
       }
+      o._vertexTotal = vertexTotal;
       var vertexStart = 0;
       var vertexIndex = 0;
       var faceIndex = 0;
@@ -478,11 +481,11 @@ with(MO){
          vertexStart += positionCount;
       }
       var colorIndex = 0;
-      var colors = new Uint8Array(4 * vertexTotal);
+      var colors = o.colorsData = new Uint8Array(4 * vertexTotal);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = (color >> 16) & 0x1F;
-         colors[colorIndex++] = (color >>  8) & 0x1F;
-         colors[colorIndex++] = (color      ) & 0x1F;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0
+         colors[colorIndex++] = 0;
          colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
@@ -517,6 +520,24 @@ with(MO){
       matrix.ty = -8;
       matrix.setScale(0.2, 0.25, 0.2);
       matrix.update();
+   }
+   MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
+      var o = this;
+      var investmentTotal = data.investmentTotal();
+      var rate = Math.sqrt(investmentTotal) / 100;
+      if(rate > 255){
+         rate = 255;
+      }
+      var colorIndex = 0;
+      var colors = o.colorsData;
+      for(var i = 0; i < o._vertexTotal; i++){
+         colors[colorIndex++] = rate;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 255;
+      }
+      var renderable = o._faceRenderable;
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
    }
    MO.FEaiProvinceEntity_dispose = function FEaiProvinceEntity_dispose(){
       var o = this;

@@ -9,6 +9,8 @@ var MO = new function MoSpace(){
    var o = this;
    o.version = '0.2.0';
    o.info    = new Object();
+   o.Lang    = new function MoLangSpace(){return this;}
+   o.Core    = new function MoCoreSpace(){return this;}
    return o;
 }
 
