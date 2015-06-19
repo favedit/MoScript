@@ -13,9 +13,9 @@
 <SCRIPT>
 //------------------------------------------------------------
 function onLoadData(){
-   // 选择舞台和场景
-   var stage = MO.Eai.Application.selectStageByCode(MO.EEaiStage.Chart);
-   stage.selectSceneByCode(MO.EEaiScene.ChartHistory);
+   // 选择舞台和章节
+   var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
+   chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
 }
 //------------------------------------------------------------
 function onLoad(){

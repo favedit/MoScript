@@ -1358,17 +1358,15 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd       = EScope.Local;
       o._loadModels    = null;
-      o._models        = null;
-      o._meshs         = null;
+      o._models        = RClass.register(o, new AGetter('_models'));
+      o._meshs         = RClass.register(o, new AGetter('_meshs'));
       o._dynamicMeshs  = null;
       o._thread        = null;
       o._interval      = 200;
       o.onProcess      = FE3rModelConsole_onProcess;
       o.construct      = FE3rModelConsole_construct;
       o.findModel      = FE3rModelConsole_findModel;
-      o.models         = FE3rModelConsole_models;
       o.findMesh       = FE3rModelConsole_findMesh;
-      o.meshs          = FE3rModelConsole_meshs;
       o.load           = FE3rModelConsole_load;
       o.loadMeshByGuid = FE3rModelConsole_loadMeshByGuid;
       o.loadMeshByCode = FE3rModelConsole_loadMeshByCode;
@@ -1393,22 +1391,16 @@ with(MO){
       o._models = new TDictionary();
       o._meshs = new TDictionary();
       o._dynamicMeshs = new TDictionary();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
-   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(p){
-      return this._models.get(p);
+   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(guid){
+      return this._models.get(guid);
    }
-   MO.FE3rModelConsole_models = function FE3rModelConsole_models(){
-      return this._models;
-   }
-   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(p){
-      return this._meshs.get(p);
-   }
-   MO.FE3rModelConsole_meshs = function FE3rModelConsole_meshs(){
-      return this._meshs;
+   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(guid){
+      return this._meshs.get(guid);
    }
    MO.FE3rModelConsole_load = function FE3rModelConsole_load(context, guid){
       var o = this;

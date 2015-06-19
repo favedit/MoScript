@@ -1,20 +1,20 @@
 with (MO) {
    MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
       o = RClass.inherits(this, o, FG2dContext);
-      o._handle = null;
-      o.construct = FG2dCanvasContext_construct;
-      o.linkCanvas = FG2dCanvasContext_linkCanvas;
-      o.setFont = FG2dCanvasContext_setFont;
-      o.clear = FG2dCanvasContext_clear;
-      o.drawLine = FG2dCanvasContext_drawLine;
-      o.drawRectangle = FG2dCanvasContext_drawRectangle;
-      o.drawText = FG2dCanvasContext_drawText;
-      o.drawImage = FG2dCanvasContext_drawImage;
+      o._handle        = null;
+      o.construct      = FG2dCanvasContext_construct;
+      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
+      o.setFont        = FG2dCanvasContext_setFont;
+      o.clear          = FG2dCanvasContext_clear;
+      o.drawLine       = FG2dCanvasContext_drawLine;
+      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawText       = FG2dCanvasContext_drawText;
+      o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder = FG2dCanvasContext_drawBorder;
-      o.drawGridImage = FG2dCanvasContext_drawGridImage;
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
-      o.toBytes = FG2dCanvasContext_toBytes;
+      o.drawBorder     = FG2dCanvasContext_drawBorder;
+      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
+      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
+      o.toBytes        = FG2dCanvasContext_toBytes;
       return o;
    }
    MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {

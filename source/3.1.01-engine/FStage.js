@@ -10,32 +10,25 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
       //..........................................................
       // @attribute
-      o._code             = 'stage';
-      o._statusActive     = false;
-      o._timer            = RClass.register(o, new AGetter('_timer'));
-      o._layers           = RClass.register(o, new AGetter('_layers'));
-      o._scenes           = RClass.register(o, new AGetter('_scenes'));
-      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
+      o._code           = 'stage';
+      o._statusActive   = false;
+      o._timer          = RClass.register(o, new AGetter('_timer'));
+      o._layers         = RClass.register(o, new AGetter('_layers'));
       //..........................................................
       // @event
-      o.onProcess         = FStage_onProcess;
+      o.onProcess       = FStage_onProcess;
       //..........................................................
       // @method
-      o.construct         = FStage_construct;
+      o.construct       = FStage_construct;
       // @method
-      o.registerLayer     = FStage_registerLayer;
-      o.unregisterLayer   = FStage_unregisterLayer;
-      o.active            = FStage_active;
-      o.deactive          = FStage_deactive;
+      o.registerLayer   = FStage_registerLayer;
+      o.unregisterLayer = FStage_unregisterLayer;
+      o.active          = FStage_active;
+      o.deactive        = FStage_deactive;
       // @method
-      o.registerScene     = FStage_registerScene;
-      o.unregisterScene   = FStage_unregisterScene;
-      o.selectScene       = FStage_selectScene;
-      o.selectSceneByCode = FStage_selectSceneByCode;
+      o.process         = FStage_process;
       // @method
-      o.process           = FStage_process;
-      // @method
-      o.dispose           = FStage_dispose;
+      o.dispose         = FStage_dispose;
       return o;
    }
 
@@ -66,7 +59,6 @@ with(MO){
       // 设置变量
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
-      o._scenes = new TDictionary();
    }
 
    //==========================================================
@@ -128,65 +120,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>注册一个场景。</T>
-   //
-   // @method
-   // @param scene:FScene 场景
-   //==========================================================
-   MO.FStage_registerScene = function FStage_registerScene(scene){
-      var code = scene.code();
-      this._scenes.set(code, scene);
-   }
-
-   //==========================================================
-   // <T>注销一个场景。</T>
-   //
-   // @method
-   // @param scene:FScene 场景
-   //==========================================================
-   MO.FStage_unregisterScene = function FStage_unregisterScene(scene){
-      var code = scene.code();
-      this._scenes.set(code, null);
-   }
-
-   //==========================================================
-   // <T>选择场景。</T>
-   //
-   // @method
-   // @param scene:String 代码
-   //==========================================================
-   MO.FStage_selectScene = function FStage_selectScene(scene){
-      var o = this;
-      // 层集合处理
-      if(o._activeScene != scene){
-         // 注销场景
-         var activeScene = o._activeScene;
-         if(activeScene){
-            activeScene.deactive();
-            o._activeScene = null;
-         }
-         // 激活场景
-         if(scene){
-            scene.active();
-            o._activeScene = scene;
-         }
-      }
-   }
-
-   //==========================================================
-   // <T>选择场景。</T>
-   //
-   // @method
-   // @param code:String 代码
-   //==========================================================
-   MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
-      var o = this;
-      var scene = o._scenes.get(code);
-      o.selectScene(scene);
-      return scene;
-   }
-
-   //==========================================================
    // <T>逻辑处理。</T>
    //
    // @method
@@ -202,10 +135,6 @@ with(MO){
       //..........................................................
       // 前处理
       o.processEnterFrameListener(o);
-      // 场景处理
-      if(o._activeScene){
-         o._activeScene.process();
-      }
       // 逻辑处理
       o.onProcess();
       // 后处理

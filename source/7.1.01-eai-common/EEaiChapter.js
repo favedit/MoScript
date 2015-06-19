@@ -1,11 +1,11 @@
 //==========================================================
-// <T>舞台类型。</T>
+// <T>章节类型。</T>
 //
 // @enum
 // @author maocy
 // @version 160604
 //==========================================================
-MO.EEaiStage = new function EEaiStage(){
+MO.EEaiChapter = new function EEaiChapter(){
    var o = this;
    o.Loading = 'loading';
    o.Login   = 'login';

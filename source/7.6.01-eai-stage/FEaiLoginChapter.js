@@ -5,10 +5,10 @@
 // @author maocy
 // @history 150604
 //==========================================================
-MO.FEaiLoginStage = function FEaiLoginStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
+MO.FEaiLoginChapter = function FEaiLoginChapter(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
-   o._code = MO.EEaiStage.Login;
+   o._code = MO.EEaiChapter.Login;
    return o;
 }

@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150604
 //==========================================================
-MO.FEaiSceneStage = function FEaiSceneStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
+MO.FEaiSceneChapter = function FEaiSceneChapter(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
-   o._code             = MO.EEaiStage.Scene;
+   o._code             = MO.EEaiChapter.Scene;
    // @attribute
    o._sceneCountry     = null;
    o._sceneGroup       = null;
@@ -17,12 +17,12 @@ MO.FEaiSceneStage = function FEaiSceneStage(o){
    o._sceneCompany     = null;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiSceneStage_construct;
+   o.construct         = MO.FEaiSceneChapter_construct;
    // @method
-   o.setup             = MO.FEaiSceneStage_setup;
-   o.process           = MO.FEaiSceneStage_process;
+   o.setup             = MO.FEaiSceneChapter_setup;
+   o.process           = MO.FEaiSceneChapter_process;
    // @method
-   o.dispose           = MO.FEaiSceneStage_dispose;
+   o.dispose           = MO.FEaiSceneChapter_dispose;
    return o;
 }
 
@@ -31,9 +31,9 @@ MO.FEaiSceneStage = function FEaiSceneStage(o){
 //
 // @method
 //==========================================================
-MO.FEaiSceneStage_construct = function FEaiSceneStage_construct(){
+MO.FEaiSceneChapter_construct = function FEaiSceneChapter_construct(){
    var o = this;
-   o.__base.FEaiStage.construct.call(o);
+   o.__base.FEaiChapter.construct.call(o);
 }
 
 //==========================================================
@@ -41,7 +41,7 @@ MO.FEaiSceneStage_construct = function FEaiSceneStage_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
+MO.FEaiSceneChapter_setup = function FEaiSceneChapter_setup(){
    var o = this;
    // 创建国家场景
    var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
@@ -70,9 +70,9 @@ MO.FEaiSceneStage_setup = function FEaiSceneStage_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiSceneStage_process = function FEaiSceneStage_process(){
+MO.FEaiSceneChapter_process = function FEaiSceneChapter_process(){
    var o = this;
-   o.__base.FEaiStage.process.call(o);
+   o.__base.FEaiChapter.process.call(o);
 }
 
 //==========================================================
@@ -80,8 +80,8 @@ MO.FEaiSceneStage_process = function FEaiSceneStage_process(){
 //
 // @method
 //==========================================================
-MO.FEaiSceneStage_dispose = function FEaiSceneStage_dispose(){
+MO.FEaiSceneChapter_dispose = function FEaiSceneChapter_dispose(){
    var o = this;
    // 父处理
-   o.__base.FEaiStage.dispose.call(o);
+   o.__base.FEaiChapter.dispose.call(o);
 }

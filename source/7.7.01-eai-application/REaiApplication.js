@@ -16,5 +16,6 @@ MO.Eai.setup = function Eai_setup(hPanel){
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    // 配置处理
-   o.Application.setup();
+   application.linkGraphicContext(canvas);
+   application.setup();
 }

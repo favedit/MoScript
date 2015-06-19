@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150604
 //==========================================================
-MO.FEaiChartStage = function FEaiChartStage(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiStage);
+MO.FEaiChartChapter = function FEaiChartChapter(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
-   o._code             = MO.EEaiStage.Chart;
+   o._code             = MO.EEaiChapter.Chart;
    // @attribute
    o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneIndustry    = MO.Class.register(o, new MO.AGetter('_sceneIndustry'));
@@ -17,12 +17,12 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o._sceneCustomer    = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
    //..........................................................
    // @method
-   o.construct         = MO.FEaiChartStage_construct;
+   o.construct         = MO.FEaiChartChapter_construct;
    // @method
-   o.setup             = MO.FEaiChartStage_setup;
-   o.process           = MO.FEaiChartStage_process;
+   o.setup             = MO.FEaiChartChapter_setup;
+   o.process           = MO.FEaiChartChapter_process;
    // @method
-   o.dispose           = MO.FEaiChartStage_dispose;
+   o.dispose           = MO.FEaiChartChapter_dispose;
    return o;
 }
 
@@ -31,9 +31,9 @@ MO.FEaiChartStage = function FEaiChartStage(o){
 //
 // @method
 //==========================================================
-MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
+MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
    var o = this;
-   o.__base.FEaiStage.construct.call(o);
+   o.__base.FEaiChapter.construct.call(o);
 }
 
 //==========================================================
@@ -41,7 +41,7 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiChartStage_setup = function FEaiChartStage_setup(){
+MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    // 创建国家场景
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
@@ -70,9 +70,9 @@ MO.FEaiChartStage_setup = function FEaiChartStage_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiChartStage_process = function FEaiChartStage_process(){
+MO.FEaiChartChapter_process = function FEaiChartChapter_process(){
    var o = this;
-   o.__base.FEaiStage.process.call(o);
+   o.__base.FEaiChapter.process.call(o);
 }
 
 //==========================================================
@@ -80,8 +80,8 @@ MO.FEaiChartStage_process = function FEaiChartStage_process(){
 //
 // @method
 //==========================================================
-MO.FEaiChartStage_dispose = function FEaiChartStage_dispose(){
+MO.FEaiChartChapter_dispose = function FEaiChartChapter_dispose(){
    var o = this;
    // 父处理
-   o.__base.FEaiStage.dispose.call(o);
+   o.__base.FEaiChapter.dispose.call(o);
 }

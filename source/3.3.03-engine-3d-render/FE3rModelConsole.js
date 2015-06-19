@@ -13,8 +13,8 @@ with(MO){
       o._scopeCd       = EScope.Local;
       // @attribute
       o._loadModels    = null;
-      o._models        = null;
-      o._meshs         = null;
+      o._models        = RClass.register(o, new AGetter('_models'));
+      o._meshs         = RClass.register(o, new AGetter('_meshs'));
       o._dynamicMeshs  = null;
       // @attribute
       o._thread        = null;
@@ -27,9 +27,7 @@ with(MO){
       o.construct      = FE3rModelConsole_construct;
       // @method
       o.findModel      = FE3rModelConsole_findModel;
-      o.models         = FE3rModelConsole_models;
       o.findMesh       = FE3rModelConsole_findMesh;
-      o.meshs          = FE3rModelConsole_meshs;
       // @method
       o.load           = FE3rModelConsole_load;
       o.loadMeshByGuid = FE3rModelConsole_loadMeshByGuid;
@@ -69,52 +67,32 @@ with(MO){
       o._meshs = new TDictionary();
       o._dynamicMeshs = new TDictionary();
       // 创建线程
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
 
    //==========================================================
    // <T>根据唯一编号查找渲染模型。</T>
    //
    // @method
-   // @param p:guid:String 唯一编号
+   // @param guid:String 唯一编号
    // @return FE3sModel 渲染模型
    //==========================================================
-   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(p){
-      return this._models.get(p);
-   }
-
-   //==========================================================
-   // <T>获得渲染模型集合。</T>
-   //
-   // @method
-   // @return TDictionary 渲染模型集合
-   //==========================================================
-   MO.FE3rModelConsole_models = function FE3rModelConsole_models(){
-      return this._models;
+   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(guid){
+      return this._models.get(guid);
    }
 
    //==========================================================
    // <T>根据唯一编号查找渲染网格。</T>
    //
    // @method
-   // @param p:guid:String 唯一编号
+   // @param guid:String 唯一编号
    // @return FE3sMesh 渲染网格
    //==========================================================
-   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(p){
-      return this._meshs.get(p);
-   }
-
-   //==========================================================
-   // <T>获得渲染网格集合。</T>
-   //
-   // @method
-   // @return TDictionary 渲染网格集合
-   //==========================================================
-   MO.FE3rModelConsole_meshs = function FE3rModelConsole_meshs(){
-      return this._meshs;
+   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(guid){
+      return this._meshs.get(guid);
    }
 
    //==========================================================

@@ -14853,71 +14853,18 @@ MO.SBorderLine_dispose = function SBorderLine_dispose(){
    o.style = null;
    o.color = null;
 }
-with(MO){
-   MO.FG2dContext = function FG2dContext(o){
-      o = RClass.inherits(this, o, FGraphicContext);
-      o._native       = null;
-      o.construct     = FG2dContext_construct;
-      o.linkCanvas    = FG2dContext_linkCanvas;
-      o.drawLine      = FG2dContext_drawLine;
-      o.drawRecrangle = FG2dContext_drawRecrangle;
-      o.drawText      = FG2dContext_drawText;
-      o.drawImage     = FG2dContext_drawImage;
-      o.fillRecrangle = FG2dContext_fillRecrangle;
-      o.dispose       = FG2dContext_dispose;
-      return o;
-   }
-   MO.FG2dContext_construct = function FG2dContext_construct(){
-      var o = this;
-      o.__base.FGraphicContext.construct.call(o);
-   }
-   MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(h){
-      var o = this;
-      o._hCanvas = h;
-      o._native = h.getContext('2d')
-   }
-   MO.FG2dContext_drawLine = function FG2dContext_drawLine(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y2);
-      c.stroke();
-   }
-   MO.FG2dContext_drawRecrangle = function FG2dContext_drawRecrangle(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y1);
-      c.lineTo(x2, y2);
-      c.lineTo(x1, y2);
-      c.lineTo(x1, y1);
-      c.stroke();
-   }
-   MO.FG2dContext_drawText = function FG2dContext_drawText(x, y, t){
-      var o = this;
-      o._native.fillText(t, x, y);
-   }
-   MO.FG2dContext_drawImage = function FG2dContext_drawImage(image, x, y){
-      var o = this;
-      o._native.drawImage(image, 0, 0);
-   }
-   MO.FG2dContext_fillRecrangle = function FG2dContext_fillRecrangle(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.beginPath();
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y1);
-      c.lineTo(x2, y2);
-      c.lineTo(x1, y2);
-      c.lineTo(x1, y1);
-      c.closePath();
-      c.fill();
-   }
-   MO.FG2dContext_dispose = function FG2dContext_dispose(){
-      var o = this;
-      o._native = null;
-      o.__base.FGraphicContext.dispose.call(o);
-   }
+MO.FG2dObject = function FG2dObject(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o.setup   = MO.FG2dObject_setup;
+   o.dispose = MO.FG2dObject_dispose;
+   return o;
+}
+MO.FG2dObject_setup = function FG2dObject_setup(){
+}
+MO.FG2dObject_dispose = function FG2dObject_dispose(){
+   var o = this;
+   o.__base.MGraphicObject.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FG2dContext = function FG2dContext(o){
@@ -14950,20 +14897,20 @@ with(MO){
 with (MO) {
    MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
       o = RClass.inherits(this, o, FG2dContext);
-      o._handle = null;
-      o.construct = FG2dCanvasContext_construct;
-      o.linkCanvas = FG2dCanvasContext_linkCanvas;
-      o.setFont = FG2dCanvasContext_setFont;
-      o.clear = FG2dCanvasContext_clear;
-      o.drawLine = FG2dCanvasContext_drawLine;
-      o.drawRectangle = FG2dCanvasContext_drawRectangle;
-      o.drawText = FG2dCanvasContext_drawText;
-      o.drawImage = FG2dCanvasContext_drawImage;
+      o._handle        = null;
+      o.construct      = FG2dCanvasContext_construct;
+      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
+      o.setFont        = FG2dCanvasContext_setFont;
+      o.clear          = FG2dCanvasContext_clear;
+      o.drawLine       = FG2dCanvasContext_drawLine;
+      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawText       = FG2dCanvasContext_drawText;
+      o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder = FG2dCanvasContext_drawBorder;
-      o.drawGridImage = FG2dCanvasContext_drawGridImage;
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
-      o.toBytes = FG2dCanvasContext_toBytes;
+      o.drawBorder     = FG2dCanvasContext_drawBorder;
+      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
+      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
+      o.toBytes        = FG2dCanvasContext_toBytes;
       return o;
    }
    MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
@@ -20573,63 +20520,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FComponent);
-      o._activeStage      = RClass.register(o, new AGetter('_activeStage'));
-      o._stages           = RClass.register(o, new AGetter('_stages'));
-      o.construct         = FApplication_construct;
-      o.registerStage     = FApplication_registerStage;
-      o.unregisterStage   = FApplication_unregisterStage;
-      o.selectStage       = FApplication_selectStage;
-      o.selectStageByCode = FApplication_selectStageByCode;
-      o.dispose           = FApplication_dispose;
-      return o;
-   }
-   MO.FApplication_construct = function FApplication_construct(){
-      var o = this;
-      o.__base.FComponent.construct.call(o);
-      o._stages = new TDictionary();
-   }
-   MO.FApplication_registerStage = function FApplication_registerStage(stage){
-      var o = this;
-      var code = stage.code();
-      o._stages.set(code, stage);
-   }
-   MO.FApplication_unregisterStage = function FApplication_unregisterStage(stage){
-      var o = this;
-      var code = stage.code();
-      o._stages.set(code, null);
-   }
-   MO.FApplication_selectStage = function FApplication_selectStage(stage){
-      var o = this;
-      if(o._activeStage != stage){
-         var activeStage = o._activeStage;
-         if(activeStage){
-            RStage.unregister(activeStage);
-            activeStage.deactive();
-            o._activeStage = null;
-         }
-         if(stage){
-            stage.active();
-            RStage.register(stage.code(), stage);
-            o._activeStage = stage;
-         }
-      }
-   }
-   MO.FApplication_selectStageByCode = function FApplication_selectStageByCode(code){
-      var o = this;
-      var stage = o._stages.get(code);
-      o.selectStage(stage);
-      return stage;
-   }
-   MO.FApplication_dispose = function FApplication_dispose(){
-      var o = this;
-      o._stages = RObject.dispose(o._stages, true);
-      o._activeStage = null;
-      o.__base.FComponent.dispose.call(o);
-   }
-}
-with(MO){
    MO.FDisplay = function FDisplay(o){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);
       o._currentMatrix    = null;
@@ -21060,86 +20950,20 @@ with(MO){
    }
 }
 with(MO){
-   MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FComponent);
-      o._statusSetup    = false;
-      o._statusActive   = false;
-      o._layers         = RClass.register(o, AGetter('_layers'));
-      o.construct       = FScene_construct;
-      o.registerLayer   = FScene_registerLayer;
-      o.unregisterLayer = FScene_unregisterLayer;
-      o.setup           = FScene_setup;
-      o.active          = FScene_active;
-      o.deactive        = FScene_deactive;
-      o.process         = FScene_process;
-      o.dispose         = FScene_dispose;
-      return o;
-   }
-   MO.FScene_construct = function FScene_construct(){
-      var o = this;
-      o.__base.FComponent.construct.call(o);
-      o._layers = new TDictionary();
-   }
-   MO.FScene_registerLayer = function FScene_registerLayer(code, layer){
-      layer.setCode(code);
-      this._layers.set(code, layer);
-   }
-   MO.FScene_unregisterLayer = function FScene_unregisterLayer(code){
-      this._layers.set(code, null);
-   }
-   MO.FScene_setup = function FScene_setup(){
-      var o = this;
-   }
-   MO.FScene_active = function FScene_active(){
-      var o = this;
-      if(!o._statusSetup){
-         o.setup();
-         o._statusSetup = true;
-      }
-      o._statusActive = true;
-      var layers = o._layers;
-      var count = layers.count();
-      for(var i = 0; i < count; i++){
-         var layer = layers.at(i);
-         layer.active();
-      }
-   }
-   MO.FScene_deactive = function FScene_deactive(){
-      var o = this;
-      var layers = o._layers;
-      var count = layers.count();
-      for(var i = 0; i < count; i++){
-         var layer = layers.at(i);
-         layer.deactive();
-      }
-      o._statusActive = false;
-   }
-   MO.FScene_dispose = function FScene_dispose(){
-      var o = this;
-      o.__base.FComponent.dispose.call(o);
-   }
-}
-with(MO){
    MO.FStage = function FStage(o){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
-      o._code             = 'stage';
-      o._statusActive     = false;
-      o._timer            = RClass.register(o, new AGetter('_timer'));
-      o._layers           = RClass.register(o, new AGetter('_layers'));
-      o._scenes           = RClass.register(o, new AGetter('_scenes'));
-      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
-      o.onProcess         = FStage_onProcess;
-      o.construct         = FStage_construct;
-      o.registerLayer     = FStage_registerLayer;
-      o.unregisterLayer   = FStage_unregisterLayer;
-      o.active            = FStage_active;
-      o.deactive          = FStage_deactive;
-      o.registerScene     = FStage_registerScene;
-      o.unregisterScene   = FStage_unregisterScene;
-      o.selectScene       = FStage_selectScene;
-      o.selectSceneByCode = FStage_selectSceneByCode;
-      o.process           = FStage_process;
-      o.dispose           = FStage_dispose;
+      o._code           = 'stage';
+      o._statusActive   = false;
+      o._timer          = RClass.register(o, new AGetter('_timer'));
+      o._layers         = RClass.register(o, new AGetter('_layers'));
+      o.onProcess       = FStage_onProcess;
+      o.construct       = FStage_construct;
+      o.registerLayer   = FStage_registerLayer;
+      o.unregisterLayer = FStage_unregisterLayer;
+      o.active          = FStage_active;
+      o.deactive        = FStage_deactive;
+      o.process         = FStage_process;
+      o.dispose         = FStage_dispose;
       return o;
    }
    MO.FStage_onProcess = function FStage_onProcess(){
@@ -21156,7 +20980,6 @@ with(MO){
       o.__base.FComponent.construct.call(o);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
-      o._scenes = new TDictionary();
    }
    MO.FStage_registerLayer = function FStage_registerLayer(code, layer){
       layer.setCode(code);
@@ -21185,34 +21008,6 @@ with(MO){
       }
       o._statusActive = false;
    }
-   MO.FStage_registerScene = function FStage_registerScene(scene){
-      var code = scene.code();
-      this._scenes.set(code, scene);
-   }
-   MO.FStage_unregisterScene = function FStage_unregisterScene(scene){
-      var code = scene.code();
-      this._scenes.set(code, null);
-   }
-   MO.FStage_selectScene = function FStage_selectScene(scene){
-      var o = this;
-      if(o._activeScene != scene){
-         var activeScene = o._activeScene;
-         if(activeScene){
-            activeScene.deactive();
-            o._activeScene = null;
-         }
-         if(scene){
-            scene.active();
-            o._activeScene = scene;
-         }
-      }
-   }
-   MO.FStage_selectSceneByCode = function FStage_selectSceneByCode(code){
-      var o = this;
-      var scene = o._scenes.get(code);
-      o.selectScene(scene);
-      return scene;
-   }
    MO.FStage_process = function FStage_process(){
       var o = this;
       var timer = o._timer;
@@ -21221,9 +21016,6 @@ with(MO){
          timer.setup();
       }
       o.processEnterFrameListener(o);
-      if(o._activeScene){
-         o._activeScene.process();
-      }
       o.onProcess();
       o.processLeaveFrameListener(o);
       timer.update();
@@ -27289,17 +27081,15 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd       = EScope.Local;
       o._loadModels    = null;
-      o._models        = null;
-      o._meshs         = null;
+      o._models        = RClass.register(o, new AGetter('_models'));
+      o._meshs         = RClass.register(o, new AGetter('_meshs'));
       o._dynamicMeshs  = null;
       o._thread        = null;
       o._interval      = 200;
       o.onProcess      = FE3rModelConsole_onProcess;
       o.construct      = FE3rModelConsole_construct;
       o.findModel      = FE3rModelConsole_findModel;
-      o.models         = FE3rModelConsole_models;
       o.findMesh       = FE3rModelConsole_findMesh;
-      o.meshs          = FE3rModelConsole_meshs;
       o.load           = FE3rModelConsole_load;
       o.loadMeshByGuid = FE3rModelConsole_loadMeshByGuid;
       o.loadMeshByCode = FE3rModelConsole_loadMeshByCode;
@@ -27324,22 +27114,16 @@ with(MO){
       o._models = new TDictionary();
       o._meshs = new TDictionary();
       o._dynamicMeshs = new TDictionary();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
-   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(p){
-      return this._models.get(p);
+   MO.FE3rModelConsole_findModel = function FE3rModelConsole_findModel(guid){
+      return this._models.get(guid);
    }
-   MO.FE3rModelConsole_models = function FE3rModelConsole_models(){
-      return this._models;
-   }
-   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(p){
-      return this._meshs.get(p);
-   }
-   MO.FE3rModelConsole_meshs = function FE3rModelConsole_meshs(){
-      return this._meshs;
+   MO.FE3rModelConsole_findMesh = function FE3rModelConsole_findMesh(guid){
+      return this._meshs.get(guid);
    }
    MO.FE3rModelConsole_load = function FE3rModelConsole_load(context, guid){
       var o = this;
@@ -34358,6 +34142,221 @@ with(MO){
    MO.FGuiWindow = function FGuiWindow(o){
       o = RClass.inherits(this, o, FGuiFrame);
       return o;
+   }
+}
+with(MO){
+   MO.FApplication = function FApplication(o){
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o._activeChapter      = RClass.register(o, new AGetter('_activeChapter'));
+      o._chapters           = RClass.register(o, new AGetter('_chapters'));
+      o._eventEnterFrame    = null;
+      o._eventLeaveFrame    = null;
+      o.construct           = FApplication_construct;
+      o.registerChapter     = FApplication_registerChapter;
+      o.unregisterChapter   = FApplication_unregisterChapter;
+      o.selectChapter       = FApplication_selectChapter;
+      o.selectChapterByCode = FApplication_selectChapterByCode;
+      o.process             = FApplication_process;
+      o.dispose             = FApplication_dispose;
+      return o;
+   }
+   MO.FApplication_construct = function FApplication_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._chapters = new TDictionary();
+      o._eventEnterFrame = new SEvent();
+      o._eventLeaveFrame = new SEvent();
+   }
+   MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
+      var o = this;
+      var code = chapter.code();
+      o._chapters.set(code, chapter);
+   }
+   MO.FApplication_unregisterChapter = function FApplication_unregisterChapter(chapter){
+      var o = this;
+      var code = chapter.code();
+      o._chapters.set(code, null);
+   }
+   MO.FApplication_selectChapter = function FApplication_selectChapter(chapter){
+      var o = this;
+      if(o._activeChapter != chapter){
+         var activeChapter = o._activeChapter;
+         if(activeChapter){
+            activeChapter.deactive();
+            o._activeChapter = null;
+         }
+         if(chapter){
+            chapter.active();
+            o._activeChapter = chapter;
+         }
+      }
+   }
+   MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(code){
+      var o = this;
+      var chapter = o._chapters.get(code);
+      o.selectChapter(chapter);
+      return chapter;
+   }
+   MO.FApplication_process = function FApplication_process(){
+      var o = this;
+      o.processEnterFrameListener(o._eventEnterFrame);
+      if(o._activeChapter){
+         o._activeChapter.process();
+      }
+      o.processLeaveFrameListener(o._eventLeaveFrame);
+   }
+   MO.FApplication_dispose = function FApplication_dispose(){
+      var o = this;
+      o._activeChapter = null;
+      o._chapters = RObject.dispose(o._chapters, true);
+      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
+      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
+      o.__base.MListenerEnterFrame.dispose.call(o);
+      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FChapter = function FChapter(o){
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o._code             = RClass.register(o, new AGetSet('_code'));
+      o._scenes           = RClass.register(o, new AGetter('_scenes'));
+      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
+      o._statusSetup      = false;
+      o._statusActive     = false;
+      o._eventEnterFrame  = null;
+      o._eventLeaveFrame  = null;
+      o.construct         = FChapter_construct;
+      o.registerScene     = FChapter_registerScene;
+      o.unregisterScene   = FChapter_unregisterScene;
+      o.selectScene       = FChapter_selectScene;
+      o.selectSceneByCode = FChapter_selectSceneByCode;
+      o.setup             = FChapter_setup;
+      o.active            = FChapter_active;
+      o.deactive          = FChapter_deactive;
+      o.process           = FChapter_process;
+      o.dispose           = FChapter_dispose;
+      return o;
+   }
+   MO.FChapter_construct = function FChapter_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._scenes = new TDictionary();
+      o._eventEnterFrame = new SEvent();
+      o._eventLeaveFrame = new SEvent();
+   }
+   MO.FChapter_registerScene = function FChapter_registerScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, scene);
+   }
+   MO.FChapter_unregisterScene = function FChapter_unregisterScene(scene){
+      var code = scene.code();
+      this._scenes.set(code, null);
+   }
+   MO.FChapter_selectScene = function FChapter_selectScene(scene){
+      var o = this;
+      if(o._activeScene != scene){
+         var activeScene = o._activeScene;
+         if(activeScene){
+            activeScene.deactive();
+            o._activeScene = null;
+         }
+         if(scene){
+            scene.active();
+            o._activeScene = scene;
+         }
+      }
+   }
+   MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
+      var o = this;
+      var scene = o._scenes.get(code);
+      o.selectScene(scene);
+      return scene;
+   }
+   MO.FChapter_setup = function FChapter_setup(){
+      var o = this;
+   }
+   MO.FChapter_active = function FChapter_active(){
+      var o = this;
+      if(!o._statusSetup){
+         o.setup();
+         o._statusSetup = true;
+      }
+      o._statusActive = true;
+   }
+   MO.FChapter_deactive = function FChapter_deactive(){
+      var o = this;
+      o._statusActive = false;
+   }
+   MO.FChapter_process = function FChapter_process(){
+      var o = this;
+      o.processEnterFrameListener(o._eventEnterFrame);
+      if(o._activeScene){
+         o._activeScene.process();
+      }
+      o.processLeaveFrameListener(o._eventLeaveFrame);
+   }
+   MO.FChapter_dispose = function FChapter_dispose(){
+      var o = this;
+      o._scenes = RObject.dispose(o._scenes);
+      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
+      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
+      o.__base.MListenerEnterFrame.dispose.call(o);
+      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FScene = function FScene(o){
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o._code            = RClass.register(o, new AGetSet('_code'));
+      o._activeStage     = RClass.register(o, new AGetSet('_activeStage'));
+      o._statusSetup     = false;
+      o._statusActive    = false;
+      o._eventEnterFrame = null;
+      o._eventLeaveFrame = null;
+      o.construct        = FScene_construct;
+      o.setup            = FScene_setup;
+      o.active           = FScene_active;
+      o.deactive         = FScene_deactive;
+      o.process          = FScene_process;
+      o.dispose          = FScene_dispose;
+      return o;
+   }
+   MO.FScene_construct = function FScene_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._eventEnterFrame = new SEvent();
+      o._eventLeaveFrame = new SEvent();
+   }
+   MO.FScene_setup = function FScene_setup(){
+      var o = this;
+   }
+   MO.FScene_active = function FScene_active(){
+      var o = this;
+      if(!o._statusSetup){
+         o.setup();
+         o._statusSetup = true;
+      }
+      o._statusActive = true;
+   }
+   MO.FScene_deactive = function FScene_deactive(){
+      var o = this;
+      o._statusActive = false;
+   }
+   MO.FScene_process = function FScene_process(){
+      var o = this;
+      o.processEnterFrameListener(o._eventEnterFrame);
+      if(o._activeStage){
+         o._activeStage.process();
+      }
+      o.processLeaveFrameListener(o._eventLeaveFrame);
+   }
+   MO.FScene_dispose = function FScene_dispose(){
+      var o = this;
+      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
+      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
+      o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){

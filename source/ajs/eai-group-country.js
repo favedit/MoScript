@@ -65,14 +65,15 @@ with(MO){
       var o = this;
       var stage = MO.Eai.Canvas.activeStage();
       var mapLayer = stage.mapLayer();
-      var spriteLayer = stage.spriteLayer();
+      var borderLayer = stage.borderLayer();
+      var dataLayer = stage.dataLayer();
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var province = RClass.create(FEaiProvinceData);
          province.unserialize(input);
          province.build(MO.Eai.Canvas);
          mapLayer.pushRenderable(province.faceRenderable());
-         spriteLayer.pushRenderable(province.borderRenderable());
+         borderLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
       }
       var context = MO.Eai.Canvas.graphicContext();
@@ -99,7 +100,6 @@ with(MO){
                total = 1;
             }
             material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
-            console.log(i);
          }else{
             material.info().ambientColor.set(0, 0, 0, 1);
          }
@@ -117,7 +117,7 @@ with(MO){
          matrix.sy = 0.2 * range;
          matrix.sz = 0.2 * range;
          matrix.update();
-         spriteLayer.pushRenderable(bitmap);
+         dataLayer.pushRenderable(bitmap);
       }
    }
    MO.FEaiCountryData_load = function FEaiCountryData_load(){

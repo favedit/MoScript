@@ -68,15 +68,17 @@ MO.FEaiChartHistoryScene_onTemplateLoad = function FEaiChartHistoryScene_onTempl
 MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
+   var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
+   stage.linkGraphicContext(o);
+   stage.region().linkGraphicContext(o);
+   stage.region().backgroundColor().set(0, 0, 0.1, 1);
+   MO.Eai.Canvas.selectStage(stage);
    var country = o._country = MO.Class.create(MO.FEaiCountryData);
    country.load();
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
-   var stage = MO.Eai.Canvas.activeStage();
-   var layer = stage.faceLayer();
-   stage.region().backgroundColor().set(0, 0, 0.1, 1);
 }
 MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive(){
    var o = this;
@@ -176,6 +178,27 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
    var frame = o._countryLogoBar
    layer.removeRenderable(frame.renderable());
 }
+MO.FEaiChartStage = function FEaiChartStage(o){
+   o = MO.RClass.inherits(this, o, MO.FE3dStage);
+   o._mapLayer    = MO.RClass.register(o, new MO.AGetter('_mapLayer'));
+   o._borderLayer = MO.RClass.register(o, new MO.AGetter('_borderLayer'));
+   o._dataLayer   = MO.RClass.register(o, new MO.AGetter('_dataLayer'));
+   o._faceLayer   = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
+   o.construct    = MO.FEaiChartStage_construct;
+   return o;
+}
+MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
+   var o = this;
+   o.__base.FE3dStage.construct.call(o);
+   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('MapLayer', layer);
+   var layer = o._borderLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('BorderLayer', layer);
+   var layer = o._dataLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('DataLayer', layer);
+   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   o.registerLayer('FaceLayer', layer);
+}
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._code = MO.EEaiScene.Company;
@@ -239,49 +262,19 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 with(MO){
    MO.FEaiScene = function FEaiScene(o){
-      o = RClass.inherits(this, o, FE3dStage);
-      o._mapLayer       = null;
-      o._spriteLayer    = null;
-      o._faceLayer      = null;
-      o._frames         = null;
+      o = RClass.inherits(this, o, FScene);
+      o._frames         = RClass.register(o, new AGetter('_frames'));
       o.construct       = FEaiScene_construct;
-      o.mapLayer        = FEaiScene_mapLayer;
-      o.spriteLayer     = FEaiScene_spriteLayer;
-      o.faceLayer       = FEaiScene_faceLayer;
       o.registerFrame   = FEaiScene_registerFrame;
       o.unregisterFrame = FEaiScene_unregisterFrame;
-      o.active          = FEaiScene_active;
-      o.deactive        = FEaiScene_deactive;
       o.process         = FEaiScene_process;
+      o.disposet        = FEaiScene_dispose;
       return o;
    }
    MO.FEaiScene_construct = function FEaiScene_construct(){
       var o = this;
-      o.__base.FE3dStage.construct.call(o);
-      var layer = o._mapLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('MapLayer', layer);
-      var layer = o._spriteLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('SpriteLayer', layer);
-      var layer = o._faceLayer = RClass.create(FDisplayLayer);
-      o.registerLayer('FaceLayer', layer);
+      o.__base.FScene.construct.call(o);
       o._frames = new TObjects();
-   }
-   MO.FEaiScene_mapLayer = function FEaiScene_mapLayer(){
-      return this._mapLayer;
-   }
-   MO.FEaiScene_spriteLayer = function FEaiScene_spriteLayer(){
-      return this._spriteLayer;
-   }
-   MO.FEaiScene_faceLayer = function FEaiScene_faceLayer(){
-      return this._faceLayer;
-   }
-   MO.FEaiScene_active = function FEaiScene_active(){
-      var o = this;
-      o.__base.FE3dStage.active.call(o);
-   }
-   MO.FEaiScene_deactive = function FEaiScene_deactive(){
-      var o = this;
-      o.__base.FE3dStage.deactive.call(o);
    }
    MO.FEaiScene_registerFrame = function FEaiScene_registerFrame(frame){
       this._frames.push(frame);
@@ -296,5 +289,11 @@ with(MO){
          var frame = o._frames.at(i);
          frame.psUpdate();
       }
+      o.__base.FScene.process.call(o);
+   }
+   MO.FEaiScene_dispose = function FEaiScene_dispose(){
+      var o = this;
+      o._frames = RObject.dispose(o._frames);
+      o.__base.FScene.dispose.call(o);
    }
 }

@@ -25,8 +25,6 @@ with(MO){
       o.onMouseCaptureStop  = FEaiCanvas_onMouseCaptureStop;
       // @event
       o.onResize            = FEaiCanvas_onResize;
-      // @event
-      o.onTemplateLoad      = FEaiCanvas_onTemplateLoad;
       //..........................................................
       // @method
       o.construct           = FEaiCanvas_construct;
@@ -176,25 +174,6 @@ with(MO){
          rp.size().set(cs.width, cs.height);
          rp.update();
       }
-   }
-
-   //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   // @param p:template:FTemplate3d 模板
-   //==========================================================
-   MO.FEaiCanvas_onTemplateLoad = function FEaiCanvas_onTemplateLoad(p){
-      var o = this;
-      var c = o._graphicContext;
-      var s = o._activeStage;
-      // 设置投影
-      var cs = c.size();
-      var rp = s.camera().projection();
-      rp.size().set(cs.width, cs.height);
-      rp.update();
-      // 加载完成
-      o.processLoadListener(o, s);
    }
 
    //==========================================================

@@ -7,24 +7,27 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FComponent);
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
       //..........................................................
       // @attribute
-      o._statusSetup    = false;
-      o._statusActive   = false;
-      o._layers         = RClass.register(o, AGetter('_layers'));
+      o._code            = RClass.register(o, new AGetSet('_code'));
+      o._activeStage     = RClass.register(o, new AGetSet('_activeStage'));
+      // @attribute
+      o._statusSetup     = false;
+      o._statusActive    = false;
+      // @attribute
+      o._eventEnterFrame = null;
+      o._eventLeaveFrame = null;
       //..........................................................
       // @method
-      o.construct       = FScene_construct;
+      o.construct        = FScene_construct;
       // @method
-      o.registerLayer   = FScene_registerLayer;
-      o.unregisterLayer = FScene_unregisterLayer;
-      o.setup           = FScene_setup;
-      o.active          = FScene_active;
-      o.deactive        = FScene_deactive;
-      o.process         = FScene_process;
+      o.setup            = FScene_setup;
+      o.active           = FScene_active;
+      o.deactive         = FScene_deactive;
+      o.process          = FScene_process;
       // @method
-      o.dispose         = FScene_dispose;
+      o.dispose          = FScene_dispose;
       return o;
    }
 
@@ -35,31 +38,10 @@ with(MO){
    //==========================================================
    MO.FScene_construct = function FScene_construct(){
       var o = this;
-      o.__base.FComponent.construct.call(o);
+      o.__base.FObject.construct.call(o);
       // 设置变量
-      o._layers = new TDictionary();
-   }
-
-   //==========================================================
-   // <T>注册一个显示层。</T>
-   //
-   // @method
-   // @param code:String 名称
-   // @param layer:FDisplayLayer 显示层
-   //==========================================================
-   MO.FScene_registerLayer = function FScene_registerLayer(code, layer){
-      layer.setCode(code);
-      this._layers.set(code, layer);
-   }
-
-   //==========================================================
-   // <T>注销一个显示层。</T>
-   //
-   // @method
-   // @param code:String 名称
-   //==========================================================
-   MO.FScene_unregisterLayer = function FScene_unregisterLayer(code){
-      this._layers.set(code, null);
+      o._eventEnterFrame = new SEvent();
+      o._eventLeaveFrame = new SEvent();
    }
 
    //==========================================================
@@ -85,13 +67,6 @@ with(MO){
       }
       // 设置状态
       o._statusActive = true;
-      // 层集合处理
-      var layers = o._layers;
-      var count = layers.count();
-      for(var i = 0; i < count; i++){
-         var layer = layers.at(i);
-         layer.active();
-      }
    }
 
    //==========================================================
@@ -101,15 +76,25 @@ with(MO){
    //==========================================================
    MO.FScene_deactive = function FScene_deactive(){
       var o = this;
-      // 层集合处理
-      var layers = o._layers;
-      var count = layers.count();
-      for(var i = 0; i < count; i++){
-         var layer = layers.at(i);
-         layer.deactive();
-      }
       // 设置状态
       o._statusActive = false;
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FScene_process = function FScene_process(){
+      var o = this;
+      // 前处理
+      o.processEnterFrameListener(o._eventEnterFrame);
+      // 场景处理
+      if(o._activeStage){
+         o._activeStage.process();
+      }
+      // 后处理
+      o.processLeaveFrameListener(o._eventLeaveFrame);
    }
 
    //==========================================================
@@ -119,7 +104,9 @@ with(MO){
    //==========================================================
    MO.FScene_dispose = function FScene_dispose(){
       var o = this;
+      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
+      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       // 父处理
-      o.__base.FComponent.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
    }
 }

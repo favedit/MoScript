@@ -37,6 +37,8 @@
       <PathMerger source='/3.5.04-engine-control-table'      target='/ajs/engine-control-table.js'/>
       <PathMerger source='/3.5.05-engine-control-frame'      target='/ajs/engine-control-frame.js'/>
 
+      <PathMerger source='/3.6.01-engine-application'        target='/ajs/engine-application.js'/>
+
       <PathMerger source='/4.1.01-game'                      target='/ajs/game.js'/>
       <PathMerger source='/4.2.01-game-core'                 target='/ajs/game-core.js'/>
       <PathMerger source='/4.3.01-game-template'             target='/ajs/game-template.js'/>
@@ -160,6 +162,9 @@
          <File source='/ajs/engine-control-table.js'/>
          <File source='/ajs/engine-control-frame.js'/>
       </FileMerger>
+      <FileMerger target='/ajs/mo-engine-application.js'>
+         <File source='/ajs/engine-application.js'/>
+      </FileMerger>
       <FileMerger target='/ajs/mo-game.js'>
          <File source='/ajs/game.js'/>
          <File source='/ajs/game-core.js'/>
@@ -248,6 +253,7 @@
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
          <File source='/ajs/mo-engine-control.js'/>
+         <File source='/ajs/mo-engine-application.js'/>
          <File source='/ajs/mo-game.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo.js'>
@@ -257,6 +263,7 @@
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
          <File source='/ajs/mo-engine-control.js'/>
+         <File source='/ajs/mo-engine-application.js'/>
          <File source='/ajs/mo-game.js'/>
          <File source='/ajs/mo-control.js'/>
          <File source='/ajs/mo-design.js'/>

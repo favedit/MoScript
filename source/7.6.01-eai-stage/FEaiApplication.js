@@ -10,34 +10,22 @@ with(MO){
       o = RClass.inherits(this, o, FApplication);
       //..........................................................
       // @attribute
-      o._stageLoading = RClass.register(o, new AGetter('_stageLoading'));
-      o._stageLogin   = RClass.register(o, new AGetter('_stageLogin'));
-      o._stageScene   = RClass.register(o, new AGetter('_stageScene'));
-      o._stageChart   = RClass.register(o, new AGetter('_stageChart'));
+      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
+      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
+      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
+      // @attribute
+      o._thread         = null;
+      o._interval       = 10;
       //..........................................................
-      // @event
-      o.onProcess     = FEaiApplication_onProcess;
-      //..........................................................
       // @method
-      o.construct     = FEaiApplication_construct;
+      o.construct       = FEaiApplication_construct;
       // @method
-      o.setup         = FEaiApplication_setup;
-      o.selectStage   = FEaiApplication_selectStage;
+      o.setup           = FEaiApplication_setup;
+      o.selectChapter   = FEaiApplication_selectChapter;
       // @method
-      o.dispose       = FEaiApplication_dispose;
+      o.dispose         = FEaiApplication_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>执行处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiApplication_onProcess = function FEaiApplication_onProcess(){
-      var o = this;
-      //if(o._activeStage){
-      //   o._activeStage.process();
-      //}
    }
 
    //==========================================================
@@ -48,6 +36,11 @@ with(MO){
    MO.FEaiApplication_construct = function FEaiApplication_construct(){
       var o = this;
       o.__base.FApplication.construct.call(o);
+      // 创建线程
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.process);
+      RConsole.find(FThreadConsole).start(thread);
    }
 
    //==========================================================
@@ -57,29 +50,26 @@ with(MO){
    //==========================================================
    MO.FEaiApplication_setup = function FEaiApplication_setup(){
       var o = this;
-      var context = MO.Eai.Canvas.graphicContext();
       // 创建加载中舞台
-      var stage = o._stageLoading = MO.RClass.create(MO.FEaiLoadingStage);
-      stage.linkGraphicContext(context);
-      stage.setup();
-      o.registerStage(stage);
+      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
       // 创建登录舞台
-      var stage = o._stageLogin = MO.RClass.create(MO.FEaiLoginStage);
-      stage.linkGraphicContext(context);
-      stage.setup();
-      o.registerStage(stage);
+      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
       // 创建场景舞台
-      var stage = o._stageScene = MO.RClass.create(MO.FEaiSceneStage);
-      stage.linkGraphicContext(context);
-      stage.setup();
-      o.registerStage(stage);
+      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
       // 创建表格舞台
-      var stage = o._stageChart = MO.RClass.create(MO.FEaiChartStage);
-      stage.linkGraphicContext(context);
-      stage.setup();
-      o.registerStage(stage);
-      // 注册处理
-      RStage.lsnsEnterFrame.register(o, o.onProcess);
+      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+      chapter.linkGraphicContext(o);
+      chapter.setup();
+      o.registerChapter(chapter);
    }
 
    //==========================================================
@@ -87,13 +77,13 @@ with(MO){
    //
    // @method
    // @param code:String 代码
-   // @return FStage 舞台
+   // @return FChapter 舞台
    //==========================================================
-   MO.FEaiApplication_selectStage = function FEaiApplication_selectStage(code){
+   MO.FEaiApplication_selectChapter = function FEaiApplication_selectChapter(code){
       var o = this;
-      o.__base.FApplication.selectStage.call(o, code);
+      o.__base.FApplication.selectChapter.call(o, code);
       // 设置激活内容
-      MO.Eai.Canvas.selectStage(o._activeStage);
+      //MO.Eai.Canvas.selectChapter(o._activeChapter);
    }
 
    //==========================================================

@@ -1,3 +1,11 @@
+MO.EEaiChapter = new function EEaiChapter(){
+   var o = this;
+   o.Loading = 'loading';
+   o.Login   = 'login';
+   o.Scene   = 'scene';
+   o.Chart   = 'chart';
+   return o;
+}
 MO.EEaiConstant = new function EEaiConstant(){
    var o = this;
    o.ServiceHost = "eai.logic.service";
@@ -13,14 +21,6 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartIndustry   = 'chart.industry';
    o.ChartInvestment = 'chart.investment';
    o.ChartCustomer   = 'chart.customer';
-   return o;
-}
-MO.EEaiStage = new function EEaiStage(){
-   var o = this;
-   o.Loading = 'loading';
-   o.Login   = 'login';
-   o.Scene   = 'scene';
-   o.Chart   = 'chart';
    return o;
 }
 MO.Eai = new function FEai(){

@@ -152,71 +152,18 @@ MO.SBorderLine_dispose = function SBorderLine_dispose(){
    o.style = null;
    o.color = null;
 }
-with(MO){
-   MO.FG2dContext = function FG2dContext(o){
-      o = RClass.inherits(this, o, FGraphicContext);
-      o._native       = null;
-      o.construct     = FG2dContext_construct;
-      o.linkCanvas    = FG2dContext_linkCanvas;
-      o.drawLine      = FG2dContext_drawLine;
-      o.drawRecrangle = FG2dContext_drawRecrangle;
-      o.drawText      = FG2dContext_drawText;
-      o.drawImage     = FG2dContext_drawImage;
-      o.fillRecrangle = FG2dContext_fillRecrangle;
-      o.dispose       = FG2dContext_dispose;
-      return o;
-   }
-   MO.FG2dContext_construct = function FG2dContext_construct(){
-      var o = this;
-      o.__base.FGraphicContext.construct.call(o);
-   }
-   MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(h){
-      var o = this;
-      o._hCanvas = h;
-      o._native = h.getContext('2d')
-   }
-   MO.FG2dContext_drawLine = function FG2dContext_drawLine(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y2);
-      c.stroke();
-   }
-   MO.FG2dContext_drawRecrangle = function FG2dContext_drawRecrangle(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y1);
-      c.lineTo(x2, y2);
-      c.lineTo(x1, y2);
-      c.lineTo(x1, y1);
-      c.stroke();
-   }
-   MO.FG2dContext_drawText = function FG2dContext_drawText(x, y, t){
-      var o = this;
-      o._native.fillText(t, x, y);
-   }
-   MO.FG2dContext_drawImage = function FG2dContext_drawImage(image, x, y){
-      var o = this;
-      o._native.drawImage(image, 0, 0);
-   }
-   MO.FG2dContext_fillRecrangle = function FG2dContext_fillRecrangle(x1, y1, x2, y2){
-      var o = this;
-      var c = o._native;
-      c.beginPath();
-      c.moveTo(x1, y1);
-      c.lineTo(x2, y1);
-      c.lineTo(x2, y2);
-      c.lineTo(x1, y2);
-      c.lineTo(x1, y1);
-      c.closePath();
-      c.fill();
-   }
-   MO.FG2dContext_dispose = function FG2dContext_dispose(){
-      var o = this;
-      o._native = null;
-      o.__base.FGraphicContext.dispose.call(o);
-   }
+MO.FG2dObject = function FG2dObject(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o.setup   = MO.FG2dObject_setup;
+   o.dispose = MO.FG2dObject_dispose;
+   return o;
+}
+MO.FG2dObject_setup = function FG2dObject_setup(){
+}
+MO.FG2dObject_dispose = function FG2dObject_dispose(){
+   var o = this;
+   o.__base.MGraphicObject.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FG2dContext = function FG2dContext(o){
@@ -249,20 +196,20 @@ with(MO){
 with (MO) {
    MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
       o = RClass.inherits(this, o, FG2dContext);
-      o._handle = null;
-      o.construct = FG2dCanvasContext_construct;
-      o.linkCanvas = FG2dCanvasContext_linkCanvas;
-      o.setFont = FG2dCanvasContext_setFont;
-      o.clear = FG2dCanvasContext_clear;
-      o.drawLine = FG2dCanvasContext_drawLine;
-      o.drawRectangle = FG2dCanvasContext_drawRectangle;
-      o.drawText = FG2dCanvasContext_drawText;
-      o.drawImage = FG2dCanvasContext_drawImage;
+      o._handle        = null;
+      o.construct      = FG2dCanvasContext_construct;
+      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
+      o.setFont        = FG2dCanvasContext_setFont;
+      o.clear          = FG2dCanvasContext_clear;
+      o.drawLine       = FG2dCanvasContext_drawLine;
+      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawText       = FG2dCanvasContext_drawText;
+      o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder = FG2dCanvasContext_drawBorder;
-      o.drawGridImage = FG2dCanvasContext_drawGridImage;
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
-      o.toBytes = FG2dCanvasContext_toBytes;
+      o.drawBorder     = FG2dCanvasContext_drawBorder;
+      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
+      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
+      o.toBytes        = FG2dCanvasContext_toBytes;
       return o;
    }
    MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
