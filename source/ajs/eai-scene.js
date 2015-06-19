@@ -101,8 +101,14 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var count = cityEntities.count();
       for(var i = 0; i < count; i++){
          var cityEntity = cityEntities.at(i);
-         var data = cityDatas.get(cityEntity.code());
+         var code = cityEntity.data().code();
+         var data = cityDatas.get(code);
          cityEntity.update(data);
+      }
+      var hTotal = document.getElementById('id_total');
+      if(hTotal){
+         hTotal.innerHTML =
+               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
 }
@@ -115,7 +121,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._endDate = new MO.TDate();
    MO.RDate.autoParse(o._currentDate, '20140701');
    MO.RDate.autoParse(o._startDate, '20140701');
-   MO.RDate.autoParse(o._endDate, '20150616');
+   MO.RDate.autoParse(o._endDate, '20150618');
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
@@ -271,7 +277,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
       cityEntity.setData(city);
       cityEntity.build(context);
-      o._cityEntities.set(cityEntity.code(), cityEntity);
+      o._cityEntities.set(city.code(), cityEntity);
       dataLayer.pushRenderable(cityEntity.renderable());
    }
 }

@@ -10,7 +10,6 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
-      o._code       = RClass.register(o, new AGetSet('_code'));
       o._data       = RClass.register(o, new AGetSet('_data'));
       o._renderable = RClass.register(o, new AGetter('_renderable'));
       //..........................................................
@@ -43,7 +42,6 @@ with(MO){
    MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
       var o = this;
       var location = o._data.location();
-      o._code = o._data.code();
       // 创建位图数据
       var bitmapData = context.createObject(MO.FE3dBitmapData);
       bitmapData.loadUrl('/script/ars/eai/dot.png');

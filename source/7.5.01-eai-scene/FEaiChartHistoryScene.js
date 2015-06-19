@@ -92,8 +92,14 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var count = cityEntities.count();
       for(var i = 0; i < count; i++){
          var cityEntity = cityEntities.at(i);
-         var data = cityDatas.get(cityEntity.code());
+         var code = cityEntity.data().code();
+         var data = cityDatas.get(code);
          cityEntity.update(data);
+      }
+      var hTotal = document.getElementById('id_total');
+      if(hTotal){
+         hTotal.innerHTML = 
+               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
 }
@@ -112,7 +118,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._endDate = new MO.TDate();
    MO.RDate.autoParse(o._currentDate, '20140701');
    MO.RDate.autoParse(o._startDate, '20140701');
-   MO.RDate.autoParse(o._endDate, '20150616');
+   MO.RDate.autoParse(o._endDate, '20150618');
 }
 
 //==========================================================

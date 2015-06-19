@@ -1,23 +1,23 @@
 with(MO){
    //==========================================================
-   // <T>城市资源控制台。</T>
+   // <T>省份资源控制台。</T>
    //
    // @class
    // @author maocy
    // @history 150618
    //==========================================================
-   MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
+   MO.FEaiProvinceResourceConsole = function FEaiProvinceResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
-      o._citys      = RClass.register(o, new AGetter('_citys'));
+      o._provinces  = RClass.register(o, new AGetter('_provinces'));
       //..........................................................
       // @method
-      o.construct   = FEaiCityResourceConsole_construct;
+      o.construct   = FEaiProvinceResourceConsole_construct;
       // @method
-      o.unserialize = FEaiCityResourceConsole_unserialize;
+      o.unserialize = FEaiProvinceResourceConsole_unserialize;
       // @method
-      o.dispose     = FEaiCityResourceConsole_dispose;
+      o.dispose     = FEaiProvinceResourceConsole_dispose;
       return o;
    }
 
@@ -26,11 +26,11 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
+   MO.FEaiProvinceResourceConsole_construct = function FEaiProvinceResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
       // 创建属性
-      o._citys = new TDictionary();
+      o._provinces = new TDictionary();
    }
 
    //==========================================================
@@ -39,15 +39,14 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
+   MO.FEaiProvinceResourceConsole_unserialize = function FEaiProvinceResourceConsole_unserialize(input){
       var o = this;
-      var citys = o._citys;
-      var cards = o._cards;
+      var provinces = o._provinces;
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
-         var city = RClass.create(FEaiCityResource);
-         city.unserialize(input);
-         citys.set(city.code(), city);
+         var province = RClass.create(FEaiProvinceResource);
+         province.unserialize(input);
+         provinces.set(province.code(), province);
       }
    }
 
@@ -56,9 +55,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
+   MO.FEaiProvinceResourceConsole_dispose = function FEaiProvinceResourceConsole_dispose(){
       var o = this;
-      o._citys = RObject.dispose(o._citys);
+      o._provinces = RObject.dispose(o._provinces);
       // 父处理
       o.__base.FConsole.dispose.call(o);
    }

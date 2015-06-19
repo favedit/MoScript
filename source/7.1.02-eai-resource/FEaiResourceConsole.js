@@ -9,20 +9,22 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener);
    //..........................................................
    // @attribute
-   o._loadListeners  = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
-   o._cityConsole    = MO.Class.register(o, new MO.AGetter('_cityConsole'));
-   o._historyConsole = MO.Class.register(o, new MO.AGetter('_historyConsole'));
+   o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
+   o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));
+   // @attribute
+   o._loadListeners   = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    //..........................................................
    // @event
-   o.onLoad          = MO.FEaiResourceConsole_onLoad;
+   o.onLoad           = MO.FEaiResourceConsole_onLoad;
    //..........................................................
    // @method
-   o.construct       = MO.FEaiResourceConsole_construct;
+   o.construct        = MO.FEaiResourceConsole_construct;
    // @method
-   o.unserialize     = MO.FEaiResourceConsole_unserialize;
-   o.load            = MO.FEaiResourceConsole_load;
+   o.unserialize      = MO.FEaiResourceConsole_unserialize;
+   o.load             = MO.FEaiResourceConsole_load;
    // @method
-   o.dispose         = MO.FEaiResourceConsole_dispose;
+   o.dispose          = MO.FEaiResourceConsole_dispose;
    return o;
 }
 
@@ -58,6 +60,7 @@ MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
 MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._provinceConsole = MO.RClass.create(MO.FEaiProvinceResourceConsole);
    o._cityConsole = MO.RClass.create(MO.FEaiCityResourceConsole);
    o._historyConsole = MO.RClass.create(MO.FEaiHistoryResourceConsole);
 }
@@ -70,6 +73,7 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 //==========================================================
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
+   o._provinceConsole.unserialize(input);
    o._cityConsole.unserialize(input);
    o._historyConsole.unserialize(input);
 }
@@ -96,6 +100,7 @@ MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
 //==========================================================
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
+   o._provinceConsole = RObject.dispose(o._provinceConsole);
    o._cityConsole = RObject.dispose(o._cityConsole);
    o._historyConsole = RObject.dispose(o._historyConsole);
    // 父处理

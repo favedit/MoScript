@@ -11,7 +11,6 @@ with(MO){
       //..........................................................
       // @attribute
       o._provinceCode  = RClass.register(o, new AGetSet('_provinceCode'));
-      o._provinceLabel = RClass.register(o, new AGetSet('_provinceLabel'));
       o._code          = RClass.register(o, new AGetSet('_code'));
       o._label         = RClass.register(o, new AGetSet('_label'));
       o._location      = RClass.register(o, new AGetter('_location'));
@@ -45,9 +44,8 @@ with(MO){
    //==========================================================
    MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
       var o = this;
-      o._provinceCode = input.readString();
-      o._provinceLabel = input.readString();
-      o._code = input.readString();
+      o._provinceCode = input.readUint16();
+      o._code = input.readUint16();
       o._label = input.readString();
       o._location.unserialize(input);
    }

@@ -70,7 +70,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
       cityEntity.setData(city);
       cityEntity.build(context);
-      o._cityEntities.set(cityEntity.code(), cityEntity);
+      o._cityEntities.set(city.code(), cityEntity);
       dataLayer.pushRenderable(cityEntity.renderable());
    }
 }
