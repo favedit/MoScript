@@ -77,7 +77,7 @@ with(MO){
          o._provinces.set(province.name(), province);
       }
       // 放入城市
-      var context = MO.Eai.Canvas.graphicContext();
+      /*var context = MO.Eai.Canvas.graphicContext();
       var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
       var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
       var dateData = historyConsole.dates().get('20150616');
@@ -120,7 +120,7 @@ with(MO){
          matrix.sz = 0.2 * range;
          matrix.update();
          dataLayer.pushRenderable(bitmap);
-      }
+      }*/
    }
 
    //==========================================================

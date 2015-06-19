@@ -294,7 +294,8 @@ with(MO){
    MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
       o = RClass.inherits(this, o, FEaiLogic);
       o._code   = 'organization';
-      o._dict   = RClass.register(o, new AGetter('_dict'));
+      o._pIdMIndexDict = RClass.register(o, new AGetter('_pIdMIndexDict'));
+      o._cityIdNameDict = RClass.register(o, new AGetter('_cityIdNameDict'));
       o._provinceColors = RClass.register(o, new AGetter('_provinceColors'));
       o.doFetch = FEaiLogicOrganization_doFetch;
       o.getMeshIndex = FEaiLogicOrganization_getMeshIndex;
@@ -304,41 +305,42 @@ with(MO){
    MO.FEaiLogicOrganization_construct = function FEaiLogicOrganization_construct(){
       var o = this;
       o.__base.FEaiLogic.construct.call(o);
-      var dict = o._dict = new TDictionary();
-      dict.set(11, 6);
-      dict.set(12, 7);
-      dict.set(13, 5);
-      dict.set(14, 8);
-      dict.set(15, 2);
-      dict.set(21, 4);
-      dict.set(22, 3);
-      dict.set(23, 1);
-      dict.set(31, -1);
-      dict.set(32, 21);
-      dict.set(33, 22);
-      dict.set(34, 20);
-      dict.set(35, 30);
-      dict.set(36, 23);
-      dict.set(37, 9);
-      dict.set(41, 10);
-      dict.set(42, 19);
-      dict.set(43, 29);
-      dict.set(44, 24);
-      dict.set(45, 25);
-      dict.set(46, 0);
-      dict.set(50, 18);
-      dict.set(51, 17);
-      dict.set(52, 26);
-      dict.set(53, 27);
-      dict.set(54, 16);
-      dict.set(61, 12);
-      dict.set(62, 13);
-      dict.set(63, 15);
-      dict.set(64, 11);
-      dict.set(65, 14);
-      dict.set(71, 28);
-      dict.set(81, -1);
-      dict.set(82, -1);
+      var pmDict = o._pIdMIndexDict = new TDictionary();
+      pmDict.set(11, 6);
+      pmDict.set(12, 7);
+      pmDict.set(13, 5);
+      pmDict.set(14, 8);
+      pmDict.set(15, 2);
+      pmDict.set(21, 4);
+      pmDict.set(22, 3);
+      pmDict.set(23, 1);
+      pmDict.set(31, -1);
+      pmDict.set(32, 21);
+      pmDict.set(33, 22);
+      pmDict.set(34, 20);
+      pmDict.set(35, 30);
+      pmDict.set(36, 23);
+      pmDict.set(37, 9);
+      pmDict.set(41, 10);
+      pmDict.set(42, 19);
+      pmDict.set(43, 29);
+      pmDict.set(44, 24);
+      pmDict.set(45, 25);
+      pmDict.set(46, 0);
+      pmDict.set(50, 18);
+      pmDict.set(51, 17);
+      pmDict.set(52, 26);
+      pmDict.set(53, 27);
+      pmDict.set(54, 16);
+      pmDict.set(61, 12);
+      pmDict.set(62, 13);
+      pmDict.set(63, 15);
+      pmDict.set(64, 11);
+      pmDict.set(65, 14);
+      pmDict.set(71, 28);
+      pmDict.set(81, -1);
+      pmDict.set(82, -1);
+      var cinDict = o._cityIdNameDict = new TDictionary();
       var colors = o._provinceColors = new TObjects();
       colors.push(new SColor4(0.25, 0.50, 0.60));
       colors.push(new SColor4(0.30, 0.60, 0.75));
@@ -350,7 +352,10 @@ with(MO){
       return this.send('fetch', null, owner, callback);
    }
    MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getMeshIndex(provinceId){
-      return this._dict.value(provinceId);
+      return this.pIdMIndexDict().value(provinceId);
+   }
+   MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getCityName(cityId) {
+      return this.cityIdNameDict().value(cityId);
    }
 }
 with(MO){
@@ -441,49 +446,6 @@ with(MO){
          mapLayer.pushRenderable(province.faceRenderable());
          borderLayer.pushRenderable(province.borderRenderable());
          o._provinces.set(province.name(), province);
-      }
-      var context = MO.Eai.Canvas.graphicContext();
-      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
-      var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
-      var dateData = historyConsole.dates().get('20150616');
-      var cityDatas = dateData.citys();
-      var citys = cityConsole.citys();
-      var count = citys.count();
-      for(var i = 0; i < count; i++){
-         var city = citys.at(i);
-         var data = cityDatas.get(city.code());
-         var bitmapData = context.createObject(MO.FE3dBitmapData);
-         bitmapData.loadUrl('../ars/eai/dot.png');
-         var bitmap = context.createObject(MO.FE3dBitmap);
-         bitmap.setData(bitmapData);
-         var material = bitmap.material();
-         material.info().optionAlpha = true;
-         var range = 1;
-         if(data){
-            var total = data.investmentTotal() / 10000000;
-            range = total / 2;
-            if(total > 1){
-               total = 1;
-            }
-            material.info().ambientColor.set(total + 0.1, 0, total + 0.1, 1);
-         }else{
-            material.info().ambientColor.set(0, 0, 0, 1);
-         }
-         if(range < 1){
-            range = 1;
-         }
-         if(range > 2){
-            range = 2;
-         }
-         var matrix = bitmap.matrix();
-         matrix.tx = city.location().x * 0.2 - 20.3 + (0.2 * range / 2);
-         matrix.ty = city.location().y * 0.25 - 8 + (0.2 * range / 2);
-         matrix.tz = -0.0001;
-         matrix.sx = 0.2 * range;
-         matrix.sy = 0.2 * range;
-         matrix.sz = 0.2 * range;
-         matrix.update();
-         dataLayer.pushRenderable(bitmap);
       }
    }
    MO.FEaiCountryData_load = function FEaiCountryData_load(){

@@ -12,6 +12,12 @@
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
 //------------------------------------------------------------
+function onLoadData(){
+   // 选择舞台和章节
+   var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
+   chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
+}
+//------------------------------------------------------------
 function onLoad(){
    // 环境设置
    MO.initialize();
@@ -19,11 +25,12 @@ function onLoad(){
    MO.RBrowser.setContentPath('..');
    // 设置资源获取方式
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
    MO.Eai.setup(id_canvas);
-   // 选择舞台和场景
-   var stage = MO.Eai.Application.selectStageByCode(MO.EEaiStage.Chart);
-   stage.selectSceneByCode(MO.EEaiScene.ChartHistory);
+   var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
+   resourceConsole.addLoadListener(null, onLoadData);
+   resourceConsole.load();
 }
 </SCRIPT>
 </HEAD>

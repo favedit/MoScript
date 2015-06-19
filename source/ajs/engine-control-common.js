@@ -212,6 +212,17 @@ MO.EGuiDock = new function EGuiDock(){
    o.Fill        = 'fill';
    return o;
 }
+MO.EGuiTimeUnit = new function EGuiTimeUnit() {
+   var o = this;
+   o.Second = 'second';
+   o.Minute = 'minute';
+   o.Hour   = 'hour';
+   o.Day    = 'day';
+   o.Week   = 'week';
+   o.Month  = 'month';
+   o.Year   = 'year';
+   return o;
+}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
