@@ -1,0 +1,71 @@
+/* ------------------------------------------------------ */
+/* Html                                                   */
+/* ------------------------------------------------------ */
+html{
+   width:100%;
+   height:100%;
+}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+body{
+   width: 100%;
+   height: 100%;
+   margin: 0px;
+   font-family: "微软雅黑", Arial;
+   font-size: 12px;
+}
+
+/* ------------------------------------------------------ */
+/* Form                                                   */
+/* ------------------------------------------------------ */
+form{
+   width: 100%;
+   height: 100%;
+   margin: 0px;
+}
+
+a{
+   text-decoration: none;
+   color : blue;
+}
+
+a:hover{
+   text-decoration: underline;
+}
+
+td{
+   font-family:"NSimSun";
+   font-size:9pt;
+}
+
+div{
+   font-family:"NSimSun";
+   font-size:9pt;
+}
+
+span{
+   font-family:"NSimSun";
+   font-size:9pt;
+}
+
+input{
+   font-family:"NSimSun";
+   font-size:9pt;
+   border:1px solid #999999;
+}
+
+textarea{
+   font-family:"NSimSun";
+   font-size:9pt;
+   border:1px solid #999999;
+}
+
+.comCheckBox{
+   border:0;
+}
+
+.comRadioButton{
+   border:0;
+}

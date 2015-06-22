@@ -9,6 +9,8 @@
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
+      o._scopeCd         = EScope.Local;
+      // @attribute
       o._configs         = null;
       o._loadEffects     = null;
       o._registerEffects = null;

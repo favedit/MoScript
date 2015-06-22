@@ -15,7 +15,7 @@ function _load(){
       RBrowser.setContentPath('../..');
       RWindow.connect(window);
 
-      var hCanvas = document.getElementById('_canvas');
+      var hCanvas = document.createElement('CANVAS');
       context = REngine3d.createContext(FWglContext, hCanvas);
 
       RDump.dump(RBrowser, _dump);
@@ -27,7 +27,6 @@ function _load(){
 }
 </SCRIPT>
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="10">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_dump'></DIV><br>
 </BODY>
 

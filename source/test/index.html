@@ -4,56 +4,44 @@
 <TITLE>CoolLight Designer</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
-<LINK rel="stylesheet" href='../acs/control.css' type="text/css" media="all"/>
-<LINK rel="stylesheet" href='../acs/design.css' type="text/css" media="all"/>
-<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
-<STYLE>
-a{
-   text-decoration: none;
-   color: #CCEEFF;
-}
-.itemLabel{
-   color: #FFFFFF;
-   font-size: 14pt;
-}
-</STYLE>
+<LINK type="text/css" media="all" rel="stylesheet" href='acs/control.css'/>
+<LINK type="text/css" media="all" rel="stylesheet" href='acs/design.css'/>
+<LINK type="text/css" media="all" rel="stylesheet" href='acs/lang.css'/>
+<LINK type="text/css" media="all" rel="stylesheet" href='acs/test.css'/>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 </HEAD>
-<BODY style='background-color:#444444;'>
-<TABLE width='100%' cellspacing='4'>
-   <TR><TD align='center'><H1 style='color:#FFFF00'>Capacity</H1></TD></TR>
-   <TR><TD align='center'><A href='info.html'>Info</A></TD></TR>
-
-   <TR><TD align='center'><H1 style='color:#FFFF00'>Engine 3d</H1></TD></TR>
-   <TR><TD align='center'>
-      <TABLE cellspacing='2'>
-         <TR class='itemLabel'><TD width='160'>engine3d.bitmap.01</TD><TD width='100'>位图-01</TD><TD width='80'><A href='engine3d/bitmap-01.html'>测试</A></TR>
-         <TR class='itemLabel'><TD>engine3d.video.01</TD><TD>视频-01</TD><TD><A href='engine3d/video-01.html'>测试</A></TD></TR>
-         <TR class='itemLabel'><TD>engine3d.shape.01</TD><TD>形状-01</TD><TD><A href='engine3d/shape-01.html'>测试</A></TD></TR>
-      </TABLE>
-   </TD><TR>
-
-   <TR><TD align='center'><H1 style='color:#FFFF00'>Engine Control</H1></TD></TR>
-   <TR><TD align='center'>
-      <TABLE cellspacing='2'>
-         <TR class='itemLabel'><TD width='160'>engine-control.bar.01</TD><TD width='100'>停靠栏-01</TD><TD width='80'><A href='engine-control/bar-01.html'>测试</A></TR>
-      </TABLE>
-   </TD><TR>
-
-   <TR><TD align='center'><H1 style='color:#FFFF00'>Baidu</H1></TD></TR>
-   <TR><TD align='center'>
-      <TABLE cellspacing='2'>
-         <TR class='itemLabel'><TD width='160'>baidu.map.01</TD><TD width='100'>地图-01</TD><TD width='80'><A href='baidu/map-01.html'>测试</A></TR>
-      </TABLE>
-   </TD><TR>
-
-   <TR><TD align='center'><H1 style='color:#FFFF00'>Eai</H1></TD></TR>
-   <TR><TD align='center'>
-      <TABLE cellspacing='2'>
-         <TR class='itemLabel'><TD width='160'>application</TD><TD width='100'>应用</TD><TD width='80'><A href='../eai/application.html'>测试</A></TR>
-         <TR class='itemLabel'><TD width='160'>chart</TD><TD width='100'>表格</TD><TD width='80'><A href='../eai/chart.html'>测试</A></TR>
-         <TR class='itemLabel'><TD width='160'>map.03</TD><TD width='100'>地图-03</TD><TD width='80'><A href='../eai/country3.html'>测试</A></TR>
-      </TABLE>
-   </TD><TR>
+<SCRIPT>
+function onBodyLoad(){
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建画布
+   id_catalog.src = 'catalog.html';
+   id_space.src = 'capacity.html';
+}
+</SCRIPT>
+<BODY style='background-color:#FFFFFF;overflow:hidden;' onload='onBodyLoad()'>
+<TABLE width='100%' height='100%' border='0' cellpadding='0' cellspacing='0'>
+   <TR style='background-color:#333333'>
+      <TD height='28px' align='center' class='Title_Label'>
+         Microbject 3D Engine Test
+      </TD>
+   </TR>
+   <TR style='background-color:#FFFFFF'>
+      <TD align='center'>
+         <TABLE width='100%' height='100%' border='0' cellpadding='0' cellspacing='0'>
+            <TR>
+               <TD width='280px'><IFRAME name='catalog' id='id_catalog' style='width:100%;height:100%;border:0px;'></IFRAME></TD>
+               <TD><IFRAME name='space' id='id_space' style='width:100%;height:100%;border:0px;'></IFRAME><TD>
+            </TR>
+         </TABLE>
+      </TD>
+   </TR>
 </TABLE>
 </BODY>
 </HTML>

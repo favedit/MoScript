@@ -9,6 +9,7 @@
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
+      o._scopeCd    = EScope.Local;
       o._techniques = null;
       //..........................................................
       // @method

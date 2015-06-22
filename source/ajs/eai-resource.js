@@ -227,6 +227,7 @@ with(MO){
 }
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener);
+   o._scopeCd         = MO.EScope.Local;
    o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));

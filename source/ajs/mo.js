@@ -12588,15 +12588,15 @@ with(MO){
       return o;
    }
    MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
-      var c = RConsole.get(FThreadConsole);
-      c.processAll();
+      var threadConsole = RConsole.get(FThreadConsole);
+      threadConsole.processAll();
    }
-   MO.FThreadConsole_push = function FThreadConsole_push(p){
-      this._threads.push(p);
+   MO.FThreadConsole_push = function FThreadConsole_push(thread){
+      this._threads.push(thread);
    }
-   MO.FThreadConsole_start = function FThreadConsole_start(p){
-      p.start();
-      this._threads.push(p);
+   MO.FThreadConsole_start = function FThreadConsole_start(thread){
+      thread.start();
+      this._threads.push(thread);
    }
    MO.FThreadConsole_construct = function FThreadConsole_construct(){
       var o = this;
@@ -12605,18 +12605,18 @@ with(MO){
       o._hWindow = window;
       o._hIntervalId = o._hWindow.setInterval(o.ohInterval, o._interval);
    }
-   MO.FThreadConsole_process = function FThreadConsole_process(p){
+   MO.FThreadConsole_process = function FThreadConsole_process(thread){
       var o = this;
-      if(p){
-         switch(p.statusCd()){
+      if(thread){
+         switch(thread.statusCd()){
             case EThreadStatus.Sleep:
                break;
             case EThreadStatus.Active:
-               p.process(o._interval);
+               thread.process(o._interval);
                break;
             case EThreadStatus.Finish:
-               p.dispose();
-               o._threads.remove(p);
+               thread.dispose();
+               o._threads.remove(thread);
                break;
          }
       }
@@ -12624,21 +12624,21 @@ with(MO){
    MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
       var o = this;
       if(o._active){
-         var ts = o._threads;
-         var c = ts.count();
-         for(var n = 0; n < c; n++){
-            var t = ts.get(n);
-            o.process(t);
+         var threads = o._threads;
+         var count = threads.count();
+         for(var n = 0; n < count; n++){
+            var thread = threads.at(n);
+            o.process(thread);
          }
       }
    }
    MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
       var o = this;
-      var hw = o._hWindow;
-      if(hw){
-         var hi = o._hIntervalId;
-         if(hi){
-            hw.clearInterval(hi);
+      var hWindow = o._hWindow;
+      if(hWindow){
+         var hIntervalId = o._hIntervalId;
+         if(hIntervalId){
+            hWindow.clearInterval(hIntervalId);
             o._hIntervalId = null;
          }
          o._hWindow = null;
@@ -16097,6 +16097,7 @@ with(MO){
 with(MO){
    MO.FG3dEffectConsole = function FG3dEffectConsole(o){
       o = RClass.inherits(this, o, FConsole);
+      o._scopeCd         = EScope.Local;
       o._configs         = null;
       o._loadEffects     = null;
       o._registerEffects = null;
@@ -16825,6 +16826,7 @@ with(MO){
 with(MO){
    MO.FG3dTechniqueConsole = function FG3dTechniqueConsole(o){
       o = RClass.inherits(this, o, FConsole);
+      o._scopeCd    = EScope.Local;
       o._techniques = null;
       o.construct   = FG3dTechniqueConsole_construct;
       o.techniques  = FG3dTechniqueConsole_techniques;

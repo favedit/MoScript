@@ -383,12 +383,6 @@ MO.FEaiCountryScene_setup = function FEaiCountryScene_setup(){
 MO.FEaiCountryScene_active = function FEaiCountryScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
-   var stage = MO.Eai.Canvas.activeStage();
-   var layer = stage.faceLayer();
-   var frame = o._countryLogoBar
-   var renderable = frame.renderable();
-   renderable.setLocation(10, 10);
-   layer.pushRenderable(frame.renderable());
 }
 MO.FEaiCountryScene_deactive = function FEaiCountryScene_deactive(){
    var o = this;

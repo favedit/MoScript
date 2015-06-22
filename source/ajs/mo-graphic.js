@@ -1510,6 +1510,7 @@ with(MO){
 with(MO){
    MO.FG3dEffectConsole = function FG3dEffectConsole(o){
       o = RClass.inherits(this, o, FConsole);
+      o._scopeCd         = EScope.Local;
       o._configs         = null;
       o._loadEffects     = null;
       o._registerEffects = null;
@@ -2238,6 +2239,7 @@ with(MO){
 with(MO){
    MO.FG3dTechniqueConsole = function FG3dTechniqueConsole(o){
       o = RClass.inherits(this, o, FConsole);
+      o._scopeCd    = EScope.Local;
       o._techniques = null;
       o.construct   = FG3dTechniqueConsole_construct;
       o.techniques  = FG3dTechniqueConsole_techniques;

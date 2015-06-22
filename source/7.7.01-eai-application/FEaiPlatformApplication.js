@@ -6,25 +6,27 @@ with(MO){
    // @author maocy
    // @history 150606
    //==========================================================
-   MO.FEaiChartApplication = function FEaiChartApplication(o){
+   MO.FEaiPlatformApplication = function FEaiPlatformApplication(o){
       o = RClass.inherits(this, o, FEaiApplication);
       //..........................................................
       // @attribute
       o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
+      o._chapterLogin   = RClass.register(o, new AGetter('_chapterLogin'));
+      o._chapterScene   = RClass.register(o, new AGetter('_chapterScene'));
       o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
       // @attribute
       o._thread         = null;
       o._interval       = 10;
       //..........................................................
       // @method
-      o.onLoadResource  = FEaiChartApplication_onLoadResource;
+      o.onLoadResource  = FEaiPlatformApplication_onLoadResource;
       //..........................................................
       // @method
-      o.construct       = FEaiChartApplication_construct;
+      o.construct       = FEaiPlatformApplication_construct;
       // @method
-      o.setup           = FEaiChartApplication_setup;
+      o.setup           = FEaiPlatformApplication_setup;
       // @method
-      o.dispose         = FEaiChartApplication_dispose;
+      o.dispose         = FEaiPlatformApplication_dispose;
       return o;
    }
 
@@ -33,18 +35,13 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+   MO.FEaiPlatformApplication_onLoadResource = function FEaiPlatformApplication_onLoadResource(){
       var o = this;
       // 选择舞台和章节
-      var chapter = MO.Eai.Application.selectChapterByCode(MO.EEaiChapter.Chart);
-      var scene = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
-      // 创建场景画板
-      //var stage = scene.activeStage();
-      //var layer = stage.faceLayer();
-      //var timeline = MO.RClass.create(MO.FGuiTimeline);
-      //timeline.linkGraphicContext(MO.Eai.Canvas);
-      //timeline.build();
-      //layer.pushRenderable(timeline.renderable());
+      var chapter = o.selectChapterByCode(MO.EEaiChapter.Scene);
+      var scene = chapter.selectSceneByCode(MO.EEaiScene.Country);
+      // 修正大小
+      // o.processResize();
    }
 
    //==========================================================
@@ -52,7 +49,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
+   MO.FEaiPlatformApplication_construct = function FEaiPlatformApplication_construct(){
       var o = this;
       o.__base.FEaiApplication.construct.call(o);
    }
@@ -62,10 +59,18 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(){
+   MO.FEaiPlatformApplication_setup = function FEaiPlatformApplication_setup(){
       var o = this;
       // 创建加载中舞台
       var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      // 创建登录舞台
+      var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+      chapter.linkGraphicContext(o);
+      o.registerChapter(chapter);
+      // 创建场景舞台
+      var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
       chapter.linkGraphicContext(o);
       o.registerChapter(chapter);
       // 创建表格舞台
@@ -75,7 +80,7 @@ with(MO){
       //..........................................................
       // 加载资源
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
-      resourceConsole.addLoadListener(null, o.onLoadResource);
+      resourceConsole.addLoadListener(o, o.onLoadResource);
       resourceConsole.load();
    }
 
@@ -84,10 +89,8 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
+   MO.FEaiPlatformApplication_dispose = function FEaiPlatformApplication_dispose(){
       var o = this;
-      o._chapterLoading = RObject.dispose(o._chapterLoading);
-      o._chapterChart = RObject.dispose(o._chapterChart);
       // 父处理
       o.__base.FEaiApplication.dispose.call(o);
    }
