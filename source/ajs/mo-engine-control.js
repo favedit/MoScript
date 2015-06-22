@@ -749,7 +749,9 @@ with(MO){
    MO.FGuiControlData_setup = function FGuiControlData_setup(){
       var o = this;
       o.__base.FE3dFaceData.setup.call(o);
-      o._material.info().effectCode = 'flat';
+      var materialInfo = o._material.info();
+      materialInfo.effectCode = 'flat';
+      materialInfo.optionAlpha = true;
    }
    MO.FGuiControlData_setLocation = function FGuiControlData_setLocation(x, y){
       var o = this;

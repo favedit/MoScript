@@ -202,7 +202,7 @@ with (MO) {
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
       o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;

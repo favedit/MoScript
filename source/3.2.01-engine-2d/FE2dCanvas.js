@@ -9,8 +9,8 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MCanvasObject);
       //..........................................................
       // @attribute
-      o._size      = null;
-      o._context   = null;
+      o._size      = RClass.register(o, new AGetter('_size'));
+      o._context   = RClass.register(o, new AGetter('_context'));
       //..........................................................
       // @html
       o._hCanvas   = null;
@@ -22,8 +22,6 @@ with(MO){
       o.construct  = FE2dCanvas_construct;
       // @method
       o.htmlCanvas = FE2dCanvas_htmlCanvas;
-      o.size       = FE2dCanvas_size;
-      o.context    = FE2dCanvas_context;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
       o.reset      = FE2dCanvas_reset;
@@ -61,26 +59,6 @@ with(MO){
    //==========================================================
    MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
       return this._hCanvas;
-   }
-
-   //==========================================================
-   // <T>获得尺寸。</T>
-   //
-   // @method
-   // @return SSize2 尺寸
-   //==========================================================
-   MO.FE2dCanvas_size = function FE2dCanvas_size(){
-      return this._size;
-   }
-
-   //==========================================================
-   // <T>获得环境。</T>
-   //
-   // @method
-   // @return FG2dContext 环境
-   //==========================================================
-   MO.FE2dCanvas_context = function FE2dCanvas_context(){
-      return this._context;
    }
 
    //==========================================================

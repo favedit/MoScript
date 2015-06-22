@@ -45,7 +45,9 @@ with(MO){
       var o = this;
       o.__base.FE3dFaceData.setup.call(o);
       // 设置材质
-      o._material.info().effectCode = 'flat';
+      var materialInfo = o._material.info();
+      materialInfo.effectCode = 'flat';
+      materialInfo.optionAlpha = true;
    }
 
    //==========================================================

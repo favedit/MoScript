@@ -1,14 +1,12 @@
 with(MO){
    MO.FE2dCanvas = function FE2dCanvas(o){
       o = RClass.inherits(this, o, FObject, MCanvasObject);
-      o._size      = null;
-      o._context   = null;
+      o._size      = RClass.register(o, new AGetter('_size'));
+      o._context   = RClass.register(o, new AGetter('_context'));
       o._hCanvas   = null;
       o.onResize   = FE2dCanvas_onResize;
       o.construct  = FE2dCanvas_construct;
       o.htmlCanvas = FE2dCanvas_htmlCanvas;
-      o.size       = FE2dCanvas_size;
-      o.context    = FE2dCanvas_context;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
       o.reset      = FE2dCanvas_reset;
@@ -25,12 +23,6 @@ with(MO){
    }
    MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
       return this._hCanvas;
-   }
-   MO.FE2dCanvas_size = function FE2dCanvas_size(){
-      return this._size;
-   }
-   MO.FE2dCanvas_context = function FE2dCanvas_context(){
-      return this._context;
    }
    MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
       var o = this;

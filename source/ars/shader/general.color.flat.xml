@@ -108,7 +108,7 @@
                </shader:true>
             </shader:true>
             <shader:equals source='technique.mode' value='result'>
-               result.rgb = color.rgb;
+               result = vec4(color.a, color.a, color.a, color.a);
             </shader:equals>
          </shader:true>
          //............................................................
