@@ -1273,13 +1273,16 @@ with(MO){
       }
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
+      var timer = o._stage.timer();
       var stageStatistics = o._stage.statistics();
       var statistics = o._context.statistics();
       var line = 16;
       var locationX = 10;
       var locationY = rectangle.top + line;
       graphic.setFont('microsoft yahei,Arial,sans-serif');
-      graphic.drawText('Frame         : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
+      graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
       locationY += line;
       graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
       locationY += line;

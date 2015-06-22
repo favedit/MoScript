@@ -3326,13 +3326,12 @@ with(MO){
 with(MO){
    MO.FG3dRenderTarget = function FG3dRenderTarget(o){
       o = RClass.inherits(this, o, FG3dObject);
-      o._size     = null;
-      o._color    = null;
+      o._size     = RClass.register(o, new AGetter('_size'));
+      o._color    = RClass.register(o, new AGetter('_color'));
       o._textures = null;
       o.construct = FG3dRenderTarget_construct;
-      o.size      = FG3dRenderTarget_size;
-      o.color     = FG3dRenderTarget_color;
       o.textures  = FG3dRenderTarget_textures;
+      o.dispose   = FG3dRenderTarget_dispose;
       return o;
    }
    MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
@@ -3342,19 +3341,19 @@ with(MO){
       o._color = new SColor4();
       o._color.set(0.0, 0.0, 0.0, 1.0);
    }
-   MO.FG3dRenderTarget_size = function FG3dRenderTarget_size(){
-      return this._size;
-   }
-   MO.FG3dRenderTarget_color = function FG3dRenderTarget_color(){
-      return this._color;
-   }
    MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
       var o = this;
-      var r = o._textures;
-      if(r == null){
-         r = o._textures = new TObjects();
+      var textures = o._textures;
+      if(textures == null){
+         textures = o._textures = new TObjects();
       }
-      return r;
+      return textures;
+   }
+   MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
+      var o = this;
+      o._size = RObject.dispose(o._size);
+      o._color = RObject.dispose(o._color);
+      o.__base.dispose.construct();
    }
 }
 with(MO){

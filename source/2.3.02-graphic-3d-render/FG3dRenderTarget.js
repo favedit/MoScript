@@ -9,16 +9,16 @@ with(MO){
       o = RClass.inherits(this, o, FG3dObject);
       //..........................................................
       // @attribute
-      o._size     = null;
-      o._color    = null;
+      o._size     = RClass.register(o, new AGetter('_size'));
+      o._color    = RClass.register(o, new AGetter('_color'));
       o._textures = null;
       //..........................................................
       // @method
       o.construct = FG3dRenderTarget_construct;
       // @method
-      o.size      = FG3dRenderTarget_size;
-      o.color     = FG3dRenderTarget_color;
       o.textures  = FG3dRenderTarget_textures;
+      // @method
+      o.dispose   = FG3dRenderTarget_dispose;
       return o;
    }
 
@@ -36,26 +36,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得尺寸。</T>
-   //
-   // @method
-   // @return SSize2 尺寸
-   //==========================================================
-   MO.FG3dRenderTarget_size = function FG3dRenderTarget_size(){
-      return this._size;
-   }
-
-   //==========================================================
-   // <T>获得颜色。</T>
-   //
-   // @method
-   // @return SColor4 颜色
-   //==========================================================
-   MO.FG3dRenderTarget_color = function FG3dRenderTarget_color(){
-      return this._color;
-   }
-
-   //==========================================================
    // <T>获得纹理集合。</T>
    //
    // @method
@@ -63,10 +43,23 @@ with(MO){
    //==========================================================
    MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
       var o = this;
-      var r = o._textures;
-      if(r == null){
-         r = o._textures = new TObjects();
+      var textures = o._textures;
+      if(textures == null){
+         textures = o._textures = new TObjects();
       }
-      return r;
+      return textures;
+   }
+
+   //==========================================================
+   // <T>构造处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
+      var o = this;
+      o._size = RObject.dispose(o._size);
+      o._color = RObject.dispose(o._color);
+      // 父处理
+      o.__base.dispose.construct();
    }
 }
