@@ -9,15 +9,14 @@ with(MO){
       o = RClass.inherits(this, o, FDisplayContainer);
       //..........................................................
       // @attribute
+      o._optionClearDepth   = RClass.register(o, new AGetSet('_optionClearDepth'), false);
       o._statusActive       = false;
-      o._technique          = null;
+      o._technique          = RClass.register(o, new AGetSet('_technique'));
       o._visibleRenderables = null;
       //..........................................................
       // @method
       o.construct           = FDisplayLayer_construct;
       // @method
-      o.technique           = FDisplayLayer_technique;
-      o.setTechnique        = FDisplayLayer_setTechnique;
       o.selectTechnique     = FDisplayLayer_selectTechnique;
       // @method
       o.visibleRenderables  = FDisplayLayer_visibleRenderables;
@@ -39,26 +38,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得渲染技术。</T>
-   //
-   // @method
-   // @return FG3dTechnique 渲染技术
-   //==========================================================
-   MO.FDisplayLayer_technique = function FDisplayLayer_technique(){
-      return this._technique;
-   }
-
-   //==========================================================
-   // <T>设置渲染技术。</T>
-   //
-   // @method
-   // @param p:technique:FG3dTechnique 渲染技术
-   //==========================================================
-   MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
-      this._technique = p;
-   }
-
-   //==========================================================
    // <T>选择渲染技术。</T>
    //
    // @method
@@ -66,7 +45,8 @@ with(MO){
    // @param name:String 名称
    //==========================================================
    MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
+      var technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
+      this.selectTechnique(technique);
    }
 
    //==========================================================

@@ -66,6 +66,8 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var citys = cityConsole.citys();
    var count = citys.count();
+   var citysRenderable = o._citysRenderable;
+   var citysRangeRenderable = o._citysRangeRenderable;
    for(var i = 0; i < count; i++){
       var city = citys.at(i);
       var cityLocation = city.location();
@@ -74,8 +76,11 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       cityEntity.setData(city);
       cityEntity.build(context);
       o._cityEntities.set(city.code(), cityEntity);
-      dataLayer.pushRenderable(cityEntity.renderable());
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
    }
+   citysRenderable.upload();
+   citysRangeRenderable.upload();
 }
 
 //==========================================================
@@ -104,6 +109,28 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
    stage.region().backgroundColor().set(0, 0, 0.1, 1);
+   // 创建城市渲染对象
+   var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
+   renderable.linkGraphicContext(o);
+   renderable.setup();
+   var matrix = renderable.matrix();
+   matrix.tx = -20;
+   matrix.ty = -8;
+   matrix.tz = 0;
+   matrix.setScale(0.2, 0.24, 0.2);
+   matrix.update();
+   stage.cityRangeLayer().push(renderable);
+   // 创建城市渲染对象
+   var renderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
+   renderable.linkGraphicContext(o);
+   renderable.setup();
+   var matrix = renderable.matrix();
+   matrix.tx = -20;
+   matrix.ty = -8;
+   matrix.tz = 0;
+   matrix.setScale(0.2, 0.24, 0.2);
+   matrix.update();
+   stage.dataLayer().push(renderable);
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
@@ -118,8 +145,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
-   var stage = o._activeStage;
-   MO.Eai.Canvas.selectStage(stage);
 }
 
 //==========================================================
@@ -130,11 +155,6 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
    var o = this;
    o.__base.FEaiScene.deactive.call(o);
-   var stage = MO.Eai.Canvas.activeStage();
-   var layer = stage.faceLayer();
-   // 创建标志栏
-   //var frame = o._countryDataLogoBar
-   //layer.removeRenderable(frame.renderable());
 }
 
 //==========================================================

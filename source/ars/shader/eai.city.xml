@@ -106,8 +106,9 @@
          }
          result *= color;
          </shader:true>
+         //............................................................
          <shader:true source='vertex.attribute.color'>
-         result *= v_color;
+         //result *= v_color;
          </shader:true>
          //............................................................
          <shader:true source='support.ambient.sampler'>

@@ -7,19 +7,18 @@ with(MO){
    // @history 150619
    //==========================================================
    MO.FEaiCityEntity = function FEaiCityEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity);
+      o = RClass.inherits(this, o, FEaiEntity, MEaiCityRenderable);
       //..........................................................
       // @attribute
-      o._data       = RClass.register(o, new AGetSet('_data'));
-      o._renderable = RClass.register(o, new AGetter('_renderable'));
+      o._data     = RClass.register(o, new AGetSet('_data'));
       //..........................................................
       // @method
-      o.construct   = FEaiCityEntity_construct;
+      o.construct = FEaiCityEntity_construct;
       // @method
-      o.build       = FEaiCityEntity_build;
-      o.update      = FEaiCityEntity_update;
+      o.build     = FEaiCityEntity_build;
+      o.update    = FEaiCityEntity_update;
       // @method
-      o.dispose     = FEaiCityEntity_dispose;
+      o.dispose   = FEaiCityEntity_dispose;
       return o;
    }
 
@@ -31,6 +30,7 @@ with(MO){
    MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
+      o.__base.MEaiCityRenderable.construct.call(o);
    }
 
    //==========================================================
@@ -41,23 +41,8 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
       var o = this;
-      var location = o._data.location();
-      // 创建位图数据
-      var bitmapData = context.createObject(MO.FE3dBitmapData);
-      bitmapData.loadUrl('/script/ars/eai/dot.png');
-      // 创建位图
-      var bitmap = o._renderable = context.createObject(MO.FE3dBitmap);
-      bitmap.setData(bitmapData);
-      bitmap.material().info().optionAlpha = true;
-      // 设置坐标
-      var matrix = bitmap.matrix();
-      matrix.tx = location.x * 0.2 - 20.1;
-      matrix.ty = location.y * 0.25 - 7.9;
-      matrix.tz = -0.0001;
-      matrix.sx = 0.2;
-      matrix.sy = 0.2;
-      matrix.sz = 0.2;
-      matrix.update();
+      o._location.assign(o._data.location());
+      o._size.set(2, 2);
    }
 
    //==========================================================
@@ -69,8 +54,6 @@ with(MO){
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
       var location = o._data.location();
-      var renderable = o._renderable;
-      var material = renderable.material();
       var range = 1;
       if(data){
          var total = Math.sqrt(data.investmentTotal()) / 100;
@@ -78,11 +61,10 @@ with(MO){
          if(total > 1){
             total = 1;
          }
-         material.info().ambientColor.set(total, 0, total, 1);
+         o._color.set(total, 0, total, total);
       }else{
-         material.info().ambientColor.set(0, 0, 0, 1);
+         o._color.set(0, 0, 0, 0);
       }
-      material.update();
       range = Math.sqrt(range);
       if(range < 1){
          range = 1;
@@ -90,14 +72,7 @@ with(MO){
       if(range > 3){
          range = 3;
       }
-      var matrix = renderable.matrix();
-      matrix.tx = location.x * 0.2 - 20.3 + (0.2 * range / 2);
-      matrix.ty = location.y * 0.25 - 8 + (0.2 * range / 2);
-      matrix.tz = -0.0001;
-      matrix.sx = 0.3 * range;
-      matrix.sy = 0.3 * range;
-      matrix.sz = 0.3 * range;
-      matrix.update();
+      o._size.set(range, range);
    }
 
    //==========================================================
@@ -108,6 +83,7 @@ with(MO){
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
       var o = this;
       // 父处理
+      o.__base.MEaiCityRenderable.dispose.call(o);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

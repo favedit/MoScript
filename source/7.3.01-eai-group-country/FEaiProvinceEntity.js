@@ -111,7 +111,7 @@ with(MO){
       var matrix = renderable.matrix();
       matrix.tx = -20;
       matrix.ty = -8;
-      matrix.setScale(0.2, 0.25, 0.2);
+      matrix.setScale(0.2, 0.24, 0.2);
       matrix.update();
       // 创建三角边渲染对象
       var colorIndex = 0;
@@ -132,7 +132,7 @@ with(MO){
       var matrix = renderable.matrix();
       matrix.tx = -20;
       matrix.ty = -8;
-      matrix.setScale(0.2, 0.25, 0.2);
+      matrix.setScale(0.2, 0.24, 0.2);
       matrix.update();
    }
 

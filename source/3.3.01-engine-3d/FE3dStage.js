@@ -93,6 +93,9 @@ with(MO){
             // 渲染单个层
             region.reset();
             region.renderables().assign(layer.visibleRenderables());
+            if(layer.optionClearDepth()){
+               layerTechnique.clearDepth();
+            }
             layerTechnique.drawRegion(region);
          }
          // 绘制处理

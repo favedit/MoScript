@@ -377,6 +377,9 @@ with(MO){
             }
             region.reset();
             region.renderables().assign(layer.visibleRenderables());
+            if(layer.optionClearDepth()){
+               layerTechnique.clearDepth();
+            }
             layerTechnique.drawRegion(region);
          }
          technique.present(region);

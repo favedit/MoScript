@@ -417,12 +417,11 @@ with(MO){
 with(MO){
    MO.FDisplayLayer = function FDisplayLayer(o){
       o = RClass.inherits(this, o, FDisplayContainer);
+      o._optionClearDepth   = RClass.register(o, new AGetSet('_optionClearDepth'), false);
       o._statusActive       = false;
-      o._technique          = null;
+      o._technique          = RClass.register(o, new AGetSet('_technique'));
       o._visibleRenderables = null;
       o.construct           = FDisplayLayer_construct;
-      o.technique           = FDisplayLayer_technique;
-      o.setTechnique        = FDisplayLayer_setTechnique;
       o.selectTechnique     = FDisplayLayer_selectTechnique;
       o.visibleRenderables  = FDisplayLayer_visibleRenderables;
       o.filterRenderables   = FDisplayLayer_filterRenderables;
@@ -435,14 +434,9 @@ with(MO){
       o.__base.FDisplayContainer.construct.call(o);
       o._visibleRenderables = new TObjects();
    }
-   MO.FDisplayLayer_technique = function FDisplayLayer_technique(){
-      return this._technique;
-   }
-   MO.FDisplayLayer_setTechnique = function FDisplayLayer_setTechnique(p){
-      this._technique = p;
-   }
    MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
-      this._technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
+      var technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
+      this.selectTechnique(technique);
    }
    MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
       return this._visibleRenderables;
@@ -1873,6 +1867,9 @@ with(MO){
             }
             region.reset();
             region.renderables().assign(layer.visibleRenderables());
+            if(layer.optionClearDepth()){
+               layerTechnique.clearDepth();
+            }
             layerTechnique.drawRegion(region);
          }
          technique.present(region);

@@ -2206,6 +2206,7 @@ with(MO){
       o.selectMode      = FG3dTechnique_selectMode;
       o.updateRegion    = RMethod.empty;
       o.clear           = FG3dTechnique_clear;
+      o.clearDepth      = FG3dTechnique_clearDepth;
       o.sortRenderables = FG3dTechnique_sortRenderables;
       o.drawRegion      = FG3dTechnique_drawRegion;
       o.present         = FG3dTechnique_present;
@@ -2228,11 +2229,19 @@ with(MO){
    MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
       var o = this;
    }
-   MO.FG3dTechnique_clear = function FG3dTechnique_clear(p){
+   MO.FG3dTechnique_clear = function FG3dTechnique_clear(color){
       var o = this;
-      var c = o._graphicContext;
-      c.setRenderTarget(null);
-      c.clear(p.red, p.green, p.blue, p.alpha, 1);
+      var context = o._graphicContext;
+      context.setRenderTarget(null);
+      context.clear(color.red, color.green, color.blue, color.alpha, 1);
+   }
+   MO.FG3dTechnique_clearDepth = function FG3dTechnique_clearDepth(depth){
+      var o = this;
+      if(depth == null){
+         depth = 1;
+      }
+      var context = o._graphicContext;
+      context.clearDepth(depth);
    }
    MO.FG3dTechnique_sortRenderables = function FG3dTechnique_sortRenderables(a, b){
    }

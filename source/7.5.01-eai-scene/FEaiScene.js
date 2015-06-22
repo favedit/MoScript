@@ -17,6 +17,9 @@ with(MO){
       o.registerFrame   = FEaiScene_registerFrame;
       o.unregisterFrame = FEaiScene_unregisterFrame;
       // @method
+      o.active          = MO.FEaiScene_active;
+      o.deactive        = MO.FEaiScene_deactive;
+      // @method
       o.process         = FEaiScene_process;
       // @method
       o.disposet        = FEaiScene_dispose;
@@ -53,6 +56,33 @@ with(MO){
    //==========================================================
    MO.FEaiScene_unregisterFrame = function FEaiScene_unregisterFrame(frame){
       this._frames.remove(frame);
+   }
+
+   //==========================================================
+   // <T>激活处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiScene_active = function FEaiScene_active(){
+      var o = this;
+      o.__base.FScene.active.call(o);
+      var stage = o._activeStage;
+      MO.Eai.Canvas.selectStage(stage);
+   }
+
+   //==========================================================
+   // <T>注销处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiScene_deactive = function FEaiScene_deactive(){
+      var o = this;
+      o.__base.FScene.deactive.call(o);
+      var stage = MO.Eai.Canvas.activeStage();
+      var layer = stage.faceLayer();
+      // 创建标志栏
+      //var frame = o._countryDataLogoBar
+      //layer.removeRenderable(frame.renderable());
    }
 
    //==========================================================
