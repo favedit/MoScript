@@ -22,7 +22,8 @@ with (MO) {
       o.clear          = FG2dCanvasContext_clear;
       // @method
       o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       // @method
@@ -315,6 +316,28 @@ with (MO) {
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
+   }
+
+   //==========================================================
+   // <T>绘制三角形。</T>
+   //
+   // @method
+   // @param rectangle:SRectangle 矩形
+   // @param border:SBorder 边框
+   //==========================================================
+   MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
+      handle.fill();
+      handle.stroke();
    }
 
    //==========================================================

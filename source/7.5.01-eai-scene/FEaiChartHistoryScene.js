@@ -137,6 +137,22 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
+
+   var layer = o._activeStage.faceLayer()
+   // 创建场景画板
+   var timeline = MO.RClass.create(MO.FGuiTimeline);
+   timeline.linkGraphicContext(MO.Eai.Canvas);
+   
+   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
+   var aa = new Date();
+   aa.setMonth(-1);
+   timeline.setStartTime(aa);
+   timeline.setEndTime(new Date());
+   timeline.setDegreeTime(aa);
+   timeline.setSize(800, 40);
+
+   timeline.build();
+   layer.pushRenderable(timeline.renderable());
 }
 
 //==========================================================
