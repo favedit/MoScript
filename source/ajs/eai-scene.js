@@ -83,25 +83,14 @@ MO.FEaiChartCustomerScene_setup = function FEaiChartCustomerScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-   control.linkGraphicContext(o);
-   control.setStage(o._activeStage);
-   control.setContext(o.graphicContext());
-   control.build();
 }
 MO.FEaiChartCustomerScene_active = function FEaiChartCustomerScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-   var stage = o._activeStage;
-   var faceLayer = stage.faceLayer();
-   faceLayer.push(o._engineInfo);
 }
 MO.FEaiChartCustomerScene_process = function FEaiChartCustomerScene_process(){
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._engineInfo){
-      o._engineInfo.psUpdate();
-   }
    if(o._playing){
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
@@ -308,25 +297,14 @@ MO.FEaiChartIndustryScene_setup = function FEaiChartIndustryScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-   control.linkGraphicContext(o);
-   control.setStage(o._activeStage);
-   control.setContext(o.graphicContext());
-   control.build();
 }
 MO.FEaiChartIndustryScene_active = function FEaiChartIndustryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-   var stage = o._activeStage;
-   var faceLayer = stage.faceLayer();
-   faceLayer.push(o._engineInfo);
 }
 MO.FEaiChartIndustryScene_process = function FEaiChartIndustryScene_process(){
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._engineInfo){
-      o._engineInfo.psUpdate();
-   }
    if(o._playing){
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
@@ -426,25 +404,14 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-   control.linkGraphicContext(o);
-   control.setStage(o._activeStage);
-   control.setContext(o.graphicContext());
-   control.build();
 }
 MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-   var stage = o._activeStage;
-   var faceLayer = stage.faceLayer();
-   faceLayer.push(o._engineInfo);
 }
 MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process(){
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._engineInfo){
-      o._engineInfo.psUpdate();
-   }
    if(o._playing){
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
