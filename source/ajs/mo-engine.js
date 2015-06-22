@@ -66,6 +66,18 @@ with(MO){
    }
 }
 with(MO){
+   MO.MRenderableLinker = function MRenderableLinker(o){
+      o = RClass.inherits(this, o);
+      o._renderable = MO.RClass.register(o, new AGetter('_renderable'));
+      o.dispose     = MRenderableLinker_dispose;
+      return o;
+   }
+   MO.MRenderableLinker_dispose = function MRenderableLinker_dispose(){
+      var o = this;
+      o._renderable = null;
+   }
+}
+with(MO){
    MO.MResourceData = function MResourceData(o){
       o = RClass.inherits(this, o);
       o._ready          = false;
@@ -121,6 +133,8 @@ with(MO){
       o.pushRenderable    = FDisplay_pushRenderable;
       o.removeRenderable  = FDisplay_removeRenderable;
       o.clearRenderables  = FDisplay_clearRenderables;
+      o.push              = FDisplay_push;
+      o.remove            = FDisplay_remove;
       o.filterDisplays    = FDisplay_filterDisplays;
       o.filterRenderables = FDisplay_filterRenderables;
       o.show              = FDisplay_show;
@@ -129,7 +143,6 @@ with(MO){
       o.update            = FDisplay_update;
       o.updateMatrix      = FDisplay_updateMatrix;
       o.process           = FDisplay_process;
-      o.remove            = FDisplay_remove;
       o.dispose           = FDisplay_dispose;
       return o;
    }
@@ -187,6 +200,26 @@ with(MO){
          renderables.clear();
       }
    }
+   MO.FDisplay_push = function FDisplay_push(item){
+      var o = this;
+      if(RClass.isClass(item, FRenderable)){
+         o.pushRenderable(item);
+      }else if(RClass.isClass(item, MRenderableLinker)){
+         o.pushRenderable(item.renderable());
+      }else if(RClass.isClass(item, FDisplay)){
+         o.pushDisplay(item);
+      }else{
+         throw new TError(o, 'Unknown item type.');
+      }
+   }
+   MO.FDisplay_remove = function FDisplay_remove(){
+      var o = this;
+      var c = o._parent;
+      if(c){
+         c.removeDisplay(o);
+         o._parent = null;
+      }
+   }
    MO.FDisplay_filterDisplays = function FDisplay_filterDisplays(p){
       var o = this;
       if(o._visible){
@@ -240,14 +273,6 @@ with(MO){
             var renderable = renderables.at(i);
             renderable.process(region);
          }
-      }
-   }
-   MO.FDisplay_remove = function FDisplay_remove(){
-      var o = this;
-      var c = o._parent;
-      if(c){
-         c.removeDisplay(o);
-         o._parent = null;
       }
    }
    MO.FDisplay_dispose = function FDisplay_dispose(){

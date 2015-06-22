@@ -7,4 +7,5 @@ MO.Eai.setup = function Eai_setup(clazz, hPanel){
    canvas.setPanel(hPanel);
    application.linkGraphicContext(canvas);
    application.setup();
+   return application;
 }

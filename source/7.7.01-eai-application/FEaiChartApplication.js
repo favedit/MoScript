@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FEaiApplication);
       //..........................................................
       // @attribute
+      o._sceneCode      = RClass.register(o, new AGetSet('_sceneCode'), MO.EEaiScene.ChartHistory);
       o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
       o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
       // @attribute
@@ -37,7 +38,7 @@ with(MO){
       var o = this;
       // 选择舞台和章节
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-      var scene = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
+      var scene = chapter.selectSceneByCode(o._sceneCode);
       // 创建场景画板
       //var stage = scene.activeStage();
       //var layer = stage.faceLayer();

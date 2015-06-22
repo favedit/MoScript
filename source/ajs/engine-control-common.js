@@ -562,14 +562,13 @@ with(MO){
 }
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       o._statusPaint     = false;
       o._clientRectangle = null;
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       o.onUpdate         = FGuiControl_onUpdate;
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
@@ -577,6 +576,7 @@ with(MO){
       o.construct        = FGuiControl_construct;
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
+      o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
       o.psEnable         = FGuiControl_psEnable;
@@ -651,13 +651,25 @@ with(MO){
    }
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
       var o = this;
-      var location = o._location;
-      var size = o._size;
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
       o.onPaint(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+   MO.FGuiControl_repaint = function FGuiControl_repaint(){
+      var o = this;
+      var renderable = o._renderable;
+      if(!renderable){
+         throw new TError('Invalid renderable.');
+      }
+      var graphic = renderable.beginDraw();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
+      event.graphic = graphic;
+      event.rectangle.assign(o._clientRectangle);
+      o.onPaint(event);
+      MO.Memory.free(event);
+      renderable.endDraw();
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
@@ -670,7 +682,6 @@ with(MO){
       renderable.setSize(size.width, size.height);
       o.update();
       var graphic = renderable.beginDraw();
-      graphic._handle.imageSmoothingEnabled = false;
       o.paint(graphic);
       renderable.endDraw();
    }
@@ -713,6 +724,8 @@ with(MO){
       o.__base.MGuiPadding.dispose.call(o);
       o.__base.MGuiMargin.dispose.call(o);
       o.__base.MGuiSize.dispose.call(o);
+      o.__base.MRenderableLinker.dispose.call(o);
+      o.__base.MGraphicObject.dispose.call(o);
       o.__base.FGuiComponent.dispose.call(o);
    }
 }

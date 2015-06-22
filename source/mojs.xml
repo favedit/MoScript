@@ -36,6 +36,7 @@
       <PathMerger source='/3.5.03-engine-control-form'       target='/ajs/engine-control-form.js'/>
       <PathMerger source='/3.5.04-engine-control-table'      target='/ajs/engine-control-table.js'/>
       <PathMerger source='/3.5.05-engine-control-frame'      target='/ajs/engine-control-frame.js'/>
+      <PathMerger source='/3.5.06-engine-control-extension'  target='/ajs/engine-control-extension.js'/>
 
       <PathMerger source='/3.6.01-engine-application'        target='/ajs/engine-application.js'/>
 
@@ -162,6 +163,7 @@
          <File source='/ajs/engine-control-form.js'/>
          <File source='/ajs/engine-control-table.js'/>
          <File source='/ajs/engine-control-frame.js'/>
+         <File source='/ajs/engine-control-extension.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-engine-application.js'>
          <File source='/ajs/engine-application.js'/>

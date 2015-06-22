@@ -7,7 +7,8 @@ with (MO) {
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
       o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
@@ -157,6 +158,20 @@ with (MO) {
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
+   }
+   MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
+      handle.fill();
+      handle.stroke();
    }
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
       var o = this;

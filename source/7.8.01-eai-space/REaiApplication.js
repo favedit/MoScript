@@ -18,4 +18,5 @@ MO.Eai.setup = function Eai_setup(clazz, hPanel){
    // 配置处理
    application.linkGraphicContext(canvas);
    application.setup();
+   return application;
 }

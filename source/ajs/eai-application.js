@@ -173,6 +173,7 @@ with(MO){
 with(MO){
    MO.FEaiChartApplication = function FEaiChartApplication(o){
       o = RClass.inherits(this, o, FEaiApplication);
+      o._sceneCode      = RClass.register(o, new AGetSet('_sceneCode'), MO.EEaiScene.ChartHistory);
       o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
       o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
       o._thread         = null;
@@ -186,7 +187,7 @@ with(MO){
    MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
       var o = this;
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-      var scene = chapter.selectSceneByCode(MO.EEaiScene.ChartHistory);
+      var scene = chapter.selectSceneByCode(o._sceneCode);
    }
    MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
       var o = this;

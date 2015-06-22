@@ -7,7 +7,7 @@ with(MO){
    // @version 150610
    //==========================================================
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       //..........................................................
       // @property
       o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
@@ -18,8 +18,6 @@ with(MO){
       // @attribute
       o._statusPaint     = false;
       o._clientRectangle = null;
-      // @attribute
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       //..........................................................
       // @event
       o.onUpdate         = FGuiControl_onUpdate;
@@ -33,6 +31,7 @@ with(MO){
       // @method
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
+      o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
       // @method
@@ -181,15 +180,37 @@ with(MO){
    //==========================================================
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
       var o = this;
-      var location = o._location;
-      var size = o._size;
-      //..........................................................
       // 绘制处理
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
       o.onPaint(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+
+   //==========================================================
+   // <T>重新绘制处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_repaint = function FGuiControl_repaint(){
+      var o = this;
+      // 绘制开始处理
+      var renderable = o._renderable;
+      if(!renderable){
+         throw new TError('Invalid renderable.');
+      }
+      var graphic = renderable.beginDraw();
+      //..........................................................
+      // 绘制处理
+      var event = MO.Memory.alloc(SGuiPaintEvent)
+      event.graphic = graphic;
+      event.rectangle.assign(o._clientRectangle);
+      o.onPaint(event);
+      MO.Memory.free(event);
+      //..........................................................
+      // 绘制结束处理
+      renderable.endDraw();
    }
 
    //==========================================================
@@ -214,7 +235,7 @@ with(MO){
       //..........................................................
       // 绘制处理
       var graphic = renderable.beginDraw();
-      graphic._handle.imageSmoothingEnabled = false;
+      //graphic._handle.imageSmoothingEnabled = false;
       o.paint(graphic);
       renderable.endDraw();
    }
@@ -307,6 +328,8 @@ with(MO){
       o.__base.MGuiPadding.dispose.call(o);
       o.__base.MGuiMargin.dispose.call(o);
       o.__base.MGuiSize.dispose.call(o);
+      o.__base.MRenderableLinker.dispose.call(o);
+      o.__base.MGraphicObject.dispose.call(o);
       o.__base.FGuiComponent.dispose.call(o);
    }
 }

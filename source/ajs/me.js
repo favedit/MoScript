@@ -14789,7 +14789,8 @@ with (MO) {
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
       o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
@@ -14939,6 +14940,20 @@ with (MO) {
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
+   }
+   MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
+      handle.fill();
+      handle.stroke();
    }
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
       var o = this;
@@ -17055,19 +17070,14 @@ with(MO){
 with(MO){
    MO.REngine3d = function REngine3d(){
       var o = this;
-      o._setuped      = false;
-      o._contexts     = null;
-      o.onUnload      = REngine3d_onUnload;
-      o.setup         = REngine3d_setup;
-      o.contexts      = REngine3d_contexts;
-      o.createContext = REngine3d_createContext;
-      o.dispose       = REngine3d_dispose;
+      o._setuped  = false;
+      o._contexts = null;
       return o;
    }
-   MO.REngine3d_onUnload = function REngine3d_onUnload(event){
+   MO.REngine3d.prototype.onUnload = function REngine3d_onUnload(event){
       this.dispose();
    }
-   MO.REngine3d_setup = function REngine3d_setup(){
+   MO.REngine3d.prototype.setup = function REngine3d_setup(){
       var o = this;
       if(!o._setuped){
          o._contexts = new TObjects();
@@ -17075,10 +17085,10 @@ with(MO){
          o._setuped = true;
       }
    }
-   MO.REngine3d_contexts = function REngine3d_contexts(){
+   MO.REngine3d.prototype.contexts = function REngine3d_contexts(){
       return this._contexts;
    }
-   MO.REngine3d_createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
+   MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
       var o = this;
       o.setup();
       var context = RClass.create(clazz);
@@ -17090,7 +17100,7 @@ with(MO){
       o._contexts.push(context);
       return context;
    }
-   MO.REngine3d_dispose = function REngine3d_dispose(){
+   MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
       var o = this;
       var contexts = o._contexts;
       if(contexts){
@@ -17103,6 +17113,7 @@ with(MO){
       }
    }
    MO.REngine3d = new REngine3d();
+   MO.Engine3d = MO.REngine3d;
 }
 MO.EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -17935,26 +17946,26 @@ with(MO){
 with(MO){
    MO.FG3dStatistics = function FG3dStatistics(o){
       o = RClass.inherits(this, o, FStatistics);
-      o._frameClearCount     = 0;
-      o._frameFillModeCount  = 0;
-      o._frameDepthModeCount = 0;
-      o._frameCullModeCount  = 0;
-      o._frameBlendModeCount = 0;
-      o._frameProgramCount   = 0;
-      o._frameConstCount     = 0;
-      o._frameConstLength    = 0;
-      o._frameBufferCount    = 0;
-      o._frameTextureCount   = 0;
-      o._frameTargetCount    = 0;
-      o._frameDrawCount      = 0;
-      o._frameTriangleCount  = 0;
-      o._programTotal        = 0;
-      o._layoutTotal         = 0;
-      o._vertexBufferTotal   = 0;
-      o._indexBufferTotal    = 0;
-      o._flatTextureTotal    = 0;
-      o._cubeTextureTotal    = 0;
-      o._targetTotal         = 0;
+      o._frameClearCount     = RClass.register(o, new AGetter('_frameClearCount'), 0);
+      o._frameFillModeCount  = RClass.register(o, new AGetter('_frameFillModeCount'), 0);
+      o._frameDepthModeCount = RClass.register(o, new AGetter('_frameDepthModeCount'), 0);
+      o._frameCullModeCount  = RClass.register(o, new AGetter('_frameCullModeCount'), 0);
+      o._frameBlendModeCount = RClass.register(o, new AGetter('_frameBlendModeCount'), 0);
+      o._frameProgramCount   = RClass.register(o, new AGetter('_frameProgramCount'), 0);
+      o._frameConstCount     = RClass.register(o, new AGetter('_frameConstCount'), 0);
+      o._frameConstLength    = RClass.register(o, new AGetter('_frameConstLength'), 0);
+      o._frameBufferCount    = RClass.register(o, new AGetter('_frameBufferCount'), 0);
+      o._frameTextureCount   = RClass.register(o, new AGetter('_frameTextureCount'), 0);
+      o._frameTargetCount    = RClass.register(o, new AGetter('_frameTargetCount'), 0);
+      o._frameDrawCount      = RClass.register(o, new AGetter('_frameDrawCount'), 0);
+      o._frameTriangleCount  = RClass.register(o, new AGetter('_frameTriangleCount'), 0);
+      o._programTotal        = RClass.register(o, new AGetter('_programTotal'), 0);
+      o._layoutTotal         = RClass.register(o, new AGetter('_layoutTotal'), 0);
+      o._vertexBufferTotal   = RClass.register(o, new AGetter('_vertexBufferTotal'), 0);
+      o._indexBufferTotal    = RClass.register(o, new AGetter('_indexBufferTotal'), 0);
+      o._flatTextureTotal    = RClass.register(o, new AGetter('_flatTextureTotal'), 0);
+      o._cubeTextureTotal    = RClass.register(o, new AGetter('_cubeTextureTotal'), 0);
+      o._targetTotal         = RClass.register(o, new AGetter('_targetTotal'), 0);
       o.reset                = FG3dStatistics_reset;
       o.resetFrame           = FG3dStatistics_resetFrame;
       return o;
@@ -20373,6 +20384,18 @@ with(MO){
    }
 }
 with(MO){
+   MO.MRenderableLinker = function MRenderableLinker(o){
+      o = RClass.inherits(this, o);
+      o._renderable = MO.RClass.register(o, new AGetter('_renderable'));
+      o.dispose     = MRenderableLinker_dispose;
+      return o;
+   }
+   MO.MRenderableLinker_dispose = function MRenderableLinker_dispose(){
+      var o = this;
+      o._renderable = null;
+   }
+}
+with(MO){
    MO.MResourceData = function MResourceData(o){
       o = RClass.inherits(this, o);
       o._ready          = false;
@@ -20428,6 +20451,8 @@ with(MO){
       o.pushRenderable    = FDisplay_pushRenderable;
       o.removeRenderable  = FDisplay_removeRenderable;
       o.clearRenderables  = FDisplay_clearRenderables;
+      o.push              = FDisplay_push;
+      o.remove            = FDisplay_remove;
       o.filterDisplays    = FDisplay_filterDisplays;
       o.filterRenderables = FDisplay_filterRenderables;
       o.show              = FDisplay_show;
@@ -20436,7 +20461,6 @@ with(MO){
       o.update            = FDisplay_update;
       o.updateMatrix      = FDisplay_updateMatrix;
       o.process           = FDisplay_process;
-      o.remove            = FDisplay_remove;
       o.dispose           = FDisplay_dispose;
       return o;
    }
@@ -20494,6 +20518,26 @@ with(MO){
          renderables.clear();
       }
    }
+   MO.FDisplay_push = function FDisplay_push(item){
+      var o = this;
+      if(RClass.isClass(item, FRenderable)){
+         o.pushRenderable(item);
+      }else if(RClass.isClass(item, MRenderableLinker)){
+         o.pushRenderable(item.renderable());
+      }else if(RClass.isClass(item, FDisplay)){
+         o.pushDisplay(item);
+      }else{
+         throw new TError(o, 'Unknown item type.');
+      }
+   }
+   MO.FDisplay_remove = function FDisplay_remove(){
+      var o = this;
+      var c = o._parent;
+      if(c){
+         c.removeDisplay(o);
+         o._parent = null;
+      }
+   }
    MO.FDisplay_filterDisplays = function FDisplay_filterDisplays(p){
       var o = this;
       if(o._visible){
@@ -20547,14 +20591,6 @@ with(MO){
             var renderable = renderables.at(i);
             renderable.process(region);
          }
-      }
-   }
-   MO.FDisplay_remove = function FDisplay_remove(){
-      var o = this;
-      var c = o._parent;
-      if(c){
-         c.removeDisplay(o);
-         o._parent = null;
       }
    }
    MO.FDisplay_dispose = function FDisplay_dispose(){
@@ -33478,14 +33514,13 @@ with(MO){
 }
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       o._statusPaint     = false;
       o._clientRectangle = null;
-      o._renderable      = MO.RClass.register(o, new AGetter('_renderable'));
       o.onUpdate         = FGuiControl_onUpdate;
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
@@ -33493,6 +33528,7 @@ with(MO){
       o.construct        = FGuiControl_construct;
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
+      o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
       o.psEnable         = FGuiControl_psEnable;
@@ -33567,13 +33603,25 @@ with(MO){
    }
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
       var o = this;
-      var location = o._location;
-      var size = o._size;
-      var event = new SGuiPaintEvent();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
       o.onPaint(event);
-      event.dispose();
+      MO.Memory.free(event);
+   }
+   MO.FGuiControl_repaint = function FGuiControl_repaint(){
+      var o = this;
+      var renderable = o._renderable;
+      if(!renderable){
+         throw new TError('Invalid renderable.');
+      }
+      var graphic = renderable.beginDraw();
+      var event = MO.Memory.alloc(SGuiPaintEvent)
+      event.graphic = graphic;
+      event.rectangle.assign(o._clientRectangle);
+      o.onPaint(event);
+      MO.Memory.free(event);
+      renderable.endDraw();
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
@@ -33586,7 +33634,6 @@ with(MO){
       renderable.setSize(size.width, size.height);
       o.update();
       var graphic = renderable.beginDraw();
-      graphic._handle.imageSmoothingEnabled = false;
       o.paint(graphic);
       renderable.endDraw();
    }
@@ -33629,6 +33676,8 @@ with(MO){
       o.__base.MGuiPadding.dispose.call(o);
       o.__base.MGuiMargin.dispose.call(o);
       o.__base.MGuiSize.dispose.call(o);
+      o.__base.MRenderableLinker.dispose.call(o);
+      o.__base.MGraphicObject.dispose.call(o);
       o.__base.FGuiComponent.dispose.call(o);
    }
 }
@@ -34014,77 +34063,117 @@ with(MO){
       return EEventStatus.Stop;
    }
 }
-with(MO){
+with (MO) {
    MO.FGuiTimeline = function FGuiTimeline(o) {
       o = RClass.inherits(this, o, FGuiControl);
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
-      o._mainLineHeight = RClass.register(o, new AGetSet('_endTime'), 10);
-      o._degreeLineHeight = RClass.register(o, new AGetSet('_endTime'), 10);
-      o._statusPaint = false;
-      o._image       = null;
+      o._degreeTime = RClass.register(o, new AGetSet('_degreeTime'));
+      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
+      o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
+      o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
+      o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
+      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
       o.onPaintBegin = FGuiTimeline_onPaintBegin;
       return o;
-   }
-   MO.FGuiTimeline_onImageLoad = function FGuiTimeline_onImageLoad(event) {
-      var o = this;
-      var image = o._image;
-      var topComponent = o.topComponent();
-      topComponent.build();
-      o._statusPaint = true;
    }
    MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      graphic.drawLine(0, rectangle.top + rectangle.height / 2, rectangle.right, rectangle.top + rectangle.height / 2, '#FFFFFF', o.mainLineHeight());
-      var timeUnit = o.timeUnit();
+      var top = rectangle.top;
+      var middle = rectangle.top + rectangle.height / 2;
+      var decoLeft = rectangle.left + 5;
+      var decoRight = rectangle.left + rectangle.width - 5;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 0.5);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 0.5);
+      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
       var startTime = o.startTime();
       var endTime = o.endTime();
+      var timeSpan = endTime.getTime() - startTime.getTime();
       var degreeCount = 0;
-      switch(o.timeUnit()){
+      switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
-            degreeCount = endTime.getTime() - startTime.getTime() / 1000;
+            degreeCount = timeSpan / 1000;
             break;
          case EGuiTimeUnit.Minute:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60);
+            degreeCount = timeSpan / (1000 * 60);
             break;
          case EGuiTimeUnit.Hour:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60 * 60);
+            degreeCount = timeSpan / (1000 * 60 * 60);
             break;
          case EGuiTimeUnit.Day:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60 * 60 * 24);
+            degreeCount = timeSpan / (1000 * 60 * 60 * 24);
             break;
          case EGuiTimeUnit.Week:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60 * 60 * 24 * 7);
+            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 7);
             break;
          case EGuiTimeUnit.Month:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60 * 60 * 24 * 30);
+            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 30);
             break;
          case EGuiTimeUnit.Year:
-            degreeCount = endTime.getTime() - startTime.getTime() / (1000 * 60 * 60 * 24 * 365);
+            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 365);
             break;
          default:
             return;
       }
-      var degreeGap = rectangle.top + rectangle.height / 2;
-      for (var i = 0; i < degreeCount; i++) {
-         graphic.drawLine(i * degreeGap, rectangle.top + rectangle.height / 2 - o.degreeLineHeight(), i * degreeGap, rectangle.top + rectangle.height / 2, '#FFFFFF', 10);
-      }
-   }
-   MO.FGuiButton_oeUpdate = function FGuiButton_oeUpdate(event){
-      var o = this;
-      if(!o._statusPaint){
-         if(o._image == null && o._backResource){
-            var url = o._backResource.substring(4);
-            var image = o._image = RClass.create(FImage);
-            image.addLoadListener(o, o.onImageLoad);
-            image.loadUrl(url);
+      var degreeGap = (dataRight - dataLeft) / degreeCount;
+      var text;
+      var dtVar;
+      for (var i = 0; i <= degreeCount; i++) {
+         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 0.5);
+         switch (o.timeUnit()) {
+            case EGuiTimeUnit.Second:
+               text = startTime.getMinutes() + ":" + startTime.getSeconds();
+               dtVar = startTime.getSeconds();
+               startTime.setSeconds(++dtVar);
+               break;
+            case EGuiTimeUnit.Minute:
+               text = startTime.getHours() + ":" + startTime.getMinutes();
+               dtVar = startTime.getMinutes();
+               startTime.setMinutes(++dtVar);
+               break;
+            case EGuiTimeUnit.Hour:
+               text = startTime.getHours() + ":00";
+               dtVar = startTime.getHours();
+               startTime.setHours(++dtVar);
+               break;
+            case EGuiTimeUnit.Day:
+               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
+               dtVar = startTime.getDate();
+               startTime.setDate(++dtVar);
+               break;
+            case EGuiTimeUnit.Week:
+               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
+               dtVar = startTime.getDate();
+               startTime.setDate(dtVar += 7);
+               break;
+            case EGuiTimeUnit.Month:
+               text = startTime.getFullYear() + "-" + (startTime.getMonth() + 1);
+               dtVar = startTime.getMonth();
+               startTime.setMonth(++dtVar);
+               break;
+            case EGuiTimeUnit.Year:
+               text = startTime.getFullYear();
+               dtVar = startTime.getFullYear();
+               startTime.setFullYear(++dtVar);
+               break;
+            default:
+               return;
          }
+         graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
       }
-      return EEventStatus.Stop;
+      var degreeTime = o.degreeTime();
+      var degreeSpan = degreeTime.getTime() - startTime.getTime();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
    }
 }
 with(MO){
@@ -34110,6 +34199,69 @@ with(MO){
    MO.FGuiWindow = function FGuiWindow(o){
       o = RClass.inherits(this, o, FGuiFrame);
       return o;
+   }
+}
+with(MO){
+   MO.FGuiEngineInfo = function FGuiEngineInfo(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o._lastTick    = 0;
+      o._stage       = RClass.register(o, new AGetSet('_stage'));
+      o._context     = RClass.register(o, new AGetSet('_context'));
+      o.onPaintBegin = FGuiEngineInfo_onPaintBegin;
+      o.oeUpdate     = FGuiEngineInfo_oeUpdate;
+      o.construct    = FGuiEngineInfo_construct;
+      return o;
+   }
+   MO.FGuiEngineInfo_onPaintBegin = function FGuiEngineInfo_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      if(o._context == null){
+         return;
+      }
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var stageStatistics = o._stage.statistics();
+      var statistics = o._context.statistics();
+      var line = 16;
+      var locationX = 10;
+      var locationY = rectangle.top + line;
+      graphic.setFont('microsoft yahei,Arial,sans-serif');
+      graphic.drawText('Frame         : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Draw          : ' + statistics.frameDrawCount(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Draw Const    : ' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Draw Buffer   : ' + statistics.frameBufferCount(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Draw Texture  : ' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Draw Triangle : ' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Total Program : ' + statistics.programTotal(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Total Layout  : ' + statistics.layoutTotal(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+      graphic.drawText('Total Buffer  : Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
+      locationY += line;
+   }
+   MO.FGuiEngineInfo_oeUpdate = function FGuiEngineInfo_oeUpdate(event){
+      var o = this;
+      var tick = RTimer.current();
+      if(tick - o._lastTick > 1000){
+         o.repaint();
+         o._lastTick = tick;
+      }
+      return EEventStatus.Stop;
+   }
+   MO.FGuiEngineInfo_construct = function FGuiEngineInfo_construct(){
+      var o = this;
+      o.__base.FGuiControl.construct.call(o);
+      o._size.set(512, 256);
    }
 }
 with(MO){

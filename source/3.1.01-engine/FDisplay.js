@@ -34,6 +34,8 @@ with(MO){
       o.removeRenderable  = FDisplay_removeRenderable;
       o.clearRenderables  = FDisplay_clearRenderables;
       // @method
+      o.push              = FDisplay_push;
+      o.remove            = FDisplay_remove;
       o.filterDisplays    = FDisplay_filterDisplays;
       o.filterRenderables = FDisplay_filterRenderables;
       // @method
@@ -44,7 +46,6 @@ with(MO){
       o.update            = FDisplay_update;
       o.updateMatrix      = FDisplay_updateMatrix;
       o.process           = FDisplay_process;
-      o.remove            = FDisplay_remove;
       // @method
       o.dispose           = FDisplay_dispose;
       return o;
@@ -180,6 +181,39 @@ with(MO){
    }
 
    //==========================================================
+   // <T>增加一个对象。</T>
+   //
+   // @method
+   // @param item:Obejct 项目
+   //==========================================================
+   MO.FDisplay_push = function FDisplay_push(item){
+      var o = this;
+      if(RClass.isClass(item, FRenderable)){
+         o.pushRenderable(item);
+      }else if(RClass.isClass(item, MRenderableLinker)){
+         o.pushRenderable(item.renderable());
+      }else if(RClass.isClass(item, FDisplay)){
+         o.pushDisplay(item);
+      }else{
+         throw new TError(o, 'Unknown item type.');
+      }
+   }
+
+   //==========================================================
+   // <T>从父对象上移除自己。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FDisplay_remove = function FDisplay_remove(){
+      var o = this;
+      var c = o._parent;
+      if(c){
+         c.removeDisplay(o);
+         o._parent = null;
+      }
+   }
+
+   //==========================================================
    // <T>过滤显示集合。</T>
    //
    // @method
@@ -291,20 +325,6 @@ with(MO){
             var renderable = renderables.at(i);
             renderable.process(region);
          }
-      }
-   }
-
-   //==========================================================
-   // <T>从父对象上移除自己。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FDisplay_remove = function FDisplay_remove(){
-      var o = this;
-      var c = o._parent;
-      if(c){
-         c.removeDisplay(o);
-         o._parent = null;
       }
    }
 

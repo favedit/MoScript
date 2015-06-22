@@ -202,7 +202,8 @@ with (MO) {
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
       o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
+      o.drawRectangle = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
@@ -352,6 +353,20 @@ with (MO) {
       var handle = o._handle;
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
+   }
+   MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
+      handle.fill();
+      handle.stroke();
    }
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
       var o = this;
@@ -2468,19 +2483,14 @@ with(MO){
 with(MO){
    MO.REngine3d = function REngine3d(){
       var o = this;
-      o._setuped      = false;
-      o._contexts     = null;
-      o.onUnload      = REngine3d_onUnload;
-      o.setup         = REngine3d_setup;
-      o.contexts      = REngine3d_contexts;
-      o.createContext = REngine3d_createContext;
-      o.dispose       = REngine3d_dispose;
+      o._setuped  = false;
+      o._contexts = null;
       return o;
    }
-   MO.REngine3d_onUnload = function REngine3d_onUnload(event){
+   MO.REngine3d.prototype.onUnload = function REngine3d_onUnload(event){
       this.dispose();
    }
-   MO.REngine3d_setup = function REngine3d_setup(){
+   MO.REngine3d.prototype.setup = function REngine3d_setup(){
       var o = this;
       if(!o._setuped){
          o._contexts = new TObjects();
@@ -2488,10 +2498,10 @@ with(MO){
          o._setuped = true;
       }
    }
-   MO.REngine3d_contexts = function REngine3d_contexts(){
+   MO.REngine3d.prototype.contexts = function REngine3d_contexts(){
       return this._contexts;
    }
-   MO.REngine3d_createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
+   MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
       var o = this;
       o.setup();
       var context = RClass.create(clazz);
@@ -2503,7 +2513,7 @@ with(MO){
       o._contexts.push(context);
       return context;
    }
-   MO.REngine3d_dispose = function REngine3d_dispose(){
+   MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
       var o = this;
       var contexts = o._contexts;
       if(contexts){
@@ -2516,6 +2526,7 @@ with(MO){
       }
    }
    MO.REngine3d = new REngine3d();
+   MO.Engine3d = MO.REngine3d;
 }
 MO.EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -3348,26 +3359,26 @@ with(MO){
 with(MO){
    MO.FG3dStatistics = function FG3dStatistics(o){
       o = RClass.inherits(this, o, FStatistics);
-      o._frameClearCount     = 0;
-      o._frameFillModeCount  = 0;
-      o._frameDepthModeCount = 0;
-      o._frameCullModeCount  = 0;
-      o._frameBlendModeCount = 0;
-      o._frameProgramCount   = 0;
-      o._frameConstCount     = 0;
-      o._frameConstLength    = 0;
-      o._frameBufferCount    = 0;
-      o._frameTextureCount   = 0;
-      o._frameTargetCount    = 0;
-      o._frameDrawCount      = 0;
-      o._frameTriangleCount  = 0;
-      o._programTotal        = 0;
-      o._layoutTotal         = 0;
-      o._vertexBufferTotal   = 0;
-      o._indexBufferTotal    = 0;
-      o._flatTextureTotal    = 0;
-      o._cubeTextureTotal    = 0;
-      o._targetTotal         = 0;
+      o._frameClearCount     = RClass.register(o, new AGetter('_frameClearCount'), 0);
+      o._frameFillModeCount  = RClass.register(o, new AGetter('_frameFillModeCount'), 0);
+      o._frameDepthModeCount = RClass.register(o, new AGetter('_frameDepthModeCount'), 0);
+      o._frameCullModeCount  = RClass.register(o, new AGetter('_frameCullModeCount'), 0);
+      o._frameBlendModeCount = RClass.register(o, new AGetter('_frameBlendModeCount'), 0);
+      o._frameProgramCount   = RClass.register(o, new AGetter('_frameProgramCount'), 0);
+      o._frameConstCount     = RClass.register(o, new AGetter('_frameConstCount'), 0);
+      o._frameConstLength    = RClass.register(o, new AGetter('_frameConstLength'), 0);
+      o._frameBufferCount    = RClass.register(o, new AGetter('_frameBufferCount'), 0);
+      o._frameTextureCount   = RClass.register(o, new AGetter('_frameTextureCount'), 0);
+      o._frameTargetCount    = RClass.register(o, new AGetter('_frameTargetCount'), 0);
+      o._frameDrawCount      = RClass.register(o, new AGetter('_frameDrawCount'), 0);
+      o._frameTriangleCount  = RClass.register(o, new AGetter('_frameTriangleCount'), 0);
+      o._programTotal        = RClass.register(o, new AGetter('_programTotal'), 0);
+      o._layoutTotal         = RClass.register(o, new AGetter('_layoutTotal'), 0);
+      o._vertexBufferTotal   = RClass.register(o, new AGetter('_vertexBufferTotal'), 0);
+      o._indexBufferTotal    = RClass.register(o, new AGetter('_indexBufferTotal'), 0);
+      o._flatTextureTotal    = RClass.register(o, new AGetter('_flatTextureTotal'), 0);
+      o._cubeTextureTotal    = RClass.register(o, new AGetter('_cubeTextureTotal'), 0);
+      o._targetTotal         = RClass.register(o, new AGetter('_targetTotal'), 0);
       o.reset                = FG3dStatistics_reset;
       o.resetFrame           = FG3dStatistics_resetFrame;
       return o;

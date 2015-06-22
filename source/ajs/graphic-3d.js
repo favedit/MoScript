@@ -2107,19 +2107,14 @@ with(MO){
 with(MO){
    MO.REngine3d = function REngine3d(){
       var o = this;
-      o._setuped      = false;
-      o._contexts     = null;
-      o.onUnload      = REngine3d_onUnload;
-      o.setup         = REngine3d_setup;
-      o.contexts      = REngine3d_contexts;
-      o.createContext = REngine3d_createContext;
-      o.dispose       = REngine3d_dispose;
+      o._setuped  = false;
+      o._contexts = null;
       return o;
    }
-   MO.REngine3d_onUnload = function REngine3d_onUnload(event){
+   MO.REngine3d.prototype.onUnload = function REngine3d_onUnload(event){
       this.dispose();
    }
-   MO.REngine3d_setup = function REngine3d_setup(){
+   MO.REngine3d.prototype.setup = function REngine3d_setup(){
       var o = this;
       if(!o._setuped){
          o._contexts = new TObjects();
@@ -2127,10 +2122,10 @@ with(MO){
          o._setuped = true;
       }
    }
-   MO.REngine3d_contexts = function REngine3d_contexts(){
+   MO.REngine3d.prototype.contexts = function REngine3d_contexts(){
       return this._contexts;
    }
-   MO.REngine3d_createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
+   MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
       var o = this;
       o.setup();
       var context = RClass.create(clazz);
@@ -2142,7 +2137,7 @@ with(MO){
       o._contexts.push(context);
       return context;
    }
-   MO.REngine3d_dispose = function REngine3d_dispose(){
+   MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
       var o = this;
       var contexts = o._contexts;
       if(contexts){
@@ -2155,4 +2150,5 @@ with(MO){
       }
    }
    MO.REngine3d = new REngine3d();
+   MO.Engine3d = MO.REngine3d;
 }

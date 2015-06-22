@@ -10,20 +10,8 @@ with(MO){
       var o = this;
       //..........................................................
       // @attribute
-      o._setuped      = false;
-      o._contexts     = null;
-      //..........................................................
-      // @event
-      o.onUnload      = REngine3d_onUnload;
-      //..........................................................
-      // @method
-      o.setup         = REngine3d_setup;
-      // @method
-      o.contexts      = REngine3d_contexts;
-      // @method
-      o.createContext = REngine3d_createContext;
-      // @method
-      o.dispose       = REngine3d_dispose;
+      o._setuped  = false;
+      o._contexts = null;
       return o;
    }
 
@@ -33,7 +21,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.REngine3d_onUnload = function REngine3d_onUnload(event){
+   MO.REngine3d.prototype.onUnload = function REngine3d_onUnload(event){
       this.dispose();
    }
 
@@ -42,7 +30,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.REngine3d_setup = function REngine3d_setup(){
+   MO.REngine3d.prototype.setup = function REngine3d_setup(){
       var o = this;
       if(!o._setuped){
          // 设置属性
@@ -59,7 +47,7 @@ with(MO){
    // @method
    // @return TObjects 环境集合
    //==========================================================
-   MO.REngine3d_contexts = function REngine3d_contexts(){
+   MO.REngine3d.prototype.contexts = function REngine3d_contexts(){
       return this._contexts;
    }
 
@@ -72,7 +60,7 @@ with(MO){
    // @param attributes:HtmlCanvasTag 页面画板
    // @return FGraphicContext 绘制环境
    //==========================================================
-   MO.REngine3d_createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
+   MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
       var o = this;
       // 配置检查处理
       o.setup();
@@ -93,7 +81,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.REngine3d_dispose = function REngine3d_dispose(){
+   MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
       var o = this;
       var contexts = o._contexts;
       if(contexts){
@@ -108,4 +96,5 @@ with(MO){
    //..........................................................
    // 实例化内容
    MO.REngine3d = new REngine3d();
+   MO.Engine3d = MO.REngine3d;
 }
