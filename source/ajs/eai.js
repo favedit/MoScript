@@ -1449,10 +1449,10 @@ MO.FEaiChartCustomerScene_selectDate = function FEaiChartCustomerScene_selectDat
       }
       var hTotal = document.getElementById('id_total');
       if(hTotal){
-         hTotal.innerHTML =
-               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
+         hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
+   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartCustomerScene_setup = function FEaiChartCustomerScene_setup(){
    var o = this;
@@ -1582,25 +1582,14 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-   control.linkGraphicContext(o);
-   control.setStage(o._activeStage);
-   control.setContext(o.graphicContext());
-   control.build();
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-   var stage = o._activeStage;
-   var faceLayer = stage.faceLayer();
-   faceLayer.push(o._engineInfo);
 }
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process(){
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._engineInfo){
-      o._engineInfo.psUpdate();
-   }
    if(o._playing){
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
@@ -1685,10 +1674,10 @@ MO.FEaiChartIndustryScene_selectDate = function FEaiChartIndustryScene_selectDat
       }
       var hTotal = document.getElementById('id_total');
       if(hTotal){
-         hTotal.innerHTML =
-               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
+         hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
+   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartIndustryScene_setup = function FEaiChartIndustryScene_setup(){
    var o = this;
@@ -1803,10 +1792,10 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       }
       var hTotal = document.getElementById('id_total');
       if(hTotal){
-         hTotal.innerHTML =
-               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
+         hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
+   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup(){
    var o = this;
@@ -2043,9 +2032,11 @@ with(MO){
    MO.FEaiScene = function FEaiScene(o){
       o = RClass.inherits(this, o, FScene);
       o._frames         = RClass.register(o, new AGetter('_frames'));
+      o._engineInfo     = null;
       o.construct       = FEaiScene_construct;
       o.registerFrame   = FEaiScene_registerFrame;
       o.unregisterFrame = FEaiScene_unregisterFrame;
+      o.setup           = MO.FEaiScene_setup;
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
       o.process         = FEaiScene_process;
@@ -2063,20 +2054,37 @@ with(MO){
    MO.FEaiScene_unregisterFrame = function FEaiScene_unregisterFrame(frame){
       this._frames.remove(frame);
    }
+   MO.FEaiScene_setup = function FEaiScene_setup(){
+      var o = this;
+      o.__base.FScene.setup.call(o);
+      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
+      control.linkGraphicContext(o);
+      control.setContext(o.graphicContext());
+      control.build();
+   }
    MO.FEaiScene_active = function FEaiScene_active(){
       var o = this;
       o.__base.FScene.active.call(o);
       var stage = o._activeStage;
       MO.Eai.Canvas.selectStage(stage);
+      var stage = o._activeStage;
+      var faceLayer = stage.faceLayer();
+      faceLayer.push(o._engineInfo);
+      o._engineInfo.setStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FScene.deactive.call(o);
-      var stage = MO.Eai.Canvas.activeStage();
-      var layer = stage.faceLayer();
+      var stage = o._activeStage;
+      var faceLayer = stage.faceLayer();
+      faceLayer.remove(o._engineInfo.renderable());
+      MO.Eai.Canvas.selectStage(null);
    }
    MO.FEaiScene_process = function FEaiScene_process(){
       var o = this;
+      if(o._engineInfo){
+         o._engineInfo.psUpdate();
+      }
       var count = o._frames.count();
       for(var i = 0; i < count; i++){
          var frame = o._frames.at(i);

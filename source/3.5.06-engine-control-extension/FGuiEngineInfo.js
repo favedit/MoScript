@@ -33,6 +33,9 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       // 绘制信息
+      if(o._stage == null){
+         return;
+      }
       if(o._context == null){
          return;
       }

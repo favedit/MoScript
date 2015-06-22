@@ -12,6 +12,9 @@ with(MO){
    MO.FGuiEngineInfo_onPaintBegin = function FGuiEngineInfo_onPaintBegin(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
+      if(o._stage == null){
+         return;
+      }
       if(o._context == null){
          return;
       }

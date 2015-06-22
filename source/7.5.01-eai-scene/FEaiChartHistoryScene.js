@@ -127,12 +127,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   // 创建控件
-   var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-   control.linkGraphicContext(o);
-   control.setStage(o._activeStage);
-   control.setContext(o.graphicContext());
-   control.build();
 }
 
 //==========================================================
@@ -143,9 +137,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup(){
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-   var stage = o._activeStage;
-   var faceLayer = stage.faceLayer();
-   faceLayer.push(o._engineInfo);
 }
 
 //==========================================================
@@ -156,9 +147,6 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active(){
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process(){
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._engineInfo){
-      o._engineInfo.psUpdate();
-   }
    if(o._playing){
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')

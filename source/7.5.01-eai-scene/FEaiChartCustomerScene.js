@@ -106,10 +106,10 @@ MO.FEaiChartCustomerScene_selectDate = function FEaiChartCustomerScene_selectDat
       }
       var hTotal = document.getElementById('id_total');
       if(hTotal){
-         hTotal.innerHTML = 
-               o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
+         hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
       }
    }
+   o._citysRangeRenderable.upload();
 }
 
 //==========================================================

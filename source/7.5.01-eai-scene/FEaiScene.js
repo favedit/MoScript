@@ -10,6 +10,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._frames         = RClass.register(o, new AGetter('_frames'));
+      o._engineInfo     = null;
       //..........................................................
       // @method
       o.construct       = FEaiScene_construct;
@@ -17,6 +18,7 @@ with(MO){
       o.registerFrame   = FEaiScene_registerFrame;
       o.unregisterFrame = FEaiScene_unregisterFrame;
       // @method
+      o.setup           = MO.FEaiScene_setup;
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
       // @method
@@ -59,6 +61,21 @@ with(MO){
    }
 
    //==========================================================
+   // <T>配置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiScene_setup = function FEaiScene_setup(){
+      var o = this;
+      o.__base.FScene.setup.call(o);
+      // 创建控件
+      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
+      control.linkGraphicContext(o);
+      control.setContext(o.graphicContext());
+      control.build();
+   }
+
+   //==========================================================
    // <T>激活处理。</T>
    //
    // @method
@@ -68,6 +85,10 @@ with(MO){
       o.__base.FScene.active.call(o);
       var stage = o._activeStage;
       MO.Eai.Canvas.selectStage(stage);
+      var stage = o._activeStage;
+      var faceLayer = stage.faceLayer();
+      faceLayer.push(o._engineInfo);
+      o._engineInfo.setStage(stage);
    }
 
    //==========================================================
@@ -78,11 +99,10 @@ with(MO){
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FScene.deactive.call(o);
-      var stage = MO.Eai.Canvas.activeStage();
-      var layer = stage.faceLayer();
-      // 创建标志栏
-      //var frame = o._countryDataLogoBar
-      //layer.removeRenderable(frame.renderable());
+      var stage = o._activeStage;
+      var faceLayer = stage.faceLayer();
+      faceLayer.remove(o._engineInfo.renderable());
+      MO.Eai.Canvas.selectStage(null);
    }
 
    //==========================================================
@@ -92,6 +112,10 @@ with(MO){
    //==========================================================
    MO.FEaiScene_process = function FEaiScene_process(){
       var o = this;
+      // 更新引擎信息
+      if(o._engineInfo){
+         o._engineInfo.psUpdate();
+      }
       // 更新页面
       var count = o._frames.count();
       for(var i = 0; i < count; i++){
