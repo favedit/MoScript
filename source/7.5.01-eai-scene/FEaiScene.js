@@ -72,6 +72,7 @@ with(MO){
       var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
+      control.location().set(10, 200);
       control.build();
    }
 

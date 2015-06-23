@@ -10,7 +10,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._scaleRate          = 1;
-      o._optionAlpha        = false;
+      o._optionAlpha        = true;
       // @attribute
       o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
       // @attribute

@@ -2033,7 +2033,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.region().backgroundColor().set(1, 0, 0.1, 1);
+   stage.region().backgroundColor().set(0, 0, 0, 0);
    var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    renderable.linkGraphicContext(o);
    renderable.setup();
@@ -2188,6 +2188,7 @@ with(MO){
       var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
+      control.location().set(10, 200);
       control.build();
    }
    MO.FEaiScene_active = function FEaiScene_active(){
@@ -2348,7 +2349,7 @@ with(MO){
    MO.FEaiCanvas = function FEaiCanvas(o){
       o = RClass.inherits(this, o, FE3dCanvas);
       o._scaleRate          = 1;
-      o._optionAlpha        = false;
+      o._optionAlpha        = true;
       o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
       o._capturePosition    = null;
       o._captureRotation    = null;

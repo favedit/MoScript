@@ -24,7 +24,7 @@ with(MO){
    MO.FEaiCanvas = function FEaiCanvas(o){
       o = RClass.inherits(this, o, FE3dCanvas);
       o._scaleRate          = 1;
-      o._optionAlpha        = false;
+      o._optionAlpha        = true;
       o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
       o._capturePosition    = null;
       o._captureRotation    = null;

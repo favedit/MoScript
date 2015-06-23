@@ -108,7 +108,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.region().backgroundColor().set(1, 0, 0.1, 1);
+   stage.region().backgroundColor().set(0, 0, 0, 0);
    // 创建城市渲染对象
    var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    renderable.linkGraphicContext(o);

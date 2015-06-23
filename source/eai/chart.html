@@ -21,13 +21,20 @@ function onLoad(){
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 创建场景画板
-   var application = MO.Eai.setup(MO.FEaiChartApplication, id_canvas);
+   var application = MO.Eai.setup(MO.FEaiChartApplication, document.body);
    application.setSceneCode(MO.EEaiScene.ChartHistory);
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' onload='onLoad()'>
-<TABLE width='100%' height='100%' cellpadding='0px' cellmargin='0px' style='border-spacing:0px'>
+<BODY scroll='no' onload='onLoad()' style='background:url("../ars/eai/background.png")'>
+<DIV style='position:absolute;left:10px;top:10px;width:443px;height:206px;background:url("../ars/eai/logo.png");'>
+</DIV>
+<DIV style='position:absolute;left:550px;top:10px;width:319px;height:73px;background:url("../ars/eai/button.png");font-size:12pt;color:#FFFFFF;'>发展历程</DIV>
+<DIV style='position:absolute;left:750px;top:10px;width:319px;height:73px;background:url("../ars/eai/button.png");font-size:12pt;color:#FFFFFF;'>行业历史</DIV>
+<DIV style='position:absolute;left:950px;top:10px;width:319px;height:73px;background:url("../ars/eai/button.png");font-size:12pt;color:#FFFFFF;'>投资历史</DIV>
+<DIV style='position:absolute;left:1150px;top:10px;width:319px;height:73px;background:url("../ars/eai/button.png");font-size:12pt;color:#FFFFFF;'>用户历史</DIV>
+
+<TABLE width='100%' height='100%' cellpadding='0px' cellmargin='0px' style='border-spacing:0px;display:none'>
    <TR>
       <TD height='50px' bgcolor='#0D5AB1'>
          <TABLE bgcolor='#0D5AB1' height='100%'>
@@ -42,7 +49,7 @@ function onLoad(){
       </TD>
    </TR>
    <TR>
-      <TD bgcolor='#000019'>
+      <TD>
          <TABLE width='100%' height='100%' cellpadding='0px' cellmargin='0px'>
             <TR>
                <TD>
@@ -60,76 +67,6 @@ function onLoad(){
                                  <TD style='color:#EEEEEE;font-size:10pt;'>公司名称</TD>
                                  <TD width='100px' align='center' style='color:#EEEEEE;font-size:10pt;'>公司地址</TD>
                                  <TD width='100px' align='center' style='color:#EEEEEE;font-size:10pt;'>成立时间</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
-                              </TR>
-                              <TR bgcolor='#003366'>
-                                 <TD class='Grid_Text'>北京第一分公司</TD>
-                                 <TD class='Grid_Text' align='center'>北京</TD>
-                                 <TD class='Grid_Text' align='center'>2015-10</TD>
                               </TR>
                            </TABLE>
                         </TD>

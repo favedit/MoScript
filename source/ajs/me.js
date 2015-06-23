@@ -21909,23 +21909,23 @@ with(MO){
    }
    MO.FE3dCanvas_build = function FE3dCanvas_build(p){
       var o = this;
-      var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
-      h.__linker = o;
-      h.style.width = '100%';
-      h.style.height = '100%';
+      var hCanvas = o._hCanvas = RBuilder.create(p, 'CANVAS');
+      hCanvas.__linker = o;
+      hCanvas.style.width = '100%';
+      hCanvas.style.height = '100%';
       if(!RMethod.isEmpty(o.onTouchStart)){
-         h.addEventListener('touchstart', o.ohTouchStart, false);
+         hCanvas.addEventListener('touchstart', o.ohTouchStart, false);
       }
       if(!RMethod.isEmpty(o.onTouchMove)){
-         h.addEventListener('touchmove', o.ohTouchMove, false);
+         hCanvas.addEventListener('touchmove', o.ohTouchMove, false);
       }
       if(!RMethod.isEmpty(o.onTouchStop)){
-         h.addEventListener('touchend', o.ohTouchStop, false);
+         hCanvas.addEventListener('touchend', o.ohTouchStop, false);
       }
-      var a = new Object();
-      a.alpha = o._optionAlpha;
-      a.antialias = o._optionAntialias;
-      var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
+      var parameters = new Object();
+      parameters.alpha = o._optionAlpha;
+      parameters.antialias = o._optionAntialias;
+      o._graphicContext = REngine3d.createContext(FWglContext, hCanvas, parameters);
       RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
       RStage.start(o._interval);
       RWindow.lsnsResize.register(o, o.onResize);
@@ -21937,7 +21937,6 @@ with(MO){
    }
    MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(p){
       var o = this;
-      var c = o._graphicContext;
       var hc = o._hCanvas;
       o._hPanel = p;
       p.appendChild(o._hCanvas);
