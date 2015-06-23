@@ -4413,6 +4413,45 @@ with(MO){
       var fr = RString.rpad(sr, r, rp);
       return fl + '.' + fr;
    }
+   MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, divide, unit) {
+      var o = this;
+      if (l == null) {
+         l = 0;
+      }
+      if (lp == null) {
+         lp = o.LEFT_CHAR;
+      }
+      if (r == null) {
+         r = 6;
+      }
+      if (rp == null) {
+         rp = o.LEFT_CHAR;
+      }
+      if (divide == null || unit == null) {
+         divide = 1;
+         unit = '';
+      }
+      v /= divide;
+      var s = v.toString();
+      var f = s.indexOf('.');
+      if (f == -1) {
+         var sl = s;
+         var sr = '';
+      } else {
+         var sl = s.substring(0, f);
+         var sr = s.substring(f + 1, f + r + 1);
+      }
+      var fl = RString.lpad(sl, l, lp);
+      var flc = new TString();
+      for (var i = 1; i - 1 < fl.length; i++) {
+         flc.append(fl.substring(i - 1, i));
+         if (fl.length - i > 0 && (fl.length - i) % 3 == 0) {
+            flc.append(',');
+         }
+      }
+      var fr = RString.rpad(sr, r, rp);
+      return flc + '.' + fr + unit;
+   }
    MO.RFloat.prototype.nvl = function RFloat_nvl(v, d){
       return v ? v : (d ? d : 0);
    }
@@ -6614,6 +6653,8 @@ with(MO){
       o.invert          = SMatrix4x4_invert;
       o.transform       = SMatrix4x4_transform;
       o.transformPoint3 = SMatrix4x4_transformPoint3;
+      o.decompose       = SMatrix4x4_decompose;
+      o.transpose       = SMatrix4x4_transpose;
       o.buildQuaternion = SMatrix4x4_buildQuaternion;
       o.build           = SMatrix4x4_build;
       o.writeData       = SMatrix4x4_writeData;
@@ -6893,6 +6934,50 @@ with(MO){
       }
       r.set(x, y, z);
       return r;
+   }
+   MO.SMatrix4x4_decompose = function SMatrix4x4_decompose(translation, rotation, scale) {
+      var d = this._data;
+      var mCopy = new Array(16);
+      RArray.prototype.copy(d, mCopy);
+      translation.set(mCopy[3], mCopy[7], mCopy[11]);
+      for (var i = 0; i < 3; i++) {
+         mCopy[i * 4 + 3] = mCopy[3 * 4 + i] = 0.0;
+      }
+      mCopy.rows[3][3] = 1.0;
+      var norm;
+      var count = 0;
+      rotation = mCopy;
+      do {
+         var nextRotation = new Array(16);
+         var currInvTranspose = new Array(16);
+         RArray.prototype.copy(rotation, currInvTranspose);
+         currInvTranspose.transpose();
+         currInvTranspose.invert();
+         for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+               nextRotation[i * 4 + j] = 0.5 * (rotation[i * 4 + j] + currInvTranspose[i * 4 + j]);
+            }
+         }
+         norm = 0.0;
+         for (var i = 0; i < 3; i++) {
+            var n = Math.abs(rotation[i * 4] - nextRotation[i * 4]) +
+                    Math.abs(rotation[i * 4 + 1] - nextRotation[i * 4 + 1]) +
+                    Math.abs(rotation[i * 4 + 2] - nextRotation[i * 4 + 2]);
+            norm = Math.max(norm, n);
+         }
+         rotation = nextRotation;
+      } while (count < 100 && norm > 0.0001);
+   }
+   MO.SMatrix4x4_transpose = function SMatrix4x4_transpose() {
+      var d = o._data;
+      var swap;
+      for (var i = 0; i < 4; i++) {
+         for (var j = i + 1; j < 4; j++) {
+            swap = d[i * 4 + j];
+            d[i * 4 + j] = d[j * 4 + i];
+            d[j * 4 + i] = swap;
+         }
+      }
    }
    MO.SMatrix4x4_build = function SMatrix4x4_build(t, r, s){
       var d = this._data;

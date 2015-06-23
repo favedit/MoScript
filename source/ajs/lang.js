@@ -3120,6 +3120,45 @@ with(MO){
       var fr = RString.rpad(sr, r, rp);
       return fl + '.' + fr;
    }
+   MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, divide, unit) {
+      var o = this;
+      if (l == null) {
+         l = 0;
+      }
+      if (lp == null) {
+         lp = o.LEFT_CHAR;
+      }
+      if (r == null) {
+         r = 6;
+      }
+      if (rp == null) {
+         rp = o.LEFT_CHAR;
+      }
+      if (divide == null || unit == null) {
+         divide = 1;
+         unit = '';
+      }
+      v /= divide;
+      var s = v.toString();
+      var f = s.indexOf('.');
+      if (f == -1) {
+         var sl = s;
+         var sr = '';
+      } else {
+         var sl = s.substring(0, f);
+         var sr = s.substring(f + 1, f + r + 1);
+      }
+      var fl = RString.lpad(sl, l, lp);
+      var flc = new TString();
+      for (var i = 1; i - 1 < fl.length; i++) {
+         flc.append(fl.substring(i - 1, i));
+         if (fl.length - i > 0 && (fl.length - i) % 3 == 0) {
+            flc.append(',');
+         }
+      }
+      var fr = RString.rpad(sr, r, rp);
+      return flc + '.' + fr + unit;
+   }
    MO.RFloat.prototype.nvl = function RFloat_nvl(v, d){
       return v ? v : (d ? d : 0);
    }

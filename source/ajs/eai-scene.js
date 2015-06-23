@@ -319,49 +319,51 @@ MO.FEaiChartIndustryScene_deactive = function FEaiChartIndustryScene_deactive(){
    var o = this;
    o.__base.FEaiChartScene.deactive.call(o);
 }
-MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o){
+MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code        = MO.EEaiScene.ChartInvestment;
-   o._playing     = false;
-   o._startDate   = null;
-   o._endDate     = null;
+   o._code = MO.EEaiScene.ChartInvestment;
+   o._playing = false;
+   o._startDate = null;
+   o._endDate = null;
    o._currentDate = null;
-   o.onLoadData   = MO.FEaiChartInvestmentScene_onLoadData;
-   o.onKeyDown    = MO.FEaiChartInvestmentScene_onKeyDown;
-   o.setup        = MO.FEaiChartInvestmentScene_setup;
-   o.selectDate   = MO.FEaiChartInvestmentScene_selectDate;
-   o.active       = MO.FEaiChartInvestmentScene_active;
-   o.process      = MO.FEaiChartInvestmentScene_process;
-   o.deactive     = MO.FEaiChartInvestmentScene_deactive;
+   o._currentRow = 0;
+   o._lastDateRowCount = 0;
+   o.onLoadData = MO.FEaiChartInvestmentScene_onLoadData;
+   o.onKeyDown = MO.FEaiChartInvestmentScene_onKeyDown;
+   o.setup = MO.FEaiChartInvestmentScene_setup;
+   o.selectDate = MO.FEaiChartInvestmentScene_selectDate;
+   o.active = MO.FEaiChartInvestmentScene_active;
+   o.process = MO.FEaiChartInvestmentScene_process;
+   o.deactive = MO.FEaiChartInvestmentScene_deactive;
    return o;
 }
-MO.FEaiChartInvestmentScene_onLoadData = function FEaiChartInvestmentScene_onLoadData(event){
+MO.FEaiChartInvestmentScene_onLoadData = function FEaiChartInvestmentScene_onLoadData(event) {
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
    var code = o._currentDate.format('YYYYMMDD')
    o.selectDate(code);
 }
-MO.FEaiChartInvestmentScene_onKeyDown = function FEaiChartInvestmentScene_onKeyDown(event){
+MO.FEaiChartInvestmentScene_onKeyDown = function FEaiChartInvestmentScene_onKeyDown(event) {
    var o = this;
    var keyCode = event.keyCode;
-   if(keyCode == MO.EKeyCode.N){
+   if (keyCode == MO.EKeyCode.N) {
       o._currentDate.addDay(-1);
       var code = o._currentDate.format('YYYYMMDD')
       o.selectDate(code);
       console.log(code);
    }
-   if(keyCode == MO.EKeyCode.M){
+   if (keyCode == MO.EKeyCode.M) {
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
       o.selectDate(code);
       console.log(code);
    }
-   if(keyCode == MO.EKeyCode.L){
+   if (keyCode == MO.EKeyCode.L) {
       MO.RDate.autoParse(o._currentDate, '20140701');
       o._playing = true;
    }
 }
-MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selectDate(code){
+MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selectDate(code) {
    var o = this;
    var context = o.graphicContext();
    var stage = o._activeStage;
@@ -370,18 +372,29 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
    var dataLayer = stage.dataLayer();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var dateData = historyConsole.dates().get(code);
-   if(dateData){
+   if (dateData) {
       var provincesData = dateData.provinces();
       var count = provincesData.count();
-      for(var i = 0; i < count; i++){
+      for (var i = 0; i < count; i++) {
          var provinceData = provincesData.at(i);
          var provinceEntity = o._provinceEntities.get(provinceData.code());
          provinceEntity.update(provinceData);
       }
+      var invesTable = document.getElementById('id_investment_table');
+      for (var i = 0; i < o._lastDateRowCount; i++) {
+         var row = invesTable.rows[o._currentRow - i];
+         row.style.display = 'none';
+      }
+      for (var i = 0; i < count; i++) {
+         var row = invesTable.rows[o._currentRow + 1 + i];
+         row.style.display = '';
+      }
+      o._currentRow += count;
+      o._lastDateRowCount = count;
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
-      for(var i = 0; i < count; i++){
+      for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
          var code = cityEntity.data().code();
          var data = cityDatas.get(code);
@@ -394,7 +407,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
    }
    o._citysRangeRenderable.upload();
 }
-MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup(){
+MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
@@ -404,25 +417,56 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup(){
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var invesTable = document.getElementById('id_investment_table');
+   var currentDate = o._currentDate;
+   while (true) {
+      var dateData = historyConsole.dates().get(currentDate.format('YYYYMMDD'));
+      if (dateData) {
+         var provincesData = dateData.provinces();
+         var count = provincesData.count();
+         for (var i = 0; i < count; i++) {
+            var provinceInvesData = provincesData.at(i);
+            var provinceResData = provinceConsole.findByCode(provinceInvesData.code());
+            var row = invesTable.insertRow(invesTable.rows.length);
+            var labelCol = row.insertCell(0);
+            var invesCol = row.insertCell(1);
+            labelCol.innerHTML = provinceResData.label();
+            if (provinceInvesData.investmentTotal() > 1000) {
+               invesCol.innerHTML = MO.RFloat.unitFormat(provinceInvesData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+            }
+            else {
+               invesCol.innerHTML = provinceInvesData.investmentTotal();
+            }
+            row.style.display = 'none';
+         }
+         currentDate.addDay(1);
+      }
+      else {
+         break;
+      }
+   }
+   o._currentDate.parseAuto('20140701');
 }
-MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active(){
+MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active() {
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
 }
-MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process(){
+MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(o._playing){
+   if (o._playing) {
       o._currentDate.addDay(1);
       var code = o._currentDate.format('YYYYMMDD')
       var endCode = o._endDate.format('YYYYMMDD')
       o.selectDate(code);
-      if(code == endCode){
+      if (code == endCode) {
          o._playing = false;
       }
    }
 }
-MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactive(){
+MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactive() {
    var o = this;
    o.__base.FEaiChartScene.deactive.call(o);
 }
