@@ -359,6 +359,7 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._vertexPositionBuffer = RClass.register(o, new AGetter('_vertexPositionBuffer'));
       o._vertexColorBuffer    = RClass.register(o, new AGetter('_vertexColorBuffer'));
+      o._indexBuffer          = RClass.register(o, new AGetter('_indexBuffer'));
       o.construct             = FE3dDataBox_construct;
       o.setup                 = FE3dDataBox_setup;
       return o;

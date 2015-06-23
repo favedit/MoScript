@@ -204,11 +204,15 @@ with(MO){
             coordData[coordPosition++] = 0;
             // 设置顶点颜色
             var color = city.color();
+            var red = parseInt(color.red * 255);
+            var green = parseInt(color.green * 255);
+            var blue = parseInt(color.blue * 255);
+            var alpha = parseInt(color.alpha * 255);
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = color.red * 255;
-               colorData[colorPosition++] = color.green * 255;
-               colorData[colorPosition++] = color.blue * 255;
-               colorData[colorPosition++] = color.alpha * 255;
+               colorData[colorPosition++] = red;
+               colorData[colorPosition++] = green;
+               colorData[colorPosition++] = blue;
+               colorData[colorPosition++] = alpha;
             }
          }
       }

@@ -12,6 +12,7 @@ with(MO){
       // @attribute
       o._vertexPositionBuffer = RClass.register(o, new AGetter('_vertexPositionBuffer'));
       o._vertexColorBuffer    = RClass.register(o, new AGetter('_vertexColorBuffer'));
+      o._indexBuffer          = RClass.register(o, new AGetter('_indexBuffer'));
       //..........................................................
       // @method
       o.construct             = FE3dDataBox_construct;

@@ -44,9 +44,8 @@ with(MO){
       // 读取顶点数据
       var index = 0;
       var vertexCount = o._positionCount = input.readInt32();
-      o._positions = new Float32Array(3 * vertexCount);
+      o._positions = new Float32Array(2 * vertexCount);
       for(var i = 0; i < vertexCount; i++){
-         o._positions[index++] = input.readFloat();
          o._positions[index++] = input.readFloat();
          o._positions[index++] = input.readFloat();
       }
@@ -65,7 +64,7 @@ with(MO){
    //==========================================================
    MO.FEaiBoundaryData_dispose = function FEaiBoundaryData_dispose(){
       var o = this;
-      o._positions = RObject.dispose(o._positions);
+      o._positions = null;
       o._indexes = null;
       // 父处理
       o.__base.FEaiEntity.dispose.call(o);
