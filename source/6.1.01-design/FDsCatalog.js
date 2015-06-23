@@ -54,7 +54,7 @@ with(MO){
       // 父处理
       o.__base.FUiDataTreeView.onBuild.call(o, p);
       // 注册事件
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
    }
 
    //==========================================================
@@ -74,10 +74,11 @@ with(MO){
    // <T>节点点击处理。</T>
    //
    // @method
-   // @param p:event:TEventProcess 处理事件
+   // @param event:SEvent 事件信息
    //==========================================================
-   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(tree, node){
+   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(event){
       var o = this;
+      var node = event.node;
       var linker = node.dataPropertyGet('linker');
       if(linker){
          o.selectObject(linker);

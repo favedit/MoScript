@@ -847,6 +847,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'control';
       materialInfo.optionAlpha = true;
+      materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }
@@ -1352,10 +1353,10 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
          colors[colorIndex++] = 0xFF;
-         colors[colorIndex++] = 0x9F;
-         colors[colorIndex++] = 0x4F;
-         colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);
@@ -2062,7 +2063,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(400, 10);
+   frame.setLocation(460, 20);
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -2407,6 +2408,7 @@ with(MO){
       stage.selectTechnique(o, FE3dGeneralTechnique);
       var camera = stage.region().camera();
       var projection = camera.projection();
+      projection.setAngle(80);
       projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
       projection.update();
       camera.position().set(0, 0, -10);

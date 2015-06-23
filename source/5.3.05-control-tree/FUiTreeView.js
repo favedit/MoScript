@@ -58,7 +58,7 @@ with(MO){
       // @listener
       o.lsnsEnter           = new TListeners();
       o.lsnsLeave           = new TListeners();
-      o.lsnsClick           = new TListeners();
+      //o.lsnsClick           = new TListeners();
       o._listenersNodeClick = RClass.register(o, new AListener('_listenersNodeClick', EEvent.NodeClick));
       //..........................................................
       // @event
@@ -715,7 +715,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeView_nodeClick = function FUiTreeView_nodeClick(node){
       var o = this;
-      o.lsnsClick.process(o, node);
+      //o.lsnsClick.process(o, node);
       // 分发事件
       var event = new SEvent();
       event.tree = o;

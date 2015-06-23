@@ -4512,22 +4512,23 @@ with(MO){
       o.PAD    = '0';
       return o;
    }
-   MO.RHex.prototype.isValid = function RHex_isValid(p){
-      return RString.isPattern(p, this.NUMBER);
+   MO.RHex.prototype.isValid = function RHex_isValid(value){
+      return RString.isPattern(value, this.NUMBER);
    }
-   MO.RHex.prototype.parse = function RHex_parse(p){
-      return p ? parseInt('0x' + p) : '0';
+   MO.RHex.prototype.parse = function RHex_parse(value){
+      return value ? parseInt('0x' + value) : 0;
    }
-   MO.RHex.prototype.format = function RHex_format(v, l){
-      var r = null;
-      if(v){
-         r = v.toString(16);
+   MO.RHex.prototype.format = function RHex_format(value, length){
+      var result = null;
+      if(value){
+         result = value.toString(16);
       }else{
-         r = '0'
+         result = '0';
       }
-      return l ? RString.lpad(r, l, this.PAD) : r;
+      return length ? RString.lpad(result, length, this.PAD) : result;
    }
    MO.RHex = new RHex();
+   MO.Lang.Hex = MO.RHex;
 }
 with(MO){
    MO.RInstance = function RInstance(){
@@ -5701,6 +5702,7 @@ with(MO){
       o.assign       = SColor4_assign;
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
+      o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
       o.unserialize3 = SColor4_unserialize3;
@@ -5730,6 +5732,22 @@ with(MO){
       o.green = g;
       o.blue = b;
       o.alpha = a;
+   }
+   MO.SColor4_setHex = function SColor4_setHex(value){
+      var o = this;
+      if(value.indexOf('#') == 0){
+         value = value.substring(1);
+      }
+      if(value.indexOf('0x') == 0){
+         value = value.substring(2);
+      }
+      if(value.length == 6){
+         o.red = RHex.parse(value.substring(0, 2)) / 255;
+         o.green = RHex.parse(value.substring(2, 4)) / 255;
+         o.blue = RHex.parse(value.substring(4, 6)) / 255;
+      }else{
+         throw new TError(o, 'Invalid value.');
+      }
    }
    MO.SColor4_serialize = function SColor4_serialize(p){
       var o = this;

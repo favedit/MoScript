@@ -234,10 +234,11 @@ with(MO){
       o.__base.FDsCatalog.onBuild.call(o, p);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
    }
-   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(t, n){
+   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(event){
       var o = this;
-      var s = n.dataPropertyGet('linker');
-      o.selectObject(s);
+      var node = event.node;
+      var linker = node.dataPropertyGet('linker');
+      o.selectObject(linker);
    }
    MO.FDsTemplateCatalogContent_construct = function FDsTemplateCatalogContent_construct(){
       var o = this;

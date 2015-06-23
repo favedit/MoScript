@@ -3219,22 +3219,23 @@ with(MO){
       o.PAD    = '0';
       return o;
    }
-   MO.RHex.prototype.isValid = function RHex_isValid(p){
-      return RString.isPattern(p, this.NUMBER);
+   MO.RHex.prototype.isValid = function RHex_isValid(value){
+      return RString.isPattern(value, this.NUMBER);
    }
-   MO.RHex.prototype.parse = function RHex_parse(p){
-      return p ? parseInt('0x' + p) : '0';
+   MO.RHex.prototype.parse = function RHex_parse(value){
+      return value ? parseInt('0x' + value) : 0;
    }
-   MO.RHex.prototype.format = function RHex_format(v, l){
-      var r = null;
-      if(v){
-         r = v.toString(16);
+   MO.RHex.prototype.format = function RHex_format(value, length){
+      var result = null;
+      if(value){
+         result = value.toString(16);
       }else{
-         r = '0'
+         result = '0';
       }
-      return l ? RString.lpad(r, l, this.PAD) : r;
+      return length ? RString.lpad(result, length, this.PAD) : result;
    }
    MO.RHex = new RHex();
+   MO.Lang.Hex = MO.RHex;
 }
 with(MO){
    MO.RInstance = function RInstance(){

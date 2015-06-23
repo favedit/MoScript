@@ -314,15 +314,12 @@ with(MO){
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject, MAttributeGuid, MAttributeCode, MAttributeLabel);
-      o._classCode = null;
-      o.classCode  = FDrResource_classCode;
+      o = RClass.inherits(this, o, FDrObject, MAttributeCode, MAttributeLabel);
+      o._classCode = RClass.register(o, new AGetter('_classCode'));
+      o._guid      = RClass.register(o, new AGetSet('_guid'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
-   }
-   MO.FDrResource_classCode = function FDrResource_classCode(){
-      return this._classCode;
    }
    MO.FDrResource_loadConfig = function FDrResource_loadConfig(xconfig){
       var o = this;

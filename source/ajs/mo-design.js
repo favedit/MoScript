@@ -636,15 +636,16 @@ with(MO){
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
    }
    MO.FDsCatalog_onLoadDisplay = function FDsCatalog_onLoadDisplay(p){
       var o = this;
       var n = p._linkNode;
       o.buildRenderable(n, p);
    }
-   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(tree, node){
+   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(event){
       var o = this;
+      var node = event.node;
       var linker = node.dataPropertyGet('linker');
       if(linker){
          o.selectObject(linker);
@@ -2164,15 +2165,12 @@ with(MO){
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject, MAttributeGuid, MAttributeCode, MAttributeLabel);
-      o._classCode = null;
-      o.classCode  = FDrResource_classCode;
+      o = RClass.inherits(this, o, FDrObject, MAttributeCode, MAttributeLabel);
+      o._classCode = RClass.register(o, new AGetter('_classCode'));
+      o._guid      = RClass.register(o, new AGetSet('_guid'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
-   }
-   MO.FDrResource_classCode = function FDrResource_classCode(){
-      return this._classCode;
    }
    MO.FDrResource_loadConfig = function FDrResource_loadConfig(xconfig){
       var o = this;
@@ -7084,7 +7082,7 @@ with(MO){
    MO.FDsResourceCatalogContent_onBuild = function FDsResourceCatalogContent_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
    }
    MO.FDsResourceCatalogContent_onLoadDisplay = function FDsResourceCatalogContent_onLoadDisplay(p){
@@ -11972,10 +11970,11 @@ with(MO){
       o.__base.FDsCatalog.onBuild.call(o, p);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
    }
-   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(t, n){
+   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(event){
       var o = this;
-      var s = n.dataPropertyGet('linker');
-      o.selectObject(s);
+      var node = event.node;
+      var linker = node.dataPropertyGet('linker');
+      o.selectObject(linker);
    }
    MO.FDsTemplateCatalogContent_construct = function FDsTemplateCatalogContent_construct(){
       var o = this;

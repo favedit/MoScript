@@ -19,6 +19,7 @@
       o.assign       = SColor4_assign;
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
+      o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
       o.unserialize3 = SColor4_unserialize3;
@@ -71,6 +72,31 @@
       o.green = g;
       o.blue = b;
       o.alpha = a;
+   }
+
+   //============================================================
+   // <T>设置数据内容。</T>
+   //
+   // @param r:red:Number 红色
+   // @param g:green:Number 绿色
+   // @param b:blue:Number 蓝色
+   // @param a:alpha:Number 透明
+   //============================================================
+   MO.SColor4_setHex = function SColor4_setHex(value){
+      var o = this;
+      if(value.indexOf('#') == 0){
+         value = value.substring(1);
+      }
+      if(value.indexOf('0x') == 0){
+         value = value.substring(2);
+      }
+      if(value.length == 6){
+         o.red = RHex.parse(value.substring(0, 2)) / 255;
+         o.green = RHex.parse(value.substring(2, 4)) / 255;
+         o.blue = RHex.parse(value.substring(4, 6)) / 255;
+      }else{
+         throw new TError(o, 'Invalid value.');
+      }
    }
 
    //==========================================================

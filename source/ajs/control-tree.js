@@ -924,7 +924,6 @@ with(MO){
       o._hNodeRows          = null;
       o.lsnsEnter           = new TListeners();
       o.lsnsLeave           = new TListeners();
-      o.lsnsClick           = new TListeners();
       o._listenersNodeClick = RClass.register(o, new AListener('_listenersNodeClick', EEvent.NodeClick));
       o.onBuildPanel        = FUiTreeView_onBuildPanel;
       o.onBuild             = FUiTreeView_onBuild;
@@ -1324,7 +1323,6 @@ with(MO){
    }
    MO.FUiTreeView_nodeClick = function FUiTreeView_nodeClick(node){
       var o = this;
-      o.lsnsClick.process(o, node);
       var event = new SEvent();
       event.tree = o;
       event.node = node;

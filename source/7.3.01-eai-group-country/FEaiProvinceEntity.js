@@ -134,10 +134,10 @@ with(MO){
          //colors[colorIndex++] = (color >> 16) & 0x1F;
          //colors[colorIndex++] = (color >>  8) & 0x1F;
          //colors[colorIndex++] = (color      ) & 0x1F;
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
          colors[colorIndex++] = 0xFF;
-         colors[colorIndex++] = 0x9F;
-         colors[colorIndex++] = 0x4F;
-         colors[colorIndex++] = 255;
       }
       // 创建三角面渲染对象
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);

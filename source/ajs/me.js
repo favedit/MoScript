@@ -4512,22 +4512,23 @@ with(MO){
       o.PAD    = '0';
       return o;
    }
-   MO.RHex.prototype.isValid = function RHex_isValid(p){
-      return RString.isPattern(p, this.NUMBER);
+   MO.RHex.prototype.isValid = function RHex_isValid(value){
+      return RString.isPattern(value, this.NUMBER);
    }
-   MO.RHex.prototype.parse = function RHex_parse(p){
-      return p ? parseInt('0x' + p) : '0';
+   MO.RHex.prototype.parse = function RHex_parse(value){
+      return value ? parseInt('0x' + value) : 0;
    }
-   MO.RHex.prototype.format = function RHex_format(v, l){
-      var r = null;
-      if(v){
-         r = v.toString(16);
+   MO.RHex.prototype.format = function RHex_format(value, length){
+      var result = null;
+      if(value){
+         result = value.toString(16);
       }else{
-         r = '0'
+         result = '0';
       }
-      return l ? RString.lpad(r, l, this.PAD) : r;
+      return length ? RString.lpad(result, length, this.PAD) : result;
    }
    MO.RHex = new RHex();
+   MO.Lang.Hex = MO.RHex;
 }
 with(MO){
    MO.RInstance = function RInstance(){
@@ -5701,6 +5702,7 @@ with(MO){
       o.assign       = SColor4_assign;
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
+      o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
       o.unserialize3 = SColor4_unserialize3;
@@ -5730,6 +5732,22 @@ with(MO){
       o.green = g;
       o.blue = b;
       o.alpha = a;
+   }
+   MO.SColor4_setHex = function SColor4_setHex(value){
+      var o = this;
+      if(value.indexOf('#') == 0){
+         value = value.substring(1);
+      }
+      if(value.indexOf('0x') == 0){
+         value = value.substring(2);
+      }
+      if(value.length == 6){
+         o.red = RHex.parse(value.substring(0, 2)) / 255;
+         o.green = RHex.parse(value.substring(2, 4)) / 255;
+         o.blue = RHex.parse(value.substring(4, 6)) / 255;
+      }else{
+         throw new TError(o, 'Invalid value.');
+      }
    }
    MO.SColor4_serialize = function SColor4_serialize(p){
       var o = this;
@@ -8954,21 +8972,6 @@ with(MO){
    }
    MO.MAttributeCode_setCode = function MAttributeCode_setCode(code){
       this._code = code;
-   }
-}
-with(MO){
-   MO.MAttributeGuid = function MAttributeGuid(o){
-      o = RClass.inherits(this, o);
-      o._guid   = null;
-      o.guid    = MAttributeGuid_guid;
-      o.setGuid = MAttributeGuid_setGuid;
-      return o;
-   }
-   MO.MAttributeGuid_guid = function MAttributeGuid_guid(){
-      return this._guid;
-   }
-   MO.MAttributeGuid_setGuid = function MAttributeGuid_setGuid(guid){
-      this._guid = guid;
    }
 }
 with(MO){
@@ -16742,9 +16745,8 @@ with(MO){
 with(MO){
    MO.FG3dPerspectiveProjection = function FG3dPerspectiveProjection(o){
       o = RClass.inherits(this, o, FG3dProjection);
-      o._matrix       = null;
+      o._matrix       = RClass.register(o, new AGetter('_matrix'));
       o.construct     = FG3dPerspectiveProjection_construct;
-      o.matrix        = FG3dPerspectiveProjection_matrix;
       o.update        = FG3dPerspectiveProjection_update;
       o.updateFrustum = FG3dPerspectiveProjection_updateFrustum;
       return o;
@@ -16753,9 +16755,6 @@ with(MO){
       var o = this;
       o.__base.FG3dProjection.construct.call(o);
       o._matrix = new SPerspectiveMatrix3d();
-   }
-   MO.FG3dPerspectiveProjection_matrix = function FG3dPerspectiveProjection_matrix(){
-      return this._matrix;
    }
    MO.FG3dPerspectiveProjection_update = function FG3dPerspectiveProjection_update(){
       var o = this;
@@ -16779,17 +16778,13 @@ with(MO){
 with(MO){
    MO.FG3dProjection = function FG3dProjection(o){
       o = RClass.inherits(this, o, FObject);
-      o._size        = null;
-      o._angle       = 60.0;
-      o._fieldOfView = 0;
-      o._znear       = 0.1;
-      o._zfar        = 200.0;
-      o._scale       = 0;
+      o._size        = RClass.register(o, new AGetter('_size'));
+      o._angle       = RClass.register(o, new AGetSet('_angle'), 60.0);
+      o._fieldOfView = RClass.register(o, new AGetSet('_fieldOfView'), 0);
+      o._znear       = RClass.register(o, new AGetSet('_znear'), 0.1);
+      o._zfar        = RClass.register(o, new AGetSet('_zfar'), 200.0);
+      o._scale       = RClass.register(o, new AGetSet('_scale'), 0);
       o.construct   = FG3dProjection_construct;
-      o.size        = FG3dProjection_size;
-      o.angle       = FG3dProjection_angle;
-      o.znear       = FG3dProjection_znear;
-      o.zfar        = FG3dProjection_zfar;
       o.distance    = FG3dProjection_distance;
       return o;
    }
@@ -16797,18 +16792,6 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._size = new SSize2();
-   }
-   MO.FG3dProjection_size = function FG3dProjection_size(){
-      return this._size;
-   }
-   MO.FG3dProjection_angle = function FG3dProjection_angle(){
-      return this._angle;
-   }
-   MO.FG3dProjection_znear = function FG3dProjection_znear(){
-      return this._znear;
-   }
-   MO.FG3dProjection_zfar = function FG3dProjection_zfar(){
-      return this._zfar;
    }
    MO.FG3dProjection_distance = function FG3dProjection_distance(){
       return this._zfar - this._znear;
@@ -21854,7 +21837,8 @@ with(MO){
 }
 with(MO){
    MO.ME3dObject = function ME3dObject(o){
-      o = RClass.inherits(this, o, MGraphicObject, MAttributeGuid, MAttributeCode);
+      o = RClass.inherits(this, o, MGraphicObject, MAttributeCode);
+      o._guid = RClass.register(o, new AGetSet('_guid'));
       return o;
    }
 }
@@ -22172,7 +22156,6 @@ with(MO){
    MO.FE3dStage = function FE3dStage(o){
       o = RClass.inherits(this, o, FStage, MGraphicObject);
       o._statistics        = RClass.register(o, new AGetter('_statistics'));
-      o._directionalLight  = RClass.register(o, new AGetter('_directionalLight'));
       o._technique         = RClass.register(o, new AGetter('_technique'));
       o._region            = RClass.register(o, new AGetter('_region'));
       o._allDisplays       = null;
@@ -23996,8 +23979,9 @@ with(MO){
 }
 with(MO){
    MO.FE3sObject = function FE3sObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode, MAttributeLabel);
       o._typeName   = null;
+      o._guid       = RClass.register(o, new AGetSet('_guid'));
       o._isClone    = false;
       o.makeLabel   = FE3sObject_makeLabel;
       o.unserialize = FE3sObject_unserialize;
@@ -26528,16 +26512,13 @@ with(MO){
 }
 with(MO){
    MO.FE3rMaterial = function FE3rMaterial(o){
-      o = RClass.inherits(this, o, FG3dMaterial, MAttributeGuid, MGraphicObject, MLinkerResource);
+      o = RClass.inherits(this, o, FG3dMaterial, MGraphicObject, MLinkerResource);
       o._ready         = false;
-      o._visible       = true;
-      o._bitmaps       = null;
-      o._reference     = null;
-      o.visible        = FE3rMaterial_visible;
-      o.setVisible     = FE3rMaterial_setVisible;
+      o._visible       = RClass.register(o, new AGetSet('_visible'), true);
+      o._guid          = RClass.register(o, new AGetSet('_guid'));
+      o._bitmaps       = RClass.register(o, new AGetter('_bitmaps'));
+      o._reference     = RClass.register(o, new AGetter('_reference'));
       o.findBitmap     = FE3rMaterial_findBitmap;
-      o.bitmaps        = FE3rMaterial_bitmaps;
-      o.reference      = FE3rMaterial_reference;
       o.testReady      = FE3rMaterial_testReady;
       o.testVisible    = FE3rMaterial_testVisible;
       o.loadResource   = FE3rMaterial_loadResource;
@@ -26545,20 +26526,8 @@ with(MO){
       o.load           = FE3rMaterial_load;
       return o;
    }
-   MO.FE3rMaterial_visible = function FE3rMaterial_visible(){
-      return this._visible;
-   }
-   MO.FE3rMaterial_setVisible = function FE3rMaterial_setVisible(visible){
-      this._visible = visible;
-   }
    MO.FE3rMaterial_findBitmap = function FE3rMaterial_findBitmap(code){
       return this._bitmaps.get(code);
-   }
-   MO.FE3rMaterial_bitmaps = function FE3rMaterial_bitmaps(){
-      return this._bitmaps;
-   }
-   MO.FE3rMaterial_reference = function FE3rMaterial_reference(){
-      return this._reference;
    }
    MO.FE3rMaterial_testReady = function FE3rMaterial_testReady(){
       var o = this;
@@ -27238,7 +27207,8 @@ with(MO){
 }
 with(MO){
    MO.FE3rObject = function FE3rObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeGuid, MAttributeCode, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MAttributeCode, MGraphicObject);
+      o._guid = RClass.register(o, new AGetSet('_guid'));
       return o;
    }
 }

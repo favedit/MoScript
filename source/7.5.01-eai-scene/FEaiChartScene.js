@@ -141,7 +141,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o.registerFrame(frame);
    // 显示左上
    var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(400, 10);
+   frame.setLocation(460, 20);
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    // 加载数据

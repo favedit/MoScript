@@ -7,7 +7,10 @@ with(MO){
    // @history 150417
    //==========================================================
    MO.ME3dObject = function ME3dObject(o){
-      o = RClass.inherits(this, o, MGraphicObject, MAttributeGuid, MAttributeCode);
+      o = RClass.inherits(this, o, MGraphicObject, MAttributeCode);
+      //..........................................................
+      // @attribute
+      o._guid = RClass.register(o, new AGetSet('_guid'));
       return o;
    }
 }

@@ -46,12 +46,13 @@ with(MO){
    // <T>构建树目录。</T>
    //
    // @method
-   // @param p:event:TEventProcess 处理事件
+   // @param event:TEventProcess 处理事件
    //==========================================================
-   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(t, n){
+   MO.FDsTemplateCatalogContent_onNodeClick = function FDsTemplateCatalogContent_onNodeClick(event){
       var o = this;
-      var s = n.dataPropertyGet('linker');
-      o.selectObject(s);
+      var node = event.node;
+      var linker = node.dataPropertyGet('linker');
+      o.selectObject(linker);
    }
 
    //==========================================================

@@ -7,27 +7,16 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject, MAttributeGuid, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FDrObject, MAttributeCode, MAttributeLabel);
       //..........................................................
       // @attribute
-      o._classCode = null;
+      o._classCode = RClass.register(o, new AGetter('_classCode'));
+      o._guid      = RClass.register(o, new AGetSet('_guid'));
       //..........................................................
-      // @method
-      o.classCode  = FDrResource_classCode;
       // @method
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得类代码。</T>
-   //
-   // @method
-   // @return String 代码
-   //==========================================================
-   MO.FDrResource_classCode = function FDrResource_classCode(){
-      return this._classCode;
    }
 
    //==========================================================

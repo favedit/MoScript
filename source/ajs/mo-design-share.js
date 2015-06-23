@@ -202,7 +202,7 @@ with(MO){
    MO.FDsShareResourceCatalogContent_onBuild = function FDsShareResourceCatalogContent_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
    }
    MO.FDsShareResourceCatalogContent_onLoadDisplay = function FDsShareResourceCatalogContent_onLoadDisplay(p){

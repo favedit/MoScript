@@ -636,15 +636,16 @@ with(MO){
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
    }
    MO.FDsCatalog_onLoadDisplay = function FDsCatalog_onLoadDisplay(p){
       var o = this;
       var n = p._linkNode;
       o.buildRenderable(n, p);
    }
-   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(tree, node){
+   MO.FDsCatalog_onNodeClick = function FDsCatalog_onNodeClick(event){
       var o = this;
+      var node = event.node;
       var linker = node.dataPropertyGet('linker');
       if(linker){
          o.selectObject(linker);

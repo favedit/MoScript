@@ -381,6 +381,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'control';
       materialInfo.optionAlpha = true;
+      materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }
@@ -886,10 +887,10 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x1F;
          colors[colorIndex++] = 0xFF;
-         colors[colorIndex++] = 0x9F;
-         colors[colorIndex++] = 0x4F;
-         colors[colorIndex++] = 255;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);

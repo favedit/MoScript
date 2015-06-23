@@ -1,6 +1,7 @@
 with(MO){
    MO.ME3dObject = function ME3dObject(o){
-      o = RClass.inherits(this, o, MGraphicObject, MAttributeGuid, MAttributeCode);
+      o = RClass.inherits(this, o, MGraphicObject, MAttributeCode);
+      o._guid = RClass.register(o, new AGetSet('_guid'));
       return o;
    }
 }
@@ -318,7 +319,6 @@ with(MO){
    MO.FE3dStage = function FE3dStage(o){
       o = RClass.inherits(this, o, FStage, MGraphicObject);
       o._statistics        = RClass.register(o, new AGetter('_statistics'));
-      o._directionalLight  = RClass.register(o, new AGetter('_directionalLight'));
       o._technique         = RClass.register(o, new AGetter('_technique'));
       o._region            = RClass.register(o, new AGetter('_region'));
       o._allDisplays       = null;

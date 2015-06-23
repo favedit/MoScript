@@ -7,22 +7,19 @@ with(MO){
    // @history 150417
    //==========================================================
    MO.FE3rMaterial = function FE3rMaterial(o){
-      o = RClass.inherits(this, o, FG3dMaterial, MAttributeGuid, MGraphicObject, MLinkerResource);
+      o = RClass.inherits(this, o, FG3dMaterial, MGraphicObject, MLinkerResource);
       //..........................................................
       // @method
       o._ready         = false;
-      o._visible       = true;
+      o._visible       = RClass.register(o, new AGetSet('_visible'), true);
+      o._guid          = RClass.register(o, new AGetSet('_guid'));
       // @method
-      o._bitmaps       = null;
+      o._bitmaps       = RClass.register(o, new AGetter('_bitmaps'));
       // @attribute 材质引用
-      o._reference     = null;
+      o._reference     = RClass.register(o, new AGetter('_reference'));
      //..........................................................
       // @method
-      o.visible        = FE3rMaterial_visible;
-      o.setVisible     = FE3rMaterial_setVisible;
       o.findBitmap     = FE3rMaterial_findBitmap;
-      o.bitmaps        = FE3rMaterial_bitmaps;
-      o.reference      = FE3rMaterial_reference;
       // @method
       o.testReady      = FE3rMaterial_testReady;
       o.testVisible    = FE3rMaterial_testVisible;
@@ -35,26 +32,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得可见性。</T>
-   //
-   // @method
-   // @return Boolean 可见性
-   //==========================================================
-   MO.FE3rMaterial_visible = function FE3rMaterial_visible(){
-      return this._visible;
-   }
-
-   //==========================================================
-   // <T>设置可见性。</T>
-   //
-   // @method
-   // @param visible:Boolean 可见性
-   //==========================================================
-   MO.FE3rMaterial_setVisible = function FE3rMaterial_setVisible(visible){
-      this._visible = visible;
-   }
-
-   //==========================================================
    // <T>根据代码查找位图。</T>
    //
    // @method
@@ -63,26 +40,6 @@ with(MO){
    //==========================================================
    MO.FE3rMaterial_findBitmap = function FE3rMaterial_findBitmap(code){
       return this._bitmaps.get(code);
-   }
-
-   //==========================================================
-   // <T>获得位图集合。</T>
-   //
-   // @method
-   // @param TDictionary 位图集合
-   //==========================================================
-   MO.FE3rMaterial_bitmaps = function FE3rMaterial_bitmaps(){
-      return this._bitmaps;
-   }
-
-   //==========================================================
-   // <T>获得材质引用。</T>
-   //
-   // @method
-   // @return FE3rMaterial 材质引用
-   //==========================================================
-   MO.FE3rMaterial_reference = function FE3rMaterial_reference(){
-      return this._reference;
    }
 
    //==========================================================

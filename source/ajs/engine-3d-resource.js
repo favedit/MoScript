@@ -1571,8 +1571,9 @@ with(MO){
 }
 with(MO){
    MO.FE3sObject = function FE3sObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeGuid, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode, MAttributeLabel);
       o._typeName   = null;
+      o._guid       = RClass.register(o, new AGetSet('_guid'));
       o._isClone    = false;
       o.makeLabel   = FE3sObject_makeLabel;
       o.unserialize = FE3sObject_unserialize;

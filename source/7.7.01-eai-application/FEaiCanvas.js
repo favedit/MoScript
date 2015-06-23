@@ -98,6 +98,7 @@ with(MO){
       stage.selectTechnique(o, FE3dGeneralTechnique);
       var camera = stage.region().camera();
       var projection = camera.projection();
+      projection.setAngle(80);
       projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
       projection.update();
       camera.position().set(0, 0, -10);

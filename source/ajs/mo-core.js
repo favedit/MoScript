@@ -291,21 +291,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.MAttributeGuid = function MAttributeGuid(o){
-      o = RClass.inherits(this, o);
-      o._guid   = null;
-      o.guid    = MAttributeGuid_guid;
-      o.setGuid = MAttributeGuid_setGuid;
-      return o;
-   }
-   MO.MAttributeGuid_guid = function MAttributeGuid_guid(){
-      return this._guid;
-   }
-   MO.MAttributeGuid_setGuid = function MAttributeGuid_setGuid(guid){
-      this._guid = guid;
-   }
-}
-with(MO){
    MO.MAttributeLabel = function MAttributeLabel(o){
       o = RClass.inherits(this, o);
       o._label   = null;

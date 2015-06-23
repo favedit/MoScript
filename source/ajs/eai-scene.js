@@ -580,7 +580,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(400, 10);
+   frame.setLocation(460, 20);
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);

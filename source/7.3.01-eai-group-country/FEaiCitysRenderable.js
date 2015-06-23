@@ -141,7 +141,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'control';
       materialInfo.optionAlpha = true;
-      //o._material.info().optionDouble = true;
+      materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }

@@ -18,7 +18,7 @@ with(MO){
    MO.FDsResourceCatalogContent_onBuild = function FDsResourceCatalogContent_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
    }
    MO.FDsResourceCatalogContent_onLoadDisplay = function FDsResourceCatalogContent_onLoadDisplay(p){

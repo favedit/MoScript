@@ -11,9 +11,7 @@ with(MO){
       // @attribute
       o._statistics        = RClass.register(o, new AGetter('_statistics'));
       // @attribute
-      o._directionalLight  = RClass.register(o, new AGetter('_directionalLight'));
       o._technique         = RClass.register(o, new AGetter('_technique'));
-      // @attribute
       o._region            = RClass.register(o, new AGetter('_region'));
       o._allDisplays       = null;
       //..........................................................
