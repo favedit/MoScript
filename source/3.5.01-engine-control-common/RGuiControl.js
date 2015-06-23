@@ -146,7 +146,7 @@ with(MO){
       }
       // 构建完成处理
       if(RClass.isClass(control, FGuiControl)){
-         //control.builded(ph);
+         //control.builded();
       }
    }
 

@@ -462,8 +462,6 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
    timeline.linkGraphicContext(o);
-   timeline.build();
-   layer.push(timeline);
 }
 MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active() {
    var o = this;
@@ -572,6 +570,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    matrix.setScale(0.2, 0.24, 0.2);
    matrix.update();
    stage.dataLayer().push(renderable);
+   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   stage.faceLayer().push(frame);
+   o.registerFrame(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
@@ -707,7 +708,6 @@ with(MO){
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
       control.location().set(10, 200);
-      control.build();
    }
    MO.FEaiScene_active = function FEaiScene_active(){
       var o = this;
@@ -716,7 +716,6 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
@@ -730,7 +729,6 @@ with(MO){
    MO.FEaiScene_process = function FEaiScene_process(){
       var o = this;
       if(o._engineInfo){
-         o._engineInfo.psUpdate();
       }
       var count = o._frames.count();
       for(var i = 0; i < count; i++){

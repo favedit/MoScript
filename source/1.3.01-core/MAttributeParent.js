@@ -10,25 +10,30 @@ with(MO){
       o = RClass.inherits(this, o);
       //..........................................................
       // @attribute
-      o._parent    = null;
+      o._parent    = RClass.register(o, new AGetSet('_parent'));
       //..........................................................
       // @method
-      o.parent     = MAttributeParent_parent;
+      o.isParent   = MAttributeParent_isParent;
       o.findParent = MAttributeParent_findParent;
-      o.setParent  = MAttributeParent_setParent;
       // @method
       o.dispose    = MAttributeParent_dispose;
       return o;
    }
 
    //==========================================================
-   // <T>获得父对象。</T>
+   // <T>判断自己是否指定组件的父。</T>
    //
    // @method
-   // @return FObject 父对象
+   // @param value:MAttributeParent 组件
+   // @return Boolean 是否指定组件的父
    //==========================================================
-   MO.MAttributeParent_parent = function MAttributeParent_parent(){
-      return this._parent;
+   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
+      while(value){
+         if(value == this){
+            return true;
+         }
+         value = value.parent();
+      }
    }
 
    //==========================================================
@@ -43,24 +48,14 @@ with(MO){
       var find = this;
       if(clazz){
          while(RClass.isClass(find._parent, clazz)){
-            find = find._parent;
+            find = find.parent();
          }
       }else{
          while(find._parent){
-            find = find._parent;
+            find = find.parent();
          }
       }
       return find;
-   }
-
-   //==========================================================
-   // <T>设置父对象。</T>
-   //
-   // @method
-   // @param parent:FObject 父对象
-   //==========================================================
-   MO.MAttributeParent_setParent = function MAttributeParent_setParent(parent){
-      this._parent = parent;
    }
 
    //==========================================================

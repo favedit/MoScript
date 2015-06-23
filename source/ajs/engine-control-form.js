@@ -47,6 +47,54 @@ with(MO){
    }
 }
 with(MO){
+   MO.FGuiLabel = function FGuiLabel(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o._statusPaint = false;
+      o._image       = null;
+      o.onImageLoad  = FGuiLabel_onImageLoad;
+      o.onPaintBegin = FGuiLabel_onPaintBegin;
+      o.oeUpdate     = FGuiLabel_oeUpdate;
+      return o;
+   }
+   MO.FGuiLabel_onImageLoad = function FGuiLabel_onImageLoad(event){
+      var o = this;
+      var image = o._image;
+      var topComponent = o.topComponent();
+      topComponent.build();
+      o._statusPaint = true;
+   }
+   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      if(o._image && o._image.testReady()){
+         if(o._backGrid.isEmpty()){
+            graphic.drawImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+         }else{
+            graphic.drawGridImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
+         }
+      }
+      if(o._label){
+         var x = rectangle.left + rectangle.width * 0.5;
+         var y = rectangle.top + rectangle.height * 0.5;
+         graphic.drawText(o._label, x, y, '#FF0000');
+      }
+   }
+   MO.FGuiLabel_oeUpdate = function FGuiLabel_oeUpdate(event){
+      var o = this;
+      if(!o._statusPaint){
+         if(o._image == null && o._backResource){
+            var url = o._backResource.substring(4);
+            var image = o._image = RClass.create(FImage);
+            image.addLoadListener(o, o.onImageLoad);
+            image.loadUrl(url);
+         }
+      }
+      return EEventStatus.Stop;
+   }
+}
+with(MO){
    MO.FGuiPanel = function FGuiPanel(o){
       o = RClass.inherits(this, o, FGuiControl);
       return o;
@@ -56,21 +104,14 @@ with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
       o._image       = null;
-      o.onImageLoad  = FGuiPicture_onImageLoad;
       o.onPaintBegin = FGuiPicture_onPaintBegin;
       o.oeUpdate     = FGuiPicture_oeUpdate;
       return o;
    }
-   MO.FGuiPicture_onImageLoad = function FGuiPicture_onImageLoad(event){
-      var o = this;
-      var image = o._image;
-      var topComponent = o.topComponent();
-      topComponent.build();
-      o._statusPaint = true;
-   }
    MO.FGuiPicture_onPaintBegin = function FGuiPicture_onPaintBegin(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
+      return;
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       if(o._image && o._image.testReady()){
@@ -82,6 +123,7 @@ with(MO){
       }
    }
    MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
+      return;
       var o = this;
       if(!o._statusPaint){
          if(o._image == null && o._backResource){

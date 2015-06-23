@@ -55,6 +55,7 @@ with(MO){
       // 构建处理
       var frame = RGuiControl.build(null, xframe, null, null);
       frame.linkGraphicContext(context);
+      frame.psInitialize();
       frame.build();
       return frame;
    }

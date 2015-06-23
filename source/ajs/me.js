@@ -9004,31 +9004,32 @@ with(MO){
 with(MO){
    MO.MAttributeParent = function MAttributeParent(o){
       o = RClass.inherits(this, o);
-      o._parent    = null;
-      o.parent     = MAttributeParent_parent;
+      o._parent    = RClass.register(o, new AGetSet('_parent'));
+      o.isParent   = MAttributeParent_isParent;
       o.findParent = MAttributeParent_findParent;
-      o.setParent  = MAttributeParent_setParent;
       o.dispose    = MAttributeParent_dispose;
       return o;
    }
-   MO.MAttributeParent_parent = function MAttributeParent_parent(){
-      return this._parent;
+   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
+      while(value){
+         if(value == this){
+            return true;
+         }
+         value = value.parent();
+      }
    }
    MO.MAttributeParent_findParent = function MAttributeParent_findParent(clazz){
       var find = this;
       if(clazz){
          while(RClass.isClass(find._parent, clazz)){
-            find = find._parent;
+            find = find.parent();
          }
       }else{
          while(find._parent){
-            find = find._parent;
+            find = find.parent();
          }
       }
       return find;
-   }
-   MO.MAttributeParent_setParent = function MAttributeParent_setParent(parent){
-      this._parent = parent;
    }
    MO.MAttributeParent_dispose = function MAttributeParent_dispose(){
       var o = this;
@@ -10043,7 +10044,8 @@ with(MO){
 }
 with(MO){
    MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode);
+      o = RClass.inherits(this, o, FObject, MAttributeParent);
+      o._code   = RClass.register(o, new AGetSet('_code'));
       o.dispose = FComponent_dispose;
       return o;
    }
@@ -33379,6 +33381,41 @@ with(MO){
       return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
    }
 }
+MO.SGuiImage = function SGuiImage(){
+   var o = this;
+   o.ready       = false;
+   o.bitmap      = null;
+   o.resource    = null;
+   o.onImageLoad = MO.SGuiImage_onImageLoad;
+   o.testReady   = MO.SGuiImage_testReady;
+   o.load        = MO.SGuiImage_load;
+   o.dispose     = MO.SGuiImage_dispose;
+   return o;
+}
+MO.SGuiImage_onImageLoad = function SGuiImage_onImageLoad(event){
+   this.ready = true;
+}
+MO.SGuiImage_testReady = function SGuiImage_testReady(){
+   return this.ready;
+}
+MO.SGuiImage_load = function SGuiImage_load(){
+   var o = this;
+   o.ready = false;
+   var url = null;
+   if(MO.Lang.String.startsWith(o.resource, 'url:')){
+      url = o.resource.substring(4);
+   }else{
+      throw new MO.TError('Invalid url.');
+   }
+   var bitmap = o.bitmap = MO.Class.create(MO.FImage);
+   bitmap.addLoadListener(o, o.onImageLoad);
+   bitmap.loadUrl(url);
+}
+MO.SGuiImage_dispose = function SGuiImage_dispose(){
+   var o = this;
+   o.bitmap = MO.RObject.dispose(o.bitmap);
+   return o;
+}
 MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic   = null;
@@ -33416,7 +33453,8 @@ with(MO){
       o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       o._components   = null;
       o._tag          = RClass.register(o, new AGetSet('_tag'));
-      o.isParent      = FGuiComponent_isParent;
+      o.oeInitialize  = FGuiComponent_oeInitialize;
+      o.oeRelease     = FGuiComponent_oeRelease;
       o.topComponent  = FGuiComponent_topComponent;
       o.hasComponent  = FGuiComponent_hasComponent;
       o.findComponent = FGuiComponent_findComponent;
@@ -33425,16 +33463,17 @@ with(MO){
       o.remove        = FGuiComponent_remove;
       o.clear         = FGuiComponent_clear;
       o.process       = FGuiComponent_process;
+      o.psInitialize  = FGuiComponent_psInitialize;
+      o.psRelease     = FGuiComponent_psRelease;
+      o.toString      = FGuiComponent_toString;
       o.dispose       = FGuiComponent_dispose;
       return o;
    }
-   MO.FGuiComponent_isParent = function FGuiComponent_isParent(component){
-      while(component){
-         if(component == this){
-            return true;
-         }
-         component = component._parent;
-      }
+   MO.FGuiComponent_oeInitialize = function FGuiComponent_oeInitialize(e){
+      return EEventStatus.Continue;
+   }
+   MO.FGuiComponent_oeRelease = function FGuiComponent_oeRelease(e){
+      return EEventStatus.Continue;
    }
    MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
       var component = this;
@@ -33535,6 +33574,22 @@ with(MO){
       }
       return EEventStatus.Continue;
    }
+   MO.FGuiComponent_psInitialize = function FGuiComponent_psInitialize(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeInitialize', FGuiComponent);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiComponent_psRelease = function FGuiComponent_psRelease(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeRelease', FGuiComponent);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiComponent_toString = function FGuiComponent_toString(){
+      var o = this;
+      return RClass.dump(o) + ':label=' + o._label;
+   }
    MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
       var o = this;
       o._components = RObject.dispose(o._components, true);
@@ -33556,11 +33611,14 @@ with(MO){
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
       o._statusPaint     = false;
+      o._backImage       = null;
       o._clientRectangle = null;
       o.onUpdate         = FGuiControl_onUpdate;
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
       o.onPaint          = FGuiControl_onPaint;
+      o.oeInitialize     = FGuiControl_oeInitialize;
+      o.oeUpdate         = FGuiControl_oeUpdate;
       o.construct        = FGuiControl_construct;
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
@@ -33602,6 +33660,15 @@ with(MO){
       var rectangle = o._clientRectangle;
       if(o._styleBackcolor){
       }
+      var backImage = o._backImage;
+      if(backImage){
+         var backGrid = o._backGrid;
+         if(backGrid && !backGrid.isEmpty()){
+            graphic.drawGridImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
+         }else{
+            graphic.drawImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+         }
+      }
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
       var o = this;
@@ -33621,6 +33688,27 @@ with(MO){
       }
       o.onPaintEnd(event);
    }
+   MO.FGuiControl_oeInitialize = function FGuiControl_oeInitialize(event){
+      var o = this;
+      var resultCd = o.__base.FGuiComponent.oeInitialize.call(o, event)
+      if(event.isBefore()){
+         if(o._backResource){
+            var image = o._backImage = new SGuiImage();
+            image.resource = o._backResource;
+            image.load();
+         }
+      }
+      return resultCd;
+   }
+   MO.FGuiControl_oeUpdate = function FGuiControl_oeUpdate(event){
+      var o = this;
+      if(!o._statusPaint){
+         if(o.testReady()){
+            o.repaint();
+         }
+      }
+      return EEventStatus.Stop;
+   }
    MO.FGuiControl_construct = function FGuiControl_construct(){
       var o = this;
       o.__base.FGuiComponent.construct.call(o);
@@ -33639,6 +33727,13 @@ with(MO){
       MO.Memory.free(event);
    }
    MO.FGuiControl_testReady = function FGuiControl_testReady(){
+      var o = this;
+      var image = o._backImage;
+      if(image){
+         if(!image.testReady()){
+            return false;
+         }
+      }
       return true;
    }
    MO.FGuiControl_paint = function FGuiControl_paint(graphic){
@@ -33648,6 +33743,7 @@ with(MO){
       event.rectangle.assign(o._clientRectangle);
       o.onPaint(event);
       MO.Memory.free(event);
+      o._statusPaint = true;
    }
    MO.FGuiControl_repaint = function FGuiControl_repaint(){
       var o = this;
@@ -33662,6 +33758,7 @@ with(MO){
       o.onPaint(event);
       MO.Memory.free(event);
       renderable.endDraw();
+      o._statusPaint = true;
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
@@ -33933,6 +34030,7 @@ with(MO){
       var xframe = describeConsole.load(name);
       var frame = RGuiControl.build(null, xframe, null, null);
       frame.linkGraphicContext(context);
+      frame.psInitialize();
       frame.build();
       return frame;
    }
@@ -34059,6 +34157,54 @@ with(MO){
    }
 }
 with(MO){
+   MO.FGuiLabel = function FGuiLabel(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o._statusPaint = false;
+      o._image       = null;
+      o.onImageLoad  = FGuiLabel_onImageLoad;
+      o.onPaintBegin = FGuiLabel_onPaintBegin;
+      o.oeUpdate     = FGuiLabel_oeUpdate;
+      return o;
+   }
+   MO.FGuiLabel_onImageLoad = function FGuiLabel_onImageLoad(event){
+      var o = this;
+      var image = o._image;
+      var topComponent = o.topComponent();
+      topComponent.build();
+      o._statusPaint = true;
+   }
+   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      if(o._image && o._image.testReady()){
+         if(o._backGrid.isEmpty()){
+            graphic.drawImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+         }else{
+            graphic.drawGridImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
+         }
+      }
+      if(o._label){
+         var x = rectangle.left + rectangle.width * 0.5;
+         var y = rectangle.top + rectangle.height * 0.5;
+         graphic.drawText(o._label, x, y, '#FF0000');
+      }
+   }
+   MO.FGuiLabel_oeUpdate = function FGuiLabel_oeUpdate(event){
+      var o = this;
+      if(!o._statusPaint){
+         if(o._image == null && o._backResource){
+            var url = o._backResource.substring(4);
+            var image = o._image = RClass.create(FImage);
+            image.addLoadListener(o, o.onImageLoad);
+            image.loadUrl(url);
+         }
+      }
+      return EEventStatus.Stop;
+   }
+}
+with(MO){
    MO.FGuiPanel = function FGuiPanel(o){
       o = RClass.inherits(this, o, FGuiControl);
       return o;
@@ -34068,21 +34214,14 @@ with(MO){
    MO.FGuiPicture = function FGuiPicture(o){
       o = RClass.inherits(this, o, FGuiControl);
       o._image       = null;
-      o.onImageLoad  = FGuiPicture_onImageLoad;
       o.onPaintBegin = FGuiPicture_onPaintBegin;
       o.oeUpdate     = FGuiPicture_oeUpdate;
       return o;
    }
-   MO.FGuiPicture_onImageLoad = function FGuiPicture_onImageLoad(event){
-      var o = this;
-      var image = o._image;
-      var topComponent = o.topComponent();
-      topComponent.build();
-      o._statusPaint = true;
-   }
    MO.FGuiPicture_onPaintBegin = function FGuiPicture_onPaintBegin(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
+      return;
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       if(o._image && o._image.testReady()){
@@ -34094,6 +34233,7 @@ with(MO){
       }
    }
    MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
+      return;
       var o = this;
       if(!o._statusPaint){
          if(o._image == null && o._backResource){

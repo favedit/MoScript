@@ -7,7 +7,10 @@ with(MO){
    // @history 150416
    //==========================================================
    MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode);
+      o = RClass.inherits(this, o, FObject, MAttributeParent);
+      //..........................................................
+      // @attribute
+      o._code   = RClass.register(o, new AGetSet('_code'));
       //..........................................................
       // @method
       o.dispose = FComponent_dispose;

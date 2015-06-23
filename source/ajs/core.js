@@ -338,31 +338,32 @@ with(MO){
 with(MO){
    MO.MAttributeParent = function MAttributeParent(o){
       o = RClass.inherits(this, o);
-      o._parent    = null;
-      o.parent     = MAttributeParent_parent;
+      o._parent    = RClass.register(o, new AGetSet('_parent'));
+      o.isParent   = MAttributeParent_isParent;
       o.findParent = MAttributeParent_findParent;
-      o.setParent  = MAttributeParent_setParent;
       o.dispose    = MAttributeParent_dispose;
       return o;
    }
-   MO.MAttributeParent_parent = function MAttributeParent_parent(){
-      return this._parent;
+   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
+      while(value){
+         if(value == this){
+            return true;
+         }
+         value = value.parent();
+      }
    }
    MO.MAttributeParent_findParent = function MAttributeParent_findParent(clazz){
       var find = this;
       if(clazz){
          while(RClass.isClass(find._parent, clazz)){
-            find = find._parent;
+            find = find.parent();
          }
       }else{
          while(find._parent){
-            find = find._parent;
+            find = find.parent();
          }
       }
       return find;
-   }
-   MO.MAttributeParent_setParent = function MAttributeParent_setParent(parent){
-      this._parent = parent;
    }
    MO.MAttributeParent_dispose = function MAttributeParent_dispose(){
       var o = this;
@@ -1377,7 +1378,8 @@ with(MO){
 }
 with(MO){
    MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode);
+      o = RClass.inherits(this, o, FObject, MAttributeParent);
+      o._code   = RClass.register(o, new AGetSet('_code'));
       o.dispose = FComponent_dispose;
       return o;
    }

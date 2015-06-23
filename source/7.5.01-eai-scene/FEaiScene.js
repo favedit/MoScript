@@ -73,7 +73,7 @@ with(MO){
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
       control.location().set(10, 200);
-      control.build();
+      //control.build();
    }
 
    //==========================================================
@@ -88,7 +88,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.push(o._engineInfo);
+      //faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
 
@@ -115,7 +115,7 @@ with(MO){
       var o = this;
       // 更新引擎信息
       if(o._engineInfo){
-         o._engineInfo.psUpdate();
+         //o._engineInfo.psUpdate();
       }
       // 更新页面
       var count = o._frames.count();

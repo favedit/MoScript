@@ -17,6 +17,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._statusPaint     = false;
+      o._backImage       = null;
       o._clientRectangle = null;
       //..........................................................
       // @event
@@ -25,6 +26,10 @@ with(MO){
       o.onPaintBegin     = FGuiControl_onPaintBegin;
       o.onPaintEnd       = FGuiControl_onPaintEnd;
       o.onPaint          = FGuiControl_onPaint;
+      //..........................................................
+      // @process
+      o.oeInitialize     = FGuiControl_oeInitialize;
+      o.oeUpdate         = FGuiControl_oeUpdate;
       //..........................................................
       // @method
       o.construct        = FGuiControl_construct;
@@ -93,6 +98,15 @@ with(MO){
       //graphic.drawBorder(o._clientRectangle, o._borderInner);
       //graphic.setFont('microsoft yahei,Arial,sans-serif');
       //graphic.drawText('这是一个测试', 10, 40, '#FF0000');
+      var backImage = o._backImage;
+      if(backImage){
+         var backGrid = o._backGrid;
+         if(backGrid && !backGrid.isEmpty()){
+            graphic.drawGridImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
+         }else{
+            graphic.drawImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+         }
+      }
    }
 
    //==========================================================
@@ -129,6 +143,43 @@ with(MO){
       //..........................................................
       // 绘制结束处理
       o.onPaintEnd(event);
+   }
+
+   //==========================================================
+   // <T>处理初始化事件。</T>
+   //
+   // @method
+   // @param event:TEventProcess 事件处理
+   // @return EEventStatus 处理状态
+   //==========================================================
+   MO.FGuiControl_oeInitialize = function FGuiControl_oeInitialize(event){
+      var o = this;
+      var resultCd = o.__base.FGuiComponent.oeInitialize.call(o, event)
+      if(event.isBefore()){
+         if(o._backResource){
+            var image = o._backImage = new SGuiImage();
+            image.resource = o._backResource;
+            image.load();
+         }
+      }
+      return resultCd;
+   }
+
+   //==========================================================
+   // <T>表单图片控件。</T>
+   //
+   // @class
+   // @author maocy
+   // @version 150610
+   //==========================================================
+   MO.FGuiControl_oeUpdate = function FGuiControl_oeUpdate(event){
+      var o = this;
+      if(!o._statusPaint){
+         if(o.testReady()){
+            o.repaint();
+         }
+      }
+      return EEventStatus.Stop;
    }
 
    //==========================================================
@@ -174,6 +225,14 @@ with(MO){
    // @return Boolean 是否准备好
    //==========================================================
    MO.FGuiControl_testReady = function FGuiControl_testReady(){
+      var o = this;
+      // 检查位图是否加载完成
+      var image = o._backImage;
+      if(image){
+         if(!image.testReady()){
+            return false;
+         }
+      }
       return true;
    }
 
@@ -190,6 +249,7 @@ with(MO){
       event.rectangle.assign(o._clientRectangle);
       o.onPaint(event);
       MO.Memory.free(event);
+      o._statusPaint = true;
    }
 
    //==========================================================
@@ -215,6 +275,7 @@ with(MO){
       //..........................................................
       // 绘制结束处理
       renderable.endDraw();
+      o._statusPaint = true;
    }
 
    //==========================================================

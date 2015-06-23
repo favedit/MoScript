@@ -23,6 +23,7 @@ with(MO){
       var xframe = describeConsole.load(name);
       var frame = RGuiControl.build(null, xframe, null, null);
       frame.linkGraphicContext(context);
+      frame.psInitialize();
       frame.build();
       return frame;
    }

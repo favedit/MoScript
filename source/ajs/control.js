@@ -2652,7 +2652,8 @@ with(MO){
 }
 with(MO){
    MO.FUiComponent = function FUiComponent(o){
-      o = RClass.inherits(this, o, FObject, MProperty, MClone);
+      o = RClass.inherits(this, o, FComponent, MProperty, MClone);
+      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
       o._parent       = null;
@@ -2660,7 +2661,6 @@ with(MO){
       o._tag          = RClass.register(o, new AGetSet('_tag'));
       o.oeInitialize  = FUiComponent_oeInitialize;
       o.oeRelease     = FUiComponent_oeRelease;
-      o.isParent      = FUiComponent_isParent;
       o.topComponent  = FUiComponent_topComponent;
       o.hasComponent  = FUiComponent_hasComponent;
       o.findComponent = FUiComponent_findComponent;
@@ -2682,14 +2682,6 @@ with(MO){
    }
    MO.FUiComponent_oeRelease = function FUiComponent_oeRelease(e){
       return EEventStatus.Continue;
-   }
-   MO.FUiComponent_isParent = function FUiComponent_isParent(p){
-      while(p){
-         if(p == this){
-            return true;
-         }
-         p = p._parent;
-      }
    }
    MO.FUiComponent_topComponent = function FUiComponent_topComponent(c){
       var p = this;
@@ -2815,7 +2807,7 @@ with(MO){
       o._label = null;
       o._tag = null;
       o._components = RObject.dispose(o._components, true);
-      o.__base.FObject.dispose.call(o);
+      o.__base.FComponent.dispose.call(o);
    }
    MO.FUiComponent_innerDumpInfo = function FUiComponent_innerDumpInfo(s){
       var o = this;

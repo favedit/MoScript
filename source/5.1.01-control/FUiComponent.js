@@ -13,8 +13,10 @@
    // @version 141231
    //==========================================================
    MO.FUiComponent = function FUiComponent(o){
-      o = RClass.inherits(this, o, FObject, MProperty, MClone);
+      o = RClass.inherits(this, o, FComponent, MProperty, MClone);
       //..........................................................
+      // @property String 唯一编号
+      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       // @property String 名称
       o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
       // @property String 标签
@@ -32,7 +34,6 @@
       o.oeRelease     = FUiComponent_oeRelease;
       //..........................................................
       // @method
-      o.isParent      = FUiComponent_isParent;
       o.topComponent  = FUiComponent_topComponent;
       o.hasComponent  = FUiComponent_hasComponent;
       o.findComponent = FUiComponent_findComponent;
@@ -74,22 +75,6 @@
    //==========================================================
    MO.FUiComponent_oeRelease = function FUiComponent_oeRelease(e){
       return EEventStatus.Continue;
-   }
-
-   //==========================================================
-   // <T>判断自己是否指定组件的父。</T>
-   //
-   // @method
-   // @param p:component:FUiComponent 组件
-   // @return Boolean 是否指定组件的父
-   //==========================================================
-   MO.FUiComponent_isParent = function FUiComponent_isParent(p){
-      while(p){
-         if(p == this){
-            return true;
-         }
-         p = p._parent;
-      }
    }
 
    //==========================================================
@@ -326,7 +311,7 @@
       o._tag = null;
       o._components = RObject.dispose(o._components, true);
       // 释放处理
-      o.__base.FObject.dispose.call(o);
+      o.__base.FComponent.dispose.call(o);
    }
 
    //==========================================================

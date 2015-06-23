@@ -21,8 +21,11 @@ with(MO){
       // @attribute Object 附加数据
       o._tag          = RClass.register(o, new AGetSet('_tag'));
       //..........................................................
+      // @process
+      o.oeInitialize  = FGuiComponent_oeInitialize;
+      o.oeRelease     = FGuiComponent_oeRelease;
+      //..........................................................
       // @method
-      o.isParent      = FGuiComponent_isParent;
       o.topComponent  = FGuiComponent_topComponent;
       o.hasComponent  = FGuiComponent_hasComponent;
       o.findComponent = FGuiComponent_findComponent;
@@ -32,25 +35,35 @@ with(MO){
       o.clear         = FGuiComponent_clear;
       // @method
       o.process       = FGuiComponent_process;
+      o.psInitialize  = FGuiComponent_psInitialize;
+      o.psRelease     = FGuiComponent_psRelease;
+      // @method
+      o.toString      = FGuiComponent_toString;
       // @method
       o.dispose       = FGuiComponent_dispose;
       return o;
    }
 
    //==========================================================
-   // <T>判断自己是否指定组件的父。</T>
+   // <T>处理初始化事件。</T>
    //
    // @method
-   // @param component:FGuiComponent 组件
-   // @return Boolean 是否指定组件的父
+   // @param e:event:SGuiDispatchEvent 事件处理
+   // @return EEventStatus 处理状态
    //==========================================================
-   MO.FGuiComponent_isParent = function FGuiComponent_isParent(component){
-      while(component){
-         if(component == this){
-            return true;
-         }
-         component = component._parent;
-      }
+   MO.FGuiComponent_oeInitialize = function FGuiComponent_oeInitialize(e){
+      return EEventStatus.Continue;
+   }
+
+   //==========================================================
+   // <T>处理释放事件。</T>
+   //
+   // @method
+   // @param e:event:SGuiDispatchEvent 事件处理
+   // @return EEventStatus 处理状态
+   //==========================================================
+   MO.FGuiComponent_oeRelease = function FGuiComponent_oeRelease(e){
+      return EEventStatus.Continue;
    }
 
    //==========================================================
@@ -234,6 +247,41 @@ with(MO){
          }
       }
       return EEventStatus.Continue;
+   }
+
+   //==========================================================
+   // <T>初始化当所有组件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiComponent_psInitialize = function FGuiComponent_psInitialize(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeInitialize', FGuiComponent);
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>释放所有组件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiComponent_psRelease = function FGuiComponent_psRelease(){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeRelease', FGuiComponent);
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>获取当前实例的信息。</T>
+   //
+   // @method
+   // @return String 含有内部信息的字符串
+   //==========================================================
+   MO.FGuiComponent_toString = function FGuiComponent_toString(){
+      var o = this;
+      return RClass.dump(o) + ':label=' + o._label;
    }
 
    //==========================================================

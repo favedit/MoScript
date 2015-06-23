@@ -131,6 +131,10 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    matrix.setScale(0.2, 0.24, 0.2);
    matrix.update();
    stage.dataLayer().push(renderable);
+   // 显示左上
+   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   stage.faceLayer().push(frame);
+   o.registerFrame(frame);
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
