@@ -161,7 +161,12 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
             var labelCol = row.insertCell(0);
             var invesCol = row.insertCell(1);
             labelCol.innerHTML = provinceResData.label();
-            invesCol.innerHTML = provinceInvesData.investmentTotal();
+            if (provinceInvesData.investmentTotal() > 1000) {
+               invesCol.innerHTML = MO.RFloat.unitFormat(provinceInvesData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+            }
+            else {
+               invesCol.innerHTML = provinceInvesData.investmentTotal();
+            }
             row.style.display = 'none';
          }
          currentDate.addDay(1);
