@@ -105,6 +105,62 @@
    }
 
    //===========================================================
+   // <T>格式化浮点数为指定格式。</T>
+   //
+   // @method
+   // @param v:value:Number 浮点数
+   // @param l:leftLength:Number 小数点左侧位数
+   // @param lp:leftPad:String 小数点左侧补足字符
+   // @param r:rightLength:Number 小数点右侧位数
+   // @param rp:rightPad:String 小数点右侧补足字符
+   // @param divide:rightPad:Number 除数
+   // @param unit:rightPad:String 单位
+   // @return String 浮点数
+   //===========================================================
+   MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, divide, unit) {
+      var o = this;
+      // 校正参数
+      if (l == null) {
+         l = 0;
+      }
+      if (lp == null) {
+         lp = o.LEFT_CHAR;
+      }
+      if (r == null) {
+         r = 6;
+      }
+      if (rp == null) {
+         rp = o.LEFT_CHAR;
+      }
+      if (divide == null || unit == null) {
+         divide = 1;
+         unit = '';
+      }
+      v /= divide;
+      // 分割内容
+      var s = v.toString();
+      var f = s.indexOf('.');
+      if (f == -1) {
+         var sl = s;
+         var sr = '';
+      } else {
+         var sl = s.substring(0, f);
+         var sr = s.substring(f + 1, f + r + 1);
+      }
+      var fl = RString.lpad(sl, l, lp);
+      var flc = new TString();
+      //插入逗号
+      for (var i = 1; i - 1 < fl.length; i++) {
+         flc.append(fl.substring(i - 1, i));
+         if (fl.length - i > 0 && (fl.length - i) % 3 == 0) {
+            flc.append(',');
+         }
+      }
+      var fr = RString.rpad(sr, r, rp);
+      return flc + '.' + fr + unit;
+   }
+
+   //===========================================================
    // <T>获得非空内容。</T>
    //
    // @method
