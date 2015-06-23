@@ -341,10 +341,10 @@ with(MO){
       this._size.width = value;
    }
    MO.MGuiSize_height = function MGuiSize_height(){
-      return this._size.width;
+      return this._size.height;
    }
    MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this._size.width = value;
+      this._size.height = value;
    }
    MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
       this._size.set(width, height);
@@ -592,7 +592,11 @@ with(MO){
       var location = o._location;
       var size = o._size;
       var rectangle = event.rectangle;
-      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      if(o._renderable){
+         o._clientRectangle.set(0, 0, size.width, size.height);
+      }else{
+         o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      }
       var components = o._components;
       if(components){
          var count = components.count();
@@ -679,6 +683,7 @@ with(MO){
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
       }
+      renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
       o.update();
       var graphic = renderable.beginDraw();

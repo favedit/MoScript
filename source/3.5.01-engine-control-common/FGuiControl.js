@@ -57,7 +57,11 @@ with(MO){
       var rectangle = event.rectangle;
       //..........................................................
       // 开始绘制处理
-      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      if(o._renderable){
+         o._clientRectangle.set(0, 0, size.width, size.height);
+      }else{
+         o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      }
       //..........................................................
       // 子控件处理
       var components = o._components;
@@ -228,6 +232,7 @@ with(MO){
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
       }
+      renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
       //..........................................................
       // 更新处理

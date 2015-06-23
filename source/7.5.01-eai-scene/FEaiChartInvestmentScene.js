@@ -181,18 +181,18 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    //时间轴
    var stage = o.activeStage();
    var layer = stage.faceLayer();
-   o._timeline = MO.RClass.create(MO.FGuiTimeline);
-   o._timeline.setLeft(50);
-   o._timeline.setTop(MO.Eai.Canvas._size.height - 100);
-   o._timeline.setWidth(MO.Eai.Canvas._size.width - 50);
-   o._timeline.setHeight(100);
-   o._timeline.setTimeUnit(MO.EGuiTimeUnit.Day);
-   o._timeline.setStartTime(o._startDate);
-   o._timeline.setEndTime(o._endDate);
-   o._timeline.setDegreeTime(o._currentDate);
-   o._timeline.linkGraphicContext(MO.Eai.Canvas);
-   o._timeline.build();
-   layer.pushRenderable(o._timeline.renderable());
+   var timeline = o._timeline = MO.RClass.create(MO.FGuiTimeline);
+   timeline.setLeft(50);
+   timeline.setTop(MO.Eai.Canvas._size.height - 100);
+   timeline.setWidth(MO.Eai.Canvas._size.width - 50);
+   timeline.setHeight(100);
+   timeline.setTimeUnit(MO.EGuiTimeUnit.Day);
+   timeline.setStartTime(o._startDate);
+   timeline.setEndTime(o._endDate);
+   timeline.setDegreeTime(o._currentDate);
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   layer.push(timeline);
 }
 
 //==========================================================

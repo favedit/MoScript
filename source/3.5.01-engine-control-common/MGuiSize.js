@@ -123,7 +123,7 @@ with(MO){
    // @return Number 高度
    //==========================================================
    MO.MGuiSize_height = function MGuiSize_height(){
-      return this._size.width;
+      return this._size.height;
    }
 
    //==========================================================
@@ -133,7 +133,7 @@ with(MO){
    // @param value:Number 高度
    //==========================================================
    MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this._size.width = value;
+      this._size.height = value;
    }
 
    //==========================================================
