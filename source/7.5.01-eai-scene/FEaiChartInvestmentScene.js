@@ -112,6 +112,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       o._lastDateRowCount = count;
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
+      o._timeline.repaint();
       // 设置城市数据
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
@@ -186,7 +187,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setTop(MO.Eai.Canvas._size.height - 100);
    timeline.setWidth(MO.Eai.Canvas._size.width - 50);
    timeline.setHeight(100);
-   timeline.setTimeUnit(MO.EGuiTimeUnit.Day);
+   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);

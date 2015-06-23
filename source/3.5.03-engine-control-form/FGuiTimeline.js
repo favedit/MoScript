@@ -54,10 +54,15 @@ with (MO) {
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       //主轴
       graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
-      //刻度
+      //游标
       var startTime = o.startTime().date;
       var endTime = o.endTime().date;
+      var degreeTime = o.degreeTime().date;
       var timeSpan = endTime.getTime() - startTime.getTime();
+      var degreeSpan = degreeTime.getTime() - startTime.getTime();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
+      //刻度
       var degreeCount = 0;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
@@ -87,6 +92,7 @@ with (MO) {
       var degreeGap = (dataRight - dataLeft) / degreeCount;
       var text;
       var dtVar;
+      var bakTime = startTime.getTime();
       for (var i = 0; i <= degreeCount; i++) {
          graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 0.5);
          switch (o.timeUnit()) {
@@ -130,11 +136,7 @@ with (MO) {
          }
          graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
       }
-      //游标
-      var degreeTime = o.degreeTime().date;
-      var degreeSpan = degreeTime.getTime() - startTime.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
+      startTime.setTime(bakTime);
    }
 
 }
