@@ -2165,9 +2165,11 @@ with(MO){
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FDrObject);
       o._classCode = RClass.register(o, new AGetter('_classCode'));
       o._guid      = RClass.register(o, new AGetSet('_guid'));
+      o._code      = RClass.register(o, new AGetSet('_code'));
+      o._label     = RClass.register(o, new AGetSet('_label'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
@@ -4000,7 +4002,7 @@ with(MO){
    MO.FDsSolutionCatalogContent_onBuild = function FDsSolutionCatalogContent_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
    }
    MO.FDsSolutionCatalogContent_onLoadDisplay = function FDsSolutionCatalogContent_onLoadDisplay(p){

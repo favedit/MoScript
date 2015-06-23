@@ -6,74 +6,24 @@ with(MO){
    // @history 150128
    //==========================================================
    MO.FE3sStream = function FE3sStream(o){
-      o = RClass.inherits(this, o, FObject, MAttributeCode);
+      o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._elementDataCd    = 0;
-      o._elementCount     = 0;
-      o._elementNormalize = false;
-      o._dataStride       = 0;
-      o._dataCount        = 0;
-      o._dataLength       = 0;
-      o._data             = null;
-      o._formatCd         = EG3dAttributeFormat.Unknown;
+      o._code             = RClass.register(o, new AGetSet('_code'));
+      o._elementDataCd    = RClass.register(o, new AGetSet('_elementDataCd'), 0);
+      o._elementCount     = RClass.register(o, new AGetSet('_elementCount'), 0);
+      o._elementNormalize = RClass.register(o, new AGetSet('_elementNormalize'), false);
+      o._dataStride       = RClass.register(o, new AGetSet('_dataStride'), 0);
+      o._dataCount        = RClass.register(o, new AGetSet('_dataCount'), 0);
+      o._dataLength       = RClass.register(o, new AGetSet('_dataLength'), 0);
+      o._data             = RClass.register(o, new AGetSet('_data'));
+      o._formatCd         = RClass.register(o, new AGetSet('_formatCd'), EG3dAttributeFormat.Unknown);
       //..........................................................
-      // @method
-      o.elementDataCd     = FE3sStream_elementDataCd;
-      o.formatCd          = FE3sStream_formatCd;
-      o.dataStride        = FE3sStream_dataStride;
-      o.dataCount         = FE3sStream_dataCount;
-      o.data              = FE3sStream_data;
       // @method
       o.unserialize       = FE3sStream_unserialize;
       // @method
       o.dispose           = FE3sStream_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得元素数据类型。</T>
-   //
-   // @return String 元素数据类型
-   //==========================================================
-   MO.FE3sStream_elementDataCd = function FE3sStream_elementDataCd(){
-      return this._elementDataCd;
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @return String 名称
-   //==========================================================
-   MO.FE3sStream_formatCd = function FE3sStream_formatCd(){
-      return this._formatCd;
-   }
-
-   //==========================================================
-   // <T>获得数据宽度。</T>
-   //
-   // @return Integer 宽度
-   //==========================================================
-   MO.FE3sStream_dataStride = function FE3sStream_dataStride(){
-      return this._dataStride;
-   }
-
-   //==========================================================
-   // <T>获得数据个数。</T>
-   //
-   // @return Integer 个数
-   //==========================================================
-   MO.FE3sStream_dataCount = function FE3sStream_dataCount(){
-      return this._dataCount;
-   }
-
-   //==========================================================
-   // <T>获得数据。</T>
-   //
-   // @return ArrayBuffer 数据
-   //==========================================================
-   MO.FE3sStream_data = function FE3sStream_data(){
-      return this._data;
    }
 
    //==========================================================
@@ -105,6 +55,7 @@ with(MO){
    MO.FE3sStream_dispose = function FE3sStream_dispose(){
       var o = this;
       o.data = null;
+      // 父处理
       o.__base.FObject.dispose.call(o);
    }
 }

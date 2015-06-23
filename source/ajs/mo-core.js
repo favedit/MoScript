@@ -272,90 +272,6 @@ MO.EOrientation = new function EOrientation(){
    return o;
 }
 with(MO){
-   MO.MAttributeCode = function MAttributeCode(o){
-      o = RClass.inherits(this, o);
-      o._code   = null;
-      o.isCode  = MAttributeCode_isCode;
-      o.code    = MAttributeCode_code;
-      o.setCode = MAttributeCode_setCode;
-      return o;
-   }
-   MO.MAttributeCode_isCode = function MAttributeCode_isCode(code){
-      return this._code == code;
-   }
-   MO.MAttributeCode_code = function MAttributeCode_code(){
-      return this._code;
-   }
-   MO.MAttributeCode_setCode = function MAttributeCode_setCode(code){
-      this._code = code;
-   }
-}
-with(MO){
-   MO.MAttributeLabel = function MAttributeLabel(o){
-      o = RClass.inherits(this, o);
-      o._label   = null;
-      o.label    = MAttributeLabel_label;
-      o.setLabel = MAttributeLabel_setLabel;
-      return o;
-   }
-   MO.MAttributeLabel_label = function MAttributeLabel_label(){
-      return this._label;
-   }
-   MO.MAttributeLabel_setLabel = function MAttributeLabel_setLabel(label){
-      this._label = label;
-   }
-}
-with(MO){
-   MO.MAttributeName = function MAttributeName(o){
-      o = RClass.inherits(this, o);
-      o._name   = null;
-      o.name    = MAttributeName_name;
-      o.setName = MAttributeName_setName;
-      return o;
-   }
-   MO.MAttributeName_name = function MAttributeName_name(){
-      return this._name;
-   }
-   MO.MAttributeName_setName = function MAttributeName_setName(name){
-      this._name = name;
-   }
-}
-with(MO){
-   MO.MAttributeParent = function MAttributeParent(o){
-      o = RClass.inherits(this, o);
-      o._parent    = RClass.register(o, new AGetSet('_parent'));
-      o.isParent   = MAttributeParent_isParent;
-      o.findParent = MAttributeParent_findParent;
-      o.dispose    = MAttributeParent_dispose;
-      return o;
-   }
-   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
-      while(value){
-         if(value == this){
-            return true;
-         }
-         value = value.parent();
-      }
-   }
-   MO.MAttributeParent_findParent = function MAttributeParent_findParent(clazz){
-      var find = this;
-      if(clazz){
-         while(RClass.isClass(find._parent, clazz)){
-            find = find.parent();
-         }
-      }else{
-         while(find._parent){
-            find = find.parent();
-         }
-      }
-      return find;
-   }
-   MO.MAttributeParent_dispose = function MAttributeParent_dispose(){
-      var o = this;
-      o._parent = null;
-   }
-}
-with(MO){
    MO.MClone = function MClone(o){
       o = RClass.inherits(this, o);
       o.clone  = MClone_clone;
@@ -987,6 +903,41 @@ with(MO){
    }
 }
 with(MO){
+   MO.MParent = function MParent(o){
+      o = RClass.inherits(this, o);
+      o._parent    = RClass.register(o, new AGetSet('_parent'));
+      o.isParent   = MParent_isParent;
+      o.findParent = MParent_findParent;
+      o.dispose    = MParent_dispose;
+      return o;
+   }
+   MO.MParent_isParent = function MParent_isParent(value){
+      while(value){
+         if(value == this){
+            return true;
+         }
+         value = value.parent();
+      }
+   }
+   MO.MParent_findParent = function MParent_findParent(clazz){
+      var find = this;
+      if(clazz){
+         while(RClass.isClass(find._parent, clazz)){
+            find = find.parent();
+         }
+      }else{
+         while(find._parent){
+            find = find.parent();
+         }
+      }
+      return find;
+   }
+   MO.MParent_dispose = function MParent_dispose(){
+      var o = this;
+      o._parent = null;
+   }
+}
+with(MO){
    MO.MProperty = function MProperty(o){
       o = RClass.inherits(this, o);
       o.propertyAssign = MProperty_propertyAssign;
@@ -1363,14 +1314,14 @@ with(MO){
 }
 with(MO){
    MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent);
+      o = RClass.inherits(this, o, FObject, MParent);
       o._code   = RClass.register(o, new AGetSet('_code'));
       o.dispose = FComponent_dispose;
       return o;
    }
    MO.FComponent_dispose = function FComponent_dispose(){
       var o = this;
-      o.__base.MAttributeParent.dispose.call(o);
+      o.__base.MParent.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }

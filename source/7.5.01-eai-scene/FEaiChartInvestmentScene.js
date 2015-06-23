@@ -163,6 +163,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
             var row = invesTable.insertRow(invesTable.rows.length);
             var labelCol = row.insertCell(0);
             var invesCol = row.insertCell(1);
+            invesCol.align = 'right';
             labelCol.innerHTML = provinceResData.label();
             if (provinceInvesData.investmentTotal() > 1000) {
                invesCol.innerHTML = MO.RFloat.unitFormat(provinceInvesData.investmentTotal(), 0, 0, 2, 0, 10000, '万');

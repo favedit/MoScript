@@ -2758,7 +2758,8 @@ with(MO){
 }
 with(MO){
    MO.FG3dBuffer = function FG3dBuffer(o){
-      o = RClass.inherits(this, o, FG3dObject, MAttributeCode);
+      o = RClass.inherits(this, o, FG3dObject);
+      o._code   = RClass.register(o, new AGetSet('_code'));
       o.isValid = RMethod.virtual(o, 'isValid');
       return o;
    }

@@ -6,11 +6,13 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FE3sObject = function FE3sObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FObject, MParent);
       //..........................................................
       // @attribute
       o._typeName   = null;
       o._guid       = RClass.register(o, new AGetSet('_guid'));
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._label      = RClass.register(o, new AGetSet('_label'));
       o._isClone    = false;
       //..........................................................
       // @method

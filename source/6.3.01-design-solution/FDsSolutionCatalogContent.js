@@ -68,7 +68,7 @@ with(MO){
       // 父处理
       o.__base.FUiDataTreeView.onBuild.call(o, p);
       // 注册事件
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       // 加载定义
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
    }

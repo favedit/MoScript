@@ -6,17 +6,17 @@ with(MO){
    // @author maocy
    // @history 150416
    //==========================================================
-   MO.MAttributeParent = function MAttributeParent(o){
+   MO.MParent = function MParent(o){
       o = RClass.inherits(this, o);
       //..........................................................
       // @attribute
       o._parent    = RClass.register(o, new AGetSet('_parent'));
       //..........................................................
       // @method
-      o.isParent   = MAttributeParent_isParent;
-      o.findParent = MAttributeParent_findParent;
+      o.isParent   = MParent_isParent;
+      o.findParent = MParent_findParent;
       // @method
-      o.dispose    = MAttributeParent_dispose;
+      o.dispose    = MParent_dispose;
       return o;
    }
 
@@ -24,10 +24,10 @@ with(MO){
    // <T>判断自己是否指定组件的父。</T>
    //
    // @method
-   // @param value:MAttributeParent 组件
+   // @param value:MParent 组件
    // @return Boolean 是否指定组件的父
    //==========================================================
-   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
+   MO.MParent_isParent = function MParent_isParent(value){
       while(value){
          if(value == this){
             return true;
@@ -44,7 +44,7 @@ with(MO){
    // @param clazz:Class 类对象
    // @return FObject 父对象
    //==========================================================
-   MO.MAttributeParent_findParent = function MAttributeParent_findParent(clazz){
+   MO.MParent_findParent = function MParent_findParent(clazz){
       var find = this;
       if(clazz){
          while(RClass.isClass(find._parent, clazz)){
@@ -63,7 +63,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.MAttributeParent_dispose = function MAttributeParent_dispose(){
+   MO.MParent_dispose = function MParent_dispose(){
       var o = this;
       // 释放属性
       o._parent = null;

@@ -8956,90 +8956,6 @@ MO.EOrientation = new function EOrientation(){
    return o;
 }
 with(MO){
-   MO.MAttributeCode = function MAttributeCode(o){
-      o = RClass.inherits(this, o);
-      o._code   = null;
-      o.isCode  = MAttributeCode_isCode;
-      o.code    = MAttributeCode_code;
-      o.setCode = MAttributeCode_setCode;
-      return o;
-   }
-   MO.MAttributeCode_isCode = function MAttributeCode_isCode(code){
-      return this._code == code;
-   }
-   MO.MAttributeCode_code = function MAttributeCode_code(){
-      return this._code;
-   }
-   MO.MAttributeCode_setCode = function MAttributeCode_setCode(code){
-      this._code = code;
-   }
-}
-with(MO){
-   MO.MAttributeLabel = function MAttributeLabel(o){
-      o = RClass.inherits(this, o);
-      o._label   = null;
-      o.label    = MAttributeLabel_label;
-      o.setLabel = MAttributeLabel_setLabel;
-      return o;
-   }
-   MO.MAttributeLabel_label = function MAttributeLabel_label(){
-      return this._label;
-   }
-   MO.MAttributeLabel_setLabel = function MAttributeLabel_setLabel(label){
-      this._label = label;
-   }
-}
-with(MO){
-   MO.MAttributeName = function MAttributeName(o){
-      o = RClass.inherits(this, o);
-      o._name   = null;
-      o.name    = MAttributeName_name;
-      o.setName = MAttributeName_setName;
-      return o;
-   }
-   MO.MAttributeName_name = function MAttributeName_name(){
-      return this._name;
-   }
-   MO.MAttributeName_setName = function MAttributeName_setName(name){
-      this._name = name;
-   }
-}
-with(MO){
-   MO.MAttributeParent = function MAttributeParent(o){
-      o = RClass.inherits(this, o);
-      o._parent    = RClass.register(o, new AGetSet('_parent'));
-      o.isParent   = MAttributeParent_isParent;
-      o.findParent = MAttributeParent_findParent;
-      o.dispose    = MAttributeParent_dispose;
-      return o;
-   }
-   MO.MAttributeParent_isParent = function MAttributeParent_isParent(value){
-      while(value){
-         if(value == this){
-            return true;
-         }
-         value = value.parent();
-      }
-   }
-   MO.MAttributeParent_findParent = function MAttributeParent_findParent(clazz){
-      var find = this;
-      if(clazz){
-         while(RClass.isClass(find._parent, clazz)){
-            find = find.parent();
-         }
-      }else{
-         while(find._parent){
-            find = find.parent();
-         }
-      }
-      return find;
-   }
-   MO.MAttributeParent_dispose = function MAttributeParent_dispose(){
-      var o = this;
-      o._parent = null;
-   }
-}
-with(MO){
    MO.MClone = function MClone(o){
       o = RClass.inherits(this, o);
       o.clone  = MClone_clone;
@@ -9671,6 +9587,41 @@ with(MO){
    }
 }
 with(MO){
+   MO.MParent = function MParent(o){
+      o = RClass.inherits(this, o);
+      o._parent    = RClass.register(o, new AGetSet('_parent'));
+      o.isParent   = MParent_isParent;
+      o.findParent = MParent_findParent;
+      o.dispose    = MParent_dispose;
+      return o;
+   }
+   MO.MParent_isParent = function MParent_isParent(value){
+      while(value){
+         if(value == this){
+            return true;
+         }
+         value = value.parent();
+      }
+   }
+   MO.MParent_findParent = function MParent_findParent(clazz){
+      var find = this;
+      if(clazz){
+         while(RClass.isClass(find._parent, clazz)){
+            find = find.parent();
+         }
+      }else{
+         while(find._parent){
+            find = find.parent();
+         }
+      }
+      return find;
+   }
+   MO.MParent_dispose = function MParent_dispose(){
+      var o = this;
+      o._parent = null;
+   }
+}
+with(MO){
    MO.MProperty = function MProperty(o){
       o = RClass.inherits(this, o);
       o.propertyAssign = MProperty_propertyAssign;
@@ -10047,14 +9998,14 @@ with(MO){
 }
 with(MO){
    MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent);
+      o = RClass.inherits(this, o, FObject, MParent);
       o._code   = RClass.register(o, new AGetSet('_code'));
       o.dispose = FComponent_dispose;
       return o;
    }
    MO.FComponent_dispose = function FComponent_dispose(){
       var o = this;
-      o.__base.MAttributeParent.dispose.call(o);
+      o.__base.MParent.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }
@@ -17389,7 +17340,8 @@ with(MO){
 }
 with(MO){
    MO.FG3dBuffer = function FG3dBuffer(o){
-      o = RClass.inherits(this, o, FG3dObject, MAttributeCode);
+      o = RClass.inherits(this, o, FG3dObject);
+      o._code   = RClass.register(o, new AGetSet('_code'));
       o.isValid = RMethod.virtual(o, 'isValid');
       return o;
    }
@@ -23979,9 +23931,11 @@ with(MO){
 }
 with(MO){
    MO.FE3sObject = function FE3sObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FObject, MParent);
       o._typeName   = null;
       o._guid       = RClass.register(o, new AGetSet('_guid'));
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._label      = RClass.register(o, new AGetSet('_label'));
       o._isClone    = false;
       o.makeLabel   = FE3sObject_makeLabel;
       o.unserialize = FE3sObject_unserialize;
@@ -24966,38 +24920,19 @@ with(MO){
 }
 with(MO){
    MO.FE3sStream = function FE3sStream(o){
-      o = RClass.inherits(this, o, FObject, MAttributeCode);
-      o._elementDataCd    = 0;
-      o._elementCount     = 0;
-      o._elementNormalize = false;
-      o._dataStride       = 0;
-      o._dataCount        = 0;
-      o._dataLength       = 0;
-      o._data             = null;
-      o._formatCd         = EG3dAttributeFormat.Unknown;
-      o.elementDataCd     = FE3sStream_elementDataCd;
-      o.formatCd          = FE3sStream_formatCd;
-      o.dataStride        = FE3sStream_dataStride;
-      o.dataCount         = FE3sStream_dataCount;
-      o.data              = FE3sStream_data;
+      o = RClass.inherits(this, o, FObject);
+      o._code             = RClass.register(o, new AGetSet('_code'));
+      o._elementDataCd    = RClass.register(o, new AGetSet('_elementDataCd'), 0);
+      o._elementCount     = RClass.register(o, new AGetSet('_elementCount'), 0);
+      o._elementNormalize = RClass.register(o, new AGetSet('_elementNormalize'), false);
+      o._dataStride       = RClass.register(o, new AGetSet('_dataStride'), 0);
+      o._dataCount        = RClass.register(o, new AGetSet('_dataCount'), 0);
+      o._dataLength       = RClass.register(o, new AGetSet('_dataLength'), 0);
+      o._data             = RClass.register(o, new AGetSet('_data'));
+      o._formatCd         = RClass.register(o, new AGetSet('_formatCd'), EG3dAttributeFormat.Unknown);
       o.unserialize       = FE3sStream_unserialize;
       o.dispose           = FE3sStream_dispose;
       return o;
-   }
-   MO.FE3sStream_elementDataCd = function FE3sStream_elementDataCd(){
-      return this._elementDataCd;
-   }
-   MO.FE3sStream_formatCd = function FE3sStream_formatCd(){
-      return this._formatCd;
-   }
-   MO.FE3sStream_dataStride = function FE3sStream_dataStride(){
-      return this._dataStride;
-   }
-   MO.FE3sStream_dataCount = function FE3sStream_dataCount(){
-      return this._dataCount;
-   }
-   MO.FE3sStream_data = function FE3sStream_data(){
-      return this._data;
    }
    MO.FE3sStream_unserialize = function FE3sStream_unserialize(input){
       var o = this;
@@ -27207,8 +27142,9 @@ with(MO){
 }
 with(MO){
    MO.FE3rObject = function FE3rObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeCode, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MGraphicObject);
       o._guid = RClass.register(o, new AGetSet('_guid'));
+      o._code = RClass.register(o, new AGetSet('_code'));
       return o;
    }
 }
@@ -59932,9 +59868,11 @@ with(MO){
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FDrObject);
       o._classCode = RClass.register(o, new AGetter('_classCode'));
       o._guid      = RClass.register(o, new AGetSet('_guid'));
+      o._code      = RClass.register(o, new AGetSet('_code'));
+      o._label     = RClass.register(o, new AGetSet('_label'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
@@ -61767,7 +61705,7 @@ with(MO){
    MO.FDsSolutionCatalogContent_onBuild = function FDsSolutionCatalogContent_onBuild(p){
       var o = this;
       o.__base.FUiDataTreeView.onBuild.call(o, p);
-      o.lsnsClick.register(o, o.onNodeClick);
+      o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
    }
    MO.FDsSolutionCatalogContent_onLoadDisplay = function FDsSolutionCatalogContent_onLoadDisplay(p){

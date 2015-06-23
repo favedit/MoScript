@@ -1571,9 +1571,11 @@ with(MO){
 }
 with(MO){
    MO.FE3sObject = function FE3sObject(o){
-      o = RClass.inherits(this, o, FObject, MAttributeParent, MAttributeCode, MAttributeLabel);
+      o = RClass.inherits(this, o, FObject, MParent);
       o._typeName   = null;
       o._guid       = RClass.register(o, new AGetSet('_guid'));
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._label      = RClass.register(o, new AGetSet('_label'));
       o._isClone    = false;
       o.makeLabel   = FE3sObject_makeLabel;
       o.unserialize = FE3sObject_unserialize;
@@ -2558,38 +2560,19 @@ with(MO){
 }
 with(MO){
    MO.FE3sStream = function FE3sStream(o){
-      o = RClass.inherits(this, o, FObject, MAttributeCode);
-      o._elementDataCd    = 0;
-      o._elementCount     = 0;
-      o._elementNormalize = false;
-      o._dataStride       = 0;
-      o._dataCount        = 0;
-      o._dataLength       = 0;
-      o._data             = null;
-      o._formatCd         = EG3dAttributeFormat.Unknown;
-      o.elementDataCd     = FE3sStream_elementDataCd;
-      o.formatCd          = FE3sStream_formatCd;
-      o.dataStride        = FE3sStream_dataStride;
-      o.dataCount         = FE3sStream_dataCount;
-      o.data              = FE3sStream_data;
+      o = RClass.inherits(this, o, FObject);
+      o._code             = RClass.register(o, new AGetSet('_code'));
+      o._elementDataCd    = RClass.register(o, new AGetSet('_elementDataCd'), 0);
+      o._elementCount     = RClass.register(o, new AGetSet('_elementCount'), 0);
+      o._elementNormalize = RClass.register(o, new AGetSet('_elementNormalize'), false);
+      o._dataStride       = RClass.register(o, new AGetSet('_dataStride'), 0);
+      o._dataCount        = RClass.register(o, new AGetSet('_dataCount'), 0);
+      o._dataLength       = RClass.register(o, new AGetSet('_dataLength'), 0);
+      o._data             = RClass.register(o, new AGetSet('_data'));
+      o._formatCd         = RClass.register(o, new AGetSet('_formatCd'), EG3dAttributeFormat.Unknown);
       o.unserialize       = FE3sStream_unserialize;
       o.dispose           = FE3sStream_dispose;
       return o;
-   }
-   MO.FE3sStream_elementDataCd = function FE3sStream_elementDataCd(){
-      return this._elementDataCd;
-   }
-   MO.FE3sStream_formatCd = function FE3sStream_formatCd(){
-      return this._formatCd;
-   }
-   MO.FE3sStream_dataStride = function FE3sStream_dataStride(){
-      return this._dataStride;
-   }
-   MO.FE3sStream_dataCount = function FE3sStream_dataCount(){
-      return this._dataCount;
-   }
-   MO.FE3sStream_data = function FE3sStream_data(){
-      return this._data;
    }
    MO.FE3sStream_unserialize = function FE3sStream_unserialize(input){
       var o = this;
