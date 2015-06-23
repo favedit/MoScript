@@ -21,6 +21,9 @@ with(MO){
       // @method
       o.rotation        = FE3dCamera_rotation;
       // @method
+      o.doMoveX         = FE3dCamera_doMoveX;
+      o.doMoveY         = FE3dCamera_doMoveY;
+      o.doMoveZ         = FE3dCamera_doMoveZ;
       o.doForward       = FE3dCamera_doForward;
       o.doPitch         = FE3dCamera_doPitch;
       o.doYaw           = FE3dCamera_doYaw;
@@ -57,6 +60,36 @@ with(MO){
    //==========================================================
    MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
       return this._rotation;
+   }
+
+   //==========================================================
+   // <T>X轴移动。</T>
+   //
+   // @method
+   // @param value:Number 距离
+   //==========================================================
+   MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
+      this._position.x += value;
+   }
+
+   //==========================================================
+   // <T>Y轴移动。</T>
+   //
+   // @method
+   // @param value:Number 距离
+   //==========================================================
+   MO.FE3dCamera_doMoveY = function FE3dCamera_doMoveY(value){
+      this._position.y += value;
+   }
+
+   //==========================================================
+   // <T>Z轴移动。</T>
+   //
+   // @method
+   // @param value:Number 距离
+   //==========================================================
+   MO.FE3dCamera_doMoveZ = function FE3dCamera_doMoveZ(value){
+      this._position.z += value;
    }
 
    //==========================================================

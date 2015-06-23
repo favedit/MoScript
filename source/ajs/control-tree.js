@@ -49,7 +49,6 @@ with(MO){
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
       o._typeGroup        = RClass.register(o, [new APtyString('_typeGroup'), new AGetSet('_typeGroup')]);
       o._typeCode         = RClass.register(o, [new APtyString('_typeCode'), new AGetter('_typeCode')]);
-      o._guid             = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._code             = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._icon             = RClass.register(o, new APtyString('_icon'));
       o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);

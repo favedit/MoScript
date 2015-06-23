@@ -10,7 +10,8 @@ with(MO){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       //..........................................................
       // @property
-      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
+      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
+      o._foreFont        = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
@@ -33,6 +34,9 @@ with(MO){
       //..........................................................
       // @method
       o.construct        = FGuiControl_construct;
+      // @method
+      o.setLocation      = FGuiControl_setLocation;
+      o.setSize          = FGuiControl_setSize;
       // @method
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
@@ -90,14 +94,11 @@ with(MO){
       var o = this;
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      // 绘制处理
-      if(o._styleBackcolor){
-         //graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
+      // 绘制底色
+      if(o._backColor){
+         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
-      //graphic.drawBorder(o._clientRectangle, o._borderOuter);
-      //graphic.drawBorder(o._clientRectangle, o._borderInner);
-      //graphic.setFont('microsoft yahei,Arial,sans-serif');
-      //graphic.drawText('这是一个测试', 10, 40, '#FF0000');
+      // 绘制背景图
       var backImage = o._backImage;
       if(backImage){
          var backGrid = o._backGrid;
@@ -107,6 +108,16 @@ with(MO){
             graphic.drawImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
          }
       }
+      // 绘制外边框
+      if(o._borderOuter.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderOuter);
+      }
+      // 绘制内边框
+      if(o._borderInner.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderInner);
+      }
+      //graphic.setFont('microsoft yahei,Arial,sans-serif');
+      //graphic.drawText('这是一个测试', 10, 40, '#FF0000');
    }
 
    //==========================================================
@@ -204,18 +215,37 @@ with(MO){
    }
 
    //==========================================================
-   // <T>更新处理。</T>
+   // <T>设置坐标。</T>
    //
    // @method
+   // @param x:Number 左距离
+   // @param y:Number 上距离
    //==========================================================
-   MO.FGuiControl_update = function FGuiControl_update(){
+   MO.FGuiControl_setLocation = function FGuiControl_setLocation(x, y){
       var o = this;
-      var size = o._size;
-      // 更新处理
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.rectangle.set(0, 0, size.width, size.height)
-      o.onUpdate(event);
-      MO.Memory.free(event);
+      o.__base.MGuiSize.setLocation.call(o, x, y);
+      // 设置渲染对象坐标
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setLocation(x, y);
+      }
+   }
+
+   //==========================================================
+   // <T>设置大小。</T>
+   //
+   // @method
+   // @param width:Number 宽度
+   // @param height:Number 高度
+   //==========================================================
+   MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
+      var o = this;
+      o.__base.MGuiSize.setSize.call(o, width, height);
+      // 设置渲染对象坐标
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setSize(width, height);
+      }
    }
 
    //==========================================================
@@ -279,6 +309,21 @@ with(MO){
    }
 
    //==========================================================
+   // <T>更新处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_update = function FGuiControl_update(){
+      var o = this;
+      var size = o._size;
+      // 更新处理
+      var event = MO.Memory.alloc(SGuiUpdateEvent)
+      event.rectangle.set(0, 0, size.width, size.height)
+      o.onUpdate(event);
+      MO.Memory.free(event);
+   }
+
+   //==========================================================
    // <T>建立处理。</T>
    //
    // @method
@@ -291,7 +336,7 @@ with(MO){
       // 获得渲染对象
       var renderable = o._renderable;
       if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
+         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);

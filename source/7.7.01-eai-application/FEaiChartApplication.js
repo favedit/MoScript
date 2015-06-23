@@ -23,6 +23,7 @@ with(MO){
       // @method
       o.construct       = FEaiChartApplication_construct;
       // @method
+      o.createCanvas    = FEaiChartApplication_createCanvas;
       o.setup           = FEaiChartApplication_setup;
       // @method
       o.dispose         = FEaiChartApplication_dispose;
@@ -56,6 +57,16 @@ with(MO){
    MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
       var o = this;
       o.__base.FEaiApplication.construct.call(o);
+   }
+
+   //==========================================================
+   // <T>创建画板。</T>
+   //
+   // @method
+   // @return FEaiCanvas 画板
+   //==========================================================
+   MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
+      return RClass.create(FEaiChartCanvas);
    }
 
    //==========================================================

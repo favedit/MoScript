@@ -8154,6 +8154,9 @@ with(MO){
       o._quaternionZ    = null;
       o.construct       = FE3dCamera_construct;
       o.rotation        = FE3dCamera_rotation;
+      o.doMoveX         = FE3dCamera_doMoveX;
+      o.doMoveY         = FE3dCamera_doMoveY;
+      o.doMoveZ         = FE3dCamera_doMoveZ;
       o.doForward       = FE3dCamera_doForward;
       o.doPitch         = FE3dCamera_doPitch;
       o.doYaw           = FE3dCamera_doYaw;
@@ -8175,6 +8178,15 @@ with(MO){
    }
    MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
       return this._rotation;
+   }
+   MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
+      this._position.x += value;
+   }
+   MO.FE3dCamera_doMoveY = function FE3dCamera_doMoveY(value){
+      this._position.y += value;
+   }
+   MO.FE3dCamera_doMoveZ = function FE3dCamera_doMoveZ(value){
+      this._position.z += value;
    }
    MO.FE3dCamera_doForward = function FE3dCamera_doForward(value){
       var o = this;

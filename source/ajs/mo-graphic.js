@@ -201,6 +201,7 @@ with (MO) {
       o.linkCanvas     = FG2dCanvasContext_linkCanvas;
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
+      o.textWidth      = FG2dCanvasContext_textWidth;
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
@@ -237,6 +238,10 @@ with (MO) {
       var handle = o._handle;
       var size = o._size;
       handle.clearRect(0, 0, size.width, size.height);
+   }
+   MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
+      var info = this._handle.measureText(text);
+      return info.width;
    }
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;

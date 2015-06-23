@@ -24,6 +24,7 @@ with(MO){
       // @method
       o.construct       = FEaiPlatformApplication_construct;
       // @method
+      o.createCanvas    = FEaiPlatformApplication_createCanvas;
       o.setup           = FEaiPlatformApplication_setup;
       // @method
       o.dispose         = FEaiPlatformApplication_dispose;
@@ -52,6 +53,16 @@ with(MO){
    MO.FEaiPlatformApplication_construct = function FEaiPlatformApplication_construct(){
       var o = this;
       o.__base.FEaiApplication.construct.call(o);
+   }
+
+   //==========================================================
+   // <T>创建画板。</T>
+   //
+   // @method
+   // @return FEaiCanvas 画板
+   //==========================================================
+   MO.FEaiPlatformApplication_createCanvas = function FEaiPlatformApplication_createCanvas(){
+      return RClass.create(FEaiPlatformCanvas);
    }
 
    //==========================================================

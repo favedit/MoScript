@@ -21,6 +21,8 @@ with (MO) {
       // @method
       o.clear          = FG2dCanvasContext_clear;
       // @method
+      o.textWidth      = FG2dCanvasContext_textWidth;
+      // @method
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
@@ -91,6 +93,18 @@ with (MO) {
       var handle = o._handle;
       var size = o._size;
       handle.clearRect(0, 0, size.width, size.height);
+   }
+
+   //==========================================================
+   // <T>获得文本长度。</T>
+   //
+   // @method
+   // @param text:String 文本
+   // @return Integer 文本长度
+   //==========================================================
+   MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
+      var info = this._handle.measureText(text);
+      return info.width;
    }
 
    //==========================================================

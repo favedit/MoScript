@@ -13,6 +13,9 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   // @attribute
+   o._logoBar          = null;
+   o._titleBar         = null;
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartScene_onLoadData;
@@ -133,6 +136,12 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.dataLayer().push(renderable);
    // 显示左上
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   frame.setLocation(10, 10);
+   stage.faceLayer().push(frame);
+   o.registerFrame(frame);
+   // 显示左上
+   var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
+   frame.setLocation(400, 10);
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    // 加载数据

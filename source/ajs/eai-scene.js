@@ -393,6 +393,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       o._currentRow += count;
       o._lastDateRowCount = count;
       o._timeline.setDegreeTime(o._currentDate);
+      o._timeline.repaint();
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
@@ -457,11 +458,13 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setTop(MO.Eai.Canvas._size.height - 100);
    timeline.setWidth(MO.Eai.Canvas._size.width - 50);
    timeline.setHeight(100);
-   timeline.setTimeUnit(MO.EGuiTimeUnit.Day);
+   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
    timeline.linkGraphicContext(o);
+   timeline.build();
+   layer.push(timeline);
 }
 MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active() {
    var o = this;
@@ -489,6 +492,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._countryData      = null;
    o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   o._logoBar          = null;
+   o._titleBar         = null;
    o.onLoadData        = MO.FEaiChartScene_onLoadData;
    o.construct         = MO.FEaiChartScene_construct;
    o.setup             = MO.FEaiChartScene_setup;
@@ -571,6 +576,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    matrix.update();
    stage.dataLayer().push(renderable);
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   frame.setLocation(10, 10);
+   stage.faceLayer().push(frame);
+   o.registerFrame(frame);
+   var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
+   frame.setLocation(400, 10);
    stage.faceLayer().push(frame);
    o.registerFrame(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);

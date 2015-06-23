@@ -323,13 +323,13 @@ with(MO){
       return this._location.x;
    }
    MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
-      this._location.x = value;
+      this.setLocation(value, this._location.y);
    }
    MO.MGuiSize_top = function MGuiSize_top(){
       return this._location.y;
    }
    MO.MGuiSize_setTop = function MGuiSize_setTop(value){
-      this._location.y = value;
+      this.setLocation(this._location.x, value);
    }
    MO.MGuiSize_setLocation = function MGuiSize_setLocation(x, y){
       this._location.set(x, y);
@@ -338,13 +338,13 @@ with(MO){
       return this._size.width;
    }
    MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
-      this._size.width = value;
+      this.setSize(value, this._size.height);
    }
    MO.MGuiSize_height = function MGuiSize_height(){
       return this._size.height;
    }
    MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this._size.height = value;
+      this.setSize(this._size.width, value);
    }
    MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
       this._size.set(width, height);
@@ -616,7 +616,8 @@ with(MO){
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
-      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
+      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
+      o._foreFont        = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
@@ -630,6 +631,8 @@ with(MO){
       o.oeInitialize     = FGuiControl_oeInitialize;
       o.oeUpdate         = FGuiControl_oeUpdate;
       o.construct        = FGuiControl_construct;
+      o.setLocation      = FGuiControl_setLocation;
+      o.setSize          = FGuiControl_setSize;
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
       o.repaint          = FGuiControl_repaint;
@@ -668,7 +671,8 @@ with(MO){
       var o = this;
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      if(o._styleBackcolor){
+      if(o._backColor){
+         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
       var backImage = o._backImage;
       if(backImage){
@@ -678,6 +682,12 @@ with(MO){
          }else{
             graphic.drawImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
          }
+      }
+      if(o._borderOuter.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderOuter);
+      }
+      if(o._borderInner.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderInner);
       }
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
@@ -728,13 +738,21 @@ with(MO){
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
    }
-   MO.FGuiControl_update = function FGuiControl_update(){
+   MO.FGuiControl_setLocation = function FGuiControl_setLocation(x, y){
       var o = this;
-      var size = o._size;
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.rectangle.set(0, 0, size.width, size.height)
-      o.onUpdate(event);
-      MO.Memory.free(event);
+      o.__base.MGuiSize.setLocation.call(o, x, y);
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setLocation(x, y);
+      }
+   }
+   MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
+      var o = this;
+      o.__base.MGuiSize.setSize.call(o, width, height);
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setSize(width, height);
+      }
    }
    MO.FGuiControl_testReady = function FGuiControl_testReady(){
       var o = this;
@@ -770,13 +788,21 @@ with(MO){
       renderable.endDraw();
       o._statusPaint = true;
    }
+   MO.FGuiControl_update = function FGuiControl_update(){
+      var o = this;
+      var size = o._size;
+      var event = MO.Memory.alloc(SGuiUpdateEvent)
+      event.rectangle.set(0, 0, size.width, size.height)
+      o.onUpdate(event);
+      MO.Memory.free(event);
+   }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
       var location = o._location;
       var size = o._size;
       var renderable = o._renderable;
       if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
+         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
@@ -830,38 +856,38 @@ with(MO){
    }
 }
 with(MO){
-   MO.FGuiControlData = function FGuiControlData(o){
+   MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
       o._graphic    = null;
-      o.construct   = FGuiControlData_construct;
-      o.setup       = FGuiControlData_setup;
-      o.setLocation = FGuiControlData_setLocation;
-      o.setSize     = FGuiControlData_setSize;
-      o.beginDraw   = FGuiControlData_beginDraw;
-      o.endDraw     = FGuiControlData_endDraw;
-      o.dispose     = FGuiControlData_dispose;
+      o.construct   = FGuiControlRenderable_construct;
+      o.setup       = FGuiControlRenderable_setup;
+      o.setLocation = FGuiControlRenderable_setLocation;
+      o.setSize     = FGuiControlRenderable_setSize;
+      o.beginDraw   = FGuiControlRenderable_beginDraw;
+      o.endDraw     = FGuiControlRenderable_endDraw;
+      o.dispose     = FGuiControlRenderable_dispose;
       return o;
    }
-   MO.FGuiControlData_construct = function FGuiControlData_construct(){
+   MO.FGuiControlRenderable_construct = function FGuiControlRenderable_construct(){
       var o = this;
       o.__base.FE3dFaceData.construct.call(o);
    }
-   MO.FGuiControlData_setup = function FGuiControlData_setup(){
+   MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
       var o = this;
       o.__base.FE3dFaceData.setup.call(o);
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'flat';
       materialInfo.optionAlpha = true;
    }
-   MO.FGuiControlData_setLocation = function FGuiControlData_setLocation(x, y){
+   MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
       var o = this;
       o._matrix.setTranslate(x, y, 0);
    }
-   MO.FGuiControlData_setSize = function FGuiControlData_setSize(width, height){
+   MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
       var o = this;
       o._size.set(width, height);
    }
-   MO.FGuiControlData_beginDraw = function FGuiControlData_beginDraw(){
+   MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
       var o = this;
       var size = o._size;
       var adjustWidth = RInteger.pow2(size.width);
@@ -873,7 +899,7 @@ with(MO){
       var graphic = o._graphic = canvas.context();
       return graphic;
    }
-   MO.FGuiControlData_endDraw = function FGuiControlData_endDraw(){
+   MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
       var o = this;
       var graphic = o._graphic;
       MO.Assert.debugNotNull(graphic);
@@ -884,7 +910,7 @@ with(MO){
       o._graphic = null;
       o._ready = true;
    }
-   MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
+   MO.FGuiControlRenderable_dispose = function FGuiControlRenderable_dispose(){
       var o = this;
       o.__base.FE3dFaceData.dispose.call(o);
    }

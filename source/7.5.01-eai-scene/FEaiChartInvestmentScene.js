@@ -192,8 +192,8 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
    timeline.linkGraphicContext(o);
-   //timeline.build();
-   //layer.push(timeline);
+   timeline.build();
+   layer.push(timeline);
 }
 
 //==========================================================

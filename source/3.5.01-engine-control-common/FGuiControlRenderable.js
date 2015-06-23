@@ -6,23 +6,23 @@ with(MO){
    // @author maocy
    // @history 150610
    //==========================================================
-   MO.FGuiControlData = function FGuiControlData(o){
+   MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
       //..........................................................
       // @attribute
       o._graphic    = null;
       //..........................................................
       // @method
-      o.construct   = FGuiControlData_construct;
+      o.construct   = FGuiControlRenderable_construct;
       // @method
-      o.setup       = FGuiControlData_setup;
-      o.setLocation = FGuiControlData_setLocation;
-      o.setSize     = FGuiControlData_setSize;
+      o.setup       = FGuiControlRenderable_setup;
+      o.setLocation = FGuiControlRenderable_setLocation;
+      o.setSize     = FGuiControlRenderable_setSize;
       // @method
-      o.beginDraw   = FGuiControlData_beginDraw;
-      o.endDraw     = FGuiControlData_endDraw;
+      o.beginDraw   = FGuiControlRenderable_beginDraw;
+      o.endDraw     = FGuiControlRenderable_endDraw;
       // @method
-      o.dispose     = FGuiControlData_dispose;
+      o.dispose     = FGuiControlRenderable_dispose;
       return o;
    }
 
@@ -31,7 +31,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_construct = function FGuiControlData_construct(){
+   MO.FGuiControlRenderable_construct = function FGuiControlRenderable_construct(){
       var o = this;
       o.__base.FE3dFaceData.construct.call(o);
    }
@@ -41,7 +41,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_setup = function FGuiControlData_setup(){
+   MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
       var o = this;
       o.__base.FE3dFaceData.setup.call(o);
       // 设置材质
@@ -55,7 +55,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_setLocation = function FGuiControlData_setLocation(x, y){
+   MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
       var o = this;
       o._matrix.setTranslate(x, y, 0);
    }
@@ -65,7 +65,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_setSize = function FGuiControlData_setSize(width, height){
+   MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
       var o = this;
       o._size.set(width, height);
    }
@@ -75,7 +75,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_beginDraw = function FGuiControlData_beginDraw(){
+   MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
       var o = this;
       // 设置大小
       var size = o._size;
@@ -95,7 +95,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_endDraw = function FGuiControlData_endDraw(){
+   MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
       var o = this;
       // 检查环境
       var graphic = o._graphic;
@@ -115,7 +115,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
+   MO.FGuiControlRenderable_dispose = function FGuiControlRenderable_dispose(){
       var o = this;
       // 父处理
       o.__base.FE3dFaceData.dispose.call(o);

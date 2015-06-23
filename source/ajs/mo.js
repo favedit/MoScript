@@ -14829,6 +14829,7 @@ with (MO) {
       o.linkCanvas     = FG2dCanvasContext_linkCanvas;
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
+      o.textWidth      = FG2dCanvasContext_textWidth;
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
@@ -14865,6 +14866,10 @@ with (MO) {
       var handle = o._handle;
       var size = o._size;
       handle.clearRect(0, 0, size.width, size.height);
+   }
+   MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
+      var info = this._handle.measureText(text);
+      return info.width;
    }
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;
@@ -28521,6 +28526,9 @@ with(MO){
       o._quaternionZ    = null;
       o.construct       = FE3dCamera_construct;
       o.rotation        = FE3dCamera_rotation;
+      o.doMoveX         = FE3dCamera_doMoveX;
+      o.doMoveY         = FE3dCamera_doMoveY;
+      o.doMoveZ         = FE3dCamera_doMoveZ;
       o.doForward       = FE3dCamera_doForward;
       o.doPitch         = FE3dCamera_doPitch;
       o.doYaw           = FE3dCamera_doYaw;
@@ -28542,6 +28550,15 @@ with(MO){
    }
    MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
       return this._rotation;
+   }
+   MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
+      this._position.x += value;
+   }
+   MO.FE3dCamera_doMoveY = function FE3dCamera_doMoveY(value){
+      this._position.y += value;
+   }
+   MO.FE3dCamera_doMoveZ = function FE3dCamera_doMoveZ(value){
+      this._position.z += value;
    }
    MO.FE3dCamera_doForward = function FE3dCamera_doForward(value){
       var o = this;
@@ -33313,13 +33330,13 @@ with(MO){
       return this._location.x;
    }
    MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
-      this._location.x = value;
+      this.setLocation(value, this._location.y);
    }
    MO.MGuiSize_top = function MGuiSize_top(){
       return this._location.y;
    }
    MO.MGuiSize_setTop = function MGuiSize_setTop(value){
-      this._location.y = value;
+      this.setLocation(this._location.x, value);
    }
    MO.MGuiSize_setLocation = function MGuiSize_setLocation(x, y){
       this._location.set(x, y);
@@ -33328,13 +33345,13 @@ with(MO){
       return this._size.width;
    }
    MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
-      this._size.width = value;
+      this.setSize(value, this._size.height);
    }
    MO.MGuiSize_height = function MGuiSize_height(){
       return this._size.height;
    }
    MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this._size.height = value;
+      this.setSize(this._size.width, value);
    }
    MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
       this._size.set(width, height);
@@ -33606,7 +33623,8 @@ with(MO){
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
-      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
+      o._foreColor       = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
+      o._foreFont        = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
       o._backColor       = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
       o._backResource    = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
       o._backGrid        = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
@@ -33620,6 +33638,8 @@ with(MO){
       o.oeInitialize     = FGuiControl_oeInitialize;
       o.oeUpdate         = FGuiControl_oeUpdate;
       o.construct        = FGuiControl_construct;
+      o.setLocation      = FGuiControl_setLocation;
+      o.setSize          = FGuiControl_setSize;
       o.testReady        = FGuiControl_testReady;
       o.paint            = FGuiControl_paint;
       o.repaint          = FGuiControl_repaint;
@@ -33658,7 +33678,8 @@ with(MO){
       var o = this;
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      if(o._styleBackcolor){
+      if(o._backColor){
+         graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
       var backImage = o._backImage;
       if(backImage){
@@ -33668,6 +33689,12 @@ with(MO){
          }else{
             graphic.drawImage(backImage.bitmap, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
          }
+      }
+      if(o._borderOuter.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderOuter);
+      }
+      if(o._borderInner.valid){
+         graphic.drawBorder(o._clientRectangle, o._borderInner);
       }
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
@@ -33718,13 +33745,21 @@ with(MO){
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
    }
-   MO.FGuiControl_update = function FGuiControl_update(){
+   MO.FGuiControl_setLocation = function FGuiControl_setLocation(x, y){
       var o = this;
-      var size = o._size;
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.rectangle.set(0, 0, size.width, size.height)
-      o.onUpdate(event);
-      MO.Memory.free(event);
+      o.__base.MGuiSize.setLocation.call(o, x, y);
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setLocation(x, y);
+      }
+   }
+   MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
+      var o = this;
+      o.__base.MGuiSize.setSize.call(o, width, height);
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setSize(width, height);
+      }
    }
    MO.FGuiControl_testReady = function FGuiControl_testReady(){
       var o = this;
@@ -33760,13 +33795,21 @@ with(MO){
       renderable.endDraw();
       o._statusPaint = true;
    }
+   MO.FGuiControl_update = function FGuiControl_update(){
+      var o = this;
+      var size = o._size;
+      var event = MO.Memory.alloc(SGuiUpdateEvent)
+      event.rectangle.set(0, 0, size.width, size.height)
+      o.onUpdate(event);
+      MO.Memory.free(event);
+   }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
       var location = o._location;
       var size = o._size;
       var renderable = o._renderable;
       if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlData);
+         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
@@ -33820,38 +33863,38 @@ with(MO){
    }
 }
 with(MO){
-   MO.FGuiControlData = function FGuiControlData(o){
+   MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
       o._graphic    = null;
-      o.construct   = FGuiControlData_construct;
-      o.setup       = FGuiControlData_setup;
-      o.setLocation = FGuiControlData_setLocation;
-      o.setSize     = FGuiControlData_setSize;
-      o.beginDraw   = FGuiControlData_beginDraw;
-      o.endDraw     = FGuiControlData_endDraw;
-      o.dispose     = FGuiControlData_dispose;
+      o.construct   = FGuiControlRenderable_construct;
+      o.setup       = FGuiControlRenderable_setup;
+      o.setLocation = FGuiControlRenderable_setLocation;
+      o.setSize     = FGuiControlRenderable_setSize;
+      o.beginDraw   = FGuiControlRenderable_beginDraw;
+      o.endDraw     = FGuiControlRenderable_endDraw;
+      o.dispose     = FGuiControlRenderable_dispose;
       return o;
    }
-   MO.FGuiControlData_construct = function FGuiControlData_construct(){
+   MO.FGuiControlRenderable_construct = function FGuiControlRenderable_construct(){
       var o = this;
       o.__base.FE3dFaceData.construct.call(o);
    }
-   MO.FGuiControlData_setup = function FGuiControlData_setup(){
+   MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
       var o = this;
       o.__base.FE3dFaceData.setup.call(o);
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'flat';
       materialInfo.optionAlpha = true;
    }
-   MO.FGuiControlData_setLocation = function FGuiControlData_setLocation(x, y){
+   MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
       var o = this;
       o._matrix.setTranslate(x, y, 0);
    }
-   MO.FGuiControlData_setSize = function FGuiControlData_setSize(width, height){
+   MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
       var o = this;
       o._size.set(width, height);
    }
-   MO.FGuiControlData_beginDraw = function FGuiControlData_beginDraw(){
+   MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
       var o = this;
       var size = o._size;
       var adjustWidth = RInteger.pow2(size.width);
@@ -33863,7 +33906,7 @@ with(MO){
       var graphic = o._graphic = canvas.context();
       return graphic;
    }
-   MO.FGuiControlData_endDraw = function FGuiControlData_endDraw(){
+   MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
       var o = this;
       var graphic = o._graphic;
       MO.Assert.debugNotNull(graphic);
@@ -33874,7 +33917,7 @@ with(MO){
       o._graphic = null;
       o._ready = true;
    }
-   MO.FGuiControlData_dispose = function FGuiControlData_dispose(){
+   MO.FGuiControlRenderable_dispose = function FGuiControlRenderable_dispose(){
       var o = this;
       o.__base.FE3dFaceData.dispose.call(o);
    }
@@ -34111,97 +34154,45 @@ with(MO){
 with(MO){
    MO.FGuiButton = function FGuiButton(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._statusPaint = false;
-      o._image       = null;
-      o.onImageLoad  = FGuiButton_onImageLoad;
       o.onPaintBegin = FGuiButton_onPaintBegin;
-      o.oeUpdate     = FGuiButton_oeUpdate;
       return o;
-   }
-   MO.FGuiButton_onImageLoad = function FGuiButton_onImageLoad(event){
-      var o = this;
-      var image = o._image;
-      var topComponent = o.topComponent();
-      topComponent.build();
-      o._statusPaint = true;
    }
    MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      if(o._image && o._image.testReady()){
-         if(o._backGrid.isEmpty()){
-            graphic.drawImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-         }else{
-            graphic.drawGridImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
-         }
-      }
       if(o._label){
-         var x = rectangle.left + rectangle.width * 0.5;
-         var y = rectangle.top + rectangle.height * 0.5;
-         graphic.drawText(o._label, x, y, '#FF0000');
-      }
-   }
-   MO.FGuiButton_oeUpdate = function FGuiButton_oeUpdate(event){
-      var o = this;
-      if(!o._statusPaint){
-         if(o._image == null && o._backResource){
-            var url = o._backResource.substring(4);
-            var image = o._image = RClass.create(FImage);
-            image.addLoadListener(o, o.onImageLoad);
-            image.loadUrl(url);
+         if(o._foreFont){
+            graphic.setFont(o._foreFont);
          }
+         var width = graphic.textWidth(o._label);
+         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+         var y = rectangle.top + rectangle.height * 0.5 + 3;
+         graphic.drawText(o._label, x, y, o._foreColor);
       }
-      return EEventStatus.Stop;
    }
 }
 with(MO){
    MO.FGuiLabel = function FGuiLabel(o){
       o = RClass.inherits(this, o, FGuiControl);
-      o._statusPaint = false;
-      o._image       = null;
-      o.onImageLoad  = FGuiLabel_onImageLoad;
       o.onPaintBegin = FGuiLabel_onPaintBegin;
-      o.oeUpdate     = FGuiLabel_oeUpdate;
       return o;
-   }
-   MO.FGuiLabel_onImageLoad = function FGuiLabel_onImageLoad(event){
-      var o = this;
-      var image = o._image;
-      var topComponent = o.topComponent();
-      topComponent.build();
-      o._statusPaint = true;
    }
    MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-      if(o._image && o._image.testReady()){
-         if(o._backGrid.isEmpty()){
-            graphic.drawImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-         }else{
-            graphic.drawGridImage(o._image, rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backGrid);
-         }
-      }
       if(o._label){
-         var x = rectangle.left + rectangle.width * 0.5;
-         var y = rectangle.top + rectangle.height * 0.5;
-         graphic.drawText(o._label, x, y, '#FF0000');
-      }
-   }
-   MO.FGuiLabel_oeUpdate = function FGuiLabel_oeUpdate(event){
-      var o = this;
-      if(!o._statusPaint){
-         if(o._image == null && o._backResource){
-            var url = o._backResource.substring(4);
-            var image = o._image = RClass.create(FImage);
-            image.addLoadListener(o, o.onImageLoad);
-            image.loadUrl(url);
+         if(o._foreFont){
+            graphic.setFont(o._foreFont);
          }
+         var width = graphic.textWidth(o._label);
+         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+         var y = rectangle.top + rectangle.height * 0.5 + 3;
+         graphic.drawText(o._label, x, y, o._foreColor);
       }
-      return EEventStatus.Stop;
    }
 }
 with(MO){
@@ -34280,7 +34271,11 @@ with (MO) {
       graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
       var startTime = o.startTime().date;
       var endTime = o.endTime().date;
+      var degreeTime = o.degreeTime().date;
       var timeSpan = endTime.getTime() - startTime.getTime();
+      var degreeSpan = degreeTime.getTime() - startTime.getTime();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
       var degreeCount = 0;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
@@ -34310,6 +34305,7 @@ with (MO) {
       var degreeGap = (dataRight - dataLeft) / degreeCount;
       var text;
       var dtVar;
+      var bakTime = startTime.getTime();
       for (var i = 0; i <= degreeCount; i++) {
          graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 0.5);
          switch (o.timeUnit()) {
@@ -34353,10 +34349,7 @@ with (MO) {
          }
          graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
       }
-      var degreeTime = o.degreeTime().date;
-      var degreeSpan = degreeTime.getTime() - startTime.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
+      startTime.setTime(bakTime);
    }
 }
 with(MO){
@@ -52126,7 +52119,6 @@ with(MO){
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
       o._typeGroup        = RClass.register(o, [new APtyString('_typeGroup'), new AGetSet('_typeGroup')]);
       o._typeCode         = RClass.register(o, [new APtyString('_typeCode'), new AGetter('_typeCode')]);
-      o._guid             = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
       o._code             = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._icon             = RClass.register(o, new APtyString('_icon'));
       o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);

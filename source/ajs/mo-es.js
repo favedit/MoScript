@@ -4309,6 +4309,7 @@ with (MO) {
       o.linkCanvas     = FG2dCanvasContext_linkCanvas;
       o.setFont        = FG2dCanvasContext_setFont;
       o.clear          = FG2dCanvasContext_clear;
+      o.textWidth      = FG2dCanvasContext_textWidth;
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
@@ -4345,6 +4346,10 @@ with (MO) {
       var handle = o._handle;
       var size = o._size;
       handle.clearRect(0, 0, size.width, size.height);
+   }
+   MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
+      var info = this._handle.measureText(text);
+      return info.width;
    }
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;
@@ -18001,6 +18006,9 @@ with(MO){
       o._quaternionZ    = null;
       o.construct       = FE3dCamera_construct;
       o.rotation        = FE3dCamera_rotation;
+      o.doMoveX         = FE3dCamera_doMoveX;
+      o.doMoveY         = FE3dCamera_doMoveY;
+      o.doMoveZ         = FE3dCamera_doMoveZ;
       o.doForward       = FE3dCamera_doForward;
       o.doPitch         = FE3dCamera_doPitch;
       o.doYaw           = FE3dCamera_doYaw;
@@ -18022,6 +18030,15 @@ with(MO){
    }
    MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
       return this._rotation;
+   }
+   MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
+      this._position.x += value;
+   }
+   MO.FE3dCamera_doMoveY = function FE3dCamera_doMoveY(value){
+      this._position.y += value;
+   }
+   MO.FE3dCamera_doMoveZ = function FE3dCamera_doMoveZ(value){
+      this._position.z += value;
    }
    MO.FE3dCamera_doForward = function FE3dCamera_doForward(value){
       var o = this;

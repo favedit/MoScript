@@ -62,7 +62,7 @@ with(MO){
    // @param value:Number 左距离
    //==========================================================
    MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
-      this._location.x = value;
+      this.setLocation(value, this._location.y);
    }
 
    //==========================================================
@@ -82,7 +82,7 @@ with(MO){
    // @param value:Number 上距离
    //==========================================================
    MO.MGuiSize_setTop = function MGuiSize_setTop(value){
-      this._location.y = value;
+      this.setLocation(this._location.x, value);
    }
 
    //==========================================================
@@ -113,7 +113,7 @@ with(MO){
    // @param value:Number 宽度
    //==========================================================
    MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
-      this._size.width = value;
+      this.setSize(value, this._size.height);
    }
 
    //==========================================================
@@ -133,7 +133,7 @@ with(MO){
    // @param value:Number 高度
    //==========================================================
    MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this._size.height = value;
+      this.setSize(this._size.width, value);
    }
 
    //==========================================================

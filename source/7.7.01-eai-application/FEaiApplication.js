@@ -10,13 +10,15 @@ with(MO){
       o = RClass.inherits(this, o, FApplication);
       //..........................................................
       // @attribute
-      o._thread   = null;
-      o._interval = 10;
+      o._thread      = null;
+      o._interval    = 10;
       //..........................................................
       // @method
-      o.construct = FEaiApplication_construct;
+      o.construct    = FEaiApplication_construct;
       // @method
-      o.dispose   = FEaiApplication_dispose;
+      o.createCanvas = FEaiApplication_createCanvas;
+      // @method
+      o.dispose      = FEaiApplication_dispose;
       return o;
    }
 
@@ -33,6 +35,16 @@ with(MO){
       thread.setInterval(o._interval);
       thread.addProcessListener(o, o.process);
       RConsole.find(FThreadConsole).start(thread);
+   }
+
+   //==========================================================
+   // <T>创建画板。</T>
+   //
+   // @method
+   // @return FEaiCanvas 画板
+   //==========================================================
+   MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
+      return RClass.create(FEaiCanvas);
    }
 
    //==========================================================
