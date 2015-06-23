@@ -507,9 +507,8 @@ with(MO){
       var o = this;
       var index = 0;
       var vertexCount = o._positionCount = input.readInt32();
-      o._positions = new Float32Array(3 * vertexCount);
+      o._positions = new Float32Array(2 * vertexCount);
       for(var i = 0; i < vertexCount; i++){
-         o._positions[index++] = input.readFloat();
          o._positions[index++] = input.readFloat();
          o._positions[index++] = input.readFloat();
       }
@@ -521,7 +520,7 @@ with(MO){
    }
    MO.FEaiBoundaryData_dispose = function FEaiBoundaryData_dispose(){
       var o = this;
-      o._positions = RObject.dispose(o._positions);
+      o._positions = null;
       o._indexes = null;
       o.__base.FEaiEntity.dispose.call(o);
    }
@@ -712,11 +711,15 @@ with(MO){
             coordData[coordPosition++] = 0;
             coordData[coordPosition++] = 0;
             var color = city.color();
+            var red = parseInt(color.red * 255);
+            var green = parseInt(color.green * 255);
+            var blue = parseInt(color.blue * 255);
+            var alpha = parseInt(color.alpha * 255);
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = color.red * 255;
-               colorData[colorPosition++] = color.green * 255;
-               colorData[colorPosition++] = color.blue * 255;
-               colorData[colorPosition++] = color.alpha * 255;
+               colorData[colorPosition++] = red;
+               colorData[colorPosition++] = green;
+               colorData[colorPosition++] = blue;
+               colorData[colorPosition++] = alpha;
             }
          }
       }
@@ -1262,7 +1265,10 @@ with(MO){
       o._data             = RClass.register(o, new AGetSet('_data'));
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
+      o._layerDepth       = 1;
       o.construct         = FEaiProvinceEntity_construct;
+      o.buildFace         = FEaiProvinceEntity_buildFace;
+      o.buildBorder       = FEaiProvinceEntity_buildBorder;
       o.build             = FEaiProvinceEntity_build;
       o.update            = FEaiProvinceEntity_update;
       o.dispose           = FEaiProvinceEntity_dispose;
@@ -1272,38 +1278,120 @@ with(MO){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
    }
-   MO.FEaiProvinceEntity_build = function FEaiProvinceEntity_build(context){
+   MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context){
       var o = this;
-      var color = o._color;
-      var vertexTotal = 0;
-      var indexTotal = 0;
       var boundaries = o._data.boundaries();
       var count = boundaries.count();
-      for(var i = 0; i < count; i++){
-         var boundary = boundaries.at(i);
-         vertexTotal += boundary.positionCount();
-         indexTotal += boundary.indexes().length;
-      }
-      o._vertexTotal = vertexTotal;
+      var vertexTotal = o._vertexTotal;
+      var indexTotal = o._indexTotal;
+      var color = o._color;
       var vertexStart = 0;
       var vertexIndex = 0;
+      var vertexData = new Float32Array(3 * vertexTotal * 2);
       var faceIndex = 0;
-      var vertexData = new Float32Array(3 * vertexTotal);
-      var faceData = new Uint16Array(indexTotal);
-      var borderIndex = 0;
-      var borderData = new Uint16Array(2 * vertexTotal);
+      var faceData = new Uint16Array(indexTotal * 2 + 3 * 2 * vertexTotal);
       for(var n = 0; n < count; n++){
          var boundary = boundaries.at(n);
          var positionCount = boundary.positionCount();
-         var positionTotal = 3 * positionCount;
          var positions = boundary.positions();
-         for(var i = 0; i < positionTotal; i++){
-            vertexData[vertexIndex++] = positions[i];
+         var positionIndex = 0;
+         for(var i = 0; i < positionCount; i++){
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = 0;
          }
          var indexes = boundary.indexes();
          var indexCount = indexes.length;
          for(var i = 0; i < indexCount; i++){
             faceData[faceIndex++] = vertexStart + indexes[i];
+         }
+         vertexStart += positionCount;
+      }
+      var layerStart = vertexStart;
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         var positions = boundary.positions();
+         var positionIndex = 0;
+         for(var i = 0; i < positionCount; i++){
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = o._layerDepth;
+         }
+         var indexes = boundary.indexes();
+         var indexCount = indexes.length;
+         for(var i = 0; i < indexCount; i++){
+            faceData[faceIndex++] = vertexStart + indexes[i];
+         }
+         vertexStart += positionCount;
+      }
+      var vertexStart = 0;
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         for(var i = 0; i < positionCount; i++){
+            if(i == positionCount - 1){
+               faceData[faceIndex++] = vertexStart + i;
+               faceData[faceIndex++] = vertexStart + 0;
+               faceData[faceIndex++] = vertexStart + i + layerStart;
+               faceData[faceIndex++] = vertexStart + 0;
+               faceData[faceIndex++] = vertexStart + layerStart;
+               faceData[faceIndex++] = vertexStart + i + layerStart;
+            }else{
+               faceData[faceIndex++] = vertexStart + i;
+               faceData[faceIndex++] = vertexStart + i + 1;
+               faceData[faceIndex++] = vertexStart + i + layerStart;
+               faceData[faceIndex++] = vertexStart + i + 1;
+               faceData[faceIndex++] = vertexStart + i + layerStart + 1;
+               faceData[faceIndex++] = vertexStart + i + layerStart;
+            }
+         }
+         vertexStart += positionCount;
+      }
+      var colorIndex = 0;
+      var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
+      var positionTotal = vertexTotal * 2;
+      for(var i = 0; i < positionTotal; i++){
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0x9F;
+         colors[colorIndex++] = 0x4F;
+         colors[colorIndex++] = 255;
+      }
+      var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
+      renderable.linkGraphicContext(context);
+      renderable.setup();
+      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
+      renderable.indexBuffer().upload(faceData, faceIndex);
+      renderable.material().info().optionDouble = true;
+      var matrix = renderable.matrix();
+      matrix.tx = -20;
+      matrix.ty = -8;
+      matrix.setScale(0.2, 0.24, 0.2);
+      matrix.update();
+   }
+   MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
+      var o = this;
+      var boundaries = o._data.boundaries();
+      var count = boundaries.count();
+      var vertexTotal = o._vertexTotal;
+      var indexTotal = o._indexTotal;
+      var color = o._color;
+      var vertexStart = 0;
+      var vertexIndex = 0;
+      var faceIndex = 0;
+      var vertexData = new Float32Array(3 * vertexTotal * 2);
+      var borderIndex = 0;
+      var borderData = new Uint16Array(2 * vertexTotal + 2 * vertexTotal);
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         var positions = boundary.positions();
+         var positionIndex = 0;
+         for(var i = 0; i < positionCount; i++){
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = 0;
          }
          for(var i = 0; i < positionCount; i++){
             borderData[borderIndex++] = vertexStart + i;
@@ -1315,64 +1403,77 @@ with(MO){
          }
          vertexStart += positionCount;
       }
+      var layerStart = vertexStart;
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         var positions = boundary.positions();
+         var positionIndex = 0;
+         for(var i = 0; i < positionCount; i++){
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = positions[positionIndex++];
+            vertexData[vertexIndex++] = o._layerDepth;
+         }
+         vertexStart += positionCount;
+      }
+      var vertexStart = 0;
+      for(var n = 0; n < count; n++){
+         var boundary = boundaries.at(n);
+         var positionCount = boundary.positionCount();
+         for(var i = 0; i < positionCount; i++){
+            borderData[borderIndex++] = vertexStart + i;
+            borderData[borderIndex++] = vertexStart + i + layerStart;
+         }
+         vertexStart += positionCount;
+      }
       var colorIndex = 0;
-      var colors = o.colorsData = new Uint8Array(4 * vertexTotal);
+      var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0;
-         colors[colorIndex++] = 0
-         colors[colorIndex++] = 0;
+         colors[colorIndex++] = 0x3B;
+         colors[colorIndex++] = 0x49;
+         colors[colorIndex++] = 0x54;
          colors[colorIndex++] = 255;
       }
-      var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
-      renderable.linkGraphicContext(context);
-      renderable.setup();
-      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal);
-      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal);
-      renderable._indexBuffer.upload(faceData, faceIndex);
-      renderable.material().info().optionDouble = true;
-      var matrix = renderable.matrix();
-      matrix.tx = -20;
-      matrix.ty = -8;
-      matrix.setScale(0.2, 0.24, 0.2);
-      matrix.update();
-      var colorIndex = 0;
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x4B;
-         colors[colorIndex++] = 0x59;
-         colors[colorIndex++] = 0x64;
+         colors[colorIndex++] = 0x5B;
+         colors[colorIndex++] = 0x69;
+         colors[colorIndex++] = 0x74;
          colors[colorIndex++] = 255;
       }
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);
       renderable.setup();
-      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal);
-      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal);
-      renderable._indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
-      renderable._indexBuffer.setLineWidth(1);
-      renderable._indexBuffer.upload(borderData, borderIndex);
+      renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
+      renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
+      renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
+      renderable.indexBuffer().setLineWidth(1);
+      renderable.indexBuffer().upload(borderData, borderIndex);
       var matrix = renderable.matrix();
       matrix.tx = -20;
       matrix.ty = -8;
       matrix.setScale(0.2, 0.24, 0.2);
       matrix.update();
    }
+   MO.FEaiProvinceEntity_build = function FEaiProvinceEntity_build(context){
+      var o = this;
+      var vertexTotal = 0;
+      var indexTotal = 0;
+      var boundaries = o._data.boundaries();
+      var count = boundaries.count();
+      for(var i = 0; i < count; i++){
+         var boundary = boundaries.at(i);
+         vertexTotal += boundary.positionCount();
+         indexTotal += boundary.indexes().length;
+      }
+      o._vertexTotal = vertexTotal;
+      o._indexTotal = indexTotal;
+      o.buildFace(context);
+      o.buildBorder(context);
+   }
    MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
       var o = this;
       var investmentTotal = data.investmentTotal();
       var rate = Math.sqrt(investmentTotal) / 100;
-      if(rate > 255){
-         rate = 255;
-      }
-      var colorIndex = 0;
-      var colors = o.colorsData;
-      for(var i = 0; i < o._vertexTotal; i++){
-         colors[colorIndex++] = rate;
-         colors[colorIndex++] = 0;
-         colors[colorIndex++] = 0;
-         colors[colorIndex++] = 255;
-      }
-      var renderable = o._faceRenderable;
-      renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
    }
    MO.FEaiProvinceEntity_dispose = function FEaiProvinceEntity_dispose(){
       var o = this;
@@ -1916,7 +2017,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.region().backgroundColor().set(0, 0, 0.1, 1);
+   stage.region().backgroundColor().set(1, 0, 0.1, 1);
    var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    renderable.linkGraphicContext(o);
    renderable.setup();

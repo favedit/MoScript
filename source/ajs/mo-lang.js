@@ -6653,8 +6653,6 @@ with(MO){
       o.invert          = SMatrix4x4_invert;
       o.transform       = SMatrix4x4_transform;
       o.transformPoint3 = SMatrix4x4_transformPoint3;
-      o.decompose       = SMatrix4x4_decompose;
-      o.transpose       = SMatrix4x4_transpose;
       o.buildQuaternion = SMatrix4x4_buildQuaternion;
       o.build           = SMatrix4x4_build;
       o.writeData       = SMatrix4x4_writeData;
@@ -6934,50 +6932,6 @@ with(MO){
       }
       r.set(x, y, z);
       return r;
-   }
-   MO.SMatrix4x4_decompose = function SMatrix4x4_decompose(translation, rotation, scale) {
-      var d = this._data;
-      var mCopy = new Array(16);
-      RArray.prototype.copy(d, mCopy);
-      translation.set(mCopy[3], mCopy[7], mCopy[11]);
-      for (var i = 0; i < 3; i++) {
-         mCopy[i * 4 + 3] = mCopy[3 * 4 + i] = 0.0;
-      }
-      mCopy.rows[3][3] = 1.0;
-      var norm;
-      var count = 0;
-      rotation = mCopy;
-      do {
-         var nextRotation = new Array(16);
-         var currInvTranspose = new Array(16);
-         RArray.prototype.copy(rotation, currInvTranspose);
-         currInvTranspose.transpose();
-         currInvTranspose.invert();
-         for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < 4; j++) {
-               nextRotation[i * 4 + j] = 0.5 * (rotation[i * 4 + j] + currInvTranspose[i * 4 + j]);
-            }
-         }
-         norm = 0.0;
-         for (var i = 0; i < 3; i++) {
-            var n = Math.abs(rotation[i * 4] - nextRotation[i * 4]) +
-                    Math.abs(rotation[i * 4 + 1] - nextRotation[i * 4 + 1]) +
-                    Math.abs(rotation[i * 4 + 2] - nextRotation[i * 4 + 2]);
-            norm = Math.max(norm, n);
-         }
-         rotation = nextRotation;
-      } while (count < 100 && norm > 0.0001);
-   }
-   MO.SMatrix4x4_transpose = function SMatrix4x4_transpose() {
-      var d = o._data;
-      var swap;
-      for (var i = 0; i < 4; i++) {
-         for (var j = i + 1; j < 4; j++) {
-            swap = d[i * 4 + j];
-            d[i * 4 + j] = d[j * 4 + i];
-            d[j * 4 + i] = swap;
-         }
-      }
    }
    MO.SMatrix4x4_build = function SMatrix4x4_build(t, r, s){
       var d = this._data;
