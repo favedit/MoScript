@@ -126,8 +126,8 @@ with (MO) {
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
-      var startTime = o.startTime();
-      var endTime = o.endTime();
+      var startTime = o.startTime().date;
+      var endTime = o.endTime().date;
       var timeSpan = endTime.getTime() - startTime.getTime();
       var degreeCount = 0;
       switch (o.timeUnit()) {
@@ -201,7 +201,7 @@ with (MO) {
          }
          graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
       }
-      var degreeTime = o.degreeTime();
+      var degreeTime = o.degreeTime().date;
       var degreeSpan = degreeTime.getTime() - startTime.getTime();
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');

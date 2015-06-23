@@ -1810,6 +1810,7 @@ MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o) {
    o._currentDate = null;
    o._currentRow = 0;
    o._lastDateRowCount = 0;
+   o._timeline = null;
    o.onLoadData = MO.FEaiChartInvestmentScene_onLoadData;
    o.onKeyDown = MO.FEaiChartInvestmentScene_onKeyDown;
    o.setup = MO.FEaiChartInvestmentScene_setup;
@@ -1873,6 +1874,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       }
       o._currentRow += count;
       o._lastDateRowCount = count;
+      o._timeline.setDegreeTime(o._currentDate);
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
       var count = cityEntities.count();
@@ -1930,6 +1932,20 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
       }
    }
    o._currentDate.parseAuto('20140701');
+   var stage = o.activeStage();
+   var layer = stage.faceLayer();
+   o._timeline = MO.RClass.create(MO.FGuiTimeline);
+   o._timeline.setLeft(50);
+   o._timeline.setTop(MO.Eai.Canvas._size.height - 100);
+   o._timeline.setWidth(MO.Eai.Canvas._size.width - 50);
+   o._timeline.setHeight(100);
+   o._timeline.setTimeUnit(MO.EGuiTimeUnit.Day);
+   o._timeline.setStartTime(o._startDate);
+   o._timeline.setEndTime(o._endDate);
+   o._timeline.setDegreeTime(o._currentDate);
+   o._timeline.linkGraphicContext(MO.Eai.Canvas);
+   o._timeline.build();
+   layer.pushRenderable(o._timeline.renderable());
 }
 MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active() {
    var o = this;
