@@ -117,13 +117,13 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          rankCell.innerHTML = i + 1;
          switch (i) {
             case 0:
-               row.style.color = '#FBEB67';
+               row.style.color = '#FF6B49';
                break;
             case 1:
-               row.style.color = '#BBC7CA';
+               row.style.color = '#F1D46F';
                break;
             case 2:
-               row.style.color = '#C69207';
+               row.style.color = '#1BBC82';
                break;
             default:
                break;
