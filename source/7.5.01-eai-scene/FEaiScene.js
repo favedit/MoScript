@@ -15,16 +15,18 @@ with(MO){
       o._engineInfo     = null;
       //..........................................................
       // @event
-      o.onProcess       = FEaiScene_onProcess;
+      o.onProcess       = MO.FEaiScene_onProcess;
       //..........................................................
       // @method
-      o.construct       = FEaiScene_construct;
+      o.construct       = MO.FEaiScene_construct;
       // @method
       o.setup           = MO.FEaiScene_setup;
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
       // @method
-      o.disposet        = FEaiScene_dispose;
+      o.processEvent    = FEaiScene_processEvent;
+      // @method
+      o.dispose         = MO.FEaiScene_dispose;
       return o;
    }
 
@@ -98,6 +100,17 @@ with(MO){
       var faceLayer = stage.faceLayer();
       faceLayer.remove(o._engineInfo.renderable());
       MO.Eai.Canvas.selectStage(null);
+   }
+
+   //==========================================================
+   // <T>事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
+      var o = this;
+      o.__base.FScene.processEvent();
    }
 
    //==========================================================

@@ -12,16 +12,16 @@
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
 function onLoad(){
-   // 环境设置
+   // 设置变量
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.RApplication.initialize();
-   MO.RBrowser.setContentPath('..');
-   // 设置资源获取方式
-   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
-   MO.RConsole.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
-   // 创建场景画板
-   var application = MO.Eai.setup(MO.FEaiChartApplication, id_canvas);
+   MO.Browser.setContentPath('..');
+   // 设置环境
+   MO.Console.find(MO.FE3sVendorConsole).setup('net');
+   MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
+   // 设置应用
+   var application = MO.Desktop.initialize(MO.FEaiChartApplication);
+   application.setup(document.body);
    application.setSceneCode(MO.EEaiScene.ChartHistory);
 }
 </SCRIPT>

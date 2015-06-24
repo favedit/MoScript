@@ -10,7 +10,7 @@
       var o = this;
       //..........................................................
       // @attribute
-      o._workspaces = new TDictionary();
+      o._workspaces  = new TDictionary();
       return o;
    }
 
@@ -33,19 +33,19 @@
    // <T>查找工作空间。</T>
    //
    // @method
-   // @param p:class:Function 类名称
+   // @param clazz:Function 类名称
    // @return 工作空间
    // =========================================================
-   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(p){
+   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
       var o = this;
-      var n = RClass.name(p);
-      var ws = o._workspaces;
-      var w = ws.get(n);
-      if(w == null){
-         w = RClass.create(p);
-         ws.set(n, w);
+      var name = RClass.name(clazz);
+      var workspaces = o._workspaces;
+      var workspace = workspaces.get(name);
+      if(workspace == null){
+         workspace = RClass.create(clazz);
+         workspaces.set(name, workspace);
       }
-      return w;
+      return workspace;
    }
 
    //==========================================================

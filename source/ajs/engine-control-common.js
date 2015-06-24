@@ -638,6 +638,7 @@ with(MO){
       o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
+      o.processEvent     = FGuiControl_processEvent;
       o.psEnable         = FGuiControl_psEnable;
       o.psVisible        = FGuiControl_psVisible;
       o.psResize         = FGuiControl_psResize;
@@ -811,6 +812,9 @@ with(MO){
       if(o.testReady()){
          o.repaint();
       }
+   }
+   MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
+      var o = this;
    }
    MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;

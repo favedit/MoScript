@@ -1,12 +1,13 @@
 with(MO){
    MO.FGuiDesktop = function FGuiDesktop(o){
       o = RClass.inherits(this, o, FObject);
-      o._controls  = RClass.register(o, new AGetter('_controls'));
-      o.construct  = FGuiDesktop_construct;
-      o.register   = FGuiDesktop_register;
-      o.unregister = FGuiDesktop_unregister;
-      o.process    = FGuiDesktop_process;
-      o.dispose    = FGuiDesktop_dispose;
+      o._controls    = RClass.register(o, new AGetter('_controls'));
+      o.construct    = FGuiDesktop_construct;
+      o.register     = FGuiDesktop_register;
+      o.unregister   = FGuiDesktop_unregister;
+      o.processEvent = FGuiDesktop_processEvent;
+      o.process      = FGuiDesktop_process;
+      o.dispose      = FGuiDesktop_dispose;
       return o;
    }
    MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
@@ -19,6 +20,9 @@ with(MO){
    }
    MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
       this._controls.remove(control);
+   }
+   MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
+      var o = this;
    }
    MO.FGuiDesktop_process = function FGuiDesktop_process(){
       var o = this;

@@ -32,6 +32,7 @@ with(MO){
       o.active            = FChapter_active;
       o.deactive          = FChapter_deactive;
       // @method
+      o.processEvent      = FChapter_processEvent;
       o.process           = FChapter_process;
       // @method
       o.dispose           = FChapter_dispose;
@@ -144,6 +145,20 @@ with(MO){
       var o = this;
       // 设置状态
       o._statusActive = false;
+   }
+
+   //==========================================================
+   // <T>事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FChapter_processEvent = function FChapter_processEvent(event){
+      var o = this;
+      var scene = o._activeScene;
+      if(scene){
+         scene.processEvent(event);
+      }
    }
 
    //==========================================================

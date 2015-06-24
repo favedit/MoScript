@@ -3441,11 +3441,21 @@ with(MO){
    }
    MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
-      var n = RMethod.name(RLogger_debug.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|D [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -3463,13 +3473,23 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger.prototype.info = function RLogger_info(sf, ms, pm){
+   MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
       var o = this;
-      var n = RMethod.name(RLogger_info.caller);
-      n = n.replace('_', '.');
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -3482,18 +3502,28 @@ with(MO){
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
-      o.output(sf, r.flush());
+      result.append(message);
+      o.output(owner, result.flush());
    }
-   MO.RLogger.prototype.warn = function RLogger_warn(sf, ms, pm){
+   MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
       var o = this;
-      var n = RMethod.name(RLogger_warn.caller);
-      n = n.replace('_', '.');
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|W [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -3506,18 +3536,28 @@ with(MO){
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
-      o.output(sf, r.flush());
+      result.append(message);
+      o.output(owner, result.flush());
    }
-   MO.RLogger.prototype.error = function RLogger_error(sf, ms, pm){
+   MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       var o = this;
-      var n = RMethod.name(RLogger_error.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|E [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|E [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -3535,7 +3575,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, pm){
+   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
       var o = this;
       if(o._statusError){
          return;
@@ -3582,13 +3622,23 @@ with(MO){
       var text = m.toString();
       throw new Error(text);
    }
-   MO.RLogger.prototype.show = function RLogger_show(sf, ms, pm){
+   MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       var o = this;
-      var n = RMethod.name(RLogger_show.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){

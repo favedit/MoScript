@@ -28,6 +28,8 @@ with(MO){
       o.setup            = FScene_setup;
       o.active           = FScene_active;
       o.deactive         = FScene_deactive;
+      // @method
+      o.processEvent     = FScene_processEvent;
       o.process          = FScene_process;
       // @method
       o.dispose          = FScene_dispose;
@@ -110,6 +112,16 @@ with(MO){
       if(o._statusActive){
          o.onProcess();
       }
+   }
+
+   //==========================================================
+   // <T>事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FScene_processEvent = function FScene_processEvent(event){
+      var o = this;
    }
 
    //==========================================================

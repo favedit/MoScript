@@ -4734,11 +4734,21 @@ with(MO){
    }
    MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
-      var n = RMethod.name(RLogger_debug.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|D [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -4756,13 +4766,23 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger.prototype.info = function RLogger_info(sf, ms, pm){
+   MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
       var o = this;
-      var n = RMethod.name(RLogger_info.caller);
-      n = n.replace('_', '.');
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -4775,18 +4795,28 @@ with(MO){
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
-      o.output(sf, r.flush());
+      result.append(message);
+      o.output(owner, result.flush());
    }
-   MO.RLogger.prototype.warn = function RLogger_warn(sf, ms, pm){
+   MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
       var o = this;
-      var n = RMethod.name(RLogger_warn.caller);
-      n = n.replace('_', '.');
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|W [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -4799,18 +4829,28 @@ with(MO){
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
-      o.output(sf, r.flush());
+      result.append(message);
+      o.output(owner, result.flush());
    }
-   MO.RLogger.prototype.error = function RLogger_error(sf, ms, pm){
+   MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       var o = this;
-      var n = RMethod.name(RLogger_error.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|E [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|E [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -4828,7 +4868,7 @@ with(MO){
       r.append(ms);
       o.output(sf, r.flush());
    }
-   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, pm){
+   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
       var o = this;
       if(o._statusError){
          return;
@@ -4875,13 +4915,23 @@ with(MO){
       var text = m.toString();
       throw new Error(text);
    }
-   MO.RLogger.prototype.show = function RLogger_show(sf, ms, pm){
+   MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       var o = this;
-      var n = RMethod.name(RLogger_show.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       var as = arguments;
       var c = as.length;
       for(var n = 2; n < c; n++){
@@ -13043,38 +13093,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.RApplication = function RApplication(){
-      var o = this;
-      o._workspaces = new TDictionary();
-      return o;
-   }
-   MO.RApplication.prototype.initialize = function RApplication_initialize(){
-      var o = this;
-      RBrowser.construct();
-      RWindow.connect(window);
-      RKeyboard.construct();
-   }
-   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(p){
-      var o = this;
-      var n = RClass.name(p);
-      var ws = o._workspaces;
-      var w = ws.get(n);
-      if(w == null){
-         w = RClass.create(p);
-         ws.set(n, w);
-      }
-      return w;
-   }
-   MO.RApplication.prototype.release = function RApplication_release(){
-      try{
-         CollectGarbage();
-      }catch(e){
-        MO.Logger.error(e);
-      }
-   }
-   MO.RApplication = new RApplication();
-}
-with(MO){
    MO.RBrowser = function RBrowser(){
       var o = this;
       o._capability   = null;
@@ -14787,6 +14805,7 @@ with (MO) {
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
+      o.drawCircle     = FG2dCanvasContext_drawCircle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
@@ -14815,11 +14834,11 @@ with (MO) {
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
    }
-   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d) {
+   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
-      var handle = o._handle;
       var size = o._size;
-      handle.clearRect(0, 0, size.width, size.height);
+      o._handle.clearRect(0, 0, size.width, size.height);
+      console.log(size.width + ' x ' + size.height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);
@@ -14872,6 +14891,7 @@ with (MO) {
       handle.lineWidth = borderLine.width;
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.closePath();
       handle.stroke();
    }
    MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
@@ -14944,14 +14964,24 @@ with (MO) {
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
+      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
       handle.closePath();
+      handle.fill();
+   }
+   MO.FG2dCanvasContext_drawCircle = function FG2dCanvasContext_drawCircle(x, y, radius, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.arc(x, y, radius, 0, 2 * Math.PI, false);
       handle.fill();
       handle.stroke();
    }
@@ -33551,6 +33581,7 @@ with(MO){
       o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
+      o.processEvent     = FGuiControl_processEvent;
       o.psEnable         = FGuiControl_psEnable;
       o.psVisible        = FGuiControl_psVisible;
       o.psResize         = FGuiControl_psResize;
@@ -33724,6 +33755,9 @@ with(MO){
       if(o.testReady()){
          o.repaint();
       }
+   }
+   MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
+      var o = this;
    }
    MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;
@@ -33959,12 +33993,13 @@ with(MO){
 with(MO){
    MO.FGuiDesktop = function FGuiDesktop(o){
       o = RClass.inherits(this, o, FObject);
-      o._controls  = RClass.register(o, new AGetter('_controls'));
-      o.construct  = FGuiDesktop_construct;
-      o.register   = FGuiDesktop_register;
-      o.unregister = FGuiDesktop_unregister;
-      o.process    = FGuiDesktop_process;
-      o.dispose    = FGuiDesktop_dispose;
+      o._controls    = RClass.register(o, new AGetter('_controls'));
+      o.construct    = FGuiDesktop_construct;
+      o.register     = FGuiDesktop_register;
+      o.unregister   = FGuiDesktop_unregister;
+      o.processEvent = FGuiDesktop_processEvent;
+      o.process      = FGuiDesktop_process;
+      o.dispose      = FGuiDesktop_dispose;
       return o;
    }
    MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
@@ -33977,6 +34012,9 @@ with(MO){
    }
    MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
       this._controls.remove(control);
+   }
+   MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
+      var o = this;
    }
    MO.FGuiDesktop_process = function FGuiDesktop_process(){
       var o = this;
@@ -34118,6 +34156,67 @@ with(MO){
       }
    }
 }
+with (MO) {
+   MO.FGuiChartTimeline = function FGuiChartTimeline(o) {
+      o = RClass.inherits(this, o, FGuiTimeline);
+      o.onPaintBegin = FGuiChartTimeline_onPaintBegin;
+      return o;
+   }
+   MO.FGuiChartTimeline_onPaintBegin = function FGuiChartTimeline_onPaintBegin(event) {
+      var o = this;
+      o.__base.FGuiTimeline.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var top = rectangle.top;
+      var bottom = rectangle.top + rectangle.height;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+      var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
+      var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
+      var dataBottom = bottom - 20;
+      var startDate = o.startTime();
+      var endDate = o.endTime();
+      var degreeDate = o.degreeTime();
+      var bakTime = startDate.date.getTime();
+      var timeSpan = endDate.date.getTime() - startDate.date.getTime();
+      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+      var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
+      var maxInves = dateData.investmentTotal();
+      var pixPer10k = rectangle.height * 10000 / maxInves;
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var inves = dateData.investmentTotal();
+      var lastX = dataLeft;
+      var lastY = dataBottom - inves / 10000 * pixPer10k;
+      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+      while (!startDate.isAfter(degreeDate)) {
+         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+         if (dateData) {
+            var degreeSpan = startDate.date.getTime() - bakTime;
+            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+            var inves = dateData.investmentTotal();
+            var y = dataBottom - inves / 10000 * pixPer10k;
+            var rate = 1 - (y / rectangle.height);
+            var colorIdx = parseInt(rateConsole.count() * rate);
+            var hexColor = RHex.format(rateConsole.find(colorIdx));
+            var color = '#' + hexColor.substring(2);
+            graphic.drawLine(lastX, lastY, x, y, color, 1);
+            if (startDate.date.getDate() == 1)
+            {
+               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+               graphic.drawCircle(lastX, lastY, 3, 0, color, color);
+               graphic.drawText(text, lastX - text.length * 3, lastY - 12, '#FFFFFF');
+            }
+            lastX = x;
+            lastY = y;
+            startDate.addDay(1);
+         }
+         else {
+            break;
+         }
+      }
+      startDate.date.setTime(bakTime);
+      startDate.refresh();
+   }
+}
 with(MO){
    MO.FGuiLabel = function FGuiLabel(o){
       o = RClass.inherits(this, o, FGuiControl);
@@ -34171,24 +34270,25 @@ with (MO) {
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       var top = rectangle.top;
-      var middle = rectangle.top + rectangle.height / 2;
+      var bottom = rectangle.top + rectangle.height;
+      var middle = bottom - 20;
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
-      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
-      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 0.5);
-      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 0.5);
+      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 1);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 1);
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
       var startTime = o.startTime().date;
       var endTime = o.endTime().date;
       var degreeTime = o.degreeTime().date;
       var timeSpan = endTime.getTime() - startTime.getTime();
       var degreeSpan = degreeTime.getTime() - startTime.getTime();
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       var degreeCount = 0;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
@@ -34220,7 +34320,7 @@ with (MO) {
       var dtVar;
       var bakTime = startTime.getTime();
       for (var i = 0; i <= degreeCount; i++) {
-         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 0.5);
+         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 1);
          switch (o.timeUnit()) {
             case EGuiTimeUnit.Second:
                text = startTime.getMinutes() + ":" + startTime.getSeconds();
@@ -34318,7 +34418,7 @@ with(MO){
       var line = 16;
       var locationX = 10;
       var locationY = rectangle.top + line;
-      graphic.setFont('microsoft yahei,Arial,sans-serif');
+      graphic.setFont('10px sans-serif');
       graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
       locationY += line;
       graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
@@ -34366,14 +34466,27 @@ with(MO){
       o._chapters           = RClass.register(o, new AGetter('_chapters'));
       o._eventEnterFrame    = null;
       o._eventLeaveFrame    = null;
+      o.onOperationDown     = FApplication_onOperationDown;
+      o.onOperationMove     = FApplication_onOperationMove;
+      o.onOperationUp       = FApplication_onOperationUp;
       o.construct           = FApplication_construct;
       o.registerChapter     = FApplication_registerChapter;
       o.unregisterChapter   = FApplication_unregisterChapter;
       o.selectChapter       = FApplication_selectChapter;
       o.selectChapterByCode = FApplication_selectChapterByCode;
+      o.processEvent        = FApplication_processEvent;
       o.process             = FApplication_process;
       o.dispose             = FApplication_dispose;
       return o;
+   }
+   MO.FApplication_onOperationDown = function FApplication_onOperationDown(){
+      var o = this;
+   }
+   MO.FApplication_onOperationMove = function FApplication_onOperationMove(){
+      var o = this;
+   }
+   MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
+      var o = this;
    }
    MO.FApplication_construct = function FApplication_construct(){
       var o = this;
@@ -34412,6 +34525,13 @@ with(MO){
       o.selectChapter(chapter);
       return chapter;
    }
+   MO.FApplication_processEvent = function FApplication_processEvent(event){
+      var o = this;
+      var chapter = o._activeChapter;
+      if(chapter){
+         chapter.processEvent(event);
+      }
+   }
    MO.FApplication_process = function FApplication_process(){
       var o = this;
       o.processEnterFrameListener(o._eventEnterFrame);
@@ -34449,6 +34569,7 @@ with(MO){
       o.setup             = FChapter_setup;
       o.active            = FChapter_active;
       o.deactive          = FChapter_deactive;
+      o.processEvent      = FChapter_processEvent;
       o.process           = FChapter_process;
       o.dispose           = FChapter_dispose;
       return o;
@@ -34503,6 +34624,13 @@ with(MO){
       var o = this;
       o._statusActive = false;
    }
+   MO.FChapter_processEvent = function FChapter_processEvent(event){
+      var o = this;
+      var scene = o._activeScene;
+      if(scene){
+         scene.processEvent(event);
+      }
+   }
    MO.FChapter_process = function FChapter_process(){
       var o = this;
       o.processEnterFrameListener(o._eventEnterFrame);
@@ -34535,6 +34663,7 @@ with(MO){
       o.setup            = FScene_setup;
       o.active           = FScene_active;
       o.deactive         = FScene_deactive;
+      o.processEvent     = FScene_processEvent;
       o.process          = FScene_process;
       o.dispose          = FScene_dispose;
       return o;
@@ -34574,12 +34703,109 @@ with(MO){
          o.onProcess();
       }
    }
+   MO.FScene_processEvent = function FScene_processEvent(event){
+      var o = this;
+   }
    MO.FScene_dispose = function FScene_dispose(){
       var o = this;
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       o.__base.FObject.dispose.call(o);
    }
+}
+with(MO){
+   MO.RApplication = function RApplication(){
+      var o = this;
+      o._workspaces  = new TDictionary();
+      return o;
+   }
+   MO.RApplication.prototype.initialize = function RApplication_initialize(){
+      var o = this;
+      RBrowser.construct();
+      RWindow.connect(window);
+      RKeyboard.construct();
+   }
+   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
+      var o = this;
+      var name = RClass.name(clazz);
+      var workspaces = o._workspaces;
+      var workspace = workspaces.get(name);
+      if(workspace == null){
+         workspace = RClass.create(clazz);
+         workspaces.set(name, workspace);
+      }
+      return workspace;
+   }
+   MO.RApplication.prototype.release = function RApplication_release(){
+      try{
+         CollectGarbage();
+      }catch(e){
+        MO.Logger.error(e);
+      }
+   }
+   MO.RApplication = new RApplication();
+}
+with(MO){
+   MO.RDesktop = function RDesktop(){
+      var o = this;
+      o._application = null;
+      o._workspaces  = new TDictionary();
+      return o;
+   }
+   MO.RDesktop.prototype.application = function RDesktop_application(){
+      return this._application;
+   }
+   MO.RDesktop.prototype.onMouseDown = function RDesktop_onMouseDown(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.onMouseMove = function RDesktop_onMouseMove(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.onMouseUp = function RDesktop_onMouseUp(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
+      var o = this;
+      RBrowser.construct();
+      RWindow.connect(window);
+      RKeyboard.construct();
+      RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+      RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+      RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+      var application = MO.Application = o._application = MO.Class.create(clazz);
+      return application;
+   }
+   MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
+      var o = this;
+      var name = RClass.name(clazz);
+      var workspaces = o._workspaces;
+      var workspace = workspaces.get(name);
+      if(workspace == null){
+         workspace = RClass.create(clazz);
+         workspaces.set(name, workspace);
+      }
+      return workspace;
+   }
+   MO.RDesktop.prototype.release = function RDesktop_release(){
+      try{
+         CollectGarbage();
+      }catch(e){
+        MO.Logger.error(e);
+      }
+   }
+   MO.Desktop = new RDesktop();
 }
 with(MO){
    MO.FGameObject = function FGameObject(o){

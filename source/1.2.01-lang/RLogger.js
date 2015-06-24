@@ -39,12 +39,22 @@
    MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
       // 获得函数名称
-      var n = RMethod.name(RLogger_debug.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       //..........................................................
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|D [' + RString.rpad(name, o._labelLength) + '] ');
       // 格式化参数
       var as = arguments;
       var c = as.length;
@@ -66,22 +76,32 @@
    }
 
    //==========================================================
-   //<T>显示一个警告信息。</T>
+   //<T>显示一个提示信息。</T>
    //
    // @method
-   // @param sf:self:Object 消息对象
-   // @param ms:message:String 消息内容
-   // @param pm:params:Object... 消息参数列表
+   // @param owner:Object 消息对象
+   // @param message:String 消息内容
+   // @param params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger.prototype.info = function RLogger_info(sf, ms, pm){
+   MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
       var o = this;
       // 获得函数名称
-      var n = RMethod.name(RLogger_info.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       //..........................................................
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       // 格式化参数
       var as = arguments;
       var c = as.length;
@@ -95,27 +115,40 @@
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
+      result.append(message);
       //..........................................................
-      o.output(sf, r.flush());
+      o.output(owner, result.flush());
    }
 
    //==========================================================
    // <T>显示一个警告信息。</T>
    //
    // @method
+   // @param owner:Object 消息对象
+   // @param message:String 消息内容
+   // @param params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger.prototype.warn = function RLogger_warn(sf, ms, pm){
+   MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
       var o = this;
       // 获得函数名称
-      var n = RMethod.name(RLogger_warn.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       //..........................................................
-      var r = new TString();
-      r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
+      var result = new TString();
+      result.append(RDate.format('yymmdd-hh24miss.ms'));
+      result.append('|W [' + RString.rpad(name, o._labelLength) + '] ');
       // 格式化参数
       var as = arguments;
       var c = as.length;
@@ -129,27 +162,40 @@
                s = a.toString();
             }
          }
-         ms = ms.replace('{' + (n - 1) + '}', s);
+         message = message.replace('{' + (n - 1) + '}', s);
       }
-      r.append(ms);
+      result.append(message);
       //..........................................................
-      o.output(sf, r.flush());
+      o.output(owner, result.flush());
    }
 
    //==========================================================
    // <T>显示一个错误信息。</T>
    //
    // @method
+   // @param owner:Object 消息对象
+   // @param message:String 消息内容
+   // @param params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger.prototype.error = function RLogger_error(sf, ms, pm){
+   MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       var o = this;
       // 获得函数名称
-      var n = RMethod.name(RLogger_error.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       //..........................................................
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|E [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|E [' + RString.rpad(name, o._labelLength) + '] ');
       // 格式化参数
       var as = arguments;
       var c = as.length;
@@ -179,7 +225,7 @@
    // @param ms:message:String 消息内容
    // @param pm:params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, pm){
+   MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
       var o = this;
       // 检查是否已经弹出过错误
       if(o._statusError){
@@ -234,19 +280,29 @@
    //<T>显示一个弹出信息。</T>
    //
    // @method
-   // @param sf:self:Object 消息对象
-   // @param ms:message:String 消息内容
-   // @param pm:params:Object... 消息参数列表
+   // @param owner:Object 消息对象
+   // @param message:String 消息内容
+   // @param params:Object... 消息参数列表
    //==========================================================
-   MO.RLogger.prototype.show = function RLogger_show(sf, ms, pm){
+   MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       var o = this;
       // 获得函数名称
-      var n = RMethod.name(RLogger_show.caller);
-      n = n.replace('_', '.');
+      var name = null;
+      var caller = RLogger_info.caller;
+      if(caller){
+         name = RMethod.name(caller);
+      }else if(arguments.caller){
+         name = RMethod.name(arguments.caller[0]);
+      }
+      if(name == null){
+         name = 'unknown';
+      }else{
+         name = name.replace('_', '.');
+      }
       //..........................................................
       var r = new TString();
       r.append(RDate.format('yymmdd-hh24miss.ms'));
-      r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
+      r.append('|I [' + RString.rpad(name, o._labelLength) + '] ');
       // 格式化参数
       var as = arguments;
       var c = as.length;

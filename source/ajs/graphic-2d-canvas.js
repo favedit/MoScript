@@ -10,6 +10,7 @@ with (MO) {
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
+      o.drawCircle     = FG2dCanvasContext_drawCircle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
@@ -38,11 +39,11 @@ with (MO) {
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
    }
-   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d) {
+   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
-      var handle = o._handle;
       var size = o._size;
-      handle.clearRect(0, 0, size.width, size.height);
+      o._handle.clearRect(0, 0, size.width, size.height);
+      console.log(size.width + ' x ' + size.height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);
@@ -95,6 +96,7 @@ with (MO) {
       handle.lineWidth = borderLine.width;
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.closePath();
       handle.stroke();
    }
    MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
@@ -167,14 +169,24 @@ with (MO) {
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
+      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
       handle.closePath();
+      handle.fill();
+   }
+   MO.FG2dCanvasContext_drawCircle = function FG2dCanvasContext_drawCircle(x, y, radius, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.arc(x, y, radius, 0, 2 * Math.PI, false);
       handle.fill();
       handle.stroke();
    }

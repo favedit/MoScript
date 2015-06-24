@@ -74,6 +74,7 @@ with (MO) {
    //==========================================================
    // <T>设置字体。</T>
    //
+   // @method
    // @param font:String 字体
    //==========================================================
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
@@ -83,17 +84,17 @@ with (MO) {
    //==========================================================
    // <T>清空内容。</T>
    //
-   // @param r:red:Float 红色
-   // @param g:green:Float 绿色
-   // @param b:blue:Float 蓝色
-   // @param a:alpha:Float 透明
-   // @param d:depth:Float 深度
+   // @method
    //==========================================================
-   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(r, g, b, a, d) {
+   MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
-      var handle = o._handle;
       var size = o._size;
-      handle.clearRect(0, 0, size.width, size.height);
+      o._handle.clearRect(0, 0, size.width, size.height);
+      console.log(size.width + ' x ' + size.height);
+
+      //var handle = o._handle;
+      //handle.fillStyle = '#666666';
+      //handle.fillRect(0, 0, size.width, size.height);
    }
 
    //==========================================================
@@ -159,11 +160,6 @@ with (MO) {
    MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color) {
       var o = this;
       var handle = o._handle;
-      //handle.font = "italic 200 36px/2 Unknown Font, sans-serif"; 
-      //handle.strokeStyle = "blue";
-      //handle.fillStyle = "red";
-      //handle.lineWidth = "10";
-      //handle.strokeText(text, x, y);
       handle.fillStyle = color;
       handle.fillText(text, x, y);
    }
@@ -268,9 +264,7 @@ with (MO) {
       } else {
          throw new TError(o, 'Unknown content type');
       }
-
       var ssize = content.size();
-
       var sx = new Array();
       sx[0] = 0;
       sx[1] = padding.left;
@@ -303,7 +297,6 @@ with (MO) {
       dh[0] = padding.top;
       dh[1] = height - padding.top - padding.bottom;
       dh[2] = padding.bottom;
-
       //drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh)
       for (var i = 0; i < 9; i++) {
          var row = parseInt(i / 3);
@@ -312,7 +305,6 @@ with (MO) {
             handle.drawImage(data, sx[column], sy[row], sw[column], sh[row], dx[column], dy[row], dw[column], dh[row]);
          }
       }
-
       //handle.drawImage(data, 0, 1, 1, 1, 1, 1, 100, 100);
    }
 
@@ -346,16 +338,19 @@ with (MO) {
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
+      //handle.lineWidth = 1;
+      //handle.strokeStyle = '#ff00ff';
+      //handle.fillStyle = '#ff00ff';
+      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
       handle.closePath();
       handle.fill();
-      handle.stroke();
+      //handle.stroke();
    }
 
    //==========================================================

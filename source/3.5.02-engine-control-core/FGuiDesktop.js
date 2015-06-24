@@ -10,17 +10,18 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._controls  = RClass.register(o, new AGetter('_controls'));
+      o._controls    = RClass.register(o, new AGetter('_controls'));
       //..........................................................
       // @method
-      o.construct  = FGuiDesktop_construct;
+      o.construct    = FGuiDesktop_construct;
       // @method
-      o.register   = FGuiDesktop_register;
-      o.unregister = FGuiDesktop_unregister;
+      o.register     = FGuiDesktop_register;
+      o.unregister   = FGuiDesktop_unregister;
       // @method
-      o.process    = FGuiDesktop_process;
+      o.processEvent = FGuiDesktop_processEvent;
+      o.process      = FGuiDesktop_process;
       // @method
-      o.dispose    = FGuiDesktop_dispose;
+      o.dispose      = FGuiDesktop_dispose;
       return o;
    }
 
@@ -54,6 +55,21 @@ with(MO){
    //==========================================================
    MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
       this._controls.remove(control);
+   }
+
+   //==========================================================
+   // <T>分法事件。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
+      var o = this;
+      //var controls = o._controls;
+      //var count = controls.count();
+      //for(var i = 0; i < count; i++){
+      //   var control = controls.at(i);
+      //   control.psUpdate();
+      //}
    }
 
    //==========================================================

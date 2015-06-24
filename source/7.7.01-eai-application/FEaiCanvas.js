@@ -37,7 +37,7 @@ with(MO){
    // @method
    // @param p:template:FTemplate3d 模板
    //==========================================================
-   MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(){
+   MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(event){
       var o = this;
       o.__base.FE3dCanvas.onResize.call(o, event);
       // 获得相机信息

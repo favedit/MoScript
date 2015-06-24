@@ -302,6 +302,7 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._ready                = false;
       o._image                = null;
+      o._levelScale           = null;
       o._citys                = RClass.register(o, new AGetter('_citys'));
       o._level                = RClass.register(o, new AGetSet('_level'));
       o._size                 = RClass.register(o, new AGetter('_size'));
@@ -347,6 +348,11 @@ with(MO){
       o._size = new SSize2();
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
+      var scale = o._levelScale = new Object();
+      scale[1] = 0.6;
+      scale[2] = 1.0;
+      scale[3] = 0.3;
+      scale[4] = 0.2;
    }
    MO.FEaiCitysRenderable_testReady = function FEaiCitysRenderable_testReady(){
       return this._ready;
@@ -413,35 +419,18 @@ with(MO){
          if(city.visible()){
             var location = city.location();
             var size = city.size();
-            switch(o._level){
-               case 1:
-                  var width = 0.6;
-                  var height = 0.6;
-                  break;
-               case 2:
-                  var width = 1.0;
-                  var height = 1.0;
-                  break;
-               case 3:
-                  var width = 0.3;
-                  var height = 0.3;
-                  break;
-               case 4:
-                  var width = 0.2;
-                  var height = 0.2;
-                  break;
-            }
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y + height;
+            var scale = o._levelScale[o._level];
+            vertexData[vertexPosition++] = location.x - scale;
+            vertexData[vertexPosition++] = location.y + scale;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x + scale;
+            vertexData[vertexPosition++] = location.y + scale;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x + scale;
+            vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x - scale;
+            vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
             coordData[coordPosition++] = 0;
             coordData[coordPosition++] = 1;

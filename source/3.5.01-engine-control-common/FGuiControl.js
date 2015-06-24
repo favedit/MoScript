@@ -43,6 +43,7 @@ with(MO){
       o.repaint          = FGuiControl_repaint;
       o.update           = FGuiControl_update;
       o.build            = FGuiControl_build;
+      o.processEvent     = FGuiControl_processEvent;
       // @method
       o.psEnable         = FGuiControl_psEnable;
       o.psVisible        = FGuiControl_psVisible;
@@ -350,6 +351,16 @@ with(MO){
       if(o.testReady()){
          o.repaint();
       }
+   }
+
+   //==========================================================
+   // <T>分发改变控件可操作和禁止的事件。</T>
+   //
+   // @method
+   // @param enable:Boolean 是否可操作
+   //==========================================================
+   MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
+      var o = this;
    }
 
    //==========================================================

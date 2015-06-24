@@ -74,8 +74,15 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(){
+   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
+      o._hPanel = hPanel;
+      // 创建画板
+      var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
+      canvas.build(hPanel);
+      canvas.setPanel(hPanel);
+      o.linkGraphicContext(canvas);
+      //..........................................................
       // 创建加载中舞台
       var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
       chapter.linkGraphicContext(o);

@@ -40,7 +40,7 @@ with(MO){
       o.dispose             = FEaiCanvas_dispose;
       return o;
    }
-   MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(){
+   MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(event){
       var o = this;
       o.__base.FE3dCanvas.onResize.call(o, event);
       var context = o._graphicContext;
@@ -115,8 +115,13 @@ with(MO){
    MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
       return RClass.create(FEaiChartCanvas);
    }
-   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(){
+   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
+      o._hPanel = hPanel;
+      var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
+      canvas.build(hPanel);
+      canvas.setPanel(hPanel);
+      o.linkGraphicContext(canvas);
       var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
       chapter.linkGraphicContext(o);
       o.registerChapter(chapter);

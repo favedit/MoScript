@@ -315,38 +315,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.RApplication = function RApplication(){
-      var o = this;
-      o._workspaces = new TDictionary();
-      return o;
-   }
-   MO.RApplication.prototype.initialize = function RApplication_initialize(){
-      var o = this;
-      RBrowser.construct();
-      RWindow.connect(window);
-      RKeyboard.construct();
-   }
-   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(p){
-      var o = this;
-      var n = RClass.name(p);
-      var ws = o._workspaces;
-      var w = ws.get(n);
-      if(w == null){
-         w = RClass.create(p);
-         ws.set(n, w);
-      }
-      return w;
-   }
-   MO.RApplication.prototype.release = function RApplication_release(){
-      try{
-         CollectGarbage();
-      }catch(e){
-        MO.Logger.error(e);
-      }
-   }
-   MO.RApplication = new RApplication();
-}
-with(MO){
    MO.RBrowser = function RBrowser(){
       var o = this;
       o._capability   = null;

@@ -47,7 +47,7 @@ with(MO){
       var line = 16;
       var locationX = 10;
       var locationY = rectangle.top + line;
-      graphic.setFont('microsoft yahei,Arial,sans-serif');
+      graphic.setFont('10px sans-serif');
       graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
       locationY += line;
       graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');

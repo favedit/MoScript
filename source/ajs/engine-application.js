@@ -5,14 +5,27 @@ with(MO){
       o._chapters           = RClass.register(o, new AGetter('_chapters'));
       o._eventEnterFrame    = null;
       o._eventLeaveFrame    = null;
+      o.onOperationDown     = FApplication_onOperationDown;
+      o.onOperationMove     = FApplication_onOperationMove;
+      o.onOperationUp       = FApplication_onOperationUp;
       o.construct           = FApplication_construct;
       o.registerChapter     = FApplication_registerChapter;
       o.unregisterChapter   = FApplication_unregisterChapter;
       o.selectChapter       = FApplication_selectChapter;
       o.selectChapterByCode = FApplication_selectChapterByCode;
+      o.processEvent        = FApplication_processEvent;
       o.process             = FApplication_process;
       o.dispose             = FApplication_dispose;
       return o;
+   }
+   MO.FApplication_onOperationDown = function FApplication_onOperationDown(){
+      var o = this;
+   }
+   MO.FApplication_onOperationMove = function FApplication_onOperationMove(){
+      var o = this;
+   }
+   MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
+      var o = this;
    }
    MO.FApplication_construct = function FApplication_construct(){
       var o = this;
@@ -51,6 +64,13 @@ with(MO){
       o.selectChapter(chapter);
       return chapter;
    }
+   MO.FApplication_processEvent = function FApplication_processEvent(event){
+      var o = this;
+      var chapter = o._activeChapter;
+      if(chapter){
+         chapter.processEvent(event);
+      }
+   }
    MO.FApplication_process = function FApplication_process(){
       var o = this;
       o.processEnterFrameListener(o._eventEnterFrame);
@@ -88,6 +108,7 @@ with(MO){
       o.setup             = FChapter_setup;
       o.active            = FChapter_active;
       o.deactive          = FChapter_deactive;
+      o.processEvent      = FChapter_processEvent;
       o.process           = FChapter_process;
       o.dispose           = FChapter_dispose;
       return o;
@@ -142,6 +163,13 @@ with(MO){
       var o = this;
       o._statusActive = false;
    }
+   MO.FChapter_processEvent = function FChapter_processEvent(event){
+      var o = this;
+      var scene = o._activeScene;
+      if(scene){
+         scene.processEvent(event);
+      }
+   }
    MO.FChapter_process = function FChapter_process(){
       var o = this;
       o.processEnterFrameListener(o._eventEnterFrame);
@@ -174,6 +202,7 @@ with(MO){
       o.setup            = FScene_setup;
       o.active           = FScene_active;
       o.deactive         = FScene_deactive;
+      o.processEvent     = FScene_processEvent;
       o.process          = FScene_process;
       o.dispose          = FScene_dispose;
       return o;
@@ -213,10 +242,107 @@ with(MO){
          o.onProcess();
       }
    }
+   MO.FScene_processEvent = function FScene_processEvent(event){
+      var o = this;
+   }
    MO.FScene_dispose = function FScene_dispose(){
       var o = this;
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       o.__base.FObject.dispose.call(o);
    }
+}
+with(MO){
+   MO.RApplication = function RApplication(){
+      var o = this;
+      o._workspaces  = new TDictionary();
+      return o;
+   }
+   MO.RApplication.prototype.initialize = function RApplication_initialize(){
+      var o = this;
+      RBrowser.construct();
+      RWindow.connect(window);
+      RKeyboard.construct();
+   }
+   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
+      var o = this;
+      var name = RClass.name(clazz);
+      var workspaces = o._workspaces;
+      var workspace = workspaces.get(name);
+      if(workspace == null){
+         workspace = RClass.create(clazz);
+         workspaces.set(name, workspace);
+      }
+      return workspace;
+   }
+   MO.RApplication.prototype.release = function RApplication_release(){
+      try{
+         CollectGarbage();
+      }catch(e){
+        MO.Logger.error(e);
+      }
+   }
+   MO.RApplication = new RApplication();
+}
+with(MO){
+   MO.RDesktop = function RDesktop(){
+      var o = this;
+      o._application = null;
+      o._workspaces  = new TDictionary();
+      return o;
+   }
+   MO.RDesktop.prototype.application = function RDesktop_application(){
+      return this._application;
+   }
+   MO.RDesktop.prototype.onMouseDown = function RDesktop_onMouseDown(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.onMouseMove = function RDesktop_onMouseMove(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.onMouseUp = function RDesktop_onMouseUp(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+   MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
+      var o = this;
+      RBrowser.construct();
+      RWindow.connect(window);
+      RKeyboard.construct();
+      RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+      RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+      RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+      var application = MO.Application = o._application = MO.Class.create(clazz);
+      return application;
+   }
+   MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
+      var o = this;
+      var name = RClass.name(clazz);
+      var workspaces = o._workspaces;
+      var workspace = workspaces.get(name);
+      if(workspace == null){
+         workspace = RClass.create(clazz);
+         workspaces.set(name, workspace);
+      }
+      return workspace;
+   }
+   MO.RDesktop.prototype.release = function RDesktop_release(){
+      try{
+         CollectGarbage();
+      }catch(e){
+        MO.Logger.error(e);
+      }
+   }
+   MO.Desktop = new RDesktop();
 }

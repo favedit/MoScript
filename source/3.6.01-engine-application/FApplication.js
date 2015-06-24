@@ -16,6 +16,11 @@ with(MO){
       o._eventEnterFrame    = null;
       o._eventLeaveFrame    = null;
       //..........................................................
+      // @event
+      o.onOperationDown     = FApplication_onOperationDown;
+      o.onOperationMove     = FApplication_onOperationMove;
+      o.onOperationUp       = FApplication_onOperationUp;
+      //..........................................................
       // @method
       o.construct           = FApplication_construct;
       // @method
@@ -24,10 +29,38 @@ with(MO){
       o.selectChapter       = FApplication_selectChapter;
       o.selectChapterByCode = FApplication_selectChapterByCode;
       // @method
+      o.processEvent        = FApplication_processEvent;
       o.process             = FApplication_process;
       // @method
       o.dispose             = FApplication_dispose;
       return o;
+   }
+
+   //==========================================================
+   // <T>操作落下处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FApplication_onOperationDown = function FApplication_onOperationDown(){
+      var o = this;
+   }
+
+   //==========================================================
+   // <T>操作移动处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FApplication_onOperationMove = function FApplication_onOperationMove(){
+      var o = this;
+   }
+
+   //==========================================================
+   // <T>操作抬起处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
+      var o = this;
    }
 
    //==========================================================
@@ -103,6 +136,20 @@ with(MO){
       var chapter = o._chapters.get(code);
       o.selectChapter(chapter);
       return chapter;
+   }
+
+   //==========================================================
+   // <T>事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FApplication_processEvent = function FApplication_processEvent(event){
+      var o = this;
+      var chapter = o._activeChapter;
+      if(chapter){
+         chapter.processEvent(event);
+      }
    }
 
    //==========================================================
