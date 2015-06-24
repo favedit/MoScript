@@ -221,6 +221,7 @@ with (MO) {
       handle.lineWidth = borderLine.width;
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.closePath();
       handle.stroke();
    }
 
@@ -375,7 +376,6 @@ with (MO) {
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
       handle.arc(x, y, radius, 0, 2 * Math.PI, false);
-      handle.closePath();
       handle.fill();
       handle.stroke();
    }

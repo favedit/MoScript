@@ -105,6 +105,21 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       for (var i = 0; i < count; i++) {
          // rows[0]为标题栏，这里需要+1
          var row = invesTable.rows[o._currentRow + 1 + i];
+         var rankCell = row.cells[0];
+         rankCell.innerHTML = i + 1;
+         switch (i) {
+            case 0:
+               row.style.color = '#FBEB67';
+               break;
+            case 1:
+               row.style.color = '#BBC7CA';
+               break;
+            case 2:
+               row.style.color = '#C69207';
+               break;
+            default:
+               break;
+         }
          row.style.display = '';
       }
       o._currentRow += count;
@@ -162,8 +177,9 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
             var provinceResData = provinceConsole.findByCode(provinceInvesData.code());
             var row = invesTable.insertRow(invesTable.rows.length);
             row.className = 'DataGrid_Row';
-            var labelCol = row.insertCell(0);
-            var invesCol = row.insertCell(1);
+            var rankCol = row.insertCell(0)
+            var labelCol = row.insertCell(1);
+            var invesCol = row.insertCell(2);
             invesCol.align = 'right';
             labelCol.innerHTML = provinceResData.label();
             if (provinceInvesData.investmentTotal() > 1000) {
@@ -187,7 +203,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas._size.height - 400);
-   timeline.setWidth(MO.Eai.Canvas._size.width - 450);
+   timeline.setWidth(MO.Eai.Canvas._size.width - 500);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
