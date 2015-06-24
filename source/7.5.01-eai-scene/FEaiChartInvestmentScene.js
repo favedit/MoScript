@@ -184,11 +184,11 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    //时间轴
    var stage = o.activeStage();
    var layer = stage.faceLayer();
-   var timeline = o._timeline = MO.RClass.create(MO.FGuiTimeline);
+   var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas._size.height - 100);
-   timeline.setWidth(MO.Eai.Canvas._size.width - 50);
-   timeline.setHeight(100);
+   timeline.setTop(MO.Eai.Canvas._size.height - 400);
+   timeline.setWidth(MO.Eai.Canvas._size.width - 450);
+   timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);

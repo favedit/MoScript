@@ -26,6 +26,7 @@ with (MO) {
       o.drawLine       = FG2dCanvasContext_drawLine;
       o.drawRectangle  = FG2dCanvasContext_drawRectangle;
       o.drawTriangle   = FG2dCanvasContext_drawTriangle;
+      o.drawCircle     = FG2dCanvasContext_drawCircle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
       // @method
@@ -336,8 +337,10 @@ with (MO) {
    // <T>绘制三角形。</T>
    //
    // @method
-   // @param rectangle:SRectangle 矩形
-   // @param border:SBorder 边框
+   // @param x1,y1,x2,y2,x3,y3:Integer 三个点的坐标
+   // @param lineWidth:Integer 线宽
+   // @param strokeColor:String 边线色
+   // @param fillColor:String 填充色
    //==========================================================
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
@@ -349,6 +352,29 @@ with (MO) {
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
+      handle.fill();
+      handle.stroke();
+   }
+
+   //==========================================================
+   // <T>画圈。</T>
+   //
+   // @method
+   // @param x,y:Integer 圆心坐标
+   // @param radius:Integer 半径
+   // @param lineWidth:Integer 线宽
+   // @param strokeColor:String 边线色
+   // @param fillColor:String 填充色
+   //==========================================================
+   MO.FG2dCanvasContext_drawCircle = function FG2dCanvasContext_drawCircle(x, y, radius, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.arc(x, y, radius, 0, 2 * Math.PI, false);
       handle.closePath();
       handle.fill();
       handle.stroke();

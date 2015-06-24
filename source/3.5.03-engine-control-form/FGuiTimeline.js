@@ -38,22 +38,23 @@ with (MO) {
       var rectangle = o._clientRectangle;
 
       var top = rectangle.top;
-      var middle = rectangle.top + rectangle.height / 2;
+      var bottom = rectangle.top + rectangle.height;
+      var middle = bottom - 20;
 
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
       //绘制左右三角及轴延长部分
-      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
-      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 0.5, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
 
-      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 0.5);
-      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 0.5);
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 1);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 1);
 
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       //主轴
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 0.5);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
       //游标
       var startTime = o.startTime().date;
       var endTime = o.endTime().date;
@@ -61,7 +62,7 @@ with (MO) {
       var timeSpan = endTime.getTime() - startTime.getTime();
       var degreeSpan = degreeTime.getTime() - startTime.getTime();
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 0.5, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       //刻度
       var degreeCount = 0;
       switch (o.timeUnit()) {
@@ -94,7 +95,7 @@ with (MO) {
       var dtVar;
       var bakTime = startTime.getTime();
       for (var i = 0; i <= degreeCount; i++) {
-         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 0.5);
+         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 1);
          switch (o.timeUnit()) {
             case EGuiTimeUnit.Second:
                text = startTime.getMinutes() + ":" + startTime.getSeconds();
