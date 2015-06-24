@@ -109,6 +109,10 @@ MO.EEvent = new function EEvent(){
    o.Leave       = 'Leave';
    o.Focus       = 'Focus';
    o.Blur        = 'Blur';
+   o.MouseDown   = 'MouseDown';
+   o.MouseMove   = 'MouseMove';
+   o.MouseUp     = 'MouseUp';
+   o.MouseWheel  = 'MouseWheel';
    o.Click       = 'Click';
    o.DoubleClick = 'DoubleClick';
    o.NodeClick   = 'NodeClick';
@@ -997,6 +1001,7 @@ with(MO){
 with(MO){
    MO.SEvent = function SEvent(sender){
       var o = this;
+      o.code       = null;
       o.annotation = null;
       o.listener   = null;
       o.sender     = sender;
@@ -4282,7 +4287,6 @@ with (MO) {
       var o = this;
       var size = o._size;
       o._handle.clearRect(0, 0, size.width, size.height);
-      console.log(size.width + ' x ' + size.height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);

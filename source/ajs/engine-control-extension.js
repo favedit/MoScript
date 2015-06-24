@@ -2,6 +2,7 @@ with(MO){
    MO.FGuiEngineInfo = function FGuiEngineInfo(o){
       o = RClass.inherits(this, o, FGuiControl);
       o._lastTick    = 0;
+      o._name        = 'EngineInfo';
       o._stage       = RClass.register(o, new AGetSet('_stage'));
       o._context     = RClass.register(o, new AGetSet('_context'));
       o.onPaintBegin = FGuiEngineInfo_onPaintBegin;

@@ -25,6 +25,14 @@ MO.EEvent = new function EEvent(){
    o.Focus       = 'Focus';
    // @attribute 失去焦点
    o.Blur        = 'Blur';
+   // @attribute 鼠标落下
+   o.MouseDown   = 'MouseDown';
+   // @attribute 鼠标移动
+   o.MouseMove   = 'MouseMove';
+   // @attribute 鼠标抬起
+   o.MouseUp     = 'MouseUp';
+   // @attribute 鼠标卷动
+   o.MouseWheel  = 'MouseWheel';
    // @attribute 点击
    o.Click       = 'Click';
    // @attribute 双击

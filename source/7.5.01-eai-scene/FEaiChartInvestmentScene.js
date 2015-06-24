@@ -201,6 +201,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var stage = o.activeStage();
    var layer = stage.faceLayer();
    var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
+   timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas._size.height - 400);
    timeline.setWidth(MO.Eai.Canvas._size.width - 500);
@@ -211,6 +212,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setDegreeTime(o._currentDate);
    timeline.linkGraphicContext(o);
    timeline.build();
+   o._desktop.register(timeline);
    layer.push(timeline);
 }
 

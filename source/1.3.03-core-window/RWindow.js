@@ -55,64 +55,68 @@
    // <T>鼠标按下处理。</T>
    //
    // @method
-   // @param p:event:htmlEvent 事件
+   // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(p){
+   MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
       var o = RWindow;
-      if(!p){
-         p = o._hWindow.event;
+      if(!hEvent){
+         hEvent = o._hWindow.event;
       }
-      var e = o._eventMouse;
-      e.attachEvent(p);
-      o.lsnsMouseDown.process(e);
+      var event = o._eventMouse;
+      event.code = EEvent.MouseDown;
+      event.attachEvent(hEvent);
+      o.lsnsMouseDown.process(event);
    }
 
    //==========================================================
    // <T>鼠标移动处理。</T>
    //
    // @method
-   // @param p:event:htmlEvent 事件
+   // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(p){
+   MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
       var o = RWindow;
-      if(!p){
-         p = o._hWindow.event;
+      if(!hEvent){
+         hEvent = o._hWindow.event;
       }
-      var e = o._eventMouse;
-      e.attachEvent(p);
-      o.lsnsMouseMove.process(e);
+      var event = o._eventMouse;
+      event.code = EEvent.MouseMove;
+      event.attachEvent(hEvent);
+      o.lsnsMouseMove.process(event);
    }
 
    //==========================================================
    // <T>鼠标抬起处理。</T>
    //
    // @method
-   // @param p:event:htmlEvent 事件
+   // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(p){
+   MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
       var o = RWindow;
-      if(!p){
-         p = o._hWindow.event;
+      if(!hEvent){
+         hEvent = o._hWindow.event;
       }
-      var e = o._eventMouse;
-      e.attachEvent(p);
-      o.lsnsMouseUp.process(e);
+      var event = o._eventMouse;
+      event.code = EEvent.MouseUp;
+      event.attachEvent(hEvent);
+      o.lsnsMouseUp.process(event);
    }
 
    //==========================================================
    // <T>鼠标滚动处理。</T>
    //
    // @method
-   // @param p:event:htmlEvent 事件
+   // @param hEvent:htmlEvent 事件
    //==========================================================
-   MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(p){
+   MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
       var o = RWindow;
-      if(!p){
-         p = o._hWindow.event;
+      if(!hEvent){
+         hEvent = o._hWindow.event;
       }
-      var e = o._eventMouse;
-      e.attachEvent(p);
-      o.lsnsMouseWheel.process(e);
+      var event = o._eventMouse;
+      event.code = EEvent.MouseWheel;
+      event.attachEvent(hEvent);
+      o.lsnsMouseWheel.process(event);
    }
 
    //==========================================================

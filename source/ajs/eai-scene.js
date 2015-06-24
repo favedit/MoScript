@@ -471,6 +471,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var stage = o.activeStage();
    var layer = stage.faceLayer();
    var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
+   timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas._size.height - 400);
    timeline.setWidth(MO.Eai.Canvas._size.width - 500);
@@ -481,6 +482,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setDegreeTime(o._currentDate);
    timeline.linkGraphicContext(o);
    timeline.build();
+   o._desktop.register(timeline);
    layer.push(timeline);
 }
 MO.FEaiChartInvestmentScene_active = function FEaiChartInvestmentScene_active() {
@@ -605,6 +607,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
+   stage.groundLayer().push(control);
    var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    renderable.linkGraphicContext(o);
    renderable.setup();
@@ -796,6 +799,7 @@ with(MO){
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
       var o = this;
       o.__base.FScene.processEvent();
+      o._desktop.processEvent(event);
    }
    MO.FEaiScene_dispose = function FEaiScene_dispose(){
       var o = this;

@@ -238,7 +238,6 @@ with (MO) {
       var o = this;
       var size = o._size;
       o._handle.clearRect(0, 0, size.width, size.height);
-      console.log(size.width + ' x ' + size.height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);

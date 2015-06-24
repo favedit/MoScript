@@ -10,6 +10,8 @@
       var o = this;
       //..........................................................
       // @attribute
+      o.code       = null;
+      // @attribute
       o.annotation = null;
       // @attribute
       o.listener   = null;

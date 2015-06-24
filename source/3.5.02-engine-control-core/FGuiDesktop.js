@@ -58,18 +58,24 @@ with(MO){
    }
 
    //==========================================================
-   // <T>分法事件。</T>
+   // <T>事件处理。</T>
    //
    // @method
+   // @param event:SEvent 事件信息
    //==========================================================
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;
-      //var controls = o._controls;
-      //var count = controls.count();
-      //for(var i = 0; i < count; i++){
-      //   var control = controls.at(i);
-      //   control.psUpdate();
-      //}
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.visible()){
+            var location = control.location();
+            event.locationX = event.clientX - location.x;
+            event.locationY = event.clientY - location.y;
+            control.processEvent(event);
+         }
+      }
    }
 
    //==========================================================

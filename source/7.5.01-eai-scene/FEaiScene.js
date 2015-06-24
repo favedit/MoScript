@@ -111,6 +111,8 @@ with(MO){
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
       var o = this;
       o.__base.FScene.processEvent();
+      // 处理界面事件
+      o._desktop.processEvent(event);
    }
 
    //==========================================================

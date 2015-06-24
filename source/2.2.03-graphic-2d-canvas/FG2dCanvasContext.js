@@ -90,11 +90,6 @@ with (MO) {
       var o = this;
       var size = o._size;
       o._handle.clearRect(0, 0, size.width, size.height);
-      console.log(size.width + ' x ' + size.height);
-
-      //var handle = o._handle;
-      //handle.fillStyle = '#666666';
-      //handle.fillRect(0, 0, size.width, size.height);
    }
 
    //==========================================================

@@ -8073,12 +8073,13 @@ with(MO){
 with(MO){
    MO.SRectangle = function SRectangle(left, top, width, height){
       var o = this;
-      o.left   = RInteger.nvl(left);
-      o.top    = RInteger.nvl(top);
-      o.width  = RInteger.nvl(width);
-      o.height = RInteger.nvl(height);
+      o.left        = RInteger.nvl(left);
+      o.top         = RInteger.nvl(top);
+      o.width       = RInteger.nvl(width);
+      o.height      = RInteger.nvl(height);
       o.right       = SRectangle_right;
       o.bottom      = SRectangle_bottom;
+      o.testRange   = SRectangle_testRange;
       o.assign      = SRectangle_assign;
       o.setLocation = SRectangle_setLocation;
       o.setSize     = SRectangle_setSize;
@@ -8087,23 +8088,27 @@ with(MO){
       o.dispose     = SRectangle_dispose;
       return o;
    }
-   MO.SRectangle_left = function SRectangle_left(){
-      return this.position.x;
-   }
-   MO.SRectangle_top = function SRectangle_top(){
-      return this.position.y;
-   }
    MO.SRectangle_right = function SRectangle_right(){
-      return this.position.x + this.size.width;
+      return this.left + this.width;
    }
    MO.SRectangle_bottom = function SRectangle_bottom(){
-      return this.position.y + this.size.height;
+      return this.top + this.height;
    }
-   MO.SRectangle_width = function SRectangle_width(){
-      return this.size.width;
-   }
-   MO.SRectangle_height = function SRectangle_height(){
-      return this.size.height;
+   MO.SRectangle_testRange = function SRectangle_testRange(x, y){
+      var o = this;
+      if(x < o.left){
+         return false;
+      }
+      if(y < o.top){
+         return false;
+      }
+      if(x - o.left > o.width){
+         return false;
+      }
+      if(y - o.top > o.height){
+         return false;
+      }
+      return true;
    }
    MO.SRectangle_assign = function SRectangle_assign(value){
       var o = this;
@@ -8131,7 +8136,7 @@ with(MO){
    }
    MO.SRectangle_toString = function SRectangle_toString(){
       var o = this;
-      return o.position.x + ',' + o.position.y + ',' + o.size.width + ',' + o.size.height;
+      return o.left + ',' + o.top + ',' + o.width + ',' + o.height;
    }
    MO.SRectangle_dispose = function SRectangle_dispose(){
       var o = this;

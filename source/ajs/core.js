@@ -109,6 +109,10 @@ MO.EEvent = new function EEvent(){
    o.Leave       = 'Leave';
    o.Focus       = 'Focus';
    o.Blur        = 'Blur';
+   o.MouseDown   = 'MouseDown';
+   o.MouseMove   = 'MouseMove';
+   o.MouseUp     = 'MouseUp';
+   o.MouseWheel  = 'MouseWheel';
    o.Click       = 'Click';
    o.DoubleClick = 'DoubleClick';
    o.NodeClick   = 'NodeClick';
@@ -997,6 +1001,7 @@ with(MO){
 with(MO){
    MO.SEvent = function SEvent(sender){
       var o = this;
+      o.code       = null;
       o.annotation = null;
       o.listener   = null;
       o.sender     = sender;

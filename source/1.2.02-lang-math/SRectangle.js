@@ -10,14 +10,16 @@
       var o = this;
       //..........................................................
       // @attribute
-      o.left   = RInteger.nvl(left);
-      o.top    = RInteger.nvl(top);
-      o.width  = RInteger.nvl(width);
-      o.height = RInteger.nvl(height);
+      o.left        = RInteger.nvl(left);
+      o.top         = RInteger.nvl(top);
+      o.width       = RInteger.nvl(width);
+      o.height      = RInteger.nvl(height);
       //..........................................................
       // @method
       o.right       = SRectangle_right;
       o.bottom      = SRectangle_bottom;
+      // @method
+      o.testRange   = SRectangle_testRange;
       // @method
       o.assign      = SRectangle_assign;
       o.setLocation = SRectangle_setLocation;
@@ -30,33 +32,13 @@
    }
 
    //============================================================
-   // <T>获得左位置。</T>
-   //
-   // @method
-   // @return Number 左位置
-   //============================================================
-   MO.SRectangle_left = function SRectangle_left(){
-      return this.position.x;
-   }
-
-   //============================================================
-   // <T>获得上位置。</T>
-   //
-   // @method
-   // @return Number 上位置
-   //============================================================
-   MO.SRectangle_top = function SRectangle_top(){
-      return this.position.y;
-   }
-
-   //============================================================
    // <T>获得右位置。</T>
    //
    // @method
    // @return Number 右位置
    //============================================================
    MO.SRectangle_right = function SRectangle_right(){
-      return this.position.x + this.size.width;
+      return this.left + this.width;
    }
 
    //============================================================
@@ -66,27 +48,32 @@
    // @return Number 下位置
    //============================================================
    MO.SRectangle_bottom = function SRectangle_bottom(){
-      return this.position.y + this.size.height;
+      return this.top + this.height;
    }
 
    //============================================================
-   // <T>获得宽度。</T>
+   // <T>测试是否在范围内。</T>
    //
    // @method
-   // @return Number 宽度
+   // @param x:Number 横坐标
+   // @param y:Number 纵坐标
+   // @return Boolean 是否在范围内
    //============================================================
-   MO.SRectangle_width = function SRectangle_width(){
-      return this.size.width;
-   }
-
-   //============================================================
-   // <T>获得高度。</T>
-   //
-   // @method
-   // @return Number 高度
-   //============================================================
-   MO.SRectangle_height = function SRectangle_height(){
-      return this.size.height;
+   MO.SRectangle_testRange = function SRectangle_testRange(x, y){
+      var o = this;
+      if(x < o.left){
+         return false;
+      }
+      if(y < o.top){
+         return false;
+      }
+      if(x - o.left > o.width){
+         return false;
+      }
+      if(y - o.top > o.height){
+         return false;
+      }
+      return true;
    }
 
    //============================================================
@@ -153,7 +140,7 @@
    //============================================================
    MO.SRectangle_toString = function SRectangle_toString(){
       var o = this;
-      return o.position.x + ',' + o.position.y + ',' + o.size.width + ',' + o.size.height;
+      return o.left + ',' + o.top + ',' + o.width + ',' + o.height;
    }
 
    //============================================================

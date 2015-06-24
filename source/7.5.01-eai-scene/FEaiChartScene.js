@@ -155,7 +155,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
-   //stage.groundLayer().push(control);
+   stage.groundLayer().push(control);
    // 创建城市渲染对象
    var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    renderable.linkGraphicContext(o);
