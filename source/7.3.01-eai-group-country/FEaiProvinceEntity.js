@@ -14,7 +14,7 @@ with(MO){
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       // @attribute
-      o._layerDepth       = 1;
+      o._layerDepth       = 2;
       //..........................................................
       // @method
       o.construct         = FEaiProvinceEntity_construct;
@@ -147,11 +147,6 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
-      var matrix = renderable.matrix();
-      matrix.tx = -20;
-      matrix.ty = -8;
-      matrix.setScale(0.2, 0.24, 0.2);
-      matrix.update();
    }
 
    //==========================================================
@@ -250,11 +245,6 @@ with(MO){
       renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
       renderable.indexBuffer().setLineWidth(1);
       renderable.indexBuffer().upload(borderData, borderIndex);
-      var matrix = renderable.matrix();
-      matrix.tx = -20;
-      matrix.ty = -8;
-      matrix.setScale(0.2, 0.24, 0.2);
-      matrix.update();
    }
 
    //==========================================================

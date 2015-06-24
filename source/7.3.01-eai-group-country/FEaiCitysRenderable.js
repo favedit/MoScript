@@ -14,6 +14,7 @@ with(MO){
       o._image                = null;
       // @attribute
       o._citys                = RClass.register(o, new AGetter('_citys'));
+      o._level                = RClass.register(o, new AGetSet('_level'));
       o._size                 = RClass.register(o, new AGetter('_size'));
       o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       o._citySize             = RClass.register(o, new AGetter('_citySize'));
@@ -143,7 +144,7 @@ with(MO){
       materialInfo.optionAlpha = true;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/dot.png');
+      o.loadUrl('/script/ars/eai/city/' + o._level + '.png');
    }
 
    //==========================================================
@@ -178,8 +179,26 @@ with(MO){
          if(city.visible()){
             var location = city.location();
             var size = city.size();
-            var width = 0.4;
-            var height = 0.4;
+            switch(o._level){
+               case 1:
+                  var width = 0.7;
+                  var height = 0.7;
+                  break;
+               case 2:
+                  var width = 1.0;
+                  var height = 1.0;
+                  break;
+               case 3:
+                  var width = 0.3;
+                  var height = 0.3;
+                  break;
+               case 4:
+                  var width = 0.2;
+                  var height = 0.2;
+                  break;
+            }
+            //var width = 0.1 * (6 - o._level);
+            //var height = 0.1 * (6 - o._level);
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - width;
             vertexData[vertexPosition++] = location.y + height;

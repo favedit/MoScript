@@ -803,6 +803,7 @@ with(MO){
       var renderable = o._renderable;
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
+         renderable.setControl(o);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
@@ -858,6 +859,7 @@ with(MO){
 with(MO){
    MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
+      o._control    = RClass.register(o, new AGetSet('_control'));
       o._graphic    = null;
       o.construct   = FGuiControlRenderable_construct;
       o.setup       = FGuiControlRenderable_setup;

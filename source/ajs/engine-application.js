@@ -169,6 +169,7 @@ with(MO){
       o._statusActive    = false;
       o._eventEnterFrame = null;
       o._eventLeaveFrame = null;
+      o.onProcess        = FScene_onProcess;
       o.construct        = FScene_construct;
       o.setup            = FScene_setup;
       o.active           = FScene_active;
@@ -176,6 +177,14 @@ with(MO){
       o.process          = FScene_process;
       o.dispose          = FScene_dispose;
       return o;
+   }
+   MO.FScene_onProcess = function FScene_onProcess(){
+      var o = this;
+      o.processEnterFrameListener(o._eventEnterFrame);
+      if(o._activeStage){
+         o._activeStage.process();
+      }
+      o.processLeaveFrameListener(o._eventLeaveFrame);
    }
    MO.FScene_construct = function FScene_construct(){
       var o = this;
@@ -200,11 +209,9 @@ with(MO){
    }
    MO.FScene_process = function FScene_process(){
       var o = this;
-      o.processEnterFrameListener(o._eventEnterFrame);
-      if(o._activeStage){
-         o._activeStage.process();
+      if(o._statusActive){
+         o.onProcess();
       }
-      o.processLeaveFrameListener(o._eventLeaveFrame);
    }
    MO.FScene_dispose = function FScene_dispose(){
       var o = this;

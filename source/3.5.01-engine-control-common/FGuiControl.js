@@ -337,6 +337,7 @@ with(MO){
       var renderable = o._renderable;
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
+         renderable.setControl(o);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);

@@ -27,19 +27,6 @@ table{
    padding: 0px;
 }
 
-/*body
-   {
-   font-size:9pt;
-   font-family:"NSimSun";
-   scrollbar-face-color:#BBBBBB;
-   scrollbar-highlight-color:#FFFFFF;
-   scrollbar-shadow-color:#999999;
-   scrollbar-3dlight-color:#999999;
-   scrollbar-arrow-color:#666666;
-   scrollbar-track-color:#F0F0F0;
-   scrollbar-darkshadow-color:#FFFFFF;
-   }*/
-
 /* ------------------------------------------------------ */
 /* Href                                                   */
 /* ------------------------------------------------------ */
@@ -138,4 +125,29 @@ textarea{
 .Grid_Text{
    color:#999999;
    font-size:12pt;
+}
+
+/* ------------------------------------------------------ */
+/* DataGrid                                               */
+/* ------------------------------------------------------ */
+.DataGrid_Ground{
+   border:2px solid #1DACE5;
+   border-radius: 6px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Title{
+}
+
+.DataGrid_Border{
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Row{
+   color: #1DACE5;
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.3);
 }

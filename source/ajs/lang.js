@@ -844,15 +844,15 @@ with(MO){
    }
    MO.TDate_refresh = function TDate_refresh(){
       var o = this;
-      var d = o.date;
-      if(d){
-         o.year = d.getFullYear();
-         o.month = d.getMonth() + 1;
-         o.day = d.getDate();
-         o.hour = d.getHours();
-         o.minute = d.getMinutes();
-         o.second = d.getSeconds();
-         o.ms = d.getMilliseconds();
+      var date = o.date;
+      if(date){
+         o.year = date.getFullYear();
+         o.month = date.getMonth() + 1;
+         o.day = date.getDate();
+         o.hour = date.getHours();
+         o.minute = date.getMinutes();
+         o.second = date.getSeconds();
+         o.ms = date.getMilliseconds();
       }
    }
    MO.TDate_weekDay = function TDate_weekDay(){

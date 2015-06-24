@@ -803,6 +803,7 @@ with(MO){
       var renderable = o._renderable;
       if(!renderable){
          renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
+         renderable.setControl(o);
       }
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
@@ -858,6 +859,7 @@ with(MO){
 with(MO){
    MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
+      o._control    = RClass.register(o, new AGetSet('_control'));
       o._graphic    = null;
       o.construct   = FGuiControlRenderable_construct;
       o.setup       = FGuiControlRenderable_setup;
@@ -1042,6 +1044,43 @@ with(MO){
    MO.RGuiControl = new RGuiControl();
 }
 with(MO){
+   MO.FGuiDesktop = function FGuiDesktop(o){
+      o = RClass.inherits(this, o, FObject);
+      o._controls  = RClass.register(o, new AGetter('_controls'));
+      o.construct  = FGuiDesktop_construct;
+      o.register   = FGuiDesktop_register;
+      o.unregister = FGuiDesktop_unregister;
+      o.process    = FGuiDesktop_process;
+      o.dispose    = FGuiDesktop_dispose;
+      return o;
+   }
+   MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._controls = new TObjects();
+   }
+   MO.FGuiDesktop_register = function FGuiDesktop_register(control){
+      this._controls.push(control);
+   }
+   MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
+      this._controls.remove(control);
+   }
+   MO.FGuiDesktop_process = function FGuiDesktop_process(){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psUpdate();
+      }
+   }
+   MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
+      var o = this;
+      o._controls = RObject.dispose(o._controls);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
    MO.FGuiFrameConsole = function FGuiFrameConsole(o){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd         = EScope.Local;
@@ -1194,41 +1233,9 @@ with(MO){
       return o;
    }
 }
-with(MO){
-   MO.FGuiPicture = function FGuiPicture(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o._image       = null;
-      o.onPaintBegin = FGuiPicture_onPaintBegin;
-      o.oeUpdate     = FGuiPicture_oeUpdate;
-      return o;
-   }
-   MO.FGuiPicture_onPaintBegin = function FGuiPicture_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      return;
-      var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
-      if(o._image && o._image.testReady()){
-         if(o._backGrid.isEmpty()){
-            graphic.drawImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height);
-         }else{
-            graphic.drawGridImage(o._image, o._clientRectangle.left, o._clientRectangle.top, o._clientRectangle.width, o._clientRectangle.height, o._backGrid);
-         }
-      }
-   }
-   MO.FGuiPicture_oeUpdate = function FGuiPicture_oeUpdate(event){
-      return;
-      var o = this;
-      if(!o._statusPaint){
-         if(o._image == null && o._backResource){
-            var url = o._backResource.substring(4);
-            var image = o._image = RClass.create(FImage);
-            image.addLoadListener(o, o.onImageLoad);
-            image.loadUrl(url);
-         }
-      }
-      return EEventStatus.Stop;
-   }
+MO.FGuiPicture = function FGuiPicture(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   return o;
 }
 with (MO) {
    MO.FGuiTimeline = function FGuiTimeline(o) {

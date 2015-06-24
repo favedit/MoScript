@@ -56,12 +56,13 @@ with(MO){
       var location = o._data.location();
       var range = 1;
       if(data){
-         var total = Math.sqrt(data.investmentTotal()) / 100;
-         range = total / 2;
+         var total = Math.log(data.investmentTotal());
+         range = total;
+         total = total / 20;
          if(total > 1){
             total = 1;
          }
-         o._color.set(total, 0, total, total);
+         o._color.set(total, 0, total, total * 0.8);
       }else{
          o._color.set(0, 0, 0, 0);
       }
@@ -69,8 +70,8 @@ with(MO){
       if(range < 1){
          range = 1;
       }
-      if(range > 3){
-         range = 3;
+      if(range > 4){
+         range = 4;
       }
       o._size.set(range, range);
    }

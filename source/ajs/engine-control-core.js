@@ -1,4 +1,41 @@
 with(MO){
+   MO.FGuiDesktop = function FGuiDesktop(o){
+      o = RClass.inherits(this, o, FObject);
+      o._controls  = RClass.register(o, new AGetter('_controls'));
+      o.construct  = FGuiDesktop_construct;
+      o.register   = FGuiDesktop_register;
+      o.unregister = FGuiDesktop_unregister;
+      o.process    = FGuiDesktop_process;
+      o.dispose    = FGuiDesktop_dispose;
+      return o;
+   }
+   MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._controls = new TObjects();
+   }
+   MO.FGuiDesktop_register = function FGuiDesktop_register(control){
+      this._controls.push(control);
+   }
+   MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
+      this._controls.remove(control);
+   }
+   MO.FGuiDesktop_process = function FGuiDesktop_process(){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psUpdate();
+      }
+   }
+   MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
+      var o = this;
+      o._controls = RObject.dispose(o._controls);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
    MO.FGuiFrameConsole = function FGuiFrameConsole(o){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd         = EScope.Local;

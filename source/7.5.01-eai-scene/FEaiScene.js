@@ -2,6 +2,7 @@ with(MO){
    //==========================================================
    // <T>简单三维舞台对象。</T>
    //
+   // @class
    // @author maocy
    // @history 150106
    //==========================================================
@@ -9,23 +10,35 @@ with(MO){
       o = RClass.inherits(this, o, FScene);
       //..........................................................
       // @attribute
-      o._frames         = RClass.register(o, new AGetter('_frames'));
+      o._desktop        = RClass.register(o, new AGetter('_desktop'));
+      // @attribute
       o._engineInfo     = null;
+      //..........................................................
+      // @event
+      o.onProcess       = FEaiScene_onProcess;
       //..........................................................
       // @method
       o.construct       = FEaiScene_construct;
-      // @method
-      o.registerFrame   = FEaiScene_registerFrame;
-      o.unregisterFrame = FEaiScene_unregisterFrame;
       // @method
       o.setup           = MO.FEaiScene_setup;
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
       // @method
-      o.process         = FEaiScene_process;
-      // @method
       o.disposet        = FEaiScene_dispose;
       return o;
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
+      var o = this;
+      // 界面处理
+      o._desktop.process();
+      // 父处理
+      o.__base.FScene.onProcess.call(o);
    }
 
    //==========================================================
@@ -37,27 +50,7 @@ with(MO){
       var o = this;
       o.__base.FScene.construct.call(o);
       // 创建界面集合
-      o._frames = new TObjects();
-   }
-
-   //==========================================================
-   // <T>注册一个页面。</T>
-   //
-   // @method
-   // @param frame:FGuiFrame 页面
-   //==========================================================
-   MO.FEaiScene_registerFrame = function FEaiScene_registerFrame(frame){
-      this._frames.push(frame);
-   }
-
-   //==========================================================
-   // <T>逻辑处理。</T>
-   //
-   // @method
-   // @param frame:FGuiFrame 页面
-   //==========================================================
-   MO.FEaiScene_unregisterFrame = function FEaiScene_unregisterFrame(frame){
-      this._frames.remove(frame);
+      o._desktop = RClass.create(FGuiDesktop);
    }
 
    //==========================================================
@@ -73,7 +66,8 @@ with(MO){
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
       control.location().set(10, 200);
-      //control.build();
+      control.build();
+      o._desktop.register(control);
    }
 
    //==========================================================
@@ -88,7 +82,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      //faceLayer.push(o._engineInfo);
+      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
 
@@ -107,34 +101,13 @@ with(MO){
    }
 
    //==========================================================
-   // <T>逻辑处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiScene_process = function FEaiScene_process(){
-      var o = this;
-      // 更新引擎信息
-      if(o._engineInfo){
-         //o._engineInfo.psUpdate();
-      }
-      // 更新页面
-      var count = o._frames.count();
-      for(var i = 0; i < count; i++){
-         var frame = o._frames.at(i);
-         frame.psUpdate();
-      }
-      // 父处理
-      o.__base.FScene.process.call(o);
-   }
-
-   //==========================================================
-   // <T>构造处理。</T>
+   // <T>释放处理。</T>
    //
    // @method
    //==========================================================
    MO.FEaiScene_dispose = function FEaiScene_dispose(){
       var o = this;
-      o._frames = RObject.dispose(o._frames);
+      o._desktop = RObject.dispose(o._desktop);
       // 父处理
       o.__base.FScene.dispose.call(o);
    }

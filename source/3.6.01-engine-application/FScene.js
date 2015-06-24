@@ -19,6 +19,9 @@ with(MO){
       o._eventEnterFrame = null;
       o._eventLeaveFrame = null;
       //..........................................................
+      // @event
+      o.onProcess        = FScene_onProcess;
+      //..........................................................
       // @method
       o.construct        = FScene_construct;
       // @method
@@ -29,6 +32,23 @@ with(MO){
       // @method
       o.dispose          = FScene_dispose;
       return o;
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FScene_onProcess = function FScene_onProcess(){
+      var o = this;
+      // 前处理
+      o.processEnterFrameListener(o._eventEnterFrame);
+      // 场景处理
+      if(o._activeStage){
+         o._activeStage.process();
+      }
+      // 后处理
+      o.processLeaveFrameListener(o._eventLeaveFrame);
    }
 
    //==========================================================
@@ -87,14 +107,9 @@ with(MO){
    //==========================================================
    MO.FScene_process = function FScene_process(){
       var o = this;
-      // 前处理
-      o.processEnterFrameListener(o._eventEnterFrame);
-      // 场景处理
-      if(o._activeStage){
-         o._activeStage.process();
+      if(o._statusActive){
+         o.onProcess();
       }
-      // 后处理
-      o.processLeaveFrameListener(o._eventLeaveFrame);
    }
 
    //==========================================================

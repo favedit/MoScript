@@ -85,7 +85,6 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
    var stage = o._activeStage;
    var mapLayer = stage.mapLayer();
    var borderLayer = stage.borderLayer();
-   var dataLayer = stage.dataLayer();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var dateData = historyConsole.dates().get(code);
    if (dateData) {
@@ -161,6 +160,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
             var provinceInvesData = provincesData.at(i);
             var provinceResData = provinceConsole.findByCode(provinceInvesData.code());
             var row = invesTable.insertRow(invesTable.rows.length);
+            row.className = 'DataGrid_Row';
             var labelCol = row.insertCell(0);
             var invesCol = row.insertCell(1);
             invesCol.align = 'right';

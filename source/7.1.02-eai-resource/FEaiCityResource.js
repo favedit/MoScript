@@ -10,9 +10,10 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._provinceCode  = RClass.register(o, new AGetSet('_provinceCode'));
-      o._code          = RClass.register(o, new AGetSet('_code'));
-      o._label         = RClass.register(o, new AGetSet('_label'));
+      o._provinceCode  = RClass.register(o, new AGetter('_provinceCode'));
+      o._code          = RClass.register(o, new AGetter('_code'));
+      o._label         = RClass.register(o, new AGetter('_label'));
+      o._level         = RClass.register(o, new AGetter('_level'));
       o._location      = RClass.register(o, new AGetter('_location'));
       //..........................................................
       // @method
@@ -47,6 +48,7 @@ with(MO){
       o._provinceCode = input.readUint16();
       o._code = input.readUint16();
       o._label = input.readString();
+      o._level = input.readUint16();
       o._location.unserialize(input);
    }
 
