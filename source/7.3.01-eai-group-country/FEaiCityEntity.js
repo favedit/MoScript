@@ -57,16 +57,13 @@ with(MO){
       var range = 1;
       if(data){
          var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
-         var total = data.investmentTotal() / 1000000;
-         console.log(total)
+         var total = data.investmentTotal() / 10000;
          var color = rateConsole.find(parseInt(total));
-         range = total;
-         total = total / 20;
-         if(total > 1){
+         range = total / 300;
+         if(total / 20 > 1){
             total = 1;
          }
-         o._color.set(((color >> 24) % 0xFF) / 255, ((color >> 16) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total);
-         //o._color.set(total, 0, total, total * 0.8);
+         o._color.set(((color >> 16) % 0xFF) / 255, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.8);
       }else{
          o._color.set(0, 0, 0, 0);
       }
@@ -74,8 +71,8 @@ with(MO){
       if(range < 1){
          range = 1;
       }
-      if(range > 4){
-         range = 4;
+      if(range > 5){
+         range = 5;
       }
       o._size.set(range, range);
    }

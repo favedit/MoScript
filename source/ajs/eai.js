@@ -596,14 +596,13 @@ with(MO){
       var range = 1;
       if(data){
          var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
-         var total = data.investmentTotal() / 1000000;
+         var total = data.investmentTotal() / 10000;
          var color = rateConsole.find(parseInt(total));
-         range = total;
-         total = total / 20;
-         if(total > 1){
+         range = total / 300;
+         if(total / 20 > 1){
             total = 1;
          }
-         o._color.set(((color >> 24) % 0xFF) / 255, ((color >> 16) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total);
+         o._color.set(((color >> 16) % 0xFF) / 255, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.8);
       }else{
          o._color.set(0, 0, 0, 0);
       }
@@ -611,8 +610,8 @@ with(MO){
       if(range < 1){
          range = 1;
       }
-      if(range > 4){
-         range = 4;
+      if(range > 5){
+         range = 5;
       }
       o._size.set(range, range);
    }
@@ -927,8 +926,8 @@ with(MO){
             var size = city.size();
             switch(o._level){
                case 1:
-                  var width = 0.7;
-                  var height = 0.7;
+                  var width = 0.6;
+                  var height = 0.6;
                   break;
                case 2:
                   var width = 1.0;
@@ -2146,6 +2145,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
+   var currentDate = new MO.TDate();
+   var dateControl = frame.findComponent('date');
+   dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
+   var timeControl = frame.findComponent('time');
+   timeControl.setLabel(currentDate.format('HH24:MI'));
    var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
    frame.setLocation(460, 20);
    stage.faceLayer().push(frame);

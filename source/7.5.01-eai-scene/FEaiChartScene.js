@@ -177,6 +177,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
+   var currentDate = new MO.TDate();
+   var dateControl = frame.findComponent('date');
+   dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
+   var timeControl = frame.findComponent('time');
+   timeControl.setLabel(currentDate.format('HH24:MI'));
    // 显示左上
    var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
    frame.setLocation(460, 20);

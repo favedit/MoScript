@@ -181,8 +181,8 @@ with(MO){
             var size = city.size();
             switch(o._level){
                case 1:
-                  var width = 0.7;
-                  var height = 0.7;
+                  var width = 0.6;
+                  var height = 0.6;
                   break;
                case 2:
                   var width = 1.0;
