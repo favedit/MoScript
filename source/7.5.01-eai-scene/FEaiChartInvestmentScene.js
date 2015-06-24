@@ -68,6 +68,14 @@ MO.FEaiChartInvestmentScene_onKeyDown = function FEaiChartInvestmentScene_onKeyD
    }
    if (keyCode == MO.EKeyCode.L) {
       MO.RDate.autoParse(o._currentDate, '20140701');
+      o._currentRow = 0;
+      o._lastDateRowCount = 0;
+      var invesTable = document.getElementById('id_investment_table');
+      for (var i = 1; i < invesTable.rows.length; i++) {
+         var row = invesTable.rows[i];
+         row.style.display = 'none';
+      }
+      o.selectDate(o._currentDate.format('YYYYMMDD'));
       o._playing = true;
    }
 }
