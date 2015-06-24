@@ -87,9 +87,9 @@ with(MO){
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
       var scale = o._levelScale = new Object();
-      scale[1] = 0.6;
-      scale[2] = 1.0;
-      scale[3] = 0.3;
+      scale[1] = 0.8;
+      scale[2] = 0.4;
+      scale[3] = 0.4;
       scale[4] = 0.2;
    }
 
@@ -184,7 +184,6 @@ with(MO){
          var city = citys.at(i);
          if(city.visible()){
             var location = city.location();
-            var size = city.size();
             var scale = o._levelScale[o._level];
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - scale;
@@ -209,12 +208,11 @@ with(MO){
             coordData[coordPosition++] = 0;
             coordData[coordPosition++] = 0;
             // 设置顶点颜色
-            var color = city.color();
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = color.red * 255;
-               colorData[colorPosition++] = color.green * 255;
-               colorData[colorPosition++] = color.blue * 255;
-               colorData[colorPosition++] = color.alpha * 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
             }
          }
       }

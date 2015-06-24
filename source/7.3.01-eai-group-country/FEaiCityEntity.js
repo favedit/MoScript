@@ -63,7 +63,7 @@ with(MO){
          if(total / 20 > 1){
             total = 1;
          }
-         o._color.set(((color >> 16) % 0xFF) / 255, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.8);
+         o._color.set(((color >> 16) % 0xFF) / 128, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.6);
       }else{
          o._color.set(0, 0, 0, 0);
       }

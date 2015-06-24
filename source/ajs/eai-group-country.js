@@ -91,7 +91,7 @@ with(MO){
          if(total / 20 > 1){
             total = 1;
          }
-         o._color.set(((color >> 16) % 0xFF) / 255, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.8);
+         o._color.set(((color >> 16) % 0xFF) / 128, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.6);
       }else{
          o._color.set(0, 0, 0, 0);
       }
@@ -349,9 +349,9 @@ with(MO){
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
       var scale = o._levelScale = new Object();
-      scale[1] = 0.6;
-      scale[2] = 1.0;
-      scale[3] = 0.3;
+      scale[1] = 0.8;
+      scale[2] = 0.4;
+      scale[3] = 0.4;
       scale[4] = 0.2;
    }
    MO.FEaiCitysRenderable_testReady = function FEaiCitysRenderable_testReady(){
@@ -418,7 +418,6 @@ with(MO){
          var city = citys.at(i);
          if(city.visible()){
             var location = city.location();
-            var size = city.size();
             var scale = o._levelScale[o._level];
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
@@ -440,12 +439,11 @@ with(MO){
             coordData[coordPosition++] = 0;
             coordData[coordPosition++] = 0;
             coordData[coordPosition++] = 0;
-            var color = city.color();
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = color.red * 255;
-               colorData[colorPosition++] = color.green * 255;
-               colorData[colorPosition++] = color.blue * 255;
-               colorData[colorPosition++] = color.alpha * 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = 255;
             }
          }
       }
