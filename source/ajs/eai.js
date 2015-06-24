@@ -861,7 +861,7 @@ with(MO){
       o._material = RClass.create(FE3dMaterial);
       var scale = o._levelScale = new Object();
       scale[1] = 0.8;
-      scale[2] = 0.4;
+      scale[2] = 0.5;
       scale[3] = 0.4;
       scale[4] = 0.2;
    }
@@ -1885,6 +1885,14 @@ MO.FEaiChartInvestmentScene_onKeyDown = function FEaiChartInvestmentScene_onKeyD
    }
    if (keyCode == MO.EKeyCode.L) {
       MO.RDate.autoParse(o._currentDate, '20140701');
+      o._currentRow = 0;
+      o._lastDateRowCount = 0;
+      var invesTable = document.getElementById('id_investment_table');
+      for (var i = 1; i < invesTable.rows.length; i++) {
+         var row = invesTable.rows[i];
+         row.style.display = 'none';
+      }
+      o.selectDate(o._currentDate.format('YYYYMMDD'));
       o._playing = true;
    }
 }

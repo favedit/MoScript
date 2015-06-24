@@ -33,10 +33,12 @@ with (MO) {
       var rectangle = o._clientRectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
+      var dataTop = top + 25;
+      var dataBottom = bottom - 30;
+      var dataHeight = dataBottom - dataTop;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
       var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
       var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
-      var dataBottom = bottom - 20;
       var startDate = o.startTime();
       var endDate = o.endTime();
       var degreeDate = o.degreeTime();
@@ -45,7 +47,7 @@ with (MO) {
       var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
       var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
       var maxInves = dateData.investmentTotal();
-      var pixPer10k = rectangle.height * 10000 / maxInves;
+      var pixPer10k = dataHeight * 10000 / maxInves;
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       var inves = dateData.investmentTotal();
       var lastX = dataLeft;
@@ -58,16 +60,16 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
-            var rate = 1 - (y / rectangle.height);
+            var rate = 1 - (y / dataHeight);
             var colorIdx = parseInt(rateConsole.count() * rate);
             var hexColor = RHex.format(rateConsole.find(colorIdx));
             var color = '#' + hexColor.substring(2);
             graphic.drawLine(lastX, lastY, x, y, color, 1);
-            if (startDate.date.getDate() == 1)
+            if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))
             {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-               graphic.drawCircle(lastX, lastY, 3, 0, color, color);
-               graphic.drawText(text, lastX - text.length * 3, lastY - 12, '#FFFFFF');
+               graphic.drawCircle(x, y, 3, 0, color, color);
+               graphic.drawText(text, x - text.length * 3, y - 12, '#FFFFFF');
             }
             lastX = x;
             lastY = y;
@@ -135,7 +137,7 @@ with (MO) {
       var rectangle = o._clientRectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
-      var middle = bottom - 20;
+      var middle = bottom - 30;
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -146,86 +148,84 @@ with (MO) {
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
-      var startTime = o.startTime().date;
-      var endTime = o.endTime().date;
-      var degreeTime = o.degreeTime().date;
-      var timeSpan = endTime.getTime() - startTime.getTime();
-      var degreeSpan = degreeTime.getTime() - startTime.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      var startTime = o.startTime();
+      var endTime = o.endTime();
+      var degreeTime = o.degreeTime();
+      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
-      var degreeCount = 0;
+      var degreeText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
-            degreeCount = timeSpan / 1000;
+            degreeText = startTime.format('MI:SS.MISS');
             break;
          case EGuiTimeUnit.Minute:
-            degreeCount = timeSpan / (1000 * 60);
+            degreeText = startTime.format('HH24:MI:SS');
             break;
          case EGuiTimeUnit.Hour:
-            degreeCount = timeSpan / (1000 * 60 * 60);
+            degreeText = startTime.format('HH24:MI');
             break;
          case EGuiTimeUnit.Day:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24);
+            degreeText = startTime.format('MM-DD:HH24');
             break;
          case EGuiTimeUnit.Week:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 7);
+            degreeText = startTime.format('MM-DD');
             break;
          case EGuiTimeUnit.Month:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 30);
+            degreeText = degreeTime.format('YYYY-MM-DD');
             break;
          case EGuiTimeUnit.Year:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 365);
+            degreeText = startTime.format('YYYY-MM');
             break;
          default:
             return;
       }
-      var degreeGap = (dataRight - dataLeft) / degreeCount;
+      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 12, '#FFFFFF');
       var text;
-      var dtVar;
-      var bakTime = startTime.getTime();
-      for (var i = 0; i <= degreeCount; i++) {
-         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 1);
+      var bakTime = startTime.date.getTime();
+      while (!startTime.isAfter(endTime)) {
+         var span = startTime.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          switch (o.timeUnit()) {
             case EGuiTimeUnit.Second:
-               text = startTime.getMinutes() + ":" + startTime.getSeconds();
-               dtVar = startTime.getSeconds();
-               startTime.setSeconds(++dtVar);
+               text = startTime.format('MI:SS');
+               startTime.addMseconds(1000);
                break;
             case EGuiTimeUnit.Minute:
-               text = startTime.getHours() + ":" + startTime.getMinutes();
-               dtVar = startTime.getMinutes();
-               startTime.setMinutes(++dtVar);
+               text = startTime.format('HH24:MI');
+               startTime.addMseconds(1000 * 60);
                break;
             case EGuiTimeUnit.Hour:
-               text = startTime.getHours() + ":00";
-               dtVar = startTime.getHours();
-               startTime.setHours(++dtVar);
+               text = startTime.format('HH24:00');
+               startTime.addMseconds(1000 * 60 * 60);
                break;
             case EGuiTimeUnit.Day:
-               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
-               dtVar = startTime.getDate();
-               startTime.setDate(++dtVar);
+               text = startTime.format('MM-DD');
+               startTime.addDay(1);
                break;
             case EGuiTimeUnit.Week:
-               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
-               dtVar = startTime.getDate();
-               startTime.setDate(dtVar += 7);
+               text = startTime.format('MM-DD');
+               startTime.addDay(7);
                break;
             case EGuiTimeUnit.Month:
-               text = startTime.getFullYear() + "-" + (startTime.getMonth() + 1);
-               dtVar = startTime.getMonth();
-               startTime.setMonth(++dtVar);
+               text = startTime.format('YYYY-MM');
+               startTime.addMonth(1);
                break;
             case EGuiTimeUnit.Year:
-               text = startTime.getFullYear();
-               dtVar = startTime.getFullYear();
-               startTime.setFullYear(++dtVar);
+               text = startTime.format('YYYY');
+               startTime.addYear(1);
                break;
             default:
                return;
          }
-         graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
+         graphic.drawText(text, x - text.length * 3, middle + 12, '#FFFFFF');
       }
-      startTime.setTime(bakTime);
+      var span = endTime.date.getTime() - bakTime;
+      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+      startTime.date.setTime(bakTime);
+      startTime.refresh();
    }
 }

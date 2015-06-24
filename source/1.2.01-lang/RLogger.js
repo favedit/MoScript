@@ -40,7 +40,7 @@
       var o = this;
       // 获得函数名称
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_debug.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -134,7 +134,7 @@
       var o = this;
       // 获得函数名称
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_warn.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -181,7 +181,7 @@
       var o = this;
       // 获得函数名称
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_error.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -288,7 +288,7 @@
       var o = this;
       // 获得函数名称
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_show.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){

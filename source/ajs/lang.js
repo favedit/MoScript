@@ -3442,7 +3442,7 @@ with(MO){
    MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
       var o = this;
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_debug.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -3510,7 +3510,7 @@ with(MO){
    MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
       var o = this;
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_warn.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -3544,7 +3544,7 @@ with(MO){
    MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       var o = this;
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_error.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){
@@ -3625,7 +3625,7 @@ with(MO){
    MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       var o = this;
       var name = null;
-      var caller = RLogger_info.caller;
+      var caller = RLogger_show.caller;
       if(caller){
          name = RMethod.name(caller);
       }else if(arguments.caller){

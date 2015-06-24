@@ -88,7 +88,7 @@ with(MO){
       o._material = RClass.create(FE3dMaterial);
       var scale = o._levelScale = new Object();
       scale[1] = 0.8;
-      scale[2] = 0.4;
+      scale[2] = 0.5;
       scale[3] = 0.4;
       scale[4] = 0.2;
    }
