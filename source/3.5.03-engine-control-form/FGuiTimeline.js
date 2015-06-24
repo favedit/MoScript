@@ -39,7 +39,7 @@ with (MO) {
 
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
-      var middle = bottom - 20;
+      var middle = bottom - 30;
 
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
@@ -56,88 +56,88 @@ with (MO) {
       //主轴
       graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
       //游标
-      var startTime = o.startTime().date;
-      var endTime = o.endTime().date;
-      var degreeTime = o.degreeTime().date;
-      var timeSpan = endTime.getTime() - startTime.getTime();
-      var degreeSpan = degreeTime.getTime() - startTime.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      var startTime = o.startTime();
+      var endTime = o.endTime();
+      var degreeTime = o.degreeTime();
+      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
-      //刻度
-      var degreeCount = 0;
+      var degreeText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
-            degreeCount = timeSpan / 1000;
+            degreeText = startTime.format('MI:SS.MISS');
             break;
          case EGuiTimeUnit.Minute:
-            degreeCount = timeSpan / (1000 * 60);
+            degreeText = startTime.format('HH24:MI:SS');
             break;
          case EGuiTimeUnit.Hour:
-            degreeCount = timeSpan / (1000 * 60 * 60);
+            degreeText = startTime.format('HH24:MI');
             break;
          case EGuiTimeUnit.Day:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24);
+            degreeText = startTime.format('MM-DD:HH24');
             break;
          case EGuiTimeUnit.Week:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 7);
+            degreeText = startTime.format('MM-DD');
             break;
          case EGuiTimeUnit.Month:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 30);
+            degreeText = degreeTime.format('YYYY-MM-DD');
             break;
          case EGuiTimeUnit.Year:
-            degreeCount = timeSpan / (1000 * 60 * 60 * 24 * 365);
+            degreeText = startTime.format('YYYY-MM');
             break;
          default:
             return;
       }
-      var degreeGap = (dataRight - dataLeft) / degreeCount;
+      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 12, '#FFFFFF');
+      //刻度
       var text;
-      var dtVar;
-      var bakTime = startTime.getTime();
-      for (var i = 0; i <= degreeCount; i++) {
-         graphic.drawLine(dataLeft + i * degreeGap, middle - o.degreeLineHeight(), dataLeft + i * degreeGap, middle, '#FFFFFF', 1);
+      var bakTime = startTime.date.getTime();
+      while (!startTime.isAfter(endTime)) {
+         var span = startTime.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          switch (o.timeUnit()) {
             case EGuiTimeUnit.Second:
-               text = startTime.getMinutes() + ":" + startTime.getSeconds();
-               dtVar = startTime.getSeconds();
-               startTime.setSeconds(++dtVar);
+               text = startTime.format('MI:SS');
+               startTime.addMseconds(1000);
                break;
             case EGuiTimeUnit.Minute:
-               text = startTime.getHours() + ":" + startTime.getMinutes();
-               dtVar = startTime.getMinutes();
-               startTime.setMinutes(++dtVar);
+               text = startTime.format('HH24:MI');
+               startTime.addMseconds(1000 * 60);
                break;
             case EGuiTimeUnit.Hour:
-               text = startTime.getHours() + ":00";
-               dtVar = startTime.getHours();
-               startTime.setHours(++dtVar);
+               text = startTime.format('HH24:00');
+               startTime.addMseconds(1000 * 60 * 60);
                break;
             case EGuiTimeUnit.Day:
-               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
-               dtVar = startTime.getDate();
-               startTime.setDate(++dtVar);
+               text = startTime.format('MM-DD');
+               startTime.addDay(1);
                break;
             case EGuiTimeUnit.Week:
-               text = (startTime.getMonth() + 1) + "-" + startTime.getDate();
-               dtVar = startTime.getDate();
-               startTime.setDate(dtVar += 7);
+               text = startTime.format('MM-DD');
+               startTime.addDay(7);
                break;
             case EGuiTimeUnit.Month:
-               text = startTime.getFullYear() + "-" + (startTime.getMonth() + 1);
-               dtVar = startTime.getMonth();
-               startTime.setMonth(++dtVar);
+               text = startTime.format('YYYY-MM');
+               startTime.addMonth(1);
                break;
             case EGuiTimeUnit.Year:
-               text = startTime.getFullYear();
-               dtVar = startTime.getFullYear();
-               startTime.setFullYear(++dtVar);
+               text = startTime.format('YYYY');
+               startTime.addYear(1);
                break;
             default:
                return;
          }
-         graphic.drawText(text, dataLeft + i * degreeGap - text.length * 3, middle + 12, '#FFFFFF');
+         graphic.drawText(text, x - text.length * 3, middle + 12, '#FFFFFF');
       }
-      startTime.setTime(bakTime);
+      //结束刻度
+      var span = endTime.date.getTime() - bakTime;
+      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+
+      startTime.date.setTime(bakTime);
+      startTime.refresh();
    }
 
 }

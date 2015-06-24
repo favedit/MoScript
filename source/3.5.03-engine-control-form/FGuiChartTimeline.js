@@ -28,11 +28,14 @@ with (MO) {
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
 
+      var dataTop = top + 25;
+      var dataBottom = bottom - 30;
+      var dataHeight = dataBottom - dataTop;
+
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
       var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
       var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
-      var dataBottom = bottom - 20;
-      
+
       var startDate = o.startTime();
       var endDate = o.endTime();
       var degreeDate = o.degreeTime();
@@ -43,7 +46,7 @@ with (MO) {
       var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
       var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
       var maxInves = dateData.investmentTotal();
-      var pixPer10k = rectangle.height * 10000 / maxInves;
+      var pixPer10k = dataHeight * 10000 / maxInves;
       //取第一天确定起始Y
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       var inves = dateData.investmentTotal();
@@ -57,16 +60,16 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
-            var rate = 1 - (y / rectangle.height);
+            var rate = 1 - (y / dataHeight);
             var colorIdx = parseInt(rateConsole.count() * rate);
             var hexColor = RHex.format(rateConsole.find(colorIdx));
             var color = '#' + hexColor.substring(2);
             graphic.drawLine(lastX, lastY, x, y, color, 1);
-            if (startDate.date.getDate() == 1)
+            if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))
             {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-               graphic.drawCircle(lastX, lastY, 3, 0, color, color);
-               graphic.drawText(text, lastX - text.length * 3, lastY - 12, '#FFFFFF');
+               graphic.drawCircle(x, y, 3, 0, color, color);
+               graphic.drawText(text, x - text.length * 3, y - 12, '#FFFFFF');
             }
             lastX = x;
             lastY = y;
