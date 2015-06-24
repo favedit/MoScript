@@ -11,6 +11,7 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    // @attribute
    o._scopeCd         = MO.EScope.Local;
    // @attribute
+   o._rateConsole     = MO.Class.register(o, new MO.AGetter('_rateConsole'));
    o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));
@@ -62,6 +63,7 @@ MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
 MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._rateConsole = MO.RClass.create(MO.FEaiRateResourceConsole);
    o._provinceConsole = MO.RClass.create(MO.FEaiProvinceResourceConsole);
    o._cityConsole = MO.RClass.create(MO.FEaiCityResourceConsole);
    o._historyConsole = MO.RClass.create(MO.FEaiHistoryResourceConsole);
@@ -75,6 +77,7 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 //==========================================================
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
+   o._rateConsole.unserialize(input);
    o._provinceConsole.unserialize(input);
    o._cityConsole.unserialize(input);
    o._historyConsole.unserialize(input);
@@ -102,6 +105,7 @@ MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
 //==========================================================
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
+   o._rateConsole = RObject.dispose(o._rateConsole);
    o._provinceConsole = RObject.dispose(o._provinceConsole);
    o._cityConsole = RObject.dispose(o._cityConsole);
    o._historyConsole = RObject.dispose(o._historyConsole);

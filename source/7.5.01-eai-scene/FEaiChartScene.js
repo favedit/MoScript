@@ -119,7 +119,7 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 //==========================================================
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -29;
+   matrix.tx = -30;
    matrix.ty = -10;
    matrix.tz = 0;
    matrix.setScale(0.26, 0.3, 0.26);

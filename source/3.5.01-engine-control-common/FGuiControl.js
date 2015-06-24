@@ -295,6 +295,7 @@ with(MO){
          throw new TError('Invalid renderable.');
       }
       var graphic = renderable.beginDraw();
+      //graphic._handle.imageSmoothingEnabled = false;
       //..........................................................
       // 绘制处理
       var event = MO.Memory.alloc(SGuiPaintEvent)
@@ -346,10 +347,9 @@ with(MO){
       o.update();
       //..........................................................
       // 绘制处理
-      var graphic = renderable.beginDraw();
-      //graphic._handle.imageSmoothingEnabled = false;
-      o.paint(graphic);
-      renderable.endDraw();
+      if(o.testReady()){
+         o.repaint();
+      }
    }
 
    //==========================================================

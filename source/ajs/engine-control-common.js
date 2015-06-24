@@ -808,9 +808,9 @@ with(MO){
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
       o.update();
-      var graphic = renderable.beginDraw();
-      o.paint(graphic);
-      renderable.endDraw();
+      if(o.testReady()){
+         o.repaint();
+      }
    }
    MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
       var o = this;
