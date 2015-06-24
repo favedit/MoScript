@@ -271,9 +271,9 @@ with(MO){
 with(MO){
    MO.FEaiRateResourceConsole = function FEaiRateResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
+      o._count      = RClass.register(o, new AGetter('_count'));
       o._colors     = RClass.register(o, new AGetter('_colors'));
       o.construct   = FEaiRateResourceConsole_construct;
-      o.count       = FEaiRateResourceConsole_count;
       o.find        = FEaiRateResourceConsole_find;
       o.unserialize = FEaiRateResourceConsole_unserialize;
       o.dispose     = FEaiRateResourceConsole_dispose;
@@ -283,15 +283,19 @@ with(MO){
       var o = this;
       o.__base.FConsole.construct.call(o);
    }
-   MO.FEaiRateResourceConsole_count = function FEaiRateResourceConsole_count(){
-      return this._colors.length;
-   }
    MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(index){
-      return this._colors[index];
+      var o = this;
+      if(index < 0){
+         index = 0;
+      }
+      if(index > o._count){
+         index = o._count - 1;
+      }
+      return o._colors[index];
    }
    MO.FEaiRateResourceConsole_unserialize = function FEaiRateResourceConsole_unserialize(input){
       var o = this;
-      var count = input.readInt32();
+      var count = o._count = input.readInt32();
       var colors = o._colors = new Uint32Array(count);
       for(var i = 0; i < count; i++){
          colors[i] = input.readUint32();
@@ -591,13 +595,15 @@ with(MO){
       var location = o._data.location();
       var range = 1;
       if(data){
-         var total = Math.log(data.investmentTotal());
+         var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
+         var total = data.investmentTotal() / 1000000;
+         var color = rateConsole.find(parseInt(total));
          range = total;
          total = total / 20;
          if(total > 1){
             total = 1;
          }
-         o._color.set(total, 0, total, total * 0.8);
+         o._color.set(((color >> 24) % 0xFF) / 255, ((color >> 16) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total);
       }else{
          o._color.set(0, 0, 0, 0);
       }
@@ -1936,7 +1942,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
       }
       var hTotal = document.getElementById('id_total');
       if(hTotal){
-         hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
+         hTotal.innerHTML = MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
       }
    }
    o._citysRangeRenderable.upload();

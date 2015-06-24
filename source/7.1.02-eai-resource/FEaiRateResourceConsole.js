@@ -10,12 +10,12 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
+      o._count      = RClass.register(o, new AGetter('_count'));
       o._colors     = RClass.register(o, new AGetter('_colors'));
       //..........................................................
       // @method
       o.construct   = FEaiRateResourceConsole_construct;
       // @method
-      o.count       = FEaiRateResourceConsole_count;
       o.find        = FEaiRateResourceConsole_find;
       o.unserialize = FEaiRateResourceConsole_unserialize;
       // @method
@@ -40,19 +40,15 @@ with(MO){
    // @param code:String 代码
    // @return FEaiProvinceResource 省份资源
    //==========================================================
-   MO.FEaiRateResourceConsole_count = function FEaiRateResourceConsole_count(){
-      return this._colors.length;
-   }
-
-   //==========================================================
-   // <T>根据代码获得省份资源。</T>
-   //
-   // @method
-   // @param code:String 代码
-   // @return FEaiProvinceResource 省份资源
-   //==========================================================
    MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(index){
-      return this._colors[index];
+      var o = this;
+      if(index < 0){
+         index = 0;
+      }
+      if(index > o._count){
+         index = o._count - 1;
+      }
+      return o._colors[index];
    }
 
    //==========================================================
@@ -63,7 +59,7 @@ with(MO){
    //==========================================================
    MO.FEaiRateResourceConsole_unserialize = function FEaiRateResourceConsole_unserialize(input){
       var o = this;
-      var count = input.readInt32();
+      var count = o._count = input.readInt32();
       var colors = o._colors = new Uint32Array(count);
       for(var i = 0; i < count; i++){
          colors[i] = input.readUint32();
