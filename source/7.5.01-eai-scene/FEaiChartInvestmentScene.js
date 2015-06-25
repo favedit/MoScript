@@ -116,7 +116,9 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          var rankCell = row.cells[0];
          var labelCell = row.cells[1];
          var invesCell = row.cells[2];
-         rankCell.innerText = i + 1;
+         if (i > 2) {
+            rankCell.innerText = i + 1;
+         }
          labelCell.innerText = provinceResData.label();
          if (provinceData.investmentTotal() > 1000) {
             invesCell.innerText = MO.RFloat.unitFormat(provinceData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
@@ -173,16 +175,20 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
       switch (i) {
          case 0:
             row.style.color = '#FFEA01';
+            rankCell.innerHTML = "1 <IMG src='/script/ars/eai/medals/gold.png'/>";
             break;
          case 1:
-            row.style.color = '#E1A71B';
+            row.style.color = '#C5D3D6';
+            rankCell.innerHTML = "2 <IMG src='/script/ars/eai/medals/silver.png'/>";
             break;
          case 2:
             row.style.color = '#E16A00';
+            rankCell.innerHTML = "3 <IMG src='/script/ars/eai/medals/copper.png'/>";
             break;
          default:
             break;
       }
+      
    }
    //时间轴
    var stage = o.activeStage();
