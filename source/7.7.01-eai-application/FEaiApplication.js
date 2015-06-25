@@ -17,6 +17,7 @@ with(MO){
       o.construct    = FEaiApplication_construct;
       // @method
       o.createCanvas = FEaiApplication_createCanvas;
+      o.setup        = FEaiApplication_setup;
       // @method
       o.dispose      = FEaiApplication_dispose;
       return o;
@@ -45,6 +46,19 @@ with(MO){
    //==========================================================
    MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
       return RClass.create(FEaiCanvas);
+   }
+
+   //==========================================================
+   // <T>配置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
+      var o = this;
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      // 选取效果器
+      effectConsole.register('general.color.eai.citys', FEaiCityEffect);
+      effectConsole.register('general.color.eai.citys.range', FEaiCityRangeEffect);
    }
 
    //==========================================================

@@ -10,8 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
-      o._count      = RClass.register(o, new AGetter('_count'));
-      o._colors     = RClass.register(o, new AGetter('_colors'));
+      o._rates      = RClass.register(o, new AGetter('_rates'));
       //..........................................................
       // @method
       o.construct   = FEaiRateResourceConsole_construct;
@@ -31,6 +30,8 @@ with(MO){
    MO.FEaiRateResourceConsole_construct = function FEaiRateResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
+      // 创建属性
+      o._rates = new TObjects();
    }
 
    //==========================================================
@@ -40,15 +41,8 @@ with(MO){
    // @param code:String 代码
    // @return FEaiProvinceResource 省份资源
    //==========================================================
-   MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(index){
-      var o = this;
-      if(index < 0){
-         index = 0;
-      }
-      if(index > o._count){
-         index = o._count - 1;
-      }
-      return o._colors[index];
+   MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(code){
+      return this._rates.get(code);
    }
 
    //==========================================================
@@ -60,9 +54,10 @@ with(MO){
    MO.FEaiRateResourceConsole_unserialize = function FEaiRateResourceConsole_unserialize(input){
       var o = this;
       var count = o._count = input.readInt32();
-      var colors = o._colors = new Uint32Array(count);
       for(var i = 0; i < count; i++){
-         colors[i] = input.readUint32();
+         var rate = MO.Class.create(FEaiRateResource);
+         rate.unserialize(input)
+         o._rates.push(rate);
       }
    }
 
@@ -73,7 +68,7 @@ with(MO){
    //==========================================================
    MO.FEaiRateResourceConsole_dispose = function FEaiRateResourceConsole_dispose(){
       var o = this;
-      o._colors = null;
+      o._rates = RObject.dispose(o._rates);
       // 父处理
       o.__base.FConsole.dispose.call(o);
    }

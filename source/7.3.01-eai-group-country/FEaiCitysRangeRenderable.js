@@ -139,9 +139,8 @@ with(MO){
       o.pushTexture(texture, 'diffuse');
       // 设置材质
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'control';
+      materialInfo.effectCode = 'eai.citys.range';
       materialInfo.optionAlpha = true;
-      //o._material.info().optionDouble = true;
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }

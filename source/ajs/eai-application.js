@@ -5,6 +5,7 @@ with(MO){
       o._interval    = 10;
       o.construct    = FEaiApplication_construct;
       o.createCanvas = FEaiApplication_createCanvas;
+      o.setup        = FEaiApplication_setup;
       o.dispose      = FEaiApplication_dispose;
       return o;
    }
@@ -18,6 +19,12 @@ with(MO){
    }
    MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
       return RClass.create(FEaiCanvas);
+   }
+   MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
+      var o = this;
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('general.color.eai.citys', FEaiCityEffect);
+      effectConsole.register('general.color.eai.citys.range', FEaiCityRangeEffect);
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;
@@ -117,6 +124,7 @@ with(MO){
    }
    MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
+      o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
       var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
       canvas.build(hPanel);

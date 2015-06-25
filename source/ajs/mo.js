@@ -34296,6 +34296,7 @@ with (MO) {
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+      var rateResource = rateConsole.find(EEaiRate.Line);
       while (!startDate.isAfter(degreeDate)) {
          var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
          if (dateData) {
@@ -34304,8 +34305,8 @@ with (MO) {
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
             var rate = 1 - (y / dataHeight);
-            var colorIdx = parseInt(rateConsole.count() * rate);
-            var hexColor = RHex.format(rateConsole.find(colorIdx));
+            var colorIdx = parseInt(rateResource.count() * rate);
+            var hexColor = RHex.format(rateResource.find(colorIdx));
             var color = '#' + hexColor.substring(2);
             graphic.drawLine(lastX, lastY, x, y, color, 1);
             if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))

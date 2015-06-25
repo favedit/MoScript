@@ -10,7 +10,15 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
-      o._dates      = RClass.register(o, new AGetter('_dates'));
+      o._investmentDay           = RClass.register(o, new AGetter('_investmentDay'));
+      o._investmentTotal         = RClass.register(o, new AGetter('_investmentTotal'));
+      o._investmentProvinceDay   = RClass.register(o, new AGetter('_investmentProvinceDay'));
+      o._investmentProvinceTotal = RClass.register(o, new AGetter('_investmentProvinceTotal'));
+      o._investmentCityDay       = RClass.register(o, new AGetter('_investmentCityDay'));
+      o._investmentCityTotal     = RClass.register(o, new AGetter('_investmentCityTotal'));
+      o._provinces               = RClass.register(o, new AGetter('_provinces'));
+      o._citys                   = RClass.register(o, new AGetter('_citys'));
+      o._dates                   = RClass.register(o, new AGetter('_dates'));
       //..........................................................
       // @method
       o.construct   = FEaiHistoryResourceConsole_construct;
@@ -30,6 +38,8 @@ with(MO){
       var o = this;
       o.__base.FConsole.construct.call(o);
       // 创建属性
+      o._provinces = new TDictionary();
+      o._citys = new TDictionary();
       o._dates = new TDictionary();
    }
 
@@ -41,6 +51,28 @@ with(MO){
    //==========================================================
    MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_unserialize(input){
       var o = this;
+      // 读取属性
+      o._investmentDay = input.readFloat();
+      o._investmentTotal = input.readFloat();
+      o._investmentProvinceDay = input.readFloat();
+      o._investmentProvinceTotal = input.readFloat();
+      o._investmentCityDay = input.readFloat();
+      o._investmentCityTotal = input.readFloat();
+      // 读取省份属性
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var province = RClass.create(FEaiHistoryProvinceResource);
+         province.unserialize(input);
+         o._provinces.set(province.code(), province);
+      }
+      // 读取城市属性
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var city = RClass.create(FEaiHistoryCityResource);
+         city.unserialize(input);
+         o._citys.set(city.code(), city);
+      }
+      // 读取日期属性
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var date = RClass.create(FEaiHistoryDateResource);

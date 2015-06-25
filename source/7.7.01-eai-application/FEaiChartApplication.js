@@ -76,6 +76,7 @@ with(MO){
    //==========================================================
    MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
+      o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
       // 创建画板
       var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();

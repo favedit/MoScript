@@ -146,7 +146,7 @@ with(MO){
       o.pushTexture(texture, 'diffuse');
       // 设置材质
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'control';
+      materialInfo.effectCode = 'eai.citys';
       materialInfo.optionAlpha = true;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;

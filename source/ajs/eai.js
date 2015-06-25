@@ -189,7 +189,15 @@ with(MO){
 with(MO){
    MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._dates      = RClass.register(o, new AGetter('_dates'));
+      o._investmentDay           = RClass.register(o, new AGetter('_investmentDay'));
+      o._investmentTotal         = RClass.register(o, new AGetter('_investmentTotal'));
+      o._investmentProvinceDay   = RClass.register(o, new AGetter('_investmentProvinceDay'));
+      o._investmentProvinceTotal = RClass.register(o, new AGetter('_investmentProvinceTotal'));
+      o._investmentCityDay       = RClass.register(o, new AGetter('_investmentCityDay'));
+      o._investmentCityTotal     = RClass.register(o, new AGetter('_investmentCityTotal'));
+      o._provinces               = RClass.register(o, new AGetter('_provinces'));
+      o._citys                   = RClass.register(o, new AGetter('_citys'));
+      o._dates                   = RClass.register(o, new AGetter('_dates'));
       o.construct   = FEaiHistoryResourceConsole_construct;
       o.unserialize = FEaiHistoryResourceConsole_unserialize;
       o.dispose     = FEaiHistoryResourceConsole_dispose;
@@ -198,10 +206,30 @@ with(MO){
    MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
+      o._provinces = new TDictionary();
+      o._citys = new TDictionary();
       o._dates = new TDictionary();
    }
    MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_unserialize(input){
       var o = this;
+      o._investmentDay = input.readFloat();
+      o._investmentTotal = input.readFloat();
+      o._investmentProvinceDay = input.readFloat();
+      o._investmentProvinceTotal = input.readFloat();
+      o._investmentCityDay = input.readFloat();
+      o._investmentCityTotal = input.readFloat();
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var province = RClass.create(FEaiHistoryProvinceResource);
+         province.unserialize(input);
+         o._provinces.set(province.code(), province);
+      }
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var city = RClass.create(FEaiHistoryCityResource);
+         city.unserialize(input);
+         o._citys.set(city.code(), city);
+      }
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
          var date = RClass.create(FEaiHistoryDateResource);
@@ -324,8 +352,7 @@ with(MO){
 with(MO){
    MO.FEaiRateResourceConsole = function FEaiRateResourceConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._count      = RClass.register(o, new AGetter('_count'));
-      o._colors     = RClass.register(o, new AGetter('_colors'));
+      o._rates      = RClass.register(o, new AGetter('_rates'));
       o.construct   = FEaiRateResourceConsole_construct;
       o.find        = FEaiRateResourceConsole_find;
       o.unserialize = FEaiRateResourceConsole_unserialize;
@@ -335,28 +362,23 @@ with(MO){
    MO.FEaiRateResourceConsole_construct = function FEaiRateResourceConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
+      o._rates = new TObjects();
    }
-   MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(index){
-      var o = this;
-      if(index < 0){
-         index = 0;
-      }
-      if(index > o._count){
-         index = o._count - 1;
-      }
-      return o._colors[index];
+   MO.FEaiRateResourceConsole_find = function FEaiRateResourceConsole_find(code){
+      return this._rates.get(code);
    }
    MO.FEaiRateResourceConsole_unserialize = function FEaiRateResourceConsole_unserialize(input){
       var o = this;
       var count = o._count = input.readInt32();
-      var colors = o._colors = new Uint32Array(count);
       for(var i = 0; i < count; i++){
-         colors[i] = input.readUint32();
+         var rate = MO.Class.create(FEaiRateResource);
+         rate.unserialize(input)
+         o._rates.push(rate);
       }
    }
    MO.FEaiRateResourceConsole_dispose = function FEaiRateResourceConsole_dispose(){
       var o = this;
-      o._colors = null;
+      o._rates = RObject.dispose(o._rates);
       o.__base.FConsole.dispose.call(o);
    }
 }
@@ -415,6 +437,56 @@ MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    o._cityConsole = RObject.dispose(o._cityConsole);
    o._historyConsole = RObject.dispose(o._historyConsole);
    o.__base.FConsole.dispose.call(o);
+}
+with(MO){
+   MO.FEaiCityEffect = function FEaiCityEffect(o){
+      o = RClass.inherits(this, o, FG3dAutomaticEffect);
+      o._code          = 'eai.city';
+      o.drawRenderable = FEaiCityEffect_drawRenderable;
+      return o;
+   }
+   MO.FEaiCityEffect_drawRenderable = function FEaiCityEffect_drawRenderable(region, renderable){
+      var o = this;
+      var context = o._graphicContext;
+      var program = o._program;
+      var matrix = renderable.currentMatrix();
+      var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+      var material = renderable.material();
+      var info = material.info();
+      o.bindMaterial(material);
+      program.setParameter('vc_model_matrix', matrix);
+      program.setParameter('vc_vp_matrix', cameraVpMatrix);
+      program.setParameter4('fc_alpha', info.alphaBase, info.alphaRate, info.alphaLevel, info.alphaMerge);
+      program.setParameter('fc_ambient_color', info.ambientColor);
+      o.bindAttributes(renderable);
+      o.bindSamplers(renderable);
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
+   }
+}
+with(MO){
+   MO.FEaiCityRangeEffect = function FEaiCityRangeEffect(o){
+      o = RClass.inherits(this, o, FG3dAutomaticEffect);
+      o._code          = 'eai.city.range';
+      o.drawRenderable = FEaiCityRangeEffect_drawRenderable;
+      return o;
+   }
+   MO.FEaiCityRangeEffect_drawRenderable = function FEaiCityRangeEffect_drawRenderable(region, renderable){
+      var o = this;
+      var context = o._graphicContext;
+      var program = o._program;
+      var matrix = renderable.currentMatrix();
+      var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+      var material = renderable.material();
+      var info = material.info();
+      o.bindMaterial(material);
+      program.setParameter('vc_model_matrix', matrix);
+      program.setParameter('vc_vp_matrix', cameraVpMatrix);
+      o.bindAttributes(renderable);
+      o.bindSamplers(renderable);
+      var indexBuffer = renderable.indexBuffers().first();
+      context.drawTriangles(indexBuffer);
+   }
 }
 with(MO){
    MO.FEaiLogic = function FEaiLogic(o){
@@ -648,24 +720,18 @@ with(MO){
       var location = o._data.location();
       var range = 1;
       if(data){
-         var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
-         var total = data.investmentTotal() / 10000;
-         var color = rateConsole.find(parseInt(total));
-         range = total / 300;
-         if(total / 20 > 1){
-            total = 1;
-         }
-         o._color.set(((color >> 16) % 0xFF) / 128, ((color >> 8) % 0xFF) / 255, ((color >> 0) % 0xFF) / 255, total * 0.6);
+         var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
+         var investmentCityTotal = historyConsole.investmentCityTotal();
+         var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
+         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
+         var color = rateInfo.findRate(rate);
+         range = rate * 100;
+         rate = RFloat.toRange(rate, 0, 1);
+         o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 6);
       }else{
          o._color.set(0, 0, 0, 0);
       }
-      range = Math.sqrt(range);
-      if(range < 1){
-         range = 1;
-      }
-      if(range > 5){
-         range = 5;
-      }
+      range = RFloat.toRange(Math.sqrt(range), 1, 5);
       o._size.set(range, range);
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
@@ -758,7 +824,7 @@ with(MO){
       texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
       o.pushTexture(texture, 'diffuse');
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'control';
+      materialInfo.effectCode = 'eai.citys.range';
       materialInfo.optionAlpha = true;
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
@@ -952,7 +1018,7 @@ with(MO){
       texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
       o.pushTexture(texture, 'diffuse');
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'control';
+      materialInfo.effectCode = 'eai.citys';
       materialInfo.optionAlpha = true;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
@@ -2474,6 +2540,7 @@ with(MO){
       o._interval    = 10;
       o.construct    = FEaiApplication_construct;
       o.createCanvas = FEaiApplication_createCanvas;
+      o.setup        = FEaiApplication_setup;
       o.dispose      = FEaiApplication_dispose;
       return o;
    }
@@ -2487,6 +2554,12 @@ with(MO){
    }
    MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
       return RClass.create(FEaiCanvas);
+   }
+   MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
+      var o = this;
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('general.color.eai.citys', FEaiCityEffect);
+      effectConsole.register('general.color.eai.citys.range', FEaiCityRangeEffect);
    }
    MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
       var o = this;
@@ -2586,6 +2659,7 @@ with(MO){
    }
    MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
+      o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
       var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
       canvas.build(hPanel);
