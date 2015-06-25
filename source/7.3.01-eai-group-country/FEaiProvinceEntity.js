@@ -14,7 +14,7 @@ with(MO){
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       // @attribute
-      o._layerDepth       = 2;
+      o._layerDepth       = 3;
       //..........................................................
       // @method
       o.construct         = FEaiProvinceEntity_construct;
@@ -131,12 +131,9 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         //colors[colorIndex++] = (color >> 16) & 0x1F;
-         //colors[colorIndex++] = (color >>  8) & 0x1F;
-         //colors[colorIndex++] = (color      ) & 0x1F;
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x08;
+         colors[colorIndex++] = 0x0D;
+         colors[colorIndex++] = 0x19;
          colors[colorIndex++] = 0xFF;
       }
       // 创建三角面渲染对象
@@ -226,16 +223,16 @@ with(MO){
       var colorIndex = 0;
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x3B;
-         colors[colorIndex++] = 0x49;
-         colors[colorIndex++] = 0x54;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x00;
+         colors[colorIndex++] = 0xC1;
+         colors[colorIndex++] = 0xED;
+         colors[colorIndex++] = 0xFF;
       }
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x5B;
-         colors[colorIndex++] = 0x69;
-         colors[colorIndex++] = 0x74;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x0B;
+         colors[colorIndex++] = 0x11;
+         colors[colorIndex++] = 0x23;
+         colors[colorIndex++] = 0xFF;
       }
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);

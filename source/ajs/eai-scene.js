@@ -418,12 +418,10 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
-      var hTotal = document.getElementById('id_total');
-      if (hTotal) {
-         hTotal.innerHTML = MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-      }
+      var total = o._totalBar.findComponent('total');
+      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      o._totalBar.repaint();
    }
-   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var o = this;
@@ -488,6 +486,13 @@ MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process(
          o._playing = false;
       }
    }
+   var citysRenderables = o._citysRenderables;
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.upload();
+   }
+   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactive() {
    var o = this;
@@ -534,29 +539,6 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var citys = cityConsole.citys();
-   var count = citys.count();
-   var citysRenderables = o._citysRenderables;
-   var citysRangeRenderable = o._citysRangeRenderable;
-   for(var i = 0; i < count; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setData(city);
-      cityEntity.build(context);
-      o._cityEntities.set(city.code(), cityEntity);
-      var citysRenderable = citysRenderables.get(level);
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-   }
-   var count = citysRenderables.count()
-   for(var i = 0; i < count; i++){
-      var citysRenderable = citysRenderables.at(i);
-      citysRenderable.upload();
-   }
-   citysRangeRenderable.upload();
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
@@ -567,10 +549,10 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -30;
-   matrix.ty = -10;
+   matrix.tx = -34;
+   matrix.ty = -11.6;
    matrix.tz = 0;
-   matrix.setScale(0.26, 0.3, 0.26);
+   matrix.setScale(0.3, 0.34, 0.3);
    matrix.update();
 }
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
@@ -594,21 +576,44 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
+   o._desktop.register(control);
    stage.groundLayer().push(control);
-   var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
-   renderable.linkGraphicContext(o);
-   renderable.setup();
-   o.fixMatrix(renderable.matrix());
-   stage.cityRangeLayer().push(renderable);
+   var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
+   citysRangeRenderable.linkGraphicContext(o);
+   o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
+   var citysRenderables = o._citysRenderables;
    for(var i = 4; i >= 1; i--){
       var renderable = MO.Class.create(MO.FEaiCitysRenderable);
       renderable.setLevel(i);
       renderable.linkGraphicContext(o);
-      renderable.setup();
       o.fixMatrix(renderable.matrix());
       stage.cityLayer().push(renderable);
-      o._citysRenderables.set(i, renderable);
+      citysRenderables.set(i, renderable);
    }
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var citys = cityConsole.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var level = city.level();
+      var cityLocation = city.location();
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setData(city);
+      cityEntity.build(context);
+      o._cityEntities.set(city.code(), cityEntity);
+      var citysRenderable = citysRenderables.get(level);
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
+   }
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.setup();
+      citysRenderable.upload();
+   }
+   citysRangeRenderable.setup();
+   citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
@@ -618,8 +623,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
    var timeControl = frame.findComponent('time');
    timeControl.setLabel(currentDate.format('HH24:MI'));
-   var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(460, 20);
+   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
+   frame.setLocation(590, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -637,7 +642,6 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
-   o._background.psUpdate();
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;

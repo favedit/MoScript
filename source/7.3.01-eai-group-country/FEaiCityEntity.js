@@ -61,7 +61,7 @@ with(MO){
          var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
          var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
          var color = rateInfo.findRate(rate);
-         range = rate * 100;
+         range = rate * 10;
          rate = RFloat.toRange(rate, 0, 1);
          o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 6);
       }else{

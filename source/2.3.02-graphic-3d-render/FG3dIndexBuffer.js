@@ -11,7 +11,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._strideCd   = RClass.register(o, new AGetSet('_strideCd'), EG3dIndexStride.Uint16);
-      o._count      = RClass.register(o, new AGetter('_count'), 0);
+      o._count      = RClass.register(o, new AGetSet('_count'), 0);
       // @attribute
       o._drawModeCd = RClass.register(o, new AGetSet('_drawModeCd'), EG3dDrawMode.Triangles);
       o._lineWidth  = RClass.register(o, new AGetSet('_lineWidth'), 1);

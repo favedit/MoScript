@@ -70,32 +70,32 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    }
    //..........................................................
    // 创建城市实体
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var citys = cityConsole.citys();
-   var count = citys.count();
-   var citysRenderables = o._citysRenderables;
-   var citysRangeRenderable = o._citysRangeRenderable;
-   for(var i = 0; i < count; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      // 创建实体
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setData(city);
-      cityEntity.build(context);
-      o._cityEntities.set(city.code(), cityEntity);
-      // 放入渲染对象
-      var citysRenderable = citysRenderables.get(level);
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-   }
+   //var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   //var citys = cityConsole.citys();
+   //var count = citys.count();
+   //var citysRenderables = o._citysRenderables;
+   //var citysRangeRenderable = o._citysRangeRenderable;
+   //for(var i = 0; i < count; i++){
+   //   var city = citys.at(i);
+   //   var level = city.level();
+   //   var cityLocation = city.location();
+   //   // 创建实体
+   //   var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+   //   cityEntity.setData(city);
+   //   cityEntity.build(context);
+   //   o._cityEntities.set(city.code(), cityEntity);
+   //   // 放入渲染对象
+   //   var citysRenderable = citysRenderables.get(level);
+   //   citysRenderable.citys().push(cityEntity);
+   //   citysRangeRenderable.citys().push(cityEntity);
+   //}
    // 上传数据
-   var count = citysRenderables.count()
-   for(var i = 0; i < count; i++){
-      var citysRenderable = citysRenderables.at(i);
-      citysRenderable.upload();
-   }
-   citysRangeRenderable.upload();
+   //var count = citysRenderables.count()
+   //for(var i = 0; i < count; i++){
+   //   var citysRenderable = citysRenderables.at(i);
+   //   citysRenderable.upload();
+   //}
+   //citysRangeRenderable.upload();
 }
 
 //==========================================================
@@ -119,10 +119,10 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 //==========================================================
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -30;
-   matrix.ty = -10;
+   matrix.tx = -34;
+   matrix.ty = -11.6;
    matrix.tz = 0;
-   matrix.setScale(0.26, 0.3, 0.26);
+   matrix.setScale(0.3, 0.34, 0.3);
    matrix.update();
 }
 
@@ -155,23 +155,52 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
+   o._desktop.register(control);
    stage.groundLayer().push(control);
+   //..........................................................
+   // 创建城市范围渲染对象
+   var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
+   citysRangeRenderable.linkGraphicContext(o);
+   o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
    // 创建城市渲染对象
-   var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
-   renderable.linkGraphicContext(o);
-   renderable.setup();
-   o.fixMatrix(renderable.matrix());
-   stage.cityRangeLayer().push(renderable);
-   // 创建城市渲染对象
+   var citysRenderables = o._citysRenderables;
    for(var i = 4; i >= 1; i--){
       var renderable = MO.Class.create(MO.FEaiCitysRenderable);
       renderable.setLevel(i);
       renderable.linkGraphicContext(o);
-      renderable.setup();
       o.fixMatrix(renderable.matrix());
       stage.cityLayer().push(renderable);
-      o._citysRenderables.set(i, renderable);
+      citysRenderables.set(i, renderable);
    }
+   // 创建城市实体
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var citys = cityConsole.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var level = city.level();
+      var cityLocation = city.location();
+      // 创建实体
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setData(city);
+      cityEntity.build(context);
+      o._cityEntities.set(city.code(), cityEntity);
+      // 放入渲染对象
+      var citysRenderable = citysRenderables.get(level);
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
+   }
+   // 上传数据
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.setup();
+      citysRenderable.upload();
+   }
+   citysRangeRenderable.setup();
+   citysRangeRenderable.upload();
+   //..........................................................
    // 显示左上
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
@@ -183,8 +212,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var timeControl = frame.findComponent('time');
    timeControl.setLabel(currentDate.format('HH24:MI'));
    // 显示左上
-   var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(460, 20);
+   //var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
+   //frame.setLocation(460, 20);
+   //stage.faceLayer().push(frame);
+   //o._desktop.register(frame);
+   // 显示总计
+   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
+   frame.setLocation(590, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
    // 加载数据
@@ -221,8 +255,6 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
-   // 处理
-   o._background.psUpdate();
 }
 
 //==========================================================

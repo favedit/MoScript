@@ -105,7 +105,9 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       // 设置顶点数量
-      o._vertexCount = 4;
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
       // 设置顶点坐标
       var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
@@ -114,11 +116,22 @@ with(MO){
       buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
       // 设置顶点纹理
-      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
+      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
       // 设置顶点颜色
       var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
@@ -127,11 +140,24 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
+      //..........................................................
       // 设置索引数据
-      var data = [0, 1, 2, 0, 2, 3];
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
       var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
+      buffer.upload(data, indexCount);
       o.pushIndexBuffer(buffer);
+      //..........................................................
       // 创建纹理
       var texture = o._texture = context.createFlatTexture();
       texture.setOptionFlipY(true);
@@ -163,13 +189,10 @@ with(MO){
             count++;
          }
       }
-      var vertexTotal = o._vertexCount = 4 * count;
+      var vertexCount = o._vertexCount = 4 * count;
       // 设置顶点数据
-      var vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -192,15 +215,6 @@ with(MO){
             vertexData[vertexPosition++] = location.x - width;
             vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
-            // 设置顶点纹理
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             // 设置顶点颜色
             var color = city.color();
             var red = parseInt(color.red * 255);
@@ -216,25 +230,9 @@ with(MO){
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
       // 设置索引数据
-      var n = 0;
-      var indexCount = 3 * 2 * count;
-      var indexData = new Uint16Array(indexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         var index = 4 * i;
-         if(city.visible()){
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 1;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 3;
-         }
-      }
-      o._indexBuffer.upload(indexData, indexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
    }
 
    //==========================================================

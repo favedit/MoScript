@@ -7000,7 +7000,7 @@ with(MO){
    MO.FG3dIndexBuffer = function FG3dIndexBuffer(o){
       o = RClass.inherits(this, o, FG3dBuffer);
       o._strideCd   = RClass.register(o, new AGetSet('_strideCd'), EG3dIndexStride.Uint16);
-      o._count      = RClass.register(o, new AGetter('_count'), 0);
+      o._count      = RClass.register(o, new AGetSet('_count'), 0);
       o._drawModeCd = RClass.register(o, new AGetSet('_drawModeCd'), EG3dDrawMode.Triangles);
       o._lineWidth  = RClass.register(o, new AGetSet('_lineWidth'), 1);
       o.upload      = RMethod.virtual(o, 'upload');

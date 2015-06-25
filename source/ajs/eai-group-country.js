@@ -89,7 +89,7 @@ with(MO){
          var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
          var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
          var color = rateInfo.findRate(rate);
-         range = rate * 100;
+         range = rate * 10;
          rate = RFloat.toRange(rate, 0, 1);
          o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 6);
       }else{
@@ -160,18 +160,31 @@ with(MO){
    MO.FEaiCitysRangeRenderable_setup = function FEaiCitysRangeRenderable_setup(){
       var o = this;
       var context = o._graphicContext;
-      o._vertexCount = 4;
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
       var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
+      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
       var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
@@ -179,9 +192,20 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
       var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
+      buffer.upload(data, indexCount);
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();
       texture.setOptionFlipY(true);
@@ -205,12 +229,9 @@ with(MO){
             count++;
          }
       }
-      var vertexTotal = o._vertexCount = 4 * count;
-      var vertexCount = 4 * count;
+      var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -232,14 +253,6 @@ with(MO){
             vertexData[vertexPosition++] = location.x - width;
             vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             var color = city.color();
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
@@ -254,24 +267,8 @@ with(MO){
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      var n = 0;
-      var indexCount = 3 * 2 * count;
-      var indexData = new Uint16Array(indexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         var index = 4 * i;
-         if(city.visible()){
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 1;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 3;
-         }
-      }
-      o._indexBuffer.upload(indexData, indexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
    }
    MO.FEaiCitysRangeRenderable_loadUrl = function FEaiCitysRangeRenderable_loadUrl(url){
       var o = this;
@@ -354,28 +351,48 @@ with(MO){
    MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
       var o = this;
       var context = o._graphicContext;
-      o._vertexCount = 4;
-      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
+      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
-      var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
-      buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
       var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
+      buffer.upload(data, indexCount);
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();
       texture.setOptionFlipY(true);
@@ -400,12 +417,9 @@ with(MO){
             count++;
          }
       }
-      var vertexTotal = o._vertexCount = 4 * count;
-      var vertexCount = 4 * count;
+      var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -425,14 +439,6 @@ with(MO){
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
@@ -442,24 +448,8 @@ with(MO){
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      var n = 0;
-      var indexCount = 3 * 2 * count;
-      var indexData = new Uint16Array(indexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         var index = 4 * i;
-         if(city.visible()){
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 1;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 3;
-         }
-      }
-      o._indexBuffer.upload(indexData, indexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
    }
    MO.FEaiCitysRenderable_loadUrl = function FEaiCitysRenderable_loadUrl(url){
       var o = this;
@@ -800,7 +790,7 @@ with(MO){
       o._data             = RClass.register(o, new AGetSet('_data'));
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
-      o._layerDepth       = 2;
+      o._layerDepth       = 3;
       o.construct         = FEaiProvinceEntity_construct;
       o.buildFace         = FEaiProvinceEntity_buildFace;
       o.buildBorder       = FEaiProvinceEntity_buildBorder;
@@ -887,9 +877,9 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x08;
+         colors[colorIndex++] = 0x0D;
+         colors[colorIndex++] = 0x19;
          colors[colorIndex++] = 0xFF;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
@@ -959,16 +949,16 @@ with(MO){
       var colorIndex = 0;
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x3B;
-         colors[colorIndex++] = 0x49;
-         colors[colorIndex++] = 0x54;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x00;
+         colors[colorIndex++] = 0xC1;
+         colors[colorIndex++] = 0xED;
+         colors[colorIndex++] = 0xFF;
       }
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x5B;
-         colors[colorIndex++] = 0x69;
-         colors[colorIndex++] = 0x74;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x0B;
+         colors[colorIndex++] = 0x11;
+         colors[colorIndex++] = 0x23;
+         colors[colorIndex++] = 0xFF;
       }
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);

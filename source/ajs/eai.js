@@ -725,7 +725,7 @@ with(MO){
          var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
          var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
          var color = rateInfo.findRate(rate);
-         range = rate * 100;
+         range = rate * 10;
          rate = RFloat.toRange(rate, 0, 1);
          o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 6);
       }else{
@@ -796,18 +796,31 @@ with(MO){
    MO.FEaiCitysRangeRenderable_setup = function FEaiCitysRangeRenderable_setup(){
       var o = this;
       var context = o._graphicContext;
-      o._vertexCount = 4;
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
       var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
       buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
+      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
       var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
@@ -815,9 +828,20 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
       buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
       var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
+      buffer.upload(data, indexCount);
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();
       texture.setOptionFlipY(true);
@@ -841,12 +865,9 @@ with(MO){
             count++;
          }
       }
-      var vertexTotal = o._vertexCount = 4 * count;
-      var vertexCount = 4 * count;
+      var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -868,14 +889,6 @@ with(MO){
             vertexData[vertexPosition++] = location.x - width;
             vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             var color = city.color();
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
@@ -890,24 +903,8 @@ with(MO){
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      var n = 0;
-      var indexCount = 3 * 2 * count;
-      var indexData = new Uint16Array(indexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         var index = 4 * i;
-         if(city.visible()){
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 1;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 3;
-         }
-      }
-      o._indexBuffer.upload(indexData, indexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
    }
    MO.FEaiCitysRangeRenderable_loadUrl = function FEaiCitysRangeRenderable_loadUrl(url){
       var o = this;
@@ -990,28 +987,48 @@ with(MO){
    MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
       var o = this;
       var context = o._graphicContext;
-      o._vertexCount = 4;
-      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 1, 1, 1, 0, 0, 0];
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, 4);
+      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
-      var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
-      buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
-      var data = [0, 1, 2, 0, 2, 3];
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
       var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, 6);
+      buffer.upload(data, indexCount);
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();
       texture.setOptionFlipY(true);
@@ -1036,12 +1053,9 @@ with(MO){
             count++;
          }
       }
-      var vertexTotal = o._vertexCount = 4 * count;
-      var vertexCount = 4 * count;
+      var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -1061,14 +1075,6 @@ with(MO){
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
@@ -1078,24 +1084,8 @@ with(MO){
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      var n = 0;
-      var indexCount = 3 * 2 * count;
-      var indexData = new Uint16Array(indexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         var index = 4 * i;
-         if(city.visible()){
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 1;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 0;
-            indexData[n++] = index + 2;
-            indexData[n++] = index + 3;
-         }
-      }
-      o._indexBuffer.upload(indexData, indexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
    }
    MO.FEaiCitysRenderable_loadUrl = function FEaiCitysRenderable_loadUrl(url){
       var o = this;
@@ -1436,7 +1426,7 @@ with(MO){
       o._data             = RClass.register(o, new AGetSet('_data'));
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
-      o._layerDepth       = 2;
+      o._layerDepth       = 3;
       o.construct         = FEaiProvinceEntity_construct;
       o.buildFace         = FEaiProvinceEntity_buildFace;
       o.buildBorder       = FEaiProvinceEntity_buildBorder;
@@ -1523,9 +1513,9 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
-         colors[colorIndex++] = 0x1F;
+         colors[colorIndex++] = 0x08;
+         colors[colorIndex++] = 0x0D;
+         colors[colorIndex++] = 0x19;
          colors[colorIndex++] = 0xFF;
       }
       var renderable = o._faceRenderable = MO.RClass.create(MO.FE3dDataBox);
@@ -1595,16 +1585,16 @@ with(MO){
       var colorIndex = 0;
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x3B;
-         colors[colorIndex++] = 0x49;
-         colors[colorIndex++] = 0x54;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x00;
+         colors[colorIndex++] = 0xC1;
+         colors[colorIndex++] = 0xED;
+         colors[colorIndex++] = 0xFF;
       }
       for(var i = 0; i < vertexTotal; i++){
-         colors[colorIndex++] = 0x5B;
-         colors[colorIndex++] = 0x69;
-         colors[colorIndex++] = 0x74;
-         colors[colorIndex++] = 255;
+         colors[colorIndex++] = 0x0B;
+         colors[colorIndex++] = 0x11;
+         colors[colorIndex++] = 0x23;
+         colors[colorIndex++] = 0xFF;
       }
       var renderable = o._borderRenderable = MO.RClass.create(MO.FE3dDataBox);
       renderable.linkGraphicContext(context);
@@ -2061,12 +2051,10 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
-      var hTotal = document.getElementById('id_total');
-      if (hTotal) {
-         hTotal.innerHTML = MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-      }
+      var total = o._totalBar.findComponent('total');
+      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      o._totalBar.repaint();
    }
-   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    var o = this;
@@ -2131,6 +2119,13 @@ MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process(
          o._playing = false;
       }
    }
+   var citysRenderables = o._citysRenderables;
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.upload();
+   }
+   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactive() {
    var o = this;
@@ -2177,29 +2172,6 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var citys = cityConsole.citys();
-   var count = citys.count();
-   var citysRenderables = o._citysRenderables;
-   var citysRangeRenderable = o._citysRangeRenderable;
-   for(var i = 0; i < count; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setData(city);
-      cityEntity.build(context);
-      o._cityEntities.set(city.code(), cityEntity);
-      var citysRenderable = citysRenderables.get(level);
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-   }
-   var count = citysRenderables.count()
-   for(var i = 0; i < count; i++){
-      var citysRenderable = citysRenderables.at(i);
-      citysRenderable.upload();
-   }
-   citysRangeRenderable.upload();
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
@@ -2210,10 +2182,10 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -30;
-   matrix.ty = -10;
+   matrix.tx = -34;
+   matrix.ty = -11.6;
    matrix.tz = 0;
-   matrix.setScale(0.26, 0.3, 0.26);
+   matrix.setScale(0.3, 0.34, 0.3);
    matrix.update();
 }
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
@@ -2237,21 +2209,44 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
+   o._desktop.register(control);
    stage.groundLayer().push(control);
-   var renderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
-   renderable.linkGraphicContext(o);
-   renderable.setup();
-   o.fixMatrix(renderable.matrix());
-   stage.cityRangeLayer().push(renderable);
+   var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
+   citysRangeRenderable.linkGraphicContext(o);
+   o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
+   var citysRenderables = o._citysRenderables;
    for(var i = 4; i >= 1; i--){
       var renderable = MO.Class.create(MO.FEaiCitysRenderable);
       renderable.setLevel(i);
       renderable.linkGraphicContext(o);
-      renderable.setup();
       o.fixMatrix(renderable.matrix());
       stage.cityLayer().push(renderable);
-      o._citysRenderables.set(i, renderable);
+      citysRenderables.set(i, renderable);
    }
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var citys = cityConsole.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var level = city.level();
+      var cityLocation = city.location();
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setData(city);
+      cityEntity.build(context);
+      o._cityEntities.set(city.code(), cityEntity);
+      var citysRenderable = citysRenderables.get(level);
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
+   }
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.setup();
+      citysRenderable.upload();
+   }
+   citysRangeRenderable.setup();
+   citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
@@ -2261,8 +2256,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
    var timeControl = frame.findComponent('time');
    timeControl.setLabel(currentDate.format('HH24:MI'));
-   var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   frame.setLocation(460, 20);
+   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
+   frame.setLocation(590, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -2280,7 +2275,6 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
-   o._background.psUpdate();
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;

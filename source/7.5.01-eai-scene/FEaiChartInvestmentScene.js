@@ -141,13 +141,11 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
-      var hTotal = document.getElementById('id_total');
-      if (hTotal) {
-         //hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
-         hTotal.innerHTML = MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-      }
+      var total = o._totalBar.findComponent('total');
+      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      o._totalBar.repaint();
    }
-   o._citysRangeRenderable.upload();
+   //o._citysRangeRenderable.upload();
 }
 
 //==========================================================
@@ -249,6 +247,14 @@ MO.FEaiChartInvestmentScene_process = function FEaiChartInvestmentScene_process(
          o._playing = false;
       }
    }
+   // 上传数据
+   var citysRenderables = o._citysRenderables;
+   var count = citysRenderables.count()
+   for(var i = 0; i < count; i++){
+      var citysRenderable = citysRenderables.at(i);
+      citysRenderable.upload();
+   }
+   o._citysRangeRenderable.upload();
 }
 
 //==========================================================
