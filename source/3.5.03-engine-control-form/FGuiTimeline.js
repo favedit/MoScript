@@ -7,7 +7,7 @@ with (MO) {
    // @version 150618
    //==========================================================
    MO.FGuiTimeline = function FGuiTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl);
+      o = RClass.inherits(this, o, FGuiControl, MListener);
       //..........................................................
       // @attribute
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
@@ -23,6 +23,9 @@ with (MO) {
       //..........................................................
       // @method
       o.onPaintBegin = FGuiTimeline_onPaintBegin;
+      o.onOperationDown = FGuiTimeline_onOperationDown;
+      // @event
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
    }
 
@@ -138,6 +141,44 @@ with (MO) {
 
       startTime.date.setTime(bakTime);
       startTime.refresh();
+   }
+
+   //==========================================================
+   // <T>鼠标按下处理</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
+      if (!event.flag) {
+         return;
+      }
+      var o = this;
+      o.__base.FGuiControl.onOperationDown.call(o, event);
+      var rectangle = o._clientRectangle;
+      var bottom = rectangle.top + rectangle.height;
+
+      var decoLeft = rectangle.left + 5;
+      var decoRight = rectangle.left + rectangle.width - 5;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+
+      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+
+      var x = event.locationX;
+      if (event.locationY > bottom - 30) {
+         if (x > dataLeft && x < dataRight) {
+            var rate = (x - dataLeft) / (dataRight - dataLeft);
+            var msDate = o.startTime().date.getTime() + (o.endTime().date.getTime() - o.startTime().date.getTime()) * rate;
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            var selectedDate = MO.Memory.alloc(TDate);
+            selectedDate.date.setTime(msDate);
+            selectedDate.refresh();
+            dsEvent.date = selectedDate;
+            o.processDataChangedListener(dsEvent);
+         }
+      }
+
    }
 
 }

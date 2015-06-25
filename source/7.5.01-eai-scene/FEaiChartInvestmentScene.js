@@ -27,6 +27,8 @@ MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o) {
    o.active = MO.FEaiChartInvestmentScene_active;
    o.process = MO.FEaiChartInvestmentScene_process;
    o.deactive = MO.FEaiChartInvestmentScene_deactive;
+   // @method
+   o.onDateSelect = MO.FEaiChartInvestmentScene_onDateSelect;
    return o;
 }
 
@@ -195,10 +197,23 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
+   timeline.addDataChangedListener(o, o.onDateSelect);
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
    layer.push(timeline);
+}
+
+//==========================================================
+// <T>时间轴日期选择事件处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartInvestmentScene_onDateSelect = function FEaiChartInvestmentScene_onDateSelect(event) {
+   var o = this;
+   o._currentDate.date.setTime(event.date.date.getTime());
+   o._currentDate.refresh();
+   o.selectDate(o._currentDate.format('YYYYMMDD'));
 }
 
 //==========================================================
