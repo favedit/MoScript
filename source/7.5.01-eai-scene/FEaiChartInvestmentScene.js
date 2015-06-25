@@ -14,8 +14,6 @@ MO.FEaiChartInvestmentScene = function FEaiChartInvestmentScene(o) {
    o._startDate = null;
    o._endDate = null;
    o._currentDate = null;
-   o._currentRow = 0;
-   o._lastDateRowCount = 0;
    o._timeline = null;
    //..........................................................
    // @event
@@ -68,14 +66,11 @@ MO.FEaiChartInvestmentScene_onKeyDown = function FEaiChartInvestmentScene_onKeyD
    }
    if (keyCode == MO.EKeyCode.L) {
       MO.RDate.autoParse(o._currentDate, '20140701');
-      o._currentRow = 0;
-      o._lastDateRowCount = 0;
       var invesTable = document.getElementById('id_investment_table');
       for (var i = 1; i < invesTable.rows.length; i++) {
          var row = invesTable.rows[i];
          row.style.display = 'none';
       }
-      o.selectDate(o._currentDate.format('YYYYMMDD'));
       o._playing = true;
    }
 }
@@ -94,44 +89,41 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
    var mapLayer = stage.mapLayer();
    var borderLayer = stage.borderLayer();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
    if (dateData) {
       // 设置省份数据
       var provincesData = dateData.provinces();
       var count = provincesData.count();
+      var invesTable = document.getElementById('id_investment_table');
+      while (invesTable.rows.length < count + 1) {
+         var row = invesTable.insertRow(invesTable.rows.length);
+         row.insertCell(0);
+         row.insertCell(1);
+         row.insertCell(2);
+      }
       for (var i = 0; i < count; i++) {
          var provinceData = provincesData.at(i);
          var provinceEntity = o._provinceEntities.get(provinceData.code());
          provinceEntity.update(provinceData);
-      }
-      // 控制表格行显隐
-      var invesTable = document.getElementById('id_investment_table');
-      for (var i = 0; i < o._lastDateRowCount; i++) {
-         var row = invesTable.rows[o._currentRow - i];
-         row.style.display = 'none';
-      }
-      for (var i = 0; i < count; i++) {
-         // rows[0]为标题栏，这里需要+1
-         var row = invesTable.rows[o._currentRow + 1 + i];
-         var rankCell = row.cells[0];
-         rankCell.innerHTML = i + 1;
-         switch (i) {
-            case 0:
-               row.style.color = '#FFEA01';
-               break;
-            case 1:
-               row.style.color = '#E1A71B';
-               break;
-            case 2:
-               row.style.color = '#E16A00';
-               break;
-            default:
-               break;
-         }
+         //更新表格
+         var provinceResData = provinceConsole.findByCode(provinceData.code());
+         var row = invesTable.rows[i + 1];
          row.style.display = '';
+         row.className = 'DataGrid_Row';
+         var rankCell = row.cells[0];
+         var labelCell = row.cells[1];
+         var invesCell = row.cells[2];
+         rankCell.innerText = i + 1;
+         labelCell.innerText = provinceResData.label();
+         if (provinceData.investmentTotal() > 1000) {
+            invesCell.innerText = MO.RFloat.unitFormat(provinceData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+         }
+         else {
+            invesCell.innerText = provinceData.investmentTotal();
+         }
+         invesCell.align = 'right';
       }
-      o._currentRow += count;
-      o._lastDateRowCount = count;
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
       o._timeline.repaint();
@@ -146,7 +138,7 @@ MO.FEaiChartInvestmentScene_selectDate = function FEaiChartInvestmentScene_selec
          cityEntity.update(data);
       }
       var hTotal = document.getElementById('id_total');
-      if(hTotal){
+      if (hTotal) {
          //hTotal.innerHTML = o._currentDate.format('YYYY-MM-DD') + ' '+ dateData.investmentTotal();
          hTotal.innerHTML = MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
       }
@@ -169,42 +161,27 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   //填充表格
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   // 创建前三名表格并设置样式
    var invesTable = document.getElementById('id_investment_table');
-   var currentDate = o._currentDate;
-   while (true) {
-      var dateData = historyConsole.dates().get(currentDate.format('YYYYMMDD'));
-      if (dateData) {
-         // 设置省份数据
-         var provincesData = dateData.provinces();
-         var count = provincesData.count();
-         for (var i = 0; i < count; i++) {
-            var provinceInvesData = provincesData.at(i);
-            var provinceResData = provinceConsole.findByCode(provinceInvesData.code());
-            var row = invesTable.insertRow(invesTable.rows.length);
-            row.className = 'DataGrid_Row';
-            var rankCol = row.insertCell(0)
-            var labelCol = row.insertCell(1);
-            var invesCol = row.insertCell(2);
-            invesCol.align = 'right';
-            labelCol.innerHTML = provinceResData.label();
-            if (provinceInvesData.investmentTotal() > 1000) {
-               invesCol.innerHTML = MO.RFloat.unitFormat(provinceInvesData.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-            }
-            else {
-               invesCol.innerHTML = provinceInvesData.investmentTotal();
-            }
-            row.style.display = 'none';
-         }
-         currentDate.addDay(1);
-      }
-      else {
-         break;
+   for (var i = 0; i < 3; i++) {
+      var row = invesTable.insertRow(invesTable.rows.length);
+      var rankCell = row.insertCell(0);
+      row.insertCell(1);
+      row.insertCell(2);
+      switch (i) {
+         case 0:
+            row.style.color = '#FFEA01';
+            break;
+         case 1:
+            row.style.color = '#E1A71B';
+            break;
+         case 2:
+            row.style.color = '#E16A00';
+            break;
+         default:
+            break;
       }
    }
-   o._currentDate.parseAuto('20140701');
    //时间轴
    var stage = o.activeStage();
    var layer = stage.faceLayer();
