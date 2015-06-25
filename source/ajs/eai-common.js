@@ -11,6 +11,12 @@ MO.EEaiConstant = new function EEaiConstant(){
    o.ServiceHost = "eai.logic.service";
    return o;
 }
+MO.EEaiRate = new function EEaiRate(){
+   var o = this;
+   o.Line = 0;
+   o.Map  = 1;
+   return o;
+}
 MO.EEaiScene = new function EEaiScene(){
    var o = this;
    o.Group           = 'group';
