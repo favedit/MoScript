@@ -220,8 +220,9 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       var contextSize = context.size();
-      var contextWidth = contextSize.width;
-      var contextHeight = contextSize.height;
+      var contextRatio = context.ratio();
+      var contextWidth = contextSize.width * contextRatio;
+      var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -251,7 +252,6 @@ with(MO){
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
-         context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
          context.setScissorRectangle();
       }

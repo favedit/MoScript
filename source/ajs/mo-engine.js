@@ -579,7 +579,7 @@ with(MO){
    MO.FStage_construct = function FStage_construct(){
       var o = this;
       o.__base.FComponent.construct.call(o);
-      o._size = new SSize2(1280, 720);
+      o._size = new SSize2(1920, 1080);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
    }
@@ -1539,13 +1539,19 @@ with(MO){
       var hCanvas = o._hCanvas;
       var scaleWidth = hCanvas.width = width * o._scaleRate;
       var scaleHeight = hCanvas.height = height * o._scaleRate;
-      o._graphicContext.setViewport(0, 0, scaleWidth, scaleHeight);
+      var context = o._graphicContext;
+      var ratioX = o._logicSize.width / scaleWidth;
+      var ratioY = o._logicSize.height / scaleHeight;
+      var ratio = Math.max(ratioX, ratioY);
+      context.setRatio(ratio);
+      context.sizeRatio().set(ratioX, ratioY);
+      context.setViewport(0, 0, scaleWidth, scaleHeight);
    }
    MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(1280, 720);
+      o._screenSize = new SSize2(0, 0);
    }
    MO.FE3dCanvas_build = function FE3dCanvas_build(p){
       var o = this;
@@ -7667,8 +7673,9 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       var contextSize = context.size();
-      var contextWidth = contextSize.width;
-      var contextHeight = contextSize.height;
+      var contextRatio = context.ratio();
+      var contextWidth = contextSize.width * contextRatio;
+      var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -7698,7 +7705,6 @@ with(MO){
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
-         context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
          context.setScissorRectangle();
       }

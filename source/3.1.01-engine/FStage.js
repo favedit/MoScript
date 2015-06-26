@@ -58,7 +58,7 @@ with(MO){
       var o = this;
       o.__base.FComponent.construct.call(o);
       // 设置变量
-      o._size = new SSize2(1280, 720);
+      o._size = new SSize2(1920, 1080);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
    }

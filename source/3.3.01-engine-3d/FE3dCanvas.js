@@ -100,7 +100,13 @@ with(MO){
       var scaleWidth = hCanvas.width = width * o._scaleRate;
       var scaleHeight = hCanvas.height = height * o._scaleRate;
       // 设置范围
-      o._graphicContext.setViewport(0, 0, scaleWidth, scaleHeight);
+      var context = o._graphicContext;
+      var ratioX = o._logicSize.width / scaleWidth;
+      var ratioY = o._logicSize.height / scaleHeight;
+      var ratio = Math.max(ratioX, ratioY);
+      context.setRatio(ratio);
+      context.sizeRatio().set(ratioX, ratioY);
+      context.setViewport(0, 0, scaleWidth, scaleHeight);
    }
 
    //==========================================================
@@ -113,7 +119,7 @@ with(MO){
       o.__base.FObject.construct.call(o);
       // 设置变量
       o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(1280, 720);
+      o._screenSize = new SSize2(0, 0);
    }
 
    //==========================================================

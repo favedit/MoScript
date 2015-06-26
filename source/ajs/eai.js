@@ -1741,7 +1741,7 @@ MO.FEaiChartCustomerScene_deactive = function FEaiChartCustomerScene_deactive(){
 MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code        = MO.EEaiScene.ChartHistory;
-   o._playing     = false;
+   o._playing     = true;
    o._startDate   = null;
    o._endDate     = null;
    o._currentDate = null;
@@ -1828,8 +1828,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas._size.height - 400);
-   timeline.setWidth(MO.Eai.Canvas._size.width - 500);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 500);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);

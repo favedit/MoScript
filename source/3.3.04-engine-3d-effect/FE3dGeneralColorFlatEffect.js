@@ -27,8 +27,12 @@
       var o = this;
       var context = o._graphicContext;
       var contextSize = context.size();
-      var contextWidth = contextSize.width;
-      var contextHeight = contextSize.height;
+      var contextRatio = context.ratio();
+      //var contextRatio = context.sizeRatio();
+      //var contextWidth = contextSize.width * contextRatio.width;
+      //var contextHeight = contextSize.height * contextRatio.height;
+      var contextWidth = contextSize.width * contextRatio;
+      var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
       // 绑定材质
       var material = renderable.material();
@@ -63,7 +67,7 @@
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
-         context.setScissorRectangle(clipX, clipY, size.width, size.height);
+         //context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
          context.setScissorRectangle();
       }
