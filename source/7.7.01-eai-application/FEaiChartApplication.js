@@ -73,13 +73,14 @@ with(MO){
    // <T>配置处理。</T>
    //
    // @method
+   // @param hPanel:HtmlTag 页面元素
    //==========================================================
    MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
       var o = this;
       o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
       // 创建画板
-      var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
+      var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
       canvas.build(hPanel);
       canvas.setPanel(hPanel);
       o.linkGraphicContext(canvas);

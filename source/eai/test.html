@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<TITLE>EAI-Chart-Investment</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<STYLE>
+/* ------------------------------------------------------ */
+/* html                                                   */
+/* ------------------------------------------------------ */
+html{
+   width:100%;
+   height:100%;
+}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+body{
+   width:100%;
+   height:100%;
+   margin: 0px;
+   padding: 0px;
+   overflow: hidden;
+}
+</STYLE>
+<SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+<SCRIPT>
+function onLoad(){
+   //MO.Browser.fullscreen(window, true);
+   var screen = window.screen;
+   id_text.innerHTML = document.body.offsetWidth + ' x ' + document.body.offsetHeight + '<BR>' +
+      screen.width + ' x ' + screen.height + '<BR>' +
+      window.innerWidth + ' x ' + window.innerHeight;
+}
+</SCRIPT>
+</HEAD>
+<BODY style='background-color:#999999;' onload='onLoad()'>
+<DIV id='id_text'></DIV>
+</BODY>
+</HTML>

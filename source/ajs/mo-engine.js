@@ -1493,11 +1493,11 @@ with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
       o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
       o._optionAlpha        = true;
-      o._optionAntialias    = false;
+      o._optionAntialias    = true;
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 60;
+      o._interval           = 1000 / 40;
       o._hPanel             = null;
       o._hCanvas            = null;
       o.onEnterFrame        = RMethod.empty;
@@ -1553,9 +1553,9 @@ with(MO){
       o._logicSize = new SSize2(1280, 720);
       o._screenSize = new SSize2(0, 0);
    }
-   MO.FE3dCanvas_build = function FE3dCanvas_build(p){
+   MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
-      var hCanvas = o._hCanvas = RBuilder.create(p, 'CANVAS');
+      var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
       hCanvas.__linker = o;
       hCanvas.style.width = '100%';
       hCanvas.style.height = '100%';
@@ -1581,11 +1581,10 @@ with(MO){
    MO.FE3dCanvas_resize = function FE3dCanvas_resize(){
       this.onResize();
    }
-   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(p){
+   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
       var o = this;
-      var hc = o._hCanvas;
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
+      hPanel.appendChild(o._hCanvas);
+      o._hPanel = hPanel;
       o.onResize();
    }
    MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){

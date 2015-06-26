@@ -385,15 +385,15 @@ with(MO){
    MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
       this._hostPath = p;
    }
-   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(p){
+   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
       var o = this;
-      if(p){
-         return o._contentPath + p;
+      if(uri){
+         return o._contentPath + uri;
       }
       return o._contentPath;
    }
-   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(p){
-      this._contentPath = p;
+   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
+      this._contentPath = path;
    }
    MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
       return this._typeCd == p;
@@ -415,6 +415,25 @@ with(MO){
          return decodeURIComponent(url);
       }
       return decodeURI(url);
+   }
+   MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
+      if(flag){
+         if (hWindow.requestFullscreen){
+            hWindow.requestFullscreen();
+         }else if(hWindow.mozRequestFullScreen){
+            hWindow.mozRequestFullScreen();
+         }else if(hWindow.webkitRequestFullScreen){
+            hWindow.webkitRequestFullScreen();
+         }
+      }else{
+         if (hWindow.exitFullscreen){
+            hWindow.exitFullscreen();
+         }else if(hWindow.mozCancelFullScreen){
+            hWindow.mozCancelFullScreen();
+         }else if(hWindow.webkitCancelFullScreen){
+            hWindow.webkitCancelFullScreen();
+         }
+      }
    }
    MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
       var link = document.createElement('A');
@@ -970,25 +989,6 @@ with(MO){
          r = v.__puuid = RHtml._nextUid++;
       }
       return r;
-   }
-   MO.RHtml.prototype.fullscreen = function RHtml_fullscreen(h, f){
-      if(f){
-         if (h.requestFullscreen){
-            h.requestFullscreen();
-         }else if(h.mozRequestFullScreen){
-            h.mozRequestFullScreen();
-         }else if(h.webkitRequestFullScreen){
-            h.webkitRequestFullScreen();
-         }
-      }else{
-         if (h.exitFullscreen){
-            h.exitFullscreen();
-         }else if(h.mozCancelFullScreen){
-            h.mozCancelFullScreen();
-         }else if(h.webkitCancelFullScreen){
-            h.webkitCancelFullScreen();
-         }
-      }
    }
    MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
       var r = null;

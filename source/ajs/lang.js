@@ -4437,4 +4437,5 @@ with(MO){
       o._lastTime = new Date().getTime();
    }
    MO.RTimer = new RTimer();
+   MO.Timer = MO.RTimer;
 }

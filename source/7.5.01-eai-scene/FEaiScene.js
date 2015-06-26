@@ -69,7 +69,7 @@ with(MO){
       control.setContext(o.graphicContext());
       control.location().set(10, 200);
       control.build();
-      o._desktop.register(control);
+      //o._desktop.register(control);
    }
 
    //==========================================================

@@ -109,6 +109,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code        = MO.EEaiScene.ChartHistory;
    o._playing     = true;
+   o._lastTick    = 0;
+   o._interval    = 10;
    o._startDate   = null;
    o._endDate     = null;
    o._currentDate = null;
@@ -176,7 +178,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          cityEntity.update(data);
       }
       var total = o._totalBar.findComponent('total');
-      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      total.setLabel(document.body.offsetWidth + '<>' + document.body.offsetHeight);
       o._totalBar.repaint();
    }
 }
@@ -222,12 +224,16 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
    if (o._playing) {
-      o._currentDate.addDay(1);
-      var code = o._currentDate.format('YYYYMMDD')
-      var endCode = o._endDate.format('YYYYMMDD')
-      o.selectDate(code);
-      if (code == endCode) {
-         o._playing = false;
+      var currentTick = MO.Timer.current();
+      if(currentTick - o._lastTick > o._interval){
+         o._currentDate.addDay(1);
+         var code = o._currentDate.format('YYYYMMDD')
+         var endCode = o._endDate.format('YYYYMMDD')
+         o.selectDate(code);
+         if (code == endCode) {
+            o._playing = false;
+         }
+         o._lastTick = currentTick;
       }
    }
    var citysRenderables = o._citysRenderables;
@@ -592,10 +598,10 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -34;
-   matrix.ty = -11.6;
+   matrix.tx = -37;
+   matrix.ty = -12.3;
    matrix.tz = 0;
-   matrix.setScale(0.3, 0.34, 0.3);
+   matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
 }
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
@@ -615,7 +621,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.borderLayer().pushDisplay(display);
    var control = o._background = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
-   control.size().assign(contextSize);
+   control.size().assign(MO.Eai.Canvas.screenSize());
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
@@ -810,7 +816,6 @@ with(MO){
       control.setContext(o.graphicContext());
       control.location().set(10, 200);
       control.build();
-      o._desktop.register(control);
    }
    MO.FEaiScene_active = function FEaiScene_active(){
       var o = this;

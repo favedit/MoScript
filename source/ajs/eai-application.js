@@ -34,17 +34,15 @@ with(MO){
 with(MO){
    MO.FEaiCanvas = function FEaiCanvas(o){
       o = RClass.inherits(this, o, FE3dCanvas);
-      o._scaleRate          = 1;
-      o._optionAlpha        = true;
-      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
-      o._capturePosition    = null;
-      o._captureRotation    = null;
-      o.onResize            = FEaiCanvas_onResize;
-      o.construct           = FEaiCanvas_construct;
-      o.build               = FEaiCanvas_build;
-      o.setPanel            = FEaiCanvas_setPanel;
-      o.selectStage         = FEaiCanvas_selectStage;
-      o.dispose             = FEaiCanvas_dispose;
+      o._scaleRate       = 1;
+      o._optionAlpha     = true;
+      o._activeStage     = RClass.register(o, new AGetter('_activeStage'));
+      o._capturePosition = null;
+      o._captureRotation = null;
+      o.onResize         = FEaiCanvas_onResize;
+      o.construct        = FEaiCanvas_construct;
+      o.selectStage      = FEaiCanvas_selectStage;
+      o.dispose          = FEaiCanvas_dispose;
       return o;
    }
    MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(event){
@@ -65,14 +63,6 @@ with(MO){
       o._rotation = new SVector3();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
-   }
-   MO.FEaiCanvas_build = function FEaiCanvas_build(hPanel){
-      var o = this;
-      o.__base.FE3dCanvas.build.call(o, hPanel);
-   }
-   MO.FEaiCanvas_setPanel = function FEaiCanvas_setPanel(hPanel){
-      var o = this;
-      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
    }
    MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
       var o = this;
@@ -126,7 +116,7 @@ with(MO){
       var o = this;
       o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
-      var canvas = MO.Eai.Canvas = o.Canvas = o.createCanvas();
+      var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
       canvas.build(hPanel);
       canvas.setPanel(hPanel);
       o.linkGraphicContext(canvas);
@@ -157,6 +147,7 @@ with(MO){
       o.onMouseCapture      = FEaiChartCanvas_onMouseCapture;
       o.onMouseCaptureStop  = FEaiChartCanvas_onMouseCaptureStop;
       o.construct           = FEaiChartCanvas_construct;
+      o.setPanel            = FEaiChartCanvas_setPanel;
       o.dispose             = FEaiChartCanvas_dispose;
       return o;
    }
@@ -214,7 +205,12 @@ with(MO){
    MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
       var o = this;
       o.__base.FEaiCanvas.construct.call(o);
+      o._logicSize = new SSize2(1920, 1080);
       o._cameraPosition = new SPoint3();
+   }
+   MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FEaiCanvas.setPanel.call(o, hPanel);
    }
    MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
       var o = this;

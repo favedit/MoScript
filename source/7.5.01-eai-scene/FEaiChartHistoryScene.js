@@ -11,7 +11,9 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    // @attribute
    o._code        = MO.EEaiScene.ChartHistory;
    // @attribute
-   o._playing     = false;
+   o._playing     = true;
+   o._lastTick    = 0;
+   o._interval    = 10;
    o._startDate   = null;
    o._endDate     = null;
    o._currentDate = null;
@@ -109,7 +111,10 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          cityEntity.update(data);
       }
       var total = o._totalBar.findComponent('total');
-      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      //total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      //total.setLabel(MO.Eai.Canvas.screenSize().toString());
+      //total.setLabel(MO.Eai.Canvas._hCanvas.offsetWidth + 'x' + MO.Eai.Canvas._hCanvas.offsetHeight);
+      total.setLabel(document.body.offsetWidth + '<>' + document.body.offsetHeight);
       o._totalBar.repaint();
    }
    //o._citysRangeRenderable.upload();
@@ -181,12 +186,16 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
    if (o._playing) {
-      o._currentDate.addDay(1);
-      var code = o._currentDate.format('YYYYMMDD')
-      var endCode = o._endDate.format('YYYYMMDD')
-      o.selectDate(code);
-      if (code == endCode) {
-         o._playing = false;
+      var currentTick = MO.Timer.current();
+      if(currentTick - o._lastTick > o._interval){
+         o._currentDate.addDay(1);
+         var code = o._currentDate.format('YYYYMMDD')
+         var endCode = o._endDate.format('YYYYMMDD')
+         o.selectDate(code);
+         if (code == endCode) {
+            o._playing = false;
+         }
+         o._lastTick = currentTick;
       }
    }
    // 上传数据

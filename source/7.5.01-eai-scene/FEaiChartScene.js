@@ -119,10 +119,10 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 //==========================================================
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -34;
-   matrix.ty = -11.6;
+   matrix.tx = -37;
+   matrix.ty = -12.3;
    matrix.tz = 0;
-   matrix.setScale(0.3, 0.34, 0.3);
+   matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
 }
 
@@ -151,7 +151,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 创建背景
    var control = o._background = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
-   control.size().assign(contextSize);
+   control.size().assign(MO.Eai.Canvas.screenSize());
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();

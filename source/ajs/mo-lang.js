@@ -5730,6 +5730,7 @@ with(MO){
       o._lastTime = new Date().getTime();
    }
    MO.RTimer = new RTimer();
+   MO.Timer = MO.RTimer;
 }
 MO.EFrustumPlane = new function EFrustumPlane(){
    var o = this;

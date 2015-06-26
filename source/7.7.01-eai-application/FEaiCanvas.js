@@ -9,25 +9,23 @@ with(MO){
       o = RClass.inherits(this, o, FE3dCanvas);
       //..........................................................
       // @attribute
-      o._scaleRate          = 1;
-      o._optionAlpha        = true;
+      o._scaleRate       = 1;
+      o._optionAlpha     = true;
       // @attribute
-      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
+      o._activeStage     = RClass.register(o, new AGetter('_activeStage'));
       // @attribute
-      o._capturePosition    = null;
-      o._captureRotation    = null;
+      o._capturePosition = null;
+      o._captureRotation = null;
       //..........................................................
       // @event
-      o.onResize            = FEaiCanvas_onResize;
+      o.onResize         = FEaiCanvas_onResize;
       //..........................................................
       // @method
-      o.construct           = FEaiCanvas_construct;
+      o.construct        = FEaiCanvas_construct;
       // @method
-      o.build               = FEaiCanvas_build;
-      o.setPanel            = FEaiCanvas_setPanel;
-      o.selectStage         = FEaiCanvas_selectStage;
+      o.selectStage      = FEaiCanvas_selectStage;
       // @method
-      o.dispose             = FEaiCanvas_dispose;
+      o.dispose          = FEaiCanvas_dispose;
       return o;
    }
 
@@ -62,26 +60,6 @@ with(MO){
       o._rotation = new SVector3();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
-   }
-
-   //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiCanvas_build = function FEaiCanvas_build(hPanel){
-      var o = this;
-      o.__base.FE3dCanvas.build.call(o, hPanel);
-   }
-
-   //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiCanvas_setPanel = function FEaiCanvas_setPanel(hPanel){
-      var o = this;
-      o.__base.FE3dCanvas.setPanel.call(o, hPanel);
    }
 
    //==========================================================

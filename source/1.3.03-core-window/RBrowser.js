@@ -126,13 +126,13 @@
    //===========================================================
    // <T>获得内容路径。</T>
    //
-   // @param p:uri:String 路径
+   // @param uri:String 路径
    // @return String 内容路径
    //===========================================================
-   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(p){
+   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
       var o = this;
-      if(p){
-         return o._contentPath + p;
+      if(uri){
+         return o._contentPath + uri;
       }
       return o._contentPath;
    }
@@ -140,10 +140,10 @@
    //===========================================================
    // <T>设置内容路径。</T>
    //
-   // @param p:path:String 路径
+   // @param path:String 路径
    //===========================================================
-   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(p){
-      this._contentPath = p;
+   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
+      this._contentPath = path;
    }
 
    //===========================================================
@@ -202,6 +202,35 @@
          return decodeURIComponent(url);
       }
       return decodeURI(url);
+   }
+   
+   //==========================================================
+   // <T>设置窗口是否全屏。</T>
+   //
+   // @method
+   // @param hWindow:HtmlWindow 页面窗口
+   // @param flag:Boolean 标志
+   //==========================================================
+   MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
+      if(flag){
+         // 进入全屏模式
+         if (hWindow.requestFullscreen){
+            hWindow.requestFullscreen();
+         }else if(hWindow.mozRequestFullScreen){
+            hWindow.mozRequestFullScreen();
+         }else if(hWindow.webkitRequestFullScreen){
+            hWindow.webkitRequestFullScreen();
+         }
+      }else{
+         // 退出全屏模式
+         if (hWindow.exitFullscreen){
+            hWindow.exitFullscreen();
+         }else if(hWindow.mozCancelFullScreen){
+            hWindow.mozCancelFullScreen();
+         }else if(hWindow.webkitCancelFullScreen){
+            hWindow.webkitCancelFullScreen();
+         }
+      }
    }
 
    //===========================================================

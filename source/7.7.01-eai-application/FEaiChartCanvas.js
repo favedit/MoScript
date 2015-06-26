@@ -22,6 +22,8 @@ with(MO){
       // @method
       o.construct           = FEaiChartCanvas_construct;
       // @method
+      o.setPanel            = FEaiChartCanvas_setPanel;
+      // @method
       o.dispose             = FEaiChartCanvas_dispose;
       return o;
    }
@@ -115,7 +117,20 @@ with(MO){
    MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
       var o = this;
       o.__base.FEaiCanvas.construct.call(o);
+      o._logicSize = new SSize2(1920, 1080);
       o._cameraPosition = new SPoint3();
+   }
+
+   //==========================================================
+   // <T>设置面板处理。</T>
+   //
+   // @method
+   // @param hPanel:HtmlTag 页面元素
+   //==========================================================
+   MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FEaiCanvas.setPanel.call(o, hPanel);
+      //alert('body=' + window.document.body.offsetWidth + 'x' + window.document.body.offsetHeight);
    }
 
    //==========================================================

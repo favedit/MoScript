@@ -5730,6 +5730,7 @@ with(MO){
       o._lastTime = new Date().getTime();
    }
    MO.RTimer = new RTimer();
+   MO.Timer = MO.RTimer;
 }
 MO.EFrustumPlane = new function EFrustumPlane(){
    var o = this;
@@ -13173,15 +13174,15 @@ with(MO){
    MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
       this._hostPath = p;
    }
-   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(p){
+   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
       var o = this;
-      if(p){
-         return o._contentPath + p;
+      if(uri){
+         return o._contentPath + uri;
       }
       return o._contentPath;
    }
-   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(p){
-      this._contentPath = p;
+   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
+      this._contentPath = path;
    }
    MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
       return this._typeCd == p;
@@ -13203,6 +13204,25 @@ with(MO){
          return decodeURIComponent(url);
       }
       return decodeURI(url);
+   }
+   MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
+      if(flag){
+         if (hWindow.requestFullscreen){
+            hWindow.requestFullscreen();
+         }else if(hWindow.mozRequestFullScreen){
+            hWindow.mozRequestFullScreen();
+         }else if(hWindow.webkitRequestFullScreen){
+            hWindow.webkitRequestFullScreen();
+         }
+      }else{
+         if (hWindow.exitFullscreen){
+            hWindow.exitFullscreen();
+         }else if(hWindow.mozCancelFullScreen){
+            hWindow.mozCancelFullScreen();
+         }else if(hWindow.webkitCancelFullScreen){
+            hWindow.webkitCancelFullScreen();
+         }
+      }
    }
    MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
       var link = document.createElement('A');
@@ -13758,25 +13778,6 @@ with(MO){
          r = v.__puuid = RHtml._nextUid++;
       }
       return r;
-   }
-   MO.RHtml.prototype.fullscreen = function RHtml_fullscreen(h, f){
-      if(f){
-         if (h.requestFullscreen){
-            h.requestFullscreen();
-         }else if(h.mozRequestFullScreen){
-            h.mozRequestFullScreen();
-         }else if(h.webkitRequestFullScreen){
-            h.webkitRequestFullScreen();
-         }
-      }else{
-         if (h.exitFullscreen){
-            h.exitFullscreen();
-         }else if(h.mozCancelFullScreen){
-            h.mozCancelFullScreen();
-         }else if(h.webkitCancelFullScreen){
-            h.webkitCancelFullScreen();
-         }
-      }
    }
    MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
       var r = null;
@@ -21847,11 +21848,11 @@ with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
       o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
       o._optionAlpha        = true;
-      o._optionAntialias    = false;
+      o._optionAntialias    = true;
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 60;
+      o._interval           = 1000 / 40;
       o._hPanel             = null;
       o._hCanvas            = null;
       o.onEnterFrame        = RMethod.empty;
@@ -21907,9 +21908,9 @@ with(MO){
       o._logicSize = new SSize2(1280, 720);
       o._screenSize = new SSize2(0, 0);
    }
-   MO.FE3dCanvas_build = function FE3dCanvas_build(p){
+   MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
-      var hCanvas = o._hCanvas = RBuilder.create(p, 'CANVAS');
+      var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
       hCanvas.__linker = o;
       hCanvas.style.width = '100%';
       hCanvas.style.height = '100%';
@@ -21935,11 +21936,10 @@ with(MO){
    MO.FE3dCanvas_resize = function FE3dCanvas_resize(){
       this.onResize();
    }
-   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(p){
+   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
       var o = this;
-      var hc = o._hCanvas;
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
+      hPanel.appendChild(o._hCanvas);
+      o._hPanel = hPanel;
       o.onResize();
    }
    MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){

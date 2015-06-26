@@ -33,36 +33,6 @@
    }
    
    //==========================================================
-   // <T>获得对象的唯一编号。</T>
-   // <P>外部会引用这个函数，不要在内部使用this对象。</P>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @return Integer 编号
-   //==========================================================
-   MO.RHtml.prototype.fullscreen = function RHtml_fullscreen(h, f){
-      if(f){
-         // 进入全屏模式
-         if (h.requestFullscreen){
-            h.requestFullscreen();
-         }else if(h.mozRequestFullScreen){
-            h.mozRequestFullScreen();
-         }else if(h.webkitRequestFullScreen){
-            h.webkitRequestFullScreen();
-         }
-      }else{
-         // 退出全屏模式
-         if (h.exitFullscreen){
-            h.exitFullscreen();
-         }else if(h.mozCancelFullScreen){
-            h.mozCancelFullScreen();
-         }else if(h.webkitCancelFullScreen){
-            h.webkitCancelFullScreen();
-         }
-      }
-   }
-   
-   //==========================================================
    // <T>获得显示性。</T>
    //
    // @method

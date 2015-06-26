@@ -10,12 +10,12 @@ with(MO){
       //..........................................................
       // @attribute
       o._optionAlpha        = true;
-      o._optionAntialias    = false;
+      o._optionAntialias    = true;
       // @attribute
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 60;
+      o._interval           = 1000 / 40;
       //..........................................................
       // @html
       o._hPanel             = null;
@@ -126,12 +126,12 @@ with(MO){
    // <T>构建处理。</T>
    //
    // @method
-   // @param p:document:HtmlTag 页面元素
+   // @param hPanel:HtmlTag 页面元素
    //==========================================================
-   MO.FE3dCanvas_build = function FE3dCanvas_build(p){
+   MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
       // 创建画板
-      var hCanvas = o._hCanvas = RBuilder.create(p, 'CANVAS');
+      var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
       hCanvas.__linker = o;
       hCanvas.style.width = '100%';
       hCanvas.style.height = '100%';
@@ -172,13 +172,13 @@ with(MO){
    // <T>设置面板处理。</T>
    //
    // @method
+   // @param hPanel:HtmlTag 页面元素
    //==========================================================
-   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(p){
+   MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
       var o = this;
-      var hc = o._hCanvas;
       // 放入父容器
-      o._hPanel = p;
-      p.appendChild(o._hCanvas);
+      hPanel.appendChild(o._hCanvas);
+      o._hPanel = hPanel;
       // 改变大小
       o.onResize();
    }
