@@ -18,14 +18,15 @@ with(MO){
       o._investmentCityTotal     = RClass.register(o, new AGetter('_investmentCityTotal'));
       o._provinces               = RClass.register(o, new AGetter('_provinces'));
       o._citys                   = RClass.register(o, new AGetter('_citys'));
+      o._milestones              = RClass.register(o, new AGetter('_milestones'));
       o._dates                   = RClass.register(o, new AGetter('_dates'));
       //..........................................................
       // @method
-      o.construct   = FEaiHistoryResourceConsole_construct;
+      o.construct                = FEaiHistoryResourceConsole_construct;
       // @method
-      o.unserialize = FEaiHistoryResourceConsole_unserialize;
+      o.unserialize              = FEaiHistoryResourceConsole_unserialize;
       // @method
-      o.dispose     = FEaiHistoryResourceConsole_dispose;
+      o.dispose                  = FEaiHistoryResourceConsole_dispose;
       return o;
    }
 
@@ -40,6 +41,7 @@ with(MO){
       // 创建属性
       o._provinces = new TDictionary();
       o._citys = new TDictionary();
+      o._milestones = new TDictionary();
       o._dates = new TDictionary();
    }
 
@@ -72,6 +74,13 @@ with(MO){
          city.unserialize(input);
          o._citys.set(city.code(), city);
       }
+      // 读取城市属性
+      var count = input.readInt32();
+      for(var i = 0; i < count; i++){
+         var milestone = RClass.create(FEaiHistoryMilestoneResource);
+         milestone.unserialize(input);
+         o._milestones.set(milestone.code(), milestone);
+      }
       // 读取日期属性
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
@@ -88,6 +97,9 @@ with(MO){
    //==========================================================
    MO.FEaiHistoryResourceConsole_dispose = function FEaiHistoryResourceConsole_dispose(){
       var o = this;
+      o._provinces = RObject.dispose(o._provinces);
+      o._citys = RObject.dispose(o._citys);
+      o._milestones = RObject.dispose(o._milestones);
       o._dates = RObject.dispose(o._dates);
       // 父处理
       o.__base.FConsole.dispose.call(o);
