@@ -28,9 +28,7 @@
       var context = o._graphicContext;
       var contextSize = context.size();
       var contextRatio = context.ratio();
-      //var contextRatio = context.sizeRatio();
-      //var contextWidth = contextSize.width * contextRatio.width;
-      //var contextHeight = contextSize.height * contextRatio.height;
+      var contextSizeRatio = context.sizeRatio();
       var contextWidth = contextSize.width * contextRatio;
       var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
@@ -58,18 +56,28 @@
       }else{
          // 计算矩阵
          var matrix = renderable.matrix();
-         var cx = matrix.sx / contextWidth * 2;
-         var cy = matrix.sy / contextHeight * 2;
-         var tx = matrix.tx / contextWidth * 2 - 1;
-         var ty = 1 - matrix.ty / contextHeight * 2;
-         program.setParameter4('vc_position', cx, cy, tx, ty);
+         if(renderable._optionFull){
+            var contextWidth = contextSize.width * contextSizeRatio.width;
+            var contextHeight = contextSize.height * contextSizeRatio.height;
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }else{
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }
          // 绘制处理
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
          //context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-         context.setScissorRectangle();
+         //context.setScissorRectangle();
       }
    }
 }

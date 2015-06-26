@@ -4147,8 +4147,8 @@ with(MO){
       o._hCanvas = hCanvas;
       if(hCanvas.getContext){
          var parameters = new Object();
-         parameters.alpha = o._optionAlpha;
-         parameters.antialias = o._optionAntialias;
+         parameters.alpha = false;
+         parameters.antialias = false;
          var handle = hCanvas.getContext('experimental-webgl2', parameters);
          if(!handle){
             handle = hCanvas.getContext('experimental-webgl', parameters);
@@ -4178,23 +4178,23 @@ with(MO){
       capability.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
       capability.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
       capability.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
-      var e = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
-      if(e){
+      var extension = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
+      if(extension){
          capability.optionInstance = true;
       }
       capability.mergeCount = parseInt((capability.vertexConst - 32) / 4);
-      var e = o._handleLayout = handle.getExtension('OES_vertex_array_object');
-      if(e){
+      var extension = o._handleLayout = handle.getExtension('OES_vertex_array_object');
+      if(extension){
          capability.optionLayout = true;
       }
-      var e = handle.getExtension('OES_element_index_uint');
-      if(e){
+      var extension = handle.getExtension('OES_element_index_uint');
+      if(extension){
          capability.optionIndex32 = true;
       }
-      var e = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
-      if(e){
-         capability.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
-         capability.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+      var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
+      if(extension){
+         capability.samplerCompressRgb = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
+         capability.samplerCompressRgba = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       var s = capability.shader = new Object();
       var vertexPrecision = s.vertexPrecision = new Object();
@@ -4215,8 +4215,8 @@ with(MO){
          fragmentPrecision.intMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_INT);
          fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
-      var e = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
-      if(e){
+      var extension = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
+      if(extension){
          capability.optionShaderSource = true;
       }
    }

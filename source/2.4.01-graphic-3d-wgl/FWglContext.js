@@ -105,8 +105,10 @@ with(MO){
       if(hCanvas.getContext){
          // 设置参数
          var parameters = new Object();
-         parameters.alpha = o._optionAlpha;
-         parameters.antialias = o._optionAntialias;
+         //parameters.alpha = o._optionAlpha;
+         //parameters.antialias = o._optionAntialias;
+         parameters.alpha = false;
+         parameters.antialias = false;
          //parameters.premultipliedAlpha = false;
          // 初始化对象
          var handle = hCanvas.getContext('experimental-webgl2', parameters);
@@ -141,26 +143,26 @@ with(MO){
       capability.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
       capability.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
       // 测试实例绘制支持
-      var e = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
-      if(e){
+      var extension = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
+      if(extension){
          capability.optionInstance = true;
       }
       capability.mergeCount = parseInt((capability.vertexConst - 32) / 4);
       // 测试顶点布局支持
-      var e = o._handleLayout = handle.getExtension('OES_vertex_array_object');
-      if(e){
+      var extension = o._handleLayout = handle.getExtension('OES_vertex_array_object');
+      if(extension){
          capability.optionLayout = true;
       }
       // 测试32位索引支持
-      var e = handle.getExtension('OES_element_index_uint');
-      if(e){
+      var extension = handle.getExtension('OES_element_index_uint');
+      if(extension){
          capability.optionIndex32 = true;
       }
       // 测试纹理压缩支持
-      var e = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
-      if(e){
-         capability.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
-         capability.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+      var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
+      if(extension){
+         capability.samplerCompressRgb = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
+         capability.samplerCompressRgba = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       // 测定渲染精度
       var s = capability.shader = new Object();
@@ -183,8 +185,8 @@ with(MO){
          fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
       // 测试调试渲染器支持
-      var e = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
-      if(e){
+      var extension = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
+      if(extension){
          capability.optionShaderSource = true;
       }
    }

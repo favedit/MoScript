@@ -73,8 +73,8 @@ with(MO){
       buffer.upload(data, 4 * 3, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       // 设置纹理数据
@@ -85,8 +85,8 @@ with(MO){
       buffer.upload(data, 4 * 2, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       // 设置索引数据
@@ -95,8 +95,8 @@ with(MO){
       buffer.upload(data, 6);
       var stream = RClass.create(FE3sStream);
       stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
+      stream.setDataCount(2);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushIndexBuffer(buffer);
       // 创建纹理

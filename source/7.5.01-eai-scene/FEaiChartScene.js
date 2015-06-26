@@ -68,34 +68,6 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
-   //..........................................................
-   // 创建城市实体
-   //var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   //var citys = cityConsole.citys();
-   //var count = citys.count();
-   //var citysRenderables = o._citysRenderables;
-   //var citysRangeRenderable = o._citysRangeRenderable;
-   //for(var i = 0; i < count; i++){
-   //   var city = citys.at(i);
-   //   var level = city.level();
-   //   var cityLocation = city.location();
-   //   // 创建实体
-   //   var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-   //   cityEntity.setData(city);
-   //   cityEntity.build(context);
-   //   o._cityEntities.set(city.code(), cityEntity);
-   //   // 放入渲染对象
-   //   var citysRenderable = citysRenderables.get(level);
-   //   citysRenderable.citys().push(cityEntity);
-   //   citysRangeRenderable.citys().push(cityEntity);
-   //}
-   // 上传数据
-   //var count = citysRenderables.count()
-   //for(var i = 0; i < count; i++){
-   //   var citysRenderable = citysRenderables.at(i);
-   //   citysRenderable.upload();
-   //}
-   //citysRangeRenderable.upload();
 }
 
 //==========================================================
@@ -152,9 +124,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var control = o._background = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
    control.size().assign(MO.Eai.Canvas.screenSize());
+   control.size().set(1920, 1080);
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
+   control.renderable().setOptionFull(true);
    o._desktop.register(control);
    stage.groundLayer().push(control);
    //..........................................................
@@ -216,11 +190,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //frame.setLocation(460, 20);
    //stage.faceLayer().push(frame);
    //o._desktop.register(frame);
+   //..........................................................
    // 显示总计
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
    frame.setLocation(590, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
+   //..........................................................
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);

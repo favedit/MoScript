@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FE3dFaceData);
       //..........................................................
       // @attribute
+      o._optionFull = RClass.register(o, new AGetSet('_optionFull'));
       o._control    = RClass.register(o, new AGetSet('_control'));
       o._graphic    = null;
       //..........................................................

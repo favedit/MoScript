@@ -7,21 +7,22 @@ with(MO){
    // @version 150612
    //==========================================================
    MO.FGuiDesktop = function FGuiDesktop(o){
-      o = RClass.inherits(this, o, FObject);
+      o = RClass.inherits(this, o, FObject, MGraphicObject);
       //..........................................................
       // @attribute
-      o._controls    = RClass.register(o, new AGetter('_controls'));
+      o._controls        = RClass.register(o, new AGetter('_controls'));
+      o._visibleControls = null;
       //..........................................................
       // @method
-      o.construct    = FGuiDesktop_construct;
+      o.construct        = FGuiDesktop_construct;
       // @method
-      o.register     = FGuiDesktop_register;
-      o.unregister   = FGuiDesktop_unregister;
+      o.register         = FGuiDesktop_register;
+      o.unregister       = FGuiDesktop_unregister;
       // @method
-      o.processEvent = FGuiDesktop_processEvent;
-      o.process      = FGuiDesktop_process;
+      o.processEvent     = FGuiDesktop_processEvent;
+      o.process          = FGuiDesktop_process;
       // @method
-      o.dispose      = FGuiDesktop_dispose;
+      o.dispose          = FGuiDesktop_dispose;
       return o;
    }
 
@@ -35,6 +36,7 @@ with(MO){
       o.__base.FObject.construct.call(o);
       // 创建界面集合
       o._controls = new TObjects();
+      o._visibleControls = new TObjects();
    }
 
    //==========================================================
@@ -65,16 +67,30 @@ with(MO){
    //==========================================================
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;
+      // 计算屏幕点击
+      var context = o._graphicContext;
+      var ratio = context.ratio();
+      var locationX = event.clientX * ratio;
+      var locationY = event.clientY * ratio;
+      // 获得可见控件
+      var visibleControls = o._visibleControls;
+      visibleControls.clear();
       var controls = o._controls;
       var count = controls.count();
       for(var i = 0; i < count; i++){
          var control = controls.at(i);
          if(control.visible()){
-            var location = control.location();
-            event.locationX = event.clientX - location.x;
-            event.locationY = event.clientY - location.y;
-            control.processEvent(event);
+            visibleControls.push(control);
          }
+      }
+      // 事件处理
+      var count = visibleControls.count();
+      for(var i = 0; i < count; i++){
+         var control = visibleControls.at(i);
+         var location = control.location();
+         event.locationX = locationX - location.x;
+         event.locationY = locationY - location.y;
+         control.processEvent(event);
       }
    }
 
@@ -101,6 +117,7 @@ with(MO){
    MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
       var o = this;
       o._controls = RObject.dispose(o._controls);
+      o._visibleControls = RObject.dispose(o._visibleControls);
       // 父处理
       o.__base.FObject.dispose.call(o);
    }

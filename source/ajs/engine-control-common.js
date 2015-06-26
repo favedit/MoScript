@@ -615,47 +615,51 @@ with(MO){
 }
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
-      o._visible           = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetSet('_visible')], true);
-      o._foreColor         = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
-      o._foreFont          = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
-      o._backColor         = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
-      o._backResource      = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
-      o._backGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
-      o._backHoverColor    = MO.RClass.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
-      o._backHoverResource = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
-      o._backHoverGrid     = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
-      o._statusHover       = false;
-      o._statusPaint       = false;
-      o._backImage         = null;
-      o._backHoverResource = null;
-      o._clientRectangle   = null;
-      o.onUpdate           = FGuiControl_onUpdate;
-      o.onPaintBegin       = FGuiControl_onPaintBegin;
-      o.onPaintEnd         = FGuiControl_onPaintEnd;
-      o.onPaint            = FGuiControl_onPaint;
-      o.onOperationDown    = FGuiControl_onOperationDown;
-      o.onOperationMove    = FGuiControl_onOperationMove;
-      o.onOperationUp      = FGuiControl_onOperationUp;
-      o.onEvent            = FGuiControl_onEvent;
-      o.oeInitialize       = FGuiControl_oeInitialize;
-      o.oeUpdate           = FGuiControl_oeUpdate;
-      o.construct          = FGuiControl_construct;
-      o.setLocation        = FGuiControl_setLocation;
-      o.setSize            = FGuiControl_setSize;
-      o.testReady          = FGuiControl_testReady;
-      o.testInRange        = FGuiControl_testInRange;
-      o.paint              = FGuiControl_paint;
-      o.repaint            = FGuiControl_repaint;
-      o.update             = FGuiControl_update;
-      o.build              = FGuiControl_build;
-      o.processEvent       = FGuiControl_processEvent;
-      o.psEnable           = FGuiControl_psEnable;
-      o.psVisible          = FGuiControl_psVisible;
-      o.psResize           = FGuiControl_psResize;
-      o.psRefresh          = FGuiControl_psRefresh;
-      o.psUpdate           = FGuiControl_psUpdate;
-      o.dispose            = FGuiControl_dispose;
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MListener, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+      o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
+      o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
+      o._backColor              = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
+      o._backResource           = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
+      o._backGrid               = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
+      o._backHoverColor         = MO.RClass.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
+      o._backHoverResource      = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
+      o._backHoverGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
+      o._operationDownListeners = MO.RClass.register(o, new AListener('_operationDownListeners', EEvent.OperationDown));
+      o._operationMoveListeners = MO.RClass.register(o, new AListener('_operationMoveListeners', EEvent.OperationMove));
+      o._operationUpListeners   = MO.RClass.register(o, new AListener('_operationUpListeners', EEvent.OperationUp));
+      o._statusHover            = false;
+      o._statusPaint            = false;
+      o._backImage              = null;
+      o._backHoverResource      = null;
+      o._clientRectangle        = null;
+      o.onUpdate                = FGuiControl_onUpdate;
+      o.onPaintBegin            = FGuiControl_onPaintBegin;
+      o.onPaintEnd              = FGuiControl_onPaintEnd;
+      o.onPaint                 = FGuiControl_onPaint;
+      o.onOperationDown         = FGuiControl_onOperationDown;
+      o.onOperationMove         = FGuiControl_onOperationMove;
+      o.onOperationUp           = FGuiControl_onOperationUp;
+      o.onEvent                 = FGuiControl_onEvent;
+      o.oeInitialize            = FGuiControl_oeInitialize;
+      o.oeUpdate                = FGuiControl_oeUpdate;
+      o.construct               = FGuiControl_construct;
+      o.setVisible              = FGuiControl_setVisible;
+      o.setLocation             = FGuiControl_setLocation;
+      o.setSize                 = FGuiControl_setSize;
+      o.testReady               = FGuiControl_testReady;
+      o.testInRange             = FGuiControl_testInRange;
+      o.paint                   = FGuiControl_paint;
+      o.repaint                 = FGuiControl_repaint;
+      o.update                  = FGuiControl_update;
+      o.build                   = FGuiControl_build;
+      o.processEvent            = FGuiControl_processEvent;
+      o.psEnable                = FGuiControl_psEnable;
+      o.psVisible               = FGuiControl_psVisible;
+      o.psResize                = FGuiControl_psResize;
+      o.psRefresh               = FGuiControl_psRefresh;
+      o.psUpdate                = FGuiControl_psUpdate;
+      o.dispose                 = FGuiControl_dispose;
       return o;
    }
    MO.FGuiControl_onUpdate = function FGuiControl_onUpdate(event){
@@ -729,12 +733,15 @@ with(MO){
    }
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
+      o.processOperationDownListener(event);
    }
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
+      o.processOperationMoveListener(event);
    }
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;
+      o.processOperationUpListener(event);
    }
    MO.FGuiControl_onEvent = function FGuiControl_onEvent(event, flag){
       var o = this;
@@ -788,6 +795,14 @@ with(MO){
       o.__base.MGuiPadding.construct.call(o);
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
+   }
+   MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
+      var o = this;
+      o._visible = flag;
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setVisible(flag);
+      }
    }
    MO.FGuiControl_setLocation = function FGuiControl_setLocation(x, y){
       var o = this;
@@ -944,6 +959,7 @@ with(MO){
 with(MO){
    MO.FGuiControlRenderable = function FGuiControlRenderable(o){
       o = RClass.inherits(this, o, FE3dFaceData);
+      o._optionFull = RClass.register(o, new AGetSet('_optionFull'));
       o._control    = RClass.register(o, new AGetSet('_control'));
       o._graphic    = null;
       o.construct   = FGuiControlRenderable_construct;

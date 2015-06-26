@@ -65,12 +65,13 @@ with (MO) {
             var colorIdx = parseInt(rateResource.count() * rate);
             var hexColor = RHex.format(rateResource.find(colorIdx));
             var color = '#' + hexColor.substring(2);
-            graphic.drawLine(lastX, lastY, x, y, color, 1);
+            graphic.drawLine(lastX, lastY, x, y, color, 3);
             if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))
             {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
-               graphic.drawText(text, x - text.length * 3, y - 12, '#FFFFFF');
+               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
             }
             lastX = x;
             lastY = y;

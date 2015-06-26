@@ -7,63 +7,69 @@ with(MO){
    // @version 150610
    //==========================================================
    MO.FGuiControl = function FGuiControl(o){
-      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MListener, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       //..........................................................
       // @property
-      o._visible           = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetSet('_visible')], true);
-      o._foreColor         = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
-      o._foreFont          = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
-      o._backColor         = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
-      o._backResource      = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
-      o._backGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
-      o._backHoverColor    = MO.RClass.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
-      o._backHoverResource = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
-      o._backHoverGrid     = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
+      o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+      o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
+      o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
+      o._backColor              = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
+      o._backResource           = MO.RClass.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
+      o._backGrid               = MO.RClass.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
+      o._backHoverColor         = MO.RClass.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
+      o._backHoverResource      = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
+      o._backHoverGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
+      //..........................................................
+      // @event
+      o._operationDownListeners = MO.RClass.register(o, new AListener('_operationDownListeners', EEvent.OperationDown));
+      o._operationMoveListeners = MO.RClass.register(o, new AListener('_operationMoveListeners', EEvent.OperationMove));
+      o._operationUpListeners   = MO.RClass.register(o, new AListener('_operationUpListeners', EEvent.OperationUp));
       //..........................................................
       // @attribute
-      o._statusHover       = false;
-      o._statusPaint       = false;
-      o._backImage         = null;
-      o._backHoverResource = null;
-      o._clientRectangle   = null;
+      o._statusHover            = false;
+      o._statusPaint            = false;
+      o._backImage              = null;
+      o._backHoverResource      = null;
+      o._clientRectangle        = null;
       //..........................................................
       // @event
-      o.onUpdate           = FGuiControl_onUpdate;
+      o.onUpdate                = FGuiControl_onUpdate;
       // @event
-      o.onPaintBegin       = FGuiControl_onPaintBegin;
-      o.onPaintEnd         = FGuiControl_onPaintEnd;
-      o.onPaint            = FGuiControl_onPaint;
+      o.onPaintBegin            = FGuiControl_onPaintBegin;
+      o.onPaintEnd              = FGuiControl_onPaintEnd;
+      o.onPaint                 = FGuiControl_onPaint;
       // @event
-      o.onOperationDown    = FGuiControl_onOperationDown;
-      o.onOperationMove    = FGuiControl_onOperationMove;
-      o.onOperationUp      = FGuiControl_onOperationUp;
-      o.onEvent            = FGuiControl_onEvent;
+      o.onOperationDown         = FGuiControl_onOperationDown;
+      o.onOperationMove         = FGuiControl_onOperationMove;
+      o.onOperationUp           = FGuiControl_onOperationUp;
+      o.onEvent                 = FGuiControl_onEvent;
       //..........................................................
       // @process
-      o.oeInitialize       = FGuiControl_oeInitialize;
-      o.oeUpdate           = FGuiControl_oeUpdate;
+      o.oeInitialize            = FGuiControl_oeInitialize;
+      o.oeUpdate                = FGuiControl_oeUpdate;
       //..........................................................
       // @method
-      o.construct          = FGuiControl_construct;
+      o.construct               = FGuiControl_construct;
       // @method
-      o.setLocation        = FGuiControl_setLocation;
-      o.setSize            = FGuiControl_setSize;
+      o.setVisible              = FGuiControl_setVisible;
+      o.setLocation             = FGuiControl_setLocation;
+      o.setSize                 = FGuiControl_setSize;
       // @method
-      o.testReady          = FGuiControl_testReady;
-      o.testInRange        = FGuiControl_testInRange;
-      o.paint              = FGuiControl_paint;
-      o.repaint            = FGuiControl_repaint;
-      o.update             = FGuiControl_update;
-      o.build              = FGuiControl_build;
-      o.processEvent       = FGuiControl_processEvent;
+      o.testReady               = FGuiControl_testReady;
+      o.testInRange             = FGuiControl_testInRange;
+      o.paint                   = FGuiControl_paint;
+      o.repaint                 = FGuiControl_repaint;
+      o.update                  = FGuiControl_update;
+      o.build                   = FGuiControl_build;
+      o.processEvent            = FGuiControl_processEvent;
       // @method
-      o.psEnable           = FGuiControl_psEnable;
-      o.psVisible          = FGuiControl_psVisible;
-      o.psResize           = FGuiControl_psResize;
-      o.psRefresh          = FGuiControl_psRefresh;
-      o.psUpdate           = FGuiControl_psUpdate;
+      o.psEnable                = FGuiControl_psEnable;
+      o.psVisible               = FGuiControl_psVisible;
+      o.psResize                = FGuiControl_psResize;
+      o.psRefresh               = FGuiControl_psRefresh;
+      o.psUpdate                = FGuiControl_psUpdate;
       // @method
-      o.dispose            = FGuiControl_dispose;
+      o.dispose                 = FGuiControl_dispose;
       return o;
    }
 
@@ -181,6 +187,7 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
+      o.processOperationDownListener(event);
    }
 
    //==========================================================
@@ -190,6 +197,7 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
+      o.processOperationMoveListener(event);
       //if(o._backHoverResource){
          //o._statusPaint = false;
          //o._statusHover = true;
@@ -205,6 +213,7 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;
+      o.processOperationUpListener(event);
    }
 
    //==========================================================
@@ -295,6 +304,22 @@ with(MO){
       //o._borderInner.top.color = '#00FF00';
       //o._borderInner.right.color = '#0000FF';
       //o._borderInner.bottom.color = '#FF00FF';
+   }
+
+   //==========================================================
+   // <T>设置可见性。</T>
+   //
+   // @method
+   // @param flag:Boolean 标志
+   //==========================================================
+   MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
+      var o = this;
+      o._visible = flag;
+      // 设置渲染对象可见性
+      var renderable = o._renderable;
+      if(renderable){
+         renderable.setVisible(flag);
+      }
    }
 
    //==========================================================

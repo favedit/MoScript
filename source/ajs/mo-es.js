@@ -100,27 +100,30 @@ with(MO){
 }
 MO.EEvent = new function EEvent(){
    var o = this;
-   o.Unknown     = 'Unknown';
-   o.Load        = 'Load';
-   o.Process     = 'Process';
-   o.EnterFrame  = 'EnterFrame';
-   o.LeaveFrame  = 'LeaveFrame';
-   o.Enter       = 'Enter';
-   o.Leave       = 'Leave';
-   o.Focus       = 'Focus';
-   o.Blur        = 'Blur';
-   o.MouseDown   = 'MouseDown';
-   o.MouseMove   = 'MouseMove';
-   o.MouseUp     = 'MouseUp';
-   o.MouseWheel  = 'MouseWheel';
-   o.Click       = 'Click';
-   o.DoubleClick = 'DoubleClick';
-   o.NodeClick   = 'NodeClick';
-   o.ItemClick   = 'ItemClick';
-   o.Selected    = 'Selected';
-   o.DataChanged = 'DataChanged';
-   o.Result      = 'Result';
-   o.TouchZoom   = 'TouchZoom';
+   o.Unknown       = 'Unknown';
+   o.Load          = 'Load';
+   o.Process       = 'Process';
+   o.EnterFrame    = 'EnterFrame';
+   o.LeaveFrame    = 'LeaveFrame';
+   o.Enter         = 'Enter';
+   o.Leave         = 'Leave';
+   o.Focus         = 'Focus';
+   o.Blur          = 'Blur';
+   o.OperationDown = 'OperationDown';
+   o.OperationMove = 'OperationMove';
+   o.OperationUp   = 'OperationUp';
+   o.MouseDown     = 'MouseDown';
+   o.MouseMove     = 'MouseMove';
+   o.MouseUp       = 'MouseUp';
+   o.MouseWheel    = 'MouseWheel';
+   o.Click         = 'Click';
+   o.DoubleClick   = 'DoubleClick';
+   o.NodeClick     = 'NodeClick';
+   o.ItemClick     = 'ItemClick';
+   o.Selected      = 'Selected';
+   o.DataChanged   = 'DataChanged';
+   o.Result        = 'Result';
+   o.TouchZoom     = 'TouchZoom';
    return o;
 }
 MO.EEventInvoke = new function EEventInvoke(){
@@ -8196,8 +8199,8 @@ with(MO){
       o._hCanvas = hCanvas;
       if(hCanvas.getContext){
          var parameters = new Object();
-         parameters.alpha = o._optionAlpha;
-         parameters.antialias = o._optionAntialias;
+         parameters.alpha = false;
+         parameters.antialias = false;
          var handle = hCanvas.getContext('experimental-webgl2', parameters);
          if(!handle){
             handle = hCanvas.getContext('experimental-webgl', parameters);
@@ -8227,23 +8230,23 @@ with(MO){
       capability.fragmentConst = handle.getParameter(handle.MAX_FRAGMENT_UNIFORM_VECTORS);
       capability.samplerCount = handle.getParameter(handle.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
       capability.samplerSize = handle.getParameter(handle.MAX_TEXTURE_SIZE);
-      var e = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
-      if(e){
+      var extension = o._handleInstance = handle.getExtension('ANGLE_instanced_arrays');
+      if(extension){
          capability.optionInstance = true;
       }
       capability.mergeCount = parseInt((capability.vertexConst - 32) / 4);
-      var e = o._handleLayout = handle.getExtension('OES_vertex_array_object');
-      if(e){
+      var extension = o._handleLayout = handle.getExtension('OES_vertex_array_object');
+      if(extension){
          capability.optionLayout = true;
       }
-      var e = handle.getExtension('OES_element_index_uint');
-      if(e){
+      var extension = handle.getExtension('OES_element_index_uint');
+      if(extension){
          capability.optionIndex32 = true;
       }
-      var e = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
-      if(e){
-         capability.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
-         capability.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+      var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
+      if(extension){
+         capability.samplerCompressRgb = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
+         capability.samplerCompressRgba = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       }
       var s = capability.shader = new Object();
       var vertexPrecision = s.vertexPrecision = new Object();
@@ -8264,8 +8267,8 @@ with(MO){
          fragmentPrecision.intMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_INT);
          fragmentPrecision.intHigh = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.HIGH_INT);
       }
-      var e = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
-      if(e){
+      var extension = o._handleDebugShader = handle.getExtension('WEBGL_debug_shaders');
+      if(extension){
          capability.optionShaderSource = true;
       }
    }
@@ -17462,6 +17465,7 @@ with(MO){
       var context = o._graphicContext;
       var contextSize = context.size();
       var contextRatio = context.ratio();
+      var contextSizeRatio = context.sizeRatio();
       var contextWidth = contextSize.width * contextRatio;
       var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
@@ -17485,16 +17489,25 @@ with(MO){
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / contextWidth * 2;
-         var cy = matrix.sy / contextHeight * 2;
-         var tx = matrix.tx / contextWidth * 2 - 1;
-         var ty = 1 - matrix.ty / contextHeight * 2;
-         program.setParameter4('vc_position', cx, cy, tx, ty);
+         if(renderable._optionFull){
+            var contextWidth = contextSize.width * contextSizeRatio.width;
+            var contextHeight = contextSize.height * contextSizeRatio.height;
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }else{
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-         context.setScissorRectangle();
       }
    }
 }
@@ -21744,8 +21757,8 @@ with(MO){
       buffer.upload(data, 4 * 3, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       var data = [0, 1, 1, 1, 1, 0, 0, 0];
@@ -21755,8 +21768,8 @@ with(MO){
       buffer.upload(data, 4 * 2, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       var data = [0, 1, 2, 0, 2, 3];
@@ -21764,8 +21777,8 @@ with(MO){
       buffer.upload(data, 6);
       var stream = RClass.create(FE3sStream);
       stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
+      stream.setDataCount(2);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();

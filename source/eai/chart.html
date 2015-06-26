@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <HTML>
 <HEAD>
-<TITLE>EAI-Chart-Investment</TITLE>
+<TITLE>E租宝-百亿历程</TITLE>
 <META http-equiv='Content-Type' content='text/html;charset=UTF-8'>
 <META name='viewport' content='width=1920,user-scalable=no'/>
 <LINK rel="stylesheet" href='../acs/eai_mobile.css' type="text/css" media="all"/>
 <SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/me.js?1'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js?9'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/eai.js?9'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
 function onLoad(){
@@ -16,9 +16,9 @@ function onLoad(){
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
    MO.Browser.setContentPath('..');
+   MO.Browser.fullscreen(window, true);
    // 设置环境
    MO.Console.find(MO.FE3sVendorConsole).setup('net');
-   MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
    // 设置应用
    var application = MO.Desktop.initialize(MO.FEaiChartApplication);
    application.setup(document.body);
@@ -27,6 +27,5 @@ function onLoad(){
 </SCRIPT>
 </HEAD>
 <BODY scroll='no' style='background-color:#000000;' onload='onLoad()'>
-</DIV>
 </BODY>
 </HTML>

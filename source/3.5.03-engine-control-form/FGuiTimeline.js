@@ -7,7 +7,7 @@ with (MO) {
    // @version 150618
    //==========================================================
    MO.FGuiTimeline = function FGuiTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl, MListener);
+      o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
@@ -57,7 +57,7 @@ with (MO) {
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       //主轴
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 3);
       //游标
       var startTime = o.startTime();
       var endTime = o.endTime();
@@ -92,7 +92,8 @@ with (MO) {
          default:
             return;
       }
-      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 12, '#FFFFFF');
+      graphic.setFont('bold 16px Microsoft YaHei');
+      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       //刻度
       var text;
       var bakTime = startTime.date.getTime();
@@ -132,7 +133,8 @@ with (MO) {
             default:
                return;
          }
-         graphic.drawText(text, x - text.length * 3, middle + 12, '#FFFFFF');
+         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
       }
       //结束刻度
       var span = endTime.date.getTime() - bakTime;

@@ -7673,6 +7673,7 @@ with(MO){
       var context = o._graphicContext;
       var contextSize = context.size();
       var contextRatio = context.ratio();
+      var contextSizeRatio = context.sizeRatio();
       var contextWidth = contextSize.width * contextRatio;
       var contextHeight = contextSize.height * contextRatio;
       var program = o._program;
@@ -7696,16 +7697,25 @@ with(MO){
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }else{
          var matrix = renderable.matrix();
-         var cx = matrix.sx / contextWidth * 2;
-         var cy = matrix.sy / contextHeight * 2;
-         var tx = matrix.tx / contextWidth * 2 - 1;
-         var ty = 1 - matrix.ty / contextHeight * 2;
-         program.setParameter4('vc_position', cx, cy, tx, ty);
+         if(renderable._optionFull){
+            var contextWidth = contextSize.width * contextSizeRatio.width;
+            var contextHeight = contextSize.height * contextSizeRatio.height;
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }else{
+            var cx = matrix.sx / contextWidth * 2;
+            var cy = matrix.sy / contextHeight * 2;
+            var tx = matrix.tx / contextWidth * 2 - 1;
+            var ty = 1 - matrix.ty / contextHeight * 2;
+            program.setParameter4('vc_position', cx, cy, tx, ty);
+         }
          var size = renderable.size();
          var clipX = matrix.tx;
          var clipY = contextHeight - matrix.ty - size.height;
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-         context.setScissorRectangle();
       }
    }
 }
@@ -11955,8 +11965,8 @@ with(MO){
       buffer.upload(data, 4 * 3, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('position');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       var data = [0, 1, 1, 1, 1, 0, 0, 0];
@@ -11966,8 +11976,8 @@ with(MO){
       buffer.upload(data, 4 * 2, 4);
       var stream = RClass.create(FE3sStream);
       stream.setCode('coord');
-      stream._dataCount = 4;
-      stream._data = data;
+      stream.setDataCount(4);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushVertexBuffer(buffer);
       var data = [0, 1, 2, 0, 2, 3];
@@ -11975,8 +11985,8 @@ with(MO){
       buffer.upload(data, 6);
       var stream = RClass.create(FE3sStream);
       stream.setCode('index16');
-      stream._dataCount = 2;
-      stream._data = data;
+      stream.setDataCount(2);
+      stream.setData(data);
       buffer._resource = stream;
       o.pushIndexBuffer(buffer);
       var texture = o._texture = context.createFlatTexture();

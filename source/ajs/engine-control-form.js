@@ -65,12 +65,13 @@ with (MO) {
             var colorIdx = parseInt(rateResource.count() * rate);
             var hexColor = RHex.format(rateResource.find(colorIdx));
             var color = '#' + hexColor.substring(2);
-            graphic.drawLine(lastX, lastY, x, y, color, 1);
+            graphic.drawLine(lastX, lastY, x, y, color, 3);
             if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))
             {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
-               graphic.drawText(text, x - text.length * 3, y - 12, '#FFFFFF');
+               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
             }
             lastX = x;
             lastY = y;
@@ -118,7 +119,7 @@ MO.FGuiPicture = function FGuiPicture(o){
 }
 with (MO) {
    MO.FGuiTimeline = function FGuiTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl, MListener);
+      o = RClass.inherits(this, o, FGuiControl);
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
@@ -150,7 +151,7 @@ with (MO) {
       graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 1);
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 1.5);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 3);
       var startTime = o.startTime();
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();
@@ -184,7 +185,8 @@ with (MO) {
          default:
             return;
       }
-      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 12, '#FFFFFF');
+      graphic.setFont('bold 16px Microsoft YaHei');
+      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       var text;
       var bakTime = startTime.date.getTime();
       while (!startTime.isAfter(endTime)) {
@@ -223,7 +225,8 @@ with (MO) {
             default:
                return;
          }
-         graphic.drawText(text, x - text.length * 3, middle + 12, '#FFFFFF');
+         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
       }
       var span = endTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);

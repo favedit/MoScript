@@ -51,8 +51,6 @@ with(MO){
    MO.FEaiScene_construct = function FEaiScene_construct(){
       var o = this;
       o.__base.FScene.construct.call(o);
-      // 创建界面集合
-      o._desktop = RClass.create(FGuiDesktop);
    }
 
    //==========================================================
@@ -67,9 +65,12 @@ with(MO){
       var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
-      control.location().set(10, 200);
+      control.location().set(10, 300);
       control.build();
-      //o._desktop.register(control);
+      // 创建界面桌面
+      var desktop = o._desktop = RClass.create(FGuiDesktop);
+      desktop.linkGraphicContext(o);
+      desktop.register(control);
    }
 
    //==========================================================
@@ -84,7 +85,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.push(o._engineInfo);
+      //faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
 

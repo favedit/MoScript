@@ -1,19 +1,21 @@
 with(MO){
    MO.FGuiDesktop = function FGuiDesktop(o){
-      o = RClass.inherits(this, o, FObject);
-      o._controls    = RClass.register(o, new AGetter('_controls'));
-      o.construct    = FGuiDesktop_construct;
-      o.register     = FGuiDesktop_register;
-      o.unregister   = FGuiDesktop_unregister;
-      o.processEvent = FGuiDesktop_processEvent;
-      o.process      = FGuiDesktop_process;
-      o.dispose      = FGuiDesktop_dispose;
+      o = RClass.inherits(this, o, FObject, MGraphicObject);
+      o._controls        = RClass.register(o, new AGetter('_controls'));
+      o._visibleControls = null;
+      o.construct        = FGuiDesktop_construct;
+      o.register         = FGuiDesktop_register;
+      o.unregister       = FGuiDesktop_unregister;
+      o.processEvent     = FGuiDesktop_processEvent;
+      o.process          = FGuiDesktop_process;
+      o.dispose          = FGuiDesktop_dispose;
       return o;
    }
    MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._controls = new TObjects();
+      o._visibleControls = new TObjects();
    }
    MO.FGuiDesktop_register = function FGuiDesktop_register(control){
       this._controls.push(control);
@@ -23,16 +25,27 @@ with(MO){
    }
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;
+      var context = o._graphicContext;
+      var ratio = context.ratio();
+      var locationX = event.clientX * ratio;
+      var locationY = event.clientY * ratio;
+      var visibleControls = o._visibleControls;
+      visibleControls.clear();
       var controls = o._controls;
       var count = controls.count();
       for(var i = 0; i < count; i++){
          var control = controls.at(i);
          if(control.visible()){
-            var location = control.location();
-            event.locationX = event.clientX - location.x;
-            event.locationY = event.clientY - location.y;
-            control.processEvent(event);
+            visibleControls.push(control);
          }
+      }
+      var count = visibleControls.count();
+      for(var i = 0; i < count; i++){
+         var control = visibleControls.at(i);
+         var location = control.location();
+         event.locationX = locationX - location.x;
+         event.locationY = locationY - location.y;
+         control.processEvent(event);
       }
    }
    MO.FGuiDesktop_process = function FGuiDesktop_process(){
@@ -47,6 +60,7 @@ with(MO){
    MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
       var o = this;
       o._controls = RObject.dispose(o._controls);
+      o._visibleControls = RObject.dispose(o._visibleControls);
       o.__base.FObject.dispose.call(o);
    }
 }
