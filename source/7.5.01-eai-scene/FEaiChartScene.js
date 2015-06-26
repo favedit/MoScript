@@ -19,6 +19,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._logoBar              = null;
    o._titleBar             = null;
+   o._groundAutio          = null;
    //..........................................................
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
@@ -91,7 +92,7 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 //==========================================================
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -37;
+   matrix.tx = -35;
    matrix.ty = -12.3;
    matrix.tz = 0;
    matrix.setScale(0.32, 0.36, 0.32);
@@ -193,9 +194,15 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //..........................................................
    // 显示总计
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(590, 10);
+   frame.setLocation(650, 20);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
+   //..........................................................
+   // 加载背景音乐
+   var audio = o._groundAutio = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/ground.mp3');
+   audio.setVolume(0.5);
+   audio.play();
    //..........................................................
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);

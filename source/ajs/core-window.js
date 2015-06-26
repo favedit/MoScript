@@ -100,21 +100,78 @@ with(MO){
    }
 }
 with(MO){
+   MO.FAudio = function FAudio(o){
+      o = RClass.inherits(this, o, FObject, MListenerLoad);
+      o._url           = RClass.register(o, new AGetter('_url'));
+      o._hAudio        = null;
+      o.ohLoad         = FAudio_ohLoad;
+      o.ohError        = FAudio_ohError;
+      o.construct      = FAudio_construct;
+      o.volume         = FAudio_volume;
+      o.setVolume      = FAudio_setVolume;
+      o.play           = FAudio_play;
+      o.pause          = FAudio_pause;
+      o.loadUrl        = FAudio_loadUrl;
+      o.dispose        = FAudio_dispose;
+      return o;
+   }
+   MO.FAudio_ohLoad = function FAudio_ohLoad(){
+      var o = this.__linker;
+   }
+   MO.FAudio_ohError = function FAudio_ohError(p){
+      var o = this.__linker;
+      var url = o._url;
+      MO.Logger.error(o, 'Load image failure. (url={1})', url);
+   }
+   MO.FAudio_construct = function FAudio_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+   }
+   MO.FAudio_volume = function FAudio_volume(){
+      return this._hAudio.volume;
+   }
+   MO.FAudio_setVolume = function FAudio_setVolume(value){
+      this._hAudio.volume = value;
+   }
+   MO.FAudio_play = function FAudio_play(position){
+      var hAudio = this._hAudio;
+      if(position != null){
+         hAudio.currentTime = position;
+      }
+      hAudio.play();
+   }
+   MO.FAudio_pause = function FAudio_pause(){
+      this._hAudio.pause();
+   }
+   MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+      var o = this;
+      o._url = url;
+      var hAudio = o._hAudio;
+      if(!hAudio){
+         hAudio = o._hAudio = new Audio();
+         hAudio.__linker = o;
+      }
+      hAudio.src = url;
+   }
+   MO.FAudio_dispose = function FAudio_dispose(){
+      var o = this;
+      o._hAudio = RHtml.free(o._hAudio);
+      o.__base.MListenerLoad.dispose.call(o);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
    MO.FImage = function FImage(o){
       o = RClass.inherits(this, o, FObject, MListenerLoad);
-      o._optionAlpha   = true;
+      o._optionAlpha   = RClass.register(o, new AGetter('_optionAlpha'), true);
       o._ready         = false;
-      o._size          = null;
-      o._url           = null;
+      o._size          = RClass.register(o, new AGetter('_size'));
+      o._url           = RClass.register(o, new AGetter('_url'));
       o._hImage        = null;
       o.ohLoad         = FImage_ohLoad;
       o.ohError        = FImage_ohError;
       o.construct      = FImage_construct;
-      o.optionAlpha    = FImage_optionAlpha;
-      o.setOptionAlpha = FImage_setOptionAlpha;
-      o.size           = FImage_size;
       o.image          = FImage_image;
-      o.url            = FImage_url;
       o.testReady      = FImage_testReady;
       o.loadUrl        = FImage_loadUrl;
       o.dispose        = FImage_dispose;
@@ -139,35 +196,23 @@ with(MO){
       o.__base.FObject.construct.call(o);
       o._size = new SSize2();
    }
-   MO.FImage_optionAlpha = function FImage_optionAlpha(){
-      return this._optionAlpha;
-   }
-   MO.FImage_setOptionAlpha = function FImage_setOptionAlpha(p){
-      this._optionAlpha = p;
-   }
-   MO.FImage_size = function FImage_size(){
-      return this._size;
-   }
    MO.FImage_image = function FImage_image(){
       return this._hImage;
-   }
-   MO.FImage_url = function FImage_url(){
-      return this._url;
    }
    MO.FImage_testReady = function FImage_testReady(){
       return this._ready;
    }
-   MO.FImage_loadUrl = function FImage_loadUrl(p){
+   MO.FImage_loadUrl = function FImage_loadUrl(url){
       var o = this;
-      o._url = p;
-      var g = o._hImage;
-      if(!g){
-         g = o._hImage = new Image();
-         g.__linker = o;
-         g.onload = o.ohLoad;
-         g.onerror = o.ohError;
+      o._url = url;
+      var hImage = o._hImage;
+      if(!hImage){
+         hImage = o._hImage = new Image();
+         hImage.__linker = o;
+         hImage.onload = o.ohLoad;
+         hImage.onerror = o.ohError;
       }
-      g.src = p;
+      hImage.src = url;
    }
    MO.FImage_dispose = function FImage_dispose(){
       var o = this;

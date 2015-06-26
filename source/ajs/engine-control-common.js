@@ -733,15 +733,21 @@ with(MO){
    }
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
-      o.processOperationDownListener(event);
+      if(event.flag){
+         o.processOperationDownListener(event);
+      }
    }
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
-      o.processOperationMoveListener(event);
+      if(event.flag){
+         o.processOperationMoveListener(event);
+      }
    }
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;
-      o.processOperationUpListener(event);
+      if(event.flag){
+         o.processOperationUpListener(event);
+      }
    }
    MO.FGuiControl_onEvent = function FGuiControl_onEvent(event, flag){
       var o = this;

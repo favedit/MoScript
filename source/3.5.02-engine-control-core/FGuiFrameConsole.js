@@ -17,6 +17,7 @@ with(MO){
       // @method
       o.construct        = FGuiFrameConsole_construct;
       // @method
+      o.createFrame      = FGuiFrameConsole_createFrame;
       o.create           = FGuiFrameConsole_create;
       o.find             = FGuiFrameConsole_find;
       o.get              = FGuiFrameConsole_get;
@@ -47,7 +48,7 @@ with(MO){
    // @param name:String 名称
    // @return FGuiFrame 页面控件
    //==========================================================
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, control, name){
+   MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
       var o = this;
       // 获得表单定义
       var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
@@ -57,6 +58,21 @@ with(MO){
       frame.linkGraphicContext(context);
       frame.psInitialize();
       frame.build();
+      return frame;
+   }
+
+   //==========================================================
+   // <T>根据名称查找表单实例，如果不存在则创建一个。</T>
+   //
+   // @method
+   // @param context:MGraphicContext 绘制环境
+   // @param name:String 名称
+   // @return FGuiFrame 页面控件
+   //==========================================================
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
+      var o = this;
+      // 创建表单
+      var frame = o.createFrame(context, null, name);
       return frame;
    }
 
@@ -85,7 +101,7 @@ with(MO){
       var frame = frames.get(name);
       if(!frame){
          // 创建表单
-         frame = o.create(context, null, name);
+         frame = o.createFrame(context, null, name);
          frames.set(name, frame);
       }
       return frame;

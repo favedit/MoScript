@@ -10,10 +10,10 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MListenerLoad);
       //..........................................................
       // @attribute
-      o._optionAlpha   = true;
+      o._optionAlpha   = RClass.register(o, new AGetter('_optionAlpha'), true);
       o._ready         = false;
-      o._size          = null;
-      o._url           = null;
+      o._size          = RClass.register(o, new AGetter('_size'));
+      o._url           = RClass.register(o, new AGetter('_url'));
       //..........................................................
       // @html
       o._hImage        = null;
@@ -25,11 +25,7 @@ with(MO){
       // @method
       o.construct      = FImage_construct;
       // @method
-      o.optionAlpha    = FImage_optionAlpha;
-      o.setOptionAlpha = FImage_setOptionAlpha;
-      o.size           = FImage_size;
       o.image          = FImage_image;
-      o.url            = FImage_url;
       // @method
       o.testReady      = FImage_testReady;
       o.loadUrl        = FImage_loadUrl;
@@ -78,36 +74,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得透明配置。</T>
-   //
-   // @method
-   // @return Boolean 透明配置
-   //==========================================================
-   MO.FImage_optionAlpha = function FImage_optionAlpha(){
-      return this._optionAlpha;
-   }
-
-   //==========================================================
-   // <T>设置透明配置。</T>
-   //
-   // @method
-   // @param p:alpha:Boolean 透明配置
-   //==========================================================
-   MO.FImage_setOptionAlpha = function FImage_setOptionAlpha(p){
-      this._optionAlpha = p;
-   }
-
-   //==========================================================
-   // <T>获得尺寸。</T>
-   //
-   // @method
-   // @return 尺寸
-   //==========================================================
-   MO.FImage_size = function FImage_size(){
-      return this._size;
-   }
-
-   //==========================================================
    // <T>获得位图。</T>
    //
    // @method
@@ -115,16 +81,6 @@ with(MO){
    //==========================================================
    MO.FImage_image = function FImage_image(){
       return this._hImage;
-   }
-
-   //==========================================================
-   // <T>获得网络地址。</T>
-   //
-   // @method
-   // @return 网络地址
-   //==========================================================
-   MO.FImage_url = function FImage_url(){
-      return this._url;
    }
 
    //==========================================================
@@ -143,19 +99,19 @@ with(MO){
    // @method
    // @param p:url:String 网络地址
    //==========================================================
-   MO.FImage_loadUrl = function FImage_loadUrl(p){
+   MO.FImage_loadUrl = function FImage_loadUrl(url){
       var o = this;
-      o._url = p;
+      o._url = url;
       // 创建图片
-      var g = o._hImage;
-      if(!g){
-         g = o._hImage = new Image();
-         g.__linker = o;
-         g.onload = o.ohLoad;
-         g.onerror = o.ohError;
+      var hImage = o._hImage;
+      if(!hImage){
+         hImage = o._hImage = new Image();
+         hImage.__linker = o;
+         hImage.onload = o.ohLoad;
+         hImage.onerror = o.ohError;
       }
       // 加载图片
-      g.src = p;
+      hImage.src = url;
    }
 
    //==========================================================

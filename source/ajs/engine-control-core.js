@@ -1,20 +1,85 @@
+MO.FGuiChangeTransform = function FGuiChangeTransform(o){
+   o = MO.Class.inherits(this, o, MO.FGuiTransform);
+   o._changeCd      = MO.Class.register(o, new MO.AGetSet('_changeCd'));
+   o._interval      = MO.Class.register(o, new MO.AGetSet('_interval'));
+   o._scale         = MO.Class.register(o, new MO.AGetSet('_scale'));
+   o._sourceControl = MO.Class.register(o, new MO.AGetSet('_sourceControl'));
+   o._targetControl = MO.Class.register(o, new MO.AGetSet('_targetControl'));
+   o._sourceRectangle = null;
+   o._targetRectangle = null;
+   o._current         = 0;
+   o._middleCount     = 100;
+   o._endCount        = 200;
+   o.construct      = MO.FGuiChangeTransform_construct;
+   o.start          = MO.FGuiChangeTransform_start;
+   o.process        = MO.FGuiChangeTransform_process;
+   o.dispose        = MO.FGuiChangeTransform_dispose;
+   return o;
+}
+MO.FGuiChangeTransform_construct = function FGuiChangeTransform_construct(){
+   var o = this;
+   o.__base.FGuiTransform.construct.call(o);
+   o._sourceRectangle = new MO.SRectangle();
+   o._targetRectangle = new MO.SRectangle();
+}
+MO.FGuiChangeTransform_start = function FGuiChangeTransform_start(){
+   var o = this;
+   o.__base.FGuiTransform.start.call(o);
+   o._current = 0;
+   var control = o._sourceControl;
+   o._sourceRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
+   var control = o._targetControl;
+   o._targetRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
+}
+MO.FGuiChangeTransform_process = function FGuiChangeTransform_process(){
+   var o = this;
+   var sourceControl = o._sourceControl;
+   var targetControl = o._targetControl;
+   if(o._current < o._middleCount){
+      var index = o._middleCount - o._current;
+      var rate = index / o._middleCount;
+      sourceControl.size().set(o._sourceRectangle.width * rate, o._sourceRectangle.height * rate);
+   }else if(o._current == o._middleCount){
+      sourceControl.setVisible(false);
+      targetControl.setVisible(true);
+   }else if(o._current > o._middleCount){
+      var index = o._endCount - o._current;
+      var rate = index / o._middleCount;
+      targetControl.size().set(o._sourceRectangle.width * rate, o._sourceRectangle.height * rate);
+   }else if(o._current == o._endCount){
+      sourceControl.setLocation(o._targetRectangle.left, o._targetRectangle.top);
+      sourceControl.setSize(o._targetRectangle.width, o._targetRectangle.height);
+      targetControl.setLocation(o._sourceRectangle.left, o._sourceRectangle.top);
+      targetControl.setSize(o._sourceRectangle.width, o._sourceRectangle.height);
+      o._finish = true;
+   }
+   o._current++;
+}
+MO.FGuiChangeTransform_dispose = function FGuiChangeTransform_dispose(){
+   var o = this;
+   o.__base.FGuiTransform.dispose.call(o);
+}
 with(MO){
    MO.FGuiDesktop = function FGuiDesktop(o){
       o = RClass.inherits(this, o, FObject, MGraphicObject);
-      o._controls        = RClass.register(o, new AGetter('_controls'));
-      o._visibleControls = null;
-      o.construct        = FGuiDesktop_construct;
-      o.register         = FGuiDesktop_register;
-      o.unregister       = FGuiDesktop_unregister;
-      o.processEvent     = FGuiDesktop_processEvent;
-      o.process          = FGuiDesktop_process;
-      o.dispose          = FGuiDesktop_dispose;
+      o._controls         = RClass.register(o, new AGetter('_controls'));
+      o._transforms       = RClass.register(o, new AGetter('_transforms'));
+      o._visibleControls  = null;
+      o.construct         = FGuiDesktop_construct;
+      o.register          = FGuiDesktop_register;
+      o.unregister        = FGuiDesktop_unregister;
+      o.transformStart    = FGuiDesktop_transformStart;
+      o.processEvent      = FGuiDesktop_processEvent;
+      o.processTransforms = FGuiDesktop_processTransforms;
+      o.process           = FGuiDesktop_process;
+      o.dispose           = FGuiDesktop_dispose;
       return o;
    }
    MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._controls = new TObjects();
+      o._transforms = new TLooper();
       o._visibleControls = new TObjects();
    }
    MO.FGuiDesktop_register = function FGuiDesktop_register(control){
@@ -22,6 +87,11 @@ with(MO){
    }
    MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
       this._controls.remove(control);
+   }
+   MO.FGuiDesktop_transformStart = function FGuiDesktop_transformStart(transform){
+      var o = this;
+      transform.start();
+      o._transforms.pushUnique(transform);
    }
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;
@@ -48,6 +118,18 @@ with(MO){
          control.processEvent(event);
       }
    }
+   MO.FGuiDesktop_processTransforms = function FGuiDesktop_processTransforms(){
+      var o = this;
+      var transforms = o._transforms;
+      transforms.record();
+      while(transforms.next()){
+         var transform = transforms.current();
+         transform.process();
+         if(transform.isFinish()){
+            transforms.removeCurrent();
+         }
+      }
+   }
    MO.FGuiDesktop_process = function FGuiDesktop_process(){
       var o = this;
       var controls = o._controls;
@@ -56,10 +138,12 @@ with(MO){
          var control = controls.at(i);
          control.psUpdate();
       }
+      o.processTransforms();
    }
    MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
       var o = this;
       o._controls = RObject.dispose(o._controls);
+      o._transforms = RObject.dispose(o._transforms);
       o._visibleControls = RObject.dispose(o._visibleControls);
       o.__base.FObject.dispose.call(o);
    }
@@ -70,6 +154,7 @@ with(MO){
       o._scopeCd         = EScope.Local;
       o._frames          = null;
       o.construct        = FGuiFrameConsole_construct;
+      o.createFrame      = FGuiFrameConsole_createFrame;
       o.create           = FGuiFrameConsole_create;
       o.find             = FGuiFrameConsole_find;
       o.get              = FGuiFrameConsole_get;
@@ -83,7 +168,7 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       o._frames = new TDictionary();
    }
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, control, name){
+   MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
       var o = this;
       var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
       var xframe = describeConsole.load(name);
@@ -91,6 +176,11 @@ with(MO){
       frame.linkGraphicContext(context);
       frame.psInitialize();
       frame.build();
+      return frame;
+   }
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
+      var o = this;
+      var frame = o.createFrame(context, null, name);
       return frame;
    }
    MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
@@ -101,7 +191,7 @@ with(MO){
       var frames = o._frames;
       var frame = frames.get(name);
       if(!frame){
-         frame = o.create(context, null, name);
+         frame = o.createFrame(context, null, name);
          frames.set(name, frame);
       }
       return frame;
@@ -166,4 +256,32 @@ with(MO){
       o._defines = RObject.dispose(o._defines, true);
       o.__base.FConsole.dispose.call(o);
    }
+}
+MO.FGuiTransform = function FGuiTransform(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._finish   = false;
+   o.construct = MO.FGuiTransform_construct;
+   o.isFinish  = MO.FGuiTransform_isFinish;
+   o.start     = MO.FGuiTransform_start;
+   o.process   = MO.FGuiTransform_process;
+   o.dispose   = MO.FGuiTransform_dispose;
+   return o;
+}
+MO.FGuiTransform_construct = function FGuiTransform_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FGuiTransform_isFinish = function FGuiTransform_isFinish(){
+   return this._finish;
+}
+MO.FGuiTransform_start = function FGuiTransform_start(){
+   var o = this;
+   o._finish = false;
+}
+MO.FGuiTransform_process = function FGuiTransform_process(){
+   var o = this;
+}
+MO.FGuiTransform_dispose = function FGuiTransform_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
 }

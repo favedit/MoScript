@@ -20,7 +20,10 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    // @attribute
    o._playButton      = null;
    o._pauseButton     = null;
+   o._buttonTransform = null;
    o._timeline        = null;
+   // @attribute
+   o._buttonAudio     = null;
    //..........................................................
    // @event
    o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
@@ -134,14 +137,39 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.addOperationDownListener(o, o.onOperationPause);
    o._desktop.register(control);
    faceLayer.push(control);
+   // 创建按键声音
+   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/button.mp3');
+   // 创建交换器
+   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
+   transform.setInterval(10);
+   transform.setScale(0.1);
+   //..........................................................
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var milestones = historyConsole.milestones();
+   // 创建里程碑
+   var milestoneBars = o._milestoneBars = new MO.TObjects();
+   var count = milestones.count();
+   for(var i = 0; i < count; i++){
+      var milestone = milestones.at(i);
+      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
+      frame.setLocation(1920 - 180, 20 + 90 * i);
+      var date = new MO.TDate();
+      date.parse(milestone.code());
+      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
+      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal() / 100000000) + '亿');
+      faceLayer.push(frame);
+      o._desktop.register(frame);
+      milestoneBars.push(frame);
+   }
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 500);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
@@ -198,14 +226,21 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
 //==========================================================
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
+   var transform = o._buttonTransform;
    o._playing = flag;
+   o._buttonAudio.play(0);
    if(flag){
+      //transform.setSourceControl(o._playButton);
+      //transform.setTargetControl(o._pauseButton);
       o._playButton.setVisible(false);
       o._pauseButton.setVisible(true);
    }else{
+      //transform.setSourceControl(o._pauseButton);
+      //transform.setTargetControl(o._playButton);
       o._playButton.setVisible(true);
       o._pauseButton.setVisible(false);
    }
+   //o._desktop.transformStart(transform);
 }
 
 //==========================================================

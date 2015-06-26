@@ -187,7 +187,9 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
-      o.processOperationDownListener(event);
+      if(event.flag){
+         o.processOperationDownListener(event);
+      }
    }
 
    //==========================================================
@@ -197,7 +199,9 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
-      o.processOperationMoveListener(event);
+      if(event.flag){
+         o.processOperationMoveListener(event);
+      }
       //if(o._backHoverResource){
          //o._statusPaint = false;
          //o._statusHover = true;
@@ -213,7 +217,9 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;
-      o.processOperationUpListener(event);
+      if(event.flag){
+         o.processOperationUpListener(event);
+      }
    }
 
    //==========================================================

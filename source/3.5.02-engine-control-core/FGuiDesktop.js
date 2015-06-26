@@ -10,19 +10,22 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MGraphicObject);
       //..........................................................
       // @attribute
-      o._controls        = RClass.register(o, new AGetter('_controls'));
-      o._visibleControls = null;
+      o._controls         = RClass.register(o, new AGetter('_controls'));
+      o._transforms       = RClass.register(o, new AGetter('_transforms'));
+      o._visibleControls  = null;
       //..........................................................
       // @method
-      o.construct        = FGuiDesktop_construct;
+      o.construct         = FGuiDesktop_construct;
       // @method
-      o.register         = FGuiDesktop_register;
-      o.unregister       = FGuiDesktop_unregister;
+      o.register          = FGuiDesktop_register;
+      o.unregister        = FGuiDesktop_unregister;
+      o.transformStart    = FGuiDesktop_transformStart;
       // @method
-      o.processEvent     = FGuiDesktop_processEvent;
-      o.process          = FGuiDesktop_process;
+      o.processEvent      = FGuiDesktop_processEvent;
+      o.processTransforms = FGuiDesktop_processTransforms;
+      o.process           = FGuiDesktop_process;
       // @method
-      o.dispose          = FGuiDesktop_dispose;
+      o.dispose           = FGuiDesktop_dispose;
       return o;
    }
 
@@ -36,6 +39,7 @@ with(MO){
       o.__base.FObject.construct.call(o);
       // 创建界面集合
       o._controls = new TObjects();
+      o._transforms = new TLooper();
       o._visibleControls = new TObjects();
    }
 
@@ -57,6 +61,18 @@ with(MO){
    //==========================================================
    MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
       this._controls.remove(control);
+   }
+
+   //==========================================================
+   // <T>注册一个控件。</T>
+   //
+   // @method
+   // @param control:FGuiControl 控件
+   //==========================================================
+   MO.FGuiDesktop_transformStart = function FGuiDesktop_transformStart(transform){
+      var o = this;
+      transform.start();
+      o._transforms.pushUnique(transform);
    }
 
    //==========================================================
@@ -99,6 +115,24 @@ with(MO){
    //
    // @method
    //==========================================================
+   MO.FGuiDesktop_processTransforms = function FGuiDesktop_processTransforms(){
+      var o = this;
+      var transforms = o._transforms;
+      transforms.record();
+      while(transforms.next()){
+         var transform = transforms.current();
+         transform.process();
+         if(transform.isFinish()){
+            transforms.removeCurrent();
+         }
+      }
+   }
+
+   //==========================================================
+   // <T>逻辑处理。</T>
+   //
+   // @method
+   //==========================================================
    MO.FGuiDesktop_process = function FGuiDesktop_process(){
       var o = this;
       var controls = o._controls;
@@ -107,6 +141,8 @@ with(MO){
          var control = controls.at(i);
          control.psUpdate();
       }
+      // 变换处理
+      o.processTransforms();
    }
 
    //==========================================================
@@ -117,6 +153,7 @@ with(MO){
    MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
       var o = this;
       o._controls = RObject.dispose(o._controls);
+      o._transforms = RObject.dispose(o._transforms);
       o._visibleControls = RObject.dispose(o._visibleControls);
       // 父处理
       o.__base.FObject.dispose.call(o);

@@ -116,7 +116,9 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._currentDate     = null;
    o._playButton      = null;
    o._pauseButton     = null;
+   o._buttonTransform = null;
    o._timeline        = null;
+   o._buttonAudio     = null;
    o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect     = MO.FEaiChartHistoryScene_onDateSelect;
    o.onOperationPlay  = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -186,12 +188,33 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.addOperationDownListener(o, o.onOperationPause);
    o._desktop.register(control);
    faceLayer.push(control);
+   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/button.mp3');
+   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
+   transform.setInterval(10);
+   transform.setScale(0.1);
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var milestones = historyConsole.milestones();
+   var milestoneBars = o._milestoneBars = new MO.TObjects();
+   var count = milestones.count();
+   for(var i = 0; i < count; i++){
+      var milestone = milestones.at(i);
+      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
+      frame.setLocation(1920 - 180, 20 + 90 * i);
+      var date = new MO.TDate();
+      date.parse(milestone.code());
+      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
+      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal() / 100000000) + '亿');
+      faceLayer.push(frame);
+      o._desktop.register(frame);
+      milestoneBars.push(frame);
+   }
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 500);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
@@ -232,7 +255,9 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
+   var transform = o._buttonTransform;
    o._playing = flag;
+   o._buttonAudio.play(0);
    if(flag){
       o._playButton.setVisible(false);
       o._pauseButton.setVisible(true);
@@ -582,6 +607,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRenderables     = null;
    o._logoBar              = null;
    o._titleBar             = null;
+   o._groundAutio          = null;
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
    o.construct             = MO.FEaiChartScene_construct;
    o.fixMatrix             = MO.FEaiChartScene_fixMatrix;
@@ -623,7 +649,7 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -37;
+   matrix.tx = -35;
    matrix.ty = -12.3;
    matrix.tz = 0;
    matrix.setScale(0.32, 0.36, 0.32);
@@ -700,9 +726,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var timeControl = frame.findComponent('time');
    timeControl.setLabel(currentDate.format('HH24:MI'));
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(590, 10);
+   frame.setLocation(650, 20);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
+   var audio = o._groundAutio = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/ground.mp3');
+   audio.setVolume(0.5);
+   audio.play();
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
