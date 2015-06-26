@@ -732,8 +732,6 @@ with(MO){
    }
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
-      if(o._backHoverResource){
-      }
    }
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;

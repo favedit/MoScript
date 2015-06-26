@@ -554,6 +554,7 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
       o._code           = 'stage';
       o._statusActive   = false;
+      o._size           = RClass.register(o, new AGetter('_size'));
       o._timer          = RClass.register(o, new AGetter('_timer'));
       o._layers         = RClass.register(o, new AGetter('_layers'));
       o.onProcess       = FStage_onProcess;
@@ -578,6 +579,7 @@ with(MO){
    MO.FStage_construct = function FStage_construct(){
       var o = this;
       o.__base.FComponent.construct.call(o);
+      o._size = new SSize2(1280, 720);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
    }

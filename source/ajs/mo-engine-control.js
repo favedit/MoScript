@@ -732,8 +732,6 @@ with(MO){
    }
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
-      if(o._backHoverResource){
-      }
    }
    MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
       var o = this;
@@ -1405,7 +1403,7 @@ MO.FGuiPicture = function FGuiPicture(o){
 }
 with (MO) {
    MO.FGuiTimeline = function FGuiTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl);
+      o = RClass.inherits(this, o, FGuiControl, MListener);
       o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
@@ -1416,6 +1414,8 @@ with (MO) {
       o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
       o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
       o.onPaintBegin = FGuiTimeline_onPaintBegin;
+      o.onOperationDown = FGuiTimeline_onOperationDown;
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
    }
    MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
@@ -1515,6 +1515,34 @@ with (MO) {
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
       startTime.date.setTime(bakTime);
       startTime.refresh();
+   }
+   MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
+      if (!event.flag) {
+         return;
+      }
+      var o = this;
+      o.__base.FGuiControl.onOperationDown.call(o, event);
+      var rectangle = o._clientRectangle;
+      var bottom = rectangle.top + rectangle.height;
+      var decoLeft = rectangle.left + 5;
+      var decoRight = rectangle.left + rectangle.width - 5;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+      var x = event.locationX;
+      if (event.locationY > bottom - 30) {
+         if (x > dataLeft && x < dataRight) {
+            var rate = (x - dataLeft) / (dataRight - dataLeft);
+            var msDate = o.startTime().date.getTime() + (o.endTime().date.getTime() - o.startTime().date.getTime()) * rate;
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            var selectedDate = MO.Memory.alloc(TDate);
+            selectedDate.date.setTime(msDate);
+            selectedDate.refresh();
+            dsEvent.date = selectedDate;
+            o.processDataChangedListener(dsEvent);
+         }
+      }
    }
 }
 with(MO){

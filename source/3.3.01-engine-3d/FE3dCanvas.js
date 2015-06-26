@@ -13,7 +13,8 @@ with(MO){
       o._optionAntialias    = false;
       // @attribute
       o._scaleRate          = 1;
-      o._size               = null;
+      o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
+      o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
       o._interval           = 1000 / 60;
       //..........................................................
       // @html
@@ -52,54 +53,54 @@ with(MO){
    // <T>触摸事件开始处理。</T>
    //
    // @method
-   // @param p:event:TouchEvent 触摸事件
+   // @param event:TouchEvent 触摸事件
    //==========================================================
-   MO.FE3dCanvas_ohTouchStart = function FE3dCanvas_ohTouchStart(p){
-      this.__linker.onTouchStart(p);
+   MO.FE3dCanvas_ohTouchStart = function FE3dCanvas_ohTouchStart(event){
+      this.__linker.onTouchStart(event);
    }
 
    //==========================================================
    // <T>触摸事件移动处理。</T>
    //
    // @method
-   // @param p:event:TouchEvent 触摸事件
+   // @param event:TouchEvent 触摸事件
    //==========================================================
-   MO.FE3dCanvas_ohTouchMove = function FE3dCanvas_ohTouchMove(p){
-      this.__linker.onTouchMove(p);
+   MO.FE3dCanvas_ohTouchMove = function FE3dCanvas_ohTouchMove(event){
+      this.__linker.onTouchMove(event);
    }
 
    //==========================================================
    // <T>触摸事件结束处理。</T>
    //
    // @method
-   // @param p:event:TouchEvent 触摸事件
+   // @param event:TouchEvent 触摸事件
    //==========================================================
-   MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(p){
-      this.__linker.onTouchStop(p);
+   MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(event){
+      this.__linker.onTouchStop(event);
    }
 
    //==========================================================
    // <T>改变大小事件处理。</T>
    //
    // @method
-   // @param p:event:SEvent 事件信息
+   // @param event:SEvent 事件信息
    //==========================================================
-   MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(p){
+   MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
       var o = this;
       // 获得大小
-      var hp = o._hPanel;
-      var w = hp.offsetWidth;
-      var h = hp.offsetHeight;
-      if(o._size.equalsData(w, h)){
+      var hPanel = o._hPanel;
+      var width = hPanel.offsetWidth;
+      var height = hPanel.offsetHeight;
+      if(o._screenSize.equalsData(width, height)){
          return;
       }
-      o._size.set(w, h);
+      o._screenSize.set(width, height);
       // 设置画板
-      var hc = o._hCanvas;
-      var sw = hc.width = w * o._scaleRate;
-      var sh = hc.height = h * o._scaleRate;
+      var hCanvas = o._hCanvas;
+      var scaleWidth = hCanvas.width = width * o._scaleRate;
+      var scaleHeight = hCanvas.height = height * o._scaleRate;
       // 设置范围
-      o._graphicContext.setViewport(0, 0, sw, sh);
+      o._graphicContext.setViewport(0, 0, scaleWidth, scaleHeight);
    }
 
    //==========================================================
@@ -111,7 +112,8 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       // 设置变量
-      o._size = new SSize2();
+      o._logicSize = new SSize2(1280, 720);
+      o._screenSize = new SSize2(1280, 720);
    }
 
    //==========================================================
@@ -192,6 +194,8 @@ with(MO){
       }
       // 释放属性
       o._graphicContext = RObject.dispose(o._graphicContext);
+      o._screenSize = RObject.dispose(o._screenSize);
+      o._logicSize = RObject.dispose(o._logicSize);
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
       // 父处理

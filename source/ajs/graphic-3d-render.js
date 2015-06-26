@@ -246,6 +246,7 @@ with(MO){
       o._optionAlpha        = true;
       o._optionAntialias    = false;
       o._size               = RClass.register(o, new AGetter('_size'));
+      o._ratio              = RClass.register(o, new AGetter('_ratio'));
       o._capability         = RClass.register(o, new AGetter('_capability'));
       o._statistics         = RClass.register(o, new AGetter('_statistics'));
       o._fillModeCd         = EG3dFillMode.Face;
@@ -295,6 +296,7 @@ with(MO){
       var o = this;
       o.__base.FGraphicContext.construct.call(o);
       o._size = new SSize2();
+      o._ratio = new SSize2();
       o._statistics = RClass.create(FG3dStatistics);
       RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
       o._storePrograms = new TObjects();

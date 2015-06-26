@@ -190,12 +190,12 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
       var o = this;
-      if(o._backHoverResource){
+      //if(o._backHoverResource){
          //o._statusPaint = false;
          //o._statusHover = true;
          //console.log(o._name, event.code + '-' + event.flag, '(' + event.clientX + ',' + event.clientY + ')', '(' + event.locationX + ',' + event.locationY + ')');
          //o.topComponent().build();
-      }
+      //}
    }
 
    //==========================================================

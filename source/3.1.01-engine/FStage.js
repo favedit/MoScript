@@ -12,6 +12,7 @@ with(MO){
       // @attribute
       o._code           = 'stage';
       o._statusActive   = false;
+      o._size           = RClass.register(o, new AGetter('_size'));
       o._timer          = RClass.register(o, new AGetter('_timer'));
       o._layers         = RClass.register(o, new AGetter('_layers'));
       //..........................................................
@@ -57,6 +58,7 @@ with(MO){
       var o = this;
       o.__base.FComponent.construct.call(o);
       // 设置变量
+      o._size = new SSize2(1280, 720);
       o._timer = RClass.create(FTimer);
       o._layers = new TDictionary();
    }
