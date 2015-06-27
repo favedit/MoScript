@@ -3389,6 +3389,7 @@ with(MO){
       return value ? valueTrue : valueFalse;
    }
    MO.RBoolean = new RBoolean();
+   MO.Lang.Boolean = MO.RBoolean;
 }
 with(MO){
    MO.RByte = function RByte(){

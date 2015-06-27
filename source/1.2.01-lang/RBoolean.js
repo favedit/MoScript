@@ -64,4 +64,5 @@
    //..........................................................
    // 实例化内容
    MO.RBoolean = new RBoolean();
+   MO.Lang.Boolean = MO.RBoolean;
 }
