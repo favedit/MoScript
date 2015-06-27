@@ -1589,8 +1589,7 @@ with (MO) {
             var hexColor = RHex.format(rateResource.find(colorIdx));
             var color = '#' + hexColor.substring(2);
             graphic.drawLine(lastX, lastY, x, y, color, 3);
-            if (startDate.date.getDate() == 1 || startDate.format('YYMMDD') == degreeDate.format('YYMMDD'))
-            {
+            if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
                graphic.setFont('bold 16px Microsoft YaHei');
@@ -1603,6 +1602,22 @@ with (MO) {
          else {
             break;
          }
+      }
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      if (dateData) {
+         var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
+         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+         var inves = dateData.investmentTotal();
+         var y = dataBottom - inves / 10000 * pixPer10k;
+         var rate = 1 - (y / dataHeight);
+         var colorIdx = parseInt(rateResource.count() * rate);
+         var hexColor = RHex.format(rateResource.find(colorIdx));
+         var color = '#' + hexColor.substring(2);
+         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
+         var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
+         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
       }
       startDate.date.setTime(bakTime);
       startDate.refresh();
@@ -1647,6 +1662,8 @@ with (MO) {
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
       o._degreeTime = RClass.register(o, new AGetSet('_degreeTime'));
+      o._progress = RClass.register(o, new AGetSet('_progress'));
+      o._unitms = RClass.register(o, new AGetSet('_unitms'), 1000 * 60 * 60 * 24);
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
       o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
@@ -1678,10 +1695,6 @@ with (MO) {
       var startTime = o.startTime();
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();
-      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       var degreeText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
@@ -1708,6 +1721,10 @@ with (MO) {
          default:
             return;
       }
+      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan) + 3;
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
       graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       var text;
