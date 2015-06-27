@@ -23,6 +23,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._pauseButton      = null;
    o._buttonTransform  = null;
    o._timeline         = null;
+   o._milestoneFrame  = null;
    // @attribute
    o._buttonAudio      = null;
    o._statusStart      = false;
@@ -204,6 +205,18 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.build();
    o._desktop.register(timeline);
    faceLayer.push(timeline);
+   //创建里程碑框
+   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
+   milestoneFrame.setName('MilestoneFrame');
+   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
+   milestoneFrame.setTop(50);
+   milestoneFrame.setWidth(720);
+   milestoneFrame.setHeight(700);
+   milestoneFrame.linkGraphicContext(o);
+   milestoneFrame.build();
+   o._desktop.register(milestoneFrame);
+   faceLayer.push(milestoneFrame);
+   milestoneFrame.setVisible(false);
 }
 
 //==========================================================
@@ -222,6 +235,12 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
+   var milestone = historyConsole.milestones().get(code);
+   if (milestone) {
+      o._milestoneFrame.setData(milestone);
+      o._milestoneFrame.show();
+      o._milestoneFrame.repaint();
+   }
    if (dateData) {
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
@@ -315,6 +334,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
             o.switchPlay(false);
          }
          o._lastTick = currentTick;
+         o._milestoneFrame.repaint();
       }
       // 上传数据
       var citysRenderables = o._citysRenderables;
