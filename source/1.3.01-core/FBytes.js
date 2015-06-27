@@ -9,7 +9,7 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MDataView);
       //..........................................................
       // @attribute
-      o._memory   = null;
+      o._memory   = RClass.register(o, new AGetter('_memory'));
       //..........................................................
       // @method
       o.construct = FBytes_construct;

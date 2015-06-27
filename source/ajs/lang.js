@@ -53,12 +53,13 @@ with(MO){
    MO.AGetter = function AGetter(name, linker){
       var o = this;
       ASource.call(o, name, ESource.Get, linker);
-      o.build = AGetter_build;
+      o._linker = linker;
+      o.build   = AGetter_build;
       return o;
    }
    MO.AGetter_build = function AGetter_build(clazz, instance){
       var o = this;
-      var getName = o._code;
+      var getName = o._linker ? o._linker : o._code;
       instance[getName] = RMethod.makePropertyGet(o._name, getName);
    }
 }
@@ -250,38 +251,24 @@ MO.ESource = new function ESource(){
    o.Listener = 'listener';
    return o;
 }
-with(MO){
-   MO.MInstance = function MInstance(o){
-      o = RClass.inherits(this, o);
-      o.__free          = false;
-      o.instanceCreate  = RMethod.empty;
-      o.instanceAlloc   = RMethod.empty;
-      o.instanceFree    = RMethod.empty;
-      o.instanceRelease = RMethod.empty;
-      return o;
-   }
+MO.MInstance = function MInstance(o){
+   o = MO.Class.inherits(this, o);
+   o.__free          = false;
+   o.instanceCreate  = MO.Method.empty;
+   o.instanceAlloc   = MO.Method.empty;
+   o.instanceFree    = MO.Method.empty;
+   o.instanceRelease = MO.Method.empty;
+   return o;
 }
-with(MO){
-   MO.MInvoke = function MInvoke(o){
-      o = RClass.inherits(this, o);
-      o.invoke = RMethod.virtual(o, 'invoke');
-      return o;
-   }
+MO.MInvoke = function MInvoke(o){
+   o = MO.Class.inherits(this, o);
+   o.invoke = MO.Method.virtual(o, 'invoke');
+   return o;
 }
-with(MO){
-   MO.MPoolAble = function MPoolAble(o){
-      o = RClass.inherits(this, o);
-      o._poolCode   = null;
-      o.poolCode    = MPoolAble_poolCode;
-      o.setPoolCode = MPoolAble_setPoolCode;
-      return o;
-   }
-   MO.MPoolAble_poolCode = function MPoolAble_poolCode(){
-      return this._code;
-   }
-   MO.MPoolAble_setPoolCode = function MPoolAble_setPoolCode(poolCode){
-      this._poolCode = poolCode;
-   }
+MO.MPoolAble = function MPoolAble(o){
+   o = MO.Class.inherits(this, o);
+   o._poolCode = MO.Class.register(o, new MO.AGetSet('_poolCode'));
+   return o;
 }
 with(MO){
    MO.SArguments = function SArguments(){
@@ -1736,210 +1723,199 @@ with(MO){
       throw new Error(r);
    }
 }
-with(MO){
-   MO.FConsole = function FConsole(o){
-      o = RClass.inherits(this, o, FObject);
-      o._scopeCd = RClass.register(o, new AGetter('_scopeCd'), EScope.Global);
-      return o;
-   }
+MO.FConsole = function FConsole(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._scopeCd = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   return o;
 }
-with(MO){
-   MO.FObject = function FObject(o){
-      if(!o){o = this;}
-      o.__class   = null;
-      o.__hash    = 0;
-      o.__dispose = false;
-      o.construct = FObject_construct;
-      o.hashCode  = FObject_hashCode;
-      o.toString  = FObject_toString;
-      o.dispose   = FObject_dispose;
-      o.innerDump = FObject_innerDump;
-      o.dump      = FObject_dump;
-      return o;
-   }
-   MO.FObject_construct = function FObject_construct(){
-      var o = this;
-      o.__dispose = false;
-   }
-   MO.FObject_hashCode = function FObject_hashCode(){
-      var o = this;
-      var v = o.__hash;
-      if(!v){
-         v = o.__hash = RObject.nextId();
-      }
-      return v;
-   }
-   MO.FObject_toString = function FObject_toString(){
-      return RClass.dump(this);
-   }
-   MO.FObject_dispose = function FObject_dispose(){
-      var o = this;
-      RObject.free(o);
-      o.__dispose = true;
-   }
-   MO.FObject_innerDump = function FObject_innerDump(dump, level){
-      dump.append(RClass.dump(this));
-   }
-   MO.FObject_dump = function FObject_dump(){
-      var r = new TString();
-      this.innerDump(r, 0);
-      return r.flush();
-   }
+MO.FObject = function FObject(o){
+   if(!o){o = this;}
+   o.__class   = null;
+   o.__dispose = false;
+   o.__hash    = 0;
+   o.construct = MO.FObject_construct;
+   o.hashCode  = MO.FObject_hashCode;
+   o.toString  = MO.FObject_toString;
+   o.dispose   = MO.FObject_dispose;
+   o.innerDump = MO.FObject_innerDump;
+   o.dump      = MO.FObject_dump;
+   return o;
 }
-with(MO){
-   MO.FObjectPool = function FObjectPool(o){
-      o = RClass.inherits(this, o, FObject);
-      o._items      = null;
-      o._frees      = null;
-      o._allocCount = 0;
-      o._freeCount  = 0;
-      o.construct   = FObjectPool_construct;
-      o.hasFree     = FObjectPool_hasFree;
-      o.alloc       = FObjectPool_alloc;
-      o.free        = FObjectPool_free;
-      o.push        = FObjectPool_push;
-      o.dispose     = FObjectPool_dispose;
-      o.innerDump   = FObjectPool_innerDump;
-      return o;
-   }
-   MO.FObjectPool_construct = function FObjectPool_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._items = new TObjects();
-      o._frees = new TObjects();
-   }
-   MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
-      return !this._frees.isEmpty();
-   }
-   MO.FObjectPool_alloc = function FObjectPool_alloc(){
-      var o = this;
-      var r = null;
-      if(!o._frees.isEmpty()){
-         r = o._frees.pop();
-      }
-      o._allocCount++;
-      return r;
-   }
-   MO.FObjectPool_free = function FObjectPool_free(p){
-      var o = this;
-      o._frees.push(p);
-      o._freeCount++;
-   }
-   MO.FObjectPool_push = function FObjectPool_push(p){
-      var o = this;
-      o._items.push(p);
-      o._frees.push(p);
-   }
-   MO.FObjectPool_dispose = function FObjectPool_dispose(){
-      var o = this;
-      o._items = RObject.dispose(o._items);
-      o._frees = RObject.dispose(o._frees);
-      o.__base.FObject.dispose.call(o);
-   }
-   MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
-      var o = this;
-      s.append('Pool:');
-      s.append('total=', o._items.count());
-      s.append(', free=', o._frees.count());
-      s.append(', alloc_count=', o._allocCount);
-      s.append(', free_count=', o._freeCount);
-   }
+MO.FObject_construct = function FObject_construct(){
+   this.__dispose = false;
 }
-with(MO){
-   MO.FObjectPools = function FObjectPools(o){
-      o = RClass.inherits(this, o, FObject);
-      o._pools    = null;
-      o.construct = FObjectPools_construct;
-      o.pool      = FObjectPools_pool;
-      o.alloc     = FObjectPools_alloc;
-      o.free      = FObjectPools_free;
-      o.dispose   = FObjectPools_dispose;
-      return o;
+MO.FObject_hashCode = function FObject_hashCode(){
+   var o = this;
+   var hash = o.__hash;
+   if(!hash){
+      hash = o.__hash = MO.RObject.nextId();
    }
-   MO.FObjectPools_construct = function FObjectPools_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._pools = new TDictionary();
-   }
-   MO.FObjectPools_pool = function FObjectPools_pool(code){
-      var o = this;
-      var pool = o._pools.get(code);
-      if(!pool){
-         pool = RClass.create(FObjectPool);
-         o._pools.set(code, pool);
-      }
-      return pool;
-   }
-   MO.FObjectPools_alloc = function FObjectPools_alloc(code){
-      var o = this;
-      var pool = o.pool(code);
-      return pool.alloc();
-   }
-   MO.FObjectPools_free = function FObjectPools_free(code, instance){
-      var o = this;
-      var pool = o.pool(code);
-      return pool.free(instance);
-   }
-   MO.FObjectPools_push = function FObjectPools_push(code, instance){
-      var o = this;
-      var pool = o.pool(code);
-      return pool.push(instance);
-   }
-   MO.FObjectPools_dispose = function FObjectPools_dispose(){
-      var o = this;
-      var pools = o._pools;
-      var count = pools.count();
-      for(var i = 0; i < count; i++){
-         var pool = pools.valueAt(i);
-         pool.dispose();
-      }
-      pools.dispose();
-      o.__base.FObject.dispose.call(o);
-   }
+   return hash;
 }
-with(MO){
-   MO.FTimer = function FTimer(o){
-      o = RClass.inherits(this, o, FObject);
-      o._count      = 0;
-      o._startTime  = 0;
-      o._beginTime  = 0;
-      o._endTime    = 0;
-      o._stopTime   = 0;
-      o._span       = RClass.register(o, new AGetter('_span'), 0);
-      o._spanSecond = RClass.register(o, new AGetter('_spanSecond'), 0);
-      o.setup       = FTimer_setup;
-      o.current     = FTimer_current;
-      o.rate        = FTimer_rate;
-      o.update      = FTimer_update;
-      return o;
+MO.FObject_toString = function FObject_toString(){
+   return MO.Class.dump(this);
+}
+MO.FObject_dispose = function FObject_dispose(){
+   var o = this;
+   MO.RObject.free(o);
+   o.__dispose = true;
+}
+MO.FObject_innerDump = function FObject_innerDump(dump, level){
+   dump.append(MO.Class.dump(this));
+}
+MO.FObject_dump = function FObject_dump(){
+   var result = new MO.TString();
+   this.innerDump(result, 0);
+   return result.flush();
+}
+MO.FObjectPool = function FObjectPool(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._items      = null;
+   o._frees      = null;
+   o._allocCount = 0;
+   o._freeCount  = 0;
+   o.construct   = MO.FObjectPool_construct;
+   o.hasFree     = MO.FObjectPool_hasFree;
+   o.alloc       = MO.FObjectPool_alloc;
+   o.free        = MO.FObjectPool_free;
+   o.push        = MO.FObjectPool_push;
+   o.dispose     = MO.FObjectPool_dispose;
+   o.innerDump   = MO.FObjectPool_innerDump;
+   return o;
+}
+MO.FObjectPool_construct = function FObjectPool_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._items = new MO.TObjects();
+   o._frees = new MO.TObjects();
+}
+MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
+   return !this._frees.isEmpty();
+}
+MO.FObjectPool_alloc = function FObjectPool_alloc(){
+   var o = this;
+   var r = null;
+   if(!o._frees.isEmpty()){
+      r = o._frees.pop();
    }
-   MO.FTimer_setup = function FTimer_setup(){
-      var o = this;
-      var n = new Date().getTime();
-      o._startTime = n;
-      o._beginTime = n;
-      o._endTime = n;
+   o._allocCount++;
+   return r;
+}
+MO.FObjectPool_free = function FObjectPool_free(p){
+   var o = this;
+   o._frees.push(p);
+   o._freeCount++;
+}
+MO.FObjectPool_push = function FObjectPool_push(p){
+   var o = this;
+   o._items.push(p);
+   o._frees.push(p);
+}
+MO.FObjectPool_dispose = function FObjectPool_dispose(){
+   var o = this;
+   o._items = MO.RObject.dispose(o._items);
+   o._frees = MO.RObject.dispose(o._frees);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
+   var o = this;
+   s.append('Pool:');
+   s.append('total=', o._items.count());
+   s.append(', free=', o._frees.count());
+   s.append(', alloc_count=', o._allocCount);
+   s.append(', free_count=', o._freeCount);
+}
+MO.FObjectPools = function FObjectPools(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._pools    = null;
+   o.construct = MO.FObjectPools_construct;
+   o.pool      = MO.FObjectPools_pool;
+   o.alloc     = MO.FObjectPools_alloc;
+   o.free      = MO.FObjectPools_free;
+   o.dispose   = MO.FObjectPools_dispose;
+   return o;
+}
+MO.FObjectPools_construct = function FObjectPools_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._pools = new MO.TDictionary();
+}
+MO.FObjectPools_pool = function FObjectPools_pool(code){
+   var o = this;
+   var pool = o._pools.get(code);
+   if(!pool){
+      pool = MO.Class.create(MO.FObjectPool);
+      o._pools.set(code, pool);
    }
-   MO.FTimer_current = function FTimer_current(){
-      return this._lastTime;
+   return pool;
+}
+MO.FObjectPools_alloc = function FObjectPools_alloc(code){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.alloc();
+}
+MO.FObjectPools_free = function FObjectPools_free(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.free(instance);
+}
+MO.FObjectPools_push = function FObjectPools_push(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.push(instance);
+}
+MO.FObjectPools_dispose = function FObjectPools_dispose(){
+   var o = this;
+   var pools = o._pools;
+   var count = pools.count();
+   for(var i = 0; i < count; i++){
+      var pool = pools.valueAt(i);
+      pool.dispose();
    }
-   MO.FTimer_rate = function FTimer_rate(){
-      var o = this;
-      if(o._count == 0){
-         return 0;
-      }
-      var t = o._lastTime - o._startTime;
-      var c = o._count * 1000 / t;
-      return parseInt(c);
+   pools.dispose();
+   o.__base.FObject.dispose.call(o);
+}
+MO.FTimer = function FTimer(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._count      = 0;
+   o._startTime  = 0;
+   o._beginTime  = 0;
+   o._endTime    = 0;
+   o._stopTime   = 0;
+   o._span       = MO.Class.register(o, new MO.AGetter('_span'), 0);
+   o._spanSecond = MO.Class.register(o, new MO.AGetter('_spanSecond'), 0);
+   o.setup       = MO.FTimer_setup;
+   o.current     = MO.FTimer_current;
+   o.rate        = MO.FTimer_rate;
+   o.update      = MO.FTimer_update;
+   return o;
+}
+MO.FTimer_setup = function FTimer_setup(){
+   var o = this;
+   var n = new Date().getTime();
+   o._startTime = n;
+   o._beginTime = n;
+   o._endTime = n;
+}
+MO.FTimer_current = function FTimer_current(){
+   return this._lastTime;
+}
+MO.FTimer_rate = function FTimer_rate(){
+   var o = this;
+   if(o._count == 0){
+      return 0;
    }
-   MO.FTimer_update = function FTimer_update(){
-      var o = this;
-      o._count++;
-      var b = o._beginTime = o._endTime;
-      var e = o._endTime = new Date().getTime();
-      var s = o._span = e - b;
-      o._spanSecond = s / 1000;
-   }
+   var t = o._lastTime - o._startTime;
+   var c = o._count * 1000 / t;
+   return parseInt(c);
+}
+MO.FTimer_update = function FTimer_update(){
+   var o = this;
+   o._count++;
+   var b = o._beginTime = o._endTime;
+   var e = o._endTime = new Date().getTime();
+   var s = o._span = e - b;
+   o._spanSecond = s / 1000;
 }
 with(MO){
    MO.RArray = function RArray(){

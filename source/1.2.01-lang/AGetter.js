@@ -12,8 +12,11 @@
       var o = this;
       ASource.call(o, name, ESource.Get, linker);
       //..........................................................
+      // @attribute
+      o._linker = linker;
+      //..........................................................
       // @method
-      o.build = AGetter_build;
+      o.build   = AGetter_build;
       return o;
    }
 
@@ -26,7 +29,7 @@
    //============================================================
    MO.AGetter_build = function AGetter_build(clazz, instance){
       var o = this;
-      var getName = o._code;
+      var getName = o._linker ? o._linker : o._code;
       instance[getName] = RMethod.makePropertyGet(o._name, getName);
    }
 }

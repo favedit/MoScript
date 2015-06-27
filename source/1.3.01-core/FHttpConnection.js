@@ -16,9 +16,9 @@
       o._url                 = null;
       // @attribute
       o._input               = null;
-      o._inputData           = null;
+      o._inputData           = RClass.register(o, new AGetSet('_inputData'));
       o._output              = null;
-      o._outputData          = null;
+      o._outputData          = RClass.register(o, new AGetter('_outputData'));
       // @attribute
       o._connection          = null;
       o._contentLength       = 0;
@@ -33,9 +33,6 @@
       o.construct            = FHttpConnection_construct;
       // @method
       o.setHeaders           = FHttpConnection_setHeaders;
-      o.inputData            = FHttpConnection_inputData;
-      o.setInputData         = FHttpConnection_setInputData;
-      o.outputData           = FHttpConnection_outputData;
       o.setOutputData        = FHttpConnection_setOutputData;
       o.content              = FHttpConnection_content;
       o.sendSync             = FHttpConnection_sendSync;
@@ -141,36 +138,6 @@
             connection.setRequestHeader('content-length', o._contentLength);
          }
       }
-   }
-
-   //==========================================================
-   // <T>获得发送信息。</T>
-   //
-   // @method
-   // @param p:value:String 内容
-   //==========================================================
-   MO.FHttpConnection_inputData = function FHttpConnection_inputData(){
-      return this._inputData;
-   }
-
-   //==========================================================
-   // <T>设置发送信息。</T>
-   //
-   // @method
-   // @param p:value:String 内容
-   //==========================================================
-   MO.FHttpConnection_setInputData = function FHttpConnection_setInputData(p){
-      this._inputData = p;
-   }
-
-   //==========================================================
-   // <T>获得接收信息。</T>
-   //
-   // @method
-   // @param p:value:String 内容
-   //==========================================================
-   MO.FHttpConnection_outputData = function FHttpConnection_outputData(){
-      return this._outputData;
    }
 
    //==========================================================

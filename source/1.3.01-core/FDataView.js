@@ -17,12 +17,12 @@ with(MO){
    //==========================================================
    // <T>构造处理。</T>
    //
-   // @param p:data:Array 数组
+   // @param data:Array 数组
    //==========================================================
-   MO.FDataView_link = function FDataView_link(p){
+   MO.FDataView_link = function FDataView_link(data){
       var o = this;
-      o._memory = p;
-      o._viewer = new DataView(p);
+      o._memory = data;
+      o._viewer = new DataView(data);
    }
 
    //==========================================================

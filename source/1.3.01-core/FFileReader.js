@@ -79,6 +79,7 @@
    // @method
    //==========================================================
    MO.FFileReader_ohProgress = function FFileReader_ohProgress(){
+      var o = this.__linker;
    }
 
    //==========================================================

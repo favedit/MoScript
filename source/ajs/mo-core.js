@@ -278,719 +278,697 @@ MO.EOrientation = new function EOrientation(){
    o.Vertical   = 'V';
    return o;
 }
-with(MO){
-   MO.MClone = function MClone(o){
-      o = RClass.inherits(this, o);
-      o.clone  = MClone_clone;
-      return o;
-   }
-   MO.MClone_clone = function MClone_clone(){
-      var o = this;
-      var r = RClass.create(o.constructor);
-      for(var n in o){
-         v = o[n];
-         if(v != null){
-            if(!RClass.isBaseDataType(v.constructor)){
-               r[n] = v.clone();
-            }
-         }
-         r[n] = v;
-      }
-      return r;
-   }
+MO.MClone = function MClone(o){
+   o = MO.Class.inherits(this, o);
+   o.clone  = MO.MClone_clone;
+   return o;
 }
-with(MO){
-   MO.MDataStream = function MDataStream(o){
-      o = RClass.inherits(this, o);
-      o._viewer      = null;
-      o._endianCd    = false;
-      o._position    = 0;
-      o.testString   = MDataStream_testString;
-      o.readBoolean  = MDataStream_readBoolean;
-      o.readInt8     = MDataStream_readInt8;
-      o.readInt16    = MDataStream_readInt16;
-      o.readInt32    = MDataStream_readInt32;
-      o.readInt64    = MDataStream_readInt64;
-      o.readUint8    = MDataStream_readUint8;
-      o.readUint16   = MDataStream_readUint16;
-      o.readUint32   = MDataStream_readUint32;
-      o.readUint64   = MDataStream_readUint64;
-      o.readFloat    = MDataStream_readFloat;
-      o.readDouble   = MDataStream_readDouble;
-      o.readString   = MDataStream_readString;
-      o.readData     = MDataStream_readData;
-      o.readBytes    = MDataStream_readBytes;
-      o.writeBoolean = MDataStream_writeBoolean;
-      o.writeInt8    = MDataStream_writeInt8;
-      o.writeInt16   = MDataStream_writeInt16;
-      o.writeInt32   = MDataStream_writeInt32;
-      o.writeInt64   = MDataStream_writeInt64;
-      o.writeUint8   = MDataStream_writeUint8;
-      o.writeUint16  = MDataStream_writeUint16;
-      o.writeUint32  = MDataStream_writeUint32;
-      o.writeUint64  = MDataStream_writeUint64;
-      o.writeFloat   = MDataStream_writeFloat;
-      o.writeDouble  = MDataStream_writeDouble;
-      o.writeString  = MDataStream_writeString;
-      o.writeBytes   = MDataStream_writeBytes;
-      return o;
-   }
-   MO.MDataStream_testString = function MDataStream_testString(){
-      var o = this;
-      var position = o._position;
-      var length = o._viewer.getUint16(position, o._endianCd);
-      position += 2;
-      var result = new TString();
-      for(var i = 0; i < length; i++){
-         var value = o._viewer.getUint16(position, o._endianCd);
-         position += 2;
-         result.push(String.fromCharCode(value));
+MO.MClone_clone = function MClone_clone(){
+   var o = this;
+   var result = MO.Class.create(o.constructor);
+   for(var name in o){
+      var value = o[name];
+      if(value != null){
+         if(!MO.Class.isBaseDataType(value.constructor)){
+            result[name] = value.clone();
+         }
       }
-      return result.toString();
+      result[name] = value;
    }
-   MO.MDataStream_readBoolean = function MDataStream_readBoolean(){
-      var o = this;
-      var value = o._viewer.getInt8(o._position, o._endianCd);
-      o._position++;
-      return value > 0;
-   }
-   MO.MDataStream_readInt8 = function MDataStream_readInt8(){
-      var o = this;
-      var value = o._viewer.getInt8(o._position, o._endianCd);
-      o._position++;
-      return value;
-   }
-   MO.MDataStream_readInt16 = function MDataStream_readInt16(){
-      var o = this;
-      var value = o._viewer.getInt16(o._position, o._endianCd);
-      o._position += 2;
-      return value;
-   }
-   MO.MDataStream_readInt32 = function MDataStream_readInt32(){
-      var o = this;
-      var value = o._viewer.getInt32(o._position, o._endianCd);
-      o._position += 4;
-      return value;
-   }
-   MO.MDataStream_readInt64 = function MDataStream_readInt64(){
-      var o = this;
-      var value = o._viewer.getInt64(o._position, o._endianCd);
-      o._position += 8;
-      return value;
-   }
-   MO.MDataStream_readUint8 = function MDataStream_readUint8(){
-      var o = this;
-      var value = o._viewer.getUint8(o._position, o._endianCd);
-      o._position += 1;
-      return value;
-   }
-   MO.MDataStream_readUint16 = function MDataStream_readUint16(){
-      var o = this;
-      var value = o._viewer.getUint16(o._position, o._endianCd);
-      o._position += 2;
-      return value;
-   }
-   MO.MDataStream_readUint32 = function MDataStream_readUint32(){
-      var o = this;
-      var value = o._viewer.getUint32(o._position, o._endianCd);
-      o._position += 4;
-      return value;
-   }
-   MO.MDataStream_readUint64 = function MDataStream_readUint64(){
-      var o = this;
-      var value = o._viewer.getUint64(o._position, o._endianCd);
-      o._position += 8;
-      return value;
-   }
-   MO.MDataStream_readFloat = function MDataStream_readFloat(){
-      var o = this;
-      var value = o._viewer.getFloat32(o._position, o._endianCd);
-      o._position += 4;
-      return value;
-   }
-   MO.MDataStream_readDouble = function MDataStream_readDouble(){
-      var o = this;
-      var value = o._viewer.getFloat64(o._position, o._endianCd);
-      o._position += 8;
-      return value;
-   }
-   MO.MDataStream_readString = function MDataStream_readString(){
-      var o = this;
-      var viewer = o._viewer;
-      var endianCd = o._endianCd;
-      var position = o._position;
-      var length = viewer.getUint16(position, endianCd);
+   return result;
+}
+MO.MDataStream = function MDataStream(o){
+   o = MO.Class.inherits(this, o);
+   o._viewer      = null;
+   o._endianCd    = false;
+   o._position    = 0;
+   o.testString   = MO.MDataStream_testString;
+   o.readBoolean  = MO.MDataStream_readBoolean;
+   o.readInt8     = MO.MDataStream_readInt8;
+   o.readInt16    = MO.MDataStream_readInt16;
+   o.readInt32    = MO.MDataStream_readInt32;
+   o.readInt64    = MO.MDataStream_readInt64;
+   o.readUint8    = MO.MDataStream_readUint8;
+   o.readUint16   = MO.MDataStream_readUint16;
+   o.readUint32   = MO.MDataStream_readUint32;
+   o.readUint64   = MO.MDataStream_readUint64;
+   o.readFloat    = MO.MDataStream_readFloat;
+   o.readDouble   = MO.MDataStream_readDouble;
+   o.readString   = MO.MDataStream_readString;
+   o.readData     = MO.MDataStream_readData;
+   o.readBytes    = MO.MDataStream_readBytes;
+   o.writeBoolean = MO.MDataStream_writeBoolean;
+   o.writeInt8    = MO.MDataStream_writeInt8;
+   o.writeInt16   = MO.MDataStream_writeInt16;
+   o.writeInt32   = MO.MDataStream_writeInt32;
+   o.writeInt64   = MO.MDataStream_writeInt64;
+   o.writeUint8   = MO.MDataStream_writeUint8;
+   o.writeUint16  = MO.MDataStream_writeUint16;
+   o.writeUint32  = MO.MDataStream_writeUint32;
+   o.writeUint64  = MO.MDataStream_writeUint64;
+   o.writeFloat   = MO.MDataStream_writeFloat;
+   o.writeDouble  = MO.MDataStream_writeDouble;
+   o.writeString  = MO.MDataStream_writeString;
+   o.writeBytes   = MO.MDataStream_writeBytes;
+   return o;
+}
+MO.MDataStream_testString = function MDataStream_testString(){
+   var o = this;
+   var position = o._position;
+   var length = o._viewer.getUint16(position, o._endianCd);
+   position += 2;
+   var result = new TString();
+   for(var i = 0; i < length; i++){
+      var value = o._viewer.getUint16(position, o._endianCd);
       position += 2;
-      var value = new TString();
-      for(var i = 0; i < length; i++){
-         var character = viewer.getUint16(position, endianCd);
-         value.push(String.fromCharCode(character));
-         position += 2;
+      result.push(String.fromCharCode(value));
+   }
+   return result.toString();
+}
+MO.MDataStream_readBoolean = function MDataStream_readBoolean(){
+   var o = this;
+   var value = o._viewer.getInt8(o._position, o._endianCd);
+   o._position++;
+   return value > 0;
+}
+MO.MDataStream_readInt8 = function MDataStream_readInt8(){
+   var o = this;
+   var value = o._viewer.getInt8(o._position, o._endianCd);
+   o._position++;
+   return value;
+}
+MO.MDataStream_readInt16 = function MDataStream_readInt16(){
+   var o = this;
+   var value = o._viewer.getInt16(o._position, o._endianCd);
+   o._position += 2;
+   return value;
+}
+MO.MDataStream_readInt32 = function MDataStream_readInt32(){
+   var o = this;
+   var value = o._viewer.getInt32(o._position, o._endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MDataStream_readInt64 = function MDataStream_readInt64(){
+   var o = this;
+   var value = o._viewer.getInt64(o._position, o._endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MDataStream_readUint8 = function MDataStream_readUint8(){
+   var o = this;
+   var value = o._viewer.getUint8(o._position, o._endianCd);
+   o._position += 1;
+   return value;
+}
+MO.MDataStream_readUint16 = function MDataStream_readUint16(){
+   var o = this;
+   var value = o._viewer.getUint16(o._position, o._endianCd);
+   o._position += 2;
+   return value;
+}
+MO.MDataStream_readUint32 = function MDataStream_readUint32(){
+   var o = this;
+   var value = o._viewer.getUint32(o._position, o._endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MDataStream_readUint64 = function MDataStream_readUint64(){
+   var o = this;
+   var value = o._viewer.getUint64(o._position, o._endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MDataStream_readFloat = function MDataStream_readFloat(){
+   var o = this;
+   var value = o._viewer.getFloat32(o._position, o._endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MDataStream_readDouble = function MDataStream_readDouble(){
+   var o = this;
+   var value = o._viewer.getFloat64(o._position, o._endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MDataStream_readString = function MDataStream_readString(){
+   var o = this;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var position = o._position;
+   var length = viewer.getUint16(position, endianCd);
+   position += 2;
+   var value = new MO.TString();
+   for(var i = 0; i < length; i++){
+      var character = viewer.getUint16(position, endianCd);
+      value.push(String.fromCharCode(character));
+      position += 2;
+   }
+   o._position = position;
+   return value.flush();
+}
+MO.MDataStream_readData = function MDataStream_readData(dataCd){
+   var o = this;
+   switch(dataCd){
+      case EDataType.Int8:
+         return o.readInt8();
+      case EDataType.Int16:
+         return o.readInt16();
+      case EDataType.Int32:
+         return o.readInt32();
+      case EDataType.Int64:
+         return o.readInt64();
+      case EDataType.Uint8:
+         return o.readUint8();
+      case EDataType.Uint16:
+         return o.readUint16();
+      case EDataType.Uint32:
+         return o.readUint32();
+      case EDataType.Uint64:
+         return o.readUint64();
+      case EDataType.Float32:
+         return o.readFloat();
+      case EDataType.Float64:
+         return o.readDouble();
+      case EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
+}
+MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
+      return;
+   }
+   if(offset != 0){
+      throw new MO.TError(o, 'Unsupport.');
+   }
+   var position = o._position;
+   var endianCd = o._endianCd;
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getFloat64(position, endianCd);
+         position += 8;
       }
       o._position = position;
-      return value.flush();
+      return;
    }
-   MO.MDataStream_readData = function MDataStream_readData(dataCd){
-      var o = this;
-      switch(dataCd){
-         case EDataType.Int8:
-            return o.readInt8();
-         case EDataType.Int16:
-            return o.readInt16();
-         case EDataType.Int32:
-            return o.readInt32();
-         case EDataType.Int64:
-            return o.readInt64();
-         case EDataType.Uint8:
-            return o.readUint8();
-         case EDataType.Uint16:
-            return o.readUint16();
-         case EDataType.Uint32:
-            return o.readUint32();
-         case EDataType.Uint64:
-            return o.readUint64();
-         case EDataType.Float32:
-            return o.readFloat();
-         case EDataType.Float64:
-            return o.readDouble();
-         case EDataType.String:
-            return o.readString();
-      }
-      throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
-   }
-   MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
-      var o = this;
-      var viewer = o._viewer;
-      if(length <= 0){
-         return;
-      }
-      if(offset != 0){
-         throw new TError(o, 'Unsupport.');
-      }
-      var position = o._position;
-      var endianCd = o._endianCd;
-      if(length % 8 == 0){
-         var array = new Float64Array(data);
-         var count = length >> 3;
-         for(var i = 0; i < count; i++){
-            array[i] = viewer.getFloat64(position, endianCd);
-            position += 8;
-         }
-         o._position = position;
-         return;
-      }
-      if(length % 4 == 0){
-         var array = new Uint32Array(data);
-         var count = length >> 2;
-         for(var i = 0; i < count; i++){
-            array[i] = viewer.getUint32(position, endianCd);
-            position += 4;
-         }
-         o._position = position;
-         return;
-      }
-      if(length % 2 == 0){
-         var array = new Uint16Array(data);
-         var count = length >> 1;
-         for(var i = 0; i < count; i++){
-            array[i] = viewer.getUint16(position, endianCd);
-            position += 2;
-         }
-         o._position = position;
-         return;
-      }
-      var array = new Uint8Array(data);
-      for(var i = 0; i < length; i++){
-         array[i] = viewer.getUint8(position++, endianCd);
+   if(length % 4 == 0){
+      var array = new Uint32Array(data);
+      var count = length >> 2;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint32(position, endianCd);
+         position += 4;
       }
       o._position = position;
+      return;
    }
-   MO.MDataStream_writeBoolean = function MDataStream_writeBoolean(value){
-      var o = this;
-      o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
-      o._position++;
-   }
-   MO.MDataStream_writeInt8 = function MDataStream_writeInt8(value){
-      var o = this;
-      o._viewer.setInt8(o._position, value, o._endianCd);
-      o._position++;
-   }
-   MO.MDataStream_writeInt16 = function MDataStream_writeInt16(value){
-      var o = this;
-      o._viewer.setInt16(o._position, value, o._endianCd);
-      o._position += 2;
-   }
-   MO.MDataStream_writeInt32 = function MDataStream_writeInt32(value){
-      var o = this;
-      o._viewer.setInt32(o._position, value, o._endianCd);
-      o._position += 4;
-   }
-   MO.MDataStream_writeInt64 = function MDataStream_writeInt64(value){
-      var o = this;
-      o._viewer.setInt64(o._position, value, o._endianCd);
-      o._position += 8;
-   }
-   MO.MDataStream_writeUint8 = function MDataStream_writeUint8(value){
-      var o = this;
-      o._viewer.setUint8(o._position, value, o._endianCd);
-      o._position += 1;
-   }
-   MO.MDataStream_writeUint16 = function MDataStream_writeUint16(value){
-      var o = this;
-      o._viewer.setUint16(o._position, value, o._endianCd);
-      o._position += 2;
-   }
-   MO.MDataStream_writeUint32 = function MDataStream_writeUint32(value){
-      var o = this;
-      o._viewer.setUint32(o._position, value, o._endianCd);
-      o._position += 4;
-   }
-   MO.MDataStream_writeUint64 = function MDataStream_writeUint64(value){
-      var o = this;
-      o._viewer.setUint64(o._position, value, o._endianCd);
-      o._position += 8;
-   }
-   MO.MDataStream_writeFloat = function MDataStream_writeFloat(value){
-      var o = this;
-      o._viewer.setFloat32(o._position, value, o._endianCd);
-      o._position += 4;
-   }
-   MO.MDataStream_writeDouble = function MDataStream_writeDouble(value){
-      var o = this;
-      o._viewer.setDouble(o._position, value, o._endianCd);
-      o._position += 8;
-   }
-   MO.MDataStream_writeString = function MDataStream_writeString(value){
-      var o = this;
-      var viewer = o._viewer;
-      var length = v.length;
-      var endianCd = o._endianCd;
-      var position = o._position;
-      viewer.setUint16(position, length, endianCd);
-      position += 2;
-      for(var i = 0; i < length; i++){
-         viewer.setUint16(position, value.charCodeAt(i), endianCd);
+   if(length % 2 == 0){
+      var array = new Uint16Array(data);
+      var count = length >> 1;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint16(position, endianCd);
          position += 2;
       }
       o._position = position;
+      return;
    }
-   MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length){
-      var o = this;
-      var viewer = o._viewer;
-      if(length <= 0){
-         return;
-      }
-      if(offset != 0){
-         throw new TError('Unsupport.');
-      }
-      var position = o._position;
-      var endianCd = o._endianCd;
-      if(length % 8 == 0){
-         var array = new Float64Array(data);
-         var count = length >> 3;
-         for(var i = 0; i < count; i++){
-            viewer.setFloat64(position, array[i], endianCd);
-            position += 8;
-         }
-         o._position = position;
-         return;
-      }
-      if(length % 4 == 0){
-         var array = new Uint32Array(data);
-         var count = length >> 2;
-         for(var i = 0; i < count; i++){
-            viewer.setUint32(position, array[i], endianCd);
-            position += 4;
-         }
-         o._position = position;
-         return;
-      }
-      if(length % 2 == 0){
-         var array = new Uint16Array(data);
-         var count = length >> 1;
-         for(var i = 0; i < count; i++){
-            viewer.setUint16(position, array[i], endianCd);
-            position += 2;
-         }
-         o._position = position;
-         return;
-      }
-      var array = new Uint8Array(data);
-      for(var i = 0; i < length; i++){
-         viewer.setUint8(position++, array[i], endianCd);
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      array[i] = viewer.getUint8(position++, endianCd);
+   }
+   o._position = position;
+}
+MO.MDataStream_writeBoolean = function MDataStream_writeBoolean(value){
+   var o = this;
+   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
+   o._position++;
+}
+MO.MDataStream_writeInt8 = function MDataStream_writeInt8(value){
+   var o = this;
+   o._viewer.setInt8(o._position, value, o._endianCd);
+   o._position++;
+}
+MO.MDataStream_writeInt16 = function MDataStream_writeInt16(value){
+   var o = this;
+   o._viewer.setInt16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+MO.MDataStream_writeInt32 = function MDataStream_writeInt32(value){
+   var o = this;
+   o._viewer.setInt32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MDataStream_writeInt64 = function MDataStream_writeInt64(value){
+   var o = this;
+   o._viewer.setInt64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MDataStream_writeUint8 = function MDataStream_writeUint8(value){
+   var o = this;
+   o._viewer.setUint8(o._position, value, o._endianCd);
+   o._position += 1;
+}
+MO.MDataStream_writeUint16 = function MDataStream_writeUint16(value){
+   var o = this;
+   o._viewer.setUint16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+MO.MDataStream_writeUint32 = function MDataStream_writeUint32(value){
+   var o = this;
+   o._viewer.setUint32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MDataStream_writeUint64 = function MDataStream_writeUint64(value){
+   var o = this;
+   o._viewer.setUint64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MDataStream_writeFloat = function MDataStream_writeFloat(value){
+   var o = this;
+   o._viewer.setFloat32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MDataStream_writeDouble = function MDataStream_writeDouble(value){
+   var o = this;
+   o._viewer.setDouble(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MDataStream_writeString = function MDataStream_writeString(value){
+   var o = this;
+   var viewer = o._viewer;
+   var length = v.length;
+   var endianCd = o._endianCd;
+   var position = o._position;
+   viewer.setUint16(position, length, endianCd);
+   position += 2;
+   for(var i = 0; i < length; i++){
+      viewer.setUint16(position, value.charCodeAt(i), endianCd);
+      position += 2;
+   }
+   o._position = position;
+}
+MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
+      return;
+   }
+   if(offset != 0){
+      throw new MO.TError('Unsupport.');
+   }
+   var position = o._position;
+   var endianCd = o._endianCd;
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         viewer.setFloat64(position, array[i], endianCd);
+         position += 8;
       }
       o._position = position;
+      return;
    }
-}
-with(MO){
-   MO.MDataView = function MDataView(o){
-      o = RClass.inherits(this, o);
-      o._viewer     = null;
-      o._endianCd   = 0;
-      o.endianCd    = MDataView_endianCd;
-      o.setEndianCd = MDataView_setEndianCd;
-      o.getInt8     = MDataView_getInt8;
-      o.getInt16    = MDataView_getInt16;
-      o.getInt32    = MDataView_getInt32;
-      o.getInt64    = MDataView_getInt64;
-      o.getUint8    = MDataView_getUint8;
-      o.getUint16   = MDataView_getUint16;
-      o.getUint32   = MDataView_getUint32;
-      o.getUint64   = MDataView_getUint64;
-      o.getFloat    = MDataView_getFloat;
-      o.getDouble   = MDataView_getDouble;
-      o.setInt8     = MDataView_setInt8;
-      o.setInt16    = MDataView_setInt16;
-      o.setInt32    = MDataView_setInt32;
-      o.setInt64    = MDataView_setInt64;
-      o.setUint8    = MDataView_setUint8;
-      o.setUint16   = MDataView_setUint16;
-      o.setUint32   = MDataView_setUint32;
-      o.setUint64   = MDataView_setUint64;
-      o.setFloat    = MDataView_setFloat;
-      o.setDouble   = MDataView_setDouble;
-      return o;
-   }
-   MO.MDataView_endianCd = function MDataView_endianCd(p){
-      return this._endianCd;
-   }
-   MO.MDataView_setEndianCd = function MDataView_setEndianCd(p){
-      this._endianCd = p;
-   }
-   MO.MDataView_getInt8 = function MDataView_getInt8(p){
-      var o = this;
-      return o._viewer.getInt8(p, o._endianCd);
-   }
-   MO.MDataView_getInt16 = function MDataView_getInt16(p){
-      var o = this;
-      return o._viewer.getInt16(p, o._endianCd);
-   }
-   MO.MDataView_getInt32 = function MDataView_getInt32(p){
-      var o = this;
-      return o._viewer.getInt32(p, o._endianCd);
-   }
-   MO.MDataView_getInt64 = function MDataView_getInt64(p){
-      var o = this;
-      return o._viewer.getInt64(p, o._endianCd);
-   }
-   MO.MDataView_getUint8 = function MDataView_getUint8(p){
-      var o = this;
-      return o._viewer.getUint8(p, o._endianCd);
-   }
-   MO.MDataView_getUint16 = function MDataView_getUint16(p){
-      var o = this;
-      return o._viewer.getUint16(p, o._endianCd);
-   }
-   MO.MDataView_getUint32 = function MDataView_getUint32(p){
-      var o = this;
-      return o._viewer.getUint32(p, o._endianCd);
-   }
-   MO.MDataView_getUint64 = function MDataView_getUint64(p){
-      var o = this;
-      return o._viewer.getUint64(p, o._endianCd);
-   }
-   MO.MDataView_getFloat = function MDataView_getFloat(p){
-      var o = this;
-      return o._viewer.getFloat32(p, o._endianCd);
-   }
-   MO.MDataView_getDouble = function MDataView_getDouble(p){
-      var o = this;
-      return o._viewer.getFloat64(p, o._endianCd);
-   }
-   MO.MDataView_setInt8 = function MDataView_setInt8(p, v){
-      var o = this;
-      o._viewer.setInt8(p, v, o._endianCd);
-   }
-   MO.MDataView_setInt16 = function MDataView_setInt16(p, v){
-      var o = this;
-      o._viewer.setInt16(p, v, o._endianCd);
-   }
-   MO.MDataView_setInt32 = function MDataView_setInt32(p, v){
-      var o = this;
-      o._viewer.setInt32(p, v, o._endianCd);
-   }
-   MO.MDataView_setInt64 = function MDataView_setInt64(p, v){
-      var o = this;
-      o._viewer.setInt64(p, v, o._endianCd);
-   }
-   MO.MDataView_setUint8 = function MDataView_setUint8(p, v){
-      var o = this;
-      o._viewer.setUint8(p, v, o._endianCd);
-   }
-   MO.MDataView_setUint16 = function MDataView_setUint16(p, v){
-      var o = this;
-      o._viewer.setUint16(p, v, o._endianCd);
-   }
-   MO.MDataView_setUint32 = function MDataView_setUint32(p, v){
-      var o = this;
-      o._viewer.setUint32(p, v, o._endianCd);
-   }
-   MO.MDataView_setUint64 = function MDataView_setUint64(p, v){
-      var o = this;
-      o._viewer.setUint64(p, v, o._endianCd);
-   }
-   MO.MDataView_setFloat = function MDataView_setFloat(p, v){
-      var o = this;
-      o._viewer.setFloat32(p, v, o._endianCd);
-   }
-   MO.MDataView_setDouble = function MDataView_setDouble(p, v){
-      var o = this;
-      o._viewer.setDouble(p, v, o._endianCd);
-   }
-}
-with(MO){
-   MO.MListener = function MListener(o){
-      o = RClass.inherits(this, o);
-      o._listenerss       = null;
-      o.addListener       = MListener_addListener;
-      o.setListener       = MListener_setListener;
-      o.removeListener    = MListener_removeListener;
-      o.clearListeners    = MListener_clearListeners;
-      o.clearAllListeners = MListener_clearAllListeners;
-      o.processListener   = MListener_processListener;
-      o.dispose           = MListener_dispose;
-      return o;
-   }
-   MO.MListener_addListener = function MListener_addListener(name, owner, method){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(!listenerss){
-         listenerss = o._listenerss = new TDictionary();
+   if(length % 4 == 0){
+      var array = new Uint32Array(data);
+      var count = length >> 2;
+      for(var i = 0; i < count; i++){
+         viewer.setUint32(position, array[i], endianCd);
+         position += 4;
       }
+      o._position = position;
+      return;
+   }
+   if(length % 2 == 0){
+      var array = new Uint16Array(data);
+      var count = length >> 1;
+      for(var i = 0; i < count; i++){
+         viewer.setUint16(position, array[i], endianCd);
+         position += 2;
+      }
+      o._position = position;
+      return;
+   }
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      viewer.setUint8(position++, array[i], endianCd);
+   }
+   o._position = position;
+}
+MO.MDataView = function MDataView(o){
+   o = MO.Class.inherits(this, o);
+   o._viewer     = null;
+   o._endianCd   = 0;
+   o.endianCd    = MO.MDataView_endianCd;
+   o.setEndianCd = MO.MDataView_setEndianCd;
+   o.getInt8     = MO.MDataView_getInt8;
+   o.getInt16    = MO.MDataView_getInt16;
+   o.getInt32    = MO.MDataView_getInt32;
+   o.getInt64    = MO.MDataView_getInt64;
+   o.getUint8    = MO.MDataView_getUint8;
+   o.getUint16   = MO.MDataView_getUint16;
+   o.getUint32   = MO.MDataView_getUint32;
+   o.getUint64   = MO.MDataView_getUint64;
+   o.getFloat    = MO.MDataView_getFloat;
+   o.getDouble   = MO.MDataView_getDouble;
+   o.setInt8     = MO.MDataView_setInt8;
+   o.setInt16    = MO.MDataView_setInt16;
+   o.setInt32    = MO.MDataView_setInt32;
+   o.setInt64    = MO.MDataView_setInt64;
+   o.setUint8    = MO.MDataView_setUint8;
+   o.setUint16   = MO.MDataView_setUint16;
+   o.setUint32   = MO.MDataView_setUint32;
+   o.setUint64   = MO.MDataView_setUint64;
+   o.setFloat    = MO.MDataView_setFloat;
+   o.setDouble   = MO.MDataView_setDouble;
+   return o;
+}
+MO.MDataView_endianCd = function MDataView_endianCd(p){
+   return this._endianCd;
+}
+MO.MDataView_setEndianCd = function MDataView_setEndianCd(p){
+   this._endianCd = p;
+}
+MO.MDataView_getInt8 = function MDataView_getInt8(p){
+   var o = this;
+   return o._viewer.getInt8(p, o._endianCd);
+}
+MO.MDataView_getInt16 = function MDataView_getInt16(p){
+   var o = this;
+   return o._viewer.getInt16(p, o._endianCd);
+}
+MO.MDataView_getInt32 = function MDataView_getInt32(p){
+   var o = this;
+   return o._viewer.getInt32(p, o._endianCd);
+}
+MO.MDataView_getInt64 = function MDataView_getInt64(p){
+   var o = this;
+   return o._viewer.getInt64(p, o._endianCd);
+}
+MO.MDataView_getUint8 = function MDataView_getUint8(p){
+   var o = this;
+   return o._viewer.getUint8(p, o._endianCd);
+}
+MO.MDataView_getUint16 = function MDataView_getUint16(p){
+   var o = this;
+   return o._viewer.getUint16(p, o._endianCd);
+}
+MO.MDataView_getUint32 = function MDataView_getUint32(p){
+   var o = this;
+   return o._viewer.getUint32(p, o._endianCd);
+}
+MO.MDataView_getUint64 = function MDataView_getUint64(p){
+   var o = this;
+   return o._viewer.getUint64(p, o._endianCd);
+}
+MO.MDataView_getFloat = function MDataView_getFloat(p){
+   var o = this;
+   return o._viewer.getFloat32(p, o._endianCd);
+}
+MO.MDataView_getDouble = function MDataView_getDouble(p){
+   var o = this;
+   return o._viewer.getFloat64(p, o._endianCd);
+}
+MO.MDataView_setInt8 = function MDataView_setInt8(p, v){
+   var o = this;
+   o._viewer.setInt8(p, v, o._endianCd);
+}
+MO.MDataView_setInt16 = function MDataView_setInt16(p, v){
+   var o = this;
+   o._viewer.setInt16(p, v, o._endianCd);
+}
+MO.MDataView_setInt32 = function MDataView_setInt32(p, v){
+   var o = this;
+   o._viewer.setInt32(p, v, o._endianCd);
+}
+MO.MDataView_setInt64 = function MDataView_setInt64(p, v){
+   var o = this;
+   o._viewer.setInt64(p, v, o._endianCd);
+}
+MO.MDataView_setUint8 = function MDataView_setUint8(p, v){
+   var o = this;
+   o._viewer.setUint8(p, v, o._endianCd);
+}
+MO.MDataView_setUint16 = function MDataView_setUint16(p, v){
+   var o = this;
+   o._viewer.setUint16(p, v, o._endianCd);
+}
+MO.MDataView_setUint32 = function MDataView_setUint32(p, v){
+   var o = this;
+   o._viewer.setUint32(p, v, o._endianCd);
+}
+MO.MDataView_setUint64 = function MDataView_setUint64(p, v){
+   var o = this;
+   o._viewer.setUint64(p, v, o._endianCd);
+}
+MO.MDataView_setFloat = function MDataView_setFloat(p, v){
+   var o = this;
+   o._viewer.setFloat32(p, v, o._endianCd);
+}
+MO.MDataView_setDouble = function MDataView_setDouble(p, v){
+   var o = this;
+   o._viewer.setDouble(p, v, o._endianCd);
+}
+MO.MListener = function MListener(o){
+   o = MO.Class.inherits(this, o);
+   o._listenerss       = null;
+   o.addListener       = MO.MListener_addListener;
+   o.setListener       = MO.MListener_setListener;
+   o.removeListener    = MO.MListener_removeListener;
+   o.clearListeners    = MO.MListener_clearListeners;
+   o.clearAllListeners = MO.MListener_clearAllListeners;
+   o.processListener   = MO.MListener_processListener;
+   o.dispose           = MO.MListener_dispose;
+   return o;
+}
+MO.MListener_addListener = function MListener_addListener(name, owner, method){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(!listenerss){
+      listenerss = o._listenerss = new MO.TDictionary();
+   }
+   var listeners = listenerss.get(name);
+   if(!listeners){
+      listeners = new MO.TListeners();
+      listenerss.set(name, listeners);
+   }
+   return listeners.register(owner, method);
+}
+MO.MListener_setListener = function MListener_setListener(name, owner, method){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
       var listeners = listenerss.get(name);
-      if(!listeners){
-         listeners = new TListeners();
-         listenerss.set(name, listeners);
+      if(listeners){
+         listeners.clear();
       }
-      return listeners.register(owner, method);
    }
-   MO.MListener_setListener = function MListener_setListener(name, owner, method){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(listenerss){
-         var listeners = listenerss.get(name);
+   return o.addListener(name, owner, method)
+}
+MO.MListener_removeListener = function MListener_removeListener(name, owner, method){
+   var o = this;
+   var listenerss = o._listenerss;
+   var listeners = listenerss.get(name);
+   return listeners.unregister(owner, method);
+}
+MO.MListener_clearListeners = function MListener_clearListeners(name){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var listeners = listenerss.get(name);
+      if(listeners){
+         listeners.clear();
+      }
+   }
+}
+MO.MListener_clearAllListeners = function MListener_clearAllListeners(){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      var count = listenerss.count();
+      for(var i = 0; i < count; i++){
+         var listeners = listenerss.at(i);
          if(listeners){
             listeners.clear();
          }
       }
-      return o.addListener(name, owner, method)
    }
-   MO.MListener_removeListener = function MListener_removeListener(name, owner, method){
-      var o = this;
-      var listenerss = o._listenerss;
+}
+MO.MListener_processListener = function MListener_processListener(name, p1, p2, p3, p4, p5){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
       var listeners = listenerss.get(name);
-      return listeners.unregister(owner, method);
-   }
-   MO.MListener_clearListeners = function MListener_clearListeners(name){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(listenerss){
-         var listeners = listenerss.get(name);
-         if(listeners){
-            listeners.clear();
-         }
-      }
-   }
-   MO.MListener_clearAllListeners = function MListener_clearAllListeners(){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(listenerss){
-         var count = listenerss.count();
-         for(var i = 0; i < count; i++){
-            var listeners = listenerss.at(i);
-            if(listeners){
-               listeners.clear();
-            }
-         }
-      }
-   }
-   MO.MListener_processListener = function MListener_processListener(name, p1, p2, p3, p4, p5){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(listenerss){
-         var listeners = listenerss.get(name);
-         if(listeners){
-            listeners.process(p1, p2, p3, p4, p5);
-         }
-      }
-   }
-   MO.MListener_dispose = function MListener_dispose(){
-      var o = this;
-      var listenerss = o._listenerss;
-      if(listenerss){
-         for(var i = listenerss.count() - 1; i >= 0; i--){
-            var listeners = listenerss.at(i);
-            listeners.dispose();
-         }
-         o._listenerss = RObject.dispose(listenerss);
+      if(listeners){
+         listeners.process(p1, p2, p3, p4, p5);
       }
    }
 }
-with(MO){
-   MO.MListenerLoad = function MListenerLoad(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addLoadListener     = MListenerLoad_addLoadListener;
-      o.removeLoadListener  = MListenerLoad_removeLoadListener;
-      o.clearLoadListeners  = MListenerLoad_clearLoadListeners;
-      o.processLoadListener = MListenerLoad_processLoadListener;
-      return o;
-   }
-   MO.MListenerLoad_addLoadListener = function MListenerLoad_addLoadListener(w, m){
-      return this.addListener(EEvent.Load, w, m);
-   }
-   MO.MListenerLoad_removeLoadListener = function MListenerLoad_removeLoadListener(w, m){
-      this.removeListener(EEvent.Load, w, m);
-   }
-   MO.MListenerLoad_clearLoadListeners = function MListenerLoad_clearLoadListeners(){
-      this.clearListeners(EEvent.Load);
-   }
-   MO.MListenerLoad_processLoadListener = function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
+MO.MListener_dispose = function MListener_dispose(){
+   var o = this;
+   var listenerss = o._listenerss;
+   if(listenerss){
+      for(var i = listenerss.count() - 1; i >= 0; i--){
+         var listeners = listenerss.at(i);
+         listeners.dispose();
+      }
+      o._listenerss = MO.RObject.dispose(listenerss);
    }
 }
-with(MO){
-   MO.MListenerProcess = function MListenerProcess(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addProcessListener     = MListenerProcess_addProcessListener;
-      o.removeProcessListener  = MListenerProcess_removeProcessListener;
-      o.clearProcessListeners  = MListenerProcess_clearProcessListeners;
-      o.processProcessListener = MListenerProcess_processProcessListener;
-      return o;
-   }
-   MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(owner, process){
-      return this.addListener(EEvent.Process, owner, process);
-   }
-   MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(owner, process){
-      this.removeListener(EEvent.Process, owner, process);
-   }
-   MO.MListenerProcess_clearProcessListeners = function MListenerProcess_clearProcessListeners(){
-      this.clearListeners(EEvent.Process);
-   }
-   MO.MListenerProcess_processProcessListener = function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
+MO.MListenerLoad = function MListenerLoad(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addLoadListener     = MO.MListenerLoad_addLoadListener;
+   o.removeLoadListener  = MO.MListenerLoad_removeLoadListener;
+   o.clearLoadListeners  = MO.MListenerLoad_clearLoadListeners;
+   o.processLoadListener = MO.MListenerLoad_processLoadListener;
+   return o;
+}
+MO.MListenerLoad_addLoadListener = function MListenerLoad_addLoadListener(w, m){
+   return this.addListener(MO.EEvent.Load, w, m);
+}
+MO.MListenerLoad_removeLoadListener = function MListenerLoad_removeLoadListener(w, m){
+   this.removeListener(MO.EEvent.Load, w, m);
+}
+MO.MListenerLoad_clearLoadListeners = function MListenerLoad_clearLoadListeners(){
+   this.clearListeners(MO.EEvent.Load);
+}
+MO.MListenerLoad_processLoadListener = function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Load, p1, p2, p3, p4, p5);
+}
+MO.MListenerProcess = function MListenerProcess(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addProcessListener     = MO.MListenerProcess_addProcessListener;
+   o.removeProcessListener  = MO.MListenerProcess_removeProcessListener;
+   o.clearProcessListeners  = MO.MListenerProcess_clearProcessListeners;
+   o.processProcessListener = MO.MListenerProcess_processProcessListener;
+   return o;
+}
+MO.MListenerProcess_addProcessListener = function MListenerProcess_addProcessListener(owner, process){
+   return this.addListener(MO.EEvent.Process, owner, process);
+}
+MO.MListenerProcess_removeProcessListener = function MListenerProcess_removeProcessListener(owner, process){
+   this.removeListener(MO.EEvent.Process, owner, process);
+}
+MO.MListenerProcess_clearProcessListeners = function MListenerProcess_clearProcessListeners(){
+   this.clearListeners(MO.EEvent.Process);
+}
+MO.MListenerProcess_processProcessListener = function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Process, p1, p2, p3, p4, p5);
+}
+MO.MListenerTouchZoom = function MListenerTouchZoom(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addTouchZoomListener     = MO.MListenerTouchZoom_addTouchZoomListener;
+   o.removeTouchZoomListener  = MO.MListenerTouchZoom_removeTouchZoomListener;
+   o.clearTouchZoomListeners  = MO.MListenerTouchZoom_clearTouchZoomListeners;
+   o.processTouchZoomListener = MO.MListenerTouchZoom_processTouchZoomListener;
+   return o;
+}
+MO.MListenerTouchZoom_addTouchZoomListener = function MListenerTouchZoom_addTouchZoomListener(w, m){
+   return this.addListener(MO.EEvent.TouchZoom, w, m);
+}
+MO.MListenerTouchZoom_removeTouchZoomListener = function MListenerTouchZoom_removeTouchZoomListener(w, m){
+   this.removeListener(MO.EEvent.TouchZoom, w, m);
+}
+MO.MListenerTouchZoom_clearTouchZoomListeners = function MListenerTouchZoom_clearTouchZoomListeners(){
+   this.clearListeners(MO.EEvent.TouchZoom);
+}
+MO.MListenerTouchZoom_processTouchZoomListener = function MListenerTouchZoom_processTouchZoomListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.TouchZoom, p1, p2, p3, p4, p5);
+}
+MO.MMouseCapture = function MMouseCapture(o){
+   o = MO.Class.inherits(this, o);
+   o.onMouseCaptureStart = MO.Method.virtual(o, 'onMouseCaptureStart');
+   o.onMouseCapture      = MO.Method.virtual(o, 'onMouseCapture');
+   o.onMouseCaptureStop  = MO.Method.virtual(o, 'onMouseCaptureStop');
+   o.testMouseCapture    = MO.Method.emptyTrue;
+   return o;
+}
+MO.MMouseWheel = function MMouseWheel(o){
+   o = MO.Class.inherits(this, o);
+   o.onMouseWheel = MO.Class.register(o, new MO.AEventMouseWheel('onMouseWheel'), MO.Method.empty);
+   return o;
+}
+MO.MParent = function MParent(o){
+   o = MO.Class.inherits(this, o);
+   o._parent    = MO.Class.register(o, new MO.AGetSet('_parent'));
+   o.isParent   = MO.MParent_isParent;
+   o.findParent = MO.MParent_findParent;
+   o.dispose    = MO.MParent_dispose;
+   return o;
+}
+MO.MParent_isParent = function MParent_isParent(value){
+   while(value){
+      if(value == this){
+         return true;
+      }
+      value = value.parent();
    }
 }
-with(MO){
-   MO.MListenerTouchZoom = function MListenerTouchZoom(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addTouchZoomListener     = MListenerTouchZoom_addTouchZoomListener;
-      o.removeTouchZoomListener  = MListenerTouchZoom_removeTouchZoomListener;
-      o.clearTouchZoomListeners  = MListenerTouchZoom_clearTouchZoomListeners;
-      o.processTouchZoomListener = MListenerTouchZoom_processTouchZoomListener;
-      return o;
-   }
-   MO.MListenerTouchZoom_addTouchZoomListener = function MListenerTouchZoom_addTouchZoomListener(w, m){
-      return this.addListener(EEvent.TouchZoom, w, m);
-   }
-   MO.MListenerTouchZoom_removeTouchZoomListener = function MListenerTouchZoom_removeTouchZoomListener(w, m){
-      this.removeListener(EEvent.TouchZoom, w, m);
-   }
-   MO.MListenerTouchZoom_clearTouchZoomListeners = function MListenerTouchZoom_clearTouchZoomListeners(){
-      this.clearListeners(EEvent.TouchZoom);
-   }
-   MO.MListenerTouchZoom_processTouchZoomListener = function MListenerTouchZoom_processTouchZoomListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.TouchZoom, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MMouseCapture = function MMouseCapture(o){
-      o = RClass.inherits(this, o);
-      o.onMouseCaptureStart = RMethod.virtual(o, 'onMouseCaptureStart');
-      o.onMouseCapture      = RMethod.virtual(o, 'onMouseCapture');
-      o.onMouseCaptureStop  = RMethod.virtual(o, 'onMouseCaptureStop');
-      o.testMouseCapture    = RMethod.emptyTrue;
-      return o;
-   }
-}
-with(MO){
-   MO.MMouseWheel = function MMouseWheel(o){
-      o = RClass.inherits(this, o);
-      o.onMouseWheel = RClass.register(o, new AEventMouseWheel('onMouseWheel'), RMethod.empty);
-      return o;
-   }
-}
-with(MO){
-   MO.MParent = function MParent(o){
-      o = RClass.inherits(this, o);
-      o._parent    = RClass.register(o, new AGetSet('_parent'));
-      o.isParent   = MParent_isParent;
-      o.findParent = MParent_findParent;
-      o.dispose    = MParent_dispose;
-      return o;
-   }
-   MO.MParent_isParent = function MParent_isParent(value){
-      while(value){
-         if(value == this){
-            return true;
-         }
-         value = value.parent();
+MO.MParent_findParent = function MParent_findParent(clazz){
+   var find = this;
+   if(clazz){
+      while(RClass.isClass(find._parent, clazz)){
+         find = find.parent();
+      }
+   }else{
+      while(find._parent){
+         find = find.parent();
       }
    }
-   MO.MParent_findParent = function MParent_findParent(clazz){
-      var find = this;
-      if(clazz){
-         while(RClass.isClass(find._parent, clazz)){
-            find = find.parent();
-         }
-      }else{
-         while(find._parent){
-            find = find.parent();
-         }
+   return find;
+}
+MO.MParent_dispose = function MParent_dispose(){
+   var o = this;
+   o._parent = null;
+}
+MO.MProperty = function MProperty(o){
+   o = MO.Class.inherits(this, o);
+   o.propertyAssign = MO.MProperty_propertyAssign;
+   o.propertyLoad   = MO.MProperty_propertyLoad;
+   o.propertySave   = MO.MProperty_propertySave;
+   return o;
+}
+MO.MProperty_propertyAssign = function MProperty_propertyAssign(value){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Property);
+   for(var name in annotations){
+      var annotation = annotations[name];
+      if(annotation.constructor != Function){
+         o[annotation._name] = value[annotation._name];
       }
-      return find;
-   }
-   MO.MParent_dispose = function MParent_dispose(){
-      var o = this;
-      o._parent = null;
    }
 }
-with(MO){
-   MO.MProperty = function MProperty(o){
-      o = RClass.inherits(this, o);
-      o.propertyAssign = MProperty_propertyAssign;
-      o.propertyLoad   = MProperty_propertyLoad;
-      o.propertySave   = MProperty_propertySave;
-      return o;
-   }
-   MO.MProperty_propertyAssign = function MProperty_propertyAssign(value){
-      var o = this;
-      var clazz = RClass.find(o.constructor);
-      var annotations = clazz.annotations(EAnnotation.Property);
-      for(var name in annotations){
-         var annotation = annotations[name];
-         if(annotation.constructor != Function){
-            o[annotation._name] = value[annotation._name];
-         }
-      }
-   }
-   MO.MProperty_propertyLoad = function MProperty_propertyLoad(xconfig){
-      var o = this;
-      var clazz = RClass.find(o.constructor);
-      var annotations = clazz.annotations(EAnnotation.Property);
-      for(var name in annotations){
-         var annotation = annotations[name];
-         if(annotation.constructor != Function){
-            if(annotation._force){
+MO.MProperty_propertyLoad = function MProperty_propertyLoad(xconfig){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Property);
+   for(var name in annotations){
+      var annotation = annotations[name];
+      if(annotation.constructor != Function){
+         if(annotation._force){
+            annotation.load(o, xconfig);
+         }else{
+            if(xconfig.contains(annotation._linker)){
                annotation.load(o, xconfig);
-            }else{
-               if(xconfig.contains(annotation._linker)){
-                  annotation.load(o, xconfig);
-               }else if(o[annotation._name] == null){
-                  o[annotation._name] = annotation._value;
-               }
+            }else if(o[annotation._name] == null){
+               o[annotation._name] = annotation._value;
             }
          }
       }
    }
-   MO.MProperty_propertySave = function MProperty_propertySave(xconfig){
-      var o = this;
-      var clazz = RClass.find(o.constructor);
-      var annotations = clazz.annotations(EAnnotation.Property);
-      for(var name in annotations){
-         var annotation = annotations[name];
-         if(annotation.constructor != Function){
-            annotation.save(o, xconfig);
-         }
+}
+MO.MProperty_propertySave = function MProperty_propertySave(xconfig){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Property);
+   for(var name in annotations){
+      var annotation = annotations[name];
+      if(annotation.constructor != Function){
+         annotation.save(o, xconfig);
       }
    }
 }
@@ -1266,7 +1244,7 @@ with(MO){
 with(MO){
    MO.FBytes = function FBytes(o){
       o = RClass.inherits(this, o, FObject, MDataView);
-      o._memory   = null;
+      o._memory   = RClass.register(o, new AGetter('_memory'));
       o.construct = FBytes_construct;
       o.dispose   = FBytes_dispose;
       return o;
@@ -1374,10 +1352,10 @@ with(MO){
       o.dispose = FDataView_dispose;
       return o;
    }
-   MO.FDataView_link = function FDataView_link(p){
+   MO.FDataView_link = function FDataView_link(data){
       var o = this;
-      o._memory = p;
-      o._viewer = new DataView(p);
+      o._memory = data;
+      o._viewer = new DataView(data);
    }
    MO.FDataView_dispose = function FDataView_dispose(){
       var o = this;
@@ -1424,6 +1402,7 @@ with(MO){
       }
    }
    MO.FFileReader_ohProgress = function FFileReader_ohProgress(){
+      var o = this.__linker;
    }
    MO.FFileReader_construct = function FFileReader_construct(){
       var o = this;
@@ -1465,9 +1444,9 @@ with(MO){
       o._contentCd           = EHttpContent.Binary;
       o._url                 = null;
       o._input               = null;
-      o._inputData           = null;
+      o._inputData           = RClass.register(o, new AGetSet('_inputData'));
       o._output              = null;
-      o._outputData          = null;
+      o._outputData          = RClass.register(o, new AGetter('_outputData'));
       o._connection          = null;
       o._contentLength       = 0;
       o._statusFree          = true;
@@ -1476,9 +1455,6 @@ with(MO){
       o.onConnectionComplete = FHttpConnection_onConnectionComplete;
       o.construct            = FHttpConnection_construct;
       o.setHeaders           = FHttpConnection_setHeaders;
-      o.inputData            = FHttpConnection_inputData;
-      o.setInputData         = FHttpConnection_setInputData;
-      o.outputData           = FHttpConnection_outputData;
       o.setOutputData        = FHttpConnection_setOutputData;
       o.content              = FHttpConnection_content;
       o.sendSync             = FHttpConnection_sendSync;
@@ -1548,15 +1524,6 @@ with(MO){
             connection.setRequestHeader('content-length', o._contentLength);
          }
       }
-   }
-   MO.FHttpConnection_inputData = function FHttpConnection_inputData(){
-      return this._inputData;
-   }
-   MO.FHttpConnection_setInputData = function FHttpConnection_setInputData(p){
-      this._inputData = p;
-   }
-   MO.FHttpConnection_outputData = function FHttpConnection_outputData(){
-      return this._outputData;
    }
    MO.FHttpConnection_setOutputData = function FHttpConnection_setOutputData(){
       var o = this;
