@@ -11,7 +11,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    // @attribute
    o._code            = MO.EEaiScene.ChartHistory;
    // @attribute
-   o._playing         = false;
+   o._playing         = true;
    o._lastTick        = 0;
    o._interval        = 10;
    o._startDate       = null;

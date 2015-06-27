@@ -2792,16 +2792,10 @@ with(MO){
       o.callback = null;
    }
 }
-with(MO){
-   MO.FContent = function FContent(o){
-      o = RClass.inherits(this, o, FObject);
-      o._name = null;
-      o.name  = FContent_name;
-      return o;
-   }
-   MO.FContent_name = function FContent_name(){
-      return this._name;
-   }
+MO.FContent = function FContent(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._name = MO.Class.register(o, new MO.AGetter('_name'));
+   return o;
 }
 with(MO){
    MO.FContentConsole = function FContentConsole(o){
@@ -2872,16 +2866,10 @@ with(MO){
       return r;
    }
 }
-with(MO){
-   MO.FContentPipeline = function FContentPipeline(o){
-      o = RClass.inherits(this, o, FPipeline);
-      o._scopeCd = EScope.Global;
-      o.scopeCd  = FContentPipeline_scopeCd;
-      return o;
-   }
-   MO.FContentPipeline_scopeCd = function FContentPipeline_scopeCd(){
-      return this._scopeCd;
-   }
+MO.FContentPipeline = function FContentPipeline(o){
+   o = MO.Class.inherits(this, o, MO.FPipeline);
+   o._scopeCd = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   return o;
 }
 with(MO){
    MO.FDragConsole = function FDragConsole(o){
@@ -3001,48 +2989,22 @@ with(MO){
       return value;
    }
 }
-with(MO){
-   MO.FEvent = function FEvent(o){
-      o = RClass.inherits(this, o, FObject);
-      o._owner      = null;
-      o._callback   = null;
-      o._valid      = true;
-      o.owner       = FEvent_owner;
-      o.setOwner    = FEvent_setOwner;
-      o.callback    = FEvent_callback;
-      o.setCallback = FEvent_setCallback;
-      o.valid       = FEvent_valid;
-      o.setValid    = FEvent_setValid;
-      o.process     = FEvent_process;
-      return o;
-   }
-   MO.FEvent_owner = function FEvent_owner(){
-      return this._owner;
-   }
-   MO.FEvent_setOwner = function FEvent_setOwner(p){
-      this._owner = p;
-   }
-   MO.FEvent_callback = function FEvent_callback(){
-      return this._callback;
-   }
-   MO.FEvent_setCallback = function FEvent_setCallback(p){
-      this._callback = p;
-   }
-   MO.FEvent_valid = function FEvent_valid(){
-      return this._valid;
-   }
-   MO.FEvent_setValid = function FEvent_setValid(p){
-      this._valid = p;
-   }
-   MO.FEvent_process = function FEvent_process(){
-      var o = this;
-      if(o._valid){
-         var s = o._owner;
-         if(s){
-            o._callback.call(s, o);
-         }else{
-            o._callback(o);
-         }
+MO.FEvent = function FEvent(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._owner      = MO.Class.register(o, new MO.AListener('_owner'));
+   o._callback   = MO.Class.register(o, new MO.AListener('_callback'));
+   o._valid      = MO.Class.register(o, new MO.AListener('_valid'), true);
+   o.process     = MO.FEvent_process;
+   return o;
+}
+MO.FEvent_process = function FEvent_process(){
+   var o = this;
+   if(o._valid){
+      var owner = o._owner;
+      if(owner){
+         o._callback.call(owner, o);
+      }else{
+         o._callback(o);
       }
    }
 }
@@ -3231,7 +3193,7 @@ with(MO){
 with(MO){
    MO.FLoggerConsole = function FLoggerConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o.scope      = EScope.Page;
+      o._scopeCd   = EScope.Page;
       o.iLogger    = null;
       o.onKeyDown  = FLoggerConsole_onKeyDown;
       o.construct  = FLoggerConsole_construct;

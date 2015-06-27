@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv='Content-Type' content='text/html;charset=UTF-8'></META>
+<META name='viewport' content='width=device-width'></META>
+<META name='viewport' content='target-densitydpi=xhigh-dpi'></META>
+<LINK rel='stylesheet' href='../acs/mobile.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function onDeviceReady(){
+   return;
+   var h = screen.height - 40;
+   var w = screen.width - 20;
+   var c = document.getElementById("myCanvas");
+   c.setAttribute('width', w);
+   c.setAttribute('height', h);
+   var cxt=c.getContext("2d");
+   cxt.fillStyle="#FF0000";
+   cxt.fillRect(0,0,w,h);                            
+}
+
+function _load(){
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.Browser.setContentPath('..');
+
+   id_dump.innerHTML = 'Body: ' + document.body.offsetWidth + 'x' + document.body.offsetHeight + '<BR>' +
+      'Window: ' + document.documentElement.clientWidth + 'x' + document.documentElement.clientHeight + '<BR>' +
+      'Screen: ' + screen.width + 'x' + screen.height + '<BR>' +
+      'Screen2: ' + screen.availWidth + 'x' + screen.availHeight;
+   
+   //document.addEventListener("deviceready", onDeviceReady, false);
+}
+</SCRIPT>
+<BODY style='background-color:#999999;' onload='_load()' >
+<DIV id='id_dump' style='width:1920px;height:1080px;border:1px solid red' ></DIV>
+</BODY>
+
+</HTML>

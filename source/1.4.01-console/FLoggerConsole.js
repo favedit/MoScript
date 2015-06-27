@@ -6,7 +6,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
-      o.scope      = EScope.Page;
+      o._scopeCd   = EScope.Page;
       o.iLogger    = null;
       //..........................................................
       // @event
