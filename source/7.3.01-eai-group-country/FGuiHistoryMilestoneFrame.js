@@ -97,10 +97,12 @@ with(MO){
       if (o.data()) {
          //graphic.drawText(o.data().investmentTotal(), textLeft + 120, textTop, '#FFA800');
          var invesText = o.data().investmentTotal().toString();
-         for (var i = invesText.length - 1; i >= 0; i--) {
-            graphic.drawImage(o._numImages[invesText.length - i], hCenter + 20 - i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
+         var numWidth = invesText.length * 60 + 80;
+         var numLeft = hCenter - numWidth / 2;
+         for (var i = 0; i < invesText.length; i++) {
+            graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
          }
-         graphic.drawImage(o._yiImage, hCenter + 80, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
+         graphic.drawImage(o._yiImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
