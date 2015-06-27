@@ -14,6 +14,8 @@ with (MO) {
       o._startTime = RClass.register(o, new AGetSet('_startTime'));
       o._endTime = RClass.register(o, new AGetSet('_endTime'));
       o._degreeTime = RClass.register(o, new AGetSet('_degreeTime'));
+      o._progress = RClass.register(o, new AGetSet('_progress'));
+      o._unitms = RClass.register(o, new AGetSet('_unitms'), 1000 * 60 * 60 * 24);
       // @attribute
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
@@ -62,10 +64,6 @@ with (MO) {
       var startTime = o.startTime();
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();
-      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       var degreeText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
@@ -92,6 +90,10 @@ with (MO) {
          default:
             return;
       }
+      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan) + 3;
+      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
       graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       //刻度

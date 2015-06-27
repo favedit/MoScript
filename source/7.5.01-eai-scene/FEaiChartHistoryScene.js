@@ -14,7 +14,9 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._ready            = false;
    o._playing          = false;
    o._lastTick         = 0;
-   o._interval         = 1;
+   o._interval         = 10;
+   o._lastDateTick    = 0;
+   o._dateInterval    = 100;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -31,10 +33,11 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerLevel = 150;
    //..........................................................
    // @event
-   o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
-   o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
+   o.onDateSelect     = MO.FEaiChartHistoryScene_onDateSelect;
+   o.onMilestoneDone  = MO.FEaiChartHistoryScene_onMilestoneDone;
+   o.onOperationPlay  = MO.FEaiChartHistoryScene_onOperationPlay;
+   o.onOperationPause = MO.FEaiChartHistoryScene_onOperationPause;
    //..........................................................
    // @method
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
@@ -72,6 +75,16 @@ MO.FEaiChartHistoryScene_onDateSelect = function FEaiChartHistoryScene_onDateSel
    o._currentDate.date.setTime(event.date.date.getTime());
    o._currentDate.refresh();
    o.selectDate(o._currentDate.format('YYYYMMDD'));
+}
+
+//==========================================================
+// <T>时间轴日期选择事件处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMilestoneDone(event) {
+   var o = this;
+   o.switchPlay(true);
 }
 
 //==========================================================
@@ -212,6 +225,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setTop(50);
    milestoneFrame.setWidth(720);
    milestoneFrame.setHeight(700);
+   milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
    o._desktop.register(milestoneFrame);
@@ -240,11 +254,12 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
       o._milestoneFrame.repaint();
+      o.switchPlay(false);
    }
    if (dateData) {
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
-      o._timeline.repaint();
+      //o._timeline.repaint();
       // 设置城市数据
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;
@@ -325,25 +340,35 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    // 重复播放
    if (o._playing) {
       var currentTick = MO.Timer.current();
-      if(currentTick - o._lastTick > o._interval){
-         o._currentDate.addDay(1);
-         var code = o._currentDate.format('YYYYMMDD')
-         var endCode = o._endDate.format('YYYYMMDD')
-         o.selectDate(code);
-         if (code == endCode) {
-            o.switchPlay(false);
+      if (currentTick - o._lastTick > o._interval) {
+         //计时切换日期
+         if (currentTick - o._lastDateTick > o._dateInterval) {
+            o._currentDate.addDay(1);
+            var code = o._currentDate.format('YYYYMMDD')
+            var endCode = o._endDate.format('YYYYMMDD')
+            o.selectDate(code);
+            if (code == endCode) {
+               o.switchPlay(false);
+            }
+            o._lastDateTick = currentTick;
          }
+         //调用重绘
+         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
+         o._timeline.repaint();
+         //记录lastTick
          o._lastTick = currentTick;
-         o._milestoneFrame.repaint();
       }
       // 上传数据
       var citysRenderables = o._citysRenderables;
       var count = citysRenderables.count()
-      for(var i = 0; i < count; i++){
+      for (var i = 0; i < count; i++) {
          var citysRenderable = citysRenderables.at(i);
          citysRenderable.upload();
       }
       o._citysRangeRenderable.upload();
+   }
+   if (o._milestoneFrame.visible()) {
+      o._milestoneFrame.repaint();
    }
 }
 

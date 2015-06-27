@@ -25,7 +25,9 @@ with(MO){
       o.onImageLoad = FGuiHistoryMilestoneFrame_onImageLoad;
       o.show = FGuiHistoryMilestoneFrame_show;
       // @method
-      o.dispose   = FGuiHistoryMilestoneFrame_dispose;
+      o.dispose = FGuiHistoryMilestoneFrame_dispose;
+      // @event
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
    }
 
@@ -103,6 +105,9 @@ with(MO){
       }
       else {
          o.setVisible(false);
+         var dsEvent = MO.Memory.alloc(SEvent);
+         dsEvent.sender = o;
+         o.processDataChangedListener(dsEvent);
       }
    }
 
