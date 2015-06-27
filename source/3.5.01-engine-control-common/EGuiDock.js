@@ -8,14 +8,16 @@
 MO.EGuiDock = new function EGuiDock(){
    var o = this;
    // @attribute
-   o.None        = 'none';
-   o.LeftTop     = 'left.top';
-   o.Left        = 'left';
-   o.LeftBottom  = 'left.bottom';
-   o.RightTop    = 'right.top';
-   o.Right       = 'right';
-   o.RightBottom = 'right.bottom';
-   o.Center      = 'center';
-   o.Fill        = 'fill';
+   o.None        = 'None';
+   o.LeftTop     = 'LeftTop';
+   o.Left        = 'Left';
+   o.LeftBottom  = 'LeftBottom';
+   o.Top         = 'Top';
+   o.RightTop    = 'RightTop';
+   o.Right       = 'Right';
+   o.RightBottom = 'RightBottom';
+   o.Bottom      = 'Bottom';
+   o.Center      = 'Center';
+   o.Fill        = 'Fill';
    return o;
 }

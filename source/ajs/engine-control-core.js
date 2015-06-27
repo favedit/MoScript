@@ -69,6 +69,7 @@ with(MO){
       o.register          = FGuiDesktop_register;
       o.unregister        = FGuiDesktop_unregister;
       o.transformStart    = FGuiDesktop_transformStart;
+      o.setup             = FGuiDesktop_setup;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
       o.process           = FGuiDesktop_process;
@@ -92,6 +93,11 @@ with(MO){
       var o = this;
       transform.start();
       o._transforms.pushUnique(transform);
+   }
+   MO.FGuiDesktop_setup = function FGuiDesktop_setup(){
+      var o = this;
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
    }
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;
@@ -256,6 +262,71 @@ with(MO){
       o._defines = RObject.dispose(o._defines, true);
       o.__base.FConsole.dispose.call(o);
    }
+}
+MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.gui';
+   o.drawRenderable = MO.FGuiGeneralColorEffect_drawRenderable;
+   return o;
+}
+MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawRenderable(region, renderable){
+   var o = this;
+   if(!MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
+      throw new MO.TError('Invalid renderable.');
+   }
+   var control = renderable.control();
+   var adjustSize = renderable.adjustSize();
+   var controlLocation = control.location();
+   var controlSize = control.size();
+   var dockCd = control.dockCd();
+   var context = o._graphicContext;
+   var logicSize = context.logicSize();
+   var contextSize = context.size();
+   var contextRatio = context.ratio();
+   var contextSizeRatio = context.sizeRatio();
+   var radioWidth = contextSize.width * contextRatio;
+   var radioHeight = contextSize.height * contextRatio;
+   var sizeWidth = contextSize.width * contextSizeRatio.width;
+   var sizeHeight = contextSize.height * contextSizeRatio.height;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var x = y = width = height = 0;
+   if(renderable._optionFull){
+      x = controlLocation.x / sizeWidth * 2 - 1;
+      y = 1 - controlLocation.y / sizeHeight * 2;
+      width = adjustSize.width / sizeWidth * 2;
+      height = adjustSize.height / sizeHeight * 2;
+   }else{
+      var contextRatioX = (contextSizeRatio.width > contextSizeRatio.height) ? 1 : contextSizeRatio.height / contextSizeRatio.width;
+      if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Left) || (dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Fill)){
+         x = controlLocation.x / sizeWidth * 2 - 1;
+      }else if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
+         x = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
+      }else{
+         throw new MO.TError(o, 'Invalid dock.');
+      }
+      var y = 0;
+      var contextRatioY = (contextSizeRatio.width > contextSizeRatio.height) ? 1 : contextSizeRatio.height / contextSizeRatio.width;
+      if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Top) || (dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Fill)){
+         y = 1 - controlLocation.y / sizeHeight * 2;
+      }else if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
+         y = 1 - (logicSize.height - controlLocation.y - controlSize.height / contextRatioY) / sizeHeight * 2;
+      }else{
+         throw new MO.TError(o, 'Invalid dock.');
+      }
+      if((dockCd == MO.EGuiDock.Fill)){
+         var right = logicSize.width - controlLocation.x - controlSize.width;
+         var x1 = controlLocation.x / sizeWidth * 2 - 1;
+         var x2 = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
+         width = x2 - x1;
+         height = adjustSize.height / radioHeight * 2;
+      }else{
+         width = adjustSize.width / radioWidth * 2;
+         height = adjustSize.height / radioHeight * 2;
+      }
+   }
+   o._program.setParameter4('vc_position', x, y, width, height);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 MO.FGuiTransform = function FGuiTransform(o){
    o = MO.Class.inherits(this, o, MO.FObject);

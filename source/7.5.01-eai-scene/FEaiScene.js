@@ -70,6 +70,7 @@ with(MO){
       // 创建界面桌面
       var desktop = o._desktop = RClass.create(FGuiDesktop);
       desktop.linkGraphicContext(o);
+      desktop.setup();
       desktop.register(control);
    }
 

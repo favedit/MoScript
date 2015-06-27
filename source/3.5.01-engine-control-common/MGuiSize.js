@@ -12,6 +12,7 @@ with(MO){
       // @property
       o._location   = RClass.register(o, [new APtyPoint2('_location'), new AGetter('_location')]);
       o._size       = RClass.register(o, [new APtySize2('_size'), new AGetter('_size')]);
+      o._scale      = RClass.register(o, [new APtySize2('_scale'), new AGetter('_scale')]);
       //..........................................................
       // @method
       o.construct   = MGuiSize_construct;
@@ -28,6 +29,8 @@ with(MO){
       o.setHeight   = MGuiSize_setHeight;
       o.setSize     = MGuiSize_setSize;
       // @method
+      o.setScale    = MGuiSize_setScale;
+      // @method
       o.setBounds   = MGuiSize_setBounds;
       // @method
       o.dispose     = MGuiSize_dispose;
@@ -41,8 +44,9 @@ with(MO){
    //==========================================================
    MO.MGuiSize_construct = function MGuiSize_construct(){
       var o = this;
-      o._location = new SPoint2();
-      o._size = new SSize2();
+      o._location = new SPoint2(0, 0);
+      o._size = new SSize2(128, 128);
+      o._scale = new SSize2(1, 1);
    }
 
    //==========================================================
@@ -148,6 +152,17 @@ with(MO){
    }
 
    //==========================================================
+   // <T>设置缩放。</T>
+   //
+   // @method
+   // @param width:Number 横向缩放
+   // @param height:Number 纵向缩放
+   //==========================================================
+   MO.MGuiSize_setScale = function MGuiSize_setScale(width, height){
+      this._scale.set(width, height);
+   }
+
+   //==========================================================
    // <T>设置边框。</T>
    //
    // @method
@@ -171,5 +186,6 @@ with(MO){
       var o = this;
       o._location = RObject.dispose(o._location);
       o._size = RObject.dispose(o._size);
+      o._scale = RObject.dispose(o._scale);
    }
 }

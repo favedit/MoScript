@@ -21,6 +21,8 @@ with(MO){
       o.unregister        = FGuiDesktop_unregister;
       o.transformStart    = FGuiDesktop_transformStart;
       // @method
+      o.setup             = FGuiDesktop_setup;
+      // @method
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
       o.process           = FGuiDesktop_process;
@@ -73,6 +75,18 @@ with(MO){
       var o = this;
       transform.start();
       o._transforms.pushUnique(transform);
+   }
+
+   //==========================================================
+   // <T>配置处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiDesktop_setup = function FGuiDesktop_setup(){
+      var o = this;
+      // 注册效果器
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
    }
 
    //==========================================================

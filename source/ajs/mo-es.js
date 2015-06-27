@@ -6718,6 +6718,7 @@ with(MO){
       o._optionAlpha        = true;
       o._optionAntialias    = false;
       o._size               = RClass.register(o, new AGetter('_size'));
+      o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._ratio              = RClass.register(o, new AGetSet('_ratio'));
       o._sizeRatio          = RClass.register(o, new AGetter('_sizeRatio'));
       o._capability         = RClass.register(o, new AGetter('_capability'));
@@ -6769,6 +6770,7 @@ with(MO){
       var o = this;
       o.__base.FGraphicContext.construct.call(o);
       o._size = new SSize2(1280, 720);
+      o._logicSize = new SSize2(1280, 720);
       o._sizeRatio = new SSize2(1, 1);
       o._statistics = RClass.create(FG3dStatistics);
       RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
@@ -6841,6 +6843,7 @@ with(MO){
       }
       o._program = null;
       o._size = RObject.dispose(o._size);
+      o._logicSize = RObject.dispose(o._logicSize);
       o._sizeRatio = RObject.dispose(o._sizeRatio);
       o._capability = RObject.dispose(o._capability);
       o._statistics = RObject.dispose(o._statistics);
@@ -11220,6 +11223,7 @@ with(MO){
       var ratioX = o._logicSize.width / scaleWidth;
       var ratioY = o._logicSize.height / scaleHeight;
       var ratio = Math.max(ratioX, ratioY);
+      context.logicSize().assign(o._logicSize);
       context.setRatio(ratio);
       context.sizeRatio().set(ratioX, ratioY);
       context.setViewport(0, 0, scaleWidth, scaleHeight);
@@ -17351,8 +17355,10 @@ with(MO){
       var contextSize = context.size();
       var contextRatio = context.ratio();
       var contextSizeRatio = context.sizeRatio();
-      var contextWidth = contextSize.width * contextRatio;
-      var contextHeight = contextSize.height * contextRatio;
+      var radioWidth = contextSize.width * contextRatio;
+      var radioHeight = contextSize.height * contextRatio;
+      var sizeWidth = contextSize.width * contextSizeRatio.width;
+      var sizeHeight = contextSize.height * contextSizeRatio.height;
       var program = o._program;
       var material = renderable.material();
       o.bindMaterial(material);
@@ -17375,23 +17381,18 @@ with(MO){
       }else{
          var matrix = renderable.matrix();
          if(renderable._optionFull){
-            var contextWidth = contextSize.width * contextSizeRatio.width;
-            var contextHeight = contextSize.height * contextSizeRatio.height;
-            var cx = matrix.sx / contextWidth * 2;
-            var cy = matrix.sy / contextHeight * 2;
-            var tx = matrix.tx / contextWidth * 2 - 1;
-            var ty = 1 - matrix.ty / contextHeight * 2;
+            var cx = matrix.sx / sizeWidth * 2;
+            var cy = matrix.sy / sizeHeight * 2;
+            var tx = matrix.tx / sizeWidth * 2 - 1;
+            var ty = 1 - matrix.ty / sizeHeight * 2;
             program.setParameter4('vc_position', cx, cy, tx, ty);
          }else{
-            var cx = matrix.sx / contextWidth * 2;
-            var cy = matrix.sy / contextHeight * 2;
-            var tx = matrix.tx / contextWidth * 2 - 1;
-            var ty = 1 - matrix.ty / contextHeight * 2;
+            var cx = matrix.sx / radioWidth * 2;
+            var cy = matrix.sy / radioHeight * 2;
+            var tx = matrix.tx / sizeWidth * 2 - 1;
+            var ty = 1 - matrix.ty / sizeHeight * 2;
             program.setParameter4('vc_position', cx, cy, tx, ty);
          }
-         var size = renderable.size();
-         var clipX = matrix.tx;
-         var clipY = contextHeight - matrix.ty - size.height;
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
       }
    }

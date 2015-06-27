@@ -48,8 +48,10 @@ with(MO){
       o.__base.FE3dFaceData.setup.call(o);
       // 设置材质
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'flat';
+      materialInfo.effectCode = 'gui';
       materialInfo.optionAlpha = true;
+      materialInfo.optionDepth = false;
+      materialInfo.optionDouble = false;
    }
 
    //==========================================================

@@ -153,7 +153,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    for(var i = 0; i < count; i++){
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setLocation(1920 - 180, 20 + 90 * i);
+      frame.setLocation(0, 25 + 90 * i);
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
@@ -167,6 +167,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
+   //timeline.setDockCd(MO.EGuiDock.Fill);
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
    timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);

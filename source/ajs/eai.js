@@ -1864,7 +1864,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    for(var i = 0; i < count; i++){
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setLocation(1920 - 180, 20 + 90 * i);
+      frame.setLocation(0, 25 + 90 * i);
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
@@ -2538,6 +2538,7 @@ with(MO){
       control.build();
       var desktop = o._desktop = RClass.create(FGuiDesktop);
       desktop.linkGraphicContext(o);
+      desktop.setup();
       desktop.register(control);
    }
    MO.FEaiScene_active = function FEaiScene_active(){
@@ -3041,13 +3042,4 @@ with(MO){
    }
 }
 MO.Eai.setup = function Eai_setup(clazz, hPanel){
-   var o = this;
-   o._hPanel = hPanel;
-   var application = o.Application = MO.RClass.create(clazz);
-   var canvas = o.Canvas = application.createCanvas();
-   canvas.build(hPanel);
-   canvas.setPanel(hPanel);
-   application.linkGraphicContext(canvas);
-   application.setup();
-   return application;
 }

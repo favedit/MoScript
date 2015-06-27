@@ -29,8 +29,10 @@
       var contextSize = context.size();
       var contextRatio = context.ratio();
       var contextSizeRatio = context.sizeRatio();
-      var contextWidth = contextSize.width * contextRatio;
-      var contextHeight = contextSize.height * contextRatio;
+      var radioWidth = contextSize.width * contextRatio;
+      var radioHeight = contextSize.height * contextRatio;
+      var sizeWidth = contextSize.width * contextSizeRatio.width;
+      var sizeHeight = contextSize.height * contextSizeRatio.height;
       var program = o._program;
       // 绑定材质
       var material = renderable.material();
@@ -57,24 +59,22 @@
          // 计算矩阵
          var matrix = renderable.matrix();
          if(renderable._optionFull){
-            var contextWidth = contextSize.width * contextSizeRatio.width;
-            var contextHeight = contextSize.height * contextSizeRatio.height;
-            var cx = matrix.sx / contextWidth * 2;
-            var cy = matrix.sy / contextHeight * 2;
-            var tx = matrix.tx / contextWidth * 2 - 1;
-            var ty = 1 - matrix.ty / contextHeight * 2;
+            var cx = matrix.sx / sizeWidth * 2;
+            var cy = matrix.sy / sizeHeight * 2;
+            var tx = matrix.tx / sizeWidth * 2 - 1;
+            var ty = 1 - matrix.ty / sizeHeight * 2;
             program.setParameter4('vc_position', cx, cy, tx, ty);
          }else{
-            var cx = matrix.sx / contextWidth * 2;
-            var cy = matrix.sy / contextHeight * 2;
-            var tx = matrix.tx / contextWidth * 2 - 1;
-            var ty = 1 - matrix.ty / contextHeight * 2;
+            var cx = matrix.sx / radioWidth * 2;
+            var cy = matrix.sy / radioHeight * 2;
+            var tx = matrix.tx / sizeWidth * 2 - 1;
+            var ty = 1 - matrix.ty / sizeHeight * 2;
             program.setParameter4('vc_position', cx, cy, tx, ty);
          }
-         // 绘制处理
-         var size = renderable.size();
-         var clipX = matrix.tx;
-         var clipY = contextHeight - matrix.ty - size.height;
+         // 绘制处理（TODO：Clip未实现）
+         //var size = renderable.size();
+         //var clipX = matrix.tx;
+         //var clipY = sizeHeight - matrix.ty - size.height;
          //context.setScissorRectangle(clipX, clipY, size.width, size.height);
          o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
          //context.setScissorRectangle();

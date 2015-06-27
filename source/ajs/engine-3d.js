@@ -59,6 +59,7 @@ with(MO){
       var ratioX = o._logicSize.width / scaleWidth;
       var ratioY = o._logicSize.height / scaleHeight;
       var ratio = Math.max(ratioX, ratioY);
+      context.logicSize().assign(o._logicSize);
       context.setRatio(ratio);
       context.sizeRatio().set(ratioX, ratioY);
       context.setViewport(0, 0, scaleWidth, scaleHeight);

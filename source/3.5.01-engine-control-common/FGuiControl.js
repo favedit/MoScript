@@ -11,6 +11,7 @@ with(MO){
       //..........................................................
       // @property
       o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+      o._dockCd                 = MO.RClass.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], EGuiDock.LeftTop);
       o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
       o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
       o._backColor              = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
@@ -52,7 +53,6 @@ with(MO){
       o.construct               = FGuiControl_construct;
       // @method
       o.setVisible              = FGuiControl_setVisible;
-      o.setLocation             = FGuiControl_setLocation;
       o.setSize                 = FGuiControl_setSize;
       // @method
       o.testReady               = FGuiControl_testReady;
@@ -325,23 +325,6 @@ with(MO){
       var renderable = o._renderable;
       if(renderable){
          renderable.setVisible(flag);
-      }
-   }
-
-   //==========================================================
-   // <T>设置坐标。</T>
-   //
-   // @method
-   // @param x:Number 左距离
-   // @param y:Number 上距离
-   //==========================================================
-   MO.FGuiControl_setLocation = function FGuiControl_setLocation(x, y){
-      var o = this;
-      o.__base.MGuiSize.setLocation.call(o, x, y);
-      // 设置渲染对象坐标
-      var renderable = o._renderable;
-      if(renderable){
-         renderable.setLocation(x, y);
       }
    }
 
