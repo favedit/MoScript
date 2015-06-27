@@ -2726,6 +2726,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
+      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
@@ -2880,7 +2881,8 @@ with(MO){
    MO.FEaiCanvas = function FEaiCanvas(o){
       o = RClass.inherits(this, o, FE3dCanvas);
       o._scaleRate       = 1;
-      o._optionAlpha     = true;
+      o._optionAlpha     = false;
+      o._optionAntialias = false;
       o._activeStage     = RClass.register(o, new AGetter('_activeStage'));
       o._capturePosition = null;
       o._captureRotation = null;

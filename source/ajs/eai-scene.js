@@ -956,6 +956,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
+      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){

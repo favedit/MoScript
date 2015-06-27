@@ -91,7 +91,9 @@ with(MO){
    MO.FAudio_play = function FAudio_play(position){
       var hAudio = this._hAudio;
       if(position != null){
-         hAudio.currentTime = position;
+         if(hAudio.currentTime != position){
+            hAudio.currentTime = position;
+         }
       }
       hAudio.play();
    }

@@ -20,7 +20,7 @@ MO.RRuntime = function RRuntime(){
 // @return 是否调试模式
 //==========================================================
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
-   return (this._processCd == MO.EProcess.Debug);
+   return this._processCd == MO.EProcess.Debug;
 }
 
 //==========================================================
@@ -30,7 +30,7 @@ MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
 // @return 是否处理模式
 //==========================================================
 MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
-   return (this._processCd == MO.EProcess.Process);
+   return this._processCd == MO.EProcess.Process;
 }
 
 //==========================================================
@@ -40,7 +40,7 @@ MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
 // @return 是否运行模式
 //==========================================================
 MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
-   return (this._processCd == MO.EProcess.Release);
+   return this._processCd == MO.EProcess.Release;
 }
 
 //==========================================================

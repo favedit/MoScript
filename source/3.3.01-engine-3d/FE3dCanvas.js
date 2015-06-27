@@ -15,7 +15,7 @@ with(MO){
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 40;
+      o._interval           = 10;
       //..........................................................
       // @html
       o._hPanel             = null;

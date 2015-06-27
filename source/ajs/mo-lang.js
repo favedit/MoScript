@@ -57,13 +57,13 @@ MO.RRuntime = function RRuntime(){
    return o;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
-   return (this._processCd == MO.EProcess.Debug);
+   return this._processCd == MO.EProcess.Debug;
 }
 MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
-   return (this._processCd == MO.EProcess.Process);
+   return this._processCd == MO.EProcess.Process;
 }
 MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
-   return (this._processCd == MO.EProcess.Release);
+   return this._processCd == MO.EProcess.Release;
 }
 MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;

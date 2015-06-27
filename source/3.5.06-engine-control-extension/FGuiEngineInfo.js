@@ -45,10 +45,10 @@ with(MO){
       var timer = o._stage.timer();
       var stageStatistics = o._stage.statistics();
       var statistics = o._context.statistics();
-      var line = 16;
+      var line = 20;
       var locationX = 10;
       var locationY = rectangle.top + line;
-      graphic.setFont('10px sans-serif');
+      graphic.setFont('16px sans-serif');
       graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
       locationY += line;
       graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');

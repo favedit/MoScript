@@ -86,7 +86,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      //faceLayer.push(o._engineInfo);
+      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
 

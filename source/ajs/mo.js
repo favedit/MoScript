@@ -57,13 +57,13 @@ MO.RRuntime = function RRuntime(){
    return o;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
-   return (this._processCd == MO.EProcess.Debug);
+   return this._processCd == MO.EProcess.Debug;
 }
 MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
-   return (this._processCd == MO.EProcess.Process);
+   return this._processCd == MO.EProcess.Process;
 }
 MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
-   return (this._processCd == MO.EProcess.Release);
+   return this._processCd == MO.EProcess.Release;
 }
 MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
@@ -12790,7 +12790,9 @@ with(MO){
    MO.FAudio_play = function FAudio_play(position){
       var hAudio = this._hAudio;
       if(position != null){
-         hAudio.currentTime = position;
+         if(hAudio.currentTime != position){
+            hAudio.currentTime = position;
+         }
       }
       hAudio.play();
    }
@@ -21765,7 +21767,7 @@ with(MO){
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 40;
+      o._interval           = 1000 / 100;
       o._hPanel             = null;
       o._hCanvas            = null;
       o.onEnterFrame        = RMethod.empty;
@@ -34747,10 +34749,10 @@ with(MO){
       var timer = o._stage.timer();
       var stageStatistics = o._stage.statistics();
       var statistics = o._context.statistics();
-      var line = 16;
+      var line = 20;
       var locationX = 10;
       var locationY = rectangle.top + line;
-      graphic.setFont('10px sans-serif');
+      graphic.setFont('16px sans-serif');
       graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
       locationY += line;
       graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');

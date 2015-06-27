@@ -51,7 +51,7 @@
    <Source name='fragment'><![CDATA[
       // 声明环境
       #ifdef GL_ES
-      precision highp float;
+      precision mediump float;
       #endif
       //..........................................................
       // 声明插值器
