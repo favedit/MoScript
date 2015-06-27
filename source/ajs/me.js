@@ -33151,6 +33151,16 @@ with(MO){
       return child;
    }
 }
+with(MO){
+   MO.MGuiLocation = function MGuiLocation(o){
+      o = RClass.inherits(this, o);
+      o._left   = RClass.register(o, [new APtyInteger('_left'), new AGetSet('_left')]);
+      o._right  = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')]);
+      o._top    = RClass.register(o, [new APtyInteger('_top'), new AGetSet('_top')]);
+      o._bottom = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')]);
+      return o;
+   }
+}
 MO.MGuiMargin = function MGuiMargin(o){
    o = MO.RClass.inherits(this, o);
    o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);
