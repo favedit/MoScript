@@ -9,36 +9,42 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code            = MO.EEaiScene.ChartHistory;
+   o._code             = MO.EEaiScene.ChartHistory;
    // @attribute
-   o._playing         = true;
-   o._lastTick        = 0;
-   o._interval        = 10;
-   o._startDate       = null;
-   o._endDate         = null;
-   o._currentDate     = null;
+   o._ready            = false;
+   o._playing          = false;
+   o._lastTick         = 0;
+   o._interval         = 1;
+   o._startDate        = null;
+   o._endDate          = null;
+   o._currentDate      = null;
    // @attribute
-   o._playButton      = null;
-   o._pauseButton     = null;
-   o._buttonTransform = null;
-   o._timeline        = null;
+   o._playButton       = null;
+   o._pauseButton      = null;
+   o._buttonTransform  = null;
+   o._timeline         = null;
    // @attribute
-   o._buttonAudio     = null;
+   o._buttonAudio      = null;
+   o._statusStart      = false;
+   o._statusLayerCount = 150;
+   o._statusLayerLevel = 150;
    //..........................................................
    // @event
-   o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
-   o.onDateSelect     = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onOperationPlay  = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
+   o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
+   o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
    //..........................................................
    // @method
-   o.setup            = MO.FEaiChartHistoryScene_setup;
-   o.selectDate       = MO.FEaiChartHistoryScene_selectDate;
-   o.switchPlay       = MO.FEaiChartHistoryScene_switchPlay;
+   o.testReady         = MO.FEaiChartHistoryScene_testReady;
    // @method
-   o.active           = MO.FEaiChartHistoryScene_active;
-   o.process          = MO.FEaiChartHistoryScene_process;
-   o.deactive         = MO.FEaiChartHistoryScene_deactive;
+   o.setup             = MO.FEaiChartHistoryScene_setup;
+   o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
+   o.switchPlay        = MO.FEaiChartHistoryScene_switchPlay;
+   // @method
+   o.active            = MO.FEaiChartHistoryScene_active;
+   o.process           = MO.FEaiChartHistoryScene_process;
+   o.deactive          = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
 
@@ -95,6 +101,23 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
    var o = this;
    // 停止播放
    o.switchPlay(false);
+}
+
+//==========================================================
+// <T>点击暂停处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._readyProvince){
+         return false;
+      }
+      o._ready = true;
+   }
+   return o._ready;
 }
 
 //==========================================================
@@ -157,7 +180,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal() / 100000000) + '亿');
+      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
       faceLayer.push(frame);
       o._desktop.register(frame);
       milestoneBars.push(frame);
@@ -262,6 +285,25 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
+   // 检测首次播放
+   if(!o._statusStart){
+      if(o.testReady()){
+         var hLoading = document.getElementById('id_loading');
+         if(hLoading){
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+         if(o._statusLayerLevel == 0){
+            if(hLoading){
+               document.body.removeChild(hLoading);
+            }
+            o._playing = true;
+            o._statusStart = true;
+         }
+      }
+   }
+   // 重复播放
    if (o._playing) {
       var currentTick = MO.Timer.current();
       if(currentTick - o._lastTick > o._interval){

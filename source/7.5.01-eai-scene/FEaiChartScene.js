@@ -20,6 +20,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._logoBar              = null;
    o._titleBar             = null;
    o._groundAutio          = null;
+   o._readyProvince        = false;
    //..........................................................
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
@@ -31,6 +32,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.setup                 = MO.FEaiChartScene_setup;
    // @method
    o.active                = MO.FEaiChartScene_active;
+   o.resetDate             = MO.FEaiChartScene_resetDate;
    o.process               = MO.FEaiChartScene_process;
    o.deactive              = MO.FEaiChartScene_deactive;
    // @method
@@ -69,6 +71,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
+   o._readyProvince = true;
 }
 
 //==========================================================
@@ -228,6 +231,15 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
+}
+
+//==========================================================
+// <T>重置时间。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
+   var o = this;
 }
 
 //==========================================================

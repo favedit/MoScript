@@ -204,6 +204,7 @@ with(MO){
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
          var city = citys.at(i);
+         var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
             var scale = o._levelScale[o._level];
@@ -225,7 +226,7 @@ with(MO){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = range;
             }
          }
       }

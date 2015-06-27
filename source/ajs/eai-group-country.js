@@ -91,11 +91,11 @@ with(MO){
          var color = rateInfo.findRate(rate);
          range = rate * 10;
          rate = RFloat.toRange(rate, 0, 1);
-         o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 6);
+         o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 4);
       }else{
          o._color.set(0, 0, 0, 0);
       }
-      range = RFloat.toRange(Math.sqrt(range), 1, 5);
+      range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
       o._size.set(range, range);
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
@@ -424,6 +424,7 @@ with(MO){
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
          var city = citys.at(i);
+         var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
             var scale = o._levelScale[o._level];
@@ -443,7 +444,7 @@ with(MO){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
+               colorData[colorPosition++] = range;
             }
          }
       }
