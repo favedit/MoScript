@@ -51,7 +51,7 @@ with(MO){
       materialInfo.effectCode = 'gui';
       materialInfo.optionAlpha = true;
       materialInfo.optionDepth = false;
-      materialInfo.optionDouble = false;
+      materialInfo.optionDouble = true;
    }
 
    //==========================================================

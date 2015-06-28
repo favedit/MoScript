@@ -11177,7 +11177,7 @@ with(MO){
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 100;
+      o._interval           = 10;
       o._hPanel             = null;
       o._hCanvas            = null;
       o.onEnterFrame        = RMethod.empty;

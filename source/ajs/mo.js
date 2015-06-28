@@ -21767,7 +21767,7 @@ with(MO){
       o._scaleRate          = 1;
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
-      o._interval           = 1000 / 100;
+      o._interval           = 10;
       o._hPanel             = null;
       o._hCanvas            = null;
       o.onEnterFrame        = RMethod.empty;
@@ -33894,7 +33894,7 @@ with(MO){
       materialInfo.effectCode = 'gui';
       materialInfo.optionAlpha = true;
       materialInfo.optionDepth = false;
-      materialInfo.optionDouble = false;
+      materialInfo.optionDouble = true;
    }
    MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
       var o = this;

@@ -39,6 +39,7 @@
          position.xy += vc_position.xy;
          // 计算最终坐标
          gl_Position = position;
+         //gl_Position = vec4(position.y, -position.x, 0.0, 1.0);
          // 设置纹理
          v_coord = va_coord;
       }
