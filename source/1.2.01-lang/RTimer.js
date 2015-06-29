@@ -23,9 +23,9 @@
    //===========================================================
    MO.RTimer.prototype.setup = function RTimer_setup(){
       var o = this;
-      var n = new Date().getTime();
-      o._startTime = n;
-      o._lastTime = n;
+      var tick = new Date().getTime();
+      o._startTime = tick;
+      o._lastTime = tick;
    }
 
    //====================================1=======================

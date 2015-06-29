@@ -16,5 +16,6 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartIndustry   = 'chart.industry';
    o.ChartInvestment = 'chart.investment';
    o.ChartCustomer   = 'chart.customer';
+   o.ChartStatistics = 'chart.statistics';
    return o;
 }

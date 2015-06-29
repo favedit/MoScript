@@ -62,6 +62,7 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity, MEaiCityRenderable);
+      o._level    = RClass.register(o, new AGetSet('_level'));
       o._data     = RClass.register(o, new AGetSet('_data'));
       o.construct = FEaiCityEntity_construct;
       o.build     = FEaiCityEntity_build;
@@ -81,6 +82,7 @@ with(MO){
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
+      o._level = o._data.level();
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -293,6 +295,8 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._ready                = false;
       o._image                = null;
+      o._levelCoordLeft       = null;
+      o._levelCoordRight      = null;
       o._levelScale           = null;
       o._citys                = RClass.register(o, new AGetter('_citys'));
       o._level                = RClass.register(o, new AGetSet('_level'));
@@ -339,6 +343,8 @@ with(MO){
       o._size = new SSize2();
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
+      o._levelCoordLeft = new Object();
+      o._levelCoordRight = new Object();
       var scale = o._levelScale = new Object();
       scale[1] = 0.8;
       scale[2] = 0.5;
@@ -420,6 +426,8 @@ with(MO){
       var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
+      var coordPosition = 0;
+      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -427,6 +435,9 @@ with(MO){
          var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
+            var level = city.level();
+            var coordLeft = 0.25 * level;
+            var coordRight = 0.25 * level;
             var scale = o._levelScale[o._level];
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
@@ -440,6 +451,14 @@ with(MO){
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 0;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;

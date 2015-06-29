@@ -12,6 +12,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._code             = MO.EEaiChapter.Chart;
    // @attribute
    o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneStatistics  = MO.Class.register(o, new MO.AGetter('_sceneStatistics'));
    o._sceneIndustry    = MO.Class.register(o, new MO.AGetter('_sceneIndustry'));
    o._sceneInvestment  = MO.Class.register(o, new MO.AGetter('_sceneInvestment'));
    o._sceneCustomer    = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
@@ -45,6 +46,10 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    // 创建国家场景
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
+   // 创建统计场景
+   var scene = o._sceneStatistics = MO.RClass.create(MO.FEaiChartStatisticsScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建集团场景

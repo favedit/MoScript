@@ -27,6 +27,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartIndustry   = 'chart.industry';
    o.ChartInvestment = 'chart.investment';
    o.ChartCustomer   = 'chart.customer';
+   o.ChartStatistics = 'chart.statistics';
    return o;
 }
 MO.Eai = new function FEai(){
@@ -531,6 +532,9 @@ with(MO){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
       var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+      if(parameters){
+         url += '?' + parameters;
+      }
       return url;
    }
    MO.FEaiLogicOrganization_send = function FEaiLogicOrganization_send(method, parameters, owner, callback){
@@ -561,30 +565,30 @@ with(MO){
    }
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FConsole);
-   o._organization = null;
-   o._achievement  = null;
-   o._schedule     = null;
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
+   o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
+   o._schedule     = MO.Class.register(o, new MO.AGetter('_schedule'));
+   o._statistics   = MO.Class.register(o, new MO.AGetter('_statistics'));
    o.construct     = MO.FEaiLogicConsole_construct;
-   o.organization  = MO.FEaiLogicConsole_organization;
-   o.achievement   = MO.FEaiLogicConsole_achievement;
-   o.schedule      = MO.FEaiLogicConsole_schedule;
+   o.dispose       = MO.FEaiLogicConsole_dispose;
    return o;
 }
-MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(monitor){
+MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
    var o = this;
-   o._organization = MO.RClass.create(MO.FEaiLogicOrganization);
-   o._achievement = MO.RClass.create(MO.FEaiLogicAchievement);
-   o._schedule = MO.RClass.create(MO.FEaiLogicSchedule);
+   o.__base.FConsole.construct.call(o);
+   o._organization = MO.Class.create(MO.FEaiLogicOrganization);
+   o._achievement = MO.Class.create(MO.FEaiLogicAchievement);
+   o._schedule = MO.Class.create(MO.FEaiLogicSchedule);
+   o._statistics = MO.Class.create(MO.FEaiLogicStatistics);
 }
-MO.FEaiLogicConsole_organization = function FEaiLogicConsole_organization(){
-   return this._organization;
-}
-MO.FEaiLogicConsole_achievement = function FEaiLogicConsole_achievement(){
-   return this._achievement;
-}
-MO.FEaiLogicConsole_schedule = function FEaiLogicConsole_schedule(){
-   return this._schedule;
+MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
+   var o = this;
+   o._organization = MO.RObject.dispose(o._organization);
+   o._achievement = MO.RObject.dispose(o._achievement);
+   o._schedule = MO.RObject.dispose(o._schedule);
+   o._statistics = MO.RObject.dispose(o._statistics);
+   o.__base.FConsole.dispose.call(o);
 }
 with(MO){
    MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
@@ -665,6 +669,16 @@ with(MO){
       return this.send('fetch', null, owner, callback);
    }
 }
+MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code        = 'statistics';
+   o.doInvestment = MO.FEaiLogicStatistics_doInvestment;
+   return o;
+}
+MO.FEaiLogicStatistics_doInvestment = function FEaiLogicStatistics_doInvestment(owner, callback, startDate, endDate){
+   var parameters = 'begin=' + startDate + '&end=' + endDate;
+   return this.send('investment', parameters, owner, callback);
+}
 with(MO){
    MO.MEaiCityRenderable = function MEaiCityRenderable(o){
       o = RClass.inherits(this, o);
@@ -729,6 +743,7 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity, MEaiCityRenderable);
+      o._level    = RClass.register(o, new AGetSet('_level'));
       o._data     = RClass.register(o, new AGetSet('_data'));
       o.construct = FEaiCityEntity_construct;
       o.build     = FEaiCityEntity_build;
@@ -748,6 +763,7 @@ with(MO){
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
+      o._level = o._data.level();
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -960,6 +976,8 @@ with(MO){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._ready                = false;
       o._image                = null;
+      o._levelCoordLeft       = null;
+      o._levelCoordRight      = null;
       o._levelScale           = null;
       o._citys                = RClass.register(o, new AGetter('_citys'));
       o._level                = RClass.register(o, new AGetSet('_level'));
@@ -1006,6 +1024,8 @@ with(MO){
       o._size = new SSize2();
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
+      o._levelCoordLeft = new Object();
+      o._levelCoordRight = new Object();
       var scale = o._levelScale = new Object();
       scale[1] = 0.8;
       scale[2] = 0.5;
@@ -1087,6 +1107,8 @@ with(MO){
       var vertexCount = o._vertexCount = 4 * count;
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
+      var coordPosition = 0;
+      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
@@ -1094,6 +1116,9 @@ with(MO){
          var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
+            var level = city.level();
+            var coordLeft = 0.25 * level;
+            var coordRight = 0.25 * level;
             var scale = o._levelScale[o._level];
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
@@ -1107,6 +1132,14 @@ with(MO){
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = 0;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = 255;
                colorData[colorPosition++] = 255;
@@ -1766,6 +1799,301 @@ with(MO){
    MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose(){
       var o = this;
       o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiStatisticsInvement = function FEaiStatisticsInvement(o){
+      o = RClass.inherits(this, o, FObject);
+      o._beginDate    = RClass.register(o, new AGetter('_beginDate'));
+      o._endDate      = RClass.register(o, new AGetter('_endDate'));
+      o._entities     = RClass.register(o, new AGetter('_entities'));
+      o._showEntities = RClass.register(o, new AGetter('_showEntities'));
+      o._dataTicker   = null;
+      o.onInvestment  = FEaiStatisticsInvement_onInvestment;
+      o.construct     = FEaiStatisticsInvement_construct;
+      o.process       = FEaiStatisticsInvement_process;
+      o.dispose       = FEaiStatisticsInvement_dispose;
+      return o;
+   }
+   MO.FEaiStatisticsInvement_onInvestment = function FEaiStatisticsInvement_onInvestment(event){
+      var o = this;
+      var content = event.content;
+      var dataset = content.collection;
+      var count = dataset.length;
+      for(var i = 0; i < count; i++){
+         var row = dataset[i];
+         var entity = RClass.create(FEaiStatisticsInvementEntity);
+         entity.loadData(row);
+         o._entities.push(entity);
+      }
+   }
+   MO.FEaiStatisticsInvement_construct = function FEaiStatisticsInvement_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._beginDate = new TDate();
+      o._endDate = new TDate();
+      o._entities = new TObjects();
+      o._dataTicker = new TTicker(1000 * 60 * 1);
+   }
+   MO.FEaiStatisticsInvement_process = function FEaiStatisticsInvement_process(){
+      var o = this;
+      if(o._dataTicker.process()){
+         debugger
+         var statistics = RConsole.find(FEaiLogicConsole).statistics();
+         var beginDate = o._beginDate;
+         var endDate = o._endDate;
+         endDate.assign(beginDate);
+         endDate.addMinute();
+         statistics.doInvestment(o, o.onInvestment, beginDate.format(), endDate.format());
+         beginDate.assign(o._endDate);
+      }
+      o._lastDataTick = 0;
+   }
+   MO.FEaiStatisticsInvement_dispose = function FEaiStatisticsInvement_dispose(){
+      var o = this;
+      o._entities = RObject.dispose(o._entities);
+      o._dataTicker = RObject.dispose(o._dataTicker);
+      o.__base.FObject.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiStatisticsInvementEntity = function FEaiStatisticsInvementEntity(o){
+      o = RClass.inherits(this, o, FEaiEntity);
+      o._date       = RClass.register(o, new AGetter('_date'));
+      o._customer   = RClass.register(o, new AGetter('_customer'));
+      o._phone      = RClass.register(o, new AGetter('_phone'));
+      o._card       = RClass.register(o, new AGetter('_card'));
+      o._investment = RClass.register(o, new AGetter('_investment'));
+      o._renderable = RClass.register(o, new AGetter('_renderable'));
+      o.construct   = FEaiStatisticsInvementEntity_construct;
+      o.loadData    = FEaiStatisticsInvementEntity_loadData;
+      o.update      = FEaiStatisticsInvementEntity_update;
+      o.dispose     = FEaiStatisticsInvementEntity_dispose;
+      return o;
+   }
+   MO.FEaiStatisticsInvementEntity_construct = function FEaiStatisticsInvementEntity_construct(){
+      var o = this;
+      o.__base.FEaiEntity.construct.call(o);
+   }
+   MO.FEaiStatisticsInvementEntity_loadData = function FEaiStatisticsInvementEntity_loadData(data){
+      var o = this;
+      o._date = data.date;
+      o._customer = data.customer;
+      o._phone = data.phone;
+      o._card = data.card;
+      o._investment = data.investment;
+   }
+   MO.FEaiStatisticsInvementEntity_build = function FEaiStatisticsInvementEntity_build(context){
+      var o = this;
+      o._location.assign(o._data.location());
+      o._size.set(2, 2);
+   }
+   MO.FEaiStatisticsInvementEntity_update = function FEaiStatisticsInvementEntity_update(data){
+      var o = this;
+      var location = o._data.location();
+      var range = 1;
+      if(data){
+         var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
+         var investmentCityTotal = historyConsole.investmentCityTotal();
+         var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
+         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
+         var color = rateInfo.findRate(rate);
+         range = rate * 10;
+         rate = RFloat.toRange(rate, 0, 1);
+         o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 4);
+      }else{
+         o._color.set(0, 0, 0, 0);
+      }
+      range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
+      o._size.set(range, range);
+   }
+   MO.FEaiStatisticsInvementEntity_dispose = function FEaiStatisticsInvementEntity_dispose(){
+      var o = this;
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiStatisticsInvementShape = function FEaiStatisticsInvementShape(o){
+      o = RClass.inherits(this, o, FE3dShape);
+      o._ready                = false;
+      o._image                = null;
+      o._citys                = RClass.register(o, new AGetter('_citys'));
+      o._size                 = RClass.register(o, new AGetter('_size'));
+      o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
+      o._citySize             = RClass.register(o, new AGetter('_citySize'));
+      o._vertexPositionBuffer = null;
+      o._vertexCoordBuffer    = null;
+      o._indexBuffer          = null;
+      o._texture              = null;
+      o.onImageLoad           = FEaiStatisticsInvementShape_onImageLoad;
+      o.construct             = FEaiStatisticsInvementShape_construct;
+      o.testReady             = FEaiStatisticsInvementShape_testReady;
+      o.setup                 = FEaiStatisticsInvementShape_setup;
+      o.upload                = FEaiStatisticsInvementShape_upload;
+      o.loadUrl               = FEaiStatisticsInvementShape_loadUrl;
+      o.dispose               = FEaiStatisticsInvementShape_dispose;
+      return o;
+   }
+   MO.FEaiStatisticsInvementShape_onImageLoad = function FEaiStatisticsInvementShape_onImageLoad(event){
+      var o = this;
+      var context = o._graphicContext;
+      var image = event.sender;
+      var size = image.size();
+      var width = size.width;
+      var height = size.height;
+      o._size.set(width, height);
+      var adjustWidth = RInteger.pow2(width);
+      var adjustHeight = RInteger.pow2(height);
+      o._adjustSize.set(adjustWidth, adjustHeight);
+      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+      var context2d = canvas.context();
+      context2d.drawImage(image, 0, 0, width, height);
+      o._texture.upload(canvas);
+      canvasConsole.free(canvas);
+      image.dispose();
+      o._ready = true;
+   }
+   MO.FEaiStatisticsInvementShape_construct = function FEaiStatisticsInvementShape_construct(){
+      var o = this;
+      o.__base.FE3dShape.construct.call(o);
+      o._citys = new TObjects();
+      o._size = new SSize2();
+      o._adjustSize = new SSize2();
+      o._material = RClass.create(FE3dMaterial);
+   }
+   MO.FEaiStatisticsInvementShape_testReady = function FEaiStatisticsInvementShape_testReady(){
+      return this._ready;
+   }
+   MO.FEaiStatisticsInvementShape_setup = function FEaiStatisticsInvementShape_setup(){
+      var o = this;
+      var context = o._graphicContext;
+      var citys = o._citys;
+      var count = citys.count();
+      var vertexCount = o._vertexCount = 4 * count;
+      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+      buffer.setCode('position');
+      buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      buffer.upload(data, 4 * 3, 4);
+      o.pushVertexBuffer(buffer);
+      var position = 0;
+      var data = new Float32Array(2 * vertexCount);
+      for(var i = 0; i < count; i++){
+         data[position++] = 0;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 1;
+         data[position++] = 0;
+         data[position++] = 0;
+         data[position++] = 0;
+      }
+      var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+      buffer.setCode('coord');
+      buffer.setFormatCd(EG3dAttributeFormat.Float2);
+      buffer.upload(data, 4 * 2, vertexCount);
+      o.pushVertexBuffer(buffer);
+      var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+      buffer.upload(data, 1 * 4, 4);
+      o.pushVertexBuffer(buffer);
+      var indexCount = 3 * 2 * count;
+      var position = 0;
+      var data = new Uint16Array(indexCount);
+      for(var i = 0; i < count; i++){
+         var index = 4 * i;
+         data[position++] = index + 0;
+         data[position++] = index + 1;
+         data[position++] = index + 2;
+         data[position++] = index + 0;
+         data[position++] = index + 2;
+         data[position++] = index + 3;
+      }
+      var buffer = o._indexBuffer = context.createIndexBuffer();
+      buffer.upload(data, indexCount);
+      o.pushIndexBuffer(buffer);
+      var texture = o._texture = context.createFlatTexture();
+      texture.setOptionFlipY(true);
+      texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+      o.pushTexture(texture, 'diffuse');
+      var materialInfo = o._material.info();
+      materialInfo.effectCode = 'eai.citys.range';
+      materialInfo.optionAlpha = true;
+      o._material._textures = o._textures;
+      o.loadUrl('/script/ars/eai/dot.png');
+   }
+   MO.FEaiStatisticsInvementShape_upload = function FEaiStatisticsInvementShape_upload(){
+      var o = this;
+      var context = o._graphicContext;
+      var citys = o._citys;
+      var total = citys.count();
+      var count = 0;
+      for(var i = 0; i < total; i++){
+         var city = citys.at(i);
+         if(city.visible()){
+            count++;
+         }
+      }
+      var vertexCount = o._vertexCount = 4 * count;
+      var vertexPosition = 0;
+      var vertexData = new Float32Array(3 * vertexCount);
+      var colorPosition = 0;
+      var colorData = new Uint8Array(4 * vertexCount);
+      for(var i = 0; i < total; i++){
+         var city = citys.at(i);
+         if(city.visible()){
+            var location = city.location();
+            var size = city.size();
+            var width = size.width / 2;
+            var height = size.height / 2;
+            vertexData[vertexPosition++] = location.x - width;
+            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = location.x + width;
+            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = location.x + width;
+            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = location.x - width;
+            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = 0;
+            var color = city.color();
+            var red = parseInt(color.red * 255);
+            var green = parseInt(color.green * 255);
+            var blue = parseInt(color.blue * 255);
+            var alpha = parseInt(color.alpha * 255);
+            for(var v = 0; v < 4; v++){
+               colorData[colorPosition++] = red;
+               colorData[colorPosition++] = green;
+               colorData[colorPosition++] = blue;
+               colorData[colorPosition++] = alpha;
+            }
+         }
+      }
+      o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
+      o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
+      o._indexBuffer.setCount(3 * 2 * count);
+   }
+   MO.FEaiStatisticsInvementShape_loadUrl = function FEaiStatisticsInvementShape_loadUrl(url){
+      var o = this;
+      var image = RClass.create(FImage);
+      image.addLoadListener(o, o.onImageLoad);
+      image.loadUrl(url);
+      o._ready = false;
+   }
+   MO.FEaiStatisticsInvementShape_dispose = function FEaiStatisticsInvementShape_dispose(){
+      var o = this;
+      o._size = RObject.dispose(o._size);
+      o._adjustSize = RObject.dispose(o._adjustSize);
+      o._texture = RObject.dispose(o._texture);
+      o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);
+      o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
+      o._indexBuffer = RObject.dispose(o._indexBuffer);
+      o.__base.FE3dShape.dispose.call(o);
    }
 }
 MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o){
@@ -2628,6 +2956,268 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    layer.setOptionClearDepth(true);
    o.registerLayer('FaceLayer', layer);
 }
+MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o._code             = MO.EEaiScene.ChartStatistics;
+   o._invement         = MO.Class.register(o, new MO.AGetter('_invement'));
+   o._ready            = false;
+   o._playing          = false;
+   o._lastTick         = 0;
+   o._interval         = 10;
+   o._lastDateTick     = 0;
+   o._dateInterval     = 100;
+   o._startDate        = null;
+   o._endDate          = null;
+   o._currentDate      = null;
+   o._playButton       = null;
+   o._pauseButton      = null;
+   o._buttonTransform  = null;
+   o._timeline         = null;
+   o._milestoneFrame   = null;
+   o._buttonAudio      = null;
+   o._statusStart      = false;
+   o._statusLayerCount = 150;
+   o._statusLayerLevel = 150;
+   o.onLoadData       = MO.FEaiChartStatisticsScene_onLoadData;
+   o.onDateSelect     = MO.FEaiChartStatisticsScene_onDateSelect;
+   o.onMilestoneDone  = MO.FEaiChartStatisticsScene_onMilestoneDone;
+   o.onOperationPlay  = MO.FEaiChartStatisticsScene_onOperationPlay;
+   o.onOperationPause = MO.FEaiChartStatisticsScene_onOperationPause;
+   o.testReady         = MO.FEaiChartStatisticsScene_testReady;
+   o.setup             = MO.FEaiChartStatisticsScene_setup;
+   o.selectDate        = MO.FEaiChartStatisticsScene_selectDate;
+   o.switchPlay        = MO.FEaiChartStatisticsScene_switchPlay;
+   o.active            = MO.FEaiChartStatisticsScene_active;
+   o.process           = MO.FEaiChartStatisticsScene_process;
+   o.deactive          = MO.FEaiChartStatisticsScene_deactive;
+   return o;
+}
+MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var code = o._currentDate.format('YYYYMMDD')
+   o.selectDate(code);
+}
+MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onDateSelect(event) {
+   var o = this;
+   o._currentDate.date.setTime(event.date.date.getTime());
+   o._currentDate.refresh();
+   o.selectDate(o._currentDate.format('YYYYMMDD'));
+}
+MO.FEaiChartStatisticsScene_onMilestoneDone = function FEaiChartStatisticsScene_onMilestoneDone(event) {
+   var o = this;
+   o.switchPlay(true);
+}
+MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_onOperationPlay(event){
+   var o = this;
+   var code = o._currentDate.format('YYYYMMDD')
+   var endCode = o._endDate.format('YYYYMMDD')
+   if(code == endCode) {
+      MO.RDate.autoParse(o._currentDate, '20140701');
+   }
+   o.switchPlay(true);
+}
+MO.FEaiChartStatisticsScene_onOperationPause = function FEaiChartStatisticsScene_onOperationPause(event){
+   var o = this;
+   o.switchPlay(false);
+}
+MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._readyProvince){
+         return false;
+      }
+      o._ready = true;
+   }
+   return o._ready;
+}
+MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
+   var o = this;
+   o.__base.FEaiChartScene.setup.call(o);
+   var faceLayer = o._activeStage.faceLayer();
+   o._currentDate = new MO.TDate();
+   o._startDate = new MO.TDate();
+   o._endDate = new MO.TDate();
+   o._currentDate.parseAuto('20140701');
+   o._startDate.parseAuto('20140701');
+   o._endDate.parseAuto('20150618');
+   o._invement = MO.Class.create(MO.FEaiStatisticsInvement);
+   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
+   control.linkGraphicContext(o);
+   control.setLocation(40, 730);
+   control.setSize(196, 196);
+   control.setBackResource('url:/script/ars/eai/player.png');
+   control.psInitialize();
+   control.build();
+   control.setVisible(true);
+   control.addOperationDownListener(o, o.onOperationPlay);
+   o._desktop.register(control);
+   faceLayer.push(control);
+   var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
+   control.linkGraphicContext(o);
+   control.setLocation(40, 730);
+   control.setSize(196, 196);
+   control.setBackResource('url:/script/ars/eai/pause.png');
+   control.psInitialize();
+   control.build();
+   control.setVisible(false);
+   control.addOperationDownListener(o, o.onOperationPause);
+   o._desktop.register(control);
+   faceLayer.push(control);
+   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/button.mp3');
+   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
+   transform.setInterval(10);
+   transform.setScale(0.1);
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var milestones = historyConsole.milestones();
+   var milestoneBars = o._milestoneBars = new MO.TObjects();
+   var count = milestones.count();
+   for(var i = 0; i < count; i++){
+      var milestone = milestones.at(i);
+      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
+      frame.setLocation(0, 25 + 90 * i);
+      var date = new MO.TDate();
+      date.parse(milestone.code());
+      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
+      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
+      faceLayer.push(frame);
+      o._desktop.register(frame);
+      milestoneBars.push(frame);
+   }
+   var stage = o.activeStage();
+   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
+   timeline.setName('Timeline');
+   timeline.setLeft(50);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
+   timeline.setHeight(350);
+   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
+   timeline.setStartTime(o._startDate);
+   timeline.setEndTime(o._endDate);
+   timeline.setDegreeTime(o._currentDate);
+   timeline.addDataChangedListener(o, o.onDateSelect);
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   o._desktop.register(timeline);
+   faceLayer.push(timeline);
+   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
+   milestoneFrame.setName('MilestoneFrame');
+   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
+   milestoneFrame.setTop(50);
+   milestoneFrame.setWidth(720);
+   milestoneFrame.setHeight(700);
+   milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
+   milestoneFrame.linkGraphicContext(o);
+   milestoneFrame.build();
+   o._desktop.register(milestoneFrame);
+   faceLayer.push(milestoneFrame);
+   milestoneFrame.setVisible(false);
+}
+MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
+   var o = this;
+   var context = o.graphicContext();
+   var stage = o._activeStage;
+   var mapLayer = stage.mapLayer();
+   var borderLayer = stage.borderLayer();
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var dateData = historyConsole.dates().get(code);
+   var milestone = historyConsole.milestones().get(code);
+   if (milestone) {
+      o._milestoneFrame.setData(milestone);
+      o._milestoneFrame.show();
+      o._milestoneFrame.repaint();
+      o.switchPlay(false);
+   }
+   if (dateData) {
+      o._timeline.setDegreeTime(o._currentDate);
+      var cityDatas = dateData.citys();
+      var cityEntities = o._cityEntities;
+      var count = cityEntities.count();
+      for (var i = 0; i < count; i++) {
+         var cityEntity = cityEntities.at(i);
+         var code = cityEntity.data().code();
+         var data = cityDatas.get(code);
+         cityEntity.update(data);
+      }
+      var total = o._totalBar.findComponent('total');
+      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      o._totalBar.repaint();
+   }
+   o._citysRangeRenderable.upload();
+}
+MO.FEaiChartStatisticsScene_switchPlay = function FEaiChartStatisticsScene_switchPlay(flag){
+   var o = this;
+   var transform = o._buttonTransform;
+   o._playing = flag;
+   o._buttonAudio.play(0);
+   if(flag){
+      o._playButton.setVisible(false);
+      o._pauseButton.setVisible(true);
+   }else{
+      o._playButton.setVisible(true);
+      o._pauseButton.setVisible(false);
+   }
+}
+MO.FEaiChartStatisticsScene_active = function FEaiChartStatisticsScene_active() {
+   var o = this;
+   o.__base.FEaiChartScene.active.call(o);
+}
+MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process() {
+   var o = this;
+   o.__base.FEaiChartScene.process.call(o);
+   if(!o._statusStart){
+      if(o.testReady()){
+         var hLoading = document.getElementById('id_loading');
+         if(hLoading){
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+         if(o._statusLayerLevel == 0){
+            if(hLoading){
+               document.body.removeChild(hLoading);
+            }
+            o._playing = true;
+            o._statusStart = true;
+         }
+      }
+   }
+   if (o._playing) {
+      var currentTick = MO.Timer.current();
+      if (currentTick - o._lastTick > o._interval) {
+         if (currentTick - o._lastDateTick > o._dateInterval) {
+            o._currentDate.addDay(1);
+            var code = o._currentDate.format('YYYYMMDD')
+            var endCode = o._endDate.format('YYYYMMDD')
+            o.selectDate(code);
+            if (code == endCode) {
+               o.switchPlay(false);
+            }
+            o._lastDateTick = currentTick;
+         }
+         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
+         o._timeline.repaint();
+         o._lastTick = currentTick;
+      }
+      var citysRenderables = o._citysRenderables;
+      var count = citysRenderables.count()
+      for (var i = 0; i < count; i++) {
+         var citysRenderable = citysRenderables.at(i);
+         citysRenderable.upload();
+      }
+      o._citysRangeRenderable.upload();
+   }
+   if (o._milestoneFrame.visible()) {
+      o._milestoneFrame.repaint();
+   }
+   o._invement.process();
+}
+MO.FEaiChartStatisticsScene_deactive = function FEaiChartStatisticsScene_deactive() {
+   var o = this;
+   o.__base.FEaiChartScene.deactive.call(o);
+}
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._code = MO.EEaiScene.Company;
@@ -2758,6 +3348,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
    o._code             = MO.EEaiChapter.Chart;
    o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneStatistics  = MO.Class.register(o, new MO.AGetter('_sceneStatistics'));
    o._sceneIndustry    = MO.Class.register(o, new MO.AGetter('_sceneIndustry'));
    o._sceneInvestment  = MO.Class.register(o, new MO.AGetter('_sceneInvestment'));
    o._sceneCustomer    = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
@@ -2774,6 +3365,9 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
+   var scene = o._sceneStatistics = MO.RClass.create(MO.FEaiChartStatisticsScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);

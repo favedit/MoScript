@@ -29,6 +29,7 @@
       o.monthWeekDay = TDate_monthWeekDay;
       o.weekDay      = TDate_weekDay;
       // @method
+      o.assign       = TDate_assign;
       o.refresh      = TDate_refresh;
       o.setYear      = TDate_setYear;
       o.setMonth     = TDate_setMonth;
@@ -41,6 +42,8 @@
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
+      o.addHour      = TDate_addHour;
+      o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
       // @method
       o.now          = TDate_now;
@@ -107,6 +110,17 @@
    //===========================================================
    MO.TDate_monthWeekDay = function TDate_monthWeekDay(){
       return (8 - (this.day - this.weekDay()) % 7) % 7;
+   }
+
+   //===========================================================
+   // <T>接收数据。<T>
+   //
+   // @method
+   //===========================================================
+   MO.TDate_assign = function TDate_assign(value){
+      var o = this;
+      o.date.setTime(value.date.getTime());
+      o.refresh();
    }
 
    //===========================================================
@@ -255,6 +269,30 @@
    MO.TDate_addDay = function TDate_addDay(value){
       var o = this;
       o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60 * 24);
+      o.refresh();
+   }
+
+   //===========================================================
+   // <T>增加指定的小时。<T>
+   //
+   // @method
+   // @param value:Integer 小时
+   //===========================================================
+   MO.TDate_addHour = function TDate_addHour(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60);
+      o.refresh();
+   }
+
+   //===========================================================
+   // <T>增加指定的分钟。<T>
+   //
+   // @method
+   // @param value:Integer 分钟
+   //===========================================================
+   MO.TDate_addMinute = function TDate_addMinute(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60);
       o.refresh();
    }
 

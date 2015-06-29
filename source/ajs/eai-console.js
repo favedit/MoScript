@@ -10,6 +10,9 @@ with(MO){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
       var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+      if(parameters){
+         url += '?' + parameters;
+      }
       return url;
    }
    MO.FEaiLogicOrganization_send = function FEaiLogicOrganization_send(method, parameters, owner, callback){
@@ -40,30 +43,30 @@ with(MO){
    }
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FConsole);
-   o._organization = null;
-   o._achievement  = null;
-   o._schedule     = null;
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
+   o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
+   o._schedule     = MO.Class.register(o, new MO.AGetter('_schedule'));
+   o._statistics   = MO.Class.register(o, new MO.AGetter('_statistics'));
    o.construct     = MO.FEaiLogicConsole_construct;
-   o.organization  = MO.FEaiLogicConsole_organization;
-   o.achievement   = MO.FEaiLogicConsole_achievement;
-   o.schedule      = MO.FEaiLogicConsole_schedule;
+   o.dispose       = MO.FEaiLogicConsole_dispose;
    return o;
 }
-MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(monitor){
+MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
    var o = this;
-   o._organization = MO.RClass.create(MO.FEaiLogicOrganization);
-   o._achievement = MO.RClass.create(MO.FEaiLogicAchievement);
-   o._schedule = MO.RClass.create(MO.FEaiLogicSchedule);
+   o.__base.FConsole.construct.call(o);
+   o._organization = MO.Class.create(MO.FEaiLogicOrganization);
+   o._achievement = MO.Class.create(MO.FEaiLogicAchievement);
+   o._schedule = MO.Class.create(MO.FEaiLogicSchedule);
+   o._statistics = MO.Class.create(MO.FEaiLogicStatistics);
 }
-MO.FEaiLogicConsole_organization = function FEaiLogicConsole_organization(){
-   return this._organization;
-}
-MO.FEaiLogicConsole_achievement = function FEaiLogicConsole_achievement(){
-   return this._achievement;
-}
-MO.FEaiLogicConsole_schedule = function FEaiLogicConsole_schedule(){
-   return this._schedule;
+MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
+   var o = this;
+   o._organization = MO.RObject.dispose(o._organization);
+   o._achievement = MO.RObject.dispose(o._achievement);
+   o._schedule = MO.RObject.dispose(o._schedule);
+   o._statistics = MO.RObject.dispose(o._statistics);
+   o.__base.FConsole.dispose.call(o);
 }
 with(MO){
    MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
@@ -143,4 +146,14 @@ with(MO){
    MO.FEaiLogicSchedule_doFetch = function FEaiLogicSchedule_doFetch(owner, callback){
       return this.send('fetch', null, owner, callback);
    }
+}
+MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code        = 'statistics';
+   o.doInvestment = MO.FEaiLogicStatistics_doInvestment;
+   return o;
+}
+MO.FEaiLogicStatistics_doInvestment = function FEaiLogicStatistics_doInvestment(owner, callback, startDate, endDate){
+   var parameters = 'begin=' + startDate + '&end=' + endDate;
+   return this.send('investment', parameters, owner, callback);
 }

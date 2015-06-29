@@ -1,23 +1,19 @@
 with(MO){
    //==========================================================
-   // <T>渲染城市集合。</T>
+   // <T>统计投资形状。</T>
    //
    // @class
    // @author maocy
-   // @history 150622
+   // @history 150629
    //==========================================================
-   MO.FEaiCitysRenderable = function FEaiCitysRenderable(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
+   MO.FEaiStatisticsInvementShape = function FEaiStatisticsInvementShape(o){
+      o = RClass.inherits(this, o, FE3dShape);
       //..........................................................
       // @attribute
       o._ready                = false;
       o._image                = null;
-      o._levelCoordLeft       = null;
-      o._levelCoordRight      = null;
-      o._levelScale           = null;
       // @attribute
       o._citys                = RClass.register(o, new AGetter('_citys'));
-      o._level                = RClass.register(o, new AGetSet('_level'));
       o._size                 = RClass.register(o, new AGetter('_size'));
       o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       o._citySize             = RClass.register(o, new AGetter('_citySize'));
@@ -28,18 +24,18 @@ with(MO){
       o._texture              = null;
       //..........................................................
       // @event
-      o.onImageLoad           = FEaiCitysRenderable_onImageLoad;
+      o.onImageLoad           = FEaiStatisticsInvementShape_onImageLoad;
       //..........................................................
       // @method
-      o.construct             = FEaiCitysRenderable_construct;
+      o.construct             = FEaiStatisticsInvementShape_construct;
       // @method
-      o.testReady             = FEaiCitysRenderable_testReady;
+      o.testReady             = FEaiStatisticsInvementShape_testReady;
       // @method
-      o.setup                 = FEaiCitysRenderable_setup;
-      o.upload                = FEaiCitysRenderable_upload;
-      o.loadUrl               = FEaiCitysRenderable_loadUrl;
+      o.setup                 = FEaiStatisticsInvementShape_setup;
+      o.upload                = FEaiStatisticsInvementShape_upload;
+      o.loadUrl               = FEaiStatisticsInvementShape_loadUrl;
       // @method
-      o.dispose               = FEaiCitysRenderable_dispose;
+      o.dispose               = FEaiStatisticsInvementShape_dispose;
       return o;
    }
 
@@ -48,7 +44,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_onImageLoad = function FEaiCitysRenderable_onImageLoad(event){
+   MO.FEaiStatisticsInvementShape_onImageLoad = function FEaiStatisticsInvementShape_onImageLoad(event){
       var o = this;
       var context = o._graphicContext;
       var image = event.sender;
@@ -80,22 +76,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_construct = function FEaiCitysRenderable_construct(){
+   MO.FEaiStatisticsInvementShape_construct = function FEaiStatisticsInvementShape_construct(){
       var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
+      o.__base.FE3dShape.construct.call(o);
       // 设置属性
       o._citys = new TObjects();
       o._size = new SSize2();
       o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
-      // 设置数据
-      o._levelCoordLeft = new Object();
-      o._levelCoordRight = new Object();
-      var scale = o._levelScale = new Object();
-      scale[1] = 0.8;
-      scale[2] = 0.5;
-      scale[3] = 0.4;
-      scale[4] = 0.2;
    }
 
    //==========================================================
@@ -104,7 +92,7 @@ with(MO){
    // @method
    // @return 是否完成
    //==========================================================
-   MO.FEaiCitysRenderable_testReady = function FEaiCitysRenderable_testReady(){
+   MO.FEaiStatisticsInvementShape_testReady = function FEaiStatisticsInvementShape_testReady(){
       return this._ready;
    }
 
@@ -113,20 +101,20 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
+   MO.FEaiStatisticsInvementShape_setup = function FEaiStatisticsInvementShape_setup(){
       var o = this;
       var context = o._graphicContext;
       // 设置顶点数量
       var citys = o._citys;
       var count = citys.count();
       var vertexCount = o._vertexCount = 4 * count;
-      //..........................................................
       // 设置顶点坐标
+      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
+      buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
-      //..........................................................
       // 设置顶点纹理
       var position = 0;
       var data = new Float32Array(2 * vertexCount);
@@ -145,11 +133,12 @@ with(MO){
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
       buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
-      //..........................................................
       // 设置顶点颜色
+      var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
+      buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
       //..........................................................
       // 设置索引数据
@@ -176,11 +165,10 @@ with(MO){
       o.pushTexture(texture, 'diffuse');
       // 设置材质
       var materialInfo = o._material.info();
-      materialInfo.effectCode = 'eai.citys';
+      materialInfo.effectCode = 'eai.citys.range';
       materialInfo.optionAlpha = true;
-      materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/city/' + o._level + '.png');
+      o.loadUrl('/script/ars/eai/dot.png');
    }
 
    //==========================================================
@@ -188,7 +176,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
+   MO.FEaiStatisticsInvementShape_upload = function FEaiStatisticsInvementShape_upload(){
       var o = this;
       var context = o._graphicContext;
       var citys = o._citys;
@@ -205,47 +193,39 @@ with(MO){
       // 设置顶点数据
       var vertexPosition = 0;
       var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
       var colorPosition = 0;
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
          var city = citys.at(i);
-         var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
-            var level = city.level();
-            var coordLeft = 0.25 * level;
-            var coordRight = 0.25 * level;
-            var scale = o._levelScale[o._level];
+            var size = city.size();
+            var width = size.width / 2;
+            var height = size.height / 2;
             // 设置顶点位置
-            vertexData[vertexPosition++] = location.x - scale;
-            vertexData[vertexPosition++] = location.y + scale;
+            vertexData[vertexPosition++] = location.x - width;
+            vertexData[vertexPosition++] = location.y + height;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + scale;
-            vertexData[vertexPosition++] = location.y + scale;
+            vertexData[vertexPosition++] = location.x + width;
+            vertexData[vertexPosition++] = location.y + height;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + scale;
-            vertexData[vertexPosition++] = location.y - scale;
+            vertexData[vertexPosition++] = location.x + width;
+            vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x - scale;
-            vertexData[vertexPosition++] = location.y - scale;
+            vertexData[vertexPosition++] = location.x - width;
+            vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
-            // 设置顶点纹理
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
             // 设置顶点颜色
+            var color = city.color();
+            var red = parseInt(color.red * 255);
+            var green = parseInt(color.green * 255);
+            var blue = parseInt(color.blue * 255);
+            var alpha = parseInt(color.alpha * 255);
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = range;
+               colorData[colorPosition++] = red;
+               colorData[colorPosition++] = green;
+               colorData[colorPosition++] = blue;
+               colorData[colorPosition++] = alpha;
             }
          }
       }
@@ -260,7 +240,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_loadUrl = function FEaiCitysRenderable_loadUrl(url){
+   MO.FEaiStatisticsInvementShape_loadUrl = function FEaiStatisticsInvementShape_loadUrl(url){
       var o = this;
       // 加载图片
       var image = RClass.create(FImage);
@@ -275,7 +255,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
+   MO.FEaiStatisticsInvementShape_dispose = function FEaiStatisticsInvementShape_dispose(){
       var o = this;
       // 释放属性
       o._size = RObject.dispose(o._size);
@@ -286,6 +266,6 @@ with(MO){
       o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
       o._indexBuffer = RObject.dispose(o._indexBuffer);
       // 父处理
-      o.__base.FE3dRenderable.dispose.call(o);
+      o.__base.FE3dShape.dispose.call(o);
    }
 }

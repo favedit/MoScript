@@ -252,10 +252,10 @@
          s.append('   ' + (c - n) + ': ' + RMethod.name(f));
       }
       // 建立消息信息
-      var m = new TString();
-      m.appendLine(RContext.get('RMessage:fatal'));
-      m.appendLine(RString.repeat('-', 60));
-      m.append(RClass.dump(sf), ': ');
+      var message = new TString();
+      message.appendLine(RContext.get('RMessage:fatal'));
+      message.appendLine(RString.repeat('-', 60));
+      message.append(RClass.dump(sf), ': ');
       if(ms){
          var ag = arguments;
          c = ag.length;
@@ -268,12 +268,15 @@
             ms = ms.replace('{' + pi + '}', p);
          }
       }
-      m.appendLine(ms);
-      m.appendLine(RString.repeat('-', 60));
-      m.appendLine('Stack:');
-      m.append(s);
-      var text = m.toString();
-      throw new Error(text);
+      message.appendLine(ms);
+      message.appendLine(RString.repeat('-', 60));
+      message.appendLine('Stack:');
+      message.append(s);
+      var text = message.toString();
+      // 显示信息
+      if(!MO.Runtime.isRelease()){
+         throw new Error(text);
+      }
    }
 
    //==========================================================

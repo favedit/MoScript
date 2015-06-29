@@ -1487,7 +1487,7 @@ with(MO){
                o.setOutputData();
                o.onConnectionComplete();
             }else{
-               throw new TError(o, 'Connection failure. (url={1})', o._url);
+               MO.Logger.fatal(o, 'Connection failure. (url={1})', o._url);
             }
          }
       }

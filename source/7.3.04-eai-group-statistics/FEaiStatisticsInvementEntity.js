@@ -1,25 +1,30 @@
 with(MO){
    //==========================================================
-   // <T>全国城市实体类。</T>
+   // <T>统计投资实体。</T>
    //
    // @class
    // @author maocy
-   // @history 150619
+   // @history 150629
    //==========================================================
-   MO.FEaiCityEntity = function FEaiCityEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity, MEaiCityRenderable);
+   MO.FEaiStatisticsInvementEntity = function FEaiStatisticsInvementEntity(o){
+      o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
-      o._level    = RClass.register(o, new AGetSet('_level'));
-      o._data     = RClass.register(o, new AGetSet('_data'));
+      o._date       = RClass.register(o, new AGetter('_date'));
+      o._customer   = RClass.register(o, new AGetter('_customer'));
+      o._phone      = RClass.register(o, new AGetter('_phone'));
+      o._card       = RClass.register(o, new AGetter('_card'));
+      o._investment = RClass.register(o, new AGetter('_investment'));
+      // @attribute
+      o._renderable = RClass.register(o, new AGetter('_renderable'));
       //..........................................................
       // @method
-      o.construct = FEaiCityEntity_construct;
+      o.construct   = FEaiStatisticsInvementEntity_construct;
       // @method
-      o.build     = FEaiCityEntity_build;
-      o.update    = FEaiCityEntity_update;
+      o.loadData    = FEaiStatisticsInvementEntity_loadData;
+      o.update      = FEaiStatisticsInvementEntity_update;
       // @method
-      o.dispose   = FEaiCityEntity_dispose;
+      o.dispose     = FEaiStatisticsInvementEntity_dispose;
       return o;
    }
 
@@ -28,10 +33,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
+   MO.FEaiStatisticsInvementEntity_construct = function FEaiStatisticsInvementEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
-      o.__base.MEaiCityRenderable.construct.call(o);
    }
 
    //==========================================================
@@ -40,7 +44,22 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
+   MO.FEaiStatisticsInvementEntity_loadData = function FEaiStatisticsInvementEntity_loadData(data){
+      var o = this;
+      o._date = data.date;
+      o._customer = data.customer;
+      o._phone = data.phone;
+      o._card = data.card;
+      o._investment = data.investment;
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
+   MO.FEaiStatisticsInvementEntity_build = function FEaiStatisticsInvementEntity_build(context){
       var o = this;
       o._location.assign(o._data.location());
       o._size.set(2, 2);
@@ -52,9 +71,8 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
+   MO.FEaiStatisticsInvementEntity_update = function FEaiStatisticsInvementEntity_update(data){
       var o = this;
-      o._level = o._data.level();
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -78,10 +96,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
+   MO.FEaiStatisticsInvementEntity_dispose = function FEaiStatisticsInvementEntity_dispose(){
       var o = this;
       // 父处理
-      o.__base.MEaiCityRenderable.dispose.call(o);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

@@ -29,6 +29,9 @@ with(MO){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
       var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+      if(parameters){
+         url += '?' + parameters;
+      }
       return url;
    }
 

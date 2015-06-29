@@ -112,6 +112,7 @@
       <PathMerger source='/7.3.01-eai-group-country'         target='/ajs/eai-group-country.js'/>
       <PathMerger source='/7.3.02-eai-group-report'          target='/ajs/eai-group-report.js'/>
       <PathMerger source='/7.3.03-eai-group-task'            target='/ajs/eai-group-task.js'/>
+      <PathMerger source='/7.3.04-eai-group-statistics'      target='/ajs/eai-group-statistics.js'/>
       <PathMerger source='/7.4.01-eai-company-report'        target='/ajs/eai-company-report.js'/>
       <PathMerger source='/7.4.02-eai-company-task'          target='/ajs/eai-company-task.js'/>
       <PathMerger source='/7.5.01-eai-scene'                 target='/ajs/eai-scene.js'/>
@@ -287,6 +288,7 @@
          <File source='/ajs/eai-group-country.js'/>
          <File source='/ajs/eai-group-report.js'/>
          <File source='/ajs/eai-group-task.js'/>
+         <File source='/ajs/eai-group-statistics.js'/>
          <File source='/ajs/eai-company-report.js'/>
          <File source='/ajs/eai-company-task.js'/>
          <File source='/ajs/eai-scene.js'/>

@@ -2086,6 +2086,7 @@ with(MO){
       o.monthDays    = TDate_monthDays;
       o.monthWeekDay = TDate_monthWeekDay;
       o.weekDay      = TDate_weekDay;
+      o.assign       = TDate_assign;
       o.refresh      = TDate_refresh;
       o.setYear      = TDate_setYear;
       o.setMonth     = TDate_setMonth;
@@ -2097,6 +2098,8 @@ with(MO){
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
+      o.addHour      = TDate_addHour;
+      o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
       o.now          = TDate_now;
       o.parse        = TDate_parse;
@@ -2121,6 +2124,11 @@ with(MO){
    }
    MO.TDate_monthWeekDay = function TDate_monthWeekDay(){
       return (8 - (this.day - this.weekDay()) % 7) % 7;
+   }
+   MO.TDate_assign = function TDate_assign(value){
+      var o = this;
+      o.date.setTime(value.date.getTime());
+      o.refresh();
    }
    MO.TDate_refresh = function TDate_refresh(){
       var o = this;
@@ -2186,6 +2194,16 @@ with(MO){
    MO.TDate_addDay = function TDate_addDay(value){
       var o = this;
       o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60 * 24);
+      o.refresh();
+   }
+   MO.TDate_addHour = function TDate_addHour(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60);
+      o.refresh();
+   }
+   MO.TDate_addMinute = function TDate_addMinute(value){
+      var o = this;
+      o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60);
       o.refresh();
    }
    MO.TDate_addMseconds = function TDate_addMseconds(value){
@@ -2974,6 +2992,22 @@ with(MO){
       var o = this;
       return o._span + ' (' + o._spanMin + ' - ' + o._spanMax + ')';
    }
+}
+MO.TTicker = function TTicker(interval){
+   var o = this;
+   o.interval = interval;
+   o.lastTick = 0;
+   o.process  = MO.TTicker_process;
+}
+MO.TTicker_process = function TTicker_process(){
+   var o = this;
+   var tick = MO.Timer.current();
+   var span = tick - o.lastTick;
+   if(span > o.interval){
+      o.lastTick = tick;
+      return true;
+   }
+   return false;
 }
 with(MO){
    MO.TUnsupportError = function TUnsupportError(po, pp){
@@ -4869,10 +4903,10 @@ with(MO){
          }
          s.append('   ' + (c - n) + ': ' + RMethod.name(f));
       }
-      var m = new TString();
-      m.appendLine(RContext.get('RMessage:fatal'));
-      m.appendLine(RString.repeat('-', 60));
-      m.append(RClass.dump(sf), ': ');
+      var message = new TString();
+      message.appendLine(RContext.get('RMessage:fatal'));
+      message.appendLine(RString.repeat('-', 60));
+      message.append(RClass.dump(sf), ': ');
       if(ms){
          var ag = arguments;
          c = ag.length;
@@ -4885,12 +4919,14 @@ with(MO){
             ms = ms.replace('{' + pi + '}', p);
          }
       }
-      m.appendLine(ms);
-      m.appendLine(RString.repeat('-', 60));
-      m.appendLine('Stack:');
-      m.append(s);
-      var text = m.toString();
-      throw new Error(text);
+      message.appendLine(ms);
+      message.appendLine(RString.repeat('-', 60));
+      message.appendLine('Stack:');
+      message.append(s);
+      var text = message.toString();
+      if(!MO.Runtime.isRelease()){
+         throw new Error(text);
+      }
    }
    MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       var o = this;
@@ -5682,9 +5718,9 @@ with(MO){
    }
    MO.RTimer.prototype.setup = function RTimer_setup(){
       var o = this;
-      var n = new Date().getTime();
-      o._startTime = n;
-      o._lastTime = n;
+      var tick = new Date().getTime();
+      o._startTime = tick;
+      o._lastTime = tick;
    }
    MO.RTimer.prototype.now = function RTimer_now(){
       return new Date().getTime();
@@ -10204,7 +10240,7 @@ with(MO){
                o.setOutputData();
                o.onConnectionComplete();
             }else{
-               throw new TError(o, 'Connection failure. (url={1})', o._url);
+               MO.Logger.fatal(o, 'Connection failure. (url={1})', o._url);
             }
          }
       }
