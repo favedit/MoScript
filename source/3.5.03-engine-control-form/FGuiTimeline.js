@@ -92,7 +92,7 @@ with (MO) {
       }
       var timeSpan = endTime.date.getTime() - startTime.date.getTime();
       var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan) + 3;
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
       graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
@@ -178,7 +178,7 @@ with (MO) {
             var selectedDate = MO.Memory.alloc(TDate);
             selectedDate.date.setTime(msDate);
             selectedDate.refresh();
-            dsEvent.date = selectedDate;
+            dsEvent.date = selectedDate.parseAuto(selectedDate.format('YYYYMMDD'));
             o.processDataChangedListener(dsEvent);
          }
       }

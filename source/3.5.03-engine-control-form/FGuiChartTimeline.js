@@ -28,7 +28,7 @@ with (MO) {
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
 
-      var dataTop = top + 25;
+      var dataTop = top + 30;
       var dataBottom = bottom - 30;
       var dataHeight = dataBottom - dataTop;
 
@@ -54,7 +54,7 @@ with (MO) {
       var lastY = dataBottom - inves / 10000 * pixPer10k;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
       var rateResource = rateConsole.find(EEaiRate.Line);
-      while (!startDate.isAfter(degreeDate)) {
+      while (startDate.isBefore(degreeDate)) {
          var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
          if (dateData) {
             var degreeSpan = startDate.date.getTime() - bakTime;

@@ -98,8 +98,10 @@ MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOper
    // 设置时间
    var code = o._currentDate.format('YYYYMMDD')
    var endCode = o._endDate.format('YYYYMMDD')
-   if(code == endCode) {
-      MO.RDate.autoParse(o._currentDate, '20140701');
+   if (code == endCode) {
+      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+      var startDD = historyConsole.dates().at(0);
+      MO.RDate.autoParse(o._currentDate, startDD._code);
    }
    // 开始播放
    o.switchPlay(true);
@@ -209,9 +211,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setName('Timeline');
    //timeline.setDockCd(MO.EGuiDock.Fill);
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas.logicSize().height - 500);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 550);
    timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
-   timeline.setHeight(450);
+   timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
@@ -335,7 +337,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
             if(hLoading){
                document.body.removeChild(hLoading);
             }
-            o._playing = true;
+            o.switchPlay(true);
             o._statusStart = true;
          }
       }

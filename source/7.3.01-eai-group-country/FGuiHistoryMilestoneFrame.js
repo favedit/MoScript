@@ -106,29 +106,31 @@ with(MO){
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
+         var passedTick = MO.Timer.current() - o._startTick;
+         var showTick = passedTick - o._popDuration;
+         var closeTick = passedTick - o._showDuration - o._popDuration;
+         var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         if (passedTick < o._popDuration) {
+            p = passedTick / o._popDuration;
+            p = 1 - (1 - p) * (1 - p);
+            o.setLeft(-rectangle.width + slideDistance * p);
+         }
+         else if (showTick < o._showDuration) {
+         }
+         else if (closeTick < o._closeDuration) {
+            p = closeTick / o._closeDuration;
+            p = p * p;
+            o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
+         }
+         else {
+            o._data = null;
+            o.setVisible(false);
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            o.processDataChangedListener(dsEvent);
+         }
       }
-      var passedTick = MO.Timer.current() - o._startTick;
-      var showTick = passedTick - o._popDuration;
-      var closeTick = passedTick - o._showDuration - o._popDuration;
-      var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width)/2;
-      if (passedTick < o._popDuration) {
-         p = passedTick / o._popDuration;
-         p = 1 - (1 - p) * (1 - p);
-         o.setLeft(-rectangle.width + slideDistance * p);
-      }
-      else if (showTick < o._showDuration) {
-      }
-      else if (closeTick < o._closeDuration) {
-         p = closeTick / o._closeDuration;
-         p = p * p;
-         o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-      }
-      else {
-         o.setVisible(false);
-         var dsEvent = MO.Memory.alloc(SEvent);
-         dsEvent.sender = o;
-         o.processDataChangedListener(dsEvent);
-      }
+      
    }
 
    //==========================================================
