@@ -65,27 +65,35 @@ with (MO) {
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();
       var degreeText;
+      var startText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
-            degreeText = startTime.format('MI:SS.MISS');
+            startText = startTime.format('MI:SS.MISS');
+            degreeText = degreeTime.format('MI:SS.MISS');
             break;
          case EGuiTimeUnit.Minute:
-            degreeText = startTime.format('HH24:MI:SS');
+            startText = startTime.format('HH24:MI:SS');
+            degreeText = degreeTime.format('HH24:MI:SS');
             break;
          case EGuiTimeUnit.Hour:
-            degreeText = startTime.format('HH24:MI');
+            startText = startTime.format('HH24:MI');
+            degreeText = degreeTime.format('HH24:MI');
             break;
          case EGuiTimeUnit.Day:
-            degreeText = startTime.format('MM-DD:HH24');
+            startText = startTime.format('MM-DD:HH24');
+            degreeText = degreeTime.format('MM-DD:HH24');
             break;
          case EGuiTimeUnit.Week:
-            degreeText = startTime.format('MM-DD');
+            startText = startTime.format('MM-DD');
+            degreeText = degreeTime.format('MM-DD');
             break;
          case EGuiTimeUnit.Month:
+            startText = startTime.format('YYYY-MM-DD');
             degreeText = degreeTime.format('YYYY-MM-DD');
             break;
          case EGuiTimeUnit.Year:
-            degreeText = startTime.format('YYYY-MM');
+            startText = startTime.format('YYYY-MM');
+            degreeText = degreeTime.format('YYYY-MM');
             break;
          default:
             return;
@@ -99,6 +107,41 @@ with (MO) {
       //刻度
       var text;
       var bakTime = startTime.date.getTime();
+      //开始刻度
+      graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', 1);
+      graphic.drawText(startText, dataLeft - startText.length * 5, middle + 20, '#FFFFFF');
+      switch (o.timeUnit()) {
+         case EGuiTimeUnit.Second:
+            startTime.addMseconds(1000);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+            break;
+         case EGuiTimeUnit.Minute:
+            startTime.addMseconds(1000 * 60);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MI'));
+            break;
+         case EGuiTimeUnit.Hour:
+            startTime.addMseconds(1000 * 60 * 60);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24'));
+            break;
+         case EGuiTimeUnit.Day:
+            startTime.addDay(1);
+            startTime.parseAuto(startTime.format('YYYYMMDD'));
+            break;
+         case EGuiTimeUnit.Week:
+            startTime.addDay(7);
+            startTime.parseAuto(startTime.format('YYYYMMDD'));
+            break;
+         case EGuiTimeUnit.Month:
+            startTime.addMonth(1);
+            startTime.parseAuto(startTime.format('YYYYMM'));
+            break;
+         case EGuiTimeUnit.Year:
+            startTime.addYear(1);
+            startTime.parseAuto(startTime.format('YYYY'));
+            break;
+         default:
+            return;
+      }
       while (!startTime.isAfter(endTime)) {
          var span = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
