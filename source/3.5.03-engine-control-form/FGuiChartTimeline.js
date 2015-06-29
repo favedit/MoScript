@@ -69,11 +69,30 @@ with (MO) {
             if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
-               graphic.setFont('bold 16px Microsoft YaHei');
-               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
             }
             lastX = x;
             lastY = y;
+            startDate.addDay(1);
+         }
+         else {
+            break;
+         }
+      }
+      //后写字
+      startDate.date.setTime(bakTime);
+      startDate.refresh();
+      while (startDate.isBefore(degreeDate)) {
+         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+         if (dateData) {
+            var degreeSpan = startDate.date.getTime() - bakTime;
+            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+            var inves = dateData.investmentTotal();
+            var y = dataBottom - inves / 10000 * pixPer10k;
+            if (startDate.date.getDate() == 1) {
+               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+            }
             startDate.addDay(1);
          }
          else {

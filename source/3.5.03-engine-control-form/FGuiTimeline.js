@@ -142,6 +142,7 @@ with (MO) {
          default:
             return;
       }
+      //中间刻度
       while (!startTime.isAfter(endTime)) {
          var span = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
