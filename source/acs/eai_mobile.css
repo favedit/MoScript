@@ -94,3 +94,50 @@ textarea{
 .Tag_Check{
    border:0; cursor:hand;
 }
+
+/* ------------------------------------------------------ */
+/* DataGrid                                               */
+/* ------------------------------------------------------ */
+.DataGrid_Ground{
+   border:2px solid #1DACE5;
+   border-radius: 6px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Title{
+}
+
+.DataGrid_Border{
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Row{
+   color: #1DACE5;
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.3);
+}
+
+/* ------------------------------------------------------ */
+/* Investment_DataGrid                                    */
+/* ------------------------------------------------------ */
+.Investment_DataGrid_RowTitle{
+   color: #FFFFFF;
+   border:1px solid #1DACE5;
+   background-color:#006699;
+}
+
+.Investment_DataGrid_RowCell{
+   font-size:11pt;
+}
+
+.Investment_DataGrid_Row{
+   color: #1DACE5;
+   background-color:rgba(10, 39, 69, 0.3);
+}
+
+.Investment_DataGrid_Cell{
+   font-size:11pt;
+}

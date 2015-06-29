@@ -35,6 +35,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._citys      = RClass.register(o, new AGetter('_citys'));
       o.construct   = FEaiCityResourceConsole_construct;
+      o.find        = FEaiCityResourceConsole_find;
       o.unserialize = FEaiCityResourceConsole_unserialize;
       o.dispose     = FEaiCityResourceConsole_dispose;
       return o;
@@ -43,6 +44,9 @@ with(MO){
       var o = this;
       o.__base.FConsole.construct.call(o);
       o._citys = new TDictionary();
+   }
+   MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
+      return this._citys.get(code);
    }
    MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
       var o = this;

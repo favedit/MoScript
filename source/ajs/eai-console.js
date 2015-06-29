@@ -44,24 +44,38 @@ with(MO){
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
+   o._system       = MO.Class.register(o, new MO.AGetter('_system'));
    o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
    o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
    o._schedule     = MO.Class.register(o, new MO.AGetter('_schedule'));
    o._statistics   = MO.Class.register(o, new MO.AGetter('_statistics'));
+   o._thread       = null;
+   o._interval     = 1000 * 60 * 10;
+   o.onProcess     = MO.FEaiLogicConsole_onProcess;
    o.construct     = MO.FEaiLogicConsole_construct;
    o.dispose       = MO.FEaiLogicConsole_dispose;
    return o;
 }
+MO.FEaiLogicConsole_onProcess = function FEaiLogicConsole_onProcess(event){
+   var o = this;
+   o._system.refresh();
+}
 MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._system = MO.Class.create(MO.FEaiLogicSystem);
    o._organization = MO.Class.create(MO.FEaiLogicOrganization);
    o._achievement = MO.Class.create(MO.FEaiLogicAchievement);
    o._schedule = MO.Class.create(MO.FEaiLogicSchedule);
    o._statistics = MO.Class.create(MO.FEaiLogicStatistics);
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   MO.Console.find(MO.FThreadConsole).start(thread);
 }
 MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    var o = this;
+   o._system = MO.RObject.dispose(o._system);
    o._organization = MO.RObject.dispose(o._organization);
    o._achievement = MO.RObject.dispose(o._achievement);
    o._schedule = MO.RObject.dispose(o._schedule);
@@ -149,11 +163,68 @@ with(MO){
 }
 MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
-   o._code        = 'statistics';
-   o.doInvestment = MO.FEaiLogicStatistics_doInvestment;
+   o._code               = 'statistics';
+   o.doInvestmentDynamic = MO.FEaiLogicStatistics_doInvestmentDynamic;
+   o.doInvestmentTrend   = MO.FEaiLogicStatistics_doInvestmentTrend;
    return o;
 }
-MO.FEaiLogicStatistics_doInvestment = function FEaiLogicStatistics_doInvestment(owner, callback, startDate, endDate){
+MO.FEaiLogicStatistics_doInvestmentDynamic = function FEaiLogicStatistics_doInvestmentDynamic(owner, callback, startDate, endDate){
    var parameters = 'begin=' + startDate + '&end=' + endDate;
-   return this.send('investment', parameters, owner, callback);
+   return this.send('investment_dynamic', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvestmentTrend(owner, callback, startDate, endDate, interval){
+   var parameters = 'begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
+   return this.send('investment_trend', parameters, owner, callback);
+}
+MO.FEaiLogicSystem = function FEaiLogicSystem(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code        = 'system';
+   o._ready       = false;
+   o._currentDate = null;
+   o._localDate   = null;
+   o._systemDate  = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o.onInfo       = MO.FEaiLogicSystem_onInfo;
+   o.construct    = MO.FEaiLogicSystem_construct;
+   o.doInfo       = MO.FEaiLogicSystem_doInfo;
+   o.testReady    = MO.FEaiLogicSystem_testReady;
+   o.currentDate  = MO.FEaiLogicSystem_currentDate;
+   o.refresh      = MO.FEaiLogicSystem_refresh;
+   o.dispose      = MO.FEaiLogicSystem_dispose;
+   return o;
+}
+MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
+   var o = this;
+   var content = event.content;
+   o._localDate.setNow();
+   o._systemDate.parse(content.date);
+   o._ready = true;
+}
+MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
+   var o = this;
+   o.__base.FEaiLogic.construct.call(o);
+   o._currentDate = new MO.TDate();
+   o._localDate = new MO.TDate();
+   o._systemDate = new MO.TDate();
+}
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
+   return this.send('info', null, owner, callback);
+}
+MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
+   return this._ready;
+}
+MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
+   var o = this;
+   var span = o._systemDate.get() - o._localDate.get();
+   o._currentDate.set(MO.Timer.current() + span);
+   return o._currentDate;
+}
+MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
+   var o = this;
+   return o.doInfo(o, o.onInfo);
+}
+MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose(){
+   var o = this;
+   o._localDate = RObject.dispose(o._localDate);
+   o._systemDate = RObject.dispose(o._systemDate);
+   o.__base.FEaiLogic.consturct.call(o);
 }

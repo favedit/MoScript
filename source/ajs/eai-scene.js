@@ -186,9 +186,12 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   o._currentDate.parseAuto('20140701');
-   o._startDate.parseAuto('20140701');
-   o._endDate.parseAuto('20150618');
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var startDD = historyConsole.dates().at(0);
+   var endDD = historyConsole.dates().at(historyConsole.dates().count() - 1);
+   o._currentDate.parseAuto(startDD._code);
+   o._startDate.parseAuto(startDD._code);
+   o._endDate.parseAuto(endDD._code);
    var control = o._playButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
    control.setLocation(40, 730);
@@ -236,9 +239,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 500);
    timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
-   timeline.setHeight(350);
+   timeline.setHeight(450);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
@@ -665,14 +668,15 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    o._countryData          = null;
-   o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-   o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    o._countryBorderDisplay = null;
    o._countryDisplay       = null;
-   o._citysRenderables     = null;
+   o._citysRangeRenderable = null;
+   o._citysRenderable      = null;
    o._logoBar              = null;
    o._titleBar             = null;
+   o._totalBar             = null;
    o._groundAutio          = null;
    o._readyProvince        = false;
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
@@ -694,6 +698,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var countryDisplay = o._countryDisplay;
    var countryBorderDisplay = o._countryBorderDisplay;
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var provinceEntities = o._mapEntity.provinceEntities();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
@@ -703,7 +708,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      o._provinceEntities.set(province.code(), provinceEntity);
+      provinceEntities.set(province.code(), provinceEntity);
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
@@ -712,9 +717,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
    o.__base.FEaiScene.construct.call(o);
-   o._provinceEntities = new MO.TDictionary();
-   o._cityEntities = new MO.TDictionary();
-   o._citysRenderables = new MO.TDictionary();
+   o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
    var o = this;
@@ -752,17 +755,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
-   var citysRenderables = o._citysRenderables;
-   for(var i = 4; i >= 1; i--){
-      var renderable = MO.Class.create(MO.FEaiCitysRenderable);
-      renderable.setLevel(i);
-      renderable.linkGraphicContext(o);
-      o.fixMatrix(renderable.matrix());
-      stage.cityLayer().push(renderable);
-      citysRenderables.set(i, renderable);
-   }
+   var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
+   citysRenderable.linkGraphicContext(o);
+   o.fixMatrix(citysRenderable.matrix());
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntities = o._mapEntity.cityEntities();
    var citys = cityConsole.citys();
    var cityCount = citys.count();
    for(var i = 0; i < cityCount; i++){
@@ -772,17 +769,12 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
       cityEntity.setData(city);
       cityEntity.build(context);
-      o._cityEntities.set(city.code(), cityEntity);
-      var citysRenderable = citysRenderables.get(level);
+      cityEntities.set(city.code(), cityEntity);
       citysRenderable.citys().push(cityEntity);
       citysRangeRenderable.citys().push(cityEntity);
    }
-   var count = citysRenderables.count()
-   for(var i = 0; i < count; i++){
-      var citysRenderable = citysRenderables.at(i);
-      citysRenderable.setup();
-      citysRenderable.upload();
-   }
+   citysRenderable.setup();
+   citysRenderable.upload();
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
@@ -823,8 +815,7 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
-   o._provinceEntities = RObject.dispose(o._provinceEntities);
-   o._cityEntities = RObject.dispose(o._cityEntities);
+   o._mapEntity = RObject.dispose(o._mapEntity);
    o.__base.FEaiScene.dispose.call(o);
 }
 MO.FEaiChartStage = function FEaiChartStage(o){
@@ -834,6 +825,7 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o._borderLayer    = MO.RClass.register(o, new MO.AGetter('_borderLayer'));
    o._cityRangeLayer = MO.RClass.register(o, new MO.AGetter('_cityRangeLayer'));
    o._cityLayer      = MO.RClass.register(o, new MO.AGetter('_cityLayer'));
+   o._dataLayer      = MO.RClass.register(o, new MO.AGetter('_dataLayer'));
    o._faceLayer      = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
    o.construct       = MO.FEaiChartStage_construct;
    return o;
@@ -854,6 +846,9 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    var layer = o._cityLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('CityLayer', layer);
+   var layer = o._dataLayer = MO.RClass.create(MO.FDisplayLayer);
+   layer.setOptionClearDepth(true);
+   o.registerLayer('DataLayer', layer);
    var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('FaceLayer', layer);
@@ -861,7 +856,7 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
 MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code             = MO.EEaiScene.ChartStatistics;
-   o._invement         = MO.Class.register(o, new MO.AGetter('_invement'));
+   o._investment       = MO.Class.register(o, new MO.AGetter('_investment'));
    o._ready            = false;
    o._playing          = false;
    o._lastTick         = 0;
@@ -871,27 +866,23 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
-   o._playButton       = null;
-   o._pauseButton      = null;
-   o._buttonTransform  = null;
    o._timeline         = null;
    o._milestoneFrame   = null;
    o._buttonAudio      = null;
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
-   o.onLoadData       = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect     = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onMilestoneDone  = MO.FEaiChartStatisticsScene_onMilestoneDone;
-   o.onOperationPlay  = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause = MO.FEaiChartStatisticsScene_onOperationPause;
-   o.testReady         = MO.FEaiChartStatisticsScene_testReady;
-   o.setup             = MO.FEaiChartStatisticsScene_setup;
-   o.selectDate        = MO.FEaiChartStatisticsScene_selectDate;
-   o.switchPlay        = MO.FEaiChartStatisticsScene_switchPlay;
-   o.active            = MO.FEaiChartStatisticsScene_active;
-   o.process           = MO.FEaiChartStatisticsScene_process;
-   o.deactive          = MO.FEaiChartStatisticsScene_deactive;
+   o._investmentCurrent  = 0;
+   o.onLoadData        = MO.FEaiChartStatisticsScene_onLoadData;
+   o.onDateSelect      = MO.FEaiChartStatisticsScene_onDateSelect;
+   o.onOperationPlay   = MO.FEaiChartStatisticsScene_onOperationPlay;
+   o.onOperationPause  = MO.FEaiChartStatisticsScene_onOperationPause;
+   o.testReady          = MO.FEaiChartStatisticsScene_testReady;
+   o.setup              = MO.FEaiChartStatisticsScene_setup;
+   o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
+   o.active             = MO.FEaiChartStatisticsScene_active;
+   o.process            = MO.FEaiChartStatisticsScene_process;
+   o.deactive           = MO.FEaiChartStatisticsScene_deactive;
    return o;
 }
 MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
@@ -908,7 +899,6 @@ MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onD
 }
 MO.FEaiChartStatisticsScene_onMilestoneDone = function FEaiChartStatisticsScene_onMilestoneDone(event) {
    var o = this;
-   o.switchPlay(true);
 }
 MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_onOperationPlay(event){
    var o = this;
@@ -917,11 +907,9 @@ MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_
    if(code == endCode) {
       MO.RDate.autoParse(o._currentDate, '20140701');
    }
-   o.switchPlay(true);
 }
 MO.FEaiChartStatisticsScene_onOperationPause = function FEaiChartStatisticsScene_onOperationPause(event){
    var o = this;
-   o.switchPlay(false);
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
    var o = this;
@@ -936,6 +924,7 @@ MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testRe
 MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
+   var dataLayer = o._activeStage.dataLayer();
    var faceLayer = o._activeStage.faceLayer();
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
@@ -943,50 +932,15 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
-   o._invement = MO.Class.create(MO.FEaiStatisticsInvement);
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/player.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   control.addOperationDownListener(o, o.onOperationPlay);
-   o._desktop.register(control);
-   faceLayer.push(control);
-   var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/pause.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(false);
-   control.addOperationDownListener(o, o.onOperationPause);
-   o._desktop.register(control);
-   faceLayer.push(control);
-   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/button.mp3');
-   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
-   transform.setInterval(10);
-   transform.setScale(0.1);
+   var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
+   invement.linkGraphicContext(o);
+   invement.setMapEntity(o._mapEntity);
+   invement.setup();
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
-   var milestoneBars = o._milestoneBars = new MO.TObjects();
-   var count = milestones.count();
-   for(var i = 0; i < count; i++){
-      var milestone = milestones.at(i);
-      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setLocation(0, 25 + 90 * i);
-      var date = new MO.TDate();
-      date.parse(milestone.code());
-      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
-      faceLayer.push(frame);
-      o._desktop.register(frame);
-      milestoneBars.push(frame);
-   }
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
@@ -1009,7 +963,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    milestoneFrame.setTop(50);
    milestoneFrame.setWidth(720);
    milestoneFrame.setHeight(700);
-   milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
    o._desktop.register(milestoneFrame);
@@ -1018,6 +971,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 }
 MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
    var o = this;
+   return;
    var context = o.graphicContext();
    var stage = o._activeStage;
    var mapLayer = stage.mapLayer();
@@ -1027,10 +981,6 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
    var dateData = historyConsole.dates().get(code);
    var milestone = historyConsole.milestones().get(code);
    if (milestone) {
-      o._milestoneFrame.setData(milestone);
-      o._milestoneFrame.show();
-      o._milestoneFrame.repaint();
-      o.switchPlay(false);
    }
    if (dateData) {
       o._timeline.setDegreeTime(o._currentDate);
@@ -1048,19 +998,6 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
       o._totalBar.repaint();
    }
    o._citysRangeRenderable.upload();
-}
-MO.FEaiChartStatisticsScene_switchPlay = function FEaiChartStatisticsScene_switchPlay(flag){
-   var o = this;
-   var transform = o._buttonTransform;
-   o._playing = flag;
-   o._buttonAudio.play(0);
-   if(flag){
-      o._playButton.setVisible(false);
-      o._pauseButton.setVisible(true);
-   }else{
-      o._playButton.setVisible(true);
-      o._pauseButton.setVisible(false);
-   }
 }
 MO.FEaiChartStatisticsScene_active = function FEaiChartStatisticsScene_active() {
    var o = this;
@@ -1081,40 +1018,23 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
             if(hLoading){
                document.body.removeChild(hLoading);
             }
+            var hTable = document.getElementById('id_table');
+            hTable.style.display = '';
             o._playing = true;
             o._statusStart = true;
          }
       }
    }
-   if (o._playing) {
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._lastTick > o._interval) {
-         if (currentTick - o._lastDateTick > o._dateInterval) {
-            o._currentDate.addDay(1);
-            var code = o._currentDate.format('YYYYMMDD')
-            var endCode = o._endDate.format('YYYYMMDD')
-            o.selectDate(code);
-            if (code == endCode) {
-               o.switchPlay(false);
-            }
-            o._lastDateTick = currentTick;
-         }
-         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
-         o._timeline.repaint();
-         o._lastTick = currentTick;
+   if (o._playing){
+      o._investment.process();
+      var invementCurrent = o._investment.invementCurrent();
+      if(invementCurrent != o._investmentCurrent){
+         var total = o._totalBar.findComponent('total');
+         total.setLabel(MO.RFloat.unitFormat(invementCurrent, 0, 0, 2, 0, 10000, '万'));
+         o._totalBar.repaint();
+         o._investmentCurrent = invementCurrent;
       }
-      var citysRenderables = o._citysRenderables;
-      var count = citysRenderables.count()
-      for (var i = 0; i < count; i++) {
-         var citysRenderable = citysRenderables.at(i);
-         citysRenderable.upload();
-      }
-      o._citysRangeRenderable.upload();
    }
-   if (o._milestoneFrame.visible()) {
-      o._milestoneFrame.repaint();
-   }
-   o._invement.process();
 }
 MO.FEaiChartStatisticsScene_deactive = function FEaiChartStatisticsScene_deactive() {
    var o = this;

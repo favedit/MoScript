@@ -1849,15 +1849,15 @@ with(MO){
    }
    MO.FG3dTechnique_sortRenderables = function FG3dTechnique_sortRenderables(a, b){
    }
-   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(p){
+   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(region){
       var o = this;
-      p.setTechnique(o);
-      var s = o._passes;
-      var c = s.count();
-      for(var n = 0; n < c; n++){
-         var v = s.get(n);
-         p.setTechniquePass(v, (n == c - 1));
-         v.drawRegion(p);
+      region.setTechnique(o);
+      var passes = o._passes;
+      var count = passes.count();
+      for(var i = 0; i < count; i++){
+         var pass = passes.at(i);
+         region.setTechniquePass(pass, (i == count - 1));
+         pass.drawRegion(region);
       }
    }
    MO.FG3dTechnique_present = function FG3dTechnique_present(p){

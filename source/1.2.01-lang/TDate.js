@@ -38,6 +38,7 @@
       o.setMinute    = TDate_setMinute;
       o.setSecond    = TDate_setSecond;
       o.setDate      = TDate_setDate;
+      o.setNow       = TDate_setNow;
       // @method
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
@@ -46,7 +47,8 @@
       o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
       // @method
-      o.now          = TDate_now;
+      o.get          = TDate_get;
+      o.set          = TDate_set;
       o.parse        = TDate_parse;
       o.parseAuto    = TDate_parseAuto;
       o.format       = TDate_format;
@@ -237,6 +239,17 @@
    }
 
    //===========================================================
+   // <T>设定为当前时间。<T>
+   //
+   // @method
+   //===========================================================
+   MO.TDate_setNow = function TDate_setNow(){
+      var o = this;
+      o.date = new Date();
+      o.refresh();
+   }
+
+   //===========================================================
    // <T>增加指定的年数。</T>
    //
    // @method
@@ -309,13 +322,24 @@
    }
 
    //===========================================================
-   // <T>设定为当前时间。<T>
+   // <T>获得数据。<T>
    //
    // @method
+   // @return Integer 数据
    //===========================================================
-   MO.TDate_now = function TDate_now(){
+   MO.TDate_get = function TDate_get(value){
+      return this.date.getTime();
+   }
+
+   //===========================================================
+   // <T>设置数据。<T>
+   //
+   // @method
+   // @param value:Integer 数据
+   //===========================================================
+   MO.TDate_set = function TDate_set(value){
       var o = this;
-      o.date = new Date();
+      o.date.setTime(value);
       o.refresh();
    }
 

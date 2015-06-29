@@ -18,8 +18,6 @@ with(MO){
       // @attribute
       o._citys                = RClass.register(o, new AGetter('_citys'));
       o._level                = RClass.register(o, new AGetSet('_level'));
-      o._size                 = RClass.register(o, new AGetter('_size'));
-      o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       o._citySize             = RClass.register(o, new AGetter('_citySize'));
       // @attribute
       o._vertexPositionBuffer = null;
@@ -50,25 +48,9 @@ with(MO){
    //==========================================================
    MO.FEaiCitysRenderable_onImageLoad = function FEaiCitysRenderable_onImageLoad(event){
       var o = this;
-      var context = o._graphicContext;
       var image = event.sender;
-      // 设置大小
-      var size = image.size();
-      var width = size.width;
-      var height = size.height;
-      o._size.set(width, height);
-      var adjustWidth = RInteger.pow2(width);
-      var adjustHeight = RInteger.pow2(height);
-      o._adjustSize.set(adjustWidth, adjustHeight);
-      // 绘制画板
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-      var context2d = canvas.context();
-      context2d.drawImage(image, 0, 0, width, height);
       // 创建纹理
-      o._texture.upload(canvas);
-      // 释放画板
-      canvasConsole.free(canvas);
+      o._texture.upload(image);
       // 释放位图
       image.dispose();
       // 设置属性
@@ -85,17 +67,23 @@ with(MO){
       o.__base.FE3dRenderable.construct.call(o);
       // 设置属性
       o._citys = new TObjects();
-      o._size = new SSize2();
-      o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
       // 设置数据
-      o._levelCoordLeft = new Object();
-      o._levelCoordRight = new Object();
-      var scale = o._levelScale = new Object();
-      scale[1] = 0.8;
-      scale[2] = 0.5;
-      scale[3] = 0.4;
-      scale[4] = 0.2;
+      var data = o._levelCoordLeft = new Object();
+      data[1] = 0.0;
+      data[2] = 0.25;
+      data[3] = 0.5;
+      data[4] = 0.75;
+      var data = o._levelCoordRight = new Object();
+      data[1] = 0.25;
+      data[2] = 0.5;
+      data[3] = 0.75;
+      data[4] = 1.0;
+      var data = o._levelScale = new Object();
+      data[1] = 0.7;
+      data[2] = 0.5;
+      data[3] = 0.4;
+      data[4] = 0.2;
    }
 
    //==========================================================
@@ -128,22 +116,9 @@ with(MO){
       o.pushVertexBuffer(buffer);
       //..........................................................
       // 设置顶点纹理
-      var position = 0;
-      var data = new Float32Array(2 * vertexCount);
-      for(var i = 0; i < count; i++){
-         data[position++] = 0;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 0;
-         data[position++] = 0;
-         data[position++] = 0;
-      }
       var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
       buffer.setCode('coord');
       buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
       //..........................................................
       // 设置顶点颜色
@@ -180,7 +155,7 @@ with(MO){
       materialInfo.optionAlpha = true;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/city/' + o._level + '.png');
+      o.loadUrl('/script/ars/eai/citys.png');
    }
 
    //==========================================================
@@ -214,10 +189,13 @@ with(MO){
          var range = city._range * 255;
          if(city.visible()){
             var location = city.location();
-            var level = city.level();
-            var coordLeft = 0.25 * level;
-            var coordRight = 0.25 * level;
-            var scale = o._levelScale[o._level];
+            var level = city.data().level();
+            if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
+               throw new TError('Invalid level.');
+            }
+            var coordLeft = o._levelCoordLeft[level];
+            var coordRight = o._levelCoordRight[level];
+            var scale = o._levelScale[level];
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
@@ -232,24 +210,30 @@ with(MO){
             vertexData[vertexPosition++] = location.y - scale;
             vertexData[vertexPosition++] = 0;
             // 设置顶点纹理
+            coordData[coordPosition++] = coordLeft;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = coordRight;
+            coordData[coordPosition++] = 1;
+            coordData[coordPosition++] = coordRight;
             coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = 0;
+            coordData[coordPosition++] = coordLeft;
             coordData[coordPosition++] = 0;
             // 设置顶点颜色
+            var color = city.color();
+            var red = parseInt(color.red * 255);
+            var green = parseInt(color.green * 255);
+            var blue = parseInt(color.blue * 255);
+            var alpha = parseInt(color.alpha * 255);
             for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = 255;
-               colorData[colorPosition++] = range;
+               colorData[colorPosition++] = red;
+               colorData[colorPosition++] = green;
+               colorData[colorPosition++] = blue;
+               colorData[colorPosition++] = alpha;
             }
          }
       }
       o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
+      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
       // 设置索引数据
       o._indexBuffer.setCount(3 * 2 * count);
@@ -278,12 +262,11 @@ with(MO){
    MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
       var o = this;
       // 释放属性
-      o._size = RObject.dispose(o._size);
-      o._adjustSize = RObject.dispose(o._adjustSize);
       o._texture = RObject.dispose(o._texture);
       // 释放属性
       o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);
       o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
+      o._vertexColorBuffer = RObject.dispose(o._vertexColorBuffer);
       o._indexBuffer = RObject.dispose(o._indexBuffer);
       // 父处理
       o.__base.FE3dRenderable.dispose.call(o);

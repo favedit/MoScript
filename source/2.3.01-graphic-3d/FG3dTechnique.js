@@ -111,19 +111,19 @@
    // <T>绘制区域处理。</T>
    //
    // @method
-   // @param p:region:FG3dRetion 区域
+   // @param region:FG3dRetion 区域
    //==========================================================
-   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(p){
+   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(region){
       var o = this;
       // 设置区域属性
-      p.setTechnique(o);
+      region.setTechnique(o);
       // 绘制所有过程
-      var s = o._passes;
-      var c = s.count();
-      for(var n = 0; n < c; n++){
-         var v = s.get(n);
-         p.setTechniquePass(v, (n == c - 1));
-         v.drawRegion(p);
+      var passes = o._passes;
+      var count = passes.count();
+      for(var i = 0; i < count; i++){
+         var pass = passes.at(i);
+         region.setTechniquePass(pass, (i == count - 1));
+         pass.drawRegion(region);
       }
    }
 

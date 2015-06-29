@@ -14,6 +14,7 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o._borderLayer    = MO.RClass.register(o, new MO.AGetter('_borderLayer'));
    o._cityRangeLayer = MO.RClass.register(o, new MO.AGetter('_cityRangeLayer'));
    o._cityLayer      = MO.RClass.register(o, new MO.AGetter('_cityLayer'));
+   o._dataLayer      = MO.RClass.register(o, new MO.AGetter('_dataLayer'));
    o._faceLayer      = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
    //..........................................................
    // @method
@@ -47,6 +48,10 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    var layer = o._cityLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('CityLayer', layer);
+   // 创建数据层
+   var layer = o._dataLayer = MO.RClass.create(MO.FDisplayLayer);
+   layer.setOptionClearDepth(true);
+   o.registerLayer('DataLayer', layer);
    // 创建界面层
    var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);

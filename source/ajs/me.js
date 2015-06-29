@@ -713,24 +713,28 @@ with(MO){
       }
    }
    MO.TObjects_assign = function TObjects_assign(values){
-      var count = this._count = values._count;
+      var o = this;
+      var count = o._count = values._count;
       for(var i = 0; i < count; i++){
-         this._items[i] = values._items[i];
+         o._items[i] = values._items[i];
       }
    }
    MO.TObjects_append = function TObjects_append(values){
+      var o = this;
       var count = values._count;
       for(var i = 0; i < count; i++){
-         this.push(values.at(i));
+         o.push(values.at(i));
       }
    }
    MO.TObjects_insert = function TObjects_insert(index, value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if((index >= 0) && (index <= count)){
          for(var i = count; i > index; i--){
-            this._items[i] = this._items[i - 1];
+            o._items[i] = o._items[i - 1];
          }
-         this._items[index] = value;
+         o._items[index] = value;
+         o._count++;
       }
    }
    MO.TObjects_shift = function TObjects_shift(){
@@ -775,11 +779,12 @@ with(MO){
       items.sort(callback);
    }
    MO.TObjects_erase = function TObjects_erase(index){
+      var o = this;
       var value = null;
-      if((index >= 0) && (index < this._count)){
-         value = this._items[index];
-         var count = --this._count;
-         var items = this._items;
+      if((index >= 0) && (index < o._count)){
+         value = o._items[index];
+         var count = --o._count;
+         var items = o._items;
          for(var i = index; i < count; i++){
             items[i] = items[i+1];
          }
@@ -788,10 +793,11 @@ with(MO){
       return value;
    }
    MO.TObjects_remove = function TObjects_remove(value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if(count){
          var index = 0;
-         var items = this._items;
+         var items = o._items;
          for(var i = index; i < count; i++){
             if(items[i] != value){
                items[index++] = items[i];
@@ -800,7 +806,7 @@ with(MO){
          for(var i = index; i < count; i++){
             items[i] = null;
          }
-         this._count = index;
+         o._count = index;
       }
       return value;
    }
@@ -808,11 +814,12 @@ with(MO){
       this._count = 0;
    }
    MO.TObjects_dispose = function TObjects_dispose(){
-      for(var name in this._items){
-         this._items[name] = null;
+      var o = this;
+      for(var name in o._items){
+         o._items[name] = null;
       }
-      this._count = 0;
-      this._items = null;
+      o._count = 0;
+      o._items = null;
    }
    MO.TObjects_dump = function TObjects_dump(){
       var count = this._count;
@@ -2095,13 +2102,15 @@ with(MO){
       o.setMinute    = TDate_setMinute;
       o.setSecond    = TDate_setSecond;
       o.setDate      = TDate_setDate;
+      o.setNow       = TDate_setNow;
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
       o.addHour      = TDate_addHour;
       o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
-      o.now          = TDate_now;
+      o.get          = TDate_get;
+      o.set          = TDate_set;
       o.parse        = TDate_parse;
       o.parseAuto    = TDate_parseAuto;
       o.format       = TDate_format;
@@ -2181,6 +2190,11 @@ with(MO){
       o.date = value;
       o.refresh();
    }
+   MO.TDate_setNow = function TDate_setNow(){
+      var o = this;
+      o.date = new Date();
+      o.refresh();
+   }
    MO.TDate_addYear = function TDate_addYear(value){
       var o = this;
       o.date.setFullYear(o.date.getFullYear() + parseInt(value));
@@ -2211,9 +2225,12 @@ with(MO){
       o.date.setTime(o.date.getTime() + parseInt(value));
       o.refresh();
    }
-   MO.TDate_now = function TDate_now(){
+   MO.TDate_get = function TDate_get(value){
+      return this.date.getTime();
+   }
+   MO.TDate_set = function TDate_set(value){
       var o = this;
-      o.date = new Date();
+      o.date.setTime(value);
       o.refresh();
    }
    MO.TDate_parse = function TDate_parse(value, format){
@@ -3121,16 +3138,16 @@ MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
 }
 MO.FObjectPool_alloc = function FObjectPool_alloc(){
    var o = this;
-   var r = null;
+   var item = null;
    if(!o._frees.isEmpty()){
-      r = o._frees.pop();
+      item = o._frees.pop();
    }
    o._allocCount++;
-   return r;
+   return item;
 }
-MO.FObjectPool_free = function FObjectPool_free(p){
+MO.FObjectPool_free = function FObjectPool_free(item){
    var o = this;
-   o._frees.push(p);
+   o._frees.push(item);
    o._freeCount++;
 }
 MO.FObjectPool_push = function FObjectPool_push(p){
@@ -3144,13 +3161,13 @@ MO.FObjectPool_dispose = function FObjectPool_dispose(){
    o._frees = MO.RObject.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
 }
-MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
+MO.FObjectPool_innerDump = function FObjectPool_innerDump(result, level){
    var o = this;
-   s.append('Pool:');
-   s.append('total=', o._items.count());
-   s.append(', free=', o._frees.count());
-   s.append(', alloc_count=', o._allocCount);
-   s.append(', free_count=', o._freeCount);
+   result.append('Pool:');
+   result.append('total=', o._items.count());
+   result.append(', free=', o._frees.count());
+   result.append(', alloc_count=', o._allocCount);
+   result.append(', free_count=', o._freeCount);
 }
 MO.FObjectPools = function FObjectPools(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -4515,6 +4532,7 @@ with(MO){
       }
    }
    MO.RFloat = new RFloat();
+   MO.Lang.Float = MO.RFloat;
 }
 with(MO){
    MO.RHex = function RHex(){
@@ -12602,6 +12620,22 @@ with(MO){
       }
    }
 }
+MO.FTimeConsole = function FTimeConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o._date     = null;
+   o.construct = MO.FTimeConsole_construct;
+   o.dispose   = MO.FTimeConsole_dispose;
+   return o;
+}
+MO.FTimeConsole_construct = function FTimeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+MO.FTimeConsole_dispose = function FTimeConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+}
 with(MO){
    MO.FXmlConsole = function FXmlConsole(o){
       o = RClass.inherits(this, o, FConsole);
@@ -16804,15 +16838,15 @@ with(MO){
    }
    MO.FG3dTechnique_sortRenderables = function FG3dTechnique_sortRenderables(a, b){
    }
-   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(p){
+   MO.FG3dTechnique_drawRegion = function FG3dTechnique_drawRegion(region){
       var o = this;
-      p.setTechnique(o);
-      var s = o._passes;
-      var c = s.count();
-      for(var n = 0; n < c; n++){
-         var v = s.get(n);
-         p.setTechniquePass(v, (n == c - 1));
-         v.drawRegion(p);
+      region.setTechnique(o);
+      var passes = o._passes;
+      var count = passes.count();
+      for(var i = 0; i < count; i++){
+         var pass = passes.at(i);
+         region.setTechniquePass(pass, (i == count - 1));
+         pass.drawRegion(region);
       }
    }
    MO.FG3dTechnique_present = function FG3dTechnique_present(p){
@@ -32176,6 +32210,7 @@ with(MO){
       o._ready           = false;
       o._size            = RClass.register(o, new AGetter('_size'));
       o._loadListeners   = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
+      o._statusDirty     = true;
       o.construct        = FE3dFace_construct;
       o.setSize          = FE3dFace_setSize;
       o.setData          = FE3dFace_setData;
@@ -32184,6 +32219,7 @@ with(MO){
       o.findTexture      = FE3dFace_findTexture;
       o.textures         = FE3dFace_textures;
       o.material         = FE3dFace_material;
+      o.dirty            = FE3dFace_dirty;
       o.processLoad      = FE3dFace_processLoad;
       o.process          = FE3dFace_process;
       o.dispose          = FE3dFace_dispose;
@@ -32217,6 +32253,9 @@ with(MO){
    }
    MO.FE3dFace_material = function FE3dFace_material(){
       return this._renderable.material();
+   }
+   MO.FE3dFace_dirty = function FE3dFace_dirty(){
+      this._statusDirty = true;
    }
    MO.FE3dFace_processLoad = function FE3dFace_processLoad(){
       var o = this;
@@ -32565,42 +32604,14 @@ with(MO){
 with(MO){
    MO.FE3dShape = function FE3dShape(o){
       o = RClass.inherits(this, o, FE3dFace);
+      o._ready    = true;
       o.construct = FE3dShape_construct;
-      o.testReady = FE3dShape_testReady;
-      o.loadUrl   = FE3dShape_loadUrl;
       o.dispose   = FE3dShape_dispose;
       return o;
    }
    MO.FE3dShape_construct = function FE3dShape_construct(){
       var o = this;
       o.__base.FE3dFace.construct.call(o);
-   }
-   MO.FE3dShape_testReady = function FE3dShape_testReady(){
-      var o = this;
-      if(!o._ready){
-         var renderable = o._renderable;
-         if(renderable){
-            o._ready = renderable.testReady();
-            if(o._ready){
-               var size = renderable.size();
-               var adjustSize = renderable.adjustSize();
-               var matrix = o.matrix();
-               matrix.sz = adjustSize.height / size.height;
-               matrix.updateForce();
-               var event = new SEvent(o);
-               o.processLoadListener(event);
-               event.dispose();
-            }
-            o._materialReference = renderable;
-         }
-      }
-      return o._ready;
-   }
-   MO.FE3dShape_loadUrl = function FE3dShape_loadUrl(url){
-      var o = this;
-      var context = o._graphicContext;
-      o._renderable = RConsole.find(FE3dShapeConsole).loadUrl(context, url);
-      o._ready = false;
    }
    MO.FE3dShape_dispose = function FE3dShape_dispose(){
       var o = this;
@@ -32664,25 +32675,25 @@ with(MO){
 with(MO){
    MO.FE3dShapeData = function FE3dShapeData(o){
       o = RClass.inherits(this, o, FE3dFaceData);
-      o._graphic      = null;
-      o._texture = null;
-      o.construct     = FE3dShapeData_construct;
-      o.beginDraw     = FE3dShapeData_beginDraw;
-      o.endDraw       = FE3dShapeData_endDraw;
-      o.dispose       = FE3dShapeData_dispose;
+      o._graphic  = null;
+      o._texture  = null;
+      o.construct = FE3dShapeData_construct;
+      o.beginDraw = FE3dShapeData_beginDraw;
+      o.endDraw   = FE3dShapeData_endDraw;
+      o.dispose   = FE3dShapeData_dispose;
       return o;
    }
    MO.FE3dShapeData_construct = function FE3dShapeData_construct(){
       var o = this;
       o.__base.FE3dFaceData.construct.call(o);
    }
-   MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(url){
+   MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
       var o = this;
       var size = o._size;
-      var adjustWidth = RInteger.pow2(size.width);
-      var adjustHeight = RInteger.pow2(size.height);
+      var adjustWidth = MO.Lang.Integer.pow2(size.width);
+      var adjustHeight = MO.Lang.Integer.pow2(size.height);
       o._adjustSize.set(adjustWidth, adjustHeight);
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      var canvasConsole = MO.Console.find(FE2dCanvasConsole);
       var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
       var graphic = o._graphic = canvas.context();
       return graphic;
@@ -32693,7 +32704,8 @@ with(MO){
       MO.Assert.debugNotNull(graphic);
       o._texture.upload(o._canvas);
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(graphic);
+      canvasConsole.free(o._canvas);
+      o._canvas = null;
       o._graphic = null;
       o._ready = true;
    }

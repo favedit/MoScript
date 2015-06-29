@@ -802,13 +802,15 @@ with(MO){
       o.setMinute    = TDate_setMinute;
       o.setSecond    = TDate_setSecond;
       o.setDate      = TDate_setDate;
+      o.setNow       = TDate_setNow;
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
       o.addHour      = TDate_addHour;
       o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
-      o.now          = TDate_now;
+      o.get          = TDate_get;
+      o.set          = TDate_set;
       o.parse        = TDate_parse;
       o.parseAuto    = TDate_parseAuto;
       o.format       = TDate_format;
@@ -888,6 +890,11 @@ with(MO){
       o.date = value;
       o.refresh();
    }
+   MO.TDate_setNow = function TDate_setNow(){
+      var o = this;
+      o.date = new Date();
+      o.refresh();
+   }
    MO.TDate_addYear = function TDate_addYear(value){
       var o = this;
       o.date.setFullYear(o.date.getFullYear() + parseInt(value));
@@ -918,9 +925,12 @@ with(MO){
       o.date.setTime(o.date.getTime() + parseInt(value));
       o.refresh();
    }
-   MO.TDate_now = function TDate_now(){
+   MO.TDate_get = function TDate_get(value){
+      return this.date.getTime();
+   }
+   MO.TDate_set = function TDate_set(value){
       var o = this;
-      o.date = new Date();
+      o.date.setTime(value);
       o.refresh();
    }
    MO.TDate_parse = function TDate_parse(value, format){
@@ -1828,16 +1838,16 @@ MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
 }
 MO.FObjectPool_alloc = function FObjectPool_alloc(){
    var o = this;
-   var r = null;
+   var item = null;
    if(!o._frees.isEmpty()){
-      r = o._frees.pop();
+      item = o._frees.pop();
    }
    o._allocCount++;
-   return r;
+   return item;
 }
-MO.FObjectPool_free = function FObjectPool_free(p){
+MO.FObjectPool_free = function FObjectPool_free(item){
    var o = this;
-   o._frees.push(p);
+   o._frees.push(item);
    o._freeCount++;
 }
 MO.FObjectPool_push = function FObjectPool_push(p){
@@ -1851,13 +1861,13 @@ MO.FObjectPool_dispose = function FObjectPool_dispose(){
    o._frees = MO.RObject.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
 }
-MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
+MO.FObjectPool_innerDump = function FObjectPool_innerDump(result, level){
    var o = this;
-   s.append('Pool:');
-   s.append('total=', o._items.count());
-   s.append(', free=', o._frees.count());
-   s.append(', alloc_count=', o._allocCount);
-   s.append(', free_count=', o._freeCount);
+   result.append('Pool:');
+   result.append('total=', o._items.count());
+   result.append(', free=', o._frees.count());
+   result.append(', alloc_count=', o._allocCount);
+   result.append(', free_count=', o._freeCount);
 }
 MO.FObjectPools = function FObjectPools(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -3222,6 +3232,7 @@ with(MO){
       }
    }
    MO.RFloat = new RFloat();
+   MO.Lang.Float = MO.RFloat;
 }
 with(MO){
    MO.RHex = function RHex(){

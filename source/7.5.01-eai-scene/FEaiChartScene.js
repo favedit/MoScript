@@ -9,16 +9,17 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    //..........................................................
    // @attribute
+   o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    o._countryData          = null;
    // @attribute
-   o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-   o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    o._countryBorderDisplay = null;
    o._countryDisplay       = null;
-   o._citysRenderables     = null;
+   o._citysRangeRenderable = null;
+   o._citysRenderable      = null;
    // @attribute
    o._logoBar              = null;
    o._titleBar             = null;
+   o._totalBar             = null;
    o._groundAutio          = null;
    o._readyProvince        = false;
    //..........................................................
@@ -56,6 +57,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    //..........................................................
    // 创建省份实体
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var provinceEntities = o._mapEntity.provinceEntities();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
@@ -66,7 +68,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      o._provinceEntities.set(province.code(), provinceEntity);
+      provinceEntities.set(province.code(), provinceEntity);
       // 放入显示层
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
@@ -83,9 +85,7 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
    o.__base.FEaiScene.construct.call(o);
    // 创建属性
-   o._provinceEntities = new MO.TDictionary();
-   o._cityEntities = new MO.TDictionary();
-   o._citysRenderables = new MO.TDictionary();
+   o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
 }
 
 //==========================================================
@@ -140,19 +140,15 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
+   //stage.cityRangeLayer().push(citysRangeRenderable);
    // 创建城市渲染对象
-   var citysRenderables = o._citysRenderables;
-   for(var i = 4; i >= 1; i--){
-      var renderable = MO.Class.create(MO.FEaiCitysRenderable);
-      renderable.setLevel(i);
-      renderable.linkGraphicContext(o);
-      o.fixMatrix(renderable.matrix());
-      stage.cityLayer().push(renderable);
-      citysRenderables.set(i, renderable);
-   }
+   var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
+   citysRenderable.linkGraphicContext(o);
+   o.fixMatrix(citysRenderable.matrix());
+   //stage.cityLayer().push(citysRenderable);
    // 创建城市实体
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntities = o._mapEntity.cityEntities();
    var citys = cityConsole.citys();
    var cityCount = citys.count();
    for(var i = 0; i < cityCount; i++){
@@ -163,19 +159,14 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
       cityEntity.setData(city);
       cityEntity.build(context);
-      o._cityEntities.set(city.code(), cityEntity);
+      cityEntities.set(city.code(), cityEntity);
       // 放入渲染对象
-      var citysRenderable = citysRenderables.get(level);
       citysRenderable.citys().push(cityEntity);
       citysRangeRenderable.citys().push(cityEntity);
    }
    // 上传数据
-   var count = citysRenderables.count()
-   for(var i = 0; i < count; i++){
-      var citysRenderable = citysRenderables.at(i);
-      citysRenderable.setup();
-      citysRenderable.upload();
-   }
+   citysRenderable.setup();
+   citysRenderable.upload();
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    //..........................................................
@@ -259,8 +250,7 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
 //==========================================================
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
-   o._provinceEntities = RObject.dispose(o._provinceEntities);
-   o._cityEntities = RObject.dispose(o._cityEntities);
+   o._mapEntity = RObject.dispose(o._mapEntity);
    // 父处理
    o.__base.FEaiScene.dispose.call(o);
 }

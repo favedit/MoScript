@@ -11870,6 +11870,7 @@ with(MO){
       o._ready           = false;
       o._size            = RClass.register(o, new AGetter('_size'));
       o._loadListeners   = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
+      o._statusDirty     = true;
       o.construct        = FE3dFace_construct;
       o.setSize          = FE3dFace_setSize;
       o.setData          = FE3dFace_setData;
@@ -11878,6 +11879,7 @@ with(MO){
       o.findTexture      = FE3dFace_findTexture;
       o.textures         = FE3dFace_textures;
       o.material         = FE3dFace_material;
+      o.dirty            = FE3dFace_dirty;
       o.processLoad      = FE3dFace_processLoad;
       o.process          = FE3dFace_process;
       o.dispose          = FE3dFace_dispose;
@@ -11911,6 +11913,9 @@ with(MO){
    }
    MO.FE3dFace_material = function FE3dFace_material(){
       return this._renderable.material();
+   }
+   MO.FE3dFace_dirty = function FE3dFace_dirty(){
+      this._statusDirty = true;
    }
    MO.FE3dFace_processLoad = function FE3dFace_processLoad(){
       var o = this;
@@ -12259,42 +12264,14 @@ with(MO){
 with(MO){
    MO.FE3dShape = function FE3dShape(o){
       o = RClass.inherits(this, o, FE3dFace);
+      o._ready    = true;
       o.construct = FE3dShape_construct;
-      o.testReady = FE3dShape_testReady;
-      o.loadUrl   = FE3dShape_loadUrl;
       o.dispose   = FE3dShape_dispose;
       return o;
    }
    MO.FE3dShape_construct = function FE3dShape_construct(){
       var o = this;
       o.__base.FE3dFace.construct.call(o);
-   }
-   MO.FE3dShape_testReady = function FE3dShape_testReady(){
-      var o = this;
-      if(!o._ready){
-         var renderable = o._renderable;
-         if(renderable){
-            o._ready = renderable.testReady();
-            if(o._ready){
-               var size = renderable.size();
-               var adjustSize = renderable.adjustSize();
-               var matrix = o.matrix();
-               matrix.sz = adjustSize.height / size.height;
-               matrix.updateForce();
-               var event = new SEvent(o);
-               o.processLoadListener(event);
-               event.dispose();
-            }
-            o._materialReference = renderable;
-         }
-      }
-      return o._ready;
-   }
-   MO.FE3dShape_loadUrl = function FE3dShape_loadUrl(url){
-      var o = this;
-      var context = o._graphicContext;
-      o._renderable = RConsole.find(FE3dShapeConsole).loadUrl(context, url);
-      o._ready = false;
    }
    MO.FE3dShape_dispose = function FE3dShape_dispose(){
       var o = this;
@@ -12358,25 +12335,25 @@ with(MO){
 with(MO){
    MO.FE3dShapeData = function FE3dShapeData(o){
       o = RClass.inherits(this, o, FE3dFaceData);
-      o._graphic      = null;
-      o._texture = null;
-      o.construct     = FE3dShapeData_construct;
-      o.beginDraw     = FE3dShapeData_beginDraw;
-      o.endDraw       = FE3dShapeData_endDraw;
-      o.dispose       = FE3dShapeData_dispose;
+      o._graphic  = null;
+      o._texture  = null;
+      o.construct = FE3dShapeData_construct;
+      o.beginDraw = FE3dShapeData_beginDraw;
+      o.endDraw   = FE3dShapeData_endDraw;
+      o.dispose   = FE3dShapeData_dispose;
       return o;
    }
    MO.FE3dShapeData_construct = function FE3dShapeData_construct(){
       var o = this;
       o.__base.FE3dFaceData.construct.call(o);
    }
-   MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(url){
+   MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
       var o = this;
       var size = o._size;
-      var adjustWidth = RInteger.pow2(size.width);
-      var adjustHeight = RInteger.pow2(size.height);
+      var adjustWidth = MO.Lang.Integer.pow2(size.width);
+      var adjustHeight = MO.Lang.Integer.pow2(size.height);
       o._adjustSize.set(adjustWidth, adjustHeight);
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
+      var canvasConsole = MO.Console.find(FE2dCanvasConsole);
       var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
       var graphic = o._graphic = canvas.context();
       return graphic;
@@ -12387,7 +12364,8 @@ with(MO){
       MO.Assert.debugNotNull(graphic);
       o._texture.upload(o._canvas);
       var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(graphic);
+      canvasConsole.free(o._canvas);
+      o._canvas = null;
       o._graphic = null;
       o._ready = true;
    }

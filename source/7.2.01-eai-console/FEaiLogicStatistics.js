@@ -9,15 +9,16 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    //..........................................................
    // @attribute
-   o._code        = 'statistics';
+   o._code               = 'statistics';
    //..........................................................
    // @method
-   o.doInvestment = MO.FEaiLogicStatistics_doInvestment;
+   o.doInvestmentDynamic = MO.FEaiLogicStatistics_doInvestmentDynamic;
+   o.doInvestmentTrend   = MO.FEaiLogicStatistics_doInvestmentTrend;
    return o;
 }
 
 //==========================================================
-// <T>根据索引获得颜色。</T>
+// <T>获取投资动态数据。</T>
 //
 // @method
 // @param owner:Obejct 拥有者
@@ -26,7 +27,22 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicStatistics_doInvestment = function FEaiLogicStatistics_doInvestment(owner, callback, startDate, endDate){
+MO.FEaiLogicStatistics_doInvestmentDynamic = function FEaiLogicStatistics_doInvestmentDynamic(owner, callback, startDate, endDate){
    var parameters = 'begin=' + startDate + '&end=' + endDate;
-   return this.send('investment', parameters, owner, callback);
+   return this.send('investment_dynamic', parameters, owner, callback);
+}
+
+//==========================================================
+// <T>获取投资趋势数据。</T>
+//
+// @method
+// @param owner:Obejct 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvestmentTrend(owner, callback, startDate, endDate, interval){
+   var parameters = 'begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
+   return this.send('investment_trend', parameters, owner, callback);
 }

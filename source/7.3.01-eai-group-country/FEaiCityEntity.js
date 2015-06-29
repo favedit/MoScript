@@ -7,19 +7,25 @@ with(MO){
    // @history 150619
    //==========================================================
    MO.FEaiCityEntity = function FEaiCityEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity, MEaiCityRenderable);
+      o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
-      o._level    = RClass.register(o, new AGetSet('_level'));
-      o._data     = RClass.register(o, new AGetSet('_data'));
+      o._visible    = RClass.register(o, new AGetter('_visible'), true);
+      o._location   = RClass.register(o, new AGetter('_location'));
+      o._size       = RClass.register(o, new AGetter('_size'));
+      o._color      = RClass.register(o, new AGetter('_color'));
+      o._range      = RClass.register(o, new AGetter('_range'), 1);
+      o._rangeColor = RClass.register(o, new AGetter('_rangeColor'));
+      // @attribute
+      o._data       = RClass.register(o, new AGetSet('_data'));
       //..........................................................
       // @method
-      o.construct = FEaiCityEntity_construct;
+      o.construct   = FEaiCityEntity_construct;
       // @method
-      o.build     = FEaiCityEntity_build;
-      o.update    = FEaiCityEntity_update;
+      o.build       = FEaiCityEntity_build;
+      o.update      = FEaiCityEntity_update;
       // @method
-      o.dispose   = FEaiCityEntity_dispose;
+      o.dispose     = FEaiCityEntity_dispose;
       return o;
    }
 
@@ -31,7 +37,11 @@ with(MO){
    MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
-      o.__base.MEaiCityRenderable.construct.call(o);
+      // 设置属性
+      o._location = new SPoint2();
+      o._size = new SSize2();
+      o._color = new SColor4(1, 1, 1, 1);
+      o._rangeColor = new SColor4(0, 0, 0, 0);
    }
 
    //==========================================================
@@ -54,7 +64,7 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      o._level = o._data.level();
+      return;
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -65,9 +75,9 @@ with(MO){
          var color = rateInfo.findRate(rate);
          range = rate * 10;
          rate = RFloat.toRange(rate, 0, 1);
-         o._color.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 4);
+         o._rangeColor.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 4);
       }else{
-         o._color.set(0, 0, 0, 0);
+         o._rangeColor.set(0, 0, 0, 0);
       }
       range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
       o._size.set(range, range);
@@ -80,8 +90,12 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
       var o = this;
+      // 释放属性
+      o._location = RObject.dispose(o._location);
+      o._size = RObject.dispose(o._size);
+      o._color = RObject.dispose(o._color);
+      o._rangeColor = RObject.dispose(o._rangeColor);
       // 父处理
-      o.__base.MEaiCityRenderable.dispose.call(o);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

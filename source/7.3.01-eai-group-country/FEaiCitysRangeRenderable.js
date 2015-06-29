@@ -14,11 +14,10 @@ with(MO){
       o._image                = null;
       // @attribute
       o._citys                = RClass.register(o, new AGetter('_citys'));
-      o._size                 = RClass.register(o, new AGetter('_size'));
-      o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       o._citySize             = RClass.register(o, new AGetter('_citySize'));
       // @attribute
       o._vertexPositionBuffer = null;
+      o._vertexColorBuffer    = null;
       o._vertexCoordBuffer    = null;
       o._indexBuffer          = null;
       o._texture              = null;
@@ -46,25 +45,9 @@ with(MO){
    //==========================================================
    MO.FEaiCitysRangeRenderable_onImageLoad = function FEaiCitysRangeRenderable_onImageLoad(event){
       var o = this;
-      var context = o._graphicContext;
       var image = event.sender;
-      // 设置大小
-      var size = image.size();
-      var width = size.width;
-      var height = size.height;
-      o._size.set(width, height);
-      var adjustWidth = RInteger.pow2(width);
-      var adjustHeight = RInteger.pow2(height);
-      o._adjustSize.set(adjustWidth, adjustHeight);
-      // 绘制画板
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-      var context2d = canvas.context();
-      context2d.drawImage(image, 0, 0, width, height);
       // 创建纹理
-      o._texture.upload(canvas);
-      // 释放画板
-      canvasConsole.free(canvas);
+      o._texture.upload(image);
       // 释放位图
       image.dispose();
       // 设置属性
@@ -81,8 +64,6 @@ with(MO){
       o.__base.FE3dRenderable.construct.call(o);
       // 设置属性
       o._citys = new TObjects();
-      o._size = new SSize2();
-      o._adjustSize = new SSize2();
       o._material = RClass.create(FE3dMaterial);
    }
 
@@ -109,11 +90,9 @@ with(MO){
       var count = citys.count();
       var vertexCount = o._vertexCount = 4 * count;
       // 设置顶点坐标
-      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      buffer.upload(data, 4 * 3, 4);
       o.pushVertexBuffer(buffer);
       // 设置顶点纹理
       var position = 0;
@@ -134,11 +113,9 @@ with(MO){
       buffer.upload(data, 4 * 2, vertexCount);
       o.pushVertexBuffer(buffer);
       // 设置顶点颜色
-      var data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
       var buffer = o._vertexColorBuffer = context.createVertexBuffer();
       buffer.setCode('color');
       buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
-      buffer.upload(data, 1 * 4, 4);
       o.pushVertexBuffer(buffer);
       //..........................................................
       // 设置索引数据
@@ -216,7 +193,7 @@ with(MO){
             vertexData[vertexPosition++] = location.y - height;
             vertexData[vertexPosition++] = 0;
             // 设置顶点颜色
-            var color = city.color();
+            var color = city.rangeColor();
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
@@ -258,8 +235,6 @@ with(MO){
    MO.FEaiCitysRangeRenderable_dispose = function FEaiCitysRangeRenderable_dispose(){
       var o = this;
       // 释放属性
-      o._size = RObject.dispose(o._size);
-      o._adjustSize = RObject.dispose(o._adjustSize);
       o._texture = RObject.dispose(o._texture);
       // 释放属性
       o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);

@@ -3849,6 +3849,22 @@ with(MO){
       }
    }
 }
+MO.FTimeConsole = function FTimeConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o._date     = null;
+   o.construct = MO.FTimeConsole_construct;
+   o.dispose   = MO.FTimeConsole_dispose;
+   return o;
+}
+MO.FTimeConsole_construct = function FTimeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+MO.FTimeConsole_dispose = function FTimeConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+}
 with(MO){
    MO.FXmlConsole = function FXmlConsole(o){
       o = RClass.inherits(this, o, FConsole);

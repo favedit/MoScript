@@ -713,24 +713,28 @@ with(MO){
       }
    }
    MO.TObjects_assign = function TObjects_assign(values){
-      var count = this._count = values._count;
+      var o = this;
+      var count = o._count = values._count;
       for(var i = 0; i < count; i++){
-         this._items[i] = values._items[i];
+         o._items[i] = values._items[i];
       }
    }
    MO.TObjects_append = function TObjects_append(values){
+      var o = this;
       var count = values._count;
       for(var i = 0; i < count; i++){
-         this.push(values.at(i));
+         o.push(values.at(i));
       }
    }
    MO.TObjects_insert = function TObjects_insert(index, value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if((index >= 0) && (index <= count)){
          for(var i = count; i > index; i--){
-            this._items[i] = this._items[i - 1];
+            o._items[i] = o._items[i - 1];
          }
-         this._items[index] = value;
+         o._items[index] = value;
+         o._count++;
       }
    }
    MO.TObjects_shift = function TObjects_shift(){
@@ -775,11 +779,12 @@ with(MO){
       items.sort(callback);
    }
    MO.TObjects_erase = function TObjects_erase(index){
+      var o = this;
       var value = null;
-      if((index >= 0) && (index < this._count)){
-         value = this._items[index];
-         var count = --this._count;
-         var items = this._items;
+      if((index >= 0) && (index < o._count)){
+         value = o._items[index];
+         var count = --o._count;
+         var items = o._items;
          for(var i = index; i < count; i++){
             items[i] = items[i+1];
          }
@@ -788,10 +793,11 @@ with(MO){
       return value;
    }
    MO.TObjects_remove = function TObjects_remove(value){
-      var count = this._count;
+      var o = this;
+      var count = o._count;
       if(count){
          var index = 0;
-         var items = this._items;
+         var items = o._items;
          for(var i = index; i < count; i++){
             if(items[i] != value){
                items[index++] = items[i];
@@ -800,7 +806,7 @@ with(MO){
          for(var i = index; i < count; i++){
             items[i] = null;
          }
-         this._count = index;
+         o._count = index;
       }
       return value;
    }
@@ -808,11 +814,12 @@ with(MO){
       this._count = 0;
    }
    MO.TObjects_dispose = function TObjects_dispose(){
-      for(var name in this._items){
-         this._items[name] = null;
+      var o = this;
+      for(var name in o._items){
+         o._items[name] = null;
       }
-      this._count = 0;
-      this._items = null;
+      o._count = 0;
+      o._items = null;
    }
    MO.TObjects_dump = function TObjects_dump(){
       var count = this._count;
@@ -2095,13 +2102,15 @@ with(MO){
       o.setMinute    = TDate_setMinute;
       o.setSecond    = TDate_setSecond;
       o.setDate      = TDate_setDate;
+      o.setNow       = TDate_setNow;
       o.addYear      = TDate_addYear;
       o.addMonth     = TDate_addMonth;
       o.addDay       = TDate_addDay;
       o.addHour      = TDate_addHour;
       o.addMinute    = TDate_addMinute;
       o.addMseconds  = TDate_addMseconds;
-      o.now          = TDate_now;
+      o.get          = TDate_get;
+      o.set          = TDate_set;
       o.parse        = TDate_parse;
       o.parseAuto    = TDate_parseAuto;
       o.format       = TDate_format;
@@ -2181,6 +2190,11 @@ with(MO){
       o.date = value;
       o.refresh();
    }
+   MO.TDate_setNow = function TDate_setNow(){
+      var o = this;
+      o.date = new Date();
+      o.refresh();
+   }
    MO.TDate_addYear = function TDate_addYear(value){
       var o = this;
       o.date.setFullYear(o.date.getFullYear() + parseInt(value));
@@ -2211,9 +2225,12 @@ with(MO){
       o.date.setTime(o.date.getTime() + parseInt(value));
       o.refresh();
    }
-   MO.TDate_now = function TDate_now(){
+   MO.TDate_get = function TDate_get(value){
+      return this.date.getTime();
+   }
+   MO.TDate_set = function TDate_set(value){
       var o = this;
-      o.date = new Date();
+      o.date.setTime(value);
       o.refresh();
    }
    MO.TDate_parse = function TDate_parse(value, format){
@@ -3121,16 +3138,16 @@ MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
 }
 MO.FObjectPool_alloc = function FObjectPool_alloc(){
    var o = this;
-   var r = null;
+   var item = null;
    if(!o._frees.isEmpty()){
-      r = o._frees.pop();
+      item = o._frees.pop();
    }
    o._allocCount++;
-   return r;
+   return item;
 }
-MO.FObjectPool_free = function FObjectPool_free(p){
+MO.FObjectPool_free = function FObjectPool_free(item){
    var o = this;
-   o._frees.push(p);
+   o._frees.push(item);
    o._freeCount++;
 }
 MO.FObjectPool_push = function FObjectPool_push(p){
@@ -3144,13 +3161,13 @@ MO.FObjectPool_dispose = function FObjectPool_dispose(){
    o._frees = MO.RObject.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
 }
-MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
+MO.FObjectPool_innerDump = function FObjectPool_innerDump(result, level){
    var o = this;
-   s.append('Pool:');
-   s.append('total=', o._items.count());
-   s.append(', free=', o._frees.count());
-   s.append(', alloc_count=', o._allocCount);
-   s.append(', free_count=', o._freeCount);
+   result.append('Pool:');
+   result.append('total=', o._items.count());
+   result.append(', free=', o._frees.count());
+   result.append(', alloc_count=', o._allocCount);
+   result.append(', free_count=', o._freeCount);
 }
 MO.FObjectPools = function FObjectPools(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -4515,6 +4532,7 @@ with(MO){
       }
    }
    MO.RFloat = new RFloat();
+   MO.Lang.Float = MO.RFloat;
 }
 with(MO){
    MO.RHex = function RHex(){

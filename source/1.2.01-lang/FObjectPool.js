@@ -58,23 +58,23 @@ MO.FObjectPool_hasFree = function FObjectPool_hasFree(){
 //==========================================================
 MO.FObjectPool_alloc = function FObjectPool_alloc(){
    var o = this;
-   var r = null;
+   var item = null;
    if(!o._frees.isEmpty()){
-      r = o._frees.pop();
+      item = o._frees.pop();
    }
    o._allocCount++;
-   return r;
+   return item;
 }
 
 //==========================================================
 // <T>释放 一个自由对象。</T>
 //
 // @method
-// @param FObject 对象
+// @param item:FObject 对象
 //==========================================================
-MO.FObjectPool_free = function FObjectPool_free(p){
+MO.FObjectPool_free = function FObjectPool_free(item){
    var o = this;
-   o._frees.push(p);
+   o._frees.push(item);
    o._freeCount++;
 }
 
@@ -106,14 +106,14 @@ MO.FObjectPool_dispose = function FObjectPool_dispose(){
 // <T>获取运行信息。</T>
 //
 // @method
-// @param s:dump:TString 字符串
-// @param l:level:Integer 递归层次
+// @param result:TString 字符串
+// @param level:Integer 递归层次
 //==========================================================
-MO.FObjectPool_innerDump = function FObjectPool_innerDump(s, l){
+MO.FObjectPool_innerDump = function FObjectPool_innerDump(result, level){
    var o = this;
-   s.append('Pool:');
-   s.append('total=', o._items.count());
-   s.append(', free=', o._frees.count());
-   s.append(', alloc_count=', o._allocCount);
-   s.append(', free_count=', o._freeCount);
+   result.append('Pool:');
+   result.append('total=', o._items.count());
+   result.append(', free=', o._frees.count());
+   result.append(', alloc_count=', o._allocCount);
+   result.append(', free_count=', o._freeCount);
 }

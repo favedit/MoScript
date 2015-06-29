@@ -11,7 +11,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @attribute
    o._code             = MO.EEaiScene.ChartStatistics;
    // @attribute
-   o._invement         = MO.Class.register(o, new MO.AGetter('_invement'));
+   o._investment       = MO.Class.register(o, new MO.AGetter('_investment'));
    // @attribute
    o._ready            = false;
    o._playing          = false;
@@ -23,9 +23,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._endDate          = null;
    o._currentDate      = null;
    // @attribute
-   o._playButton       = null;
-   o._pauseButton      = null;
-   o._buttonTransform  = null;
    o._timeline         = null;
    o._milestoneFrame   = null;
    // @attribute
@@ -33,24 +30,23 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
+   o._investmentCurrent  = 0;
    //..........................................................
    // @event
-   o.onLoadData       = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect     = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onMilestoneDone  = MO.FEaiChartStatisticsScene_onMilestoneDone;
-   o.onOperationPlay  = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause = MO.FEaiChartStatisticsScene_onOperationPause;
+   o.onLoadData        = MO.FEaiChartStatisticsScene_onLoadData;
+   o.onDateSelect      = MO.FEaiChartStatisticsScene_onDateSelect;
+   o.onOperationPlay   = MO.FEaiChartStatisticsScene_onOperationPlay;
+   o.onOperationPause  = MO.FEaiChartStatisticsScene_onOperationPause;
    //..........................................................
    // @method
-   o.testReady         = MO.FEaiChartStatisticsScene_testReady;
+   o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    // @method
-   o.setup             = MO.FEaiChartStatisticsScene_setup;
-   o.selectDate        = MO.FEaiChartStatisticsScene_selectDate;
-   o.switchPlay        = MO.FEaiChartStatisticsScene_switchPlay;
+   o.setup              = MO.FEaiChartStatisticsScene_setup;
+   o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
    // @method
-   o.active            = MO.FEaiChartStatisticsScene_active;
-   o.process           = MO.FEaiChartStatisticsScene_process;
-   o.deactive          = MO.FEaiChartStatisticsScene_deactive;
+   o.active             = MO.FEaiChartStatisticsScene_active;
+   o.process            = MO.FEaiChartStatisticsScene_process;
+   o.deactive           = MO.FEaiChartStatisticsScene_deactive;
    return o;
 }
 
@@ -86,7 +82,7 @@ MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onD
 //==========================================================
 MO.FEaiChartStatisticsScene_onMilestoneDone = function FEaiChartStatisticsScene_onMilestoneDone(event) {
    var o = this;
-   o.switchPlay(true);
+   //o.switchPlay(true);
 }
 
 //==========================================================
@@ -104,7 +100,7 @@ MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_
       MO.RDate.autoParse(o._currentDate, '20140701');
    }
    // 开始播放
-   o.switchPlay(true);
+   //o.switchPlay(true);
 }
 
 //==========================================================
@@ -116,7 +112,7 @@ MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_
 MO.FEaiChartStatisticsScene_onOperationPause = function FEaiChartStatisticsScene_onOperationPause(event){
    var o = this;
    // 停止播放
-   o.switchPlay(false);
+   //o.switchPlay(false);
 }
 
 //==========================================================
@@ -144,6 +140,7 @@ MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testRe
 MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
+   var dataLayer = o._activeStage.dataLayer();
    var faceLayer = o._activeStage.faceLayer();
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
@@ -152,57 +149,17 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
    //..........................................................
-   o._invement = MO.Class.create(MO.FEaiStatisticsInvement);
-   //..........................................................
-   // 创建播放按键
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/player.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   control.addOperationDownListener(o, o.onOperationPlay);
-   o._desktop.register(control);
-   faceLayer.push(control);
-   // 创建播放按键
-   var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/pause.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(false);
-   control.addOperationDownListener(o, o.onOperationPause);
-   o._desktop.register(control);
-   faceLayer.push(control);
-   // 创建按键声音
-   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/button.mp3');
-   // 创建交换器
-   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
-   transform.setInterval(10);
-   transform.setScale(0.1);
+   // 创建投资数据
+   var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
+   invement.linkGraphicContext(o);
+   invement.setMapEntity(o._mapEntity);
+   invement.setup();
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
    //..........................................................
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
-   // 创建里程碑
-   var milestoneBars = o._milestoneBars = new MO.TObjects();
-   var count = milestones.count();
-   for(var i = 0; i < count; i++){
-      var milestone = milestones.at(i);
-      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setLocation(0, 25 + 90 * i);
-      var date = new MO.TDate();
-      date.parse(milestone.code());
-      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
-      faceLayer.push(frame);
-      o._desktop.register(frame);
-      milestoneBars.push(frame);
-   }
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
@@ -229,7 +186,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    milestoneFrame.setTop(50);
    milestoneFrame.setWidth(720);
    milestoneFrame.setHeight(700);
-   milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
    o._desktop.register(milestoneFrame);
@@ -245,6 +201,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 //==========================================================
 MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
    var o = this;
+   return;
    // 构建画面
    var context = o.graphicContext();
    var stage = o._activeStage;
@@ -255,10 +212,10 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
    var dateData = historyConsole.dates().get(code);
    var milestone = historyConsole.milestones().get(code);
    if (milestone) {
-      o._milestoneFrame.setData(milestone);
-      o._milestoneFrame.show();
-      o._milestoneFrame.repaint();
-      o.switchPlay(false);
+      //o._milestoneFrame.setData(milestone);
+      //o._milestoneFrame.show();
+      //o._milestoneFrame.repaint();
+      //o.switchPlay(false);
    }
    if (dateData) {
       // 更新时间轴
@@ -279,30 +236,6 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
       o._totalBar.repaint();
    }
    o._citysRangeRenderable.upload();
-}
-
-//==========================================================
-// <T>激活处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatisticsScene_switchPlay = function FEaiChartStatisticsScene_switchPlay(flag){
-   var o = this;
-   var transform = o._buttonTransform;
-   o._playing = flag;
-   o._buttonAudio.play(0);
-   if(flag){
-      //transform.setSourceControl(o._playButton);
-      //transform.setTargetControl(o._pauseButton);
-      o._playButton.setVisible(false);
-      o._pauseButton.setVisible(true);
-   }else{
-      //transform.setSourceControl(o._pauseButton);
-      //transform.setTargetControl(o._playButton);
-      o._playButton.setVisible(true);
-      o._pauseButton.setVisible(false);
-   }
-   //o._desktop.transformStart(transform);
 }
 
 //==========================================================
@@ -336,46 +269,26 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
             if(hLoading){
                document.body.removeChild(hLoading);
             }
+            var hTable = document.getElementById('id_table');
+            hTable.style.display = '';
             o._playing = true;
             o._statusStart = true;
          }
       }
    }
    // 重复播放
-   if (o._playing) {
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._lastTick > o._interval) {
-         //计时切换日期
-         if (currentTick - o._lastDateTick > o._dateInterval) {
-            o._currentDate.addDay(1);
-            var code = o._currentDate.format('YYYYMMDD')
-            var endCode = o._endDate.format('YYYYMMDD')
-            o.selectDate(code);
-            if (code == endCode) {
-               o.switchPlay(false);
-            }
-            o._lastDateTick = currentTick;
-         }
-         //调用重绘
-         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
-         o._timeline.repaint();
-         //记录lastTick
-         o._lastTick = currentTick;
+   if (o._playing){
+      // 投资处理
+      o._investment.process();
+      // 设置资金
+      var invementCurrent = o._investment.invementCurrent();
+      if(invementCurrent != o._investmentCurrent){
+         var total = o._totalBar.findComponent('total');
+         total.setLabel(MO.RFloat.unitFormat(invementCurrent, 0, 0, 2, 0, 10000, '万'));
+         o._totalBar.repaint();
+         o._investmentCurrent = invementCurrent;
       }
-      // 上传数据
-      var citysRenderables = o._citysRenderables;
-      var count = citysRenderables.count()
-      for (var i = 0; i < count; i++) {
-         var citysRenderable = citysRenderables.at(i);
-         citysRenderable.upload();
-      }
-      o._citysRangeRenderable.upload();
    }
-   if (o._milestoneFrame.visible()) {
-      o._milestoneFrame.repaint();
-   }
-   // 投资处理
-   o._invement.process();
 }
 
 //==========================================================

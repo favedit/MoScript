@@ -15,6 +15,7 @@ with(MO){
       // @method
       o.construct   = FEaiCityResourceConsole_construct;
       // @method
+      o.find        = FEaiCityResourceConsole_find;
       o.unserialize = FEaiCityResourceConsole_unserialize;
       // @method
       o.dispose     = FEaiCityResourceConsole_dispose;
@@ -31,6 +32,17 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       // 创建属性
       o._citys = new TDictionary();
+   }
+
+   //==========================================================
+   // <T>根据代码查找城市信息。</T>
+   //
+   // @method
+   // @param code:String 代码
+   // @return 城市信息
+   //==========================================================
+   MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
+      return this._citys.get(code);
    }
 
    //==========================================================

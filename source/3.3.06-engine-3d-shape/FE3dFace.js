@@ -13,6 +13,8 @@ with(MO){
       o._ready           = false;
       o._size            = RClass.register(o, new AGetter('_size'));
       o._loadListeners   = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
+      // @attribute
+      o._statusDirty     = true;
       //..........................................................
       // @method
       o.construct        = FE3dFace_construct;
@@ -26,6 +28,7 @@ with(MO){
       o.textures         = FE3dFace_textures;
       o.material         = FE3dFace_material;
       // @method
+      o.dirty            = FE3dFace_dirty;
       o.processLoad      = FE3dFace_processLoad;
       o.process          = FE3dFace_process;
       // @method
@@ -116,6 +119,15 @@ with(MO){
    //==========================================================
    MO.FE3dFace_material = function FE3dFace_material(){
       return this._renderable.material();
+   }
+
+   //==========================================================
+   // <T>脏处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FE3dFace_dirty = function FE3dFace_dirty(){
+      this._statusDirty = true;
    }
 
    //==========================================================

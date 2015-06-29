@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @history 150629
    //==========================================================
-   MO.FEaiStatisticsInvementEntity = function FEaiStatisticsInvementEntity(o){
+   MO.FEaiStatisticsInvestmentEntity = function FEaiStatisticsInvestmentEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
@@ -16,15 +16,15 @@ with(MO){
       o._card       = RClass.register(o, new AGetter('_card'));
       o._investment = RClass.register(o, new AGetter('_investment'));
       // @attribute
-      o._renderable = RClass.register(o, new AGetter('_renderable'));
+      o._shape      = RClass.register(o, new AGetSet('_shape'));
       //..........................................................
       // @method
-      o.construct   = FEaiStatisticsInvementEntity_construct;
+      o.construct   = FEaiStatisticsInvestmentEntity_construct;
       // @method
-      o.loadData    = FEaiStatisticsInvementEntity_loadData;
-      o.update      = FEaiStatisticsInvementEntity_update;
+      o.loadData    = FEaiStatisticsInvestmentEntity_loadData;
+      o.update      = FEaiStatisticsInvestmentEntity_update;
       // @method
-      o.dispose     = FEaiStatisticsInvementEntity_dispose;
+      o.dispose     = FEaiStatisticsInvestmentEntity_dispose;
       return o;
    }
 
@@ -33,7 +33,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiStatisticsInvementEntity_construct = function FEaiStatisticsInvementEntity_construct(){
+   MO.FEaiStatisticsInvestmentEntity_construct = function FEaiStatisticsInvestmentEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
    }
@@ -44,7 +44,7 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiStatisticsInvementEntity_loadData = function FEaiStatisticsInvementEntity_loadData(data){
+   MO.FEaiStatisticsInvestmentEntity_loadData = function FEaiStatisticsInvestmentEntity_loadData(data){
       var o = this;
       o._date = data.date;
       o._customer = data.customer;
@@ -59,7 +59,7 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiStatisticsInvementEntity_build = function FEaiStatisticsInvementEntity_build(context){
+   MO.FEaiStatisticsInvestmentEntity_build = function FEaiStatisticsInvestmentEntity_build(context){
       var o = this;
       o._location.assign(o._data.location());
       o._size.set(2, 2);
@@ -71,7 +71,7 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
-   MO.FEaiStatisticsInvementEntity_update = function FEaiStatisticsInvementEntity_update(data){
+   MO.FEaiStatisticsInvestmentEntity_update = function FEaiStatisticsInvestmentEntity_update(data){
       var o = this;
       var location = o._data.location();
       var range = 1;
@@ -96,7 +96,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiStatisticsInvementEntity_dispose = function FEaiStatisticsInvementEntity_dispose(){
+   MO.FEaiStatisticsInvestmentEntity_dispose = function FEaiStatisticsInvestmentEntity_dispose(){
       var o = this;
       // 父处理
       o.__base.FEaiEntity.dispose.call(o);
