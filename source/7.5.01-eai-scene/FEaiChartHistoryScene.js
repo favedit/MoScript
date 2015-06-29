@@ -146,9 +146,12 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   o._currentDate.parseAuto('20140701');
-   o._startDate.parseAuto('20140701');
-   o._endDate.parseAuto('20150618');
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var startDD = historyConsole.dates().at(0);
+   var endDD = historyConsole.dates().at(historyConsole.dates().count() - 1);
+   o._currentDate.parseAuto(startDD._code);
+   o._startDate.parseAuto(startDD._code);
+   o._endDate.parseAuto(endDD._code);
    //..........................................................
    // 创建播放按键
    var control = o._playButton = MO.Class.create(MO.FGuiPicture);
@@ -206,9 +209,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setName('Timeline');
    //timeline.setDockCd(MO.EGuiDock.Fill);
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 500);
    timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
-   timeline.setHeight(350);
+   timeline.setHeight(450);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
