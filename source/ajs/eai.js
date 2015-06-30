@@ -836,6 +836,9 @@ with(MO){
       o._investmentTotal      = RClass.register(o, new AGetSet('_investmentTotal'));
       o._investmentLevelTotal = 10000;
       o._investmentLevel      = 0;
+      o._investmentRange      = 1;
+      o._investmentRate       = 100;
+      o._investmentDirection  = 1;
       o._data                 = RClass.register(o, new AGetSet('_data'));
       o.construct             = FEaiCityEntity_construct;
       o.build                 = FEaiCityEntity_build;
@@ -869,6 +872,8 @@ with(MO){
       o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
       o._rangeColor.setInteger(color);
       o._rangeColor.alpha = 1;
+      o._investmentRange = o._range;
+      o._investmentRate = 100;
       o._visible = true;
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
@@ -895,6 +900,15 @@ with(MO){
       var o = this;
       if(o._investmentLevel > 0){
          var rate = o._investmentLevel / o._investmentLevelTotal;
+         if(o._investmentRate < 0){
+            o._investmentRate = 0;
+            o._investmentDirection = 4;
+         }else if(o._investmentRate > 100){
+            o._investmentRate = 100;
+            o._investmentDirection = -2;
+         }
+         o._investmentRate += o._investmentDirection;
+         var rate = o._investmentRate / 100;
          o._color.alpha = rate;
          o._rangeColor.alpha = rate;
          o._investmentLevel--;
@@ -2066,7 +2080,7 @@ with(MO){
             o._autio3.play(0);
          }else if(investment > 10000){
             o._autio2.play(0);
-         }else if(investment > 1){
+         }else if(investment > 1000){
             o._autio1.play(0);
          }
          cityEntity.addInvestmentTotal(investment);

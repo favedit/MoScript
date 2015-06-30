@@ -21,6 +21,9 @@ with(MO){
       o._investmentTotal      = RClass.register(o, new AGetSet('_investmentTotal'));
       o._investmentLevelTotal = 10000;
       o._investmentLevel      = 0;
+      o._investmentRange      = 1;
+      o._investmentRate       = 100;
+      o._investmentDirection  = 1;
       // @attribute
       o._data                 = RClass.register(o, new AGetSet('_data'));
       //..........................................................
@@ -82,6 +85,8 @@ with(MO){
       o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
       o._rangeColor.setInteger(color);
       o._rangeColor.alpha = 1;
+      o._investmentRange = o._range;
+      o._investmentRate = 100;
       o._visible = true;
    }
 
@@ -122,8 +127,19 @@ with(MO){
       var o = this;
       if(o._investmentLevel > 0){
          var rate = o._investmentLevel / o._investmentLevelTotal;
+         // 设置比率
+         if(o._investmentRate < 0){
+            o._investmentRate = 0;
+            o._investmentDirection = 4;
+         }else if(o._investmentRate > 100){
+            o._investmentRate = 100;
+            o._investmentDirection = -2;
+         }
+         o._investmentRate += o._investmentDirection;
+         var rate = o._investmentRate / 100;
          // 设置内容
          o._color.alpha = rate;
+         //o._range = o._investmentRange * rate;
          o._rangeColor.alpha = rate;
          // 设置内容
          o._investmentLevel--;

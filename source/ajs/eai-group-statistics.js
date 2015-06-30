@@ -108,7 +108,7 @@ with(MO){
             o._autio3.play(0);
          }else if(investment > 10000){
             o._autio2.play(0);
-         }else if(investment > 1){
+         }else if(investment > 1000){
             o._autio1.play(0);
          }
          cityEntity.addInvestmentTotal(investment);
