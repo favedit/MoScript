@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._name     = null;
+      o._name     = MO.Class.register(o, new MO.AGetter('_name'));
       o._source   = null;
       o._worker   = null;
       o._events   = null;
@@ -21,8 +21,6 @@ with(MO){
       //..........................................................
       // @method
       o.construct = FProcessor_construct;
-      // @method
-      o.name      = FProcessor_name;
       // @method
       o.start     = FProcessor_start;
       o.process   = FProcessor_process;
@@ -45,16 +43,6 @@ with(MO){
    // @method
    //==========================================================
    MO.FProcessor_onMessage = function FProcessor_onMessage(p){
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   MO.FProcessor_name = function FProcessor_name(){
-      return this._name;
    }
 
    //==========================================================
@@ -101,10 +89,10 @@ with(MO){
       var c = es.count();
       es.push(p);
       // 发布处理
-      var e = new SProcessEvent();
-      e.index = c;
-      e.code = p.code();
-      e.data = p.data();
-      o._worker.postMessage(e);
+      var event = new SProcessEvent();
+      event.index = c;
+      event.code = p.code();
+      event.data = p.data();
+      o._worker.postMessage(event);
    }
 }

@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._name     = null;
+      o._name     = MO.Class.register(o, new MO.AGetter('_name'));
       o._source   = null;
       o._worker   = null;
       o._events   = null;
@@ -45,16 +45,6 @@ with(MO){
    // @method
    //==========================================================
    MO.FProcess_onMessage = function FProcess_onMessage(p){
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   MO.FProcess_name = function FProcess_name(){
-      return this._name;
    }
 
    //==========================================================

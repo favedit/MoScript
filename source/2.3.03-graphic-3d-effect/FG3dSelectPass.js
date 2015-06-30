@@ -10,7 +10,7 @@
       //..........................................................
       // @attribute
       o._code         = 'select';
-      o._texture      = null;
+      o._texture      = MO.Class.register(o, new MO.AGetter('_texture'));
       o._renderTarget = null;
       o._position     = null;
       o._data         = null;
@@ -19,7 +19,6 @@
       o.construct     = FG3dSelectPass_construct;
       // @method
       o.setup         = FG3dSelectPass_setup;
-      o.textureDepth  = FG3dSelectPass_texture;
       o.drawRegion    = FG3dSelectPass_drawRegion;
       return o;
    }
@@ -55,16 +54,6 @@
       t.size().set(1, 1);
       t.textures().push(T);
       t.build();
-   }
-
-   //==========================================================
-   // <T>获得深度纹理。</T>
-   //
-   // @method
-   // @return 深度纹理
-   //==========================================================
-   MO.FG3dSelectPass_texture = function FG3dSelectPass_texture(){
-      return this._texture;
    }
 
    //==========================================================

@@ -9,9 +9,9 @@ MO.FEvent = function FEvent(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._owner      = MO.Class.register(o, new MO.AListener('_owner'));
-   o._callback   = MO.Class.register(o, new MO.AListener('_callback'));
-   o._valid      = MO.Class.register(o, new MO.AListener('_valid'), true);
+   o._owner      = MO.Class.register(o, new MO.AGetSet('_owner'));
+   o._callback   = MO.Class.register(o, new MO.AGetSet('_callback'));
+   o._valid      = MO.Class.register(o, new MO.AGetSet('_valid'), true);
    //..........................................................
    // @method
    o.process     = MO.FEvent_process;

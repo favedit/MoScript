@@ -10,15 +10,13 @@ with(MO){
       o = RClass.inherits(this, o, FG3dObject);
       //..........................................................
       // @attribute
-      o._buffers       = null;
-      o._samplers      = null;
+      o._buffers       = MO.Class.register(o, new MO.AGetter('_buffers'));
+      o._samplers      = MO.Class.register(o, new MO.AGetter('_samplers'));
       //..........................................................
       // @method
-      o.buffers        = FG3dLayout_buffers;
       o.linkBuffers    = FG3dLayout_linkBuffers;
       o.bindBuffers    = FG3dLayout_bindBuffers;
       // @method
-      o.samplers       = FG3dLayout_samplers;
       o.linkSamplers   = FG3dLayout_linkSamplers;
       o.bindSamplers   = FG3dLayout_bindSamplers;
       o.unbindSamplers = FG3dLayout_unbindSamplers;
@@ -36,16 +34,6 @@ with(MO){
    MO.FG3dLayout_construct = function FG3dLayout_construct(){
       var o = this;
       o.__base.FG3dObject.construct.call(o);
-   }
-
-   //==========================================================
-   // <T>获得元素集合。</T>
-   //
-   // @method
-   // @return TObjects 元素集合
-   //==========================================================
-   MO.FG3dLayout_buffers = function FG3dLayout_buffers(){
-      return this._buffers;
    }
 
    //==========================================================
@@ -81,16 +69,6 @@ with(MO){
             context.bindVertexBuffer(buffer.slot, buffer.buffer, buffer.index, buffer.formatCd);
          }
       }
-   }
-
-   //==========================================================
-   // <T>获得取样集合。</T>
-   //
-   // @method
-   // @return TObjects 取样集合
-   //==========================================================
-   MO.FG3dLayout_samplers = function FG3dLayout_samplers(){
-      return this._samplers;
    }
 
    //==========================================================

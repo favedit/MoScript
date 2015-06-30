@@ -9,15 +9,15 @@ with(MO){
    MO.FProcessConsole = function FProcessConsole(o){
       o = RClass.inherits(this, o, FConsole);
       // Attribute
-      o._scopeCd    = EScope.Local;
-      o.connections = null;
+      o._scopeCd     = EScope.Local;
+      o._connections = null;
       // Event
-      o.onLoad      = FProcessConsole_onLoad;
+      o.onLoad       = FProcessConsole_onLoad;
       // Method
-      o.construct   = FProcessConsole_construct;
-      o.alloc       = FProcessConsole_alloc;
-      o.process     = FProcessConsole_process;
-      o.send        = FProcessConsole_send;
+      o.construct    = FProcessConsole_construct;
+      o.alloc        = FProcessConsole_alloc;
+      o.process      = FProcessConsole_process;
+      o.send         = FProcessConsole_send;
       return o;
    }
 
@@ -28,7 +28,7 @@ with(MO){
    //==========================================================
    MO.FProcessConsole_construct = function FProcessConsole_construct(){
       var o = this;
-      o.connections = new TObjects();
+      o._connections = new TObjects();
    }
 
    //==========================================================
@@ -56,7 +56,7 @@ with(MO){
       var o = this;
       // 查找一个未使用的节点链接
       var a = null;
-      var cs = o.connections;
+      var cs = o._connections;
       for(var n = cs.count - 1; n >= 0; n--){
          var c = cs.get(n);
          if(c._statusFree){

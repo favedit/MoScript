@@ -2748,14 +2748,12 @@ MO.EThreadStatus = new function EThreadStatus(){
    o.Finish = 2;
    return o;
 }
-with(MO){
-   MO.SProcessEvent = function SProcessEvent(){
-      var o = this;
-      o.index = null;
-      o.code  = null;
-      o.data  = null;
-      return o;
-   }
+MO.SProcessEvent = function SProcessEvent(){
+   var o = this;
+   o.index = null;
+   o.code  = null;
+   o.data  = null;
+   return o;
 }
 with(MO){
    MO.SXmlEvent = function SXmlEvent(){
@@ -2800,18 +2798,18 @@ MO.FContent = function FContent(o){
 with(MO){
    MO.FContentConsole = function FContentConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._scopeCd    = EScope.Local;
-      o.connections = null;
-      o.onLoad      = FContentConsole_onLoad;
-      o.construct   = FContentConsole_construct;
-      o.alloc       = FContentConsole_alloc;
-      o.process     = FContentConsole_process;
-      o.send        = FContentConsole_send;
+      o._scopeCd     = EScope.Local;
+      o._connections = null;
+      o.onLoad       = FContentConsole_onLoad;
+      o.construct    = FContentConsole_construct;
+      o.alloc        = FContentConsole_alloc;
+      o.process      = FContentConsole_process;
+      o.send         = FContentConsole_send;
       return o;
    }
    MO.FContentConsole_construct = function FContentConsole_construct(){
       var o = this;
-      o.connections = new TObjects();
+      o._connections = new TObjects();
    }
    MO.FContentConsole_onLoad = function FContentConsole_onLoad(){
       var o = this;
@@ -2825,7 +2823,7 @@ with(MO){
    MO.FContentConsole_alloc = function FContentConsole_alloc(){
       var o = this;
       var a = null;
-      var cs = o.connections;
+      var cs = o._connections;
       for(var n = cs.count - 1; n >= 0; n--){
          var c = cs.get(n);
          if(c._statusFree){
@@ -2951,7 +2949,7 @@ with(MO){
    MO.FEnvironmentConsole = function FEnvironmentConsole(o){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd      = EScope.Local;
-      o._environments = null;
+      o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
       o.construct     = FEnvironmentConsole_construct;
       o.register      = FEnvironmentConsole_register;
       o.registerValue = FEnvironmentConsole_registerValue;
@@ -2991,9 +2989,9 @@ with(MO){
 }
 MO.FEvent = function FEvent(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._owner      = MO.Class.register(o, new MO.AListener('_owner'));
-   o._callback   = MO.Class.register(o, new MO.AListener('_callback'));
-   o._valid      = MO.Class.register(o, new MO.AListener('_valid'), true);
+   o._owner      = MO.Class.register(o, new MO.AGetSet('_owner'));
+   o._callback   = MO.Class.register(o, new MO.AGetSet('_callback'));
+   o._valid      = MO.Class.register(o, new MO.AGetSet('_valid'), true);
    o.process     = MO.FEvent_process;
    return o;
 }
@@ -3045,11 +3043,11 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       o._processEvents = new TObjects();
       o._events = new TObjects();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.lsnsProcess.register(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
-      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.lsnsProcess.register(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
+      MO.Logger.debug(o, 'Add event thread. (thread={1})', RClass.dump(thread));
    }
    MO.FEventConsole_register = function FEventConsole_register(po, pc){
       var o = this;
@@ -3395,21 +3393,15 @@ with(MO){
    MO.FMouseConsole_clear = function FMouseConsole_clear(){
    }
 }
-with(MO){
-   MO.FPipeline = function FPipeline(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code = null;
-      o.code  = FPipeline_code;
-      return o;
-   }
-   MO.FPipeline_code = function FPipeline_code(){
-      return this._code;
-   }
+MO.FPipeline = function FPipeline(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code = MO.Class.register(o, new MO.AGetter('_code'));
+   return o;
 }
 with(MO){
    MO.FProcess = function FProcess(o){
       o = RClass.inherits(this, o, FObject);
-      o._name     = null;
+      o._name     = MO.Class.register(o, new MO.AGetter('_name'));
       o._source   = null;
       o._worker   = null;
       o._events   = null;
@@ -3426,9 +3418,6 @@ with(MO){
       o.onMessage(this);
    }
    MO.FProcess_onMessage = function FProcess_onMessage(p){
-   }
-   MO.FProcess_name = function FProcess_name(){
-      return this._name;
    }
    MO.FProcess_construct = function FProcess_construct(){
       var o = this;
@@ -3460,18 +3449,18 @@ with(MO){
 with(MO){
    MO.FProcessConsole = function FProcessConsole(o){
       o = RClass.inherits(this, o, FConsole);
-      o._scopeCd    = EScope.Local;
-      o.connections = null;
-      o.onLoad      = FProcessConsole_onLoad;
-      o.construct   = FProcessConsole_construct;
-      o.alloc       = FProcessConsole_alloc;
-      o.process     = FProcessConsole_process;
-      o.send        = FProcessConsole_send;
+      o._scopeCd     = EScope.Local;
+      o._connections = null;
+      o.onLoad       = FProcessConsole_onLoad;
+      o.construct    = FProcessConsole_construct;
+      o.alloc        = FProcessConsole_alloc;
+      o.process      = FProcessConsole_process;
+      o.send         = FProcessConsole_send;
       return o;
    }
    MO.FProcessConsole_construct = function FProcessConsole_construct(){
       var o = this;
-      o.connections = new TObjects();
+      o._connections = new TObjects();
    }
    MO.FProcessConsole_onLoad = function FProcessConsole_onLoad(){
       var o = this;
@@ -3485,7 +3474,7 @@ with(MO){
    MO.FProcessConsole_alloc = function FProcessConsole_alloc(){
       var o = this;
       var a = null;
-      var cs = o.connections;
+      var cs = o._connections;
       for(var n = cs.count - 1; n >= 0; n--){
          var c = cs.get(n);
          if(c._statusFree){
@@ -3529,50 +3518,30 @@ with(MO){
 with(MO){
    MO.FProcessEvent = function FProcessEvent(o){
       o = RClass.inherits(this, o, FObject);
-      o._code      = null;
-      o._data      = null;
+      o._code      = MO.Class.register(o, new MO.AGetSet('_code'));
+      o._data      = MO.Class.register(o, new MO.AGetSet('_data'));
       o._listeners = null;
-      o.code       = FProcessEvent_code;
-      o.setCode    = FProcessEvent_setCode;
-      o.data       = FProcessEvent_data;
-      o.setData    = FProcessEvent_setData;
       o.register   = FProcessEvent_register;
       return o;
    }
-   MO.FProcessEvent_name = function FProcessEvent_name(){
-      return this._name;
-   }
-   MO.FProcessEvent_code = function FProcessEvent_code(){
-      return this._code;
-   }
-   MO.FProcessEvent_setCode = function FProcessEvent_setCode(p){
-      this._code = p;
-   }
-   MO.FProcessEvent_data = function FProcessEvent_data(){
-      return this._data;
-   }
-   MO.FProcessEvent_setData = function FProcessEvent_setData(p){
-      this._data = p;
-   }
-   MO.FProcessEvent_register = function FProcessEvent_register(po, pf){
+   MO.FProcessEvent_register = function FProcessEvent_register(owner, callback){
       var o = this;
       if(!o._listeners){
          o._listeners = new TListeners();
       }
-      o._listeners.register(po, pf);
+      o._listeners.register(owner, callback);
    }
 }
 with(MO){
    MO.FProcessor = function FProcessor(o){
       o = RClass.inherits(this, o, FObject);
-      o._name     = null;
+      o._name     = MO.Class.register(o, new MO.AGetter('_name'));
       o._source   = null;
       o._worker   = null;
       o._events   = null;
       o.ohMessage = FProcessor_ohMessage;
       o.onMessage = FProcessor_onMessage;
       o.construct = FProcessor_construct;
-      o.name      = FProcessor_name;
       o.start     = FProcessor_start;
       o.process   = FProcessor_process;
       return o;
@@ -3582,9 +3551,6 @@ with(MO){
       o.onMessage(this);
    }
    MO.FProcessor_onMessage = function FProcessor_onMessage(p){
-   }
-   MO.FProcessor_name = function FProcessor_name(){
-      return this._name;
    }
    MO.FProcessor_construct = function FProcessor_construct(){
       var o = this;
@@ -3606,17 +3572,17 @@ with(MO){
       var es = o._events;
       var c = es.count();
       es.push(p);
-      var e = new SProcessEvent();
-      e.index = c;
-      e.code = p.code();
-      e.data = p.data();
-      o._worker.postMessage(e);
+      var event = new SProcessEvent();
+      event.index = c;
+      event.code = p.code();
+      event.data = p.data();
+      o._worker.postMessage(event);
    }
 }
 with(MO){
    MO.FProcessServer = function FProcessServer(o){
       o = RClass.inherits(this, o, FObject);
-      o._name               = null;
+      o._name               = MO.Class.register(o, new MO.AGetSet('_name'));
       o._handle             = null;
       o._processors         = null;
       o.ohInterval          = FProcessServer_ohInterval;
@@ -3624,7 +3590,6 @@ with(MO){
       o.ohMessage           = FProcessServer_ohMessage;
       o.onMessage           = FProcessServer_onMessage;
       o.construct           = FProcessServer_construct;
-      o.name                = FProcessServer_name;
       o.registerProcessor   = FProcessServer_registerProcessor;
       o.unregisterProcessor = FProcessServer_unregisterProcessor;
       o.send                = FProcessServer_send;
@@ -3648,9 +3613,6 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._processors = new TDictionary();
-   }
-   MO.FProcessServer_name = function FProcessServer_name(){
-      return this._name;
    }
    MO.FProcessServer_registerProcessor = function FProcessServer_registerProcessor(c, p){
       this._processors.set(c, p);
@@ -3685,12 +3647,11 @@ with(MO){
    MO.FStatisticsConsole = function FStatisticsConsole(o){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd      = EScope.Local;
-      o._statisticses = null;
+      o._statisticses = MO.Class.register(o, new MO.AGetter('_statisticses'));
       o.construct     = FStatisticsConsole_construct;
       o.register      = FStatisticsConsole_register;
       o.unregister    = FStatisticsConsole_unregister;
       o.find          = FStatisticsConsole_find;
-      o.statisticses  = FStatisticsConsole_statisticses;
       o.reset         = FStatisticsConsole_reset;
       o.resetFrame    = FStatisticsConsole_resetFrame;
       return o;
@@ -3708,34 +3669,27 @@ with(MO){
    MO.FStatisticsConsole_find = function FStatisticsConsole_find(n){
       return this._statisticses.get(n);
    }
-   MO.FStatisticsConsole_statisticses = function FStatisticsConsole_statisticses(){
-      return this._statisticses;
-   }
    MO.FStatisticsConsole_reset = function FStatisticsConsole_reset(e){
-      var s = this._statisticses;
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).reset();
+      var statisticses = this._statisticses;
+      for(var i = statisticses.count() - 1; i >= 0; i--){
+         statisticses.at(i).reset();
       }
    }
    MO.FStatisticsConsole_resetFrame = function FStatisticsConsole_resetFrame(u, d){
-      var s = this._statisticses;
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).resetFrame();
+      var statisticses = this._statisticses;
+      for(var i = statisticses.count() - 1; i >= 0; i--){
+         statisticses.at(i).resetFrame();
       }
    }
 }
 with(MO){
    MO.FThread = function FThread(o){
       o = RClass.inherits(this, o, FObject, MListenerProcess);
-      o._name       = null;
-      o._statusCd   = EThreadStatus.Sleep;
-      o._interval   = 100;
+      o._name       = MO.Class.register(o, new MO.AGetter('_name'));
+      o._statusCd   = MO.Class.register(o, new MO.AGetter('_statusCd'), EThreadStatus.Sleep);
+      o._interval   = MO.Class.register(o, new MO.AGetSet('_interval'), 100);
       o._delay      = 0;
       o.construct   = FThread_construct;
-      o.name        = FThread_name;
-      o.statusCd    = FThread_statusCd;
-      o.interval    = FThread_interval;
-      o.setInterval = FThread_setInterval;
       o.start       = FThread_start;
       o.stop        = FThread_stop;
       o.process     = FThread_process;
@@ -3745,31 +3699,19 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
    }
-   MO.FThread_name = function FThread_name(){
-      return this._name;
-   }
-   MO.FThread_statusCd = function FThread_statusCd(){
-      return this._statusCd;
-   }
-   MO.FThread_interval = function FThread_interval(){
-      return this._interval;
-   }
-   MO.FThread_setInterval = function FThread_setInterval(p){
-      this._interval = p;
-   }
    MO.FThread_start = function FThread_start(){
       this._statusCd = EThreadStatus.Active;
    }
    MO.FThread_stop = function FThread_stop(){
       this._statusCd = EThreadStatus.Finish;
    }
-   MO.FThread_process = function FThread_process(p){
+   MO.FThread_process = function FThread_process(interval){
       var o = this;
       if(o._delay <= 0){
          o.processProcessListener(o);
          o._delay = o._interval;
       }else{
-         o._delay -= p;
+         o._delay -= interval;
       }
    }
 }

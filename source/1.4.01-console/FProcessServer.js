@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._name               = null;
+      o._name               = MO.Class.register(o, new MO.AGetSet('_name'));
       o._handle             = null;
       o._processors         = null;
       //..........................................................
@@ -22,8 +22,6 @@ with(MO){
       //..........................................................
       // @method
       o.construct           = FProcessServer_construct;
-      // @method
-      o.name                = FProcessServer_name;
       // @method
       o.registerProcessor   = FProcessServer_registerProcessor;
       o.unregisterProcessor = FProcessServer_unregisterProcessor;
@@ -84,16 +82,6 @@ with(MO){
       o.__base.FObject.construct.call(o);
       // 设置属性
       o._processors = new TDictionary();
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   MO.FProcessServer_name = function FProcessServer_name(){
-      return this._name;
    }
 
    //==========================================================

@@ -12,7 +12,7 @@ with(MO){
       // @attribute
       o._scopeCd      = EScope.Local;
       // @attribute
-      o._environments = null;
+      o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
       //..........................................................
       // @method
       o.construct     = FEnvironmentConsole_construct;

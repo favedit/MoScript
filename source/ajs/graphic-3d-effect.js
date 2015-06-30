@@ -487,13 +487,12 @@ with(MO){
    MO.FG3dSelectPass = function FG3dSelectPass(o){
       o = RClass.inherits(this, o, FG3dTechniquePass);
       o._code         = 'select';
-      o._texture      = null;
+      o._texture      = MO.Class.register(o, new MO.AGetter('_texture'));
       o._renderTarget = null;
       o._position     = null;
       o._data         = null;
       o.construct     = FG3dSelectPass_construct;
       o.setup         = FG3dSelectPass_setup;
-      o.textureDepth  = FG3dSelectPass_texture;
       o.drawRegion    = FG3dSelectPass_drawRegion;
       return o;
    }
@@ -514,9 +513,6 @@ with(MO){
       t.size().set(1, 1);
       t.textures().push(T);
       t.build();
-   }
-   MO.FG3dSelectPass_texture = function FG3dSelectPass_texture(){
-      return this._texture;
    }
    MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(p){
       var o = this;
@@ -590,9 +586,8 @@ with(MO){
    MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
       o = RClass.inherits(this, o, FG3dTechnique);
       o._code       = 'select';
-      o._passSelect = null;
+      o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
       o.setup       = FG3dSelectTechnique_setup;
-      o.passSelect  = FG3dSelectTechnique_passSelect;
       o.test        = FG3dSelectTechnique_test;
       return o;
    }
@@ -605,15 +600,12 @@ with(MO){
       pd.setup();
       o._passes.push(pd);
    }
-   MO.FG3dSelectTechnique_passSelect = function FG3dSelectTechnique_passSelect(){
-      return this._passSelect;
-   }
-   MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(p, x, y){
+   MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(region, x, y){
       var o = this;
-      p._selectX = x;
-      p._selectY = y;
-      p.setTechnique(o);
-      o.drawRegion(p);
+      region._selectX = x;
+      region._selectY = y;
+      region.setTechnique(o);
+      o.drawRegion(region);
       return o._passSelect._selectRenderable;
    }
 }

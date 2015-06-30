@@ -10,17 +10,14 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MListenerProcess);
       //..........................................................
       // @attribute
-      o._name       = null;
-      o._statusCd   = EThreadStatus.Sleep;
-      o._interval   = 100;
+      o._name       = MO.Class.register(o, new MO.AGetter('_name'));
+      o._statusCd   = MO.Class.register(o, new MO.AGetter('_statusCd'), EThreadStatus.Sleep);
+      o._interval   = MO.Class.register(o, new MO.AGetSet('_interval'), 100);
       o._delay      = 0;
       //..........................................................
       // @method
       o.construct   = FThread_construct;
-      o.name        = FThread_name;
-      o.statusCd    = FThread_statusCd;
-      o.interval    = FThread_interval;
-      o.setInterval = FThread_setInterval;
+      // @method
       o.start       = FThread_start;
       o.stop        = FThread_stop;
       o.process     = FThread_process;
@@ -35,46 +32,6 @@ with(MO){
    MO.FThread_construct = function FThread_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-   }
-
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   MO.FThread_name = function FThread_name(){
-      return this._name;
-   }
-
-   //==========================================================
-   // <T>获得状态。</T>
-   //
-   // @method
-   // @return 状态
-   //==========================================================
-   MO.FThread_statusCd = function FThread_statusCd(){
-      return this._statusCd;
-   }
-
-   //==========================================================
-   // <T>获得间隔。</T>
-   //
-   // @method
-   // @return 间隔
-   //==========================================================
-   MO.FThread_interval = function FThread_interval(){
-      return this._interval;
-   }
-
-   //==========================================================
-   // <T>设置间隔。</T>
-   //
-   // @method
-   // @param p:interval:Integer 间隔
-   //==========================================================
-   MO.FThread_setInterval = function FThread_setInterval(p){
-      this._interval = p;
    }
 
    //==========================================================
@@ -99,16 +56,16 @@ with(MO){
    // <T>调用处理。</T>
    //
    // @method
-   // @param p:interval:integer 调用间隔
+   // @param interval:integer 调用间隔
    // @return 名称
    //==========================================================
-   MO.FThread_process = function FThread_process(p){
+   MO.FThread_process = function FThread_process(interval){
       var o = this;
       if(o._delay <= 0){
          o.processProcessListener(o);
          o._delay = o._interval;
       }else{
-         o._delay -= p;
+         o._delay -= interval;
       }
    }
 }

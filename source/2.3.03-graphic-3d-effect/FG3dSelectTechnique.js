@@ -11,11 +11,10 @@
       // @attribute
       o._code       = 'select';
       // @attribute
-      o._passSelect = null;
+      o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
       //..........................................................
       // @method
       o.setup       = FG3dSelectTechnique_setup;
-      o.passSelect  = FG3dSelectTechnique_passSelect;
       o.test        = FG3dSelectTechnique_test;
       return o;
    }
@@ -40,29 +39,19 @@
    }
 
    //==========================================================
-   // <T>获得深度渲染过程。</T>
-   //
-   // @method
-   // @return FG3dShadowDepthPass 深度渲染过程
-   //==========================================================
-   MO.FG3dSelectTechnique_passSelect = function FG3dSelectTechnique_passSelect(){
-      return this._passSelect;
-   }
-
-   //==========================================================
    // <T>测试信息。</T>
    //
    // @method
-   // @param p:region:FG3dRegion 渲染区域
+   // @param region:FG3dRegion 渲染区域
    //==========================================================
-   MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(p, x, y){
+   MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(region, x, y){
       var o = this;
       // 设置区域属性
-      p._selectX = x;
-      p._selectY = y;
-      p.setTechnique(o);
+      region._selectX = x;
+      region._selectY = y;
+      region.setTechnique(o);
       // 绘制所有过程
-      o.drawRegion(p);
+      o.drawRegion(region);
       // 返回选中内容
       return o._passSelect._selectRenderable;
    }

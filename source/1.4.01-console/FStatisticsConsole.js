@@ -11,7 +11,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._scopeCd      = EScope.Local;
-      o._statisticses = null;
+      o._statisticses = MO.Class.register(o, new MO.AGetter('_statisticses'));
       //..........................................................
       // @method
       o.construct     = FStatisticsConsole_construct;
@@ -20,7 +20,6 @@ with(MO){
       o.unregister    = FStatisticsConsole_unregister;
       // @method
       o.find          = FStatisticsConsole_find;
-      o.statisticses  = FStatisticsConsole_statisticses;
       // @method
       o.reset         = FStatisticsConsole_reset;
       o.resetFrame    = FStatisticsConsole_resetFrame;
@@ -70,24 +69,14 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得统计器集合。</T>
-   //
-   // @method
-   // @return 统计器集合
-   //==========================================================
-   MO.FStatisticsConsole_statisticses = function FStatisticsConsole_statisticses(){
-      return this._statisticses;
-   }
-
-   //==========================================================
    // <T>重置所有数据。</T>
    //
    // @method
    //==========================================================
    MO.FStatisticsConsole_reset = function FStatisticsConsole_reset(e){
-      var s = this._statisticses;
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).reset();
+      var statisticses = this._statisticses;
+      for(var i = statisticses.count() - 1; i >= 0; i--){
+         statisticses.at(i).reset();
       }
    }
 
@@ -97,9 +86,9 @@ with(MO){
    // @method
    //==========================================================
    MO.FStatisticsConsole_resetFrame = function FStatisticsConsole_resetFrame(u, d){
-      var s = this._statisticses;
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).resetFrame();
+      var statisticses = this._statisticses;
+      for(var i = statisticses.count() - 1; i >= 0; i--){
+         statisticses.at(i).resetFrame();
       }
    }
 }

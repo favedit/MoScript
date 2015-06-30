@@ -10,17 +10,17 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
-      o._scopeCd    = EScope.Local;
-      o.connections = null;
+      o._scopeCd     = EScope.Local;
+      o._connections = null;
       //..........................................................
       // @event
-      o.onLoad      = FContentConsole_onLoad;
+      o.onLoad       = FContentConsole_onLoad;
       //..........................................................
       // @method
-      o.construct   = FContentConsole_construct;
-      o.alloc       = FContentConsole_alloc;
-      o.process     = FContentConsole_process;
-      o.send        = FContentConsole_send;
+      o.construct    = FContentConsole_construct;
+      o.alloc        = FContentConsole_alloc;
+      o.process      = FContentConsole_process;
+      o.send         = FContentConsole_send;
       return o;
    }
 
@@ -31,7 +31,7 @@ with(MO){
    //==========================================================
    MO.FContentConsole_construct = function FContentConsole_construct(){
       var o = this;
-      o.connections = new TObjects();
+      o._connections = new TObjects();
    }
 
    //==========================================================
@@ -59,7 +59,7 @@ with(MO){
       var o = this;
       // 查找一个未使用的节点链接
       var a = null;
-      var cs = o.connections;
+      var cs = o._connections;
       for(var n = cs.count - 1; n >= 0; n--){
          var c = cs.get(n);
          if(c._statusFree){
