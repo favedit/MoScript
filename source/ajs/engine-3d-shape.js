@@ -580,6 +580,7 @@ with(MO){
    MO.FE3dFaceData = function FE3dFaceData(o){
       o = RClass.inherits(this, o, FE3dRenderable);
       o._ready                = false;
+      o._optionCenter         = RClass.register(o, new AGetSet('_optionCenter'), false);
       o._size                 = RClass.register(o, new AGetter('_size'));
       o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       o._vertexPositionBuffer = null;
@@ -606,7 +607,12 @@ with(MO){
       var o = this;
       var context = o._graphicContext;
       o._vertexCount = 4;
-      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var data = null;
+      if(o._optionCenter){
+         data = [-1, 1, 0, 1, 1, 0, 1, -1, 0, -1, -1, 0];
+      }else{
+         data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      }
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);

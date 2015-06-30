@@ -12,9 +12,19 @@ with(MO){
       o._hTable        = null
       //..........................................................
       // @method
-      o.setDataCount   = FEaiCityEntity_setDataCount;
-      o.dataRow        = FEaiCityEntity_dataRow;
+      o.createRow      = FEaiTable_createRow;
+      o.setDataCount   = FEaiTable_setDataCount;
+      o.dataRow        = FEaiTable_dataRow;
       return o;
+   }
+
+   //==========================================================
+   // <T>创建行。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiTable_createRow = function FEaiTable_createRow(){
+      var o = this;
    }
 
    //==========================================================
@@ -22,29 +32,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityEntity_setDataCount = function FEaiCityEntity_setDataCount(count){
+   MO.FEaiTable_setDataCount = function FEaiTable_setDataCount(count){
       var o = this;
       var headLineCount = o._headLineCount;
       var total = headLineCount + count;
       // 创建行集合
       var rowCount = o._hTable.rows.length;
       for(var i = rowCount; i < total; i++){
-         // 创建行
-         var hRow = RBuilder.appendTableRow(o._hTable);
-         hRow.className = 'Investment_DataGrid_Row';
-         // 创建格子
-         var hCell = RBuilder.appendTableCell(hRow);
-         hCell.className = 'Investment_DataGrid_Cell';
-         hCell.align = 'center';
-         var hCell = RBuilder.appendTableCell(hRow);
-         hCell.className = 'Investment_DataGrid_Cell';
-         hCell.align = 'center';
-         var hCell = RBuilder.appendTableCell(hRow);
-         hCell.className = 'Investment_DataGrid_Cell';
-         hCell.align = 'center';
-         var hCell = RBuilder.appendTableCell(hRow);
-         hCell.className = 'Investment_DataGrid_Cell';
-         hCell.align = 'right';
+         o.createRow();
       }
       // 设置行可见性
       var rowCount = o._hTable.rows.length;
@@ -59,7 +54,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FEaiCityEntity_dataRow = function FEaiCityEntity_dataRow(index){
+   MO.FEaiTable_dataRow = function FEaiTable_dataRow(index){
       var o = this;
       var rowIndex = o._headLineCount + index;
       return o._hTable.rows[rowIndex];

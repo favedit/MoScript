@@ -121,22 +121,28 @@ with (MO) {
 with(MO){
    MO.FGuiLabel = function FGuiLabel(o){
       o = RClass.inherits(this, o, FGuiControl);
+      o.onPaintLabel = FGuiLabel_onPaintLabel;
       o.onPaintBegin = FGuiLabel_onPaintBegin;
       return o;
    }
-   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+   MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
+      if(o._foreFont){
+         graphic.setFont(o._foreFont);
+      }
+      var width = graphic.textWidth(o._label);
+      var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+      var y = rectangle.top + rectangle.height * 0.5 + 3;
+      graphic.drawText(o._label, x, y, o._foreColor);
+   }
+   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
       if(o._label){
-         if(o._foreFont){
-            graphic.setFont(o._foreFont);
-         }
-         var width = graphic.textWidth(o._label);
-         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
-         var y = rectangle.top + rectangle.height * 0.5 + 3;
-         graphic.drawText(o._label, x, y, o._foreColor);
+         o.onPaintLabel(event);
       }
    }
 }

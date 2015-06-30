@@ -9,6 +9,11 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    //..........................................................
    // @attribute
+   o._readyProvince        = false;
+   // @attribute
+   o._nowDate              = null;
+   o._nowTicker            = null;
+   // @attribute
    o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    o._countryData          = null;
    // @attribute
@@ -20,8 +25,9 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._logoBar              = null;
    o._titleBar             = null;
    o._totalBar             = null;
+   // @attribute
+   o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
-   o._readyProvince        = false;
    //..........................................................
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
@@ -85,6 +91,8 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
    o.__base.FEaiScene.construct.call(o);
    // 创建属性
+   o._nowDate = new MO.TDate();
+   o._nowTicker = new MO.TTicker(10000);
    o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
 }
 
@@ -177,11 +185,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
-   var currentDate = new MO.TDate();
-   var dateControl = frame.findComponent('date');
-   dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
-   var timeControl = frame.findComponent('time');
-   timeControl.setLabel(currentDate.format('HH24:MI'));
    // 显示左上
    //var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
    //frame.setLocation(460, 20);
@@ -196,7 +199,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //..........................................................
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/ground.mp3');
+   audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.5);
    audio.play();
    //..........................................................
@@ -243,6 +246,17 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
+   // 更新时间
+   if(o._nowTicker.process()){
+      var bar = o._logoBar;
+      var date = o._nowDate;
+      date.setNow();
+      var dateControl = bar.findComponent('date');
+      dateControl.setLabel(date.format('YYYY/MM/DD'));
+      var timeControl = bar.findComponent('time');
+      timeControl.setLabel(date.format('HH24:MI'));
+      bar.repaint();
+   }
 }
 
 //==========================================================
@@ -252,6 +266,8 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
 //==========================================================
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
+   o._nowDate = RObject.dispose(o._nowDate);
+   o._nowTicker = RObject.dispose(o._nowTicker);
    o._mapEntity = RObject.dispose(o._mapEntity);
    // 父处理
    o.__base.FEaiScene.dispose.call(o);

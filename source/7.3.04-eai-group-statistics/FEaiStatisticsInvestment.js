@@ -13,7 +13,7 @@ with(MO){
       o._dateSetup       = false;
       o._beginDate       = MO.Class.register(o, new AGetter('_beginDate'));
       o._endDate         = MO.Class.register(o, new AGetter('_endDate'));
-      o._invementCurrent = MO.Class.register(o, new AGetter('_invementCurrent'));
+      o._invementCurrent = MO.Class.register(o, new AGetter('_invementCurrent'), 0);
       o._invementTotal   = MO.Class.register(o, new AGetter('_invementTotal'));
       o._intervalMinute  = 1;
       // @attribute
@@ -22,9 +22,9 @@ with(MO){
       // @attribute
       o._entities        = MO.Class.register(o, new AGetter('_entities'));
       o._tableEntities   = MO.Class.register(o, new AGetter('_tableEntities'));
-      o._showEntities    = MO.Class.register(o, new AGetter('_showEntities'));
+      o._showShapes      = MO.Class.register(o, new AGetter('_showShapes'));
       // @attribute
-      o._tableCount      = 24;
+      o._tableCount      = 22;
       o._tableInterval   = 1000;
       o._tableTick       = 1;
       o._dataTicker      = null;
@@ -85,13 +85,13 @@ with(MO){
       o._beginDate = new TDate();
       o._endDate = new TDate();
       o._entities = new TObjects();
-      o._showEntities = new TObjects();
+      o._showShapes = new TObjects();
       o._tableEntities = new TObjects();
       o._tableTicker = new TTicker(1000 * o._tableInterval);
       // 5分钟定时
       o._dataTicker = new TTicker(1000 * 60 * o._intervalMinute);
       // 创建表格
-      var table = o._dataTable = MO.Class.create(MO.FEaiTable);
+      var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
       table._hTable = document.getElementById('id_investment');
       table._headLineCount = 1;
       // 创建缓冲
@@ -160,12 +160,13 @@ with(MO){
          cityEntity.addInvestmentTotal(investment);
          // 更新数据
          o._mapEntity.upload();
+         // 创建渲染对象
          //var shape = o.allocShape();
          //shape.setCityEntity(cityEntity)
          //shape.setEntity(entity)
          //shape.dirty()
          //o._display.push(shape);
-         //o._showEntities.push(entity);
+         //o._showShapes.push(shape);
       }
    }
 
@@ -210,7 +211,8 @@ with(MO){
       if(currentTick - o._tableTick > o._tableInterval){
          // 大于个数从尾部弹出
          if(o._tableEntities.count() > o._tableCount){
-            o._tableEntities.pop();
+            var entity = o._tableEntities.pop();
+            o._entityPool.free(entity);
          }
          // 从开始位置压入
          var entities = o._entities;
@@ -219,6 +221,7 @@ with(MO){
             o._tableEntities.unshift(entity);
             // 设置实体焦点
             o.focusEntity(entity);
+            //..........................................................
             // 刷新表格
             var table = o._dataTable;
             var count = o._tableEntities.count();
@@ -259,6 +262,18 @@ with(MO){
       //..........................................................
       // 地图处理
       o._mapEntity.process();
+      //..........................................................
+      // 测试释放实体
+      var shapes = o._showShapes;
+      var count = shapes.count();
+      for(var i = count - 1; i >= 0; i--){
+         var shape = shapes.at(i);
+         if(shape._finish){
+            shapes.erase(i)
+            o._display.removeRenderable(shape);
+            o._shapePool.free(shape);
+         }
+      }
    }
 
    //==========================================================
@@ -269,6 +284,7 @@ with(MO){
    MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
       var o = this;
       o._entities = RObject.dispose(o._entities);
+      o._showShapes = RObject.dispose(o._showShapes);
       o._dataTicker = RObject.dispose(o._dataTicker);
       // 父处理
       o.__base.FObject.dispose.call(o);

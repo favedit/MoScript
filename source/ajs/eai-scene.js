@@ -663,6 +663,9 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._readyProvince        = false;
+   o._nowDate              = null;
+   o._nowTicker            = null;
    o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    o._countryData          = null;
    o._countryBorderDisplay = null;
@@ -672,8 +675,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._logoBar              = null;
    o._titleBar             = null;
    o._totalBar             = null;
+   o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
-   o._readyProvince        = false;
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
    o.construct             = MO.FEaiChartScene_construct;
    o.fixMatrix             = MO.FEaiChartScene_fixMatrix;
@@ -712,6 +715,8 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
    o.__base.FEaiScene.construct.call(o);
+   o._nowDate = new MO.TDate();
+   o._nowTicker = new MO.TTicker(10000);
    o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
 }
 MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
@@ -780,17 +785,12 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    frame.setLocation(10, 10);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
-   var currentDate = new MO.TDate();
-   var dateControl = frame.findComponent('date');
-   dateControl.setLabel(currentDate.format('YYYY/MM/DD'));
-   var timeControl = frame.findComponent('time');
-   timeControl.setLabel(currentDate.format('HH24:MI'));
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
    frame.setLocation(650, 20);
    stage.faceLayer().push(frame);
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/ground.mp3');
+   audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.5);
    audio.play();
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -811,9 +811,21 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
+   if(o._nowTicker.process()){
+      var bar = o._logoBar;
+      var date = o._nowDate;
+      date.setNow();
+      var dateControl = bar.findComponent('date');
+      dateControl.setLabel(date.format('YYYY/MM/DD'));
+      var timeControl = bar.findComponent('time');
+      timeControl.setLabel(date.format('HH24:MI'));
+      bar.repaint();
+   }
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
+   o._nowDate = RObject.dispose(o._nowDate);
+   o._nowTicker = RObject.dispose(o._nowTicker);
    o._mapEntity = RObject.dispose(o._mapEntity);
    o.__base.FEaiScene.dispose.call(o);
 }
@@ -854,27 +866,25 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
 }
 MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code             = MO.EEaiScene.ChartStatistics;
-   o._investment       = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._ready            = false;
-   o._playing          = false;
-   o._lastTick         = 0;
-   o._interval         = 10;
-   o._lastDateTick     = 0;
-   o._dateInterval     = 100;
-   o._startDate        = null;
-   o._endDate          = null;
-   o._currentDate      = null;
-   o._timeline         = null;
-   o._buttonAudio      = null;
-   o._statusStart      = false;
-   o._statusLayerCount = 150;
-   o._statusLayerLevel = 150;
-   o._investmentCurrent  = 0;
-   o.onLoadData        = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect      = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onOperationPlay   = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause  = MO.FEaiChartStatisticsScene_onOperationPause;
+   o._code              = MO.EEaiScene.ChartStatistics;
+   o._investment        = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent = 0;
+   o._ready             = false;
+   o._playing           = false;
+   o._lastTick          = 0;
+   o._interval          = 10;
+   o._startDate         = null;
+   o._endDate           = null;
+   o._currentDate       = null;
+   o._timeline          = null;
+   o._statusStart       = false;
+   o._statusLayerCount  = 150;
+   o._statusLayerLevel  = 150;
+   o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
+   o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
+   o.onDateSelect       = MO.FEaiChartStatisticsScene_onDateSelect;
+   o.onOperationPlay    = MO.FEaiChartStatisticsScene_onOperationPlay;
+   o.onOperationPause   = MO.FEaiChartStatisticsScene_onOperationPause;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
@@ -1019,11 +1029,13 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing){
       o._investment.process();
       var invementCurrent = o._investment.invementCurrent();
-      if(invementCurrent != o._investmentCurrent){
-         var total = o._totalBar.findComponent('total');
-         total.setLabel(MO.RFloat.unitFormat(invementCurrent, 0, 0, 2, 0, 10000, '万'));
-         o._totalBar.repaint();
-         o._investmentCurrent = invementCurrent;
+      if(invementCurrent != null){
+         var bar = o._totalBar;
+         var total = bar.findComponent('total');
+         total.setValue(parseInt(invementCurrent).toString());
+         if(total.process()){
+            bar.repaint();
+         }
       }
    }
 }
@@ -1129,7 +1141,6 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
@@ -1137,7 +1148,6 @@ with(MO){
       o.__base.FScene.deactive.call(o);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.remove(o._engineInfo.renderable());
       MO.Eai.Canvas.selectStage(null);
    }
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){

@@ -143,16 +143,42 @@ with(MO){
       o = RClass.inherits(this, o, FEaiCanvas);
       o._capturePosition    = null;
       o._cameraPosition     = null;
-      o.onEnterFrame        = FEaiChartCanvas_onEnterFrame;
-      o.onMouseCaptureStart = FEaiChartCanvas_onMouseCaptureStart;
-      o.onMouseCapture      = FEaiChartCanvas_onMouseCapture;
-      o.onMouseCaptureStop  = FEaiChartCanvas_onMouseCaptureStop;
       o.construct           = FEaiChartCanvas_construct;
       o.setPanel            = FEaiChartCanvas_setPanel;
       o.dispose             = FEaiChartCanvas_dispose;
       return o;
    }
-   MO.FEaiChartCanvas_onEnterFrame = function FEaiChartCanvas_onEnterFrame(){
+   MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
+      var o = this;
+      o.__base.FEaiCanvas.construct.call(o);
+      o._logicSize = new SSize2(1920, 1080);
+      o._cameraPosition = new SPoint3();
+   }
+   MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
+      var o = this;
+      o.__base.FEaiCanvas.setPanel.call(o, hPanel);
+   }
+   MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
+      var o = this;
+      o._cameraPosition = RObject.dispose(o._cameraPosition);
+      o.__base.FEaiCanvas.dispose.call(o);
+   }
+}
+with(MO){
+   MO.FEaiFlatCanvas = function FEaiFlatCanvas(o){
+      o = RClass.inherits(this, o, FEaiCanvas);
+      o._capturePosition    = null;
+      o._cameraPosition     = null;
+      o.onEnterFrame        = FEaiFlatCanvas_onEnterFrame;
+      o.onMouseCaptureStart = FEaiFlatCanvas_onMouseCaptureStart;
+      o.onMouseCapture      = FEaiFlatCanvas_onMouseCapture;
+      o.onMouseCaptureStop  = FEaiFlatCanvas_onMouseCaptureStop;
+      o.construct           = FEaiFlatCanvas_construct;
+      o.setPanel            = FEaiFlatCanvas_setPanel;
+      o.dispose             = FEaiFlatCanvas_dispose;
+      return o;
+   }
+   MO.FEaiFlatCanvas_onEnterFrame = function FEaiFlatCanvas_onEnterFrame(){
       var o = this;
       var stage = o._activeStage;
       if(!stage){
@@ -179,7 +205,7 @@ with(MO){
       }
       camera.update();
    }
-   MO.FEaiChartCanvas_onMouseCaptureStart = function FEaiChartCanvas_onMouseCaptureStart(event){
+   MO.FEaiFlatCanvas_onMouseCaptureStart = function FEaiFlatCanvas_onMouseCaptureStart(event){
       var o = this;
       var stage = o._activeStage;
       if(!stage){
@@ -188,7 +214,7 @@ with(MO){
       o._capturePosition.set(event.clientX, event.clientY);
       o._cameraPosition.assign(stage.camera().position());
    }
-   MO.FEaiChartCanvas_onMouseCapture = function FEaiChartCanvas_onMouseCapture(event){
+   MO.FEaiFlatCanvas_onMouseCapture = function FEaiFlatCanvas_onMouseCapture(event){
       var o = this;
       var stage = o._activeStage;
       if(!stage){
@@ -201,19 +227,19 @@ with(MO){
       position.x = o._cameraPosition.x - cx * 0.03;
       position.y = o._cameraPosition.y + cy * 0.03;
    }
-   MO.FEaiChartCanvas_onMouseCaptureStop = function FEaiChartCanvas_onMouseCaptureStop(p){
+   MO.FEaiFlatCanvas_onMouseCaptureStop = function FEaiFlatCanvas_onMouseCaptureStop(p){
    }
-   MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
+   MO.FEaiFlatCanvas_construct = function FEaiFlatCanvas_construct(){
       var o = this;
       o.__base.FEaiCanvas.construct.call(o);
       o._logicSize = new SSize2(1920, 1080);
       o._cameraPosition = new SPoint3();
    }
-   MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
+   MO.FEaiFlatCanvas_setPanel = function FEaiFlatCanvas_setPanel(hPanel){
       var o = this;
       o.__base.FEaiCanvas.setPanel.call(o, hPanel);
    }
-   MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
+   MO.FEaiFlatCanvas_dispose = function FEaiFlatCanvas_dispose(){
       var o = this;
       o._cameraPosition = RObject.dispose(o._cameraPosition);
       o.__base.FEaiCanvas.dispose.call(o);

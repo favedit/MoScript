@@ -86,7 +86,7 @@ with(MO){
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.push(o._engineInfo);
+      //faceLayer.push(o._engineInfo);
       o._engineInfo.setStage(stage);
    }
 
@@ -100,7 +100,7 @@ with(MO){
       o.__base.FScene.deactive.call(o);
       var stage = o._activeStage;
       var faceLayer = stage.faceLayer();
-      faceLayer.remove(o._engineInfo.renderable());
+      //faceLayer.remove(o._engineInfo.renderable());
       MO.Eai.Canvas.selectStage(null);
    }
 

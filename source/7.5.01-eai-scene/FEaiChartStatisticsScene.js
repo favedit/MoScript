@@ -9,33 +9,32 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code             = MO.EEaiScene.ChartStatistics;
+   o._code              = MO.EEaiScene.ChartStatistics;
    // @attribute
-   o._investment       = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investment        = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent = 0;
    // @attribute
-   o._ready            = false;
-   o._playing          = false;
-   o._lastTick         = 0;
-   o._interval         = 10;
-   o._lastDateTick     = 0;
-   o._dateInterval     = 100;
-   o._startDate        = null;
-   o._endDate          = null;
-   o._currentDate      = null;
+   o._ready             = false;
+   o._playing           = false;
+   o._lastTick          = 0;
+   o._interval          = 10;
+   o._startDate         = null;
+   o._endDate           = null;
+   o._currentDate       = null;
    // @attribute
-   o._timeline         = null;
+   o._timeline          = null;
    // @attribute
-   o._buttonAudio      = null;
-   o._statusStart      = false;
-   o._statusLayerCount = 150;
-   o._statusLayerLevel = 150;
-   o._investmentCurrent  = 0;
+   o._statusStart       = false;
+   o._statusLayerCount  = 150;
+   o._statusLayerLevel  = 150;
+   // @attribute
+   o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
    // @event
-   o.onLoadData        = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect      = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onOperationPlay   = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause  = MO.FEaiChartStatisticsScene_onOperationPause;
+   o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
+   o.onDateSelect       = MO.FEaiChartStatisticsScene_onDateSelect;
+   o.onOperationPlay    = MO.FEaiChartStatisticsScene_onOperationPlay;
+   o.onOperationPause   = MO.FEaiChartStatisticsScene_onOperationPause;
    //..........................................................
    // @method
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
@@ -269,12 +268,13 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       o._investment.process();
       // 设置资金
       var invementCurrent = o._investment.invementCurrent();
-      if(invementCurrent != o._investmentCurrent){
-         var total = o._totalBar.findComponent('total');
-         total.setLabel(MO.RFloat.unitFormat(invementCurrent, 0, 0, 2, 0, 10000, '万'));
-         // total.setLabel(invementCurrent);
-         o._totalBar.repaint();
-         o._investmentCurrent = invementCurrent;
+      if(invementCurrent != null){
+         var bar = o._totalBar;
+         var total = bar.findComponent('total');
+         total.setValue(parseInt(invementCurrent).toString());
+         if(total.process()){
+            bar.repaint();
+         }
       }
    }
 }

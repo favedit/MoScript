@@ -12,6 +12,8 @@ with(MO){
       // @attribute
       o._ready                = false;
       // @attribute
+      o._optionCenter         = RClass.register(o, new AGetSet('_optionCenter'), false);
+      // @attribute
       o._size                 = RClass.register(o, new AGetter('_size'));
       o._adjustSize           = RClass.register(o, new AGetter('_adjustSize'));
       // @attribute
@@ -66,7 +68,12 @@ with(MO){
       // 设置顶点数量
       o._vertexCount = 4;
       // 设置顶点数据
-      var data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      var data = null;
+      if(o._optionCenter){
+         data = [-1, 1, 0, 1, 1, 0, 1, -1, 0, -1, -1, 0];
+      }else{
+         data = [0, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0];
+      }
       var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
       buffer.setCode('position');
       buffer.setFormatCd(EG3dAttributeFormat.Float3);

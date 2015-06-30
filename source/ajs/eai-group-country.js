@@ -86,19 +86,22 @@ with(MO){
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
       var range = 1;
+      o._visible = true;
+      o._color.set(1, 1, 1, 1);
+      o._rangeColor.set(1, 1, 1, 1);
       if(data){
          var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
          var investmentCityTotal = historyConsole.investmentCityTotal();
          var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
-         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 5;
+         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 4;
          var color = rateInfo.findRate(rate);
-         range = rate * 10;
+         range = rate * 6;
          rate = RFloat.toRange(rate, 0, 1);
-         o._rangeColor.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 4);
+         o._rangeColor.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 1);
       }else{
          o._rangeColor.set(0, 0, 0, 0);
       }
-      o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
+      o._range = RFloat.toRange(Math.sqrt(range), 1, 6);
    }
    MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
       var o = this;
