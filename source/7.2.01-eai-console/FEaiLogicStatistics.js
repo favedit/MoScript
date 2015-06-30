@@ -43,6 +43,9 @@ MO.FEaiLogicStatistics_doInvestmentDynamic = function FEaiLogicStatistics_doInve
 // @return FListener 监听
 //==========================================================
 MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvestmentTrend(owner, callback, startDate, endDate, interval){
+   if(!interval){
+      interval = 600000;
+   }
    var parameters = 'begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
    return this.send('investment_trend', parameters, owner, callback);
 }

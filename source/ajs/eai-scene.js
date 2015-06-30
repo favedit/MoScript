@@ -675,9 +675,11 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._logoBar              = null;
    o._titleBar             = null;
    o._totalBar             = null;
+   o._flagSprite           = null;
    o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
+   o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.construct             = MO.FEaiChartScene_construct;
    o.fixMatrix             = MO.FEaiChartScene_fixMatrix;
    o.setup                 = MO.FEaiChartScene_setup;
@@ -711,6 +713,15 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    o._readyProvince = true;
+}
+MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
+   var o = this;
+   var template = event.template;
+   var sprite = o._flagSprite = template.sprite();
+   var matrix = sprite.matrix();
+   matrix.ty = 0;
+   matrix.setScaleAll(0.06);
+   matrix.updateForce();
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
@@ -791,8 +802,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
-   audio.setVolume(0.5);
+   audio.setVolume(0.1);
    audio.play();
+   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
+   template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
+   template.addLoadListener(o, o.onLoadTemplate);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
@@ -811,6 +825,11 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
+   if(o._flagSprite){
+      var matrix = o._flagSprite.matrix();
+      matrix.ry += 0.005;
+      matrix.updateForce();
+   }
    if(o._nowTicker.process()){
       var bar = o._logoBar;
       var date = o._nowDate;
@@ -882,9 +901,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusLayerLevel  = 150;
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect       = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onOperationPlay    = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause   = MO.FEaiChartStatisticsScene_onOperationPause;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
@@ -897,25 +913,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
 MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
-   var code = o._currentDate.format('YYYYMMDD')
-   o.selectDate(code);
-}
-MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onDateSelect(event) {
-   var o = this;
-   o._currentDate.date.setTime(event.date.date.getTime());
-   o._currentDate.refresh();
-   o.selectDate(o._currentDate.format('YYYYMMDD'));
-}
-MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_onOperationPlay(event){
-   var o = this;
-   var code = o._currentDate.format('YYYYMMDD')
-   var endCode = o._endDate.format('YYYYMMDD')
-   if(code == endCode) {
-      MO.RDate.autoParse(o._currentDate, '20140701');
-   }
-}
-MO.FEaiChartStatisticsScene_onOperationPause = function FEaiChartStatisticsScene_onOperationPause(event){
-   var o = this;
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
    var o = this;
@@ -959,7 +956,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
-   timeline.addDataChangedListener(o, o.onDateSelect);
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
@@ -1108,7 +1104,7 @@ with(MO){
       o.setup           = MO.FEaiScene_setup;
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
-      o.processEvent    = FEaiScene_processEvent;
+      o.processEvent    = MO.FEaiScene_processEvent;
       o.dispose         = MO.FEaiScene_dispose;
       return o;
    }

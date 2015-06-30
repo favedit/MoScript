@@ -9,12 +9,10 @@ with(MO){
       o = RClass.inherits(this, o, FG3dCamera);
       //..........................................................
       // 投影
-      o._projection      = null;
+      o._projection      = RClass.register(o, new AGetter('_projection'));
       //..........................................................
       // @method
       o.construct        = FG3dOrthoCamera_construct;
-      // @method
-      o.projection       = FG3dOrthoCamera_projection;
       // @method
       o.updateFrustum    = FG3dOrthoCamera_updateFrustum;
       o.updateFromCamera = FG3dOrthoCamera_updateFromCamera;
@@ -32,16 +30,6 @@ with(MO){
       o.__base.FG3dCamera.construct.call(o);
       // 初始化变量
       o._projection = RClass.create(FG3dOrthoProjection);
-   }
-
-   //==========================================================
-   // <T>获得投影。</T>
-   //
-   // @method
-   // @return FG3dOrthoProjection 投影
-   //==========================================================
-   MO.FG3dOrthoCamera_projection = function FG3dOrthoCamera_projection(){
-      return this._projection;
    }
 
    //==========================================================

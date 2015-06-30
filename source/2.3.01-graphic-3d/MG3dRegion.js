@@ -10,15 +10,15 @@ with(MO){
       //..........................................................
       // @attribute
       o._changed                    = false;
-      o._spaceName                  = null;
-      o._technique                  = null;
-      o._techniquePass              = null;
-      o._camera                     = null;
+      o._spaceName                  = RClass.register(o, new AGetter('_spaceName'));
+      o._technique                  = RClass.register(o, new AGetSet('_technique'));
+      o._techniquePass              = RClass.register(o, new AGetter('_techniquePass'));
+      o._camera                     = RClass.register(o, new AGetter('_camera'));
       o._projection                 = null;
-      o._directionalLight           = null
-      o._lights                     = null
-      o._allRenderables             = null;
-      o._renderables                = null;
+      o._directionalLight           = RClass.register(o, new AGetter('_directionalLight'));
+      o._lights                     = RClass.register(o, new AGetter('_lights'));
+      o._allRenderables             = RClass.register(o, new AGetter('_allRenderables'));
+      o._renderables                = RClass.register(o, new AGetter('_renderables'));
       // @attribute
       o._cameraPosition             = null;
       o._cameraDirection            = null;
@@ -33,24 +33,13 @@ with(MO){
       o._lightViewProjectionMatrix  = null;
       o._lightInfo                  = null;
       // @attribute
-      o._materialMap                = null;
       //..........................................................
       // @method
       o.construct                   = MG3dRegion_construct;
       // @method
       o.isChanged                   = MG3dRegion_isChanged;
-      o.spaceName                   = MG3dRegion_spaceName;
-      o.technique                   = MG3dRegion_technique;
-      o.setTechnique                = MG3dRegion_setTechnique;
-      o.techniquePass               = MG3dRegion_techniquePass;
       o.setTechniquePass            = MG3dRegion_setTechniquePass;
-      o.camera                      = MG3dRegion_camera;
-      o.directionalLight            = MG3dRegion_directionalLight;
-      o.lights                      = MG3dRegion_lights;
-      o.materialMap                 = MG3dRegion_materialMap;
       // @method
-      o.allRenderables              = MG3dRegion_allRenderables;
-      o.renderables                 = MG3dRegion_renderables;
       o.pushRenderable              = MG3dRegion_pushRenderable;
       // @method
       o.setup                       = MG3dRegion_setup;
@@ -100,46 +89,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得空间名称。</T>
-   //
-   // @method
-   // @return String 空间名称
-   //==========================================================
-   MO.MG3dRegion_spaceName = function MG3dRegion_spaceName(){
-      return this._spaceName;
-   }
-
-   //==========================================================
-   // <T>获得技术。</T>
-   //
-   // @method
-   // @return FG3dTechnique 技术
-   //==========================================================
-   MO.MG3dRegion_technique = function MG3dRegion_technique(){
-      return this._technique;
-   }
-
-   //==========================================================
-   // <T>设置技术。</T>
-   //
-   // @method
-   // @param p:technique:FG3dTechnique 技术
-   //==========================================================
-   MO.MG3dRegion_setTechnique = function MG3dRegion_setTechnique(p){
-      this._technique = p;
-   }
-
-   //==========================================================
-   // <T>获得技术过程。</T>
-   //
-   // @method
-   // @return FG3dTechniquePass 技术过程
-   //==========================================================
-   MO.MG3dRegion_techniquePass = function MG3dRegion_techniquePass(){
-      return this._techniquePass;
-   }
-
-   //==========================================================
    // <T>设置技术过程。</T>
    //
    // @method
@@ -150,64 +99,6 @@ with(MO){
       o._techniquePass = p;
       o._spaceName = p.fullCode();
       o._finish = f;
-   }
-
-   //==========================================================
-   // <T>获得相机。</T>
-   //
-   // @method
-   // @return FG3dCamera 相机
-   //==========================================================
-   MO.MG3dRegion_camera = function MG3dRegion_camera(){
-      return this._camera;
-   }
-
-   //==========================================================
-   // <T>获得方向光。</T>
-   //
-   // @method
-   // @return FG3dProjection 投影
-   //==========================================================
-   MO.MG3dRegion_directionalLight = function MG3dRegion_directionalLight(){
-      return this._directionalLight;
-   }
-
-   //==========================================================
-   // <T>获得光源集合。</T>
-   //
-   // @method
-   // @return TObjects 光源集合
-   //==========================================================
-   MO.MG3dRegion_lights = function MG3dRegion_lights(){
-      return this._lights;
-   }
-
-   //==========================================================
-   // <T>获得材质映射。</T>
-   //
-   // @method
-   // @return FG3dMaterialMap 材质映射
-   //==========================================================
-   MO.MG3dRegion_materialMap = function MG3dRegion_materialMap(){
-      return this._materialMap;
-   }
-
-   //==========================================================
-   // <T>获得全部渲染对象集合。</T>
-   //
-   // @return FRenderables 渲染对象集合
-   //==========================================================
-   MO.MG3dRegion_allRenderables = function MG3dRegion_allRenderables(p){
-      return this._allRenderables;
-   }
-
-   //==========================================================
-   // <T>获得渲染对象集合。</T>
-   //
-   // @return FRenderables 渲染对象集合
-   //==========================================================
-   MO.MG3dRegion_renderables = function MG3dRegion_renderables(p){
-      return this._renderables;
    }
 
    //==========================================================
@@ -332,10 +223,11 @@ with(MO){
    //==========================================================
    MO.MG3dRegion_update = function MG3dRegion_update(){
       var o = this;
-      var rs = o._renderables;
-      var c = rs.count();
-      for(var i = 0; i < c; i++){
-         rs.getAt(i).update(o);
+      var renderables = o._renderables;
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.update(o);
       }
    }
 

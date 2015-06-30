@@ -31,6 +31,11 @@ with(MO){
       // @attribute
       o._entityPool      = null;
       o._shapePool       = null;
+      // @attribute
+      o._autio1          = null;
+      o._autio2          = null;
+      o._autio3          = null;
+      o._autio4          = null;
       //..........................................................
       // @method
       o.onInvestment     = FEaiStatisticsInvestment_onInvestment;
@@ -138,6 +143,16 @@ with(MO){
    //==========================================================
    MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
       var o = this;
+      //..........................................................
+      // 创建声音
+      var audio = o._autio1 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/1.mp3');
+      var audio = o._autio2 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/2.mp3');
+      var audio = o._autio3 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/3.mp3');
+      var audio = o._autio4 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/4.mp3');
       // 设置变量
       var display = o._display = RClass.create(FE3dDisplay);
       display.linkGraphicContext(o);
@@ -157,8 +172,18 @@ with(MO){
       var cityEntity = o._mapEntity.findCityByCard(card);
       // 显示实体
       if(cityEntity){
-         cityEntity.addInvestmentTotal(investment);
+         // 播放声音
+         if(investment > 1000000){
+            o._autio4.play(0);
+         }else if(investment > 100000){
+            o._autio3.play(0);
+         }else if(investment > 10000){
+            o._autio2.play(0);
+         }else if(investment > 1){
+            o._autio1.play(0);
+         }
          // 更新数据
+         cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
          // 创建渲染对象
          //var shape = o.allocShape();

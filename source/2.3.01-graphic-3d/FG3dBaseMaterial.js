@@ -11,12 +11,10 @@ with(MO){
       // @attribute 名称
       o._name       = null;
       // @attribute 材质信息
-      o._info       = null;
+      o._info       = RClass.register(o, new AGetter('_info'));
       //..........................................................
       // @method
       o.construct   = FG3dBaseMaterial_construct;
-      // @method
-      o.info        = FG3dBaseMaterial_info;
       // @method
       o.assignInfo  = FG3dBaseMaterial_assignInfo;
       o.assign      = FG3dBaseMaterial_assign;
@@ -37,16 +35,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得材质信息。</T>
-   //
-   // @method
-   // @return SG3dMaterialInfo 材质信息
-   //==========================================================
-   MO.FG3dBaseMaterial_info = function FG3dBaseMaterial_info(){
-      return this._info;
-   }
-
-   //==========================================================
    // <T>接收数据。</T>
    //
    // @method
@@ -63,8 +51,7 @@ with(MO){
    // @param material:SG3dMaterialInfo 材质信息
    //==========================================================
    MO.FG3dBaseMaterial_assign = function FG3dBaseMaterial_assign(material){
-      var o = this;
-      o._info.assign(material.info());
+      this._info.assign(material.info());
    }
 
    //==========================================================
@@ -74,7 +61,6 @@ with(MO){
    // @param material:SG3dMaterialInfo 材质信息
    //==========================================================
    MO.FG3dBaseMaterial_calculate = function FG3dBaseMaterial_calculate(material){
-      var o = this;
-      o._info.calculate(material.info());
+      this._info.calculate(material.info());
    }
 }

@@ -9,12 +9,12 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute 变换矩阵
-      o._matrix          = null;
+      o._matrix          = RClass.register(o, new AGetter('_matrix'));
       // @attribute 相机位置
-      o._position        = null;
+      o._position        = RClass.register(o, new AGetter('_position'));
       o._target          = null;
       // @attribute 相机方向
-      o._direction       = null;
+      o._direction       = RClass.register(o, new AGetter('_direction'));
       o._directionTarget = null;
       // @attribute 中心位置
       o._centerFront     = 0.6;
@@ -23,8 +23,8 @@ with(MO){
       o._focalNear       = 0.1;
       o._focalFar        = 200.0;
       // @attribute 视截体
-      o._frustum         = null;
-      o._planes          = null;
+      o._frustum         = RClass.register(o, new AGetter('_frustum'));
+      o._planes          = RClass.register(o, new AGetter('_planes'));
       o._viewport        = null;
       // @attribute 轴线
       o.__axisUp         = null;
@@ -35,13 +35,8 @@ with(MO){
       // @method
       o.construct        = FG3dCamera_construct;
       // @method
-      o.matrix           = FG3dCamera_matrix;
-      o.position         = FG3dCamera_position;
       o.setPosition      = FG3dCamera_setPosition;
-      o.direction        = FG3dCamera_direction;
       o.setDirection     = FG3dCamera_setDirection;
-      o.frustum          = FG3dCamera_frustum;
-      o.planes           = FG3dCamera_planes;
       // @method
       o.doWalk           = FG3dCamera_doWalk;
       o.doStrafe         = FG3dCamera_doStrafe;
@@ -83,26 +78,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得位置。</T>
-   //
-   // @method
-   // @return 位置
-   //==========================================================
-   MO.FG3dCamera_position = function FG3dCamera_position(){
-      return this._position;
-   }
-
-   //==========================================================
-   // <T>获得矩阵。</T>
-   //
-   // @method
-   // @return SMatrix3d 矩阵
-   //==========================================================
-   MO.FG3dCamera_matrix = function FG3dCamera_matrix(){
-      return this._matrix;
-   }
-
-   //==========================================================
    // <T>设置位置。</T>
    //
    // @method
@@ -112,16 +87,6 @@ with(MO){
    //==========================================================
    MO.FG3dCamera_setPosition = function FG3dCamera_setPosition(x, y, z){
       this._position.set(x, y, z);
-   }
-
-   //==========================================================
-   // <T>获得方向。</T>
-   //
-   // @method
-   // @return SVector3 方向
-   //==========================================================
-   MO.FG3dCamera_direction = function FG3dCamera_direction(){
-      return this._direction;
    }
 
    //==========================================================
@@ -136,26 +101,6 @@ with(MO){
       var o = this;
       o._direction.set(x, y, z);
       o._directionTarget.set(x, y, z);
-   }
-
-   //==========================================================
-   // <T>获得视截体。</T>
-   //
-   // @method
-   // @return SFrustum 视截体
-   //==========================================================
-   MO.FG3dCamera_frustum = function FG3dCamera_frustum(){
-      return this._frustum;
-   }
-
-   //==========================================================
-   // <T>获得视截面。</T>
-   //
-   // @method
-   // @return SFrustumPlanes 视截面
-   //==========================================================
-   MO.FG3dCamera_planes = function FG3dCamera_planes(){
-      return this._planes;
    }
 
    //==========================================================

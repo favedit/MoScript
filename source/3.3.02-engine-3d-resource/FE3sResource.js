@@ -6,28 +6,32 @@ with(MO){
    // @history 150105
    //==========================================================
    MO.FE3sResource = function FE3sResource(o){
-      o = RClass.inherits(this, o, FResource, MListenerLoad);
+      o = RClass.inherits(this, o, FResource, MListener);
       //..........................................................
       // @attribute
-      o._dataLoad   = false;
-      o._dataReady  = false;
-      o._dataSize   = 0;
-      o._blockSize  = 0;
-      o._blockCount = 0;
-      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
+      o._dataLoad      = false;
+      o._dataReady     = false;
+      o._dataSize      = 0;
+      // @attribute
+      o._blockSize     = 0;
+      o._blockCount    = 0;
+      // @attribute
+      o._vendor        = RClass.register(o, new AGetSet('_vendor'));
+      // @attribute
+      o._loadListeners = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
       //..........................................................
       // @event
-      o.onComplete  = FE3sResource_onComplete;
+      o.onComplete     = FE3sResource_onComplete;
       //..........................................................
       // @method
-      o.makeLabel   = FE3sResource_makeLabel;
+      o.makeLabel      = FE3sResource_makeLabel;
       // @method
-      o.testReady   = FE3sResource_testReady;
+      o.testReady      = FE3sResource_testReady;
       // @method
-      o.unserialize = FE3sResource_unserialize;
-      o.saveConfig  = FE3sResource_saveConfig;
+      o.unserialize    = FE3sResource_unserialize;
+      o.saveConfig     = FE3sResource_saveConfig;
       // @method
-      o.dispose     = FE3sResource_dispose;
+      o.dispose        = FE3sResource_dispose;
       return o;
    }
 
@@ -133,7 +137,7 @@ with(MO){
       var o = this;
       o._vendor = null;
       // 父处理
-      o.__base.MListenerLoad.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FConsole.dispose.call(o);
    }
 }

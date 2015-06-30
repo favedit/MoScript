@@ -13,11 +13,11 @@ with(MO){
       o._ready           = false;
       o._resource        = null;
       // @attribute
-      o._sprites         = null;
-      o._skeletons       = null;
-      o._animations      = null;
+      o._sprites         = RClass.register(o, new AGetter('_sprites'));
+      o._skeletons       = RClass.register(o, new AGetter('_skeletons'));
+      o._animations      = RClass.register(o, new AGetter('_animations'));
       // @attribute
-      o._resource        = null;
+      o._resource        = RClass.register(o, new AGetSet('_resource'));
       //..........................................................
       // @method
       o.construct        = FE3dTemplate_construct;
@@ -28,17 +28,13 @@ with(MO){
       // @method
       o.findMeshByCode   = FE3dTemplate_findMeshByCode;
       o.meshRenderables  = FE3dTemplate_sprites;
-      o.skeletons        = FE3dTemplate_skeletons;
       o.pushSkeleton     = FE3dTemplate_pushSkeleton;
       o.findAnimation    = FE3dTemplate_findAnimation;
-      o.animations       = FE3dTemplate_animations;
       o.pushAnimation    = FE3dTemplate_pushAnimation;
       // @method
       o.visible          = FE3dTemplate_visible;
       o.setVisible       = FE3dTemplate_setVisible;
       // @method
-      o.resource         = FE3dTemplate_resource;
-      o.setResource      = FE3dTemplate_setResource;
       o.loadSkeletons    = FE3dTemplate_loadSkeletons;
       o.linkAnimation    = FE3dTemplate_linkAnimation;
       o.loadAnimations   = FE3dTemplate_loadAnimations;
@@ -106,26 +102,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得网格渲染集合。</T>
-   //
-   // @method
-   // @return TObjects 网格渲染集合
-   //==========================================================
-   MO.FE3dTemplate_sprites = function FE3dTemplate_sprites(){
-      return this._sprites;
-   }
-
-   //==========================================================
-   // <T>获得骨骼集合。</T>
-   //
-   // @method
-   // @return TDictionary 骨骼集合
-   //==========================================================
-   MO.FE3dTemplate_skeletons = function FE3dTemplate_skeletons(){
-      return this._skeletons;
-   }
-
-   //==========================================================
    // <T>增加一个渲染骨骼。</T>
    //
    // @method
@@ -144,6 +120,16 @@ with(MO){
    }
 
    //==========================================================
+   // <T>获得网格渲染集合。</T>
+   //
+   // @method
+   // @return TObjects 网格渲染集合
+   //==========================================================
+   MO.FE3dTemplate_sprites = function FE3dTemplate_sprites(){
+      return this._sprites;
+   }
+
+   //==========================================================
    // <T>根据唯一编号查找一个渲染动画。</T>
    //
    // @method
@@ -153,16 +139,6 @@ with(MO){
    MO.FE3dTemplate_findAnimation = function FE3dTemplate_findAnimation(p){
       var s = this._animations;
       return s ? s.get(p) : null;
-   }
-
-   //==========================================================
-   // <T>获得动画集合。</T>
-   //
-   // @method
-   // @return TDictionary 动画集合
-   //==========================================================
-   MO.FE3dTemplate_animations = function FE3dTemplate_animations(){
-      return this._animations;
    }
 
    //==========================================================
@@ -199,26 +175,6 @@ with(MO){
    //==========================================================
    MO.FE3dTemplate_setVisible = function FE3dTemplate_setVisible(visible){
       this.sprite().setVisible(visible);
-   }
-
-   //==========================================================
-   // <T>获得资源。</T>
-   //
-   // @method
-   // @param FE3sTemplate 资源
-   //==========================================================
-   MO.FE3dTemplate_resource = function FE3dTemplate_resource(p){
-      return this._resource;
-   }
-
-   //==========================================================
-   // <T>设置资源模板。</T>
-   //
-   // @method
-   // @param p:resource:FE3sTemplate 资源模板
-   //==========================================================
-   MO.FE3dTemplate_setResource = function FE3dTemplate_setResource(p){
-      this._resource = p;
    }
 
    //==========================================================
@@ -390,7 +346,11 @@ with(MO){
       // 加载完成
       o._ready = true;
       // 事件发送
-      o.processLoadListener(o);
+      var event = MO.Memory.alloc(SEvent);
+      event.sender = o;
+      event.template = o;
+      o.processLoadListener(event);
+      MO.Memory.free(event);
       return o._ready;
    }
 

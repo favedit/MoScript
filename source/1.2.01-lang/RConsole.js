@@ -126,52 +126,52 @@ with(MO){
    // <T>根据类函数查找一个控制台实例。</T>
    //
    // @method
-   // @param v:value:Object 类名称/类函数
+   // @param value:Object 类名称/类函数
    // @return Object 控制台实例
    //==========================================================
-   MO.RConsole.prototype.find = function RConsole_find(v){
+   MO.RConsole.prototype.find = function RConsole_find(value){
       var o = this;
       // 获得名称
-      var n = null;
-      if(v.constructor = String){
-         n = RClass.name(v);
-      }else if(v.constructor == Function){
-         n = v;
+      var name = null;
+      if(value.constructor == String){
+         name = value;
+      }else if(value.constructor == Function){
+         name = RClass.name(value);
       }else{
-         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', value);
       }
       // 查找全局控制台
-      var r = MO.Global.get(o.ConsolePreFix + n);
-      if(r){
-         return r;
+      var console = MO.Global.get(o.ConsolePreFix + name);
+      if(console){
+         return console;
       }
       // 查找本地控制台
-      r = o._consoles.get(n);
-      if(r){
-         return r;
+      console = o._consoles.get(name);
+      if(console){
+         return console;
       }
       // 创建控制台实例
-      var c = RClass.forName(n);
-      var s = c.instance.scopeCd();
-      switch(s){
+      var template = RClass.forName(name);
+      var scopeCd = template.instance.scopeCd();
+      switch(scopeCd){
          case EScope.Global:
             // 从顶层对象重新创建
-            r = top.MO.RConsole.createByName(n);
-            MO.Global.set(o.ConsolePreFix + n, r);
+            console = top.MO.RConsole.createByName(name);
+            MO.Global.set(o.ConsolePreFix + name, console);
             // 在本地保存当前对象
-            o._consoles.set(n, r);
+            o._consoles.set(name, console);
             break;
          case EScope.Local:
             // 在本地保存当前对象
-            r = o.createByName(n);
-            o._localConsoles.set(n, r);
-            o._consoles.set(n, r);
+            console = o.createByName(name);
+            o._localConsoles.set(name, console);
+            o._consoles.set(name, console);
             break;
          default:
-            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
       }
-      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
-      return r;
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, REnum.decode(EScope, scopeCd));
+      return console;
    }
 
    //==========================================================

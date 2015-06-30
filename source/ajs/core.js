@@ -337,13 +337,13 @@ MO.MDataStream_testString = function MDataStream_testString(){
    var position = o._position;
    var length = o._viewer.getUint16(position, o._endianCd);
    position += 2;
-   var result = new TString();
+   var result = new MO.TString();
    for(var i = 0; i < length; i++){
       var value = o._viewer.getUint16(position, o._endianCd);
       position += 2;
       result.push(String.fromCharCode(value));
    }
-   return result.toString();
+   return result.flush();
 }
 MO.MDataStream_readBoolean = function MDataStream_readBoolean(){
    var o = this;

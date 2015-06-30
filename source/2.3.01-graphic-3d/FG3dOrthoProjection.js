@@ -9,11 +9,10 @@ with(MO){
       o = RClass.inherits(this, o, FG3dProjection);
       //..........................................................
       // @attribute
-      o._matrix       = null;
+      o._matrix       = RClass.register(o, new AGetter('_matrix'));
       //..........................................................
       // @method
       o.construct     = FG3dOrthoProjection_construct;
-      o.matrix        = FG3dOrthoProjection_matrix;
       o.update        = FG3dOrthoProjection_update;
       o.updateFrustum = FG3dOrthoProjection_updateFrustum;
       return o;
@@ -28,16 +27,6 @@ with(MO){
       var o = this;
       o.__base.FG3dProjection.construct.call(o);
       o._matrix = new SOrthoMatrix3d();
-   }
-
-   //==========================================================
-   // <T>获得矩阵。</T>
-   //
-   // @method
-   // @return SOrthoMatrix3d 矩阵
-   //==========================================================
-   MO.FG3dOrthoProjection_matrix = function FG3dOrthoProjection_matrix(){
-      return this._matrix;
    }
 
    //============================================================

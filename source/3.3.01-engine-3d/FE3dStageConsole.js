@@ -34,12 +34,12 @@ with(MO){
    //==========================================================
    MO.FE3dStageConsole_onProcess = function FE3dStageConsole_onProcess(){
       var o = this;
-      var s = o._looper;
-      s.record();
+      var looper = o._looper;
+      looper.record();
       for(var i = o._limit - 1; i >= 0; i--){
-         var r = s.next();
-         if(r){
-            r.processDelay(r._linkRegion);
+         var renderable = looper.next();
+         if(renderable){
+            renderable.processDelay(renderable._linkRegion);
          }else{
             break;
          }
@@ -57,28 +57,28 @@ with(MO){
       o._looper = new TLooper();
       o._renderables = new TDictionary();
       // 创建线程
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
 
    //==========================================================
    // <T>逻辑处理。</T>
    //
    // @method
-   // @param p:region:FG3dRegion 区域
+   // @param region:FG3dRegion 区域
    //==========================================================
-   MO.FE3dStageConsole_process = function FE3dStageConsole_process(p){
+   MO.FE3dStageConsole_process = function FE3dStageConsole_process(region){
       var o = this;
       // 放入处理队列中
-      var s = p.allRenderables();
-      for(var i = s.count() - 1; i >= 0; i--){
-         var r = s.getAt(i);
-         if(!r._linkStageLooper){
-            o._looper.push(r);
-            r._linkRegion = p;
-            r._linkStageLooper = o._looper;
+      var renderables = region.allRenderables();
+      for(var i = renderables.count() - 1; i >= 0; i--){
+         var renderable = renderables.at(i);
+         if(!renderable._linkStageLooper){
+            renderable._linkRegion = region;
+            renderable._linkStageLooper = o._looper;
+            o._looper.push(renderable);
          }
       }
    }

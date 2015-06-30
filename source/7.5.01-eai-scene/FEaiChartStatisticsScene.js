@@ -32,9 +32,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    //..........................................................
    // @event
    o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
-   o.onDateSelect       = MO.FEaiChartStatisticsScene_onDateSelect;
-   o.onOperationPlay    = MO.FEaiChartStatisticsScene_onOperationPlay;
-   o.onOperationPause   = MO.FEaiChartStatisticsScene_onOperationPause;
    //..........................................................
    // @method
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
@@ -58,50 +55,9 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
 MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
-   var code = o._currentDate.format('YYYYMMDD')
-   o.selectDate(code);
-}
-
-//==========================================================
-// <T>时间轴日期选择事件处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onDateSelect(event) {
-   var o = this;
-   o._currentDate.date.setTime(event.date.date.getTime());
-   o._currentDate.refresh();
-   o.selectDate(o._currentDate.format('YYYYMMDD'));
-}
-
-//==========================================================
-// <T>点击播放处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_onOperationPlay(event){
-   var o = this;
    // 设置时间
-   var code = o._currentDate.format('YYYYMMDD')
-   var endCode = o._endDate.format('YYYYMMDD')
-   if(code == endCode) {
-      MO.RDate.autoParse(o._currentDate, '20140701');
-   }
-   // 开始播放
-   //o.switchPlay(true);
-}
-
-//==========================================================
-// <T>点击暂停处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onOperationPause = function FEaiChartStatisticsScene_onOperationPause(event){
-   var o = this;
-   // 停止播放
-   //o.switchPlay(false);
+   //var code = o._currentDate.format('YYYYMMDD')
+   //o.selectDate(code);
 }
 
 //==========================================================
@@ -165,7 +121,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
-   timeline.addDataChangedListener(o, o.onDateSelect);
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);

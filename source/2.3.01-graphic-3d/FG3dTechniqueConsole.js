@@ -10,11 +10,10 @@
       //..........................................................
       // @attribute
       o._scopeCd    = EScope.Local;
-      o._techniques = null;
+      o._techniques = RClass.register(o, new AGetter('_techniques'));
       //..........................................................
       // @method
       o.construct   = FG3dTechniqueConsole_construct;
-      o.techniques  = FG3dTechniqueConsole_techniques;
       o.find        = FG3dTechniqueConsole_find;
       return o;
    }
@@ -29,16 +28,6 @@
       o.__base.FConsole.construct.call(o);
       // 设置变量
       o._techniques = new TDictionary();
-   }
-
-   //==========================================================
-   // <T>获得技术字典。</T>
-   //
-   // @method
-   // @return TDictionary 技术字典
-   //==========================================================
-   MO.FG3dTechniqueConsole_techniques = function FG3dTechniqueConsole_techniques(){
-      return this._techniques;
    }
 
    //==========================================================

@@ -26,11 +26,13 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._titleBar             = null;
    o._totalBar             = null;
    // @attribute
+   o._flagSprite           = null;
    o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
    //..........................................................
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
+   o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    //..........................................................
    // @method
    o.construct             = MO.FEaiChartScene_construct;
@@ -80,6 +82,24 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    o._readyProvince = true;
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
+   var o = this;
+   var template = event.template;
+   var sprite = o._flagSprite = template.sprite();
+   var matrix = sprite.matrix();
+   //matrix.tx = -20;
+   matrix.ty = 0;
+   matrix.setScaleAll(0.06);
+   matrix.updateForce();
+   //o._activeStage.dataLayer().push(sprite);
 }
 
 //==========================================================
@@ -200,8 +220,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
-   audio.setVolume(0.5);
+   audio.setVolume(0.1);
    audio.play();
+   //..........................................................
+   // 加载标志
+   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
+   template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
+   template.addLoadListener(o, o.onLoadTemplate);
    //..........................................................
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -246,6 +271,12 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
+   // 更新精灵
+   if(o._flagSprite){
+      var matrix = o._flagSprite.matrix();
+      matrix.ry += 0.005;
+      matrix.updateForce();
+   }
    // 更新时间
    if(o._nowTicker.process()){
       var bar = o._logoBar;

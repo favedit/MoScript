@@ -24,7 +24,7 @@ with(MO){
       o.active          = MO.FEaiScene_active;
       o.deactive        = MO.FEaiScene_deactive;
       // @method
-      o.processEvent    = FEaiScene_processEvent;
+      o.processEvent    = MO.FEaiScene_processEvent;
       // @method
       o.dispose         = MO.FEaiScene_dispose;
       return o;

@@ -16,7 +16,7 @@
       o._registerEffects = null;
       o._templateEffects = null;
       o._effects         = null;
-      o._path            = "/ars/shader/";
+      o._path            = RClass.register(o, AGetter('_path'), "/ars/shader/");
       o._effectInfo      = null;
       o._tagContext      = null;
       // @attribute
@@ -28,8 +28,6 @@
       //..........................................................
       // @method
       o.construct        = FG3dEffectConsole_construct;
-      // @method
-      o.path             = FG3dEffectConsole_path;
       // @method
       o.register         = FG3dEffectConsole_register;
       o.unregister       = FG3dEffectConsole_unregister;
@@ -49,12 +47,12 @@
    //==========================================================
    MO.FG3dEffectConsole_onProcess = function FG3dEffectConsole_onProcess(){
       var o = this;
-      var s = o._loadEffects;
-      s.record();
-      while(s.next()){
-         var m = s.current();
-         if(m.processLoad()){
-            s.removeCurrent();
+      var effects = o._loadEffects;
+      effects.record();
+      while(effects.next()){
+         var effect = effects.current();
+         if(effect.processLoad()){
+            effects.removeCurrent();
          }
       }
    }
@@ -74,16 +72,6 @@
       o._effects = new TDictionary();
       o._effectInfo = new SG3dEffectInfo();
       o._tagContext = RClass.create(FTagContext);
-   }
-
-   //==========================================================
-   // <T>获得路径。</T>
-   //
-   // @method
-   // @return String 路径
-   //==========================================================
-   MO.FG3dEffectConsole_path = function FG3dEffectConsole_path(){
-      return this._path;
    }
 
    //==========================================================

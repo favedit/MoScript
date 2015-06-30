@@ -1,9 +1,7 @@
-with(MO){
-   MO.ME3dObject = function ME3dObject(o){
-      o = RClass.inherits(this, o, MGraphicObject, MAttributeCode);
-      o._guid = RClass.register(o, new AGetSet('_guid'));
-      return o;
-   }
+MO.ME3dObject = function ME3dObject(o){
+   o = MO.Class.inherits(this, o, MO.MGraphicObject, MO.MAttributeCode);
+   o._guid = MO.Class.register(o, new MO.AGetSet('_guid'));
+   return o;
 }
 with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
@@ -125,9 +123,8 @@ with(MO){
    MO.FE3dDisplay = function FE3dDisplay(o){
       o = RClass.inherits(this, o, FDisplay);
       o._outline         = null;
-      o._materials       = null;
+      o._materials       = RClass.register(o, new AGetter('_materials'));
       o.construct        = FE3dDisplay_construct;
-      o.materials        = FE3dDisplay_materials;
       o.calculateOutline = FE3dDisplay_calculateOutline;
       o.dispose          = FE3dDisplay_dispose;
       return o;
@@ -137,12 +134,8 @@ with(MO){
       o.__base.FDisplay.construct.call(o);
       o._outline = new SOutline3();
    }
-   MO.FE3dDisplay_materials = function FE3dDisplay_materials(){
-      return this._materials;
-   }
    MO.FE3dDisplay_calculateOutline = function FE3dDisplay_calculateOutline(){
-      var o = this;
-      return o._outline;
+      return this._outline;
    }
    MO.FE3dDisplay_dispose = function FE3dDisplay_dispose(){
       var o = this;
@@ -150,47 +143,41 @@ with(MO){
       o.__base.FDisplay.dispose.call(o);
    }
 }
-with(MO){
-   MO.FE3dDisplayContainer = function FE3dDisplayContainer(o){
-      o = RClass.inherits(this, o, FDisplayContainer);
-      o._outline         = null;
-      o._materials       = null;
-      o.construct        = FE3dDisplayContainer_construct;
-      o.materials        = FE3dDisplayContainer_materials;
-      o.calculateOutline = FE3dDisplayContainer_calculateOutline;
-      o.dispose          = FE3dDisplayContainer_dispose;
-      return o;
-   }
-   MO.FE3dDisplayContainer_construct = function FE3dDisplayContainer_construct(){
-      var o = this;
-      o.__base.FDisplayContainer.construct.call(o);
-      o._outline = new SOutline3d();
-   }
-   MO.FE3dDisplayContainer_materials = function FE3dDisplayContainer_materials(){
-      return this._materials;
-   }
-   MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calculateOutline(){
-      var o = this;
-      var outline = o._outline;
-      if(outline.isEmpty()){
-         outline.setMin();
-         var renderables = o._renderables;
-         if(renderables){
-            var count = renderables.count();
-            for(var i = 0; i < count; i++){
-               var renderable = renderables.at(i);
-               var renderableOutline = renderable.calculateOutline()
-               outline.mergeMax(renderableOutline);
-            }
+MO.FE3dDisplayContainer = function FE3dDisplayContainer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayContainer);
+   o._outline         = null;
+   o._materials       = MO.Class.register(o, new MO.AGetter('_materials'));
+   o.construct        = MO.FE3dDisplayContainer_construct;
+   o.calculateOutline = MO.FE3dDisplayContainer_calculateOutline;
+   o.dispose          = MO.FE3dDisplayContainer_dispose;
+   return o;
+}
+MO.FE3dDisplayContainer_construct = function FE3dDisplayContainer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._outline = new MO.SOutline3d();
+}
+MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._renderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
          }
       }
-      return outline;
    }
-   MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
-      var o = this;
-      o._materials = RObject.free(o._materials);
-      o.__base.FDisplayContainer.dispose.call(o);
-   }
+   return outline;
+}
+MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
+   var o = this;
+   o._materials = RObject.dispose(o._materials);
+   o.__base.FDisplayContainer.dispose.call(o);
 }
 with(MO){
    MO.FE3dRenderable = function FE3dRenderable(o){
@@ -469,12 +456,12 @@ with(MO){
    }
    MO.FE3dStageConsole_onProcess = function FE3dStageConsole_onProcess(){
       var o = this;
-      var s = o._looper;
-      s.record();
+      var looper = o._looper;
+      looper.record();
       for(var i = o._limit - 1; i >= 0; i--){
-         var r = s.next();
-         if(r){
-            r.processDelay(r._linkRegion);
+         var renderable = looper.next();
+         if(renderable){
+            renderable.processDelay(renderable._linkRegion);
          }else{
             break;
          }
@@ -484,62 +471,58 @@ with(MO){
       var o = this;
       o._looper = new TLooper();
       o._renderables = new TDictionary();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
-   MO.FE3dStageConsole_process = function FE3dStageConsole_process(p){
+   MO.FE3dStageConsole_process = function FE3dStageConsole_process(region){
       var o = this;
-      var s = p.allRenderables();
-      for(var i = s.count() - 1; i >= 0; i--){
-         var r = s.getAt(i);
-         if(!r._linkStageLooper){
-            o._looper.push(r);
-            r._linkRegion = p;
-            r._linkStageLooper = o._looper;
+      var renderables = region.allRenderables();
+      for(var i = renderables.count() - 1; i >= 0; i--){
+         var renderable = renderables.at(i);
+         if(!renderable._linkStageLooper){
+            renderable._linkRegion = region;
+            renderable._linkStageLooper = o._looper;
+            o._looper.push(renderable);
          }
       }
    }
 }
-with(MO){
-   MO.FE3dStageStatistics = function FE3dStageStatistics(o){
-      o = RClass.inherits(this, o, FStatistics);
-      o._frame         = null;
-      o._frameProcess  = null;
-      o._frameDraw     = null;
-      o._frameDrawSort = null;
-      o._frameDrawRenderable = null;
-      o.construct      = FE3dStageStatistics_construct;
-      o.reset          = FE3dStageStatistics_reset;
-      o.resetFrame     = FE3dStageStatistics_resetFrame;
-      return o;
-   }
-   MO.FE3dStageStatistics_construct = function FE3dStageStatistics_construct(){
-      var o = this;
-      o.__base.FStatistics.construct.call(o);
-      o._frame = new TSpeed();
-      o._frameProcess = new TSpeed();
-      o._frameDraw = new TSpeed();
-      o._frameDrawSort = new TSpeed();
-      o._frameDrawRenderable = new TSpeed();
-   }
-   MO.FE3dStageStatistics_reset = function FE3dStageStatistics_reset(){
-   }
-   MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
-      var o = this;
-      o._frame.reset();
-      o._frameProcess.reset();
-      o._frameDraw.reset();
-      o._frameDrawSort.reset();
-      o._frameDrawRenderable.reset();
-   }
+MO.FE3dStageStatistics = function FE3dStageStatistics(o){
+   o = MO.Class.inherits(this, o, MO.FStatistics);
+   o._frame               = null;
+   o._frameProcess        = null;
+   o._frameDraw           = null;
+   o._frameDrawSort       = null;
+   o._frameDrawRenderable = null;
+   o.construct            = MO.FE3dStageStatistics_construct;
+   o.reset                = MO.FE3dStageStatistics_reset;
+   o.resetFrame           = MO.FE3dStageStatistics_resetFrame;
+   return o;
 }
-with(MO){
-   MO.FE3dTechnique = function FE3dTechnique(o){
-      o = RClass.inherits(this, o, FG3dTechnique, MLinkerResource);
-      return o;
-   }
+MO.FE3dStageStatistics_construct = function FE3dStageStatistics_construct(){
+   var o = this;
+   o.__base.FStatistics.construct.call(o);
+   o._frame = new MO.TSpeed();
+   o._frameProcess = new MO.TSpeed();
+   o._frameDraw = new MO.TSpeed();
+   o._frameDrawSort = new MO.TSpeed();
+   o._frameDrawRenderable = new MO.TSpeed();
+}
+MO.FE3dStageStatistics_reset = function FE3dStageStatistics_reset(){
+}
+MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
+   var o = this;
+   o._frame.reset();
+   o._frameProcess.reset();
+   o._frameDraw.reset();
+   o._frameDrawSort.reset();
+   o._frameDrawRenderable.reset();
+}
+MO.FE3dTechnique = function FE3dTechnique(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechnique, MO.MLinkerResource);
+   return o;
 }
 with(MO){
    MO.RE3dEngine = function RE3dEngine(){

@@ -18,6 +18,10 @@ with(MO){
       o._dataTicker      = null;
       o._entityPool      = null;
       o._shapePool       = null;
+      o._autio1          = null;
+      o._autio2          = null;
+      o._autio3          = null;
+      o._autio4          = null;
       o.onInvestment     = FEaiStatisticsInvestment_onInvestment;
       o.construct        = FEaiStatisticsInvestment_construct;
       o.allocEntity      = FEaiStatisticsInvestment_allocEntity;
@@ -80,6 +84,14 @@ with(MO){
    }
    MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
       var o = this;
+      var audio = o._autio1 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/1.mp3');
+      var audio = o._autio2 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/2.mp3');
+      var audio = o._autio3 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/3.mp3');
+      var audio = o._autio4 = MO.Class.create(MO.FAudio);
+      audio.loadUrl('/script/ars/eai/currency/4.mp3');
       var display = o._display = RClass.create(FE3dDisplay);
       display.linkGraphicContext(o);
    }
@@ -90,6 +102,15 @@ with(MO){
       var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
       var cityEntity = o._mapEntity.findCityByCard(card);
       if(cityEntity){
+         if(investment > 1000000){
+            o._autio4.play(0);
+         }else if(investment > 100000){
+            o._autio3.play(0);
+         }else if(investment > 10000){
+            o._autio2.play(0);
+         }else if(investment > 1){
+            o._autio1.play(0);
+         }
          cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
       }

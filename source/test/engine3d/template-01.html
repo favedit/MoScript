@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var context = null;
+var stage = null;
+var layer = null;
+var sprites = null;
+var rotation = null;
+var mRotationY = 0;
+var mRotationZ = 0;
+//----------------------------------------------------------
+function onEnterFrame(){
+   // 旋转模型
+   var count = sprites.count();
+   for(var i = 0; i < count; i++){
+      var sprite = sprites.at(i);
+      var matrix = sprite.matrix();
+      matrix.ry = rotation.y;
+      matrix.updateForce();
+   }
+   rotation.y += 0.005;
+}
+//----------------------------------------------------------
+function onTemplateLoad(event){
+   var template = event.template;
+   var sprite = template.sprite();
+   sprite.matrix().setScaleAll(0.06);
+   sprite.matrix().setScaleAll(0.06);
+   sprites.push(sprite);
+   canvas.stage().spriteLayer().push(sprite);
+}
+//----------------------------------------------------------
+function _load(){
+   MO.initialize();
+   MO.Runtime.processCd = MO.EProcess.Debug;
+   MO.RBrowser.construct();
+   MO.RBrowser.setContentPath('../..');
+   // 创建模板集合
+   sprites = new MO.TObjects();
+   rotation = new MO.SVector3(0, 0, 0);
+   // 创建画板
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   // 增加监听
+   var stage = canvas.stage();
+   stage.addEnterFrameListener(null, onEnterFrame);
+   // 加载模型
+   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
+   template = templateConsole.allocByCode(canvas, 'eai.flag.ezubao');
+   template.addLoadListener(null, onTemplateLoad);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+</BODY>
+</HTML>

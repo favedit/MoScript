@@ -337,13 +337,13 @@ MO.MDataStream_testString = function MDataStream_testString(){
    var position = o._position;
    var length = o._viewer.getUint16(position, o._endianCd);
    position += 2;
-   var result = new TString();
+   var result = new MO.TString();
    for(var i = 0; i < length; i++){
       var value = o._viewer.getUint16(position, o._endianCd);
       position += 2;
       result.push(String.fromCharCode(value));
    }
-   return result.toString();
+   return result.flush();
 }
 MO.MDataStream_readBoolean = function MDataStream_readBoolean(){
    var o = this;
@@ -4386,15 +4386,15 @@ with(MO){
    MO.MG3dRegion = function MG3dRegion(o){
       o = RClass.inherits(this, o);
       o._changed                    = false;
-      o._spaceName                  = null;
-      o._technique                  = null;
-      o._techniquePass              = null;
-      o._camera                     = null;
+      o._spaceName                  = RClass.register(o, new AGetter('_spaceName'));
+      o._technique                  = RClass.register(o, new AGetSet('_technique'));
+      o._techniquePass              = RClass.register(o, new AGetter('_techniquePass'));
+      o._camera                     = RClass.register(o, new AGetter('_camera'));
       o._projection                 = null;
-      o._directionalLight           = null
-      o._lights                     = null
-      o._allRenderables             = null;
-      o._renderables                = null;
+      o._directionalLight           = RClass.register(o, new AGetter('_directionalLight'));
+      o._lights                     = RClass.register(o, new AGetter('_lights'));
+      o._allRenderables             = RClass.register(o, new AGetter('_allRenderables'));
+      o._renderables                = RClass.register(o, new AGetter('_renderables'));
       o._cameraPosition             = null;
       o._cameraDirection            = null;
       o._cameraViewMatrix           = null;
@@ -4406,20 +4406,9 @@ with(MO){
       o._lightProjectionMatrix      = null;
       o._lightViewProjectionMatrix  = null;
       o._lightInfo                  = null;
-      o._materialMap                = null;
       o.construct                   = MG3dRegion_construct;
       o.isChanged                   = MG3dRegion_isChanged;
-      o.spaceName                   = MG3dRegion_spaceName;
-      o.technique                   = MG3dRegion_technique;
-      o.setTechnique                = MG3dRegion_setTechnique;
-      o.techniquePass               = MG3dRegion_techniquePass;
       o.setTechniquePass            = MG3dRegion_setTechniquePass;
-      o.camera                      = MG3dRegion_camera;
-      o.directionalLight            = MG3dRegion_directionalLight;
-      o.lights                      = MG3dRegion_lights;
-      o.materialMap                 = MG3dRegion_materialMap;
-      o.allRenderables              = MG3dRegion_allRenderables;
-      o.renderables                 = MG3dRegion_renderables;
       o.pushRenderable              = MG3dRegion_pushRenderable;
       o.setup                       = MG3dRegion_setup;
       o.change                      = MG3dRegion_change;
@@ -4450,41 +4439,11 @@ with(MO){
    MO.MG3dRegion_isChanged = function MG3dRegion_isChanged(){
       return this._changed;
    }
-   MO.MG3dRegion_spaceName = function MG3dRegion_spaceName(){
-      return this._spaceName;
-   }
-   MO.MG3dRegion_technique = function MG3dRegion_technique(){
-      return this._technique;
-   }
-   MO.MG3dRegion_setTechnique = function MG3dRegion_setTechnique(p){
-      this._technique = p;
-   }
-   MO.MG3dRegion_techniquePass = function MG3dRegion_techniquePass(){
-      return this._techniquePass;
-   }
    MO.MG3dRegion_setTechniquePass = function MG3dRegion_setTechniquePass(p, f){
       var o = this;
       o._techniquePass = p;
       o._spaceName = p.fullCode();
       o._finish = f;
-   }
-   MO.MG3dRegion_camera = function MG3dRegion_camera(){
-      return this._camera;
-   }
-   MO.MG3dRegion_directionalLight = function MG3dRegion_directionalLight(){
-      return this._directionalLight;
-   }
-   MO.MG3dRegion_lights = function MG3dRegion_lights(){
-      return this._lights;
-   }
-   MO.MG3dRegion_materialMap = function MG3dRegion_materialMap(){
-      return this._materialMap;
-   }
-   MO.MG3dRegion_allRenderables = function MG3dRegion_allRenderables(p){
-      return this._allRenderables;
-   }
-   MO.MG3dRegion_renderables = function MG3dRegion_renderables(p){
-      return this._renderables;
    }
    MO.MG3dRegion_pushRenderable = function MG3dRegion_pushRenderable(p){
       var o = this;
@@ -4556,10 +4515,11 @@ with(MO){
    }
    MO.MG3dRegion_update = function MG3dRegion_update(){
       var o = this;
-      var rs = o._renderables;
-      var c = rs.count();
-      for(var i = 0; i < c; i++){
-         rs.getAt(i).update(o);
+      var renderables = o._renderables;
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.update(o);
       }
    }
    MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
@@ -5076,9 +5036,8 @@ with(MO){
    MO.FG3dBaseMaterial = function FG3dBaseMaterial(o){
       o = RClass.inherits(this, o, FObject);
       o._name       = null;
-      o._info       = null;
+      o._info       = RClass.register(o, new AGetter('_info'));
       o.construct   = FG3dBaseMaterial_construct;
-      o.info        = FG3dBaseMaterial_info;
       o.assignInfo  = FG3dBaseMaterial_assignInfo;
       o.assign      = FG3dBaseMaterial_assign;
       o.calculate   = FG3dBaseMaterial_calculate;
@@ -5089,19 +5048,14 @@ with(MO){
       o.__base.FObject.construct.call(o);
       o._info = new SG3dMaterialInfo();
    }
-   MO.FG3dBaseMaterial_info = function FG3dBaseMaterial_info(){
-      return this._info;
-   }
    MO.FG3dBaseMaterial_assignInfo = function FG3dBaseMaterial_assignInfo(info){
       this._info.assign(info);
    }
    MO.FG3dBaseMaterial_assign = function FG3dBaseMaterial_assign(material){
-      var o = this;
-      o._info.assign(material.info());
+      this._info.assign(material.info());
    }
    MO.FG3dBaseMaterial_calculate = function FG3dBaseMaterial_calculate(material){
-      var o = this;
-      o._info.calculate(material.info());
+      this._info.calculate(material.info());
    }
 }
 with(MO){
@@ -5118,30 +5072,25 @@ with(MO){
 with(MO){
    MO.FG3dCamera = function FG3dCamera(o){
       o = RClass.inherits(this, o, FObject);
-      o._matrix          = null;
-      o._position        = null;
+      o._matrix          = RClass.register(o, new AGetter('_matrix'));
+      o._position        = RClass.register(o, new AGetter('_position'));
       o._target          = null;
-      o._direction       = null;
+      o._direction       = RClass.register(o, new AGetter('_direction'));
       o._directionTarget = null;
       o._centerFront     = 0.6;
       o._centerBack      = 1.0;
       o._focalNear       = 0.1;
       o._focalFar        = 200.0;
-      o._frustum         = null;
-      o._planes          = null;
+      o._frustum         = RClass.register(o, new AGetter('_frustum'));
+      o._planes          = RClass.register(o, new AGetter('_planes'));
       o._viewport        = null;
       o.__axisUp         = null;
       o.__axisX          = null;
       o.__axisY          = null;
       o.__axisZ          = null;
       o.construct        = FG3dCamera_construct;
-      o.matrix           = FG3dCamera_matrix;
-      o.position         = FG3dCamera_position;
       o.setPosition      = FG3dCamera_setPosition;
-      o.direction        = FG3dCamera_direction;
       o.setDirection     = FG3dCamera_setDirection;
-      o.frustum          = FG3dCamera_frustum;
-      o.planes           = FG3dCamera_planes;
       o.doWalk           = FG3dCamera_doWalk;
       o.doStrafe         = FG3dCamera_doStrafe;
       o.doFly            = FG3dCamera_doFly;
@@ -5170,28 +5119,13 @@ with(MO){
       o.__axisY = new SVector3();
       o.__axisZ = new SVector3();
    }
-   MO.FG3dCamera_position = function FG3dCamera_position(){
-      return this._position;
-   }
-   MO.FG3dCamera_matrix = function FG3dCamera_matrix(){
-      return this._matrix;
-   }
    MO.FG3dCamera_setPosition = function FG3dCamera_setPosition(x, y, z){
       this._position.set(x, y, z);
-   }
-   MO.FG3dCamera_direction = function FG3dCamera_direction(){
-      return this._direction;
    }
    MO.FG3dCamera_setDirection = function FG3dCamera_setDirection(x, y, z){
       var o = this;
       o._direction.set(x, y, z);
       o._directionTarget.set(x, y, z);
-   }
-   MO.FG3dCamera_frustum = function FG3dCamera_frustum(){
-      return this._frustum;
-   }
-   MO.FG3dCamera_planes = function FG3dCamera_planes(){
-      return this._planes;
    }
    MO.FG3dCamera_doWalk = function FG3dCamera_doWalk(p){
       var o = this;
@@ -5265,33 +5199,23 @@ with(MO){
 with(MO){
    MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
       o = RClass.inherits(this, o, FG3dLight);
-      o._camera     = null;
-      o._viewport   = null;
-      o._direction  = null;
-      o.construct   = FG3dDirectionalLight_construct;
-      o.camera      = FG3dDirectionalLight_camera;
-      o.projection  = FG3dDirectionalLight_projection;
-      o.viewport    = FG3dDirectionalLight_viewport;
-      o.direction   = FG3dDirectionalLight_direction;
+      o._camera    = RClass.register(o, new AGetter('_camera'));
+      o._viewport  = RClass.register(o, new AGetter('_viewport'));
+      o._direction = RClass.register(o, new AGetter('_direction'));
+      o.construct  = FG3dDirectionalLight_construct;
+      o.dispose    = FG3dDirectionalLight_dispose;
       return o;
    }
    MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
       var o = this;
       o.__base.FG3dLight.construct.call(o);
-      o._direction = new SVector3();
       o._camera = RClass.create(FG3dPerspectiveCamera);
+      o._direction = new SVector3();
    }
-   MO.FG3dDirectionalLight_camera = function FG3dDirectionalLight_camera(){
-      return this._camera;
-   }
-   MO.FG3dDirectionalLight_projection = function FG3dDirectionalLight_projection(){
-      return this._projection;
-   }
-   MO.FG3dDirectionalLight_viewport = function FG3dDirectionalLight_viewport(){
-      return this._viewport;
-   }
-   MO.FG3dDirectionalLight_direction = function FG3dDirectionalLight_direction(){
-      return this._direction;
+   MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
+      var o = this;
+      o._camera = RObject.dispose(o._camera);
+      o.__base.FG3dLight.dispose.call(o);
    }
 }
 with(MO){
@@ -5500,14 +5424,13 @@ with(MO){
       o._registerEffects = null;
       o._templateEffects = null;
       o._effects         = null;
-      o._path            = "/ars/shader/";
+      o._path            = RClass.register(o, AGetter('_path'), "/ars/shader/");
       o._effectInfo      = null;
       o._tagContext      = null;
       o._thread          = null;
       o._interval        = 300;
       o.onProcess        = FG3dEffectConsole_onProcess;
       o.construct        = FG3dEffectConsole_construct;
-      o.path             = FG3dEffectConsole_path;
       o.register         = FG3dEffectConsole_register;
       o.unregister       = FG3dEffectConsole_unregister;
       o.create           = FG3dEffectConsole_create;
@@ -5519,12 +5442,12 @@ with(MO){
    }
    MO.FG3dEffectConsole_onProcess = function FG3dEffectConsole_onProcess(){
       var o = this;
-      var s = o._loadEffects;
-      s.record();
-      while(s.next()){
-         var m = s.current();
-         if(m.processLoad()){
-            s.removeCurrent();
+      var effects = o._loadEffects;
+      effects.record();
+      while(effects.next()){
+         var effect = effects.current();
+         if(effect.processLoad()){
+            effects.removeCurrent();
          }
       }
    }
@@ -5538,9 +5461,6 @@ with(MO){
       o._effects = new TDictionary();
       o._effectInfo = new SG3dEffectInfo();
       o._tagContext = RClass.create(FTagContext);
-   }
-   MO.FG3dEffectConsole_path = function FG3dEffectConsole_path(){
-      return this._path;
    }
    MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
       this._registerEffects.set(n, e);
@@ -5683,46 +5603,33 @@ with(MO){
       return x;
    }
 }
-with(MO){
-   MO.FG3dLight = function FG3dLight(o){
-      o = RClass.inherits(this, o, FObject);
-      return o;
-   }
+MO.FG3dLight = function FG3dLight(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   return o;
 }
-with(MO){
-   MO.FG3dLightMaterial = function FG3dLightMaterial(o){
-      o = RClass.inherits(this, o, FG3dBaseMaterial);
-      return o;
-   }
+MO.FG3dLightMaterial = function FG3dLightMaterial(o){
+   o = MO.Class.inherits(this, o, MO.FG3dBaseMaterial);
+   return o;
 }
-with(MO){
-   MO.FG3dMaterial = function FG3dMaterial(o){
-      o = RClass.inherits(this, o, FG3dBaseMaterial);
-      o._dirty    = true;
-      o._textures = null;
-      o.textures  = FG3dMaterial_textures;
-      o.update    = FG3dMaterial_update;
-      return o;
-   }
-   MO.FG3dMaterial_textures = function FG3dMaterial_textures(){
-      return this._textures;
-   }
-   MO.FG3dMaterial_update = function FG3dMaterial_update(){
-      this._dirty = true;
-   }
+MO.FG3dMaterial = function FG3dMaterial(o){
+   o = MO.Class.inherits(this, o, MO.FG3dBaseMaterial);
+   o._dirty    = true;
+   o._textures = MO.Class.register(o, new MO.AGetter('_textures'))
+   o.update    = MO.FG3dMaterial_update;
+   return o;
+}
+MO.FG3dMaterial_update = function FG3dMaterial_update(){
+   this._dirty = true;
 }
 with(MO){
    MO.FG3dMaterialMap = function FG3dMaterialMap(o){
       o = RClass.inherits(this, o, FObject, MGraphicObject);
-      o._size      = null;
-      o._data      = null;
-      o._texture   = null;
+      o._size      = RClass.register(o, new AGetter('_size'));
+      o._data      = RClass.register(o, new AGetter('_data'));
+      o._texture   = RClass.register(o, new AGetter('_texture'));
       o._stride    = null;
       o._dirty     = false;
       o.construct  = FG3dMaterialMap_construct;
-      o.size       = FG3dMaterialMap_size;
-      o.data       = FG3dMaterialMap_data;
-      o.texture    = FG3dMaterialMap_texture;
       o.setup      = FG3dMaterialMap_setup;
       o.resize     = FG3dMaterialMap_resize;
       o.setUint8   = FG3dMaterialMap_setUint8;
@@ -5738,53 +5645,44 @@ with(MO){
       o.__base.FObject.construct.call(o);
       o._size = new SSize2();
    }
-   MO.FG3dMaterialMap_size = function FG3dMaterialMap_size(){
-      return this._size;
-   }
-   MO.FG3dMaterialMap_data = function FG3dMaterialMap_data(){
-      return this._data;
-   }
-   MO.FG3dMaterialMap_texture = function FG3dMaterialMap_texture(){
-      return this._texture;
-   }
-   MO.FG3dMaterialMap_setup = function FG3dMaterialMap_setup(w, h){
+   MO.FG3dMaterialMap_setup = function FG3dMaterialMap_setup(width, height){
       var o = this;
       var c = o._graphicContext;
-      var t = o._texture = c.createFlatTexture();
-      o.resize(w, h);
-      t.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-      t.uploadData(o._data, w, h);
+      var texture = o._texture = c.createFlatTexture();
+      o.resize(width, height);
+      texture.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+      texture.uploadData(o._data, width, height);
    }
-   MO.FG3dMaterialMap_resize = function FG3dMaterialMap_resize(w, h){
+   MO.FG3dMaterialMap_resize = function FG3dMaterialMap_resize(width, height){
       var o = this;
       var s = o._size;
-      if(h > 2048){
-         h = 4096;
-      }else if(h > 1024){
-         h = 2048;
-      }else if(h > 512){
-         h = 1024;
-      }else if(h > 256){
-         h = 512;
-      }else if(h > 128){
-         h = 256;
-      }else if(h > 64){
-         h = 128;
-      }else if(h > 32){
-         h = 64;
-      }else if(h > 16){
-         h = 32;
+      if(height > 2048){
+         height = 4096;
+      }else if(height > 1024){
+         height = 2048;
+      }else if(height > 512){
+         height = 1024;
+      }else if(height > 256){
+         height = 512;
+      }else if(height > 128){
+         height = 256;
+      }else if(height > 64){
+         height = 128;
+      }else if(height > 32){
+         height = 64;
+      }else if(height > 16){
+        height = 32;
       }
-      if(h < s.height){
-         h = s.height;
+      if(height < s.height){
+         height = s.height;
       }
-      if((s.width == w) && (s.height == h)){
+      if((s.width == width) && (s.height == height)){
          return;
       }
-      s.set(w, h);
-      o._stride = 4 * w;
-      var t = 4 * w * h;
-      o._data = new Uint8Array(t);
+      s.set(width, height);
+      o._stride = 4 * width;
+      var total = 4 * width * height;
+      o._data = new Uint8Array(total);
    }
    MO.FG3dMaterialMap_setUint8 = function FG3dMaterialMap_setUint8(n, i, v1, v2, v3, v4){
       var o = this;
@@ -5868,38 +5766,29 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.FG3dMaterialTexture = function FG3dMaterialTexture(o){
-      o = RClass.inherits(this, o, FG3dMaterial);
-      o._texture  = null;
-      o.construct = FG3dMaterialTexture_construct;
-      return o;
-   }
-   MO.FG3dMaterialTexture_construct = function FG3dMaterialTexture_construct(){
-      var o = this;
-   }
+MO.FG3dMaterialTexture = function FG3dMaterialTexture(o){
+   o = MO.Class.inherits(this, o, MO.FG3dMaterial);
+   o._texture = null;
+   return o;
 }
-with(MO){
-   MO.FG3dObject = function FG3dObject(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject);
-      o.setup   = FG3dObject_setup;
-      o.dispose = FG3dObject_dispose;
-      return o;
-   }
-   MO.FG3dObject_setup = function FG3dObject_setup(){
-   }
-   MO.FG3dObject_dispose = function FG3dObject_dispose(){
-      var o = this;
-      o.__base.MGraphicObject.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FG3dObject = function FG3dObject(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o.setup   = MO.FG3dObject_setup;
+   o.dispose = MO.FG3dObject_dispose;
+   return o;
+}
+MO.FG3dObject_setup = function FG3dObject_setup(){
+}
+MO.FG3dObject_dispose = function FG3dObject_dispose(){
+   var o = this;
+   o.__base.MGraphicObject.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FG3dOrthoCamera = function FG3dOrthoCamera(o){
       o = RClass.inherits(this, o, FG3dCamera);
-      o._projection      = null;
+      o._projection      = RClass.register(o, new AGetter('_projection'));
       o.construct        = FG3dOrthoCamera_construct;
-      o.projection       = FG3dOrthoCamera_projection;
       o.updateFrustum    = FG3dOrthoCamera_updateFrustum;
       o.updateFromCamera = FG3dOrthoCamera_updateFromCamera;
       o.updateFlatCamera = FG3dOrthoCamera_updateFlatCamera;
@@ -5909,9 +5798,6 @@ with(MO){
       var o = this;
       o.__base.FG3dCamera.construct.call(o);
       o._projection = RClass.create(FG3dOrthoProjection);
-   }
-   MO.FG3dOrthoCamera_projection = function FG3dOrthoCamera_projection(){
-      return this._projection;
    }
    MO.FG3dOrthoCamera_updateFrustum = function FG3dOrthoCamera_updateFrustum(){
       var o = this;
@@ -5961,9 +5847,8 @@ with(MO){
 with(MO){
    MO.FG3dOrthoProjection = function FG3dOrthoProjection(o){
       o = RClass.inherits(this, o, FG3dProjection);
-      o._matrix       = null;
+      o._matrix       = RClass.register(o, new AGetter('_matrix'));
       o.construct     = FG3dOrthoProjection_construct;
-      o.matrix        = FG3dOrthoProjection_matrix;
       o.update        = FG3dOrthoProjection_update;
       o.updateFrustum = FG3dOrthoProjection_updateFrustum;
       return o;
@@ -5972,9 +5857,6 @@ with(MO){
       var o = this;
       o.__base.FG3dProjection.construct.call(o);
       o._matrix = new SOrthoMatrix3d();
-   }
-   MO.FG3dOrthoProjection_matrix = function FG3dOrthoProjection_matrix(){
-      return this._matrix;
    }
    MO.FG3dOrthoProjection_update = function FG3dOrthoProjection_update(){
       var o = this;
@@ -6001,10 +5883,9 @@ with(MO){
 with(MO){
    MO.FG3dPerspectiveCamera = function FG3dPerspectiveCamera(o){
       o = RClass.inherits(this, o, FG3dCamera);
-      o._projection       = null;
+      o._projection       = RClass.register(o, new AGetter('_projection'));
       o._centerFront      = 0.4;
       o.construct         = FG3dPerspectiveCamera_construct;
-      o.projection        = FG3dPerspectiveCamera_projection;
       o.updateFrustum     = FG3dPerspectiveCamera_updateFrustum;
       o.updateFlatFrustum = FG3dPerspectiveCamera_updateFlatFrustum;
       o.updateFromCamera  = FG3dPerspectiveCamera_updateFromCamera;
@@ -6015,9 +5896,6 @@ with(MO){
       var o = this;
       o.__base.FG3dCamera.construct.call(o);
       o._projection = RClass.create(FG3dPerspectiveProjection);
-   }
-   MO.FG3dPerspectiveCamera_projection = function FG3dPerspectiveCamera_projection(){
-      return this._projection;
    }
    MO.FG3dPerspectiveCamera_updateFrustum = function FG3dPerspectiveCamera_updateFrustum(){
       var o = this;
@@ -6102,11 +5980,9 @@ with(MO){
       o.update();
    }
 }
-with(MO){
-   MO.FG3dPointLight = function FG3dPointLight(o){
-      o = RClass.inherits(this, o, FG3dLight);
-      return o;
-   }
+MO.FG3dPointLight = function FG3dPointLight(o){
+   o = MO.Class.inherits(this, o, MO.FG3dLight);
+   return o;
 }
 with(MO){
    MO.FG3dProjection = function FG3dProjection(o){
@@ -6130,18 +6006,14 @@ with(MO){
       return this._zfar - this._znear;
    }
 }
-with(MO){
-   MO.FG3dShaderTemplate = function FG3dShaderTemplate(o){
-      o = RClass.inherits(this, o, FTagDocument);
-      o._space  = 'shader';
-      return o;
-   }
+MO.FG3dShaderTemplate = function FG3dShaderTemplate(o){
+   o = MO.Class.inherits(this, o, MO.FTagDocument);
+   o._space  = 'shader';
+   return o;
 }
-with(MO){
-   MO.FG3dSpotLight = function FG3dSpotLight(o){
-      o = RClass.inherits(this, o, FG3dLight);
-      return o;
-   }
+MO.FG3dSpotLight = function FG3dSpotLight(o){
+   o = MO.Class.inherits(this, o, MO.FG3dLight);
+   return o;
 }
 with(MO){
    MO.FG3dTechnique = function FG3dTechnique(o){
@@ -6213,9 +6085,8 @@ with(MO){
    MO.FG3dTechniqueConsole = function FG3dTechniqueConsole(o){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd    = EScope.Local;
-      o._techniques = null;
+      o._techniques = RClass.register(o, new AGetter('_techniques'));
       o.construct   = FG3dTechniqueConsole_construct;
-      o.techniques  = FG3dTechniqueConsole_techniques;
       o.find        = FG3dTechniqueConsole_find;
       return o;
    }
@@ -6223,9 +6094,6 @@ with(MO){
       var o = this;
       o.__base.FConsole.construct.call(o);
       o._techniques = new TDictionary();
-   }
-   MO.FG3dTechniqueConsole_techniques = function FG3dTechniqueConsole_techniques(){
-      return this._techniques;
    }
    MO.FG3dTechniqueConsole_find = function FG3dTechniqueConsole_find(context, clazz){
       var o = this;
@@ -6255,20 +6123,10 @@ with(MO){
       return technique;
    }
 }
-with(MO){
-   MO.FG3dTechniqueMode = function FG3dTechniqueMode(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code   = null;
-      o.code    = FG3dTechniqueMode_code;
-      o.setCode = FG3dTechniqueMode_setCode;
-      return o;
-   }
-   MO.FG3dTechniqueMode_code = function FG3dTechniqueMode_code(){
-      return this._code;
-   }
-   MO.FG3dTechniqueMode_setCode = function FG3dTechniqueMode_setCode(p){
-      this._code = p;
-   }
+MO.FG3dTechniqueMode = function FG3dTechniqueMode(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code = MO.Class.register(o, new MO.AGetSet('_code'));
+   return o;
 }
 with(MO){
    MO.FG3dTechniquePass = function FG3dTechniquePass(o){
@@ -6420,23 +6278,21 @@ with(MO){
       return true;
    }
 }
-with(MO){
-   MO.FG3dViewport = function FG3dViewport(o){
-      o = RClass.inherits(this, o, FObject);
-      o.left   = 0;
-      o.top    = 0;
-      o.width  = 0;
-      o.height = 0;
-      o.set    = FG3dViewport_set;
-      return o;
-   }
-   MO.FG3dViewport_set = function FG3dViewport_set(l, t, w, h){
-      var o = this;
-      o.left = l;
-      o.top = t;
-      o.width = w;
-      o.height= h;
-   }
+MO.FG3dViewport = function FG3dViewport(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o.left   = 0;
+   o.top    = 0;
+   o.width  = 0;
+   o.height = 0;
+   o.set    = MO.FG3dViewport_set;
+   return o;
+}
+MO.FG3dViewport_set = function FG3dViewport_set(left, top, width, height){
+   var o = this;
+   o.left = left;
+   o.top = top;
+   o.width = width;
+   o.height= height;
 }
 with(MO){
    MO.REngine3d = function REngine3d(){
@@ -11178,12 +11034,10 @@ with(MO){
       return o;
    }
 }
-with(MO){
-   MO.ME3dObject = function ME3dObject(o){
-      o = RClass.inherits(this, o, MGraphicObject, MAttributeCode);
-      o._guid = RClass.register(o, new AGetSet('_guid'));
-      return o;
-   }
+MO.ME3dObject = function ME3dObject(o){
+   o = MO.Class.inherits(this, o, MO.MGraphicObject, MO.MAttributeCode);
+   o._guid = MO.Class.register(o, new MO.AGetSet('_guid'));
+   return o;
 }
 with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
@@ -11305,9 +11159,8 @@ with(MO){
    MO.FE3dDisplay = function FE3dDisplay(o){
       o = RClass.inherits(this, o, FDisplay);
       o._outline         = null;
-      o._materials       = null;
+      o._materials       = RClass.register(o, new AGetter('_materials'));
       o.construct        = FE3dDisplay_construct;
-      o.materials        = FE3dDisplay_materials;
       o.calculateOutline = FE3dDisplay_calculateOutline;
       o.dispose          = FE3dDisplay_dispose;
       return o;
@@ -11317,12 +11170,8 @@ with(MO){
       o.__base.FDisplay.construct.call(o);
       o._outline = new SOutline3();
    }
-   MO.FE3dDisplay_materials = function FE3dDisplay_materials(){
-      return this._materials;
-   }
    MO.FE3dDisplay_calculateOutline = function FE3dDisplay_calculateOutline(){
-      var o = this;
-      return o._outline;
+      return this._outline;
    }
    MO.FE3dDisplay_dispose = function FE3dDisplay_dispose(){
       var o = this;
@@ -11330,47 +11179,41 @@ with(MO){
       o.__base.FDisplay.dispose.call(o);
    }
 }
-with(MO){
-   MO.FE3dDisplayContainer = function FE3dDisplayContainer(o){
-      o = RClass.inherits(this, o, FDisplayContainer);
-      o._outline         = null;
-      o._materials       = null;
-      o.construct        = FE3dDisplayContainer_construct;
-      o.materials        = FE3dDisplayContainer_materials;
-      o.calculateOutline = FE3dDisplayContainer_calculateOutline;
-      o.dispose          = FE3dDisplayContainer_dispose;
-      return o;
-   }
-   MO.FE3dDisplayContainer_construct = function FE3dDisplayContainer_construct(){
-      var o = this;
-      o.__base.FDisplayContainer.construct.call(o);
-      o._outline = new SOutline3d();
-   }
-   MO.FE3dDisplayContainer_materials = function FE3dDisplayContainer_materials(){
-      return this._materials;
-   }
-   MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calculateOutline(){
-      var o = this;
-      var outline = o._outline;
-      if(outline.isEmpty()){
-         outline.setMin();
-         var renderables = o._renderables;
-         if(renderables){
-            var count = renderables.count();
-            for(var i = 0; i < count; i++){
-               var renderable = renderables.at(i);
-               var renderableOutline = renderable.calculateOutline()
-               outline.mergeMax(renderableOutline);
-            }
+MO.FE3dDisplayContainer = function FE3dDisplayContainer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayContainer);
+   o._outline         = null;
+   o._materials       = MO.Class.register(o, new MO.AGetter('_materials'));
+   o.construct        = MO.FE3dDisplayContainer_construct;
+   o.calculateOutline = MO.FE3dDisplayContainer_calculateOutline;
+   o.dispose          = MO.FE3dDisplayContainer_dispose;
+   return o;
+}
+MO.FE3dDisplayContainer_construct = function FE3dDisplayContainer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._outline = new MO.SOutline3d();
+}
+MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._renderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
          }
       }
-      return outline;
    }
-   MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
-      var o = this;
-      o._materials = RObject.free(o._materials);
-      o.__base.FDisplayContainer.dispose.call(o);
-   }
+   return outline;
+}
+MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
+   var o = this;
+   o._materials = RObject.dispose(o._materials);
+   o.__base.FDisplayContainer.dispose.call(o);
 }
 with(MO){
    MO.FE3dRenderable = function FE3dRenderable(o){
@@ -11649,12 +11492,12 @@ with(MO){
    }
    MO.FE3dStageConsole_onProcess = function FE3dStageConsole_onProcess(){
       var o = this;
-      var s = o._looper;
-      s.record();
+      var looper = o._looper;
+      looper.record();
       for(var i = o._limit - 1; i >= 0; i--){
-         var r = s.next();
-         if(r){
-            r.processDelay(r._linkRegion);
+         var renderable = looper.next();
+         if(renderable){
+            renderable.processDelay(renderable._linkRegion);
          }else{
             break;
          }
@@ -11664,62 +11507,58 @@ with(MO){
       var o = this;
       o._looper = new TLooper();
       o._renderables = new TDictionary();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
+      var thread = o._thread = RClass.create(FThread);
+      thread.setInterval(o._interval);
+      thread.addProcessListener(o, o.onProcess);
+      RConsole.find(FThreadConsole).start(thread);
    }
-   MO.FE3dStageConsole_process = function FE3dStageConsole_process(p){
+   MO.FE3dStageConsole_process = function FE3dStageConsole_process(region){
       var o = this;
-      var s = p.allRenderables();
-      for(var i = s.count() - 1; i >= 0; i--){
-         var r = s.getAt(i);
-         if(!r._linkStageLooper){
-            o._looper.push(r);
-            r._linkRegion = p;
-            r._linkStageLooper = o._looper;
+      var renderables = region.allRenderables();
+      for(var i = renderables.count() - 1; i >= 0; i--){
+         var renderable = renderables.at(i);
+         if(!renderable._linkStageLooper){
+            renderable._linkRegion = region;
+            renderable._linkStageLooper = o._looper;
+            o._looper.push(renderable);
          }
       }
    }
 }
-with(MO){
-   MO.FE3dStageStatistics = function FE3dStageStatistics(o){
-      o = RClass.inherits(this, o, FStatistics);
-      o._frame         = null;
-      o._frameProcess  = null;
-      o._frameDraw     = null;
-      o._frameDrawSort = null;
-      o._frameDrawRenderable = null;
-      o.construct      = FE3dStageStatistics_construct;
-      o.reset          = FE3dStageStatistics_reset;
-      o.resetFrame     = FE3dStageStatistics_resetFrame;
-      return o;
-   }
-   MO.FE3dStageStatistics_construct = function FE3dStageStatistics_construct(){
-      var o = this;
-      o.__base.FStatistics.construct.call(o);
-      o._frame = new TSpeed();
-      o._frameProcess = new TSpeed();
-      o._frameDraw = new TSpeed();
-      o._frameDrawSort = new TSpeed();
-      o._frameDrawRenderable = new TSpeed();
-   }
-   MO.FE3dStageStatistics_reset = function FE3dStageStatistics_reset(){
-   }
-   MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
-      var o = this;
-      o._frame.reset();
-      o._frameProcess.reset();
-      o._frameDraw.reset();
-      o._frameDrawSort.reset();
-      o._frameDrawRenderable.reset();
-   }
+MO.FE3dStageStatistics = function FE3dStageStatistics(o){
+   o = MO.Class.inherits(this, o, MO.FStatistics);
+   o._frame               = null;
+   o._frameProcess        = null;
+   o._frameDraw           = null;
+   o._frameDrawSort       = null;
+   o._frameDrawRenderable = null;
+   o.construct            = MO.FE3dStageStatistics_construct;
+   o.reset                = MO.FE3dStageStatistics_reset;
+   o.resetFrame           = MO.FE3dStageStatistics_resetFrame;
+   return o;
 }
-with(MO){
-   MO.FE3dTechnique = function FE3dTechnique(o){
-      o = RClass.inherits(this, o, FG3dTechnique, MLinkerResource);
-      return o;
-   }
+MO.FE3dStageStatistics_construct = function FE3dStageStatistics_construct(){
+   var o = this;
+   o.__base.FStatistics.construct.call(o);
+   o._frame = new MO.TSpeed();
+   o._frameProcess = new MO.TSpeed();
+   o._frameDraw = new MO.TSpeed();
+   o._frameDrawSort = new MO.TSpeed();
+   o._frameDrawRenderable = new MO.TSpeed();
+}
+MO.FE3dStageStatistics_reset = function FE3dStageStatistics_reset(){
+}
+MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
+   var o = this;
+   o._frame.reset();
+   o._frameProcess.reset();
+   o._frameDraw.reset();
+   o._frameDrawSort.reset();
+   o._frameDrawRenderable.reset();
+}
+MO.FE3dTechnique = function FE3dTechnique(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechnique, MO.MLinkerResource);
+   return o;
 }
 with(MO){
    MO.RE3dEngine = function RE3dEngine(){
@@ -13601,19 +13440,20 @@ with(MO){
 }
 with(MO){
    MO.FE3sResource = function FE3sResource(o){
-      o = RClass.inherits(this, o, FResource, MListenerLoad);
-      o._dataLoad   = false;
-      o._dataReady  = false;
-      o._dataSize   = 0;
-      o._blockSize  = 0;
-      o._blockCount = 0;
-      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
-      o.onComplete  = FE3sResource_onComplete;
-      o.makeLabel   = FE3sResource_makeLabel;
-      o.testReady   = FE3sResource_testReady;
-      o.unserialize = FE3sResource_unserialize;
-      o.saveConfig  = FE3sResource_saveConfig;
-      o.dispose     = FE3sResource_dispose;
+      o = RClass.inherits(this, o, FResource, MListener);
+      o._dataLoad      = false;
+      o._dataReady     = false;
+      o._dataSize      = 0;
+      o._blockSize     = 0;
+      o._blockCount    = 0;
+      o._vendor        = RClass.register(o, new AGetSet('_vendor'));
+      o._loadListeners = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
+      o.onComplete     = FE3sResource_onComplete;
+      o.makeLabel      = FE3sResource_makeLabel;
+      o.testReady      = FE3sResource_testReady;
+      o.unserialize    = FE3sResource_unserialize;
+      o.saveConfig     = FE3sResource_saveConfig;
+      o.dispose        = FE3sResource_dispose;
       return o;
    }
    MO.FE3sResource_onComplete = function FE3sResource_onComplete(input){
@@ -13670,7 +13510,7 @@ with(MO){
    MO.FE3sResource_dispose = function FE3sResource_dispose(){
       var o = this;
       o._vendor = null;
-      o.__base.MListenerLoad.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FConsole.dispose.call(o);
    }
 }
@@ -14696,43 +14536,36 @@ with(MO){
       o.__base.FConsole.dispose.call(o);
    }
 }
-with(MO){
-   MO.FE3sTheme = function FE3sTheme(o){
-      o = RClass.inherits(this, o, FE3sResource);
-      o._materials  = null;
-      o.materials   = FE3sTheme_materials;
-      o.find        = FE3sTheme_find;
-      o.unserialize = FE3sTheme_unserialize;
-      return o;
-   }
-   MO.FE3sTheme_materials = function FE3sTheme_materials(){
-      return this._materials;
-   }
-   MO.FE3sTheme_find = function FE3sTheme_find(p){
-      var ms = this._materials;
-      return ms ? ms.get(p) : null;
-   }
-   MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(p){
-      var o = this;
-      var c = p.readInt32();
-      if(c > 0){
-         var s = o._materials = new TDictionary();
-         for(var n = 0; n < c; n++){
-            var m = RClass.create(FE3sMaterial);
-            m.unserialize(p);
-            s.set(m.code(), m);
-         }
+MO.FE3sTheme = function FE3sTheme(o){
+   o = MO.Class.inherits(this, o, MO.FE3sResource);
+   o._materials  = MO.Class.register(o, new MO.AGetter('_materials'));
+   o.find        = MO.FE3sTheme_find;
+   o.unserialize = MO.FE3sTheme_unserialize;
+   return o;
+}
+MO.FE3sTheme_find = function FE3sTheme_find(name){
+   var materials = this._materials;
+   return materials ? materials.get(name) : null;
+}
+MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(input){
+   var o = this;
+   var count = input.readInt32();
+   if(count > 0){
+      var materials = o._materials = new MO.TDictionary();
+      for(var n = 0; n < c; n++){
+         var material = RClass.create(FE3sMaterial);
+         material.unserialize(input);
+         materials.set(material.code(), material);
       }
    }
 }
 with(MO){
    MO.FE3sThemeConsole = function FE3sThemeConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, MO.FConsole);
       o._path        = '/assets/theme/'
-      o._activeTheme = null;
+      o._activeTheme = RClass.register(o, new AGetter('_activeTheme'));
       o._themes      = null;
       o.construct    = FE3sThemeConsole_construct;
-      o.activeTheme  = FE3sThemeConsole_activeTheme;
       o.find         = FE3sThemeConsole_find;
       o.select       = FE3sThemeConsole_select;
       return o;
@@ -14742,27 +14575,24 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       o._themes = new TDictionary();
    }
-   MO.FE3sThemeConsole_activeTheme = function FE3sThemeConsole_activeTheme(){
-      return this._activeTheme;
-   }
-   MO.FE3sThemeConsole_find = function FE3sThemeConsole_find(p){
-      var t = this._activeTheme;
-      if(t == null){
+   MO.FE3sThemeConsole_find = function FE3sThemeConsole_find(name){
+      var theme = this._activeTheme;
+      if(theme == null){
          throw new TError('Active theme is empty.');
       }
-      return t.find(p);
+      return theme.find(name);
    }
-   MO.FE3sThemeConsole_select = function FE3sThemeConsole_select(p){
+   MO.FE3sThemeConsole_select = function FE3sThemeConsole_select(name){
       var o = this;
-      var r = o._themes.get(p);
-      if(r == null){
-         var u = RBrowser.contentPath(o._path + p + '.ser');
-         r = RClass.create(FE3sTheme);
-         r.load(u);
-         o._themes.set(p, r);
+      var theme = o._themes.get(name);
+      if(theme == null){
+         var url = RBrowser.contentPath(o._path + name + '.ser');
+         theme = RClass.create(FE3sTheme);
+         theme.load(url);
+         o._themes.set(name, theme);
       }
-      o._activeTheme = r;
-      return r;
+      o._activeTheme = theme;
+      return theme;
    }
 }
 with(MO){
@@ -20255,24 +20085,20 @@ with(MO){
       o._dataReady       = false;
       o._ready           = false;
       o._resource        = null;
-      o._sprites         = null;
-      o._skeletons       = null;
-      o._animations      = null;
-      o._resource        = null;
+      o._sprites         = RClass.register(o, new AGetter('_sprites'));
+      o._skeletons       = RClass.register(o, new AGetter('_skeletons'));
+      o._animations      = RClass.register(o, new AGetter('_animations'));
+      o._resource        = RClass.register(o, new AGetSet('_resource'));
       o.construct        = FE3dTemplate_construct;
       o.testReady        = FE3dTemplate_testReady;
       o.sprite           = FE3dTemplate_sprite;
       o.findMeshByCode   = FE3dTemplate_findMeshByCode;
       o.meshRenderables  = FE3dTemplate_sprites;
-      o.skeletons        = FE3dTemplate_skeletons;
       o.pushSkeleton     = FE3dTemplate_pushSkeleton;
       o.findAnimation    = FE3dTemplate_findAnimation;
-      o.animations       = FE3dTemplate_animations;
       o.pushAnimation    = FE3dTemplate_pushAnimation;
       o.visible          = FE3dTemplate_visible;
       o.setVisible       = FE3dTemplate_setVisible;
-      o.resource         = FE3dTemplate_resource;
-      o.setResource      = FE3dTemplate_setResource;
       o.loadSkeletons    = FE3dTemplate_loadSkeletons;
       o.linkAnimation    = FE3dTemplate_linkAnimation;
       o.loadAnimations   = FE3dTemplate_loadAnimations;
@@ -20306,12 +20132,6 @@ with(MO){
       }
       return null;
    }
-   MO.FE3dTemplate_sprites = function FE3dTemplate_sprites(){
-      return this._sprites;
-   }
-   MO.FE3dTemplate_skeletons = function FE3dTemplate_skeletons(){
-      return this._skeletons;
-   }
    MO.FE3dTemplate_pushSkeleton = function FE3dTemplate_pushSkeleton(p){
       var o = this;
       var r = o._skeletons;
@@ -20323,12 +20143,12 @@ with(MO){
       }
       r.set(p._resource.guid(), p);
    }
+   MO.FE3dTemplate_sprites = function FE3dTemplate_sprites(){
+      return this._sprites;
+   }
    MO.FE3dTemplate_findAnimation = function FE3dTemplate_findAnimation(p){
       var s = this._animations;
       return s ? s.get(p) : null;
-   }
-   MO.FE3dTemplate_animations = function FE3dTemplate_animations(){
-      return this._animations;
    }
    MO.FE3dTemplate_pushAnimation = function FE3dTemplate_pushAnimation(p){
       var o = this;
@@ -20344,12 +20164,6 @@ with(MO){
    }
    MO.FE3dTemplate_setVisible = function FE3dTemplate_setVisible(visible){
       this.sprite().setVisible(visible);
-   }
-   MO.FE3dTemplate_resource = function FE3dTemplate_resource(p){
-      return this._resource;
-   }
-   MO.FE3dTemplate_setResource = function FE3dTemplate_setResource(p){
-      this._resource = p;
    }
    MO.FE3dTemplate_loadSkeletons = function FE3dTemplate_loadSkeletons(p){
       var o = this;
@@ -20468,7 +20282,11 @@ with(MO){
          }
       }
       o._ready = true;
-      o.processLoadListener(o);
+      var event = MO.Memory.alloc(SEvent);
+      event.sender = o;
+      event.template = o;
+      o.processLoadListener(event);
+      MO.Memory.free(event);
       return o._ready;
    }
    MO.FE3dTemplate_process = function FE3dTemplate_process(event){

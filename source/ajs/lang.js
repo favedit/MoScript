@@ -2381,12 +2381,13 @@ with(MO){
       var value = annotation.value();
       return (defaultValue != null) ? defaultValue : value;
    }
-   MO.RClass.prototype.createBase = function RClass_createBase(n){
-      if(n){
-         var s = 'function ' + n + '(){return this;} new ' + n + '();';
-         return eval(s);
+   MO.RClass.prototype.createBase = function RClass_createBase(name){
+      var base = null;
+      if(name){
+         var source = 'function ' + name + '(){return this;} new ' + name + '();';
+         base = eval(source);
       }
-      return null;
+      return base;
    }
    MO.RClass.prototype.createClass = function RClass_createClass(className){
       var o = this;
@@ -2632,42 +2633,42 @@ with(MO){
       var r = o._consoles.get(n);
       return r;
    }
-   MO.RConsole.prototype.find = function RConsole_find(v){
+   MO.RConsole.prototype.find = function RConsole_find(value){
       var o = this;
-      var n = null;
-      if(v.constructor = String){
-         n = RClass.name(v);
-      }else if(v.constructor == Function){
-         n = v;
+      var name = null;
+      if(value.constructor == String){
+         name = value;
+      }else if(value.constructor == Function){
+         name = RClass.name(value);
       }else{
-         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', v);
+         return MO.Logger.fatal(o, null, 'Parameter type is invalid. (console={1})', value);
       }
-      var r = MO.Global.get(o.ConsolePreFix + n);
-      if(r){
-         return r;
+      var console = MO.Global.get(o.ConsolePreFix + name);
+      if(console){
+         return console;
       }
-      r = o._consoles.get(n);
-      if(r){
-         return r;
+      console = o._consoles.get(name);
+      if(console){
+         return console;
       }
-      var c = RClass.forName(n);
-      var s = c.instance.scopeCd();
-      switch(s){
+      var template = RClass.forName(name);
+      var scopeCd = template.instance.scopeCd();
+      switch(scopeCd){
          case EScope.Global:
-            r = top.MO.RConsole.createByName(n);
-            MO.Global.set(o.ConsolePreFix + n, r);
-            o._consoles.set(n, r);
+            console = top.MO.RConsole.createByName(name);
+            MO.Global.set(o.ConsolePreFix + name, console);
+            o._consoles.set(name, console);
             break;
          case EScope.Local:
-            r = o.createByName(n);
-            o._localConsoles.set(n, r);
-            o._consoles.set(n, r);
+            console = o.createByName(name);
+            o._localConsoles.set(name, console);
+            o._consoles.set(name, console);
             break;
          default:
-            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', n);
+            return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
       }
-      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
-      return r;
+      MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, REnum.decode(EScope, scopeCd));
+      return console;
    }
    MO.RConsole.prototype.release = function RConsole_release(){
       var o = this;

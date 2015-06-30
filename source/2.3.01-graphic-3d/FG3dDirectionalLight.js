@@ -9,16 +9,13 @@ with(MO){
       o = RClass.inherits(this, o, FG3dLight);
       //..........................................................
       // @attribute
-      o._camera     = null;
-      o._viewport   = null;
-      o._direction  = null;
+      o._camera    = RClass.register(o, new AGetter('_camera'));
+      o._viewport  = RClass.register(o, new AGetter('_viewport'));
+      o._direction = RClass.register(o, new AGetter('_direction'));
       //..........................................................
       // @method
-      o.construct   = FG3dDirectionalLight_construct;
-      o.camera      = FG3dDirectionalLight_camera;
-      o.projection  = FG3dDirectionalLight_projection;
-      o.viewport    = FG3dDirectionalLight_viewport;
-      o.direction   = FG3dDirectionalLight_direction;
+      o.construct  = FG3dDirectionalLight_construct;
+      o.dispose    = FG3dDirectionalLight_dispose;
       return o;
    }
 
@@ -30,49 +27,19 @@ with(MO){
    MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
       var o = this;
       o.__base.FG3dLight.construct.call(o);
-      o._direction = new SVector3();
-      //o._camera = RClass.create(FG3dOrthoCamera);
       o._camera = RClass.create(FG3dPerspectiveCamera);
-      //o._viewport = RClass.create(FG3dViewport);
+      o._direction = new SVector3();
    }
 
    //==========================================================
-   // <T>获得相机。</T>
+   // <T>释放处理。</T>
    //
    // @method
-   // @return FG3dCamera 相机
    //==========================================================
-   MO.FG3dDirectionalLight_camera = function FG3dDirectionalLight_camera(){
-      return this._camera;
-   }
-
-   //==========================================================
-   // <T>获得投影。</T>
-   //
-   // @method
-   // @return FG3dProjection 投影
-   //==========================================================
-   MO.FG3dDirectionalLight_projection = function FG3dDirectionalLight_projection(){
-      return this._projection;
-   }
-
-   //==========================================================
-   // <T>获得视角。</T>
-   //
-   // @method
-   // @return FG3dCamera 视角
-   //==========================================================
-   MO.FG3dDirectionalLight_viewport = function FG3dDirectionalLight_viewport(){
-      return this._viewport;
-   }
-
-   //==========================================================
-   // <T>获得方向。</T>
-   //
-   // @method
-   // @return SVector3 方向
-   //==========================================================
-   MO.FG3dDirectionalLight_direction = function FG3dDirectionalLight_direction(){
-      return this._direction;
+   MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
+      var o = this;
+      o._camera = RObject.dispose(o._camera);
+      // 父处理
+      o.__base.FG3dLight.dispose.call(o);
    }
 }

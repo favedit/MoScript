@@ -70,9 +70,9 @@ with(MO){
       }
       m.updateForce();
    }
-   MO.FDsTemplateCanvasContent_onMouseCaptureStop = function FDsTemplateCanvasContent_onMouseCaptureStop(p){
+   MO.FDsTemplateCanvasContent_onMouseCaptureStop = function FDsTemplateCanvasContent_onMouseCaptureStop(event){
    }
-   MO.FDsTemplateCanvasContent_onDataLoaded = function FDsTemplateCanvasContent_onDataLoaded(p){
+   MO.FDsTemplateCanvasContent_onDataLoaded = function FDsTemplateCanvasContent_onDataLoaded(event){
       var o = this;
       var m = o._activeSpace;
       var g = m.region();
@@ -130,8 +130,8 @@ with(MO){
       if(!space._linked){
          RConsole.find(FUiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
-         space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
+         space.addLoadListener(o, o.onDataLoaded);
       }
       RStage.register('space', space);
    }

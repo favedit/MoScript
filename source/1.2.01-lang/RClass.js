@@ -382,15 +382,16 @@
    // <T>创建一个临时的基类对象。</T>
    //
    // @method
-   // @param n:name:String 类名称
+   // @param name:String 类名称
    // @return Object 基类对象
    //==========================================================
-   MO.RClass.prototype.createBase = function RClass_createBase(n){
-      if(n){
-         var s = 'function ' + n + '(){return this;} new ' + n + '();';
-         return eval(s);
+   MO.RClass.prototype.createBase = function RClass_createBase(name){
+      var base = null;
+      if(name){
+         var source = 'function ' + name + '(){return this;} new ' + name + '();';
+         base = eval(source);
       }
-      return null;
+      return base;
    }
 
    //==========================================================

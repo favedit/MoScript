@@ -144,18 +144,18 @@ with(MO){
    // <T>鼠标捕捉结束处理。</T>
    //
    // @method
-   // @param p:event:SEvent 事件
+   // @param event:SEvent 事件
    //==========================================================
-   MO.FDsTemplateCanvasContent_onMouseCaptureStop = function FDsTemplateCanvasContent_onMouseCaptureStop(p){
+   MO.FDsTemplateCanvasContent_onMouseCaptureStop = function FDsTemplateCanvasContent_onMouseCaptureStop(event){
    }
 
    //==========================================================
    // <T>加载模板处理。</T>
    //
    // @method
-   // @param p:template:FTemplate3d 模板
+   // @param template:FTemplate3d 模板
    //==========================================================
-   MO.FDsTemplateCanvasContent_onDataLoaded = function FDsTemplateCanvasContent_onDataLoaded(p){
+   MO.FDsTemplateCanvasContent_onDataLoaded = function FDsTemplateCanvasContent_onDataLoaded(event){
       var o = this;
       var m = o._activeSpace;
       //m.selectTechnique(o, FE3dGeneralTechnique);
@@ -247,8 +247,8 @@ with(MO){
          RConsole.find(FUiDesktopConsole).showLoading();
          // 设置事件
          space._layer.pushRenderable(o._dimensional);
-         space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
+         space.addLoadListener(o, o.onDataLoaded);
       }
       // 启动舞台
       RStage.register('space', space);

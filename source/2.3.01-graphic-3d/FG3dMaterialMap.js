@@ -9,19 +9,15 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MGraphicObject);
       //..........................................................
       // @attribute
-      o._size      = null;
-      o._data      = null;
-      o._texture   = null;
+      o._size      = RClass.register(o, new AGetter('_size'));
+      o._data      = RClass.register(o, new AGetter('_data'));
+      o._texture   = RClass.register(o, new AGetter('_texture'));
       // @attribute
       o._stride    = null;
       o._dirty     = false;
       //..........................................................
       // @method
       o.construct  = FG3dMaterialMap_construct;
-      // @method
-      o.size       = FG3dMaterialMap_size;
-      o.data       = FG3dMaterialMap_data;
-      o.texture    = FG3dMaterialMap_texture;
       // @method
       o.setup      = FG3dMaterialMap_setup;
       o.resize     = FG3dMaterialMap_resize;
@@ -49,104 +45,73 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得尺寸。</T>
-   //
-   // @method
-   // @return SSize2 尺寸
-   //==========================================================
-   MO.FG3dMaterialMap_size = function FG3dMaterialMap_size(){
-      return this._size;
-   }
-
-   //==========================================================
-   // <T>获得数据。</T>
-   //
-   // @method
-   // @return Uint8Array 数据
-   //==========================================================
-   MO.FG3dMaterialMap_data = function FG3dMaterialMap_data(){
-      return this._data;
-   }
-
-   //==========================================================
-   // <T>获得纹理。</T>
-   //
-   // @method
-   // @return FG3dTexture 纹理
-   //==========================================================
-   MO.FG3dMaterialMap_texture = function FG3dMaterialMap_texture(){
-      return this._texture;
-   }
-
-   //==========================================================
    // <T>获得纹理集合。</T>
    //
    // @method
-   // @param w:width:Integer 宽度
-   // @param h:height:Integer 高度
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
    //==========================================================
-   MO.FG3dMaterialMap_setup = function FG3dMaterialMap_setup(w, h){
+   MO.FG3dMaterialMap_setup = function FG3dMaterialMap_setup(width, height){
       var o = this;
       var c = o._graphicContext;
-      var t = o._texture = c.createFlatTexture();
-      o.resize(w, h);
-      t.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-      t.uploadData(o._data, w, h);
+      var texture = o._texture = c.createFlatTexture();
+      o.resize(width, height);
+      texture.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+      texture.uploadData(o._data, width, height);
    }
 
    //==========================================================
    // <T>改变纹理大小。</T>
    //
    // @method
-   // @param w:width:Integer 宽度
-   // @param h:height:Integer 高度
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
    //==========================================================
-   MO.FG3dMaterialMap_resize = function FG3dMaterialMap_resize(w, h){
+   MO.FG3dMaterialMap_resize = function FG3dMaterialMap_resize(width, height){
       var o = this;
       var s = o._size;
       // 计算有效值
-      if(h > 2048){
-         h = 4096;
-      }else if(h > 1024){
-         h = 2048;
-      }else if(h > 512){
-         h = 1024;
-      }else if(h > 256){
-         h = 512;
-      }else if(h > 128){
-         h = 256;
-      }else if(h > 64){
-         h = 128;
-      }else if(h > 32){
-         h = 64;
-      }else if(h > 16){
-         h = 32;
+      if(height > 2048){
+         height = 4096;
+      }else if(height > 1024){
+         height = 2048;
+      }else if(height > 512){
+         height = 1024;
+      }else if(height > 256){
+         height = 512;
+      }else if(height > 128){
+         height = 256;
+      }else if(height > 64){
+         height = 128;
+      }else if(height > 32){
+         height = 64;
+      }else if(height > 16){
+        height = 32;
       }
-      if(h < s.height){
-         h = s.height;
+      if(height < s.height){
+         height = s.height;
       }
       // 检查参数
-      if((s.width == w) && (s.height == h)){
+      if((s.width == width) && (s.height == height)){
          return;
       }
-      s.set(w, h);
-      o._stride = 4 * w;
+      s.set(width, height);
+      o._stride = 4 * width;
       // 分配内存
-      var t = 4 * w * h;
-      o._data = new Uint8Array(t);
-      //console.log('Resize material map.', w, h);
+      var total = 4 * width * height;
+      o._data = new Uint8Array(total);
    }
 
    //==========================================================
    // <T>设置4个8位非负整数。</T>
    //
    // @method
-   // @param n:number:Integer 编号
-   // @param i:index:Integer 索引
-   // @param v1:value1:Integer 数据1(0~255)
-   // @param v2:value2:Integer 数据2(0~255)
-   // @param v3:value3:Integer 数据3(0~255)
-   // @param v4:value4:Integer 数据4(0~255)
+   // @param number:Integer 编号
+   // @param index:Integer 索引
+   // @param value1:Integer 数据1(0~255)
+   // @param value2:Integer 数据2(0~255)
+   // @param value3:Integer 数据3(0~255)
+   // @param value4:Integer 数据4(0~255)
    //==========================================================
    MO.FG3dMaterialMap_setUint8 = function FG3dMaterialMap_setUint8(n, i, v1, v2, v3, v4){
       var o = this;
@@ -275,7 +240,6 @@ with(MO){
       if(o._dirty){
          var s = o._size;
          o._texture.uploadData(o._data, s.width, s.height);
-         //console.log('Material dirty.', s.width, s.height);
          o._dirty = false;
       }
    }

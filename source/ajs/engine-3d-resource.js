@@ -1840,19 +1840,20 @@ with(MO){
 }
 with(MO){
    MO.FE3sResource = function FE3sResource(o){
-      o = RClass.inherits(this, o, FResource, MListenerLoad);
-      o._dataLoad   = false;
-      o._dataReady  = false;
-      o._dataSize   = 0;
-      o._blockSize  = 0;
-      o._blockCount = 0;
-      o._vendor     = RClass.register(o, new AGetSet('_vendor'));
-      o.onComplete  = FE3sResource_onComplete;
-      o.makeLabel   = FE3sResource_makeLabel;
-      o.testReady   = FE3sResource_testReady;
-      o.unserialize = FE3sResource_unserialize;
-      o.saveConfig  = FE3sResource_saveConfig;
-      o.dispose     = FE3sResource_dispose;
+      o = RClass.inherits(this, o, FResource, MListener);
+      o._dataLoad      = false;
+      o._dataReady     = false;
+      o._dataSize      = 0;
+      o._blockSize     = 0;
+      o._blockCount    = 0;
+      o._vendor        = RClass.register(o, new AGetSet('_vendor'));
+      o._loadListeners = RClass.register(o, new AListener('_loadListeners', EEvent.Load));
+      o.onComplete     = FE3sResource_onComplete;
+      o.makeLabel      = FE3sResource_makeLabel;
+      o.testReady      = FE3sResource_testReady;
+      o.unserialize    = FE3sResource_unserialize;
+      o.saveConfig     = FE3sResource_saveConfig;
+      o.dispose        = FE3sResource_dispose;
       return o;
    }
    MO.FE3sResource_onComplete = function FE3sResource_onComplete(input){
@@ -1909,7 +1910,7 @@ with(MO){
    MO.FE3sResource_dispose = function FE3sResource_dispose(){
       var o = this;
       o._vendor = null;
-      o.__base.MListenerLoad.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FConsole.dispose.call(o);
    }
 }
@@ -2935,43 +2936,36 @@ with(MO){
       o.__base.FConsole.dispose.call(o);
    }
 }
-with(MO){
-   MO.FE3sTheme = function FE3sTheme(o){
-      o = RClass.inherits(this, o, FE3sResource);
-      o._materials  = null;
-      o.materials   = FE3sTheme_materials;
-      o.find        = FE3sTheme_find;
-      o.unserialize = FE3sTheme_unserialize;
-      return o;
-   }
-   MO.FE3sTheme_materials = function FE3sTheme_materials(){
-      return this._materials;
-   }
-   MO.FE3sTheme_find = function FE3sTheme_find(p){
-      var ms = this._materials;
-      return ms ? ms.get(p) : null;
-   }
-   MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(p){
-      var o = this;
-      var c = p.readInt32();
-      if(c > 0){
-         var s = o._materials = new TDictionary();
-         for(var n = 0; n < c; n++){
-            var m = RClass.create(FE3sMaterial);
-            m.unserialize(p);
-            s.set(m.code(), m);
-         }
+MO.FE3sTheme = function FE3sTheme(o){
+   o = MO.Class.inherits(this, o, MO.FE3sResource);
+   o._materials  = MO.Class.register(o, new MO.AGetter('_materials'));
+   o.find        = MO.FE3sTheme_find;
+   o.unserialize = MO.FE3sTheme_unserialize;
+   return o;
+}
+MO.FE3sTheme_find = function FE3sTheme_find(name){
+   var materials = this._materials;
+   return materials ? materials.get(name) : null;
+}
+MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(input){
+   var o = this;
+   var count = input.readInt32();
+   if(count > 0){
+      var materials = o._materials = new MO.TDictionary();
+      for(var n = 0; n < c; n++){
+         var material = RClass.create(FE3sMaterial);
+         material.unserialize(input);
+         materials.set(material.code(), material);
       }
    }
 }
 with(MO){
    MO.FE3sThemeConsole = function FE3sThemeConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, MO.FConsole);
       o._path        = '/assets/theme/'
-      o._activeTheme = null;
+      o._activeTheme = RClass.register(o, new AGetter('_activeTheme'));
       o._themes      = null;
       o.construct    = FE3sThemeConsole_construct;
-      o.activeTheme  = FE3sThemeConsole_activeTheme;
       o.find         = FE3sThemeConsole_find;
       o.select       = FE3sThemeConsole_select;
       return o;
@@ -2981,27 +2975,24 @@ with(MO){
       o.__base.FConsole.construct.call(o);
       o._themes = new TDictionary();
    }
-   MO.FE3sThemeConsole_activeTheme = function FE3sThemeConsole_activeTheme(){
-      return this._activeTheme;
-   }
-   MO.FE3sThemeConsole_find = function FE3sThemeConsole_find(p){
-      var t = this._activeTheme;
-      if(t == null){
+   MO.FE3sThemeConsole_find = function FE3sThemeConsole_find(name){
+      var theme = this._activeTheme;
+      if(theme == null){
          throw new TError('Active theme is empty.');
       }
-      return t.find(p);
+      return theme.find(name);
    }
-   MO.FE3sThemeConsole_select = function FE3sThemeConsole_select(p){
+   MO.FE3sThemeConsole_select = function FE3sThemeConsole_select(name){
       var o = this;
-      var r = o._themes.get(p);
-      if(r == null){
-         var u = RBrowser.contentPath(o._path + p + '.ser');
-         r = RClass.create(FE3sTheme);
-         r.load(u);
-         o._themes.set(p, r);
+      var theme = o._themes.get(name);
+      if(theme == null){
+         var url = RBrowser.contentPath(o._path + name + '.ser');
+         theme = RClass.create(FE3sTheme);
+         theme.load(url);
+         o._themes.set(name, theme);
       }
-      o._activeTheme = r;
-      return r;
+      o._activeTheme = theme;
+      return theme;
    }
 }
 with(MO){
