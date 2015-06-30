@@ -276,7 +276,8 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          cityEntity.update(data);
       }
       var total = o._totalBar.findComponent('total');
-      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      //total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
+      total.setLabel(parseInt(dateData.investmentTotal()).toString());
       o._totalBar.repaint();
    }
 }
