@@ -112,8 +112,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._playing          = false;
    o._lastTick         = 0;
    o._interval         = 10;
-   o._lastDateTick    = 0;
-   o._dateInterval    = 100;
+   o._lastDateTick     = 0;
+   o._dateInterval     = 100;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -121,16 +121,16 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._pauseButton      = null;
    o._buttonTransform  = null;
    o._timeline         = null;
-   o._milestoneFrame  = null;
+   o._milestoneFrame   = null;
    o._buttonAudio      = null;
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
-   o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
-   o.onDateSelect     = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onMilestoneDone  = MO.FEaiChartHistoryScene_onMilestoneDone;
-   o.onOperationPlay  = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
+   o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
+   o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
+   o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
    o.setup             = MO.FEaiChartHistoryScene_setup;
    o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
@@ -285,7 +285,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    if (dateData) {
       o._timeline.setDegreeTime(o._currentDate);
       var cityDatas = dateData.citys();
-      var cityEntities = o._cityEntities;
+      var cityEntities = o._mapEntity.cityEntities();
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
@@ -297,7 +297,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
       o._totalBar.repaint();
    }
-   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
@@ -353,13 +352,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._timeline.repaint();
          o._lastTick = currentTick;
       }
-      var citysRenderables = o._citysRenderables;
-      var count = citysRenderables.count()
-      for (var i = 0; i < count; i++) {
-         var citysRenderable = citysRenderables.at(i);
-         citysRenderable.upload();
-      }
-      o._citysRangeRenderable.upload();
+      o._mapEntity.upload();
    }
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.repaint();

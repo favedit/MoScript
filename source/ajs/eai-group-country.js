@@ -78,15 +78,13 @@ with(MO){
       var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
       o._color.set(1, 1, 1, 1);
-      o._range = Math.log(o._investmentTotal) * 10;
+      o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
       o._rangeColor.setInteger(color);
       o._rangeColor.alpha = 1;
       o._visible = true;
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      debugger
-      var location = o._data.location();
       var range = 1;
       if(data){
          var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
@@ -100,15 +98,13 @@ with(MO){
       }else{
          o._rangeColor.set(0, 0, 0, 0);
       }
-      range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
-      o._size.set(range, range);
+      o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
    }
    MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
       var o = this;
       if(o._investmentLevel > 0){
          var rate = o._investmentLevel / o._investmentLevelTotal;
          o._color.alpha = rate;
-         o._range = Math.log(o._investmentTotal) * rate;
          o._rangeColor.alpha = rate;
          o._investmentLevel--;
          if(o._investmentLevel == 0){
@@ -241,20 +237,21 @@ with(MO){
          var city = citys.at(i);
          if(city.visible()){
             var location = city.location();
+            var range = city.range();
             var size = city.size();
             var width = size.width / 2;
             var height = size.height / 2;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
             var color = city.rangeColor();
             var red = parseInt(color.red * 255);

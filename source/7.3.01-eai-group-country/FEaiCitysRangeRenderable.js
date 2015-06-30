@@ -176,21 +176,22 @@ with(MO){
          var city = citys.at(i);
          if(city.visible()){
             var location = city.location();
+            var range = city.range();
             var size = city.size();
             var width = size.width / 2;
             var height = size.height / 2;
             // 设置顶点位置
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
             // 设置顶点颜色
             var color = city.rangeColor();

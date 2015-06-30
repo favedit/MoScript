@@ -870,15 +870,13 @@ with(MO){
       var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
       o._color.set(1, 1, 1, 1);
-      o._range = Math.log(o._investmentTotal) * 10;
+      o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
       o._rangeColor.setInteger(color);
       o._rangeColor.alpha = 1;
       o._visible = true;
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      debugger
-      var location = o._data.location();
       var range = 1;
       if(data){
          var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
@@ -892,15 +890,13 @@ with(MO){
       }else{
          o._rangeColor.set(0, 0, 0, 0);
       }
-      range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
-      o._size.set(range, range);
+      o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
    }
    MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
       var o = this;
       if(o._investmentLevel > 0){
          var rate = o._investmentLevel / o._investmentLevelTotal;
          o._color.alpha = rate;
-         o._range = Math.log(o._investmentTotal) * rate;
          o._rangeColor.alpha = rate;
          o._investmentLevel--;
          if(o._investmentLevel == 0){
@@ -1033,20 +1029,21 @@ with(MO){
          var city = citys.at(i);
          if(city.visible()){
             var location = city.location();
+            var range = city.range();
             var size = city.size();
             var width = size.width / 2;
             var height = size.height / 2;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y + height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y + range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x + width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x + range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
-            vertexData[vertexPosition++] = location.x - width;
-            vertexData[vertexPosition++] = location.y - height;
+            vertexData[vertexPosition++] = location.x - range;
+            vertexData[vertexPosition++] = location.y - range;
             vertexData[vertexPosition++] = 0;
             var color = city.rangeColor();
             var red = parseInt(color.red * 255);
@@ -2373,8 +2370,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._playing          = false;
    o._lastTick         = 0;
    o._interval         = 10;
-   o._lastDateTick    = 0;
-   o._dateInterval    = 100;
+   o._lastDateTick     = 0;
+   o._dateInterval     = 100;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -2382,16 +2379,16 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._pauseButton      = null;
    o._buttonTransform  = null;
    o._timeline         = null;
-   o._milestoneFrame  = null;
+   o._milestoneFrame   = null;
    o._buttonAudio      = null;
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
-   o.onLoadData       = MO.FEaiChartHistoryScene_onLoadData;
-   o.onDateSelect     = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onMilestoneDone  = MO.FEaiChartHistoryScene_onMilestoneDone;
-   o.onOperationPlay  = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
+   o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
+   o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
+   o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
    o.setup             = MO.FEaiChartHistoryScene_setup;
    o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
@@ -2546,7 +2543,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    if (dateData) {
       o._timeline.setDegreeTime(o._currentDate);
       var cityDatas = dateData.citys();
-      var cityEntities = o._cityEntities;
+      var cityEntities = o._mapEntity.cityEntities();
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
@@ -2558,7 +2555,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
       o._totalBar.repaint();
    }
-   o._citysRangeRenderable.upload();
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
@@ -2614,13 +2610,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._timeline.repaint();
          o._lastTick = currentTick;
       }
-      var citysRenderables = o._citysRenderables;
-      var count = citysRenderables.count()
-      for (var i = 0; i < count; i++) {
-         var citysRenderable = citysRenderables.at(i);
-         citysRenderable.upload();
-      }
-      o._citysRangeRenderable.upload();
+      o._mapEntity.upload();
    }
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.repaint();

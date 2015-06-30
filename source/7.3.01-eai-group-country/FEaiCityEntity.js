@@ -79,7 +79,7 @@ with(MO){
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
       // 设置内容
       o._color.set(1, 1, 1, 1);
-      o._range = Math.log(o._investmentTotal) * 10;
+      o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
       o._rangeColor.setInteger(color);
       o._rangeColor.alpha = 1;
       o._visible = true;
@@ -93,8 +93,6 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      debugger
-      var location = o._data.location();
       var range = 1;
       if(data){
          var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
@@ -108,8 +106,7 @@ with(MO){
       }else{
          o._rangeColor.set(0, 0, 0, 0);
       }
-      range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
-      o._size.set(range, range);
+      o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
    }
 
    //==========================================================
@@ -124,7 +121,6 @@ with(MO){
          var rate = o._investmentLevel / o._investmentLevelTotal;
          // 设置内容
          o._color.alpha = rate;
-         o._range = Math.log(o._investmentTotal) * rate;
          o._rangeColor.alpha = rate;
          // 设置内容
          o._investmentLevel--;
