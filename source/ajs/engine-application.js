@@ -1,10 +1,12 @@
 with(MO){
    MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
       o._activeChapter      = RClass.register(o, new AGetter('_activeChapter'));
       o._chapters           = RClass.register(o, new AGetter('_chapters'));
       o._eventEnterFrame    = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
       o._eventLeaveFrame    = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       o.onOperationDown     = FApplication_onOperationDown;
       o.onOperationMove     = FApplication_onOperationMove;
       o.onOperationUp       = FApplication_onOperationUp;
@@ -85,32 +87,33 @@ with(MO){
       o._chapters = RObject.dispose(o._chapters, true);
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
    MO.FChapter = function FChapter(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
-      o._code             = RClass.register(o, new AGetSet('_code'));
-      o._scenes           = RClass.register(o, new AGetter('_scenes'));
-      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
-      o._statusSetup      = false;
-      o._statusActive     = false;
-      o._eventEnterFrame  = null;
-      o._eventLeaveFrame  = null;
-      o.construct         = FChapter_construct;
-      o.registerScene     = FChapter_registerScene;
-      o.unregisterScene   = FChapter_unregisterScene;
-      o.selectScene       = FChapter_selectScene;
-      o.selectSceneByCode = FChapter_selectSceneByCode;
-      o.setup             = FChapter_setup;
-      o.active            = FChapter_active;
-      o.deactive          = FChapter_deactive;
-      o.processEvent      = FChapter_processEvent;
-      o.process           = FChapter_process;
-      o.dispose           = FChapter_dispose;
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o._code                = RClass.register(o, new AGetSet('_code'));
+      o._scenes              = RClass.register(o, new AGetter('_scenes'));
+      o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
+      o._statusSetup         = false;
+      o._statusActive        = false;
+      o._eventEnterFrame     = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._eventLeaveFrame     = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
+      o.construct            = FChapter_construct;
+      o.registerScene        = FChapter_registerScene;
+      o.unregisterScene      = FChapter_unregisterScene;
+      o.selectScene          = FChapter_selectScene;
+      o.selectSceneByCode    = FChapter_selectSceneByCode;
+      o.setup                = FChapter_setup;
+      o.active               = FChapter_active;
+      o.deactive             = FChapter_deactive;
+      o.processEvent         = FChapter_processEvent;
+      o.process              = FChapter_process;
+      o.dispose              = FChapter_dispose;
       return o;
    }
    MO.FChapter_construct = function FChapter_construct(){
@@ -183,28 +186,29 @@ with(MO){
       o._scenes = RObject.dispose(o._scenes);
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }
 with(MO){
    MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._activeStage     = RClass.register(o, new AGetSet('_activeStage'));
-      o._statusSetup     = false;
-      o._statusActive    = false;
-      o._eventEnterFrame = null;
-      o._eventLeaveFrame = null;
-      o.onProcess        = FScene_onProcess;
-      o.construct        = FScene_construct;
-      o.setup            = FScene_setup;
-      o.active           = FScene_active;
-      o.deactive         = FScene_deactive;
-      o.processEvent     = FScene_processEvent;
-      o.process          = FScene_process;
-      o.dispose          = FScene_dispose;
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o._code                = RClass.register(o, new AGetSet('_code'));
+      o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
+      o._statusSetup         = false;
+      o._statusActive        = false;
+      o._eventEnterFrame     = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._eventLeaveFrame     = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
+      o.onProcess            = FScene_onProcess;
+      o.construct            = FScene_construct;
+      o.setup                = FScene_setup;
+      o.active               = FScene_active;
+      o.deactive             = FScene_deactive;
+      o.processEvent         = FScene_processEvent;
+      o.process              = FScene_process;
+      o.dispose              = FScene_dispose;
       return o;
    }
    MO.FScene_onProcess = function FScene_onProcess(){
@@ -249,6 +253,7 @@ with(MO){
       var o = this;
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }

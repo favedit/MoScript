@@ -12,15 +12,13 @@ with(MO){
       // @attribute
       o._ready      = false;
       o._dataLength = 0;
-      o._resource   = null;
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       //..........................................................
       // @method
       o.construct   = FResourceStorage_construct;
       // @method
       o.testReady   = FResourceStorage_testReady;
       // @method
-      o.resource    = FResourceStorage_resource;
-      o.setResource = FResourceStorage_setResource;
       o.load        = FResourceStorage_load;
       o.complete    = FResourceStorage_complete;
       // @method
@@ -46,26 +44,6 @@ with(MO){
    //==========================================================
    MO.FResourceStorage_testReady = function FResourceStorage_testReady(){
       return this._ready;
-   }
-
-   //==========================================================
-   // <T>获得资源。</T>
-   //
-   // @method
-   // @return FResource 资源
-   //==========================================================
-   MO.FResourceStorage_resource = function FResourceStorage_resource(){
-      return this._resource;
-   }
-
-   //==========================================================
-   // <T>设置资源。</T>
-   //
-   // @method
-   // @return FResource 资源
-   //==========================================================
-   MO.FResourceStorage_setResource = function FResourceStorage_setResource(resource){
-      this._resource = resource;
    }
 
    //==========================================================

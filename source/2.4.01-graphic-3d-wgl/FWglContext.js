@@ -23,8 +23,8 @@ with(MO){
       o._extensions         = null;
       // @attribute
       o._statusRecord       = false;
-      o._recordBuffers      = null;
-      o._recordSamplers     = null;
+      o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
+      o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
       // @attribute
       o._statusScissor      = false;
       o._data9              = null;
@@ -38,8 +38,6 @@ with(MO){
       o.parameters          = FWglContext_parameters;
       o.extensions          = FWglContext_extensions;
       // @method
-      o.recordBuffers       = FWglContext_recordBuffers;
-      o.recordSamplers      = FWglContext_recordSamplers;
       o.recordBegin         = FWglContext_recordBegin;
       o.recordEnd           = FWglContext_recordEnd;
       // @method
@@ -332,26 +330,6 @@ with(MO){
          }
       }
       return extensions;
-   }
-
-   //==========================================================
-   // <T>获得记录缓冲集合。</T>
-   //
-   // @method
-   // @return TObjects 缓冲集合
-   //==========================================================
-   MO.FWglContext_recordBuffers = function FWglContext_recordBuffers(){
-      return this._recordBuffers;
-   }
-
-   //==========================================================
-   // <T>获得记录取样集合。</T>
-   //
-   // @method
-   // @return TObjects 取样集合
-   //==========================================================
-   MO.FWglContext_recordSamplers = function FWglContext_recordSamplers(){
-      return this._recordSamplers;
    }
 
    //==========================================================

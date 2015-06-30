@@ -7,32 +7,34 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
       //..........................................................
       // @attribute
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._activeStage     = RClass.register(o, new AGetSet('_activeStage'));
+      o._code                = RClass.register(o, new AGetSet('_code'));
+      o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
       // @attribute
-      o._statusSetup     = false;
-      o._statusActive    = false;
+      o._statusSetup         = false;
+      o._statusActive        = false;
       // @attribute
-      o._eventEnterFrame = null;
-      o._eventLeaveFrame = null;
+      o._eventEnterFrame     = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._eventLeaveFrame     = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
       // @event
-      o.onProcess        = FScene_onProcess;
+      o.onProcess            = FScene_onProcess;
       //..........................................................
       // @method
-      o.construct        = FScene_construct;
+      o.construct            = FScene_construct;
       // @method
-      o.setup            = FScene_setup;
-      o.active           = FScene_active;
-      o.deactive         = FScene_deactive;
+      o.setup                = FScene_setup;
+      o.active               = FScene_active;
+      o.deactive             = FScene_deactive;
       // @method
-      o.processEvent     = FScene_processEvent;
-      o.process          = FScene_process;
+      o.processEvent         = FScene_processEvent;
+      o.process              = FScene_process;
       // @method
-      o.dispose          = FScene_dispose;
+      o.dispose              = FScene_dispose;
       return o;
    }
 
@@ -134,6 +136,7 @@ with(MO){
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       // 父处理
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }

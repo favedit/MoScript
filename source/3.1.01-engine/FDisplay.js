@@ -9,11 +9,11 @@ with(MO){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);
       //..........................................................
       // @attribute
-      o._currentMatrix    = null;
-      o._matrix           = null;
-      o._location         = null;
-      o._rotation         = null;
-      o._scale            = null;
+      o._currentMatrix    = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
+      o._matrix           = MO.Class.register(o, new MO.AGetter('_matrix'));
+      o._location         = MO.Class.register(o, new MO.AGetter('_location'));
+      o._rotation         = MO.Class.register(o, new MO.AGetter('_rotation'));
+      o._scale            = MO.Class.register(o, new MO.AGetter('_scale'));
       // @attribute
       o._visible          = true;
       // @attribute
@@ -21,12 +21,6 @@ with(MO){
       //..........................................................
       // @method
       o.construct         = FDisplay_construct;
-      // @method
-      o.currentMatrix     = FDisplay_currentMatrix;
-      o.matrix            = FDisplay_matrix;
-      o.location          = FDisplay_location;
-      o.rotation          = FDisplay_rotation;
-      o.scale             = FDisplay_scale;
       // @method
       o.hasRenderable     = FDisplay_hasRenderable;
       o.renderables       = FDisplay_renderables;
@@ -65,56 +59,6 @@ with(MO){
       o._rotation = new SVector3();
       o._scale = new SVector3();
       o._scale.set(1, 1, 1);
-   }
-
-   //==========================================================
-   // <T>获得当前矩阵。</T>
-   //
-   // @method
-   // @return 当前矩阵
-   //==========================================================
-   MO.FDisplay_currentMatrix = function FDisplay_currentMatrix(){
-      return this._currentMatrix;
-   }
-
-   //==========================================================
-   // <T>获得矩阵。</T>
-   //
-   // @method
-   // @return 矩阵
-   //==========================================================
-   MO.FDisplay_matrix = function FDisplay_matrix(){
-      return this._matrix;
-   }
-
-   //==========================================================
-   // <T>获得位置。</T>
-   //
-   // @method
-   // @return 位置
-   //==========================================================
-   MO.FDisplay_location = function FDisplay_location(){
-      return this._location;
-   }
-
-   //==========================================================
-   // <T>获得方向。</T>
-   //
-   // @method
-   // @return 方向
-   //==========================================================
-   MO.FDisplay_rotation = function FDisplay_rotation(){
-      return this._rotation;
-   }
-
-   //==========================================================
-   // <T>获得缩放。</T>
-   //
-   // @method
-   // @return 缩放
-   //==========================================================
-   MO.FDisplay_scale = function FDisplay_scale(){
-      return this._scale;
    }
 
    //==========================================================

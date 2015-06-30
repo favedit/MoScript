@@ -7,29 +7,32 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FStage = function FStage(o){
-      o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
+      o = RClass.inherits(this, o, FComponent, MListener);
       //..........................................................
       // @attribute
-      o._code           = 'stage';
-      o._statusActive   = false;
-      o._size           = RClass.register(o, new AGetter('_size'));
-      o._timer          = RClass.register(o, new AGetter('_timer'));
-      o._layers         = RClass.register(o, new AGetter('_layers'));
+      o._code                = 'stage';
+      o._statusActive        = false;
+      o._size                = RClass.register(o, new AGetter('_size'));
+      o._timer               = RClass.register(o, new AGetter('_timer'));
+      o._layers              = RClass.register(o, new AGetter('_layers'));
+      // @attribute
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
       // @event
-      o.onProcess       = FStage_onProcess;
+      o.onProcess            = FStage_onProcess;
       //..........................................................
       // @method
-      o.construct       = FStage_construct;
+      o.construct            = FStage_construct;
       // @method
-      o.registerLayer   = FStage_registerLayer;
-      o.unregisterLayer = FStage_unregisterLayer;
-      o.active          = FStage_active;
-      o.deactive        = FStage_deactive;
+      o.registerLayer        = FStage_registerLayer;
+      o.unregisterLayer      = FStage_unregisterLayer;
+      o.active               = FStage_active;
+      o.deactive             = FStage_deactive;
       // @method
-      o.process         = FStage_process;
+      o.process              = FStage_process;
       // @method
-      o.dispose         = FStage_dispose;
+      o.dispose              = FStage_dispose;
       return o;
    }
 
@@ -156,8 +159,7 @@ with(MO){
       o._timer = RObject.dispose(o._timer);
       o._layers = RObject.dispose(o._layers);
       // 父处理
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FComponent.dispose.call(o);
    }
 }

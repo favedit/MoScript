@@ -30,42 +30,6 @@ MO.EStageKey = new function EStageKey(){
    return o;
 }
 with(MO){
-   MO.MListenerEnterFrame = function MListenerEnterFrame(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
-      o.removeEnterFrameListener  = MListenerEnterFrame_removeEnterFrameListener;
-      o.processEnterFrameListener = MListenerEnterFrame_processEnterFrameListener;
-      return o;
-   }
-   MO.MListenerEnterFrame_addEnterFrameListener = function MListenerEnterFrame_addEnterFrameListener(w, m){
-      return this.addListener(EEvent.EnterFrame, w, m);
-   }
-   MO.MListenerEnterFrame_removeEnterFrameListener = function MListenerEnterFrame_removeEnterFrameListener(w, m){
-      this.removeListener(EEvent.EnterFrame, w, m);
-   }
-   MO.MListenerEnterFrame_processEnterFrameListener = function MListenerEnterFrame_processEnterFrameListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.EnterFrame, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerLeaveFrame = function MListenerLeaveFrame(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addLeaveFrameListener     = MListenerLeaveFrame_addLeaveFrameListener;
-      o.removeLeaveFrameListener  = MListenerLeaveFrame_removeLeaveFrameListener;
-      o.processLeaveFrameListener = MListenerLeaveFrame_processLeaveFrameListener;
-      return o;
-   }
-   MO.MListenerLeaveFrame_addLeaveFrameListener = function MListenerLeaveFrame_addLeaveFrameListener(w, m){
-      return this.addListener(EEvent.LeaveFrame, w, m);
-   }
-   MO.MListenerLeaveFrame_removeLeaveFrameListener = function MListenerLeaveFrame_removeLeaveFrameListener(w, m){
-      this.removeListener(EEvent.LeaveFrame, w, m);
-   }
-   MO.MListenerLeaveFrame_processLeaveFrameListener = function MListenerLeaveFrame_processLeaveFrameListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.LeaveFrame, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
    MO.MRenderableLinker = function MRenderableLinker(o){
       o = RClass.inherits(this, o);
       o._renderable = MO.RClass.register(o, new AGetter('_renderable'));
@@ -115,19 +79,14 @@ with(MO){
 with(MO){
    MO.FDisplay = function FDisplay(o){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);
-      o._currentMatrix    = null;
-      o._matrix           = null;
-      o._location         = null;
-      o._rotation         = null;
-      o._scale            = null;
+      o._currentMatrix    = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
+      o._matrix           = MO.Class.register(o, new MO.AGetter('_matrix'));
+      o._location         = MO.Class.register(o, new MO.AGetter('_location'));
+      o._rotation         = MO.Class.register(o, new MO.AGetter('_rotation'));
+      o._scale            = MO.Class.register(o, new MO.AGetter('_scale'));
       o._visible          = true;
       o._renderables      = null;
       o.construct         = FDisplay_construct;
-      o.currentMatrix     = FDisplay_currentMatrix;
-      o.matrix            = FDisplay_matrix;
-      o.location          = FDisplay_location;
-      o.rotation          = FDisplay_rotation;
-      o.scale             = FDisplay_scale;
       o.hasRenderable     = FDisplay_hasRenderable;
       o.renderables       = FDisplay_renderables;
       o.pushRenderable    = FDisplay_pushRenderable;
@@ -155,21 +114,6 @@ with(MO){
       o._rotation = new SVector3();
       o._scale = new SVector3();
       o._scale.set(1, 1, 1);
-   }
-   MO.FDisplay_currentMatrix = function FDisplay_currentMatrix(){
-      return this._currentMatrix;
-   }
-   MO.FDisplay_matrix = function FDisplay_matrix(){
-      return this._matrix;
-   }
-   MO.FDisplay_location = function FDisplay_location(){
-      return this._location;
-   }
-   MO.FDisplay_rotation = function FDisplay_rotation(){
-      return this._rotation;
-   }
-   MO.FDisplay_scale = function FDisplay_scale(){
-      return this._scale;
    }
    MO.FDisplay_hasRenderable = function FDisplay_hasRenderable(){
       var renderables = this._renderables;
@@ -414,76 +358,56 @@ with(MO){
       o.__base.FDisplay.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDisplayLayer = function FDisplayLayer(o){
-      o = RClass.inherits(this, o, FDisplayContainer);
-      o._optionClearDepth   = RClass.register(o, new AGetSet('_optionClearDepth'), false);
-      o._statusActive       = false;
-      o._technique          = RClass.register(o, new AGetSet('_technique'));
-      o._visibleRenderables = null;
-      o.construct           = FDisplayLayer_construct;
-      o.selectTechnique     = FDisplayLayer_selectTechnique;
-      o.visibleRenderables  = FDisplayLayer_visibleRenderables;
-      o.filterRenderables   = FDisplayLayer_filterRenderables;
-      o.active              = FDisplayLayer_active;
-      o.deactive            = FDisplayLayer_deactive;
-      return o;
-   }
-   MO.FDisplayLayer_construct = function FDisplayLayer_construct(){
-      var o = this;
-      o.__base.FDisplayContainer.construct.call(o);
-      o._visibleRenderables = new TObjects();
-   }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
-      var technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
-      this.selectTechnique(technique);
-   }
-   MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
-      return this._visibleRenderables;
-   }
-   MO.FDisplayLayer_filterRenderables = function FDisplayLayer_filterRenderables(p){
-      var o = this;
-      o.__base.FDisplayContainer.filterRenderables.call(o, p);
-      o._visibleRenderables.assign(p.renderables());
-   }
-   MO.FDisplayLayer_active = function FDisplayLayer_active(){
-      this._statusActive = true;
-   }
-   MO.FDisplayLayer_deactive = function FDisplayLayer_deactive(){
-      this._statusActive = false;
-   }
+MO.FDisplayLayer = function FDisplayLayer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayContainer);
+   o._optionClearDepth   = MO.Class.register(o, new MO.AGetSet('_optionClearDepth'), false);
+   o._statusActive       = false;
+   o._technique          = MO.Class.register(o, new MO.AGetSet('_technique'));
+   o._visibleRenderables = MO.Class.register(o, new MO.AGetter('_visibleRenderables'));
+   o.construct           = MO.FDisplayLayer_construct;
+   o.selectTechnique     = MO.FDisplayLayer_selectTechnique;
+   o.filterRenderables   = MO.FDisplayLayer_filterRenderables;
+   o.active              = MO.FDisplayLayer_active;
+   o.deactive            = MO.FDisplayLayer_deactive;
+   return o;
 }
-with(MO){
-   MO.FDisplayUiLayer = function FDisplayUiLayer(o){
-      o = RClass.inherits(this, o, FDisplayLayer);
-      return o;
-   }
+MO.FDisplayLayer_construct = function FDisplayLayer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._visibleRenderables = new MO.TObjects();
 }
-with(MO){
-   MO.FDrawable = function FDrawable(o){
-      o = RClass.inherits(this, o, FObject);
-      o._visible    = true;
-      o.testVisible = FDrawable_testVisible;
-      o.visible     = FDrawable_visible;
-      o.setVisible  = FDrawable_setVisible;
-      o.process     = RMethod.empty;
-      return o;
-   }
-   MO.FDrawable_testVisible = function FDrawable_testVisible(){
-      return this._visible;
-   }
-   MO.FDrawable_visible = function FDrawable_visible(){
-      return this._visible;
-   }
-   MO.FDrawable_setVisible = function FDrawable_setVisible(p){
-      this._visible = p;
-   }
+MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+   var technique = MO.Console.find(MO.FG3dTechniqueConsole).find(context, name);
+   this.selectTechnique(technique);
 }
-with(MO){
-   MO.FRegion = function FRegion(o){
-      o = RClass.inherits(this, o, FObject);
-      return o;
-   }
+MO.FDisplayLayer_filterRenderables = function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   o._visibleRenderables.assign(p.renderables());
+}
+MO.FDisplayLayer_active = function FDisplayLayer_active(){
+   this._statusActive = true;
+}
+MO.FDisplayLayer_deactive = function FDisplayLayer_deactive(){
+   this._statusActive = false;
+}
+MO.FDisplayUiLayer = function FDisplayUiLayer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayLayer);
+   return o;
+}
+MO.FDrawable = function FDrawable(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._visible    = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o.testVisible = MO.FDrawable_testVisible;
+   o.process     = MO.Method.empty;
+   return o;
+}
+MO.FDrawable_testVisible = function FDrawable_testVisible(){
+   return this._visible;
+}
+MO.FRegion = function FRegion(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   return o;
 }
 with(MO){
    MO.FRenderable = function FRenderable(o){
@@ -551,20 +475,22 @@ with(MO){
 }
 with(MO){
    MO.FStage = function FStage(o){
-      o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
-      o._code           = 'stage';
-      o._statusActive   = false;
-      o._size           = RClass.register(o, new AGetter('_size'));
-      o._timer          = RClass.register(o, new AGetter('_timer'));
-      o._layers         = RClass.register(o, new AGetter('_layers'));
-      o.onProcess       = FStage_onProcess;
-      o.construct       = FStage_construct;
-      o.registerLayer   = FStage_registerLayer;
-      o.unregisterLayer = FStage_unregisterLayer;
-      o.active          = FStage_active;
-      o.deactive        = FStage_deactive;
-      o.process         = FStage_process;
-      o.dispose         = FStage_dispose;
+      o = RClass.inherits(this, o, FComponent, MListener);
+      o._code                = 'stage';
+      o._statusActive        = false;
+      o._size                = RClass.register(o, new AGetter('_size'));
+      o._timer               = RClass.register(o, new AGetter('_timer'));
+      o._layers              = RClass.register(o, new AGetter('_layers'));
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
+      o.onProcess            = FStage_onProcess;
+      o.construct            = FStage_construct;
+      o.registerLayer        = FStage_registerLayer;
+      o.unregisterLayer      = FStage_unregisterLayer;
+      o.active               = FStage_active;
+      o.deactive             = FStage_deactive;
+      o.process              = FStage_process;
+      o.dispose              = FStage_dispose;
       return o;
    }
    MO.FStage_onProcess = function FStage_onProcess(){
@@ -626,8 +552,7 @@ with(MO){
       var o = this;
       o._timer = RObject.dispose(o._timer);
       o._layers = RObject.dispose(o._layers);
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FComponent.dispose.call(o);
    }
 }

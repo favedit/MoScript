@@ -7,14 +7,16 @@ with(MO){
    // @history 150606
    //==========================================================
    MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
       //..........................................................
       // @attribute
       o._activeChapter      = RClass.register(o, new AGetter('_activeChapter'));
       o._chapters           = RClass.register(o, new AGetter('_chapters'));
       // @attribute
       o._eventEnterFrame    = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
       o._eventLeaveFrame    = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
       // @event
       o.onOperationDown     = FApplication_onOperationDown;
@@ -181,8 +183,7 @@ with(MO){
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       // 父处理
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }

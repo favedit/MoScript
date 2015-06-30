@@ -30,42 +30,6 @@ MO.EStageKey = new function EStageKey(){
    return o;
 }
 with(MO){
-   MO.MListenerEnterFrame = function MListenerEnterFrame(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
-      o.removeEnterFrameListener  = MListenerEnterFrame_removeEnterFrameListener;
-      o.processEnterFrameListener = MListenerEnterFrame_processEnterFrameListener;
-      return o;
-   }
-   MO.MListenerEnterFrame_addEnterFrameListener = function MListenerEnterFrame_addEnterFrameListener(w, m){
-      return this.addListener(EEvent.EnterFrame, w, m);
-   }
-   MO.MListenerEnterFrame_removeEnterFrameListener = function MListenerEnterFrame_removeEnterFrameListener(w, m){
-      this.removeListener(EEvent.EnterFrame, w, m);
-   }
-   MO.MListenerEnterFrame_processEnterFrameListener = function MListenerEnterFrame_processEnterFrameListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.EnterFrame, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerLeaveFrame = function MListenerLeaveFrame(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addLeaveFrameListener     = MListenerLeaveFrame_addLeaveFrameListener;
-      o.removeLeaveFrameListener  = MListenerLeaveFrame_removeLeaveFrameListener;
-      o.processLeaveFrameListener = MListenerLeaveFrame_processLeaveFrameListener;
-      return o;
-   }
-   MO.MListenerLeaveFrame_addLeaveFrameListener = function MListenerLeaveFrame_addLeaveFrameListener(w, m){
-      return this.addListener(EEvent.LeaveFrame, w, m);
-   }
-   MO.MListenerLeaveFrame_removeLeaveFrameListener = function MListenerLeaveFrame_removeLeaveFrameListener(w, m){
-      this.removeListener(EEvent.LeaveFrame, w, m);
-   }
-   MO.MListenerLeaveFrame_processLeaveFrameListener = function MListenerLeaveFrame_processLeaveFrameListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.LeaveFrame, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
    MO.MRenderableLinker = function MRenderableLinker(o){
       o = RClass.inherits(this, o);
       o._renderable = MO.RClass.register(o, new AGetter('_renderable'));
@@ -115,19 +79,14 @@ with(MO){
 with(MO){
    MO.FDisplay = function FDisplay(o){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);
-      o._currentMatrix    = null;
-      o._matrix           = null;
-      o._location         = null;
-      o._rotation         = null;
-      o._scale            = null;
+      o._currentMatrix    = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
+      o._matrix           = MO.Class.register(o, new MO.AGetter('_matrix'));
+      o._location         = MO.Class.register(o, new MO.AGetter('_location'));
+      o._rotation         = MO.Class.register(o, new MO.AGetter('_rotation'));
+      o._scale            = MO.Class.register(o, new MO.AGetter('_scale'));
       o._visible          = true;
       o._renderables      = null;
       o.construct         = FDisplay_construct;
-      o.currentMatrix     = FDisplay_currentMatrix;
-      o.matrix            = FDisplay_matrix;
-      o.location          = FDisplay_location;
-      o.rotation          = FDisplay_rotation;
-      o.scale             = FDisplay_scale;
       o.hasRenderable     = FDisplay_hasRenderable;
       o.renderables       = FDisplay_renderables;
       o.pushRenderable    = FDisplay_pushRenderable;
@@ -155,21 +114,6 @@ with(MO){
       o._rotation = new SVector3();
       o._scale = new SVector3();
       o._scale.set(1, 1, 1);
-   }
-   MO.FDisplay_currentMatrix = function FDisplay_currentMatrix(){
-      return this._currentMatrix;
-   }
-   MO.FDisplay_matrix = function FDisplay_matrix(){
-      return this._matrix;
-   }
-   MO.FDisplay_location = function FDisplay_location(){
-      return this._location;
-   }
-   MO.FDisplay_rotation = function FDisplay_rotation(){
-      return this._rotation;
-   }
-   MO.FDisplay_scale = function FDisplay_scale(){
-      return this._scale;
    }
    MO.FDisplay_hasRenderable = function FDisplay_hasRenderable(){
       var renderables = this._renderables;
@@ -414,76 +358,56 @@ with(MO){
       o.__base.FDisplay.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDisplayLayer = function FDisplayLayer(o){
-      o = RClass.inherits(this, o, FDisplayContainer);
-      o._optionClearDepth   = RClass.register(o, new AGetSet('_optionClearDepth'), false);
-      o._statusActive       = false;
-      o._technique          = RClass.register(o, new AGetSet('_technique'));
-      o._visibleRenderables = null;
-      o.construct           = FDisplayLayer_construct;
-      o.selectTechnique     = FDisplayLayer_selectTechnique;
-      o.visibleRenderables  = FDisplayLayer_visibleRenderables;
-      o.filterRenderables   = FDisplayLayer_filterRenderables;
-      o.active              = FDisplayLayer_active;
-      o.deactive            = FDisplayLayer_deactive;
-      return o;
-   }
-   MO.FDisplayLayer_construct = function FDisplayLayer_construct(){
-      var o = this;
-      o.__base.FDisplayContainer.construct.call(o);
-      o._visibleRenderables = new TObjects();
-   }
-   MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
-      var technique = RConsole.find(FG3dTechniqueConsole).find(context, name);
-      this.selectTechnique(technique);
-   }
-   MO.FDisplayLayer_visibleRenderables = function FDisplayLayer_visibleRenderables(){
-      return this._visibleRenderables;
-   }
-   MO.FDisplayLayer_filterRenderables = function FDisplayLayer_filterRenderables(p){
-      var o = this;
-      o.__base.FDisplayContainer.filterRenderables.call(o, p);
-      o._visibleRenderables.assign(p.renderables());
-   }
-   MO.FDisplayLayer_active = function FDisplayLayer_active(){
-      this._statusActive = true;
-   }
-   MO.FDisplayLayer_deactive = function FDisplayLayer_deactive(){
-      this._statusActive = false;
-   }
+MO.FDisplayLayer = function FDisplayLayer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayContainer);
+   o._optionClearDepth   = MO.Class.register(o, new MO.AGetSet('_optionClearDepth'), false);
+   o._statusActive       = false;
+   o._technique          = MO.Class.register(o, new MO.AGetSet('_technique'));
+   o._visibleRenderables = MO.Class.register(o, new MO.AGetter('_visibleRenderables'));
+   o.construct           = MO.FDisplayLayer_construct;
+   o.selectTechnique     = MO.FDisplayLayer_selectTechnique;
+   o.filterRenderables   = MO.FDisplayLayer_filterRenderables;
+   o.active              = MO.FDisplayLayer_active;
+   o.deactive            = MO.FDisplayLayer_deactive;
+   return o;
 }
-with(MO){
-   MO.FDisplayUiLayer = function FDisplayUiLayer(o){
-      o = RClass.inherits(this, o, FDisplayLayer);
-      return o;
-   }
+MO.FDisplayLayer_construct = function FDisplayLayer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._visibleRenderables = new MO.TObjects();
 }
-with(MO){
-   MO.FDrawable = function FDrawable(o){
-      o = RClass.inherits(this, o, FObject);
-      o._visible    = true;
-      o.testVisible = FDrawable_testVisible;
-      o.visible     = FDrawable_visible;
-      o.setVisible  = FDrawable_setVisible;
-      o.process     = RMethod.empty;
-      return o;
-   }
-   MO.FDrawable_testVisible = function FDrawable_testVisible(){
-      return this._visible;
-   }
-   MO.FDrawable_visible = function FDrawable_visible(){
-      return this._visible;
-   }
-   MO.FDrawable_setVisible = function FDrawable_setVisible(p){
-      this._visible = p;
-   }
+MO.FDisplayLayer_selectTechnique = function FDisplayLayer_selectTechnique(context, name){
+   var technique = MO.Console.find(MO.FG3dTechniqueConsole).find(context, name);
+   this.selectTechnique(technique);
 }
-with(MO){
-   MO.FRegion = function FRegion(o){
-      o = RClass.inherits(this, o, FObject);
-      return o;
-   }
+MO.FDisplayLayer_filterRenderables = function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   o._visibleRenderables.assign(p.renderables());
+}
+MO.FDisplayLayer_active = function FDisplayLayer_active(){
+   this._statusActive = true;
+}
+MO.FDisplayLayer_deactive = function FDisplayLayer_deactive(){
+   this._statusActive = false;
+}
+MO.FDisplayUiLayer = function FDisplayUiLayer(o){
+   o = MO.Class.inherits(this, o, MO.FDisplayLayer);
+   return o;
+}
+MO.FDrawable = function FDrawable(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._visible    = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o.testVisible = MO.FDrawable_testVisible;
+   o.process     = MO.Method.empty;
+   return o;
+}
+MO.FDrawable_testVisible = function FDrawable_testVisible(){
+   return this._visible;
+}
+MO.FRegion = function FRegion(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   return o;
 }
 with(MO){
    MO.FRenderable = function FRenderable(o){
@@ -551,20 +475,22 @@ with(MO){
 }
 with(MO){
    MO.FStage = function FStage(o){
-      o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
-      o._code           = 'stage';
-      o._statusActive   = false;
-      o._size           = RClass.register(o, new AGetter('_size'));
-      o._timer          = RClass.register(o, new AGetter('_timer'));
-      o._layers         = RClass.register(o, new AGetter('_layers'));
-      o.onProcess       = FStage_onProcess;
-      o.construct       = FStage_construct;
-      o.registerLayer   = FStage_registerLayer;
-      o.unregisterLayer = FStage_unregisterLayer;
-      o.active          = FStage_active;
-      o.deactive        = FStage_deactive;
-      o.process         = FStage_process;
-      o.dispose         = FStage_dispose;
+      o = RClass.inherits(this, o, FComponent, MListener);
+      o._code                = 'stage';
+      o._statusActive        = false;
+      o._size                = RClass.register(o, new AGetter('_size'));
+      o._timer               = RClass.register(o, new AGetter('_timer'));
+      o._layers              = RClass.register(o, new AGetter('_layers'));
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
+      o.onProcess            = FStage_onProcess;
+      o.construct            = FStage_construct;
+      o.registerLayer        = FStage_registerLayer;
+      o.unregisterLayer      = FStage_unregisterLayer;
+      o.active               = FStage_active;
+      o.deactive             = FStage_deactive;
+      o.process              = FStage_process;
+      o.dispose              = FStage_dispose;
       return o;
    }
    MO.FStage_onProcess = function FStage_onProcess(){
@@ -626,8 +552,7 @@ with(MO){
       var o = this;
       o._timer = RObject.dispose(o._timer);
       o._layers = RObject.dispose(o._layers);
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FComponent.dispose.call(o);
    }
 }
@@ -726,34 +651,24 @@ with(MO){
    }
    MO.RStage = new RStage();
 }
-with(MO){
-   MO.MLinkerResource = function MLinkerResource(o){
-      o = RClass.inherits(this, o);
-      o._resource      = null;
-      o.resource       = MLinkerResource_resource;
-      o.setResource    = MLinkerResource_setResource;
-      o.loadResource   = MLinkerResource_loadResource;
-      o.reloadResource = MLinkerResource_reloadResource;
-      o.dispose        = MLinkerResource_dispose;
-      return o;
-   }
-   MO.MLinkerResource_resource = function MLinkerResource_resource(){
-      return this._resource;
-   }
-   MO.MLinkerResource_setResource = function MLinkerResource_setResource(resource){
-      this._resource = resource;
-   }
-   MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
-      this._resource = resource;
-   }
-   MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
-      var o = this;
-      o.loadResource(resource);
-   }
-   MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
-      var o = this;
-      o._resource = null;
-   }
+MO.MLinkerResource = function MLinkerResource(o){
+   o = MO.Class.inherits(this, o);
+   o._resource      = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o.loadResource   = MO.MLinkerResource_loadResource;
+   o.reloadResource = MO.MLinkerResource_reloadResource;
+   o.dispose        = MO.MLinkerResource_dispose;
+   return o;
+}
+MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
+   this._resource = resource;
+}
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+   var o = this;
+   o.loadResource(resource);
+}
+MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
+   var o = this;
+   o._resource = null;
 }
 with(MO){
    MO.FResource = function FResource(o){
@@ -776,11 +691,10 @@ with(MO){
       o._dataLength = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._blocks     = null;
+      o._blocks     = MO.Class.register(o, new MO.AGetter('_blocks'));
       o._resource   = null;
       o.construct   = FResourceBlockStorage_construct;
       o.testReady   = FResourceBlockStorage_testReady;
-      o.blocks      = FResourceBlockStorage_blocks;
       o.load        = FResourceBlockStorage_load;
       o.complete    = FResourceBlockStorage_complete;
       o.dispose     = FResourceBlockStorage_dispose;
@@ -805,9 +719,6 @@ with(MO){
          o._ready = true;
       }
       return o._ready;
-   }
-   MO.FResourceBlockStorage_blocks = function FResourceBlockStorage_blocks(){
-      return this._blocks;
    }
    MO.FResourceBlockStorage_load = function FResourceBlockStorage_load(buffer){
       var o = this;
@@ -867,17 +778,15 @@ with(MO){
       o.__base.FResourceStorage.dispose.call(o);
    }
 }
-with(MO){
-   MO.FResourceBlockStorageData = function FResourceBlockStorageData(o){
-      o = RClass.inherits(this, o, FObject, MResourceData);
-      o.dispose = FResourceBlockStorageData_dispose;
-      return o;
-   }
-   MO.FResourceBlockStorageData_dispose = function FResourceBlockStorageData_dispose(){
-      var o = this;
-      o.__base.MResourceData.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FResourceBlockStorageData = function FResourceBlockStorageData(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MResourceData);
+   o.dispose = MO.FResourceBlockStorageData_dispose;
+   return o;
+}
+MO.FResourceBlockStorageData_dispose = function FResourceBlockStorageData_dispose(){
+   var o = this;
+   o.__base.MResourceData.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FResourceConsole = function FResourceConsole(o){
@@ -1099,46 +1008,20 @@ with(MO){
       this._loadDatas.push(data);
    }
 }
-with(MO){
-   MO.FResourceGroup = function FResourceGroup(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code      = null;
-      o._resources = null;
-      o.code       = FResourceGroup_code;
-      return o;
-   }
-   MO.FResourceGroup_code = function FResourceGroup_code(){
-      return this._code;
-   }
+MO.FResourceGroup = function FResourceGroup(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = MO.Class.register(o, new MO.AGetter('_code'));
+   o._resources = null;
+   return o;
 }
 with(MO){
    MO.FResourcePipeline = function FResourcePipeline(o){
       o = RClass.inherits(this, o, FPipeline);
-      o._console    = null;
-      o._compressCd = null;
-      o._resource   = null;
-      o.console     = FResourcePipeline_console;
-      o.setConsole  = FResourcePipeline_setConsole;
-      o.compressCd  = FResourcePipeline_compressCd;
-      o.resource    = FResourcePipeline_resource;
-      o.setResource = FResourcePipeline_setResource;
+      o._console    = MO.Class.register(o, new MO.AGetSet('_console'));
+      o._compressCd = MO.Class.register(o, new MO.AGetter('_compressCd'));
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       o.dispose     = FResourcePipeline_dispose;
       return o;
-   }
-   MO.FResourcePipeline_console = function FResourcePipeline_console(){
-      return this._console;
-   }
-   MO.FResourcePipeline_setConsole = function FResourcePipeline_setConsole(p){
-      this._console = p;
-   }
-   MO.FResourcePipeline_compressCd = function FResourcePipeline_compressCd(){
-      return this._compressCd;
-   }
-   MO.FResourcePipeline_resource = function FResourcePipeline_resource(){
-      return this._resource;
-   }
-   MO.FResourcePipeline_setResource = function FResourcePipeline_setResource(p){
-      this._resource = p;
    }
    MO.FResourcePipeline_dispose = function FResourcePipeline_dispose(){
       var o = this;
@@ -1211,46 +1094,42 @@ with(MO){
       o.__base.FPipeline.dispose.call(o);
    }
 }
-with(MO){
-   MO.FResourceSingleStorage = function FResourceSingleStorage(o){
-      o = RClass.inherits(this, o, FResourceStorage, MResourceData);
-      o.construct   = FResourceSingleStorage_construct;
-      o.load        = FResourceSingleStorage_load;
-      o.complete    = FResourceSingleStorage_complete;
-      o.dispose     = FResourceSingleStorage_dispose;
-      return o;
-   }
-   MO.FResourceSingleStorage_construct = function FResourceSingleStorage_construct(){
-      var o = this;
-      o.__base.FResourceStorage.construct.call(o);
-   }
-   MO.FResourceSingleStorage_load = function FResourceSingleStorage_load(buffer){
-      var o = this;
-      var resource = o._resource;
-      o._compressLength = buffer.byteLength;
-      o._compressData = new Uint8Array(buffer);
-   }
-   MO.FResourceSingleStorage_complete = function FResourceSingleStorage_complete(){
-      var o = this;
-      var resource = o._resource;
-      resource.onComplete(o._data);
-   }
-   MO.FResourceSingleStorage_dispose = function FResourceSingleStorage_dispose(){
-      var o = this;
-      o.__base.MResourceData.dispose.call(o);
-      o.__base.FResourceStorage.dispose.call(o);
-   }
+MO.FResourceSingleStorage = function FResourceSingleStorage(o){
+   o = MO.Class.inherits(this, o, MO.FResourceStorage, MO.MResourceData);
+   o.construct   = MO.FResourceSingleStorage_construct;
+   o.load        = MO.FResourceSingleStorage_load;
+   o.complete    = MO.FResourceSingleStorage_complete;
+   o.dispose     = MO.FResourceSingleStorage_dispose;
+   return o;
+}
+MO.FResourceSingleStorage_construct = function FResourceSingleStorage_construct(){
+   var o = this;
+   o.__base.FResourceStorage.construct.call(o);
+}
+MO.FResourceSingleStorage_load = function FResourceSingleStorage_load(buffer){
+   var o = this;
+   var resource = o._resource;
+   o._compressLength = buffer.byteLength;
+   o._compressData = new Uint8Array(buffer);
+}
+MO.FResourceSingleStorage_complete = function FResourceSingleStorage_complete(){
+   var o = this;
+   var resource = o._resource;
+   resource.onComplete(o._data);
+}
+MO.FResourceSingleStorage_dispose = function FResourceSingleStorage_dispose(){
+   var o = this;
+   o.__base.MResourceData.dispose.call(o);
+   o.__base.FResourceStorage.dispose.call(o);
 }
 with(MO){
    MO.FResourceStorage = function FResourceStorage(o){
       o = RClass.inherits(this, o, FObject);
       o._ready      = false;
       o._dataLength = 0;
-      o._resource   = null;
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       o.construct   = FResourceStorage_construct;
       o.testReady   = FResourceStorage_testReady;
-      o.resource    = FResourceStorage_resource;
-      o.setResource = FResourceStorage_setResource;
       o.load        = FResourceStorage_load;
       o.complete    = FResourceStorage_complete;
       o.dispose     = FResourceStorage_dispose;
@@ -1262,12 +1141,6 @@ with(MO){
    }
    MO.FResourceStorage_testReady = function FResourceStorage_testReady(){
       return this._ready;
-   }
-   MO.FResourceStorage_resource = function FResourceStorage_resource(){
-      return this._resource;
-   }
-   MO.FResourceStorage_setResource = function FResourceStorage_setResource(resource){
-      this._resource = resource;
    }
    MO.FResourceStorage_load = function FResourceStorage_load(buffer){
    }
@@ -1342,14 +1215,10 @@ with(MO){
 with(MO){
    MO.FResourceType = function FResourceType(o){
       o = RClass.inherits(this, o, FObject);
-      o._code        = null;
-      o._pipeline    = null;
+      o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+      o._pipeline    = MO.Class.register(o, new MO.AGetSet('_pipeline'));
       o._resources   = null;
       o.construct    = FResourceType_construct;
-      o.code         = FResourceType_code;
-      o.setCode      = FResourceType_setCode;
-      o.pipeline     = FResourceType_pipeline;
-      o.setPipeline  = FResourceType_setPipeline;
       o.findResource = FResourceType_findResource;
       o.resources    = FResourceType_resources;
       return o;
@@ -1358,18 +1227,6 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._resources = new TDictionary();
-   }
-   MO.FResourceType_code = function FResourceType_code(){
-      return this._code;
-   }
-   MO.FResourceType_setCode = function FResourceType_setCode(p){
-      this._code = p;
-   }
-   MO.FResourceType_pipeline = function FResourceType_pipeline(){
-      return this._pipeline;
-   }
-   MO.FResourceType_setPipeline = function FResourceType_setPipeline(p){
-      this._pipeline = p;
    }
    MO.FResourceType_findResource = function FResourceType_findResource(p){
       return this._resources.get(p);

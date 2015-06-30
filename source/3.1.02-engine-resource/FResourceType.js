@@ -10,17 +10,12 @@ with(MO){
       o = RClass.inherits(this, o, FObject);
       //..........................................................
       // @attribute
-      o._code        = null;
-      o._pipeline    = null;
+      o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+      o._pipeline    = MO.Class.register(o, new MO.AGetSet('_pipeline'));
       o._resources   = null;
       //..........................................................
       // @method
       o.construct    = FResourceType_construct;
-      // @method
-      o.code         = FResourceType_code;
-      o.setCode      = FResourceType_setCode;
-      o.pipeline     = FResourceType_pipeline;
-      o.setPipeline  = FResourceType_setPipeline;
       // @method
       o.findResource = FResourceType_findResource;
       o.resources    = FResourceType_resources;
@@ -36,50 +31,6 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._resources = new TDictionary();
-   }
-
-   //==========================================================
-   // <T>获得代码。</T>
-   //
-   // @method
-   // @property get
-   // @return String 代码
-   //==========================================================
-   MO.FResourceType_code = function FResourceType_code(){
-      return this._code;
-   }
-
-   //==========================================================
-   // <T>设置代码。</T>
-   //
-   // @method
-   // @property set
-   // @param String 代码
-   //==========================================================
-   MO.FResourceType_setCode = function FResourceType_setCode(p){
-      this._code = p;
-   }
-
-   //==========================================================
-   // <T>获得管道。</T>
-   //
-   // @method
-   // @property get
-   // @return String 管道
-   //==========================================================
-   MO.FResourceType_pipeline = function FResourceType_pipeline(){
-      return this._pipeline;
-   }
-
-   //==========================================================
-   // <T>设置管道。</T>
-   //
-   // @method
-   // @property set
-   // @param String 管道
-   //==========================================================
-   MO.FResourceType_setPipeline = function FResourceType_setPipeline(p){
-      this._pipeline = p;
    }
 
    //==========================================================

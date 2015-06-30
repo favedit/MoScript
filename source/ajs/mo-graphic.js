@@ -3904,8 +3904,8 @@ with(MO){
       o._parameters         = null;
       o._extensions         = null;
       o._statusRecord       = false;
-      o._recordBuffers      = null;
-      o._recordSamplers     = null;
+      o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
+      o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
       o._statusScissor      = false;
       o._data9              = null;
       o._data16             = null;
@@ -3913,8 +3913,6 @@ with(MO){
       o.linkCanvas          = FWglContext_linkCanvas;
       o.parameters          = FWglContext_parameters;
       o.extensions          = FWglContext_extensions;
-      o.recordBuffers       = FWglContext_recordBuffers;
-      o.recordSamplers      = FWglContext_recordSamplers;
       o.recordBegin         = FWglContext_recordBegin;
       o.recordEnd           = FWglContext_recordEnd;
       o.createProgram       = FWglContext_createProgram;
@@ -4155,12 +4153,6 @@ with(MO){
          }
       }
       return extensions;
-   }
-   MO.FWglContext_recordBuffers = function FWglContext_recordBuffers(){
-      return this._recordBuffers;
-   }
-   MO.FWglContext_recordSamplers = function FWglContext_recordSamplers(){
-      return this._recordSamplers;
    }
    MO.FWglContext_recordBegin = function FWglContext_recordBegin(){
       var o = this;
@@ -5428,126 +5420,124 @@ with(MO){
       o.__base.FG3dVertexShader.dispose.call(o);
    }
 }
-with(MO){
-   MO.RWglUtility = function RWglUtility(){
-      return this;
-   }
-   MO.RWglUtility.prototype.convertFillMode = function RWglUtility_convertFillMode(graphic, fillCd){
-      switch(fillCd){
-         case EG3dFillMode.Point:
-            return graphic.POINT;
-         case EG3dFillMode.Line:
-            return graphic.LINE;
-         case EG3dFillMode.Face:
-            return graphic.FILL;
-      }
-      throw new TError(this, "Convert fill mode failure. (fill_cd={1})", fillCd);
-   }
-   MO.RWglUtility.prototype.convertDrawMode = function RWglUtility_convertDrawMode(graphic, drawCd){
-      switch(drawCd){
-         case EG3dDrawMode.Point:
-            return graphic.POINTS;
-         case EG3dDrawMode.Lines:
-            return graphic.LINES;
-         case EG3dDrawMode.LineStrip:
-            return graphic.LINE_STRIP;
-         case EG3dDrawMode.LineLoop:
-            return graphic.LINE_LOOP;
-         case EG3dDrawMode.Triangles:
-            return graphic.TRIANGLES;
-         case EG3dDrawMode.TriangleStrip:
-            return graphic.TRIANGLE_STRIP;
-         case EG3dDrawMode.TriangleFan:
-            return graphic.TRIANGLE_FAN;
-         case EG3dDrawMode.Quads:
-            return graphic.QUADS;
-         case EG3dDrawMode.QuadStrip:
-            return graphic.QUAD_STRIP;
-      }
-      throw new TError(this, "Convert draw mode failure. (draw_cd={1})", drawCd);
-   }
-   MO.RWglUtility.prototype.convertCullMode = function RWglUtility_convertCullMode(graphic, cullCd){
-      switch(cullCd){
-         case EG3dCullMode.Front:
-            return graphic.FRONT;
-         case EG3dCullMode.Back:
-            return graphic.BACK;
-         case EG3dCullMode.Both:
-            return graphic.FRONT_AND_BACK;
-      }
-      throw new TError(this, "Convert cull mode failure. (cull_cd={1})", cullCd);
-   }
-   MO.RWglUtility.prototype.convertDepthMode = function RWglUtility_convertDepthMode(graphic, depthCd){
-      switch(depthCd){
-         case EG3dDepthMode.Equal:
-            return graphic.EQUAL;
-         case EG3dDepthMode.NotEqual:
-            return graphic.NOTEQUAL;
-         case EG3dDepthMode.Less:
-            return graphic.LESS;
-         case EG3dDepthMode.LessEqual:
-            return graphic.LEQUAL;
-         case EG3dDepthMode.Greater:
-            return graphic.GREATER;
-         case EG3dDepthMode.GreaterEqual:
-            return graphic.GEQUAL;
-         case EG3dDepthMode.Always:
-            return graphic.ALWAYS;
-      }
-      throw new TError(this, "Convert depth mode failure. (depth_cd={1})", depthCd);
-   }
-   MO.RWglUtility.prototype.convertBlendFactors = function RWglUtility_convertBlendFactors(graphic, blendCd){
-      switch(blendCd){
-         case EG3dBlendMode.Zero:
-            return graphic.ZERO;
-         case EG3dBlendMode.One:
-            return graphic.ONE;
-         case EG3dBlendMode.SrcColor:
-            return graphic.SRC_COLOR;
-         case EG3dBlendMode.OneMinusSrcColor:
-            return graphic.ONE_MINUS_SRC_COLOR;
-         case EG3dBlendMode.DstColor:
-            return graphic.DST_COLOR;
-         case EG3dBlendMode.OneMinusDstColor:
-            return graphic.ONE_MINUS_DST_COLOR;
-         case EG3dBlendMode.SrcAlpha:
-            return graphic.SRC_ALPHA;
-         case EG3dBlendMode.OneMinusSrcAlpha:
-            return graphic.ONE_MINUS_SRC_ALPHA;
-         case EG3dBlendMode.DstAlpha:
-            return graphic.DST_ALPHA;
-         case EG3dBlendMode.OneMinusDstAlpha:
-            return graphic.ONE_MINUS_DST_ALPHA;
-         case EG3dBlendMode.SrcAlphaSaturate:
-            return graphic.SRC_ALPHA_SATURATE;
-      }
-      throw new TError(this, "Convert blend factors failure. (blend_cd={1})", blendCd);
-   }
-   MO.RWglUtility.prototype.convertIndexStride = function RWglUtility_convertIndexStride(graphic, strideCd){
-      switch(strideCd){
-         case EG3dIndexStride.Uint16:
-            return graphic.UNSIGNED_SHORT;
-         case EG3dIndexStride.Uint32:
-            return graphic.UNSIGNED_INT;
-      }
-      throw new TError(this, "Convert index stride failure. (stride_cd={1})", strideCd);
-   }
-   MO.RWglUtility.prototype.convertSamplerFilter = function RWglUtility_convertSamplerFilter(graphic, filterCd){
-      switch(filterCd){
-         case EG3dSamplerFilter.Unknown:
-            return 0;
-         case EG3dSamplerFilter.Nearest:
-            return graphic.NEAREST;
-         case EG3dSamplerFilter.Linear:
-            return graphic.LINEAR;
-         case EG3dSamplerFilter.Repeat:
-            return graphic.REPEAT;
-         case EG3dSamplerFilter.ClampToEdge:
-            return graphic.CLAMP_TO_EDGE;
-         case EG3dSamplerFilter.ClampToBorder:
-            return graphic.CLAMP_TO_BORDER;
-      }
-      throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", filterCd);
-   }
-   MO.RWglUtility = new RWglUtility();
+MO.RWglUtility = function RWglUtility(){
+   return this;
 }
+MO.RWglUtility.prototype.convertFillMode = function RWglUtility_convertFillMode(graphic, fillCd){
+   switch(fillCd){
+      case MO.EG3dFillMode.Point:
+         return graphic.POINT;
+      case MO.EG3dFillMode.Line:
+         return graphic.LINE;
+      case MO.EG3dFillMode.Face:
+         return graphic.FILL;
+   }
+   throw new TError(this, "Convert fill mode failure. (fill_cd={1})", fillCd);
+}
+MO.RWglUtility.prototype.convertDrawMode = function RWglUtility_convertDrawMode(graphic, drawCd){
+   switch(drawCd){
+      case MO.EG3dDrawMode.Point:
+         return graphic.POINTS;
+      case MO.EG3dDrawMode.Lines:
+         return graphic.LINES;
+      case MO.EG3dDrawMode.LineStrip:
+         return graphic.LINE_STRIP;
+      case MO.EG3dDrawMode.LineLoop:
+         return graphic.LINE_LOOP;
+      case MO.EG3dDrawMode.Triangles:
+         return graphic.TRIANGLES;
+      case MO.EG3dDrawMode.TriangleStrip:
+         return graphic.TRIANGLE_STRIP;
+      case MO.EG3dDrawMode.TriangleFan:
+         return graphic.TRIANGLE_FAN;
+      case MO.EG3dDrawMode.Quads:
+         return graphic.QUADS;
+      case MO.EG3dDrawMode.QuadStrip:
+         return graphic.QUAD_STRIP;
+   }
+   throw new TError(this, "Convert draw mode failure. (draw_cd={1})", drawCd);
+}
+MO.RWglUtility.prototype.convertCullMode = function RWglUtility_convertCullMode(graphic, cullCd){
+   switch(cullCd){
+      case MO.EG3dCullMode.Front:
+         return graphic.FRONT;
+      case MO.EG3dCullMode.Back:
+         return graphic.BACK;
+      case MO.EG3dCullMode.Both:
+         return graphic.FRONT_AND_BACK;
+   }
+   throw new TError(this, "Convert cull mode failure. (cull_cd={1})", cullCd);
+}
+MO.RWglUtility.prototype.convertDepthMode = function RWglUtility_convertDepthMode(graphic, depthCd){
+   switch(depthCd){
+      case MO.EG3dDepthMode.Equal:
+         return graphic.EQUAL;
+      case MO.EG3dDepthMode.NotEqual:
+         return graphic.NOTEQUAL;
+      case MO.EG3dDepthMode.Less:
+         return graphic.LESS;
+      case MO.EG3dDepthMode.LessEqual:
+         return graphic.LEQUAL;
+      case MO.EG3dDepthMode.Greater:
+         return graphic.GREATER;
+      case MO.EG3dDepthMode.GreaterEqual:
+         return graphic.GEQUAL;
+      case MO.EG3dDepthMode.Always:
+         return graphic.ALWAYS;
+   }
+   throw new TError(this, "Convert depth mode failure. (depth_cd={1})", depthCd);
+}
+MO.RWglUtility.prototype.convertBlendFactors = function RWglUtility_convertBlendFactors(graphic, blendCd){
+   switch(blendCd){
+      case MO.EG3dBlendMode.Zero:
+         return graphic.ZERO;
+      case MO.EG3dBlendMode.One:
+         return graphic.ONE;
+      case MO.EG3dBlendMode.SrcColor:
+         return graphic.SRC_COLOR;
+      case MO.EG3dBlendMode.OneMinusSrcColor:
+         return graphic.ONE_MINUS_SRC_COLOR;
+      case MO.EG3dBlendMode.DstColor:
+         return graphic.DST_COLOR;
+      case MO.EG3dBlendMode.OneMinusDstColor:
+         return graphic.ONE_MINUS_DST_COLOR;
+      case MO.EG3dBlendMode.SrcAlpha:
+         return graphic.SRC_ALPHA;
+      case MO.EG3dBlendMode.OneMinusSrcAlpha:
+         return graphic.ONE_MINUS_SRC_ALPHA;
+      case MO.EG3dBlendMode.DstAlpha:
+         return graphic.DST_ALPHA;
+      case MO.EG3dBlendMode.OneMinusDstAlpha:
+         return graphic.ONE_MINUS_DST_ALPHA;
+      case MO.EG3dBlendMode.SrcAlphaSaturate:
+         return graphic.SRC_ALPHA_SATURATE;
+   }
+   throw new TError(this, "Convert blend factors failure. (blend_cd={1})", blendCd);
+}
+MO.RWglUtility.prototype.convertIndexStride = function RWglUtility_convertIndexStride(graphic, strideCd){
+   switch(strideCd){
+      case MO.EG3dIndexStride.Uint16:
+         return graphic.UNSIGNED_SHORT;
+      case MO.EG3dIndexStride.Uint32:
+         return graphic.UNSIGNED_INT;
+   }
+   throw new TError(this, "Convert index stride failure. (stride_cd={1})", strideCd);
+}
+MO.RWglUtility.prototype.convertSamplerFilter = function RWglUtility_convertSamplerFilter(graphic, filterCd){
+   switch(filterCd){
+      case MO.EG3dSamplerFilter.Unknown:
+         return 0;
+      case MO.EG3dSamplerFilter.Nearest:
+         return graphic.NEAREST;
+      case MO.EG3dSamplerFilter.Linear:
+         return graphic.LINEAR;
+      case MO.EG3dSamplerFilter.Repeat:
+         return graphic.REPEAT;
+      case MO.EG3dSamplerFilter.ClampToEdge:
+         return graphic.CLAMP_TO_EDGE;
+      case MO.EG3dSamplerFilter.ClampToBorder:
+         return graphic.CLAMP_TO_BORDER;
+   }
+   throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", filterCd);
+}
+MO.RWglUtility = new MO.RWglUtility();

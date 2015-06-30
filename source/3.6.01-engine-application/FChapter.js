@@ -7,35 +7,37 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FChapter = function FChapter(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerEnterFrame, MListenerLeaveFrame);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
       //..........................................................
       // @attribute
-      o._code             = RClass.register(o, new AGetSet('_code'));
-      o._scenes           = RClass.register(o, new AGetter('_scenes'));
+      o._code                = RClass.register(o, new AGetSet('_code'));
+      o._scenes              = RClass.register(o, new AGetter('_scenes'));
       // @attribute
-      o._activeScene      = RClass.register(o, new AGetter('_activeScene'));
-      o._statusSetup      = false;
-      o._statusActive     = false;
+      o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
+      o._statusSetup         = false;
+      o._statusActive        = false;
       // @attribute
-      o._eventEnterFrame  = null;
-      o._eventLeaveFrame  = null;
+      o._eventEnterFrame     = null;
+      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
+      o._eventLeaveFrame     = null;
+      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
       // @method
-      o.construct         = FChapter_construct;
+      o.construct            = FChapter_construct;
       // @method
-      o.registerScene     = FChapter_registerScene;
-      o.unregisterScene   = FChapter_unregisterScene;
-      o.selectScene       = FChapter_selectScene;
-      o.selectSceneByCode = FChapter_selectSceneByCode;
+      o.registerScene        = FChapter_registerScene;
+      o.unregisterScene      = FChapter_unregisterScene;
+      o.selectScene          = FChapter_selectScene;
+      o.selectSceneByCode    = FChapter_selectSceneByCode;
       // @method
-      o.setup             = FChapter_setup;
-      o.active            = FChapter_active;
-      o.deactive          = FChapter_deactive;
+      o.setup                = FChapter_setup;
+      o.active               = FChapter_active;
+      o.deactive             = FChapter_deactive;
       // @method
-      o.processEvent      = FChapter_processEvent;
-      o.process           = FChapter_process;
+      o.processEvent         = FChapter_processEvent;
+      o.process              = FChapter_process;
       // @method
-      o.dispose           = FChapter_dispose;
+      o.dispose              = FChapter_dispose;
       return o;
    }
 
@@ -189,8 +191,7 @@ with(MO){
       o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
       o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
       // 父处理
-      o.__base.MListenerEnterFrame.dispose.call(o);
-      o.__base.MListenerLeaveFrame.dispose.call(o);
+      o.__base.MListener.dispose.call(o);
       o.__base.FObject.dispose.call(o);
    }
 }

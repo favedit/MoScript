@@ -10,69 +10,13 @@ with(MO){
       o = RClass.inherits(this, o, FPipeline);
       //..........................................................
       // @attribute
-      o._console    = null;
-      o._compressCd = null;
-      o._resource   = null;
+      o._console    = MO.Class.register(o, new MO.AGetSet('_console'));
+      o._compressCd = MO.Class.register(o, new MO.AGetter('_compressCd'));
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       //..........................................................
-      // @method
-      o.console     = FResourcePipeline_console;
-      o.setConsole  = FResourcePipeline_setConsole;
-      o.compressCd  = FResourcePipeline_compressCd;
-      o.resource    = FResourcePipeline_resource;
-      o.setResource = FResourcePipeline_setResource;
       // @method
       o.dispose     = FResourcePipeline_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>获得控制台。</T>
-   //
-   // @method
-   // @return FConsole 控制台
-   //==========================================================
-   MO.FResourcePipeline_console = function FResourcePipeline_console(){
-      return this._console;
-   }
-
-   //==========================================================
-   // <T>设置控制台。</T>
-   //
-   // @method
-   // @param p:console:FConsole 控制台
-   //==========================================================
-   MO.FResourcePipeline_setConsole = function FResourcePipeline_setConsole(p){
-      this._console = p;
-   }
-
-   //==========================================================
-   // <T>获得压缩类型。</T>
-   //
-   // @method
-   // @return EResourceCompress 压缩类型
-   //==========================================================
-   MO.FResourcePipeline_compressCd = function FResourcePipeline_compressCd(){
-      return this._compressCd;
-   }
-
-   //==========================================================
-   // <T>获得资源。</T>
-   //
-   // @method
-   // @return FResource 资源
-   //==========================================================
-   MO.FResourcePipeline_resource = function FResourcePipeline_resource(){
-      return this._resource;
-   }
-
-   //==========================================================
-   // <T>设置资源。</T>
-   //
-   // @method
-   // @param p:resource:FResource 资源
-   //==========================================================
-   MO.FResourcePipeline_setResource = function FResourcePipeline_setResource(p){
-      this._resource = p;
    }
 
    //==========================================================

@@ -1,31 +1,21 @@
-with(MO){
-   MO.MLinkerResource = function MLinkerResource(o){
-      o = RClass.inherits(this, o);
-      o._resource      = null;
-      o.resource       = MLinkerResource_resource;
-      o.setResource    = MLinkerResource_setResource;
-      o.loadResource   = MLinkerResource_loadResource;
-      o.reloadResource = MLinkerResource_reloadResource;
-      o.dispose        = MLinkerResource_dispose;
-      return o;
-   }
-   MO.MLinkerResource_resource = function MLinkerResource_resource(){
-      return this._resource;
-   }
-   MO.MLinkerResource_setResource = function MLinkerResource_setResource(resource){
-      this._resource = resource;
-   }
-   MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
-      this._resource = resource;
-   }
-   MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
-      var o = this;
-      o.loadResource(resource);
-   }
-   MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
-      var o = this;
-      o._resource = null;
-   }
+MO.MLinkerResource = function MLinkerResource(o){
+   o = MO.Class.inherits(this, o);
+   o._resource      = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o.loadResource   = MO.MLinkerResource_loadResource;
+   o.reloadResource = MO.MLinkerResource_reloadResource;
+   o.dispose        = MO.MLinkerResource_dispose;
+   return o;
+}
+MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
+   this._resource = resource;
+}
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+   var o = this;
+   o.loadResource(resource);
+}
+MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
+   var o = this;
+   o._resource = null;
 }
 with(MO){
    MO.FResource = function FResource(o){
@@ -48,11 +38,10 @@ with(MO){
       o._dataLength = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._blocks     = null;
+      o._blocks     = MO.Class.register(o, new MO.AGetter('_blocks'));
       o._resource   = null;
       o.construct   = FResourceBlockStorage_construct;
       o.testReady   = FResourceBlockStorage_testReady;
-      o.blocks      = FResourceBlockStorage_blocks;
       o.load        = FResourceBlockStorage_load;
       o.complete    = FResourceBlockStorage_complete;
       o.dispose     = FResourceBlockStorage_dispose;
@@ -77,9 +66,6 @@ with(MO){
          o._ready = true;
       }
       return o._ready;
-   }
-   MO.FResourceBlockStorage_blocks = function FResourceBlockStorage_blocks(){
-      return this._blocks;
    }
    MO.FResourceBlockStorage_load = function FResourceBlockStorage_load(buffer){
       var o = this;
@@ -139,17 +125,15 @@ with(MO){
       o.__base.FResourceStorage.dispose.call(o);
    }
 }
-with(MO){
-   MO.FResourceBlockStorageData = function FResourceBlockStorageData(o){
-      o = RClass.inherits(this, o, FObject, MResourceData);
-      o.dispose = FResourceBlockStorageData_dispose;
-      return o;
-   }
-   MO.FResourceBlockStorageData_dispose = function FResourceBlockStorageData_dispose(){
-      var o = this;
-      o.__base.MResourceData.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FResourceBlockStorageData = function FResourceBlockStorageData(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MResourceData);
+   o.dispose = MO.FResourceBlockStorageData_dispose;
+   return o;
+}
+MO.FResourceBlockStorageData_dispose = function FResourceBlockStorageData_dispose(){
+   var o = this;
+   o.__base.MResourceData.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FResourceConsole = function FResourceConsole(o){
@@ -371,46 +355,20 @@ with(MO){
       this._loadDatas.push(data);
    }
 }
-with(MO){
-   MO.FResourceGroup = function FResourceGroup(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code      = null;
-      o._resources = null;
-      o.code       = FResourceGroup_code;
-      return o;
-   }
-   MO.FResourceGroup_code = function FResourceGroup_code(){
-      return this._code;
-   }
+MO.FResourceGroup = function FResourceGroup(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = MO.Class.register(o, new MO.AGetter('_code'));
+   o._resources = null;
+   return o;
 }
 with(MO){
    MO.FResourcePipeline = function FResourcePipeline(o){
       o = RClass.inherits(this, o, FPipeline);
-      o._console    = null;
-      o._compressCd = null;
-      o._resource   = null;
-      o.console     = FResourcePipeline_console;
-      o.setConsole  = FResourcePipeline_setConsole;
-      o.compressCd  = FResourcePipeline_compressCd;
-      o.resource    = FResourcePipeline_resource;
-      o.setResource = FResourcePipeline_setResource;
+      o._console    = MO.Class.register(o, new MO.AGetSet('_console'));
+      o._compressCd = MO.Class.register(o, new MO.AGetter('_compressCd'));
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       o.dispose     = FResourcePipeline_dispose;
       return o;
-   }
-   MO.FResourcePipeline_console = function FResourcePipeline_console(){
-      return this._console;
-   }
-   MO.FResourcePipeline_setConsole = function FResourcePipeline_setConsole(p){
-      this._console = p;
-   }
-   MO.FResourcePipeline_compressCd = function FResourcePipeline_compressCd(){
-      return this._compressCd;
-   }
-   MO.FResourcePipeline_resource = function FResourcePipeline_resource(){
-      return this._resource;
-   }
-   MO.FResourcePipeline_setResource = function FResourcePipeline_setResource(p){
-      this._resource = p;
    }
    MO.FResourcePipeline_dispose = function FResourcePipeline_dispose(){
       var o = this;
@@ -483,46 +441,42 @@ with(MO){
       o.__base.FPipeline.dispose.call(o);
    }
 }
-with(MO){
-   MO.FResourceSingleStorage = function FResourceSingleStorage(o){
-      o = RClass.inherits(this, o, FResourceStorage, MResourceData);
-      o.construct   = FResourceSingleStorage_construct;
-      o.load        = FResourceSingleStorage_load;
-      o.complete    = FResourceSingleStorage_complete;
-      o.dispose     = FResourceSingleStorage_dispose;
-      return o;
-   }
-   MO.FResourceSingleStorage_construct = function FResourceSingleStorage_construct(){
-      var o = this;
-      o.__base.FResourceStorage.construct.call(o);
-   }
-   MO.FResourceSingleStorage_load = function FResourceSingleStorage_load(buffer){
-      var o = this;
-      var resource = o._resource;
-      o._compressLength = buffer.byteLength;
-      o._compressData = new Uint8Array(buffer);
-   }
-   MO.FResourceSingleStorage_complete = function FResourceSingleStorage_complete(){
-      var o = this;
-      var resource = o._resource;
-      resource.onComplete(o._data);
-   }
-   MO.FResourceSingleStorage_dispose = function FResourceSingleStorage_dispose(){
-      var o = this;
-      o.__base.MResourceData.dispose.call(o);
-      o.__base.FResourceStorage.dispose.call(o);
-   }
+MO.FResourceSingleStorage = function FResourceSingleStorage(o){
+   o = MO.Class.inherits(this, o, MO.FResourceStorage, MO.MResourceData);
+   o.construct   = MO.FResourceSingleStorage_construct;
+   o.load        = MO.FResourceSingleStorage_load;
+   o.complete    = MO.FResourceSingleStorage_complete;
+   o.dispose     = MO.FResourceSingleStorage_dispose;
+   return o;
+}
+MO.FResourceSingleStorage_construct = function FResourceSingleStorage_construct(){
+   var o = this;
+   o.__base.FResourceStorage.construct.call(o);
+}
+MO.FResourceSingleStorage_load = function FResourceSingleStorage_load(buffer){
+   var o = this;
+   var resource = o._resource;
+   o._compressLength = buffer.byteLength;
+   o._compressData = new Uint8Array(buffer);
+}
+MO.FResourceSingleStorage_complete = function FResourceSingleStorage_complete(){
+   var o = this;
+   var resource = o._resource;
+   resource.onComplete(o._data);
+}
+MO.FResourceSingleStorage_dispose = function FResourceSingleStorage_dispose(){
+   var o = this;
+   o.__base.MResourceData.dispose.call(o);
+   o.__base.FResourceStorage.dispose.call(o);
 }
 with(MO){
    MO.FResourceStorage = function FResourceStorage(o){
       o = RClass.inherits(this, o, FObject);
       o._ready      = false;
       o._dataLength = 0;
-      o._resource   = null;
+      o._resource   = MO.Class.register(o, new MO.AGetSet('_resource'));
       o.construct   = FResourceStorage_construct;
       o.testReady   = FResourceStorage_testReady;
-      o.resource    = FResourceStorage_resource;
-      o.setResource = FResourceStorage_setResource;
       o.load        = FResourceStorage_load;
       o.complete    = FResourceStorage_complete;
       o.dispose     = FResourceStorage_dispose;
@@ -534,12 +488,6 @@ with(MO){
    }
    MO.FResourceStorage_testReady = function FResourceStorage_testReady(){
       return this._ready;
-   }
-   MO.FResourceStorage_resource = function FResourceStorage_resource(){
-      return this._resource;
-   }
-   MO.FResourceStorage_setResource = function FResourceStorage_setResource(resource){
-      this._resource = resource;
    }
    MO.FResourceStorage_load = function FResourceStorage_load(buffer){
    }
@@ -614,14 +562,10 @@ with(MO){
 with(MO){
    MO.FResourceType = function FResourceType(o){
       o = RClass.inherits(this, o, FObject);
-      o._code        = null;
-      o._pipeline    = null;
+      o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+      o._pipeline    = MO.Class.register(o, new MO.AGetSet('_pipeline'));
       o._resources   = null;
       o.construct    = FResourceType_construct;
-      o.code         = FResourceType_code;
-      o.setCode      = FResourceType_setCode;
-      o.pipeline     = FResourceType_pipeline;
-      o.setPipeline  = FResourceType_setPipeline;
       o.findResource = FResourceType_findResource;
       o.resources    = FResourceType_resources;
       return o;
@@ -630,18 +574,6 @@ with(MO){
       var o = this;
       o.__base.FObject.construct.call(o);
       o._resources = new TDictionary();
-   }
-   MO.FResourceType_code = function FResourceType_code(){
-      return this._code;
-   }
-   MO.FResourceType_setCode = function FResourceType_setCode(p){
-      this._code = p;
-   }
-   MO.FResourceType_pipeline = function FResourceType_pipeline(){
-      return this._pipeline;
-   }
-   MO.FResourceType_setPipeline = function FResourceType_setPipeline(p){
-      this._pipeline = p;
    }
    MO.FResourceType_findResource = function FResourceType_findResource(p){
       return this._resources.get(p);

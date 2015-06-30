@@ -14,7 +14,7 @@ with(MO){
       o._dataLength = 0;
       o._blockSize  = 0;
       o._blockCount = 0;
-      o._blocks     = null;
+      o._blocks     = MO.Class.register(o, new MO.AGetter('_blocks'));
       o._resource   = null;
       //..........................................................
       // @method
@@ -22,7 +22,6 @@ with(MO){
       // @method
       o.testReady   = FResourceBlockStorage_testReady;
       // @method
-      o.blocks      = FResourceBlockStorage_blocks;
       o.load        = FResourceBlockStorage_load;
       o.complete    = FResourceBlockStorage_complete;
       // @method
@@ -62,16 +61,6 @@ with(MO){
          o._ready = true;
       }
       return o._ready;
-   }
-
-   //==========================================================
-   // <T>增加一个资源存储块集合。</T>
-   //
-   // @method
-   // @return TObjects 资源存储块集合
-   //==========================================================
-   MO.FResourceBlockStorage_blocks = function FResourceBlockStorage_blocks(){
-      return this._blocks;
    }
 
    //==========================================================
