@@ -19,6 +19,7 @@ with(MO){
       o.assign       = SColor4_assign;
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
+      o.setInteger   = SColor4_setInteger;
       o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
@@ -49,6 +50,13 @@ with(MO){
       o.green = g;
       o.blue = b;
       o.alpha = a;
+   }
+   MO.SColor4_setInteger = function SColor4_setInteger(value){
+      var o = this;
+      o.red = ((value >> 16) & 0xFF) / 255;
+      o.green = ((value >> 8) & 0xFF) / 255;
+      o.blue = (value & 0xFF) / 255;
+      o.alpha = ((value >> 24) & 0xFF) / 255;
    }
    MO.SColor4_setHex = function SColor4_setHex(value){
       var o = this;

@@ -24,7 +24,7 @@ with(MO){
       o._tableEntities   = MO.Class.register(o, new AGetter('_tableEntities'));
       o._showEntities    = MO.Class.register(o, new AGetter('_showEntities'));
       // @attribute
-      o._tableCount      = 20;
+      o._tableCount      = 24;
       o._tableInterval   = 1000;
       o._tableTick       = 1;
       o._dataTicker      = null;
@@ -41,6 +41,7 @@ with(MO){
       o.allocShape       = FEaiStatisticsInvestment_allocShape;
       o.setup            = FEaiStatisticsInvestment_setup;
       // @method
+      o.focusEntity      = FEaiStatisticsInvestment_focusEntity;
       o.process          = FEaiStatisticsInvestment_process;
       // @method
       o.dispose          = FEaiStatisticsInvestment_dispose;
@@ -143,6 +144,32 @@ with(MO){
    }
 
    //==========================================================
+   // <T>修正矩阵。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
+      var o = this;
+      var card = entity.card();
+      var investment = entity.investment();
+      // 获得城市
+      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var cityEntity = o._mapEntity.findCityByCard(card);
+      // 显示实体
+      if(cityEntity){
+         cityEntity.addInvestmentTotal(investment);
+         // 更新数据
+         o._mapEntity.upload();
+         //var shape = o.allocShape();
+         //shape.setCityEntity(cityEntity)
+         //shape.setEntity(entity)
+         //shape.dirty()
+         //o._display.push(shape);
+         //o._showEntities.push(entity);
+      }
+   }
+
+   //==========================================================
    // <T>从输入流反序列化数据。</T>
    //
    // @method
@@ -189,20 +216,9 @@ with(MO){
          var entities = o._entities;
          if(!entities.isEmpty()){
             var entity = entities.shift();
-            var card = entity.card();
             o._tableEntities.unshift(entity);
-            // 获得城市
-            var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
-            var cityEntity = o._mapEntity.findCityByCard(card);
-            // 显示实体
-            if(cityEntity){
-               var shape = o.allocShape();
-               shape.setCityEntity(cityEntity)
-               shape.setEntity(entity)
-               shape.dirty()
-               o._display.push(shape);
-               o._showEntities.push(entity);
-            }
+            // 设置实体焦点
+            o.focusEntity(entity);
             // 刷新表格
             var table = o._dataTable;
             var count = o._tableEntities.count();
@@ -240,6 +256,9 @@ with(MO){
          // 设置时间
          o._tableTick = currentTick;
       }
+      //..........................................................
+      // 地图处理
+      o._mapEntity.process();
    }
 
    //==========================================================

@@ -38,17 +38,23 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
-      o._visible    = RClass.register(o, new AGetter('_visible'), true);
-      o._location   = RClass.register(o, new AGetter('_location'));
-      o._size       = RClass.register(o, new AGetter('_size'));
-      o._color      = RClass.register(o, new AGetter('_color'));
-      o._range      = RClass.register(o, new AGetter('_range'), 1);
-      o._rangeColor = RClass.register(o, new AGetter('_rangeColor'));
-      o._data       = RClass.register(o, new AGetSet('_data'));
-      o.construct   = FEaiCityEntity_construct;
-      o.build       = FEaiCityEntity_build;
-      o.update      = FEaiCityEntity_update;
-      o.dispose     = FEaiCityEntity_dispose;
+      o._visible              = RClass.register(o, new AGetter('_visible'), false);
+      o._location             = RClass.register(o, new AGetter('_location'));
+      o._size                 = RClass.register(o, new AGetter('_size'));
+      o._color                = RClass.register(o, new AGetter('_color'));
+      o._range                = RClass.register(o, new AGetter('_range'), 1);
+      o._rangeColor           = RClass.register(o, new AGetter('_rangeColor'));
+      o._investmentCount      = 0;
+      o._investmentTotal      = RClass.register(o, new AGetSet('_investmentTotal'));
+      o._investmentLevelTotal = 10000;
+      o._investmentLevel      = 0;
+      o._data                 = RClass.register(o, new AGetSet('_data'));
+      o.construct             = FEaiCityEntity_construct;
+      o.build                 = FEaiCityEntity_build;
+      o.addInvestmentTotal    = FEaiCityEntity_addInvestmentTotal;
+      o.update                = FEaiCityEntity_update;
+      o.process               = FEaiCityEntity_process;
+      o.dispose               = FEaiCityEntity_dispose;
       return o;
    }
    MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
@@ -56,7 +62,7 @@ with(MO){
       o.__base.FEaiEntity.construct.call(o);
       o._location = new SPoint2();
       o._size = new SSize2();
-      o._color = new SColor4(1, 1, 1, 1);
+      o._color = new SColor4(0, 0, 0, 0);
       o._rangeColor = new SColor4(0, 0, 0, 0);
    }
    MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
@@ -64,9 +70,22 @@ with(MO){
       o._location.assign(o._data.location());
       o._size.set(2, 2);
    }
+   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(investmentTotal){
+      var o = this;
+      o._investmentCount++;
+      o._investmentTotal += investmentTotal;
+      o._investmentLevel = o._investmentLevelTotal;
+      var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
+      var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
+      o._color.set(1, 1, 1, 1);
+      o._range = Math.log(o._investmentTotal) * 10;
+      o._rangeColor.setInteger(color);
+      o._rangeColor.alpha = 1;
+      o._visible = true;
+   }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      return;
+      debugger
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -83,6 +102,21 @@ with(MO){
       }
       range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
       o._size.set(range, range);
+   }
+   MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
+      var o = this;
+      if(o._investmentLevel > 0){
+         var rate = o._investmentLevel / o._investmentLevelTotal;
+         o._color.alpha = rate;
+         o._range = Math.log(o._investmentTotal) * rate;
+         o._rangeColor.alpha = rate;
+         o._investmentLevel--;
+         if(o._investmentLevel == 0){
+            o._visible = false;
+         }
+         return true;
+      }
+      return false;
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
       var o = this;
@@ -724,11 +758,15 @@ with(MO){
 }
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-   o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
-   o.construct         = MO.FEaiMapEntity_construct;
-   o.findCityByCard    = MO.FEaiMapEntity_findCityByCard;
-   o.dispose           = MO.FEaiMapEntity_dispose;
+   o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
+   o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
+   o.construct             = MO.FEaiMapEntity_construct;
+   o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
+   o.upload                = MO.FEaiMapEntity_upload;
+   o.process               = MO.FEaiMapEntity_process;
+   o.dispose               = MO.FEaiMapEntity_dispose;
    return o;
 }
 MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
@@ -753,6 +791,26 @@ MO.FEaiMapEntity_findCityByCard = function FEaiMapEntity_findCityByCard(card){
       return cityEntity;
    }
    return null;
+}
+MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
+   var o = this;
+   o._citysRenderable.upload();
+   o._citysRangeRenderable.upload();
+}
+MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
+   var o = this;
+   var changed = false;
+   var cityEntities = o._cityEntities;
+   var count = cityEntities.count();
+   for (var i = 0; i < count; i++) {
+      var cityEntity = cityEntities.at(i);
+      if(cityEntity.process()){
+         changed = true;
+      }
+   }
+   if(changed){
+      o.upload();
+   }
 }
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
@@ -1075,28 +1133,29 @@ with(MO){
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
-      }
-      var passedTick = MO.Timer.current() - o._startTick;
-      var showTick = passedTick - o._popDuration;
-      var closeTick = passedTick - o._showDuration - o._popDuration;
-      var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width)/2;
-      if (passedTick < o._popDuration) {
-         p = passedTick / o._popDuration;
-         p = 1 - (1 - p) * (1 - p);
-         o.setLeft(-rectangle.width + slideDistance * p);
-      }
-      else if (showTick < o._showDuration) {
-      }
-      else if (closeTick < o._closeDuration) {
-         p = closeTick / o._closeDuration;
-         p = p * p;
-         o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-      }
-      else {
-         o.setVisible(false);
-         var dsEvent = MO.Memory.alloc(SEvent);
-         dsEvent.sender = o;
-         o.processDataChangedListener(dsEvent);
+         var passedTick = MO.Timer.current() - o._startTick;
+         var showTick = passedTick - o._popDuration;
+         var closeTick = passedTick - o._showDuration - o._popDuration;
+         var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         if (passedTick < o._popDuration) {
+            p = passedTick / o._popDuration;
+            p = 1 - (1 - p) * (1 - p);
+            o.setLeft(-rectangle.width + slideDistance * p);
+         }
+         else if (showTick < o._showDuration) {
+         }
+         else if (closeTick < o._closeDuration) {
+            p = closeTick / o._closeDuration;
+            p = p * p;
+            o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
+         }
+         else {
+            o._data = null;
+            o.setVisible(false);
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            o.processDataChangedListener(dsEvent);
+         }
       }
    }
    MO.FGuiHistoryMilestoneFrame_show = function FGuiHistoryMilestoneFrame_show() {

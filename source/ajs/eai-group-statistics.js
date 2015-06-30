@@ -12,7 +12,7 @@ with(MO){
       o._entities        = MO.Class.register(o, new AGetter('_entities'));
       o._tableEntities   = MO.Class.register(o, new AGetter('_tableEntities'));
       o._showEntities    = MO.Class.register(o, new AGetter('_showEntities'));
-      o._tableCount      = 20;
+      o._tableCount      = 24;
       o._tableInterval   = 1000;
       o._tableTick       = 1;
       o._dataTicker      = null;
@@ -23,6 +23,7 @@ with(MO){
       o.allocEntity      = FEaiStatisticsInvestment_allocEntity;
       o.allocShape       = FEaiStatisticsInvestment_allocShape;
       o.setup            = FEaiStatisticsInvestment_setup;
+      o.focusEntity      = FEaiStatisticsInvestment_focusEntity;
       o.process          = FEaiStatisticsInvestment_process;
       o.dispose          = FEaiStatisticsInvestment_dispose;
       return o;
@@ -82,6 +83,17 @@ with(MO){
       var display = o._display = RClass.create(FE3dDisplay);
       display.linkGraphicContext(o);
    }
+   MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
+      var o = this;
+      var card = entity.card();
+      var investment = entity.investment();
+      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var cityEntity = o._mapEntity.findCityByCard(card);
+      if(cityEntity){
+         cityEntity.addInvestmentTotal(investment);
+         o._mapEntity.upload();
+      }
+   }
    MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
       var o = this;
       var system = RConsole.find(FEaiLogicConsole).system();
@@ -111,18 +123,8 @@ with(MO){
          var entities = o._entities;
          if(!entities.isEmpty()){
             var entity = entities.shift();
-            var card = entity.card();
             o._tableEntities.unshift(entity);
-            var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
-            var cityEntity = o._mapEntity.findCityByCard(card);
-            if(cityEntity){
-               var shape = o.allocShape();
-               shape.setCityEntity(cityEntity)
-               shape.setEntity(entity)
-               shape.dirty()
-               o._display.push(shape);
-               o._showEntities.push(entity);
-            }
+            o.focusEntity(entity);
             var table = o._dataTable;
             var count = o._tableEntities.count();
             table.setDataCount(count);
@@ -157,6 +159,7 @@ with(MO){
          }
          o._tableTick = currentTick;
       }
+      o._mapEntity.process();
    }
    MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
       var o = this;

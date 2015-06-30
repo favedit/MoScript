@@ -830,17 +830,23 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
-      o._visible    = RClass.register(o, new AGetter('_visible'), true);
-      o._location   = RClass.register(o, new AGetter('_location'));
-      o._size       = RClass.register(o, new AGetter('_size'));
-      o._color      = RClass.register(o, new AGetter('_color'));
-      o._range      = RClass.register(o, new AGetter('_range'), 1);
-      o._rangeColor = RClass.register(o, new AGetter('_rangeColor'));
-      o._data       = RClass.register(o, new AGetSet('_data'));
-      o.construct   = FEaiCityEntity_construct;
-      o.build       = FEaiCityEntity_build;
-      o.update      = FEaiCityEntity_update;
-      o.dispose     = FEaiCityEntity_dispose;
+      o._visible              = RClass.register(o, new AGetter('_visible'), false);
+      o._location             = RClass.register(o, new AGetter('_location'));
+      o._size                 = RClass.register(o, new AGetter('_size'));
+      o._color                = RClass.register(o, new AGetter('_color'));
+      o._range                = RClass.register(o, new AGetter('_range'), 1);
+      o._rangeColor           = RClass.register(o, new AGetter('_rangeColor'));
+      o._investmentCount      = 0;
+      o._investmentTotal      = RClass.register(o, new AGetSet('_investmentTotal'));
+      o._investmentLevelTotal = 10000;
+      o._investmentLevel      = 0;
+      o._data                 = RClass.register(o, new AGetSet('_data'));
+      o.construct             = FEaiCityEntity_construct;
+      o.build                 = FEaiCityEntity_build;
+      o.addInvestmentTotal    = FEaiCityEntity_addInvestmentTotal;
+      o.update                = FEaiCityEntity_update;
+      o.process               = FEaiCityEntity_process;
+      o.dispose               = FEaiCityEntity_dispose;
       return o;
    }
    MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
@@ -848,7 +854,7 @@ with(MO){
       o.__base.FEaiEntity.construct.call(o);
       o._location = new SPoint2();
       o._size = new SSize2();
-      o._color = new SColor4(1, 1, 1, 1);
+      o._color = new SColor4(0, 0, 0, 0);
       o._rangeColor = new SColor4(0, 0, 0, 0);
    }
    MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
@@ -856,9 +862,22 @@ with(MO){
       o._location.assign(o._data.location());
       o._size.set(2, 2);
    }
+   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(investmentTotal){
+      var o = this;
+      o._investmentCount++;
+      o._investmentTotal += investmentTotal;
+      o._investmentLevel = o._investmentLevelTotal;
+      var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
+      var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
+      o._color.set(1, 1, 1, 1);
+      o._range = Math.log(o._investmentTotal) * 10;
+      o._rangeColor.setInteger(color);
+      o._rangeColor.alpha = 1;
+      o._visible = true;
+   }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      return;
+      debugger
       var location = o._data.location();
       var range = 1;
       if(data){
@@ -875,6 +894,21 @@ with(MO){
       }
       range = o._range = RFloat.toRange(Math.sqrt(range), 1, 4);
       o._size.set(range, range);
+   }
+   MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
+      var o = this;
+      if(o._investmentLevel > 0){
+         var rate = o._investmentLevel / o._investmentLevelTotal;
+         o._color.alpha = rate;
+         o._range = Math.log(o._investmentTotal) * rate;
+         o._rangeColor.alpha = rate;
+         o._investmentLevel--;
+         if(o._investmentLevel == 0){
+            o._visible = false;
+         }
+         return true;
+      }
+      return false;
    }
    MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
       var o = this;
@@ -1516,11 +1550,15 @@ with(MO){
 }
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-   o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
-   o.construct         = MO.FEaiMapEntity_construct;
-   o.findCityByCard    = MO.FEaiMapEntity_findCityByCard;
-   o.dispose           = MO.FEaiMapEntity_dispose;
+   o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
+   o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
+   o.construct             = MO.FEaiMapEntity_construct;
+   o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
+   o.upload                = MO.FEaiMapEntity_upload;
+   o.process               = MO.FEaiMapEntity_process;
+   o.dispose               = MO.FEaiMapEntity_dispose;
    return o;
 }
 MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
@@ -1545,6 +1583,26 @@ MO.FEaiMapEntity_findCityByCard = function FEaiMapEntity_findCityByCard(card){
       return cityEntity;
    }
    return null;
+}
+MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
+   var o = this;
+   o._citysRenderable.upload();
+   o._citysRangeRenderable.upload();
+}
+MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
+   var o = this;
+   var changed = false;
+   var cityEntities = o._cityEntities;
+   var count = cityEntities.count();
+   for (var i = 0; i < count; i++) {
+      var cityEntity = cityEntities.at(i);
+      if(cityEntity.process()){
+         changed = true;
+      }
+   }
+   if(changed){
+      o.upload();
+   }
 }
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
@@ -1867,28 +1925,29 @@ with(MO){
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
-      }
-      var passedTick = MO.Timer.current() - o._startTick;
-      var showTick = passedTick - o._popDuration;
-      var closeTick = passedTick - o._showDuration - o._popDuration;
-      var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width)/2;
-      if (passedTick < o._popDuration) {
-         p = passedTick / o._popDuration;
-         p = 1 - (1 - p) * (1 - p);
-         o.setLeft(-rectangle.width + slideDistance * p);
-      }
-      else if (showTick < o._showDuration) {
-      }
-      else if (closeTick < o._closeDuration) {
-         p = closeTick / o._closeDuration;
-         p = p * p;
-         o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-      }
-      else {
-         o.setVisible(false);
-         var dsEvent = MO.Memory.alloc(SEvent);
-         dsEvent.sender = o;
-         o.processDataChangedListener(dsEvent);
+         var passedTick = MO.Timer.current() - o._startTick;
+         var showTick = passedTick - o._popDuration;
+         var closeTick = passedTick - o._showDuration - o._popDuration;
+         var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         if (passedTick < o._popDuration) {
+            p = passedTick / o._popDuration;
+            p = 1 - (1 - p) * (1 - p);
+            o.setLeft(-rectangle.width + slideDistance * p);
+         }
+         else if (showTick < o._showDuration) {
+         }
+         else if (closeTick < o._closeDuration) {
+            p = closeTick / o._closeDuration;
+            p = p * p;
+            o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
+         }
+         else {
+            o._data = null;
+            o.setVisible(false);
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            o.processDataChangedListener(dsEvent);
+         }
       }
    }
    MO.FGuiHistoryMilestoneFrame_show = function FGuiHistoryMilestoneFrame_show() {
@@ -1915,7 +1974,7 @@ with(MO){
       o._entities        = MO.Class.register(o, new AGetter('_entities'));
       o._tableEntities   = MO.Class.register(o, new AGetter('_tableEntities'));
       o._showEntities    = MO.Class.register(o, new AGetter('_showEntities'));
-      o._tableCount      = 20;
+      o._tableCount      = 24;
       o._tableInterval   = 1000;
       o._tableTick       = 1;
       o._dataTicker      = null;
@@ -1926,6 +1985,7 @@ with(MO){
       o.allocEntity      = FEaiStatisticsInvestment_allocEntity;
       o.allocShape       = FEaiStatisticsInvestment_allocShape;
       o.setup            = FEaiStatisticsInvestment_setup;
+      o.focusEntity      = FEaiStatisticsInvestment_focusEntity;
       o.process          = FEaiStatisticsInvestment_process;
       o.dispose          = FEaiStatisticsInvestment_dispose;
       return o;
@@ -1985,6 +2045,17 @@ with(MO){
       var display = o._display = RClass.create(FE3dDisplay);
       display.linkGraphicContext(o);
    }
+   MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
+      var o = this;
+      var card = entity.card();
+      var investment = entity.investment();
+      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
+      var cityEntity = o._mapEntity.findCityByCard(card);
+      if(cityEntity){
+         cityEntity.addInvestmentTotal(investment);
+         o._mapEntity.upload();
+      }
+   }
    MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
       var o = this;
       var system = RConsole.find(FEaiLogicConsole).system();
@@ -2014,18 +2085,8 @@ with(MO){
          var entities = o._entities;
          if(!entities.isEmpty()){
             var entity = entities.shift();
-            var card = entity.card();
             o._tableEntities.unshift(entity);
-            var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
-            var cityEntity = o._mapEntity.findCityByCard(card);
-            if(cityEntity){
-               var shape = o.allocShape();
-               shape.setCityEntity(cityEntity)
-               shape.setEntity(entity)
-               shape.dirty()
-               o._display.push(shape);
-               o._showEntities.push(entity);
-            }
+            o.focusEntity(entity);
             var table = o._dataTable;
             var count = o._tableEntities.count();
             table.setDataCount(count);
@@ -2060,6 +2121,7 @@ with(MO){
          }
          o._tableTick = currentTick;
       }
+      o._mapEntity.process();
    }
    MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
       var o = this;
@@ -2359,8 +2421,10 @@ MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOper
    var o = this;
    var code = o._currentDate.format('YYYYMMDD')
    var endCode = o._endDate.format('YYYYMMDD')
-   if(code == endCode) {
-      MO.RDate.autoParse(o._currentDate, '20140701');
+   if (code == endCode) {
+      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+      var startDD = historyConsole.dates().at(0);
+      MO.RDate.autoParse(o._currentDate, startDD._code);
    }
    o.switchPlay(true);
 }
@@ -2438,9 +2502,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
-   timeline.setTop(MO.Eai.Canvas.logicSize().height - 500);
+   timeline.setTop(MO.Eai.Canvas.logicSize().height - 550);
    timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
-   timeline.setHeight(450);
+   timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
@@ -2528,7 +2592,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
             if(hLoading){
                document.body.removeChild(hLoading);
             }
-            o._playing = true;
+            o.switchPlay(true);
             o._statusStart = true;
          }
       }
@@ -2954,9 +3018,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
+   o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRenderable.matrix());
+   stage.cityLayer().push(citysRenderable);
+   o._mapEntity.setCitysRenderable(citysRenderable);
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var cityEntities = o._mapEntity.cityEntities();
    var citys = cityConsole.citys();
@@ -3066,7 +3134,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._endDate          = null;
    o._currentDate      = null;
    o._timeline         = null;
-   o._milestoneFrame   = null;
    o._buttonAudio      = null;
    o._statusStart      = false;
    o._statusLayerCount = 150;
@@ -3078,6 +3145,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.onOperationPause  = MO.FEaiChartStatisticsScene_onOperationPause;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
+   o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
    o.active             = MO.FEaiChartStatisticsScene_active;
    o.process            = MO.FEaiChartStatisticsScene_process;
@@ -3095,9 +3163,6 @@ MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onD
    o._currentDate.date.setTime(event.date.date.getTime());
    o._currentDate.refresh();
    o.selectDate(o._currentDate.format('YYYYMMDD'));
-}
-MO.FEaiChartStatisticsScene_onMilestoneDone = function FEaiChartStatisticsScene_onMilestoneDone(event) {
-   var o = this;
 }
 MO.FEaiChartStatisticsScene_onOperationPlay = function FEaiChartStatisticsScene_onOperationPlay(event){
    var o = this;
@@ -3140,12 +3205,13 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    dataLayer.push(display);
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
+   o._totalBar.setLocation(600, 20);
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 580);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
@@ -3156,17 +3222,14 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.build();
    o._desktop.register(timeline);
    faceLayer.push(timeline);
-   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
-   milestoneFrame.setName('MilestoneFrame');
-   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
-   milestoneFrame.setTop(50);
-   milestoneFrame.setWidth(720);
-   milestoneFrame.setHeight(700);
-   milestoneFrame.linkGraphicContext(o);
-   milestoneFrame.build();
-   o._desktop.register(milestoneFrame);
-   faceLayer.push(milestoneFrame);
-   milestoneFrame.setVisible(false);
+}
+MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
+   var o = this;
+   matrix.tx = -38;
+   matrix.ty = -13;
+   matrix.tz = 0;
+   matrix.setScale(0.32, 0.36, 0.32);
+   matrix.update();
 }
 MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
    var o = this;
@@ -3178,10 +3241,7 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
-   var milestone = historyConsole.milestones().get(code);
-   if (milestone) {
-   }
-   if (dateData) {
+   if(dateData){
       o._timeline.setDegreeTime(o._currentDate);
       var cityDatas = dateData.citys();
       var cityEntities = o._cityEntities;

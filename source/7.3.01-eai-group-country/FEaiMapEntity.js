@@ -8,16 +8,21 @@
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
-   // @property
-   o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-   o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   // @attribute
+   o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   // @attribute
+   o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
+   o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
    //..........................................................
    // @method
-   o.construct         = MO.FEaiMapEntity_construct;
+   o.construct             = MO.FEaiMapEntity_construct;
    // @method
-   o.findCityByCard    = MO.FEaiMapEntity_findCityByCard;
+   o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
+   o.upload                = MO.FEaiMapEntity_upload;
+   o.process               = MO.FEaiMapEntity_process;
    // @method
-   o.dispose           = MO.FEaiMapEntity_dispose;
+   o.dispose               = MO.FEaiMapEntity_dispose;
    return o;
 }
 
@@ -58,6 +63,39 @@ MO.FEaiMapEntity_findCityByCard = function FEaiMapEntity_findCityByCard(card){
       return cityEntity;
    }
    return null;
+}
+
+//==========================================================
+// <T>上传处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
+   var o = this;
+   o._citysRenderable.upload();
+   o._citysRangeRenderable.upload();
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
+   var o = this;
+   var changed = false;
+   // 城市实体处理
+   var cityEntities = o._cityEntities;
+   var count = cityEntities.count();
+   for (var i = 0; i < count; i++) {
+      var cityEntity = cityEntities.at(i);
+      if(cityEntity.process()){
+         changed = true;
+      }
+   }
+   if(changed){
+      o.upload();
+   }
 }
 
 //==========================================================

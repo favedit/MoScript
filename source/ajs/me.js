@@ -5784,6 +5784,7 @@ with(MO){
       o.assign       = SColor4_assign;
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
+      o.setInteger   = SColor4_setInteger;
       o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
@@ -5814,6 +5815,13 @@ with(MO){
       o.green = g;
       o.blue = b;
       o.alpha = a;
+   }
+   MO.SColor4_setInteger = function SColor4_setInteger(value){
+      var o = this;
+      o.red = ((value >> 16) & 0xFF) / 255;
+      o.green = ((value >> 8) & 0xFF) / 255;
+      o.blue = (value & 0xFF) / 255;
+      o.alpha = ((value >> 24) & 0xFF) / 255;
    }
    MO.SColor4_setHex = function SColor4_setHex(value){
       var o = this;
@@ -34499,7 +34507,7 @@ with (MO) {
       var rectangle = o._clientRectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
-      var dataTop = top + 25;
+      var dataTop = top + 30;
       var dataBottom = bottom - 30;
       var dataHeight = dataBottom - dataTop;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -34520,7 +34528,7 @@ with (MO) {
       var lastY = dataBottom - inves / 10000 * pixPer10k;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
       var rateResource = rateConsole.find(EEaiRate.Line);
-      while (!startDate.isAfter(degreeDate)) {
+      while (startDate.isBefore(degreeDate)) {
          var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
          if (dateData) {
             var degreeSpan = startDate.date.getTime() - bakTime;
@@ -34535,11 +34543,29 @@ with (MO) {
             if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
-               graphic.setFont('bold 16px Microsoft YaHei');
-               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
             }
             lastX = x;
             lastY = y;
+            startDate.addDay(1);
+         }
+         else {
+            break;
+         }
+      }
+      startDate.date.setTime(bakTime);
+      startDate.refresh();
+      while (startDate.isBefore(degreeDate)) {
+         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+         if (dateData) {
+            var degreeSpan = startDate.date.getTime() - bakTime;
+            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+            var inves = dateData.investmentTotal();
+            var y = dataBottom - inves / 10000 * pixPer10k;
+            if (startDate.date.getDate() == 1) {
+               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+            }
             startDate.addDay(1);
          }
          else {
@@ -34639,39 +34665,81 @@ with (MO) {
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();
       var degreeText;
+      var startText;
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
-            degreeText = startTime.format('MI:SS.MISS');
+            startText = startTime.format('MI:SS.MISS');
+            degreeText = degreeTime.format('MI:SS.MISS');
             break;
          case EGuiTimeUnit.Minute:
-            degreeText = startTime.format('HH24:MI:SS');
+            startText = startTime.format('HH24:MI:SS');
+            degreeText = degreeTime.format('HH24:MI:SS');
             break;
          case EGuiTimeUnit.Hour:
-            degreeText = startTime.format('HH24:MI');
+            startText = startTime.format('HH24:MI');
+            degreeText = degreeTime.format('HH24:MI');
             break;
          case EGuiTimeUnit.Day:
-            degreeText = startTime.format('MM-DD:HH24');
+            startText = startTime.format('MM-DD:HH24');
+            degreeText = degreeTime.format('MM-DD:HH24');
             break;
          case EGuiTimeUnit.Week:
-            degreeText = startTime.format('MM-DD');
+            startText = startTime.format('MM-DD');
+            degreeText = degreeTime.format('MM-DD');
             break;
          case EGuiTimeUnit.Month:
+            startText = startTime.format('YYYY-MM-DD');
             degreeText = degreeTime.format('YYYY-MM-DD');
             break;
          case EGuiTimeUnit.Year:
-            degreeText = startTime.format('YYYY-MM');
+            startText = startTime.format('YYYY-MM');
+            degreeText = degreeTime.format('YYYY-MM');
             break;
          default:
             return;
       }
       var timeSpan = endTime.date.getTime() - startTime.date.getTime();
       var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan) + 3;
+      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
       graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       var text;
       var bakTime = startTime.date.getTime();
+      graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', 1);
+      graphic.drawText(startText, dataLeft - startText.length * 5, middle + 20, '#FFFFFF');
+      switch (o.timeUnit()) {
+         case EGuiTimeUnit.Second:
+            startTime.addMseconds(1000);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+            break;
+         case EGuiTimeUnit.Minute:
+            startTime.addMseconds(1000 * 60);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MI'));
+            break;
+         case EGuiTimeUnit.Hour:
+            startTime.addMseconds(1000 * 60 * 60);
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24'));
+            break;
+         case EGuiTimeUnit.Day:
+            startTime.addDay(1);
+            startTime.parseAuto(startTime.format('YYYYMMDD'));
+            break;
+         case EGuiTimeUnit.Week:
+            startTime.addDay(7);
+            startTime.parseAuto(startTime.format('YYYYMMDD'));
+            break;
+         case EGuiTimeUnit.Month:
+            startTime.addMonth(1);
+            startTime.parseAuto(startTime.format('YYYYMM'));
+            break;
+         case EGuiTimeUnit.Year:
+            startTime.addYear(1);
+            startTime.parseAuto(startTime.format('YYYY'));
+            break;
+         default:
+            return;
+      }
       while (!startTime.isAfter(endTime)) {
          var span = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
@@ -34740,7 +34808,7 @@ with (MO) {
             var selectedDate = MO.Memory.alloc(TDate);
             selectedDate.date.setTime(msDate);
             selectedDate.refresh();
-            dsEvent.date = selectedDate;
+            dsEvent.date = selectedDate.parseAuto(selectedDate.format('YYYYMMDD'));
             o.processDataChangedListener(dsEvent);
          }
       }

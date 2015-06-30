@@ -24,7 +24,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._currentDate      = null;
    // @attribute
    o._timeline         = null;
-   o._milestoneFrame   = null;
    // @attribute
    o._buttonAudio      = null;
    o._statusStart      = false;
@@ -42,6 +41,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    // @method
    o.setup              = MO.FEaiChartStatisticsScene_setup;
+   o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
    // @method
    o.active             = MO.FEaiChartStatisticsScene_active;
@@ -73,16 +73,6 @@ MO.FEaiChartStatisticsScene_onDateSelect = function FEaiChartStatisticsScene_onD
    o._currentDate.date.setTime(event.date.date.getTime());
    o._currentDate.refresh();
    o.selectDate(o._currentDate.format('YYYYMMDD'));
-}
-
-//==========================================================
-// <T>时间轴日期选择事件处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatisticsScene_onMilestoneDone = function FEaiChartStatisticsScene_onMilestoneDone(event) {
-   var o = this;
-   //o.switchPlay(true);
 }
 
 //==========================================================
@@ -161,6 +151,8 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
    //..........................................................
+   o._totalBar.setLocation(600, 20);
+   //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
@@ -168,7 +160,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    //timeline.setDockCd(MO.EGuiDock.Fill);
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 300);
+   timeline.setWidth(MO.Eai.Canvas.logicSize().width - 580);
    timeline.setHeight(350);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
@@ -179,18 +171,20 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.build();
    o._desktop.register(timeline);
    faceLayer.push(timeline);
-   //创建里程碑框
-   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
-   milestoneFrame.setName('MilestoneFrame');
-   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
-   milestoneFrame.setTop(50);
-   milestoneFrame.setWidth(720);
-   milestoneFrame.setHeight(700);
-   milestoneFrame.linkGraphicContext(o);
-   milestoneFrame.build();
-   o._desktop.register(milestoneFrame);
-   faceLayer.push(milestoneFrame);
-   milestoneFrame.setVisible(false);
+}
+
+//==========================================================
+// <T>修正矩阵。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
+   var o = this;
+   matrix.tx = -38;
+   matrix.ty = -13;
+   matrix.tz = 0;
+   matrix.setScale(0.32, 0.36, 0.32);
+   matrix.update();
 }
 
 //==========================================================
@@ -210,14 +204,7 @@ MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selec
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
-   var milestone = historyConsole.milestones().get(code);
-   if (milestone) {
-      //o._milestoneFrame.setData(milestone);
-      //o._milestoneFrame.show();
-      //o._milestoneFrame.repaint();
-      //o.switchPlay(false);
-   }
-   if (dateData) {
+   if(dateData){
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
       //o._timeline.repaint();
@@ -285,6 +272,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       if(invementCurrent != o._investmentCurrent){
          var total = o._totalBar.findComponent('total');
          total.setLabel(MO.RFloat.unitFormat(invementCurrent, 0, 0, 2, 0, 10000, '万'));
+         // total.setLabel(invementCurrent);
          o._totalBar.repaint();
          o._investmentCurrent = invementCurrent;
       }
