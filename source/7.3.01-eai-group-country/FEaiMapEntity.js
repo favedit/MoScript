@@ -9,6 +9,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @attribute
+   o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    // @attribute
@@ -35,6 +36,7 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 设置属性
+   o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
@@ -105,6 +107,7 @@ MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
 //==========================================================
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
+   o._countryEntity = MO.RObject.dispose(o._countryEntity);
    o._provinceEntities = MO.RObject.dispose(o._provinceEntities);
    o._cityEntities = MO.RObject.dispose(o._cityEntities);
    // 父处理

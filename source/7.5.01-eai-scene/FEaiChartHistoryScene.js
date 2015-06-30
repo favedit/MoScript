@@ -324,6 +324,7 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
+
    // 检测首次播放
    if(!o._statusStart){
       if(o.testReady()){
@@ -342,6 +343,12 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          }
       }
    }
+
+   if (!o._mapEntity._countryEntity.introAnimeDone()) {
+      o._mapEntity._countryEntity.process();
+      return;
+   }
+
    // 重复播放
    if (o._playing) {
       var currentTick = MO.Timer.current();
