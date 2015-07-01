@@ -19,6 +19,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    // @method
    o.construct             = MO.FEaiMapEntity_construct;
    // @method
+   o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.upload                = MO.FEaiMapEntity_upload;
    o.process               = MO.FEaiMapEntity_process;
@@ -39,6 +40,17 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>根据代码查找城市。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_findProvinceByCard = function FEaiMapEntity_findProvinceByCard(code){
+   var o = this;
+   var provinceEntity = o._provinceEntities.get(code);
+   return provinceEntity;
 }
 
 //==========================================================
@@ -85,8 +97,19 @@ MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
 //==========================================================
 MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
    var o = this;
+   // 省份实体处理
    var changed = false;
+   var provinceEntities = o._provinceEntities;
+   var count = provinceEntities.count();
+   for (var i = 0; i < count; i++) {
+      var provinceEntity = provinceEntities.at(i);
+      if(provinceEntity.process()){
+         changed = true;
+      }
+   }
+   //..........................................................
    // 城市实体处理
+   var changed = false;
    var cityEntities = o._cityEntities;
    var count = cityEntities.count();
    for (var i = 0; i < count; i++) {

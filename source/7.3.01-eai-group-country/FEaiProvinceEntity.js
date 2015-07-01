@@ -16,6 +16,11 @@ with(MO){
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       // @attribute
       o._layerDepth       = 3;
+      // @attribute
+      o._focusTick        = 0;
+      o._focusInterval    = 10;
+      o._focusCurrent     = 0;
+      o._focusCount       = 100;
       //..........................................................
       // @method
       o.construct         = FEaiProvinceEntity_construct;
@@ -23,7 +28,11 @@ with(MO){
       o.buildFace         = FEaiProvinceEntity_buildFace;
       o.buildBorder       = FEaiProvinceEntity_buildBorder;
       o.build             = FEaiProvinceEntity_build;
+      // @method
+      o.doInvestment      = FEaiProvinceEntity_doInvestment;
+      o.updateColor       = FEaiProvinceEntity_updateColor;
       o.update            = FEaiProvinceEntity_update;
+      o.process           = FEaiProvinceEntity_process;
       // @method
       o.dispose           = FEaiProvinceEntity_dispose;
       return o;
@@ -279,6 +288,18 @@ with(MO){
    // @method
    // @param input:MStream 输入流
    //==========================================================
+   MO.FEaiProvinceEntity_doInvestment = function FEaiProvinceEntity_doInvestment(){
+      var o = this;
+      o._focusTick = 0;
+      o._focusCurrent = o._focusCount;
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
    MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
       var o = this;
       var investmentTotal = data.investmentTotal();
@@ -305,6 +326,59 @@ with(MO){
       //var material = renderable.material();
       //material.info().ambientColor.set(rate, rate, rate, 1);
       //material.update();
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
+   MO.FEaiProvinceEntity_updateColor = function FEaiProvinceEntity_updateColor(rate){
+      var o = this;
+      var rate = o._focusCurrent / 100;
+      var vertexTotal = o._vertexTotal;
+      var colorIndex = 0;
+      var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
+      var positionTotal = vertexTotal * 2;
+      for(var i = 0; i < positionTotal; i++){
+         colors[colorIndex++] = 0x08 + ((0xFF - 0x08)* rate);
+         colors[colorIndex++] = 0x0D + ((0x4D - 0x08)* rate);
+         colors[colorIndex++] = 0x19 + ((0x59 - 0x08)* rate);
+         colors[colorIndex++] = 0xFF;
+      }
+      // 创建三角面渲染对象
+      o._faceRenderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
+   MO.FEaiProvinceEntity_process = function FEaiProvinceEntity_process(){
+      var o = this;
+      if(o._focusCurrent > 0){
+         var tick = RTimer.current();
+         if(tick - o._focusTick > o._focusInterval){
+            var z = -o._focusCurrent / 20;
+            // 设置坐标
+            faceRenderable = o._faceRenderable;
+            matrix = faceRenderable.matrix();
+            matrix.tz = z;
+            matrix.updateForce();
+            borderRenderable = o._borderRenderable;
+            matrix = borderRenderable.matrix();
+            matrix.tz = z;
+            matrix.updateForce();
+            // 更新颜色
+            o.updateColor(o._focusCurrent);
+            // 更新数据
+            o._focusCurrent--;
+            o._focusTick = tick;
+         }
+      }
    }
 
    //==========================================================

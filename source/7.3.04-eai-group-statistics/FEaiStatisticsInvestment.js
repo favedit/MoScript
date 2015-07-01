@@ -172,7 +172,15 @@ with(MO){
       var cityEntity = o._mapEntity.findCityByCard(card);
       // 显示实体
       if(cityEntity){
-         // 更新数据
+         // 更新省份数据
+         var provinceCode = cityEntity.data().provinceCode();
+         var provinceConsole = RConsole.find(FEaiResourceConsole).provinceConsole();
+         var province = provinceConsole.findByCode(provinceCode);
+         var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
+         if(provinceEntity){
+            provinceEntity.doInvestment();
+         }
+         // 更新城市数据
          cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
          // 播放声音

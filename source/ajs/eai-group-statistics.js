@@ -102,6 +102,13 @@ with(MO){
       var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
       var cityEntity = o._mapEntity.findCityByCard(card);
       if(cityEntity){
+         var provinceCode = cityEntity.data().provinceCode();
+         var provinceConsole = RConsole.find(FEaiResourceConsole).provinceConsole();
+         var province = provinceConsole.findByCode(provinceCode);
+         var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
+         if(provinceEntity){
+            provinceEntity.doInvestment();
+         }
          cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
          if(investment >= 1000000){
@@ -388,21 +395,25 @@ with(MO){
       if(o._foreFont){
          graphic.setFont(o._foreFont);
       }
+      var text = '';
       var label = o._label;
       var labelLength = label.length;
       var labelH = null;
       if(labelLength > 8){
-         labelH = label.substring(0, labelLength - 8);
+         labelH = label.substring(0, labelLength - 8) + '亿';
+         text += labelH;
       }
       var labelM = null;
       if(labelLength > 4){
-         labelM = label.substring(labelLength - 8, labelLength - 4);
+         labelM = label.substring(labelLength - 8, labelLength - 4) + '万';
+         text += labelM;
       }
       var labelL = null;
       if(labelLength > 0){
-         labelL = label.substring(labelLength - 4, labelLength);
+         labelL = label.substring(labelLength - 4, labelLength) + '元';
+         text += labelL;
       }
-      var width = graphic.textWidth(label);
+      var width = graphic.textWidth(text);
       var widthH = graphic.textWidth(labelH);
       var widthM = graphic.textWidth(labelM);
       var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
