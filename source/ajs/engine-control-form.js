@@ -8,7 +8,7 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       if(o._label){
          if(o._foreFont){
             graphic.setFont(o._foreFont);
@@ -30,7 +30,7 @@ with (MO) {
       var o = this;
       o.__base.FGuiTimeline.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
       var dataTop = top + 30;
@@ -129,7 +129,7 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       if(o._foreFont){
          graphic.setFont(o._foreFont);
       }
@@ -179,7 +179,7 @@ with (MO) {
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
       var middle = bottom - 30;
@@ -323,7 +323,7 @@ with (MO) {
       }
       var o = this;
       o.__base.FGuiControl.onOperationDown.call(o, event);
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var bottom = rectangle.top + rectangle.height;
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;

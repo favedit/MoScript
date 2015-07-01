@@ -33,7 +33,7 @@ with(MO){
    MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(event){
       var o = this;
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       // 设置字体
       if(o._foreFont){
          graphic.setFont(o._foreFont);

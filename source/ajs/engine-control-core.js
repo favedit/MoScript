@@ -1,27 +1,40 @@
 MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
    o = MO.Class.inherits(this, o, MO.FGuiDesktop);
    o._canvas        = MO.Class.register(o, new MO.AGetSet('_canvas'));
-   o._controlRectangle = null;
+   o.onResize       = MO.FGuiCanvasDesktop_onResize;
    o.construct      = MO.FGuiCanvasDesktop_construct;
+   o.processResize  = MO.FGuiCanvasDesktop_processResize;
    o.processControl = MO.FGuiCanvasDesktop_processControl;
    o.process        = MO.FGuiCanvasDesktop_process;
    o.dispose        = MO.FGuiCanvasDesktop_dispose;
    return o;
 }
+MO.FGuiCanvasDesktop_onResize = function FGuiCanvasDesktop_onResize(event){
+}
 MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
    var o = this;
    o.__base.FGuiDesktop.construct.call(o);
-   o._controlRectangle = new MO.SRectangle();
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+}
+MO.FGuiCanvasDesktop_processResize = function FGuiCanvasDesktop_processResize(control){
 }
 MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(control){
    var o = this;
    o.__base.FGuiDesktop.process.call(o);
+   if(!control.testReady()){
+   }
+   if(!control.testDirty()){
+   }
    var graphic = o._canvas.context();
+   var size = graphic.size();
    var event = MO.Memory.alloc(MO.SGuiPaintEvent)
    event.graphic = graphic;
+   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
    MO.Memory.free(event);
+   return true;
 }
 MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
    var o = this;
@@ -39,7 +52,6 @@ MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
 }
 MO.FGuiCanvasDesktop_dispose = function FGuiCanvasDesktop_dispose(){
    var o = this;
-   o._controlRectangle = RObject.dispose(o._controlRectangle);
    o.__base.FGuiDesktop.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
@@ -114,6 +126,7 @@ with(MO){
       o.unregister        = FGuiDesktop_unregister;
       o.transformStart    = FGuiDesktop_transformStart;
       o.setup             = FGuiDesktop_setup;
+      o.processResize     = FGuiDesktop_processResize;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
       o.process           = FGuiDesktop_process;
@@ -142,6 +155,15 @@ with(MO){
       var o = this;
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+   MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psResize();
+      }
    }
    MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
       var o = this;

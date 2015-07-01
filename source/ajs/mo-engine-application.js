@@ -10,6 +10,7 @@ with(MO){
       o.onOperationDown     = FApplication_onOperationDown;
       o.onOperationMove     = FApplication_onOperationMove;
       o.onOperationUp       = FApplication_onOperationUp;
+      o.onOperationResize   = FApplication_onOperationResize;
       o.construct           = FApplication_construct;
       o.registerChapter     = FApplication_registerChapter;
       o.unregisterChapter   = FApplication_unregisterChapter;
@@ -27,6 +28,9 @@ with(MO){
       var o = this;
    }
    MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
+      var o = this;
+   }
+   MO.FApplication_onOperationResize = function FApplication_onOperationResize(){
       var o = this;
    }
    MO.FApplication_construct = function FApplication_construct(){

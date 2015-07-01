@@ -23,6 +23,7 @@ with(MO){
       // @method
       o.setup             = FGuiDesktop_setup;
       // @method
+      o.processResize     = FGuiDesktop_processResize;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
       o.process           = FGuiDesktop_process;
@@ -87,6 +88,22 @@ with(MO){
       // 注册效果器
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+
+   //==========================================================
+   // <T>大小事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psResize();
+      }
    }
 
    //==========================================================

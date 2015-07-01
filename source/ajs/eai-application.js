@@ -143,11 +143,11 @@ with(MO){
 with(MO){
    MO.FEaiChartCanvas = function FEaiChartCanvas(o){
       o = RClass.inherits(this, o, FEaiCanvas);
-      o._capturePosition    = null;
-      o._cameraPosition     = null;
-      o.construct           = FEaiChartCanvas_construct;
-      o.setPanel            = FEaiChartCanvas_setPanel;
-      o.dispose             = FEaiChartCanvas_dispose;
+      o._capturePosition = null;
+      o._cameraPosition  = null;
+      o.construct        = FEaiChartCanvas_construct;
+      o.setPanel         = FEaiChartCanvas_setPanel;
+      o.dispose          = FEaiChartCanvas_dispose;
       return o;
    }
    MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
@@ -176,8 +176,17 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o.dispose   = MO.FEaiChartDesktop_dispose;
    return o;
 }
-MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(p){
+MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(event){
    var o = this;
+   var canvas3d = o._canvas3d;
+   var hCanvas3d = canvas3d._hCanvas;
+   var size = canvas3d.size();
+   var canvas2d = o._canvas2d;
+   canvas2d.size().assign(size);
+   canvas2d.context().size().assign(size);
+   var hCanvas2d = canvas2d._hCanvas;
+   hCanvas2d.width = hCanvas3d.offsetWidth;
+   hCanvas2d.height = hCanvas3d.offsetHeight;
 }
 MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
    var o = this;
@@ -201,6 +210,8 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    hCanvas2d.style.position = 'absolute';
    hCanvas2d.style.left = '0px';
    hCanvas2d.style.top = '0px';
+   hCanvas2d.style.width = '100%';
+   hCanvas2d.style.height = '100%';
    o.canvasRegister(canvas2d);
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){

@@ -9,15 +9,15 @@ with(MO){
       o = RClass.inherits(this, o, FEaiCanvas);
       //..........................................................
       // @attribute
-      o._capturePosition    = null;
-      o._cameraPosition     = null;
+      o._capturePosition = null;
+      o._cameraPosition  = null;
       //..........................................................
       // @method
-      o.construct           = FEaiChartCanvas_construct;
+      o.construct        = FEaiChartCanvas_construct;
       // @method
-      o.setPanel            = FEaiChartCanvas_setPanel;
+      o.setPanel         = FEaiChartCanvas_setPanel;
       // @method
-      o.dispose             = FEaiChartCanvas_dispose;
+      o.dispose          = FEaiChartCanvas_dispose;
       return o;
    }
    //==========================================================

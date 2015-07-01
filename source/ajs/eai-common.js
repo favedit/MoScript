@@ -13,8 +13,9 @@ MO.EEaiConstant = new function EEaiConstant(){
 }
 MO.EEaiRate = new function EEaiRate(){
    var o = this;
-   o.Line = 0;
-   o.Map  = 1;
+   o.Line       = 0;
+   o.Map        = 1;
+   o.Investment = 2;
    return o;
 }
 MO.EEaiScene = new function EEaiScene(){

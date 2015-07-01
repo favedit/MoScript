@@ -23,7 +23,7 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       // 绘制标签
       if(o._label){
          // 设置字体

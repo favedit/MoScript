@@ -97,6 +97,7 @@ MO.FDesktop = function FDesktop(o){
    o.construct        = MO.FDesktop_construct;
    o.canvasRegister   = MO.FDesktop_canvasRegister;
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
+   o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
    o.dispose          = MO.FDesktop_dispose;
    return o;
@@ -115,6 +116,9 @@ MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
    MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
+}
+MO.FDesktop_setup = function FDesktop_setup(hPanel){
+   var o = this;
 }
 MO.FDesktop_build = function FDesktop_build(hPanel){
    var o = this;

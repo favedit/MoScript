@@ -16,6 +16,7 @@ MO.FDesktop = function FDesktop(o){
    // @method
    o.canvasRegister   = MO.FDesktop_canvasRegister;
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
+   o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
    // @method
    o.dispose          = MO.FDesktop_dispose;
@@ -56,6 +57,16 @@ MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
    MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+// @param hPanel:HtmlTag 页面元素
+//==========================================================
+MO.FDesktop_setup = function FDesktop_setup(hPanel){
+   var o = this;
 }
 
 //==========================================================

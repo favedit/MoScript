@@ -40,7 +40,7 @@ with (MO) {
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
 
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
@@ -202,7 +202,7 @@ with (MO) {
       }
       var o = this;
       o.__base.FGuiControl.onOperationDown.call(o, event);
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var bottom = rectangle.top + rectangle.height;
 
       var decoLeft = rectangle.left + 5;

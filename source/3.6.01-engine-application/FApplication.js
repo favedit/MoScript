@@ -22,6 +22,7 @@ with(MO){
       o.onOperationDown     = FApplication_onOperationDown;
       o.onOperationMove     = FApplication_onOperationMove;
       o.onOperationUp       = FApplication_onOperationUp;
+      o.onOperationResize   = FApplication_onOperationResize;
       //..........................................................
       // @method
       o.construct           = FApplication_construct;
@@ -62,6 +63,15 @@ with(MO){
    // @method
    //==========================================================
    MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
+      var o = this;
+   }
+
+   //==========================================================
+   // <T>操作大小处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FApplication_onOperationResize = function FApplication_onOperationResize(){
       var o = this;
    }
 
