@@ -1066,13 +1066,13 @@ with (MO) {
          var degreeSpan = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
          var y = dataBottom - data[i].investment / 10000 * pixPer10k;
-         var rate = 1 - (y / dataHeight);
-         var colorIdx = parseInt(rateResource.count() * rate);
+         var rate = data[i].investment / maxInves;
+         var colorIdx = parseInt((rateResource.count() - 1) * rate);
          var hexColor = RHex.format(rateResource.find(colorIdx));
          var color = '#' + hexColor.substring(2);
          var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.6)';
-         var lastRate = 1 - (lastY / dataHeight);
-         var lastColorIdx = parseInt(rateResource.count() * lastRate);
+         var lastRate = data[i - 1].investment / maxInves;
+         var lastColorIdx = parseInt((rateResource.count() - 1) * lastRate);
          var lastHexColor = RHex.format(rateResource.find(lastColorIdx));
          var lastColor = '#' + lastHexColor.substring(2);
          var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.6)';
