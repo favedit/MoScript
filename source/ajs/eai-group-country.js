@@ -1095,14 +1095,20 @@ with (MO) {
       var timeSpan = endTime.date.getTime() - startTime.date.getTime();
       var bakTime = startTime.date.getTime();
       var text;
+      var drawText = false;
+      var textWidth = 0;
       while (!startTime.isAfter(endTime)) {
          var span = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
          graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          text = startTime.format('HH24:00');
          startTime.addMseconds(1000 * 60 * 60);
-         graphic.setFont('bold 16px Microsoft YaHei');
-         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
+         drawText = !drawText;
+         if (drawText) {
+            graphic.setFont('bold 20px Microsoft YaHei');
+            textWidth = graphic.textWidth(text);
+            graphic.drawText(text, x - textWidth / 2, middle + 20, '#FFFFFF');
+         }
       }
       startTime.date.setTime(bakTime);
       startTime.refresh();
@@ -1125,6 +1131,7 @@ with (MO) {
       var rateResource = rateConsole.find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
+         startTime.refresh();
          var degreeSpan = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
          var y = dataBottom - data[i].investment / 10000 * pixPer10k;
@@ -1149,6 +1156,37 @@ with (MO) {
          lastX = x;
          lastY = y;
       }
+      startTime.date.setTime(bakTime);
+      startTime.refresh();
+      var lastHour = -1;
+      var hourInves = 0;
+      var maxHourInves = 0;
+      var dayTotal = 0;
+      startTime.parseAuto(data[0].date);
+      startTime.refresh();
+      lastHour = startTime.date.getHours();
+      for (var i = 0; i < data.length; i++) {
+         startTime.parseAuto(data[i].date);
+         startTime.refresh();
+         var hour = startTime.date.getHours();
+         if (lastHour == hour) {
+            hourInves += parseInt(data[i].investment);
+         }
+         else {
+            if (hourInves > maxHourInves) {
+               dayTotal += hourInves;
+               maxHourInves = hourInves;
+            }
+            lastHour = hour;
+         }
+      }
+      var textHourPeak = '峰值：' + maxHourInves;
+      var textDayTotal = '总额：' + dayTotal;
+      var textHourAvrg = '均值：' + (dayTotal / 24);
+      graphic.setFont('bold 20px Microsoft YaHei');
+      graphic.drawText(textHourPeak, decoLeft, top + 5, '#1DACE5');
+      graphic.drawText(textDayTotal, decoLeft, top + 30, '#1DACE5');
+      graphic.drawText(textHourAvrg, decoLeft, top + 55, '#1DACE5');
       startTime.date.setTime(bakTime);
       startTime.refresh();
    }
