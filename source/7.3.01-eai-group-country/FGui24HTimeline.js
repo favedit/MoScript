@@ -56,7 +56,7 @@ with (MO) {
       startTime.addDay(-1);
       endTime.date.setTime(nowTick);
       endTime.setSecond(0);
-      endTime.setMinute(endTime.date.getMinutes() % 15 * 15);
+      endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
       endTime.refresh();
       var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
       statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, o._startTime.format('YYYYMMDDHH24MISS'), o._endTime.format('YYYYMMDDHH24MISS'), 60 * 15);
@@ -137,12 +137,31 @@ with (MO) {
       var inves = parseInt(data[0].investment);
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
+      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+      var rateResource = rateConsole.find(EEaiRate.Line);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
          var degreeSpan = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
          var y = dataBottom - data[i].investment / 10000 * pixPer10k;
-         graphic.drawLine(lastX, lastY, x, y, '#33AAEE', 3);
+         var rate = 1 - (y / dataHeight);
+         var colorIdx = parseInt(rateResource.count() * rate);
+         var hexColor = RHex.format(rateResource.find(colorIdx));
+         var color = '#' + hexColor.substring(2);
+         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.6)';
+         var lastRate = 1 - (lastY / dataHeight);
+         var lastColorIdx = parseInt(rateResource.count() * lastRate);
+         var lastHexColor = RHex.format(rateResource.find(lastColorIdx));
+         var lastColor = '#' + lastHexColor.substring(2);
+         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.6)';
+         var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
+         gradient.addColorStop('0', lastColor);
+         gradient.addColorStop('1', color);
+         var opGradient = graphic.createLinearGradient(lastX, 0, x, 0);
+         opGradient.addColorStop('0', lastOpColor);
+         opGradient.addColorStop('1', opColor);
+         graphic.drawLine(lastX, lastY, x, y, gradient, 3);
+         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
          lastX = x;
          lastY = y;
       }

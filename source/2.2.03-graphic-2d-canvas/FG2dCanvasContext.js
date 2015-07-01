@@ -29,12 +29,15 @@ with (MO) {
       o.drawCircle     = FG2dCanvasContext_drawCircle;
       o.drawText       = FG2dCanvasContext_drawText;
       o.drawImage      = FG2dCanvasContext_drawImage;
+      o.drawQuadrilateral = FG2dCanvasContext_drawQuadrilateral;
       // @method
       o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
       o.drawBorder     = FG2dCanvasContext_drawBorder;
       o.drawGridImage  = FG2dCanvasContext_drawGridImage;
       // @method
-      o.fillRectangle  = FG2dCanvasContext_fillRectangle;
+      o.fillRectangle = FG2dCanvasContext_fillRectangle;
+      // @method
+      o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
       // @method
       o.toBytes        = FG2dCanvasContext_toBytes;
       return o;
@@ -118,11 +121,13 @@ with (MO) {
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;
       var handle = o._handle;
+      handle.beginPath();
       handle.strokeStyle = color;
       handle.lineWidth = lineWidth;
       handle.moveTo(x1, y1);
       handle.lineTo(x2, y2);
       handle.stroke();
+      handle.closePath();
    }
 
    //==========================================================
@@ -139,9 +144,11 @@ with (MO) {
    MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth) {
       var o = this;
       var handle = o._handle;
+      handle.beginPath();
       handle.strokeStyle = color;
       handle.lineWidth = lineWidth;
       handle.strokeRect(x, y, width, height);
+      handle.closePath();
    }
 
    //==========================================================
@@ -317,8 +324,40 @@ with (MO) {
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
       var o = this;
       var handle = o._handle;
+      handle.beginPath();
       handle.fillStyle = color;
       handle.fillRect(x, y, width, height);
+      handle.closePath();
+   }
+
+   //==========================================================
+   // <T>绘制四边形。</T>
+   //
+   // @method
+   // @param x1,y1...x4,y4:Integer 四个点
+   // @param lineWidth:Integer 线宽
+   // @param strokeColor:String 描边色
+   // @param fillColor:String 填充色
+   //==========================================================
+   MO.FG2dCanvasContext_drawQuadrilateral = function FG2dCanvasContext_drawQuadrilateral(x1, y1, x2, y2, x3, y3, x4, y4, lineWidth, strokeColor, fillColor) {
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.lineWidth = lineWidth;
+      handle.strokeStyle = strokeColor;
+      handle.fillStyle = fillColor;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.lineTo(x4 + 0.5, y4 + 0.5);
+      handle.lineTo(x1 + 0.5, y1 + 0.5);
+      handle.closePath();
+      if(lineWidth!=null &&strokeColor!=null){
+         handle.stroke();
+      }
+      if (fillColor != null) {
+         handle.fill();
+      }
    }
 
    //==========================================================
@@ -333,19 +372,16 @@ with (MO) {
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
+      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
-      //handle.lineWidth = 1;
-      //handle.strokeStyle = '#ff00ff';
-      //handle.fillStyle = '#ff00ff';
-      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
-      handle.closePath();
       handle.fill();
-      //handle.stroke();
+      handle.stroke();
+      handle.closePath();
    }
 
    //==========================================================
@@ -368,6 +404,19 @@ with (MO) {
       handle.arc(x, y, radius, 0, 2 * Math.PI, false);
       handle.fill();
       handle.stroke();
+   }
+
+   //==========================================================
+   // <T>创建线性渐变填充。</T>
+   //
+   // @method
+   // @param x1,y1,x2,y2:Integer 起始、终止坐标
+   // @return gradient 渐变
+   //==========================================================
+   MO.FG2dCanvasContext_createLinearGradient = function FG2dCanvasContext_createLinearGradient(x1, y1, x2, y2) {
+      var o = this;
+      var handle = o._handle;
+      return handle.createLinearGradient(x1, y1, x2, y2);
    }
 
    //==========================================================
