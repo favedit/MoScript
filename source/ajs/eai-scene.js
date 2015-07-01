@@ -717,11 +717,6 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
    var template = event.template;
-   var sprite = o._flagSprite = template.sprite();
-   var matrix = sprite.matrix();
-   matrix.ty = 0;
-   matrix.setScaleAll(0.06);
-   matrix.updateForce();
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
@@ -804,9 +799,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
    audio.play();
-   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
-   template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
-   template.addLoadListener(o, o.onLoadTemplate);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
@@ -825,11 +817,6 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
-   if(o._flagSprite){
-      var matrix = o._flagSprite.matrix();
-      matrix.ry += 0.005;
-      matrix.updateForce();
-   }
    if(o._nowTicker.process()){
       var bar = o._logoBar;
       var date = o._nowDate;

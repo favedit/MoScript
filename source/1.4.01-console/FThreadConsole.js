@@ -12,8 +12,8 @@ with(MO){
       // @attribute
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 10;
-      o._threads     = null;
+      o._interval    = 5;
+      o._threads     = RClass.register(o, new AGetter('_threads'));
       //..........................................................
       // @html
       o._hWindow     = null;
@@ -24,10 +24,12 @@ with(MO){
       //..........................................................
       // @method
       o.construct    = FThreadConsole_construct;
+      // @method
       o.push         = FThreadConsole_push;
       o.start        = FThreadConsole_start;
       o.process      = FThreadConsole_process;
       o.processAll   = FThreadConsole_processAll;
+      // @method
       o.dispose      = FThreadConsole_dispose;
       return o;
    }
@@ -71,6 +73,7 @@ with(MO){
    MO.FThreadConsole_construct = function FThreadConsole_construct(){
       var o = this;
       o.__base.FConsole.construct.call(o);
+      // 设置属性
       o._threads = new TObjects();
       o._hWindow = window;
       // 设置时钟
@@ -86,15 +89,16 @@ with(MO){
    MO.FThreadConsole_process = function FThreadConsole_process(thread){
       var o = this;
       if(thread){
-         switch(thread.statusCd()){
+         var statusCd = thread.statusCd();
+         switch(statusCd){
             case EThreadStatus.Sleep:
                break;
             case EThreadStatus.Active:
                thread.process(o._interval);
                break;
             case EThreadStatus.Finish:
-               thread.dispose();
                o._threads.remove(thread);
+               thread.dispose();
                break;
          }
       }
@@ -124,6 +128,7 @@ with(MO){
    //==========================================================
    MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
       var o = this;
+      // 释放属性
       var hWindow = o._hWindow;
       if(hWindow){
          var hIntervalId = o._hIntervalId;
@@ -133,5 +138,8 @@ with(MO){
          }
          o._hWindow = null;
       }
+      o._threads = RObject.dispose(o._threads);
+      // 父处理
+      o.__base.FConsole.dispose.call(o);
    }
 }

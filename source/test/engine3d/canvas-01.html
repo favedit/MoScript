@@ -29,12 +29,20 @@ function onEnterFrame(){
       matrix.updateForce();
    }
    rotation.y += 0.005;
+   // 增加2D
+   var canvas2d = desktop.canvas2d();
+   var context2d = canvas2d.context();
+   context2d.clear();
+   for(var y = 0; y < 40; y++){
+      for(var x = 0; x < 80; x++){
+         //context2d.fillRectangle(10 + 20 * x + rotation.y * 100, 10 + 20 * y, 10, 10, '#FF0000');
+      }
+   }
 }
 //----------------------------------------------------------
 function onTemplateLoad(event){
    var template = event.template;
    var sprite = template.sprite();
-   sprite.matrix().setScaleAll(0.06);
    sprite.matrix().setScaleAll(0.06);
    sprites.push(sprite);
    canvas.stage().spriteLayer().push(sprite);
@@ -52,13 +60,13 @@ function _load(){
    desktop = MO.RClass.create(MO.FE3dSimpleDesktop);
    desktop.build(document.body);
    // 增加监听
-   // var canvas = desktop.canvas3d();
-   // var stage = canvas3d.stage();
-   // stage.addEnterFrameListener(null, onEnterFrame);
+   canvas = desktop.canvas3d();
+   stage = canvas.stage();
+   stage.addEnterFrameListener(null, onEnterFrame);
    // 加载模型
-   // var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
-   // template = templateConsole.allocByCode(canvas, 'eai.flag.ezubao');
-   // template.addLoadListener(null, onTemplateLoad);
+   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
+   template = templateConsole.allocByCode(canvas, 'eai.flag.ezubao');
+   template.addLoadListener(null, onTemplateLoad);
 }
 </SCRIPT>
 

@@ -878,7 +878,6 @@ with(MO){
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      return;
       var range = 1;
       o._visible = true;
       o._color.set(1, 1, 1, 1);
@@ -3177,11 +3176,6 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
    var template = event.template;
-   var sprite = o._flagSprite = template.sprite();
-   var matrix = sprite.matrix();
-   matrix.ty = 0;
-   matrix.setScaleAll(0.06);
-   matrix.updateForce();
 }
 MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    var o = this;
@@ -3264,9 +3258,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
    audio.play();
-   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
-   template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
-   template.addLoadListener(o, o.onLoadTemplate);
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
@@ -3285,11 +3276,6 @@ MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
-   if(o._flagSprite){
-      var matrix = o._flagSprite.matrix();
-      matrix.ry += 0.005;
-      matrix.updateForce();
-   }
    if(o._nowTicker.process()){
       var bar = o._logoBar;
       var date = o._nowDate;
@@ -3882,6 +3868,47 @@ with(MO){
       o._cameraPosition = RObject.dispose(o._cameraPosition);
       o.__base.FEaiCanvas.dispose.call(o);
    }
+}
+MO.FEaiDesktop = function FEaiDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onResize  = MO.FEaiDesktop_onResize;
+   o.construct = MO.FEaiDesktop_construct;
+   o.build     = MO.FEaiDesktop_build;
+   o.dispose   = MO.FEaiDesktop_dispose;
+   return o;
+}
+MO.FEaiDesktop_onResize = function FEaiDesktop_onResize(p){
+   var o = this;
+}
+MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+}
+MO.FEaiDesktop_build = function FEaiDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas3d.build(hPanel);
+   canvas3d.setPanel(hPanel);
+   var size = canvas3d.size();
+   var hCanvas3d = canvas3d._hCanvas;
+   o.canvasRegister(canvas3d);
+   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas2d.size().assign(size);
+   canvas2d.build(hPanel);
+   canvas2d.setPanel(hPanel);
+   var hCanvas2d = canvas2d._hCanvas;
+   hCanvas2d.style.position = 'absolute';
+   hCanvas2d.style.left = hCanvas3d.offsetLeft + 'px';
+   hCanvas2d.style.top = hCanvas3d.offsetTop + 'px';
+   o.canvasRegister(canvas2d);
+}
+MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
+   var o = this;
+   o.__base.FDesktop.dispose.call(o);
 }
 with(MO){
    MO.FEaiFlatCanvas = function FEaiFlatCanvas(o){

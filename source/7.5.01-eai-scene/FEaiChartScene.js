@@ -95,12 +95,12 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
    var template = event.template;
-   var sprite = o._flagSprite = template.sprite();
-   var matrix = sprite.matrix();
+   //var sprite = o._flagSprite = template.sprite();
+   //var matrix = sprite.matrix();
    //matrix.tx = -20;
-   matrix.ty = 0;
-   matrix.setScaleAll(0.06);
-   matrix.updateForce();
+   //matrix.ty = 0;
+   //matrix.setScaleAll(0.06);
+   //matrix.updateForce();
    //o._activeStage.dataLayer().push(sprite);
 }
 
@@ -226,9 +226,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.play();
    //..........................................................
    // 加载标志
-   var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
-   template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
-   template.addLoadListener(o, o.onLoadTemplate);
+   //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
+   //template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
+   //template.addLoadListener(o, o.onLoadTemplate);
    //..........................................................
    // 加载数据
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
@@ -274,11 +274,11 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
    // 更新精灵
-   if(o._flagSprite){
-      var matrix = o._flagSprite.matrix();
-      matrix.ry += 0.005;
-      matrix.updateForce();
-   }
+   //if(o._flagSprite){
+   //   var matrix = o._flagSprite.matrix();
+   //   matrix.ry += 0.005;
+   //   matrix.updateForce();
+   //}
    // 更新时间
    if(o._nowTicker.process()){
       var bar = o._logoBar;

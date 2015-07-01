@@ -977,7 +977,7 @@ with(MO){
       o = RClass.inherits(this, o, FConsole);
       o._scopeCd     = EScope.Local;
       o._active      = true;
-      o._interval    = 10;
+      o._interval    = 5;
       o._threads     = null;
       o._hWindow     = null;
       o._hIntervalId = null;

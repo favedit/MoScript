@@ -98,7 +98,6 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
-      return;
       var range = 1;
       o._visible = true;
       o._color.set(1, 1, 1, 1);

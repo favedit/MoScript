@@ -93,16 +93,28 @@ MO.FCanvas_dispose = function FCanvas_dispose(){
 }
 MO.FDesktop = function FDesktop(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._canvases = MO.Class.register(o, new MO.AGetter('_canvases'));
-   o.construct = MO.FDesktop_construct;
-   o.build     = MO.FDesktop_build;
-   o.dispose   = MO.FDesktop_dispose;
+   o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
+   o.construct        = MO.FDesktop_construct;
+   o.canvasRegister   = MO.FDesktop_canvasRegister;
+   o.canvasUnregister = MO.FDesktop_canvasUnregister;
+   o.build            = MO.FDesktop_build;
+   o.dispose          = MO.FDesktop_dispose;
    return o;
 }
 MO.FDesktop_construct = function FDesktop_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._canvases = new MO.TObjects();
+}
+MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
+   var canvases = this._canvases;
+   MO.Assert.debugFalse(canvases.constains(canvas));
+   canvases.push(canvas);
+}
+MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
+   var canvases = this._canvases;
+   MO.Assert.debugTrue(canvases.constains(canvas));
+   canvases.remove(canvas);
 }
 MO.FDesktop_build = function FDesktop_build(hPanel){
    var o = this;

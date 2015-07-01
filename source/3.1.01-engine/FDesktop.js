@@ -9,14 +9,16 @@ MO.FDesktop = function FDesktop(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._canvases = MO.Class.register(o, new MO.AGetter('_canvases'));
+   o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    //..........................................................
    // @method
-   o.construct = MO.FDesktop_construct;
+   o.construct        = MO.FDesktop_construct;
    // @method
-   o.build     = MO.FDesktop_build;
+   o.canvasRegister   = MO.FDesktop_canvasRegister;
+   o.canvasUnregister = MO.FDesktop_canvasUnregister;
+   o.build            = MO.FDesktop_build;
    // @method
-   o.dispose   = MO.FDesktop_dispose;
+   o.dispose          = MO.FDesktop_dispose;
    return o;
 }
 
@@ -30,6 +32,30 @@ MO.FDesktop_construct = function FDesktop_construct(){
    o.__base.FObject.construct.call(o);
    // 设置属性
    o._canvases = new MO.TObjects();
+}
+
+//==========================================================
+// <T>注册画板。</T>
+//
+// @method
+// @param canvas:FCanvas 画布
+//==========================================================
+MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
+   var canvases = this._canvases;
+   MO.Assert.debugFalse(canvases.constains(canvas));
+   canvases.push(canvas);
+}
+
+//==========================================================
+// <T>注销画板。</T>
+//
+// @method
+// @param canvas:FCanvas 画布
+//==========================================================
+MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
+   var canvases = this._canvases;
+   MO.Assert.debugTrue(canvases.constains(canvas));
+   canvases.remove(canvas);
 }
 
 //==========================================================
