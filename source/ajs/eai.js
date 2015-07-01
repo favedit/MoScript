@@ -878,6 +878,7 @@ with(MO){
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
+      return;
       var range = 1;
       o._visible = true;
       o._color.set(1, 1, 1, 1);
@@ -907,8 +908,6 @@ with(MO){
             o._investmentRate = 100;
             o._investmentDirection = -2;
          }
-         o._investmentRate += o._investmentDirection;
-         var rate = o._investmentRate / 100;
          o._color.alpha = rate;
          o._rangeColor.alpha = rate;
          o._investmentLevel--;
