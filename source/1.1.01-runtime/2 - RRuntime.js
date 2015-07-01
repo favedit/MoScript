@@ -9,7 +9,8 @@ MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
    //..........................................................
    // @attribute
-   o._processCd = MO.EProcess.Release;
+   o._processCd  = MO.EProcess.Release;
+   o._platformCd = MO.EPlatform.Pc;
    return o;
 }
 
@@ -51,6 +52,36 @@ MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
 //==========================================================
 MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
+}
+
+//==========================================================
+// <T>测试是否PC平台模式。</T>
+//
+// @method
+// @return 是否PC平台模式
+//==========================================================
+MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
+   return this._processCd == MO.EProcess.Process;
+}
+
+//==========================================================
+// <T>测试是否移动平台模式。</T>
+//
+// @method
+// @return 是否移动平台模式
+//==========================================================
+MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
+   return this._processCd == MO.EProcess.Release;
+}
+
+//==========================================================
+// <T>设置平台模式。</T>
+//
+// @method
+// @param platformCd:EPlatform 平台模式
+//==========================================================
+MO.RRuntime.prototype.setPlatformCd = function RRuntime_setPlatformCd(platformCd){
+   this._platformCd = platformCd;
 }
 
 //==========================================================

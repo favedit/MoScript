@@ -32,6 +32,12 @@ MO.ELogger = new function ELogger(){
    o.Fatal = 4;
    return o;
 }
+MO.EPlatform = new function EPlatform(){
+   var o = this;
+   o.Pc     = 'pc';
+   o.Mobile = 'mobile';
+   return o;
+}
 MO.EProcess = new function EProcess(){
    var o = this;
    o.Release = 0;
@@ -53,7 +59,8 @@ MO.RSingleton = function RSingleton(){
 }
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
-   o._processCd = MO.EProcess.Release;
+   o._processCd  = MO.EProcess.Release;
+   o._platformCd = MO.EPlatform.Pc;
    return o;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
@@ -67,6 +74,15 @@ MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
 }
 MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
+}
+MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
+   return this._processCd == MO.EProcess.Process;
+}
+MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
+   return this._processCd == MO.EProcess.Release;
+}
+MO.RRuntime.prototype.setPlatformCd = function RRuntime_setPlatformCd(platformCd){
+   this._platformCd = platformCd;
 }
 MO.RRuntime.prototype.empty = function RRuntime_empty(){
 }

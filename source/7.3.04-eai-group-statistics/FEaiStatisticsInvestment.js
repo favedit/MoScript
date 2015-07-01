@@ -172,19 +172,19 @@ with(MO){
       var cityEntity = o._mapEntity.findCityByCard(card);
       // 显示实体
       if(cityEntity){
-         // 播放声音
-         if(investment > 1000000){
-            o._autio4.play(0);
-         }else if(investment > 100000){
-            o._autio3.play(0);
-         }else if(investment > 10000){
-            o._autio2.play(0);
-         }else if(investment > 1000){
-            o._autio1.play(0);
-         }
          // 更新数据
          cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
+         // 播放声音
+         if(investment >= 1000000){
+            o._autio4.play(0);
+         }else if(investment >= 100000){
+            o._autio3.play(0);
+         }else if(investment >= 10000){
+            o._autio2.play(0);
+         }else if(investment >= 1000){
+            o._autio1.play(0);
+         }
          // 创建渲染对象
          //var shape = o.allocShape();
          //shape.setCityEntity(cityEntity)

@@ -1978,6 +1978,45 @@ with(MO){
       o.__base.FE3dCanvas.dispose.call(o);
    }
 }
+MO.FE3dSimpleDesktop = function FE3dSimpleDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onResize  = MO.FE3dSimpleDesktop_onResize;
+   o.construct = MO.FE3dSimpleDesktop_construct;
+   o.build     = MO.FE3dSimpleDesktop_build;
+   o.dispose   = MO.FE3dSimpleDesktop_dispose;
+   return o;
+}
+MO.FE3dSimpleDesktop_onResize = function FE3dSimpleDesktop_onResize(p){
+   var o = this;
+}
+MO.FE3dSimpleDesktop_construct = function FE3dSimpleDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+}
+MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(hPanel);
+   canvas.setPanel(hPanel);
+   var size = canvas.size();
+   var hCanvas3d = canvas._hCanvas;
+   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(hPanel);
+   canvas.setPanel(hPanel);
+   var hCanvas2d = canvas._hCanvas;
+   hCanvas2d.style.position = 'absolute';
+   hCanvas2d.style.left = hCanvas3d.offsetLeft + 'px';
+   hCanvas2d.style.top = hCanvas3d.offsetTop + 'px';
+}
+MO.FE3dSimpleDesktop_dispose = function FE3dSimpleDesktop_dispose(){
+   var o = this;
+   o.__base.FDesktop.dispose.call(o);
+}
 MO.FE3dSimpleStage = function FE3dSimpleStage(o){
    o = MO.RClass.inherits(this, o, MO.FE3dStage);
    o._optionKeyboard = true;

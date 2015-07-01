@@ -102,17 +102,17 @@ with(MO){
       var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
       var cityEntity = o._mapEntity.findCityByCard(card);
       if(cityEntity){
-         if(investment > 1000000){
-            o._autio4.play(0);
-         }else if(investment > 100000){
-            o._autio3.play(0);
-         }else if(investment > 10000){
-            o._autio2.play(0);
-         }else if(investment > 1000){
-            o._autio1.play(0);
-         }
          cityEntity.addInvestmentTotal(investment);
          o._mapEntity.upload();
+         if(investment >= 1000000){
+            o._autio4.play(0);
+         }else if(investment >= 100000){
+            o._autio3.play(0);
+         }else if(investment >= 10000){
+            o._autio2.play(0);
+         }else if(investment >= 1000){
+            o._autio1.play(0);
+         }
       }
    }
    MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){

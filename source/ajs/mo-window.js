@@ -422,15 +422,15 @@ with(MO){
    MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
       return this._supportHtml5;
    }
-   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(p){
+   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
       var o = this;
-      if(p){
-         return o._hostPath + p;
+      if(uri){
+         return o._hostPath + uri;
       }
       return o._hostPath;
    }
-   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
-      this._hostPath = p;
+   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
+      this._hostPath = host;
    }
    MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
       var o = this;

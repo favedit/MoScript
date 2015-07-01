@@ -103,13 +103,13 @@
    //===========================================================
    // <T>获得主机路径。</T>
    //
-   // @param p:uri:String 路径
+   // @param uri:String 路径
    // @return String 主机路径
    //===========================================================
-   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(p){
+   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
       var o = this;
-      if(p){
-         return o._hostPath + p;
+      if(uri){
+         return o._hostPath + uri;
       }
       return o._hostPath;
    }
@@ -117,10 +117,10 @@
    //===========================================================
    // <T>设置主机路径。</T>
    //
-   // @param p:host:String 主机路径
+   // @param host:String 主机路径
    //===========================================================
-   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
-      this._hostPath = p;
+   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
+      this._hostPath = host;
    }
 
    //===========================================================

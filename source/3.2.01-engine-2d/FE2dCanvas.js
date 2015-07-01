@@ -6,7 +6,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FE2dCanvas = function FE2dCanvas(o){
-      o = RClass.inherits(this, o, FObject, MCanvasObject);
+      o = RClass.inherits(this, o, FCanvas, MCanvasObject);
       //..........................................................
       // @attribute
       o._size      = RClass.register(o, new AGetter('_size'));
@@ -47,7 +47,7 @@ with(MO){
    //==========================================================
    MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FCanvas.construct.call(o);
       o._size = new SSize2();
    }
 
@@ -125,6 +125,6 @@ with(MO){
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
       // 父处理
-      o.__base.FObject.dispose.call(o);
+      o.__base.FCanvas.dispose.call(o);
    }
 }

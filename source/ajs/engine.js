@@ -76,6 +76,42 @@ with(MO){
       o._data = null;
    }
 }
+MO.FCanvas = function FCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._activeStage = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o.construct    = MO.FCanvas_construct;
+   o.dispose      = MO.FCanvas_dispose;
+   return o;
+}
+MO.FCanvas_construct = function FCanvas_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FCanvas_dispose = function FCanvas_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDesktop = function FDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._canvases = MO.Class.register(o, new MO.AGetter('_canvases'));
+   o.construct = MO.FDesktop_construct;
+   o.build     = MO.FDesktop_build;
+   o.dispose   = MO.FDesktop_dispose;
+   return o;
+}
+MO.FDesktop_construct = function FDesktop_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._canvases = new MO.TObjects();
+}
+MO.FDesktop_build = function FDesktop_build(hPanel){
+   var o = this;
+}
+MO.FDesktop_dispose = function FDesktop_dispose(){
+   var o = this;
+   o._canvases = RObject.dispose(o._canvases);
+   o.__base.FObject.dispose.call(o);
+}
 with(MO){
    MO.FDisplay = function FDisplay(o){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);

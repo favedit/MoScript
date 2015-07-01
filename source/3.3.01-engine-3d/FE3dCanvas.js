@@ -6,13 +6,15 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FE3dCanvas = function FE3dCanvas(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FCanvas, MGraphicObject, MMouseCapture);
       //..........................................................
       // @attribute
       o._optionAlpha        = true;
       o._optionAntialias    = true;
       // @attribute
+      o._listenerLoad       = RClass.register(o, new AListener('_listenerLoad', EEvent.Load));
       o._scaleRate          = 1;
+      o._size               = RClass.register(o, new AGetter('_size'));
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
       o._interval           = 10;
@@ -108,6 +110,8 @@ with(MO){
       context.setRatio(ratio);
       context.sizeRatio().set(ratioX, ratioY);
       context.setViewport(0, 0, scaleWidth, scaleHeight);
+      // 设置大小
+      o._size.assign(o._screenSize);
    }
 
    //==========================================================
@@ -117,10 +121,11 @@ with(MO){
    //==========================================================
    MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FCanvas.construct.call(o);
       // 设置变量
+      o._size = new SSize2(1280, 720);
       o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(0, 0);
+      o._screenSize = new SSize2(1280, 720);
    }
 
    //==========================================================
@@ -201,11 +206,12 @@ with(MO){
       }
       // 释放属性
       o._graphicContext = RObject.dispose(o._graphicContext);
+      o._size = RObject.dispose(o._size);
       o._screenSize = RObject.dispose(o._screenSize);
       o._logicSize = RObject.dispose(o._logicSize);
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
       // 父处理
-      o.__base.FObject.dispose.call(o);
+      o.__base.FCanvas.dispose.call(o);
    }
 }

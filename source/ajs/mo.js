@@ -32,6 +32,12 @@ MO.ELogger = new function ELogger(){
    o.Fatal = 4;
    return o;
 }
+MO.EPlatform = new function EPlatform(){
+   var o = this;
+   o.Pc     = 'pc';
+   o.Mobile = 'mobile';
+   return o;
+}
 MO.EProcess = new function EProcess(){
    var o = this;
    o.Release = 0;
@@ -53,7 +59,8 @@ MO.RSingleton = function RSingleton(){
 }
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
-   o._processCd = MO.EProcess.Release;
+   o._processCd  = MO.EProcess.Release;
+   o._platformCd = MO.EPlatform.Pc;
    return o;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
@@ -67,6 +74,15 @@ MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
 }
 MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
+}
+MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
+   return this._processCd == MO.EProcess.Process;
+}
+MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
+   return this._processCd == MO.EProcess.Release;
+}
+MO.RRuntime.prototype.setPlatformCd = function RRuntime_setPlatformCd(platformCd){
+   this._platformCd = platformCd;
 }
 MO.RRuntime.prototype.empty = function RRuntime_empty(){
 }
@@ -13097,15 +13113,15 @@ with(MO){
    MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
       return this._supportHtml5;
    }
-   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(p){
+   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
       var o = this;
-      if(p){
-         return o._hostPath + p;
+      if(uri){
+         return o._hostPath + uri;
       }
       return o._hostPath;
    }
-   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(p){
-      this._hostPath = p;
+   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
+      this._hostPath = host;
    }
    MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
       var o = this;
@@ -20171,6 +20187,42 @@ with(MO){
       o._data = null;
    }
 }
+MO.FCanvas = function FCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._activeStage = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o.construct    = MO.FCanvas_construct;
+   o.dispose      = MO.FCanvas_dispose;
+   return o;
+}
+MO.FCanvas_construct = function FCanvas_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FCanvas_dispose = function FCanvas_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDesktop = function FDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._canvases = MO.Class.register(o, new MO.AGetter('_canvases'));
+   o.construct = MO.FDesktop_construct;
+   o.build     = MO.FDesktop_build;
+   o.dispose   = MO.FDesktop_dispose;
+   return o;
+}
+MO.FDesktop_construct = function FDesktop_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._canvases = new MO.TObjects();
+}
+MO.FDesktop_build = function FDesktop_build(hPanel){
+   var o = this;
+}
+MO.FDesktop_dispose = function FDesktop_dispose(){
+   var o = this;
+   o._canvases = RObject.dispose(o._canvases);
+   o.__base.FObject.dispose.call(o);
+}
 with(MO){
    MO.FDisplay = function FDisplay(o){
       o = RClass.inherits(this, o, FComponent, MGraphicObject);
@@ -21332,7 +21384,7 @@ with(MO){
 }
 with(MO){
    MO.FE2dCanvas = function FE2dCanvas(o){
-      o = RClass.inherits(this, o, FObject, MCanvasObject);
+      o = RClass.inherits(this, o, FCanvas, MCanvasObject);
       o._size      = RClass.register(o, new AGetter('_size'));
       o._context   = RClass.register(o, new AGetter('_context'));
       o._hCanvas   = null;
@@ -21350,7 +21402,7 @@ with(MO){
    }
    MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FCanvas.construct.call(o);
       o._size = new SSize2();
    }
    MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
@@ -21389,7 +21441,7 @@ with(MO){
       o._context = RObject.dispose(o._context);
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
-      o.__base.FObject.dispose.call(o);
+      o.__base.FCanvas.dispose.call(o);
    }
 }
 with(MO){
@@ -21441,10 +21493,12 @@ MO.ME3dObject = function ME3dObject(o){
 }
 with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FCanvas, MGraphicObject, MMouseCapture);
       o._optionAlpha        = true;
       o._optionAntialias    = true;
+      o._listenerLoad       = RClass.register(o, new AListener('_listenerLoad', EEvent.Load));
       o._scaleRate          = 1;
+      o._size               = RClass.register(o, new AGetter('_size'));
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
       o._interval           = 10;
@@ -21497,12 +21551,14 @@ with(MO){
       context.setRatio(ratio);
       context.sizeRatio().set(ratioX, ratioY);
       context.setViewport(0, 0, scaleWidth, scaleHeight);
+      o._size.assign(o._screenSize);
    }
    MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FCanvas.construct.call(o);
+      o._size = new SSize2(1280, 720);
       o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(0, 0);
+      o._screenSize = new SSize2(1280, 720);
    }
    MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
@@ -21548,11 +21604,12 @@ with(MO){
          h.removeEventListener('touchend', o.ohTouchStop);
       }
       o._graphicContext = RObject.dispose(o._graphicContext);
+      o._size = RObject.dispose(o._size);
       o._screenSize = RObject.dispose(o._screenSize);
       o._logicSize = RObject.dispose(o._logicSize);
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
-      o.__base.FObject.dispose.call(o);
+      o.__base.FCanvas.dispose.call(o);
    }
 }
 with(MO){
@@ -30020,6 +30077,45 @@ with(MO){
       }
       o.__base.FE3dCanvas.dispose.call(o);
    }
+}
+MO.FE3dSimpleDesktop = function FE3dSimpleDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onResize  = MO.FE3dSimpleDesktop_onResize;
+   o.construct = MO.FE3dSimpleDesktop_construct;
+   o.build     = MO.FE3dSimpleDesktop_build;
+   o.dispose   = MO.FE3dSimpleDesktop_dispose;
+   return o;
+}
+MO.FE3dSimpleDesktop_onResize = function FE3dSimpleDesktop_onResize(p){
+   var o = this;
+}
+MO.FE3dSimpleDesktop_construct = function FE3dSimpleDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+}
+MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(hPanel);
+   canvas.setPanel(hPanel);
+   var size = canvas.size();
+   var hCanvas3d = canvas._hCanvas;
+   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(hPanel);
+   canvas.setPanel(hPanel);
+   var hCanvas2d = canvas._hCanvas;
+   hCanvas2d.style.position = 'absolute';
+   hCanvas2d.style.left = hCanvas3d.offsetLeft + 'px';
+   hCanvas2d.style.top = hCanvas3d.offsetTop + 'px';
+}
+MO.FE3dSimpleDesktop_dispose = function FE3dSimpleDesktop_dispose(){
+   var o = this;
+   o.__base.FDesktop.dispose.call(o);
 }
 MO.FE3dSimpleStage = function FE3dSimpleStage(o){
    o = MO.RClass.inherits(this, o, MO.FE3dStage);

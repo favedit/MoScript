@@ -5,10 +5,12 @@ MO.ME3dObject = function ME3dObject(o){
 }
 with(MO){
    MO.FE3dCanvas = function FE3dCanvas(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FCanvas, MGraphicObject, MMouseCapture);
       o._optionAlpha        = true;
       o._optionAntialias    = true;
+      o._listenerLoad       = RClass.register(o, new AListener('_listenerLoad', EEvent.Load));
       o._scaleRate          = 1;
+      o._size               = RClass.register(o, new AGetter('_size'));
       o._logicSize          = RClass.register(o, new AGetter('_logicSize'));
       o._screenSize         = RClass.register(o, new AGetter('_screenSize'));
       o._interval           = 10;
@@ -61,12 +63,14 @@ with(MO){
       context.setRatio(ratio);
       context.sizeRatio().set(ratioX, ratioY);
       context.setViewport(0, 0, scaleWidth, scaleHeight);
+      o._size.assign(o._screenSize);
    }
    MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
       var o = this;
-      o.__base.FObject.construct.call(o);
+      o.__base.FCanvas.construct.call(o);
+      o._size = new SSize2(1280, 720);
       o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(0, 0);
+      o._screenSize = new SSize2(1280, 720);
    }
    MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
@@ -112,11 +116,12 @@ with(MO){
          h.removeEventListener('touchend', o.ohTouchStop);
       }
       o._graphicContext = RObject.dispose(o._graphicContext);
+      o._size = RObject.dispose(o._size);
       o._screenSize = RObject.dispose(o._screenSize);
       o._logicSize = RObject.dispose(o._logicSize);
       o._hPanel = RHtml.free(o._hPanel);
       o._hCanvas = RHtml.free(o._hCanvas);
-      o.__base.FObject.dispose.call(o);
+      o.__base.FCanvas.dispose.call(o);
    }
 }
 with(MO){
