@@ -13,8 +13,8 @@ with(MO){
       o._code   = null;
       //..........................................................
       // @method
-      o.makeUrl = FEaiLogicOrganization_makeUrl;
-      o.send    = FEaiLogicOrganization_send;
+      o.makeUrl = FEaiLogic_makeUrl;
+      o.send    = FEaiLogic_send;
       return o;
    }
 
@@ -25,7 +25,7 @@ with(MO){
    // @param callback:Function 回调函数
    // @param owner:Object 拥有者
    //==========================================================
-   MO.FEaiLogicOrganization_makeUrl = function FEaiLogicOrganization_makeUrl(method, parameters){
+   MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
       var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
@@ -44,7 +44,7 @@ with(MO){
    // @param owner:Object 拥有者
    // @param callback:Function 回调函数
    //==========================================================
-   MO.FEaiLogicOrganization_send = function FEaiLogicOrganization_send(method, parameters, owner, callback){
+   MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
       var o = this;
       // 获得地址
       var url = o.makeUrl(method, parameters);

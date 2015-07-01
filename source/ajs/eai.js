@@ -558,11 +558,11 @@ with(MO){
    MO.FEaiLogic = function FEaiLogic(o){
       o = RClass.inherits(this, o, FObject);
       o._code   = null;
-      o.makeUrl = FEaiLogicOrganization_makeUrl;
-      o.send    = FEaiLogicOrganization_send;
+      o.makeUrl = FEaiLogic_makeUrl;
+      o.send    = FEaiLogic_send;
       return o;
    }
-   MO.FEaiLogicOrganization_makeUrl = function FEaiLogicOrganization_makeUrl(method, parameters){
+   MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
       var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
@@ -571,7 +571,7 @@ with(MO){
       }
       return url;
    }
-   MO.FEaiLogicOrganization_send = function FEaiLogicOrganization_send(method, parameters, owner, callback){
+   MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
       var o = this;
       var url = o.makeUrl(method, parameters);
       var connection = RConsole.find(FJsonConsole).sendAsync(url);
@@ -1850,7 +1850,7 @@ with (MO) {
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-      var rateResource = rateConsole.find(EEaiRate.Line);
+      var rateResource = rateConsole.find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
          var degreeSpan = startTime.date.getTime() - bakTime;

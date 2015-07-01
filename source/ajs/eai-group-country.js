@@ -1061,7 +1061,7 @@ with (MO) {
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-      var rateResource = rateConsole.find(EEaiRate.Line);
+      var rateResource = rateConsole.find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
          var degreeSpan = startTime.date.getTime() - bakTime;
