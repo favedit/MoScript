@@ -8127,81 +8127,95 @@ with(MO){
       return d;
    }
 }
-with(MO){
-   MO.SRectangle = function SRectangle(left, top, width, height){
-      var o = this;
-      o.left        = RInteger.nvl(left);
-      o.top         = RInteger.nvl(top);
-      o.width       = RInteger.nvl(width);
-      o.height      = RInteger.nvl(height);
-      o.right       = SRectangle_right;
-      o.bottom      = SRectangle_bottom;
-      o.testRange   = SRectangle_testRange;
-      o.assign      = SRectangle_assign;
-      o.setLocation = SRectangle_setLocation;
-      o.setSize     = SRectangle_setSize;
-      o.set         = SRectangle_set;
-      o.toString    = SRectangle_toString;
-      o.dispose     = SRectangle_dispose;
-      return o;
+MO.SRectangle = function SRectangle(left, top, width, height){
+   var o = this;
+   o.left            = MO.Lang.Integer.nvl(left);
+   o.top             = MO.Lang.Integer.nvl(top);
+   o.width           = MO.Lang.Integer.nvl(width);
+   o.height          = MO.Lang.Integer.nvl(height);
+   o.right           = MO.SRectangle_right;
+   o.bottom          = MO.SRectangle_bottom;
+   o.testRange       = MO.SRectangle_testRange;
+   o.reset           = MO.SRectangle_reset;
+   o.assign          = MO.SRectangle_assign;
+   o.setLocation     = MO.SRectangle_setLocation;
+   o.setSize         = MO.SRectangle_setSize;
+   o.setLocationSize = MO.SRectangle_setLocationSize;
+   o.set             = MO.SRectangle_set;
+   o.toString        = MO.SRectangle_toString;
+   o.dispose         = MO.SRectangle_dispose;
+   return o;
+}
+MO.SRectangle_right = function SRectangle_right(){
+   return this.left + this.width;
+}
+MO.SRectangle_bottom = function SRectangle_bottom(){
+   return this.top + this.height;
+}
+MO.SRectangle_testRange = function SRectangle_testRange(x, y){
+   var o = this;
+   if(x < o.left){
+      return false;
    }
-   MO.SRectangle_right = function SRectangle_right(){
-      return this.left + this.width;
+   if(y < o.top){
+      return false;
    }
-   MO.SRectangle_bottom = function SRectangle_bottom(){
-      return this.top + this.height;
+   if(x - o.left > o.width){
+      return false;
    }
-   MO.SRectangle_testRange = function SRectangle_testRange(x, y){
-      var o = this;
-      if(x < o.left){
-         return false;
-      }
-      if(y < o.top){
-         return false;
-      }
-      if(x - o.left > o.width){
-         return false;
-      }
-      if(y - o.top > o.height){
-         return false;
-      }
-      return true;
+   if(y - o.top > o.height){
+      return false;
    }
-   MO.SRectangle_assign = function SRectangle_assign(value){
-      var o = this;
-      o.left = value.left;
-      o.top = value.top;
-      o.width = value.width;
-      o.height = value.height;
-   }
-   MO.SRectangle_setLocation = function SRectangle_setLocation(left, top){
-      var o = this;
-      o.left = left;
-      o.top = top;
-   }
-   MO.SRectangle_setSize = function SRectangle_setSize(width, height){
-      var o = this;
-      o.width = width;
-      o.height = height;
-   }
-   MO.SRectangle_set = function SRectangle_set(left, top, width, height){
-      var o = this;
-      o.left = left;
-      o.top = top;
-      o.width = width;
-      o.height = height;
-   }
-   MO.SRectangle_toString = function SRectangle_toString(){
-      var o = this;
-      return o.left + ',' + o.top + ',' + o.width + ',' + o.height;
-   }
-   MO.SRectangle_dispose = function SRectangle_dispose(){
-      var o = this;
-      o.left = null;
-      o.top = null;
-      o.width = null;
-      o.height = null;
-   }
+   return true;
+}
+MO.SRectangle_reset = function SRectangle_reset(){
+   var o = this;
+   o.left = 0;
+   o.top = 0;
+   o.width = 0;
+   o.height = 0;
+}
+MO.SRectangle_assign = function SRectangle_assign(value){
+   var o = this;
+   o.left = value.left;
+   o.top = value.top;
+   o.width = value.width;
+   o.height = value.height;
+}
+MO.SRectangle_setLocation = function SRectangle_setLocation(left, top){
+   var o = this;
+   o.left = left;
+   o.top = top;
+}
+MO.SRectangle_setSize = function SRectangle_setSize(width, height){
+   var o = this;
+   o.width = width;
+   o.height = height;
+}
+MO.SRectangle_setLocationSize = function SRectangle_setLocationSize(location, size){
+   var o = this;
+   o.left = location.x;
+   o.top = location.y;
+   o.width = size.width;
+   o.height = size.height;
+}
+MO.SRectangle_set = function SRectangle_set(left, top, width, height){
+   var o = this;
+   o.left = left;
+   o.top = top;
+   o.width = width;
+   o.height = height;
+}
+MO.SRectangle_toString = function SRectangle_toString(){
+   var o = this;
+   return o.left + ',' + o.top + ',' + o.width + ',' + o.height;
+}
+MO.SRectangle_dispose = function SRectangle_dispose(){
+   var o = this;
+   o.left = null;
+   o.top = null;
+   o.width = null;
+   o.height = null;
 }
 with(MO){
    MO.SSize2 = function SSize2(width, height){
@@ -12517,7 +12531,7 @@ with(MO){
       o._scopeCd     = EScope.Local;
       o._active      = true;
       o._interval    = 5;
-      o._threads     = null;
+      o._threads     = RClass.register(o, new AGetter('_threads'));
       o._hWindow     = null;
       o._hIntervalId = null;
       o.ohInterval   = FThreadConsole_ohInterval;
@@ -12550,15 +12564,16 @@ with(MO){
    MO.FThreadConsole_process = function FThreadConsole_process(thread){
       var o = this;
       if(thread){
-         switch(thread.statusCd()){
+         var statusCd = thread.statusCd();
+         switch(statusCd){
             case EThreadStatus.Sleep:
                break;
             case EThreadStatus.Active:
                thread.process(o._interval);
                break;
             case EThreadStatus.Finish:
-               thread.dispose();
                o._threads.remove(thread);
+               thread.dispose();
                break;
          }
       }
@@ -12585,6 +12600,8 @@ with(MO){
          }
          o._hWindow = null;
       }
+      o._threads = RObject.dispose(o._threads);
+      o.__base.FConsole.dispose.call(o);
    }
 }
 MO.FTimeConsole = function FTimeConsole(o){
@@ -20219,12 +20236,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.constains(canvas));
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.constains(canvas));
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_build = function FDesktop_build(hPanel){
@@ -21694,7 +21711,7 @@ with(MO){
       o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
       o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
       o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
-      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materialReference = RClass.register(o, new AGetSet('_materialReference'));
       o._materials         = RClass.register(o, new AGetter('_materials'));
       o._bones             = RClass.register(o, new AGetter('_bones'));
       o._textures          = RClass.register(o, new AGetter('_textures'));
@@ -33275,11 +33292,11 @@ with(MO){
       o._statusPaint            = false;
       o._backImage              = null;
       o._backHoverResource      = null;
+      o._eventRectangle         = null;
       o._clientRectangle        = null;
       o.onUpdate                = FGuiControl_onUpdate;
       o.onPaintBegin            = FGuiControl_onPaintBegin;
       o.onPaintEnd              = FGuiControl_onPaintEnd;
-      o.onPaint                 = FGuiControl_onPaint;
       o.onOperationDown         = FGuiControl_onOperationDown;
       o.onOperationMove         = FGuiControl_onOperationMove;
       o.onOperationUp           = FGuiControl_onOperationUp;
@@ -33299,6 +33316,7 @@ with(MO){
       o.psEnable                = FGuiControl_psEnable;
       o.psVisible               = FGuiControl_psVisible;
       o.psResize                = FGuiControl_psResize;
+      o.psPaint                 = FGuiControl_psPaint;
       o.psRefresh               = FGuiControl_psRefresh;
       o.psUpdate                = FGuiControl_psUpdate;
       o.dispose                 = FGuiControl_dispose;
@@ -33310,9 +33328,7 @@ with(MO){
       var size = o._size;
       var rectangle = event.rectangle;
       if(o._renderable){
-         o._clientRectangle.set(0, 0, size.width, size.height);
       }else{
-         o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
       }
       var components = o._components;
       if(components){
@@ -33328,7 +33344,7 @@ with(MO){
    MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
       var o = this;
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       if(o._backColor){
          graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
@@ -33357,21 +33373,6 @@ with(MO){
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
       var o = this;
-   }
-   MO.FGuiControl_onPaint = function FGuiControl_onPaint(event){
-      var o = this;
-      o.onPaintBegin(event);
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            if(RClass.isClass(component, FGuiControl)){
-               component.onPaint(event);
-            }
-         }
-      }
-      o.onPaintEnd(event);
    }
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
@@ -33443,6 +33444,7 @@ with(MO){
       o.__base.MGuiPadding.construct.call(o);
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
+      o._eventRectangle = new SRectangle();
    }
    MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
       var o = this;
@@ -33481,17 +33483,32 @@ with(MO){
       var range = o._clientRectangle.testRange(x, y);
       return range;
    }
-   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
+   MO.FGuiControl_paint = function FGuiControl_paint(event){
       var o = this;
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.graphic = graphic;
-      event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
-      MO.Memory.free(event);
+      var location = o._location;
+      var size = o._size;
+      var rectangle = event.rectangle;
+      o._eventRectangle.assign(rectangle);
+      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      rectangle.assign(o._clientRectangle);
+      o.onPaintBegin(event);
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(MO.Class.isClass(component, MO.FGuiControl)){
+               component.paint(event);
+            }
+         }
+      }
+      o.onPaintEnd(event);
+      rectangle.assign(o._eventRectangle);
       o._statusPaint = true;
    }
    MO.FGuiControl_repaint = function FGuiControl_repaint(){
       var o = this;
+      return;
       var renderable = o._renderable;
       if(!renderable){
          throw new TError('Invalid renderable.');
@@ -33500,7 +33517,7 @@ with(MO){
       var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
+      o.paint(event);
       MO.Memory.free(event);
       renderable.endDraw();
       o._statusPaint = true;
@@ -33515,6 +33532,7 @@ with(MO){
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
+      return;
       var location = o._location;
       var size = o._size;
       var renderable = o._renderable;
@@ -33567,6 +33585,12 @@ with(MO){
    MO.FGuiControl_psResize = function FGuiControl_psResize(){
       var o = this;
       var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeParint', FGuiControl);
       o.process(event);
       event.dispose();
    }
@@ -33785,6 +33809,50 @@ with(MO){
       return xconfig;
    }
    MO.RGuiControl = new RGuiControl();
+}
+MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FGuiDesktop);
+   o._canvas        = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._controlRectangle = null;
+   o.construct      = MO.FGuiCanvasDesktop_construct;
+   o.processControl = MO.FGuiCanvasDesktop_processControl;
+   o.process        = MO.FGuiCanvasDesktop_process;
+   o.dispose        = MO.FGuiCanvasDesktop_dispose;
+   return o;
+}
+MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
+   var o = this;
+   o.__base.FGuiDesktop.construct.call(o);
+   o._controlRectangle = new MO.SRectangle();
+}
+MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(control){
+   var o = this;
+   o.__base.FGuiDesktop.process.call(o);
+   var graphic = o._canvas.context();
+   var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   event.graphic = graphic;
+   event.rectangle.reset();
+   control.paint(event);
+   MO.Memory.free(event);
+}
+MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
+   var o = this;
+   o.__base.FGuiDesktop.process.call(o);
+   var graphic = o._canvas.context();
+   graphic.clear();
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      if(control.visible()){
+         o.processControl(control);
+      }
+   }
+}
+MO.FGuiCanvasDesktop_dispose = function FGuiCanvasDesktop_dispose(){
+   var o = this;
+   o._controlRectangle = RObject.dispose(o._controlRectangle);
+   o.__base.FGuiDesktop.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
    o = MO.Class.inherits(this, o, MO.FGuiTransform);
@@ -34881,12 +34949,10 @@ with(MO){
 with(MO){
    MO.RDesktop = function RDesktop(){
       var o = this;
-      o._application = null;
-      o._workspaces  = new TDictionary();
+      o._application   = null;
+      o._activeDesktop = null;
+      o._workspaces    = new TDictionary();
       return o;
-   }
-   MO.RDesktop.prototype.application = function RDesktop_application(){
-      return this._application;
    }
    MO.RDesktop.prototype.onMouseDown = function RDesktop_onMouseDown(event){
       var o = this;
@@ -34908,6 +34974,15 @@ with(MO){
       if(application){
          application.processEvent(event);
       }
+   }
+   MO.RDesktop.prototype.application = function RDesktop_application(){
+      return this._application;
+   }
+   MO.RDesktop.prototype.activeDesktop = function RDesktop_activeDesktop(){
+      return this._activeDesktop;
+   }
+   MO.RDesktop.prototype.setActiveDesktop = function RDesktop_setActiveDesktop(desktop){
+      this._activeDesktop = desktop;
    }
    MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
       var o = this;

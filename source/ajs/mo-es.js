@@ -3721,7 +3721,7 @@ with(MO){
       o._scopeCd     = EScope.Local;
       o._active      = true;
       o._interval    = 5;
-      o._threads     = null;
+      o._threads     = RClass.register(o, new AGetter('_threads'));
       o._hWindow     = null;
       o._hIntervalId = null;
       o.ohInterval   = FThreadConsole_ohInterval;
@@ -3754,15 +3754,16 @@ with(MO){
    MO.FThreadConsole_process = function FThreadConsole_process(thread){
       var o = this;
       if(thread){
-         switch(thread.statusCd()){
+         var statusCd = thread.statusCd();
+         switch(statusCd){
             case EThreadStatus.Sleep:
                break;
             case EThreadStatus.Active:
                thread.process(o._interval);
                break;
             case EThreadStatus.Finish:
-               thread.dispose();
                o._threads.remove(thread);
+               thread.dispose();
                break;
          }
       }
@@ -3789,6 +3790,8 @@ with(MO){
          }
          o._hWindow = null;
       }
+      o._threads = RObject.dispose(o._threads);
+      o.__base.FConsole.dispose.call(o);
    }
 }
 MO.FTimeConsole = function FTimeConsole(o){
@@ -9550,12 +9553,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.constains(canvas));
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.constains(canvas));
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_build = function FDesktop_build(hPanel){
@@ -11025,7 +11028,7 @@ with(MO){
       o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
       o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
       o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
-      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materialReference = RClass.register(o, new AGetSet('_materialReference'));
       o._materials         = RClass.register(o, new AGetter('_materials'));
       o._bones             = RClass.register(o, new AGetter('_bones'));
       o._textures          = RClass.register(o, new AGetter('_textures'));

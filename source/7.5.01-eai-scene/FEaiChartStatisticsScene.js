@@ -123,7 +123,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
-   faceLayer.push(timeline);
+   //faceLayer.push(timeline);
 }
 
 //==========================================================

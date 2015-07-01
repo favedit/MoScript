@@ -108,12 +108,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.constains(canvas));
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.constains(canvas));
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_build = function FDesktop_build(hPanel){
@@ -1583,7 +1583,7 @@ with(MO){
       o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
       o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
       o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
-      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materialReference = RClass.register(o, new AGetSet('_materialReference'));
       o._materials         = RClass.register(o, new AGetter('_materials'));
       o._bones             = RClass.register(o, new AGetter('_bones'));
       o._textures          = RClass.register(o, new AGetter('_textures'));

@@ -194,7 +194,7 @@ with(MO){
       o._vertexCount       = RClass.register(o, new AGetter('_vertexCount'));
       o._vertexBuffers     = RClass.register(o, new AGetter('_vertexBuffers'));
       o._indexBuffers      = RClass.register(o, new AGetter('_indexBuffers'));
-      o._materialReference = RClass.register(o, new AGetter('_materialReference'));
+      o._materialReference = RClass.register(o, new AGetSet('_materialReference'));
       o._materials         = RClass.register(o, new AGetter('_materials'));
       o._bones             = RClass.register(o, new AGetter('_bones'));
       o._textures          = RClass.register(o, new AGetter('_textures'));

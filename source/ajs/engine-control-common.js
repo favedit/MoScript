@@ -652,11 +652,11 @@ with(MO){
       o._statusPaint            = false;
       o._backImage              = null;
       o._backHoverResource      = null;
+      o._eventRectangle         = null;
       o._clientRectangle        = null;
       o.onUpdate                = FGuiControl_onUpdate;
       o.onPaintBegin            = FGuiControl_onPaintBegin;
       o.onPaintEnd              = FGuiControl_onPaintEnd;
-      o.onPaint                 = FGuiControl_onPaint;
       o.onOperationDown         = FGuiControl_onOperationDown;
       o.onOperationMove         = FGuiControl_onOperationMove;
       o.onOperationUp           = FGuiControl_onOperationUp;
@@ -676,6 +676,7 @@ with(MO){
       o.psEnable                = FGuiControl_psEnable;
       o.psVisible               = FGuiControl_psVisible;
       o.psResize                = FGuiControl_psResize;
+      o.psPaint                 = FGuiControl_psPaint;
       o.psRefresh               = FGuiControl_psRefresh;
       o.psUpdate                = FGuiControl_psUpdate;
       o.dispose                 = FGuiControl_dispose;
@@ -687,9 +688,7 @@ with(MO){
       var size = o._size;
       var rectangle = event.rectangle;
       if(o._renderable){
-         o._clientRectangle.set(0, 0, size.width, size.height);
       }else{
-         o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
       }
       var components = o._components;
       if(components){
@@ -705,7 +704,7 @@ with(MO){
    MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
       var o = this;
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       if(o._backColor){
          graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
       }
@@ -734,21 +733,6 @@ with(MO){
    }
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
       var o = this;
-   }
-   MO.FGuiControl_onPaint = function FGuiControl_onPaint(event){
-      var o = this;
-      o.onPaintBegin(event);
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            if(RClass.isClass(component, FGuiControl)){
-               component.onPaint(event);
-            }
-         }
-      }
-      o.onPaintEnd(event);
    }
    MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
       var o = this;
@@ -820,6 +804,7 @@ with(MO){
       o.__base.MGuiPadding.construct.call(o);
       o.__base.MGuiBorder.construct.call(o);
       o._clientRectangle = new SRectangle();
+      o._eventRectangle = new SRectangle();
    }
    MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
       var o = this;
@@ -858,17 +843,32 @@ with(MO){
       var range = o._clientRectangle.testRange(x, y);
       return range;
    }
-   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
+   MO.FGuiControl_paint = function FGuiControl_paint(event){
       var o = this;
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.graphic = graphic;
-      event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
-      MO.Memory.free(event);
+      var location = o._location;
+      var size = o._size;
+      var rectangle = event.rectangle;
+      o._eventRectangle.assign(rectangle);
+      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      rectangle.assign(o._clientRectangle);
+      o.onPaintBegin(event);
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(MO.Class.isClass(component, MO.FGuiControl)){
+               component.paint(event);
+            }
+         }
+      }
+      o.onPaintEnd(event);
+      rectangle.assign(o._eventRectangle);
       o._statusPaint = true;
    }
    MO.FGuiControl_repaint = function FGuiControl_repaint(){
       var o = this;
+      return;
       var renderable = o._renderable;
       if(!renderable){
          throw new TError('Invalid renderable.');
@@ -877,7 +877,7 @@ with(MO){
       var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
+      o.paint(event);
       MO.Memory.free(event);
       renderable.endDraw();
       o._statusPaint = true;
@@ -892,6 +892,7 @@ with(MO){
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
+      return;
       var location = o._location;
       var size = o._size;
       var renderable = o._renderable;
@@ -944,6 +945,12 @@ with(MO){
    MO.FGuiControl_psResize = function FGuiControl_psResize(){
       var o = this;
       var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      o.process(event);
+      event.dispose();
+   }
+   MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
+      var o = this;
+      var event = new SGuiDispatchEvent(o, 'oeParint', FGuiControl);
       o.process(event);
       event.dispose();
    }

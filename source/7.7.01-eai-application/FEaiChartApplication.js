@@ -79,10 +79,22 @@ with(MO){
       var o = this;
       o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
+      //..........................................................
+      // 创建桌面
+      var desktop = MO.RClass.create(MO.FEaiChartDesktop);
+      desktop.build(hPanel);
+      MO.Desktop.setActiveDesktop(desktop);
+      var canvas3d = desktop.canvas3d();
+      // 增加监听
+      //canvas = desktop.canvas3d();
+      //stage = canvas.stage();
+      //stage.addEnterFrameListener(null, onEnterFrame);
+      //..........................................................
       // 创建画板
-      var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
-      canvas.build(hPanel);
-      canvas.setPanel(hPanel);
+      //var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
+      var canvas = MO.Eai.Canvas = o._canvas = canvas3d;
+      //canvas.build(hPanel);
+      //canvas.setPanel(hPanel);
       o.linkGraphicContext(canvas);
       //..........................................................
       // 创建加载中舞台

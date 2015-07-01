@@ -31,6 +31,7 @@ with(MO){
       o._statusPaint            = false;
       o._backImage              = null;
       o._backHoverResource      = null;
+      o._eventRectangle         = null;
       o._clientRectangle        = null;
       //..........................................................
       // @event
@@ -38,7 +39,6 @@ with(MO){
       // @event
       o.onPaintBegin            = FGuiControl_onPaintBegin;
       o.onPaintEnd              = FGuiControl_onPaintEnd;
-      o.onPaint                 = FGuiControl_onPaint;
       // @event
       o.onOperationDown         = FGuiControl_onOperationDown;
       o.onOperationMove         = FGuiControl_onOperationMove;
@@ -66,6 +66,7 @@ with(MO){
       o.psEnable                = FGuiControl_psEnable;
       o.psVisible               = FGuiControl_psVisible;
       o.psResize                = FGuiControl_psResize;
+      o.psPaint                 = FGuiControl_psPaint;
       o.psRefresh               = FGuiControl_psRefresh;
       o.psUpdate                = FGuiControl_psUpdate;
       // @method
@@ -86,9 +87,9 @@ with(MO){
       //..........................................................
       // 开始绘制处理
       if(o._renderable){
-         o._clientRectangle.set(0, 0, size.width, size.height);
+         //o._clientRectangle.set(0, 0, size.width, size.height);
       }else{
-         o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+         //o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
       }
       //..........................................................
       // 子控件处理
@@ -112,7 +113,7 @@ with(MO){
    MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
       var o = this;
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       // 绘制底色
       if(o._backColor){
          graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
@@ -151,33 +152,6 @@ with(MO){
    //==========================================================
    MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
       var o = this;
-   }
-
-   //==========================================================
-   // <T>绘制处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FGuiControl_onPaint = function FGuiControl_onPaint(event){
-      var o = this;
-      //..........................................................
-      // 开始绘制处理
-      o.onPaintBegin(event);
-      //..........................................................
-      // 子控件处理
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            if(RClass.isClass(component, FGuiControl)){
-               component.onPaint(event);
-            }
-         }
-      }
-      //..........................................................
-      // 绘制结束处理
-      o.onPaintEnd(event);
    }
 
    //==========================================================
@@ -305,6 +279,7 @@ with(MO){
       o.__base.MGuiBorder.construct.call(o);
       // 创建属性
       o._clientRectangle = new SRectangle();
+      o._eventRectangle = new SRectangle();
       //o._backColor = '#CCCCCC';
       //o._borderInner.left.color = '#FFFFFF';
       //o._borderInner.top.color = '#00FF00';
@@ -389,14 +364,33 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiControl_paint = function FGuiControl_paint(graphic){
+   MO.FGuiControl_paint = function FGuiControl_paint(event){
       var o = this;
       // 绘制处理
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.graphic = graphic;
-      event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
-      MO.Memory.free(event);
+      var location = o._location;
+      var size = o._size;
+      var rectangle = event.rectangle;
+      o._eventRectangle.assign(rectangle);
+      o._clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, size.width, size.height);
+      rectangle.assign(o._clientRectangle);
+      //..........................................................
+      // 开始绘制处理
+      o.onPaintBegin(event);
+      // 子控件处理
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(MO.Class.isClass(component, MO.FGuiControl)){
+               component.paint(event);
+            }
+         }
+      }
+      // 绘制结束处理
+      o.onPaintEnd(event);
+      //..........................................................
+      rectangle.assign(o._eventRectangle);
       o._statusPaint = true;
    }
 
@@ -407,6 +401,7 @@ with(MO){
    //==========================================================
    MO.FGuiControl_repaint = function FGuiControl_repaint(){
       var o = this;
+      return;
       // 绘制开始处理
       var renderable = o._renderable;
       if(!renderable){
@@ -419,7 +414,7 @@ with(MO){
       var event = MO.Memory.alloc(SGuiPaintEvent)
       event.graphic = graphic;
       event.rectangle.assign(o._clientRectangle);
-      o.onPaint(event);
+      o.paint(event);
       MO.Memory.free(event);
       //..........................................................
       // 绘制结束处理
@@ -449,6 +444,7 @@ with(MO){
    //==========================================================
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
+      return;
       var location = o._location;
       var size = o._size;
       //..........................................................
@@ -539,6 +535,20 @@ with(MO){
       var o = this;
       // 创建事件
       var event = new SGuiDispatchEvent(o, 'oeResize', FGuiControl);
+      // 处理消息
+      o.process(event);
+      event.dispose();
+   }
+
+   //==========================================================
+   // <T>绘制处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
+      var o = this;
+      // 创建事件
+      var event = new SGuiDispatchEvent(o, 'oeParint', FGuiControl);
       // 处理消息
       o.process(event);
       event.dispose();

@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
+      o._mapEntity        = RClass.register(o, new AGetSet('_mapEntity'));
       o._data             = RClass.register(o, new AGetSet('_data'));
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
@@ -144,6 +145,7 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
+      renderable.setMaterialReference(o._mapEntity);
    }
 
    //==========================================================

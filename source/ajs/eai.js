@@ -1654,6 +1654,7 @@ with(MO){
 with(MO){
    MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
+      o._mapEntity        = RClass.register(o, new AGetSet('_mapEntity'));
       o._data             = RClass.register(o, new AGetSet('_data'));
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
@@ -1756,6 +1757,7 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
+      renderable.setMaterialReference(o._mapEntity);
    }
    MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
       var o = this;
@@ -3156,8 +3158,9 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var stage = o._activeStage;
    var countryDisplay = o._countryDisplay;
    var countryBorderDisplay = o._countryBorderDisplay;
+   var mapEntity = o._mapEntity;
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var provinceEntities = o._mapEntity.provinceEntities();
+   var provinceEntities = mapEntity.provinceEntities();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
@@ -3165,6 +3168,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       var provinceName = provinceData.name();
       var province = provinceConsole.findByName(provinceName);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
+      provinceEntity.setMapEntity(mapEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
       provinceEntities.set(province.code(), provinceEntity);
@@ -3214,9 +3218,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    control.setBackResource('url:/script/ars/eai/background.png');
    control.psInitialize();
    control.build();
-   control.renderable().setOptionFull(true);
-   o._desktop.register(control);
-   stage.groundLayer().push(control);
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
@@ -3248,11 +3249,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
-   stage.faceLayer().push(frame);
    o._desktop.register(frame);
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
    frame.setLocation(650, 20);
-   stage.faceLayer().push(frame);
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
@@ -3405,7 +3404,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
-   faceLayer.push(timeline);
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
@@ -3543,6 +3541,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 with(MO){
    MO.FEaiScene = function FEaiScene(o){
       o = RClass.inherits(this, o, FScene);
+      o._optionDebug    = true;
       o._desktop        = RClass.register(o, new AGetter('_desktop'));
       o._engineInfo     = null;
       o.onProcess       = MO.FEaiScene_onProcess;
@@ -3566,15 +3565,20 @@ with(MO){
    MO.FEaiScene_setup = function FEaiScene_setup(){
       var o = this;
       o.__base.FScene.setup.call(o);
-      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-      control.linkGraphicContext(o);
-      control.setContext(o.graphicContext());
-      control.location().set(10, 300);
-      control.build();
-      var desktop = o._desktop = RClass.create(FGuiDesktop);
+      var activeDesktop = MO.Desktop.activeDesktop();
+      var canvas2d = activeDesktop.canvas2d();
+      var desktop = o._desktop = RClass.create(FGuiCanvasDesktop);
       desktop.linkGraphicContext(o);
+      desktop.setCanvas(canvas2d);
       desktop.setup();
-      desktop.register(control);
+      if(o._optionDebug){
+         var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
+         control.linkGraphicContext(o);
+         control.setContext(o.graphicContext());
+         control.location().set(10, 300);
+         control.build();
+         desktop.register(control);
+      }
    }
    MO.FEaiScene_active = function FEaiScene_active(){
       var o = this;
@@ -3582,14 +3586,18 @@ with(MO){
       var stage = o._activeStage;
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
-      var faceLayer = stage.faceLayer();
-      o._engineInfo.setStage(stage);
+      if(o._optionDebug){
+         var faceLayer = stage.faceLayer();
+         o._engineInfo.setStage(stage);
+      }
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FScene.deactive.call(o);
       var stage = o._activeStage;
-      var faceLayer = stage.faceLayer();
+      if(o._optionDebug){
+         var faceLayer = stage.faceLayer();
+      }
       MO.Eai.Canvas.selectStage(null);
    }
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
@@ -3822,9 +3830,11 @@ with(MO){
       var o = this;
       o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
-      var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
-      canvas.build(hPanel);
-      canvas.setPanel(hPanel);
+      var desktop = MO.RClass.create(MO.FEaiChartDesktop);
+      desktop.build(hPanel);
+      MO.Desktop.setActiveDesktop(desktop);
+      var canvas3d = desktop.canvas3d();
+      var canvas = MO.Eai.Canvas = o._canvas = canvas3d;
       o.linkGraphicContext(canvas);
       var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
       chapter.linkGraphicContext(o);
@@ -3869,28 +3879,28 @@ with(MO){
       o.__base.FEaiCanvas.dispose.call(o);
    }
 }
-MO.FEaiDesktop = function FEaiDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FDesktop);
+MO.FEaiChartDesktop = function FEaiChartDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
-   o.onResize  = MO.FEaiDesktop_onResize;
-   o.construct = MO.FEaiDesktop_construct;
-   o.build     = MO.FEaiDesktop_build;
-   o.dispose   = MO.FEaiDesktop_dispose;
+   o.onResize  = MO.FEaiChartDesktop_onResize;
+   o.construct = MO.FEaiChartDesktop_construct;
+   o.build     = MO.FEaiChartDesktop_build;
+   o.dispose   = MO.FEaiChartDesktop_dispose;
    return o;
 }
-MO.FEaiDesktop_onResize = function FEaiDesktop_onResize(p){
+MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(p){
    var o = this;
 }
-MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
+MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
    var o = this;
-   o.__base.FDesktop.construct.call(o);
+   o.__base.FEaiDesktop.construct.call(o);
 }
-MO.FEaiDesktop_build = function FEaiDesktop_build(hPanel){
+MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
-   o.__base.FDesktop.build.call(o, hPanel);
+   o.__base.FEaiDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    var size = canvas3d.size();
@@ -3902,9 +3912,23 @@ MO.FEaiDesktop_build = function FEaiDesktop_build(hPanel){
    canvas2d.setPanel(hPanel);
    var hCanvas2d = canvas2d._hCanvas;
    hCanvas2d.style.position = 'absolute';
-   hCanvas2d.style.left = hCanvas3d.offsetLeft + 'px';
-   hCanvas2d.style.top = hCanvas3d.offsetTop + 'px';
+   hCanvas2d.style.left = '0px';
+   hCanvas2d.style.top = '0px';
    o.canvasRegister(canvas2d);
+}
+MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
+   var o = this;
+   o.__base.FEaiDesktop.dispose.call(o);
+}
+MO.FEaiDesktop = function FEaiDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o.construct = MO.FEaiDesktop_construct;
+   o.dispose   = MO.FEaiDesktop_dispose;
+   return o;
+}
+MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
 }
 MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
    var o = this;

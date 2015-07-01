@@ -10,19 +10,10 @@ with(MO){
       var o = this;
       //..........................................................
       // @attribute
-      o._application = null;
-      o._workspaces  = new TDictionary();
+      o._application   = null;
+      o._activeDesktop = null;
+      o._workspaces    = new TDictionary();
       return o;
-   }
-
-   //==========================================================
-   // <T>获得应用。</T>
-   //
-   // @method
-   // @return Function 应用
-   //==========================================================
-   MO.RDesktop.prototype.application = function RDesktop_application(){
-      return this._application;
    }
 
    //==========================================================
@@ -65,6 +56,36 @@ with(MO){
       if(application){
          application.processEvent(event);
       }
+   }
+
+   //==========================================================
+   // <T>获得应用。</T>
+   //
+   // @method
+   // @return Function 应用
+   //==========================================================
+   MO.RDesktop.prototype.application = function RDesktop_application(){
+      return this._application;
+   }
+
+   //==========================================================
+   // <T>获得激活桌面。</T>
+   //
+   // @method
+   // @return FDesktop 桌面
+   //==========================================================
+   MO.RDesktop.prototype.activeDesktop = function RDesktop_activeDesktop(){
+      return this._activeDesktop;
+   }
+
+   //==========================================================
+   // <T>设置激活桌面。</T>
+   //
+   // @method
+   // @param desktop:FDesktop 桌面
+   //==========================================================
+   MO.RDesktop.prototype.setActiveDesktop = function RDesktop_setActiveDesktop(desktop){
+      this._activeDesktop = desktop;
    }
 
    //==========================================================

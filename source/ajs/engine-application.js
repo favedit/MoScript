@@ -292,12 +292,10 @@ with(MO){
 with(MO){
    MO.RDesktop = function RDesktop(){
       var o = this;
-      o._application = null;
-      o._workspaces  = new TDictionary();
+      o._application   = null;
+      o._activeDesktop = null;
+      o._workspaces    = new TDictionary();
       return o;
-   }
-   MO.RDesktop.prototype.application = function RDesktop_application(){
-      return this._application;
    }
    MO.RDesktop.prototype.onMouseDown = function RDesktop_onMouseDown(event){
       var o = this;
@@ -319,6 +317,15 @@ with(MO){
       if(application){
          application.processEvent(event);
       }
+   }
+   MO.RDesktop.prototype.application = function RDesktop_application(){
+      return this._application;
+   }
+   MO.RDesktop.prototype.activeDesktop = function RDesktop_activeDesktop(){
+      return this._activeDesktop;
+   }
+   MO.RDesktop.prototype.setActiveDesktop = function RDesktop_setActiveDesktop(desktop){
+      this._activeDesktop = desktop;
    }
    MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
       var o = this;

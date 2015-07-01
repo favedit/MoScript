@@ -1,3 +1,47 @@
+MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FGuiDesktop);
+   o._canvas        = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._controlRectangle = null;
+   o.construct      = MO.FGuiCanvasDesktop_construct;
+   o.processControl = MO.FGuiCanvasDesktop_processControl;
+   o.process        = MO.FGuiCanvasDesktop_process;
+   o.dispose        = MO.FGuiCanvasDesktop_dispose;
+   return o;
+}
+MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
+   var o = this;
+   o.__base.FGuiDesktop.construct.call(o);
+   o._controlRectangle = new MO.SRectangle();
+}
+MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(control){
+   var o = this;
+   o.__base.FGuiDesktop.process.call(o);
+   var graphic = o._canvas.context();
+   var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   event.graphic = graphic;
+   event.rectangle.reset();
+   control.paint(event);
+   MO.Memory.free(event);
+}
+MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
+   var o = this;
+   o.__base.FGuiDesktop.process.call(o);
+   var graphic = o._canvas.context();
+   graphic.clear();
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      if(control.visible()){
+         o.processControl(control);
+      }
+   }
+}
+MO.FGuiCanvasDesktop_dispose = function FGuiCanvasDesktop_dispose(){
+   var o = this;
+   o._controlRectangle = RObject.dispose(o._controlRectangle);
+   o.__base.FGuiDesktop.dispose.call(o);
+}
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
    o = MO.Class.inherits(this, o, MO.FGuiTransform);
    o._changeCd      = MO.Class.register(o, new MO.AGetSet('_changeCd'));

@@ -3721,7 +3721,7 @@ with(MO){
       o._scopeCd     = EScope.Local;
       o._active      = true;
       o._interval    = 5;
-      o._threads     = null;
+      o._threads     = RClass.register(o, new AGetter('_threads'));
       o._hWindow     = null;
       o._hIntervalId = null;
       o.ohInterval   = FThreadConsole_ohInterval;
@@ -3754,15 +3754,16 @@ with(MO){
    MO.FThreadConsole_process = function FThreadConsole_process(thread){
       var o = this;
       if(thread){
-         switch(thread.statusCd()){
+         var statusCd = thread.statusCd();
+         switch(statusCd){
             case EThreadStatus.Sleep:
                break;
             case EThreadStatus.Active:
                thread.process(o._interval);
                break;
             case EThreadStatus.Finish:
-               thread.dispose();
                o._threads.remove(thread);
+               thread.dispose();
                break;
          }
       }
@@ -3789,6 +3790,8 @@ with(MO){
          }
          o._hWindow = null;
       }
+      o._threads = RObject.dispose(o._threads);
+      o.__base.FConsole.dispose.call(o);
    }
 }
 MO.FTimeConsole = function FTimeConsole(o){

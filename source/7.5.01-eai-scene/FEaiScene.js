@@ -10,6 +10,8 @@ with(MO){
       o = RClass.inherits(this, o, FScene);
       //..........................................................
       // @attribute
+      o._optionDebug    = true;
+      // @attribute
       o._desktop        = RClass.register(o, new AGetter('_desktop'));
       // @attribute
       o._engineInfo     = null;
@@ -61,17 +63,22 @@ with(MO){
    MO.FEaiScene_setup = function FEaiScene_setup(){
       var o = this;
       o.__base.FScene.setup.call(o);
-      // 创建控件
-      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-      control.linkGraphicContext(o);
-      control.setContext(o.graphicContext());
-      control.location().set(10, 300);
-      control.build();
+      var activeDesktop = MO.Desktop.activeDesktop();
+      var canvas2d = activeDesktop.canvas2d();
       // 创建界面桌面
-      var desktop = o._desktop = RClass.create(FGuiDesktop);
+      var desktop = o._desktop = RClass.create(FGuiCanvasDesktop);
       desktop.linkGraphicContext(o);
+      desktop.setCanvas(canvas2d);
       desktop.setup();
-      desktop.register(control);
+      // 创建控件
+      if(o._optionDebug){
+         var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
+         control.linkGraphicContext(o);
+         control.setContext(o.graphicContext());
+         control.location().set(10, 300);
+         control.build();
+         desktop.register(control);
+      }
    }
 
    //==========================================================
@@ -85,9 +92,11 @@ with(MO){
       var stage = o._activeStage;
       MO.Eai.Canvas.selectStage(stage);
       var stage = o._activeStage;
-      var faceLayer = stage.faceLayer();
-      //faceLayer.push(o._engineInfo);
-      o._engineInfo.setStage(stage);
+      if(o._optionDebug){
+         var faceLayer = stage.faceLayer();
+         //faceLayer.push(o._engineInfo);
+         o._engineInfo.setStage(stage);
+      }
    }
 
    //==========================================================
@@ -99,8 +108,10 @@ with(MO){
       var o = this;
       o.__base.FScene.deactive.call(o);
       var stage = o._activeStage;
-      var faceLayer = stage.faceLayer();
-      //faceLayer.remove(o._engineInfo.renderable());
+      if(o._optionDebug){
+         var faceLayer = stage.faceLayer();
+         //faceLayer.remove(o._engineInfo.renderable());
+      }
       MO.Eai.Canvas.selectStage(null);
    }
 

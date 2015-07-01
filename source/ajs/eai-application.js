@@ -117,9 +117,11 @@ with(MO){
       var o = this;
       o.__base.FEaiApplication.setup.call(o, hPanel);
       o._hPanel = hPanel;
-      var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
-      canvas.build(hPanel);
-      canvas.setPanel(hPanel);
+      var desktop = MO.RClass.create(MO.FEaiChartDesktop);
+      desktop.build(hPanel);
+      MO.Desktop.setActiveDesktop(desktop);
+      var canvas3d = desktop.canvas3d();
+      var canvas = MO.Eai.Canvas = o._canvas = canvas3d;
       o.linkGraphicContext(canvas);
       var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
       chapter.linkGraphicContext(o);
@@ -164,28 +166,28 @@ with(MO){
       o.__base.FEaiCanvas.dispose.call(o);
    }
 }
-MO.FEaiDesktop = function FEaiDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FDesktop);
+MO.FEaiChartDesktop = function FEaiChartDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
-   o.onResize  = MO.FEaiDesktop_onResize;
-   o.construct = MO.FEaiDesktop_construct;
-   o.build     = MO.FEaiDesktop_build;
-   o.dispose   = MO.FEaiDesktop_dispose;
+   o.onResize  = MO.FEaiChartDesktop_onResize;
+   o.construct = MO.FEaiChartDesktop_construct;
+   o.build     = MO.FEaiChartDesktop_build;
+   o.dispose   = MO.FEaiChartDesktop_dispose;
    return o;
 }
-MO.FEaiDesktop_onResize = function FEaiDesktop_onResize(p){
+MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(p){
    var o = this;
 }
-MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
+MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
    var o = this;
-   o.__base.FDesktop.construct.call(o);
+   o.__base.FEaiDesktop.construct.call(o);
 }
-MO.FEaiDesktop_build = function FEaiDesktop_build(hPanel){
+MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
-   o.__base.FDesktop.build.call(o, hPanel);
+   o.__base.FEaiDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    var size = canvas3d.size();
@@ -197,9 +199,23 @@ MO.FEaiDesktop_build = function FEaiDesktop_build(hPanel){
    canvas2d.setPanel(hPanel);
    var hCanvas2d = canvas2d._hCanvas;
    hCanvas2d.style.position = 'absolute';
-   hCanvas2d.style.left = hCanvas3d.offsetLeft + 'px';
-   hCanvas2d.style.top = hCanvas3d.offsetTop + 'px';
+   hCanvas2d.style.left = '0px';
+   hCanvas2d.style.top = '0px';
    o.canvasRegister(canvas2d);
+}
+MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
+   var o = this;
+   o.__base.FEaiDesktop.dispose.call(o);
+}
+MO.FEaiDesktop = function FEaiDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o.construct = MO.FEaiDesktop_construct;
+   o.dispose   = MO.FEaiDesktop_dispose;
+   return o;
+}
+MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
 }
 MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
    var o = this;
