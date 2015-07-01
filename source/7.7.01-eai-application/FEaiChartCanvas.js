@@ -9,6 +9,8 @@ with(MO){
       o = RClass.inherits(this, o, FEaiCanvas);
       //..........................................................
       // @attribute
+      o._optionAlpha     = true;
+      o._optionAntialias = false;
       o._capturePosition = null;
       o._cameraPosition  = null;
       //..........................................................

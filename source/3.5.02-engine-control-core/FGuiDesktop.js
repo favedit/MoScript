@@ -23,6 +23,10 @@ with(MO){
       // @method
       o.setup             = FGuiDesktop_setup;
       // @method
+      o.setVisible        = FGuiDesktop_setVisible;
+      o.show              = FGuiDesktop_show;
+      o.hide              = FGuiDesktop_hide;
+      // @method
       o.processResize     = FGuiDesktop_processResize;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
@@ -88,6 +92,40 @@ with(MO){
       // 注册效果器
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+
+   //==========================================================
+   // <T>设置可见性。</T>
+   //
+   // @method
+   // @param value:Boolean 可见性
+   //==========================================================
+   MO.FGuiDesktop_setVisible = function FGuiDesktop_setVisible(value){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.setVisible(value);
+      }
+   }
+
+   //==========================================================
+   // <T>显示处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiDesktop_show = function FGuiDesktop_show(){
+      this.setVisible(true);
+   }
+
+   //==========================================================
+   // <T>隐藏处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiDesktop_hide = function FGuiDesktop_hide(){
+      this.setVisible(false);
    }
 
    //==========================================================

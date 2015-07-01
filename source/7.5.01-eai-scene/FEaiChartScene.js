@@ -157,13 +157,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o.fixMatrix(display.matrix());
    stage.borderLayer().pushDisplay(display);
    // 创建背景
-   var control = o._background = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.size().assign(MO.Eai.Canvas.screenSize());
-   control.size().set(1920, 1080);
-   control.setBackResource('url:/script/ars/eai/background.png');
-   control.psInitialize();
-   control.build();
+   //var control = o._background = MO.Class.create(MO.FGuiPicture);
+   //control.linkGraphicContext(o);
+   //control.size().assign(MO.Eai.Canvas.screenSize());
+   //control.size().set(1920, 1080);
+   //control.setBackResource('url:/script/ars/eai/background.png');
+   //control.psInitialize();
+   //control.build();
    //control.renderable().setOptionFull(true);
    //o._desktop.register(control);
    //stage.groundLayer().push(control);
@@ -217,7 +217,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //..........................................................
    // 显示总计
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(650, 20);
+   frame.setLocation(650, 0);
    //stage.faceLayer().push(frame);
    o._desktop.register(frame);
    //..........................................................

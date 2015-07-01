@@ -1645,7 +1645,6 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
-      renderable.setMaterialReference(o._mapEntity);
    }
    MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
       var o = this;
@@ -1801,7 +1800,7 @@ with (MO) {
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
       var middle = bottom - 30;
@@ -3331,13 +3330,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplay);
    o.fixMatrix(display.matrix());
    stage.borderLayer().pushDisplay(display);
-   var control = o._background = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.size().assign(MO.Eai.Canvas.screenSize());
-   control.size().set(1920, 1080);
-   control.setBackResource('url:/script/ars/eai/background.png');
-   control.psInitialize();
-   control.build();
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
@@ -3371,7 +3363,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    frame.setLocation(10, 10);
    o._desktop.register(frame);
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(650, 20);
+   frame.setLocation(650, 0);
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
@@ -3466,6 +3458,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusStart       = false;
    o._statusLayerCount  = 150;
    o._statusLayerLevel  = 150;
+   o._statusDesktopShow = false;
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
@@ -3516,12 +3509,16 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
-   timeline.setLocation(30, 30);
-   timeline.setSize(1300, 350);
+   timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+   timeline.setLeft(20);
+   timeline.setBottom(30);
+   timeline.setRight(640);
+   timeline.setHeight(250);
    timeline.sync();
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
+   o._desktop.hide();
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
@@ -3577,14 +3574,22 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
             if(hLoading){
                document.body.removeChild(hLoading);
             }
-            var hTable = document.getElementById('id_table');
-            hTable.style.display = '';
             o._playing = true;
             o._statusStart = true;
          }
       }
    }
    if (o._playing) {
+      if(!o._mapEntity._countryEntity.introAnimeDone()){
+         o._mapEntity._countryEntity.process();
+         return;
+      }
+      if(!o._statusDesktopShow){
+         var hTable = document.getElementById('id_table');
+         hTable.style.display = '';
+         o._desktop.show();
+         o._statusDesktopShow = true;
+      }
       var currentTick = MO.Timer.current();
       if (currentTick - o._24HLastTick > o._24HTrendInterval) {
          o._timeline.sync();
@@ -3664,7 +3669,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 with(MO){
    MO.FEaiScene = function FEaiScene(o){
       o = RClass.inherits(this, o, FScene);
-      o._optionDebug    = true;
+      o._optionDebug    = false;
       o._desktop        = RClass.register(o, new AGetter('_desktop'));
       o._engineInfo     = null;
       o.onProcess       = MO.FEaiScene_onProcess;
@@ -3979,6 +3984,8 @@ with(MO){
 with(MO){
    MO.FEaiChartCanvas = function FEaiChartCanvas(o){
       o = RClass.inherits(this, o, FEaiCanvas);
+      o._optionAlpha     = true;
+      o._optionAntialias = false;
       o._capturePosition = null;
       o._cameraPosition  = null;
       o.construct        = FEaiChartCanvas_construct;

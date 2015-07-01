@@ -10,7 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FScene);
       //..........................................................
       // @attribute
-      o._optionDebug    = true;
+      o._optionDebug    = false;
       // @attribute
       o._desktop        = RClass.register(o, new AGetter('_desktop'));
       // @attribute

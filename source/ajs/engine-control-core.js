@@ -126,6 +126,9 @@ with(MO){
       o.unregister        = FGuiDesktop_unregister;
       o.transformStart    = FGuiDesktop_transformStart;
       o.setup             = FGuiDesktop_setup;
+      o.setVisible        = FGuiDesktop_setVisible;
+      o.show              = FGuiDesktop_show;
+      o.hide              = FGuiDesktop_hide;
       o.processResize     = FGuiDesktop_processResize;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
@@ -155,6 +158,21 @@ with(MO){
       var o = this;
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+   MO.FGuiDesktop_setVisible = function FGuiDesktop_setVisible(value){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.setVisible(value);
+      }
+   }
+   MO.FGuiDesktop_show = function FGuiDesktop_show(){
+      this.setVisible(true);
+   }
+   MO.FGuiDesktop_hide = function FGuiDesktop_hide(){
+      this.setVisible(false);
    }
    MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
       var o = this;

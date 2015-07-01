@@ -103,10 +103,8 @@ with(MO){
       if(hCanvas.getContext){
          // 设置参数
          var parameters = new Object();
-         //parameters.alpha = o._optionAlpha;
-         //parameters.antialias = o._optionAntialias;
-         parameters.alpha = false;
-         parameters.antialias = false;
+         parameters.alpha = o._optionAlpha;
+         parameters.antialias = o._optionAntialias;
          //parameters.premultipliedAlpha = false;
          // 初始化对象
          var handle = hCanvas.getContext('experimental-webgl2', parameters);

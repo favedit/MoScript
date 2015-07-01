@@ -29,6 +29,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusStart       = false;
    o._statusLayerCount  = 150;
    o._statusLayerLevel  = 150;
+   o._statusDesktopShow = false;
    // @attribute
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
@@ -115,14 +116,18 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
-   //timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   //timeline.setWidth(MO.Eai.Canvas.logicSize().width - 580);
-   timeline.setLocation(30, 30);
-   timeline.setSize(1300, 350);
+   timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+   timeline.setLeft(20);
+   timeline.setBottom(30);
+   timeline.setRight(640);
+   timeline.setHeight(250);
    timeline.sync();
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
+   //..........................................................
+   // 隐藏全部界面
+   o._desktop.hide();
    //faceLayer.push(timeline);
 }
 
@@ -209,8 +214,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
             if(hLoading){
                document.body.removeChild(hLoading);
             }
-            var hTable = document.getElementById('id_table');
-            hTable.style.display = '';
             o._playing = true;
             o._statusStart = true;
          }
@@ -218,6 +221,21 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    }
    // 重复播放
    if (o._playing) {
+      if(!o._mapEntity._countryEntity.introAnimeDone()){
+         o._mapEntity._countryEntity.process();
+         return;
+      }
+      //..........................................................
+      // 隐藏全部界面
+      if(!o._statusDesktopShow){
+         // 显示网格
+         var hTable = document.getElementById('id_table');
+         hTable.style.display = '';
+         // 显示桌面
+         o._desktop.show();
+         o._statusDesktopShow = true;
+      }
+      //..........................................................
       var currentTick = MO.Timer.current();
       if (currentTick - o._24HLastTick > o._24HTrendInterval) {
          o._timeline.sync();

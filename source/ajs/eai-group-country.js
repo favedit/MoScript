@@ -856,7 +856,6 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
-      renderable.setMaterialReference(o._mapEntity);
    }
    MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
       var o = this;
@@ -1012,7 +1011,7 @@ with (MO) {
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
       var middle = bottom - 30;

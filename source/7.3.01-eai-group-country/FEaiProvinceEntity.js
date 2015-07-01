@@ -145,7 +145,7 @@ with(MO){
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
       renderable.material().info().optionDouble = true;
-      renderable.setMaterialReference(o._mapEntity);
+      //renderable.setMaterialReference(o._mapEntity);
    }
 
    //==========================================================

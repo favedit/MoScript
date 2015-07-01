@@ -11,6 +11,8 @@ with(MO){
       //..........................................................
       // @property
       o._location   = RClass.register(o, [new APtyPoint2('_location'), new AGetter('_location')]);
+      o._right      = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')], 0);
+      o._bottom     = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')], 0);
       o._size       = RClass.register(o, [new APtySize2('_size'), new AGetter('_size')]);
       o._scale      = RClass.register(o, [new APtySize2('_scale'), new AGetter('_scale')]);
       //..........................................................

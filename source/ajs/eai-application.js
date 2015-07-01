@@ -143,6 +143,8 @@ with(MO){
 with(MO){
    MO.FEaiChartCanvas = function FEaiChartCanvas(o){
       o = RClass.inherits(this, o, FEaiCanvas);
+      o._optionAlpha     = true;
+      o._optionAntialias = false;
       o._capturePosition = null;
       o._cameraPosition  = null;
       o.construct        = FEaiChartCanvas_construct;

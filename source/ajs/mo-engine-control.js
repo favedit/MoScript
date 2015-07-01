@@ -199,6 +199,15 @@ with(MO){
       return 'linker=' + o._linker + ',value=' + o._value;
    }
 }
+MO.EGuiAnchor = new function EGuiAnchor(){
+   var o = this;
+   o.None   = 0;
+   o.Left   = 1;
+   o.Top    = 2;
+   o.Right  = 4;
+   o.Bottom = 8;
+   return o;
+}
 MO.EGuiDock = new function EGuiDock(){
    var o = this;
    o.None        = 'None';
@@ -310,6 +319,8 @@ with(MO){
    MO.MGuiSize = function MGuiSize(o){
       o = RClass.inherits(this, o);
       o._location   = RClass.register(o, [new APtyPoint2('_location'), new AGetter('_location')]);
+      o._right      = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')], 0);
+      o._bottom     = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')], 0);
       o._size       = RClass.register(o, [new APtySize2('_size'), new AGetter('_size')]);
       o._scale      = RClass.register(o, [new APtySize2('_scale'), new AGetter('_scale')]);
       o.construct   = MGuiSize_construct;
@@ -640,6 +651,7 @@ with(MO){
    MO.FGuiControl = function FGuiControl(o){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MListener, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
       o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+      o._anchorCd               = MO.RClass.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], EGuiAnchor.None);
       o._dockCd                 = MO.RClass.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], EGuiDock.LeftTop);
       o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
       o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
@@ -876,10 +888,13 @@ with(MO){
          case MO.EGuiDock.LeftTop:
             break;
          case MO.EGuiDock.Bottom:
-            top = parentRectangle.top + parentRectangle.height - height - location.y;
+            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
             break;
          default:
             throw new TError(o, 'Invalid dockcd.');
+      }
+      if(o._anchorCd & EGuiAnchor.Right){
+         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0);
       }
       clientRectangle.set(left, top, width, height);
       rectangle.assign(clientRectangle);
@@ -1335,6 +1350,9 @@ with(MO){
       o.unregister        = FGuiDesktop_unregister;
       o.transformStart    = FGuiDesktop_transformStart;
       o.setup             = FGuiDesktop_setup;
+      o.setVisible        = FGuiDesktop_setVisible;
+      o.show              = FGuiDesktop_show;
+      o.hide              = FGuiDesktop_hide;
       o.processResize     = FGuiDesktop_processResize;
       o.processEvent      = FGuiDesktop_processEvent;
       o.processTransforms = FGuiDesktop_processTransforms;
@@ -1364,6 +1382,21 @@ with(MO){
       var o = this;
       var effectConsole = RConsole.find(FG3dEffectConsole);
       effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+   MO.FGuiDesktop_setVisible = function FGuiDesktop_setVisible(value){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.setVisible(value);
+      }
+   }
+   MO.FGuiDesktop_show = function FGuiDesktop_show(){
+      this.setVisible(true);
+   }
+   MO.FGuiDesktop_hide = function FGuiDesktop_hide(){
+      this.setVisible(false);
    }
    MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
       var o = this;

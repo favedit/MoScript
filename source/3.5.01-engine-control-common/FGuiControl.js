@@ -11,6 +11,7 @@ with(MO){
       //..........................................................
       // @property
       o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+      o._anchorCd               = MO.RClass.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], EGuiAnchor.None);
       o._dockCd                 = MO.RClass.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], EGuiDock.LeftTop);
       o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
       o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
@@ -407,10 +408,14 @@ with(MO){
          case MO.EGuiDock.LeftTop:
             break;
          case MO.EGuiDock.Bottom:
-            top = parentRectangle.top + parentRectangle.height - height - location.y;
+            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
             break;
          default:
             throw new TError(o, 'Invalid dockcd.');
+      }
+      // 右边固定
+      if(o._anchorCd & EGuiAnchor.Right){
+         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0);
       }
       //..........................................................
       // 计算范围

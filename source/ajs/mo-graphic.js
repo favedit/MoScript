@@ -3996,8 +3996,8 @@ with(MO){
       o._hCanvas = hCanvas;
       if(hCanvas.getContext){
          var parameters = new Object();
-         parameters.alpha = false;
-         parameters.antialias = false;
+         parameters.alpha = o._optionAlpha;
+         parameters.antialias = o._optionAntialias;
          var handle = hCanvas.getContext('experimental-webgl2', parameters);
          if(!handle){
             handle = hCanvas.getContext('experimental-webgl', parameters);
