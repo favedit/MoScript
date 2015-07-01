@@ -6,11 +6,11 @@ with (MO) {
    // @author sunpeng
    // @version 150618
    //==========================================================
-   MO.FGuiChartTimeline = function FGuiChartTimeline(o) {
+   MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
       o = RClass.inherits(this, o, FGuiTimeline);
       //..........................................................
       // @method
-      o.onPaintBegin = FGuiChartTimeline_onPaintBegin;
+      o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
       return o;
    }
 
@@ -19,7 +19,7 @@ with (MO) {
    //
    // @method
    //==========================================================
-   MO.FGuiChartTimeline_onPaintBegin = function FGuiChartTimeline_onPaintBegin(event) {
+   MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(event) {
       var o = this;
       o.__base.FGuiTimeline.onPaintBegin.call(o, event);
       var graphic = event.graphic;

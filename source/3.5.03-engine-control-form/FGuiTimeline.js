@@ -117,11 +117,11 @@ with (MO) {
             break;
          case EGuiTimeUnit.Minute:
             startTime.addMseconds(1000 * 60);
-            startTime.parseAuto(startTime.format('YYYYMMDDHH24MI'));
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
             break;
          case EGuiTimeUnit.Hour:
             startTime.addMseconds(1000 * 60 * 60);
-            startTime.parseAuto(startTime.format('YYYYMMDDHH24'));
+            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
             break;
          case EGuiTimeUnit.Day:
             startTime.addDay(1);

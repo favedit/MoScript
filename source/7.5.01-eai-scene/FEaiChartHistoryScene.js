@@ -207,7 +207,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.setName('Timeline');
    //timeline.setDockCd(MO.EGuiDock.Fill);
    timeline.setLeft(50);
