@@ -242,6 +242,7 @@ with(MO){
       renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
       renderable.indexBuffer().setLineWidth(1);
       renderable.indexBuffer().upload(borderData, borderIndex);
+      //renderable.setMaterialReference();
    }
 
    //==========================================================

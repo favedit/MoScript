@@ -35,9 +35,9 @@ MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource
 // @method
 // @param resource:FResource 资源
 //==========================================================
-MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(){
    var o = this;
-   o.loadResource(resource);
+   o.loadResource(o._resource);
 }
 
 //==========================================================

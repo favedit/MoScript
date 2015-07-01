@@ -11,13 +11,10 @@ with(MO){
       // @attribute
       o._dataReady       = false;
       o._ready           = false;
-      o._resource        = null;
       // @attribute
       o._sprites         = RClass.register(o, new AGetter('_sprites'));
       o._skeletons       = RClass.register(o, new AGetter('_skeletons'));
       o._animations      = RClass.register(o, new AGetter('_animations'));
-      // @attribute
-      o._resource        = RClass.register(o, new AGetSet('_resource'));
       //..........................................................
       // @method
       o.construct        = FE3dTemplate_construct;
@@ -286,11 +283,12 @@ with(MO){
    //==========================================================
    MO.FE3dTemplate_reloadResource = function FE3dTemplate_reloadResource(){
       var o = this;
-      var s = o._sprites;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.getAt(i).reloadResource();
+      var sprites = o._sprites;
+      if(sprites){
+         var count = sprites.count();
+         for(var i = 0; i < count; i++){
+            var sprite = sprites.at(i);
+            sprite.reloadResource();
          }
       }
    }

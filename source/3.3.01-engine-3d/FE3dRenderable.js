@@ -185,6 +185,7 @@ with(MO){
       if(!textures){
          textures = o._textures = new TDictionary();
       }
+      // 增加纹理
       if(code != null){
          textures.set(code, texture);
       }else if(texture._name){

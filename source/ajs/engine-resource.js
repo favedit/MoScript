@@ -9,9 +9,9 @@ MO.MLinkerResource = function MLinkerResource(o){
 MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }
-MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(){
    var o = this;
-   o.loadResource(resource);
+   o.loadResource(o._resource);
 }
 MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    var o = this;

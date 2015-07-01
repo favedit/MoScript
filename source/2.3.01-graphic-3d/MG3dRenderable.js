@@ -115,16 +115,16 @@ with(MO){
    // <T>选中一个信息。</T>
    //
    // @method
-   // @param p:name:String 名称
+   // @param code:String 名称
    // @return SG3dRenderableInfo 信息
    //==========================================================
-   MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(p){
+   MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(code){
       var o = this;
       var infos = o.infos();
-      var info = infos.get(p);
+      var info = infos.get(code);
       if(!info){
          info = new SG3dRenderableInfo();
-         infos.set(p, info)
+         infos.set(code, info)
       }
       o._activeInfo = info;
       return info;
@@ -139,8 +139,10 @@ with(MO){
       var o = this;
       var infos = o._infos;
       if(infos){
-         for(var i = infos.count() - 1; i >= 0; i--){
-            infos.at(i).reset();
+         var count = infos.count();
+         for(var i = 0; i < count; i++){
+            var info = infos.at(i);
+            info.reset();
          }
       }
    }

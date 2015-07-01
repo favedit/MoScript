@@ -32,50 +32,50 @@
    //==========================================================
    MO.FG3dTechniquePass_setup = function FG3dTechniquePass_setup(){
       var o = this;
-      var m = o._materialMap = RClass.create(FG3dMaterialMap);
-      m.linkGraphicContext(o);
-      m.setup(EG3dMaterialMap.Count, 32);
+      var map = o._materialMap = RClass.create(FG3dMaterialMap);
+      map.linkGraphicContext(o);
+      map.setup(EG3dMaterialMap.Count, 32);
    }
 
    //==========================================================
    // <T>排序渲染对象处理。</T>
    //
    // @method
-   // @param s:source:FG3dRenderable 区域
-   // @param t:target:FG3dRenderable 目标
+   // @param source:FG3dRenderable 区域
+   // @param target:FG3dRenderable 目标
    //==========================================================
-   MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderables(s, t){
-      var ms = s.material().info();
-      var mt = t.material().info();
+   MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderables(source, target){
+      var sourceMaterial = source.material().info();
+      var targetMaterial = target.material().info();
       // 按照效果排序
-      if(ms.optionAlpha && mt.optionAlpha){
-         var se = s.activeEffect();
-         var te = t.activeEffect();
-         if(se == te){
+      if(sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
+         var sourceEffect = source.activeEffect();
+         var targetEffect = target.activeEffect();
+         if(sourceEffect == targetEffect){
             // 按照材质排序
-            sm = s._materialReference;
-            tm = t._materialReference;
-            if(sm && tm){
-               return sm.hashCode() - tm.hashCode();
+            var sourceReference = source.materialReference();
+            var targetReference = target.materialReference();
+            if(sourceReference && targetReference){
+               return sourceReference.hashCode() - targetReference.hashCode();
             }
          }
-         return se.hashCode() - te.hashCode();
-      }else if(ms.optionAlpha && !mt.optionAlpha){
+         return sourceEffect.hashCode() - targetEffect.hashCode();
+      }else if(sourceMaterial.optionAlpha && !targetMaterial.optionAlpha){
          return 1;
-      }else if(!ms.optionAlpha && mt.optionAlpha){
+      }else if(!sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
          return -1;
       }else{
-         var se = s.activeEffect();
-         var te = t.activeEffect();
-         if(se == te){
+         var sourceEffect = source.activeEffect();
+         var targetEffect = target.activeEffect();
+         if(sourceEffect == targetEffect){
             // 按照材质排序
-            sm = s._materialReference;
-            tm = t._materialReference;
-            if(sm && tm){
-               return sm.hashCode() - tm.hashCode();
+            var sourceReference = source.materialReference();
+            var targetReference = target.materialReference();
+            if(sourceReference && targetReference){
+               return sourceReference.hashCode() - targetReference.hashCode();
             }
          }
-         return se.hashCode() - te.hashCode();
+         return sourceEffect.hashCode() - targetEffect.hashCode();
       }
    }
 
@@ -83,17 +83,19 @@
    // <T>激活效果器。</T>
    //
    // @method
-   // @param p:region:FG3dRetion 区域
+   // @param region:FG3dRetion 区域
+   // @param renderables:TObjects 渲染集合
    //==========================================================
-   MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(p, rs){
+   MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(region, renderables){
       var o = this;
-      var sn = p.spaceName();
+      var spaceName = region.spaceName();
       // 关联渲染器
-      for(var i = rs.count() - 1; i >= 0; i--){
-         var r = rs.get(i);
-         var f = r.selectInfo(sn);
-         if(!f.effect){
-            f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, p, r);
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         var info = renderable.selectInfo(spaceName);
+         if(!info.effect){
+            info.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, region, renderable);
          }
       }
    }
@@ -113,12 +115,13 @@
          return;
       }
       //..........................................................
-      region._statistics._frameDrawSort.begin();
+      var statistics = region._statistics;
+      statistics._frameDrawSort.begin();
       // 激活效果器
       o.activeEffects(region, renderables);
       // 控件排序
       renderables.sort(o.sortRenderables);
-      region._statistics._frameDrawSort.end();
+      statistics._frameDrawSort.end();
       //..........................................................
       // 材质映射
       var capability = o._graphicContext.capability();

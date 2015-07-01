@@ -48,6 +48,7 @@ with(MO){
       o.reset                       = MG3dRegion_reset;
       o.calculate                   = MG3dRegion_calculate;
       o.update                      = MG3dRegion_update;
+      // @method
       o.dispose                     = MG3dRegion_dispose;
       return o;
    }
@@ -92,7 +93,7 @@ with(MO){
    // <T>设置技术过程。</T>
    //
    // @method
-   // @param p:pass:FG3dTechniquePass 技术过程
+   // @param pass:FG3dTechniquePass 技术过程
    //==========================================================
    MO.MG3dRegion_setTechniquePass = function MG3dRegion_setTechniquePass(p, f){
       var o = this;

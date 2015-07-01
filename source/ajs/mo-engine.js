@@ -662,9 +662,9 @@ MO.MLinkerResource = function MLinkerResource(o){
 MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }
-MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(){
    var o = this;
-   o.loadResource(resource);
+   o.loadResource(o._resource);
 }
 MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    var o = this;
@@ -9962,16 +9962,14 @@ with(MO){
    MO.FE3dSpace = function FE3dSpace(o){
       o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
       o._dataReady            = false;
-      o._resource             = null;
-      o._materials            = null;
+      o._resource             = RClass.register(o, new AGetSet('_resource'));
+      o._materials            = RClass.register(o, new AGetter('_materials'));
       o._dirty                = false;
       o.onProcess             = FE3dSpace_onProcess;
       o.construct             = FE3dSpace_construct;
       o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
       o.createRegion          = FE3dSpace_createRegion;
-      o.resource              = FE3dSpace_resource;
       o.findMaterial          = FE3dSpace_findMaterial;
-      o.materials             = FE3dSpace_materials;
       o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
       o.loadRegionResource    = FE3dSpace_loadRegionResource;
       o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
@@ -9988,10 +9986,11 @@ with(MO){
       var o = this;
       o.__base.FE3dStage.onProcess.call(o);
       if(o._dirty){
-         var s = o._region.allRenderables();
-         for(var i = s.count() - 1; i >= 0; i--){
-            var r = s.getAt(i);
-            r.resetInfos();
+         var renderables = o._region.allRenderables();
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            renderable.resetInfos();
          }
          o._dirty = false;
       }
@@ -10009,18 +10008,12 @@ with(MO){
    MO.FE3dSpace_createRegion = function FE3dSpace_createRegion(){
       return RClass.create(FE3dRegion);
    }
-   MO.FE3dSpace_resource = function FE3dSpace_resource(p){
-      return this._resource;
-   }
    MO.FE3dSpace_findMaterial = function FE3dSpace_findMaterial(guid){
       return this._materials.get(guid);
    }
-   MO.FE3dSpace_materials = function FE3dSpace_materials(p){
-      return this._materials;
-   }
-   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(p){
+   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(resource){
       var o = this;
-      o._technique._resource = p;
+      o._technique._resource = resource;
    }
    MO.FE3dSpace_loadRegionResource = function FE3dSpace_loadRegionResource(p){
       var o = this;
@@ -10389,11 +10382,9 @@ with(MO){
       o = RClass.inherits(this, o, FE3dSpace, MGraphicObject, MListenerLoad);
       o._dataReady       = false;
       o._ready           = false;
-      o._resource        = null;
       o._sprites         = RClass.register(o, new AGetter('_sprites'));
       o._skeletons       = RClass.register(o, new AGetter('_skeletons'));
       o._animations      = RClass.register(o, new AGetter('_animations'));
-      o._resource        = RClass.register(o, new AGetSet('_resource'));
       o.construct        = FE3dTemplate_construct;
       o.testReady        = FE3dTemplate_testReady;
       o.sprite           = FE3dTemplate_sprite;
@@ -10540,11 +10531,12 @@ with(MO){
    }
    MO.FE3dTemplate_reloadResource = function FE3dTemplate_reloadResource(){
       var o = this;
-      var s = o._sprites;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.getAt(i).reloadResource();
+      var sprites = o._sprites;
+      if(sprites){
+         var count = sprites.count();
+         for(var i = 0; i < count; i++){
+            var sprite = sprites.at(i);
+            sprite.reloadResource();
          }
       }
    }

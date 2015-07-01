@@ -10,8 +10,8 @@ with(MO){
       //..........................................................
       // @attribute
       o._dataReady            = false;
-      o._resource             = null;
-      o._materials            = null;
+      o._resource             = RClass.register(o, new AGetSet('_resource'));
+      o._materials            = RClass.register(o, new AGetter('_materials'));
       o._dirty                = false;
       //..........................................................
       // @event
@@ -23,9 +23,7 @@ with(MO){
       o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
       o.createRegion          = FE3dSpace_createRegion;
       // @method
-      o.resource              = FE3dSpace_resource;
       o.findMaterial          = FE3dSpace_findMaterial;
-      o.materials             = FE3dSpace_materials;
       // @method
       o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
       o.loadRegionResource    = FE3dSpace_loadRegionResource;
@@ -53,10 +51,11 @@ with(MO){
       //..........................................................
       // 脏处理
       if(o._dirty){
-         var s = o._region.allRenderables();
-         for(var i = s.count() - 1; i >= 0; i--){
-            var r = s.getAt(i);
-            r.resetInfos();
+         var renderables = o._region.allRenderables();
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            renderable.resetInfos();
          }
          o._dirty = false;
       }
@@ -82,6 +81,7 @@ with(MO){
    MO.FE3dSpace_linkGraphicContext = function FE3dSpace_linkGraphicContext(context){
       var o = this;
       o.__base.FE3dStage.linkGraphicContext.call(o, context);
+      // 关联环境
       o._region.linkGraphicContext(context);
    }
 
@@ -96,16 +96,6 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得资源。</T>
-   //
-   // @method
-   // @param FE3sScene 资源
-   //==========================================================
-   MO.FE3dSpace_resource = function FE3dSpace_resource(p){
-      return this._resource;
-   }
-
-   //==========================================================
    // <T>根据唯一代码查找材质。</T>
    //
    // @method
@@ -116,24 +106,14 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得材质集合。</T>
-   //
-   // @method
-   // @param FE3rMaterial 材质集合
-   //==========================================================
-   MO.FE3dSpace_materials = function FE3dSpace_materials(p){
-      return this._materials;
-   }
-
-   //==========================================================
    // <T>加载技术资源。</T>
    //
    // @method
-   // @param p:resource:FE3sSceneTechnique 技术资源
+   // @param resource:FE3sSceneTechnique 技术资源
    //==========================================================
-   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(p){
+   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(resource){
       var o = this;
-      o._technique._resource = p;
+      o._technique._resource = resource;
    }
 
    //==========================================================

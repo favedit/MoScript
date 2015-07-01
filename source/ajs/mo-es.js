@@ -4529,13 +4529,13 @@ with(MO){
       }
       return infos;
    }
-   MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(p){
+   MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(code){
       var o = this;
       var infos = o.infos();
-      var info = infos.get(p);
+      var info = infos.get(code);
       if(!info){
          info = new SG3dRenderableInfo();
-         infos.set(p, info)
+         infos.set(code, info)
       }
       o._activeInfo = info;
       return info;
@@ -4544,8 +4544,10 @@ with(MO){
       var o = this;
       var infos = o._infos;
       if(infos){
-         for(var i = infos.count() - 1; i >= 0; i--){
-            infos.at(i).reset();
+         var count = infos.count();
+         for(var i = 0; i < count; i++){
+            var info = infos.at(i);
+            info.reset();
          }
       }
    }
@@ -6086,49 +6088,50 @@ with(MO){
    }
    MO.FG3dTechniquePass_setup = function FG3dTechniquePass_setup(){
       var o = this;
-      var m = o._materialMap = RClass.create(FG3dMaterialMap);
-      m.linkGraphicContext(o);
-      m.setup(EG3dMaterialMap.Count, 32);
+      var map = o._materialMap = RClass.create(FG3dMaterialMap);
+      map.linkGraphicContext(o);
+      map.setup(EG3dMaterialMap.Count, 32);
    }
-   MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderables(s, t){
-      var ms = s.material().info();
-      var mt = t.material().info();
-      if(ms.optionAlpha && mt.optionAlpha){
-         var se = s.activeEffect();
-         var te = t.activeEffect();
-         if(se == te){
-            sm = s._materialReference;
-            tm = t._materialReference;
-            if(sm && tm){
-               return sm.hashCode() - tm.hashCode();
+   MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderables(source, target){
+      var sourceMaterial = source.material().info();
+      var targetMaterial = target.material().info();
+      if(sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
+         var sourceEffect = source.activeEffect();
+         var targetEffect = target.activeEffect();
+         if(sourceEffect == targetEffect){
+            var sourceReference = source.materialReference();
+            var targetReference = target.materialReference();
+            if(sourceReference && targetReference){
+               return sourceReference.hashCode() - targetReference.hashCode();
             }
          }
-         return se.hashCode() - te.hashCode();
-      }else if(ms.optionAlpha && !mt.optionAlpha){
+         return sourceEffect.hashCode() - targetEffect.hashCode();
+      }else if(sourceMaterial.optionAlpha && !targetMaterial.optionAlpha){
          return 1;
-      }else if(!ms.optionAlpha && mt.optionAlpha){
+      }else if(!sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
          return -1;
       }else{
-         var se = s.activeEffect();
-         var te = t.activeEffect();
-         if(se == te){
-            sm = s._materialReference;
-            tm = t._materialReference;
-            if(sm && tm){
-               return sm.hashCode() - tm.hashCode();
+         var sourceEffect = source.activeEffect();
+         var targetEffect = target.activeEffect();
+         if(sourceEffect == targetEffect){
+            var sourceReference = source.materialReference();
+            var targetReference = target.materialReference();
+            if(sourceReference && targetReference){
+               return sourceReference.hashCode() - targetReference.hashCode();
             }
          }
-         return se.hashCode() - te.hashCode();
+         return sourceEffect.hashCode() - targetEffect.hashCode();
       }
    }
-   MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(p, rs){
+   MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(region, renderables){
       var o = this;
-      var sn = p.spaceName();
-      for(var i = rs.count() - 1; i >= 0; i--){
-         var r = rs.get(i);
-         var f = r.selectInfo(sn);
-         if(!f.effect){
-            f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, p, r);
+      var spaceName = region.spaceName();
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         var info = renderable.selectInfo(spaceName);
+         if(!info.effect){
+            info.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, region, renderable);
          }
       }
    }
@@ -6139,10 +6142,11 @@ with(MO){
       if(count == 0){
          return;
       }
-      region._statistics._frameDrawSort.begin();
+      var statistics = region._statistics;
+      statistics._frameDrawSort.begin();
       o.activeEffects(region, renderables);
       renderables.sort(o.sortRenderables);
-      region._statistics._frameDrawSort.end();
+      statistics._frameDrawSort.end();
       var capability = o._graphicContext.capability();
       if(capability.optionMaterialMap){
          var mm = o._materialMap;
@@ -10100,9 +10104,9 @@ MO.MLinkerResource = function MLinkerResource(o){
 MO.MLinkerResource_loadResource = function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }
-MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(resource){
+MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(){
    var o = this;
-   o.loadResource(resource);
+   o.loadResource(o._resource);
 }
 MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    var o = this;
@@ -19400,16 +19404,14 @@ with(MO){
    MO.FE3dSpace = function FE3dSpace(o){
       o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
       o._dataReady            = false;
-      o._resource             = null;
-      o._materials            = null;
+      o._resource             = RClass.register(o, new AGetSet('_resource'));
+      o._materials            = RClass.register(o, new AGetter('_materials'));
       o._dirty                = false;
       o.onProcess             = FE3dSpace_onProcess;
       o.construct             = FE3dSpace_construct;
       o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
       o.createRegion          = FE3dSpace_createRegion;
-      o.resource              = FE3dSpace_resource;
       o.findMaterial          = FE3dSpace_findMaterial;
-      o.materials             = FE3dSpace_materials;
       o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
       o.loadRegionResource    = FE3dSpace_loadRegionResource;
       o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
@@ -19426,10 +19428,11 @@ with(MO){
       var o = this;
       o.__base.FE3dStage.onProcess.call(o);
       if(o._dirty){
-         var s = o._region.allRenderables();
-         for(var i = s.count() - 1; i >= 0; i--){
-            var r = s.getAt(i);
-            r.resetInfos();
+         var renderables = o._region.allRenderables();
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            renderable.resetInfos();
          }
          o._dirty = false;
       }
@@ -19447,18 +19450,12 @@ with(MO){
    MO.FE3dSpace_createRegion = function FE3dSpace_createRegion(){
       return RClass.create(FE3dRegion);
    }
-   MO.FE3dSpace_resource = function FE3dSpace_resource(p){
-      return this._resource;
-   }
    MO.FE3dSpace_findMaterial = function FE3dSpace_findMaterial(guid){
       return this._materials.get(guid);
    }
-   MO.FE3dSpace_materials = function FE3dSpace_materials(p){
-      return this._materials;
-   }
-   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(p){
+   MO.FE3dSpace_loadTechniqueResource = function FE3dSpace_loadTechniqueResource(resource){
       var o = this;
-      o._technique._resource = p;
+      o._technique._resource = resource;
    }
    MO.FE3dSpace_loadRegionResource = function FE3dSpace_loadRegionResource(p){
       var o = this;
@@ -19827,11 +19824,9 @@ with(MO){
       o = RClass.inherits(this, o, FE3dSpace, MGraphicObject, MListenerLoad);
       o._dataReady       = false;
       o._ready           = false;
-      o._resource        = null;
       o._sprites         = RClass.register(o, new AGetter('_sprites'));
       o._skeletons       = RClass.register(o, new AGetter('_skeletons'));
       o._animations      = RClass.register(o, new AGetter('_animations'));
-      o._resource        = RClass.register(o, new AGetSet('_resource'));
       o.construct        = FE3dTemplate_construct;
       o.testReady        = FE3dTemplate_testReady;
       o.sprite           = FE3dTemplate_sprite;
@@ -19978,11 +19973,12 @@ with(MO){
    }
    MO.FE3dTemplate_reloadResource = function FE3dTemplate_reloadResource(){
       var o = this;
-      var s = o._sprites;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.getAt(i).reloadResource();
+      var sprites = o._sprites;
+      if(sprites){
+         var count = sprites.count();
+         for(var i = 0; i < count; i++){
+            var sprite = sprites.at(i);
+            sprite.reloadResource();
          }
       }
    }
