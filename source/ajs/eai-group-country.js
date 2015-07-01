@@ -541,14 +541,18 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       o._cameraDirection     = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay          = RClass.register(o, new AGetSet('_startDelay'), 0);
-      o._riseDuration        = RClass.register(o, new AGetSet('_riseDuration'), 1200);
-      o._riseDistance        = RClass.register(o, new AGetSet('_riseDistance'), 2050);
-      o._fallDuration        = RClass.register(o, new AGetSet('_fallDuration'), 400);
-      o._fallDistance        = RClass.register(o, new AGetSet('_fallDistance'), 50);
+      o._riseDuration        = RClass.register(o, new AGetSet('_riseDuration'), 5000);
+      o._riseDistance        = RClass.register(o, new AGetSet('_riseDistance'), 1000);
+      o._fallDuration        = RClass.register(o, new AGetSet('_fallDuration'), 200);
+      o._fallDistance        = RClass.register(o, new AGetSet('_fallDistance'), 3);
       o._blockInterval       = RClass.register(o, new AGetSet('_blockInterval'), 60);
-      o._mouseOverRiseHeight = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 10);
+      o._mouseOverRiseHeight = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
       o._mouseMoveCheckInterval = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
       o._cameraMoveDuration  = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
+      o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+      o._playing = false;
+      o._lastTick = 0;
+      o._interval = 10;
       o._template                = RClass.register(o, new AGetSet('_template'));
       o._introAnimeDone          = RClass.register(o, new AGetSet('_introAnimeDone'), false);
       o._startTime               = RClass.register(o, new AGetSet('_startTime'));
@@ -558,7 +562,8 @@ with(MO){
       o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
       o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
       o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
-      o.initialize = FEaiCountryEntity_initialize;
+      o.setup = FEaiCountryEntity_setup;
+      o.process = FEaiCountryEntity_process;
       o.introAnime = FEaiCountryEntity_introAnime;
       o.onMouseMove = FEaiCountryEntity_onMouseMove;
       o.onMouseDown = FEaiCountryEntity_onMouseDown;
@@ -567,50 +572,38 @@ with(MO){
       o.cameraMoveAnime = FEaiCountryEntity_cameraMoveAnime;
       return o;
    }
-   MO.FEaiCountryEntity_initialize = function FEaiCountryEntity_initialize(template){
+   MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
       var o = this;
-      o.setCameraDirection(new SVector3(0.02, -0.9, 0.5));
-      o.setCameraFrom(new SPoint3());
-      o.setCameraTo(new SPoint3());
-      o.setMouseOverFallArray(new TObjects());
-      o.setTemplate(template);
-      o.setMouseMoveLastCheck(new Date());
-      o.template().addEnterFrameListener(o, FEaiCountryEntity_onEnterFrame);
-      var region = o.template().region();
-      region.backgroundColor().set(0.2, 0.2, 0.2, 1);
-      var camera = region.camera();
-      camera.setPosition(3, 24, -0.5);
-      camera.setDirection(o.cameraDirection().x, o.cameraDirection().y, o.cameraDirection().z);
-      var sprite = o.template().sprite();
-      for (var i = 0; i < sprite.renderables().count(); i++){
-         var renderable = sprite.renderables().at(i);
-         renderable.material().info().optionAlpha = true;
+      o._provinceEntities = provinceEntities;
+      for (var i = 0; i < o._provinceEntities.count(); i++) {
+         var fr = o._provinceEntities.at(i).faceRenderable();
+         var br = o._provinceEntities.at(i).borderRenderable();
+         var frm = fr.matrix();
+         var brm = br.matrix();
+         frm.tz = o.riseDistance();
+         frm.updateForce();
+         brm.tz = o.riseDistance();
+         brm.updateForce();
       }
-      o.setStartTime(new Date());
+      o._startTime = MO.Timer.current();
    }
-   MO.FEaiCountryEntity_onEnterFrame = function FEaiCountryEntity_onEnterFrame(){
+   MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
       var o = this;
-      if (!o.introAnimeDone()) {
-         o.introAnime();
+      if (!o._provinceEntities) {
+         return;
       }
-      else if(o.cameraMoving()) {
-         o.cameraMoveAnime();
-      }
-      else{
-         o.mouseOverFallAnime();
-      }
+      o.introAnime();
    }
-   MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime(){
+   MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
       var o = this;
-      var sprite = o.template().sprite();
-      var now = new Date();
-      var timePassed = now.getTime() - o.startTime().getTime();
+      var now = MO.Timer.current();
+      var timePassed = now - o._startTime;
       if (timePassed < o.startDelay()) {
          return;
       }
-      else{
+      else {
          timePassed -= o.startDelay();
-         if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * sprite.renderables().count()) {
+         if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
             o.setIntroAnimeDone(true);
             var listener = new TListener();
             listener._owner = this;
@@ -620,156 +613,48 @@ with(MO){
             listener._owner = this;
             listener._callback = o.onMouseDown;
             RWindow.lsnsMouseDown.push(listener);
-            RConsole.find(FEnvironmentConsole).registerValue(EEaiConstant.ServiceHost, '115.28.82.149');
-            var logicConsole = MO.RConsole.find(FEaiLogicConsole);
-            logicConsole.organization().doFetch(o, o.onOrganizationFetch);
          }
       }
       var idxCap = timePassed / o.blockInterval();
-      for (var i = 0; i < sprite.renderables().count() && i < idxCap; i++){
-         var renderable = sprite.renderables().at(i);
-         var matrix = renderable.matrix();
+      for (var i = 0; i < o._provinceEntities.count() && i < idxCap; i++) {
+         var fr = o._provinceEntities.at(i).faceRenderable();
+         var br = o._provinceEntities.at(i).borderRenderable();
+         var frm = fr.matrix();
+         var brm = br.matrix();
          var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
          var fallPercentage = 0;
          if (risePercentage > 1) {
-			risePercentage = 1;
-			fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
-			if (fallPercentage > 1) {
-				fallPercentage = 1;
-			}
+            risePercentage = 1;
+            fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
+            if (fallPercentage > 1) {
+               fallPercentage = 1;
+            }
          }
-         matrix.ty = o.riseDistance() * risePercentage - o.fallDistance() * fallPercentage;
-         matrix.updateForce();
+         frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+         frm.updateForce();
+         brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+         brm.updateForce();
       }
    }
    MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event){
       var o = this;
-      var now = new Date();
-      if (now.getDate() - o.mouseMoveLastCheck() < o.mouseMoveCheckInterval) {
-         return;
-      }
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(canvas._graphicContext, FG3dSelectTechnique);
-      var renderable = selectTechnique.test(o.template().region(), event.offsetX, event.offsetY);
-      if (o.mouseOverRiseRenderable() != renderable) {
-         if (o.mouseOverRiseRenderable()) {
-            o.mouseOverFallArray().push(o.mouseOverRiseRenderable());
-         }
-         o.setMouseOverRiseRenderable(renderable);
-         if (o.mouseOverFallArray().contains(o.mouseOverRiseRenderable())) {
-         	o.mouseOverFallArray().remove(o.mouseOverRiseRenderable());
-         }
-      }
    }
    MO.FEaiCountryEntity_mouseOverFallAnime = function FEaiCountryEntity_mouseOverFallAnime() {
       var o = this;
-      for (var i = o.mouseOverFallArray().count() - 1; i >= 0; i--) {
-         var renderable = o.mouseOverFallArray().at(i);
-         var matrix = renderable.matrix();
-         if (matrix.ty > o.riseDistance() - o.fallDistance()) {
-         	matrix.ty -= 1;
-         }
-         else {
-         	matrix.ty = o.riseDistance() - o.fallDistance();
-         	o.mouseOverFallArray().erase(i);
-         }
-         matrix.updateForce();
-      }
-      if (o.mouseOverRiseRenderable()) {
-         var riseMatrix = o.mouseOverRiseRenderable().matrix();
-         if (riseMatrix.ty < o.riseDistance() - o.fallDistance() + o.mouseOverRiseHeight()) {
-         	riseMatrix.ty = o.riseDistance() - o.fallDistance() + o.mouseOverRiseHeight();
-         	riseMatrix.updateForce();
-         }
-      }
    }
    MO.FEaiCountryEntity_onOrganizationFetch = function FEaiCountryEntity_onOrganizationFetch(event) {
       var o = this;
-      var content = event.content;
-      var branchCount = new Object();
-      for (var i = 0; i < content.collection.length; i++) {
-         if(!branchCount[content.collection[i].province_id]){
-            if(content.collection[i].province_id == null)
-            {
-            }
-            branchCount[content.collection[i].province_id] = 1;
-         }
-         else{
-            branchCount[content.collection[i].province_id]++;
-            if (content.collection[i].province_id == null) {
-               content.collection[i].label;
-            }
-         }
-      }
-      var logicConsole = MO.RConsole.find(FEaiLogicConsole);
-      var dict = logicConsole.organization().dict();
-      var colors = logicConsole.organization().provinceColors();
-      for(var i = 0; i < dict.count(); i++){
-         var bc = branchCount[dict.name(i)];
-         if (!bc) {
-            bc = 0;
-         }
-         var meshIdx = dict.valueAt(i);
-         if (meshIdx < 0) {
-            continue;
-         }
-         var renderable = o.template().sprite().renderables().at(meshIdx);
-         var ambientColor = renderable.material().info().ambientColor;
-         var diffuseColor = renderable.material().info().diffuseColor;
-         var colorLv = bc == 0 ? 0 : Math.floor(bc / 5 + 1) > 4 ? 4 : Math.floor(bc / 5 + 1);
-		 ambientColor.assign(colors.at(colorLv));
-         renderable.material().update();
-      }
    }
    MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event){
       var o = this;
-      var region = o.template().region();
-      var camera = region.camera();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(canvas._graphicContext, FG3dSelectTechnique);
-      var renderable = selectTechnique.test(o.template().region(), event.offsetX, event.offsetY);
-      if (!renderable) {
-         camera.setPosition(3, 24, -0.5);
-         camera.update();
-         return;
-      }
-      var outline = renderable.calculateOutline();
-      var relativeOutline = new SOutline3d();
-      relativeOutline.calculateFrom(outline, camera.matrix());
-      var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
-      var currentCenter = outline.center;
-      var cameraTo = new SPoint3(currentCenter.x - distance * o.cameraDirection().x, currentCenter.y - distance * o.cameraDirection().y, currentCenter.z - distance * o.cameraDirection().z);
-      var cameraPosition = camera.position();
-      o.setStartTime(new Date());
-      o.cameraFrom().assign(cameraPosition);
-      o.cameraTo().assign(cameraTo);
-      o.setCameraMoving(true);
    }
    MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
       var o = this;
-      var now = new Date();
-      var timePassed = now.getTime() - o.startTime().getTime();
-      var p = timePassed / o.cameraMoveDuration();
-      if (p >= 1) {
-         p = 1;
-         o.setCameraMoving(false);
-      }
-      p = 1-(1-p)*(1-p);
-      var movingPosition = new SPoint3();
-      movingPosition.slerp(o.cameraFrom(), o.cameraTo(), p);
-      var camera = o.template().region().camera();
-      camera.position().assign(movingPosition);
-      camera.update();
-      var sprite = o.template().sprite();
-      for (var i = 0; i < sprite.renderables().count(); i++){
-         var renderable = sprite.renderables().at(i);
-         if (renderable != o.mouseOverRiseRenderable()) {
-            renderable.material().info().alphaRate = 1.5 - p;
-            renderable.material().update();
-         }
-      }
    }
 }
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
@@ -784,6 +669,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
 MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
+   o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
@@ -826,6 +712,7 @@ MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
 }
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
+   o._countryEntity = MO.RObject.dispose(o._countryEntity);
    o._provinceEntities = MO.RObject.dispose(o._provinceEntities);
    o._cityEntities = MO.RObject.dispose(o._cityEntities);
    o.__base.FEaiEntity.dispose.call(o);
@@ -1076,6 +963,116 @@ with(MO){
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
+with (MO) {
+   MO.FGui24HTimeline = function FGui24HTimeline(o) {
+      o = RClass.inherits(this, o, FGuiControl);
+      o._startTime = RClass.register(o, new AGetSet('_startTime'));
+      o._endTime = RClass.register(o, new AGetSet('_endTime'));
+      o._data = null;
+      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
+      o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
+      o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
+      o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
+      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      o.construct = FGui24HTimeline_construct;
+      o.sync = FGui24HTimeline_sync;
+      o.onPaintBegin = FGui24HTimeline_onPaintBegin;
+      o.on24HDataFetch = FGui24HTimeline_on24HDataFetch;
+      return o;
+   }
+   MO.FGui24HTimeline_construct = function FGui24HTimeline_construct() {
+      var o = this;
+      o.__base.FGuiControl.construct.call(o);
+      o._startTime = new TDate();
+      o._endTime = new TDate();
+   }
+   MO.FGui24HTimeline_sync = function FGui24HTimeline_sync() {
+      var o = this;
+      var startTime = o._startTime;
+      var endTime = o._endTime;
+      var nowTick = MO.Timer.current();
+      startTime.date.setTime(nowTick);
+      startTime.refresh();
+      startTime.setSecond(0);
+      startTime.setMinute(0);
+      startTime.addDay(-1);
+      endTime.date.setTime(nowTick);
+      endTime.setSecond(0);
+      endTime.setMinute(endTime.date.getMinutes() % 15 * 15);
+      endTime.refresh();
+      var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
+      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, o._startTime.format('YYYYMMDDHH24MISS'), o._endTime.format('YYYYMMDDHH24MISS'), 60 * 15);
+   }
+   MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
+      var o = this;
+      o._data = event.content.collection;
+      o.repaint();
+   }
+   MO.FGui24HTimeline_onPaintBegin = function FGui24HTimeline_onPaintBegin(event) {
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var top = rectangle.top;
+      var bottom = rectangle.top + rectangle.height;
+      var middle = bottom - 30;
+      var decoLeft = rectangle.left + 5;
+      var decoRight = rectangle.left + rectangle.width - 5;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 1);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 1);
+      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+      var dataTop = top + 30;
+      var dataBottom = bottom - 30;
+      var dataHeight = dataBottom - dataTop;
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 3);
+      var startTime = o.startTime();
+      var endTime = o.endTime();
+      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+      var bakTime = startTime.date.getTime();
+      var text;
+      while (!startTime.isAfter(endTime)) {
+         var span = startTime.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+         text = startTime.format('HH24:00');
+         startTime.addMseconds(1000 * 60 * 60);
+         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
+      }
+      startTime.date.setTime(bakTime);
+      startTime.refresh();
+      var data = o._data;
+      if (!data) {
+         return;
+      }
+      var maxInves = 0;
+      for (var i = 0; i < data.length; i++) {
+         var inves = parseInt(data[i].investment);
+         if (inves > maxInves) {
+            maxInves = inves;
+         }
+      }
+      var pixPer10k = dataHeight * 10000 / maxInves;
+      var inves = parseInt(data[0].investment);
+      var lastX = dataLeft;
+      var lastY = dataBottom - inves / 10000 * pixPer10k;
+      for (var i = 1; i < data.length; i++) {
+         startTime.parseAuto(data[i].date);
+         var degreeSpan = startTime.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
+         var y = dataBottom - data[i].investment / 10000 * pixPer10k;
+         graphic.drawLine(lastX, lastY, x, y, '#33AAEE', 3);
+         lastX = x;
+         lastY = y;
+      }
+      startTime.date.setTime(bakTime);
+      startTime.refresh();
+   }
+}
 with(MO){
    MO.FGuiHistoryMilestoneFrame = function FGuiHistoryMilestoneFrame(o) {
       o = RClass.inherits(this, o, FGuiControl);
@@ -1180,5 +1177,103 @@ with(MO){
    MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose(){
       var o = this;
       o.__base.FEaiEntity.dispose.call(o);
+   }
+}
+with (MO) {
+   MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
+      o = RClass.inherits(this, o, FGuiTimeline);
+      o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
+      return o;
+   }
+   MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(event) {
+      var o = this;
+      o.__base.FGuiTimeline.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = event.rectangle;
+      var top = rectangle.top;
+      var bottom = rectangle.top + rectangle.height;
+      var dataTop = top + 30;
+      var dataBottom = bottom - 30;
+      var dataHeight = dataBottom - dataTop;
+      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+      var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
+      var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
+      var startDate = o.startTime();
+      var endDate = o.endTime();
+      var degreeDate = o.degreeTime();
+      var bakTime = startDate.date.getTime();
+      var timeSpan = endDate.date.getTime() - startDate.date.getTime();
+      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+      var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
+      var maxInves = dateData.investmentTotal();
+      var pixPer10k = dataHeight * 10000 / maxInves;
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var inves = dateData.investmentTotal();
+      var lastX = dataLeft;
+      var lastY = dataBottom - inves / 10000 * pixPer10k;
+      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+      var rateResource = rateConsole.find(EEaiRate.Line);
+      while (startDate.isBefore(degreeDate)) {
+         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+         if (dateData) {
+            var degreeSpan = startDate.date.getTime() - bakTime;
+            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+            var inves = dateData.investmentTotal();
+            var y = dataBottom - inves / 10000 * pixPer10k;
+            var rate = 1 - (y / dataHeight);
+            var colorIdx = parseInt(rateResource.count() * rate);
+            var hexColor = RHex.format(rateResource.find(colorIdx));
+            var color = '#' + hexColor.substring(2);
+            graphic.drawLine(lastX, lastY, x, y, color, 3);
+            if (startDate.date.getDate() == 1) {
+               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+               graphic.drawCircle(x, y, 3, 0, color, color);
+            }
+            lastX = x;
+            lastY = y;
+            startDate.addDay(1);
+         }
+         else {
+            break;
+         }
+      }
+      startDate.date.setTime(bakTime);
+      startDate.refresh();
+      while (startDate.isBefore(degreeDate)) {
+         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+         if (dateData) {
+            var degreeSpan = startDate.date.getTime() - bakTime;
+            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+            var inves = dateData.investmentTotal();
+            var y = dataBottom - inves / 10000 * pixPer10k;
+            if (startDate.date.getDate() == 1) {
+               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+            }
+            startDate.addDay(1);
+         }
+         else {
+            break;
+         }
+      }
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      if (dateData) {
+         var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
+         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+         var inves = dateData.investmentTotal();
+         var y = dataBottom - inves / 10000 * pixPer10k;
+         var rate = 1 - (y / dataHeight);
+         var colorIdx = parseInt(rateResource.count() * rate);
+         var hexColor = RHex.format(rateResource.find(colorIdx));
+         var color = '#' + hexColor.substring(2);
+         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
+         var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
+         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+      }
+      startDate.date.setTime(bakTime);
+      startDate.refresh();
    }
 }

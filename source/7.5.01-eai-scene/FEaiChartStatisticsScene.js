@@ -115,12 +115,10 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
-   timeline.setLeft(50);
    //timeline.setTop(MO.Eai.Canvas.logicSize().height - 400);
-   timeline.setTop(50);
    //timeline.setWidth(MO.Eai.Canvas.logicSize().width - 580);
-   timeline.setWidth(1000);
-   timeline.setHeight(350);
+   timeline.setLocation(50, 50);
+   timeline.setSize(1000, 350);
    timeline.sync();
    timeline.linkGraphicContext(o);
    timeline.build();

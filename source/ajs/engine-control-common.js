@@ -866,24 +866,22 @@ with(MO){
       var parentRectangle = event.parentRectangle;
       var rectangle = event.rectangle;
       o._eventRectangle.assign(rectangle);
-      var left = null;
-      var top = null;
+      var left = rectangle.left + location.x;
+      var top = rectangle.top + location.y;
       var width = size.width;
       var height = size.height;
       var width2 = (parentRectangle.width - width) * 0.5;
       var height2 = (parentRectangle.height - height) * 0.5;
       switch(o._dockCd){
          case MO.EGuiDock.LeftTop:
-            left = rectangle.left + location.x;
-            top = rectangle.top + location.y;
             break;
          case MO.EGuiDock.Bottom:
-            top = rectangle.top + height2;
+            top = parentRectangle.top + parentRectangle.height - height - location.y;
             break;
          default:
             throw new TError(o, 'Invalid dockcd.');
       }
-      clientRectangle.set(rectangle.left + location.x, rectangle.top + location.y, width, height);
+      clientRectangle.set(left, top, width, height);
       rectangle.assign(clientRectangle);
       event.clientRectangle.assign(clientRectangle);
       o.onPaintBegin(event);

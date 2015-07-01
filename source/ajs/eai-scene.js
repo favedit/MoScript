@@ -238,7 +238,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       milestoneBars.push(frame);
    }
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas.logicSize().height - 550);
@@ -334,6 +334,10 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
             o._statusStart = true;
          }
       }
+   }
+   if (!o._mapEntity._countryEntity.introAnimeDone()) {
+      o._mapEntity._countryEntity.process();
+      return;
    }
    if (o._playing) {
       var currentTick = MO.Timer.current();
@@ -611,7 +615,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    }
    var stage = o.activeStage();
    var layer = stage.faceLayer();
-   var timeline = o._timeline = MO.RClass.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.RClass.create(MO.FGuiHistoryTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas._size.height - 400);
@@ -715,6 +719,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    o._readyProvince = true;
+   o._mapEntity._countryEntity.setup(provinceEntities);
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
@@ -876,6 +881,8 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._playing           = false;
    o._lastTick          = 0;
    o._interval          = 10;
+   o._24HLastTick       = 0;
+   o._24HTrendInterval  = 1000 * 60 * 5;
    o._startDate         = null;
    o._endDate           = null;
    o._currentDate       = null;
@@ -930,17 +937,12 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var milestones = historyConsole.milestones();
    o._totalBar.setLocation(600, 20);
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGuiChartTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
-   timeline.setLeft(50);
-   timeline.setTop(50);
-   timeline.setWidth(1000);
-   timeline.setHeight(350);
-   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
-   timeline.setStartTime(o._startDate);
-   timeline.setEndTime(o._endDate);
-   timeline.setDegreeTime(o._currentDate);
+   timeline.setLocation(50, 50);
+   timeline.setSize(1000, 350);
+   timeline.sync();
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
@@ -1006,7 +1008,12 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
-   if (o._playing){
+   if (o._playing) {
+      var currentTick = MO.Timer.current();
+      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
+         o._timeline.sync();
+         o._24HLastTick = currentTick;
+      }
       o._investment.process();
       var invementCurrent = o._investment.invementCurrent();
       if(invementCurrent != null){
