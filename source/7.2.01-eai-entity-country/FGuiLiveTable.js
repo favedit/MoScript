@@ -17,6 +17,7 @@ with(MO){
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
       // @method
       o.dispose = FGuiLiveTable_dispose;
+      o.onImageLoad = FGuiLiveTable_onImageLoad;
       // @event
       o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
@@ -29,6 +30,17 @@ with(MO){
    //==========================================================
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
+      o.__base.FGuiControl.construct.call(o);
+   }
+
+   //==========================================================
+   // <T>图片加载完成处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
+      var o = this;
+      o.dirty();
       o.__base.FGuiControl.construct.call(o);
    }
 
@@ -49,6 +61,11 @@ with(MO){
       var height = rectangle.height;
       var right = left + width;
       var bottom = top + height;
+      //背景
+      var bg = MO.Class.create(MO.FImage);
+      bg.addLoadListener(o, o.onImageLoad);
+      bg.loadUrl('../ars/eai/grid.png');
+      graphic.drawImage(bg, left, top, width, height);
       // 边框
       graphic.fillRectangle(left, top, width, height, 'rgba(29, 172, 229, 0.1)');
       graphic.drawRectangle(left, top, width, height, '#1DACE5', 2);
