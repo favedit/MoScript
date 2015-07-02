@@ -1230,13 +1230,15 @@ with (MO) {
             lastHour = hour;
          }
       }
-      var textHourPeak = '峰值：' + maxHourInves;
-      var textDayTotal = '总额：' + dayTotal;
-      var textHourAvrg = '均值：' + (dayTotal / 24);
+      var textHourPeak = '峰值：' + MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+      var textDayTotal = '总额：' + MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrg = '均值：' + MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      graphic.setFont('bold 22px Microsoft YaHei');
+      graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
       graphic.setFont('bold 20px Microsoft YaHei');
-      graphic.drawText(textHourPeak, decoLeft, top + 5, '#1DACE5');
-      graphic.drawText(textDayTotal, decoLeft, top + 30, '#1DACE5');
-      graphic.drawText(textHourAvrg, decoLeft, top + 55, '#1DACE5');
+      graphic.drawText(textHourPeak, decoLeft, top + 30, '#00B5F6');
+      graphic.drawText(textDayTotal, decoLeft, top + 55, '#00B5F6');
+      graphic.drawText(textHourAvrg, decoLeft, top + 80, '#00B5F6');
       startTime.date.setTime(bakTime);
       startTime.refresh();
    }

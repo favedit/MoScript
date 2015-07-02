@@ -1969,13 +1969,15 @@ with (MO) {
             lastHour = hour;
          }
       }
-      var textHourPeak = '峰值：' + maxHourInves;
-      var textDayTotal = '总额：' + dayTotal;
-      var textHourAvrg = '均值：' + (dayTotal / 24);
+      var textHourPeak = '峰值：' + MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+      var textDayTotal = '总额：' + MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrg = '均值：' + MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      graphic.setFont('bold 22px Microsoft YaHei');
+      graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
       graphic.setFont('bold 20px Microsoft YaHei');
-      graphic.drawText(textHourPeak, decoLeft, top + 5, '#1DACE5');
-      graphic.drawText(textDayTotal, decoLeft, top + 30, '#1DACE5');
-      graphic.drawText(textHourAvrg, decoLeft, top + 55, '#1DACE5');
+      graphic.drawText(textHourPeak, decoLeft, top + 30, '#00B5F6');
+      graphic.drawText(textDayTotal, decoLeft, top + 55, '#00B5F6');
+      graphic.drawText(textHourAvrg, decoLeft, top + 80, '#00B5F6');
       startTime.date.setTime(bakTime);
       startTime.refresh();
    }
@@ -2624,17 +2626,17 @@ with(MO){
       if(labelH != null){
          var textWidth = graphic.textWidth(labelNumberH);
          graphic.drawText(labelNumberH, x, y, '#FD0000');
-         graphic.drawText('亿', x + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
       }
       if(labelM != null){
          var textWidth = graphic.textWidth(labelNumberM);
          graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-         graphic.drawText('万', x + widthH + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
       }
       if(labelL != null){
          var textWidth = graphic.textWidth(labelNumberL);
          graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FFD926');
-         graphic.drawText('元', x + widthH + widthM + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
       }
    }
    MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct(){
@@ -3387,7 +3389,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRenderable      = null;
    o._logoBar              = null;
    o._titleBar             = null;
-   o._totalBar             = null;
    o._flagSprite           = null;
    o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
@@ -3496,8 +3497,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
    o._desktop.register(frame);
-   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(650, 0);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
@@ -3592,16 +3591,11 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusLayerLevel  = 150;
    o._statusDesktopShow = false;
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
-   o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.process            = MO.FEaiChartStatisticsScene_process;
    return o;
-}
-MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
-   var o = this;
-   o.__base.FEaiChartScene.onLoadData.call(o, event);
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
    var o = this;
@@ -3633,7 +3627,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    dataLayer.push(display);
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
-   o._totalBar.setLocation(600, 20);
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
@@ -3652,7 +3645,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
    matrix.tx = -38;
-   matrix.ty = -13;
+   matrix.ty = -13.2;
    matrix.tz = 0;
    matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
@@ -3698,7 +3691,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       if((invementDayCurrent != null) && (invementTotalCurrent != null)){
          var logoBar = o._logoBar;
          var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(invementDayCurrent + 100000000).toString());
+         investmentDay.setValue(parseInt(invementDayCurrent).toString());
          if(investmentDay.process()){
             logoBar.dirty();
          }

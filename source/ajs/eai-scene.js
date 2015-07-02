@@ -678,7 +678,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRenderable      = null;
    o._logoBar              = null;
    o._titleBar             = null;
-   o._totalBar             = null;
    o._flagSprite           = null;
    o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
@@ -787,8 +786,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
    o._desktop.register(frame);
-   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(650, 0);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
@@ -883,16 +880,11 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusLayerLevel  = 150;
    o._statusDesktopShow = false;
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
-   o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.process            = MO.FEaiChartStatisticsScene_process;
    return o;
-}
-MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
-   var o = this;
-   o.__base.FEaiChartScene.onLoadData.call(o, event);
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
    var o = this;
@@ -924,7 +916,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    dataLayer.push(display);
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
-   o._totalBar.setLocation(600, 20);
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
@@ -943,7 +934,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
    matrix.tx = -38;
-   matrix.ty = -13;
+   matrix.ty = -13.2;
    matrix.tz = 0;
    matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
@@ -989,7 +980,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       if((invementDayCurrent != null) && (invementTotalCurrent != null)){
          var logoBar = o._logoBar;
          var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(invementDayCurrent + 100000000).toString());
+         investmentDay.setValue(parseInt(invementDayCurrent).toString());
          if(investmentDay.process()){
             logoBar.dirty();
          }

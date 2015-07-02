@@ -439,17 +439,17 @@ with(MO){
       if(labelH != null){
          var textWidth = graphic.textWidth(labelNumberH);
          graphic.drawText(labelNumberH, x, y, '#FD0000');
-         graphic.drawText('亿', x + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
       }
       if(labelM != null){
          var textWidth = graphic.textWidth(labelNumberM);
          graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-         graphic.drawText('万', x + widthH + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
       }
       if(labelL != null){
          var textWidth = graphic.textWidth(labelNumberL);
          graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FFD926');
-         graphic.drawText('元', x + widthH + widthM + textWidth, y - 2, '#00B5F6');
+         graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
       }
    }
    MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct(){

@@ -24,7 +24,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._logoBar              = null;
    o._titleBar             = null;
-   o._totalBar             = null;
    // @attribute
    o._flagSprite           = null;
    o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
@@ -208,15 +207,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
    o._desktop.register(frame);
-   // 显示左上
-   //var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
-   //frame.setLocation(460, 20);
-   //o._desktop.register(frame);
-   //..........................................................
-   // 显示总计
-   var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
-   frame.setLocation(650, 0);
-   //o._desktop.register(frame);
    //..........................................................
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);

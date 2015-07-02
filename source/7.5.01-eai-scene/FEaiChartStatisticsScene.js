@@ -33,9 +33,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @attribute
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
-   // @event
-   o.onLoadData         = MO.FEaiChartStatisticsScene_onLoadData;
-   //..........................................................
    // @method
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    // @method
@@ -44,20 +41,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @method
    o.process            = MO.FEaiChartStatisticsScene_process;
    return o;
-}
-
-//==========================================================
-// <T>数据加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
-   var o = this;
-   o.__base.FEaiChartScene.onLoadData.call(o, event);
-   // 设置时间
-   //var code = o._currentDate.format('YYYYMMDD')
-   //o.selectDate(code);
 }
 
 //==========================================================
@@ -106,8 +89,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var milestones = historyConsole.milestones();
    //..........................................................
-   o._totalBar.setLocation(600, 20);
-   //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
@@ -136,7 +117,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
    matrix.tx = -38;
-   matrix.ty = -13;
+   matrix.ty = -13.2;
    matrix.tz = 0;
    matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
@@ -199,7 +180,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          var logoBar = o._logoBar;
          // 设置当前金额
          var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(invementDayCurrent + 100000000).toString());
+         investmentDay.setValue(parseInt(invementDayCurrent).toString());
          if(investmentDay.process()){
             logoBar.dirty();
          }
