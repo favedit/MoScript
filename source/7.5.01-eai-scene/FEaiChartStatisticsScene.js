@@ -112,10 +112,10 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setName('LiveTable');
    liveTable.setDockCd(MO.EGuiDock.Right);
    liveTable.setAnchorCd(MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
-   liveTable.setTop(40);
-   liveTable.setRight(40);
-   liveTable.setBottom(40);
-   liveTable.setWidth(560);
+   liveTable.setTop(20);
+   liveTable.setRight(20);
+   liveTable.setBottom(20);
+   liveTable.setWidth(580);
    liveTable.linkGraphicContext(o);
    liveTable.build();
    o._desktop.register(liveTable);
