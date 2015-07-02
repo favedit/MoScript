@@ -192,8 +192,9 @@ with (MO) {
          }
          else {
             if (hourInves > maxHourInves) {
-               dayTotal += hourInves;
                maxHourInves = hourInves;
+               dayTotal += hourInves;
+               hourInves = 0;
             }
             lastHour = hour;
          }
