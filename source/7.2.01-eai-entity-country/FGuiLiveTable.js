@@ -83,35 +83,35 @@ with(MO){
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
-      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 50, '#1DACE5');
+      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 70, '#00B2F2');
       // 表头
       graphic.setFont('22px Microsoft YaHei');
       var headText = '';
       var headTextWidth = 0;
       var headLeft = left + 5;
-      var headTop = top + 64;
-      var headTextTop = top + 92;
+      var headTop = top + 96;
+      var headTextTop = headTop + 28;
       var colWidth = new Array(110, 110, 160, 173);
       var headHeight = 40;
-      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#122a46');
       headText = '时间';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[0] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
       headLeft += colWidth[0] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#122a46');
       headText = '城市';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[1] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
       headLeft += colWidth[1] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#122a46');
       headText = '顾客-手机尾号';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[2] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
       headLeft += colWidth[2] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#122a46');
       headText = '投资额(元)';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[3] - 5 - headTextWidth, headTextTop, '#FFFFFF');
@@ -121,9 +121,9 @@ with(MO){
       }
 
       graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 124;
+      var tableTop = headTop + 64;
       var tableLeft = left + 5;
-      var tableLineHeight = 24;
+      var tableLineHeight = 32;
       var tableText = '';
       var tableTextWidth = 0;
       var date = MO.Memory.alloc(TDate);
@@ -133,7 +133,7 @@ with(MO){
          date.parse(entity.date());
          tableText = date.format('HH24:MI:SS');
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
 
          tableLeft += colWidth[0] + 1;
          var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
@@ -143,12 +143,12 @@ with(MO){
             tableText = cityEntity.label();
          }
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
 
          tableLeft += colWidth[1] + 1;
          tableText = entity.customer() + ' - ' + entity.phone();
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
 
          tableLeft += colWidth[2] + 1;
          var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
@@ -157,12 +157,12 @@ with(MO){
             var low = investment.substring(investment.length - 7, investment.length);
             var highWidth = graphic.textWidth(high);
             var lowWidth = graphic.textWidth(low);
-            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#FF4482');
-            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#1DACE5');
+            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#1DACE5');
          } else {
             tableText = investment;
             tableTextWidth = graphic.textWidth(tableText);
-            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#1DACE5');
          }
       }
       //表框
