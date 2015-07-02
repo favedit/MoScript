@@ -107,12 +107,13 @@
 
       <PathMerger source='/7.1.01-eai-common'                target='/ajs/eai-common.js'/>
       <PathMerger source='/7.1.02-eai-resource'              target='/ajs/eai-resource.js'/>
-      <PathMerger source='/7.1.03-eai-effect'                target='/ajs/eai-effect.js'/>
-      <PathMerger source='/7.2.01-eai-console'               target='/ajs/eai-console.js'/>
-      <PathMerger source='/7.3.01-eai-group-country'         target='/ajs/eai-group-country.js'/>
-      <PathMerger source='/7.3.02-eai-group-report'          target='/ajs/eai-group-report.js'/>
-      <PathMerger source='/7.3.03-eai-group-task'            target='/ajs/eai-group-task.js'/>
-      <PathMerger source='/7.3.04-eai-group-statistics'      target='/ajs/eai-group-statistics.js'/>
+      <PathMerger source='/7.1.03-eai-console'               target='/ajs/eai-console.js'/>
+
+      <PathMerger source='/7.2.01-eai-entity-country'        target='/ajs/eai-entity-country.js'/>
+
+      <PathMerger source='/7.3.01-eai-logic-history'         target='/ajs/eai-logic-history.js'/>
+      <PathMerger source='/7.3.02-eai-logic-statistics'      target='/ajs/eai-logic-statistics.js'/>
+
       <PathMerger source='/7.4.01-eai-company-report'        target='/ajs/eai-company-report.js'/>
       <PathMerger source='/7.4.02-eai-company-task'          target='/ajs/eai-company-task.js'/>
       <PathMerger source='/7.5.01-eai-scene'                 target='/ajs/eai-scene.js'/>
