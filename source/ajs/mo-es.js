@@ -4060,33 +4060,30 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FG2dContext = function FG2dContext(o){
-      o = RClass.inherits(this, o, FGraphicContext);
-      o._size      = null;
-      o.construct  = FG2dContext_construct;
-      o.linkCanvas = FG2dContext_linkCanvas;
-      o.size       = FG2dContext_size;
-      o.dispose    = FG2dContext_dispose;
-      return o;
-   }
-   MO.FG2dContext_construct = function FG2dContext_construct(){
-      var o = this;
-      o.__base.FGraphicContext.construct.call(o);
-      o._size = new SSize2();
-   }
-   MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(h){
-      var o = this;
-      o._size.set(h.width, h.height);
-   }
-   MO.FG2dContext_size = function FG2dContext_size(){
-      return this._size;
-   }
-   MO.FG2dContext_dispose = function FG2dContext_dispose(){
-      var o = this;
-      o._size = RObject.dispose(o._size);
-      o.__base.FGraphicContext.dispose.call(o);
-   }
+MO.FG2dContext = function FG2dContext(o){
+   o = MO.Class.inherits(this, o, MO.FGraphicContext);
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
+   o.construct  = MO.FG2dContext_construct;
+   o.linkCanvas = MO.FG2dContext_linkCanvas;
+   o.dispose    = MO.FG2dContext_dispose;
+   return o;
+}
+MO.FG2dContext_construct = function FG2dContext_construct(){
+   var o = this;
+   o.__base.FGraphicContext.construct.call(o);
+   o._size = new MO.SSize2();
+   o._scale = new MO.SSize2(1, 1);
+}
+MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
+   var o = this;
+   o._size.set(hCanvas.width, hCanvas.height);
+}
+MO.FG2dContext_dispose = function FG2dContext_dispose(){
+   var o = this;
+   o._size = RObject.dispose(o._size);
+   o._scale = RObject.dispose(o._scale);
+   o.__base.FGraphicContext.dispose.call(o);
 }
 with (MO) {
    MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
@@ -4130,7 +4127,9 @@ with (MO) {
       o._hCanvas = hCanvas;
    }
    MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
-      this._handle.scale(width, height);
+      var o = this;
+      o._scale.set(width, height);
+      o._handle.scale(width, height);
    }
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
@@ -4138,7 +4137,9 @@ with (MO) {
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
       var size = o._size;
-      o._handle.clearRect(0, 0, size.width, size.height);
+      var width = size.width / o._scale.width;
+      var height = size.height / o._scale.height;
+      o._handle.clearRect(0, 0, width, height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);

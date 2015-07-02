@@ -83,7 +83,9 @@ with (MO) {
    // @param height:Number 纵向缩放
    //==========================================================
    MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
-      this._handle.scale(width, height);
+      var o = this;
+      o._scale.set(width, height);
+      o._handle.scale(width, height);
    }
 
    //==========================================================
@@ -104,7 +106,9 @@ with (MO) {
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
       var size = o._size;
-      o._handle.clearRect(0, 0, size.width, size.height);
+      var width = size.width / o._scale.width;
+      var height = size.height / o._scale.height;
+      o._handle.clearRect(0, 0, width, height);
    }
 
    //==========================================================

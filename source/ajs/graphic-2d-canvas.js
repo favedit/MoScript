@@ -40,7 +40,9 @@ with (MO) {
       o._hCanvas = hCanvas;
    }
    MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
-      this._handle.scale(width, height);
+      var o = this;
+      o._scale.set(width, height);
+      o._handle.scale(width, height);
    }
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
@@ -48,7 +50,9 @@ with (MO) {
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
       var size = o._size;
-      o._handle.clearRect(0, 0, size.width, size.height);
+      var width = size.width / o._scale.width;
+      var height = size.height / o._scale.height;
+      o._handle.clearRect(0, 0, width, height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);

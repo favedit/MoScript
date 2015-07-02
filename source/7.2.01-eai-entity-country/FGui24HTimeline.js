@@ -10,20 +10,20 @@ with (MO) {
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
-      o._startTime = RClass.register(o, new AGetSet('_startTime'));
-      o._endTime = RClass.register(o, new AGetSet('_endTime'));
-      o._data = null;
+      o._startTime        = RClass.register(o, new AGetSet('_startTime'));
+      o._endTime          = RClass.register(o, new AGetSet('_endTime'));
+      o._data             = null;
       // @attribute
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
-      o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
-      o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
-      o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
-      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
+      o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
+      o._decoLineGap      = RClass.register(o, new AGetSet('_decoLineGap'), 10);
+      o._decoLineWidth    = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
       // @method
-      o.construct = FGui24HTimeline_construct;
-      o.sync = FGui24HTimeline_sync;
-      o.onPaintBegin = FGui24HTimeline_onPaintBegin;
-      o.on24HDataFetch = FGui24HTimeline_on24HDataFetch;
+      o.construct         = FGui24HTimeline_construct;
+      o.sync              = FGui24HTimeline_sync;
+      o.onPaintBegin      = FGui24HTimeline_onPaintBegin;
+      o.on24HDataFetch    = FGui24HTimeline_on24HDataFetch;
       return o;
    }
 
@@ -189,9 +189,8 @@ with (MO) {
          var hour = startTime.date.getHours();
          if (lastHour == hour) {
             hourInves += parseInt(data[i].investment);
-         }
-         else {
-            if (hourInves > maxHourInves) {
+         }else{
+            if(hourInves > maxHourInves){
                maxHourInves = hourInves;
                dayTotal += hourInves;
                hourInves = 0;
@@ -199,15 +198,26 @@ with (MO) {
             lastHour = hour;
          }
       }
-      var textHourPeak = '峰值：' + MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-      var textDayTotal = '总额：' + MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
-      var textHourAvrg = '均值：' + MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      // 输出数据文本
       graphic.setFont('bold 22px Microsoft YaHei');
       graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
+      // 输出数据文本
       graphic.setFont('bold 20px Microsoft YaHei');
-      graphic.drawText(textHourPeak, decoLeft, top + 30, '#00B5F6');
-      graphic.drawText(textDayTotal, decoLeft, top + 55, '#00B5F6');
-      graphic.drawText(textHourAvrg, decoLeft, top + 80, '#00B5F6');
+      var textWidth = graphic.textWidth('峰值：');
+      var textHourPeakValue = MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+      var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
+      var textDayTotalValue = MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
+      var textDayTotalWidth = graphic.textWidth(textDayTotalValue);
+      var textHourAvrgValue = MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
+      var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
+      graphic.drawText('峰值：', decoLeft, top + 30, '#00CFFF');
+      graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, top + 30, '#00B5F6');
+      graphic.drawText('总额：', decoLeft, top + 55, '#00CFFF');
+      graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, top + 55, '#00B5F6');
+      graphic.drawText('均值：', decoLeft, top + 80, '#00CFFF');
+      graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, top + 80, '#00B5F6');
+      // 设置时间
       startTime.date.setTime(bakTime);
       startTime.refresh();
    }
