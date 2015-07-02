@@ -116,6 +116,7 @@
 
       <PathMerger source='/7.4.01-eai-company-report'        target='/ajs/eai-company-report.js'/>
       <PathMerger source='/7.4.02-eai-company-task'          target='/ajs/eai-company-task.js'/>
+
       <PathMerger source='/7.5.01-eai-scene'                 target='/ajs/eai-scene.js'/>
       <PathMerger source='/7.6.01-eai-chapter'               target='/ajs/eai-chapter.js'/>
       <PathMerger source='/7.7.01-eai-application'           target='/ajs/eai-application.js'/>
@@ -284,12 +285,10 @@
       <FileMerger target='/ajs/eai.js'>
          <File source='/ajs/eai-common.js'/>
          <File source='/ajs/eai-resource.js'/>
-         <File source='/ajs/eai-effect.js'/>
          <File source='/ajs/eai-console.js'/>
-         <File source='/ajs/eai-group-country.js'/>
-         <File source='/ajs/eai-group-report.js'/>
-         <File source='/ajs/eai-group-task.js'/>
-         <File source='/ajs/eai-group-statistics.js'/>
+         <File source='/ajs/eai-entity-country.js'/>
+         <File source='/ajs/eai-logic-history.js'/>
+         <File source='/ajs/eai-logic-statistics.js'/>
          <File source='/ajs/eai-company-report.js'/>
          <File source='/ajs/eai-company-task.js'/>
          <File source='/ajs/eai-scene.js'/>
