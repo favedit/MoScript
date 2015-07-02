@@ -39,10 +39,9 @@ with(MO){
    //==========================================================
    MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
       var o = this;
+      o.__base.FScene.onProcess.call(o);
       // 界面处理
       o._desktop.process();
-      // 父处理
-      o.__base.FScene.onProcess.call(o);
    }
 
    //==========================================================
@@ -66,7 +65,7 @@ with(MO){
       var activeDesktop = MO.Desktop.activeDesktop();
       var canvas2d = activeDesktop.canvas2d();
       // 创建界面桌面
-      var desktop = o._desktop = RClass.create(FGuiCanvasDesktop);
+      var desktop = o._desktop = RClass.create(FGuiCanvasManager);
       desktop.linkGraphicContext(o);
       desktop.setCanvas(canvas2d);
       desktop.setup();
@@ -90,13 +89,10 @@ with(MO){
       var o = this;
       o.__base.FScene.active.call(o);
       var stage = o._activeStage;
-      MO.Eai.Canvas.selectStage(stage);
-      var stage = o._activeStage;
       if(o._optionDebug){
-         var faceLayer = stage.faceLayer();
-         //faceLayer.push(o._engineInfo);
          o._engineInfo.setStage(stage);
       }
+      MO.Eai.Canvas.selectStage(stage);
    }
 
    //==========================================================
@@ -107,11 +103,6 @@ with(MO){
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FScene.deactive.call(o);
-      var stage = o._activeStage;
-      if(o._optionDebug){
-         var faceLayer = stage.faceLayer();
-         //faceLayer.remove(o._engineInfo.renderable());
-      }
       MO.Eai.Canvas.selectStage(null);
    }
 
@@ -123,7 +114,9 @@ with(MO){
    //==========================================================
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
       var o = this;
-      o.__base.FScene.processEvent();
+      o.__base.FScene.processEvent.call(o, event);
+      // 处理界面事件
+      // MO.Desktop.activeDesktop();
       // 处理界面事件
       o._desktop.processEvent(event);
    }

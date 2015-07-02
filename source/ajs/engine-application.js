@@ -1,37 +1,21 @@
 with(MO){
    MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
-      o._activeChapter      = RClass.register(o, new AGetter('_activeChapter'));
-      o._chapters           = RClass.register(o, new AGetter('_chapters'));
-      o._eventEnterFrame    = null;
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
+      o._activeChapter       = RClass.register(o, new AGetter('_activeChapter'));
+      o._chapters            = RClass.register(o, new AGetter('_chapters'));
+      o._eventEnterFrame     = null;
       o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
-      o._eventLeaveFrame    = null;
+      o._eventLeaveFrame     = null;
       o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
-      o.onOperationDown     = FApplication_onOperationDown;
-      o.onOperationMove     = FApplication_onOperationMove;
-      o.onOperationUp       = FApplication_onOperationUp;
-      o.onOperationResize   = FApplication_onOperationResize;
-      o.construct           = FApplication_construct;
-      o.registerChapter     = FApplication_registerChapter;
-      o.unregisterChapter   = FApplication_unregisterChapter;
-      o.selectChapter       = FApplication_selectChapter;
-      o.selectChapterByCode = FApplication_selectChapterByCode;
-      o.processEvent        = FApplication_processEvent;
-      o.process             = FApplication_process;
-      o.dispose             = FApplication_dispose;
+      o.construct            = FApplication_construct;
+      o.registerChapter      = FApplication_registerChapter;
+      o.unregisterChapter    = FApplication_unregisterChapter;
+      o.selectChapter        = FApplication_selectChapter;
+      o.selectChapterByCode  = FApplication_selectChapterByCode;
+      o.processEvent         = FApplication_processEvent;
+      o.process              = FApplication_process;
+      o.dispose              = FApplication_dispose;
       return o;
-   }
-   MO.FApplication_onOperationDown = function FApplication_onOperationDown(){
-      var o = this;
-   }
-   MO.FApplication_onOperationMove = function FApplication_onOperationMove(){
-      var o = this;
-   }
-   MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
-      var o = this;
-   }
-   MO.FApplication_onOperationResize = function FApplication_onOperationResize(){
-      var o = this;
    }
    MO.FApplication_construct = function FApplication_construct(){
       var o = this;
@@ -72,6 +56,7 @@ with(MO){
    }
    MO.FApplication_processEvent = function FApplication_processEvent(event){
       var o = this;
+      o.dispatcherEvent(event);
       var chapter = o._activeChapter;
       if(chapter){
          chapter.processEvent(event);
@@ -97,7 +82,7 @@ with(MO){
 }
 with(MO){
    MO.FChapter = function FChapter(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       o._code                = RClass.register(o, new AGetSet('_code'));
       o._scenes              = RClass.register(o, new AGetter('_scenes'));
       o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
@@ -172,6 +157,7 @@ with(MO){
    }
    MO.FChapter_processEvent = function FChapter_processEvent(event){
       var o = this;
+      o.dispatcherEvent(event);
       var scene = o._activeScene;
       if(scene){
          scene.processEvent(event);
@@ -196,7 +182,7 @@ with(MO){
 }
 with(MO){
    MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       o._code                = RClass.register(o, new AGetSet('_code'));
       o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
       o._statusSetup         = false;
@@ -252,6 +238,7 @@ with(MO){
    }
    MO.FScene_processEvent = function FScene_processEvent(event){
       var o = this;
+      o.dispatcherEvent(event);
    }
    MO.FScene_dispose = function FScene_dispose(){
       var o = this;
@@ -322,6 +309,13 @@ with(MO){
          application.processEvent(event);
       }
    }
+   MO.RDesktop.prototype.onResize = function RDesktop_onResize(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
    MO.RDesktop.prototype.application = function RDesktop_application(){
       return this._application;
    }
@@ -339,6 +333,7 @@ with(MO){
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseMove.register(o, o.onMouseMove);
       RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+      RWindow.lsnsResize.register(o, o.onResize);
       var application = MO.Application = o._application = MO.Class.create(clazz);
       return application;
    }

@@ -10,36 +10,37 @@ with (MO) {
       o = RClass.inherits(this, o, FG2dContext);
       //..........................................................
       // @attribute
-      o._handle        = null;
+      o._handle              = null;
       //..........................................................
       // @method
-      o.construct      = FG2dCanvasContext_construct;
+      o.construct            = FG2dCanvasContext_construct;
       // @method
-      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
+      o.linkCanvas           = FG2dCanvasContext_linkCanvas;
       // @method
-      o.setFont        = FG2dCanvasContext_setFont;
+      o.setScale             = FG2dCanvasContext_setScale;
+      o.setFont              = FG2dCanvasContext_setFont;
       // @method
-      o.clear          = FG2dCanvasContext_clear;
+      o.clear                = FG2dCanvasContext_clear;
       // @method
-      o.textWidth      = FG2dCanvasContext_textWidth;
+      o.textWidth            = FG2dCanvasContext_textWidth;
       // @method
-      o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
-      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
-      o.drawCircle     = FG2dCanvasContext_drawCircle;
-      o.drawText       = FG2dCanvasContext_drawText;
-      o.drawImage      = FG2dCanvasContext_drawImage;
-      o.drawQuadrilateral = FG2dCanvasContext_drawQuadrilateral;
+      o.drawLine             = FG2dCanvasContext_drawLine;
+      o.drawRectangle        = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle         = FG2dCanvasContext_drawTriangle;
+      o.drawCircle           = FG2dCanvasContext_drawCircle;
+      o.drawText             = FG2dCanvasContext_drawText;
+      o.drawImage            = FG2dCanvasContext_drawImage;
+      o.drawQuadrilateral    = FG2dCanvasContext_drawQuadrilateral;
       // @method
-      o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder     = FG2dCanvasContext_drawBorder;
-      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
+      o.drawBorderLine       = FG2dCanvasContext_drawBorderLine;
+      o.drawBorder           = FG2dCanvasContext_drawBorder;
+      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
       // @method
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
+      o.fillRectangle        = FG2dCanvasContext_fillRectangle;
       // @method
       o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
       // @method
-      o.toBytes        = FG2dCanvasContext_toBytes;
+      o.toBytes              = FG2dCanvasContext_toBytes;
       return o;
    }
 
@@ -72,6 +73,17 @@ with (MO) {
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
+   }
+
+   //==========================================================
+   // <T>设置缩放。</T>
+   //
+   // @method
+   // @param width:Number 横向缩放
+   // @param height:Number 纵向缩放
+   //==========================================================
+   MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
+      this._handle.scale(width, height);
    }
 
    //==========================================================

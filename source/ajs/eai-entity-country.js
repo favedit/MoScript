@@ -1117,7 +1117,7 @@ with (MO) {
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
       o._data = event.content.collection;
-      o.repaint();
+      o.dirty();
    }
    MO.FGui24HTimeline_onPaintBegin = function FGui24HTimeline_onPaintBegin(event) {
       var o = this;
@@ -1282,8 +1282,7 @@ with(MO){
       }
    }
    MO.FGuiHistoryMilestoneFrame_onImageLoad = function FGuiHistoryMilestoneFrame_onImageLoad() {
-      var o = this;
-      o.repaint();
+      this.dirty();
    }
    MO.FGuiHistoryMilestoneFrame_onPaintBegin = function FGuiHistoryMilestoneFrame_onPaintBegin(event) {
       var o = this;

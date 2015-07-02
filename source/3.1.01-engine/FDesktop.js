@@ -9,6 +9,14 @@ MO.FDesktop = function FDesktop(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
+   o._size            = MO.Class.register(o, new MO.AGetter('_size'));
+   o._sizeRate        = MO.Class.register(o, new MO.AGetter('_sizeRate'), 1);
+   o._calculateSize   = MO.Class.register(o, new MO.AGetter('_calculateSize'));
+   o._calculateRate   = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._logicSize       = MO.Class.register(o, new MO.AGetter('_logicSize'));
+   o._logicRate       = MO.Class.register(o, new MO.AGetter('_logicRate'));
+   o._screenSize      = MO.Class.register(o, new MO.AGetter('_screenSize'));
+   // @attribute
    o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    //..........................................................
    // @method
@@ -18,6 +26,7 @@ MO.FDesktop = function FDesktop(o){
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
    o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
+   o.resize           = MO.FDesktop_resize;
    // @method
    o.dispose          = MO.FDesktop_dispose;
    return o;
@@ -32,6 +41,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
+   o._size = new MO.SSize2(1280, 720);
+   o._calculateSize = new MO.SSize2(1280, 720);
+   o._calculateRate = new MO.SSize2(1, 1);
+   o._logicSize = new MO.SSize2(1280, 720);
+   o._logicRate = new MO.SSize2(1, 1);
+   o._screenSize = new MO.SSize2(1280, 720);
    o._canvases = new MO.TObjects();
 }
 
@@ -80,6 +95,15 @@ MO.FDesktop_build = function FDesktop_build(hPanel){
 }
 
 //==========================================================
+// <T>改变大小处理。</T>
+//
+// @method
+//==========================================================
+MO.FDesktop_resize = function FDesktop_resize(){
+   var o = this;
+}
+
+//==========================================================
 // <T>释放处理。</T>
 //
 // @method
@@ -87,6 +111,11 @@ MO.FDesktop_build = function FDesktop_build(hPanel){
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
    // 释放属性
+   o._size = RObject.dispose(o._size);
+   o._calculateSize = RObject.dispose(o._calculateSize);
+   o._logicSize = RObject.dispose(o._logicSize);
+   o._logicRate = RObject.dispose(o._logicRate);
+   o._screenSize = RObject.dispose(o._screenSize);
    o._canvases = RObject.dispose(o._canvases);
    // 父处理
    o.__base.FObject.dispose.call(o);

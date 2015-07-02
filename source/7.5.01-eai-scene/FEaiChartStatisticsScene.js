@@ -41,11 +41,8 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @method
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
-   o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
    // @method
-   o.active             = MO.FEaiChartStatisticsScene_active;
    o.process            = MO.FEaiChartStatisticsScene_process;
-   o.deactive           = MO.FEaiChartStatisticsScene_deactive;
    return o;
 }
 
@@ -146,54 +143,6 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
 }
 
 //==========================================================
-// <T>数据加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
-   var o = this;
-   return;
-   // 构建画面
-   var context = o.graphicContext();
-   var stage = o._activeStage;
-   var mapLayer = stage.mapLayer();
-   var borderLayer = stage.borderLayer();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var dateData = historyConsole.dates().get(code);
-   if(dateData){
-      // 更新时间轴
-      o._timeline.setDegreeTime(o._currentDate);
-      //o._timeline.repaint();
-      // 设置城市数据
-      var cityDatas = dateData.citys();
-      var cityEntities = o._cityEntities;
-      var count = cityEntities.count();
-      for (var i = 0; i < count; i++) {
-         var cityEntity = cityEntities.at(i);
-         var code = cityEntity.data().code();
-         var data = cityDatas.get(code);
-         cityEntity.update(data);
-      }
-      var total = o._totalBar.findComponent('total');
-      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
-      o._totalBar.repaint();
-   }
-   o._citysRangeRenderable.upload();
-}
-
-//==========================================================
-// <T>激活处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatisticsScene_active = function FEaiChartStatisticsScene_active() {
-   var o = this;
-   o.__base.FEaiChartScene.active.call(o);
-}
-
-//==========================================================
 // <T>激活处理。</T>
 //
 // @method
@@ -223,7 +172,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
+         //return;
       }
       //..........................................................
       // 隐藏全部界面
@@ -244,24 +193,22 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       // 投资处理
       o._investment.process();
       // 设置资金
-      var invementCurrent = o._investment.invementCurrent();
-      if(invementCurrent != null){
-         var bar = o._totalBar;
-         var total = bar.findComponent('total');
-         total.setValue(parseInt(invementCurrent).toString());
-         if(total.process()){
-            bar.repaint();
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      var invementTotalCurrent = o._investment.invementTotalCurrent();
+      if((invementDayCurrent != null) && (invementTotalCurrent != null)){
+         var logoBar = o._logoBar;
+         // 设置当前金额
+         var investmentDay = logoBar.findComponent('investmentDay');
+         investmentDay.setValue(parseInt(invementDayCurrent + 100000000).toString());
+         if(investmentDay.process()){
+            logoBar.dirty();
+         }
+         // 设置全部金额
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+         if(investmentTotal.process()){
+            logoBar.dirty();
          }
       }
    }
-}
-
-//==========================================================
-// <T>注销处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatisticsScene_deactive = function FEaiChartStatisticsScene_deactive() {
-   var o = this;
-   o.__base.FEaiChartScene.deactive.call(o);
 }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FChapter = function FChapter(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       //..........................................................
       // @attribute
       o._code                = RClass.register(o, new AGetSet('_code'));
@@ -157,6 +157,9 @@ with(MO){
    //==========================================================
    MO.FChapter_processEvent = function FChapter_processEvent(event){
       var o = this;
+      // 处理事件
+      o.dispatcherEvent(event);
+      // 激活场景处理事件
       var scene = o._activeScene;
       if(scene){
          scene.processEvent(event);

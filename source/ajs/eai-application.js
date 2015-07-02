@@ -1,35 +1,42 @@
-with(MO){
-   MO.FEaiApplication = function FEaiApplication(o){
-      o = RClass.inherits(this, o, FApplication);
-      o._thread      = null;
-      o._interval    = 10;
-      o.construct    = FEaiApplication_construct;
-      o.createCanvas = FEaiApplication_createCanvas;
-      o.setup        = FEaiApplication_setup;
-      o.dispose      = FEaiApplication_dispose;
-      return o;
-   }
-   MO.FEaiApplication_construct = function FEaiApplication_construct(){
-      var o = this;
-      o.__base.FApplication.construct.call(o);
-      var thread = o._thread = RClass.create(FThread);
-      thread.setInterval(o._interval);
-      thread.addProcessListener(o, o.process);
-      RConsole.find(FThreadConsole).start(thread);
-   }
-   MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
-      return RClass.create(FEaiCanvas);
-   }
-   MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
-      var o = this;
-      var effectConsole = RConsole.find(FG3dEffectConsole);
-      effectConsole.register('general.color.eai.citys', FEaiCityEffect);
-      effectConsole.register('general.color.eai.citys.range', FEaiCityRangeEffect);
-   }
-   MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
-      var o = this;
-      o.__base.FApplication.dispose.call(o);
-   }
+MO.FEaiApplication = function FEaiApplication(o){
+   o = MO.Class.inherits(this, o, MO.FApplication);
+   o._thread           = null;
+   o._interval         = 10;
+   o.onOperationResize = MO.FEaiApplication_onOperationResize;
+   o.construct         = MO.FEaiApplication_construct;
+   o.createCanvas      = MO.FEaiApplication_createCanvas;
+   o.setup             = MO.FEaiApplication_setup;
+   o.dispose           = MO.FEaiApplication_dispose;
+   return o;
+}
+MO.FEaiApplication_onOperationResize = function FEaiApplication_onOperationResize(event){
+   var o = this;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
+   var activeDesktop = MO.Desktop.activeDesktop();
+   activeDesktop.resize(width, height);
+   MO.Logger.debug(o, 'Resize screen. (width={1}, height={2})', width, height);
+}
+MO.FEaiApplication_construct = function FEaiApplication_construct(){
+   var o = this;
+   o.__base.FApplication.construct.call(o);
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.process);
+   MO.Console.find(MO.FThreadConsole).start(thread);
+}
+MO.FEaiApplication_createCanvas = function FEaiApplication_createCanvas(){
+   return MO.Class.create(FEaiCanvas);
+}
+MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
+   var o = this;
+   var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
+   effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+}
+MO.FEaiApplication_dispose = function FEaiApplication_dispose(){
+   var o = this;
+   o.__base.FApplication.dispose.call(o);
 }
 with(MO){
    MO.FEaiCanvas = function FEaiCanvas(o){
@@ -105,6 +112,7 @@ with(MO){
       var o = this;
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
       var scene = chapter.selectSceneByCode(o._sceneCode);
+      o.onOperationResize(null);
    }
    MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
       var o = this;
@@ -170,16 +178,18 @@ with(MO){
 }
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
-   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
-   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
-   o.onResize  = MO.FEaiChartDesktop_onResize;
-   o.construct = MO.FEaiChartDesktop_construct;
-   o.build     = MO.FEaiChartDesktop_build;
-   o.dispose   = MO.FEaiChartDesktop_dispose;
+   o._canvas3d         = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d         = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onOperationResize = MO.FEaiChartDesktop_onOperationResize;
+   o.construct         = MO.FEaiChartDesktop_construct;
+   o.build             = MO.FEaiChartDesktop_build;
+   o.resize            = MO.FEaiChartDesktop_resize;
+   o.dispose           = MO.FEaiChartDesktop_dispose;
    return o;
 }
-MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(event){
+MO.FEaiChartDesktop_onOperationResize = function FEaiChartDesktop_onOperationResize(event){
    var o = this;
+   debugger
    var canvas3d = o._canvas3d;
    var hCanvas3d = canvas3d._hCanvas;
    var size = canvas3d.size();
@@ -197,14 +207,15 @@ MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
 MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
    o.__base.FEaiDesktop.build.call(o, hPanel);
-   MO.RWindow.lsnsResize.register(o, o.onResize);
    var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    var size = canvas3d.size();
    var hCanvas3d = canvas3d._hCanvas;
    o.canvasRegister(canvas3d);
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas2d.setDesktop(o);
    canvas2d.size().assign(size);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);
@@ -216,12 +227,32 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    hCanvas2d.style.height = '100%';
    o.canvasRegister(canvas2d);
 }
+MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(width, height){
+   var o = this;
+   var logicSize = o._logicSize;
+   var canvas2d = o._canvas2d;
+   o._screenSize.set(width, height);
+   o._canvas3d.resize(width, height);
+   canvas2d.resize(width, height);
+   var widthRate = width / logicSize.width;
+   var heightRate = height / logicSize.height;
+   var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
+   o._logicRate.set(widthRate, heightRate);
+   if(widthRate > heightRate){
+      o._calculateRate.set(widthRate / sizeRate, 1);
+   }else if(widthRate < heightRate){
+      o._calculateRate.set(1, heightRate / sizeRate);
+   }else{
+      o._calculateRate.set(1, 1);
+   }
+   canvas2d.context().setScale(sizeRate, sizeRate);
+}
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
    o.__base.FEaiDesktop.dispose.call(o);
 }
 MO.FEaiDesktop = function FEaiDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o = MO.Class.inherits(this, o, MO.FDesktop, MO.MEventDispatcher);
    o.construct = MO.FEaiDesktop_construct;
    o.dispose   = MO.FEaiDesktop_dispose;
    return o;
@@ -229,6 +260,9 @@ MO.FEaiDesktop = function FEaiDesktop(o){
 MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
    var o = this;
    o.__base.FDesktop.construct.call(o);
+   o._size.set(1920, 1080);
+   o._logicSize.set(1920, 1080);
+   o._screenSize.set(1920, 1080);
 }
 MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
    var o = this;

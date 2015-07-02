@@ -7,72 +7,30 @@ with(MO){
    // @history 150606
    //==========================================================
    MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       //..........................................................
       // @attribute
-      o._activeChapter      = RClass.register(o, new AGetter('_activeChapter'));
-      o._chapters           = RClass.register(o, new AGetter('_chapters'));
+      o._activeChapter       = RClass.register(o, new AGetter('_activeChapter'));
+      o._chapters            = RClass.register(o, new AGetter('_chapters'));
       // @attribute
-      o._eventEnterFrame    = null;
+      o._eventEnterFrame     = null;
       o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
-      o._eventLeaveFrame    = null;
+      o._eventLeaveFrame     = null;
       o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
-      // @event
-      o.onOperationDown     = FApplication_onOperationDown;
-      o.onOperationMove     = FApplication_onOperationMove;
-      o.onOperationUp       = FApplication_onOperationUp;
-      o.onOperationResize   = FApplication_onOperationResize;
-      //..........................................................
       // @method
-      o.construct           = FApplication_construct;
+      o.construct            = FApplication_construct;
       // @method
-      o.registerChapter     = FApplication_registerChapter;
-      o.unregisterChapter   = FApplication_unregisterChapter;
-      o.selectChapter       = FApplication_selectChapter;
-      o.selectChapterByCode = FApplication_selectChapterByCode;
+      o.registerChapter      = FApplication_registerChapter;
+      o.unregisterChapter    = FApplication_unregisterChapter;
+      o.selectChapter        = FApplication_selectChapter;
+      o.selectChapterByCode  = FApplication_selectChapterByCode;
       // @method
-      o.processEvent        = FApplication_processEvent;
-      o.process             = FApplication_process;
+      o.processEvent         = FApplication_processEvent;
+      o.process              = FApplication_process;
       // @method
-      o.dispose             = FApplication_dispose;
+      o.dispose              = FApplication_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>操作落下处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FApplication_onOperationDown = function FApplication_onOperationDown(){
-      var o = this;
-   }
-
-   //==========================================================
-   // <T>操作移动处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FApplication_onOperationMove = function FApplication_onOperationMove(){
-      var o = this;
-   }
-
-   //==========================================================
-   // <T>操作抬起处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FApplication_onOperationUp = function FApplication_onOperationUp(){
-      var o = this;
-   }
-
-   //==========================================================
-   // <T>操作大小处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FApplication_onOperationResize = function FApplication_onOperationResize(){
-      var o = this;
    }
 
    //==========================================================
@@ -158,6 +116,9 @@ with(MO){
    //==========================================================
    MO.FApplication_processEvent = function FApplication_processEvent(event){
       var o = this;
+      // 处理事件
+      o.dispatcherEvent(event);
+      // 激活章节处理事件
       var chapter = o._activeChapter;
       if(chapter){
          chapter.processEvent(event);

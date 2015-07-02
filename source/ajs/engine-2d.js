@@ -9,6 +9,7 @@ with(MO){
       o.htmlCanvas = FE2dCanvas_htmlCanvas;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
+      o.resize     = FE2dCanvas_resize;
       o.reset      = FE2dCanvas_reset;
       o.dispose    = FE2dCanvas_dispose;
       return o;
@@ -46,6 +47,14 @@ with(MO){
       o._hPanel = hPanel;
       hPanel.appendChild(hCanvas);
       o.onResize();
+   }
+   MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
+      var o = this;
+      o._size.set(width, height);
+      o._hCanvas.width = width;
+      o._hCanvas.height = height;
+      o._hCanvas.style.width = width + 'px';
+      o._hCanvas.style.height = height + 'px';
    }
    MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
       var o = this;

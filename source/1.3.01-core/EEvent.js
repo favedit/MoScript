@@ -21,6 +21,8 @@ MO.EEvent = new function EEvent(){
    o.Enter         = 'Enter';
    // @attribute 失去热点
    o.Leave         = 'Leave';
+   // @attribute 改变大小
+   o.Resize        = 'Reisze';
    // @attribute 获得焦点
    o.Focus         = 'Focus';
    // @attribute 失去焦点
@@ -31,6 +33,8 @@ MO.EEvent = new function EEvent(){
    o.OperationMove = 'OperationMove';
    // @attribute 操作抬起
    o.OperationUp   = 'OperationUp';
+   // @attribute 操作大小
+   o.OperationResize = 'OperationResize';
    // @attribute 鼠标落下
    o.MouseDown     = 'MouseDown';
    // @attribute 鼠标移动

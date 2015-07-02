@@ -107,11 +107,13 @@ MO.EEvent = new function EEvent(){
    o.LeaveFrame    = 'LeaveFrame';
    o.Enter         = 'Enter';
    o.Leave         = 'Leave';
+   o.Resize        = 'Reisze';
    o.Focus         = 'Focus';
    o.Blur          = 'Blur';
    o.OperationDown = 'OperationDown';
    o.OperationMove = 'OperationMove';
    o.OperationUp   = 'OperationUp';
+   o.OperationResize = 'OperationResize';
    o.MouseDown     = 'MouseDown';
    o.MouseMove     = 'MouseMove';
    o.MouseUp       = 'MouseUp';
@@ -4089,25 +4091,26 @@ with(MO){
 with (MO) {
    MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
       o = RClass.inherits(this, o, FG2dContext);
-      o._handle        = null;
-      o.construct      = FG2dCanvasContext_construct;
-      o.linkCanvas     = FG2dCanvasContext_linkCanvas;
-      o.setFont        = FG2dCanvasContext_setFont;
-      o.clear          = FG2dCanvasContext_clear;
-      o.textWidth      = FG2dCanvasContext_textWidth;
-      o.drawLine       = FG2dCanvasContext_drawLine;
-      o.drawRectangle  = FG2dCanvasContext_drawRectangle;
-      o.drawTriangle   = FG2dCanvasContext_drawTriangle;
-      o.drawCircle     = FG2dCanvasContext_drawCircle;
-      o.drawText       = FG2dCanvasContext_drawText;
-      o.drawImage      = FG2dCanvasContext_drawImage;
-      o.drawQuadrilateral = FG2dCanvasContext_drawQuadrilateral;
-      o.drawBorderLine = FG2dCanvasContext_drawBorderLine;
-      o.drawBorder     = FG2dCanvasContext_drawBorder;
-      o.drawGridImage  = FG2dCanvasContext_drawGridImage;
-      o.fillRectangle = FG2dCanvasContext_fillRectangle;
+      o._handle              = null;
+      o.construct            = FG2dCanvasContext_construct;
+      o.linkCanvas           = FG2dCanvasContext_linkCanvas;
+      o.setScale             = FG2dCanvasContext_setScale;
+      o.setFont              = FG2dCanvasContext_setFont;
+      o.clear                = FG2dCanvasContext_clear;
+      o.textWidth            = FG2dCanvasContext_textWidth;
+      o.drawLine             = FG2dCanvasContext_drawLine;
+      o.drawRectangle        = FG2dCanvasContext_drawRectangle;
+      o.drawTriangle         = FG2dCanvasContext_drawTriangle;
+      o.drawCircle           = FG2dCanvasContext_drawCircle;
+      o.drawText             = FG2dCanvasContext_drawText;
+      o.drawImage            = FG2dCanvasContext_drawImage;
+      o.drawQuadrilateral    = FG2dCanvasContext_drawQuadrilateral;
+      o.drawBorderLine       = FG2dCanvasContext_drawBorderLine;
+      o.drawBorder           = FG2dCanvasContext_drawBorder;
+      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
+      o.fillRectangle        = FG2dCanvasContext_fillRectangle;
       o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
-      o.toBytes        = FG2dCanvasContext_toBytes;
+      o.toBytes              = FG2dCanvasContext_toBytes;
       return o;
    }
    MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
@@ -4125,6 +4128,9 @@ with (MO) {
          o._handle = handle;
       }
       o._hCanvas = hCanvas;
+   }
+   MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
+      this._handle.scale(width, height);
    }
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;
@@ -9552,6 +9558,7 @@ with(MO){
 }
 MO.FCanvas = function FCanvas(o){
    o = MO.Class.inherits(this, o, MO.FObject);
+   o._desktop     = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._activeStage = MO.Class.register(o, new MO.AGetter('_activeStage'));
    o.construct    = MO.FCanvas_construct;
    o.dispose      = MO.FCanvas_dispose;
@@ -9563,22 +9570,37 @@ MO.FCanvas_construct = function FCanvas_construct(){
 }
 MO.FCanvas_dispose = function FCanvas_dispose(){
    var o = this;
+   o._desktop = null;
    o.__base.FObject.dispose.call(o);
 }
 MO.FDesktop = function FDesktop(o){
    o = MO.Class.inherits(this, o, MO.FObject);
+   o._size            = MO.Class.register(o, new MO.AGetter('_size'));
+   o._sizeRate        = MO.Class.register(o, new MO.AGetter('_sizeRate'), 1);
+   o._calculateSize   = MO.Class.register(o, new MO.AGetter('_calculateSize'));
+   o._calculateRate   = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._logicSize       = MO.Class.register(o, new MO.AGetter('_logicSize'));
+   o._logicRate       = MO.Class.register(o, new MO.AGetter('_logicRate'));
+   o._screenSize      = MO.Class.register(o, new MO.AGetter('_screenSize'));
    o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    o.construct        = MO.FDesktop_construct;
    o.canvasRegister   = MO.FDesktop_canvasRegister;
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
    o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
+   o.resize           = MO.FDesktop_resize;
    o.dispose          = MO.FDesktop_dispose;
    return o;
 }
 MO.FDesktop_construct = function FDesktop_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+   o._calculateSize = new MO.SSize2(1280, 720);
+   o._calculateRate = new MO.SSize2(1, 1);
+   o._logicSize = new MO.SSize2(1280, 720);
+   o._logicRate = new MO.SSize2(1, 1);
+   o._screenSize = new MO.SSize2(1280, 720);
    o._canvases = new MO.TObjects();
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
@@ -9597,8 +9619,16 @@ MO.FDesktop_setup = function FDesktop_setup(hPanel){
 MO.FDesktop_build = function FDesktop_build(hPanel){
    var o = this;
 }
+MO.FDesktop_resize = function FDesktop_resize(){
+   var o = this;
+}
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
+   o._size = RObject.dispose(o._size);
+   o._calculateSize = RObject.dispose(o._calculateSize);
+   o._logicSize = RObject.dispose(o._logicSize);
+   o._logicRate = RObject.dispose(o._logicRate);
+   o._screenSize = RObject.dispose(o._screenSize);
    o._canvases = RObject.dispose(o._canvases);
    o.__base.FObject.dispose.call(o);
 }
@@ -10772,6 +10802,7 @@ with(MO){
       o.htmlCanvas = FE2dCanvas_htmlCanvas;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
+      o.resize     = FE2dCanvas_resize;
       o.reset      = FE2dCanvas_reset;
       o.dispose    = FE2dCanvas_dispose;
       return o;
@@ -10809,6 +10840,14 @@ with(MO){
       o._hPanel = hPanel;
       hPanel.appendChild(hCanvas);
       o.onResize();
+   }
+   MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
+      var o = this;
+      o._size.set(width, height);
+      o._hCanvas.width = width;
+      o._hCanvas.height = height;
+      o._hCanvas.style.width = width + 'px';
+      o._hCanvas.style.height = height + 'px';
    }
    MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
       var o = this;

@@ -1432,6 +1432,7 @@ with(MO){
          hEvent = o._hWindow.event;
       }
       var event = o._eventResize;
+      event.code = EEvent.Resize;
       event.attachEvent(hEvent);
       o.lsnsResize.process(event);
    }

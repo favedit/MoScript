@@ -1,44 +1,54 @@
-MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FGuiDesktop);
-   o._canvas        = MO.Class.register(o, new MO.AGetSet('_canvas'));
-   o.onResize       = MO.FGuiCanvasDesktop_onResize;
-   o.construct      = MO.FGuiCanvasDesktop_construct;
-   o.processResize  = MO.FGuiCanvasDesktop_processResize;
-   o.processControl = MO.FGuiCanvasDesktop_processControl;
-   o.process        = MO.FGuiCanvasDesktop_process;
-   o.dispose        = MO.FGuiCanvasDesktop_dispose;
+MO.FGuiCanvasManager = function FGuiCanvasManager(o){
+   o = MO.Class.inherits(this, o, MO.FGuiManager);
+   o._size             = MO.Class.register(o, new MO.AGetter('_size'));
+   o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._sizeRate         = MO.Class.register(o, new MO.AGetter('_sizeRate'));
+   o._logicRate        = MO.Class.register(o, new MO.AGetter('_logicRate'));
+   o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
+   o.construct         = MO.FGuiCanvasManager_construct;
+   o.processResize     = MO.FGuiCanvasManager_processResize;
+   o.processControl    = MO.FGuiCanvasManager_processControl;
+   o.process           = MO.FGuiCanvasManager_process;
+   o.dispose           = MO.FGuiCanvasManager_dispose;
    return o;
 }
-MO.FGuiCanvasDesktop_onResize = function FGuiCanvasDesktop_onResize(event){
-}
-MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
+MO.FGuiCanvasManager_onOperationResize = function FGuiCanvasManager_onOperationResize(event){
    var o = this;
-   o.__base.FGuiDesktop.construct.call(o);
-   MO.RWindow.lsnsResize.register(o, o.onResize);
 }
-MO.FGuiCanvasDesktop_processResize = function FGuiCanvasDesktop_processResize(control){
-}
-MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(control){
+MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    var o = this;
-   o.__base.FGuiDesktop.process.call(o);
+   o.__base.FGuiManager.construct.call(o);
+   o._size = new MO.SSize2();
+   o._calculateRate = new MO.SSize2();
+}
+MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
+}
+MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
+   var o = this;
+   o.__base.FGuiManager.process.call(o);
    if(!control.testReady()){
    }
    if(!control.testDirty()){
    }
    var graphic = o._canvas.context();
-   var size = graphic.size();
    var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   event.optionContainer = true;
    event.graphic = graphic;
-   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.parentRectangle.set(0, 0, o._size.width, o._size.height);
+   event.calculateRate = o._calculateRate;
    event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
    MO.Memory.free(event);
    return true;
 }
-MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
+MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
-   o.__base.FGuiDesktop.process.call(o);
+   o.__base.FGuiManager.process.call(o);
+   var desktop = MO.Desktop.activeDesktop();
+   o._size.assign(desktop.logicSize());
+   o._calculateRate.assign(desktop.calculateRate());
    var graphic = o._canvas.context();
    graphic.clear();
    var controls = o._controls;
@@ -50,9 +60,10 @@ MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
       }
    }
 }
-MO.FGuiCanvasDesktop_dispose = function FGuiCanvasDesktop_dispose(){
+MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
-   o.__base.FGuiDesktop.dispose.call(o);
+   o._size = RObject.dispose(o._size);
+   o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
    o = MO.Class.inherits(this, o, MO.FGuiTransform);
@@ -114,129 +125,6 @@ MO.FGuiChangeTransform_process = function FGuiChangeTransform_process(){
 MO.FGuiChangeTransform_dispose = function FGuiChangeTransform_dispose(){
    var o = this;
    o.__base.FGuiTransform.dispose.call(o);
-}
-with(MO){
-   MO.FGuiDesktop = function FGuiDesktop(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject);
-      o._controls         = RClass.register(o, new AGetter('_controls'));
-      o._transforms       = RClass.register(o, new AGetter('_transforms'));
-      o._visibleControls  = null;
-      o.construct         = FGuiDesktop_construct;
-      o.register          = FGuiDesktop_register;
-      o.unregister        = FGuiDesktop_unregister;
-      o.transformStart    = FGuiDesktop_transformStart;
-      o.setup             = FGuiDesktop_setup;
-      o.setVisible        = FGuiDesktop_setVisible;
-      o.show              = FGuiDesktop_show;
-      o.hide              = FGuiDesktop_hide;
-      o.processResize     = FGuiDesktop_processResize;
-      o.processEvent      = FGuiDesktop_processEvent;
-      o.processTransforms = FGuiDesktop_processTransforms;
-      o.process           = FGuiDesktop_process;
-      o.dispose           = FGuiDesktop_dispose;
-      return o;
-   }
-   MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._controls = new TObjects();
-      o._transforms = new TLooper();
-      o._visibleControls = new TObjects();
-   }
-   MO.FGuiDesktop_register = function FGuiDesktop_register(control){
-      this._controls.push(control);
-   }
-   MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
-      this._controls.remove(control);
-   }
-   MO.FGuiDesktop_transformStart = function FGuiDesktop_transformStart(transform){
-      var o = this;
-      transform.start();
-      o._transforms.pushUnique(transform);
-   }
-   MO.FGuiDesktop_setup = function FGuiDesktop_setup(){
-      var o = this;
-      var effectConsole = RConsole.find(FG3dEffectConsole);
-      effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
-   }
-   MO.FGuiDesktop_setVisible = function FGuiDesktop_setVisible(value){
-      var o = this;
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         control.setVisible(value);
-      }
-   }
-   MO.FGuiDesktop_show = function FGuiDesktop_show(){
-      this.setVisible(true);
-   }
-   MO.FGuiDesktop_hide = function FGuiDesktop_hide(){
-      this.setVisible(false);
-   }
-   MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
-      var o = this;
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         control.psResize();
-      }
-   }
-   MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
-      var o = this;
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
-         }
-      }
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
-      }
-   }
-   MO.FGuiDesktop_processTransforms = function FGuiDesktop_processTransforms(){
-      var o = this;
-      var transforms = o._transforms;
-      transforms.record();
-      while(transforms.next()){
-         var transform = transforms.current();
-         transform.process();
-         if(transform.isFinish()){
-            transforms.removeCurrent();
-         }
-      }
-   }
-   MO.FGuiDesktop_process = function FGuiDesktop_process(){
-      var o = this;
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         control.psUpdate();
-      }
-      o.processTransforms();
-   }
-   MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
-      var o = this;
-      o._controls = RObject.dispose(o._controls);
-      o._transforms = RObject.dispose(o._transforms);
-      o._visibleControls = RObject.dispose(o._visibleControls);
-      o.__base.FObject.dispose.call(o);
-   }
 }
 with(MO){
    MO.FGuiFrameConsole = function FGuiFrameConsole(o){
@@ -411,6 +299,132 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    }
    o._program.setParameter4('vc_position', x, y, width, height);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+with(MO){
+   MO.FGuiManager = function FGuiManager(o){
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MEventDispatcher);
+      o._controls         = RClass.register(o, new AGetter('_controls'));
+      o._transforms       = RClass.register(o, new AGetter('_transforms'));
+      o._visibleControls  = null;
+      o.construct         = FGuiManager_construct;
+      o.register          = FGuiManager_register;
+      o.unregister        = FGuiManager_unregister;
+      o.transformStart    = FGuiManager_transformStart;
+      o.setup             = FGuiManager_setup;
+      o.setVisible        = FGuiManager_setVisible;
+      o.show              = FGuiManager_show;
+      o.hide              = FGuiManager_hide;
+      o.processResize     = FGuiManager_processResize;
+      o.processEvent      = FGuiManager_processEvent;
+      o.processTransforms = FGuiManager_processTransforms;
+      o.process           = FGuiManager_process;
+      o.dispose           = FGuiManager_dispose;
+      return o;
+   }
+   MO.FGuiManager_construct = function FGuiManager_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._controls = new TObjects();
+      o._transforms = new TLooper();
+      o._visibleControls = new TObjects();
+   }
+   MO.FGuiManager_register = function FGuiManager_register(control){
+      this._controls.push(control);
+   }
+   MO.FGuiManager_unregister = function FGuiManager_unregister(control){
+      this._controls.remove(control);
+   }
+   MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
+      var o = this;
+      transform.start();
+      o._transforms.pushUnique(transform);
+   }
+   MO.FGuiManager_setup = function FGuiManager_setup(){
+      var o = this;
+      var effectConsole = RConsole.find(FG3dEffectConsole);
+      effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
+   }
+   MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.setVisible(value);
+      }
+   }
+   MO.FGuiManager_show = function FGuiManager_show(){
+      this.setVisible(true);
+   }
+   MO.FGuiManager_hide = function FGuiManager_hide(){
+      this.setVisible(false);
+   }
+   MO.FGuiManager_processResize = function FGuiManager_processResize(event){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psResize();
+      }
+   }
+   MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
+      var o = this;
+      o.dispatcherEvent(event);
+      if((event.code == EEvent.MouseDown) || (event.code == EEvent.MouseMove) || (event.code == EEvent.MouseUp)){
+         var context = o._graphicContext;
+         var ratio = context.ratio();
+         var locationX = event.clientX * ratio;
+         var locationY = event.clientY * ratio;
+         var visibleControls = o._visibleControls;
+         visibleControls.clear();
+         var controls = o._controls;
+         var count = controls.count();
+         for(var i = 0; i < count; i++){
+            var control = controls.at(i);
+            if(control.visible()){
+               visibleControls.push(control);
+            }
+         }
+         var count = visibleControls.count();
+         for(var i = 0; i < count; i++){
+            var control = visibleControls.at(i);
+            var location = control.location();
+            event.locationX = locationX - location.x;
+            event.locationY = locationY - location.y;
+            control.processEvent(event);
+         }
+      }
+   }
+   MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
+      var o = this;
+      var transforms = o._transforms;
+      transforms.record();
+      while(transforms.next()){
+         var transform = transforms.current();
+         transform.process();
+         if(transform.isFinish()){
+            transforms.removeCurrent();
+         }
+      }
+   }
+   MO.FGuiManager_process = function FGuiManager_process(){
+      var o = this;
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         control.psUpdate();
+      }
+      o.processTransforms();
+   }
+   MO.FGuiManager_dispose = function FGuiManager_dispose(){
+      var o = this;
+      o._controls = RObject.dispose(o._controls);
+      o._transforms = RObject.dispose(o._transforms);
+      o._visibleControls = RObject.dispose(o._visibleControls);
+      o.__base.FObject.dispose.call(o);
+   }
 }
 MO.FGuiTransform = function FGuiTransform(o){
    o = MO.Class.inherits(this, o, MO.FObject);

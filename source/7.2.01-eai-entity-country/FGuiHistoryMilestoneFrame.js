@@ -65,8 +65,7 @@ with(MO){
    // @method
    //==========================================================
    MO.FGuiHistoryMilestoneFrame_onImageLoad = function FGuiHistoryMilestoneFrame_onImageLoad() {
-      var o = this;
-      o.repaint();
+      this.dirty();
    }
 
    //==========================================================

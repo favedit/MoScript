@@ -9,6 +9,7 @@ MO.FCanvas = function FCanvas(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
+   o._desktop     = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._activeStage = MO.Class.register(o, new MO.AGetter('_activeStage'));
    //..........................................................
    // @method
@@ -35,6 +36,7 @@ MO.FCanvas_construct = function FCanvas_construct(){
 //==========================================================
 MO.FCanvas_dispose = function FCanvas_dispose(){
    var o = this;
+   o._desktop = null;
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

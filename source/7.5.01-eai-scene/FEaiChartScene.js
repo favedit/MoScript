@@ -207,19 +207,16 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 显示左上
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(10, 10);
-   //stage.faceLayer().push(frame);
    o._desktop.register(frame);
    // 显示左上
    //var frame = o._titleBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TitleBar');
    //frame.setLocation(460, 20);
-   //stage.faceLayer().push(frame);
    //o._desktop.register(frame);
    //..........................................................
    // 显示总计
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
    frame.setLocation(650, 0);
-   //stage.faceLayer().push(frame);
-   o._desktop.register(frame);
+   //o._desktop.register(frame);
    //..........................................................
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
@@ -290,7 +287,6 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
       dateControl.setLabel(date.format('YYYY/MM/DD'));
       var timeControl = bar.findComponent('time');
       timeControl.setLabel(date.format('HH24:MI'));
-      bar.repaint();
    }
 }
 

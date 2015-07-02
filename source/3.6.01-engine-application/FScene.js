@@ -7,7 +7,7 @@ with(MO){
    // @history 150106
    //==========================================================
    MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       //..........................................................
       // @attribute
       o._code                = RClass.register(o, new AGetSet('_code'));
@@ -124,6 +124,8 @@ with(MO){
    //==========================================================
    MO.FScene_processEvent = function FScene_processEvent(event){
       var o = this;
+      // 处理事件
+      o.dispatcherEvent(event);
    }
 
    //==========================================================

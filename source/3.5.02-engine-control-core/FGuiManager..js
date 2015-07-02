@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @version 150612
    //==========================================================
-   MO.FGuiDesktop = function FGuiDesktop(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject);
+   MO.FGuiManager = function FGuiManager(o){
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MEventDispatcher);
       //..........................................................
       // @attribute
       o._controls         = RClass.register(o, new AGetter('_controls'));
@@ -15,24 +15,24 @@ with(MO){
       o._visibleControls  = null;
       //..........................................................
       // @method
-      o.construct         = FGuiDesktop_construct;
+      o.construct         = FGuiManager_construct;
       // @method
-      o.register          = FGuiDesktop_register;
-      o.unregister        = FGuiDesktop_unregister;
-      o.transformStart    = FGuiDesktop_transformStart;
+      o.register          = FGuiManager_register;
+      o.unregister        = FGuiManager_unregister;
+      o.transformStart    = FGuiManager_transformStart;
       // @method
-      o.setup             = FGuiDesktop_setup;
+      o.setup             = FGuiManager_setup;
       // @method
-      o.setVisible        = FGuiDesktop_setVisible;
-      o.show              = FGuiDesktop_show;
-      o.hide              = FGuiDesktop_hide;
+      o.setVisible        = FGuiManager_setVisible;
+      o.show              = FGuiManager_show;
+      o.hide              = FGuiManager_hide;
       // @method
-      o.processResize     = FGuiDesktop_processResize;
-      o.processEvent      = FGuiDesktop_processEvent;
-      o.processTransforms = FGuiDesktop_processTransforms;
-      o.process           = FGuiDesktop_process;
+      o.processResize     = FGuiManager_processResize;
+      o.processEvent      = FGuiManager_processEvent;
+      o.processTransforms = FGuiManager_processTransforms;
+      o.process           = FGuiManager_process;
       // @method
-      o.dispose           = FGuiDesktop_dispose;
+      o.dispose           = FGuiManager_dispose;
       return o;
    }
 
@@ -41,7 +41,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
+   MO.FGuiManager_construct = function FGuiManager_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
       // 创建界面集合
@@ -56,7 +56,7 @@ with(MO){
    // @method
    // @param control:FGuiControl 控件
    //==========================================================
-   MO.FGuiDesktop_register = function FGuiDesktop_register(control){
+   MO.FGuiManager_register = function FGuiManager_register(control){
       this._controls.push(control);
    }
 
@@ -66,7 +66,7 @@ with(MO){
    // @method
    // @param control:FGuiControl 控件
    //==========================================================
-   MO.FGuiDesktop_unregister = function FGuiDesktop_unregister(control){
+   MO.FGuiManager_unregister = function FGuiManager_unregister(control){
       this._controls.remove(control);
    }
 
@@ -76,7 +76,7 @@ with(MO){
    // @method
    // @param control:FGuiControl 控件
    //==========================================================
-   MO.FGuiDesktop_transformStart = function FGuiDesktop_transformStart(transform){
+   MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
       var o = this;
       transform.start();
       o._transforms.pushUnique(transform);
@@ -87,7 +87,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_setup = function FGuiDesktop_setup(){
+   MO.FGuiManager_setup = function FGuiManager_setup(){
       var o = this;
       // 注册效果器
       var effectConsole = RConsole.find(FG3dEffectConsole);
@@ -100,7 +100,7 @@ with(MO){
    // @method
    // @param value:Boolean 可见性
    //==========================================================
-   MO.FGuiDesktop_setVisible = function FGuiDesktop_setVisible(value){
+   MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
       var o = this;
       var controls = o._controls;
       var count = controls.count();
@@ -115,7 +115,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_show = function FGuiDesktop_show(){
+   MO.FGuiManager_show = function FGuiManager_show(){
       this.setVisible(true);
    }
 
@@ -124,7 +124,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_hide = function FGuiDesktop_hide(){
+   MO.FGuiManager_hide = function FGuiManager_hide(){
       this.setVisible(false);
    }
 
@@ -134,7 +134,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FGuiDesktop_processResize = function FGuiDesktop_processResize(event){
+   MO.FGuiManager_processResize = function FGuiManager_processResize(event){
       var o = this;
       var controls = o._controls;
       var count = controls.count();
@@ -150,32 +150,37 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FGuiDesktop_processEvent = function FGuiDesktop_processEvent(event){
+   MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
       var o = this;
-      // 计算屏幕点击
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      // 获得可见控件
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
+      // 处理事件
+      o.dispatcherEvent(event);
+      // 处理鼠标
+      if((event.code == EEvent.MouseDown) || (event.code == EEvent.MouseMove) || (event.code == EEvent.MouseUp)){
+         // 计算屏幕点击
+         var context = o._graphicContext;
+         var ratio = context.ratio();
+         var locationX = event.clientX * ratio;
+         var locationY = event.clientY * ratio;
+         // 获得可见控件
+         var visibleControls = o._visibleControls;
+         visibleControls.clear();
+         var controls = o._controls;
+         var count = controls.count();
+         for(var i = 0; i < count; i++){
+            var control = controls.at(i);
+            if(control.visible()){
+               visibleControls.push(control);
+            }
          }
-      }
-      // 事件处理
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
+         // 事件处理
+         var count = visibleControls.count();
+         for(var i = 0; i < count; i++){
+            var control = visibleControls.at(i);
+            var location = control.location();
+            event.locationX = locationX - location.x;
+            event.locationY = locationY - location.y;
+            control.processEvent(event);
+         }
       }
    }
 
@@ -184,7 +189,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_processTransforms = function FGuiDesktop_processTransforms(){
+   MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
       var o = this;
       var transforms = o._transforms;
       transforms.record();
@@ -202,7 +207,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_process = function FGuiDesktop_process(){
+   MO.FGuiManager_process = function FGuiManager_process(){
       var o = this;
       var controls = o._controls;
       var count = controls.count();
@@ -219,7 +224,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
+   MO.FGuiManager_dispose = function FGuiManager_dispose(){
       var o = this;
       o._controls = RObject.dispose(o._controls);
       o._transforms = RObject.dispose(o._transforms);

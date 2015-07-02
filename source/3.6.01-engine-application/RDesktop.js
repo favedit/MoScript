@@ -59,6 +59,20 @@ with(MO){
    }
 
    //==========================================================
+   // <T>屏幕大小事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.RDesktop.prototype.onResize = function RDesktop_onResize(event){
+      var o = this;
+      var application = o._application;
+      if(application){
+         application.processEvent(event);
+      }
+   }
+
+   //==========================================================
    // <T>获得应用。</T>
    //
    // @method
@@ -106,6 +120,7 @@ with(MO){
       RWindow.lsnsMouseDown.register(o, o.onMouseDown);
       RWindow.lsnsMouseMove.register(o, o.onMouseMove);
       RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+      RWindow.lsnsResize.register(o, o.onResize);
       // 创建应用
       var application = MO.Application = o._application = MO.Class.create(clazz);
       return application;

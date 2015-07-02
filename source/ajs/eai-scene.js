@@ -789,7 +789,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o._desktop.register(frame);
    var frame = o._totalBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.TotalBar');
    frame.setLocation(650, 0);
-   o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
@@ -820,7 +819,6 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
       dateControl.setLabel(date.format('YYYY/MM/DD'));
       var timeControl = bar.findComponent('time');
       timeControl.setLabel(date.format('HH24:MI'));
-      bar.repaint();
    }
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
@@ -889,10 +887,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
-   o.selectDate         = MO.FEaiChartStatisticsScene_selectDate;
-   o.active             = MO.FEaiChartStatisticsScene_active;
    o.process            = MO.FEaiChartStatisticsScene_process;
-   o.deactive           = MO.FEaiChartStatisticsScene_deactive;
    return o;
 }
 MO.FEaiChartStatisticsScene_onLoadData = function FEaiChartStatisticsScene_onLoadData(event) {
@@ -953,37 +948,6 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
    matrix.setScale(0.32, 0.36, 0.32);
    matrix.update();
 }
-MO.FEaiChartStatisticsScene_selectDate = function FEaiChartStatisticsScene_selectDate(code) {
-   var o = this;
-   return;
-   var context = o.graphicContext();
-   var stage = o._activeStage;
-   var mapLayer = stage.mapLayer();
-   var borderLayer = stage.borderLayer();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var dateData = historyConsole.dates().get(code);
-   if(dateData){
-      o._timeline.setDegreeTime(o._currentDate);
-      var cityDatas = dateData.citys();
-      var cityEntities = o._cityEntities;
-      var count = cityEntities.count();
-      for (var i = 0; i < count; i++) {
-         var cityEntity = cityEntities.at(i);
-         var code = cityEntity.data().code();
-         var data = cityDatas.get(code);
-         cityEntity.update(data);
-      }
-      var total = o._totalBar.findComponent('total');
-      total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
-      o._totalBar.repaint();
-   }
-   o._citysRangeRenderable.upload();
-}
-MO.FEaiChartStatisticsScene_active = function FEaiChartStatisticsScene_active() {
-   var o = this;
-   o.__base.FEaiChartScene.active.call(o);
-}
 MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
@@ -1007,7 +971,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
       }
       if(!o._statusDesktopShow){
          var hTable = document.getElementById('id_table');
@@ -1021,20 +984,22 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          o._24HLastTick = currentTick;
       }
       o._investment.process();
-      var invementCurrent = o._investment.invementCurrent();
-      if(invementCurrent != null){
-         var bar = o._totalBar;
-         var total = bar.findComponent('total');
-         total.setValue(parseInt(invementCurrent).toString());
-         if(total.process()){
-            bar.repaint();
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      var invementTotalCurrent = o._investment.invementTotalCurrent();
+      if((invementDayCurrent != null) && (invementTotalCurrent != null)){
+         var logoBar = o._logoBar;
+         var investmentDay = logoBar.findComponent('investmentDay');
+         investmentDay.setValue(parseInt(invementDayCurrent + 100000000).toString());
+         if(investmentDay.process()){
+            logoBar.dirty();
+         }
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+         if(investmentTotal.process()){
+            logoBar.dirty();
          }
       }
    }
-}
-MO.FEaiChartStatisticsScene_deactive = function FEaiChartStatisticsScene_deactive() {
-   var o = this;
-   o.__base.FEaiChartScene.deactive.call(o);
 }
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
@@ -1108,8 +1073,8 @@ with(MO){
    }
    MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
       var o = this;
-      o._desktop.process();
       o.__base.FScene.onProcess.call(o);
+      o._desktop.process();
    }
    MO.FEaiScene_construct = function FEaiScene_construct(){
       var o = this;
@@ -1120,7 +1085,7 @@ with(MO){
       o.__base.FScene.setup.call(o);
       var activeDesktop = MO.Desktop.activeDesktop();
       var canvas2d = activeDesktop.canvas2d();
-      var desktop = o._desktop = RClass.create(FGuiCanvasDesktop);
+      var desktop = o._desktop = RClass.create(FGuiCanvasManager);
       desktop.linkGraphicContext(o);
       desktop.setCanvas(canvas2d);
       desktop.setup();
@@ -1137,25 +1102,19 @@ with(MO){
       var o = this;
       o.__base.FScene.active.call(o);
       var stage = o._activeStage;
-      MO.Eai.Canvas.selectStage(stage);
-      var stage = o._activeStage;
       if(o._optionDebug){
-         var faceLayer = stage.faceLayer();
          o._engineInfo.setStage(stage);
       }
+      MO.Eai.Canvas.selectStage(stage);
    }
    MO.FEaiScene_deactive = function FEaiScene_deactive(){
       var o = this;
       o.__base.FScene.deactive.call(o);
-      var stage = o._activeStage;
-      if(o._optionDebug){
-         var faceLayer = stage.faceLayer();
-      }
       MO.Eai.Canvas.selectStage(null);
    }
    MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
       var o = this;
-      o.__base.FScene.processEvent();
+      o.__base.FScene.processEvent.call(o, event);
       o._desktop.processEvent(event);
    }
    MO.FEaiScene_dispose = function FEaiScene_dispose(){

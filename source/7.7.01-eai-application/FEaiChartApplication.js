@@ -40,13 +40,8 @@ with(MO){
       // 选择舞台和章节
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
       var scene = chapter.selectSceneByCode(o._sceneCode);
-      // 创建场景画板
-      //var stage = scene.activeStage();
-      //var layer = stage.faceLayer();
-      //var timeline = MO.RClass.create(MO.FGuiTimeline);
-      //timeline.linkGraphicContext(MO.Eai.Canvas);
-      //timeline.build();
-      //layer.pushRenderable(timeline.renderable());
+      // 重置大小
+      o.onOperationResize(null);
    }
 
    //==========================================================

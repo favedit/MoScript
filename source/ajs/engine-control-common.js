@@ -234,6 +234,46 @@ MO.EGuiTimeUnit = new function EGuiTimeUnit() {
    o.Year   = 'year';
    return o;
 }
+MO.MEventDispatcher = function MEventDispatcher(o){
+   o = MO.Class.inherits(this, o);
+   o.onOperationDown   = MO.MEventDispatcher_onOperationDown;
+   o.onOperationMove   = MO.MEventDispatcher_onOperationMove;
+   o.onOperationUp     = MO.MEventDispatcher_onOperationUp;
+   o.onOperationResize = MO.MEventDispatcher_onOperationResize;
+   o.dispatcherEvent   = MO.MEventDispatcher_dispatcherEvent;
+   return o;
+}
+MO.MEventDispatcher_onOperationDown = function MEventDispatcher_onOperationDown(event){
+   var o = this;
+}
+MO.MEventDispatcher_onOperationMove = function MEventDispatcher_onOperationMove(event){
+   var o = this;
+}
+MO.MEventDispatcher_onOperationUp = function MEventDispatcher_onOperationUp(event){
+   var o = this;
+}
+MO.MEventDispatcher_onOperationResize = function MEventDispatcher_onOperationResize(event){
+   var o = this;
+}
+MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(event){
+   var o = this;
+   switch(event.code){
+      case MO.EEvent.MouseDown:
+         o.onOperationDown(event);
+         break;
+      case MO.EEvent.MouseMove:
+         o.onOperationMove(event);
+         break;
+      case MO.EEvent.MouseUp:
+         o.onOperationUp(event);
+         break;
+      case MO.EEvent.Resize:
+         o.onOperationResize(event);
+         break;
+      default:
+         throw new MO.TError('Unknown event type.');
+   }
+}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
@@ -687,7 +727,6 @@ with(MO){
       o.testDirty               = FGuiControl_testDirty;
       o.testInRange             = FGuiControl_testInRange;
       o.paint                   = FGuiControl_paint;
-      o.repaint                 = FGuiControl_repaint;
       o.update                  = FGuiControl_update;
       o.build                   = FGuiControl_build;
       o.processEvent            = FGuiControl_processEvent;
@@ -805,18 +844,9 @@ with(MO){
    }
    MO.FGuiControl_oeResize = function FGuiControl_oeResize(event){
       var o = this;
-      if(event.flag){
-      }
-      console.log(this);
       return EEventStatus.Continue;
    }
    MO.FGuiControl_oeUpdate = function FGuiControl_oeUpdate(event){
-      var o = this;
-      if(!o._statusPaint){
-         if(o.testReady()){
-            o.repaint();
-         }
-      }
       return EEventStatus.Continue;
    }
    MO.FGuiControl_construct = function FGuiControl_construct(){
@@ -876,6 +906,7 @@ with(MO){
       var clientRectangle = o._clientRectangle;
       var graphic = event.graphic;
       var parentRectangle = event.parentRectangle;
+      var calculateRate = event.calculateRate;
       var rectangle = event.rectangle;
       o._eventRectangle.assign(rectangle);
       var left = rectangle.left + location.x;
@@ -887,6 +918,9 @@ with(MO){
       switch(o._dockCd){
          case MO.EGuiDock.LeftTop:
             break;
+         case MO.EGuiDock.Right:
+            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
+            break;
          case MO.EGuiDock.Bottom:
             top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
             break;
@@ -894,7 +928,12 @@ with(MO){
             throw new TError(o, 'Invalid dockcd.');
       }
       if(o._anchorCd & EGuiAnchor.Right){
-         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0);
+         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0) * calculateRate.width;
+      }
+      if(event.optionContainer){
+         left *= calculateRate.width;
+         top *= calculateRate.height;
+         event.optionContainer = false;
       }
       clientRectangle.set(left, top, width, height);
       rectangle.assign(clientRectangle);
@@ -913,22 +952,6 @@ with(MO){
       o.onPaintEnd(event);
       rectangle.assign(o._eventRectangle);
       o._statusDirty = false;
-      o._statusPaint = true;
-   }
-   MO.FGuiControl_repaint = function FGuiControl_repaint(){
-      var o = this;
-      return;
-      var renderable = o._renderable;
-      if(!renderable){
-         throw new TError('Invalid renderable.');
-      }
-      var graphic = renderable.beginDraw();
-      var event = MO.Memory.alloc(SGuiPaintEvent)
-      event.graphic = graphic;
-      event.rectangle.assign(o._clientRectangle);
-      o.paint(event);
-      MO.Memory.free(event);
-      renderable.endDraw();
       o._statusPaint = true;
    }
    MO.FGuiControl_update = function FGuiControl_update(){
@@ -955,9 +978,6 @@ with(MO){
       renderable.setLocation(location.x, location.y);
       renderable.setSize(size.width, size.height);
       o.update();
-      if(o.testReady()){
-         o.repaint();
-      }
    }
    MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
       var o = this;

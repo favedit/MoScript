@@ -24,6 +24,7 @@ with(MO){
       o.htmlCanvas = FE2dCanvas_htmlCanvas;
       o.build      = FE2dCanvas_build;
       o.setPanel   = FE2dCanvas_setPanel;
+      o.resize     = FE2dCanvas_resize;
       o.reset      = FE2dCanvas_reset;
       // @method
       o.dispose    = FE2dCanvas_dispose;
@@ -100,6 +101,20 @@ with(MO){
       hPanel.appendChild(hCanvas);
       // 改变大小
       o.onResize();
+   }
+
+   //==========================================================
+   // <T>改变大小。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
+      var o = this;
+      o._size.set(width, height);
+      o._hCanvas.width = width;
+      o._hCanvas.height = height;
+      o._hCanvas.style.width = width + 'px';
+      o._hCanvas.style.height = height + 'px';
    }
 
    //==========================================================

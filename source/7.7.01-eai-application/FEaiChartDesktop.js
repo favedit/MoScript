@@ -9,18 +9,19 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    //..........................................................
    // @attribute
-   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
-   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o._canvas3d         = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d         = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    //..........................................................
    // @event
-   o.onResize  = MO.FEaiChartDesktop_onResize;
+   o.onOperationResize = MO.FEaiChartDesktop_onOperationResize;
    //..........................................................
    // @method
-   o.construct = MO.FEaiChartDesktop_construct;
+   o.construct         = MO.FEaiChartDesktop_construct;
    // @method
-   o.build     = MO.FEaiChartDesktop_build;
+   o.build             = MO.FEaiChartDesktop_build;
+   o.resize            = MO.FEaiChartDesktop_resize;
    // @method
-   o.dispose   = MO.FEaiChartDesktop_dispose;
+   o.dispose           = MO.FEaiChartDesktop_dispose;
    return o;
 }
 
@@ -30,8 +31,9 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartDesktop_onResize = function FEaiChartDesktop_onResize(event){
+MO.FEaiChartDesktop_onOperationResize = function FEaiChartDesktop_onOperationResize(event){
    var o = this;
+   debugger
    // 创建3D画板
    var canvas3d = o._canvas3d;
    var hCanvas3d = canvas3d._hCanvas;
@@ -65,9 +67,10 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
    o.__base.FEaiDesktop.build.call(o, hPanel);
    // 增加监听
-   MO.RWindow.lsnsResize.register(o, o.onResize);
+   // MO.RWindow.lsnsResize.register(o, o.onResize);
    // 创建3D画板
    var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    var size = canvas3d.size();
@@ -75,6 +78,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    o.canvasRegister(canvas3d);
    // 创建2D画板
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas2d.setDesktop(o);
    canvas2d.size().assign(size);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);
@@ -87,6 +91,38 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    hCanvas2d.style.width = '100%';
    hCanvas2d.style.height = '100%';
    o.canvasRegister(canvas2d);
+}
+
+//==========================================================
+// <T>改变大小处理。</T>
+//
+// @method
+// @param width:Integer 宽度
+// @param height:Integer 高度
+//==========================================================
+MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(width, height){
+   var o = this;
+   var logicSize = o._logicSize;
+   var canvas2d = o._canvas2d;
+   // 设置大小
+   o._screenSize.set(width, height);
+   o._canvas3d.resize(width, height);
+   canvas2d.resize(width, height);
+   // 计算比率
+   var widthRate = width / logicSize.width;
+   var heightRate = height / logicSize.height;
+   var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
+   o._logicRate.set(widthRate, heightRate);
+   //o._calculateSize.set(logicSize.width / widthRate, logicSize.width / heightRate);
+   if(widthRate > heightRate){
+      o._calculateRate.set(widthRate / sizeRate, 1);
+   }else if(widthRate < heightRate){
+      o._calculateRate.set(1, heightRate / sizeRate);
+   }else{
+      o._calculateRate.set(1, 1);
+   }
+   // 设置缩放
+   canvas2d.context().setScale(sizeRate, sizeRate);
 }
 
 //==========================================================

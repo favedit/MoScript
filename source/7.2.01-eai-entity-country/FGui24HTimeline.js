@@ -70,7 +70,7 @@ with (MO) {
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
       o._data = event.content.collection;
-      o.repaint();
+      o.dirty();
    }
 
    //==========================================================

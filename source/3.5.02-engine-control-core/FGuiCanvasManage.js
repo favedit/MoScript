@@ -5,23 +5,27 @@
 // @author maocy
 // @version 150612
 //==========================================================
-MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FGuiDesktop);
+MO.FGuiCanvasManager = function FGuiCanvasManager(o){
+   o = MO.Class.inherits(this, o, MO.FGuiManager);
    //..........................................................
    // @attribute
-   o._canvas        = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._size             = MO.Class.register(o, new MO.AGetter('_size'));
+   o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._sizeRate         = MO.Class.register(o, new MO.AGetter('_sizeRate'));
+   o._logicRate        = MO.Class.register(o, new MO.AGetter('_logicRate'));
+   o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   //..........................................................
+   // @event
+   o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    //..........................................................
    // @method
-   o.onResize       = MO.FGuiCanvasDesktop_onResize;
-   //..........................................................
+   o.construct         = MO.FGuiCanvasManager_construct;
    // @method
-   o.construct      = MO.FGuiCanvasDesktop_construct;
+   o.processResize     = MO.FGuiCanvasManager_processResize;
+   o.processControl    = MO.FGuiCanvasManager_processControl;
+   o.process           = MO.FGuiCanvasManager_process;
    // @method
-   o.processResize  = MO.FGuiCanvasDesktop_processResize;
-   o.processControl = MO.FGuiCanvasDesktop_processControl;
-   o.process        = MO.FGuiCanvasDesktop_process;
-   // @method
-   o.dispose        = MO.FGuiCanvasDesktop_dispose;
+   o.dispose           = MO.FGuiCanvasManager_dispose;
    return o;
 }
 
@@ -30,8 +34,8 @@ MO.FGuiCanvasDesktop = function FGuiCanvasDesktop(o){
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_onResize = function FGuiCanvasDesktop_onResize(event){
-   //this.processResize(event);
+MO.FGuiCanvasManager_onOperationResize = function FGuiCanvasManager_onOperationResize(event){
+   var o = this;
 }
 
 //==========================================================
@@ -39,11 +43,14 @@ MO.FGuiCanvasDesktop_onResize = function FGuiCanvasDesktop_onResize(event){
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
+MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    var o = this;
-   o.__base.FGuiDesktop.construct.call(o);
-   // 注册事件
-   MO.RWindow.lsnsResize.register(o, o.onResize);
+   o.__base.FGuiManager.construct.call(o);
+   // 设置属性
+   o._size = new MO.SSize2();
+   o._calculateRate = new MO.SSize2();
+   //o._logicRate = new MO.SSize2();
+   //o._sizeRate = new MO.SSize2();
 }
 
 //==========================================================
@@ -51,7 +58,7 @@ MO.FGuiCanvasDesktop_construct = function FGuiCanvasDesktop_construct(){
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_processResize = function FGuiCanvasDesktop_processResize(control){
+MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
    //control.psResize();
 }
 
@@ -60,9 +67,9 @@ MO.FGuiCanvasDesktop_processResize = function FGuiCanvasDesktop_processResize(co
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(control){
+MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
    var o = this;
-   o.__base.FGuiDesktop.process.call(o);
+   o.__base.FGuiManager.process.call(o);
    // 检查准备好
    if(!control.testReady()){
       //return false;
@@ -73,11 +80,14 @@ MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(
    }
    // 获得尺寸
    var graphic = o._canvas.context();
-   var size = graphic.size();
    // 绘制处理
    var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   event.optionContainer = true;
    event.graphic = graphic;
-   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.parentRectangle.set(0, 0, o._size.width, o._size.height);
+   event.calculateRate = o._calculateRate;
+   //event.logicRate = o._logicRate;
+   //event.sizeRate = o._sizeRate;
    event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
@@ -90,9 +100,15 @@ MO.FGuiCanvasDesktop_processControl = function FGuiCanvasDesktop_processControl(
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
+MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
-   o.__base.FGuiDesktop.process.call(o);
+   o.__base.FGuiManager.process.call(o);
+   // 获得大小
+   var desktop = MO.Desktop.activeDesktop();
+   o._size.assign(desktop.logicSize());
+   o._calculateRate.assign(desktop.calculateRate());
+   //o._logicRate.assign(desktop.logicRate());
+   //o._sizeRate = desktop.sizeRate();
    // 清空画板
    var graphic = o._canvas.context();
    graphic.clear();
@@ -112,8 +128,9 @@ MO.FGuiCanvasDesktop_process = function FGuiCanvasDesktop_process(){
 //
 // @method
 //==========================================================
-MO.FGuiCanvasDesktop_dispose = function FGuiCanvasDesktop_dispose(){
+MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
+   o._size = RObject.dispose(o._size);
    // 父处理
-   o.__base.FGuiDesktop.dispose.call(o);
+   o.__base.FGuiManager.dispose.call(o);
 }

@@ -6,7 +6,7 @@
 // @history 150701
 //==========================================================
 MO.FEaiDesktop = function FEaiDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o = MO.Class.inherits(this, o, MO.FDesktop, MO.MEventDispatcher);
    //..........................................................
    // @method
    o.construct = MO.FEaiDesktop_construct;
@@ -23,6 +23,9 @@ MO.FEaiDesktop = function FEaiDesktop(o){
 MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
    var o = this;
    o.__base.FDesktop.construct.call(o);
+   o._size.set(1920, 1080);
+   o._logicSize.set(1920, 1080);
+   o._screenSize.set(1920, 1080);
 }
 
 //==========================================================

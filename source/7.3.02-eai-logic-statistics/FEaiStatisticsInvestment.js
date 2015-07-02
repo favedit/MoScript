@@ -10,46 +10,48 @@ with(MO){
       o = RClass.inherits(this, o, FObject, MGraphicObject);
       //..........................................................
       // @attribute
-      o._dateSetup       = false;
-      o._beginDate       = MO.Class.register(o, new AGetter('_beginDate'));
-      o._endDate         = MO.Class.register(o, new AGetter('_endDate'));
-      o._invementCurrent = MO.Class.register(o, new AGetter('_invementCurrent'), 0);
-      o._invementTotal   = MO.Class.register(o, new AGetter('_invementTotal'));
-      o._intervalMinute  = 1;
+      o._dateSetup            = false;
+      o._beginDate            = MO.Class.register(o, new AGetter('_beginDate'));
+      o._endDate              = MO.Class.register(o, new AGetter('_endDate'));
+      o._invementDayCurrent   = MO.Class.register(o, new AGetter('_invementDayCurrent'), 0);
+      o._invementDay          = MO.Class.register(o, new AGetter('_invementDay'), 0);
+      o._invementTotalCurrent = MO.Class.register(o, new AGetter('_invementTotalCurrent'), 0);
+      o._invementTotal        = MO.Class.register(o, new AGetter('_invementTotal'), 0);
+      o._intervalMinute       = 1;
       // @attribute
-      o._mapEntity       = MO.Class.register(o, new AGetSet('_mapEntity'));
-      o._display         = MO.Class.register(o, new AGetter('_display'));
+      o._mapEntity            = MO.Class.register(o, new AGetSet('_mapEntity'));
+      o._display              = MO.Class.register(o, new AGetter('_display'));
       // @attribute
-      o._entities        = MO.Class.register(o, new AGetter('_entities'));
-      o._tableEntities   = MO.Class.register(o, new AGetter('_tableEntities'));
-      o._showShapes      = MO.Class.register(o, new AGetter('_showShapes'));
+      o._entities             = MO.Class.register(o, new AGetter('_entities'));
+      o._tableEntities        = MO.Class.register(o, new AGetter('_tableEntities'));
+      o._showShapes           = MO.Class.register(o, new AGetter('_showShapes'));
       // @attribute
-      o._tableCount      = 22;
-      o._tableInterval   = 1000;
-      o._tableTick       = 1;
-      o._dataTicker      = null;
+      o._tableCount           = 22;
+      o._tableInterval        = 1000;
+      o._tableTick            = 1;
+      o._dataTicker           = null;
       // @attribute
-      o._entityPool      = null;
-      o._shapePool       = null;
+      o._entityPool           = null;
+      o._shapePool            = null;
       // @attribute
-      o._autio1          = null;
-      o._autio2          = null;
-      o._autio3          = null;
-      o._autio4          = null;
+      o._autio1               = null;
+      o._autio2               = null;
+      o._autio3               = null;
+      o._autio4               = null;
       //..........................................................
       // @method
-      o.onInvestment     = FEaiStatisticsInvestment_onInvestment;
+      o.onInvestment          = FEaiStatisticsInvestment_onInvestment;
       //..........................................................
       // @method
-      o.construct        = FEaiStatisticsInvestment_construct;
-      o.allocEntity      = FEaiStatisticsInvestment_allocEntity;
-      o.allocShape       = FEaiStatisticsInvestment_allocShape;
-      o.setup            = FEaiStatisticsInvestment_setup;
+      o.construct             = FEaiStatisticsInvestment_construct;
+      o.allocEntity           = FEaiStatisticsInvestment_allocEntity;
+      o.allocShape            = FEaiStatisticsInvestment_allocShape;
+      o.setup                 = FEaiStatisticsInvestment_setup;
       // @method
-      o.focusEntity      = FEaiStatisticsInvestment_focusEntity;
-      o.process          = FEaiStatisticsInvestment_process;
+      o.focusEntity           = FEaiStatisticsInvestment_focusEntity;
+      o.process               = FEaiStatisticsInvestment_process;
       // @method
-      o.dispose          = FEaiStatisticsInvestment_dispose;
+      o.dispose               = FEaiStatisticsInvestment_dispose;
       return o;
    }
 
@@ -62,6 +64,7 @@ with(MO){
       var o = this;
       var content = event.content;
       // 设置总量
+      o._invementDay = content.investment_day;
       o._invementTotal = content.investment_total;
       // 设置实体集合
       var dataset = content.collection;
@@ -282,12 +285,22 @@ with(MO){
                }
             }
          }
+         //..........................................................
          // 计算总数
          var count = entities.count();
-         o._invementCurrent = o._invementTotal;
+         var invementDay = o._invementDay;
+         var invementTotal = o._invementTotal;
          for(var i = 0; i < count; i++){
             var entity = entities.at(i);
-            o._invementCurrent -= entity.investment()
+            var investment = entity.investment();
+            invementDay -= investment;
+            invementTotal -= investment;
+         }
+         if(invementDay > o._invementDayCurrent){
+            o._invementDayCurrent = invementDay;
+         }
+         if(invementTotal > o._invementTotalCurrent){
+            o._invementTotalCurrent = invementTotal;
          }
          // 设置时间
          o._tableTick = currentTick;
