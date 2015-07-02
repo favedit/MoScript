@@ -25,6 +25,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._currentDate       = null;
    // @attribute
    o._timeline          = null;
+   o._liveTable         = null;
    // @attribute
    o._statusStart       = false;
    o._statusLayerCount  = 150;
@@ -103,6 +104,20 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
+   //..........................................................
+   // 创建表格
+   var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
+   liveTable.setName('LiveTable');
+   //liveTable.setDockCd(MO.EGuiDock.Right);
+   //liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+   liveTable.setLeft(MO.Eai.Canvas.logicSize().width - 600 - 20);
+   liveTable.setTop(20);
+   liveTable.setWidth(600);
+   liveTable.setHeight(1030);
+   //liveTable.sync();
+   liveTable.linkGraphicContext(o);
+   liveTable.build();
+   o._desktop.register(liveTable);
    //..........................................................
    // 隐藏全部界面
    o._desktop.hide();
