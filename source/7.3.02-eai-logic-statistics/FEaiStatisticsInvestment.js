@@ -7,7 +7,7 @@ with(MO){
    // @history 150619
    //==========================================================
    MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject);
+      o = RClass.inherits(this, o, FObject, MGraphicObject, MListener);
       //..........................................................
       // @attribute
       o._dateSetup            = false;
@@ -51,7 +51,9 @@ with(MO){
       o.focusEntity           = FEaiStatisticsInvestment_focusEntity;
       o.process               = FEaiStatisticsInvestment_process;
       // @method
-      o.dispose               = FEaiStatisticsInvestment_dispose;
+      o.dispose = FEaiStatisticsInvestment_dispose;
+      // @event
+      o._tableEntitiesChangedListeners = RClass.register(o, new AListener('_tableEntitiesChangedListeners', EEvent.DataChanged));
       return o;
    }
 
@@ -284,6 +286,11 @@ with(MO){
                   row.cells[3].innerHTML = investment;
                }
             }*/
+            // 触发事件
+            var dsEvent = MO.Memory.alloc(SEvent);
+            dsEvent.sender = o;
+            dsEvent.data = o._tableEntities;
+            o.processDataChangedListener(dsEvent);
          }
          //..........................................................
          // 计算总数

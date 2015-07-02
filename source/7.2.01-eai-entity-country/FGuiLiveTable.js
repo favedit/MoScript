@@ -10,22 +10,11 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
-      o._bgImage = null;
-      o._shiningImage = null;
-      o._numImages = null;
-      o._yiImage = null;
-      // @attribute
       o._data = RClass.register(o, new AGetSet('_data'));
-      o._startTick = 0;
-      o._popDuration = 500;
-      o._showDuration = 2000;
-      o._closeDuration = 500;
       //..........................................................
       // @method
       o.construct = FGuiLiveTable_construct;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
-      o.onImageLoad = FGuiLiveTable_onImageLoad;
-      o.show = FGuiLiveTable_show;
       // @method
       o.dispose = FGuiLiveTable_dispose;
       // @event
@@ -41,32 +30,6 @@ with(MO){
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
-      o._bgImage = MO.Class.create(MO.FImage);
-      o._bgImage.addLoadListener(o, o.onImageLoad);
-      o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
-      o._shiningImage = MO.Class.create(MO.FImage);
-      o._shiningImage.addLoadListener(o, o.onImageLoad);
-      o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
-      o._yiImage = MO.Class.create(MO.FImage);
-      o._yiImage.addLoadListener(o, o.onImageLoad);
-      o._yiImage.loadUrl('../ars/eai/number/yi.png');
-      o._numImages = new Array(10);
-      for (var i = 0; i < 10; i++) {
-         var img = MO.Class.create(MO.FImage);
-         img.addLoadListener(o, o.onImageLoad);
-         img.loadUrl('../ars/eai/number/' + i + '.png');
-         o._numImages[i] = img;
-      }
-   }
-
-   //==========================================================
-   // <T>图片加载完成后重绘。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
-      var o = this;
-      o.dirty();
    }
 
    //==========================================================
@@ -79,87 +42,104 @@ with(MO){
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
-
-
       
       var left = rectangle.left;
       var top = rectangle.top;
-      var right = rectangle.left + rectangle.width;
-      var bottom = rectangle.top + rectangle.height;
+      var width = rectangle.width;
+      var height = rectangle.height;
+      var right = left + width;
+      var bottom = top + height;
       // 边框
-      graphic.drawRectangle(left, top, rectangle.width, rectangle.height, '#1DACE5', 2);
+      graphic.fillRectangle(left, top, width, height, 'rgba(29, 172, 229, 0.1)');
+      graphic.drawRectangle(left, top, width, height, '#1DACE5', 2);
       // 标题
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
-      
       graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 40, '#1DACE5');
+      // 表头
+      graphic.setFont('22px Microsoft YaHei');
+      var headText = '';
+      var headTextWidth = 0;
+      var headLeft = left + 5;
+      var headTop = top + 64;
+      var headTextTop = top + 92;
+      var colWidth = new Array(110, 110, 165, 202);
+      var headHeight = 40;
+      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#1DACE5');
+      headText = '时间';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[0] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
+      headLeft += colWidth[0] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#1DACE5');
+      headText = '城市';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[1] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
+      headLeft += colWidth[1] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#1DACE5');
+      headText = '顾客-手机尾号';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[2] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
 
-      //var bgSize = o._bgImage._size;
-      //var shiningSize = o._shiningImage._size;
-      //var hCenter = rectangle.left + rectangle.width / 2;
+      headLeft += colWidth[2] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#1DACE5');
+      headText = '投资额(元)';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[3] - 5 - headTextWidth, headTextTop, '#FFFFFF');
+      // 表内容
+      if (o._data == null || o._data.count() < 1) {
+         return;
+      }
 
-      //var textLeft = hCenter - 120;
-      //var textTop = rectangle.top + 450;
+      graphic.setFont('22px Microsoft YaHei');
+      var tableTop = top + 124;
+      var tableLeft = left + 5;
+      var tableLineHeight = 24;
+      var tableText = '';
+      var tableTextWidth = 0;
+      var date = MO.Memory.alloc(TDate);
+      for (var i = 0; i < o._data.count() ; i++) {
+         tableLeft = left + 5;
+         var entity = o._data.at(i);
+         date.parse(entity.date());
+         tableText = date.format('HH24:MI:SS');
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
 
-      //graphic.drawImage(o._shiningImage, hCenter - shiningSize.width / 2, rectangle.top, shiningSize.width, shiningSize.height);
-      //graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top + shiningSize.height / 2, bgSize.width, bgSize.height);
+         tableLeft += colWidth[0] + 1;
+         var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+         var cityEntity = cityConsole.findCityByCard(entity.card());
+         tableText = '';
+         if (cityEntity) {
+            tableText = cityEntity.label();
+         }
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
 
-      //graphic.setFont('bold 20px Microsoft YaHei');
-      ////graphic.drawText('投资总额：', textLeft, textTop, '#FFE849');
-      //graphic.drawText('达成日数：', textLeft, textTop + 50, '#FFE849');
-      //graphic.drawText('分公司数：', textLeft, textTop + 100, '#FFE849');
-      //graphic.drawText('理财师数：', textLeft, textTop + 150, '#FFE849');
-      //if (o.data()) {
-      //   //graphic.drawText(o.data().investmentTotal(), textLeft + 120, textTop, '#FFA800');
-      //   var invesText = o.data().investmentTotal().toString();
-      //   var numWidth = invesText.length * 60 + 80;
-      //   var numLeft = hCenter - numWidth / 2;
-      //   for (var i = 0; i < invesText.length; i++) {
-      //      graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
-      //   }
-      //   graphic.drawImage(o._yiImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
-      //   graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
-      //   graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
-      //   graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
-      //   var passedTick = MO.Timer.current() - o._startTick;
-      //   var showTick = passedTick - o._popDuration;
-      //   var closeTick = passedTick - o._showDuration - o._popDuration;
-      //   var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
-      //   if (passedTick < o._popDuration) {
-      //      p = passedTick / o._popDuration;
-      //      p = 1 - (1 - p) * (1 - p);
-      //      o.setLeft(-rectangle.width + slideDistance * p);
-      //   }
-      //   else if (showTick < o._showDuration) {
-      //   }
-      //   else if (closeTick < o._closeDuration) {
-      //      p = closeTick / o._closeDuration;
-      //      p = p * p;
-      //      o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-      //   }
-      //   else {
-      //      o._data = null;
-      //      o.setVisible(false);
-      //      var dsEvent = MO.Memory.alloc(SEvent);
-      //      dsEvent.sender = o;
-      //      o.processDataChangedListener(dsEvent);
-      //   }
-      //}
-      
-   }
+         tableLeft += colWidth[1] + 1;
+         tableText = entity.customer() + ' - ' + entity.phone();
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
 
-   //==========================================================
-   // <T>显示。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FGuiLiveTable_show = function FGuiLiveTable_show() {
-      o = this;
-      o.setVisible(true);
-      o._startTick = MO.Timer.current();
+         tableLeft += colWidth[2] + 1;
+         var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
+         if (investment.length > 7) {
+            var high = investment.substring(0, investment.length - 7);
+            var low = investment.substring(investment.length - 7, investment.length);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#FF4482');
+            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+         } else {
+            tableText = investment;
+            tableTextWidth = graphic.textWidth(tableText);
+            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+         }
+      }
+      //表框
+      graphic.drawRectangle(left + 3, top + 62, width - 6, tableTop + tableLineHeight * 22, '#1DACE5', 1);
    }
 
    //==========================================================

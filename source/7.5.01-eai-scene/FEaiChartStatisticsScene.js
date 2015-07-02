@@ -41,6 +41,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    // @method
    o.process            = MO.FEaiChartStatisticsScene_process;
+   o.onTableEntitiesChanged = MO.FEaiChartStatisticsScene_onTableEntitiesChanged;
    return o;
 }
 
@@ -83,6 +84,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
+   invement.addDataChangedListener(o, o.onTableEntitiesChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -203,4 +205,16 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
+   var o = this;
+   o._liveTable.setData(event.data);
+   o._liveTable.dirty();
 }

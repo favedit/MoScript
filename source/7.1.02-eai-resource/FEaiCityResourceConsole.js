@@ -16,6 +16,7 @@ with(MO){
       o.construct   = FEaiCityResourceConsole_construct;
       // @method
       o.find        = FEaiCityResourceConsole_find;
+      o.findCityByCard = FEaiCityResourceConsole_findCityByCard;
       o.unserialize = FEaiCityResourceConsole_unserialize;
       // @method
       o.dispose     = FEaiCityResourceConsole_dispose;
@@ -43,6 +44,34 @@ with(MO){
    //==========================================================
    MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
       return this._citys.get(code);
+   }
+
+   //==========================================================
+   // <T>根据代码查找城市信息。</T>
+   //
+   // @method
+   // @param code:String 代码
+   // @return 城市信息
+   //==========================================================
+   MO.FEaiCityResourceConsole_findCityByCard = function FEaiCityResourceConsole_findCityByCard(card) {
+      var o = this;
+      // 检查参数
+      if (card.length != 4) {
+         return null;
+      }
+      // 查找4位
+      var cityEntities = o._citys;
+      var cityEntity = cityEntities.get(card);
+      if (cityEntity) {
+         return cityEntity;
+      }
+      // 查找2位
+      var cityEntities = o._citys;
+      var cityEntity = cityEntities.get(card.substring(0, 2));
+      if (cityEntity) {
+         return cityEntity;
+      }
+      return null;
    }
 
    //==========================================================
