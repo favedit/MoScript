@@ -153,7 +153,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         //return;
+         return;
       }
       //..........................................................
       // 隐藏全部界面

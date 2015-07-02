@@ -3673,6 +3673,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
+         return;
       }
       if(!o._statusDesktopShow){
          var hTable = document.getElementById('id_table');
