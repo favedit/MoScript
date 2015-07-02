@@ -1454,3 +1454,72 @@ with (MO) {
       startDate.refresh();
    }
 }
+with(MO){
+   MO.FGuiLiveTable = function FGuiLiveTable(o) {
+      o = RClass.inherits(this, o, FGuiControl);
+      o._bgImage = null;
+      o._shiningImage = null;
+      o._numImages = null;
+      o._yiImage = null;
+      o._data = RClass.register(o, new AGetSet('_data'));
+      o._startTick = 0;
+      o._popDuration = 500;
+      o._showDuration = 2000;
+      o._closeDuration = 500;
+      o.construct = FGuiLiveTable_construct;
+      o.onPaintBegin = FGuiLiveTable_onPaintBegin;
+      o.onImageLoad = FGuiLiveTable_onImageLoad;
+      o.show = FGuiLiveTable_show;
+      o.dispose = FGuiLiveTable_dispose;
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
+      return o;
+   }
+   MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
+      var o = this;
+      o.__base.FGuiControl.construct.call(o);
+      o._bgImage = MO.Class.create(MO.FImage);
+      o._bgImage.addLoadListener(o, o.onImageLoad);
+      o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
+      o._shiningImage = MO.Class.create(MO.FImage);
+      o._shiningImage.addLoadListener(o, o.onImageLoad);
+      o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
+      o._yiImage = MO.Class.create(MO.FImage);
+      o._yiImage.addLoadListener(o, o.onImageLoad);
+      o._yiImage.loadUrl('../ars/eai/number/yi.png');
+      o._numImages = new Array(10);
+      for (var i = 0; i < 10; i++) {
+         var img = MO.Class.create(MO.FImage);
+         img.addLoadListener(o, o.onImageLoad);
+         img.loadUrl('../ars/eai/number/' + i + '.png');
+         o._numImages[i] = img;
+      }
+   }
+   MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
+      var o = this;
+      o.dirty();
+   }
+   MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var left = rectangle.left;
+      var top = rectangle.top;
+      var right = rectangle.left + rectangle.width;
+      var bottom = rectangle.top + rectangle.height;
+      graphic.drawRectangle(left, top, rectangle.width, rectangle.height, '#1DACE5', 2);
+      var titleText = '钰诚控股集团';
+      graphic.setFont('bold 30px Microsoft YaHei');
+      var titleWidth = graphic.textWidth(titleText);
+      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 40, '#1DACE5');
+   }
+   MO.FGuiLiveTable_show = function FGuiLiveTable_show() {
+      o = this;
+      o.setVisible(true);
+      o._startTick = MO.Timer.current();
+   }
+   MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
+      var o = this;
+      o.__base.FEaiEntity.dispose.call(o);
+   }
+}

@@ -2,8 +2,6 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
-   o._sizeRate         = MO.Class.register(o, new MO.AGetter('_sizeRate'));
-   o._logicRate        = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    o.construct         = MO.FGuiCanvasManager_construct;
@@ -46,23 +44,34 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
+   var controls = o._controls;
+   var count = controls.count();
    var desktop = MO.Desktop.activeDesktop();
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
-   var graphic = o._canvas.context();
-   graphic.clear();
-   var controls = o._controls;
-   var count = controls.count();
+   var changed = false;
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
-      if(control.visible()){
-         o.processControl(control);
+      if(control.testDirty()){
+         changed = true;
+         break;
+      }
+   }
+   if(changed){
+      var graphic = o._canvas.context();
+      graphic.clear();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.visible()){
+            o.processControl(control);
+         }
       }
    }
 }
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
+   o._calculateRate = RObject.dispose(o._calculateRate);
    o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){

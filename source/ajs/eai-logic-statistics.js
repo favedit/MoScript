@@ -157,31 +157,6 @@ with(MO){
             var entity = entities.shift();
             o._tableEntities.unshift(entity);
             o.focusEntity(entity);
-            var table = o._dataTable;
-            var count = o._tableEntities.count();
-            table.setDataCount(count);
-            var date = new MO.TDate();
-            for(var i = 0; i < count; i++){
-               var entity = o._tableEntities.at(i);
-               var row = table.dataRow(i);
-               date.parse(entity.date());
-               row.cells[0].innerHTML = date.format('HH24:MI:SS');
-               var cityEntity = o._mapEntity.findCityByCard(entity.card());
-               if(cityEntity){
-                  row.cells[1].innerHTML = cityEntity.data().label();
-               }else{
-                  row.cells[1].innerHTML = '';
-               }
-               row.cells[2].innerHTML = entity.customer() + ' - ' + entity.phone();
-               var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
-               if(investment.length > 7){
-                  var high = investment.substring(0, investment.length - 7);
-                  var low = investment.substring(investment.length - 7, investment.length);
-                  row.cells[3].innerHTML = '<FONT color="#FF4482">' + high + '</FONT>' + low;
-               }else{
-                  row.cells[3].innerHTML = investment;
-               }
-            }
          }
          var count = entities.count();
          var invementDay = o._invementDay;

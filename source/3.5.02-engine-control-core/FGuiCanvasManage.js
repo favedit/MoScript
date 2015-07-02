@@ -11,8 +11,6 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    // @attribute
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
-   o._sizeRate         = MO.Class.register(o, new MO.AGetter('_sizeRate'));
-   o._logicRate        = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    //..........................................................
    // @event
@@ -49,8 +47,6 @@ MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    // 设置属性
    o._size = new MO.SSize2();
    o._calculateRate = new MO.SSize2();
-   //o._logicRate = new MO.SSize2();
-   //o._sizeRate = new MO.SSize2();
 }
 
 //==========================================================
@@ -86,8 +82,6 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    event.graphic = graphic;
    event.parentRectangle.set(0, 0, o._size.width, o._size.height);
    event.calculateRate = o._calculateRate;
-   //event.logicRate = o._logicRate;
-   //event.sizeRate = o._sizeRate;
    event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
@@ -103,22 +97,30 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
+   var controls = o._controls;
+   var count = controls.count();
    // 获得大小
    var desktop = MO.Desktop.activeDesktop();
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
-   //o._logicRate.assign(desktop.logicRate());
-   //o._sizeRate = desktop.sizeRate();
-   // 清空画板
-   var graphic = o._canvas.context();
-   graphic.clear();
-   // 渲染处理
-   var controls = o._controls;
-   var count = controls.count();
+   // 检查变更
+   var changed = false;
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
-      if(control.visible()){
-         o.processControl(control);
+      if(control.testDirty()){
+         changed = true;
+         break;
+      }
+   }
+   // 重绘画板
+   if(changed){
+      var graphic = o._canvas.context();
+      graphic.clear();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.visible()){
+            o.processControl(control);
+         }
       }
    }
 }
@@ -131,6 +133,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
+   o._calculateRate = RObject.dispose(o._calculateRate);
    // 父处理
    o.__base.FGuiManager.dispose.call(o);
 }

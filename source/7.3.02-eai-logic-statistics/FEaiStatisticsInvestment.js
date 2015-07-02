@@ -259,7 +259,7 @@ with(MO){
             o.focusEntity(entity);
             //..........................................................
             // 刷新表格
-            var table = o._dataTable;
+            /*var table = o._dataTable;
             var count = o._tableEntities.count();
             table.setDataCount(count);
             var date = new MO.TDate();
@@ -283,7 +283,7 @@ with(MO){
                }else{
                   row.cells[3].innerHTML = investment;
                }
-            }
+            }*/
          }
          //..........................................................
          // 计算总数

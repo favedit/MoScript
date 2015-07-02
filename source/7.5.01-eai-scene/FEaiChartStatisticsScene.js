@@ -108,13 +108,12 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    // 创建表格
    var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
    liveTable.setName('LiveTable');
-   //liveTable.setDockCd(MO.EGuiDock.Right);
-   //liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-   liveTable.setLeft(MO.Eai.Canvas.logicSize().width - 600 - 20);
-   liveTable.setTop(20);
-   liveTable.setWidth(600);
-   liveTable.setHeight(1030);
-   //liveTable.sync();
+   liveTable.setDockCd(MO.EGuiDock.Right);
+   liveTable.setAnchorCd(MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+   liveTable.setTop(40);
+   liveTable.setRight(40);
+   liveTable.setBottom(40);
+   liveTable.setWidth(560);
    liveTable.linkGraphicContext(o);
    liveTable.build();
    o._desktop.register(liveTable);
@@ -173,9 +172,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       //..........................................................
       // 隐藏全部界面
       if(!o._statusDesktopShow){
-         // 显示网格
-         var hTable = document.getElementById('id_table');
-         hTable.style.display = '';
          // 显示桌面
          o._desktop.show();
          o._statusDesktopShow = true;

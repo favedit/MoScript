@@ -875,6 +875,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._endDate           = null;
    o._currentDate       = null;
    o._timeline          = null;
+   o._liveTable         = null;
    o._statusStart       = false;
    o._statusLayerCount  = 150;
    o._statusLayerLevel  = 150;
@@ -929,6 +930,17 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
+   var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
+   liveTable.setName('LiveTable');
+   liveTable.setDockCd(MO.EGuiDock.Right);
+   liveTable.setAnchorCd(MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+   liveTable.setTop(40);
+   liveTable.setRight(40);
+   liveTable.setBottom(40);
+   liveTable.setWidth(560);
+   liveTable.linkGraphicContext(o);
+   liveTable.build();
+   o._desktop.register(liveTable);
    o._desktop.hide();
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
@@ -964,8 +976,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          o._mapEntity._countryEntity.process();
       }
       if(!o._statusDesktopShow){
-         var hTable = document.getElementById('id_table');
-         hTable.style.display = '';
          o._desktop.show();
          o._statusDesktopShow = true;
       }

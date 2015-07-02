@@ -66,7 +66,7 @@ with(MO){
    //==========================================================
    MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
       var o = this;
-      o.repaint();
+      o.dirty();
    }
 
    //==========================================================

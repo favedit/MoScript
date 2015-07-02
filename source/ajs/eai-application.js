@@ -178,27 +178,13 @@ with(MO){
 }
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
-   o._canvas3d         = MO.Class.register(o, new MO.AGetter('_canvas3d'));
-   o._canvas2d         = MO.Class.register(o, new MO.AGetter('_canvas2d'));
-   o.onOperationResize = MO.FEaiChartDesktop_onOperationResize;
-   o.construct         = MO.FEaiChartDesktop_construct;
-   o.build             = MO.FEaiChartDesktop_build;
-   o.resize            = MO.FEaiChartDesktop_resize;
-   o.dispose           = MO.FEaiChartDesktop_dispose;
+   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.construct = MO.FEaiChartDesktop_construct;
+   o.build     = MO.FEaiChartDesktop_build;
+   o.resize    = MO.FEaiChartDesktop_resize;
+   o.dispose   = MO.FEaiChartDesktop_dispose;
    return o;
-}
-MO.FEaiChartDesktop_onOperationResize = function FEaiChartDesktop_onOperationResize(event){
-   var o = this;
-   debugger
-   var canvas3d = o._canvas3d;
-   var hCanvas3d = canvas3d._hCanvas;
-   var size = canvas3d.size();
-   var canvas2d = o._canvas2d;
-   canvas2d.size().assign(size);
-   canvas2d.context().size().assign(size);
-   var hCanvas2d = canvas2d._hCanvas;
-   hCanvas2d.width = hCanvas3d.offsetWidth;
-   hCanvas2d.height = hCanvas3d.offsetHeight;
 }
 MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
    var o = this;

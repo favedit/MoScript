@@ -388,38 +388,43 @@ with(MO){
       var rectangle = event.rectangle;
       o._eventRectangle.assign(rectangle);
       //..........................................................
+      // 设置范围
+      var dockCd = o._dockCd;
       var left = rectangle.left + location.x;
       var top = rectangle.top + location.y;
       var width = size.width;
       var height = size.height;
-      // 计算停靠位置
+      var parentRight = parentRectangle.right();
+      var parentBottom = parentRectangle.bottom();
+      var right = parentRight - o._right;
+      var bottom = parentBottom - o._bottom;
       var width2 = (parentRectangle.width - width) * 0.5;
       var height2 = (parentRectangle.height - height) * 0.5;
-      switch(o._dockCd){
-         case MO.EGuiDock.LeftTop:
-            break;
-         case MO.EGuiDock.Right:
-            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
-            break;
-         case MO.EGuiDock.Bottom:
-            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
-            break;
-         default:
-            throw new TError(o, 'Invalid dockcd.');
-      }
-      // 右边固定
-      if(o._anchorCd & EGuiAnchor.Right){
-         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0) * calculateRate.width;
-      }
       // 调整位置
       if(event.optionContainer){
+         // 固定处理
          left *= calculateRate.width;
          top *= calculateRate.height;
-         event.optionContainer = false;
+         right *= calculateRate.width;
+         bottom *= calculateRate.height;
       }
+      // 计算顶层停靠位置
+      if(dockCd == MO.EGuiDock.Bottom){
+         top = bottom - height;
+      }
+      if(dockCd == MO.EGuiDock.Right){
+         left = right - width;
+      }
+      if((o._anchorCd & EGuiAnchor.Left) && (o._anchorCd & EGuiAnchor.Right)){
+         width = right - left;
+      }
+      if((o._anchorCd & EGuiAnchor.Top) && (o._anchorCd & EGuiAnchor.Bottom)){
+         height = bottom - top;
+      }
+      event.optionContainer = false;
       //..........................................................
       // 计算范围
-      clientRectangle.set(left, top, width, height);
+      clientRectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
       rectangle.assign(clientRectangle);
       event.clientRectangle.assign(clientRectangle);
       //..........................................................

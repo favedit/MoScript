@@ -33623,33 +33623,37 @@ with(MO){
       var calculateRate = event.calculateRate;
       var rectangle = event.rectangle;
       o._eventRectangle.assign(rectangle);
+      var dockCd = o._dockCd;
       var left = rectangle.left + location.x;
       var top = rectangle.top + location.y;
       var width = size.width;
       var height = size.height;
+      var parentRight = parentRectangle.right();
+      var parentBottom = parentRectangle.bottom();
+      var right = parentRight - o._right;
+      var bottom = parentBottom - o._bottom;
       var width2 = (parentRectangle.width - width) * 0.5;
       var height2 = (parentRectangle.height - height) * 0.5;
-      switch(o._dockCd){
-         case MO.EGuiDock.LeftTop:
-            break;
-         case MO.EGuiDock.Right:
-            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
-            break;
-         case MO.EGuiDock.Bottom:
-            top = Math.max(parentRectangle.top + parentRectangle.height - height - o._bottom, 0);
-            break;
-         default:
-            throw new TError(o, 'Invalid dockcd.');
-      }
-      if(o._anchorCd & EGuiAnchor.Right){
-         width = Math.max(parentRectangle.left + parentRectangle.width - left - o._right, 0) * calculateRate.width;
-      }
       if(event.optionContainer){
          left *= calculateRate.width;
          top *= calculateRate.height;
-         event.optionContainer = false;
+         right *= calculateRate.width;
+         bottom *= calculateRate.height;
       }
-      clientRectangle.set(left, top, width, height);
+      if(dockCd == MO.EGuiDock.Bottom){
+         top = bottom - height;
+      }
+      if(dockCd == MO.EGuiDock.Right){
+         left = right - width;
+      }
+      if((o._anchorCd & EGuiAnchor.Left) && (o._anchorCd & EGuiAnchor.Right)){
+         width = right - left;
+      }
+      if((o._anchorCd & EGuiAnchor.Top) && (o._anchorCd & EGuiAnchor.Bottom)){
+         height = bottom - top;
+      }
+      event.optionContainer = false;
+      clientRectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
       rectangle.assign(clientRectangle);
       event.clientRectangle.assign(clientRectangle);
       o.onPaintBegin(event);
@@ -33960,8 +33964,6 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
-   o._sizeRate         = MO.Class.register(o, new MO.AGetter('_sizeRate'));
-   o._logicRate        = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    o.construct         = MO.FGuiCanvasManager_construct;
@@ -34004,23 +34006,34 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
+   var controls = o._controls;
+   var count = controls.count();
    var desktop = MO.Desktop.activeDesktop();
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
-   var graphic = o._canvas.context();
-   graphic.clear();
-   var controls = o._controls;
-   var count = controls.count();
+   var changed = false;
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
-      if(control.visible()){
-         o.processControl(control);
+      if(control.testDirty()){
+         changed = true;
+         break;
+      }
+   }
+   if(changed){
+      var graphic = o._canvas.context();
+      graphic.clear();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.visible()){
+            o.processControl(control);
+         }
       }
    }
 }
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
+   o._calculateRate = RObject.dispose(o._calculateRate);
    o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
