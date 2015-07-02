@@ -1189,12 +1189,12 @@ with (MO) {
          var colorIdx = parseInt((rateResource.count() - 1) * rate);
          var hexColor = RHex.format(rateResource.find(colorIdx));
          var color = '#' + hexColor.substring(2);
-         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.6)';
+         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
          var lastRate = data[i - 1].investment / maxInves;
          var lastColorIdx = parseInt((rateResource.count() - 1) * lastRate);
          var lastHexColor = RHex.format(rateResource.find(lastColorIdx));
          var lastColor = '#' + lastHexColor.substring(2);
-         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.6)';
+         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.3)';
          var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
          gradient.addColorStop('0', lastColor);
          gradient.addColorStop('1', color);
@@ -1457,8 +1457,10 @@ with (MO) {
 with(MO){
    MO.FGuiLiveTable = function FGuiLiveTable(o) {
       o = RClass.inherits(this, o, FGuiControl);
+      o._bgImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
       o.construct = FGuiLiveTable_construct;
+      o.setup = FGuiLiveTable_setup;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
       o.dispose = FGuiLiveTable_dispose;
       o.onImageLoad = FGuiLiveTable_onImageLoad;
@@ -1468,6 +1470,12 @@ with(MO){
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
+   }
+   MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
+      var o = this;
+      o._bgImage = MO.Class.create(MO.FImage);
+      o._bgImage.addLoadListener(o, o.onImageLoad);
+      o._bgImage.loadUrl('../ars/eai/grid.png');
    }
    MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
       var o = this;
@@ -1484,38 +1492,35 @@ with(MO){
       var height = rectangle.height;
       var right = left + width;
       var bottom = top + height;
-      var bg = MO.Class.create(MO.FImage);
-      bg.addLoadListener(o, o.onImageLoad);
-      bg.loadUrl('../ars/eai/grid.png');
-      graphic.drawImage(bg, left, top, width, height);
+      graphic.drawImage(o._bgImage, left, top, width, height);
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
-      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 40, '#1DACE5');
+      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 70, '#00B2F2');
       graphic.setFont('22px Microsoft YaHei');
       var headText = '';
       var headTextWidth = 0;
       var headLeft = left + 5;
-      var headTop = top + 64;
-      var headTextTop = top + 92;
-      var colWidth = new Array(110, 110, 165, 202);
+      var headTop = top + 96;
+      var headTextTop = headTop + 28;
+      var colWidth = new Array(110, 110, 160, 173);
       var headHeight = 40;
-      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#122a46');
       headText = '时间';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[0] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
       headLeft += colWidth[0] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#122a46');
       headText = '城市';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[1] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
       headLeft += colWidth[1] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#122a46');
       headText = '顾客-手机尾号';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[2] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
       headLeft += colWidth[2] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#1DACE5');
+      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#122a46');
       headText = '投资额(元)';
       headTextWidth = graphic.textWidth(headText);
       graphic.drawText(headText, headLeft + colWidth[3] - 5 - headTextWidth, headTextTop, '#FFFFFF');
@@ -1523,9 +1528,9 @@ with(MO){
          return;
       }
       graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 124;
+      var tableTop = headTop + 64;
       var tableLeft = left + 5;
-      var tableLineHeight = 24;
+      var tableLineHeight = 32;
       var tableText = '';
       var tableTextWidth = 0;
       var date = MO.Memory.alloc(TDate);
@@ -1535,7 +1540,7 @@ with(MO){
          date.parse(entity.date());
          tableText = date.format('HH24:MI:SS');
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
          tableLeft += colWidth[0] + 1;
          var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
          var cityEntity = cityConsole.findCityByCard(entity.card());
@@ -1544,11 +1549,11 @@ with(MO){
             tableText = cityEntity.label();
          }
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
          tableLeft += colWidth[1] + 1;
          tableText = entity.customer() + ' - ' + entity.phone();
          tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
          tableLeft += colWidth[2] + 1;
          var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
          if (investment.length > 7) {
@@ -1556,15 +1561,14 @@ with(MO){
             var low = investment.substring(investment.length - 7, investment.length);
             var highWidth = graphic.textWidth(high);
             var lowWidth = graphic.textWidth(low);
-            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#FF4482');
-            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#1DACE5');
+            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#1DACE5');
          } else {
             tableText = investment;
             tableTextWidth = graphic.textWidth(tableText);
-            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#1DACE5');
          }
       }
-      graphic.drawRectangle(left + 3, top + 62, width - 6, tableTop + tableLineHeight * 22, '#1DACE5', 1);
    }
    MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
       var o = this;

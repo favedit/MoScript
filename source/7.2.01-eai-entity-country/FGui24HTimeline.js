@@ -156,12 +156,12 @@ with (MO) {
          var colorIdx = parseInt((rateResource.count() - 1) * rate);
          var hexColor = RHex.format(rateResource.find(colorIdx));
          var color = '#' + hexColor.substring(2);
-         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.6)';
+         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
          var lastRate = data[i - 1].investment / maxInves;
          var lastColorIdx = parseInt((rateResource.count() - 1) * lastRate);
          var lastHexColor = RHex.format(rateResource.find(lastColorIdx));
          var lastColor = '#' + lastHexColor.substring(2);
-         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.6)';
+         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.3)';
          var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
          gradient.addColorStop('0', lastColor);
          gradient.addColorStop('1', color);
