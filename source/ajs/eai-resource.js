@@ -36,6 +36,7 @@ with(MO){
       o._citys      = RClass.register(o, new AGetter('_citys'));
       o.construct   = FEaiCityResourceConsole_construct;
       o.find        = FEaiCityResourceConsole_find;
+      o.findCityByCard = FEaiCityResourceConsole_findCityByCard;
       o.unserialize = FEaiCityResourceConsole_unserialize;
       o.dispose     = FEaiCityResourceConsole_dispose;
       return o;
@@ -47,6 +48,23 @@ with(MO){
    }
    MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
       return this._citys.get(code);
+   }
+   MO.FEaiCityResourceConsole_findCityByCard = function FEaiCityResourceConsole_findCityByCard(card) {
+      var o = this;
+      if (card.length != 4) {
+         return null;
+      }
+      var cityEntities = o._citys;
+      var cityEntity = cityEntities.get(card);
+      if (cityEntity) {
+         return cityEntity;
+      }
+      var cityEntities = o._citys;
+      var cityEntity = cityEntities.get(card.substring(0, 2));
+      if (cityEntity) {
+         return cityEntity;
+      }
+      return null;
    }
    MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
       var o = this;

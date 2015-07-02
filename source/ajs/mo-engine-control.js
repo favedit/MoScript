@@ -1305,6 +1305,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          break;
       }
    }
+   changed = true;
    if(changed){
       var graphic = o._canvas.context();
       graphic.clear();

@@ -113,6 +113,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
    }
    // 重绘画板
+   changed = true;
    if(changed){
       var graphic = o._canvas.context();
       graphic.clear();

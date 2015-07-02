@@ -1457,42 +1457,17 @@ with (MO) {
 with(MO){
    MO.FGuiLiveTable = function FGuiLiveTable(o) {
       o = RClass.inherits(this, o, FGuiControl);
-      o._bgImage = null;
-      o._shiningImage = null;
-      o._numImages = null;
-      o._yiImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
-      o._startTick = 0;
-      o._popDuration = 500;
-      o._showDuration = 2000;
-      o._closeDuration = 500;
       o.construct = FGuiLiveTable_construct;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
-      o.onImageLoad = FGuiLiveTable_onImageLoad;
-      o.show = FGuiLiveTable_show;
       o.dispose = FGuiLiveTable_dispose;
+      o.onImageLoad = FGuiLiveTable_onImageLoad;
       o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
    }
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
-      o._bgImage = MO.Class.create(MO.FImage);
-      o._bgImage.addLoadListener(o, o.onImageLoad);
-      o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
-      o._shiningImage = MO.Class.create(MO.FImage);
-      o._shiningImage.addLoadListener(o, o.onImageLoad);
-      o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
-      o._yiImage = MO.Class.create(MO.FImage);
-      o._yiImage.addLoadListener(o, o.onImageLoad);
-      o._yiImage.loadUrl('../ars/eai/number/yi.png');
-      o._numImages = new Array(10);
-      for (var i = 0; i < 10; i++) {
-         var img = MO.Class.create(MO.FImage);
-         img.addLoadListener(o, o.onImageLoad);
-         img.loadUrl('../ars/eai/number/' + i + '.png');
-         o._numImages[i] = img;
-      }
    }
    MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
       var o = this;
@@ -1505,18 +1480,91 @@ with(MO){
       var rectangle = o._clientRectangle;
       var left = rectangle.left;
       var top = rectangle.top;
-      var right = rectangle.left + rectangle.width;
-      var bottom = rectangle.top + rectangle.height;
-      graphic.drawRectangle(left, top, rectangle.width, rectangle.height, '#1DACE5', 2);
+      var width = rectangle.width;
+      var height = rectangle.height;
+      var right = left + width;
+      var bottom = top + height;
+      var bg = MO.Class.create(MO.FImage);
+      bg.addLoadListener(o, o.onImageLoad);
+      bg.loadUrl('../ars/eai/grid.png');
+      graphic.drawImage(bg, left, top, width, height);
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
       graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 40, '#1DACE5');
-   }
-   MO.FGuiLiveTable_show = function FGuiLiveTable_show() {
-      o = this;
-      o.setVisible(true);
-      o._startTick = MO.Timer.current();
+      graphic.setFont('22px Microsoft YaHei');
+      var headText = '';
+      var headTextWidth = 0;
+      var headLeft = left + 5;
+      var headTop = top + 64;
+      var headTextTop = top + 92;
+      var colWidth = new Array(110, 110, 165, 202);
+      var headHeight = 40;
+      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#1DACE5');
+      headText = '时间';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[0] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
+      headLeft += colWidth[0] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#1DACE5');
+      headText = '城市';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[1] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
+      headLeft += colWidth[1] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#1DACE5');
+      headText = '顾客-手机尾号';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[2] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
+      headLeft += colWidth[2] + 1;
+      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#1DACE5');
+      headText = '投资额(元)';
+      headTextWidth = graphic.textWidth(headText);
+      graphic.drawText(headText, headLeft + colWidth[3] - 5 - headTextWidth, headTextTop, '#FFFFFF');
+      if (o._data == null || o._data.count() < 1) {
+         return;
+      }
+      graphic.setFont('22px Microsoft YaHei');
+      var tableTop = top + 124;
+      var tableLeft = left + 5;
+      var tableLineHeight = 24;
+      var tableText = '';
+      var tableTextWidth = 0;
+      var date = MO.Memory.alloc(TDate);
+      for (var i = 0; i < o._data.count() ; i++) {
+         tableLeft = left + 5;
+         var entity = o._data.at(i);
+         date.parse(entity.date());
+         tableText = date.format('HH24:MI:SS');
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         tableLeft += colWidth[0] + 1;
+         var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+         var cityEntity = cityConsole.findCityByCard(entity.card());
+         tableText = '';
+         if (cityEntity) {
+            tableText = cityEntity.label();
+         }
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         tableLeft += colWidth[1] + 1;
+         tableText = entity.customer() + ' - ' + entity.phone();
+         tableTextWidth = graphic.textWidth(tableText);
+         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#FFFFFF');
+         tableLeft += colWidth[2] + 1;
+         var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
+         if (investment.length > 7) {
+            var high = investment.substring(0, investment.length - 7);
+            var low = investment.substring(investment.length - 7, investment.length);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#FF4482');
+            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+         } else {
+            tableText = investment;
+            tableTextWidth = graphic.textWidth(tableText);
+            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#FFFFFF');
+         }
+      }
+      graphic.drawRectangle(left + 3, top + 62, width - 6, tableTop + tableLineHeight * 22, '#1DACE5', 1);
    }
    MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
       var o = this;

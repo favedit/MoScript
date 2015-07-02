@@ -885,6 +885,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.process            = MO.FEaiChartStatisticsScene_process;
+   o.onTableEntitiesChanged = MO.FEaiChartStatisticsScene_onTableEntitiesChanged;
    return o;
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
@@ -912,6 +913,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
+   invement.addDataChangedListener(o, o.onTableEntitiesChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -934,10 +936,10 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setName('LiveTable');
    liveTable.setDockCd(MO.EGuiDock.Right);
    liveTable.setAnchorCd(MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
-   liveTable.setTop(40);
-   liveTable.setRight(40);
-   liveTable.setBottom(40);
-   liveTable.setWidth(560);
+   liveTable.setTop(20);
+   liveTable.setRight(20);
+   liveTable.setBottom(20);
+   liveTable.setWidth(580);
    liveTable.linkGraphicContext(o);
    liveTable.build();
    o._desktop.register(liveTable);
@@ -1001,6 +1003,11 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
+}
+MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
+   var o = this;
+   o._liveTable.setData(event.data);
+   o._liveTable.dirty();
 }
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
