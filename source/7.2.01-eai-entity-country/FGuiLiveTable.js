@@ -10,10 +10,12 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
+      o._bgImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
       //..........................................................
       // @method
       o.construct = FGuiLiveTable_construct;
+      o.setup = FGuiLiveTable_setup;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
       // @method
       o.dispose = FGuiLiveTable_dispose;
@@ -34,6 +36,18 @@ with(MO){
    }
 
    //==========================================================
+   // <T>初始化处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
+      var o = this;
+      o._bgImage = MO.Class.create(MO.FImage);
+      o._bgImage.addLoadListener(o, o.onImageLoad);
+      o._bgImage.loadUrl('../ars/eai/grid.png');
+   }
+
+   //==========================================================
    // <T>图片加载完成处理。</T>
    //
    // @method
@@ -41,7 +55,6 @@ with(MO){
    MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
       var o = this;
       o.dirty();
-      o.__base.FGuiControl.construct.call(o);
    }
 
    //==========================================================
@@ -62,18 +75,15 @@ with(MO){
       var right = left + width;
       var bottom = top + height;
       //背景
-      var bg = MO.Class.create(MO.FImage);
-      bg.addLoadListener(o, o.onImageLoad);
-      bg.loadUrl('../ars/eai/grid.png');
-      graphic.drawImage(bg, left, top, width, height);
+      graphic.drawImage(o._bgImage, left, top, width, height);
       // 边框
-      graphic.fillRectangle(left, top, width, height, 'rgba(29, 172, 229, 0.1)');
-      graphic.drawRectangle(left, top, width, height, '#1DACE5', 2);
+      //graphic.fillRectangle(left, top, width, height, 'rgba(29, 172, 229, 0.1)');
+      //graphic.drawRectangle(left, top, width, height, '#1DACE5', 2);
       // 标题
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
-      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 40, '#1DACE5');
+      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 50, '#1DACE5');
       // 表头
       graphic.setFont('22px Microsoft YaHei');
       var headText = '';
@@ -81,7 +91,7 @@ with(MO){
       var headLeft = left + 5;
       var headTop = top + 64;
       var headTextTop = top + 92;
-      var colWidth = new Array(110, 110, 165, 202);
+      var colWidth = new Array(110, 110, 160, 173);
       var headHeight = 40;
       graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#1DACE5');
       headText = '时间';
@@ -156,7 +166,7 @@ with(MO){
          }
       }
       //表框
-      graphic.drawRectangle(left + 3, top + 62, width - 6, tableTop + tableLineHeight * 22, '#1DACE5', 1);
+      //graphic.drawRectangle(left + 3, top + 62, width - 6, tableTop + tableLineHeight * 22, '#1DACE5', 1);
    }
 
    //==========================================================

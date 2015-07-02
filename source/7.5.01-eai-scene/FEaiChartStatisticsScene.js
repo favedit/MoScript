@@ -117,6 +117,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setBottom(20);
    liveTable.setWidth(580);
    liveTable.linkGraphicContext(o);
+   liveTable.setup();
    liveTable.build();
    o._desktop.register(liveTable);
    //..........................................................
