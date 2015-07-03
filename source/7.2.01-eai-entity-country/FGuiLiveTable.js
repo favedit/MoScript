@@ -12,6 +12,7 @@ with(MO){
       // @attribute
       o._bgImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
+      o._backgroundPadding = null;
       //..........................................................
       // @method
       o.construct = FGuiLiveTable_construct;
@@ -21,7 +22,7 @@ with(MO){
       o.dispose = FGuiLiveTable_dispose;
       o.onImageLoad = FGuiLiveTable_onImageLoad;
       // @event
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', MO.EEvent.DataChanged));
       return o;
    }
 
@@ -33,6 +34,7 @@ with(MO){
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
+      o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
    }
 
    //==========================================================
@@ -66,7 +68,7 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       
       var left = rectangle.left;
       var top = rectangle.top;
@@ -75,7 +77,8 @@ with(MO){
       var right = left + width;
       var bottom = top + height;
       //背景
-      graphic.drawImage(o._bgImage, left, top, width, height);
+      //graphic.drawImage(o._bgImage, left, top, width, height);
+      graphic.drawGridImage(o._bgImage, left, top, width, height, o._backgroundPadding);
       // 边框
       //graphic.fillRectangle(left, top, width, height, 'rgba(29, 172, 229, 0.1)');
       //graphic.drawRectangle(left, top, width, height, '#1DACE5', 2);
@@ -176,6 +179,7 @@ with(MO){
    //==========================================================
    MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
       var o = this;
+      o._backgroundPadding = RObject.dispose(o._backgroundPadding);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

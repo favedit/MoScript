@@ -30,11 +30,11 @@ with (MO) {
       o.drawCircle           = FG2dCanvasContext_drawCircle;
       o.drawText             = FG2dCanvasContext_drawText;
       o.drawImage            = FG2dCanvasContext_drawImage;
+      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
       o.drawQuadrilateral    = FG2dCanvasContext_drawQuadrilateral;
       // @method
       o.drawBorderLine       = FG2dCanvasContext_drawBorderLine;
       o.drawBorder           = FG2dCanvasContext_drawBorder;
-      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
       // @method
       o.fillRectangle        = FG2dCanvasContext_fillRectangle;
       // @method
@@ -217,58 +217,6 @@ with (MO) {
    }
 
    //==========================================================
-   // <T>绘制图像。</T>
-   //
-   // @method
-   // @param content:Object 图像内容
-   // @param rectangle:SRectangle 矩形
-   //==========================================================
-   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
-      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-   }
-
-   //==========================================================
-   // <T>绘制边框线。</T>
-   //
-   // @method
-   // @param rectangle:SRectangle 矩形
-   // @param border:SBorder 边框
-   //==========================================================
-   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
-      var o = this;
-      var handle = o._handle;
-      handle.beginPath();
-      handle.strokeStyle = borderLine.color;
-      handle.lineWidth = borderLine.width;
-      handle.moveTo(x1 + 0.5, y1 + 0.5);
-      handle.lineTo(x2 + 0.5, y2 + 0.5);
-      handle.closePath();
-      handle.stroke();
-   }
-
-   //==========================================================
-   // <T>绘制边框。</T>
-   //
-   // @method
-   // @param content:Object 图像内容
-   // @param rectangle:SRectangle 矩形
-   // @param border:SBorder 边框
-   //==========================================================
-   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
-      var o = this;
-      // 计算位置
-      var left = rectangle.left;
-      var top = rectangle.top;
-      var right = rectangle.left + rectangle.width - 1;
-      var bottom = rectangle.top + rectangle.height - 1;
-      // 绘制边框
-      o.drawBorderLine(left, bottom, left, top, border.left);
-      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
-      o.drawBorderLine(right, top, right, bottom, border.right);
-      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
-   }
-
-   //==========================================================
    // <T>绘制九宫格图像。</T>
    //
    // @method
@@ -331,6 +279,58 @@ with (MO) {
          }
       }
       //handle.drawImage(data, 0, 1, 1, 1, 1, 1, 100, 100);
+   }
+
+   //==========================================================
+   // <T>绘制图像。</T>
+   //
+   // @method
+   // @param content:Object 图像内容
+   // @param rectangle:SRectangle 矩形
+   //==========================================================
+   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
+      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   }
+
+   //==========================================================
+   // <T>绘制边框线。</T>
+   //
+   // @method
+   // @param rectangle:SRectangle 矩形
+   // @param border:SBorder 边框
+   //==========================================================
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.strokeStyle = borderLine.color;
+      handle.lineWidth = borderLine.width;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.closePath();
+      handle.stroke();
+   }
+
+   //==========================================================
+   // <T>绘制边框。</T>
+   //
+   // @method
+   // @param content:Object 图像内容
+   // @param rectangle:SRectangle 矩形
+   // @param border:SBorder 边框
+   //==========================================================
+   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
+      var o = this;
+      // 计算位置
+      var left = rectangle.left;
+      var top = rectangle.top;
+      var right = rectangle.left + rectangle.width - 1;
+      var bottom = rectangle.top + rectangle.height - 1;
+      // 绘制边框
+      o.drawBorderLine(left, bottom, left, top, border.left);
+      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
+      o.drawBorderLine(right, top, right, bottom, border.right);
+      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
 
    //==========================================================

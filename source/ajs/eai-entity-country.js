@@ -1556,17 +1556,19 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       o._bgImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
+      o._backgroundPadding = null;
       o.construct = FGuiLiveTable_construct;
       o.setup = FGuiLiveTable_setup;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
       o.dispose = FGuiLiveTable_dispose;
       o.onImageLoad = FGuiLiveTable_onImageLoad;
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', MO.EEvent.DataChanged));
       return o;
    }
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
+      o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
    }
    MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       var o = this;
@@ -1582,14 +1584,14 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var left = rectangle.left;
       var top = rectangle.top;
       var width = rectangle.width;
       var height = rectangle.height;
       var right = left + width;
       var bottom = top + height;
-      graphic.drawImage(o._bgImage, left, top, width, height);
+      graphic.drawGridImage(o._bgImage, left, top, width, height, o._backgroundPadding);
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
@@ -1669,6 +1671,7 @@ with(MO){
    }
    MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
       var o = this;
+      o._backgroundPadding = RObject.dispose(o._backgroundPadding);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

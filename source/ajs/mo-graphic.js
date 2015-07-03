@@ -206,10 +206,10 @@ with (MO) {
       o.drawCircle           = FG2dCanvasContext_drawCircle;
       o.drawText             = FG2dCanvasContext_drawText;
       o.drawImage            = FG2dCanvasContext_drawImage;
+      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
       o.drawQuadrilateral    = FG2dCanvasContext_drawQuadrilateral;
       o.drawBorderLine       = FG2dCanvasContext_drawBorderLine;
       o.drawBorder           = FG2dCanvasContext_drawBorder;
-      o.drawGridImage        = FG2dCanvasContext_drawGridImage;
       o.fillRectangle        = FG2dCanvasContext_fillRectangle;
       o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
       o.toBytes              = FG2dCanvasContext_toBytes;
@@ -293,31 +293,6 @@ with (MO) {
       }
       handle.drawImage(data, x, y, width, height);
    }
-   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
-      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-   }
-   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
-      var o = this;
-      var handle = o._handle;
-      handle.beginPath();
-      handle.strokeStyle = borderLine.color;
-      handle.lineWidth = borderLine.width;
-      handle.moveTo(x1 + 0.5, y1 + 0.5);
-      handle.lineTo(x2 + 0.5, y2 + 0.5);
-      handle.closePath();
-      handle.stroke();
-   }
-   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
-      var o = this;
-      var left = rectangle.left;
-      var top = rectangle.top;
-      var right = rectangle.left + rectangle.width - 1;
-      var bottom = rectangle.top + rectangle.height - 1;
-      o.drawBorderLine(left, bottom, left, top, border.left);
-      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
-      o.drawBorderLine(right, top, right, bottom, border.right);
-      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
-   }
    MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(content, x, y, width, height, padding) {
       var o = this;
       var handle = o._handle;
@@ -367,6 +342,31 @@ with (MO) {
             handle.drawImage(data, sx[column], sy[row], sw[column], sh[row], dx[column], dy[row], dw[column], dh[row]);
          }
       }
+   }
+   MO.FG2dCanvasContext_drawImageRectangle = function FG2dCanvasContext_drawImageRectangle(content, rectangle){
+      return this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   }
+   MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
+      var o = this;
+      var handle = o._handle;
+      handle.beginPath();
+      handle.strokeStyle = borderLine.color;
+      handle.lineWidth = borderLine.width;
+      handle.moveTo(x1 + 0.5, y1 + 0.5);
+      handle.lineTo(x2 + 0.5, y2 + 0.5);
+      handle.closePath();
+      handle.stroke();
+   }
+   MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangle, border) {
+      var o = this;
+      var left = rectangle.left;
+      var top = rectangle.top;
+      var right = rectangle.left + rectangle.width - 1;
+      var bottom = rectangle.top + rectangle.height - 1;
+      o.drawBorderLine(left, bottom, left, top, border.left);
+      o.drawBorderLine(left - 0.5, top, right + 0.5, top, border.top);
+      o.drawBorderLine(right, top, right, bottom, border.right);
+      o.drawBorderLine(left - 0.5, bottom, right + 0.5, bottom, border.bottom);
    }
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
       var o = this;

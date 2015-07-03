@@ -2313,17 +2313,19 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       o._bgImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
+      o._backgroundPadding = null;
       o.construct = FGuiLiveTable_construct;
       o.setup = FGuiLiveTable_setup;
       o.onPaintBegin = FGuiLiveTable_onPaintBegin;
       o.dispose = FGuiLiveTable_dispose;
       o.onImageLoad = FGuiLiveTable_onImageLoad;
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
+      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', MO.EEvent.DataChanged));
       return o;
    }
    MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
       var o = this;
       o.__base.FGuiControl.construct.call(o);
+      o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
    }
    MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       var o = this;
@@ -2339,14 +2341,14 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var left = rectangle.left;
       var top = rectangle.top;
       var width = rectangle.width;
       var height = rectangle.height;
       var right = left + width;
       var bottom = top + height;
-      graphic.drawImage(o._bgImage, left, top, width, height);
+      graphic.drawGridImage(o._bgImage, left, top, width, height, o._backgroundPadding);
       var titleText = '钰诚控股集团';
       graphic.setFont('bold 30px Microsoft YaHei');
       var titleWidth = graphic.textWidth(titleText);
@@ -2426,210 +2428,210 @@ with(MO){
    }
    MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
       var o = this;
+      o._backgroundPadding = RObject.dispose(o._backgroundPadding);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
-with(MO){
-   MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MListener);
-      o._dateSetup            = false;
-      o._beginDate            = MO.Class.register(o, new AGetter('_beginDate'));
-      o._endDate              = MO.Class.register(o, new AGetter('_endDate'));
-      o._invementDayCurrent   = MO.Class.register(o, new AGetter('_invementDayCurrent'), 0);
-      o._invementDay          = MO.Class.register(o, new AGetter('_invementDay'), 0);
-      o._invementTotalCurrent = MO.Class.register(o, new AGetter('_invementTotalCurrent'), 0);
-      o._invementTotal        = MO.Class.register(o, new AGetter('_invementTotal'), 0);
-      o._intervalMinute       = 1;
-      o._mapEntity            = MO.Class.register(o, new AGetSet('_mapEntity'));
-      o._display              = MO.Class.register(o, new AGetter('_display'));
-      o._entities             = MO.Class.register(o, new AGetter('_entities'));
-      o._tableEntities        = MO.Class.register(o, new AGetter('_tableEntities'));
-      o._showShapes           = MO.Class.register(o, new AGetter('_showShapes'));
-      o._tableCount           = 22;
-      o._tableInterval        = 1000;
-      o._tableTick            = 1;
-      o._dataTicker           = null;
-      o._entityPool           = null;
-      o._shapePool            = null;
-      o._autio1               = null;
-      o._autio2               = null;
-      o._autio3               = null;
-      o._autio4               = null;
-      o.onInvestment          = FEaiStatisticsInvestment_onInvestment;
-      o.construct             = FEaiStatisticsInvestment_construct;
-      o.allocEntity           = FEaiStatisticsInvestment_allocEntity;
-      o.allocShape            = FEaiStatisticsInvestment_allocShape;
-      o.setup                 = FEaiStatisticsInvestment_setup;
-      o.focusEntity           = FEaiStatisticsInvestment_focusEntity;
-      o.process               = FEaiStatisticsInvestment_process;
-      o.dispose = FEaiStatisticsInvestment_dispose;
-      o._tableEntitiesChangedListeners = RClass.register(o, new AListener('_tableEntitiesChangedListeners', EEvent.DataChanged));
-      return o;
+MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
+   o._dateSetup              = false;
+   o._beginDate              = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate                = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._invementDayCurrent     = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._invementDay            = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent   = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal          = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._intervalMinute         = 1;
+   o._mapEntity              = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display                = MO.Class.register(o, new MO.AGetter('_display'));
+   o._entities               = MO.Class.register(o, new MO.AGetter('_entities'));
+   o._tableEntities          = MO.Class.register(o, new MO.AGetter('_tableEntities'));
+   o._showShapes             = MO.Class.register(o, new MO.AGetter('_showShapes'));
+   o._tableCount             = 22;
+   o._tableInterval          = 1000;
+   o._tableTick              = 1;
+   o._dataTicker             = null;
+   o._entityPool             = null;
+   o._shapePool              = null;
+   o._autio1                 = null;
+   o._autio2                 = null;
+   o._autio3                 = null;
+   o._autio4                 = null;
+   o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
+   o.onInvestment            = MO.FEaiStatisticsInvestment_onInvestment;
+   o.construct               = MO.FEaiStatisticsInvestment_construct;
+   o.allocEntity             = MO.FEaiStatisticsInvestment_allocEntity;
+   o.allocShape              = MO.FEaiStatisticsInvestment_allocShape;
+   o.setup                   = MO.FEaiStatisticsInvestment_setup;
+   o.focusEntity             = MO.FEaiStatisticsInvestment_focusEntity;
+   o.process                 = MO.FEaiStatisticsInvestment_process;
+   o.dispose                 = MO.FEaiStatisticsInvestment_dispose;
+   return o;
+}
+MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onInvestment(event){
+   var o = this;
+   var content = event.content;
+   o._invementDay = content.investment_day;
+   o._invementTotal = content.investment_total;
+   var dataset = content.collection;
+   var count = dataset.length;
+   for(var i = 0; i < count; i++){
+      var row = dataset[i];
+      var entity = o.allocEntity();
+      entity.loadData(row);
+      o._entities.push(entity);
    }
-   MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onInvestment(event){
-      var o = this;
-      var content = event.content;
-      o._invementDay = content.investment_day;
-      o._invementTotal = content.investment_total;
-      var dataset = content.collection;
-      var count = dataset.length;
+   var entityCount = o._entities.count();
+   o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
+   o._tableTick = 0;
+}
+MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._beginDate = new MO.TDate();
+   o._endDate = new MO.TDate();
+   o._entities = new MO.TObjects();
+   o._showShapes = new MO.TObjects();
+   o._tableEntities = new MO.TObjects();
+   o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
+   o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
+   var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
+   table._hTable = document.getElementById('id_investment');
+   table._headLineCount = 1;
+   o._entityPool = MO.Class.create(MO.FObjectPool);
+   o._shapePool = MO.Class.create(MO.FObjectPool);
+}
+MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allocEntity(){
+   var o = this;
+   var entity = o._entityPool.alloc();
+   if(!entity){
+      entity = MO.Class.create(MO.FEaiStatisticsInvestmentEntity);
+   }
+   return entity;
+}
+MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_allocShape(){
+   var o = this;
+   var shape = o._shapePool.alloc();
+   if(!shape){
+      shape = MO.Class.create(MO.FEaiStatisticsInvestmentShape);
+      shape.linkGraphicContext(o);
+      shape.setup();
+   }
+   return shape;
+}
+MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
+   var o = this;
+   var audio = o._autio1 = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/currency/1.mp3');
+   var audio = o._autio2 = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/currency/2.mp3');
+   var audio = o._autio3 = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/currency/3.mp3');
+   var audio = o._autio4 = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/currency/4.mp3');
+   var display = o._display = MO.Class.create(MO.FE3dDisplay);
+   display.linkGraphicContext(o);
+}
+MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
+   var o = this;
+   var card = entity.card();
+   var investment = entity.investment();
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntity = o._mapEntity.findCityByCard(card);
+   if(cityEntity){
+      var provinceCode = cityEntity.data().provinceCode();
+      var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+      var province = provinceConsole.findByCode(provinceCode);
+      var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
+      if(provinceEntity){
+         provinceEntity.doInvestment();
+      }
+      cityEntity.addInvestmentTotal(investment);
+      o._mapEntity.upload();
+      if(investment >= 1000000){
+         o._autio4.play(0);
+      }else if(investment >= 100000){
+         o._autio3.play(0);
+      }else if(investment >= 10000){
+         o._autio2.play(0);
+      }else if(investment >= 1000){
+         o._autio1.play(0);
+      }
+   }
+}
+MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
+   var o = this;
+   var system = MO.Console.find(MO.FEaiLogicConsole).system();
+   if(!system.testReady()){
+      return;
+   }
+   var systemDate = system.currentDate();
+   if(!o._dateSetup){
+      o._endDate.assign(systemDate);
+      o._endDate.addMinute(-o._intervalMinute);
+      o._dateSetup = true;
+   }
+   if(o._dataTicker.process()){
+      var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
+      var beginDate = o._beginDate;
+      var endDate = o._endDate;
+      beginDate.assign(endDate);
+      endDate.assign(systemDate);
+      statistics.doInvestmentDynamic(o, o.onInvestment, beginDate.format(), endDate.format());
+      beginDate.assign(endDate);
+   }
+   var currentTick = MO.RTimer.current();
+   if(currentTick - o._tableTick > o._tableInterval){
+      if(o._tableEntities.count() > o._tableCount){
+         var entity = o._tableEntities.pop();
+         o._entityPool.free(entity);
+      }
+      var entities = o._entities;
+      if(!entities.isEmpty()){
+         var entity = entities.shift();
+         o._tableEntities.unshift(entity);
+         o.focusEntity(entity);
+         var dsEvent = MO.Memory.alloc(MO.SEvent);
+         dsEvent.sender = o;
+         dsEvent.data = o._tableEntities;
+         o.processDataChangedListener(dsEvent);
+         MO.Memory.free(dsEvent);
+      }
+      var count = entities.count();
+      var invementDay = o._invementDay;
+      var invementTotal = o._invementTotal;
       for(var i = 0; i < count; i++){
-         var row = dataset[i];
-         var entity = o.allocEntity();
-         entity.loadData(row);
-         o._entities.push(entity);
+         var entity = entities.at(i);
+         var investment = entity.investment();
+         invementDay -= investment;
+         invementTotal -= investment;
       }
-      var entityCount = o._entities.count();
-      o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
-      o._tableTick = 0;
-   }
-   MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._beginDate = new TDate();
-      o._endDate = new TDate();
-      o._entities = new TObjects();
-      o._showShapes = new TObjects();
-      o._tableEntities = new TObjects();
-      o._tableTicker = new TTicker(1000 * o._tableInterval);
-      o._dataTicker = new TTicker(1000 * 60 * o._intervalMinute);
-      var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
-      table._hTable = document.getElementById('id_investment');
-      table._headLineCount = 1;
-      o._entityPool = RClass.create(FObjectPool);
-      o._shapePool = RClass.create(FObjectPool);
-   }
-   MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allocEntity(){
-      var o = this;
-      var entity = o._entityPool.alloc();
-      if(!entity){
-         entity = RClass.create(FEaiStatisticsInvestmentEntity);
+      if(invementDay > o._invementDayCurrent){
+         o._invementDayCurrent = invementDay;
       }
-      return entity;
-   }
-   MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_allocShape(){
-      var o = this;
-      var shape = o._shapePool.alloc();
-      if(!shape){
-         shape = RClass.create(FEaiStatisticsInvestmentShape);
-         shape.linkGraphicContext(o);
-         shape.setup();
+      if(invementTotal > o._invementTotalCurrent){
+         o._invementTotalCurrent = invementTotal;
       }
-      return shape;
+      o._tableTick = currentTick;
    }
-   MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
-      var o = this;
-      var audio = o._autio1 = MO.Class.create(MO.FAudio);
-      audio.loadUrl('/script/ars/eai/currency/1.mp3');
-      var audio = o._autio2 = MO.Class.create(MO.FAudio);
-      audio.loadUrl('/script/ars/eai/currency/2.mp3');
-      var audio = o._autio3 = MO.Class.create(MO.FAudio);
-      audio.loadUrl('/script/ars/eai/currency/3.mp3');
-      var audio = o._autio4 = MO.Class.create(MO.FAudio);
-      audio.loadUrl('/script/ars/eai/currency/4.mp3');
-      var display = o._display = RClass.create(FE3dDisplay);
-      display.linkGraphicContext(o);
-   }
-   MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
-      var o = this;
-      var card = entity.card();
-      var investment = entity.investment();
-      var cityConsole = RConsole.find(FEaiResourceConsole).cityConsole();
-      var cityEntity = o._mapEntity.findCityByCard(card);
-      if(cityEntity){
-         var provinceCode = cityEntity.data().provinceCode();
-         var provinceConsole = RConsole.find(FEaiResourceConsole).provinceConsole();
-         var province = provinceConsole.findByCode(provinceCode);
-         var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
-         if(provinceEntity){
-            provinceEntity.doInvestment();
-         }
-         cityEntity.addInvestmentTotal(investment);
-         o._mapEntity.upload();
-         if(investment >= 1000000){
-            o._autio4.play(0);
-         }else if(investment >= 100000){
-            o._autio3.play(0);
-         }else if(investment >= 10000){
-            o._autio2.play(0);
-         }else if(investment >= 1000){
-            o._autio1.play(0);
-         }
+   o._mapEntity.process();
+   var shapes = o._showShapes;
+   var count = shapes.count();
+   for(var i = count - 1; i >= 0; i--){
+      var shape = shapes.at(i);
+      if(shape._finish){
+         shapes.erase(i)
+         o._display.removeRenderable(shape);
+         o._shapePool.free(shape);
       }
    }
-   MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
-      var o = this;
-      var system = RConsole.find(FEaiLogicConsole).system();
-      if(!system.testReady()){
-         return;
-      }
-      var systemDate = system.currentDate();
-      if(!o._dateSetup){
-         o._endDate.assign(systemDate);
-         o._endDate.addMinute(-o._intervalMinute);
-         o._dateSetup = true;
-      }
-      if(o._dataTicker.process()){
-         var statistics = RConsole.find(FEaiLogicConsole).statistics();
-         var beginDate = o._beginDate;
-         var endDate = o._endDate;
-         beginDate.assign(endDate);
-         endDate.assign(systemDate);
-         statistics.doInvestmentDynamic(o, o.onInvestment, beginDate.format(), endDate.format());
-         beginDate.assign(endDate);
-      }
-      var currentTick = RTimer.current();
-      if(currentTick - o._tableTick > o._tableInterval){
-         if(o._tableEntities.count() > o._tableCount){
-            var entity = o._tableEntities.pop();
-            o._entityPool.free(entity);
-         }
-         var entities = o._entities;
-         if(!entities.isEmpty()){
-            var entity = entities.shift();
-            o._tableEntities.unshift(entity);
-            o.focusEntity(entity);
-            var dsEvent = MO.Memory.alloc(SEvent);
-            dsEvent.sender = o;
-            dsEvent.data = o._tableEntities;
-            o.processDataChangedListener(dsEvent);
-         }
-         var count = entities.count();
-         var invementDay = o._invementDay;
-         var invementTotal = o._invementTotal;
-         for(var i = 0; i < count; i++){
-            var entity = entities.at(i);
-            var investment = entity.investment();
-            invementDay -= investment;
-            invementTotal -= investment;
-         }
-         if(invementDay > o._invementDayCurrent){
-            o._invementDayCurrent = invementDay;
-         }
-         if(invementTotal > o._invementTotalCurrent){
-            o._invementTotalCurrent = invementTotal;
-         }
-         o._tableTick = currentTick;
-      }
-      o._mapEntity.process();
-      var shapes = o._showShapes;
-      var count = shapes.count();
-      for(var i = count - 1; i >= 0; i--){
-         var shape = shapes.at(i);
-         if(shape._finish){
-            shapes.erase(i)
-            o._display.removeRenderable(shape);
-            o._shapePool.free(shape);
-         }
-      }
-   }
-   MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
-      var o = this;
-      o._entities = RObject.dispose(o._entities);
-      o._showShapes = RObject.dispose(o._showShapes);
-      o._dataTicker = RObject.dispose(o._dataTicker);
-      o.__base.FObject.dispose.call(o);
-   }
+}
+MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
+   var o = this;
+   o._entities = MO.RObject.dispose(o._entities);
+   o._showShapes = MO.RObject.dispose(o._showShapes);
+   o._dataTicker = MO.RObject.dispose(o._dataTicker);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FEaiStatisticsInvestmentEntity = function FEaiStatisticsInvestmentEntity(o){
