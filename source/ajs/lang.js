@@ -2153,18 +2153,16 @@ with(MO){
    }
    MO.RByte = new RByte();
 }
-with(MO){
-   MO.RChar = function RChar(){
-      return this;
-   }
-   MO.RChar.prototype.parse = function RChar_parse(n){
-      return String.fromCharCode(n);
-   }
-   MO.RChar.prototype.toString = function RChar_toString(v){
-      return v;
-   }
-   MO.RChar = new RChar();
+MO.RChar = function RChar(){
+   return this;
 }
+MO.RChar.prototype.parse = function RChar_parse(n){
+   return String.fromCharCode(n);
+}
+MO.RChar.prototype.toString = function RChar_toString(v){
+   return v;
+}
+MO.RChar = new MO.RChar();
 with(MO){
    MO.RClass = function RClass(){
       var o = this;

@@ -64,26 +64,31 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
-      o._visible              = RClass.register(o, new AGetter('_visible'), false);
-      o._location             = RClass.register(o, new AGetter('_location'));
-      o._size                 = RClass.register(o, new AGetter('_size'));
-      o._color                = RClass.register(o, new AGetter('_color'));
-      o._range                = RClass.register(o, new AGetter('_range'), 1);
-      o._rangeColor           = RClass.register(o, new AGetter('_rangeColor'));
-      o._investmentCount      = 0;
-      o._investmentTotal      = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._investmentLevelTotal = 10000;
-      o._investmentLevel      = 0;
-      o._investmentRange      = 1;
-      o._investmentRate       = 100;
-      o._investmentDirection  = 1;
-      o._data                 = RClass.register(o, new AGetSet('_data'));
-      o.construct             = FEaiCityEntity_construct;
-      o.build                 = FEaiCityEntity_build;
-      o.addInvestmentTotal    = FEaiCityEntity_addInvestmentTotal;
-      o.update                = FEaiCityEntity_update;
-      o.process               = FEaiCityEntity_process;
-      o.dispose               = FEaiCityEntity_dispose;
+      o._visible                = RClass.register(o, new AGetter('_visible'), false);
+      o._location               = RClass.register(o, new AGetter('_location'));
+      o._size                   = RClass.register(o, new AGetter('_size'));
+      o._color                  = RClass.register(o, new AGetter('_color'));
+      o._range                  = RClass.register(o, new AGetter('_range'), 1);
+      o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
+      o._investmentCount        = 0;
+      o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
+      o._investmentLevelTotal   = 10000;
+      o._investmentLevel        = 0;
+      o._investmentRange        = 1;
+      o._investmentRate         = 100;
+      o._investmentDirection    = 1;
+      o._stage                  = RClass.register(o, new AGetSet('_stage'));
+      o._renderable             = RClass.register(o, new AGetSet('_renderable'));
+      o._data                   = RClass.register(o, new AGetSet('_data'));
+      o._inputPoint             = null;
+      o._outputPoint            = null;
+      o.construct               = FEaiCityEntity_construct;
+      o.calculateScreenPosition = FEaiCityEntity_calculateScreenPosition;
+      o.build                   = FEaiCityEntity_build;
+      o.addInvestmentTotal      = FEaiCityEntity_addInvestmentTotal;
+      o.update                  = FEaiCityEntity_update;
+      o.process                 = FEaiCityEntity_process;
+      o.dispose                 = FEaiCityEntity_dispose;
       return o;
    }
    MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
@@ -93,6 +98,21 @@ with(MO){
       o._size = new SSize2();
       o._color = new SColor4(0, 0, 0, 0);
       o._rangeColor = new SColor4(0, 0, 0, 0);
+      o._inputPoint = new SPoint3();
+      o._outputPoint = new SPoint3();
+   }
+   MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScreenPosition(){
+      var o = this;
+      var region = o._stage.region();
+      var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+      var mMatrix = o._renderable.matrix();
+      var matrix = MO.RMath.matrix();
+      matrix.identity();
+      matrix.append(mMatrix);
+      matrix.append(vpMatrix);
+      o._inputPoint.set(o._location.x, o._location.y, 0);
+      matrix.transformPoint3(o._inputPoint, o._outputPoint);
+      return o._outputPoint;
    }
    MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
       var o = this;
@@ -161,6 +181,8 @@ with(MO){
       o._size = RObject.dispose(o._size);
       o._color = RObject.dispose(o._color);
       o._rangeColor = RObject.dispose(o._rangeColor);
+      o._inputPoint = RObject.dispose(o._inputPoint);
+      o._outputPoint = RObject.dispose(o._outputPoint);
       o.__base.FEaiEntity.dispose.call(o);
    }
 }

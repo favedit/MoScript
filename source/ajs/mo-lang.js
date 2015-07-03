@@ -3469,18 +3469,16 @@ with(MO){
    }
    MO.RByte = new RByte();
 }
-with(MO){
-   MO.RChar = function RChar(){
-      return this;
-   }
-   MO.RChar.prototype.parse = function RChar_parse(n){
-      return String.fromCharCode(n);
-   }
-   MO.RChar.prototype.toString = function RChar_toString(v){
-      return v;
-   }
-   MO.RChar = new RChar();
+MO.RChar = function RChar(){
+   return this;
 }
+MO.RChar.prototype.parse = function RChar_parse(n){
+   return String.fromCharCode(n);
+}
+MO.RChar.prototype.toString = function RChar_toString(v){
+   return v;
+}
+MO.RChar = new MO.RChar();
 with(MO){
    MO.RClass = function RClass(){
       var o = this;
@@ -7044,19 +7042,19 @@ with(MO){
          po[poi++] = (x * d[ 2]) + (y * d[ 6]) +(z * d[10]) + d[14];
       }
    }
-   MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(pi, po){
-      var d = this._data;
-      var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
-      var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
-      var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
-      var r = null;
-      if(po){
-         r = po;
+   MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(input, output){
+      var data = this._data;
+      var x = (input.x * data[ 0]) + (input.y * data[ 4]) +(input.z * data[ 8]) + data[12];
+      var y = (input.x * data[ 1]) + (input.y * data[ 5]) +(input.z * data[ 9]) + data[13];
+      var z = (input.x * data[ 2]) + (input.y * data[ 6]) +(input.z * data[10]) + data[14];
+      var result = null;
+      if(output){
+         result = output;
       }else{
-         r = new SPoint3();
+         result = new SPoint3();
       }
-      r.set(x, y, z);
-      return r;
+      result.set(x, y, z);
+      return result;
    }
    MO.SMatrix4x4_build = function SMatrix4x4_build(t, r, s){
       var d = this._data;
@@ -8712,99 +8710,90 @@ with(MO){
       o.z = p.readFloat();
    }
 }
-with(MO){
-   MO.RMath = function RMath(){
-      var o = this;
-      o.value1         = new Array(1);
-      o.value2         = new Array(2);
-      o.value3         = new Array(3);
-      o.value4         = new Array(4);
-      o.value9         = new Array(9);
-      o.value12        = new Array(12);
-      o.value16        = new Array(16);
-      o.vectorAxisX    = null;
-      o.vectorAxisY    = null;
-      o.vectorAxisZ    = null;
-      o.vectorScale    = null;
-      o.vectorForward  = null;
-      o.vectorBackward = null;
-      o.vector3        = null;
-      o.rectangle      = null;
-      o.matrix         = null;
-      o.construct      = RMath_construct;
-      o.min            = RMath_min;
-      o.max            = RMath_max;
-      o.sign           = RMath_sign;
-      o.construct();
-      return o;
-   }
-   MO.RMath_construct = function RMath_construct(){
-      var o = this;
-      o.vectorAxisX = new MO.SVector3(1, 0, 0);
-      o.vectorAxisY = new MO.SVector3(0, 1, 0);
-      o.vectorAxisZ = new MO.SVector3(0, 0, 1);
-      o.vectorScale = new MO.SVector3(1, 1, 1);
-      o.vectorForward = new MO.SVector3(0, 0, 1);
-      o.vectorBackward = new MO.SVector3(0, 0, -1);
-      o.vector3 = new MO.SVector3();
-      o.rectangle = new MO.SRectangle();
-      o.matrix = new MO.SMatrix3d();
-   }
-   MO.RMath_min = function RMath_min(){
-      var result = 0;
-      var count = arguments.length;
-      if(count > 1){
-         result = Number.MAX_VALUE;
-         for(var i = 0; i < count; i++){
-            var value = arguments[i];
-            if(value < result){
-               result = value;
-            }
+MO.RMath = function RMath(){
+   var o = this;
+   o.value1         = new Array(1);
+   o.value2         = new Array(2);
+   o.value3         = new Array(3);
+   o.value4         = new Array(4);
+   o.value9         = new Array(9);
+   o.value12        = new Array(12);
+   o.value16        = new Array(16);
+   o.vectorAxisX    = null;
+   o.vectorAxisY    = null;
+   o.vectorAxisZ    = null;
+   o.vectorScale    = null;
+   o.vectorForward  = null;
+   o.vectorBackward = null;
+   o.vector3        = null;
+   o.rectangle      = null;
+   o.matrix         = null;
+   return o;
+}
+MO.RMath.prototype.construct = function RMath_construct(){
+   var o = this;
+   o.vectorAxisX = new MO.SVector3(1, 0, 0);
+   o.vectorAxisY = new MO.SVector3(0, 1, 0);
+   o.vectorAxisZ = new MO.SVector3(0, 0, 1);
+   o.vectorScale = new MO.SVector3(1, 1, 1);
+   o.vectorForward = new MO.SVector3(0, 0, 1);
+   o.vectorBackward = new MO.SVector3(0, 0, -1);
+   o.vector3 = new MO.SVector3();
+   o.rectangle = new MO.SRectangle();
+   o.matrix = new MO.SMatrix3d();
+}
+MO.RMath.prototype.min = function RMath_min(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MAX_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value < result){
+            result = value;
          }
       }
-      return result;
    }
-   MO.RMath_max = function RMath_max(){
-      var result = 0;
-      var count = arguments.length;
-      if(count > 1){
-         result = Number.MIN_VALUE;
-         for(var i = 0; i < count; i++){
-            var value = arguments[i];
-            if(value > result){
-               result = value;
-            }
+   return result;
+}
+MO.RMath.prototype.max = function RMath_max(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MIN_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value > result){
+            result = value;
          }
       }
-      return result;
    }
-   MO.RMath_sign = function RMath_sign(value){
-      if(value > 0){
-         return 1;
-      }else if(value < 0){
-         return -1;
-      }
-      return 0;
-   }
-   MO.RMath = new RMath();
+   return result;
 }
-with(MO){
-   MO.RRandom = function RRandom(){
-      var o = this;
-      o._seed = (new Date()).getTime();
-      o.get  = RRandom_get;
-      o.rand = RRandom_rand;
-      return o;
+MO.RMath.prototype.sign = function RMath_sign(value){
+   if(value > 0){
+      return 1;
+   }else if(value < 0){
+      return -1;
    }
-   MO.RRandom_get = function RRandom_get(){
-      var o = this;
-      o._seed = (o._seed * 9301 + 49297) % 233280;
-      return o._seed/(233280.0);
-   }
-   MO.RRandom_rand = function RRandom_rand(seed){
-      var o = this;
-      var value = o.get() * seed;
-      return Math.ceil(value);
-   }
-   MO.RRandom = new RRandom();
+   return 0;
 }
+MO.RMath = new MO.RMath();
+MO.RMath.construct();
+MO.RRandom = function RRandom(){
+   var o = this;
+   o._seed = (new Date()).getTime();
+   return o;
+}
+MO.RRandom.prototype.get = function RRandom_get(){
+   var o = this;
+   o._seed = (o._seed * 9301 + 49297) % 233280;
+   return o._seed/(233280.0);
+}
+MO.RRandom.prototype.rand = function RRandom_rand(seed){
+   var o = this;
+   var value = o.get() * seed;
+   return Math.ceil(value);
+}
+MO.RRandom = new MO.RRandom();
+MO.Random = MO.RRandom;

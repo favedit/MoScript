@@ -773,6 +773,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       var level = city.level();
       var cityLocation = city.location();
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setStage(o._activeStage);
+      cityEntity.setRenderable(citysRenderable);
       cityEntity.setData(city);
       cityEntity.build(context);
       cityEntities.set(city.code(), cityEntity);
@@ -935,7 +937,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
    liveTable.setName('LiveTable');
    liveTable.setDockCd(MO.EGuiDock.Right);
-   liveTable.setAnchorCd(MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+   liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
    liveTable.setTop(20);
    liveTable.setRight(20);
    liveTable.setBottom(20);

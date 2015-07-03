@@ -451,22 +451,24 @@
    // <T>变换顶点数据。</T>
    //
    // @method
-   // @param pi:inputPoint:SPoint3 输入顶点
-   // @param po:inputPoint:SPoint3 输出顶点
+   // @param input:SPoint3 输入顶点
+   // @param output:SPoint3 输出顶点
    //==========================================================
-   MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(pi, po){
-      var d = this._data;
-      var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
-      var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
-      var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
-      var r = null;
-      if(po){
-         r = po;
+   MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(input, output){
+      // 计算数据
+      var data = this._data;
+      var x = (input.x * data[ 0]) + (input.y * data[ 4]) +(input.z * data[ 8]) + data[12];
+      var y = (input.x * data[ 1]) + (input.y * data[ 5]) +(input.z * data[ 9]) + data[13];
+      var z = (input.x * data[ 2]) + (input.y * data[ 6]) +(input.z * data[10]) + data[14];
+      // 设置结果
+      var result = null;
+      if(output){
+         result = output;
       }else{
-         r = new SPoint3();
+         result = new SPoint3();
       }
-      r.set(x, y, z);
-      return r;
+      result.set(x, y, z);
+      return result;
    }
 
    //============================================================

@@ -4440,17 +4440,17 @@ with(MO){
    MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
       var o = this;
       o._changed = false;
-      var c = o._camera;
-      var cp = c.projection();
-      c.updateFrustum();
-      o._cameraPosition.assign(c.position());
-      o._cameraDirection.assign(c.direction());
-      o._cameraViewMatrix.assign(c.matrix());
-      o._cameraProjectionMatrix.assign(cp.matrix());
-      o._cameraViewProjectionMatrix.assign(c.matrix());
-      o._cameraViewProjectionMatrix.append(cp.matrix());
-      var l = o._directionalLight;
-      var lc = l.camera();
+      var camera = o._camera;
+      var projection = camera.projection();
+      camera.updateFrustum();
+      o._cameraPosition.assign(camera.position());
+      o._cameraDirection.assign(camera.direction());
+      o._cameraViewMatrix.assign(camera.matrix());
+      o._cameraProjectionMatrix.assign(projection.matrix());
+      o._cameraViewProjectionMatrix.assign(camera.matrix());
+      o._cameraViewProjectionMatrix.append(projection.matrix());
+      var light = o._directionalLight;
+      var lc = light.camera();
       var lcp = lc.position();
       var lp = lc.projection();
       o._lightPosition.assign(lc.position());
@@ -4466,9 +4466,9 @@ with(MO){
       var o = this;
       o._renderables.clear();
    }
-   MO.MG3dRegion_calculate = function MG3dRegion_calculate(p){
+   MO.MG3dRegion_calculate = function MG3dRegion_calculate(parameterCd){
       var o = this;
-      switch(p){
+      switch(parameterCd){
          case EG3dRegionParameter.CameraPosition:
             return o._cameraPosition;
          case EG3dRegionParameter.CameraDirection:
@@ -4492,7 +4492,7 @@ with(MO){
          case EG3dRegionParameter.LightInfo:
             return o._lightInfo;
       }
-      throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
+      throw new TError(o, 'Unknown parameter type. (type_cd={1})', parameterCd);
    }
    MO.MG3dRegion_update = function MG3dRegion_update(){
       var o = this;
@@ -18260,13 +18260,12 @@ with(MO){
 with(MO){
    MO.FE3dRegion = function FE3dRegion(o){
       o = RClass.inherits(this, o, FRegion, MGraphicObject, MG3dRegion, MLinkerResource);
-      o._backgroundColor = null;
-      o.construct       = FE3dRegion_construct;
-      o.backgroundColor = FE3dRegion_backgroundColor;
-      o.loadResource    = FE3dRegion_loadResource;
-      o.reloadResource  = FE3dRegion_reloadResource;
-      o.prepare         = FE3dRegion_prepare;
-      o.dispose         = FE3dRegion_dispose;
+      o._backgroundColor = RClass.register(o, new AGetter('_backgroundColor'));
+      o.construct        = FE3dRegion_construct;
+      o.loadResource     = FE3dRegion_loadResource;
+      o.reloadResource   = FE3dRegion_reloadResource;
+      o.prepare          = FE3dRegion_prepare;
+      o.dispose          = FE3dRegion_dispose;
       return o;
    }
    MO.FE3dRegion_construct = function FE3dRegion_construct(){
@@ -18287,22 +18286,19 @@ with(MO){
       backgroundColor.set(0, 0, 0, 1);
       o._calculateCameraMatrix = new SMatrix3d();
    }
-   MO.FE3dRegion_backgroundColor = function FE3dRegion_backgroundColor(){
-      return this._backgroundColor;
-   }
-   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(p){
+   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(resource){
       var o = this;
-      o._resource = p;
-      o._camera.loadResource(p.camera());
-      o._directionalLight.loadResource(p.light());
+      o._resource = resource;
+      o._camera.loadResource(resource.camera());
+      o._directionalLight.loadResource(resource.light());
       o.reloadResource();
    }
    MO.FE3dRegion_reloadResource = function FE3dRegion_reloadResource(){
       var o = this;
-      var r = o._resource;
-      var f = r.optionBackground();
-      if(f){
-         o._backgroundColor.assignPower(r.backgroundColor());
+      var resource = o._resource;
+      var optionBackground = resource.optionBackground();
+      if(optionBackground){
+         o._backgroundColor.assignPower(resource.backgroundColor());
          o._backgroundColor.alpha = 1;
       }else{
          o._backgroundColor.set(0, 0, 0, 0);
@@ -18311,8 +18307,8 @@ with(MO){
    MO.FE3dRegion_prepare = function FE3dRegion_prepare(){
       var o = this;
       o.__base.MG3dRegion.prepare.call(o);
-      var r = o._calculateCameraMatrix.attach(o._camera.matrix());
-      if(r){
+      var changed = o._calculateCameraMatrix.attach(o._camera.matrix());
+      if(changed){
          o._changed = true;
       }
    }

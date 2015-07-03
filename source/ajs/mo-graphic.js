@@ -545,17 +545,17 @@ with(MO){
    MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
       var o = this;
       o._changed = false;
-      var c = o._camera;
-      var cp = c.projection();
-      c.updateFrustum();
-      o._cameraPosition.assign(c.position());
-      o._cameraDirection.assign(c.direction());
-      o._cameraViewMatrix.assign(c.matrix());
-      o._cameraProjectionMatrix.assign(cp.matrix());
-      o._cameraViewProjectionMatrix.assign(c.matrix());
-      o._cameraViewProjectionMatrix.append(cp.matrix());
-      var l = o._directionalLight;
-      var lc = l.camera();
+      var camera = o._camera;
+      var projection = camera.projection();
+      camera.updateFrustum();
+      o._cameraPosition.assign(camera.position());
+      o._cameraDirection.assign(camera.direction());
+      o._cameraViewMatrix.assign(camera.matrix());
+      o._cameraProjectionMatrix.assign(projection.matrix());
+      o._cameraViewProjectionMatrix.assign(camera.matrix());
+      o._cameraViewProjectionMatrix.append(projection.matrix());
+      var light = o._directionalLight;
+      var lc = light.camera();
       var lcp = lc.position();
       var lp = lc.projection();
       o._lightPosition.assign(lc.position());
@@ -571,9 +571,9 @@ with(MO){
       var o = this;
       o._renderables.clear();
    }
-   MO.MG3dRegion_calculate = function MG3dRegion_calculate(p){
+   MO.MG3dRegion_calculate = function MG3dRegion_calculate(parameterCd){
       var o = this;
-      switch(p){
+      switch(parameterCd){
          case EG3dRegionParameter.CameraPosition:
             return o._cameraPosition;
          case EG3dRegionParameter.CameraDirection:
@@ -597,7 +597,7 @@ with(MO){
          case EG3dRegionParameter.LightInfo:
             return o._lightInfo;
       }
-      throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
+      throw new TError(o, 'Unknown parameter type. (type_cd={1})', parameterCd);
    }
    MO.MG3dRegion_update = function MG3dRegion_update(){
       var o = this;

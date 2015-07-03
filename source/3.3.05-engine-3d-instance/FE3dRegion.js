@@ -10,19 +10,17 @@ with(MO){
       o = RClass.inherits(this, o, FRegion, MGraphicObject, MG3dRegion, MLinkerResource);
       //..........................................................
       // @attribute
-      o._backgroundColor = null;
+      o._backgroundColor = RClass.register(o, new AGetter('_backgroundColor'));
       //..........................................................
       // @method
-      o.construct       = FE3dRegion_construct;
+      o.construct        = FE3dRegion_construct;
       // @method
-      o.backgroundColor = FE3dRegion_backgroundColor;
+      o.loadResource     = FE3dRegion_loadResource;
+      o.reloadResource   = FE3dRegion_reloadResource;
       // @method
-      o.loadResource    = FE3dRegion_loadResource;
-      o.reloadResource  = FE3dRegion_reloadResource;
+      o.prepare          = FE3dRegion_prepare;
       // @method
-      o.prepare         = FE3dRegion_prepare;
-      // @method
-      o.dispose         = FE3dRegion_dispose;
+      o.dispose          = FE3dRegion_dispose;
       return o;
    }
 
@@ -55,26 +53,16 @@ with(MO){
    }
 
    //==========================================================
-   // <T>获得背景色。</T>
-   //
-   // @method
-   // @return SColor4 背景色
-   //==========================================================
-   MO.FE3dRegion_backgroundColor = function FE3dRegion_backgroundColor(){
-      return this._backgroundColor;
-   }
-
-   //==========================================================
    // <T>重新加载资源。</T>
    //
    // @method
-   // @param p:resource:FE3sSceneRegion 资源
+   // @param resource:FE3sSceneRegion 资源
    //==========================================================
-   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(p){
+   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(resource){
       var o = this;
-      o._resource = p;
-      o._camera.loadResource(p.camera());
-      o._directionalLight.loadResource(p.light());
+      o._resource = resource;
+      o._camera.loadResource(resource.camera());
+      o._directionalLight.loadResource(resource.light());
       o.reloadResource();
    }
 
@@ -85,11 +73,11 @@ with(MO){
    //==========================================================
    MO.FE3dRegion_reloadResource = function FE3dRegion_reloadResource(){
       var o = this;
-      var r = o._resource;
+      var resource = o._resource;
       // 设置背景颜色
-      var f = r.optionBackground();
-      if(f){
-         o._backgroundColor.assignPower(r.backgroundColor());
+      var optionBackground = resource.optionBackground();
+      if(optionBackground){
+         o._backgroundColor.assignPower(resource.backgroundColor());
          o._backgroundColor.alpha = 1;
       }else{
          o._backgroundColor.set(0, 0, 0, 0);
@@ -105,8 +93,8 @@ with(MO){
       var o = this;
       o.__base.MG3dRegion.prepare.call(o);
       // 检查相机变更
-      var r = o._calculateCameraMatrix.attach(o._camera.matrix());
-      if(r){
+      var changed = o._calculateCameraMatrix.attach(o._camera.matrix());
+      if(changed){
          o._changed = true;
       }
    }

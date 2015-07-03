@@ -144,19 +144,19 @@ with(MO){
       // 数据未改变
       o._changed = false;
       // 设置相机信息
-      var c = o._camera;
-      var cp = c.projection();
-      c.updateFrustum();
+      var camera = o._camera;
+      var projection = camera.projection();
+      camera.updateFrustum();
       // 设置视角内容
-      o._cameraPosition.assign(c.position());
-      o._cameraDirection.assign(c.direction());
-      o._cameraViewMatrix.assign(c.matrix());
-      o._cameraProjectionMatrix.assign(cp.matrix());
-      o._cameraViewProjectionMatrix.assign(c.matrix());
-      o._cameraViewProjectionMatrix.append(cp.matrix());
+      o._cameraPosition.assign(camera.position());
+      o._cameraDirection.assign(camera.direction());
+      o._cameraViewMatrix.assign(camera.matrix());
+      o._cameraProjectionMatrix.assign(projection.matrix());
+      o._cameraViewProjectionMatrix.assign(camera.matrix());
+      o._cameraViewProjectionMatrix.append(projection.matrix());
       // 设置光源信息
-      var l = o._directionalLight;
-      var lc = l.camera();
+      var light = o._directionalLight;
+      var lc = light.camera();
       var lcp = lc.position();
       var lp = lc.projection();
       o._lightPosition.assign(lc.position());
@@ -185,12 +185,12 @@ with(MO){
    // <T>计算参数数据。</T>
    //
    // @method
-   // @param p:parameterCd:EG3dRegionParameter 参数类型
+   // @param parameterCd:EG3dRegionParameter 参数类型
    // @return 参数内容
    //==========================================================
-   MO.MG3dRegion_calculate = function MG3dRegion_calculate(p){
+   MO.MG3dRegion_calculate = function MG3dRegion_calculate(parameterCd){
       var o = this;
-      switch(p){
+      switch(parameterCd){
          case EG3dRegionParameter.CameraPosition:
             return o._cameraPosition;
          case EG3dRegionParameter.CameraDirection:
@@ -214,7 +214,7 @@ with(MO){
          case EG3dRegionParameter.LightInfo:
             return o._lightInfo;
       }
-      throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
+      throw new TError(o, 'Unknown parameter type. (type_cd={1})', parameterCd);
    }
 
    //==========================================================

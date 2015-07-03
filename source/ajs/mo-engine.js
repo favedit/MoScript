@@ -8779,13 +8779,12 @@ with(MO){
 with(MO){
    MO.FE3dRegion = function FE3dRegion(o){
       o = RClass.inherits(this, o, FRegion, MGraphicObject, MG3dRegion, MLinkerResource);
-      o._backgroundColor = null;
-      o.construct       = FE3dRegion_construct;
-      o.backgroundColor = FE3dRegion_backgroundColor;
-      o.loadResource    = FE3dRegion_loadResource;
-      o.reloadResource  = FE3dRegion_reloadResource;
-      o.prepare         = FE3dRegion_prepare;
-      o.dispose         = FE3dRegion_dispose;
+      o._backgroundColor = RClass.register(o, new AGetter('_backgroundColor'));
+      o.construct        = FE3dRegion_construct;
+      o.loadResource     = FE3dRegion_loadResource;
+      o.reloadResource   = FE3dRegion_reloadResource;
+      o.prepare          = FE3dRegion_prepare;
+      o.dispose          = FE3dRegion_dispose;
       return o;
    }
    MO.FE3dRegion_construct = function FE3dRegion_construct(){
@@ -8806,22 +8805,19 @@ with(MO){
       backgroundColor.set(0, 0, 0, 1);
       o._calculateCameraMatrix = new SMatrix3d();
    }
-   MO.FE3dRegion_backgroundColor = function FE3dRegion_backgroundColor(){
-      return this._backgroundColor;
-   }
-   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(p){
+   MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(resource){
       var o = this;
-      o._resource = p;
-      o._camera.loadResource(p.camera());
-      o._directionalLight.loadResource(p.light());
+      o._resource = resource;
+      o._camera.loadResource(resource.camera());
+      o._directionalLight.loadResource(resource.light());
       o.reloadResource();
    }
    MO.FE3dRegion_reloadResource = function FE3dRegion_reloadResource(){
       var o = this;
-      var r = o._resource;
-      var f = r.optionBackground();
-      if(f){
-         o._backgroundColor.assignPower(r.backgroundColor());
+      var resource = o._resource;
+      var optionBackground = resource.optionBackground();
+      if(optionBackground){
+         o._backgroundColor.assignPower(resource.backgroundColor());
          o._backgroundColor.alpha = 1;
       }else{
          o._backgroundColor.set(0, 0, 0, 0);
@@ -8830,8 +8826,8 @@ with(MO){
    MO.FE3dRegion_prepare = function FE3dRegion_prepare(){
       var o = this;
       o.__base.MG3dRegion.prepare.call(o);
-      var r = o._calculateCameraMatrix.attach(o._camera.matrix());
-      if(r){
+      var changed = o._calculateCameraMatrix.attach(o._camera.matrix());
+      if(changed){
          o._changed = true;
       }
    }

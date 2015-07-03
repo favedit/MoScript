@@ -693,6 +693,7 @@ with(MO){
       o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
       o._anchorCd               = MO.RClass.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], EGuiAnchor.None);
       o._dockCd                 = MO.RClass.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], EGuiDock.LeftTop);
+      o._alpha                  = MO.RClass.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
       o._foreColor              = MO.RClass.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
       o._foreFont               = MO.RClass.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
       o._backColor              = MO.RClass.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
@@ -910,6 +911,7 @@ with(MO){
       var rectangle = event.rectangle;
       o._eventRectangle.assign(rectangle);
       var dockCd = o._dockCd;
+      var anchorCd = o._anchorCd;
       var left = rectangle.left + location.x;
       var top = rectangle.top + location.y;
       var width = size.width;
@@ -932,10 +934,11 @@ with(MO){
       if(dockCd == MO.EGuiDock.Right){
          left = right - width;
       }
-      if((o._anchorCd & EGuiAnchor.Left) && (o._anchorCd & EGuiAnchor.Right)){
+      if((anchorCd & EGuiAnchor.Left) && (anchorCd & EGuiAnchor.Right)){
          width = right - left;
+      }else if(o._anchorCd & EGuiAnchor.Left){
       }
-      if((o._anchorCd & EGuiAnchor.Top) && (o._anchorCd & EGuiAnchor.Bottom)){
+      if((anchorCd & EGuiAnchor.Top) && (o._anchorCd & EGuiAnchor.Bottom)){
          height = bottom - top;
       }
       event.optionContainer = false;

@@ -190,6 +190,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       var cityLocation = city.location();
       // 创建实体
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setStage(o._activeStage);
+      cityEntity.setRenderable(citysRenderable);
       cityEntity.setData(city);
       cityEntity.build(context);
       cityEntities.set(city.code(), cityEntity);
