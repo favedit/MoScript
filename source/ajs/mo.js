@@ -13055,142 +13055,151 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.RBrowser = function RBrowser(){
-      var o = this;
-      o._capability   = null;
-      o._deviceCd     = MO.EDevice.Unknown;
-      o._softwareCd   = MO.ESoftware.Unknown;
-      o._typeCd       = MO.EBrowser.Unknown;
-      o._supportHtml5 = false;
-      o._hostPath     = '';
-      o._contentPath  = '';
-      return o;
-   }
-   MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
-      console.log(p);
-   }
-   MO.RBrowser.prototype.construct = function RBrowser_construct(){
-      var o = this;
-      var s = window.navigator.userAgent.toLowerCase();
-      if(s.indexOf("android") != -1){
-         o._typeCd = EDevice.Mobile;
-         o._softwareCd = ESoftware.Android;
-      }
-      if(s.indexOf("chrome") != -1){
-         o._typeCd = EBrowser.Chrome;
-      }else if(s.indexOf("firefox") != -1){
-         o._typeCd = EBrowser.FireFox;
-      }else if((s.indexOf("msie") != -1) || (s.indexOf("windows") != -1)){
-         o._typeCd = EBrowser.Explorer;
-      }else if((s.indexOf("safari") != -1) || (s.indexOf("applewebkit") != -1)){
-         o._typeCd = EBrowser.Safari;
-      }else{
-         alert('Unknown browser.\n' + s);
-         return;
-      }
-      if(o._typeCd == EBrowser.Chrome){
-         MO.Logger.lsnsOutput.register(o, o.onLog);
-      }
-      MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
-      if(window.applicationCache){
-         o._supportHtml5 = true;
-      }
-      var capability = o._capability = new SBrowserCapability();
-      if(window.Worker){
-         capability.optionProcess = true;
-      }
-      if(window.localStorage){
-         capability.optionStorage = true;
-      }
-      try{
-         new Blob(["Test"], {'type':'text/plain'});
-         capability.blobCreate = true;
-      }catch(e){
-         MO.Logger.warn(o, 'Browser blob not support.');
-      }
-   }
-   MO.RBrowser.prototype.capability = function RBrowser_capability(){
-      return this._capability;
-   }
-   MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
-      return this._supportHtml5;
-   }
-   MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
-      var o = this;
-      if(uri){
-         return o._hostPath + uri;
-      }
-      return o._hostPath;
-   }
-   MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
-      this._hostPath = host;
-   }
-   MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
-      var o = this;
-      if(uri){
-         return o._contentPath + uri;
-      }
-      return o._contentPath;
-   }
-   MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
-      this._contentPath = path;
-   }
-   MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
-      return this._typeCd == p;
-   }
-   MO.RBrowser.prototype.encode = function RBrowser_encode(value){
-      return escape(value);
-   }
-   MO.RBrowser.prototype.decode = function RBrowser_decode(value){
-      return unescape(value);
-   }
-   MO.RBrowser.prototype.urlEncode = function RBrowser_urlEncode(url, flag){
-      if(flag){
-         return encodeURIComponent(url);
-      }
-      return encodeURI(url);
-   }
-   MO.RBrowser.prototype.urlDecode = function RBrowser_urlDecode(url, flag){
-      if(flag){
-         return decodeURIComponent(url);
-      }
-      return decodeURI(url);
-   }
-   MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
-      if(flag){
-         if (hWindow.requestFullscreen){
-            hWindow.requestFullscreen();
-         }else if(hWindow.mozRequestFullScreen){
-            hWindow.mozRequestFullScreen();
-         }else if(hWindow.webkitRequestFullScreen){
-            hWindow.webkitRequestFullScreen();
-         }
-      }else{
-         if (hWindow.exitFullscreen){
-            hWindow.exitFullscreen();
-         }else if(hWindow.mozCancelFullScreen){
-            hWindow.mozCancelFullScreen();
-         }else if(hWindow.webkitCancelFullScreen){
-            hWindow.webkitCancelFullScreen();
-         }
-      }
-   }
-   MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
-      var link = document.createElement('A');
-      var event = document.createEvent("MouseEvents");
-      event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      link.download = fileName;
-      link.href = URL.createObjectURL(blob);
-      link.dispatchEvent(event);
-   }
-   MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
-      var blob = RBlob.fromText(text);
-      this.downloadBlob(fileName, blob);
-   }
-   MO.RBrowser = new RBrowser();
-   MO.Browser = MO.RBrowser;
+MO.RBrowser = function RBrowser(){
+   var o = this;
+   o._capability   = null;
+   o._deviceCd     = MO.EDevice.Unknown;
+   o._softwareCd   = MO.ESoftware.Unknown;
+   o._typeCd       = MO.EBrowser.Unknown;
+   o._supportHtml5 = false;
+   o._hostPath     = '';
+   o._contentPath  = '';
+   return o;
 }
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
+   console.log(p);
+}
+MO.RBrowser.prototype.construct = function RBrowser_construct(){
+   var o = this;
+   var agent = window.navigator.userAgent.toLowerCase();
+   if(agent.indexOf("android") != -1){
+      o._typeCd = MO.EDevice.Mobile;
+      o._softwareCd = MO.ESoftware.Android;
+   }
+   if(agent.indexOf("chrome") != -1){
+      o._typeCd = MO.EBrowser.Chrome;
+   }else if(agent.indexOf("firefox") != -1){
+      o._typeCd = MO.EBrowser.FireFox;
+   }else if((agent.indexOf("msie") != -1) || (agent.indexOf("windows") != -1)){
+      o._typeCd = MO.EBrowser.Explorer;
+   }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
+      o._typeCd = MO.EBrowser.Safari;
+   }else{
+      alert('Unknown browser.\n' + agent);
+      return;
+   }
+   if(o._typeCd == MO.EBrowser.Chrome){
+      MO.Logger.lsnsOutput.register(o, o.onLog);
+   }
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.REnum.decode(MO.EBrowser, o._typeCd));
+   if(window.applicationCache){
+      o._supportHtml5 = true;
+   }
+   var bIsIpad = agent.match(/ipad/i) == "ipad";
+   var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
+   var bIsMidp = agent.match(/midp/i) == "midp";
+   var bIsUc7 = agent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+   var bIsUc = agent.match(/ucweb/i) == "ucweb";
+   var bIsAndroid = agent.match(/android/i) == "android";
+   var bIsCE = agent.match(/windows ce/i) == "windows ce";
+   var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
+   if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
+      MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   var capability = o._capability = new MO.SBrowserCapability();
+   if(window.Worker){
+      capability.optionProcess = true;
+   }
+   if(window.localStorage){
+      capability.optionStorage = true;
+   }
+   try{
+      new Blob(["Test"], {'type':'text/plain'});
+      capability.blobCreate = true;
+   }catch(e){
+      MO.Logger.warn(o, 'Browser blob not support.');
+   }
+}
+MO.RBrowser.prototype.capability = function RBrowser_capability(){
+   return this._capability;
+}
+MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
+   return this._supportHtml5;
+}
+MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
+   var o = this;
+   if(uri){
+      return o._hostPath + uri;
+   }
+   return o._hostPath;
+}
+MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
+   this._hostPath = host;
+}
+MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
+   var o = this;
+   if(uri){
+      return o._contentPath + uri;
+   }
+   return o._contentPath;
+}
+MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
+   this._contentPath = path;
+}
+MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
+   return this._typeCd == p;
+}
+MO.RBrowser.prototype.encode = function RBrowser_encode(value){
+   return escape(value);
+}
+MO.RBrowser.prototype.decode = function RBrowser_decode(value){
+   return unescape(value);
+}
+MO.RBrowser.prototype.urlEncode = function RBrowser_urlEncode(url, flag){
+   if(flag){
+      return encodeURIComponent(url);
+   }
+   return encodeURI(url);
+}
+MO.RBrowser.prototype.urlDecode = function RBrowser_urlDecode(url, flag){
+   if(flag){
+      return decodeURIComponent(url);
+   }
+   return decodeURI(url);
+}
+MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
+   if(flag){
+      if (hWindow.requestFullscreen){
+         hWindow.requestFullscreen();
+      }else if(hWindow.mozRequestFullScreen){
+         hWindow.mozRequestFullScreen();
+      }else if(hWindow.webkitRequestFullScreen){
+         hWindow.webkitRequestFullScreen();
+      }
+   }else{
+      if (hWindow.exitFullscreen){
+         hWindow.exitFullscreen();
+      }else if(hWindow.mozCancelFullScreen){
+         hWindow.mozCancelFullScreen();
+      }else if(hWindow.webkitCancelFullScreen){
+         hWindow.webkitCancelFullScreen();
+      }
+   }
+}
+MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, blob){
+   var link = document.createElement('A');
+   var event = document.createEvent("MouseEvents");
+   event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+   link.download = fileName;
+   link.href = URL.createObjectURL(blob);
+   link.dispatchEvent(event);
+}
+MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
+   var blob = MO.RBlob.fromText(text);
+   this.downloadBlob(fileName, blob);
+}
+MO.RBrowser = new MO.RBrowser();
+MO.Browser = MO.RBrowser;
 with(MO){
    MO.RBuilder = function RBuilder(){
       return this;
