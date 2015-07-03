@@ -109,6 +109,7 @@ with(MO){
          var showTick = passedTick - o._popDuration;
          var closeTick = passedTick - o._showDuration - o._popDuration;
          var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         var p = 0;
          if (passedTick < o._popDuration) {
             p = passedTick / o._popDuration;
             p = 1 - (1 - p) * (1 - p);

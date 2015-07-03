@@ -26,6 +26,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @attribute
    o._timeline          = null;
    o._liveTable         = null;
+   o._livePop           = null;
    // @attribute
    o._statusStart       = false;
    o._statusLayerCount  = 150;
@@ -135,6 +136,13 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setup();
    liveTable.build();
    o._desktop.register(liveTable);
+   // 创建弹出
+   var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
+   livePop.setName('LiveTable');
+   livePop.linkGraphicContext(o);
+   livePop.setup();
+   livePop.build();
+   o._desktop.register(livePop);
    //..........................................................
    // 隐藏全部界面
    o._desktop.hide();
@@ -220,4 +228,18 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
+   var o = this;
+   o._liveTable.setData(event.data);
+   o._liveTable.dirty();
+   o._livePop.setData(event.data.at(0));
+   o._livePop.show();
 }
