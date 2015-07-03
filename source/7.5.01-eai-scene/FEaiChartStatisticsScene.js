@@ -34,6 +34,9 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    // @attribute
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
+   // @event
+   o.onLiveTableChanged = MO.FEaiChartStatisticsScene_onLiveTableChanged;
+   //..........................................................
    // @method
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    // @method
@@ -41,9 +44,22 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    // @method
    o.process            = MO.FEaiChartStatisticsScene_process;
-   o.onTableEntitiesChanged = MO.FEaiChartStatisticsScene_onTableEntitiesChanged;
    return o;
 }
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsScene_onLiveTableChanged(event) {
+   var o = this;
+   o._liveTable.setRank(event.rank);
+   o._liveTable.setData(event.data);
+   o._liveTable.dirty();
+}
+
 
 //==========================================================
 // <T>点击暂停处理。</T>
@@ -84,7 +100,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onTableEntitiesChanged);
+   invement.addDataChangedListener(o, o.onLiveTableChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -205,16 +221,4 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
-}
-
-//==========================================================
-// <T>表格数据变更处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
-   var o = this;
-   o._liveTable.setData(event.data);
-   o._liveTable.dirty();
 }

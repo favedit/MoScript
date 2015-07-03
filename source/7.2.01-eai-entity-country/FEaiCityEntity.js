@@ -19,7 +19,7 @@ with(MO){
       // @attribute
       o._investmentCount        = 0;
       o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._investmentLevelTotal   = 5000;
+      o._investmentLevelTotal   = 20000;
       o._investmentLevel        = 0;
       o._investmentRange        = 1;
       o._investmentRate         = 100;
@@ -105,7 +105,8 @@ with(MO){
       // 设置数据
       o._investmentCount++;
       o._investmentTotal += investmentTotal;
-      o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
+      //o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
+      o._investmentLevel = o._investmentLevelTotal;
       // 获得颜色
       var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);

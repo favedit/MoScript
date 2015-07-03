@@ -829,7 +829,7 @@ with(MO){
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
       o._investmentCount        = 0;
       o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._investmentLevelTotal   = 5000;
+      o._investmentLevelTotal   = 20000;
       o._investmentLevel        = 0;
       o._investmentRange        = 1;
       o._investmentRate         = 100;
@@ -880,7 +880,7 @@ with(MO){
       var o = this;
       o._investmentCount++;
       o._investmentTotal += investmentTotal;
-      o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
+      o._investmentLevel = o._investmentLevelTotal;
       var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
       o._color.set(1, 1, 1, 1);
@@ -2308,129 +2308,159 @@ with (MO) {
       startDate.refresh();
    }
 }
-with(MO){
-   MO.FGuiLiveTable = function FGuiLiveTable(o) {
-      o = RClass.inherits(this, o, FGuiControl);
-      o._bgImage = null;
-      o._data = RClass.register(o, new AGetSet('_data'));
-      o._backgroundPadding = null;
-      o.construct = FGuiLiveTable_construct;
-      o.setup = FGuiLiveTable_setup;
-      o.onPaintBegin = FGuiLiveTable_onPaintBegin;
-      o.dispose = FGuiLiveTable_dispose;
-      o.onImageLoad = FGuiLiveTable_onImageLoad;
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', MO.EEvent.DataChanged));
-      return o;
+MO.FGuiLiveTable = function FGuiLiveTable(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._currentDate          = null;
+   o._rank                 = MO.Class.register(o, new MO.AGetSet('_rank'));
+   o._data                 = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._backgroundImage      = null;
+   o._backgroundPadding    = null;
+   o._columnLabels         = null;
+   o._columnDefines        = null;
+   o._columnWidths         = null;
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o.onImageLoad           = MO.FGuiLiveTable_onImageLoad;
+   o.construct             = MO.FGuiLiveTable_construct;
+   o.setup                 = MO.FGuiLiveTable_setup;
+   o.drawRow               = MO.FGuiLiveTable_drawRow;
+   o.onPaintBegin          = MO.FGuiLiveTable_onPaintBegin;
+   o.dispose               = MO.FGuiLiveTable_dispose;
+   return o;
+}
+MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
+   this.dirty();
+}
+MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+   o._currentDate = MO.TDate();
+   o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
+   o._columnLabels = new Array('时间', '城市', '顾客-手机尾号', '投资额(元)');
+   o._columnDefines = new Array(110, 110, 160, 173);
+   o._columnWidths = new Array();
+}
+MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
+   var o = this;
+   var image = o._backgroundImage = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/grid.png');
+}
+MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, x, y){
+   var o = this;
+   var widths = o._columnWidths;
+   var fontColor = null;
+   if(flag){
+      fontColor = '#EBFF40';
+   }else{
+      fontColor = '#1DACE5';
    }
-   MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
-      var o = this;
-      o.__base.FGuiControl.construct.call(o);
-      o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
+   if(!flag){
+      o._currentDate.parse(entity.date());
+      var text = o._currentDate.format('HH24:MI:SS');
+      var textWidth = graphic.textWidth(text);
+      graphic.drawText(text, x + widths[0] / 2 - textWidth / 2, y, fontColor);
    }
-   MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
-      var o = this;
-      o._bgImage = MO.Class.create(MO.FImage);
-      o._bgImage.addLoadListener(o, o.onImageLoad);
-      o._bgImage.loadUrl('../ars/eai/grid.png');
+   x += widths[0] + 1;
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntity = cityConsole.findCityByCard(entity.card());
+   text = '';
+   if (cityEntity) {
+      text = cityEntity.label();
    }
-   MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
-      var o = this;
-      o.dirty();
-   }
-   MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      var left = rectangle.left;
-      var top = rectangle.top;
-      var width = rectangle.width;
-      var height = rectangle.height;
-      var right = left + width;
-      var bottom = top + height;
-      graphic.drawGridImage(o._bgImage, left, top, width, height, o._backgroundPadding);
-      var titleText = '钰诚控股集团';
-      graphic.setFont('bold 30px Microsoft YaHei');
-      var titleWidth = graphic.textWidth(titleText);
-      graphic.drawText(titleText, left + (right - left) / 2 - titleWidth / 2, top + 70, '#00B2F2');
-      graphic.setFont('22px Microsoft YaHei');
-      var headText = '';
-      var headTextWidth = 0;
-      var headLeft = left + 5;
-      var headTop = top + 96;
-      var headTextTop = headTop + 28;
-      var colWidth = new Array(110, 110, 160, 173);
-      var headHeight = 40;
-      graphic.fillRectangle(headLeft, headTop, colWidth[0], headHeight, '#122a46');
-      headText = '时间';
-      headTextWidth = graphic.textWidth(headText);
-      graphic.drawText(headText, headLeft + colWidth[0] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
-      headLeft += colWidth[0] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[1], headHeight, '#122a46');
-      headText = '城市';
-      headTextWidth = graphic.textWidth(headText);
-      graphic.drawText(headText, headLeft + colWidth[1] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
-      headLeft += colWidth[1] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[2], headHeight, '#122a46');
-      headText = '顾客-手机尾号';
-      headTextWidth = graphic.textWidth(headText);
-      graphic.drawText(headText, headLeft + colWidth[2] / 2 - headTextWidth / 2, headTextTop, '#FFFFFF');
-      headLeft += colWidth[2] + 1;
-      graphic.fillRectangle(headLeft, headTop, colWidth[3], headHeight, '#122a46');
-      headText = '投资额(元)';
-      headTextWidth = graphic.textWidth(headText);
-      graphic.drawText(headText, headLeft + colWidth[3] - 5 - headTextWidth, headTextTop, '#FFFFFF');
-      if (o._data == null || o._data.count() < 1) {
-         return;
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, x + widths[1] / 2 - textWidth / 2, y, fontColor);
+   x += widths[1] + 1;
+   text = entity.customer() + ' - ' + entity.phone();
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, x + widths[2] / 2 - textWidth / 2, y, fontColor);
+   x += widths[2] + 1;
+   var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
+   if (investment.length > 7) {
+      var highColor = null;
+      if(investment.length > 9){
+         highColor = '#C60F02';
+      }else{
+         highColor = '#BF6C06';
       }
+      var high = investment.substring(0, investment.length - 7);
+      var low = investment.substring(investment.length - 7, investment.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText(high, x + widths[3] - 5 - lowWidth - highWidth, y, highColor);
+      graphic.drawText(low, x + widths[3] - 5 - lowWidth, y, fontColor);
+   } else {
+      text = investment;
+      textWidth = graphic.textWidth(text);
+      graphic.drawText(text, x + widths[3] - 5 - textWidth, y, fontColor);
+   }
+}
+MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
+   var right = left + width;
+   var bottom = top + height;
+   var drawPosition = top;
+   var widthRate = width / o._size.width;
+   for(var i = 0; i < 4; i++){
+      o._columnWidths[i] = o._columnDefines[i] * widthRate;
+   }
+   var drawLeft = left + 8;
+   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
+   var titleText = '钰诚控股 - E租宝';
+   graphic.setFont('bold 30px Microsoft YaHei');
+   var titleWidth = graphic.textWidth(titleText);
+   graphic.drawText(titleText, left + (right - left) / 2 - (titleWidth / 2), top + 90, '#00B2F2');
+   drawPosition += 70
+   graphic.setFont('22px Microsoft YaHei');
+   var headText = '';
+   var headTextWidth = 0;
+   var headLeft = drawLeft;
+   var headTop = top + 116;
+   var headTextTop = headTop + 28;
+   var headHeight = 40;
+   for(var i = 0; i < 4; i++){
+      var headText = o._columnLabels[i];
+      var headTextWidth = graphic.textWidth(headText);
+      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i], headHeight, '#122A46');
+      graphic.drawText(headText, headLeft + o._columnWidths[i] / 2 - headTextWidth / 2, headTextTop, '#00B2F2');
+      headLeft += o._columnWidths[i] + 2;
+   }
+   var rankEntity = o._rank;
+   if(rankEntity){
       graphic.setFont('22px Microsoft YaHei');
-      var tableTop = headTop + 64;
-      var tableLeft = left + 5;
-      var tableLineHeight = 32;
+      var tableTop = top + 96 + 99;
       var tableText = '';
       var tableTextWidth = 0;
-      var date = MO.Memory.alloc(TDate);
-      for (var i = 0; i < o._data.count() ; i++) {
-         tableLeft = left + 5;
-         var entity = o._data.at(i);
-         date.parse(entity.date());
-         tableText = date.format('HH24:MI:SS');
-         tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[0] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
-         tableLeft += colWidth[0] + 1;
-         var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-         var cityEntity = cityConsole.findCityByCard(entity.card());
-         tableText = '';
-         if (cityEntity) {
-            tableText = cityEntity.label();
-         }
-         tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[1] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
-         tableLeft += colWidth[1] + 1;
-         tableText = entity.customer() + ' - ' + entity.phone();
-         tableTextWidth = graphic.textWidth(tableText);
-         graphic.drawText(tableText, tableLeft + colWidth[2] / 2 - tableTextWidth / 2, tableTop + tableLineHeight * i, '#1DACE5');
-         tableLeft += colWidth[2] + 1;
-         var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
-         if (investment.length > 7) {
-            var high = investment.substring(0, investment.length - 7);
-            var low = investment.substring(investment.length - 7, investment.length);
-            var highWidth = graphic.textWidth(high);
-            var lowWidth = graphic.textWidth(low);
-            graphic.drawText(high, tableLeft + colWidth[3] - 5 - lowWidth - highWidth, tableTop + tableLineHeight * i, '#1DACE5');
-            graphic.drawText(low, tableLeft + colWidth[3] - 5 - lowWidth, tableTop + tableLineHeight * i, '#1DACE5');
-         } else {
-            tableText = investment;
-            tableTextWidth = graphic.textWidth(tableText);
-            graphic.drawText(tableText, tableLeft + colWidth[3] - 5 - tableTextWidth, tableTop + tableLineHeight * i, '#1DACE5');
-         }
+      var dataEntities = o._data;
+      var count = rankEntity.count();
+      for(var i = 0; i < count; i++) {
+         var entity = rankEntity.at(i);
+         o.drawRow(graphic, entity, true, drawLeft, tableTop + 44 * i);
       }
    }
-   MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
-      var o = this;
-      o._backgroundPadding = RObject.dispose(o._backgroundPadding);
-      o.__base.FEaiEntity.dispose.call(o);
+   var dataEntities = o._data;
+   if(dataEntities){
+      graphic.setFont('22px Microsoft YaHei');
+      var tableTop = top + 96 + 232;
+      var tableText = '';
+      var tableTextWidth = 0;
+      var count = dataEntities.count();
+      for(var i = 0; i < count; i++) {
+         var entity = dataEntities.at(i);
+         o.drawRow(graphic, entity, false, drawLeft, tableTop + 32 * i);
+      }
    }
+}
+MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
+   var o = this;
+   o._backgroundPadding = RObject.dispose(o._backgroundPadding);
+   o.__base.FEaiEntity.dispose.call(o);
 }
 MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
@@ -2441,13 +2471,14 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._invementDay            = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent   = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal          = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute         = 1;
+   o._intervalMinute         = 2;
    o._mapEntity              = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                = MO.Class.register(o, new MO.AGetter('_display'));
+   o._rankEntities           = MO.Class.register(o, new MO.AGetter('_rankEntities'));
    o._entities               = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities          = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes             = MO.Class.register(o, new MO.AGetter('_showShapes'));
-   o._tableCount             = 22;
+   o._tableCount             = 21;
    o._tableInterval          = 1000;
    o._tableTick              = 1;
    o._dataTicker             = null;
@@ -2473,13 +2504,32 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    var content = event.content;
    o._invementDay = content.investment_day;
    o._invementTotal = content.investment_total;
-   var dataset = content.collection;
-   var count = dataset.length;
+   var rankEntities = o._rankEntities;
+   var count = rankEntities.count();
    for(var i = 0; i < count; i++){
-      var row = dataset[i];
-      var entity = o.allocEntity();
-      entity.loadData(row);
-      o._entities.push(entity);
+      var entity = rankEntities.at(i);
+      o._entityPool.free(entity);
+   }
+   rankEntities.clear();
+   var dataset = content.rank;
+   if(dataset){
+      var count = dataset.length;
+      for(var i = 0; i < count; i++){
+         var row = dataset[i];
+         var entity = o.allocEntity();
+         entity.loadData(row);
+         rankEntities.push(entity);
+      }
+   }
+   var dataset = content.collection;
+   if(dataset){
+      var count = dataset.length;
+      for(var i = 0; i < count; i++){
+         var row = dataset[i];
+         var entity = o.allocEntity();
+         entity.loadData(row);
+         o._entities.push(entity);
+      }
    }
    var entityCount = o._entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
@@ -2498,6 +2548,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
    table._hTable = document.getElementById('id_investment');
    table._headLineCount = 1;
+   o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
    o._shapePool = MO.Class.create(MO.FObjectPool);
 }
@@ -2593,6 +2644,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          o.focusEntity(entity);
          var dsEvent = MO.Memory.alloc(MO.SEvent);
          dsEvent.sender = o;
+         dsEvent.rank = o._rankEntities;
          dsEvent.data = o._tableEntities;
          o.processDataChangedListener(dsEvent);
          MO.Memory.free(dsEvent);
@@ -3824,12 +3876,18 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusLayerLevel  = 150;
    o._statusDesktopShow = false;
    o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
+   o.onLiveTableChanged = MO.FEaiChartStatisticsScene_onLiveTableChanged;
    o.testReady          = MO.FEaiChartStatisticsScene_testReady;
    o.setup              = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
    o.process            = MO.FEaiChartStatisticsScene_process;
-   o.onTableEntitiesChanged = MO.FEaiChartStatisticsScene_onTableEntitiesChanged;
    return o;
+}
+MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsScene_onLiveTableChanged(event) {
+   var o = this;
+   o._liveTable.setRank(event.rank);
+   o._liveTable.setData(event.data);
+   o._liveTable.dirty();
 }
 MO.FEaiChartStatisticsScene_testReady = function FEaiChartStatisticsScene_testReady(){
    var o = this;
@@ -3856,7 +3914,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onTableEntitiesChanged);
+   invement.addDataChangedListener(o, o.onLiveTableChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -3948,11 +4006,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          }
       }
    }
-}
-MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
-   var o = this;
-   o._liveTable.setData(event.data);
-   o._liveTable.dirty();
 }
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);

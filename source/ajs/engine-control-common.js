@@ -690,6 +690,7 @@ with(MO){
 with(MO){
    MO.FGuiControl = function FGuiControl(o){
       o = RClass.inherits(this, o, FGuiComponent, MGraphicObject, MRenderableLinker, MListener, MGuiSize, MGuiMargin, MGuiPadding, MGuiBorder);
+      o._optionScale            = MO.RClass.register(o, [new MO.AGetter('_optionScale')], true);
       o._visible                = MO.RClass.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
       o._anchorCd               = MO.RClass.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], EGuiAnchor.None);
       o._dockCd                 = MO.RClass.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], EGuiDock.LeftTop);

@@ -7,13 +7,14 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._invementDay            = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent   = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal          = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute         = 1;
+   o._intervalMinute         = 2;
    o._mapEntity              = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                = MO.Class.register(o, new MO.AGetter('_display'));
+   o._rankEntities           = MO.Class.register(o, new MO.AGetter('_rankEntities'));
    o._entities               = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities          = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes             = MO.Class.register(o, new MO.AGetter('_showShapes'));
-   o._tableCount             = 22;
+   o._tableCount             = 21;
    o._tableInterval          = 1000;
    o._tableTick              = 1;
    o._dataTicker             = null;
@@ -39,13 +40,32 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    var content = event.content;
    o._invementDay = content.investment_day;
    o._invementTotal = content.investment_total;
-   var dataset = content.collection;
-   var count = dataset.length;
+   var rankEntities = o._rankEntities;
+   var count = rankEntities.count();
    for(var i = 0; i < count; i++){
-      var row = dataset[i];
-      var entity = o.allocEntity();
-      entity.loadData(row);
-      o._entities.push(entity);
+      var entity = rankEntities.at(i);
+      o._entityPool.free(entity);
+   }
+   rankEntities.clear();
+   var dataset = content.rank;
+   if(dataset){
+      var count = dataset.length;
+      for(var i = 0; i < count; i++){
+         var row = dataset[i];
+         var entity = o.allocEntity();
+         entity.loadData(row);
+         rankEntities.push(entity);
+      }
+   }
+   var dataset = content.collection;
+   if(dataset){
+      var count = dataset.length;
+      for(var i = 0; i < count; i++){
+         var row = dataset[i];
+         var entity = o.allocEntity();
+         entity.loadData(row);
+         o._entities.push(entity);
+      }
    }
    var entityCount = o._entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
@@ -64,6 +84,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
    table._hTable = document.getElementById('id_investment');
    table._headLineCount = 1;
+   o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
    o._shapePool = MO.Class.create(MO.FObjectPool);
 }
@@ -159,6 +180,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          o.focusEntity(entity);
          var dsEvent = MO.Memory.alloc(MO.SEvent);
          dsEvent.sender = o;
+         dsEvent.rank = o._rankEntities;
          dsEvent.data = o._tableEntities;
          o.processDataChangedListener(dsEvent);
          MO.Memory.free(dsEvent);
