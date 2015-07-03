@@ -55,7 +55,24 @@ MO.FEaiCityEntityConsole_findByCode = function FEaiCityEntityConsole_findByCode(
 // @return FEaiCityEntity 城市实体
 //==========================================================
 MO.FEaiCityEntityConsole_findByCard = function FEaiCityEntityConsole_findByCard(card){
-   return this._citys.get(code);
+   var o = this;
+   // 检查参数
+   if (card.length != 4) {
+      return null;
+   }
+   // 查找4位
+   var cityEntities = o._citys;
+   var cityEntity = cityEntities.get(card);
+   if (cityEntity) {
+      return cityEntity;
+   }
+   // 查找2位
+   var cityEntities = o._citys;
+   var cityEntity = cityEntities.get(card.substring(0, 2));
+   if (cityEntity) {
+      return cityEntity;
+   }
+   return null;
 }
 
 //==========================================================

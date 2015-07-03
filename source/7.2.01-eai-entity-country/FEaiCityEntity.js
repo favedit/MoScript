@@ -73,7 +73,7 @@ with(MO){
       var region = o._stage.region();
       var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
       var mMatrix = o._renderable.matrix();
-      var matrix = MO.RMath.matrix();
+      var matrix = MO.RMath.matrix;
       matrix.identity();
       matrix.append(mMatrix);
       matrix.append(vpMatrix);
