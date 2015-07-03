@@ -829,7 +829,7 @@ with(MO){
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
       o._investmentCount        = 0;
       o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._investmentLevelTotal   = 10000;
+      o._investmentLevelTotal   = 5000;
       o._investmentLevel        = 0;
       o._investmentRange        = 1;
       o._investmentRate         = 100;
@@ -880,7 +880,7 @@ with(MO){
       var o = this;
       o._investmentCount++;
       o._investmentTotal += investmentTotal;
-      o._investmentLevel = o._investmentLevelTotal;
+      o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
       var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
       var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
       o._color.set(1, 1, 1, 1);
@@ -1821,9 +1821,9 @@ with(MO){
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x08 + ((0xFF - 0x08)* rate);
-         colors[colorIndex++] = 0x0D + ((0x4D - 0x08)* rate);
-         colors[colorIndex++] = 0x19 + ((0x59 - 0x08)* rate);
+         colors[colorIndex++] = 0x08 + ((0x08 - 0x08)* rate);
+         colors[colorIndex++] = 0x0D + ((0xB5 - 0x0D)* rate);
+         colors[colorIndex++] = 0x19 + ((0xF6 - 0x19)* rate);
          colors[colorIndex++] = 0xFF;
       }
       o._faceRenderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
@@ -3839,6 +3839,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
+         return;
       }
       if(!o._statusDesktopShow){
          o._desktop.show();

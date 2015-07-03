@@ -123,7 +123,6 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    //..........................................................
    // 隐藏全部界面
    o._desktop.hide();
-   //faceLayer.push(timeline);
 }
 
 //==========================================================
@@ -170,7 +169,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         //return;
+         return;
       }
       //..........................................................
       // 隐藏全部界面

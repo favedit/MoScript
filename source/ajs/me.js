@@ -33636,6 +33636,8 @@ with(MO){
       if((anchorCd & EGuiAnchor.Left) && (anchorCd & EGuiAnchor.Right)){
          width = right - left;
       }else if(o._anchorCd & EGuiAnchor.Left){
+         left = (parentRight - width - o._right) * calculateRate.width;
+         width = right - left;
       }
       if((anchorCd & EGuiAnchor.Top) && (o._anchorCd & EGuiAnchor.Bottom)){
          height = bottom - top;

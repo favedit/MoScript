@@ -342,9 +342,9 @@ with(MO){
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x08 + ((0xFF - 0x08)* rate);
-         colors[colorIndex++] = 0x0D + ((0x4D - 0x08)* rate);
-         colors[colorIndex++] = 0x19 + ((0x59 - 0x08)* rate);
+         colors[colorIndex++] = 0x08 + ((0x08 - 0x08)* rate);
+         colors[colorIndex++] = 0x0D + ((0xB5 - 0x0D)* rate);
+         colors[colorIndex++] = 0x19 + ((0xF6 - 0x19)* rate);
          colors[colorIndex++] = 0xFF;
       }
       // 创建三角面渲染对象
