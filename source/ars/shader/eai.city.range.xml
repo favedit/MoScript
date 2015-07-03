@@ -66,9 +66,9 @@
          //............................................................
          // 计算环境颜色
          vec4 color = texture2D(fs_diffuse, v_coord);
-         if(color.a < 0.1){
-            discard;
-         }
+         //if(color.a < 0.1){
+         //   discard;
+         //}
          //............................................................
          vec4 result = color * v_color;
          gl_FragColor = result;

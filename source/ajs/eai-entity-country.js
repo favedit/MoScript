@@ -1011,8 +1011,8 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       for(var i = 0; i < vertexTotal; i++){
          colors[colorIndex++] = 0x00;
-         colors[colorIndex++] = 0xC1;
-         colors[colorIndex++] = 0xED;
+         colors[colorIndex++] = 0xB5;
+         colors[colorIndex++] = 0xF6;
          colors[colorIndex++] = 0xFF;
       }
       for(var i = 0; i < vertexTotal; i++){
