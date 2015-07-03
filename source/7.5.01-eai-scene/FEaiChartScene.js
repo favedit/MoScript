@@ -65,6 +65,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    // 创建省份实体
    var mapEntity = o._mapEntity;
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var provinceEntityConsole = MO.Console.find(MO.FEaiEntityConsole).provinceConsole();
    var provinceEntities = mapEntity.provinceEntities();
    var provincesData = countryData.provinces();
    var count = provincesData.count();
@@ -78,13 +79,14 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
       provinceEntities.set(province.code(), provinceEntity);
+      provinceEntityConsole.push(provinceEntity);
       // 放入显示层
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    o._readyProvince = true;
    // 初始化地图动画
-   o._mapEntity._countryEntity.setup(provinceEntities);
+   o._mapEntity.countryEntity().setup(provinceEntities);
 }
 
 //==========================================================
@@ -181,6 +183,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o._mapEntity.setCitysRenderable(citysRenderable);
    // 创建城市实体
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
    var cityEntities = o._mapEntity.cityEntities();
    var citys = cityConsole.citys();
    var cityCount = citys.count();
@@ -198,6 +201,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       // 放入渲染对象
       citysRenderable.citys().push(cityEntity);
       citysRangeRenderable.citys().push(cityEntity);
+      cityEntityConsole.push(cityEntity);
    }
    // 上传数据
    citysRenderable.setup();

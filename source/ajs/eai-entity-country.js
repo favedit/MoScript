@@ -186,6 +186,35 @@ with(MO){
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
+MO.FEaiCityEntityConsole = function FEaiCityEntityConsole(o){
+   o = MO.RClass.inherits(this, o, MO.FObject);
+   o._citys     = MO.Class.register(o, new MO.AGetter('_citys'));
+   o.construct  = MO.FEaiCityEntityConsole_construct;
+   o.findByCode = MO.FEaiCityEntityConsole_findByCode;
+   o.findByCard = MO.FEaiCityEntityConsole_findByCard;
+   o.push       = MO.FEaiCityEntityConsole_push;
+   o.dispose    = MO.FEaiCityEntityConsole_dispose;
+   return o;
+}
+MO.FEaiCityEntityConsole_construct = function FEaiCityEntityConsole_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._citys = MO.TDictionary();
+}
+MO.FEaiCityEntityConsole_findByCode = function FEaiCityEntityConsole_findByCode(code){
+   return this._citys.get(code);
+}
+MO.FEaiCityEntityConsole_findByCard = function FEaiCityEntityConsole_findByCard(card){
+   return this._citys.get(code);
+}
+MO.FEaiCityEntityConsole_push = function FEaiCityEntityConsole_push(entity){
+   this._citys.set(entity.data().code(), entity);
+}
+MO.FEaiCityEntityConsole_dispose = function FEaiCityEntityConsole_dispose(monitor){
+   var o = this;
+   o._citys = RObject.dispose(o._citys);
+   o.__base.FObject.dispose.call(o);
+}
 with(MO){
    MO.FEaiCityRangeEffect = function FEaiCityRangeEffect(o){
       o = RClass.inherits(this, o, FG3dAutomaticEffect);
@@ -724,6 +753,27 @@ with(MO){
       var o = this;
    }
 }
+MO.FEaiEntityConsole = function FEaiEntityConsole(o){
+   o = MO.RClass.inherits(this, o, MO.FConsole);
+   o._scopeCd         = MO.EScope.Local;
+   o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
+   o.construct        = MO.FEaiEntityConsole_construct;
+   o.dispose          = MO.FEaiEntityConsole_dispose;
+   return o;
+}
+MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._cityConsole = MO.RClass.create(MO.FEaiCityEntityConsole);
+   o._provinceConsole = MO.RClass.create(MO.FEaiProvinceEntityConsole);
+}
+MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
+   var o = this;
+   o._cityConsole = RObject.dispose(o._cityConsole);
+   o._provinceConsole = RObject.dispose(o._provinceConsole);
+   o.__base.FConsole.dispose.call(o);
+}
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
@@ -1095,6 +1145,31 @@ with(MO){
       var o = this;
       o.__base.FEaiEntity.dispose.call(o);
    }
+}
+MO.FEaiProvinceEntityConsole = function FEaiProvinceEntityConsole(o){
+   o = MO.RClass.inherits(this, o, MO.FObject);
+   o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));
+   o.construct  = MO.FEaiProvinceEntityConsole_construct;
+   o.findByCode = MO.FEaiProvinceEntityConsole_findByCode;
+   o.push       = MO.FEaiProvinceEntityConsole_push;
+   o.dispose    = MO.FEaiProvinceEntityConsole_dispose;
+   return o;
+}
+MO.FEaiProvinceEntityConsole_construct = function FEaiProvinceEntityConsole_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._provinces = MO.TDictionary();
+}
+MO.FEaiProvinceEntityConsole_findByCode = function FEaiProvinceEntityConsole_findByCode(code){
+   return this._provinces.get(code);
+}
+MO.FEaiProvinceEntityConsole_push = function FEaiProvinceEntityConsole_push(entity){
+   this._provinces.set(entity.data().name(), entity);
+}
+MO.FEaiProvinceEntityConsole_dispose = function FEaiProvinceEntityConsole_dispose(monitor){
+   var o = this;
+   o._provinces = RObject.dispose(o._provinces);
+   o.__base.FObject.dispose.call(o);
 }
 with (MO) {
    MO.FGui24HTimeline = function FGui24HTimeline(o) {

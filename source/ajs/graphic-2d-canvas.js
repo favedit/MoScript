@@ -49,9 +49,12 @@ with (MO) {
    }
    MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
       var o = this;
-      var size = o._size;
-      var width = size.width / o._scale.width;
-      var height = size.height / o._scale.height;
+      var hCanvas = o._handle.canvas;
+      var offsetWidth = hCanvas.offsetWidth;
+      var offsetHeight = hCanvas.offsetHeight;
+      o._size.set(offsetWidth, offsetHeight);
+      var width = offsetWidth / o._scale.width;
+      var height = offsetHeight / o._scale.height;
       o._handle.clearRect(0, 0, width, height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
