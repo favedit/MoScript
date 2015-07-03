@@ -60,7 +60,6 @@ MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsSce
    o._liveTable.dirty();
 }
 
-
 //==========================================================
 // <T>点击暂停处理。</T>
 //

@@ -1556,6 +1556,12 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    o._currentDate          = null;
    o._rank                 = MO.Class.register(o, new MO.AGetSet('_rank'));
    o._data                 = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._rankLogoImage        = null;
+   o._rankLineImage        = null;
+   o._rankLinePadding      = null;
+   o._rank1Image           = null;
+   o._rank2Image           = null;
+   o._rank3Image           = null;
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
    o._columnLabels         = null;
@@ -1577,25 +1583,58 @@ MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._currentDate = MO.TDate();
+   o._rankLinePadding = new MO.SPadding(80, 0, 80, 0);
    o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
    o._columnLabels = new Array('时间', '城市', '顾客-手机尾号', '投资额(元)');
-   o._columnDefines = new Array(110, 110, 160, 173);
+   o._columnDefines = new Array(110, 110, 160, 166);
    o._columnWidths = new Array();
 }
 MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var o = this;
+   var image = o._logoImage = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/statistics/logo.png');
    var image = o._backgroundImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/grid.png');
+   image.loadUrl('../ars/eai/statistics/grid.png');
+   var image = o._rankLineImage = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/statistics/line.png');
+   var image = o._rank1Image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/statistics/1.png');
+   var image = o._rank2Image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/statistics/2.png');
+   var image = o._rank3Image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/statistics/3.png');
 }
-MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, x, y){
+MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, index, x, y, width){
    var o = this;
    var widths = o._columnWidths;
    var fontColor = null;
    if(flag){
-      fontColor = '#EBFF40';
+      fontColor = '#59FDE9';
    }else{
       fontColor = '#1DACE5';
+   }
+   if(flag){
+      if(o._rankLineImage.testReady()){
+         graphic.drawGridImage(o._rankLineImage, x - 5, y - 32, width - 14, 51, o._rankLinePadding);
+      }
+      var columnWidth = widths[0];
+      var imageX = x + (columnWidth * 0.5) - 23;
+      var imageY = y - 25;
+      if((index == 0) && o._rank1Image.testReady()){
+         graphic.drawImage(o._rank1Image, imageX, imageY, 46, 37);
+      }
+      if((index == 1) && o._rank2Image.testReady()){
+         graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
+      }
+      if((index == 2) && o._rank3Image.testReady()){
+         graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
+      }
    }
    if(!flag){
       o._currentDate.parse(entity.date());
@@ -1621,9 +1660,9 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    if (investment.length > 7) {
       var highColor = null;
       if(investment.length > 9){
-         highColor = '#C60F02';
+         highColor = '#FDEF01';
       }else{
-         highColor = '#BF6C06';
+         highColor = '#EB6C03';
       }
       var high = investment.substring(0, investment.length - 7);
       var low = investment.substring(investment.length - 7, investment.length);
@@ -1650,22 +1689,27 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var bottom = top + height;
    var drawPosition = top;
    var widthRate = width / o._size.width;
+   var heightRate = height / o._size.height;
    for(var i = 0; i < 4; i++){
       o._columnWidths[i] = o._columnDefines[i] * widthRate;
    }
    var drawLeft = left + 8;
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   var titleText = '钰诚控股 - E租宝';
+   var titleText = '钰诚控股 - e租宝';
    graphic.setFont('bold 30px Microsoft YaHei');
    var titleWidth = graphic.textWidth(titleText);
-   graphic.drawText(titleText, left + (right - left) / 2 - (titleWidth / 2), top + 90, '#00B2F2');
+   var textLeft = left + (right - left) / 2 - (titleWidth / 2);
+   if(o._logoImage.testReady()){
+      graphic.drawImage(o._logoImage, textLeft - 77, top + 35, 62, 62);
+   }
+   graphic.drawText(titleText, textLeft, top + 76, '#00B2F2');
    drawPosition += 70
    graphic.setFont('22px Microsoft YaHei');
    var headText = '';
    var headTextWidth = 0;
    var headLeft = drawLeft;
    var headTop = top + 116;
-   var headTextTop = headTop + 28;
+   var headTextTop = headTop + 26;
    var headHeight = 40;
    for(var i = 0; i < 4; i++){
       var headText = o._columnLabels[i];
@@ -1677,26 +1721,26 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var rankEntity = o._rank;
    if(rankEntity){
       graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 96 + 99;
+      var tableTop = top + 190;
       var tableText = '';
       var tableTextWidth = 0;
       var dataEntities = o._data;
       var count = rankEntity.count();
       for(var i = 0; i < count; i++) {
          var entity = rankEntity.at(i);
-         o.drawRow(graphic, entity, true, drawLeft, tableTop + 44 * i);
+         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + 44 * i, width);
       }
    }
    var dataEntities = o._data;
    if(dataEntities){
       graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 96 + 232;
+      var tableTop = top + 320;
       var tableText = '';
       var tableTextWidth = 0;
       var count = dataEntities.count();
       for(var i = 0; i < count; i++) {
          var entity = dataEntities.at(i);
-         o.drawRow(graphic, entity, false, drawLeft, tableTop + 32 * i);
+         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + 32 * i, width);
       }
    }
 }

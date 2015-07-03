@@ -184,7 +184,6 @@ MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
 MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
-   var faceLayer = o._activeStage.faceLayer();
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
@@ -204,7 +203,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.setVisible(true);
    control.addOperationDownListener(o, o.onOperationPlay);
    o._desktop.register(control);
-   faceLayer.push(control);
    var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
    control.setLocation(40, 730);
@@ -215,7 +213,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.setVisible(false);
    control.addOperationDownListener(o, o.onOperationPause);
    o._desktop.register(control);
-   faceLayer.push(control);
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
@@ -233,7 +230,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
       frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
-      faceLayer.push(frame);
       o._desktop.register(frame);
       milestoneBars.push(frame);
    }
@@ -252,7 +248,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._desktop.register(timeline);
-   faceLayer.push(timeline);
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.setName('MilestoneFrame');
    milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
@@ -263,7 +258,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
    o._desktop.register(milestoneFrame);
-   faceLayer.push(milestoneFrame);
    milestoneFrame.setVisible(false);
 }
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
@@ -279,7 +273,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    if (milestone) {
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
-      o._milestoneFrame.repaint();
+      o._milestoneFrame.dirty();
       o.switchPlay(false);
    }
    if (dateData) {
@@ -293,9 +287,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
-      var total = o._totalBar.findComponent('total');
-      total.setLabel(parseInt(dateData.investmentTotal()).toString());
-      o._totalBar.repaint();
    }
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
@@ -353,13 +344,13 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
             o._lastDateTick = currentTick;
          }
          o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
-         o._timeline.repaint();
+         o._timeline.dirty();
          o._lastTick = currentTick;
       }
       o._mapEntity.upload();
    }
    if (o._milestoneFrame.visible()) {
-      o._milestoneFrame.repaint();
+      o._milestoneFrame.dirty();
    }
 }
 MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive() {

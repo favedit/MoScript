@@ -100,6 +100,14 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
       }
    }
    //..........................................................
+   // 触发数据事件
+   var dsEvent = MO.Memory.alloc(MO.SEvent);
+   dsEvent.sender = o;
+   dsEvent.rank = o._rankEntities;
+   dsEvent.data = o._tableEntities;
+   o.processDataChangedListener(dsEvent);
+   MO.Memory.free(dsEvent);
+   //..........................................................
    // 计算间隔
    var entityCount = o._entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;

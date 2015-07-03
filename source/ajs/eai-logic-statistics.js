@@ -67,6 +67,12 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
          o._entities.push(entity);
       }
    }
+   var dsEvent = MO.Memory.alloc(MO.SEvent);
+   dsEvent.sender = o;
+   dsEvent.rank = o._rankEntities;
+   dsEvent.data = o._tableEntities;
+   o.processDataChangedListener(dsEvent);
+   MO.Memory.free(dsEvent);
    var entityCount = o._entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
    o._tableTick = 0;
