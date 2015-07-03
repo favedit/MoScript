@@ -231,6 +231,8 @@ MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
          hWindow.mozRequestFullScreen();
       }else if(hWindow.webkitRequestFullScreen){
          hWindow.webkitRequestFullScreen();
+      }else if(hWindow.msRequestFullscreen){
+         hWindow.msRequestFullscreen();
       }
    }else{
       // 退出全屏模式
@@ -240,6 +242,8 @@ MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
          hWindow.mozCancelFullScreen();
       }else if(hWindow.webkitCancelFullScreen){
          hWindow.webkitCancelFullScreen();
+      }else if(hWindow.msExitFullscreen){
+         hWindow.msExitFullscreen();
       }
    }
 }

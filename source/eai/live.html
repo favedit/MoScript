@@ -10,12 +10,13 @@
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
+var fullScreen = false;
 function onLoad(){
    // 设置变量
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
    MO.Browser.setContentPath('..');
-   MO.Browser.fullscreen(window, true);
+   //MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    // 设置环境
    MO.Console.find(MO.FE3sVendorConsole).setup('net');
    MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.82.149');
@@ -34,6 +35,7 @@ function onLoad(){
          <IMG src='/script/ars/eai/loading/text.png' style='padding-top:30px'>
       </TD>
    </TR>
+</TABLE>
 </TABLE>
 </BODY>
 </HTML>

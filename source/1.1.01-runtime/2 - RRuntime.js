@@ -61,7 +61,7 @@ MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
 // @return 是否PC平台模式
 //==========================================================
 MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
-   return this._processCd == MO.EProcess.Process;
+   return this._platformCd == MO.EPlatform.Pc;
 }
 
 //==========================================================
@@ -71,7 +71,7 @@ MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
 // @return 是否移动平台模式
 //==========================================================
 MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
-   return this._processCd == MO.EProcess.Release;
+   return this._platformCd == MO.EPlatform.Mobile;
 }
 
 //==========================================================

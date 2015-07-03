@@ -76,10 +76,10 @@ MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
 }
 MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
-   return this._processCd == MO.EProcess.Process;
+   return this._platformCd == MO.EPlatform.Pc;
 }
 MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
-   return this._processCd == MO.EProcess.Release;
+   return this._platformCd == MO.EPlatform.Mobile;
 }
 MO.RRuntime.prototype.setPlatformCd = function RRuntime_setPlatformCd(platformCd){
    this._platformCd = platformCd;

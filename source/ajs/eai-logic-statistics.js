@@ -114,6 +114,11 @@ MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_alloc
 }
 MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var o = this;
+   if(MO.Runtime.isPlatformMobile()){
+      o._tableCount = 12;
+   }else{
+      o._tableCount = 21;
+   }
    var audio = o._autio1 = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/currency/1.mp3');
    var audio = o._autio2 = MO.Class.create(MO.FAudio);

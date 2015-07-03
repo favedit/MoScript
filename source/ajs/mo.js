@@ -76,10 +76,10 @@ MO.RRuntime.prototype.setProcessCd = function RRuntime_setProcessCd(processCd){
    this._processCd = processCd;
 }
 MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
-   return this._processCd == MO.EProcess.Process;
+   return this._platformCd == MO.EPlatform.Pc;
 }
 MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
-   return this._processCd == MO.EProcess.Release;
+   return this._platformCd == MO.EPlatform.Mobile;
 }
 MO.RRuntime.prototype.setPlatformCd = function RRuntime_setPlatformCd(platformCd){
    this._platformCd = platformCd;
@@ -13175,6 +13175,8 @@ MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
          hWindow.mozRequestFullScreen();
       }else if(hWindow.webkitRequestFullScreen){
          hWindow.webkitRequestFullScreen();
+      }else if(hWindow.msRequestFullscreen){
+         hWindow.msRequestFullscreen();
       }
    }else{
       if (hWindow.exitFullscreen){
@@ -13183,6 +13185,8 @@ MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
          hWindow.mozCancelFullScreen();
       }else if(hWindow.webkitCancelFullScreen){
          hWindow.webkitCancelFullScreen();
+      }else if(hWindow.msExitFullscreen){
+         hWindow.msExitFullscreen();
       }
    }
 }

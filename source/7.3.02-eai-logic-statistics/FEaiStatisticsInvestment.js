@@ -180,6 +180,11 @@ MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_alloc
 //==========================================================
 MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var o = this;
+   if(MO.Runtime.isPlatformMobile()){
+      o._tableCount = 12;
+   }else{
+      o._tableCount = 21;
+   }
    //..........................................................
    // 创建声音
    var audio = o._autio1 = MO.Class.create(MO.FAudio);

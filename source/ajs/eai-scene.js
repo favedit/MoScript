@@ -781,7 +781,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(10, 10);
+   frame.setLocation(0, 10);
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
@@ -929,7 +929,11 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(20);
    timeline.setBottom(30);
-   timeline.setRight(640);
+   if(MO.Runtime.isPlatformMobile()){
+      timeline.setRight(680);
+   }else{
+      timeline.setRight(640);
+   }
    timeline.setHeight(250);
    timeline.sync();
    timeline.linkGraphicContext(o);
@@ -940,9 +944,13 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setDockCd(MO.EGuiDock.Right);
    liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
    liveTable.setTop(20);
-   liveTable.setRight(20);
+   liveTable.setRight(10);
    liveTable.setBottom(20);
-   liveTable.setWidth(580);
+   if(MO.Runtime.isPlatformMobile()){
+      liveTable.setWidth(660);
+   }else{
+      liveTable.setWidth(580);
+   }
    liveTable.linkGraphicContext(o);
    liveTable.setup();
    liveTable.build();
@@ -951,10 +959,17 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -38;
-   matrix.ty = -13.2;
-   matrix.tz = 0;
-   matrix.setScale(0.32, 0.36, 0.32);
+   if(MO.Runtime.isPlatformMobile()){
+      matrix.tx = -36.8;
+      matrix.ty = -11.6;
+      matrix.tz = 0;
+      matrix.setScale(0.3, 0.33, 0.3);
+   }else{
+      matrix.tx = -38;
+      matrix.ty = -13.2;
+      matrix.tz = 0;
+      matrix.setScale(0.32, 0.36, 0.32);
+   }
    matrix.update();
 }
 MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process() {
@@ -980,7 +995,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
       }
       if(!o._statusDesktopShow){
          o._desktop.show();

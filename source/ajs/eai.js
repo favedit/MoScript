@@ -2342,8 +2342,12 @@ MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
    o._currentDate = MO.TDate();
    o._rankLinePadding = new MO.SPadding(80, 0, 80, 0);
    o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
-   o._columnLabels = new Array('时间', '城市', '顾客-手机尾号', '投资额(元)');
-   o._columnDefines = new Array(110, 110, 160, 166);
+   o._columnLabels = new Array('时间', '城市', '用户-手机', '投资额(元)');
+   if(MO.Runtime.isPlatformMobile()){
+      o._columnDefines = new Array(130, 130, 180, 186);
+   }else{
+      o._columnDefines = new Array(110, 110, 160, 166);
+   }
    o._columnWidths = new Array();
 }
 MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
@@ -2366,6 +2370,33 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var image = o._rank3Image = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
    image.loadUrl('../ars/eai/statistics/3.png');
+   if(MO.Runtime.isPlatformMobile()){
+      o._headFontStyle = 'bold 42px Microsoft YaHei';
+      o._headStart = 120;
+      o._headTextTop = 38;
+      o._headHeight = 54;
+      o._rankStart = 220;
+      o._rankHeight = 60;
+      o._rankIconStart = 30;
+      o._rankRowUp = 46;
+      o._rankRowDown = 68;
+      o._rowStart = 400;
+      o._rowFontStyle = '36px Microsoft YaHei';
+      o._rowHeight = 46;
+   }else{
+      o._headFontStyle = 'bold 36px Microsoft YaHei';
+      o._headStart = 116;
+      o._headTextTop = 26;
+      o._headHeight = 40;
+      o._rankStart = 190;
+      o._rankHeight = 44;
+      o._rankIconStart = 25;
+      o._rankRowUp = 32;
+      o._rankRowDown = 51;
+      o._rowStart = 320;
+      o._rowFontStyle = '22px Microsoft YaHei';
+      o._rowHeight = 32;
+   }
 }
 MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, index, x, y, width){
    var o = this;
@@ -2378,11 +2409,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    }
    if(flag){
       if(o._rankLineImage.testReady()){
-         graphic.drawGridImage(o._rankLineImage, x - 5, y - 32, width - 14, 51, o._rankLinePadding);
+         graphic.drawGridImage(o._rankLineImage, x - 5, y - o._rankRowUp, width - 14, o._rankRowDown, o._rankLinePadding);
       }
       var columnWidth = widths[0];
       var imageX = x + (columnWidth * 0.5) - 23;
-      var imageY = y - 25;
+      var imageY = y - o._rankIconStart;
       if((index == 0) && o._rank1Image.testReady()){
          graphic.drawImage(o._rank1Image, imageX, imageY, 46, 37);
       }
@@ -2453,7 +2484,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var drawLeft = left + 8;
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    var titleText = '钰诚控股 - e租宝';
-   graphic.setFont('bold 30px Microsoft YaHei');
+   graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
    var textLeft = left + (right - left) / 2 - (titleWidth / 2);
    if(o._logoImage.testReady()){
@@ -2461,43 +2492,40 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    }
    graphic.drawText(titleText, textLeft, top + 76, '#00B2F2');
    drawPosition += 70
-   graphic.setFont('22px Microsoft YaHei');
+   graphic.setFont(o._rowFontStyle);
    var headText = '';
    var headTextWidth = 0;
    var headLeft = drawLeft;
-   var headTop = top + 116;
-   var headTextTop = headTop + 26;
-   var headHeight = 40;
+   var headTop = top + o._headStart;
+   var headTextTop = headTop + o._headTextTop;
    for(var i = 0; i < 4; i++){
       var headText = o._columnLabels[i];
       var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i], headHeight, '#122A46');
+      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i], o._headHeight, '#122A46');
       graphic.drawText(headText, headLeft + o._columnWidths[i] / 2 - headTextWidth / 2, headTextTop, '#00B2F2');
       headLeft += o._columnWidths[i] + 2;
    }
    var rankEntity = o._rank;
    if(rankEntity){
-      graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 190;
+      var tableTop = top + o._rankStart;
       var tableText = '';
       var tableTextWidth = 0;
       var dataEntities = o._data;
       var count = rankEntity.count();
       for(var i = 0; i < count; i++) {
          var entity = rankEntity.at(i);
-         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + 44 * i, width);
+         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankHeight * i, width);
       }
    }
    var dataEntities = o._data;
    if(dataEntities){
-      graphic.setFont('22px Microsoft YaHei');
-      var tableTop = top + 320;
+      var tableTop = top + o._rowStart;
       var tableText = '';
       var tableTextWidth = 0;
       var count = dataEntities.count();
       for(var i = 0; i < count; i++) {
          var entity = dataEntities.at(i);
-         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + 32 * i, width);
+         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + o._rowHeight * i, width);
       }
    }
 }
@@ -2622,6 +2650,11 @@ MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_alloc
 }
 MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var o = this;
+   if(MO.Runtime.isPlatformMobile()){
+      o._tableCount = 12;
+   }else{
+      o._tableCount = 21;
+   }
    var audio = o._autio1 = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/currency/1.mp3');
    var audio = o._autio2 = MO.Class.create(MO.FAudio);
@@ -3820,7 +3853,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(10, 10);
+   frame.setLocation(0, 10);
    o._desktop.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
@@ -3968,7 +4001,11 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(20);
    timeline.setBottom(30);
-   timeline.setRight(640);
+   if(MO.Runtime.isPlatformMobile()){
+      timeline.setRight(680);
+   }else{
+      timeline.setRight(640);
+   }
    timeline.setHeight(250);
    timeline.sync();
    timeline.linkGraphicContext(o);
@@ -3979,9 +4016,13 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.setDockCd(MO.EGuiDock.Right);
    liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
    liveTable.setTop(20);
-   liveTable.setRight(20);
+   liveTable.setRight(10);
    liveTable.setBottom(20);
-   liveTable.setWidth(580);
+   if(MO.Runtime.isPlatformMobile()){
+      liveTable.setWidth(660);
+   }else{
+      liveTable.setWidth(580);
+   }
    liveTable.linkGraphicContext(o);
    liveTable.setup();
    liveTable.build();
@@ -3990,10 +4031,17 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
-   matrix.tx = -38;
-   matrix.ty = -13.2;
-   matrix.tz = 0;
-   matrix.setScale(0.32, 0.36, 0.32);
+   if(MO.Runtime.isPlatformMobile()){
+      matrix.tx = -36.8;
+      matrix.ty = -11.6;
+      matrix.tz = 0;
+      matrix.setScale(0.3, 0.33, 0.3);
+   }else{
+      matrix.tx = -38;
+      matrix.ty = -13.2;
+      matrix.tz = 0;
+      matrix.setScale(0.32, 0.36, 0.32);
+   }
    matrix.update();
 }
 MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process() {
@@ -4019,7 +4067,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
       }
       if(!o._statusDesktopShow){
          o._desktop.show();
