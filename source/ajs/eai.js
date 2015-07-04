@@ -1952,11 +1952,13 @@ with (MO) {
       o._startTime        = RClass.register(o, new AGetSet('_startTime'));
       o._endTime          = RClass.register(o, new AGetSet('_endTime'));
       o._data             = null;
+      o._ready            = false;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
       o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
       o._decoLineGap      = RClass.register(o, new AGetSet('_decoLineGap'), 10);
       o._decoLineWidth    = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      o.oeUpdate          = FGui24HTimeline_oeUpdate;
       o.construct         = FGui24HTimeline_construct;
       o.sync              = FGui24HTimeline_sync;
       o.onPaintBegin      = FGui24HTimeline_onPaintBegin;
@@ -1971,16 +1973,18 @@ with (MO) {
    }
    MO.FGui24HTimeline_sync = function FGui24HTimeline_sync() {
       var o = this;
+      if (!o._ready) {
+         return;
+      }
       var startTime = o._startTime;
       var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
       var nowTick = systemLogic.currentDate();
-      startTime.date.setTime(nowTick);
-      startTime.refresh();
+      startTime.assign(nowTick);
       startTime.setSecond(0);
       startTime.setMinute(0);
       startTime.addDay(-1);
-      endTime.date.setTime(nowTick);
+      endTime.assign(nowTick);
       endTime.setSecond(0);
       endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
       endTime.refresh();
@@ -1992,8 +1996,24 @@ with (MO) {
       o._data = event.content.collection;
       o.dirty();
    }
+   MO.FGui24HTimeline_oeUpdate = function FGui24HTimeline_oeUpdate(event) {
+      var o = this;
+      o.__base.FGuiControl.oeUpdate.call(o, event);
+      if (o._ready) {
+         return;
+      }
+      var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+      if (systemLogic.testReady()) {
+         o._ready = true;
+         o.sync();
+      }
+      return MO.EEventStatus.Stop;
+   }
    MO.FGui24HTimeline_onPaintBegin = function FGui24HTimeline_onPaintBegin(event) {
       var o = this;
+      if (!o._ready) {
+         return;
+      }
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = event.rectangle;

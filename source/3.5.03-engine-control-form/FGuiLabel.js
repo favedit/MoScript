@@ -9,9 +9,12 @@ with(MO){
    MO.FGuiLabel = function FGuiLabel(o){
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
-      // @method
+      // @event
       o.onPaintLabel = FGuiLabel_onPaintLabel;
       o.onPaintBegin = FGuiLabel_onPaintBegin;
+      //..........................................................
+      // @method
+      o.setLabel     = FGuiLabel_setLabel;
       return o;
    }
 
@@ -49,5 +52,18 @@ with(MO){
       if(o._label){
          o.onPaintLabel(event);
       }
+   }
+
+   //==========================================================
+   // <T>设置标签。</T>
+   //
+   // @method
+   // @param label:String 标签
+   //==========================================================
+   MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
+      var o = this;
+      o.__base.FGuiControl.setLabel.call(o, label);
+      // 脏处理
+      o.dirty();
    }
 }

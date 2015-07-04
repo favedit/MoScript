@@ -4096,6 +4096,7 @@ with (MO) {
       o.clear                = FG2dCanvasContext_clear;
       o.clearRectangle       = FG2dCanvasContext_clearRectangle;
       o.textWidth            = FG2dCanvasContext_textWidth;
+      o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
       o.drawLine             = FG2dCanvasContext_drawLine;
       o.drawRectangle        = FG2dCanvasContext_drawRectangle;
       o.drawTriangle         = FG2dCanvasContext_drawTriangle;
@@ -4107,7 +4108,6 @@ with (MO) {
       o.drawBorderLine       = FG2dCanvasContext_drawBorderLine;
       o.drawBorder           = FG2dCanvasContext_drawBorder;
       o.fillRectangle        = FG2dCanvasContext_fillRectangle;
-      o.createLinearGradient = FG2dCanvasContext_createLinearGradient;
       o.toBytes              = FG2dCanvasContext_toBytes;
       return o;
    }
@@ -4152,25 +4152,28 @@ with (MO) {
       var info = this._handle.measureText(text);
       return info.width;
    }
+   MO.FG2dCanvasContext_createLinearGradient = function FG2dCanvasContext_createLinearGradient(x1, y1, x2, y2) {
+      var o = this;
+      var handle = o._handle;
+      return handle.createLinearGradient(x1, y1, x2, y2);
+   }
    MO.FG2dCanvasContext_drawLine = function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.strokeStyle = color;
       handle.lineWidth = lineWidth;
+      handle.beginPath();
       handle.moveTo(x1, y1);
       handle.lineTo(x2, y2);
-      handle.stroke();
       handle.closePath();
+      handle.stroke();
    }
    MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.strokeStyle = color;
       handle.lineWidth = lineWidth;
       handle.strokeRect(x, y, width, height);
-      handle.closePath();
    }
    MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color) {
       var o = this;
@@ -4248,9 +4251,9 @@ with (MO) {
    MO.FG2dCanvasContext_drawBorderLine = function FG2dCanvasContext_drawBorderLine(x1, y1, x2, y2, borderLine){
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.strokeStyle = borderLine.color;
       handle.lineWidth = borderLine.width;
+      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.closePath();
@@ -4270,8 +4273,8 @@ with (MO) {
    MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.fillStyle = color;
+      handle.beginPath();
       handle.fillRect(x, y, width, height);
       handle.closePath();
    }
@@ -4288,7 +4291,7 @@ with (MO) {
       handle.lineTo(x4 + 0.5, y4 + 0.5);
       handle.lineTo(x1 + 0.5, y1 + 0.5);
       handle.closePath();
-      if(lineWidth!=null &&strokeColor!=null){
+      if(lineWidth != null && strokeColor != null){
          handle.stroke();
       }
       if (fillColor != null) {
@@ -4298,32 +4301,28 @@ with (MO) {
    MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, y1, x2, y2, x3, y3, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
+      handle.beginPath();
       handle.moveTo(x1 + 0.5, y1 + 0.5);
       handle.lineTo(x2 + 0.5, y2 + 0.5);
       handle.lineTo(x3 + 0.5, y3 + 0.5);
+      handle.closePath();
       handle.fill();
       handle.stroke();
-      handle.closePath();
    }
    MO.FG2dCanvasContext_drawCircle = function FG2dCanvasContext_drawCircle(x, y, radius, lineWidth, strokeColor, fillColor) {
       var o = this;
       var handle = o._handle;
-      handle.beginPath();
       handle.lineWidth = lineWidth;
       handle.strokeStyle = strokeColor;
       handle.fillStyle = fillColor;
+      handle.beginPath();
       handle.arc(x, y, radius, 0, 2 * Math.PI, false);
+      handle.closePath();
       handle.fill();
       handle.stroke();
-   }
-   MO.FG2dCanvasContext_createLinearGradient = function FG2dCanvasContext_createLinearGradient(x1, y1, x2, y2) {
-      var o = this;
-      var handle = o._handle;
-      return handle.createLinearGradient(x1, y1, x2, y2);
    }
    MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
       var o = this;

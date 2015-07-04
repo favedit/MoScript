@@ -25,6 +25,7 @@ with(MO){
       o = RClass.inherits(this, o, FGuiControl);
       o.onPaintLabel = FGuiLabel_onPaintLabel;
       o.onPaintBegin = FGuiLabel_onPaintBegin;
+      o.setLabel     = FGuiLabel_setLabel;
       return o;
    }
    MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
@@ -46,6 +47,11 @@ with(MO){
       if(o._label){
          o.onPaintLabel(event);
       }
+   }
+   MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
+      var o = this;
+      o.__base.FGuiControl.setLabel.call(o, label);
+      o.dirty();
    }
 }
 with(MO){

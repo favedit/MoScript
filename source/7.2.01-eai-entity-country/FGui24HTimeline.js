@@ -20,12 +20,15 @@ with (MO) {
       o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
       o._decoLineGap      = RClass.register(o, new AGetSet('_decoLineGap'), 10);
       o._decoLineWidth    = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      //..........................................................
+      // @event
+      o.oeUpdate          = FGui24HTimeline_oeUpdate;
+      //..........................................................
       // @method
       o.construct         = FGui24HTimeline_construct;
       o.sync              = FGui24HTimeline_sync;
       o.onPaintBegin      = FGui24HTimeline_onPaintBegin;
       o.on24HDataFetch    = FGui24HTimeline_on24HDataFetch;
-      o.oeUpdate          = FGui24HTimeline_oeUpdate;
       return o;
    }
 
@@ -55,12 +58,11 @@ with (MO) {
       var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
       var nowTick = systemLogic.currentDate();
-      startTime.date.setTime(nowTick);
-      startTime.refresh();
+      startTime.assign(nowTick);
       startTime.setSecond(0);
       startTime.setMinute(0);
       startTime.addDay(-1);
-      endTime.date.setTime(nowTick);
+      endTime.assign(nowTick);
       endTime.setSecond(0);
       endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
       endTime.refresh();
