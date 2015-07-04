@@ -25,6 +25,7 @@ with (MO) {
       o.sync              = FGui24HTimeline_sync;
       o.onPaintBegin      = FGui24HTimeline_onPaintBegin;
       o.on24HDataFetch    = FGui24HTimeline_on24HDataFetch;
+      o.oeUpdate          = FGui24HTimeline_oeUpdate;
       return o;
    }
 
