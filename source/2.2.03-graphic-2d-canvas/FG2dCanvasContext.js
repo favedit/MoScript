@@ -21,6 +21,7 @@ with (MO) {
       o.setFont              = FG2dCanvasContext_setFont;
       // @method
       o.clear                = FG2dCanvasContext_clear;
+      o.clearRectangle       = FG2dCanvasContext_clearRectangle;
       // @method
       o.textWidth            = FG2dCanvasContext_textWidth;
       // @method
@@ -116,6 +117,15 @@ with (MO) {
       //var width = size.width / o._scale.width;
       //var height = size.height / o._scale.height;
       //o._handle.clearRect(0, 0, width, height);
+   }
+
+   //==========================================================
+   // <T>清空矩形内容。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(rectangle){
+      this._handle.clearRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    }
 
    //==========================================================

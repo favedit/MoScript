@@ -7,6 +7,7 @@ with (MO) {
       o.setScale             = FG2dCanvasContext_setScale;
       o.setFont              = FG2dCanvasContext_setFont;
       o.clear                = FG2dCanvasContext_clear;
+      o.clearRectangle       = FG2dCanvasContext_clearRectangle;
       o.textWidth            = FG2dCanvasContext_textWidth;
       o.drawLine             = FG2dCanvasContext_drawLine;
       o.drawRectangle        = FG2dCanvasContext_drawRectangle;
@@ -56,6 +57,9 @@ with (MO) {
       var width = offsetWidth / o._scale.width;
       var height = offsetHeight / o._scale.height;
       o._handle.clearRect(0, 0, width, height);
+   }
+   MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(rectangle){
+      this._handle.clearRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    }
    MO.FG2dCanvasContext_textWidth = function FG2dCanvasContext_textWidth(text){
       var info = this._handle.measureText(text);

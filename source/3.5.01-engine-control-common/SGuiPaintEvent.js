@@ -12,7 +12,6 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    o.graphic         = null;
    // @method
    o.parentRectangle = new MO.SRectangle();
-   o.clientRectangle = new MO.SRectangle();
    o.rectangle       = new MO.SRectangle();
    //..........................................................
    // @method
@@ -40,7 +39,6 @@ MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
 MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
    var o = this;
    o.parentRectangle = MO.RObject.dispose(o.parentRectangle);
-   o.clientRectangle = MO.RObject.dispose(o.clientRectangle);
    o.rectangle = MO.RObject.dispose(o.rectangle);
    return o;
 }

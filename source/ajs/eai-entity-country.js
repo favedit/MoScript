@@ -106,7 +106,7 @@ with(MO){
       var region = o._stage.region();
       var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
       var mMatrix = o._renderable.matrix();
-      var matrix = MO.RMath.matrix();
+      var matrix = MO.RMath.matrix;
       matrix.identity();
       matrix.append(mMatrix);
       matrix.append(vpMatrix);
@@ -205,7 +205,21 @@ MO.FEaiCityEntityConsole_findByCode = function FEaiCityEntityConsole_findByCode(
    return this._citys.get(code);
 }
 MO.FEaiCityEntityConsole_findByCard = function FEaiCityEntityConsole_findByCard(card){
-   return this._citys.get(code);
+   var o = this;
+   if (card.length != 4) {
+      return null;
+   }
+   var cityEntities = o._citys;
+   var cityEntity = cityEntities.get(card);
+   if (cityEntity) {
+      return cityEntity;
+   }
+   var cityEntities = o._citys;
+   var cityEntity = cityEntities.get(card.substring(0, 2));
+   if (cityEntity) {
+      return cityEntity;
+   }
+   return null;
 }
 MO.FEaiCityEntityConsole_push = function FEaiCityEntityConsole_push(entity){
    this._citys.set(entity.data().code(), entity);
@@ -640,17 +654,17 @@ with(MO){
 with(MO){
    MO.FEaiCountryEntity = function FEaiCountryEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
-      o._cameraDirection     = RClass.register(o, new AGetSet('_cameraDirection'));
-      o._startDelay          = RClass.register(o, new AGetSet('_startDelay'), 0);
-      o._riseDuration        = RClass.register(o, new AGetSet('_riseDuration'), 5000);
-      o._riseDistance        = RClass.register(o, new AGetSet('_riseDistance'), 1000);
-      o._fallDuration        = RClass.register(o, new AGetSet('_fallDuration'), 200);
-      o._fallDistance        = RClass.register(o, new AGetSet('_fallDistance'), 3);
-      o._blockInterval       = RClass.register(o, new AGetSet('_blockInterval'), 60);
-      o._mouseOverRiseHeight = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
-      o._mouseMoveCheckInterval = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
-      o._cameraMoveDuration  = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
-      o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+      o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
+      o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
+      o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
+      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 1000);
+      o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
+      o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
+      o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 60);
+      o._mouseOverRiseHeight     = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
+      o._mouseMoveCheckInterval  = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
+      o._cameraMoveDuration      = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
+      o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
       o._playing = false;
       o._lastTick = 0;
       o._interval = 10;
@@ -663,14 +677,15 @@ with(MO){
       o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
       o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
       o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
-      o.setup = FEaiCountryEntity_setup;
-      o.process = FEaiCountryEntity_process;
-      o.introAnime = FEaiCountryEntity_introAnime;
-      o.onMouseMove = FEaiCountryEntity_onMouseMove;
-      o.onMouseDown = FEaiCountryEntity_onMouseDown;
-      o.mouseOverFallAnime = FEaiCountryEntity_mouseOverFallAnime;
-      o.onOrganizationFetch = FEaiCountryEntity_onOrganizationFetch;
-      o.cameraMoveAnime = FEaiCountryEntity_cameraMoveAnime;
+      o.setup                    = FEaiCountryEntity_setup;
+      o.start                    = FEaiCountryEntity_start;
+      o.process                  = FEaiCountryEntity_process;
+      o.introAnime               = FEaiCountryEntity_introAnime;
+      o.onMouseMove              = FEaiCountryEntity_onMouseMove;
+      o.onMouseDown              = FEaiCountryEntity_onMouseDown;
+      o.mouseOverFallAnime       = FEaiCountryEntity_mouseOverFallAnime;
+      o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
+      o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
       return o;
    }
    MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
@@ -687,6 +702,9 @@ with(MO){
          brm.updateForce();
       }
       o._startTime = MO.Timer.current();
+   }
+   MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
+      this._startTime = MO.Timer.current();
    }
    MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
       var o = this;
@@ -1422,6 +1440,7 @@ with(MO){
          var showTick = passedTick - o._popDuration;
          var closeTick = passedTick - o._showDuration - o._popDuration;
          var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         var p = 0;
          if (passedTick < o._popDuration) {
             p = passedTick / o._popDuration;
             p = 1 - (1 - p) * (1 - p);
@@ -1549,6 +1568,103 @@ with (MO) {
       }
       startDate.date.setTime(bakTime);
       startDate.refresh();
+   }
+}
+with(MO){
+   MO.FGuiLivePop = function FGuiLivePop(o) {
+      o = RClass.inherits(this, o, FGuiControl);
+      o._bgImage = null;
+      o._data = RClass.register(o, new AGetSet('_data'));
+      o._startTick = 0;
+      o._popDuration = 500;
+      o._showDuration = 2000;
+      o._closeDuration = 500;
+      o._fullWidth = 910;
+      o._fullHeight = 140;
+      o._riseHeight = 50;
+      o.setup = FGuiLivePop_setup;
+      o.onPaintBegin = FGuiLivePop_onPaintBegin;
+      o.onImageLoad = FGuiLivePop_onImageLoad;
+      o.show = FGuiLivePop_show;
+      o.dispose = FGuiLivePop_dispose;
+      return o;
+   }
+   MO.FGuiLivePop_setup = function FGuiLivePop_setup() {
+      var o = this;
+      o.setWidth(o._fullWidth);
+      o.setHeight(o._fullHeight);
+      o.setLeft((MO.Eai.Canvas.logicSize().width - o._fullWidth) / 3);
+      o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight);
+      o._bgImage = MO.Class.create(MO.FImage);
+      o._bgImage.addLoadListener(o, o.onImageLoad);
+      o._bgImage.loadUrl('../ars/eai/invespop.png');
+   }
+   MO.FGuiLivePop_onImageLoad = function FGuiLivePop_onImageLoad() {
+      this.dirty();
+   }
+   MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      if (!o._data) {
+         return;
+      }
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var entity = o._data;
+      var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
+      var cityEntity = cityConsole.findByCard(entity.card());
+      var popText = '';
+      var date = MO.Memory.alloc(TDate);
+      date.parse(entity.date());
+      popText += date.format('HH24:MI:SS');
+      popText += '    ';
+      if (cityEntity) {
+         popText += cityEntity.data().label();
+      }
+      popText += '    ';
+      popText += entity.customer() + ' - ' + entity.phone();
+      popText += '    ';
+      popText += MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
+      graphic.setFont('36px Microsoft YaHei');
+      popTextWidth = graphic.textWidth(popText);
+      var passedTick = MO.Timer.current() - o._startTick;
+      var showTick = passedTick - o._popDuration;
+      var closeTick = passedTick - o._showDuration - o._popDuration;
+      var p = 0;
+      if (passedTick < o._popDuration) {
+         p = passedTick / o._popDuration;
+         graphic.globalAlpha = p;
+         graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
+         graphic.globalAlpha = 1;
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight * (1 - p));
+         graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + p + ')');
+      }
+      else if (showTick < o._showDuration) {
+         graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
+         graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, 1)');
+      }
+      else if (closeTick < o._closeDuration) {
+         p = closeTick / o._closeDuration;
+         graphic.globalAlpha = p;
+         graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
+         graphic.globalAlpha = 1;
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - o._riseHeight * p);
+         graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + (1 - p) + ')');
+      }
+      else {
+         o._data = null;
+         o.setVisible(false);
+         return;
+      }
+   }
+   MO.FGuiLivePop_show = function FGuiLivePop_show() {
+      o = this;
+      o.setVisible(true);
+      o._startTick = MO.Timer.current();
+   }
+   MO.FGuiLivePop_dispose = function FGuiLivePop_dispose(){
+      var o = this;
+      o.__base.FEaiEntity.dispose.call(o);
    }
 }
 MO.FGuiLiveTable = function FGuiLiveTable(o) {

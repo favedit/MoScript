@@ -8133,7 +8133,9 @@ MO.SRectangle = function SRectangle(left, top, width, height){
    o.height          = MO.Lang.Integer.nvl(height);
    o.right           = MO.SRectangle_right;
    o.bottom          = MO.SRectangle_bottom;
+   o.isEmpty         = MO.SRectangle_isEmpty;
    o.testRange       = MO.SRectangle_testRange;
+   o.testRectangle   = MO.SRectangle_testRectangle;
    o.reset           = MO.SRectangle_reset;
    o.assign          = MO.SRectangle_assign;
    o.setLocation     = MO.SRectangle_setLocation;
@@ -8150,6 +8152,13 @@ MO.SRectangle_right = function SRectangle_right(){
 MO.SRectangle_bottom = function SRectangle_bottom(){
    return this.top + this.height;
 }
+MO.SRectangle_isEmpty = function SRectangle_isEmpty(){
+   var o = this;
+   if((o.width > 0) && (o.height > 0)){
+      return false;
+   }
+   return true;
+}
 MO.SRectangle_testRange = function SRectangle_testRange(x, y){
    var o = this;
    if(x < o.left){
@@ -8165,6 +8174,14 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
       return false;
    }
    return true;
+}
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(rectangle){
+   var o = this;
+   var minx = Math.max(o.left, rectangle.left);
+   var miny = Math.max(o.top, rectangle.top);
+   var maxx = Math.min(o.left + o.width, rectangle.left + rectangle.width);
+   var maxy = Math.min(o.top + o.height, rectangle.top + rectangle.height);
+   return (minx < maxx) && (miny < maxy);
 }
 MO.SRectangle_reset = function SRectangle_reset(){
    var o = this;

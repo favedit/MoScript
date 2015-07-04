@@ -56,9 +56,13 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
 //==========================================================
 MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsScene_onLiveTableChanged(event) {
    var o = this;
-   o._liveTable.setRank(event.rank);
-   o._liveTable.setData(event.data);
-   o._liveTable.dirty();
+   var table = o._liveTable;
+   table.setRank(event.rank);
+   table.setData(event.data);
+   table.dirty();
+   //var pop = o._livePop;
+   //pop.setData(event.data.at(0));
+   //pop.show();
 }
 
 //==========================================================
@@ -198,6 +202,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
             if(hLoading){
                document.body.removeChild(hLoading);
             }
+            o._mapEntity.countryEntity().start();
             o._playing = true;
             o._statusStart = true;
          }
@@ -224,37 +229,16 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       }
       // 投资处理
       o._investment.process();
-      // 设置资金
+      //..........................................................
+      // 设置数据
+      var logoBar = o._logoBar;
+      // 设置当前金额
+      var investmentDay = logoBar.findComponent('investmentDay');
       var invementDayCurrent = o._investment.invementDayCurrent();
+      investmentDay.setValue(parseInt(invementDayCurrent).toString());
+      // 设置全部金额
+      var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._investment.invementTotalCurrent();
-      if((invementDayCurrent != null) && (invementTotalCurrent != null)){
-         var logoBar = o._logoBar;
-         // 设置当前金额
-         var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(invementDayCurrent).toString());
-         if(investmentDay.process()){
-            logoBar.dirty();
-         }
-         // 设置全部金额
-         var investmentTotal = logoBar.findComponent('investmentTotal');
-         investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
-         if(investmentTotal.process()){
-            logoBar.dirty();
-         }
-      }
+      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
    }
-}
-
-//==========================================================
-// <T>表格数据变更处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onTableEntitiesChanged = function FEaiChartStatisticsScene_onTableEntitiesChanged(event) {
-   var o = this;
-   o._liveTable.setData(event.data);
-   o._liveTable.dirty();
-   o._livePop.setData(event.data.at(0));
-   o._livePop.show();
 }

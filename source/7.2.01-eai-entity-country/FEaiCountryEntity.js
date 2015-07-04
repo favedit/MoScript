@@ -10,26 +10,26 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @property
-      //o._startDelay          = RClass.register(o, new APtyInteger('_startDelay'), 0);
-      //o._riseDuration        = RClass.register(o, new APtyNumber('_riseDuration'), 1200);
-      //o._riseDistance        = RClass.register(o, new APtyNumber('_riseDistance'), 2050);
-      //o._fallDuration        = RClass.register(o, new APtyNumber('_fallDuration'), 400);
-      //o._fallDistance        = RClass.register(o, new APtyNumber('_fallDistance'), 50);
-      //o._blockInterval       = RClass.register(o, new APtyNumber('_blockInterval'), 60);
-      //o._mouseOverRiseHeight = RClass.register(o, new APtyNumber('_mouseOverRiseHeight'), 10);
-      o._cameraDirection     = RClass.register(o, new AGetSet('_cameraDirection'));
-      o._startDelay          = RClass.register(o, new AGetSet('_startDelay'), 0);
-      o._riseDuration        = RClass.register(o, new AGetSet('_riseDuration'), 5000);
-      o._riseDistance        = RClass.register(o, new AGetSet('_riseDistance'), 1000);
-      o._fallDuration        = RClass.register(o, new AGetSet('_fallDuration'), 200);
-      o._fallDistance        = RClass.register(o, new AGetSet('_fallDistance'), 3);
-      o._blockInterval       = RClass.register(o, new AGetSet('_blockInterval'), 60);
-      o._mouseOverRiseHeight = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
-      o._mouseMoveCheckInterval = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
-      o._cameraMoveDuration  = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
+      //o._startDelay            = RClass.register(o, new APtyInteger('_startDelay'), 0);
+      //o._riseDuration          = RClass.register(o, new APtyNumber('_riseDuration'), 1200);
+      //o._riseDistance          = RClass.register(o, new APtyNumber('_riseDistance'), 2050);
+      //o._fallDuration          = RClass.register(o, new APtyNumber('_fallDuration'), 400);
+      //o._fallDistance          = RClass.register(o, new APtyNumber('_fallDistance'), 50);
+      //o._blockInterval         = RClass.register(o, new APtyNumber('_blockInterval'), 60);
+      //o._mouseOverRiseHeight   = RClass.register(o, new APtyNumber('_mouseOverRiseHeight'), 10);
+      o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
+      o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
+      o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
+      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 1000);
+      o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
+      o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
+      o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 60);
+      o._mouseOverRiseHeight     = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
+      o._mouseMoveCheckInterval  = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
+      o._cameraMoveDuration      = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
       //..........................................................
       // @attribute
-      o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+      o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
       o._playing = false;
       o._lastTick = 0;
       o._interval = 10;
@@ -45,14 +45,15 @@ with(MO){
       o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
       //..........................................................
       // @method
-      o.setup = FEaiCountryEntity_setup;
-      o.process = FEaiCountryEntity_process;
-      o.introAnime = FEaiCountryEntity_introAnime;
-      o.onMouseMove = FEaiCountryEntity_onMouseMove;
-      o.onMouseDown = FEaiCountryEntity_onMouseDown;
-      o.mouseOverFallAnime = FEaiCountryEntity_mouseOverFallAnime;
-      o.onOrganizationFetch = FEaiCountryEntity_onOrganizationFetch;
-      o.cameraMoveAnime = FEaiCountryEntity_cameraMoveAnime;
+      o.setup                    = FEaiCountryEntity_setup;
+      o.start                    = FEaiCountryEntity_start;
+      o.process                  = FEaiCountryEntity_process;
+      o.introAnime               = FEaiCountryEntity_introAnime;
+      o.onMouseMove              = FEaiCountryEntity_onMouseMove;
+      o.onMouseDown              = FEaiCountryEntity_onMouseDown;
+      o.mouseOverFallAnime       = FEaiCountryEntity_mouseOverFallAnime;
+      o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
+      o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
       return o;
    }
    
@@ -93,6 +94,15 @@ with(MO){
       //}
       ////记录开始时间
       o._startTime = MO.Timer.current();
+   }
+
+   //==========================================================
+   // <T>开始处理。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
+      this._startTime = MO.Timer.current();
    }
 
    //==========================================================

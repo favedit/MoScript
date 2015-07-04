@@ -3,9 +3,12 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._readyControls    = null;
+   o._dirtyControls    = null;
    o._paintEvent       = null;
    o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    o.construct         = MO.FGuiCanvasManager_construct;
+   o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
    o.processResize     = MO.FGuiCanvasManager_processResize;
    o.processControl    = MO.FGuiCanvasManager_processControl;
    o.process           = MO.FGuiCanvasManager_process;
@@ -20,24 +23,33 @@ MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    o.__base.FGuiManager.construct.call(o);
    o._size = new MO.SSize2();
    o._calculateRate = new MO.SSize2();
+   o._readyControls = new MO.TObjects();
+   o._dirtyControls = new MO.TObjects();
    o._paintEvent = new MO.SGuiPaintEvent();
+}
+MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRectangle(dirtyControls, rectangle){
+   var o = this;
+   var controls = o._readyControls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      var clientRectangle = control.clientRectangle();
+      if(rectangle.testRectangle(clientRectangle)){
+         dirtyControls.pushUnique(control);
+      }
+   }
 }
 MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
 }
 MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   if(!control.testReady()){
-   }
-   if(!control.testDirty()){
-   }
    var graphic = o._canvas.context();
    var event = o._paintEvent;
    event.optionContainer = true;
    event.graphic = graphic;
    event.parentRectangle.set(0, 0, o._size.width, o._size.height);
    event.calculateRate = o._calculateRate;
-   event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
    return true;
@@ -45,26 +57,50 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var controls = o._controls;
-   var count = controls.count();
    var desktop = MO.Desktop.activeDesktop();
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
-   var changed = false;
+   var readyControls = o._readyControls;
+   readyControls.clear();
+   var controls = o._controls;
+   var count = controls.count();
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
-      if(control.testDirty()){
-         changed = true;
-         break;
+      if(control.processReady()){
+         if(control.visible()){
+            readyControls.push(control)
+         }
       }
    }
-   changed = true;
-   if(changed){
-      var graphic = o._canvas.context();
+   var graphic = o._canvas.context();
+   if(o._statusDirty){
       graphic.clear();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
+      var readyCount = readyControls.count();
+      for(var i = 0; i < readyCount; i++){
+         var control = readyControls.at(i);
+         o.processControl(control);
+      }
+      o._statusDirty = false;
+   }else{
+      var dirtyControls = o._dirtyControls;
+      dirtyControls.clear();
+      var readCount = readyControls.count();
+      for(var i = 0; i < readCount; i++){
+         var control = readyControls.at(i);
+         if(control.testDirty()){
+            var controlRectangle = control.clientRectangle();
+            dirtyControls.push(control);
+            o.filterByRectangle(dirtyControls, controlRectangle)
+         }
+      }
+      var dirtyCount = dirtyControls.count();
+      for(var i = 0; i < dirtyCount; i++){
+         var control = dirtyControls.at(i);
+         if(control.isDirty()){
+            var clientRectangle = control.clientRectangle();
+            if(!clientRectangle.isEmpty()){
+               graphic.clearRectangle(clientRectangle);
+            }
             o.processControl(control);
          }
       }
@@ -74,6 +110,8 @@ MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
    o._calculateRate = RObject.dispose(o._calculateRate);
+   o._readyControls = RObject.dispose(o._readyControls);
+   o._dirtyControls = RObject.dispose(o._dirtyControls);
    o._paintEvent = RObject.dispose(o._paintEvent);
    o.__base.FGuiManager.dispose.call(o);
 }
@@ -312,131 +350,138 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    o._program.setParameter4('vc_position', x, y, width, height);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
-with(MO){
-   MO.FGuiManager = function FGuiManager(o){
-      o = RClass.inherits(this, o, FObject, MGraphicObject, MEventDispatcher);
-      o._controls         = RClass.register(o, new AGetter('_controls'));
-      o._transforms       = RClass.register(o, new AGetter('_transforms'));
-      o._visibleControls  = null;
-      o.construct         = FGuiManager_construct;
-      o.register          = FGuiManager_register;
-      o.unregister        = FGuiManager_unregister;
-      o.transformStart    = FGuiManager_transformStart;
-      o.setup             = FGuiManager_setup;
-      o.setVisible        = FGuiManager_setVisible;
-      o.show              = FGuiManager_show;
-      o.hide              = FGuiManager_hide;
-      o.processResize     = FGuiManager_processResize;
-      o.processEvent      = FGuiManager_processEvent;
-      o.processTransforms = FGuiManager_processTransforms;
-      o.process           = FGuiManager_process;
-      o.dispose           = FGuiManager_dispose;
-      return o;
+MO.FGuiManager = function FGuiManager(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
+   o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
+   o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
+   o._statusDirty      = false;
+   o._visibleControls  = null;
+   o.construct         = MO.FGuiManager_construct;
+   o.register          = MO.FGuiManager_register;
+   o.unregister        = MO.FGuiManager_unregister;
+   o.transformStart    = MO.FGuiManager_transformStart;
+   o.setup             = MO.FGuiManager_setup;
+   o.isDirty           = MO.FGuiManager_isDirty;
+   o.setVisible        = MO.FGuiManager_setVisible;
+   o.show              = MO.FGuiManager_show;
+   o.hide              = MO.FGuiManager_hide;
+   o.processResize     = MO.FGuiManager_processResize;
+   o.processEvent      = MO.FGuiManager_processEvent;
+   o.processTransforms = MO.FGuiManager_processTransforms;
+   o.process           = MO.FGuiManager_process;
+   o.dirty             = MO.FGuiManager_dirty;
+   o.dispose           = MO.FGuiManager_dispose;
+   return o;
+}
+MO.FGuiManager_construct = function FGuiManager_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._controls = new MO.TObjects();
+   o._transforms = new MO.TLooper();
+   o._visibleControls = new MO.TObjects();
+}
+MO.FGuiManager_register = function FGuiManager_register(control){
+   this._controls.push(control);
+}
+MO.FGuiManager_unregister = function FGuiManager_unregister(control){
+   this._controls.remove(control);
+}
+MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
+   var o = this;
+   transform.start();
+   o._transforms.pushUnique(transform);
+}
+MO.FGuiManager_setup = function FGuiManager_setup(){
+   var o = this;
+   var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('general.color.gui', MO.FGuiGeneralColorEffect);
+}
+MO.FGuiManager_isDirty = function FGuiManager_isDirty(){
+   return this._statusDirty;
+}
+MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.setVisible(value);
    }
-   MO.FGuiManager_construct = function FGuiManager_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._controls = new TObjects();
-      o._transforms = new TLooper();
-      o._visibleControls = new TObjects();
+}
+MO.FGuiManager_show = function FGuiManager_show(){
+   this.setVisible(true);
+}
+MO.FGuiManager_hide = function FGuiManager_hide(){
+   this.setVisible(false);
+}
+MO.FGuiManager_processResize = function FGuiManager_processResize(event){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.psResize();
    }
-   MO.FGuiManager_register = function FGuiManager_register(control){
-      this._controls.push(control);
-   }
-   MO.FGuiManager_unregister = function FGuiManager_unregister(control){
-      this._controls.remove(control);
-   }
-   MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
-      var o = this;
-      transform.start();
-      o._transforms.pushUnique(transform);
-   }
-   MO.FGuiManager_setup = function FGuiManager_setup(){
-      var o = this;
-      var effectConsole = RConsole.find(FG3dEffectConsole);
-      effectConsole.register('general.color.gui', FGuiGeneralColorEffect);
-   }
-   MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
-      var o = this;
+}
+MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
+      var context = o._graphicContext;
+      var ratio = context.ratio();
+      var locationX = event.clientX * ratio;
+      var locationY = event.clientY * ratio;
+      var visibleControls = o._visibleControls;
+      visibleControls.clear();
       var controls = o._controls;
       var count = controls.count();
       for(var i = 0; i < count; i++){
          var control = controls.at(i);
-         control.setVisible(value);
+         if(control.visible()){
+            visibleControls.push(control);
+         }
       }
-   }
-   MO.FGuiManager_show = function FGuiManager_show(){
-      this.setVisible(true);
-   }
-   MO.FGuiManager_hide = function FGuiManager_hide(){
-      this.setVisible(false);
-   }
-   MO.FGuiManager_processResize = function FGuiManager_processResize(event){
-      var o = this;
-      var controls = o._controls;
-      var count = controls.count();
+      var count = visibleControls.count();
       for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         control.psResize();
+         var control = visibleControls.at(i);
+         var location = control.location();
+         event.locationX = locationX - location.x;
+         event.locationY = locationY - location.y;
+         control.processEvent(event);
       }
    }
-   MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
-      var o = this;
-      o.dispatcherEvent(event);
-      if((event.code == EEvent.MouseDown) || (event.code == EEvent.MouseMove) || (event.code == EEvent.MouseUp)){
-         var context = o._graphicContext;
-         var ratio = context.ratio();
-         var locationX = event.clientX * ratio;
-         var locationY = event.clientY * ratio;
-         var visibleControls = o._visibleControls;
-         visibleControls.clear();
-         var controls = o._controls;
-         var count = controls.count();
-         for(var i = 0; i < count; i++){
-            var control = controls.at(i);
-            if(control.visible()){
-               visibleControls.push(control);
-            }
-         }
-         var count = visibleControls.count();
-         for(var i = 0; i < count; i++){
-            var control = visibleControls.at(i);
-            var location = control.location();
-            event.locationX = locationX - location.x;
-            event.locationY = locationY - location.y;
-            control.processEvent(event);
-         }
+}
+MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
+   var o = this;
+   var transforms = o._transforms;
+   transforms.record();
+   while(transforms.next()){
+      var transform = transforms.current();
+      transform.process();
+      if(transform.isFinish()){
+         transforms.removeCurrent();
       }
    }
-   MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
-      var o = this;
-      var transforms = o._transforms;
-      transforms.record();
-      while(transforms.next()){
-         var transform = transforms.current();
-         transform.process();
-         if(transform.isFinish()){
-            transforms.removeCurrent();
-         }
-      }
+}
+MO.FGuiManager_process = function FGuiManager_process(){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.psUpdate();
    }
-   MO.FGuiManager_process = function FGuiManager_process(){
-      var o = this;
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         control.psUpdate();
-      }
-      o.processTransforms();
-   }
-   MO.FGuiManager_dispose = function FGuiManager_dispose(){
-      var o = this;
-      o._controls = RObject.dispose(o._controls);
-      o._transforms = RObject.dispose(o._transforms);
-      o._visibleControls = RObject.dispose(o._visibleControls);
-      o.__base.FObject.dispose.call(o);
-   }
+   o.processTransforms();
+}
+MO.FGuiManager_dirty = function FGuiManager_dirty(){
+   this._statusDirty = true;
+}
+MO.FGuiManager_dispose = function FGuiManager_dispose(){
+   var o = this;
+   o._controls = MO.RObject.dispose(o._controls);
+   o._transforms = MO.RObject.dispose(o._transforms);
+   o._visibleControls = MO.RObject.dispose(o._visibleControls);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FGuiTransform = function FGuiTransform(o){
    o = MO.Class.inherits(this, o, MO.FObject);

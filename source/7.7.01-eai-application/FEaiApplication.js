@@ -26,9 +26,10 @@ MO.FEaiApplication = function FEaiApplication(o){
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>操作大小处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FEaiApplication_onOperationResize = function FEaiApplication_onOperationResize(event){
    var o = this;

@@ -500,7 +500,6 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    var o = this;
    o.graphic         = null;
    o.parentRectangle = new MO.SRectangle();
-   o.clientRectangle = new MO.SRectangle();
    o.rectangle       = new MO.SRectangle();
    o.free            = MO.SGuiPaintEvent_free;
    o.dispose         = MO.SGuiPaintEvent_dispose;
@@ -514,15 +513,23 @@ MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
 MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
    var o = this;
    o.parentRectangle = MO.RObject.dispose(o.parentRectangle);
-   o.clientRectangle = MO.RObject.dispose(o.clientRectangle);
    o.rectangle = MO.RObject.dispose(o.rectangle);
    return o;
 }
 MO.SGuiUpdateEvent = function SGuiUpdateEvent(){
    var o = this;
+   o.flag      = false;
    o.rectangle = new MO.SRectangle();
+   o.isBefore  = MO.SGuiUpdateEvent_isBefore;
+   o.isAfter   = MO.SGuiUpdateEvent_isAfter;
    o.dispose   = MO.SGuiUpdateEvent_dispose;
    return o;
+}
+MO.SGuiUpdateEvent_isBefore = function SGuiUpdateEvent_isBefore(){
+   return this.flag;
+}
+MO.SGuiUpdateEvent_isAfter = function SGuiUpdateEvent_isAfter(){
+   return !this.flag;
 }
 MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
    var o = this;
@@ -703,15 +710,16 @@ with(MO){
       o._backHoverColor         = MO.RClass.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
       o._backHoverResource      = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
       o._backHoverGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
+      o._statusReady            = false;
+      o._statusDirty            = true;
+      o._statusHover            = false;
+      o._backImage              = null;
+      o._backHoverResource      = null;
+      o._clientRectangle        = MO.RClass.register(o, new MO.AGetter('_clientRectangle'));
+      o._eventRectangle         = null;
       o._operationDownListeners = MO.RClass.register(o, new AListener('_operationDownListeners', EEvent.OperationDown));
       o._operationMoveListeners = MO.RClass.register(o, new AListener('_operationMoveListeners', EEvent.OperationMove));
       o._operationUpListeners   = MO.RClass.register(o, new AListener('_operationUpListeners', EEvent.OperationUp));
-      o._statusDirty            = true;
-      o._statusHover            = false;
-      o._statusPaint            = false;
-      o._backImage              = null;
-      o._backHoverResource      = null;
-      o._eventRectangle         = null;
       o.onUpdate                = FGuiControl_onUpdate;
       o.onPaintBegin            = FGuiControl_onPaintBegin;
       o.onPaintEnd              = FGuiControl_onPaintEnd;
@@ -723,6 +731,8 @@ with(MO){
       o.oeResize                = FGuiControl_oeResize;
       o.oeUpdate                = FGuiControl_oeUpdate;
       o.construct               = FGuiControl_construct;
+      o.isReady                 = FGuiControl_isReady;
+      o.isDirty                 = FGuiControl_isDirty;
       o.setVisible              = FGuiControl_setVisible;
       o.setSize                 = FGuiControl_setSize;
       o.testReady               = FGuiControl_testReady;
@@ -731,6 +741,7 @@ with(MO){
       o.paint                   = FGuiControl_paint;
       o.update                  = FGuiControl_update;
       o.build                   = FGuiControl_build;
+      o.processReady            = FGuiControl_processReady;
       o.processEvent            = FGuiControl_processEvent;
       o.dirty                   = FGuiControl_dirty;
       o.psEnable                = FGuiControl_psEnable;
@@ -861,6 +872,12 @@ with(MO){
       o._clientRectangle = new SRectangle();
       o._eventRectangle = new SRectangle();
    }
+   MO.FGuiControl_isReady = function FGuiControl_isReady(){
+      return this._statusReady;
+   }
+   MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
+      return this._statusDirty;
+   }
    MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
       var o = this;
       o._visible = flag;
@@ -894,18 +911,30 @@ with(MO){
       return true;
    }
    MO.FGuiControl_testDirty = function FGuiControl_testDirty(){
-      return this._statusDirty;
+      var o = this;
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(MO.Class.isClass(component, MO.FGuiControl)){
+               var dirty = component.testDirty();
+               if(dirty){
+                  o._statusDirty = true;
+                  break;
+               }
+            }
+         }
+      }
+      return o._statusDirty;
    }
    MO.FGuiControl_testInRange = function FGuiControl_testInRange(x, y){
       var o = this;
-      var range = o._clientRectangle.testRange(x, y);
-      return range;
    }
    MO.FGuiControl_paint = function FGuiControl_paint(event){
       var o = this;
       var location = o._location;
       var size = o._size;
-      var clientRectangle = o._clientRectangle;
       var graphic = event.graphic;
       var parentRectangle = event.parentRectangle;
       var calculateRate = event.calculateRate;
@@ -945,9 +974,8 @@ with(MO){
          height = bottom - top;
       }
       event.optionContainer = false;
-      clientRectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
-      rectangle.assign(clientRectangle);
-      event.clientRectangle.assign(clientRectangle);
+      rectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
+      o._clientRectangle.assign(rectangle);
       o.onPaintBegin(event);
       var components = o._components;
       if(components){
@@ -962,7 +990,6 @@ with(MO){
       o.onPaintEnd(event);
       rectangle.assign(o._eventRectangle);
       o._statusDirty = false;
-      o._statusPaint = true;
    }
    MO.FGuiControl_update = function FGuiControl_update(){
       var o = this;
@@ -977,6 +1004,13 @@ with(MO){
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
+   }
+   MO.FGuiControl_processReady = function FGuiControl_processReady(){
+      var o = this;
+      if(!o._statusReady){
+         o._statusReady = o.testReady();
+      }
+      return o._statusReady;
    }
    MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
       var o = this;

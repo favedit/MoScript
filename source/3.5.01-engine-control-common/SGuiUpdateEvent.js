@@ -8,12 +8,36 @@
 MO.SGuiUpdateEvent = function SGuiUpdateEvent(){
    var o = this;
    //..........................................................
-   // @method
+   // @attribute
+   o.flag      = false;
    o.rectangle = new MO.SRectangle();
    //..........................................................
    // @method
+   o.isBefore  = MO.SGuiUpdateEvent_isBefore;
+   o.isAfter   = MO.SGuiUpdateEvent_isAfter;
+   // @method
    o.dispose   = MO.SGuiUpdateEvent_dispose;
    return o;
+}
+
+//==========================================================
+// <T>判断是否开始处理。</T>
+//
+// @method
+// @return Boolean 是否开始
+//==========================================================
+MO.SGuiUpdateEvent_isBefore = function SGuiUpdateEvent_isBefore(){
+   return this.flag;
+}
+
+//==========================================================
+// <T>判断是否结束处理。</T>
+//
+// @method
+// @return Boolean 是否结束
+//==========================================================
+MO.SGuiUpdateEvent_isAfter = function SGuiUpdateEvent_isAfter(){
+   return !this.flag;
 }
 
 //==========================================================

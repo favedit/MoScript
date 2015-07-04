@@ -25,18 +25,20 @@ with(MO){
       o._backHoverResource      = MO.RClass.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
       o._backHoverGrid          = MO.RClass.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
       //..........................................................
-      // @event
+      // @attribute
+      o._statusReady            = false;
+      o._statusDirty            = true;
+      o._statusHover            = false;
+      // @attribute
+      o._backImage              = null;
+      o._backHoverResource      = null;
+      // @attribute
+      o._clientRectangle        = MO.RClass.register(o, new MO.AGetter('_clientRectangle'));
+      o._eventRectangle         = null;
+      // @attribute
       o._operationDownListeners = MO.RClass.register(o, new AListener('_operationDownListeners', EEvent.OperationDown));
       o._operationMoveListeners = MO.RClass.register(o, new AListener('_operationMoveListeners', EEvent.OperationMove));
       o._operationUpListeners   = MO.RClass.register(o, new AListener('_operationUpListeners', EEvent.OperationUp));
-      //..........................................................
-      // @attribute
-      o._statusDirty            = true;
-      o._statusHover            = false;
-      o._statusPaint            = false;
-      o._backImage              = null;
-      o._backHoverResource      = null;
-      o._eventRectangle         = null;
       //..........................................................
       // @event
       o.onUpdate                = FGuiControl_onUpdate;
@@ -57,6 +59,8 @@ with(MO){
       // @method
       o.construct               = FGuiControl_construct;
       // @method
+      o.isReady                 = FGuiControl_isReady;
+      o.isDirty                 = FGuiControl_isDirty;
       o.setVisible              = FGuiControl_setVisible;
       o.setSize                 = FGuiControl_setSize;
       // @method
@@ -66,6 +70,7 @@ with(MO){
       o.paint                   = FGuiControl_paint;
       o.update                  = FGuiControl_update;
       o.build                   = FGuiControl_build;
+      o.processReady            = FGuiControl_processReady;
       o.processEvent            = FGuiControl_processEvent;
       o.dirty                   = FGuiControl_dirty;
       // @method
@@ -176,7 +181,6 @@ with(MO){
          o.processOperationMoveListener(event);
       }
       //if(o._backHoverResource){
-         //o._statusPaint = false;
          //o._statusHover = true;
          //console.log(o._name, event.code + '-' + event.flag, '(' + event.clientX + ',' + event.clientY + ')', '(' + event.locationX + ',' + event.locationY + ')');
          //o.topComponent().build();
@@ -293,6 +297,26 @@ with(MO){
    }
 
    //==========================================================
+   // <T>测试是否准备好。</T>
+   //
+   // @method
+   // @return Boolean 准备好
+   //==========================================================
+   MO.FGuiControl_isReady = function FGuiControl_isReady(){
+      return this._statusReady;
+   }
+
+   //==========================================================
+   // <T>测试是否数据脏。</T>
+   //
+   // @method
+   // @return Boolean 数据脏
+   //==========================================================
+   MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
+      return this._statusDirty;
+   }
+
+   //==========================================================
    // <T>设置可见性。</T>
    //
    // @method
@@ -357,7 +381,24 @@ with(MO){
    // @return Boolean 是否准备好
    //==========================================================
    MO.FGuiControl_testDirty = function FGuiControl_testDirty(){
-      return this._statusDirty;
+      var o = this;
+      // 查询是否有子控件脏
+      var components = o._components;
+      if(components){
+         var count = components.count();
+         for(var i = 0; i < count; i++){
+            var component = components.at(i);
+            if(MO.Class.isClass(component, MO.FGuiControl)){
+               var dirty = component.testDirty();
+               if(dirty){
+                  o._statusDirty = true;
+                  break;
+               }
+            }
+         }
+      }
+      // 返回当前对象脏状态
+      return o._statusDirty;
    }
 
    //==========================================================
@@ -370,8 +411,8 @@ with(MO){
    //==========================================================
    MO.FGuiControl_testInRange = function FGuiControl_testInRange(x, y){
       var o = this;
-      var range = o._clientRectangle.testRange(x, y);
-      return range;
+      //var range = o._clientRectangle.testRange(x, y);
+      //return range;
    }
 
    //==========================================================
@@ -384,7 +425,6 @@ with(MO){
       var o = this;
       var location = o._location;
       var size = o._size;
-      var clientRectangle = o._clientRectangle;
       var graphic = event.graphic;
       var parentRectangle = event.parentRectangle;
       var calculateRate = event.calculateRate;
@@ -406,7 +446,6 @@ with(MO){
       var height2 = (parentRectangle.height - height) * 0.5;
       // 调整位置
       if(event.optionContainer){
-         // 固定处理
          left *= calculateRate.width;
          top *= calculateRate.height;
          right *= calculateRate.width;
@@ -431,9 +470,8 @@ with(MO){
       event.optionContainer = false;
       //..........................................................
       // 计算范围
-      clientRectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
-      rectangle.assign(clientRectangle);
-      event.clientRectangle.assign(clientRectangle);
+      rectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
+      o._clientRectangle.assign(rectangle);
       //..........................................................
       // 开始绘制处理
       o.onPaintBegin(event);
@@ -453,7 +491,6 @@ with(MO){
       //..........................................................
       rectangle.assign(o._eventRectangle);
       o._statusDirty = false;
-      o._statusPaint = true;
    }
 
    //==========================================================
@@ -501,6 +538,20 @@ with(MO){
       //..........................................................
       // 更新处理
       //o.update();
+   }
+
+   //==========================================================
+   // <T>测试是否准备好处理。</T>
+   //
+   // @method
+   // @return Boolean 是否准备好
+   //==========================================================
+   MO.FGuiControl_processReady = function FGuiControl_processReady(){
+      var o = this;
+      if(!o._statusReady){
+         o._statusReady = o.testReady();
+      }
+      return o._statusReady;
    }
 
    //==========================================================

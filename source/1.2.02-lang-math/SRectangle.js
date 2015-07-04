@@ -18,7 +18,9 @@ MO.SRectangle = function SRectangle(left, top, width, height){
    o.right           = MO.SRectangle_right;
    o.bottom          = MO.SRectangle_bottom;
    // @method
+   o.isEmpty         = MO.SRectangle_isEmpty;
    o.testRange       = MO.SRectangle_testRange;
+   o.testRectangle   = MO.SRectangle_testRectangle;
    // @method
    o.reset           = MO.SRectangle_reset;
    o.assign          = MO.SRectangle_assign;
@@ -53,6 +55,20 @@ MO.SRectangle_bottom = function SRectangle_bottom(){
 }
 
 //============================================================
+// <T>测试是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+MO.SRectangle_isEmpty = function SRectangle_isEmpty(){
+   var o = this;
+   if((o.width > 0) && (o.height > 0)){
+      return false;
+   }
+   return true;
+}
+
+//============================================================
 // <T>测试是否在范围内。</T>
 //
 // @method
@@ -75,6 +91,22 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
       return false;
    }
    return true;
+}
+
+//============================================================
+// <T>测试是否在范围内。</T>
+//
+// @method
+// @param rectangle:SRectangle 矩形
+// @return Boolean 是否在范围内
+//============================================================
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(rectangle){
+   var o = this;
+   var minx = Math.max(o.left, rectangle.left);
+   var miny = Math.max(o.top, rectangle.top);
+   var maxx = Math.min(o.left + o.width, rectangle.left + rectangle.width);
+   var maxy = Math.min(o.top + o.height, rectangle.top + rectangle.height);
+   return (minx < maxx) && (miny < maxy);
 }
 
 //============================================================
