@@ -977,17 +977,6 @@ with(MO){
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
-      return;
-      var location = o._location;
-      var size = o._size;
-      var renderable = o._renderable;
-      if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
-         renderable.setControl(o);
-      }
-      renderable.setLocation(location.x, location.y);
-      renderable.setSize(size.width, size.height);
-      o.update();
    }
    MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
       var o = this;

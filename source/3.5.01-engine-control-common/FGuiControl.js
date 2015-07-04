@@ -487,21 +487,20 @@ with(MO){
    //==========================================================
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
-      return;
-      var location = o._location;
-      var size = o._size;
+      //var location = o._location;
+      //var size = o._size;
       //..........................................................
       // 获得渲染对象
-      var renderable = o._renderable;
-      if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
-         renderable.setControl(o);
-      }
-      renderable.setLocation(location.x, location.y);
-      renderable.setSize(size.width, size.height);
+      //var renderable = o._renderable;
+      //if(!renderable){
+      //   renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
+      //   renderable.setControl(o);
+      //}
+      //renderable.setLocation(location.x, location.y);
+      //renderable.setSize(size.width, size.height);
       //..........................................................
       // 更新处理
-      o.update();
+      //o.update();
    }
 
    //==========================================================

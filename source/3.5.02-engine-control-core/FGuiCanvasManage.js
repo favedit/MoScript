@@ -12,6 +12,8 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   // @attribute
+   o._paintEvent       = null;
    //..........................................................
    // @event
    o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
@@ -47,6 +49,7 @@ MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    // 设置属性
    o._size = new MO.SSize2();
    o._calculateRate = new MO.SSize2();
+   o._paintEvent = new MO.SGuiPaintEvent();
 }
 
 //==========================================================
@@ -77,7 +80,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    // 获得尺寸
    var graphic = o._canvas.context();
    // 绘制处理
-   var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   var event = o._paintEvent;
    event.optionContainer = true;
    event.graphic = graphic;
    event.parentRectangle.set(0, 0, o._size.width, o._size.height);
@@ -85,7 +88,6 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
-   MO.Memory.free(event);
    return true;
 }
 
@@ -135,6 +137,7 @@ MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
    o._calculateRate = RObject.dispose(o._calculateRate);
+   o._paintEvent = RObject.dispose(o._paintEvent);
    // 父处理
    o.__base.FGuiManager.dispose.call(o);
 }

@@ -33692,17 +33692,6 @@ with(MO){
    }
    MO.FGuiControl_build = function FGuiControl_build(){
       var o = this;
-      return;
-      var location = o._location;
-      var size = o._size;
-      var renderable = o._renderable;
-      if(!renderable){
-         renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
-         renderable.setControl(o);
-      }
-      renderable.setLocation(location.x, location.y);
-      renderable.setSize(size.width, size.height);
-      o.update();
    }
    MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
       var o = this;
@@ -33972,6 +33961,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._paintEvent       = null;
    o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    o.construct         = MO.FGuiCanvasManager_construct;
    o.processResize     = MO.FGuiCanvasManager_processResize;
@@ -33988,6 +33978,7 @@ MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    o.__base.FGuiManager.construct.call(o);
    o._size = new MO.SSize2();
    o._calculateRate = new MO.SSize2();
+   o._paintEvent = new MO.SGuiPaintEvent();
 }
 MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
 }
@@ -33999,7 +33990,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    if(!control.testDirty()){
    }
    var graphic = o._canvas.context();
-   var event = MO.Memory.alloc(MO.SGuiPaintEvent)
+   var event = o._paintEvent;
    event.optionContainer = true;
    event.graphic = graphic;
    event.parentRectangle.set(0, 0, o._size.width, o._size.height);
@@ -34007,7 +33998,6 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    event.clientRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
    event.rectangle.reset();
    control.paint(event);
-   MO.Memory.free(event);
    return true;
 }
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
@@ -34042,6 +34032,7 @@ MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
    o._calculateRate = RObject.dispose(o._calculateRate);
+   o._paintEvent = RObject.dispose(o._paintEvent);
    o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
