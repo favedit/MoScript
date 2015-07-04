@@ -62,8 +62,11 @@ with(MO){
    //==========================================================
    MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
       var o = this;
-      o.__base.FGuiControl.setLabel.call(o, label);
       // 脏处理
-      o.dirty();
+      if(o._label != label){
+         o.dirty();
+      }
+      // 父处理
+      o.__base.FGuiControl.setLabel.call(o, label);
    }
 }

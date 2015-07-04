@@ -50,8 +50,10 @@ with(MO){
    }
    MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
       var o = this;
+      if(o._label != label){
+         o.dirty();
+      }
       o.__base.FGuiControl.setLabel.call(o, label);
-      o.dirty();
    }
 }
 with(MO){

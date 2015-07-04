@@ -50,6 +50,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o.allocShape              = MO.FEaiStatisticsInvestment_allocShape;
    o.setup                   = MO.FEaiStatisticsInvestment_setup;
    // @method
+   o.calculateCurrent        = MO.FEaiStatisticsInvestment_calculateCurrent;
    o.focusEntity             = MO.FEaiStatisticsInvestment_focusEntity;
    o.process                 = MO.FEaiStatisticsInvestment_process;
    // @method
@@ -99,6 +100,8 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
          o._entities.push(entity);
       }
    }
+   // 计算当前内容
+   o.calculateCurrent();
    //..........................................................
    // 触发数据事件
    var dsEvent = MO.Memory.alloc(MO.SEvent);
@@ -198,6 +201,33 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    // 设置变量
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
+}
+
+//==========================================================
+// <T>计算当前数值。</T>
+//
+// @method
+//==========================================================
+MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment_calculateCurrent(){
+   var o = this;
+   var invementDay = o._invementDay;
+   var invementTotal = o._invementTotal;
+   var entities = o._entities;
+   var count = entities.count();
+   for(var i = 0; i < count; i++){
+      var entity = entities.at(i);
+      var investment = entity.investment();
+      invementDay -= investment;
+      invementTotal -= investment;
+   }
+   o._invementDayCurrent = Math.max(invementDay, 0);
+   o._invementTotalCurrent = Math.max(invementTotal, 0);
+   //if(invementDay > o._invementDayCurrent){
+   //   o._invementDayCurrent = invementDay;
+   //}
+   //if(invementTotal > o._invementTotalCurrent){
+   //   o._invementTotalCurrent = invementTotal;
+   //}
 }
 
 //==========================================================
@@ -305,23 +335,8 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          o.processDataChangedListener(dsEvent);
          MO.Memory.free(dsEvent);
       }
-      //..........................................................
-      // 计算总数
-      var count = entities.count();
-      var invementDay = o._invementDay;
-      var invementTotal = o._invementTotal;
-      for(var i = 0; i < count; i++){
-         var entity = entities.at(i);
-         var investment = entity.investment();
-         invementDay -= investment;
-         invementTotal -= investment;
-      }
-      if(invementDay > o._invementDayCurrent){
-         o._invementDayCurrent = invementDay;
-      }
-      if(invementTotal > o._invementTotalCurrent){
-         o._invementTotalCurrent = invementTotal;
-      }
+      // 总值减去队列中内容，计算现在的当日和总值
+      o.calculateCurrent();
       // 设置时间
       o._tableTick = currentTick;
    }

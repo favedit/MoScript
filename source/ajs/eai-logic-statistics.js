@@ -30,6 +30,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o.allocEntity             = MO.FEaiStatisticsInvestment_allocEntity;
    o.allocShape              = MO.FEaiStatisticsInvestment_allocShape;
    o.setup                   = MO.FEaiStatisticsInvestment_setup;
+   o.calculateCurrent        = MO.FEaiStatisticsInvestment_calculateCurrent;
    o.focusEntity             = MO.FEaiStatisticsInvestment_focusEntity;
    o.process                 = MO.FEaiStatisticsInvestment_process;
    o.dispose                 = MO.FEaiStatisticsInvestment_dispose;
@@ -67,6 +68,7 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
          o._entities.push(entity);
       }
    }
+   o.calculateCurrent();
    var dsEvent = MO.Memory.alloc(MO.SEvent);
    dsEvent.sender = o;
    dsEvent.rank = o._rankEntities;
@@ -129,6 +131,21 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    audio.loadUrl('/script/ars/eai/currency/4.mp3');
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
+}
+MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment_calculateCurrent(){
+   var o = this;
+   var invementDay = o._invementDay;
+   var invementTotal = o._invementTotal;
+   var entities = o._entities;
+   var count = entities.count();
+   for(var i = 0; i < count; i++){
+      var entity = entities.at(i);
+      var investment = entity.investment();
+      invementDay -= investment;
+      invementTotal -= investment;
+   }
+   o._invementDayCurrent = Math.max(invementDay, 0);
+   o._invementTotalCurrent = Math.max(invementTotal, 0);
 }
 MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
    var o = this;
@@ -196,21 +213,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          o.processDataChangedListener(dsEvent);
          MO.Memory.free(dsEvent);
       }
-      var count = entities.count();
-      var invementDay = o._invementDay;
-      var invementTotal = o._invementTotal;
-      for(var i = 0; i < count; i++){
-         var entity = entities.at(i);
-         var investment = entity.investment();
-         invementDay -= investment;
-         invementTotal -= investment;
-      }
-      if(invementDay > o._invementDayCurrent){
-         o._invementDayCurrent = invementDay;
-      }
-      if(invementTotal > o._invementTotalCurrent){
-         o._invementTotalCurrent = invementTotal;
-      }
+      o.calculateCurrent();
       o._tableTick = currentTick;
    }
    o._mapEntity.process();
