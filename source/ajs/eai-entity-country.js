@@ -1216,7 +1216,8 @@ with (MO) {
       var o = this;
       var startTime = o._startTime;
       var endTime = o._endTime;
-      var nowTick = MO.Timer.current();
+      var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+      var nowTick = systemLogic.currentDate();
       startTime.date.setTime(nowTick);
       startTime.refresh();
       startTime.setSecond(0);
