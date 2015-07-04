@@ -13,6 +13,7 @@ with (MO) {
       o._startTime        = RClass.register(o, new AGetSet('_startTime'));
       o._endTime          = RClass.register(o, new AGetSet('_endTime'));
       o._data             = null;
+      o._ready            = false;
       // @attribute
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
@@ -46,6 +47,9 @@ with (MO) {
    //==========================================================
    MO.FGui24HTimeline_sync = function FGui24HTimeline_sync() {
       var o = this;
+      if (!o._ready) {
+         return;
+      }
       var startTime = o._startTime;
       var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
@@ -75,12 +79,36 @@ with (MO) {
    }
 
    //==========================================================
+   // <T>更新处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FGui24HTimeline_oeUpdate = function FGui24HTimeline_oeUpdate(event) {
+      var o = this;
+      o.__base.FGuiControl.oeUpdate.call(o, event);
+      // 更新内容
+      if (o._ready) {
+         return;
+      }
+      var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+      if (systemLogic.testReady()) {
+         o._ready = true;
+         o.sync();
+      }
+      return MO.EEventStatus.Stop;
+   }
+
+   //==========================================================
    // <T>前绘制处理。</T>
    //
    // @method
    //==========================================================
    MO.FGui24HTimeline_onPaintBegin = function FGui24HTimeline_onPaintBegin(event) {
       var o = this;
+      if (!o._ready) {
+         return;
+      }
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = event.rectangle;
