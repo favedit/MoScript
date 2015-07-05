@@ -126,6 +126,7 @@ MO.EEvent = new function EEvent(){
    o.DataChanged   = 'DataChanged';
    o.Result        = 'Result';
    o.TouchZoom     = 'TouchZoom';
+   o.Orientation   = 'Orientation';
    return o;
 }
 MO.EEventInvoke = new function EEventInvoke(){

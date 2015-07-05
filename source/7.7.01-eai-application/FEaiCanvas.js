@@ -18,36 +18,14 @@ with(MO){
       o._capturePosition = null;
       o._captureRotation = null;
       //..........................................................
-      // @event
-      o.onResize         = FEaiCanvas_onResize;
-      //..........................................................
       // @method
       o.construct        = FEaiCanvas_construct;
       // @method
+      o.resize           = FEaiCanvas_resize;
       o.selectStage      = FEaiCanvas_selectStage;
       // @method
       o.dispose          = FEaiCanvas_dispose;
       return o;
-   }
-
-   //==========================================================
-   // <T>加载模板处理。</T>
-   //
-   // @method
-   // @param p:template:FTemplate3d 模板
-   //==========================================================
-   MO.FEaiCanvas_onResize = function FEaiCanvas_onResize(event){
-      var o = this;
-      o.__base.FE3dCanvas.onResize.call(o, event);
-      // 获得相机信息
-      var context = o._graphicContext;
-      var size = context.size();
-      var stage = o._activeStage;
-      if(stage){
-         var projection = stage.camera().projection();
-         projection.size().set(size.width, size.height);
-         projection.update();
-      }
    }
 
    //==========================================================
@@ -61,6 +39,27 @@ with(MO){
       o._rotation = new SVector3();
       o._capturePosition = new SPoint2();
       o._captureRotation = new SVector3();
+   }
+
+   //==========================================================
+   // <T>加载模板处理。</T>
+   //
+   // @method
+   // @param width:Integer 宽度
+   // @param height:Integer 高度
+   //==========================================================
+   MO.FEaiCanvas_resize = function FEaiCanvas_resize(width, height){
+      var o = this;
+      o.__base.FE3dCanvas.resize.call(o, width, height);
+      // 获得相机信息
+      var context = o._graphicContext;
+      var size = context.size();
+      var stage = o._activeStage;
+      if(stage){
+         var projection = stage.camera().projection();
+         projection.size().set(size.width, size.height);
+         projection.update();
+      }
    }
 
    //==========================================================

@@ -14,5 +14,7 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.optionStorage = false;
    // @attribute Boolean 支持创建二进制
    o.blobCreate    = false;
+   // @attribute Integer 像素比率
+   o.pixelRatio    = 1;
    return o;
 }

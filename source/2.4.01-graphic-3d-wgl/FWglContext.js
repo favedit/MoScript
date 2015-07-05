@@ -124,7 +124,6 @@ with(MO){
       }
       var handle = o._handle;
       // 设置状态
-      o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       // 获得渲染信息
@@ -477,8 +476,14 @@ with(MO){
    //==========================================================
    MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
       var o = this;
+      //var pixelRatio = MO.Browser.capability().pixelRatio;
+      //left *= pixelRatio;
+      //top *= -pixelRatio;
+      //width /= pixelRatio;
+      //height /= pixelRatio;
       o._size.set(width, height);
       o._handle.viewport(left, top, width, height);
+      //alert(left + 'x' + top + ' - ' + width + 'x' + height);
    }
 
    //==========================================================

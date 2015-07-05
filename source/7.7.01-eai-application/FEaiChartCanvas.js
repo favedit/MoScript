@@ -9,17 +9,20 @@ with(MO){
       o = RClass.inherits(this, o, FEaiCanvas);
       //..........................................................
       // @attribute
-      o._optionAlpha     = true;
-      o._optionAntialias = false;
-      o._capturePosition = null;
-      o._cameraPosition  = null;
+      o._optionStageProcess = false;
+      o._optionResize       = false;
+      o._optionMouseCapture = false;
+      o._optionAlpha        = true;
+      o._optionAntialias    = true;
+      o._capturePosition    = null;
+      o._cameraPosition     = null;
       //..........................................................
       // @method
-      o.construct        = FEaiChartCanvas_construct;
+      o.construct           = FEaiChartCanvas_construct;
       // @method
-      o.setPanel         = FEaiChartCanvas_setPanel;
+      o.setPanel            = FEaiChartCanvas_setPanel;
       // @method
-      o.dispose          = FEaiChartCanvas_dispose;
+      o.dispose             = FEaiChartCanvas_dispose;
       return o;
    }
    //==========================================================
@@ -42,8 +45,8 @@ with(MO){
    //==========================================================
    MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
       var o = this;
-      o.__base.FEaiCanvas.setPanel.call(o, hPanel);
-      //alert('body=' + window.document.body.offsetWidth + 'x' + window.document.body.offsetHeight);
+      o._hPanel = hPanel;
+      hPanel.appendChild(o._hCanvas);
    }
 
    //==========================================================

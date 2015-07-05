@@ -206,6 +206,7 @@
       if(!hEvent){
          hEvent = o._hWindow.event;
       }
+      console.log('resize');
       // 接收事件
       var event = o._eventResize;
       event.code = EEvent.Resize;
@@ -253,6 +254,7 @@
    MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
       var o = RWindow;
       var event = o._eventOrientation;
+      event.code = EEvent.Orientation;
       if((window.orientation == 180) || (window.orientation == 0)){
          event.orientationCd = EOrientation.Vertical;
       }else if((window.orientation == 90) || (window.orientation == -90)){
@@ -309,6 +311,7 @@
          hContainer.onkeydown = o.ohKeyDown;
          hContainer.onkeyup = o.ohKeyUp;
          hContainer.onkeypress = o.ohKeyPress;
+         hWindow.onorientationchange = o.ohOrientation;
       }
       hContainer.onresize = o.ohResize;
       hContainer.onselectstart = o.ohSelect;
@@ -561,6 +564,7 @@
          hContainer.onkeydown = null;
          hContainer.onkeyup = null;
          hContainer.onkeypress = null;
+         hWindow.onorientationchange = null;
       }
       hContainer.onresize = null;
       hContainer.onselectstart = null;

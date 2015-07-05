@@ -41,7 +41,7 @@ with(MO){
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
       var scene = chapter.selectSceneByCode(o._sceneCode);
       // 重置大小
-      o.onOperationResize(null);
+      //o.onOperationResize(null);
    }
 
    //==========================================================
@@ -76,27 +76,12 @@ with(MO){
       o._hPanel = hPanel;
       //..........................................................
       // 创建桌面
-      var desktop = MO.RClass.create(MO.FEaiChartDesktop);
+      var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
       desktop.build(hPanel);
-      MO.Desktop.setActiveDesktop(desktop);
-      var canvas3d = desktop.canvas3d();
-      // 增加监听
-      //canvas = desktop.canvas3d();
-      //stage = canvas.stage();
-      //stage.addEnterFrameListener(null, onEnterFrame);
-      //..........................................................
-      // 创建画板
-      //var canvas = MO.Eai.Canvas = o._canvas = o.createCanvas();
-      var canvas = MO.Eai.Canvas = o._canvas = canvas3d;
-      //canvas.build(hPanel);
-      //canvas.setPanel(hPanel);
+      var canvas = MO.Eai.Canvas = desktop.canvas3d();
       o.linkGraphicContext(canvas);
       //..........................................................
-      // 创建加载中舞台
-      var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
-      chapter.linkGraphicContext(o);
-      o.registerChapter(chapter);
-      // 创建表格舞台
+      // 创建图表舞台
       var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
       chapter.linkGraphicContext(o);
       o.registerChapter(chapter);
@@ -105,6 +90,9 @@ with(MO){
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
       resourceConsole.load();
+      //..........................................................
+      // 修正画面大小
+      o.processResize();
    }
 
    //==========================================================

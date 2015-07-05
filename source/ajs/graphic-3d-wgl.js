@@ -83,7 +83,6 @@ with(MO){
          throw new TError("Canvas can't support WebGL technique.");
       }
       var handle = o._handle;
-      o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       var capability = o._capability;

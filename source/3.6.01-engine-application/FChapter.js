@@ -11,6 +11,7 @@ with(MO){
       //..........................................................
       // @attribute
       o._code                = RClass.register(o, new AGetSet('_code'));
+      o._application         = RClass.register(o, new AGetSet('_application'));
       o._scenes              = RClass.register(o, new AGetter('_scenes'));
       // @attribute
       o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
@@ -62,8 +63,11 @@ with(MO){
    // @param scene:FScene 场景
    //==========================================================
    MO.FChapter_registerScene = function FChapter_registerScene(scene){
+      var o = this;
       var code = scene.code();
-      this._scenes.set(code, scene);
+      scene.setApplication(o._application);
+      scene.setChapter(o);
+      o._scenes.set(code, scene);
    }
 
    //==========================================================

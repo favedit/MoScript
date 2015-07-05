@@ -234,46 +234,6 @@ MO.EGuiTimeUnit = new function EGuiTimeUnit() {
    o.Year   = 'year';
    return o;
 }
-MO.MEventDispatcher = function MEventDispatcher(o){
-   o = MO.Class.inherits(this, o);
-   o.onOperationDown   = MO.MEventDispatcher_onOperationDown;
-   o.onOperationMove   = MO.MEventDispatcher_onOperationMove;
-   o.onOperationUp     = MO.MEventDispatcher_onOperationUp;
-   o.onOperationResize = MO.MEventDispatcher_onOperationResize;
-   o.dispatcherEvent   = MO.MEventDispatcher_dispatcherEvent;
-   return o;
-}
-MO.MEventDispatcher_onOperationDown = function MEventDispatcher_onOperationDown(event){
-   var o = this;
-}
-MO.MEventDispatcher_onOperationMove = function MEventDispatcher_onOperationMove(event){
-   var o = this;
-}
-MO.MEventDispatcher_onOperationUp = function MEventDispatcher_onOperationUp(event){
-   var o = this;
-}
-MO.MEventDispatcher_onOperationResize = function MEventDispatcher_onOperationResize(event){
-   var o = this;
-}
-MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(event){
-   var o = this;
-   switch(event.code){
-      case MO.EEvent.MouseDown:
-         o.onOperationDown(event);
-         break;
-      case MO.EEvent.MouseMove:
-         o.onOperationMove(event);
-         break;
-      case MO.EEvent.MouseUp:
-         o.onOperationUp(event);
-         break;
-      case MO.EEvent.Resize:
-         o.onOperationResize(event);
-         break;
-      default:
-         throw new MO.TError('Unknown event type.');
-   }
-}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
@@ -305,6 +265,46 @@ with(MO){
       var child = RGuiControl.newInstance(xconfig);
       child._parent = o;
       return child;
+   }
+}
+MO.MGuiDispatcher = function MGuiDispatcher(o){
+   o = MO.Class.inherits(this, o);
+   o.onOperationDown   = MO.MGuiDispatcher_onOperationDown;
+   o.onOperationMove   = MO.MGuiDispatcher_onOperationMove;
+   o.onOperationUp     = MO.MGuiDispatcher_onOperationUp;
+   o.onOperationResize = MO.MGuiDispatcher_onOperationResize;
+   o.dispatcherEvent   = MO.MGuiDispatcher_dispatcherEvent;
+   return o;
+}
+MO.MGuiDispatcher_onOperationDown = function MGuiDispatcher_onOperationDown(event){
+   var o = this;
+}
+MO.MGuiDispatcher_onOperationMove = function MGuiDispatcher_onOperationMove(event){
+   var o = this;
+}
+MO.MGuiDispatcher_onOperationUp = function MGuiDispatcher_onOperationUp(event){
+   var o = this;
+}
+MO.MGuiDispatcher_onOperationResize = function MGuiDispatcher_onOperationResize(event){
+   var o = this;
+}
+MO.MGuiDispatcher_dispatcherEvent = function MGuiDispatcher_dispatcherEvent(event){
+   var o = this;
+   switch(event.code){
+      case MO.EEvent.MouseDown:
+         o.onOperationDown(event);
+         break;
+      case MO.EEvent.MouseMove:
+         o.onOperationMove(event);
+         break;
+      case MO.EEvent.MouseUp:
+         o.onOperationUp(event);
+         break;
+      case MO.EEvent.Resize:
+         o.onOperationResize(event);
+         break;
+      default:
+         throw new MO.TError('Unknown event type.');
    }
 }
 with(MO){
@@ -968,6 +968,9 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EGuiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
+   }else if(o._anchorCd & MO.EGuiAnchor.Top){
+      top = (parentBottom - height - o._bottom) * calculateRate.height;
+      height = bottom - top;
    }
    if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
       height = bottom - top;
@@ -1277,6 +1280,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    o._readyControls    = null;
    o._dirtyControls    = null;
@@ -1332,7 +1336,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var desktop = MO.Desktop.activeDesktop();
+   var desktop = o._desktop;
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
    var readyControls = o._readyControls;

@@ -6,7 +6,7 @@
 // @history 150701
 //==========================================================
 MO.FDesktop = function FDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MEventDispatcher);
    //..........................................................
    // @attribute
    o._size            = MO.Class.register(o, new MO.AGetter('_size'));
@@ -27,6 +27,8 @@ MO.FDesktop = function FDesktop(o){
    o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
    o.resize           = MO.FDesktop_resize;
+   o.processEvent     = MO.FDesktop_processEvent;
+   o.process          = MO.FDesktop_process;
    // @method
    o.dispose          = MO.FDesktop_dispose;
    return o;
@@ -100,6 +102,27 @@ MO.FDesktop_build = function FDesktop_build(hPanel){
 // @method
 //==========================================================
 MO.FDesktop_resize = function FDesktop_resize(){
+   var o = this;
+}
+
+//==========================================================
+// <T>事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDesktop_processEvent = function FDesktop_processEvent(event){
+   var o = this;
+   // 处理事件
+   o.dispatcherEvent(event);
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FDesktop_process = function FDesktop_process(){
    var o = this;
 }
 

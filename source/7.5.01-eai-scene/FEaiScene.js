@@ -9,26 +9,27 @@ MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
    //..........................................................
    // @attribute
-   o._optionDebug      = false;
+   o._optionDebug           = false;
    // @attribute
-   o._desktop          = MO.Class.register(o, new MO.AGetter('_desktop'));
+   o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    // @attribute
-   o._engineInfo       = null;
+   o._engineInfo            = null;
    //..........................................................
    // @event
-   o.onOperationResize = MO.FEaiScene_onOperationResize;
-   o.onProcess         = MO.FEaiScene_onProcess;
+   o.onOperationResize      = MO.FEaiScene_onOperationResize;
+   o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
+   o.onProcess              = MO.FEaiScene_onProcess;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiScene_construct;
+   o.construct              = MO.FEaiScene_construct;
    // @method
-   o.setup             = MO.FEaiScene_setup;
-   o.active            = MO.FEaiScene_active;
-   o.deactive          = MO.FEaiScene_deactive;
+   o.setup                  = MO.FEaiScene_setup;
+   o.active                 = MO.FEaiScene_active;
+   o.deactive               = MO.FEaiScene_deactive;
    // @method
-   o.processEvent      = MO.FEaiScene_processEvent;
+   o.processEvent           = MO.FEaiScene_processEvent;
    // @method
-   o.dispose           = MO.FEaiScene_dispose;
+   o.dispose                = MO.FEaiScene_dispose;
    return o;
 }
 
@@ -39,7 +40,23 @@ MO.FEaiScene = function FEaiScene(o){
 // @param event:SEvent 事件信息
 //==========================================================
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
-   this._desktop.dirty();
+   var o = this;
+   o.__base.FScene.onOperationResize.call(o, event);
+   // 界面重新绘制
+   o._guiManager.dirty();
+}
+
+//==========================================================
+// <T>操作方向处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
+   var o = this;
+   o.__base.FScene.onOperationOrientation.call(o, event);
+   // 界面重新绘制
+   o._guiManager.dirty();
 }
 
 //==========================================================
@@ -51,7 +68,7 @@ MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
    var o = this;
    o.__base.FScene.onProcess.call(o);
    // 界面处理
-   o._desktop.process();
+   o._guiManager.process();
 }
 
 //==========================================================
@@ -72,13 +89,15 @@ MO.FEaiScene_construct = function FEaiScene_construct(){
 MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
-   var activeDesktop = MO.Desktop.activeDesktop();
-   var canvas2d = activeDesktop.canvas2d();
+   // 获得2D画板
+   var desktop = o._application.desktop();
+   var canvas2d = desktop.canvas2d();
    // 创建界面桌面
-   var desktop = o._desktop = MO.Class.create(MO.FGuiCanvasManager);
-   desktop.linkGraphicContext(o);
-   desktop.setCanvas(canvas2d);
-   desktop.setup();
+   var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
+   guiManager.linkGraphicContext(o);
+   guiManager.setDesktop(desktop);
+   guiManager.setCanvas(canvas2d);
+   guiManager.setup();
    // 创建控件
    if(o._optionDebug){
       var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
@@ -86,7 +105,7 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
       control.setContext(o.graphicContext());
       control.location().set(10, 300);
       control.build();
-      desktop.register(control);
+      guiManager.register(control);
    }
 }
 
@@ -126,7 +145,7 @@ MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
    var o = this;
    o.__base.FScene.processEvent.call(o, event);
    // 处理界面事件
-   o._desktop.processEvent(event);
+   o._guiManager.processEvent(event);
 }
 
 //==========================================================
@@ -136,7 +155,7 @@ MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
 //==========================================================
 MO.FEaiScene_dispose = function FEaiScene_dispose(){
    var o = this;
-   o._desktop = MO.RObject.dispose(o._desktop);
+   o._guiManager = MO.RObject.dispose(o._guiManager);
    // 父处理
    o.__base.FScene.dispose.call(o);
 }

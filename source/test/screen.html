@@ -2,8 +2,7 @@
 <HEAD>
 <TITLE>Stage3d Example</TITLE>
 <META http-equiv='Content-Type' content='text/html;charset=UTF-8'></META>
-<META name='viewport' content='width=device-width'></META>
-<META name='viewport' content='target-densitydpi=xhigh-dpi'></META>
+<META name='viewport' content='width=device-width, initial-scale=1'>
 <LINK rel='stylesheet' href='../acs/mobile.css' type="text/css" media="all"/>
 <SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
@@ -23,20 +22,63 @@ function onDeviceReady(){
 }
 
 function _load(){
+   //window.screen.lockOrientation = screen.lockOrientation ||screen.mozLockOrientation || screen.msLockOrientation;
+   //window.screen.unlockOrientation = screen.unlockOrientation|| screen.mozUnLockOrientation || screen.msUnLockOrientation;
+   //window.screen.lockOrientation(['landscape-primary','landscape-secondary']);
+
+   //window.toolbar.visible = false;
+
+   //window.screen.lockOrientation('portrait');
+   //window.screen.orientation.lock('portrait');
+
+   //window.orientation = 90;
+   //var screen = window.screen;
+   //var orientation = screen.orientation;
+   //if(orientation){
+      //orientation.angle = 90;
+      //orientation.lock('landscape-primary');
+      //orientation.lock('portrait-primary');
+   //}
+
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
    MO.Browser.setContentPath('..');
 
-   id_dump.innerHTML = 'Body: ' + document.body.offsetWidth + 'x' + document.body.offsetHeight + '<BR>' +
+   //id_canvas.style.width = (window.innerWidth * window.devicePixelRatio) + 'px';
+   //alert(id_canvas.width);
+   var ctx = id_canvas.getContext('2d');
+   id_canvas.style.width = '100%';
+   id_canvas.style.height = '100px';
+
+   id_canvas.width = 10000;
+   id_canvas.height = 200;
+
+   ctx.font = "italic 200 36px/2 Unknown Font, sans-serif"; 
+   ctx.strokeStyle = "blue"; // set stroke color to blue 
+   ctx.fillStyle = "red";  // set fill color to red 
+   ctx.lineWidth = "3";  //  set stroke width to 3pmx 
+   ctx.fillText("Canvas:" + id_canvas.offsetWidth + 'x' + id_canvas.offsetHeight, 0, 100);
+   for(var i = 0; i < 450; i += 45){
+      ctx.strokeText("Hello World", i + 800, i);
+      ctx.fillText("Hello World", i + 800, i);
+   }
+
+
+   id_info.innerHTML = 'Body: ' + document.body.offsetWidth + 'x' + document.body.offsetHeight + '<BR>' +
       'Window: ' + document.documentElement.clientWidth + 'x' + document.documentElement.clientHeight + '<BR>' +
       'Screen: ' + screen.width + 'x' + screen.height + '<BR>' +
-      'Screen2: ' + screen.availWidth + 'x' + screen.availHeight;
+      'Screen2: ' + screen.availWidth + 'x' + screen.availHeight + '<BR>' +
+      'Canvas: ' + id_canvas.offsetWidth + 'x' + id_canvas.offsetHeight;
    
+
+   MO.RDump.dump(window, id_dump);
    //document.addEventListener("deviceready", onDeviceReady, false);
 }
 </SCRIPT>
 <BODY style='background-color:#999999;' onload='_load()' >
-<DIV id='id_dump' style='width:1920px;height:1080px;border:1px solid red' ></DIV>
+<DIV id='id_info'></DIV>
+<CANVAS id='id_canvas'></CANVAS>
+<DIV id='id_dump'></DIV>
 </BODY>
 
 </HTML>

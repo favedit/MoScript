@@ -20,6 +20,7 @@ with(MO){
       o._allRenderables             = RClass.register(o, new AGetter('_allRenderables'));
       o._renderables                = RClass.register(o, new AGetter('_renderables'));
       // @attribute
+      o._ratioMatrix                = null;
       o._cameraPosition             = null;
       o._cameraDirection            = null;
       o._cameraViewMatrix           = null;
@@ -65,6 +66,7 @@ with(MO){
       o._renderables = new TObjects();
       o._allRenderables = new TObjects();
       // 初始化参数
+      o._ratioMatrix = new SMatrix3d();
       o._cameraPosition = new SPoint3();
       o._cameraDirection = new SVector3();
       o._cameraViewMatrix = new SMatrix3d();
@@ -147,12 +149,21 @@ with(MO){
       var camera = o._camera;
       var projection = camera.projection();
       camera.updateFrustum();
+      // 修正屏幕比例
+      var pixelRatio = MO.Browser.capability().pixelRatio;
+      var ratioMatrix = o._ratioMatrix.identity();
+      //ratioMatrix.setScaleAll(pixelRatio);
+      //ratioMatrix.update();
       // 设置视角内容
       o._cameraPosition.assign(camera.position());
       o._cameraDirection.assign(camera.direction());
+      //o._cameraViewMatrix.assign(ratioMatrix);
+      //o._cameraViewMatrix.append(camera.matrix());
       o._cameraViewMatrix.assign(camera.matrix());
       o._cameraProjectionMatrix.assign(projection.matrix());
       o._cameraViewProjectionMatrix.assign(camera.matrix());
+      //o._cameraViewProjectionMatrix.assign(ratioMatrix);
+      //o._cameraViewProjectionMatrix.append(camera.matrix());
       o._cameraViewProjectionMatrix.append(projection.matrix());
       // 设置光源信息
       var light = o._directionalLight;
@@ -239,6 +250,7 @@ with(MO){
    //==========================================================
    MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
       var o = this;
+      o._ratioMatrix = RObject.free(o._ratioMatrix);
       o._renderables = RObject.free(o._renderables);
       o._allRenderables = RObject.free(o._allRenderables);
    }

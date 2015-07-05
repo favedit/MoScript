@@ -11,6 +11,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    // @attribute
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    // @attribute
    o._readyControls    = null;
@@ -116,7 +117,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
    // 获得大小
-   var desktop = MO.Desktop.activeDesktop();
+   var desktop = o._desktop;
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
    // 获得准备好的控件集合

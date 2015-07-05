@@ -782,7 +782,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(0, 10);
-   o._desktop.register(frame);
+   o._guiManager.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
    audio.setVolume(0.1);
@@ -859,32 +859,37 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
 }
 MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code              = MO.EEaiScene.ChartStatistics;
-   o._investment        = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._investmentCurrent = 0;
-   o._ready             = false;
-   o._playing           = false;
-   o._lastTick          = 0;
-   o._interval          = 10;
-   o._24HLastTick       = 0;
-   o._24HTrendInterval  = 1000 * 60 * 5;
-   o._startDate         = null;
-   o._endDate           = null;
-   o._currentDate       = null;
-   o._timeline          = null;
-   o._liveTable         = null;
-   o._livePop           = null;
-   o._statusStart       = false;
-   o._statusLayerCount  = 150;
-   o._statusLayerLevel  = 150;
-   o._statusDesktopShow = false;
-   o._groundAutioUrl    = '/script/ars/eai/music/statistics.mp3';
-   o.onLiveTableChanged = MO.FEaiChartStatisticsScene_onLiveTableChanged;
-   o.testReady          = MO.FEaiChartStatisticsScene_testReady;
-   o.setup              = MO.FEaiChartStatisticsScene_setup;
-   o.fixMatrix          = MO.FEaiChartStatisticsScene_fixMatrix;
-   o.process            = MO.FEaiChartStatisticsScene_process;
+   o._code                  = MO.EEaiScene.ChartStatistics;
+   o._investment            = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent     = 0;
+   o._ready                 = false;
+   o._playing               = false;
+   o._lastTick              = 0;
+   o._interval              = 10;
+   o._24HLastTick           = 0;
+   o._24HTrendInterval      = 1000 * 60 * 5;
+   o._startDate             = null;
+   o._endDate               = null;
+   o._currentDate           = null;
+   o._timeline              = null;
+   o._liveTable             = null;
+   o._livePop               = null;
+   o._statusStart           = false;
+   o._statusLayerCount      = 150;
+   o._statusLayerLevel      = 150;
+   o._statusDesktopShow     = false;
+   o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
+   o.onOperationOrientation = MO.FEaiChartStatisticsScene_onOperationOrientation;
+   o.onLiveTableChanged     = MO.FEaiChartStatisticsScene_onLiveTableChanged;
+   o.testReady              = MO.FEaiChartStatisticsScene_testReady;
+   o.setup                  = MO.FEaiChartStatisticsScene_setup;
+   o.fixMatrix              = MO.FEaiChartStatisticsScene_fixMatrix;
+   o.process                = MO.FEaiChartStatisticsScene_process;
    return o;
+}
+MO.FEaiChartStatisticsScene_onOperationOrientation = function FEaiChartStatisticsScene_onOperationOrientation(event) {
+   var o = this;
+   o._guiManager.dirty();
 }
 MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsScene_onLiveTableChanged(event) {
    var o = this;
@@ -927,51 +932,76 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
-   timeline.setDockCd(MO.EGuiDock.Bottom);
-   timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-   timeline.setLeft(20);
-   timeline.setBottom(30);
-   if(MO.Runtime.isPlatformMobile()){
-      timeline.setRight(680);
+   if(MO.RBrowser.isOrientationVertical()){
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setRight(20);
+      timeline.setBottom(500);
+      timeline.setHeight(250);
    }else{
-      timeline.setRight(640);
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      if(MO.Runtime.isPlatformMobile()){
+         timeline.setRight(680);
+      }else{
+         timeline.setRight(640);
+      }
+      timeline.setHeight(250);
    }
-   timeline.setHeight(250);
    timeline.sync();
    timeline.linkGraphicContext(o);
    timeline.build();
-   o._desktop.register(timeline);
+   o._guiManager.register(timeline);
    var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
    liveTable.setName('LiveTable');
-   liveTable.setDockCd(MO.EGuiDock.Right);
-   liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
-   liveTable.setTop(20);
-   liveTable.setRight(10);
-   liveTable.setBottom(20);
-   if(MO.Runtime.isPlatformMobile()){
-      liveTable.setWidth(660);
+   if(MO.RBrowser.isOrientationVertical()){
+      liveTable.setDockCd(MO.EGuiDock.Bottom);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
+      liveTable.setLeft(20);
+      liveTable.setRight(10);
+      liveTable.setBottom(0);
+      liveTable.setHeight(800);
    }else{
-      liveTable.setWidth(580);
+      liveTable.setDockCd(MO.EGuiDock.Right);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+      liveTable.setTop(20);
+      liveTable.setRight(10);
+      liveTable.setBottom(20);
+      if(MO.Runtime.isPlatformMobile()){
+         liveTable.setWidth(660);
+      }else{
+         liveTable.setWidth(580);
+      }
    }
    liveTable.linkGraphicContext(o);
    liveTable.setup();
    liveTable.build();
-   o._desktop.register(liveTable);
+   o._guiManager.register(liveTable);
    var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
    livePop.setName('LiveTable');
    livePop.linkGraphicContext(o);
    livePop.setup();
    livePop.build();
-   o._desktop.register(livePop);
-   o._desktop.hide();
+   o._guiManager.register(livePop);
+   o._guiManager.hide();
 }
 MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMatrix(matrix){
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
-      matrix.tx = -36.8;
-      matrix.ty = -11.6;
-      matrix.tz = 0;
-      matrix.setScale(0.3, 0.33, 0.3);
+      if(MO.RBrowser.isOrientationVertical()){
+         matrix.tx = -18.8;
+         matrix.ty = -3.2;
+         matrix.tz = 0;
+         matrix.setScale(0.18, 0.2, 0.18);
+      }else{
+         matrix.tx = -36.8;
+         matrix.ty = -11.6;
+         matrix.tz = 0;
+         matrix.setScale(0.3, 0.33, 0.3);
+      }
    }else{
       matrix.tx = -38;
       matrix.ty = -13.2;
@@ -1007,7 +1037,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          return;
       }
       if(!o._statusDesktopShow){
-         o._desktop.show();
+         o._guiManager.show();
          o._statusDesktopShow = true;
       }
       var currentTick = MO.Timer.current();
@@ -1082,26 +1112,34 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug      = false;
-   o._desktop          = MO.Class.register(o, new MO.AGetter('_desktop'));
-   o._engineInfo       = null;
-   o.onOperationResize = MO.FEaiScene_onOperationResize;
-   o.onProcess         = MO.FEaiScene_onProcess;
-   o.construct         = MO.FEaiScene_construct;
-   o.setup             = MO.FEaiScene_setup;
-   o.active            = MO.FEaiScene_active;
-   o.deactive          = MO.FEaiScene_deactive;
-   o.processEvent      = MO.FEaiScene_processEvent;
-   o.dispose           = MO.FEaiScene_dispose;
+   o._optionDebug           = false;
+   o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
+   o._engineInfo            = null;
+   o.onOperationResize      = MO.FEaiScene_onOperationResize;
+   o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
+   o.onProcess              = MO.FEaiScene_onProcess;
+   o.construct              = MO.FEaiScene_construct;
+   o.setup                  = MO.FEaiScene_setup;
+   o.active                 = MO.FEaiScene_active;
+   o.deactive               = MO.FEaiScene_deactive;
+   o.processEvent           = MO.FEaiScene_processEvent;
+   o.dispose                = MO.FEaiScene_dispose;
    return o;
 }
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
-   this._desktop.dirty();
+   var o = this;
+   o.__base.FScene.onOperationResize.call(o, event);
+   o._guiManager.dirty();
+}
+MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
+   var o = this;
+   o.__base.FScene.onOperationOrientation.call(o, event);
+   o._guiManager.dirty();
 }
 MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
    var o = this;
    o.__base.FScene.onProcess.call(o);
-   o._desktop.process();
+   o._guiManager.process();
 }
 MO.FEaiScene_construct = function FEaiScene_construct(){
    var o = this;
@@ -1110,19 +1148,20 @@ MO.FEaiScene_construct = function FEaiScene_construct(){
 MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
-   var activeDesktop = MO.Desktop.activeDesktop();
-   var canvas2d = activeDesktop.canvas2d();
-   var desktop = o._desktop = MO.Class.create(MO.FGuiCanvasManager);
-   desktop.linkGraphicContext(o);
-   desktop.setCanvas(canvas2d);
-   desktop.setup();
+   var desktop = o._application.desktop();
+   var canvas2d = desktop.canvas2d();
+   var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
+   guiManager.linkGraphicContext(o);
+   guiManager.setDesktop(desktop);
+   guiManager.setCanvas(canvas2d);
+   guiManager.setup();
    if(o._optionDebug){
       var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
       control.linkGraphicContext(o);
       control.setContext(o.graphicContext());
       control.location().set(10, 300);
       control.build();
-      desktop.register(control);
+      guiManager.register(control);
    }
 }
 MO.FEaiScene_active = function FEaiScene_active(){
@@ -1142,10 +1181,10 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
    var o = this;
    o.__base.FScene.processEvent.call(o, event);
-   o._desktop.processEvent(event);
+   o._guiManager.processEvent(event);
 }
 MO.FEaiScene_dispose = function FEaiScene_dispose(){
    var o = this;
-   o._desktop = MO.RObject.dispose(o._desktop);
+   o._guiManager = MO.RObject.dispose(o._guiManager);
    o.__base.FScene.dispose.call(o);
 }

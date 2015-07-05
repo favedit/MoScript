@@ -29,6 +29,38 @@ MO.EStageKey = new function EStageKey(){
    o.FocusRight    = MO.EKeyCode.L;
    return o;
 }
+MO.MEventDispatcher = function MEventDispatcher(o){
+   o = MO.Class.inherits(this, o);
+   o.onOperationDown        = MO.Method.empty;
+   o.onOperationMove        = MO.Method.empty;
+   o.onOperationUp          = MO.Method.empty;
+   o.onOperationResize      = MO.Method.empty;
+   o.onOperationOrientation = MO.Method.empty;
+   o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
+   return o;
+}
+MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(event, flag){
+   var o = this;
+   switch(event.code){
+      case MO.EEvent.MouseDown:
+         o.onOperationDown(event);
+         break;
+      case MO.EEvent.MouseMove:
+         o.onOperationMove(event);
+         break;
+      case MO.EEvent.MouseUp:
+         o.onOperationUp(event);
+         break;
+      case MO.EEvent.Resize:
+         o.onOperationResize(event);
+         break;
+      case MO.EEvent.Orientation:
+         o.onOperationOrientation(event);
+         break;
+      default:
+         throw new MO.TError('Unknown event type.');
+   }
+}
 with(MO){
    MO.MRenderableLinker = function MRenderableLinker(o){
       o = RClass.inherits(this, o);
@@ -94,7 +126,7 @@ MO.FCanvas_dispose = function FCanvas_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FDesktop = function FDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MEventDispatcher);
    o._size            = MO.Class.register(o, new MO.AGetter('_size'));
    o._sizeRate        = MO.Class.register(o, new MO.AGetter('_sizeRate'), 1);
    o._calculateSize   = MO.Class.register(o, new MO.AGetter('_calculateSize'));
@@ -109,6 +141,8 @@ MO.FDesktop = function FDesktop(o){
    o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
    o.resize           = MO.FDesktop_resize;
+   o.processEvent     = MO.FDesktop_processEvent;
+   o.process          = MO.FDesktop_process;
    o.dispose          = MO.FDesktop_dispose;
    return o;
 }
@@ -140,6 +174,13 @@ MO.FDesktop_build = function FDesktop_build(hPanel){
    var o = this;
 }
 MO.FDesktop_resize = function FDesktop_resize(){
+   var o = this;
+}
+MO.FDesktop_processEvent = function FDesktop_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+}
+MO.FDesktop_process = function FDesktop_process(){
    var o = this;
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){

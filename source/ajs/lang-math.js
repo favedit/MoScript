@@ -2475,12 +2475,12 @@ with(MO){
       var o = this;
       return (o.width == 0) && (o.height == 0);
    }
-   MO.SSize2_equalsData = function SSize2_equalsData(w, h){
+   MO.SSize2_equalsData = function SSize2_equalsData(width, height){
       var o = this;
-      if(o.width != w){
+      if(o.width != width){
          return false;
       }
-      if(o.height != h){
+      if(o.height != height){
          return false;
       }
       return true;

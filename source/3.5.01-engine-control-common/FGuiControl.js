@@ -462,6 +462,9 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EGuiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
+   }else if(o._anchorCd & MO.EGuiAnchor.Top){
+      top = (parentBottom - height - o._bottom) * calculateRate.height;
+      height = bottom - top;
    }
    if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
       height = bottom - top;

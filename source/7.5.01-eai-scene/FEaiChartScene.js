@@ -166,7 +166,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //control.psInitialize();
    //control.build();
    //control.renderable().setOptionFull(true);
-   //o._desktop.register(control);
+   //o._guiManager.register(control);
    //stage.groundLayer().push(control);
    //..........................................................
    // 创建城市范围渲染对象
@@ -212,7 +212,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 显示左上
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(0, 10);
-   o._desktop.register(frame);
+   o._guiManager.register(frame);
    //..........................................................
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);

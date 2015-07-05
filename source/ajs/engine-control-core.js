@@ -2,6 +2,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
    o._size             = MO.Class.register(o, new MO.AGetter('_size'));
    o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
+   o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    o._readyControls    = null;
    o._dirtyControls    = null;
@@ -57,7 +58,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var desktop = MO.Desktop.activeDesktop();
+   var desktop = o._desktop;
    o._size.assign(desktop.logicSize());
    o._calculateRate.assign(desktop.calculateRate());
    var readyControls = o._readyControls;

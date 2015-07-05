@@ -5,17 +5,17 @@
 // @author maocy
 // @history 150701
 //==========================================================
-MO.MEventDispatcher = function MEventDispatcher(o){
+MO.MGuiDispatcher = function MGuiDispatcher(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @event
-   o.onOperationDown   = MO.MEventDispatcher_onOperationDown;
-   o.onOperationMove   = MO.MEventDispatcher_onOperationMove;
-   o.onOperationUp     = MO.MEventDispatcher_onOperationUp;
-   o.onOperationResize = MO.MEventDispatcher_onOperationResize;
+   o.onOperationDown   = MO.MGuiDispatcher_onOperationDown;
+   o.onOperationMove   = MO.MGuiDispatcher_onOperationMove;
+   o.onOperationUp     = MO.MGuiDispatcher_onOperationUp;
+   o.onOperationResize = MO.MGuiDispatcher_onOperationResize;
    //..........................................................
    // @method
-   o.dispatcherEvent   = MO.MEventDispatcher_dispatcherEvent;
+   o.dispatcherEvent   = MO.MGuiDispatcher_dispatcherEvent;
    return o;
 }
 
@@ -24,7 +24,7 @@ MO.MEventDispatcher = function MEventDispatcher(o){
 //
 // @method
 //==========================================================
-MO.MEventDispatcher_onOperationDown = function MEventDispatcher_onOperationDown(event){
+MO.MGuiDispatcher_onOperationDown = function MGuiDispatcher_onOperationDown(event){
    var o = this;
 }
 
@@ -33,7 +33,7 @@ MO.MEventDispatcher_onOperationDown = function MEventDispatcher_onOperationDown(
 //
 // @method
 //==========================================================
-MO.MEventDispatcher_onOperationMove = function MEventDispatcher_onOperationMove(event){
+MO.MGuiDispatcher_onOperationMove = function MGuiDispatcher_onOperationMove(event){
    var o = this;
 }
 
@@ -42,7 +42,7 @@ MO.MEventDispatcher_onOperationMove = function MEventDispatcher_onOperationMove(
 //
 // @method
 //==========================================================
-MO.MEventDispatcher_onOperationUp = function MEventDispatcher_onOperationUp(event){
+MO.MGuiDispatcher_onOperationUp = function MGuiDispatcher_onOperationUp(event){
    var o = this;
 }
 
@@ -51,7 +51,7 @@ MO.MEventDispatcher_onOperationUp = function MEventDispatcher_onOperationUp(even
 //
 // @method
 //==========================================================
-MO.MEventDispatcher_onOperationResize = function MEventDispatcher_onOperationResize(event){
+MO.MGuiDispatcher_onOperationResize = function MGuiDispatcher_onOperationResize(event){
    var o = this;
 }
 
@@ -62,7 +62,7 @@ MO.MEventDispatcher_onOperationResize = function MEventDispatcher_onOperationRes
 // @param event:SEvent 事件信息
 // @param flag:Boolean 标志
 //==========================================================
-MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(event){
+MO.MGuiDispatcher_dispatcherEvent = function MGuiDispatcher_dispatcherEvent(event){
    var o = this;
    switch(event.code){
       case MO.EEvent.MouseDown:

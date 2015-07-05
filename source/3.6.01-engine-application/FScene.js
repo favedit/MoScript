@@ -11,6 +11,8 @@ with(MO){
       //..........................................................
       // @attribute
       o._code                = RClass.register(o, new AGetSet('_code'));
+      o._application         = RClass.register(o, new AGetSet('_application'));
+      o._chapter             = RClass.register(o, new AGetSet('_chapter'));
       o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
       // @attribute
       o._statusSetup         = false;

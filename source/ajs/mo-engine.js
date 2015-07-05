@@ -29,6 +29,38 @@ MO.EStageKey = new function EStageKey(){
    o.FocusRight    = MO.EKeyCode.L;
    return o;
 }
+MO.MEventDispatcher = function MEventDispatcher(o){
+   o = MO.Class.inherits(this, o);
+   o.onOperationDown        = MO.Method.empty;
+   o.onOperationMove        = MO.Method.empty;
+   o.onOperationUp          = MO.Method.empty;
+   o.onOperationResize      = MO.Method.empty;
+   o.onOperationOrientation = MO.Method.empty;
+   o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
+   return o;
+}
+MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(event, flag){
+   var o = this;
+   switch(event.code){
+      case MO.EEvent.MouseDown:
+         o.onOperationDown(event);
+         break;
+      case MO.EEvent.MouseMove:
+         o.onOperationMove(event);
+         break;
+      case MO.EEvent.MouseUp:
+         o.onOperationUp(event);
+         break;
+      case MO.EEvent.Resize:
+         o.onOperationResize(event);
+         break;
+      case MO.EEvent.Orientation:
+         o.onOperationOrientation(event);
+         break;
+      default:
+         throw new MO.TError('Unknown event type.');
+   }
+}
 with(MO){
    MO.MRenderableLinker = function MRenderableLinker(o){
       o = RClass.inherits(this, o);
@@ -94,7 +126,7 @@ MO.FCanvas_dispose = function FCanvas_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FDesktop = function FDesktop(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MEventDispatcher);
    o._size            = MO.Class.register(o, new MO.AGetter('_size'));
    o._sizeRate        = MO.Class.register(o, new MO.AGetter('_sizeRate'), 1);
    o._calculateSize   = MO.Class.register(o, new MO.AGetter('_calculateSize'));
@@ -109,6 +141,8 @@ MO.FDesktop = function FDesktop(o){
    o.setup            = MO.FDesktop_setup;
    o.build            = MO.FDesktop_build;
    o.resize           = MO.FDesktop_resize;
+   o.processEvent     = MO.FDesktop_processEvent;
+   o.process          = MO.FDesktop_process;
    o.dispose          = MO.FDesktop_dispose;
    return o;
 }
@@ -140,6 +174,13 @@ MO.FDesktop_build = function FDesktop_build(hPanel){
    var o = this;
 }
 MO.FDesktop_resize = function FDesktop_resize(){
+   var o = this;
+}
+MO.FDesktop_processEvent = function FDesktop_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+}
+MO.FDesktop_process = function FDesktop_process(){
    var o = this;
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){
@@ -1311,76 +1352,74 @@ with(MO){
       return this._resources;
    }
 }
-with(MO){
-   MO.FE2dCanvas = function FE2dCanvas(o){
-      o = RClass.inherits(this, o, FCanvas, MCanvasObject);
-      o._size      = RClass.register(o, new AGetter('_size'));
-      o._context   = RClass.register(o, new AGetter('_context'));
-      o._hCanvas   = null;
-      o.onResize   = FE2dCanvas_onResize;
-      o.construct  = FE2dCanvas_construct;
-      o.htmlCanvas = FE2dCanvas_htmlCanvas;
-      o.build      = FE2dCanvas_build;
-      o.setPanel   = FE2dCanvas_setPanel;
-      o.resize     = FE2dCanvas_resize;
-      o.reset      = FE2dCanvas_reset;
-      o.dispose    = FE2dCanvas_dispose;
-      return o;
-   }
-   MO.FE2dCanvas_onResize = function FE2dCanvas_onResize(p){
-      var o = this;
-   }
-   MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
-      var o = this;
-      o.__base.FCanvas.construct.call(o);
-      o._size = new SSize2();
-   }
-   MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
-      return this._hCanvas;
-   }
-   MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
-      var o = this;
-      var size = o._size;
-      var width = size.width;
-      var height = size.height;
-      var hCanvas = o._hCanvas = RBuilder.create(hDocument, 'CANVAS');
-      hCanvas.__linker = o;
-      hCanvas.width = width;
-      hCanvas.height = height;
-      var style = hCanvas.style;
-      style.width = width + 'px';
-      style.height = height + 'px';
-      var context = o._context = RClass.create(FG2dCanvasContext);
-      context.linkCanvas(hCanvas);
-   }
-   MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
-      var o = this;
-      var context = o._context;
-      var hCanvas = o._hCanvas;
-      o._hPanel = hPanel;
-      hPanel.appendChild(hCanvas);
-      o.onResize();
-   }
-   MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
-      var o = this;
-      o._size.set(width, height);
-      o._hCanvas.width = width;
-      o._hCanvas.height = height;
-      o._hCanvas.style.width = width + 'px';
-      o._hCanvas.style.height = height + 'px';
-   }
-   MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
-      var o = this;
-      var context = o._context;
-      context.clear();
-   }
-   MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
-      var o = this;
-      o._context = RObject.dispose(o._context);
-      o._hPanel = RHtml.free(o._hPanel);
-      o._hCanvas = RHtml.free(o._hCanvas);
-      o.__base.FCanvas.dispose.call(o);
-   }
+MO.FE2dCanvas = function FE2dCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject);
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._context   = MO.Class.register(o, new MO.AGetter('_context'));
+   o._hCanvas   = null;
+   o.onResize   = MO.FE2dCanvas_onResize;
+   o.construct  = MO.FE2dCanvas_construct;
+   o.htmlCanvas = MO.FE2dCanvas_htmlCanvas;
+   o.build      = MO.FE2dCanvas_build;
+   o.setPanel   = MO.FE2dCanvas_setPanel;
+   o.resize     = MO.FE2dCanvas_resize;
+   o.reset      = MO.FE2dCanvas_reset;
+   o.dispose    = MO.FE2dCanvas_dispose;
+   return o;
+}
+MO.FE2dCanvas_onResize = function FE2dCanvas_onResize(p){
+   var o = this;
+}
+MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
+   var o = this;
+   o.__base.FCanvas.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+}
+MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
+   return this._hCanvas;
+}
+MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
+   var o = this;
+   var size = o._size;
+   var width = size.width;
+   var height = size.height;
+   var hCanvas = o._hCanvas = MO.RBuilder.create(hDocument, 'CANVAS');
+   hCanvas.__linker = o;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   var hStyle = hCanvas.style;
+   hStyle.left = '0px';
+   hStyle.top = '0px';
+   hStyle.width = '100%';
+   hStyle.height = '100%';
+   var context = o._context = MO.Class.create(MO.FG2dCanvasContext);
+   context.linkCanvas(hCanvas);
+}
+MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
+   var o = this;
+   var context = o._context;
+   var hCanvas = o._hCanvas;
+   o._hPanel = hPanel;
+   hPanel.appendChild(hCanvas);
+   o.onResize();
+}
+MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
+   var o = this;
+   o._size.set(width, height);
+   var hCanvas = o._hCanvas;
+   hCanvas.width = width;
+   hCanvas.height = height;
+}
+MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
+   this._context.clear();
+}
+MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
+   var o = this;
+   o._size = MO.RObject.dispose(o._size);
+   o._context = MO.RObject.dispose(o._context);
+   o._hPanel = MO.RHtml.free(o._hPanel);
+   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o.__base.FCanvas.dispose.call(o);
 }
 with(MO){
    MO.FE2dCanvasConsole = function FE2dCanvasConsole(o){
@@ -1434,6 +1473,9 @@ with(MO){
       o = RClass.inherits(this, o, FCanvas, MGraphicObject, MMouseCapture);
       o._optionAlpha        = true;
       o._optionAntialias    = true;
+      o._optionStageProcess = true;
+      o._optionResize       = true;
+      o._optionMouseCapture = true;
       o._listenerLoad       = RClass.register(o, new AListener('_listenerLoad', EEvent.Load));
       o._scaleRate          = 1;
       o._size               = RClass.register(o, new AGetter('_size'));
@@ -1470,10 +1512,62 @@ with(MO){
       this.__linker.onTouchStop(event);
    }
    MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
+      this.resize();
+   }
+   MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
       var o = this;
-      var hPanel = o._hPanel;
-      var width = hPanel.offsetWidth;
-      var height = hPanel.offsetHeight;
+      o.__base.FCanvas.construct.call(o);
+      o._size = new SSize2(1280, 720);
+      o._logicSize = new SSize2(1280, 720);
+      o._screenSize = new SSize2(1280, 720);
+   }
+   MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
+      var o = this;
+      var size = o._size;
+      var width = size.width;
+      var height = size.height;
+      var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
+      hCanvas.__linker = o;
+      hCanvas.width = width;
+      hCanvas.height = height;
+      var hStyle = hCanvas.style;
+      hStyle.left = '0px';
+      hStyle.top = '0px';
+      hStyle.width = '100%';
+      hStyle.height = '100%';
+      if(!RMethod.isEmpty(o.onTouchStart)){
+         hCanvas.addEventListener('touchstart', o.ohTouchStart, false);
+      }
+      if(!RMethod.isEmpty(o.onTouchMove)){
+         hCanvas.addEventListener('touchmove', o.ohTouchMove, false);
+      }
+      if(!RMethod.isEmpty(o.onTouchStop)){
+         hCanvas.addEventListener('touchend', o.ohTouchStop, false);
+      }
+      var parameters = new Object();
+      parameters.alpha = o._optionAlpha;
+      parameters.antialias = o._optionAntialias;
+      o._graphicContext = REngine3d.createContext(FWglContext, hCanvas, parameters);
+      if(o._optionStageProcess){
+         RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+         RStage.start(o._interval);
+      }
+      if(o._optionResize){
+         RWindow.lsnsResize.register(o, o.onResize);
+         RWindow.lsnsOrientation.register(o, o.onResize);
+      }
+      if(o._optionMouseCapture){
+         RConsole.find(FMouseConsole).register(o);
+      }
+   }
+   MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+      var o = this;
+      if(width == null){
+         width = o._hPanel.offsetWidth;
+      }
+      if(height == null){
+         height = o._hPanel.offsetHeight;
+      }
       if(o._screenSize.equalsData(width, height)){
          return;
       }
@@ -1491,46 +1585,11 @@ with(MO){
       context.setViewport(0, 0, scaleWidth, scaleHeight);
       o._size.assign(o._screenSize);
    }
-   MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
-      var o = this;
-      o.__base.FCanvas.construct.call(o);
-      o._size = new SSize2(1280, 720);
-      o._logicSize = new SSize2(1280, 720);
-      o._screenSize = new SSize2(1280, 720);
-   }
-   MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
-      var o = this;
-      var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
-      hCanvas.__linker = o;
-      hCanvas.style.width = '100%';
-      hCanvas.style.height = '100%';
-      if(!RMethod.isEmpty(o.onTouchStart)){
-         hCanvas.addEventListener('touchstart', o.ohTouchStart, false);
-      }
-      if(!RMethod.isEmpty(o.onTouchMove)){
-         hCanvas.addEventListener('touchmove', o.ohTouchMove, false);
-      }
-      if(!RMethod.isEmpty(o.onTouchStop)){
-         hCanvas.addEventListener('touchend', o.ohTouchStop, false);
-      }
-      var parameters = new Object();
-      parameters.alpha = o._optionAlpha;
-      parameters.antialias = o._optionAntialias;
-      o._graphicContext = REngine3d.createContext(FWglContext, hCanvas, parameters);
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(o._interval);
-      RWindow.lsnsResize.register(o, o.onResize);
-      RWindow.lsnsOrientation.register(o, o.onResize);
-      RConsole.find(FMouseConsole).register(o);
-   }
-   MO.FE3dCanvas_resize = function FE3dCanvas_resize(){
-      this.onResize();
-   }
    MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
       var o = this;
       hPanel.appendChild(o._hCanvas);
       o._hPanel = hPanel;
-      o.onResize();
+      o.resize();
    }
    MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
       var o = this;

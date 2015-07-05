@@ -4997,107 +4997,103 @@ with(MO){
    }
    MO.Logger = new RLogger();
 }
-with(MO){
-   MO.RMethod = function RMethod(){
-      var o = this;
-      o._virtuals   = new Object();
-      o._properties = new Object();
-      return o;
-   }
-   MO.RMethod.prototype.construct = function RMethod_construct(){
-      var o = this;
-      o.empty.__empty = true;
-      o.emptyTrue.__empty = true;
-      o.emptyFalse.__empty = true;
-   }
-   MO.RMethod.prototype.isFunction = function RMethod_isFunction(v){
-      return typeof(v) == 'function';
-   }
-   MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(v){
-      return (v && v.__empty);
-   }
-   MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(v){
-      return (v && v.__virtual);
-   }
-   MO.RMethod.prototype.name = function RMethod_name(value){
-      if(value){
-         if(typeof(value) == 'function'){
-            if(value.__name){
-               return value.__name;
-            }
-            var source = value.toString();
-            var name = value.__name = RString.mid(source, 'function ', '(');
-            return name;
-         }
-      }
-      return null;
-   }
-   MO.RMethod.prototype.fullName = function RMethod_fullName(p){
-      if(p){
-         if(p.constructor == Function){
-            if(p.__fullname){
-               return p.__fullname;
-            }
-            var s = p.toString();
-            var n = p.__fullname = RString.mid(s, 'function ', ')') + ')';
-            return n;
-         }
-      }
-      return null;
-   }
-   MO.RMethod.prototype.empty = function RMethod_empty(){
-   }
-   MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
-      return true;
-   }
-   MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
-      return false;
-   }
-   MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
-   }
-   MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
-      var o = this;
-      var method = null;
-      var code = RClass.name(value) + '.' + name;
-      if(o._virtuals[code]){
-         method = o._virtuals[code];
-      }else{
-         var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
-         method = new Function(source);
-         method.__virtual = true;
-         method.__name = code;
-         o._virtuals[code] = method;
-      }
-      return method;
-   }
-   MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
-      var o = this;
-      var method = null;
-      if(o._properties[methodName]){
-         method = o._properties[methodName];
-      }else{
-         var source = 'return this.'+ name +';';
-         method = new Function(source);
-         o._properties[methodName] = method;
-      }
-      return method;
-   }
-   MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
-      var o = this;
-      var method = null;
-      if(o._properties[methodName]){
-         method = o._properties[methodName];
-      }else{
-         var source = 'this.'+ name +'=value;';
-         method = new Function('value', source);
-         o._properties[methodName] = method;
-      }
-      return method;
-   }
-   MO.RMethod = new RMethod();
-   MO.RMethod.construct();
-   MO.Method = MO.RMethod;
+MO.RMethod = function RMethod(){
+   var o = this;
+   o._virtuals   = new Object();
+   o._properties = new Object();
+   return o;
 }
+MO.RMethod.prototype.construct = function RMethod_construct(){
+   var o = this;
+   o.empty.__empty = true;
+   o.emptyTrue.__empty = true;
+   o.emptyFalse.__empty = true;
+}
+MO.RMethod.prototype.isFunction = function RMethod_isFunction(value){
+   return typeof(value) == 'function';
+}
+MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(value){
+   return (value && value.__empty);
+}
+MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(value){
+   return (value && value.__virtual);
+}
+MO.RMethod.prototype.name = function RMethod_name(value){
+   if(value){
+      if(typeof(value) == 'function'){
+         if(value.__name){
+            return value.__name;
+         }
+         var source = value.toString();
+         var name = value.__name = MO.Lang.String.mid(source, 'function ', '(');
+         return name;
+      }
+   }
+   return null;
+}
+MO.RMethod.prototype.fullName = function RMethod_fullName(value){
+   if(value && (value.constructor == Function)){
+      if(value.__fullname){
+         return value.__fullname;
+      }
+      var source = value.toString();
+      var name = value.__fullname = MO.Lang.String.mid(source, 'function ', ')') + ')';
+      return name;
+   }
+   return null;
+}
+MO.RMethod.prototype.empty = function RMethod_empty(){
+}
+MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
+   return true;
+}
+MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
+   return false;
+}
+MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
+}
+MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
+   var o = this;
+   var method = null;
+   var code = MO.Class.name(value) + '.' + name;
+   if(o._virtuals[code]){
+      method = o._virtuals[code];
+   }else{
+      var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+      method = new Function(source);
+      method.__virtual = true;
+      method.__name = code;
+      o._virtuals[code] = method;
+   }
+   return method;
+}
+MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   var method = null;
+   if(o._properties[methodName]){
+      method = o._properties[methodName];
+   }else{
+      var source = 'return this.' + name + ';';
+      method = new Function(source);
+      o._properties[methodName] = method;
+   }
+   return method;
+}
+MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
+   var o = this;
+   var method = null;
+   if(o._properties[methodName]){
+      method = o._properties[methodName];
+   }else{
+      var source = 'this.' + name + '=value;';
+      method = new Function('value', source);
+      o._properties[methodName] = method;
+   }
+   return method;
+}
+MO.RMethod = new MO.RMethod();
+MO.Method = MO.RMethod;
+MO.Method.construct();
 with(MO){
    MO.RObject = function RObject(){
       var o = this;
@@ -5741,43 +5737,41 @@ with(MO){
    MO.RString = new RString();
    MO.Lang.String = MO.RString;
 }
-with(MO){
-   MO.RTimer = function RTimer(){
-      var o = this;
-      o._startTime = 0;
-      o._lastTime  = 0;
-      o._count     = 0;
-      return o;
-   }
-   MO.RTimer.prototype.setup = function RTimer_setup(){
-      var o = this;
-      var tick = new Date().getTime();
-      o._startTime = tick;
-      o._lastTime = tick;
-   }
-   MO.RTimer.prototype.now = function RTimer_now(){
-      return new Date().getTime();
-   }
-   MO.RTimer.prototype.current = function RTimer_current(){
-      return this._lastTime;
-   }
-   MO.RTimer.prototype.rate = function RTimer_rate(){
-      var o = this;
-      if(o._count == 0){
-         return 0;
-      }
-      var t = o._lastTime - o._startTime;
-      var c = o._count * 1000 / t;
-      return parseInt(c);
-   }
-   MO.RTimer.prototype.update = function RTimer_update(){
-      var o = this;
-      o._count++;
-      o._lastTime = new Date().getTime();
-   }
-   MO.RTimer = new RTimer();
-   MO.Timer = MO.RTimer;
+MO.RTimer = function RTimer(){
+   var o = this;
+   o._startTime = 0;
+   o._lastTime  = 0;
+   o._count     = 0;
+   return o;
 }
+MO.RTimer.prototype.setup = function RTimer_setup(){
+   var o = this;
+   var tick = new Date().getTime();
+   o._startTime = tick;
+   o._lastTime = tick;
+}
+MO.RTimer.prototype.now = function RTimer_now(){
+   return new Date().getTime();
+}
+MO.RTimer.prototype.current = function RTimer_current(){
+   return this._lastTime;
+}
+MO.RTimer.prototype.rate = function RTimer_rate(){
+   var o = this;
+   if(o._count == 0){
+      return 0;
+   }
+   var t = o._lastTime - o._startTime;
+   var c = o._count * 1000 / t;
+   return parseInt(c);
+}
+MO.RTimer.prototype.update = function RTimer_update(){
+   var o = this;
+   o._count++;
+   o._lastTime = new Date().getTime();
+}
+MO.RTimer = new MO.RTimer();
+MO.Timer = MO.RTimer;
 MO.EFrustumPlane = new function EFrustumPlane(){
    var o = this;
    o.Near = 0;
@@ -8255,12 +8249,12 @@ with(MO){
       var o = this;
       return (o.width == 0) && (o.height == 0);
    }
-   MO.SSize2_equalsData = function SSize2_equalsData(w, h){
+   MO.SSize2_equalsData = function SSize2_equalsData(width, height){
       var o = this;
-      if(o.width != w){
+      if(o.width != width){
          return false;
       }
-      if(o.height != h){
+      if(o.height != height){
          return false;
       }
       return true;

@@ -59,5 +59,7 @@ MO.EEvent = new function EEvent(){
    o.Result        = 'Result';
    // @attribute 触摸缩放
    o.TouchZoom     = 'TouchZoom';
+   // @attribute 屏幕缩放
+   o.Orientation   = 'Orientation';
    return o;
 }

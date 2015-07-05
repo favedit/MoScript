@@ -26,6 +26,7 @@ with(MO){
       o.selectChapter        = FApplication_selectChapter;
       o.selectChapterByCode  = FApplication_selectChapterByCode;
       // @method
+      o.processResize        = FApplication_processResize;
       o.processEvent         = FApplication_processEvent;
       o.process              = FApplication_process;
       // @method
@@ -56,6 +57,7 @@ with(MO){
    MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
       var o = this;
       var code = chapter.code();
+      chapter.setApplication(o);
       o._chapters.set(code, chapter);
    }
 
@@ -106,6 +108,16 @@ with(MO){
       var chapter = o._chapters.get(code);
       o.selectChapter(chapter);
       return chapter;
+   }
+
+   //==========================================================
+   // <T>大小变更事件处理。</T>
+   //
+   // @method
+   // @param event:SEvent 事件信息
+   //==========================================================
+   MO.FApplication_processResize = function FApplication_processResize(){
+      var o = this;
    }
 
    //==========================================================

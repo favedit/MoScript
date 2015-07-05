@@ -9,17 +9,47 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    //..........................................................
    // @attribute
-   o._canvas3d = MO.Class.register(o, new MO.AGetter('_canvas3d'));
-   o._canvas2d = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   //..........................................................
+   // @event
+   o.onOperationResize      = MO.FEaiChartDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FEaiChartDesktop_onOperationOrientation;
    //..........................................................
    // @method
-   o.construct = MO.FEaiChartDesktop_construct;
+   o.construct              = MO.FEaiChartDesktop_construct;
    // @method
-   o.build     = MO.FEaiChartDesktop_build;
-   o.resize    = MO.FEaiChartDesktop_resize;
+   o.build                  = MO.FEaiChartDesktop_build;
+   o.resize                 = MO.FEaiChartDesktop_resize;
    // @method
-   o.dispose   = MO.FEaiChartDesktop_dispose;
+   o.dispose                = MO.FEaiChartDesktop_dispose;
    return o;
+}
+
+//==========================================================
+// <T>操作大小处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartDesktop_onOperationResize = function FEaiChartDesktop_onOperationResize(event){
+   var o = this;
+   o.__base.FEaiDesktop.onOperationResize.call(o, event);
+   // 改变大小
+   o.resize();
+}
+
+//==========================================================
+// <T>操作方向处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartDesktop_onOperationOrientation = function FEaiChartDesktop_onOperationOrientation(){
+   var o = this;
+   o.__base.FEaiDesktop.onOperationOrientation.call(o, event);
+   // 改变大小
+   o.resize();
 }
 
 //==========================================================
@@ -46,40 +76,42 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
-   var size = canvas3d.size();
-   var hCanvas3d = canvas3d._hCanvas;
    o.canvasRegister(canvas3d);
    // 创建2D画板
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
-   canvas2d.size().assign(size);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);
-   var hCanvas2d = canvas2d._hCanvas;
-   hCanvas2d.style.position = 'absolute';
-   hCanvas2d.style.left = '0px';
-   hCanvas2d.style.top = '0px';
-   hCanvas2d.style.width = '100%';
-   hCanvas2d.style.height = '100%';
+   canvas2d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas2d);
+   // 引擎配置
+   MO.RE3dEngine.setup();
 }
 
 //==========================================================
 // <T>改变大小处理。</T>
 //
 // @method
-// @param width:Integer 宽度
-// @param height:Integer 高度
+// @param targetWidth:Integer 宽度
+// @param targetHeight:Integer 高度
 //==========================================================
-MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(width, height){
+MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targetHeight){
    var o = this;
-   var logicSize = o._logicSize;
-   var canvas2d = o._canvas2d;
-   // 设置大小
+   // 检查大小
+   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
+   if(o._screenSize.equalsData(width, height)){
+      return;
+   }
    o._screenSize.set(width, height);
-   o._canvas3d.resize(width, height);
-   canvas2d.resize(width, height);
+   //..........................................................
    // 计算比率
+   var pixelRatio = MO.Browser.capability().pixelRatio;
+   MO.Logger.info(o, 'Change screen size. (size={1}x{2], pixel_ratio={3})', width, height, pixelRatio);
+   width *= pixelRatio;
+   height *= pixelRatio;
+   // 计算比率
+   var logicSize = o._logicSize;
    var widthRate = width / logicSize.width;
    var heightRate = height / logicSize.height;
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
@@ -91,7 +123,12 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(width, height){
    }else{
       o._calculateRate.set(1, 1);
    }
-   // 设置缩放
+   //..........................................................
+   // 设置3D画板
+   o._canvas3d.resize(width, height);
+   // 设置2D画板
+   var canvas2d = o._canvas2d;
+   canvas2d.resize(width, height);
    canvas2d.context().setScale(sizeRate, sizeRate);
 }
 
@@ -102,6 +139,8 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(width, height){
 //==========================================================
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
+   o._canvas3d = MO.RObject.dispose(o._canvas3d);
+   o._canvas2d = MO.RObject.dispose(o._canvas2d);
    // 父处理
    o.__base.FEaiDesktop.dispose.call(o);
 }

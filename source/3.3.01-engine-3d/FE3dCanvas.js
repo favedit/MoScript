@@ -11,6 +11,9 @@ with(MO){
       // @attribute
       o._optionAlpha        = true;
       o._optionAntialias    = true;
+      o._optionStageProcess = true;
+      o._optionResize       = true;
+      o._optionMouseCapture = true;
       // @attribute
       o._listenerLoad       = RClass.register(o, new AListener('_listenerLoad', EEvent.Load));
       o._scaleRate          = 1;
@@ -88,30 +91,7 @@ with(MO){
    // @param event:SEvent 事件信息
    //==========================================================
    MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
-      var o = this;
-      // 获得大小
-      var hPanel = o._hPanel;
-      var width = hPanel.offsetWidth;
-      var height = hPanel.offsetHeight;
-      if(o._screenSize.equalsData(width, height)){
-         return;
-      }
-      o._screenSize.set(width, height);
-      // 设置画板
-      var hCanvas = o._hCanvas;
-      var scaleWidth = hCanvas.width = width * o._scaleRate;
-      var scaleHeight = hCanvas.height = height * o._scaleRate;
-      // 设置范围
-      var context = o._graphicContext;
-      var ratioX = o._logicSize.width / scaleWidth;
-      var ratioY = o._logicSize.height / scaleHeight;
-      var ratio = Math.max(ratioX, ratioY);
-      context.logicSize().assign(o._logicSize);
-      context.setRatio(ratio);
-      context.sizeRatio().set(ratioX, ratioY);
-      context.setViewport(0, 0, scaleWidth, scaleHeight);
-      // 设置大小
-      o._size.assign(o._screenSize);
+      this.resize();
    }
 
    //==========================================================
@@ -136,11 +116,21 @@ with(MO){
    //==========================================================
    MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       var o = this;
+      // 获得大小
+      var size = o._size;
+      var width = size.width;
+      var height = size.height;
       // 创建画板
       var hCanvas = o._hCanvas = RBuilder.create(hPanel, 'CANVAS');
       hCanvas.__linker = o;
-      hCanvas.style.width = '100%';
-      hCanvas.style.height = '100%';
+      hCanvas.width = width;
+      hCanvas.height = height;
+      var hStyle = hCanvas.style;
+      hStyle.left = '0px';
+      hStyle.top = '0px';
+      hStyle.width = '100%';
+      hStyle.height = '100%';
+      // 设置事件
       if(!RMethod.isEmpty(o.onTouchStart)){
          hCanvas.addEventListener('touchstart', o.ohTouchStart, false);
       }
@@ -156,13 +146,19 @@ with(MO){
       parameters.antialias = o._optionAntialias;
       o._graphicContext = REngine3d.createContext(FWglContext, hCanvas, parameters);
       // 启动处理
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(o._interval);
+      if(o._optionStageProcess){
+         RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+         RStage.start(o._interval);
+      }
       // 监听大小改变
-      RWindow.lsnsResize.register(o, o.onResize);
-      RWindow.lsnsOrientation.register(o, o.onResize);
+      if(o._optionResize){
+         RWindow.lsnsResize.register(o, o.onResize);
+         RWindow.lsnsOrientation.register(o, o.onResize);
+      }
       // 注册鼠标捕捉监听
-      RConsole.find(FMouseConsole).register(o);
+      if(o._optionMouseCapture){
+         RConsole.find(FMouseConsole).register(o);
+      }
    }
 
    //==========================================================
@@ -170,8 +166,34 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FE3dCanvas_resize = function FE3dCanvas_resize(){
-      this.onResize();
+   MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+      var o = this;
+      // 获得大小
+      if(width == null){
+         width = o._hPanel.offsetWidth;
+      }
+      if(height == null){
+         height = o._hPanel.offsetHeight;
+      }
+      if(o._screenSize.equalsData(width, height)){
+         return;
+      }
+      o._screenSize.set(width, height);
+      // 设置画板
+      var hCanvas = o._hCanvas;
+      var scaleWidth = hCanvas.width = width * o._scaleRate;
+      var scaleHeight = hCanvas.height = height * o._scaleRate;
+      // 设置范围
+      var context = o._graphicContext;
+      var ratioX = o._logicSize.width / scaleWidth;
+      var ratioY = o._logicSize.height / scaleHeight;
+      var ratio = Math.max(ratioX, ratioY);
+      context.logicSize().assign(o._logicSize);
+      context.setRatio(ratio);
+      context.sizeRatio().set(ratioX, ratioY);
+      context.setViewport(0, 0, scaleWidth, scaleHeight);
+      // 设置大小
+      o._size.assign(o._screenSize);
    }
 
    //==========================================================
@@ -186,7 +208,7 @@ with(MO){
       hPanel.appendChild(o._hCanvas);
       o._hPanel = hPanel;
       // 改变大小
-      o.onResize();
+      o.resize();
    }
 
    //==========================================================

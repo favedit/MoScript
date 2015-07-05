@@ -50,16 +50,16 @@
    // <T>判断是否相等。</T>
    //
    // @method
-   // @param w:width:Number 宽度
-   // @param h:height:Number 高度
+   // @param width:Number 宽度
+   // @param height:Number 高度
    // @return Boolean 是否相等
    //============================================================
-   MO.SSize2_equalsData = function SSize2_equalsData(w, h){
+   MO.SSize2_equalsData = function SSize2_equalsData(width, height){
       var o = this;
-      if(o.width != w){
+      if(o.width != width){
          return false;
       }
-      if(o.height != h){
+      if(o.height != height){
          return false;
       }
       return true;

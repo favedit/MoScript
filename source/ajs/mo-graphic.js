@@ -487,6 +487,7 @@ with(MO){
       o._lights                     = RClass.register(o, new AGetter('_lights'));
       o._allRenderables             = RClass.register(o, new AGetter('_allRenderables'));
       o._renderables                = RClass.register(o, new AGetter('_renderables'));
+      o._ratioMatrix                = null;
       o._cameraPosition             = null;
       o._cameraDirection            = null;
       o._cameraViewMatrix           = null;
@@ -516,6 +517,7 @@ with(MO){
       o._lights = new TObjects();
       o._renderables = new TObjects();
       o._allRenderables = new TObjects();
+      o._ratioMatrix = new SMatrix3d();
       o._cameraPosition = new SPoint3();
       o._cameraDirection = new SVector3();
       o._cameraViewMatrix = new SMatrix3d();
@@ -554,6 +556,8 @@ with(MO){
       var camera = o._camera;
       var projection = camera.projection();
       camera.updateFrustum();
+      var pixelRatio = MO.Browser.capability().pixelRatio;
+      var ratioMatrix = o._ratioMatrix.identity();
       o._cameraPosition.assign(camera.position());
       o._cameraDirection.assign(camera.direction());
       o._cameraViewMatrix.assign(camera.matrix());
@@ -616,6 +620,7 @@ with(MO){
    }
    MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
       var o = this;
+      o._ratioMatrix = RObject.free(o._ratioMatrix);
       o._renderables = RObject.free(o._renderables);
       o._allRenderables = RObject.free(o._allRenderables);
    }
@@ -4025,7 +4030,6 @@ with(MO){
          throw new TError("Canvas can't support WebGL technique.");
       }
       var handle = o._handle;
-      o.setViewport(0, 0, hCanvas.width, hCanvas.height);
       o.setDepthMode(true, EG3dDepthMode.LessEqual);
       o.setCullingMode(true, EG3dCullMode.Front);
       var capability = o._capability;

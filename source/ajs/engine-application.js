@@ -12,6 +12,7 @@ with(MO){
       o.unregisterChapter    = FApplication_unregisterChapter;
       o.selectChapter        = FApplication_selectChapter;
       o.selectChapterByCode  = FApplication_selectChapterByCode;
+      o.processResize        = FApplication_processResize;
       o.processEvent         = FApplication_processEvent;
       o.process              = FApplication_process;
       o.dispose              = FApplication_dispose;
@@ -27,6 +28,7 @@ with(MO){
    MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
       var o = this;
       var code = chapter.code();
+      chapter.setApplication(o);
       o._chapters.set(code, chapter);
    }
    MO.FApplication_unregisterChapter = function FApplication_unregisterChapter(chapter){
@@ -53,6 +55,9 @@ with(MO){
       var chapter = o._chapters.get(code);
       o.selectChapter(chapter);
       return chapter;
+   }
+   MO.FApplication_processResize = function FApplication_processResize(){
+      var o = this;
    }
    MO.FApplication_processEvent = function FApplication_processEvent(event){
       var o = this;
@@ -84,6 +89,7 @@ with(MO){
    MO.FChapter = function FChapter(o){
       o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       o._code                = RClass.register(o, new AGetSet('_code'));
+      o._application         = RClass.register(o, new AGetSet('_application'));
       o._scenes              = RClass.register(o, new AGetter('_scenes'));
       o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
       o._statusSetup         = false;
@@ -113,8 +119,11 @@ with(MO){
       o._eventLeaveFrame = new SEvent();
    }
    MO.FChapter_registerScene = function FChapter_registerScene(scene){
+      var o = this;
       var code = scene.code();
-      this._scenes.set(code, scene);
+      scene.setApplication(o._application);
+      scene.setChapter(o);
+      o._scenes.set(code, scene);
    }
    MO.FChapter_unregisterScene = function FChapter_unregisterScene(scene){
       var code = scene.code();
@@ -184,6 +193,8 @@ with(MO){
    MO.FScene = function FScene(o){
       o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
       o._code                = RClass.register(o, new AGetSet('_code'));
+      o._application         = RClass.register(o, new AGetSet('_application'));
+      o._chapter             = RClass.register(o, new AGetSet('_chapter'));
       o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
       o._statusSetup         = false;
       o._statusActive        = false;
@@ -280,80 +291,66 @@ with(MO){
    }
    MO.RApplication = new RApplication();
 }
-with(MO){
-   MO.RDesktop = function RDesktop(){
-      var o = this;
-      o._application   = null;
-      o._activeDesktop = null;
-      o._workspaces    = new TDictionary();
-      return o;
-   }
-   MO.RDesktop.prototype.onMouseDown = function RDesktop_onMouseDown(event){
-      var o = this;
-      var application = o._application;
-      if(application){
-         application.processEvent(event);
-      }
-   }
-   MO.RDesktop.prototype.onMouseMove = function RDesktop_onMouseMove(event){
-      var o = this;
-      var application = o._application;
-      if(application){
-         application.processEvent(event);
-      }
-   }
-   MO.RDesktop.prototype.onMouseUp = function RDesktop_onMouseUp(event){
-      var o = this;
-      var application = o._application;
-      if(application){
-         application.processEvent(event);
-      }
-   }
-   MO.RDesktop.prototype.onResize = function RDesktop_onResize(event){
-      var o = this;
-      var application = o._application;
-      if(application){
-         application.processEvent(event);
-      }
-   }
-   MO.RDesktop.prototype.application = function RDesktop_application(){
-      return this._application;
-   }
-   MO.RDesktop.prototype.activeDesktop = function RDesktop_activeDesktop(){
-      return this._activeDesktop;
-   }
-   MO.RDesktop.prototype.setActiveDesktop = function RDesktop_setActiveDesktop(desktop){
-      this._activeDesktop = desktop;
-   }
-   MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
-      var o = this;
-      RBrowser.construct();
-      RWindow.connect(window);
-      RKeyboard.construct();
-      RWindow.lsnsMouseDown.register(o, o.onMouseDown);
-      RWindow.lsnsMouseMove.register(o, o.onMouseMove);
-      RWindow.lsnsMouseUp.register(o, o.onMouseUp);
-      RWindow.lsnsResize.register(o, o.onResize);
-      var application = MO.Application = o._application = MO.Class.create(clazz);
-      return application;
-   }
-   MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
-      var o = this;
-      var name = RClass.name(clazz);
-      var workspaces = o._workspaces;
-      var workspace = workspaces.get(name);
-      if(workspace == null){
-         workspace = RClass.create(clazz);
-         workspaces.set(name, workspace);
-      }
-      return workspace;
-   }
-   MO.RDesktop.prototype.release = function RDesktop_release(){
-      try{
-         CollectGarbage();
-      }catch(e){
-        MO.Logger.error(e);
-      }
-   }
-   MO.Desktop = new RDesktop();
+MO.RDesktop = function RDesktop(){
+   var o = this;
+   o._application   = null;
+   o._workspaces    = new MO.TDictionary();
+   o._thread        = null;
+   o._interval      = 10;
+   return o;
 }
+MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){
+   var o = this;
+   var application = o._application;
+   if(application){
+      application.processEvent(event);
+   }
+}
+MO.RDesktop.prototype.application = function RDesktop_application(){
+   return this._application;
+}
+MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
+   var o = this;
+   MO.Browser.construct();
+   MO.RWindow.connect(window);
+   MO.RKeyboard.construct();
+   MO.RWindow.lsnsMouseDown.register(o, o.onProcessEvent);
+   MO.RWindow.lsnsMouseMove.register(o, o.onProcessEvent);
+   MO.RWindow.lsnsMouseUp.register(o, o.onProcessEvent);
+   MO.RWindow.lsnsResize.register(o, o.onProcessEvent);
+   MO.RWindow.lsnsOrientation.register(o, o.onProcessEvent);
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.process);
+   MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.RTimer.setup();
+   var application = MO.Application = o._application = MO.Class.create(clazz);
+   return application;
+}
+MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
+   var o = this;
+   var name = RClass.name(clazz);
+   var workspaces = o._workspaces;
+   var workspace = workspaces.get(name);
+   if(workspace == null){
+      workspace = RClass.create(clazz);
+      workspaces.set(name, workspace);
+   }
+   return workspace;
+}
+MO.RDesktop.prototype.process = function RDesktop_process(){
+   var o = this;
+   var application = o._application;
+   if(application){
+      application.process();
+   }
+   MO.Timer.update();
+}
+MO.RDesktop.prototype.release = function RDesktop_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+     MO.Logger.error(e);
+   }
+}
+MO.Desktop = new MO.RDesktop();
