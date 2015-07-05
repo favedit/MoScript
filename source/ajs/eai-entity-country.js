@@ -1856,10 +1856,13 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var right = left + width;
    var bottom = top + height;
    var drawPosition = top;
-   var widthRate = width / o._size.width;
    var heightRate = height / o._size.height;
+   var widthDefine = 0;
    for(var i = 0; i < 4; i++){
-      o._columnWidths[i] = o._columnDefines[i] * widthRate;
+      widthDefine += o._columnDefines[i];
+   }
+   for(var i = 0; i < 4; i++){
+      o._columnWidths[i] = o._columnDefines[i] / widthDefine * (width - 50);
    }
    var drawLeft = left + 8;
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);

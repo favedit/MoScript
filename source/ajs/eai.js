@@ -2613,10 +2613,13 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var right = left + width;
    var bottom = top + height;
    var drawPosition = top;
-   var widthRate = width / o._size.width;
    var heightRate = height / o._size.height;
+   var widthDefine = 0;
    for(var i = 0; i < 4; i++){
-      o._columnWidths[i] = o._columnDefines[i] * widthRate;
+      widthDefine += o._columnDefines[i];
+   }
+   for(var i = 0; i < 4; i++){
+      o._columnWidths[i] = o._columnDefines[i] / widthDefine * (width - 50);
    }
    var drawLeft = left + 8;
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
@@ -3896,6 +3899,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.setup                 = MO.FEaiChartScene_setup;
    o.active                = MO.FEaiChartScene_active;
    o.resetDate             = MO.FEaiChartScene_resetDate;
+   o.processResize         = MO.FEaiChartScene_processResize;
    o.process               = MO.FEaiChartScene_process;
    o.deactive              = MO.FEaiChartScene_deactive;
    o.dispose               = MO.FEaiChartScene_dispose;
@@ -3929,6 +3933,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    }
    o._readyProvince = true;
    o._mapEntity.countryEntity().setup(provinceEntities);
+   o.processResize();
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
@@ -4019,6 +4024,18 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
    var o = this;
 }
+MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
+   var o = this;
+   o.__base.FEaiScene.processResize.call(o);
+   o.fixMatrix(o._countryDisplay.matrix());
+   o.fixMatrix(o._countryBorderDisplay.matrix());
+   o.fixMatrix(o._citysRangeRenderable.matrix());
+   o.fixMatrix(o._citysRenderable.matrix());
+   var frame = o._logoBar;
+   if(MO.RBrowser.isOrientationVertical()){
+   }else{
+   }
+}
 MO.FEaiChartScene_process = function FEaiChartScene_process(){
    var o = this;
    o.__base.FEaiScene.process.call(o);
@@ -4096,17 +4113,13 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusLayerLevel      = 150;
    o._statusDesktopShow     = false;
    o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
-   o.onOperationOrientation = MO.FEaiChartStatisticsScene_onOperationOrientation;
    o.onLiveTableChanged     = MO.FEaiChartStatisticsScene_onLiveTableChanged;
    o.testReady              = MO.FEaiChartStatisticsScene_testReady;
    o.setup                  = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix              = MO.FEaiChartStatisticsScene_fixMatrix;
+   o.processResize          = MO.FEaiChartStatisticsScene_processResize;
    o.process                = MO.FEaiChartStatisticsScene_process;
    return o;
-}
-MO.FEaiChartStatisticsScene_onOperationOrientation = function FEaiChartStatisticsScene_onOperationOrientation(event) {
-   var o = this;
-   o._guiManager.dirty();
 }
 MO.FEaiChartStatisticsScene_onLiveTableChanged = function FEaiChartStatisticsScene_onLiveTableChanged(event) {
    var o = this;
@@ -4149,50 +4162,12 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
-   if(MO.RBrowser.isOrientationVertical()){
-      timeline.setDockCd(MO.EGuiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setRight(20);
-      timeline.setBottom(500);
-      timeline.setHeight(250);
-   }else{
-      timeline.setDockCd(MO.EGuiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      if(MO.Runtime.isPlatformMobile()){
-         timeline.setRight(680);
-      }else{
-         timeline.setRight(640);
-      }
-      timeline.setHeight(250);
-   }
-   timeline.sync();
    timeline.linkGraphicContext(o);
+   timeline.sync();
    timeline.build();
    o._guiManager.register(timeline);
    var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
    liveTable.setName('LiveTable');
-   if(MO.RBrowser.isOrientationVertical()){
-      liveTable.setDockCd(MO.EGuiDock.Bottom);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
-      liveTable.setLeft(20);
-      liveTable.setRight(10);
-      liveTable.setBottom(0);
-      liveTable.setHeight(800);
-   }else{
-      liveTable.setDockCd(MO.EGuiDock.Right);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
-      liveTable.setTop(20);
-      liveTable.setRight(10);
-      liveTable.setBottom(20);
-      if(MO.Runtime.isPlatformMobile()){
-         liveTable.setWidth(660);
-      }else{
-         liveTable.setWidth(580);
-      }
-   }
    liveTable.linkGraphicContext(o);
    liveTable.setup();
    liveTable.build();
@@ -4209,10 +4184,10 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
       if(MO.RBrowser.isOrientationVertical()){
-         matrix.tx = -18.8;
-         matrix.ty = -3.2;
+         matrix.tx = -14.58;
+         matrix.ty = -2.2;
          matrix.tz = 0;
-         matrix.setScale(0.18, 0.2, 0.18);
+         matrix.setScale(0.14, 0.16, 0.14);
       }else{
          matrix.tx = -36.8;
          matrix.ty = -11.6;
@@ -4226,6 +4201,53 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
       matrix.setScale(0.32, 0.36, 0.32);
    }
    matrix.update();
+}
+MO.FEaiChartStatisticsScene_processResize = function FEaiChartStatisticsScene_processResize(){
+   var o = this;
+   o.__base.FEaiChartScene.processResize.call(o);
+   o.fixMatrix(o._investment.display().matrix());
+   var timeline = o._timeline;
+   if(MO.RBrowser.isOrientationVertical()){
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(830);
+      timeline.setHeight(250);
+   }else{
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      if(MO.Runtime.isPlatformMobile()){
+         timeline.setRight(680);
+      }else{
+         timeline.setRight(640);
+      }
+      timeline.setHeight(250);
+   }
+   var liveTable = o._liveTable;
+   if(MO.RBrowser.isOrientationVertical()){
+      liveTable.setDockCd(MO.EGuiDock.Bottom);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setWidth(1060);
+      liveTable.setHeight(800);
+   }else{
+      liveTable.setDockCd(MO.EGuiDock.Right);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+      liveTable.setTop(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setWidth(140);
+      if(MO.Runtime.isPlatformMobile()){
+         liveTable.setWidth(660);
+      }else{
+         liveTable.setWidth(580);
+      }
+   }
 }
 MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process() {
    var o = this;
@@ -4339,6 +4361,7 @@ MO.FEaiScene = function FEaiScene(o){
    o.setup                  = MO.FEaiScene_setup;
    o.active                 = MO.FEaiScene_active;
    o.deactive               = MO.FEaiScene_deactive;
+   o.processResize          = MO.FEaiScene_processResize;
    o.processEvent           = MO.FEaiScene_processEvent;
    o.dispose                = MO.FEaiScene_dispose;
    return o;
@@ -4346,12 +4369,12 @@ MO.FEaiScene = function FEaiScene(o){
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
-   o._guiManager.dirty();
+   o.processResize();
 }
 MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
    var o = this;
    o.__base.FScene.onOperationOrientation.call(o, event);
-   o._guiManager.dirty();
+   o.processResize();
 }
 MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
    var o = this;
@@ -4394,6 +4417,10 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var o = this;
    o.__base.FScene.deactive.call(o);
    MO.Eai.Canvas.selectStage(null);
+}
+MO.FEaiScene_processResize = function FEaiScene_processResize(event){
+   var o = this;
+   o._guiManager.dirty();
 }
 MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
    var o = this;
@@ -4723,12 +4750,21 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }
    o._screenSize.set(width, height);
    var pixelRatio = MO.Browser.capability().pixelRatio;
-   MO.Logger.info(o, 'Change screen size. (size={1}x{2], pixel_ratio={3})', width, height, pixelRatio);
+   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
    width *= pixelRatio;
    height *= pixelRatio;
+   var widthRate = 1;
+   var heightRate = 1;
    var logicSize = o._logicSize;
-   var widthRate = width / logicSize.width;
-   var heightRate = height / logicSize.height;
+   if(MO.Browser.isOrientationHorizontal()){
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
+   }else{
+      widthRate = width / logicSize.height;
+      heightRate = height / logicSize.width;
+      o._calculateSize.set(logicSize.height, logicSize.width);
+   }
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
    o._logicRate.set(widthRate, heightRate);
    if(widthRate > heightRate){

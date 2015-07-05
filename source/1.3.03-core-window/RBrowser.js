@@ -14,7 +14,7 @@ MO.RBrowser = function RBrowser(){
    o._deviceCd      = MO.EDevice.Unknown;
    o._softwareCd    = MO.ESoftware.Unknown;
    o._typeCd        = MO.EBrowser.Unknown;
-   o._orientationCd = MO.EOrientation.Unknown;
+   o._orientationCd = MO.EOrientation.Horizontal;
    o._supportHtml5  = false;
    o._hostPath      = '';
    o._contentPath   = '';
@@ -96,17 +96,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       MO.Logger.warn(o, 'Browser blob not support.');
    }
    // 计算方向
-   var orientation = window.orientation;
-   if(orientation != null){
-      if((window.orientation == 180) || (window.orientation == 0)){
-         o._orientationCd = MO.EOrientation.Vertical;
-      }else if((window.orientation == 90) || (window.orientation == -90)){
-         o._orientationCd = MO.EOrientation.Horizontal;
-      }else{
-         throw new TError(o, 'Unknown orientation mode.');
-      }
-   }
-   o._orientationCd = MO.EOrientation.Horizontal;
+   o.refreshOrientation();
 }
 
 //==========================================================
@@ -178,11 +168,29 @@ MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
 //===========================================================
 // <T>判断是否指定浏览器。</T>
 //
-// @param p:value:EBrowser 浏览器类型
+// @param browserCd:EBrowser 浏览器类型
 // @return 是否指定浏览器
 //===========================================================
-MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
-   return this._typeCd == p;
+MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
+   return this._typeCd == browserCd;
+}
+
+//===========================================================
+// <T>返回屏幕方向。</T>
+//
+// @return 屏幕方向
+//===========================================================
+MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
+   return this._orientationCd;
+}
+
+//===========================================================
+// <T>判断是否横屏。</T>
+//
+// @return 是否横屏
+//===========================================================
+MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationHorizontal(){
+   return this._orientationCd == MO.EOrientation.Horizontal;
 }
 
 //===========================================================
@@ -192,6 +200,26 @@ MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(p){
 //===========================================================
 MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVertical(){
    return this._orientationCd == MO.EOrientation.Vertical;
+}
+
+//===========================================================
+// <T>判断是否垂直。</T>
+//
+// @return 是否垂直
+//===========================================================
+MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(){
+   var o = this;
+   var orientation = window.orientation;
+   if(orientation != null){
+      if((window.orientation == 180) || (window.orientation == 0)){
+         o._orientationCd = MO.EOrientation.Vertical;
+      }else if((window.orientation == 90) || (window.orientation == -90)){
+         o._orientationCd = MO.EOrientation.Horizontal;
+      }else{
+         throw new TError(o, 'Unknown orientation mode.');
+      }
+   }
+   //o._orientationCd = MO.EOrientation.Vertical;
 }
 
 //===========================================================

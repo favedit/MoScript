@@ -234,8 +234,10 @@ with (MO) {
    }
    MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
       var o = this;
-      o._scale.set(width, height);
-      o._handle.scale(width, height);
+      if(!o._scale.equalsData(width, height)){
+         o._handle.scale(width, height);
+         o._scale.set(width, height);
+      }
    }
    MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
       this._handle.font = font;

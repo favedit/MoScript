@@ -36,7 +36,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
    // @event
-   o.onOperationOrientation = MO.FEaiChartStatisticsScene_onOperationOrientation;
    o.onLiveTableChanged     = MO.FEaiChartStatisticsScene_onLiveTableChanged;
    //..........................................................
    // @method
@@ -45,19 +44,9 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o.setup                  = MO.FEaiChartStatisticsScene_setup;
    o.fixMatrix              = MO.FEaiChartStatisticsScene_fixMatrix;
    // @method
+   o.processResize          = MO.FEaiChartStatisticsScene_processResize;
    o.process                = MO.FEaiChartStatisticsScene_process;
    return o;
-}
-
-//==========================================================
-// <T>屏幕方向改变处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartStatisticsScene_onOperationOrientation = function FEaiChartStatisticsScene_onOperationOrientation(event) {
-   var o = this;
-   o._guiManager.dirty();
 }
 
 //==========================================================
@@ -128,52 +117,14 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
-   if(MO.RBrowser.isOrientationVertical()){
-      timeline.setDockCd(MO.EGuiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setRight(20);
-      timeline.setBottom(500);
-      timeline.setHeight(250);
-   }else{
-      timeline.setDockCd(MO.EGuiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      if(MO.Runtime.isPlatformMobile()){
-         timeline.setRight(680);
-      }else{
-         timeline.setRight(640);
-      }
-      timeline.setHeight(250);
-   }
-   timeline.sync();
    timeline.linkGraphicContext(o);
+   timeline.sync();
    timeline.build();
    o._guiManager.register(timeline);
    //..........................................................
    // 创建表格
    var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
    liveTable.setName('LiveTable');
-   if(MO.RBrowser.isOrientationVertical()){
-      liveTable.setDockCd(MO.EGuiDock.Bottom);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
-      liveTable.setLeft(20);
-      liveTable.setRight(10);
-      liveTable.setBottom(0);
-      liveTable.setHeight(800);
-   }else{
-      liveTable.setDockCd(MO.EGuiDock.Right);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
-      liveTable.setTop(20);
-      liveTable.setRight(10);
-      liveTable.setBottom(20);
-      if(MO.Runtime.isPlatformMobile()){
-         liveTable.setWidth(660);
-      }else{
-         liveTable.setWidth(580);
-      }
-   }
    liveTable.linkGraphicContext(o);
    liveTable.setup();
    liveTable.build();
@@ -199,10 +150,10 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
       if(MO.RBrowser.isOrientationVertical()){
-         matrix.tx = -18.8;
-         matrix.ty = -3.2;
+         matrix.tx = -14.58;
+         matrix.ty = -2.2;
          matrix.tz = 0;
-         matrix.setScale(0.18, 0.2, 0.18);
+         matrix.setScale(0.14, 0.16, 0.14);
       }else{
          matrix.tx = -36.8;
          matrix.ty = -11.6;
@@ -216,6 +167,65 @@ MO.FEaiChartStatisticsScene_fixMatrix = function FEaiChartStatisticsScene_fixMat
       matrix.setScale(0.32, 0.36, 0.32);
    }
    matrix.update();
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartStatisticsScene_processResize = function FEaiChartStatisticsScene_processResize(){
+   var o = this;
+   o.__base.FEaiChartScene.processResize.call(o);
+   // 重新设置矩阵
+   o.fixMatrix(o._investment.display().matrix());
+   //..........................................................
+   // 创建时间轴
+   var timeline = o._timeline;
+   if(MO.RBrowser.isOrientationVertical()){
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(830);
+      timeline.setHeight(250);
+   }else{
+      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      if(MO.Runtime.isPlatformMobile()){
+         timeline.setRight(680);
+      }else{
+         timeline.setRight(640);
+      }
+      timeline.setHeight(250);
+   }
+   //..........................................................
+   // 创建表格
+   var liveTable = o._liveTable;
+   if(MO.RBrowser.isOrientationVertical()){
+      liveTable.setDockCd(MO.EGuiDock.Bottom);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setWidth(1060);
+      liveTable.setHeight(800);
+   }else{
+      liveTable.setDockCd(MO.EGuiDock.Right);
+      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+      liveTable.setTop(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setWidth(140);
+      if(MO.Runtime.isPlatformMobile()){
+         liveTable.setWidth(660);
+      }else{
+         liveTable.setWidth(580);
+      }
+   }
 }
 
 //==========================================================

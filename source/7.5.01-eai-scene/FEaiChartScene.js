@@ -41,6 +41,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @method
    o.active                = MO.FEaiChartScene_active;
    o.resetDate             = MO.FEaiChartScene_resetDate;
+   o.processResize         = MO.FEaiChartScene_processResize;
    o.process               = MO.FEaiChartScene_process;
    o.deactive              = MO.FEaiChartScene_deactive;
    // @method
@@ -87,6 +88,8 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    o._readyProvince = true;
    // 初始化地图动画
    o._mapEntity.countryEntity().setup(provinceEntities);
+   // 重置画面大小
+   o.processResize();
 }
 
 //==========================================================
@@ -258,6 +261,31 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 //==========================================================
 MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
    var o = this;
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
+   var o = this;
+   o.__base.FEaiScene.processResize.call(o);
+   // 重新设置矩阵
+   o.fixMatrix(o._countryDisplay.matrix());
+   o.fixMatrix(o._countryBorderDisplay.matrix());
+   o.fixMatrix(o._citysRangeRenderable.matrix());
+   o.fixMatrix(o._citysRenderable.matrix());
+   // 设置大小
+   var frame = o._logoBar;
+   if(MO.RBrowser.isOrientationVertical()){
+      //frame.setLocation(0, 10);
+      //frame.setScale(0.8, 0.8);
+   }else{
+      //frame.setLocation(0, 10);
+      //frame.setSize(1, 1);
+   }
 }
 
 //==========================================================

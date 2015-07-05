@@ -27,6 +27,7 @@ MO.FEaiScene = function FEaiScene(o){
    o.active                 = MO.FEaiScene_active;
    o.deactive               = MO.FEaiScene_deactive;
    // @method
+   o.processResize          = MO.FEaiScene_processResize;
    o.processEvent           = MO.FEaiScene_processEvent;
    // @method
    o.dispose                = MO.FEaiScene_dispose;
@@ -42,8 +43,8 @@ MO.FEaiScene = function FEaiScene(o){
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
-   // 界面重新绘制
-   o._guiManager.dirty();
+   // 改变大小处理
+   o.processResize();
 }
 
 //==========================================================
@@ -55,8 +56,8 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
 MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
    var o = this;
    o.__base.FScene.onOperationOrientation.call(o, event);
-   // 界面重新绘制
-   o._guiManager.dirty();
+   // 改变大小处理
+   o.processResize();
 }
 
 //==========================================================
@@ -133,6 +134,18 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var o = this;
    o.__base.FScene.deactive.call(o);
    MO.Eai.Canvas.selectStage(null);
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiScene_processResize = function FEaiScene_processResize(event){
+   var o = this;
+   // 界面重绘处理
+   o._guiManager.dirty();
 }
 
 //==========================================================

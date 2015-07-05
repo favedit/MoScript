@@ -33,6 +33,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backHoverResource      = null;
    // @attribute
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._clientScale            = null;
    o._eventRectangle         = null;
    // @attribute
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
@@ -287,6 +288,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MGuiBorder.construct.call(o);
    // 创建属性
    o._clientRectangle = new MO.SRectangle();
+   o._clientScale = new MO.SSize2();
    o._eventRectangle = new MO.SRectangle();
    //o._backColor = '#CCCCCC';
    //o._borderInner.left.color = '#FFFFFF';
@@ -462,18 +464,21 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EGuiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
-   }else if(o._anchorCd & MO.EGuiAnchor.Top){
-      top = (parentBottom - height - o._bottom) * calculateRate.height;
-      height = bottom - top;
    }
    if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
+      height = bottom - top;
+   }else if(o._anchorCd & MO.EGuiAnchor.Top){
+      top = (parentBottom - height - o._bottom) * calculateRate.height;
       height = bottom - top;
    }
    event.optionContainer = false;
    //..........................................................
    // 计算范围
    rectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
+   var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
+   o._clientScale.assign(sacle);
+   //graphic.setScale(sacle.width * o._scale.width, sacle.height * o._scale.height)
    //..........................................................
    // 开始绘制处理
    o.onPaintBegin(event);
@@ -491,6 +496,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    // 绘制结束处理
    o.onPaintEnd(event);
    //..........................................................
+   //graphic.setScale(o._clientScale.width, o._clientScale.height)
    rectangle.assign(o._eventRectangle);
    o._statusDirty = false;
 }
@@ -683,6 +689,7 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
+   o._clientScale = MO.RObject.dispose(o._clientScale);
    // 父处理
    o.__base.MGuiBorder.dispose.call(o);
    o.__base.MGuiPadding.dispose.call(o);

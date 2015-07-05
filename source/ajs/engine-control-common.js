@@ -715,6 +715,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._clientScale            = null;
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -869,6 +870,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MGuiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    o._clientRectangle = new MO.SRectangle();
+   o._clientScale = new MO.SSize2();
    o._eventRectangle = new MO.SRectangle();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
@@ -968,16 +970,18 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EGuiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
+   }
+   if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
+      height = bottom - top;
    }else if(o._anchorCd & MO.EGuiAnchor.Top){
       top = (parentBottom - height - o._bottom) * calculateRate.height;
       height = bottom - top;
    }
-   if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
-      height = bottom - top;
-   }
    event.optionContainer = false;
    rectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
+   var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
+   o._clientScale.assign(sacle);
    o.onPaintBegin(event);
    var components = o._components;
    if(components){
@@ -1078,6 +1082,7 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
+   o._clientScale = MO.RObject.dispose(o._clientScale);
    o.__base.MGuiBorder.dispose.call(o);
    o.__base.MGuiPadding.dispose.call(o);
    o.__base.MGuiMargin.dispose.call(o);

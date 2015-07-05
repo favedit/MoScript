@@ -1,13 +1,10 @@
 MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
-   o._size             = MO.Class.register(o, new MO.AGetter('_size'));
-   o._calculateRate    = MO.Class.register(o, new MO.AGetter('_calculateRate'));
    o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
    o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
    o._readyControls    = null;
    o._dirtyControls    = null;
    o._paintEvent       = null;
-   o.onOperationResize = MO.FGuiCanvasManager_onOperationResize;
    o.construct         = MO.FGuiCanvasManager_construct;
    o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
    o.processResize     = MO.FGuiCanvasManager_processResize;
@@ -16,14 +13,9 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o.dispose           = MO.FGuiCanvasManager_dispose;
    return o;
 }
-MO.FGuiCanvasManager_onOperationResize = function FGuiCanvasManager_onOperationResize(event){
-   var o = this;
-}
 MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    var o = this;
    o.__base.FGuiManager.construct.call(o);
-   o._size = new MO.SSize2();
-   o._calculateRate = new MO.SSize2();
    o._readyControls = new MO.TObjects();
    o._dirtyControls = new MO.TObjects();
    o._paintEvent = new MO.SGuiPaintEvent();
@@ -46,21 +38,20 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    var o = this;
    o.__base.FGuiManager.process.call(o);
    var graphic = o._canvas.context();
+   var desktop = o._desktop;
+   var calculateSize = desktop.calculateSize();
+   var calculateRate = desktop.calculateRate()
    var event = o._paintEvent;
    event.optionContainer = true;
    event.graphic = graphic;
-   event.parentRectangle.set(0, 0, o._size.width, o._size.height);
-   event.calculateRate = o._calculateRate;
+   event.parentRectangle.set(0, 0, calculateSize.width, calculateSize.height);
+   event.calculateRate = calculateRate;
    event.rectangle.reset();
    control.paint(event);
-   return true;
 }
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var desktop = o._desktop;
-   o._size.assign(desktop.logicSize());
-   o._calculateRate.assign(desktop.calculateRate());
    var readyControls = o._readyControls;
    readyControls.clear();
    var controls = o._controls;
@@ -109,8 +100,6 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
 }
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._calculateRate = RObject.dispose(o._calculateRate);
    o._readyControls = RObject.dispose(o._readyControls);
    o._dirtyControls = RObject.dispose(o._dirtyControls);
    o._paintEvent = RObject.dispose(o._paintEvent);
