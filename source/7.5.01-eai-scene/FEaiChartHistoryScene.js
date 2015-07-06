@@ -428,7 +428,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var mbPassedTick = currentTick - o._milestoneBarShowTick;
    var p = mbPassedTick / o._milestoneBarShowDuration;
    p = (1 - p) * (1 - p);
-   if (mbPassedTick < o._milestoneBarShowDuration) {
+   if (mbPassedTick > 0 && mbPassedTick < o._milestoneBarShowDuration) {
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
       mBar.setRight(20 + (-380 * p));
       mBar.dirty();
