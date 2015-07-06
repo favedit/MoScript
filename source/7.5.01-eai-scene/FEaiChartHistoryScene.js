@@ -33,6 +33,10 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
+   // @attribute
+   o._milestoneShowed          = 0;
+   o._milestoneBarShowDuration = 1000;
+   o._milestoneBarShowTick     = 0;
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
@@ -89,6 +93,8 @@ MO.FEaiChartHistoryScene_onDateSelect = function FEaiChartHistoryScene_onDateSel
 MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMilestoneDone(event) {
    var o = this;
    o.switchPlay(true);
+   o._milestoneShowed++;
+   o._milestoneBarShowTick = MO.Timer.current();
 }
 
 //==========================================================
@@ -216,7 +222,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
       frame.setTop(40 + 100 * i);
-      frame.setRight(20);
+      frame.setRight(-360);
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
@@ -231,6 +237,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
+   o._milestoneBarShowTick = MO.Timer.current() + o._milestoneBarShowDuration;
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
@@ -383,12 +390,12 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    // 重复播放
    if (o._playing) {
       // 播放地图
-      if(!o._mapEntity._countryEntity.introAnimeDone()){
+      if (!o._mapEntity._countryEntity.introAnimeDone()) {
          o._mapEntity._countryEntity.process();
          return;
       }
       // 显示界面
-      if(!o._mapReady){
+      if (!o._mapReady) {
          o._citysRangeRenderable.setVisible(true);
          o._citysRenderable.setVisible(true);
          o._guiManager.show();
@@ -397,7 +404,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
       }
       // 计时切换日期
       var currentTick = MO.Timer.current();
-      if(currentTick - o._lastTick > o._interval) {
+      if (currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {
             o._currentDate.addDay(1);
             var code = o._currentDate.format('YYYYMMDD')
@@ -415,6 +422,13 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._timeline.dirty();
          // 记录lastTick
          o._lastTick = currentTick;
+      }
+      // 出现右侧里程碑条
+      var mbPassedTick = currentTick - o._milestoneBarShowTick;
+      var p = mbPassedTick / o._milestoneBarShowDuration;
+      p = (1 - p) * (1 - p);
+      if (mbPassedTick < o._milestoneBarShowDuration) {
+         o._milestoneBars.at(o._milestoneShowed - 1).setRight(20 + (-380 * p));
       }
    }
    if (o._milestoneFrame.visible()) {
