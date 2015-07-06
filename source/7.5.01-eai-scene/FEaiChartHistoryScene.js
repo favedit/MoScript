@@ -35,7 +35,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
-   o.onLoadHistoryData = MO.FEaiChartHistoryScene_onLoadHistoryData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -45,6 +44,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
    // @method
    o.setup             = MO.FEaiChartHistoryScene_setup;
+   o.resetDate         = MO.FEaiChartHistoryScene_resetDate;
    o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
    o.switchPlay        = MO.FEaiChartHistoryScene_switchPlay;
    // @method
@@ -64,19 +64,7 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
    var code = o._currentDate.format('YYYYMMDD')
-   o.selectDate(code);
-}
-
-//==========================================================
-// <T>数据加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartHistoryScene_onLoadHistoryData = function FEaiChartHistoryScene_onLoadHistoryData(event) {
-   var o = this;
-   debugger
-   var code = o._currentDate.format('YYYYMMDD')
+   o.resetDate(code);
    o.selectDate(code);
 }
 
@@ -179,7 +167,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.build();
    control.setVisible(true);
    control.addOperationDownListener(o, o.onOperationPlay);
-   o._guiManager.register(control);
+   //o._guiManager.register(control);
    // 创建播放按键
    var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
@@ -190,7 +178,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.build();
    control.setVisible(false);
    control.addOperationDownListener(o, o.onOperationPause);
-   o._guiManager.register(control);
+   //o._guiManager.register(control);
    // 创建按键声音
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
@@ -225,7 +213,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setDockCd(MO.EGuiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
-   timeline.setRight(200);
+   timeline.setRight(350);
    timeline.setBottom(50);
    timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
@@ -254,6 +242,22 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
 }
 
 //==========================================================
+// <T>重置时间。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
+   var o = this;
+   // 设置城市数据
+   var cityEntities = o._mapEntity.cityEntities();
+   var count = cityEntities.count();
+   for(var i = 0; i < count; i++){
+      var cityEntity = cityEntities.at(i);
+      cityEntity.reset();
+   }
+}
+
+//==========================================================
 // <T>数据加载处理。</T>
 //
 // @method
@@ -262,10 +266,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
    var o = this;
    // 构建画面
-   var context = o.graphicContext();
-   var stage = o._activeStage;
-   var mapLayer = stage.mapLayer();
-   var borderLayer = stage.borderLayer();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
@@ -293,8 +293,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       // 设置数据
       var investmentTotal = o._logoBar.findComponent('investmentTotal');
       investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
-      //total.setValue(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
-      // o._totalBar.dirty();
    }
 }
 

@@ -223,7 +223,7 @@ with(MO){
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * 255);
+            var alpha = parseInt(color.alpha * o._alpha * 255);
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;

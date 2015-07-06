@@ -978,7 +978,8 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       height = bottom - top;
    }
    event.optionContainer = false;
-   rectangle.set(Math.max(left, 0), Math.max(top, 0), Math.max(width, 0), Math.max(height, 0));
+   graphic.store();
+   rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
    o._clientScale.assign(sacle);
@@ -994,6 +995,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       }
    }
    o.onPaintEnd(event);
+   graphic.restore();
    rectangle.assign(o._eventRectangle);
    o._statusDirty = false;
 }

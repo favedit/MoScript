@@ -214,7 +214,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //..........................................................
    // 显示左上
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(0, 10);
+   //frame.setScale(0.5, 0.5);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 加载背景音乐

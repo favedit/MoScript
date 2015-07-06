@@ -145,25 +145,20 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
-         if(control.isDirty()){
-            // 清空控件
-            var clientRectangle = control.clientRectangle();
-            if(!clientRectangle.isEmpty()){
-               graphic.clearRectangle(clientRectangle);
-            }
+         // 清空控件
+         var clientRectangle = control.clientRectangle();
+         if(!clientRectangle.isEmpty()){
+            graphic.clearRectangle(clientRectangle);
          }
       }
       // 重绘所有脏的控件
-      var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
-         if(control.isDirty()){
-            o.processControl(control);
-         }
+         o.processControl(control);
       }
+      //console.log('Dirty control: ' + dirtyCount);
    }
 }
-
 
 //==========================================================
 // <T>构造处理。</T>

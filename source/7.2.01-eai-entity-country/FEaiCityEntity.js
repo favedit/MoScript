@@ -13,6 +13,7 @@ with(MO){
       o._visible                = RClass.register(o, new AGetter('_visible'), false);
       o._location               = RClass.register(o, new AGetter('_location'));
       o._size                   = RClass.register(o, new AGetter('_size'));
+      o._alpha                  = RClass.register(o, new AGetSet('_alpha'), 1);
       o._color                  = RClass.register(o, new AGetter('_color'));
       o._range                  = RClass.register(o, new AGetter('_range'), 1);
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
@@ -38,6 +39,7 @@ with(MO){
       o.calculateScreenPosition = FEaiCityEntity_calculateScreenPosition;
       o.build                   = FEaiCityEntity_build;
       o.addInvestmentTotal      = FEaiCityEntity_addInvestmentTotal;
+      o.reset                   = FEaiCityEntity_reset;
       o.update                  = FEaiCityEntity_update;
       o.process                 = FEaiCityEntity_process;
       // @method
@@ -118,6 +120,16 @@ with(MO){
       o._investmentRange = o._range;
       o._investmentRate = 100;
       o._visible = true;
+   }
+
+   //==========================================================
+   // <T>从输入流反序列化数据。</T>
+   //
+   // @method
+   // @param input:MStream 输入流
+   //==========================================================
+   MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
+      var o = this;
    }
 
    //==========================================================

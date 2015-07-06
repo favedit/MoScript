@@ -883,6 +883,7 @@ with(MO){
       o._visible                = RClass.register(o, new AGetter('_visible'), false);
       o._location               = RClass.register(o, new AGetter('_location'));
       o._size                   = RClass.register(o, new AGetter('_size'));
+      o._alpha                  = RClass.register(o, new AGetSet('_alpha'), 1);
       o._color                  = RClass.register(o, new AGetter('_color'));
       o._range                  = RClass.register(o, new AGetter('_range'), 1);
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
@@ -902,6 +903,7 @@ with(MO){
       o.calculateScreenPosition = FEaiCityEntity_calculateScreenPosition;
       o.build                   = FEaiCityEntity_build;
       o.addInvestmentTotal      = FEaiCityEntity_addInvestmentTotal;
+      o.reset                   = FEaiCityEntity_reset;
       o.update                  = FEaiCityEntity_update;
       o.process                 = FEaiCityEntity_process;
       o.dispose                 = FEaiCityEntity_dispose;
@@ -949,6 +951,9 @@ with(MO){
       o._investmentRange = o._range;
       o._investmentRate = 100;
       o._visible = true;
+   }
+   MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
+      var o = this;
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
@@ -1386,7 +1391,7 @@ with(MO){
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * 255);
+            var alpha = parseInt(color.alpha * o._alpha * 255);
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;
@@ -3409,13 +3414,13 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
-   o.onLoadHistoryData = MO.FEaiChartHistoryScene_onLoadHistoryData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
    o.setup             = MO.FEaiChartHistoryScene_setup;
+   o.resetDate         = MO.FEaiChartHistoryScene_resetDate;
    o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
    o.switchPlay        = MO.FEaiChartHistoryScene_switchPlay;
    o.active            = MO.FEaiChartHistoryScene_active;
@@ -3427,12 +3432,7 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
    var code = o._currentDate.format('YYYYMMDD')
-   o.selectDate(code);
-}
-MO.FEaiChartHistoryScene_onLoadHistoryData = function FEaiChartHistoryScene_onLoadHistoryData(event) {
-   var o = this;
-   debugger
-   var code = o._currentDate.format('YYYYMMDD')
+   o.resetDate(code);
    o.selectDate(code);
 }
 MO.FEaiChartHistoryScene_onDateSelect = function FEaiChartHistoryScene_onDateSelect(event) {
@@ -3491,7 +3491,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.build();
    control.setVisible(true);
    control.addOperationDownListener(o, o.onOperationPlay);
-   o._guiManager.register(control);
    var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
    control.setLocation(40, 730);
@@ -3501,7 +3500,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    control.build();
    control.setVisible(false);
    control.addOperationDownListener(o, o.onOperationPause);
-   o._guiManager.register(control);
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
@@ -3530,7 +3528,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setDockCd(MO.EGuiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
-   timeline.setRight(200);
+   timeline.setRight(350);
    timeline.setBottom(50);
    timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
@@ -3554,12 +3552,17 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setVisible(false);
    o._guiManager.hide();
 }
+MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
+   var o = this;
+   var cityEntities = o._mapEntity.cityEntities();
+   var count = cityEntities.count();
+   for(var i = 0; i < count; i++){
+      var cityEntity = cityEntities.at(i);
+      cityEntity.reset();
+   }
+}
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
    var o = this;
-   var context = o.graphicContext();
-   var stage = o._activeStage;
-   var mapLayer = stage.mapLayer();
-   var borderLayer = stage.borderLayer();
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
    var dateData = historyConsole.dates().get(code);
@@ -4085,7 +4088,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(0, 10);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);

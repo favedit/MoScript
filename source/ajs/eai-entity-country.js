@@ -67,6 +67,7 @@ with(MO){
       o._visible                = RClass.register(o, new AGetter('_visible'), false);
       o._location               = RClass.register(o, new AGetter('_location'));
       o._size                   = RClass.register(o, new AGetter('_size'));
+      o._alpha                  = RClass.register(o, new AGetSet('_alpha'), 1);
       o._color                  = RClass.register(o, new AGetter('_color'));
       o._range                  = RClass.register(o, new AGetter('_range'), 1);
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
@@ -86,6 +87,7 @@ with(MO){
       o.calculateScreenPosition = FEaiCityEntity_calculateScreenPosition;
       o.build                   = FEaiCityEntity_build;
       o.addInvestmentTotal      = FEaiCityEntity_addInvestmentTotal;
+      o.reset                   = FEaiCityEntity_reset;
       o.update                  = FEaiCityEntity_update;
       o.process                 = FEaiCityEntity_process;
       o.dispose                 = FEaiCityEntity_dispose;
@@ -133,6 +135,9 @@ with(MO){
       o._investmentRange = o._range;
       o._investmentRate = 100;
       o._visible = true;
+   }
+   MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
+      var o = this;
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
@@ -570,7 +575,7 @@ with(MO){
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * 255);
+            var alpha = parseInt(color.alpha * o._alpha * 255);
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;

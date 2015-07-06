@@ -89,19 +89,14 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
-         if(control.isDirty()){
-            var clientRectangle = control.clientRectangle();
-            if(!clientRectangle.isEmpty()){
-               graphic.clearRectangle(clientRectangle);
-            }
+         var clientRectangle = control.clientRectangle();
+         if(!clientRectangle.isEmpty()){
+            graphic.clearRectangle(clientRectangle);
          }
       }
-      var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
-         if(control.isDirty()){
-            o.processControl(control);
-         }
+         o.processControl(control);
       }
    }
 }
