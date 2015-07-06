@@ -221,7 +221,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(40 + 100 * i);
+      frame.setTop(100 + 110 * i);
       frame.setRight(-360);
       var date = new MO.TDate();
       date.parse(milestone.code());
@@ -428,7 +428,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var mbPassedTick = currentTick - o._milestoneBarShowTick;
    var p = mbPassedTick / o._milestoneBarShowDuration;
    p = (1 - p) * (1 - p);
-   if (mbPassedTick > 0 && mbPassedTick < o._milestoneBarShowDuration) {
+   if (mbPassedTick < o._milestoneBarShowDuration) {
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
       mBar.setRight(20 + (-380 * p));
       mBar.dirty();

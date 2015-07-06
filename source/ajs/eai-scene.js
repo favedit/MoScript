@@ -128,6 +128,9 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusStart      = false;
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
+   o._milestoneShowed          = 0;
+   o._milestoneBarShowDuration = 1000;
+   o._milestoneBarShowTick     = 0;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -159,6 +162,8 @@ MO.FEaiChartHistoryScene_onDateSelect = function FEaiChartHistoryScene_onDateSel
 MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMilestoneDone(event) {
    var o = this;
    o.switchPlay(true);
+   o._milestoneShowed++;
+   o._milestoneBarShowTick = MO.Timer.current();
 }
 MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOperationPlay(event){
    var o = this;
@@ -243,7 +248,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
       frame.setTop(100 + 110 * i);
-      frame.setRight(20);
+      frame.setRight(-360);
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
@@ -258,6 +263,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
+   o._milestoneBarShowTick = MO.Timer.current() + o._milestoneBarShowDuration;
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.linkGraphicContext(o);
@@ -278,14 +284,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
-   milestoneFrame.setVisible(false);
-   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
-   milestoneFrame.setTop(50);
-   milestoneFrame.setWidth(720);
-   milestoneFrame.setHeight(700);
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
-   milestoneFrame.build();
    milestoneFrame.setup();
+   milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
    o._guiManager.hide();
 }
@@ -365,20 +366,20 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          }
       }
    }
+   var currentTick = MO.Timer.current();
    if (o._playing) {
-      if(!o._mapEntity._countryEntity.introAnimeDone()){
+      if (!o._mapEntity._countryEntity.introAnimeDone()) {
          o._mapEntity._countryEntity.process();
          return;
       }
-      if(!o._mapReady){
+      if (!o._mapReady) {
          o._citysRangeRenderable.setVisible(true);
          o._citysRenderable.setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
          o._mapReady = true;
       }
-      var currentTick = MO.Timer.current();
-      if(currentTick - o._lastTick > o._interval) {
+      if (currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {
             o._currentDate.addDay(1);
             var code = o._currentDate.format('YYYYMMDD')
@@ -394,6 +395,14 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._timeline.dirty();
          o._lastTick = currentTick;
       }
+   }
+   var mbPassedTick = currentTick - o._milestoneBarShowTick;
+   var p = mbPassedTick / o._milestoneBarShowDuration;
+   p = (1 - p) * (1 - p);
+   if (mbPassedTick < o._milestoneBarShowDuration) {
+      var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
+      mBar.setRight(20 + (-380 * p));
+      mBar.dirty();
    }
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.dirty();
