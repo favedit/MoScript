@@ -188,61 +188,75 @@ with(MO){
       this._dragables.clear();
    }
 }
-with(MO){
-   MO.FEnvironment = function FEnvironment(o){
-      o = RClass.inherits(this, o, FObject);
-      o._name  = RClass.register(o, new AGetSet('_name'));
-      o._value = RClass.register(o, new AGetSet('_value'));
-      o.set    = FEnvironment_set;
-      return o;
-   }
-   MO.FEnvironment_set = function FEnvironment_set(name, value){
-      var o = this;
-      o._name = name;
-      o._value = value;
-   }
+MO.FEnvironment = function FEnvironment(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._name  = MO.Class.register(o, new MO.AGetSet('_name'));
+   o._value = MO.Class.register(o, new MO.AGetSet('_value'));
+   o.set    = MO.FEnvironment_set;
+   return o;
 }
-with(MO){
-   MO.FEnvironmentConsole = function FEnvironmentConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd      = EScope.Local;
-      o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
-      o.construct     = FEnvironmentConsole_construct;
-      o.register      = FEnvironmentConsole_register;
-      o.registerValue = FEnvironmentConsole_registerValue;
-      o.find          = FEnvironmentConsole_find;
-      o.findValue     = FEnvironmentConsole_findValue;
-      return o;
+MO.FEnvironment_set = function FEnvironment_set(name, value){
+   var o = this;
+   o._name = name;
+   o._value = value;
+}
+MO.FEnvironmentConsole = function FEnvironmentConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd      = MO.EScope.Local;
+   o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
+   o.construct     = MO.FEnvironmentConsole_construct;
+   o.register      = MO.FEnvironmentConsole_register;
+   o.registerValue = MO.FEnvironmentConsole_registerValue;
+   o.find          = MO.FEnvironmentConsole_find;
+   o.findValue     = MO.FEnvironmentConsole_findValue;
+   o.parse         = MO.FEnvironmentConsole_parse;
+   o.dispose       = MO.FEnvironmentConsole_dispose;
+   return o;
+}
+MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._environments = new MO.TDictionary();
+}
+MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
+   var o = this;
+   var name = environment.name();
+   o._environments.set(name, environment);
+}
+MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
+   var o = this;
+   var environment = MO.RClass.create(MO.FEnvironment);
+   environment.set(name, value);
+   o._environments.set(name, environment);
+   return environment;
+}
+MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
+   return this._environments.get(name);
+}
+MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
+   var o = this;
+   var value = null;
+   var environment = o._environments.get(name);
+   if(environment){
+      value = environment.value();
    }
-   MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._environments = new TDictionary();
+   return value;
+}
+MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
+   var o = this;
+   var result = value;
+   var environments = o._environments;
+   var count = environments.count();
+   for(var i = 0; i < count; i++){
+      var environment = environments.at(i);
+      result = MO.Lang.String.replace(result, '{' + environment.name() + '}', environment.value());
    }
-   MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
-      var o = this;
-      var name = environment.name();
-      o._environments.set(name, environment);
-   }
-   MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
-      var o = this;
-      var environment = MO.RClass.create(MO.FEnvironment);
-      environment.set(name, value);
-      o._environments.set(name, environment);
-      return environment;
-   }
-   MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
-      return this._environments.get(name);
-   }
-   MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
-      var o = this;
-      var value = null;
-      var environment = o._environments.get(name);
-      if(environment){
-         value = environment.value();
-      }
-      return value;
-   }
+   return result;
+}
+MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
+   var o = this;
+   o._environments = new TDictionary();
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
    o = MO.Class.inherits(this, o, MO.FObject);

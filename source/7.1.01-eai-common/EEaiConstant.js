@@ -8,5 +8,6 @@
 MO.EEaiConstant = new function EEaiConstant(){
    var o = this;
    o.ServiceHost = "eai.logic.service";
+   o.Resource    = "eai.resource";
    return o;
 }

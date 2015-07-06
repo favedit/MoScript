@@ -814,13 +814,13 @@
    // <T>替换字符串全部内容。</T>
    //
    // @method
-   // @param v:value:String 字符串
-   // @param s:source:String 源字符串
-   // @param t:target:String 目标字符串
+   // @param value:String 字符串
+   // @param source:String 源字符串
+   // @param target:String 目标字符串
    // @return String 字符串
    //==========================================================
-   MO.RString.prototype.replace = function RString_replace(v, s, t){
-      return v.replace(new RegExp(s, 'g'), t);
+   MO.RString.prototype.replace = function RString_replace(value, source, target){
+      return value.replace(new RegExp(source, 'g'), target);
    }
 
    //==========================================================

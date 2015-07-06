@@ -14,6 +14,7 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o._rateConsole     = MO.Class.register(o, new MO.AGetter('_rateConsole'));
    o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._cardConsole     = MO.Class.register(o, new MO.AGetter('_cardConsole'));
    o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));
    // @attribute
    o._loadListeners   = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
@@ -63,10 +64,11 @@ MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
 MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._rateConsole = MO.RClass.create(MO.FEaiRateResourceConsole);
-   o._provinceConsole = MO.RClass.create(MO.FEaiProvinceResourceConsole);
-   o._cityConsole = MO.RClass.create(MO.FEaiCityResourceConsole);
-   o._historyConsole = MO.RClass.create(MO.FEaiHistoryResourceConsole);
+   o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
+   o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
+   o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
+   o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
 }
 
 //==========================================================
@@ -80,7 +82,7 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
    o._rateConsole.unserialize(input);
    o._provinceConsole.unserialize(input);
    o._cityConsole.unserialize(input);
-   o._historyConsole.unserialize(input);
+   //o._historyConsole.unserialize(input);
 }
 
 //==========================================================
@@ -91,8 +93,8 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
 //==========================================================
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
    var o = this;
-   var url = '/script/ars/eai/resource.dat';
-   var connection = MO.RConsole.find(MO.FHttpConsole).send(url);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/resource.dat');
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
 
@@ -105,10 +107,11 @@ MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
 //==========================================================
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
-   o._rateConsole = RObject.dispose(o._rateConsole);
-   o._provinceConsole = RObject.dispose(o._provinceConsole);
-   o._cityConsole = RObject.dispose(o._cityConsole);
-   o._historyConsole = RObject.dispose(o._historyConsole);
+   o._rateConsole = MO.Lang.Object.dispose(o._rateConsole);
+   o._provinceConsole = MO.Lang.Object.dispose(o._provinceConsole);
+   o._cityConsole = MO.Lang.Object.dispose(o._cityConsole);
+   o._cardConsole = MO.Lang.Object.dispose(o._cardConsole);
+   o._historyConsole = MO.Lang.Object.dispose(o._historyConsole);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }

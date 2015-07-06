@@ -1,3 +1,47 @@
+MO.FEaiCardResource = function FEaiCardResource(o){
+   o = RClass.inherits(this, o, FObject);
+   o._cardCode   = MO.Class.register(o, new MO.AGetter('_cardCode'));
+   o._cityCode   = MO.Class.register(o, new MO.AGetter('_cityCode'));
+   o.unserialize = FEaiCardResource_unserialize;
+   return o;
+}
+MO.FEaiCardResource_unserialize = function FEaiCardResource_unserialize(input){
+   var o = this;
+   o._cardCode = input.readUint16();
+   o._cityCode = input.readUint16();
+}
+MO.FEaiCardResourceConsole = function FEaiCardResourceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._cards      = MO.Class.register(o, new MO.AGetter('_cards'));
+   o.construct   = MO.FEaiCardResourceConsole_construct;
+   o.find        = MO.FEaiCardResourceConsole_find;
+   o.unserialize = MO.FEaiCardResourceConsole_unserialize;
+   o.dispose     = MO.FEaiCardResourceConsole_dispose;
+   return o;
+}
+MO.FEaiCardResourceConsole_construct = function FEaiCardResourceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._cards = new MO.TDictionary();
+}
+MO.FEaiCardResourceConsole_find = function FEaiCardResourceConsole_find(code){
+   return this._cards.get(code);
+}
+MO.FEaiCardResourceConsole_unserialize = function FEaiCardResourceConsole_unserialize(input){
+   var o = this;
+   var cards = o._cards;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var card = MO.Class.create(MO.FEaiCardResource);
+      card.unserialize(input);
+      cards.set(card.code(), card);
+   }
+}
+MO.FEaiCardResourceConsole_dispose = function FEaiCardResourceConsole_dispose(){
+   var o = this;
+   o._cards = MO.Lang.Object.dispose(o._cards);
+   o.__base.FConsole.dispose.call(o);
+}
 with(MO){
    MO.FEaiCityResource = function FEaiCityResource(o){
       o = RClass.inherits(this, o, FObject);
@@ -396,6 +440,7 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o._rateConsole     = MO.Class.register(o, new MO.AGetter('_rateConsole'));
    o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._cardConsole     = MO.Class.register(o, new MO.AGetter('_cardConsole'));
    o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));
    o._loadListeners   = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    o.onLoad           = MO.FEaiResourceConsole_onLoad;
@@ -420,29 +465,30 @@ MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
 MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._rateConsole = MO.RClass.create(MO.FEaiRateResourceConsole);
-   o._provinceConsole = MO.RClass.create(MO.FEaiProvinceResourceConsole);
-   o._cityConsole = MO.RClass.create(MO.FEaiCityResourceConsole);
-   o._historyConsole = MO.RClass.create(MO.FEaiHistoryResourceConsole);
+   o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
+   o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
+   o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
+   o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
 }
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
    o._rateConsole.unserialize(input);
    o._provinceConsole.unserialize(input);
    o._cityConsole.unserialize(input);
-   o._historyConsole.unserialize(input);
 }
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
    var o = this;
-   var url = '/script/ars/eai/resource.dat';
-   var connection = MO.RConsole.find(MO.FHttpConsole).send(url);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/resource.dat');
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
-   o._rateConsole = RObject.dispose(o._rateConsole);
-   o._provinceConsole = RObject.dispose(o._provinceConsole);
-   o._cityConsole = RObject.dispose(o._cityConsole);
-   o._historyConsole = RObject.dispose(o._historyConsole);
+   o._rateConsole = MO.Lang.Object.dispose(o._rateConsole);
+   o._provinceConsole = MO.Lang.Object.dispose(o._provinceConsole);
+   o._cityConsole = MO.Lang.Object.dispose(o._cityConsole);
+   o._cardConsole = MO.Lang.Object.dispose(o._cardConsole);
+   o._historyConsole = MO.Lang.Object.dispose(o._historyConsole);
    o.__base.FConsole.dispose.call(o);
 }

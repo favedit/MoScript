@@ -5189,6 +5189,7 @@ with(MO){
       return null;
    }
    MO.RObject = new RObject();
+   MO.Lang.Object = MO.RObject;
 }
 with(MO){
    MO.RRect = function RRect(){
@@ -5697,8 +5698,8 @@ with(MO){
       }
       return r;
    }
-   MO.RString.prototype.replace = function RString_replace(v, s, t){
-      return v.replace(new RegExp(s, 'g'), t);
+   MO.RString.prototype.replace = function RString_replace(value, source, target){
+      return value.replace(new RegExp(source, 'g'), target);
    }
    MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
       if(v != null){

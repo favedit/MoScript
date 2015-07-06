@@ -1027,11 +1027,10 @@ MO.FEaiChartStatisticsScene_processResize = function FEaiChartStatisticsScene_pr
       liveTable.setTop(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
-      liveTable.setWidth(140);
       if(MO.Runtime.isPlatformMobile()){
          liveTable.setWidth(660);
       }else{
-         liveTable.setWidth(580);
+         liveTable.setWidth(600);
       }
    }
 }
@@ -1059,7 +1058,6 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
       }
       if(!o._statusDesktopShow){
          o._guiManager.show();

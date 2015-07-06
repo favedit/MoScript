@@ -205,7 +205,6 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
-   console.log('resize');
    // 接收事件
    var event = o._eventResize;
    event.code = MO.EEvent.Resize;
@@ -543,7 +542,7 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    var hDocument = o._hDocument;
    var hContainer = o._hContainer;
    // 关联鼠标事件
-   if(RBrowser.supportHtml5()){
+   if(MO.Browser.supportHtml5()){
       hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
       hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
       hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
@@ -566,19 +565,20 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    hContainer.onselectstart = null;
    hContainer.onunload = null;
    // @attribute
-   o._localStorage = RObject.dispose(o._localStorage);
-   o._sessionStorage = RObject.dispose(o._sessionStorage);
+   o._localStorage = MO.RObject.dispose(o._localStorage);
+   o._sessionStorage = MO.RObject.dispose(o._sessionStorage);
    // @attribute
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
    // @attribute
-   o._eventMouse = RObject.dispose(o._eventMouse);
-   o._eventKey = RObject.dispose(o._eventKey);
-   o._eventResize = RObject.dispose(o._eventResize);
-   o._eventOrientation = RObject.dispose(o._eventOrientation);
-   o._eventUnload = RObject.dispose(o._eventUnload);
+   o._eventMouse = MO.RObject.dispose(o._eventMouse);
+   o._eventKey = MO.RObject.dispose(o._eventKey);
+   o._eventResize = MO.RObject.dispose(o._eventResize);
+   o._eventOrientation = MO.RObject.dispose(o._eventOrientation);
+   o._eventUnload = MO.RObject.dispose(o._eventUnload);
 }
 //..........................................................
 // 实例化内容
 MO.RWindow = new MO.RWindow();
+MO.Window = MO.RWindow;

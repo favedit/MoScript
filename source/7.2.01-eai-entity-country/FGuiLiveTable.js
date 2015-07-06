@@ -61,8 +61,8 @@ MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
    o.__base.FGuiControl.construct.call(o);
    // 创建属性
    o._currentDate = MO.TDate();
-   o._rankLinePadding = new MO.SPadding(80, 0, 80, 0);
-   o._backgroundPadding = new MO.SPadding(80, 80, 80, 80);
+   o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
+   o._backgroundPadding = new MO.SPadding(60, 60, 100, 60);
    o._columnLabels = new Array('时间', '城市', '用户-手机', '投资额(元)');
    if(MO.Runtime.isPlatformMobile()){
       o._columnDefines = new Array(130, 130, 180, 186);
@@ -143,14 +143,14 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    var widths = o._columnWidths;
    var fontColor = null;
    if(flag){
-      fontColor = '#59FDE9';
+      fontColor = '#E5BD1D';
    }else{
-      fontColor = '#1DACE5';
+      fontColor = '#59FDE9';
    }
    // 绘制底框
    if(flag){
       if(o._rankLineImage.testReady()){
-         graphic.drawGridImage(o._rankLineImage, x - 5, y - o._rankRowUp, width - 14, o._rankRowDown, o._rankLinePadding);
+         graphic.drawGridImage(o._rankLineImage, x - 9, y - o._rankRowUp, width - 42, o._rankRowDown, o._rankLinePadding);
       }
       var columnWidth = widths[0];
       var imageX = x + (columnWidth * 0.5) - 23;
@@ -173,7 +173,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       graphic.drawText(text, x + widths[0] / 2 - textWidth / 2, y, fontColor);
    }
    // 绘制城市
-   x += widths[0] + 1;
+   x += widths[0];
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var cityEntity = cityConsole.findCityByCard(entity.card());
    text = '';
@@ -183,13 +183,14 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    textWidth = graphic.textWidth(text);
    graphic.drawText(text, x + widths[1] / 2 - textWidth / 2, y, fontColor);
    // 绘制人员
-   x += widths[1] + 1;
+   x += widths[1];
    text = entity.customer() + ' - ' + entity.phone();
    textWidth = graphic.textWidth(text);
    graphic.drawText(text, x + widths[2] / 2 - textWidth / 2, y, fontColor);
    // 绘制颜色
-   x += widths[2] + 1;
+   x += widths[2];
    var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
+   var investmentRight = x + widths[3] - 15;
    if (investment.length > 7) {
       var highColor = null;
       if(investment.length > 9){
@@ -201,12 +202,12 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       var low = investment.substring(investment.length - 7, investment.length);
       var highWidth = graphic.textWidth(high);
       var lowWidth = graphic.textWidth(low);
-      graphic.drawText(high, x + widths[3] - 5 - lowWidth - highWidth, y, highColor);
-      graphic.drawText(low, x + widths[3] - 5 - lowWidth, y, fontColor);
+      graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
+      graphic.drawText(low, investmentRight - lowWidth, y, fontColor);
    } else {
       text = investment;
       textWidth = graphic.textWidth(text);
-      graphic.drawText(text, x + widths[3] - 5 - textWidth, y, fontColor);
+      graphic.drawText(text, investmentRight - textWidth, y, fontColor);
    }
 }
 
@@ -221,6 +222,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
+   var calculateRate = event.calculateRate;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
@@ -229,14 +231,18 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var bottom = top + height;
    var drawPosition = top;
    var heightRate = height / o._size.height;
+   var drawLeft = left + 29;
+   var drawRight = right - 20;
+   var drawWidth = right - left;
+   //..........................................................
+   // 计算宽度
    var widthDefine = 0;
    for(var i = 0; i < 4; i++){
       widthDefine += o._columnDefines[i];
    }
    for(var i = 0; i < 4; i++){
-      o._columnWidths[i] = o._columnDefines[i] / widthDefine * (width - 50);
+      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 14;
    }
-   var drawLeft = left + 8;
    //..........................................................
    // 绘制背景
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
@@ -249,7 +255,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    if(o._logoImage.testReady()){
       graphic.drawImage(o._logoImage, textLeft - 77, top + 35, 62, 62);
    }
-   graphic.drawText(titleText, textLeft, top + 76, '#00B2F2');
+   graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
    drawPosition += 70
    //..........................................................
    // 绘制表头
@@ -262,9 +268,9 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    for(var i = 0; i < 4; i++){
       var headText = o._columnLabels[i];
       var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i], o._headHeight, '#122A46');
-      graphic.drawText(headText, headLeft + o._columnWidths[i] / 2 - headTextWidth / 2, headTextTop, '#00B2F2');
-      headLeft += o._columnWidths[i] + 2;
+      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
+      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
+      headLeft += o._columnWidths[i];
    }
    //..........................................................
    // 绘制前3名
@@ -277,7 +283,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
       var count = rankEntity.count();
       for(var i = 0; i < count; i++) {
          var entity = rankEntity.at(i);
-         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankHeight * i, width);
+         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankHeight * i, drawWidth);
       }
    }
    //..........................................................
@@ -290,7 +296,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
       var count = dataEntities.count();
       for(var i = 0; i < count; i++) {
          var entity = dataEntities.at(i);
-         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + o._rowHeight * i, width);
+         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + o._rowHeight * i, drawWidth);
       }
    }
 }

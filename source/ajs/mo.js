@@ -5189,6 +5189,7 @@ with(MO){
       return null;
    }
    MO.RObject = new RObject();
+   MO.Lang.Object = MO.RObject;
 }
 with(MO){
    MO.RRect = function RRect(){
@@ -5697,8 +5698,8 @@ with(MO){
       }
       return r;
    }
-   MO.RString.prototype.replace = function RString_replace(v, s, t){
-      return v.replace(new RegExp(s, 'g'), t);
+   MO.RString.prototype.replace = function RString_replace(value, source, target){
+      return value.replace(new RegExp(source, 'g'), target);
    }
    MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
       if(v != null){
@@ -10947,31 +10948,26 @@ with(MO){
    }
    MO.RListener = new RListener();
 }
-with(MO){
-   MO.RResource = function RResource(){
-      var o = this;
-      o.uriIcon     = '/ars/icon/';
-      o.uriImage    = '/ars/img/';
-      o.iconPath    = RResource_iconPath;
-      o.iconUrlPath = RResource_iconUrlPath;
-      o.imagePath   = RResource_imagePath;
-      return o;
-   }
-   MO.RResource_iconPath = function RResource_iconPath(path, type){
-      var o = this;
-      path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-      return RBrowser.contentPath('/ars/icon/' + path);
-   }
-   MO.RResource_iconUrlPath = function RResource_iconUrlPath(path, type){
-      var o = this;
-      path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-      return RBrowser.contentPath('/ars/icon/' + path);
-   }
-   MO.RResource_imagePath = function RResource_imagePath(path, type){
-      var o = this;
-   }
-   MO.RResource = new RResource();
+MO.RResource = function RResource(){
+   var o = this;
+   o.uriIcon  = '/ars/icon/';
+   o.uriImage = '/ars/img/';
+   return o;
 }
+MO.RResource.prototype.iconPath = function RResource_iconPath(path, type){
+   var o = this;
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.RBrowser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
+   var o = this;
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.RBrowser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
+   var o = this;
+}
+MO.RResource = new MO.RResource();
 with(MO){
    MO.RStyle = function RStyle(){
       var o = this;
@@ -11739,61 +11735,75 @@ with(MO){
       this._dragables.clear();
    }
 }
-with(MO){
-   MO.FEnvironment = function FEnvironment(o){
-      o = RClass.inherits(this, o, FObject);
-      o._name  = RClass.register(o, new AGetSet('_name'));
-      o._value = RClass.register(o, new AGetSet('_value'));
-      o.set    = FEnvironment_set;
-      return o;
-   }
-   MO.FEnvironment_set = function FEnvironment_set(name, value){
-      var o = this;
-      o._name = name;
-      o._value = value;
-   }
+MO.FEnvironment = function FEnvironment(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._name  = MO.Class.register(o, new MO.AGetSet('_name'));
+   o._value = MO.Class.register(o, new MO.AGetSet('_value'));
+   o.set    = MO.FEnvironment_set;
+   return o;
 }
-with(MO){
-   MO.FEnvironmentConsole = function FEnvironmentConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd      = EScope.Local;
-      o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
-      o.construct     = FEnvironmentConsole_construct;
-      o.register      = FEnvironmentConsole_register;
-      o.registerValue = FEnvironmentConsole_registerValue;
-      o.find          = FEnvironmentConsole_find;
-      o.findValue     = FEnvironmentConsole_findValue;
-      return o;
+MO.FEnvironment_set = function FEnvironment_set(name, value){
+   var o = this;
+   o._name = name;
+   o._value = value;
+}
+MO.FEnvironmentConsole = function FEnvironmentConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd      = MO.EScope.Local;
+   o._environments = MO.Class.register(o, new MO.AGetSet('_environments'));
+   o.construct     = MO.FEnvironmentConsole_construct;
+   o.register      = MO.FEnvironmentConsole_register;
+   o.registerValue = MO.FEnvironmentConsole_registerValue;
+   o.find          = MO.FEnvironmentConsole_find;
+   o.findValue     = MO.FEnvironmentConsole_findValue;
+   o.parse         = MO.FEnvironmentConsole_parse;
+   o.dispose       = MO.FEnvironmentConsole_dispose;
+   return o;
+}
+MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._environments = new MO.TDictionary();
+}
+MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
+   var o = this;
+   var name = environment.name();
+   o._environments.set(name, environment);
+}
+MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
+   var o = this;
+   var environment = MO.RClass.create(MO.FEnvironment);
+   environment.set(name, value);
+   o._environments.set(name, environment);
+   return environment;
+}
+MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
+   return this._environments.get(name);
+}
+MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
+   var o = this;
+   var value = null;
+   var environment = o._environments.get(name);
+   if(environment){
+      value = environment.value();
    }
-   MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._environments = new TDictionary();
+   return value;
+}
+MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
+   var o = this;
+   var result = value;
+   var environments = o._environments;
+   var count = environments.count();
+   for(var i = 0; i < count; i++){
+      var environment = environments.at(i);
+      result = MO.Lang.String.replace(result, '{' + environment.name() + '}', environment.value());
    }
-   MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
-      var o = this;
-      var name = environment.name();
-      o._environments.set(name, environment);
-   }
-   MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
-      var o = this;
-      var environment = MO.RClass.create(MO.FEnvironment);
-      environment.set(name, value);
-      o._environments.set(name, environment);
-      return environment;
-   }
-   MO.FEnvironmentConsole_find = function FEnvironmentConsole_find(name){
-      return this._environments.get(name);
-   }
-   MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
-      var o = this;
-      var value = null;
-      var environment = o._environments.get(name);
-      if(environment){
-         value = environment.value();
-      }
-      return value;
-   }
+   return result;
+}
+MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
+   var o = this;
+   o._environments = new TDictionary();
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -14178,7 +14188,6 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
-   console.log('resize');
    var event = o._eventResize;
    event.code = MO.EEvent.Resize;
    event.attachEvent(hEvent);
@@ -14344,7 +14353,7 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    var hWindow = o._hWindow;
    var hDocument = o._hDocument;
    var hContainer = o._hContainer;
-   if(RBrowser.supportHtml5()){
+   if(MO.Browser.supportHtml5()){
       hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
       hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
       hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
@@ -14366,18 +14375,19 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    hContainer.onresize = null;
    hContainer.onselectstart = null;
    hContainer.onunload = null;
-   o._localStorage = RObject.dispose(o._localStorage);
-   o._sessionStorage = RObject.dispose(o._sessionStorage);
+   o._localStorage = MO.RObject.dispose(o._localStorage);
+   o._sessionStorage = MO.RObject.dispose(o._sessionStorage);
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
-   o._eventMouse = RObject.dispose(o._eventMouse);
-   o._eventKey = RObject.dispose(o._eventKey);
-   o._eventResize = RObject.dispose(o._eventResize);
-   o._eventOrientation = RObject.dispose(o._eventOrientation);
-   o._eventUnload = RObject.dispose(o._eventUnload);
+   o._eventMouse = MO.RObject.dispose(o._eventMouse);
+   o._eventKey = MO.RObject.dispose(o._eventKey);
+   o._eventResize = MO.RObject.dispose(o._eventResize);
+   o._eventOrientation = MO.RObject.dispose(o._eventOrientation);
+   o._eventUnload = MO.RObject.dispose(o._eventUnload);
 }
 MO.RWindow = new MO.RWindow();
+MO.Window = MO.RWindow;
 with(MO){
    MO.RXml = function RXml(){
       var o = this;

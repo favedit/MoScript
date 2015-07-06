@@ -75,7 +75,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    // 绘制文字
    if(labelH != null){
       var textWidth = graphic.textWidth(labelNumberH);
-      graphic.drawText(labelNumberH, x, y, '#FD0000');
+      graphic.drawText(labelNumberH, x, y, '#FFD926');
       graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
    }
    if(labelM != null){
@@ -85,7 +85,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    }
    if(labelL != null){
       var textWidth = graphic.textWidth(labelNumberL);
-      graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FFD926');
+      graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
       graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
    }
 }
