@@ -12,6 +12,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._code             = MO.EEaiScene.ChartHistory;
    // @attribute
    o._ready            = false;
+   o._mapReady         = false;
    o._playing          = false;
    o._lastTick         = 0;
    o._interval         = 10;
@@ -235,7 +236,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
-   //创建里程碑框
+   // 创建里程碑框
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.setName('MilestoneFrame');
    milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
@@ -249,7 +250,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setVisible(false);
    //..........................................................
    // 隐藏全部界面
-   //o._guiManager.hide();
+   o._guiManager.hide();
 }
 
 //==========================================================
@@ -278,7 +279,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    if (dateData) {
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
-      //o._timeline.dirty();
+      o._timeline.dirty();
       // 设置城市数据
       var cityDatas = dateData.citys();
       var cityEntities = o._mapEntity.cityEntities();
@@ -364,10 +365,15 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._mapEntity._countryEntity.process();
          return;
       }
-      //o._guiManager.show();
+      // 显示界面
+      if(!o._mapReady){
+         o._guiManager.show();
+         o._milestoneFrame.setVisible(false);
+         o._mapReady = true;
+      }
+      // 计时切换日期
       var currentTick = MO.Timer.current();
-      if (currentTick - o._lastTick > o._interval) {
-         //计时切换日期
+      if(currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {
             o._currentDate.addDay(1);
             var code = o._currentDate.format('YYYYMMDD')
@@ -377,15 +383,15 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
                o.switchPlay(false);
             }
             o._lastDateTick = currentTick;
+            // 上传数据
+            o._mapEntity.upload();
          }
-         //调用重绘
+         // 调用重绘
          o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
          o._timeline.dirty();
-         //记录lastTick
+         // 记录lastTick
          o._lastTick = currentTick;
       }
-      // 上传数据
-      o._mapEntity.upload();
    }
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.dirty();

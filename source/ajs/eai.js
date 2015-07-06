@@ -3390,6 +3390,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code             = MO.EEaiScene.ChartHistory;
    o._ready            = false;
+   o._mapReady         = false;
    o._playing          = false;
    o._lastTick         = 0;
    o._interval         = 10;
@@ -3551,6 +3552,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
    milestoneFrame.setVisible(false);
+   o._guiManager.hide();
 }
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
    var o = this;
@@ -3570,6 +3572,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    }
    if (dateData) {
       o._timeline.setDegreeTime(o._currentDate);
+      o._timeline.dirty();
       var cityDatas = dateData.citys();
       var cityEntities = o._mapEntity.cityEntities();
       var count = cityEntities.count();
@@ -3625,8 +3628,13 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._mapEntity._countryEntity.process();
          return;
       }
+      if(!o._mapReady){
+         o._guiManager.show();
+         o._milestoneFrame.setVisible(false);
+         o._mapReady = true;
+      }
       var currentTick = MO.Timer.current();
-      if (currentTick - o._lastTick > o._interval) {
+      if(currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {
             o._currentDate.addDay(1);
             var code = o._currentDate.format('YYYYMMDD')
@@ -3636,12 +3644,12 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
                o.switchPlay(false);
             }
             o._lastDateTick = currentTick;
+            o._mapEntity.upload();
          }
          o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
          o._timeline.dirty();
          o._lastTick = currentTick;
       }
-      o._mapEntity.upload();
    }
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.dirty();

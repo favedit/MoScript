@@ -28,6 +28,7 @@ MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRect
       var control = controls.at(i);
       var clientRectangle = control.clientRectangle();
       if(rectangle.testRectangle(clientRectangle)){
+         control.dirty();
          dirtyControls.pushUnique(control);
       }
    }
