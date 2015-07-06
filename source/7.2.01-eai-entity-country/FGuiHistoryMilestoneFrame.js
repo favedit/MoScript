@@ -1,4 +1,4 @@
-with(MO){
+with (MO) {
    //==========================================================
    // <T>里程碑实体类。</T>
    //
@@ -20,9 +20,11 @@ with(MO){
       o._popDuration = 500;
       o._showDuration = 2000;
       o._closeDuration = 500;
+      o._fullWidth = 713;
+      o._fullHeight = 686;
       //..........................................................
       // @method
-      o.construct = FGuiHistoryMilestoneFrame_construct;
+      o.setup = FGuiHistoryMilestoneFrame_setup;
       o.onPaintBegin = FGuiHistoryMilestoneFrame_onPaintBegin;
       o.onImageLoad = FGuiHistoryMilestoneFrame_onImageLoad;
       o.show = FGuiHistoryMilestoneFrame_show;
@@ -38,9 +40,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiHistoryMilestoneFrame_construct = function FGuiHistoryMilestoneFrame_construct() {
+   MO.FGuiHistoryMilestoneFrame_setup = function FGuiHistoryMilestoneFrame_setup() {
       var o = this;
-      o.__base.FGuiControl.construct.call(o);
+
+      o.setWidth(o._fullWidth);
+      o.setHeight(o._fullHeight);
+      o.setLeft((MO.Eai.Canvas.logicSize().width - o._fullWidth) / 2);
+      o.setTop((MO.Eai.Canvas.logicSize().height));
+
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
       o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
@@ -78,12 +85,45 @@ with(MO){
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
+
       var bgSize = o._bgImage._size;
       var shiningSize = o._shiningImage._size;
+
       var hCenter = rectangle.left + rectangle.width / 2;
 
       var textLeft = hCenter - 120;
       var textTop = rectangle.top + 450;
+
+      var passedTick = MO.Timer.current() - o._startTick;
+      var showTick = passedTick - o._popDuration;
+      var closeTick = passedTick - o._showDuration - o._popDuration;
+      //var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100;
+      var p = 0;
+      if (passedTick < o._popDuration) {
+         p = passedTick / o._popDuration;
+         p = 1 - (1 - p) * (1 - p);
+         //o.setLeft(-rectangle.width + slideDistance * p);
+         graphic._handle.globalAlpha = p;
+         o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
+      }
+      else if (showTick < o._showDuration) {
+      }
+      else if (closeTick < o._closeDuration) {
+         p = closeTick / o._closeDuration;
+         p = p * p;
+         graphic._handle.globalAlpha = 1 - p;
+         //o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 100 - slideDistance * p);
+      }
+      else {
+         o._data = null;
+         o.setVisible(false);
+         o.dirty();
+         var dsEvent = MO.Memory.alloc(SEvent);
+         dsEvent.sender = o;
+         o.processDataChangedListener(dsEvent);
+      }
 
       graphic.drawImage(o._shiningImage, hCenter - shiningSize.width / 2, rectangle.top, shiningSize.width, shiningSize.height);
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top + shiningSize.height / 2, bgSize.width, bgSize.height);
@@ -105,36 +145,9 @@ with(MO){
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
-         var passedTick = MO.Timer.current() - o._startTick;
-         var showTick = passedTick - o._popDuration;
-         var closeTick = passedTick - o._showDuration - o._popDuration;
-         //var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
-         var slideDistance = (MO.Eai.Canvas.logicSize().height - rectangle.height) / 2;
-         var p = 0;
-         if (passedTick < o._popDuration) {
-            p = passedTick / o._popDuration;
-            p = 1 - (1 - p) * (1 - p);
-            //o.setLeft(-rectangle.width + slideDistance * p);
-            o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
-         }
-         else if (showTick < o._showDuration) {
-         }
-         else if (closeTick < o._closeDuration) {
-            p = closeTick / o._closeDuration;
-            p = p * p;
-            //o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-            o.setTop((MO.Eai.Canvas.logicSize().height - rectangle.height) / 2 - slideDistance * p);
-         }
-         else {
-            o._data = null;
-            o.setVisible(false);
-            o.dirty();
-            var dsEvent = MO.Memory.alloc(SEvent);
-            dsEvent.sender = o;
-            o.processDataChangedListener(dsEvent);
-         }
       }
-      
+
+      graphic._handle.globalAlpha = 1;
    }
 
    //==========================================================
@@ -153,7 +166,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose(){
+   MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose() {
       var o = this;
       o.__base.FEaiEntity.dispose.call(o);
    }
