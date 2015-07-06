@@ -254,14 +254,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
-   milestoneFrame.setVisible(false);
-   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
-   milestoneFrame.setTop(50);
-   milestoneFrame.setWidth(720);
-   milestoneFrame.setHeight(700);
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
-   milestoneFrame.build();
    milestoneFrame.setup();
+   milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
    //..........................................................
    // 隐藏全部界面

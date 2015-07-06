@@ -13,6 +13,7 @@ with (MO) {
       o._bgImage = null;
       o._shiningImage = null;
       o._numImages = null;
+      o._wanImage = null;
       o._yiImage = null;
       // @attribute
       o._data = RClass.register(o, new AGetSet('_data'));
@@ -54,6 +55,9 @@ with (MO) {
       o._shiningImage = MO.Class.create(MO.FImage);
       o._shiningImage.addLoadListener(o, o.onImageLoad);
       o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
+      o._wanImage = MO.Class.create(MO.FImage);
+      o._wanImage.addLoadListener(o, o.onImageLoad);
+      o._wanImage.loadUrl('../ars/eai/number/wan.png');
       o._yiImage = MO.Class.create(MO.FImage);
       o._yiImage.addLoadListener(o, o.onImageLoad);
       o._yiImage.loadUrl('../ars/eai/number/yi.png');
@@ -82,6 +86,10 @@ with (MO) {
    //==========================================================
    MO.FGuiHistoryMilestoneFrame_onPaintBegin = function FGuiHistoryMilestoneFrame_onPaintBegin(event) {
       var o = this;
+      if (!o._data) {
+         return;
+      }
+
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
@@ -136,12 +144,19 @@ with (MO) {
       if (o.data()) {
          //graphic.drawText(o.data().investmentTotal(), textLeft + 120, textTop, '#FFA800');
          var invesText = o.data().investmentTotal().toString();
+         if (invesText.length > 4) {
+            invesText = invesText.substring(0, invesText.length - 4);
+            var unitImage = o._yiImage;
+         }
+         else {
+            var unitImage = o._wanImage;
+         }
          var numWidth = invesText.length * 60 + 80;
          var numLeft = hCenter - numWidth / 2;
          for (var i = 0; i < invesText.length; i++) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
          }
-         graphic.drawImage(o._yiImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
+         graphic.drawImage(unitImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
