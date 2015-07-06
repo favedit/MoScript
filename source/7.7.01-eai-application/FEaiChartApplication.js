@@ -89,7 +89,13 @@ with(MO){
       // 加载资源
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
-      resourceConsole.load();
+      if(o._sceneCode == MO.EEaiScene.ChartStatistics){
+         resourceConsole.load('/chart-live.dat');
+      }else if(o._sceneCode == MO.EEaiScene.ChartHistory){
+         resourceConsole.load('/chart-history.dat');
+      }else{
+         throw new TError('Scene code is invalid.');
+      }
       //..........................................................
       // 修正画面大小
       o.processResize();

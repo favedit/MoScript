@@ -203,7 +203,8 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       var highWidth = graphic.textWidth(high);
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
-      graphic.drawText(low, investmentRight - lowWidth, y, fontColor);
+      //graphic.drawText(low, investmentRight - lowWidth, y, fontColor);
+      graphic.drawText(low, investmentRight - lowWidth, y, '#59FDE9');
    } else {
       text = investment;
       textWidth = graphic.textWidth(text);

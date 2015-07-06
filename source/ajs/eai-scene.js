@@ -127,6 +127,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerCount = 150;
    o._statusLayerLevel = 150;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onLoadHistoryData = MO.FEaiChartHistoryScene_onLoadHistoryData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -143,6 +144,12 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var code = o._currentDate.format('YYYYMMDD')
+   o.selectDate(code);
+}
+MO.FEaiChartHistoryScene_onLoadHistoryData = function FEaiChartHistoryScene_onLoadHistoryData(event) {
+   var o = this;
+   debugger
    var code = o._currentDate.format('YYYYMMDD')
    o.selectDate(code);
 }
@@ -293,6 +300,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       }
       var investmentTotal = o._logoBar.findComponent('investmentTotal');
       investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
+      o._desktop.dirty();
    }
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){

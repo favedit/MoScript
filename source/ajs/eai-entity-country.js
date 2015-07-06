@@ -601,55 +601,53 @@ with(MO){
       o.__base.FE3dRenderable.dispose.call(o);
    }
 }
-with(MO){
-   MO.FEaiCountryData = function FEaiCountryData(o){
-      o = RClass.inherits(this, o, FObject, MListener);
-      o._listenersLoad = RClass.register(o, new AListener('_listenersLoad', EEvent.Load));
-      o._provinces     = RClass.register(o, new AGetter('_provinces'));
-      o.onLoaded       = FEaiCountryData_onLoaded;
-      o.construct      = FEaiCountryData_construct;
-      o.unserialize    = FEaiCountryData_unserialize;
-      o.load           = FEaiCountryData_load;
-      o.dispose        = FEaiCountryData_dispose;
-      return o;
+MO.FEaiCountryData = function FEaiCountryData(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));
+   o.onLoaded       = MO.FEaiCountryData_onLoaded;
+   o.construct      = MO.FEaiCountryData_construct;
+   o.unserialize    = MO.FEaiCountryData_unserialize;
+   o.load           = MO.FEaiCountryData_load;
+   o.dispose        = MO.FEaiCountryData_dispose;
+   return o;
+}
+MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._provinces = new MO.TDictionary();
+}
+MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
+   var o = this;
+   var data = event.outputData();
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
+   var o = this;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var province = MO.Class.create(MO.FEaiProvinceData);
+      province.unserialize(input);
+      o._provinces.set(province.name(), province);
    }
-   MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._provinces = new TDictionary();
-   }
-   MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
-      var o = this;
-      var data = event.outputData();
-      var view = RClass.create(FDataView);
-      view.setEndianCd(true);
-      view.link(data);
-      o.unserialize(view);
-      view.dispose();
-   }
-   MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
-      var o = this;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var province = RClass.create(FEaiProvinceData);
-         province.unserialize(input);
-         o._provinces.set(province.name(), province);
-      }
-      var event = new SEvent(o);
-      o.processLoadListener(event);
-      event.dispose();
-   }
-   MO.FEaiCountryData_load = function FEaiCountryData_load(){
-      var o = this;
-      var url = '/script/ars/eai/country.dat';
-      var connection = RConsole.find(FHttpConsole).send(url);
-      connection.addLoadListener(o, o.onLoaded);
-   }
-   MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
-      var o = this;
-      o._provinces = RObject.dispose(o._provinces);
-      o.__base.FObject.dispose.call(o);
-   }
+   var event = new MO.SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
+}
+MO.FEaiCountryData_load = function FEaiCountryData_load(){
+   var o = this;
+   var url = '/script/ars/eai/country.dat';
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
+   connection.addLoadListener(o, o.onLoaded);
+}
+MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
+   var o = this;
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FEaiCountryEntity = function FEaiCountryEntity(o){
@@ -1838,7 +1836,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       var highWidth = graphic.textWidth(high);
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
-      graphic.drawText(low, investmentRight - lowWidth, y, fontColor);
+      graphic.drawText(low, investmentRight - lowWidth, y, '#59FDE9');
    } else {
       text = investment;
       textWidth = graphic.textWidth(text);

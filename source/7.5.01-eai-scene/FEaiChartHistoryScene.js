@@ -34,6 +34,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onLoadHistoryData = MO.FEaiChartHistoryScene_onLoadHistoryData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -61,6 +62,19 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
    o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var code = o._currentDate.format('YYYYMMDD')
+   o.selectDate(code);
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_onLoadHistoryData = function FEaiChartHistoryScene_onLoadHistoryData(event) {
+   var o = this;
+   debugger
    var code = o._currentDate.format('YYYYMMDD')
    o.selectDate(code);
 }
@@ -280,6 +294,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
       //total.setValue(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
       // o._totalBar.dirty();
+      o._desktop.dirty();
    }
 }
 

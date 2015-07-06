@@ -79,10 +79,21 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 //==========================================================
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
-   o._rateConsole.unserialize(input);
-   o._provinceConsole.unserialize(input);
-   o._cityConsole.unserialize(input);
-   //o._historyConsole.unserialize(input);
+   var code = input.readString();
+   if(code == "chart-live"){
+      o._rateConsole.unserialize(input);
+      o._provinceConsole.unserialize(input);
+      o._cityConsole.unserialize(input);
+      o._cardConsole.unserialize(input);
+   }else if(code == "chart-history"){
+      o._rateConsole.unserialize(input);
+      o._provinceConsole.unserialize(input);
+      o._cityConsole.unserialize(input);
+      o._cardConsole.unserialize(input);
+      o._historyConsole.unserialize(input);
+   }else{
+      throw new TError("Unserialize code failure.");
+   }
 }
 
 //==========================================================
@@ -91,9 +102,9 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
 // @method
 // @return FEaiLogicOrganization 组织逻辑
 //==========================================================
-MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(){
+MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(fileName){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/resource.dat');
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}' + fileName);
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
