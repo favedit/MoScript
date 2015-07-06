@@ -14196,10 +14196,10 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    o.lsnsOrientation.process(event);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = RWindow;
+   var o = MO.RWindow;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   RWindow.dispose();
+   MO.RWindow.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
@@ -14243,7 +14243,7 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
    top.document.title = p;
 }
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
-   window.status = RString.nvl(p);
+   window.status = MO.Lang.String.nvl(p);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;

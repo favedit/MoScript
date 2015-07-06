@@ -268,12 +268,12 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
 // @param event:htmlEvent 事件
 //==========================================================
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = RWindow;
+   var o = MO.RWindow;
    // 释放处理
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
    // 释放窗口
-   RWindow.dispose();
+   MO.RWindow.dispose();
 }
 
 //==========================================================
@@ -355,7 +355,7 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
 // @param p:status:String 状态
 //==========================================================
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
-   window.status = RString.nvl(p);
+   window.status = MO.Lang.String.nvl(p);
 }
 
 //==========================================================
