@@ -4149,7 +4149,7 @@ MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
    this._handle.font = font;
 }
 MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
-   this._handle.save;
+   this._handle.save();
 }
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();

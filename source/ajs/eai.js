@@ -3633,7 +3633,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(100 + 100 * i);
+      frame.setTop(100 + 110 * i);
       frame.setRight(20);
       var date = new MO.TDate();
       date.parse(milestone.code());
