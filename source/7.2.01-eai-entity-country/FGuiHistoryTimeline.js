@@ -88,10 +88,12 @@ with (MO) {
                graphic.setFont('bold 16px Microsoft YaHei');
                if(inves > 100000000){
                   var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
-                  graphic.drawText(text, x - text.length * 3, y - 16, '#FFE849');
+                  var textWidth = graphic.textWidth(text);
+                  graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
                }else{
                   var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-                  graphic.drawText(text, x - text.length * 3, y - 16, '#FF7200');
+                  var textWidth = graphic.textWidth(text);
+                  graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
                }
             }
             startDate.addDay(1);
@@ -116,10 +118,12 @@ with (MO) {
          graphic.setFont('bold 16px Microsoft YaHei');
          if(inves > 100000000){
             var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
-            graphic.drawText(text, x - text.length * 3, y - 16, '#FFE849');
+            var textWidth = graphic.textWidth(text);
+            graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
          }else{
             var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-            graphic.drawText(text, x - text.length * 3, y - 16, '#FF7200');
+            var textWidth = graphic.textWidth(text);
+            graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
          }
       }
       startDate.date.setTime(bakTime);
