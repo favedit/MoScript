@@ -197,8 +197,10 @@ with (MO) {
          var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
          gradient.addColorStop('0', lastColor);
          gradient.addColorStop('1', color);
-         var opGradient = graphic.createLinearGradient(lastX, 0, x, 0);
-         opGradient.addColorStop('0', lastOpColor);
+         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+         var bottomHexColor = RHex.format(rateResource.find(0));
+         var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
+         opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
          graphic.drawLine(lastX, lastY, x, y, gradient, 3);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
