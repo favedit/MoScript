@@ -24,10 +24,8 @@ with (MO) {
       o.__base.FGuiTimeline.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = event.rectangle;
-
       var top = rectangle.top;
-      var bottom = rectangle.top + rectangle.height;
-
+      var bottom = rectangle.bottom();
       var dataTop = top + 30;
       var dataBottom = bottom - 50;
       var dataHeight = dataBottom - dataTop;
@@ -44,6 +42,7 @@ with (MO) {
       var timeSpan = endDate.date.getTime() - startDate.date.getTime();
       //取最后一天为最大值
       var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+      var investmentTotal = historyConsole.investmentTotal();
       var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
       var maxInves = dateData.investmentTotal();
       var pixPer10k = dataHeight * 10000 / maxInves;
@@ -59,11 +58,9 @@ with (MO) {
          if (dateData) {
             var degreeSpan = startDate.date.getTime() - bakTime;
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-            var inves = dateData.investmentTotal();
-            var y = dataBottom - inves / 10000 * pixPer10k;
-            var rate = 1 - (y / dataHeight);
-            var colorIdx = parseInt(rateResource.count() * rate);
-            var hexColor = RHex.format(rateResource.find(colorIdx));
+            var dayInvestmentTotal = dateData.investmentTotal();
+            var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
+            var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
             var color = '#' + hexColor.substring(2);
             graphic.drawLine(lastX, lastY, x, y, color, 3);
             if (startDate.date.getDate() == 1) {
@@ -73,12 +70,11 @@ with (MO) {
             lastX = x;
             lastY = y;
             startDate.addDay(1);
-         }
-         else {
+         }else{
             break;
          }
       }
-      //后写字
+      // 后写字
       startDate.date.setTime(bakTime);
       startDate.refresh();
       while (startDate.isBefore(degreeDate)) {
@@ -89,9 +85,14 @@ with (MO) {
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
             if (startDate.date.getDate() == 1) {
-               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.setFont('bold 16px Microsoft YaHei');
-               graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+               if(inves > 100000000){
+                  var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+                  graphic.drawText(text, x - text.length * 3, y - 16, '#FFE849');
+               }else{
+                  var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+                  graphic.drawText(text, x - text.length * 3, y - 16, '#FF7200');
+               }
             }
             startDate.addDay(1);
          }
@@ -99,7 +100,7 @@ with (MO) {
             break;
          }
       }
-      //画下一天的一部分
+      // 画下一天的一部分
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
          var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
@@ -111,10 +112,15 @@ with (MO) {
          var hexColor = RHex.format(rateResource.find(colorIdx));
          var color = '#' + hexColor.substring(2);
          graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
-         var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
          graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
          graphic.setFont('bold 16px Microsoft YaHei');
-         graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
+         if(inves > 100000000){
+            var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+            graphic.drawText(text, x - text.length * 3, y - 16, '#FFE849');
+         }else{
+            var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
+            graphic.drawText(text, x - text.length * 3, y - 16, '#FF7200');
+         }
       }
       startDate.date.setTime(bakTime);
       startDate.refresh();
