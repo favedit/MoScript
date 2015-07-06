@@ -2025,6 +2025,7 @@ with (MO) {
       o._endTime          = RClass.register(o, new AGetSet('_endTime'));
       o._data             = null;
       o._ready            = false;
+      o._investmentTotal  = 0;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
       o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
@@ -2065,7 +2066,15 @@ with (MO) {
    }
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
-      o._data = event.content.collection;
+      o._investmentTotal  = 0;
+      var data = o._data = event.content.collection;
+      if(data){
+         var count = data.length;
+         for(var i = 0; i < count; i++){
+            var row = data[i];
+            o._investmentTotal += parseFloat(row.investment);
+         }
+      }
       o.dirty();
    }
    MO.FGui24HTimeline_oeUpdate = function FGui24HTimeline_oeUpdate(event) {
@@ -2178,7 +2187,6 @@ with (MO) {
       var lastHour = -1;
       var hourInves = 0;
       var maxHourInves = 0;
-      var dayTotal = 0;
       startTime.parseAuto(data[0].date);
       startTime.refresh();
       lastHour = startTime.date.getHours();
@@ -2191,7 +2199,6 @@ with (MO) {
          }else{
             if(hourInves > maxHourInves){
                maxHourInves = hourInves;
-               dayTotal += hourInves;
                hourInves = 0;
             }
             lastHour = hour;
@@ -2203,9 +2210,9 @@ with (MO) {
       var textWidth = graphic.textWidth('峰值：');
       var textHourPeakValue = MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
       var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
-      var textDayTotalValue = MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
+      var textDayTotalValue = MO.RFloat.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
       var textDayTotalWidth = graphic.textWidth(textDayTotalValue);
-      var textHourAvrgValue = MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrgValue = MO.RFloat.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
       var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
       var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
       graphic.drawText('峰值：', decoLeft, top + 30, '#00CFFF');
@@ -2224,6 +2231,7 @@ with (MO) {
       o._bgImage = null;
       o._shiningImage = null;
       o._numImages = null;
+      o._wanImage = null;
       o._yiImage = null;
       o._data = RClass.register(o, new AGetSet('_data'));
       o._startTick = 0;
@@ -2252,6 +2260,9 @@ with (MO) {
       o._shiningImage = MO.Class.create(MO.FImage);
       o._shiningImage.addLoadListener(o, o.onImageLoad);
       o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
+      o._wanImage = MO.Class.create(MO.FImage);
+      o._wanImage.addLoadListener(o, o.onImageLoad);
+      o._wanImage.loadUrl('../ars/eai/number/wan.png');
       o._yiImage = MO.Class.create(MO.FImage);
       o._yiImage.addLoadListener(o, o.onImageLoad);
       o._yiImage.loadUrl('../ars/eai/number/yi.png');
@@ -2268,6 +2279,9 @@ with (MO) {
    }
    MO.FGuiHistoryMilestoneFrame_onPaintBegin = function FGuiHistoryMilestoneFrame_onPaintBegin(event) {
       var o = this;
+      if (!o._data) {
+         return;
+      }
       o.__base.FGuiControl.onPaintBegin.call(o, event);
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
@@ -2311,12 +2325,19 @@ with (MO) {
       graphic.drawText('理财师数：', textLeft, textTop + 150, '#FFE849');
       if (o.data()) {
          var invesText = o.data().investmentTotal().toString();
+         if (invesText.length > 4) {
+            invesText = invesText.substring(0, invesText.length - 4);
+            var unitImage = o._yiImage;
+         }
+         else {
+            var unitImage = o._wanImage;
+         }
          var numWidth = invesText.length * 60 + 80;
          var numLeft = hCenter - numWidth / 2;
          for (var i = 0; i < invesText.length; i++) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
          }
-         graphic.drawImage(o._yiImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
+         graphic.drawImage(unitImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
@@ -3612,7 +3633,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(40 + 100 * i);
+      frame.setTop(100 + 100 * i);
       frame.setRight(20);
       var date = new MO.TDate();
       date.parse(milestone.code());

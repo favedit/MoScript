@@ -14,6 +14,7 @@ with (MO) {
       o._endTime          = RClass.register(o, new AGetSet('_endTime'));
       o._data             = null;
       o._ready            = false;
+      o._investmentTotal  = 0;
       // @attribute
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
@@ -77,7 +78,15 @@ with (MO) {
    //==========================================================
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
-      o._data = event.content.collection;
+      o._investmentTotal  = 0;
+      var data = o._data = event.content.collection;
+      if(data){
+         var count = data.length;
+         for(var i = 0; i < count; i++){
+            var row = data[i];
+            o._investmentTotal += parseFloat(row.investment);
+         }
+      }
       o.dirty();
    }
 
@@ -213,7 +222,6 @@ with (MO) {
       var lastHour = -1;
       var hourInves = 0;
       var maxHourInves = 0;
-      var dayTotal = 0;
       startTime.parseAuto(data[0].date);
       startTime.refresh();
       lastHour = startTime.date.getHours();
@@ -226,7 +234,6 @@ with (MO) {
          }else{
             if(hourInves > maxHourInves){
                maxHourInves = hourInves;
-               dayTotal += hourInves;
                hourInves = 0;
             }
             lastHour = hour;
@@ -240,9 +247,9 @@ with (MO) {
       var textWidth = graphic.textWidth('峰值：');
       var textHourPeakValue = MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
       var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
-      var textDayTotalValue = MO.RFloat.unitFormat(dayTotal, 0, 0, 2, 0, 10000, '万');
+      var textDayTotalValue = MO.RFloat.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
       var textDayTotalWidth = graphic.textWidth(textDayTotalValue);
-      var textHourAvrgValue = MO.RFloat.unitFormat(dayTotal / 24, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrgValue = MO.RFloat.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
       var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
       var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
       graphic.drawText('峰值：', decoLeft, top + 30, '#00CFFF');

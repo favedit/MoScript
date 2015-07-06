@@ -118,7 +118,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    }
    // 脏处理
    var graphic = o._canvas.context();
-   //o._statusDirty = true;
+   // o._statusDirty = true;
    if(o._statusDirty){
       // 重绘全部控件
       graphic.clear();
