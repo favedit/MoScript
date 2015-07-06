@@ -24,6 +24,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._endDate               = null;
    o._currentDate           = null;
    // @attribute
+   o._logoBar               = null;
    o._timeline              = null;
    o._liveTable             = null;
    o._livePop               = null;
@@ -99,6 +100,11 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    o._currentDate.parseAuto('20140701');
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
+   //..........................................................
+   // 显示LOGO页面
+   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   frame.setLocation(5, 5);
+   o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
@@ -181,7 +187,17 @@ MO.FEaiChartStatisticsScene_processResize = function FEaiChartStatisticsScene_pr
    // 重新设置矩阵
    o.fixMatrix(o._investment.display().matrix());
    //..........................................................
-   // 创建时间轴
+   // 设置大小
+   var frame = o._logoBar;
+   if(MO.RBrowser.isOrientationVertical()){
+      //frame.setLocation(0, 10);
+      //frame.setScale(0.8, 0.8);
+   }else{
+      //frame.setLocation(0, 10);
+      //frame.setSize(1, 1);
+   }
+   //..........................................................
+   // 设置时间轴
    var timeline = o._timeline;
    if(MO.RBrowser.isOrientationVertical()){
       timeline.setDockCd(MO.EGuiDock.Bottom);
@@ -203,7 +219,7 @@ MO.FEaiChartStatisticsScene_processResize = function FEaiChartStatisticsScene_pr
       timeline.setHeight(250);
    }
    //..........................................................
-   // 创建表格
+   // 设置表格
    var liveTable = o._liveTable;
    if(MO.RBrowser.isOrientationVertical()){
       liveTable.setDockCd(MO.EGuiDock.Bottom);
@@ -286,5 +302,16 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._investment.invementTotalCurrent();
       investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      //..........................................................
+      // 更新时间
+      if(o._nowTicker.process()){
+         var bar = o._logoBar;
+         var date = o._nowDate;
+         date.setNow();
+         var dateControl = bar.findComponent('date');
+         dateControl.setLabel(date.format('YYYY/MM/DD'));
+         var timeControl = bar.findComponent('time');
+         timeControl.setLabel(date.format('HH24:MI'));
+      }
    }
 }

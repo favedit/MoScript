@@ -22,7 +22,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRangeRenderable = null;
    o._citysRenderable      = null;
    // @attribute
-   o._logoBar              = null;
    o._titleBar             = null;
    // @attribute
    o._flagSprite           = null;
@@ -212,12 +211,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
    //..........................................................
-   // 显示左上
-   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   //frame.setScale(0.5, 0.5);
-   frame.setLocation(5, 5);
-   o._guiManager.register(frame);
-   //..........................................................
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
@@ -278,15 +271,6 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    o.fixMatrix(o._countryBorderDisplay.matrix());
    o.fixMatrix(o._citysRangeRenderable.matrix());
    o.fixMatrix(o._citysRenderable.matrix());
-   // 设置大小
-   var frame = o._logoBar;
-   if(MO.RBrowser.isOrientationVertical()){
-      //frame.setLocation(0, 10);
-      //frame.setScale(0.8, 0.8);
-   }else{
-      //frame.setLocation(0, 10);
-      //frame.setSize(1, 1);
-   }
 }
 
 //==========================================================
@@ -303,16 +287,6 @@ MO.FEaiChartScene_process = function FEaiChartScene_process(){
    //   matrix.ry += 0.005;
    //   matrix.updateForce();
    //}
-   // 更新时间
-   if(o._nowTicker.process()){
-      var bar = o._logoBar;
-      var date = o._nowDate;
-      date.setNow();
-      var dateControl = bar.findComponent('date');
-      dateControl.setLabel(date.format('YYYY/MM/DD'));
-      var timeControl = bar.findComponent('time');
-      timeControl.setLabel(date.format('HH24:MI'));
-   }
 }
 
 //==========================================================

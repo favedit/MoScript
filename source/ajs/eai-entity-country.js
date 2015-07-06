@@ -1475,23 +1475,24 @@ with(MO){
          var passedTick = MO.Timer.current() - o._startTick;
          var showTick = passedTick - o._popDuration;
          var closeTick = passedTick - o._showDuration - o._popDuration;
-         var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
+         var slideDistance = (MO.Eai.Canvas.logicSize().height - rectangle.height) / 2;
          var p = 0;
          if (passedTick < o._popDuration) {
             p = passedTick / o._popDuration;
             p = 1 - (1 - p) * (1 - p);
-            o.setLeft(-rectangle.width + slideDistance * p);
+            o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
          }
          else if (showTick < o._showDuration) {
          }
          else if (closeTick < o._closeDuration) {
             p = closeTick / o._closeDuration;
             p = p * p;
-            o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
+            o.setTop((MO.Eai.Canvas.logicSize().height - rectangle.height) / 2 - slideDistance * p);
          }
          else {
             o._data = null;
             o.setVisible(false);
+            o.dirty();
             var dsEvent = MO.Memory.alloc(SEvent);
             dsEvent.sender = o;
             o.processDataChangedListener(dsEvent);

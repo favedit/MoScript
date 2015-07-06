@@ -22,6 +22,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._endDate          = null;
    o._currentDate      = null;
    // @attribute
+   o._logoBar          = null;
    o._playButton       = null;
    o._pauseButton      = null;
    o._buttonTransform  = null;
@@ -160,6 +161,11 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._citysRangeRenderable.setVisible(false);
    o._citysRenderable.setVisible(false);
    //..........................................................
+   // 显示LOGO页面
+   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
+   frame.setLocation(5, 5);
+   o._guiManager.register(frame);
+   //..........................................................
    // 创建城市图示
    var control = o._playButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
@@ -209,12 +215,19 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       var milestone = milestones.at(i);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(25 + 90 * i);
+      frame.setTop(40 + 100 * i);
       frame.setRight(20);
       var date = new MO.TDate();
       date.parse(milestone.code());
       frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      frame.findComponent('total').setLabel(parseInt(milestone.investmentTotal()) + '亿');
+      var label = null;
+      var milestoneInvestmentTotal = milestone.investmentTotal();
+      if(milestoneInvestmentTotal >= 10000){
+         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
+      }else{
+         label = parseInt(milestoneInvestmentTotal) + '万';
+      }
+      frame.findComponent('total').setLabel(label);
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
@@ -240,12 +253,15 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    // 创建里程碑框
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.setName('MilestoneFrame');
+   milestoneFrame.setVisible(false);
+   milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
+   milestoneFrame.setTop(50);
+   milestoneFrame.setWidth(720);
+   milestoneFrame.setHeight(700);
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
    milestoneFrame.linkGraphicContext(o);
-   milestoneFrame.setup();
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
-   milestoneFrame.setVisible(false);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -286,7 +302,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       o._milestoneFrame.dirty();
       o.switchPlay(false);
    }
-   if (dateData) {
+   if(dateData){
       // 更新时间轴
       o._timeline.setDegreeTime(o._currentDate);
       o._timeline.dirty();
@@ -301,8 +317,10 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          cityEntity.update(data);
       }
       // 设置数据
-      var investmentTotal = o._logoBar.findComponent('investmentTotal');
-      investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
+      var controlDate = o._logoBar.findComponent('date');
+      //controlDate.setValue(code);
+      var controlInvestment = o._logoBar.findComponent('investment');
+      controlInvestment.setLabel(parseInt(dateData.investmentTotal()).toString());
    }
 }
 
@@ -371,7 +389,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
       // 播放地图
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if(!o._mapReady){

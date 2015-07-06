@@ -34197,6 +34197,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
    }
    var graphic = o._canvas.context();
+   o._statusDirty = true;
    if(o._statusDirty){
       graphic.clear();
       var readyCount = readyControls.count();
