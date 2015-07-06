@@ -56,10 +56,10 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    graphic.drawText(year, x, y, '#FFD926');
    graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
    var textWidth = graphic.textWidth(month);
-   graphic.drawText(month, x + widthYear, y, '#FF7200');
+   graphic.drawText(month, x + widthYear, y, '#FFD926');
    graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
    var textWidth = graphic.textWidth(day);
-   graphic.drawText(day, x + widthYear + widthMonth, y, '#FD0000');
+   graphic.drawText(day, x + widthYear + widthMonth, y, '#FFD926');
    graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
 }
 

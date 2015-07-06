@@ -116,7 +116,6 @@ with (MO) {
          graphic.setFont('bold 16px Microsoft YaHei');
          graphic.drawText(text, x - text.length * 3, y - 16, '#FFFFFF');
       }
-
       startDate.date.setTime(bakTime);
       startDate.refresh();
    }

@@ -1352,7 +1352,6 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
    }
    var graphic = o._canvas.context();
-   o._statusDirty = true;
    if(o._statusDirty){
       graphic.clear();
       var readyCount = readyControls.count();
@@ -1890,11 +1889,11 @@ with (MO) {
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
       graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
       graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
-      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#FFFFFF', 1);
-      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#FFFFFF', 1);
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', 1);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', 1);
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#FFFFFF', 3);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', 3);
       var startTime = o.startTime();
       var endTime = o.endTime();
       var degreeTime = o.degreeTime();

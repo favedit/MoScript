@@ -265,7 +265,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setDockCd(MO.EGuiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
-   timeline.setRight(350);
+   timeline.setRight(450);
    timeline.setBottom(50);
    timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
