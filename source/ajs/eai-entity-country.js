@@ -71,6 +71,7 @@ with(MO){
       o._color                  = RClass.register(o, new AGetter('_color'));
       o._range                  = RClass.register(o, new AGetter('_range'), 1);
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
+      o._cityTotal              = 0;
       o._investmentCount        = 0;
       o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
       o._investmentLevelTotal   = 20000;
@@ -138,25 +139,33 @@ with(MO){
    }
    MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
       var o = this;
+      o._visible = false;
+      o._alpha = 0;
+      o._cityTotal = 0;
+      o._color.set(0, 0, 0, 0);
+      o._rangeColor.set(0, 0, 0, 0);
    }
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
       var range = 1;
-      o._visible = true;
       o._color.set(1, 1, 1, 1);
       o._rangeColor.set(1, 1, 1, 1);
       if(data){
-         var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
-         var investmentCityTotal = historyConsole.investmentCityTotal();
-         var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
-         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 4;
-         var color = rateInfo.findRate(rate);
-         range = rate * 6;
-         rate = RFloat.toRange(rate, 0, 1);
-         o._rangeColor.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 1);
-      }else{
-         o._rangeColor.set(0, 0, 0, 0);
+         o._cityTotal = data.investmentTotal();
       }
+      var total = o._cityTotal;
+      if(total > 0){
+         o._visible = true;
+      }
+      var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
+      var investmentCityTotal = historyConsole.investmentCityTotal();
+      var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
+      var rate = Math.sqrt(total / investmentCityTotal) * 4;
+      var color = rateInfo.findRate(rate);
+      range = rate * 6;
+      rate = RFloat.toRange(rate, 0, 1);
+      o._alpha = RFloat.toRange(rate * 1.5, 0, 1);
+      o._rangeColor.setIntAlpha(color, rate * 0.6);
       o._range = RFloat.toRange(Math.sqrt(range), 1, 6);
    }
    MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
@@ -541,8 +550,9 @@ with(MO){
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
          var city = citys.at(i);
-         var range = city._range * 255;
          if(city.visible()){
+            var range = city.range() * 255;
+            var alpha = city.alpha();
             var location = city.location();
             var level = city.data().level();
             if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
@@ -575,7 +585,7 @@ with(MO){
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * o._alpha * 255);
+            var alpha = parseInt(color.alpha * alpha * 255);
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;
@@ -1337,8 +1347,10 @@ with (MO) {
          var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
          gradient.addColorStop('0', lastColor);
          gradient.addColorStop('1', color);
-         var opGradient = graphic.createLinearGradient(lastX, 0, x, 0);
-         opGradient.addColorStop('0', lastOpColor);
+         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+         var bottomHexColor = RHex.format(rateResource.find(0));
+         var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
+         opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
          graphic.drawLine(lastX, lastY, x, y, gradient, 3);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
@@ -1510,7 +1522,7 @@ with (MO) {
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
       var dataTop = top + 30;
-      var dataBottom = bottom - 30;
+      var dataBottom = bottom - 50;
       var dataHeight = dataBottom - dataTop;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
       var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();

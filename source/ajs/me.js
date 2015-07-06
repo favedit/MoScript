@@ -5795,6 +5795,7 @@ with(MO){
       o.assignPower  = SColor4_assignPower;
       o.set          = SColor4_set;
       o.setInteger   = SColor4_setInteger;
+      o.setIntAlpha  = SColor4_setIntAlpha;
       o.setHex       = SColor4_setHex;
       o.serialize    = SColor4_serialize;
       o.unserialize  = SColor4_unserialize;
@@ -5832,6 +5833,13 @@ with(MO){
       o.green = ((value >> 8) & 0xFF) / 255;
       o.blue = (value & 0xFF) / 255;
       o.alpha = ((value >> 24) & 0xFF) / 255;
+   }
+   MO.SColor4_setIntAlpha = function SColor4_setIntAlpha(value, alpha){
+      var o = this;
+      o.red = ((value >> 16) & 0xFF) / 255;
+      o.green = ((value >> 8) & 0xFF) / 255;
+      o.blue = (value & 0xFF) / 255;
+      o.alpha = alpha;
    }
    MO.SColor4_setHex = function SColor4_setHex(value){
       var o = this;
@@ -33723,6 +33731,7 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    if(renderable){
       renderable.setVisible(flag);
    }
+   o.dirty();
 }
 MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;
@@ -34719,7 +34728,7 @@ with (MO) {
       var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
-      var middle = bottom - 30;
+      var middle = bottom - 50;
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -34772,11 +34781,13 @@ with (MO) {
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
-      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
+      var degreeTextWidth = graphic.textWidth(degreeText);
+      graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       var text;
       var bakTime = startTime.date.getTime();
       graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', 1);
-      graphic.drawText(startText, dataLeft - startText.length * 5, middle + 20, '#FFFFFF');
+      var startTextWidth = graphic.textWidth(startText);
+      graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 20, '#FFFFFF');
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
             startTime.addMseconds(1000);
@@ -34846,7 +34857,8 @@ with (MO) {
                return;
          }
          graphic.setFont('bold 16px Microsoft YaHei');
-         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
+         var textWidth = graphic.textWidth(text);
+         graphic.drawText(text, x - textWidth / 2, middle + 20, '#FFFFFF');
       }
       var span = endTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);

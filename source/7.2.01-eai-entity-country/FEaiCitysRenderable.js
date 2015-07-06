@@ -186,8 +186,9 @@ with(MO){
       var colorData = new Uint8Array(4 * vertexCount);
       for(var i = 0; i < total; i++){
          var city = citys.at(i);
-         var range = city._range * 255;
          if(city.visible()){
+            var range = city.range() * 255;
+            var alpha = city.alpha();
             var location = city.location();
             var level = city.data().level();
             if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
@@ -223,7 +224,7 @@ with(MO){
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * o._alpha * 255);
+            var alpha = parseInt(color.alpha * alpha * 255);
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;

@@ -18,6 +18,7 @@ with(MO){
       o._range                  = RClass.register(o, new AGetter('_range'), 1);
       o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
       // @attribute
+      o._cityTotal              = 0;
       o._investmentCount        = 0;
       o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
       o._investmentLevelTotal   = 20000;
@@ -130,6 +131,11 @@ with(MO){
    //==========================================================
    MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
       var o = this;
+      o._visible = false;
+      o._alpha = 0;
+      o._cityTotal = 0;
+      o._color.set(0, 0, 0, 0);
+      o._rangeColor.set(0, 0, 0, 0);
    }
 
    //==========================================================
@@ -141,21 +147,25 @@ with(MO){
    MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       var o = this;
       var range = 1;
-      o._visible = true;
       o._color.set(1, 1, 1, 1);
       o._rangeColor.set(1, 1, 1, 1);
       if(data){
-         var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
-         var investmentCityTotal = historyConsole.investmentCityTotal();
-         var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
-         var rate = Math.sqrt(data.investmentTotal() / investmentCityTotal) * 4;
-         var color = rateInfo.findRate(rate);
-         range = rate * 6;
-         rate = RFloat.toRange(rate, 0, 1);
-         o._rangeColor.set(((color >> 16) & 0xFF) / 255, ((color >> 8) & 0xFF) / 255, ((color >> 0) & 0xFF) / 255, rate * 1);
-      }else{
-         o._rangeColor.set(0, 0, 0, 0);
+         o._cityTotal = data.investmentTotal();
       }
+      var total = o._cityTotal;
+      if(total > 0){
+         o._visible = true;
+      }
+      // 计算数值
+      var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
+      var investmentCityTotal = historyConsole.investmentCityTotal();
+      var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
+      var rate = Math.sqrt(total / investmentCityTotal) * 4;
+      var color = rateInfo.findRate(rate);
+      range = rate * 6;
+      rate = RFloat.toRange(rate, 0, 1);
+      o._alpha = RFloat.toRange(rate * 1.5, 0, 1);
+      o._rangeColor.setIntAlpha(color, rate * 0.6);
       o._range = RFloat.toRange(Math.sqrt(range), 1, 6);
    }
 

@@ -196,6 +196,17 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate.parseAuto(startDD._code);
    o._startDate.parseAuto(startDD._code);
    o._endDate.parseAuto(endDD._code);
+   o._citysRangeRenderable.setVisible(false);
+   o._citysRenderable.setVisible(false);
+   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
+   control.linkGraphicContext(o);
+   control.setLocation(30, 300);
+   control.setSize(120, 120);
+   control.setBackResource('url:/script/ars/eai/city-level.png');
+   control.psInitialize();
+   control.build();
+   control.setVisible(true);
+   o._guiManager.register(control);
    var control = o._playButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
    control.setLocation(40, 730);
@@ -346,6 +357,8 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          return;
       }
       if(!o._mapReady){
+         o._citysRangeRenderable.setVisible(true);
+         o._citysRenderable.setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
          o._mapReady = true;

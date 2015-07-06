@@ -886,6 +886,7 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    if(renderable){
       renderable.setVisible(flag);
    }
+   o.dirty();
 }
 MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;

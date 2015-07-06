@@ -331,6 +331,8 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    if(renderable){
       renderable.setVisible(flag);
    }
+   // 脏处理
+   o.dirty();
 }
 
 //==========================================================

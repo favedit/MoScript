@@ -157,6 +157,19 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._startDate.parseAuto(startDD._code);
    o._endDate.parseAuto(endDD._code);
    //..........................................................
+   o._citysRangeRenderable.setVisible(false);
+   o._citysRenderable.setVisible(false);
+   //..........................................................
+   // 创建城市图示
+   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
+   control.linkGraphicContext(o);
+   control.setLocation(30, 300);
+   control.setSize(120, 120);
+   control.setBackResource('url:/script/ars/eai/city-level.png');
+   control.psInitialize();
+   control.build();
+   control.setVisible(true);
+   o._guiManager.register(control);
    // 创建播放按键
    var control = o._playButton = MO.Class.create(MO.FGuiPicture);
    control.linkGraphicContext(o);
@@ -214,7 +227,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
    timeline.setRight(350);
-   timeline.setBottom(20);
+   timeline.setBottom(50);
    timeline.setHeight(500);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
@@ -362,6 +375,8 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
       }
       // 显示界面
       if(!o._mapReady){
+         o._citysRangeRenderable.setVisible(true);
+         o._citysRenderable.setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
          o._mapReady = true;
