@@ -29,7 +29,7 @@ with (MO) {
       var bottom = rectangle.top + rectangle.height;
 
       var dataTop = top + 30;
-      var dataBottom = bottom - 30;
+      var dataBottom = bottom - 50;
       var dataHeight = dataBottom - dataTop;
 
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();

@@ -44,7 +44,7 @@ with (MO) {
 
       var top = rectangle.top;
       var bottom = rectangle.top + rectangle.height;
-      var middle = bottom - 30;
+      var middle = bottom - 50;
 
       var decoLeft = rectangle.left + 5;
       var decoRight = rectangle.left + rectangle.width - 5;
@@ -103,13 +103,15 @@ with (MO) {
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
       graphic.setFont('bold 16px Microsoft YaHei');
-      graphic.drawText(degreeText, degreeX - degreeText.length * 3, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
+      var degreeTextWidth = graphic.textWidth(degreeText);
+      graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
       //刻度
       var text;
       var bakTime = startTime.date.getTime();
       //开始刻度
       graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', 1);
-      graphic.drawText(startText, dataLeft - startText.length * 5, middle + 20, '#FFFFFF');
+      var startTextWidth = graphic.textWidth(startText);
+      graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 20, '#FFFFFF');
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
             startTime.addMseconds(1000);
@@ -180,7 +182,8 @@ with (MO) {
                return;
          }
          graphic.setFont('bold 16px Microsoft YaHei');
-         graphic.drawText(text, x - text.length * 3, middle + 20, '#FFFFFF');
+         var textWidth = graphic.textWidth(text);
+         graphic.drawText(text, x - textWidth / 2, middle + 20, '#FFFFFF');
       }
       //结束刻度
       var span = endTime.date.getTime() - bakTime;
