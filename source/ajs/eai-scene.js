@@ -291,6 +291,8 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
+      var investmentTotal = o._logoBar.findComponent('investmentTotal');
+      investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
    }
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
@@ -330,11 +332,11 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          }
       }
    }
-   if (!o._mapEntity._countryEntity.introAnimeDone()) {
-      o._mapEntity._countryEntity.process();
-      return;
-   }
    if (o._playing) {
+      if(!o._mapEntity._countryEntity.introAnimeDone()){
+         o._mapEntity._countryEntity.process();
+         return;
+      }
       var currentTick = MO.Timer.current();
       if (currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {

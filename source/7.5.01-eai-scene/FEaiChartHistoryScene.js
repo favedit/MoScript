@@ -233,6 +233,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
    milestoneFrame.setVisible(false);
+   //..........................................................
+   // 隐藏全部界面
+   //o._guiManager.hide();
 }
 
 //==========================================================
@@ -272,9 +275,10 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
          var data = cityDatas.get(code);
          cityEntity.update(data);
       }
-      // var total = o._totalBar.findComponent('total');
-      // total.setLabel(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
-      // total.setLabel(parseInt(dateData.investmentTotal()).toString());
+      // 设置数据
+      var investmentTotal = o._logoBar.findComponent('investmentTotal');
+      investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
+      //total.setValue(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
       // o._totalBar.dirty();
    }
 }
@@ -321,7 +325,6 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-
    // 检测首次播放
    if(!o._statusStart){
       if(o.testReady()){
@@ -340,14 +343,14 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          }
       }
    }
-
-   if (!o._mapEntity._countryEntity.introAnimeDone()) {
-      o._mapEntity._countryEntity.process();
-      return;
-   }
-
    // 重复播放
    if (o._playing) {
+      // 播放地图
+      if(!o._mapEntity._countryEntity.introAnimeDone()){
+         o._mapEntity._countryEntity.process();
+         return;
+      }
+      //o._guiManager.show();
       var currentTick = MO.Timer.current();
       if (currentTick - o._lastTick > o._interval) {
          //计时切换日期
