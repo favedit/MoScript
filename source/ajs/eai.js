@@ -2218,7 +2218,7 @@ with (MO) {
       startTime.refresh();
    }
 }
-with(MO){
+with (MO) {
    MO.FGuiHistoryMilestoneFrame = function FGuiHistoryMilestoneFrame(o) {
       o = RClass.inherits(this, o, FGuiControl);
       o._bgImage = null;
@@ -2230,7 +2230,9 @@ with(MO){
       o._popDuration = 500;
       o._showDuration = 2000;
       o._closeDuration = 500;
-      o.construct = FGuiHistoryMilestoneFrame_construct;
+      o._fullWidth = 713;
+      o._fullHeight = 686;
+      o.setup = FGuiHistoryMilestoneFrame_setup;
       o.onPaintBegin = FGuiHistoryMilestoneFrame_onPaintBegin;
       o.onImageLoad = FGuiHistoryMilestoneFrame_onImageLoad;
       o.show = FGuiHistoryMilestoneFrame_show;
@@ -2238,9 +2240,12 @@ with(MO){
       o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
       return o;
    }
-   MO.FGuiHistoryMilestoneFrame_construct = function FGuiHistoryMilestoneFrame_construct() {
+   MO.FGuiHistoryMilestoneFrame_setup = function FGuiHistoryMilestoneFrame_setup() {
       var o = this;
-      o.__base.FGuiControl.construct.call(o);
+      o.setWidth(o._fullWidth);
+      o.setHeight(o._fullHeight);
+      o.setLeft((MO.Eai.Canvas.logicSize().width - o._fullWidth) / 2);
+      o.setTop((MO.Eai.Canvas.logicSize().height));
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
       o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
@@ -2271,6 +2276,33 @@ with(MO){
       var hCenter = rectangle.left + rectangle.width / 2;
       var textLeft = hCenter - 120;
       var textTop = rectangle.top + 450;
+      var passedTick = MO.Timer.current() - o._startTick;
+      var showTick = passedTick - o._popDuration;
+      var closeTick = passedTick - o._showDuration - o._popDuration;
+      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100;
+      var p = 0;
+      if (passedTick < o._popDuration) {
+         p = passedTick / o._popDuration;
+         p = 1 - (1 - p) * (1 - p);
+         graphic._handle.globalAlpha = p;
+         o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
+      }
+      else if (showTick < o._showDuration) {
+      }
+      else if (closeTick < o._closeDuration) {
+         p = closeTick / o._closeDuration;
+         p = p * p;
+         graphic._handle.globalAlpha = 1 - p;
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 100 - slideDistance * p);
+      }
+      else {
+         o._data = null;
+         o.setVisible(false);
+         o.dirty();
+         var dsEvent = MO.Memory.alloc(SEvent);
+         dsEvent.sender = o;
+         o.processDataChangedListener(dsEvent);
+      }
       graphic.drawImage(o._shiningImage, hCenter - shiningSize.width / 2, rectangle.top, shiningSize.width, shiningSize.height);
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top + shiningSize.height / 2, bgSize.width, bgSize.height);
       graphic.setFont('bold 20px Microsoft YaHei');
@@ -2288,39 +2320,15 @@ with(MO){
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
-         var passedTick = MO.Timer.current() - o._startTick;
-         var showTick = passedTick - o._popDuration;
-         var closeTick = passedTick - o._showDuration - o._popDuration;
-         var slideDistance = (MO.Eai.Canvas.logicSize().height - rectangle.height) / 2;
-         var p = 0;
-         if (passedTick < o._popDuration) {
-            p = passedTick / o._popDuration;
-            p = 1 - (1 - p) * (1 - p);
-            o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
-         }
-         else if (showTick < o._showDuration) {
-         }
-         else if (closeTick < o._closeDuration) {
-            p = closeTick / o._closeDuration;
-            p = p * p;
-            o.setTop((MO.Eai.Canvas.logicSize().height - rectangle.height) / 2 - slideDistance * p);
-         }
-         else {
-            o._data = null;
-            o.setVisible(false);
-            o.dirty();
-            var dsEvent = MO.Memory.alloc(SEvent);
-            dsEvent.sender = o;
-            o.processDataChangedListener(dsEvent);
-         }
       }
+      graphic._handle.globalAlpha = 1;
    }
    MO.FGuiHistoryMilestoneFrame_show = function FGuiHistoryMilestoneFrame_show() {
       o = this;
       o.setVisible(true);
       o._startTick = MO.Timer.current();
    }
-   MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose(){
+   MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose() {
       var o = this;
       o.__base.FEaiEntity.dispose.call(o);
    }
@@ -2764,56 +2772,34 @@ MO.FEaiStatisticsDate = function FEaiStatisticsDate(o){
 }
 MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(event){
    var o = this;
-   return;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    if(o._foreFont){
       graphic.setFont(o._foreFont);
    }
-   var text = '';
+   var year = o._value.format('YYYY');
+   var month = o._value.format('MM');
+   var day = o._value.format('DD');
    var label = o._label;
    var labelLength = label.length;
-   var labelNumberH = null;
-   var labelH = null;
-   if(labelLength > 8){
-      labelNumberH = label.substring(0, labelLength - 8);
-      labelH = labelNumberH + '亿';
-      text += labelH;
-   }
-   var labelNumberM = null;
-   var labelM = null;
-   if(labelLength > 4){
-      labelNumberM = label.substring(labelLength - 8, labelLength - 4);
-      labelM = labelNumberM + '万';
-      text += labelM;
-   }
-   var labelNumberL = null;
-   var labelL = null;
-   if(labelLength > 0){
-      labelNumberL = label.substring(labelLength - 4, labelLength);
-      labelL = labelNumberL + '元';
-      text += labelL;
-   }
+   var yearValue = year + '年';
+   var monthValue = month + '月';
+   var dayValue = day + '日';
+   var text = yearValue + monthValue + dayValue;
    var width = graphic.textWidth(text);
-   var widthH = graphic.textWidth(labelH);
-   var widthM = graphic.textWidth(labelM);
+   var widthYear = graphic.textWidth(yearValue);
+   var widthMonth = graphic.textWidth(monthValue);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
-   if(labelH != null){
-      var textWidth = graphic.textWidth(labelNumberH);
-      graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
-   }
-   if(labelM != null){
-      var textWidth = graphic.textWidth(labelNumberM);
-      graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
-   }
-   if(labelL != null){
-      var textWidth = graphic.textWidth(labelNumberL);
-      graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
-   }
+   var textWidth = graphic.textWidth(year);
+   graphic.drawText(year, x, y, '#FFD926');
+   graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
+   var textWidth = graphic.textWidth(month);
+   graphic.drawText(month, x + widthYear, y, '#FF7200');
+   graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
+   var textWidth = graphic.textWidth(day);
+   graphic.drawText(day, x + widthYear + widthMonth, y, '#FD0000');
+   graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
 }
 MO.FEaiStatisticsDate_construct = function FEaiStatisticsDate_construct(){
    var o = this;
@@ -3636,6 +3622,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    }
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
+   timeline.linkGraphicContext(o);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
@@ -3648,10 +3635,10 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
    timeline.addDataChangedListener(o, o.onDateSelect);
-   timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
+   milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
    milestoneFrame.setVisible(false);
    milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
@@ -3659,8 +3646,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setWidth(720);
    milestoneFrame.setHeight(700);
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
-   milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
+   milestoneFrame.setup();
    o._guiManager.register(milestoneFrame);
    o._guiManager.hide();
 }
@@ -3693,11 +3680,12 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
-         var code = cityEntity.data().code();
-         var data = cityDatas.get(code);
+         var cityCode = cityEntity.data().code();
+         var data = cityDatas.get(cityCode);
          cityEntity.update(data);
       }
       var controlDate = o._logoBar.findComponent('date');
+      controlDate.setValue(code);
       var controlInvestment = o._logoBar.findComponent('investment');
       controlInvestment.setLabel(parseInt(dateData.investmentTotal()).toString());
    }
@@ -3742,6 +3730,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
+         return;
       }
       if(!o._mapReady){
          o._citysRangeRenderable.setVisible(true);

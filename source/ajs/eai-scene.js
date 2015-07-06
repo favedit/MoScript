@@ -260,6 +260,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    }
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
+   timeline.linkGraphicContext(o);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EGuiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
@@ -272,10 +273,10 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);
    timeline.addDataChangedListener(o, o.onDateSelect);
-   timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
+   milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
    milestoneFrame.setVisible(false);
    milestoneFrame.setLeft(MO.Eai.Canvas.logicSize().width / 2 - 360);
@@ -283,8 +284,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setWidth(720);
    milestoneFrame.setHeight(700);
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
-   milestoneFrame.linkGraphicContext(o);
    milestoneFrame.build();
+   milestoneFrame.setup();
    o._guiManager.register(milestoneFrame);
    o._guiManager.hide();
 }
@@ -317,11 +318,12 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
-         var code = cityEntity.data().code();
-         var data = cityDatas.get(code);
+         var cityCode = cityEntity.data().code();
+         var data = cityDatas.get(cityCode);
          cityEntity.update(data);
       }
       var controlDate = o._logoBar.findComponent('date');
+      controlDate.setValue(code);
       var controlInvestment = o._logoBar.findComponent('investment');
       controlInvestment.setLabel(parseInt(dateData.investmentTotal()).toString());
    }
@@ -366,6 +368,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    if (o._playing) {
       if(!o._mapEntity._countryEntity.introAnimeDone()){
          o._mapEntity._countryEntity.process();
+         return;
       }
       if(!o._mapReady){
          o._citysRangeRenderable.setVisible(true);

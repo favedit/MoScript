@@ -9,56 +9,34 @@ MO.FEaiStatisticsDate = function FEaiStatisticsDate(o){
 }
 MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(event){
    var o = this;
-   return;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    if(o._foreFont){
       graphic.setFont(o._foreFont);
    }
-   var text = '';
+   var year = o._value.format('YYYY');
+   var month = o._value.format('MM');
+   var day = o._value.format('DD');
    var label = o._label;
    var labelLength = label.length;
-   var labelNumberH = null;
-   var labelH = null;
-   if(labelLength > 8){
-      labelNumberH = label.substring(0, labelLength - 8);
-      labelH = labelNumberH + '亿';
-      text += labelH;
-   }
-   var labelNumberM = null;
-   var labelM = null;
-   if(labelLength > 4){
-      labelNumberM = label.substring(labelLength - 8, labelLength - 4);
-      labelM = labelNumberM + '万';
-      text += labelM;
-   }
-   var labelNumberL = null;
-   var labelL = null;
-   if(labelLength > 0){
-      labelNumberL = label.substring(labelLength - 4, labelLength);
-      labelL = labelNumberL + '元';
-      text += labelL;
-   }
+   var yearValue = year + '年';
+   var monthValue = month + '月';
+   var dayValue = day + '日';
+   var text = yearValue + monthValue + dayValue;
    var width = graphic.textWidth(text);
-   var widthH = graphic.textWidth(labelH);
-   var widthM = graphic.textWidth(labelM);
+   var widthYear = graphic.textWidth(yearValue);
+   var widthMonth = graphic.textWidth(monthValue);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
-   if(labelH != null){
-      var textWidth = graphic.textWidth(labelNumberH);
-      graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
-   }
-   if(labelM != null){
-      var textWidth = graphic.textWidth(labelNumberM);
-      graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
-   }
-   if(labelL != null){
-      var textWidth = graphic.textWidth(labelNumberL);
-      graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
-   }
+   var textWidth = graphic.textWidth(year);
+   graphic.drawText(year, x, y, '#FFD926');
+   graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
+   var textWidth = graphic.textWidth(month);
+   graphic.drawText(month, x + widthYear, y, '#FF7200');
+   graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
+   var textWidth = graphic.textWidth(day);
+   graphic.drawText(day, x + widthYear + widthMonth, y, '#FD0000');
+   graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
 }
 MO.FEaiStatisticsDate_construct = function FEaiStatisticsDate_construct(){
    var o = this;
