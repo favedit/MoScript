@@ -131,7 +131,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    o._guiManager.register(liveTable);
    // 创建弹出
    var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
-   livePop.setName('LiveTable');
+   livePop.setName('LivePop');
    livePop.linkGraphicContext(o);
    livePop.setup();
    livePop.build();

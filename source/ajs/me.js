@@ -34207,6 +34207,12 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             if(!clientRectangle.isEmpty()){
                graphic.clearRectangle(clientRectangle);
             }
+         }
+      }
+      var dirtyCount = dirtyControls.count();
+      for(var i = 0; i < dirtyCount; i++){
+         var control = dirtyControls.at(i);
+         if(control.isDirty()){
             o.processControl(control);
          }
       }

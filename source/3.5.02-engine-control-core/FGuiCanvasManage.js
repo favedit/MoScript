@@ -140,7 +140,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             o.filterByRectangle(dirtyControls, controlRectangle)
          }
       }
-      // 重绘脏的控件
+      // 清空所有脏的控件位置
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
@@ -150,7 +150,13 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             if(!clientRectangle.isEmpty()){
                graphic.clearRectangle(clientRectangle);
             }
-            // 处理控件
+         }
+      }
+      // 重绘所有脏的控件
+      var dirtyCount = dirtyControls.count();
+      for(var i = 0; i < dirtyCount; i++){
+         var control = dirtyControls.at(i);
+         if(control.isDirty()){
             o.processControl(control);
          }
       }

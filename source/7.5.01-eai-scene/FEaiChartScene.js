@@ -220,7 +220,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 加载背景音乐
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
-   audio.setVolume(0.1);
+   audio.setVolume(0.2);
    audio.play();
    //..........................................................
    // 加载标志

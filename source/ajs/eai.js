@@ -3581,7 +3581,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       }
       var investmentTotal = o._logoBar.findComponent('investmentTotal');
       investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
-      o._desktop.dirty();
    }
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
@@ -4082,7 +4081,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o._guiManager.register(frame);
    var audio = o._groundAutio = MO.Class.create(MO.FAudio);
    audio.loadUrl(o._groundAutioUrl);
-   audio.setVolume(0.1);
+   audio.setVolume(0.2);
    audio.play();
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
@@ -4248,7 +4247,7 @@ MO.FEaiChartStatisticsScene_setup = function FEaiChartStatisticsScene_setup() {
    liveTable.build();
    o._guiManager.register(liveTable);
    var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
-   livePop.setName('LiveTable');
+   livePop.setName('LivePop');
    livePop.linkGraphicContext(o);
    livePop.setup();
    livePop.build();

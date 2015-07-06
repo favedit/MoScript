@@ -294,7 +294,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       investmentTotal.setLabel(parseInt(dateData.investmentTotal()).toString());
       //total.setValue(MO.RFloat.unitFormat(dateData.investmentTotal(), 0, 0, 2, 0, 10000, '万'));
       // o._totalBar.dirty();
-      o._desktop.dirty();
    }
 }
 
