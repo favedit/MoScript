@@ -9,6 +9,9 @@ with (MO) {
    MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
       o = RClass.inherits(this, o, FGuiTimeline);
       //..........................................................
+      // @attribute
+      o._startHeight = 20;
+      //..........................................................
       // @method
       o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
       return o;
@@ -26,7 +29,7 @@ with (MO) {
       var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.bottom();
-      var dataTop = top + 30;
+      var dataTop = top + 30 + o._startHeight;
       var dataBottom = bottom - 50;
       var dataHeight = dataBottom - dataTop;
 
@@ -45,12 +48,20 @@ with (MO) {
       var investmentTotal = historyConsole.investmentTotal();
       var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
       var maxInves = dateData.investmentTotal();
+
+      var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
+      if (degreeData.investmentTotal() * 3 < investmentTotal) {
+         maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
+      }
+            
       var pixPer10k = dataHeight * 10000 / maxInves;
+
       //取第一天确定起始Y
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       var inves = dateData.investmentTotal();
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
+      lastY -= o._startHeight;
       //画线及多边形
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
       var rateResource = rateConsole.find(EEaiRate.Line);
@@ -61,6 +72,7 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var dayInvestmentTotal = dateData.investmentTotal();
             var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
+            y -= o._startHeight;
             var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
             var color = '#' + hexColor.substring(2);
             var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
@@ -92,6 +104,7 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
+            y -= o._startHeight;
             if (startDate.date.getDate() == 1) {
                graphic.setFont('bold 16px Microsoft YaHei');
                if(inves > 100000000){
@@ -117,6 +130,7 @@ with (MO) {
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
          var inves = dateData.investmentTotal();
          var y = dataBottom - inves / 10000 * pixPer10k;
+         y -= o._startHeight;
          var hexColor = RHex.format(rateResource.findRate(inves / investmentTotal));
          var color = '#' + hexColor.substring(2);
          var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
