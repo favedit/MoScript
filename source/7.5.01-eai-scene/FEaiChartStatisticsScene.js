@@ -15,6 +15,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._investmentCurrent     = 0;
    // @attribute
    o._ready                 = false;
+   o._mapReady              = false;
    o._playing               = false;
    o._lastTick              = 0;
    o._interval              = 10;
@@ -32,7 +33,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusStart           = false;
    o._statusLayerCount      = 150;
    o._statusLayerLevel      = 150;
-   o._statusDesktopShow     = false;
    // @attribute
    o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
@@ -272,16 +272,15 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    }
    // 重复播放
    if (o._playing) {
-      if(!o._mapEntity._countryEntity.introAnimeDone()){
-         o._mapEntity._countryEntity.process();
+      var countryEntity = o._mapEntity.countryEntity();
+      if(!countryEntity.introAnimeDone()){
+         countryEntity.process();
          return;
       }
-      //..........................................................
-      // 隐藏全部界面
-      if(!o._statusDesktopShow){
-         // 显示桌面
+      // 显示界面
+      if (!o._mapReady) {
          o._guiManager.show();
-         o._statusDesktopShow = true;
+         o._mapReady = true;
       }
       //..........................................................
       var currentTick = MO.Timer.current();

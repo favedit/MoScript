@@ -787,269 +787,46 @@ MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    var o = this;
    o._resource = null;
 }
-with(MO){
-   MO.FAudioConsole = function FAudioConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd          = EScope.Global;
-      o._factory          = null;
-      o._types            = null;
-      o._resources        = null;
-      o._loadResources    = null;
-      o._loadingResources = null;
-      o._processStorages  = null;
-      o._thread           = null;
-      o._loadLimit        = 8;
-      o._interval         = 150;
-      o.onComplete        = FAudioConsole_onComplete;
-      o.onLoad            = FAudioConsole_onLoad;
-      o.onBlockLoad       = FAudioConsole_onBlockLoad;
-      o.onProcess         = FAudioConsole_onProcess;
-      o.construct         = FAudioConsole_construct;
-      o.registerType      = FAudioConsole_registerType;
-      o.factory           = FAudioConsole_factory;
-      o.load              = FAudioConsole_load;
-      return o;
-   }
-   MO.FAudioConsole_onComplete = function FAudioConsole_onComplete(resource, data){
-      var o = this;
-      resource._data = null;
-      o._loadingResources.remove(resource);
-      resource.onComplete(data);
-   }
-   MO.FAudioConsole_onLoad = function FAudioConsole_onLoad(connection){
-      var o = this;
-      var data = connection.outputData();
-      var resource = connection._resource;
-      var storage = RClass.create(FResourceSingleStorage);
-      storage.setResource(resource);
-      storage.load(data);
-      RConsole.find(FResourceDataConsole).load(storage);
-      o._loadingResources.remove(resource);
-      o._processStorages.push(storage);
-   }
-   MO.FAudioConsole_onBlockLoad = function FAudioConsole_onBlockLoad(connection){
-      var o = this;
-      var data = connection.outputData();
-      var resource = connection._resource;
-      resource._compressLength = data.byteLength;
-      resource._compressStartTick = RTimer.current();
-      var storage = RClass.create(FResourceBlockStorage);
-      storage.setResource(resource);
-      storage.load(data);
-      var dataConsole = RConsole.find(FResourceDataConsole);
-      var blocks = storage.blocks();
-      var count = blocks.count();
-      for(var i = 0; i < count; i++){
-         var block = blocks.at(i);
-         dataConsole.load(block);
-      }
-      o._loadingResources.remove(resource);
-      o._processStorages.push(storage);
-   }
-   MO.FAudioConsole_onProcess = function FAudioConsole_onProcess(){
-      var o = this;
-      var httpConsole = RConsole.find(FHttpConsole);
-      var loadResources = o._loadResources;
-      var loadingResources = o._loadingResources;
-      var pc = loadingResources.count();
-      if(!loadResources.isEmpty()){
-         for(var i = o._loadLimit - pc; i > 0; i--){
-            var resource = loadResources.shift();
-            var sourceUrl = resource.sourceUrl();
-            var connection = httpConsole.send(sourceUrl);
-            connection._resource = resource;
-            if(resource._dataCompress){
-               if(resource._dataBlock){
-                  connection.addLoadListener(o, o.onBlockLoad);
-               }else{
-                  connection.addLoadListener(o, o.onLoad);
-               }
-            }else{
-               connection.addLoadListener(o, o.onComplete);
-            }
-            resource._dataLoad = true;
-            loadingResources.push(resource);
-            if(loadResources.isEmpty()){
-               break;
-            }
-         }
-      }
-      var storages = o._processStorages;
-      storages.record();
-      while(storages.next()){
-         var storage = storages.current();
-         if(storage.testReady()){
-            storages.removeCurrent();
-            storage.complete();
-            storage.dispose();
-         }
-      }
-   }
-   MO.FAudioConsole_construct = function FAudioConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._factory = RClass.create(FClassFactory);
-      o._types = new TDictionary();
-      o._resources = new TDictionary();
-      o._loadResources  = new TObjects();
-      o._loadingResources = new TObjects();
-      o._processStorages = new TLooper();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
-   }
-   MO.FAudioConsole_registerType = function FAudioConsole_registerType(type){
-      var o = this;
-      var code = type.code();
-      return o._types.set(code, type);
-   }
-   MO.FAudioConsole_factory = function FAudioConsole_factory(){
-      return this._factory;
-   }
-   MO.FAudioConsole_load = function FAudioConsole_load(resource){
-      var o = this;
-      var guid = resource.guid();
-      var resources = o._resources;
-      if(resources.contains(guid)){
-         throw new TError(o, 'Resource is already loaded. (guid={1})', guid);
-      }
-      resources.set(guid, resource);
-      o._loadResources.push(resource);
-      resource._dataLoad = true;
-   }
+MO.FAudioConsole = function FAudioConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd  = EScope.Global;
+   o._audios   = null;
+   o.construct = MO.FAudioConsole_construct;
+   o.create    = MO.FAudioConsole_create;
+   o.load      = MO.FAudioConsole_load;
+   o.dispose   = MO.FAudioConsole_dispose;
+   return o;
 }
-with(MO){
-   MO.FAudioResource = function FAudioResource(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd          = EScope.Global;
-      o._factory          = null;
-      o._types            = null;
-      o._resources        = null;
-      o._loadResources    = null;
-      o._loadingResources = null;
-      o._processStorages  = null;
-      o._thread           = null;
-      o._loadLimit        = 8;
-      o._interval         = 150;
-      o.onComplete        = FAudioResource_onComplete;
-      o.onLoad            = FAudioResource_onLoad;
-      o.onBlockLoad       = FAudioResource_onBlockLoad;
-      o.onProcess         = FAudioResource_onProcess;
-      o.construct         = FAudioResource_construct;
-      o.registerType      = FAudioResource_registerType;
-      o.factory           = FAudioResource_factory;
-      o.load              = FAudioResource_load;
-      return o;
+MO.FAudioConsole_construct = function FAudioConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._audios = new TDictionary();
+}
+MO.FAudioConsole_create = function FAudioConsole_create(uri){
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var audio = MO.Class.create(MO.FAudioResource);
+   audio.loadUrl(url);
+   return audio;
+}
+MO.FAudioConsole_load = function FAudioConsole_load(uri){
+   var o = this;
+   var audios = o._audios;
+   var audio = audios.get(uri);
+   if(!audio){
+      audio = o.create(uri);
+      audios.set(uri, audio);
    }
-   MO.FAudioResource_onComplete = function FAudioResource_onComplete(resource, data){
-      var o = this;
-      resource._data = null;
-      o._loadingResources.remove(resource);
-      resource.onComplete(data);
-   }
-   MO.FAudioResource_onLoad = function FAudioResource_onLoad(connection){
-      var o = this;
-      var data = connection.outputData();
-      var resource = connection._resource;
-      var storage = RClass.create(FResourceSingleStorage);
-      storage.setResource(resource);
-      storage.load(data);
-      RConsole.find(FResourceDataConsole).load(storage);
-      o._loadingResources.remove(resource);
-      o._processStorages.push(storage);
-   }
-   MO.FAudioResource_onBlockLoad = function FAudioResource_onBlockLoad(connection){
-      var o = this;
-      var data = connection.outputData();
-      var resource = connection._resource;
-      resource._compressLength = data.byteLength;
-      resource._compressStartTick = RTimer.current();
-      var storage = RClass.create(FResourceBlockStorage);
-      storage.setResource(resource);
-      storage.load(data);
-      var dataConsole = RConsole.find(FResourceDataConsole);
-      var blocks = storage.blocks();
-      var count = blocks.count();
-      for(var i = 0; i < count; i++){
-         var block = blocks.at(i);
-         dataConsole.load(block);
-      }
-      o._loadingResources.remove(resource);
-      o._processStorages.push(storage);
-   }
-   MO.FAudioResource_onProcess = function FAudioResource_onProcess(){
-      var o = this;
-      var httpConsole = RConsole.find(FHttpConsole);
-      var loadResources = o._loadResources;
-      var loadingResources = o._loadingResources;
-      var pc = loadingResources.count();
-      if(!loadResources.isEmpty()){
-         for(var i = o._loadLimit - pc; i > 0; i--){
-            var resource = loadResources.shift();
-            var sourceUrl = resource.sourceUrl();
-            var connection = httpConsole.send(sourceUrl);
-            connection._resource = resource;
-            if(resource._dataCompress){
-               if(resource._dataBlock){
-                  connection.addLoadListener(o, o.onBlockLoad);
-               }else{
-                  connection.addLoadListener(o, o.onLoad);
-               }
-            }else{
-               connection.addLoadListener(o, o.onComplete);
-            }
-            resource._dataLoad = true;
-            loadingResources.push(resource);
-            if(loadResources.isEmpty()){
-               break;
-            }
-         }
-      }
-      var storages = o._processStorages;
-      storages.record();
-      while(storages.next()){
-         var storage = storages.current();
-         if(storage.testReady()){
-            storages.removeCurrent();
-            storage.complete();
-            storage.dispose();
-         }
-      }
-   }
-   MO.FAudioResource_construct = function FAudioResource_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._factory = RClass.create(FClassFactory);
-      o._types = new TDictionary();
-      o._resources = new TDictionary();
-      o._loadResources  = new TObjects();
-      o._loadingResources = new TObjects();
-      o._processStorages = new TLooper();
-      var t = o._thread = RClass.create(FThread);
-      t.setInterval(o._interval);
-      t.addProcessListener(o, o.onProcess);
-      RConsole.find(FThreadConsole).start(t);
-   }
-   MO.FAudioResource_registerType = function FAudioResource_registerType(type){
-      var o = this;
-      var code = type.code();
-      return o._types.set(code, type);
-   }
-   MO.FAudioResource_factory = function FAudioResource_factory(){
-      return this._factory;
-   }
-   MO.FAudioResource_load = function FAudioResource_load(resource){
-      var o = this;
-      var guid = resource.guid();
-      var resources = o._resources;
-      if(resources.contains(guid)){
-         throw new TError(o, 'Resource is already loaded. (guid={1})', guid);
-      }
-      resources.set(guid, resource);
-      o._loadResources.push(resource);
-      resource._dataLoad = true;
-   }
+   return audio;
+}
+MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
+   var o = this;
+   o._audios = MO.Lang.Object.dispose(o._audios);
+   o.__base.FConsole.dispose.call(o);
+}
+MO.FAudioResource = function FAudioResource(o){
+   o = MO.Class.inherits(this, o, MO.FAudio);
+   return o;
 }
 with(MO){
    MO.FResource = function FResource(o){

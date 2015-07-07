@@ -2871,11 +2871,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._dataTicker             = null;
    o._entityPool             = null;
    o._shapePool              = null;
-   o._autio1                 = null;
-   o._autio2                 = null;
-   o._autio3                 = null;
-   o._autio4                 = null;
-   o._autio5                 = null;
+   o._autios                 = null;
    o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
    o.onInvestment            = MO.FEaiStatisticsInvestment_onInvestment;
    o.construct               = MO.FEaiStatisticsInvestment_construct;
@@ -2940,6 +2936,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._showShapes = new MO.TObjects();
    o._tableEntities = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
+   o._autios = new Object();
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
    table._hTable = document.getElementById('id_investment');
@@ -2973,16 +2970,10 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    }else{
       o._tableCount = 21;
    }
-   var audio = o._autio1 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/1.mp3');
-   var audio = o._autio2 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/2.mp3');
-   var audio = o._autio3 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/3.mp3');
-   var audio = o._autio4 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/4.mp3');
-   var audio = o._autio5 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/5.mp3');
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   for(var i = 1; i <= 5; i++){
+      o._autios[i] = audioConsole.load('{eai.resource}/currency/' + i + '.mp3');
+   }
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
@@ -3017,16 +3008,17 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       }
       cityEntity.addInvestmentTotal(investment);
       o._mapEntity.upload();
+      var autios = o._autios;
       if(investment >= 1000000){
-         o._autio5.play(0);
+         autios[5].play(0);
       }else if(investment >= 1000000){
-         o._autio4.play(0);
+         autios[4].play(0);
       }else if(investment >= 100000){
-         o._autio3.play(0);
+         autios[3].play(0);
       }else if(investment >= 10000){
-         o._autio2.play(0);
+         autios[2].play(0);
       }else if(investment >= 1000){
-         o._autio1.play(0);
+         autios[1].play(0);
       }
    }
 }
@@ -3530,8 +3522,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerLevel = 150;
    o._milestoneShowed          = 0;
    o._milestoneBarShowDuration = 1000;
-   o._milestoneBarShowTick = 0;
-   o._milestoneBarShowing = false;
+   o._milestoneBarShowTick     = 0;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -3565,7 +3556,6 @@ MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMile
    o.switchPlay(true);
    o._milestoneShowed++;
    o._milestoneBarShowTick = MO.Timer.current();
-   o._milestoneBarShowing = true;
 }
 MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOperationPlay(event){
    var o = this;
@@ -3665,6 +3655,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
+   o._milestoneBarShowTick = MO.Timer.current() + o._milestoneBarShowDuration;
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.linkGraphicContext(o);
@@ -3750,18 +3741,19 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if (!o._statusStart) {
-      if (o.testReady()) {
+   if(!o._statusStart){
+      if(o.testReady()){
          var hLoading = document.getElementById('id_loading');
-         if (hLoading) {
+         if(hLoading){
             hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if (o._statusLayerLevel == 0) {
-            if (hLoading) {
+         if(o._statusLayerLevel == 0){
+            if(hLoading){
                document.body.removeChild(hLoading);
             }
+            o._mapEntity.countryEntity().start();
             o.switchPlay(true);
             o._statusStart = true;
          }
@@ -3769,8 +3761,9 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    }
    var currentTick = MO.Timer.current();
    if (o._playing) {
-      if (!o._mapEntity._countryEntity.introAnimeDone()) {
-         o._mapEntity._countryEntity.process();
+      var countryEntity = o._mapEntity.countryEntity();
+      if (!countryEntity.introAnimeDone()) {
+         countryEntity.process();
          return;
       }
       if (!o._mapReady) {
@@ -3797,14 +3790,10 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._lastTick = currentTick;
       }
    }
-   if (o._milestoneBarShowing) {
-      var mbPassedTick = currentTick - o._milestoneBarShowTick;
-      var p = mbPassedTick / o._milestoneBarShowDuration;
-      if (p > 1) {
-         p = 1;
-         o._milestoneBarShowing = false;;
-      }
-      p = (1 - p) * (1 - p);
+   var mbPassedTick = currentTick - o._milestoneBarShowTick;
+   var p = mbPassedTick / o._milestoneBarShowDuration;
+   p = (1 - p) * (1 - p);
+   if (mbPassedTick > 0 && mbPassedTick < o._milestoneBarShowDuration) {
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
       mBar.setRight(20 + (-380 * p));
       mBar.dirty();
@@ -4320,6 +4309,7 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._investment            = MO.Class.register(o, new MO.AGetter('_investment'));
    o._investmentCurrent     = 0;
    o._ready                 = false;
+   o._mapReady              = false;
    o._playing               = false;
    o._lastTick              = 0;
    o._interval              = 10;
@@ -4335,7 +4325,6 @@ MO.FEaiChartStatisticsScene = function FEaiChartStatisticsScene(o){
    o._statusStart           = false;
    o._statusLayerCount      = 150;
    o._statusLayerLevel      = 150;
-   o._statusDesktopShow     = false;
    o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
    o.onLiveTableChanged     = MO.FEaiChartStatisticsScene_onLiveTableChanged;
    o.testReady              = MO.FEaiChartStatisticsScene_testReady;
@@ -4501,13 +4490,14 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
       }
    }
    if (o._playing) {
-      if(!o._mapEntity._countryEntity.introAnimeDone()){
-         o._mapEntity._countryEntity.process();
+      var countryEntity = o._mapEntity.countryEntity();
+      if(!countryEntity.introAnimeDone()){
+         countryEntity.process();
          return;
       }
-      if(!o._statusDesktopShow){
+      if (!o._mapReady) {
          o._guiManager.show();
-         o._statusDesktopShow = true;
+         o._mapReady = true;
       }
       var currentTick = MO.Timer.current();
       if (currentTick - o._24HLastTick > o._24HTrendInterval) {

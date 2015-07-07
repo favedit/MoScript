@@ -34,11 +34,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._entityPool             = null;
    o._shapePool              = null;
    // @attribute
-   o._autio1                 = null;
-   o._autio2                 = null;
-   o._autio3                 = null;
-   o._autio4                 = null;
-   o._autio5                 = null;
+   o._autios                 = null;
    // @event
    o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -133,6 +129,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._showShapes = new MO.TObjects();
    o._tableEntities = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
+   o._autios = new Object();
    // 5分钟定时
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建表格
@@ -191,16 +188,10 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    }
    //..........................................................
    // 创建声音
-   var audio = o._autio1 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/1.mp3');
-   var audio = o._autio2 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/2.mp3');
-   var audio = o._autio3 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/3.mp3');
-   var audio = o._autio4 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/4.mp3');
-   var audio = o._autio5 = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/currency/5.mp3');
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   for(var i = 1; i <= 5; i++){
+      o._autios[i] = audioConsole.load('{eai.resource}/currency/' + i + '.mp3');
+   }
    // 设置变量
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
@@ -259,16 +250,17 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       cityEntity.addInvestmentTotal(investment);
       o._mapEntity.upload();
       // 播放声音
+      var autios = o._autios;
       if(investment >= 1000000){
-         o._autio5.play(0);
+         autios[5].play(0);
       }else if(investment >= 1000000){
-         o._autio4.play(0);
+         autios[4].play(0);
       }else if(investment >= 100000){
-         o._autio3.play(0);
+         autios[3].play(0);
       }else if(investment >= 10000){
-         o._autio2.play(0);
+         autios[2].play(0);
       }else if(investment >= 1000){
-         o._autio1.play(0);
+         autios[1].play(0);
       }
       // 创建渲染对象
       //var shape = o.allocShape();
