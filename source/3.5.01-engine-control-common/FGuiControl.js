@@ -27,6 +27,7 @@ MO.FGuiControl = function FGuiControl(o){
    // @attribute
    o._statusReady            = false;
    o._statusDirty            = true;
+   o._statusDirtyAll         = false;
    o._statusHover            = false;
    // @attribute
    o._backImage              = null;
@@ -61,6 +62,7 @@ MO.FGuiControl = function FGuiControl(o){
    // @method
    o.isReady                 = MO.FGuiControl_isReady;
    o.isDirty                 = MO.FGuiControl_isDirty;
+   o.isDirtyAll              = MO.FGuiControl_isDirtyAll;
    o.setVisible              = MO.FGuiControl_setVisible;
    o.setSize                 = MO.FGuiControl_setSize;
    // @method
@@ -73,6 +75,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
+   o.dirtyAll                = MO.FGuiControl_dirtyAll;
    // @method
    o.psEnable                = MO.FGuiControl_psEnable;
    o.psVisible               = MO.FGuiControl_psVisible;
@@ -318,6 +321,16 @@ MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
 }
 
 //==========================================================
+// <T>测试是否数据脏。</T>
+//
+// @method
+// @return Boolean 数据脏
+//==========================================================
+MO.FGuiControl_isDirtyAll = function FGuiControl_isDirtyAll(){
+   return this._statusDirtyAll;
+}
+
+//==========================================================
 // <T>设置可见性。</T>
 //
 // @method
@@ -332,7 +345,7 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
       renderable.setVisible(flag);
    }
    // 脏处理
-   o.dirty();
+   o.dirtyAll();
 }
 
 //==========================================================
@@ -503,6 +516,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    //..........................................................
    rectangle.assign(o._eventRectangle);
    o._statusDirty = false;
+   o._statusDirtyAll = false;
 }
 
 //==========================================================
@@ -527,6 +541,17 @@ MO.FGuiControl_update = function FGuiControl_update(){
 //==========================================================
 MO.FGuiControl_dirty = function FGuiControl_dirty(){
    this._statusDirty = true;
+}
+
+//==========================================================
+// <T>全部脏处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiControl_dirtyAll = function FGuiControl_dirtyAll(){
+   var o = this;
+   o._statusDirty = true;
+   o._statusDirtyAll = true;
 }
 
 //==========================================================

@@ -100,68 +100,75 @@ with(MO){
       o.innerShow(v);
    }
 }
-with(MO){
-   MO.FAudio = function FAudio(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
-      o._url           = RClass.register(o, new AGetter('_url'));
-      o._hAudio        = null;
-      o.ohLoad         = FAudio_ohLoad;
-      o.ohError        = FAudio_ohError;
-      o.construct      = FAudio_construct;
-      o.volume         = FAudio_volume;
-      o.setVolume      = FAudio_setVolume;
-      o.play           = FAudio_play;
-      o.pause          = FAudio_pause;
-      o.loadUrl        = FAudio_loadUrl;
-      o.dispose        = FAudio_dispose;
-      return o;
-   }
-   MO.FAudio_ohLoad = function FAudio_ohLoad(){
-      var o = this.__linker;
-   }
-   MO.FAudio_ohError = function FAudio_ohError(p){
-      var o = this.__linker;
-      var url = o._url;
-      MO.Logger.error(o, 'Load image failure. (url={1})', url);
-   }
-   MO.FAudio_construct = function FAudio_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-   }
-   MO.FAudio_volume = function FAudio_volume(){
-      return this._hAudio.volume;
-   }
-   MO.FAudio_setVolume = function FAudio_setVolume(value){
-      this._hAudio.volume = value;
-   }
-   MO.FAudio_play = function FAudio_play(position){
-      var hAudio = this._hAudio;
-      if(position != null){
-         if(hAudio.currentTime != position){
-            hAudio.currentTime = position;
-         }
+MO.FAudio = function FAudio(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o._url      = MO.Class.register(o, new MO.AGetter('_url'));
+   o._hAudio   = null;
+   o.ohLoad    = MO.FAudio_ohLoad;
+   o.ohError   = MO.FAudio_ohError;
+   o.construct = MO.FAudio_construct;
+   o.volume    = MO.FAudio_volume;
+   o.setVolume = MO.FAudio_setVolume;
+   o.loop      = MO.FAudio_loop;
+   o.setLoop   = MO.FAudio_setLoop;
+   o.play      = MO.FAudio_play;
+   o.pause     = MO.FAudio_pause;
+   o.loadUrl   = MO.FAudio_loadUrl;
+   o.dispose   = MO.FAudio_dispose;
+   return o;
+}
+MO.FAudio_ohLoad = function FAudio_ohLoad(){
+   var o = this.__linker;
+}
+MO.FAudio_ohError = function FAudio_ohError(p){
+   var o = this.__linker;
+   var url = o._url;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+}
+MO.FAudio_construct = function FAudio_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FAudio_volume = function FAudio_volume(){
+   return this._hAudio.volume;
+}
+MO.FAudio_setVolume = function FAudio_setVolume(value){
+   this._hAudio.volume = value;
+}
+MO.FAudio_loop = function FAudio_loop(){
+   return this._hAudio.loop;
+}
+MO.FAudio_setLoop = function FAudio_setLoop(value){
+   this._hAudio.loop = value;
+}
+MO.FAudio_play = function FAudio_play(position){
+   var hAudio = this._hAudio;
+   if(position != null){
+      if(hAudio.currentTime != position){
+         hAudio.currentTime = position;
       }
-      hAudio.play();
    }
-   MO.FAudio_pause = function FAudio_pause(){
-      this._hAudio.pause();
+   hAudio.play();
+}
+MO.FAudio_pause = function FAudio_pause(){
+   this._hAudio.pause();
+}
+MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+   var o = this;
+   o._url = url;
+   var hAudio = o._hAudio;
+   if(!hAudio){
+      hAudio = o._hAudio = new Audio();
+      hAudio.loop = false;
+      hAudio.__linker = o;
    }
-   MO.FAudio_loadUrl = function FAudio_loadUrl(url){
-      var o = this;
-      o._url = url;
-      var hAudio = o._hAudio;
-      if(!hAudio){
-         hAudio = o._hAudio = new Audio();
-         hAudio.__linker = o;
-      }
-      hAudio.src = url;
-   }
-   MO.FAudio_dispose = function FAudio_dispose(){
-      var o = this;
-      o._hAudio = RHtml.free(o._hAudio);
-      o.__base.MListenerLoad.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+   hAudio.src = url;
+}
+MO.FAudio_dispose = function FAudio_dispose(){
+   var o = this;
+   o._hAudio = MO.RHtml.free(o._hAudio);
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FImage = function FImage(o){
@@ -1525,18 +1532,18 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
 }
-MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
+MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    var o = this;
-   o._optionSelect = p;
-   if(RBrowser.isBrowser(MO.EBrowser.FireFox)){
-      o._hContainer.style.MozUserSelect = p ? '' : 'none';
+   o._optionSelect = select;
+   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
 }
-MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
-   top.document.title = p;
+MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
+   top.document.title = MO.Lang.String.nvl(value);
 }
-MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
-   window.status = MO.Lang.String.nvl(p);
+MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
+   window.status = MO.Lang.String.nvl(value);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;

@@ -12824,68 +12824,75 @@ with(MO){
       o.innerShow(v);
    }
 }
-with(MO){
-   MO.FAudio = function FAudio(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
-      o._url           = RClass.register(o, new AGetter('_url'));
-      o._hAudio        = null;
-      o.ohLoad         = FAudio_ohLoad;
-      o.ohError        = FAudio_ohError;
-      o.construct      = FAudio_construct;
-      o.volume         = FAudio_volume;
-      o.setVolume      = FAudio_setVolume;
-      o.play           = FAudio_play;
-      o.pause          = FAudio_pause;
-      o.loadUrl        = FAudio_loadUrl;
-      o.dispose        = FAudio_dispose;
-      return o;
-   }
-   MO.FAudio_ohLoad = function FAudio_ohLoad(){
-      var o = this.__linker;
-   }
-   MO.FAudio_ohError = function FAudio_ohError(p){
-      var o = this.__linker;
-      var url = o._url;
-      MO.Logger.error(o, 'Load image failure. (url={1})', url);
-   }
-   MO.FAudio_construct = function FAudio_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-   }
-   MO.FAudio_volume = function FAudio_volume(){
-      return this._hAudio.volume;
-   }
-   MO.FAudio_setVolume = function FAudio_setVolume(value){
-      this._hAudio.volume = value;
-   }
-   MO.FAudio_play = function FAudio_play(position){
-      var hAudio = this._hAudio;
-      if(position != null){
-         if(hAudio.currentTime != position){
-            hAudio.currentTime = position;
-         }
+MO.FAudio = function FAudio(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o._url      = MO.Class.register(o, new MO.AGetter('_url'));
+   o._hAudio   = null;
+   o.ohLoad    = MO.FAudio_ohLoad;
+   o.ohError   = MO.FAudio_ohError;
+   o.construct = MO.FAudio_construct;
+   o.volume    = MO.FAudio_volume;
+   o.setVolume = MO.FAudio_setVolume;
+   o.loop      = MO.FAudio_loop;
+   o.setLoop   = MO.FAudio_setLoop;
+   o.play      = MO.FAudio_play;
+   o.pause     = MO.FAudio_pause;
+   o.loadUrl   = MO.FAudio_loadUrl;
+   o.dispose   = MO.FAudio_dispose;
+   return o;
+}
+MO.FAudio_ohLoad = function FAudio_ohLoad(){
+   var o = this.__linker;
+}
+MO.FAudio_ohError = function FAudio_ohError(p){
+   var o = this.__linker;
+   var url = o._url;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+}
+MO.FAudio_construct = function FAudio_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FAudio_volume = function FAudio_volume(){
+   return this._hAudio.volume;
+}
+MO.FAudio_setVolume = function FAudio_setVolume(value){
+   this._hAudio.volume = value;
+}
+MO.FAudio_loop = function FAudio_loop(){
+   return this._hAudio.loop;
+}
+MO.FAudio_setLoop = function FAudio_setLoop(value){
+   this._hAudio.loop = value;
+}
+MO.FAudio_play = function FAudio_play(position){
+   var hAudio = this._hAudio;
+   if(position != null){
+      if(hAudio.currentTime != position){
+         hAudio.currentTime = position;
       }
-      hAudio.play();
    }
-   MO.FAudio_pause = function FAudio_pause(){
-      this._hAudio.pause();
+   hAudio.play();
+}
+MO.FAudio_pause = function FAudio_pause(){
+   this._hAudio.pause();
+}
+MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+   var o = this;
+   o._url = url;
+   var hAudio = o._hAudio;
+   if(!hAudio){
+      hAudio = o._hAudio = new Audio();
+      hAudio.loop = false;
+      hAudio.__linker = o;
    }
-   MO.FAudio_loadUrl = function FAudio_loadUrl(url){
-      var o = this;
-      o._url = url;
-      var hAudio = o._hAudio;
-      if(!hAudio){
-         hAudio = o._hAudio = new Audio();
-         hAudio.__linker = o;
-      }
-      hAudio.src = url;
-   }
-   MO.FAudio_dispose = function FAudio_dispose(){
-      var o = this;
-      o._hAudio = RHtml.free(o._hAudio);
-      o.__base.MListenerLoad.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+   hAudio.src = url;
+}
+MO.FAudio_dispose = function FAudio_dispose(){
+   var o = this;
+   o._hAudio = MO.RHtml.free(o._hAudio);
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FImage = function FImage(o){
@@ -14249,18 +14256,18 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
 }
-MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
+MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    var o = this;
-   o._optionSelect = p;
-   if(RBrowser.isBrowser(MO.EBrowser.FireFox)){
-      o._hContainer.style.MozUserSelect = p ? '' : 'none';
+   o._optionSelect = select;
+   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
 }
-MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
-   top.document.title = p;
+MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
+   top.document.title = MO.Lang.String.nvl(value);
 }
-MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
-   window.status = MO.Lang.String.nvl(p);
+MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
+   window.status = MO.Lang.String.nvl(value);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;
@@ -21029,8 +21036,8 @@ MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    o._resource = null;
 }
 MO.FAudioConsole = function FAudioConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd  = EScope.Global;
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
    o._audios   = null;
    o.construct = MO.FAudioConsole_construct;
    o.create    = MO.FAudioConsole_create;
@@ -21041,7 +21048,7 @@ MO.FAudioConsole = function FAudioConsole(o){
 MO.FAudioConsole_construct = function FAudioConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._audios = new TDictionary();
+   o._audios = new MO.TDictionary();
 }
 MO.FAudioConsole_create = function FAudioConsole_create(uri){
    var o = this;
@@ -32293,6 +32300,180 @@ with(MO){
       o.__base.FE3dRenderable.dispose.call(o);
    }
 }
+MO.FE3dParticle = function FE3dParticle(o){
+   o = MO.Class.inherits(this, o, MO.FE3dMeshRenderable);
+   o._items                = null;
+   o._vertexPositionBuffer = null;
+   o._vertexCoordBuffer    = null;
+   o._indexBuffer          = null;
+   o.construct             = MO.FE3dParticle_construct;
+   o.setup                 = MO.FE3dParticle_setup;
+   o.testReady             = MO.FE3dParticle_testReady;
+   o.findTexture           = MO.FE3dParticle_findTexture;
+   o.textures              = MO.FE3dParticle_textures;
+   o.material              = MO.FE3dParticle_material;
+   o.setSize               = MO.FE3dParticle_setSize;
+   o.setData               = MO.FE3dParticle_setData;
+   o.loadUrl               = MO.FE3dParticle_loadUrl;
+   o.pushItem              = MO.FE3dParticle_pushItem;
+   o.upload                = MO.FE3dParticle_upload;
+   o.dispose               = MO.FE3dParticle_dispose;
+   return o;
+}
+MO.FE3dParticle_construct = function FE3dParticle_construct(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.construct.call(o);
+   o._items = new MO.TObjects();
+}
+MO.FE3dParticle_setup = function FE3dParticle_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   o._vertexCount = 0;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   o.pushIndexBuffer(buffer);
+}
+MO.FE3dParticle_testReady = function FE3dParticle_testReady(){
+   var o = this;
+   if(!o._ready){
+      o._ready = o._renderable.testReady();
+   }
+   return o._ready;
+}
+MO.FE3dParticle_findTexture = function FE3dParticle_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+MO.FE3dParticle_textures = function FE3dParticle_textures(){
+   return this._renderable.textures();
+}
+MO.FE3dParticle_material = function FE3dParticle_material(){
+   return this._renderable.material();
+}
+MO.FE3dParticle_setSize = function FE3dParticle_setSize(width, height){
+   var o = this;
+}
+MO.FE3dParticle_setData = function FE3dParticle_setData(data){
+   this._renderable = data;
+}
+MO.FE3dParticle_loadUrl = function FE3dParticle_loadUrl(url){
+   var o = this;
+   var context = o._graphicContext;
+   o._renderable = RConsole.find(FE3dParticleConsole).loadUrl(context, url);
+   o._ready = false;
+}
+MO.FE3dParticle_pushItem = function FE3dParticle_pushItem(item){
+   this._items.push(item);
+}
+MO.FE3dParticle_upload = function FE3dParticle_upload(){
+   var o = this;
+   var context = o._graphicContext;
+   var items = o._items;
+   var count = items.count();
+   var vertexCount = o._vertexCount = 4 * count;
+   var vertexPositionIndex = 0;
+   var vertexPositionData = new Float32Array(3 * vertexCount);
+   var vertexCoordIndex = 0;
+   var vertexCoordData = new Float32Array(2 * vertexCount);
+   var indexIndex = 0;
+   var indexData = new Uint16Array(6 * count);
+   for(var i = 0; i < count; i++){
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      indexData[indexIndex++] = 0;
+      indexData[indexIndex++] = 1;
+      indexData[indexIndex++] = 2;
+      indexData[indexIndex++] = 0;
+      indexData[indexIndex++] = 2;
+      indexData[indexIndex++] = 3;
+   }
+   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, vertexCount);
+   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, vertexCount);
+   o._indexBuffer.upload(indexData, 6 * count);
+}
+MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
+   var o = this;
+   o._items = RObject.dispose(o._items);
+   o.__base.FE3dMeshRenderable.dispose.call(o);
+}
+MO.FE3dParticleData = function FE3dParticleData(o){
+   o = MO.Class.inherits(this, o, MO.FE3dFaceData);
+   o.onImageLoad = MO.FE3dParticleData_onImageLoad;
+   o.construct   = MO.FE3dParticleData_construct;
+   o.loadUrl     = MO.FE3dParticleData_loadUrl;
+   o.dispose     = MO.FE3dParticleData_dispose;
+   return o;
+}
+MO.FE3dParticleData_onImageLoad = function FE3dParticleData_onImageLoad(event){
+   var o = this;
+   var image = event.sender;
+   o._size.assign(image.size());
+   o._texture.upload(image);
+   image.dispose();
+   o._ready = true;
+}
+MO.FE3dParticleData_construct = function FE3dParticleData_construct(){
+   var o = this;
+   o.__base.FE3dFaceData.construct.call(o);
+}
+MO.FE3dParticleData_loadUrl = function FE3dParticleData_loadUrl(url){
+   var o = this;
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl(url);
+   o._ready = false;
+}
+MO.FE3dParticleData_dispose = function FE3dParticleData_dispose(){
+   var o = this;
+   o._hVideo = null;
+   o.__base.FE3dFaceData.dispose.call(o);
+}
+MO.FE3dParticleItem = function FE3dParticleItem(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix   = null;
+   o._data     = MO.Class.register(o, new MO.AGetSet('_data'));
+   o.construct = MO.FE3dParticleItem_construct;
+   o.process   = MO.FE3dParticleItem_process;
+   o.dispose   = MO.FE3dParticleItem_dispose;
+   return o;
+}
+MO.FE3dParticleItem_construct = function FE3dParticleItem_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
+}
+MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
+   var o = this;
+}
+MO.FE3dParticleItem_dispose = function FE3dParticleItem_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
+}
 with(MO){
    MO.FE3dPolygon = function FE3dPolygon(o){
       o = RClass.inherits(this, o, FE3dRenderable);
@@ -33597,6 +33778,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backHoverGrid          = MO.Class.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
    o._statusReady            = false;
    o._statusDirty            = true;
+   o._statusDirtyAll         = false;
    o._statusHover            = false;
    o._backImage              = null;
    o._backHoverResource      = null;
@@ -33619,6 +33801,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.construct               = MO.FGuiControl_construct;
    o.isReady                 = MO.FGuiControl_isReady;
    o.isDirty                 = MO.FGuiControl_isDirty;
+   o.isDirtyAll              = MO.FGuiControl_isDirtyAll;
    o.setVisible              = MO.FGuiControl_setVisible;
    o.setSize                 = MO.FGuiControl_setSize;
    o.testReady               = MO.FGuiControl_testReady;
@@ -33630,6 +33813,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
+   o.dirtyAll                = MO.FGuiControl_dirtyAll;
    o.psEnable                = MO.FGuiControl_psEnable;
    o.psVisible               = MO.FGuiControl_psVisible;
    o.psResize                = MO.FGuiControl_psResize;
@@ -33765,6 +33949,9 @@ MO.FGuiControl_isReady = function FGuiControl_isReady(){
 MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
    return this._statusDirty;
 }
+MO.FGuiControl_isDirtyAll = function FGuiControl_isDirtyAll(){
+   return this._statusDirtyAll;
+}
 MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    var o = this;
    o._visible = flag;
@@ -33772,7 +33959,7 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    if(renderable){
       renderable.setVisible(flag);
    }
-   o.dirty();
+   o.dirtyAll();
 }
 MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;
@@ -33885,6 +34072,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    graphic.restore();
    rectangle.assign(o._eventRectangle);
    o._statusDirty = false;
+   o._statusDirtyAll = false;
 }
 MO.FGuiControl_update = function FGuiControl_update(){
    var o = this;
@@ -33896,6 +34084,11 @@ MO.FGuiControl_update = function FGuiControl_update(){
 }
 MO.FGuiControl_dirty = function FGuiControl_dirty(){
    this._statusDirty = true;
+}
+MO.FGuiControl_dirtyAll = function FGuiControl_dirtyAll(){
+   var o = this;
+   o._statusDirty = true;
+   o._statusDirtyAll = true;
 }
 MO.FGuiControl_build = function FGuiControl_build(){
    var o = this;
@@ -34233,6 +34426,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       var control = controls.at(i);
       if(control.processReady()){
          if(control.visible()){
+            if(control.isDirtyAll()){
+               o._statusDirty = true;
+            }
             readyControls.push(control)
          }
       }

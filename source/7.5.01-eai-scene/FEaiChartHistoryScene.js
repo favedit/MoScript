@@ -384,6 +384,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
+            o._mapAutio.play();
             o._statusStart = true;
          }
       }

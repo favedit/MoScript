@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+var particle = null;
+//----------------------------------------------------------
+function onEnterFrame(){
+   return;
+   var count = bitmaps.count();
+   for(var i = 0; i < count; i++){
+      var bitmap = bitmaps.at(i);
+      var matrix = bitmap.matrix();
+      var x = i % 20;
+      var y = parseInt(i / 20);
+      matrix.tx = x - 8;
+      matrix.ty = y - 5;
+      matrix.ry += 0.01 * y;
+      matrix.updateForce();
+      //matrix.setScaleAll(4);
+   }
+}
+//----------------------------------------------------------
+function _load(){
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建画布
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(document.body);
+   var context = canvas.graphicContext();
+   stage = canvas._stage;
+   stage.region().backgroundColor().set(0.5, 0.2, 0.2, 1);
+   stage.addEnterFrameListener(null, onEnterFrame);
+   layer = stage.spriteLayer();
+   // 创建图片
+   particle = MO.Class.create(MO.FE3dParticle);
+   particle.linkGraphicContext(context);
+   particle.setup();
+   var particleData = context.createObject(MO.FE3dParticleData);
+   particleData.loadUrl('../../ars/picture/play.png');
+   particle.setData(particleData);
+   for(var i = 0; i < 100; i++){
+      var item = MO.Class.create(MO.FE3dParticleItem);
+      particle.pushItem(item);
+   }
+   particle.upload();
+   stage.spriteLayer().pushRenderable(particle);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+</BODY>
+
+</HTML>

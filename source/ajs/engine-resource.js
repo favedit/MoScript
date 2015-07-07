@@ -18,8 +18,8 @@ MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    o._resource = null;
 }
 MO.FAudioConsole = function FAudioConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd  = EScope.Global;
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
    o._audios   = null;
    o.construct = MO.FAudioConsole_construct;
    o.create    = MO.FAudioConsole_create;
@@ -30,7 +30,7 @@ MO.FAudioConsole = function FAudioConsole(o){
 MO.FAudioConsole_construct = function FAudioConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._audios = new TDictionary();
+   o._audios = new MO.TDictionary();
 }
 MO.FAudioConsole_create = function FAudioConsole_create(uri){
    var o = this;

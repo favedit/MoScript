@@ -327,13 +327,13 @@ MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
 // <T>设置配置选取。</T>
 //
 // @method
-// @param p:select:Boolean 配置选取
+// @param select:Boolean 配置选取
 //==========================================================
-MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
+MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    var o = this;
-   o._optionSelect = p;
-   if(RBrowser.isBrowser(MO.EBrowser.FireFox)){
-      o._hContainer.style.MozUserSelect = p ? '' : 'none';
+   o._optionSelect = select;
+   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
 }
 
@@ -341,20 +341,20 @@ MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(p){
 // <T>设置标题。</T>
 //
 // @method
-// @param p:caption:String 标题
+// @param value:String 标题
 //==========================================================
-MO.RWindow.prototype.setCaption = function RWindow_setCaption(p){
-   top.document.title = p;
+MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
+   top.document.title = MO.Lang.String.nvl(value);
 }
 
 //==========================================================
 // <T>设置状态。</T>
 //
 // @method
-// @param p:status:String 状态
+// @param value:String 状态
 //==========================================================
-MO.RWindow.prototype.setStatus = function RWindow_setStatus(p){
-   window.status = MO.Lang.String.nvl(p);
+MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
+   window.status = MO.Lang.String.nvl(value);
 }
 
 //==========================================================

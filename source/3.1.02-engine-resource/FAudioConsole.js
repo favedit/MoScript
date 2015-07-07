@@ -6,10 +6,10 @@
 // @version 150707
 //==========================================================
 MO.FAudioConsole = function FAudioConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd  = EScope.Global;
+   o._scopeCd  = MO.EScope.Global;
    // @attribute
    o._audios   = null;
    //..........................................................
@@ -32,7 +32,7 @@ MO.FAudioConsole_construct = function FAudioConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置变量
-   o._audios = new TDictionary();
+   o._audios = new MO.TDictionary();
 }
 
 //==========================================================

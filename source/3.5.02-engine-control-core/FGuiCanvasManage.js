@@ -112,13 +112,18 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       var control = controls.at(i);
       if(control.processReady()){
          if(control.visible()){
+            // 全部脏处理
+            if(control.isDirtyAll()){
+               o._statusDirty = true;
+            }
+            // 放入准备好控件
             readyControls.push(control)
          }
       }
    }
    // 脏处理
-   var graphic = o._canvas.context();
    // o._statusDirty = true;
+   var graphic = o._canvas.context();
    if(o._statusDirty){
       // 重绘全部控件
       graphic.clear();

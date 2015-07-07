@@ -61,6 +61,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       var control = controls.at(i);
       if(control.processReady()){
          if(control.visible()){
+            if(control.isDirtyAll()){
+               o._statusDirty = true;
+            }
             readyControls.push(control)
          }
       }

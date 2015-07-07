@@ -363,6 +363,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
+            o._mapAutio.play();
             o._statusStart = true;
          }
       }
@@ -730,8 +731,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRenderable      = null;
    o._titleBar             = null;
    o._flagSprite           = null;
-   o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
+   o._mapAutio             = null;
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.construct             = MO.FEaiChartScene_construct;
@@ -842,10 +843,12 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRenderable.upload();
    citysRangeRenderable.setup();
    citysRangeRenderable.upload();
-   var audio = o._groundAutio = MO.Class.create(MO.FAudio);
-   audio.loadUrl(o._groundAutioUrl);
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
+   audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
+   o._mapAutio = audioConsole.load('{eai.resource}/map-enter.mp3');
    var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
    country.addLoadListener(o, o.onLoadData);
    country.load();
@@ -1096,6 +1099,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();
+            o._mapAutio.play();
             o._playing = true;
             o._statusStart = true;
          }

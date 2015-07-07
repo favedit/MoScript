@@ -10297,8 +10297,8 @@ MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    o._resource = null;
 }
 MO.FAudioConsole = function FAudioConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd  = EScope.Global;
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
    o._audios   = null;
    o.construct = MO.FAudioConsole_construct;
    o.create    = MO.FAudioConsole_create;
@@ -10309,7 +10309,7 @@ MO.FAudioConsole = function FAudioConsole(o){
 MO.FAudioConsole_construct = function FAudioConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._audios = new TDictionary();
+   o._audios = new MO.TDictionary();
 }
 MO.FAudioConsole_create = function FAudioConsole_create(uri){
    var o = this;
@@ -21560,6 +21560,180 @@ with(MO){
       o._indexBuffer = RObject.dispose(o._indexBuffer);
       o.__base.FE3dRenderable.dispose.call(o);
    }
+}
+MO.FE3dParticle = function FE3dParticle(o){
+   o = MO.Class.inherits(this, o, MO.FE3dMeshRenderable);
+   o._items                = null;
+   o._vertexPositionBuffer = null;
+   o._vertexCoordBuffer    = null;
+   o._indexBuffer          = null;
+   o.construct             = MO.FE3dParticle_construct;
+   o.setup                 = MO.FE3dParticle_setup;
+   o.testReady             = MO.FE3dParticle_testReady;
+   o.findTexture           = MO.FE3dParticle_findTexture;
+   o.textures              = MO.FE3dParticle_textures;
+   o.material              = MO.FE3dParticle_material;
+   o.setSize               = MO.FE3dParticle_setSize;
+   o.setData               = MO.FE3dParticle_setData;
+   o.loadUrl               = MO.FE3dParticle_loadUrl;
+   o.pushItem              = MO.FE3dParticle_pushItem;
+   o.upload                = MO.FE3dParticle_upload;
+   o.dispose               = MO.FE3dParticle_dispose;
+   return o;
+}
+MO.FE3dParticle_construct = function FE3dParticle_construct(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.construct.call(o);
+   o._items = new MO.TObjects();
+}
+MO.FE3dParticle_setup = function FE3dParticle_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   o._vertexCount = 0;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   o.pushIndexBuffer(buffer);
+}
+MO.FE3dParticle_testReady = function FE3dParticle_testReady(){
+   var o = this;
+   if(!o._ready){
+      o._ready = o._renderable.testReady();
+   }
+   return o._ready;
+}
+MO.FE3dParticle_findTexture = function FE3dParticle_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+MO.FE3dParticle_textures = function FE3dParticle_textures(){
+   return this._renderable.textures();
+}
+MO.FE3dParticle_material = function FE3dParticle_material(){
+   return this._renderable.material();
+}
+MO.FE3dParticle_setSize = function FE3dParticle_setSize(width, height){
+   var o = this;
+}
+MO.FE3dParticle_setData = function FE3dParticle_setData(data){
+   this._renderable = data;
+}
+MO.FE3dParticle_loadUrl = function FE3dParticle_loadUrl(url){
+   var o = this;
+   var context = o._graphicContext;
+   o._renderable = RConsole.find(FE3dParticleConsole).loadUrl(context, url);
+   o._ready = false;
+}
+MO.FE3dParticle_pushItem = function FE3dParticle_pushItem(item){
+   this._items.push(item);
+}
+MO.FE3dParticle_upload = function FE3dParticle_upload(){
+   var o = this;
+   var context = o._graphicContext;
+   var items = o._items;
+   var count = items.count();
+   var vertexCount = o._vertexCount = 4 * count;
+   var vertexPositionIndex = 0;
+   var vertexPositionData = new Float32Array(3 * vertexCount);
+   var vertexCoordIndex = 0;
+   var vertexCoordData = new Float32Array(2 * vertexCount);
+   var indexIndex = 0;
+   var indexData = new Uint16Array(6 * count);
+   for(var i = 0; i < count; i++){
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] =  1;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] = -1;
+      vertexPositionData[vertexPositionIndex++] =  0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 1;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      vertexCoordData[vertexCoordIndex++] = 0;
+      indexData[indexIndex++] = 0;
+      indexData[indexIndex++] = 1;
+      indexData[indexIndex++] = 2;
+      indexData[indexIndex++] = 0;
+      indexData[indexIndex++] = 2;
+      indexData[indexIndex++] = 3;
+   }
+   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, vertexCount);
+   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, vertexCount);
+   o._indexBuffer.upload(indexData, 6 * count);
+}
+MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
+   var o = this;
+   o._items = RObject.dispose(o._items);
+   o.__base.FE3dMeshRenderable.dispose.call(o);
+}
+MO.FE3dParticleData = function FE3dParticleData(o){
+   o = MO.Class.inherits(this, o, MO.FE3dFaceData);
+   o.onImageLoad = MO.FE3dParticleData_onImageLoad;
+   o.construct   = MO.FE3dParticleData_construct;
+   o.loadUrl     = MO.FE3dParticleData_loadUrl;
+   o.dispose     = MO.FE3dParticleData_dispose;
+   return o;
+}
+MO.FE3dParticleData_onImageLoad = function FE3dParticleData_onImageLoad(event){
+   var o = this;
+   var image = event.sender;
+   o._size.assign(image.size());
+   o._texture.upload(image);
+   image.dispose();
+   o._ready = true;
+}
+MO.FE3dParticleData_construct = function FE3dParticleData_construct(){
+   var o = this;
+   o.__base.FE3dFaceData.construct.call(o);
+}
+MO.FE3dParticleData_loadUrl = function FE3dParticleData_loadUrl(url){
+   var o = this;
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl(url);
+   o._ready = false;
+}
+MO.FE3dParticleData_dispose = function FE3dParticleData_dispose(){
+   var o = this;
+   o._hVideo = null;
+   o.__base.FE3dFaceData.dispose.call(o);
+}
+MO.FE3dParticleItem = function FE3dParticleItem(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix   = null;
+   o._data     = MO.Class.register(o, new MO.AGetSet('_data'));
+   o.construct = MO.FE3dParticleItem_construct;
+   o.process   = MO.FE3dParticleItem_process;
+   o.dispose   = MO.FE3dParticleItem_dispose;
+   return o;
+}
+MO.FE3dParticleItem_construct = function FE3dParticleItem_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
+}
+MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
+   var o = this;
+}
+MO.FE3dParticleItem_dispose = function FE3dParticleItem_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FE3dPolygon = function FE3dPolygon(o){

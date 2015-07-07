@@ -25,8 +25,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._titleBar             = null;
    // @attribute
    o._flagSprite           = null;
-   o._groundAutioUrl       = '/script/ars/eai/ground.mp3';
    o._groundAutio          = null;
+   o._mapAutio             = null;
    //..........................................................
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
@@ -212,10 +212,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    citysRangeRenderable.upload();
    //..........................................................
    // 加载背景音乐
-   var audio = o._groundAutio = MO.Class.create(MO.FAudio);
-   audio.loadUrl(o._groundAutioUrl);
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
+   audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
+   // 加载地图音乐
+   o._mapAutio = audioConsole.load('{eai.resource}/map-enter.mp3');
    //..........................................................
    // 加载标志
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
