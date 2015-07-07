@@ -2229,7 +2229,6 @@ with (MO) {
    MO.FGuiHistoryMilestoneFrame = function FGuiHistoryMilestoneFrame(o) {
       o = RClass.inherits(this, o, FGuiControl);
       o._bgImage = null;
-      o._shiningImage = null;
       o._numImages = null;
       o._wanImage = null;
       o._yiImage = null;
@@ -2238,8 +2237,8 @@ with (MO) {
       o._popDuration = 500;
       o._showDuration = 2000;
       o._closeDuration = 500;
-      o._fullWidth = 713;
-      o._fullHeight = 686;
+      o._fullWidth = 953;
+      o._fullHeight = 896;
       o.setup = FGuiHistoryMilestoneFrame_setup;
       o.onPaintBegin = FGuiHistoryMilestoneFrame_onPaintBegin;
       o.onImageLoad = FGuiHistoryMilestoneFrame_onImageLoad;
@@ -2257,9 +2256,6 @@ with (MO) {
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
       o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
-      o._shiningImage = MO.Class.create(MO.FImage);
-      o._shiningImage.addLoadListener(o, o.onImageLoad);
-      o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
       o._wanImage = MO.Class.create(MO.FImage);
       o._wanImage.addLoadListener(o, o.onImageLoad);
       o._wanImage.loadUrl('../ars/eai/number/wan.png');
@@ -2286,10 +2282,9 @@ with (MO) {
       var graphic = event.graphic;
       var rectangle = o._clientRectangle;
       var bgSize = o._bgImage._size;
-      var shiningSize = o._shiningImage._size;
       var hCenter = rectangle.left + rectangle.width / 2;
-      var textLeft = hCenter - 120;
-      var textTop = rectangle.top + 450;
+      var textLeft = hCenter - 100;
+      var textTop = rectangle.top + 520;
       var passedTick = MO.Timer.current() - o._startTick;
       var showTick = passedTick - o._popDuration;
       var closeTick = passedTick - o._showDuration - o._popDuration;
@@ -2317,8 +2312,7 @@ with (MO) {
          dsEvent.sender = o;
          o.processDataChangedListener(dsEvent);
       }
-      graphic.drawImage(o._shiningImage, hCenter - shiningSize.width / 2, rectangle.top, shiningSize.width, shiningSize.height);
-      graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top + shiningSize.height / 2, bgSize.width, bgSize.height);
+      graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
       graphic.setFont('bold 20px Microsoft YaHei');
       graphic.drawText('达成日数：', textLeft, textTop + 50, '#FFE849');
       graphic.drawText('分公司数：', textLeft, textTop + 100, '#FFE849');
@@ -2332,12 +2326,14 @@ with (MO) {
          else {
             var unitImage = o._wanImage;
          }
-         var numWidth = invesText.length * 60 + 80;
+         var numImgSize = o._numImages[0]._size;
+         var unitImgSize = o._yiImage._size;
+         var numWidth = invesText.length * numImgSize.width + unitImgSize.width;
          var numLeft = hCenter - numWidth / 2;
          for (var i = 0; i < invesText.length; i++) {
-            graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
+            graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
-         graphic.drawImage(unitImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
+         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
@@ -3522,7 +3518,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerLevel = 150;
    o._milestoneShowed          = 0;
    o._milestoneBarShowDuration = 1000;
-   o._milestoneBarShowTick     = 0;
+   o._milestoneBarShowTick = 0;
+   o._milestoneBarShowing = false;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -3556,6 +3553,7 @@ MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMile
    o.switchPlay(true);
    o._milestoneShowed++;
    o._milestoneBarShowTick = MO.Timer.current();
+   o._milestoneBarShowing = true;
 }
 MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOperationPlay(event){
    var o = this;
@@ -3655,7 +3653,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
-   o._milestoneBarShowTick = MO.Timer.current() + o._milestoneBarShowDuration;
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.linkGraphicContext(o);
@@ -3741,19 +3738,18 @@ MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
 MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
-   if(!o._statusStart){
-      if(o.testReady()){
+   if (!o._statusStart) {
+      if (o.testReady()) {
          var hLoading = document.getElementById('id_loading');
-         if(hLoading){
+         if (hLoading) {
             hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if(o._statusLayerLevel == 0){
-            if(hLoading){
+         if (o._statusLayerLevel == 0) {
+            if (hLoading) {
                document.body.removeChild(hLoading);
             }
-            o._mapEntity.countryEntity().start();
             o.switchPlay(true);
             o._statusStart = true;
          }
@@ -3762,7 +3758,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var currentTick = MO.Timer.current();
    if (o._playing) {
       var countryEntity = o._mapEntity.countryEntity();
-      if (!countryEntity.introAnimeDone()) {
+      if(!countryEntity.introAnimeDone()){
          countryEntity.process();
          return;
       }
@@ -3790,10 +3786,14 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._lastTick = currentTick;
       }
    }
-   var mbPassedTick = currentTick - o._milestoneBarShowTick;
-   var p = mbPassedTick / o._milestoneBarShowDuration;
-   p = (1 - p) * (1 - p);
-   if (mbPassedTick > 0 && mbPassedTick < o._milestoneBarShowDuration) {
+   if (o._milestoneBarShowing) {
+      var mbPassedTick = currentTick - o._milestoneBarShowTick;
+      var p = mbPassedTick / o._milestoneBarShowDuration;
+      if (p > 1) {
+         p = 1;
+         o._milestoneBarShowing = false;;
+      }
+      p = (1 - p) * (1 - p);
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
       mBar.setRight(20 + (-380 * p));
       mBar.dirty();

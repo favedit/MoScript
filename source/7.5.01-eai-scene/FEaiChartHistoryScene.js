@@ -392,8 +392,9 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    // 重复播放
    if (o._playing) {
       // 播放地图
-      if (!o._mapEntity._countryEntity.introAnimeDone()) {
-         o._mapEntity._countryEntity.process();
+      var countryEntity = o._mapEntity.countryEntity();
+      if(!countryEntity.introAnimeDone()){
+         countryEntity.process();
          return;
       }
       // 显示界面
@@ -404,6 +405,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
          o._milestoneFrame.setVisible(false);
          o._mapReady = true;
       }
+      //..........................................................
       // 计时切换日期
       if (currentTick - o._lastTick > o._interval) {
          if (currentTick - o._lastDateTick > o._dateInterval) {

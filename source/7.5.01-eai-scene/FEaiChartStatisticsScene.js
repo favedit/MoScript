@@ -272,6 +272,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
    }
    // 重复播放
    if (o._playing) {
+      // 播放地图
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
@@ -283,6 +284,7 @@ MO.FEaiChartStatisticsScene_process = function FEaiChartStatisticsScene_process(
          o._mapReady = true;
       }
       //..........................................................
+      // 刷新时间
       var currentTick = MO.Timer.current();
       if (currentTick - o._24HLastTick > o._24HTrendInterval) {
          o._timeline.sync();
