@@ -94,21 +94,21 @@ with (MO) {
 
       var hCenter = rectangle.left + rectangle.width / 2;
 
-      var textLeft = hCenter - 100;
+      var textLeft = hCenter - 135;
       var textTop = rectangle.top + 520;
 
       var passedTick = MO.Timer.current() - o._startTick;
       var showTick = passedTick - o._popDuration;
       var closeTick = passedTick - o._showDuration - o._popDuration;
       //var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
-      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100;
+      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100 - o._fullHeight;
       var p = 0;
       if (passedTick < o._popDuration) {
          p = passedTick / o._popDuration;
          p = 1 - (1 - p) * (1 - p);
          //o.setLeft(-rectangle.width + slideDistance * p);
          graphic._handle.globalAlpha = p;
-         o.setTop(MO.Eai.Canvas.logicSize().height - slideDistance * p);
+         o.setTop(MO.Eai.Canvas.logicSize().height - o._fullHeight - slideDistance * p);
       }
       else if (showTick < o._showDuration) {
       }
@@ -130,7 +130,7 @@ with (MO) {
 
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
 
-      graphic.setFont('bold 20px Microsoft YaHei');
+      graphic.setFont('bold 28px Microsoft YaHei');
       //graphic.drawText('投资总额：', textLeft, textTop, '#FFE849');
       graphic.drawText('达成日数：', textLeft, textTop + 50, '#FFE849');
       graphic.drawText('分公司数：', textLeft, textTop + 100, '#FFE849');
@@ -154,9 +154,9 @@ with (MO) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
          graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
-         graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
-         graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
+         graphic.drawText(o.data().dayCount(), textLeft + 150, textTop + 50, '#FFA800');
+         graphic.drawText(o.data().companyCount(), textLeft + 150, textTop + 100, '#FFA800');
+         graphic.drawText(o.data().staffCount(), textLeft + 150, textTop + 150, '#FFA800');
       }
 
       graphic._handle.globalAlpha = 1;
