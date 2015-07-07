@@ -79,6 +79,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._autio2                 = null;
    o._autio3                 = null;
    o._autio4                 = null;
+   o._autio5                 = null;
    o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
    o.onInvestment            = MO.FEaiStatisticsInvestment_onInvestment;
    o.construct               = MO.FEaiStatisticsInvestment_construct;
@@ -184,6 +185,8 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    audio.loadUrl('/script/ars/eai/currency/3.mp3');
    var audio = o._autio4 = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/currency/4.mp3');
+   var audio = o._autio5 = MO.Class.create(MO.FAudio);
+   audio.loadUrl('/script/ars/eai/currency/5.mp3');
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
@@ -219,6 +222,8 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       cityEntity.addInvestmentTotal(investment);
       o._mapEntity.upload();
       if(investment >= 1000000){
+         o._autio5.play(0);
+      }else if(investment >= 1000000){
          o._autio4.play(0);
       }else if(investment >= 100000){
          o._autio3.play(0);
