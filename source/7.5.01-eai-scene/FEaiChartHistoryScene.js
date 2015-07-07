@@ -36,7 +36,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    // @attribute
    o._milestoneShowed          = 0;
    o._milestoneBarShowDuration = 1000;
-   o._milestoneBarShowTick     = 0;
+   o._milestoneBarShowTick = 0;
+   o._milestoneBarShowing = false;
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
@@ -95,6 +96,7 @@ MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMile
    o.switchPlay(true);
    o._milestoneShowed++;
    o._milestoneBarShowTick = MO.Timer.current();
+   o._milestoneBarShowing = true;
 }
 
 //==========================================================
@@ -237,7 +239,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
-   o._milestoneBarShowTick = MO.Timer.current() + o._milestoneBarShowDuration;
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
@@ -370,16 +371,16 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    var o = this;
    o.__base.FEaiChartScene.process.call(o);
    // 检测首次播放
-   if(!o._statusStart){
-      if(o.testReady()){
+   if (!o._statusStart) {
+      if (o.testReady()) {
          var hLoading = document.getElementById('id_loading');
-         if(hLoading){
+         if (hLoading) {
             hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if(o._statusLayerLevel == 0){
-            if(hLoading){
+         if (o._statusLayerLevel == 0) {
+            if (hLoading) {
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
@@ -425,10 +426,14 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
       }
    }
    // 出现右侧里程碑条
-   var mbPassedTick = currentTick - o._milestoneBarShowTick;
-   var p = mbPassedTick / o._milestoneBarShowDuration;
-   p = (1 - p) * (1 - p);
-   if (mbPassedTick > 0 && mbPassedTick < o._milestoneBarShowDuration) {
+   if (o._milestoneBarShowing) {
+      var mbPassedTick = currentTick - o._milestoneBarShowTick;
+      var p = mbPassedTick / o._milestoneBarShowDuration;
+      if (p > 1) {
+         p = 1;
+         o._milestoneBarShowing = false;;
+      }
+      p = (1 - p) * (1 - p);
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
       mBar.setRight(20 + (-380 * p));
       mBar.dirty();
@@ -437,6 +442,7 @@ MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
    if (o._milestoneFrame.visible()) {
       o._milestoneFrame.dirty();
    }
+
 }
 
 //==========================================================
