@@ -11,7 +11,6 @@ with (MO) {
       //..........................................................
       // @attribute
       o._bgImage = null;
-      o._shiningImage = null;
       o._numImages = null;
       o._wanImage = null;
       o._yiImage = null;
@@ -21,8 +20,8 @@ with (MO) {
       o._popDuration = 500;
       o._showDuration = 2000;
       o._closeDuration = 500;
-      o._fullWidth = 713;
-      o._fullHeight = 686;
+      o._fullWidth = 953;
+      o._fullHeight = 896;
       //..........................................................
       // @method
       o.setup = FGuiHistoryMilestoneFrame_setup;
@@ -52,9 +51,6 @@ with (MO) {
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
       o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
-      o._shiningImage = MO.Class.create(MO.FImage);
-      o._shiningImage.addLoadListener(o, o.onImageLoad);
-      o._shiningImage.loadUrl('../ars/eai/milestone/shining.png');
       o._wanImage = MO.Class.create(MO.FImage);
       o._wanImage.addLoadListener(o, o.onImageLoad);
       o._wanImage.loadUrl('../ars/eai/number/wan.png');
@@ -95,12 +91,11 @@ with (MO) {
       var rectangle = o._clientRectangle;
 
       var bgSize = o._bgImage._size;
-      var shiningSize = o._shiningImage._size;
 
       var hCenter = rectangle.left + rectangle.width / 2;
 
-      var textLeft = hCenter - 120;
-      var textTop = rectangle.top + 450;
+      var textLeft = hCenter - 100;
+      var textTop = rectangle.top + 520;
 
       var passedTick = MO.Timer.current() - o._startTick;
       var showTick = passedTick - o._popDuration;
@@ -133,8 +128,7 @@ with (MO) {
          o.processDataChangedListener(dsEvent);
       }
 
-      graphic.drawImage(o._shiningImage, hCenter - shiningSize.width / 2, rectangle.top, shiningSize.width, shiningSize.height);
-      graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top + shiningSize.height / 2, bgSize.width, bgSize.height);
+      graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
 
       graphic.setFont('bold 20px Microsoft YaHei');
       //graphic.drawText('投资总额：', textLeft, textTop, '#FFE849');
@@ -151,12 +145,15 @@ with (MO) {
          else {
             var unitImage = o._wanImage;
          }
-         var numWidth = invesText.length * 60 + 80;
+         var numImgSize = o._numImages[0]._size;
+         var unitImgSize = o._yiImage._size;
+
+         var numWidth = invesText.length * numImgSize.width + unitImgSize.width;
          var numLeft = hCenter - numWidth / 2;
          for (var i = 0; i < invesText.length; i++) {
-            graphic.drawImage(o._numImages[invesText[i]], numLeft + i * 60, rectangle.top + shiningSize.height / 2 - 80, o._numImages[0]._size.width, o._numImages[0]._size.height);
+            graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
-         graphic.drawImage(unitImage, numLeft + invesText.length * 60, rectangle.top + shiningSize.height / 2 - 80, o._yiImage._size.width, o._yiImage._size.height);
+         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          graphic.drawText(o.data().dayCount(), textLeft + 120, textTop + 50, '#FFA800');
          graphic.drawText(o.data().companyCount(), textLeft + 120, textTop + 100, '#FFA800');
          graphic.drawText(o.data().staffCount(), textLeft + 120, textTop + 150, '#FFA800');
