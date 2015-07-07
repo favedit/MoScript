@@ -126,6 +126,7 @@ with (MO) {
          var dsEvent = MO.Memory.alloc(SEvent);
          dsEvent.sender = o;
          o.processDataChangedListener(dsEvent);
+         return;
       }
 
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
