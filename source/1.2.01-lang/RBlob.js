@@ -28,3 +28,4 @@ MO.RBlob.prototype.fromText = function RBlob_fromText(value){
 //..........................................................
 // 实例化内容
 MO.RBlob = new MO.RBlob();
+MO.Lang.Blob = MO.RBlob;

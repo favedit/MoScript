@@ -7,9 +7,10 @@
 //==========================================================
 var MO = new function MoSpace(){
    var o = this;
-   o.version = '0.2.0';
+   o.version = '0.3.0';
    o.info    = new Object();
    o.Lang    = new function MoLangSpace(){return this;}
+   o.Stream  = new function MoStreamSpace(){return this;}
    o.Core    = new function MoCoreSpace(){return this;}
    return o;
 }
@@ -21,13 +22,14 @@ var MO = new function MoSpace(){
 // @param name:String 名称
 // @param value:Object 对象
 //==========================================================
-MO.initialize = function RMO_initialize(){
+MO.initialize = function MO_initialize(){
    var o = this;
    var info = o.info;
    var count = 0;
    for(var name in this){
       var value = this[name];
       if(value){
+         // 设置函数名称
          if(value.constructor == Function){
             value.__name = name;
          }
@@ -44,5 +46,6 @@ MO.initialize = function RMO_initialize(){
 // @param name:String 名称
 // @param value:Object 对象
 //==========================================================
-MO.release = function RMO_release(){
+MO.release = function MO_release(){
+   var o = this;
 }

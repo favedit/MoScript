@@ -24,12 +24,13 @@ MO.RChar.prototype.parse = function RChar_parse(n){
 // <T>将一个数字转换为字符</T>
 //
 // @method
-// @param v:value:Integer 数字
+// @param value:Integer 数字
 // @return 字符
 //==========================================================
-MO.RChar.prototype.toString = function RChar_toString(v){
-   return v;
+MO.RChar.prototype.toString = function RChar_toString(value){
+   return value;
 }
 //..........................................................
 // 实例化内容
 MO.RChar = new MO.RChar();
+MO.Lang.Char = MO.RChar;
