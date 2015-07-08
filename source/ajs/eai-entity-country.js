@@ -1419,7 +1419,7 @@ with (MO) {
       o._data = RClass.register(o, new AGetSet('_data'));
       o._startTick = 0;
       o._popDuration = 500;
-      o._showDuration = 2000;
+      o._showDuration = 5000;
       o._closeDuration = 500;
       o._fullWidth = 953;
       o._fullHeight = 896;

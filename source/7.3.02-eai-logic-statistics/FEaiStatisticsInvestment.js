@@ -251,7 +251,7 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       o._mapEntity.upload();
       // 播放声音
       var autios = o._autios;
-      if(investment >= 1000000){
+      if(investment >= 5000000){
          autios[5].play(0);
       }else if(investment >= 1000000){
          autios[4].play(0);

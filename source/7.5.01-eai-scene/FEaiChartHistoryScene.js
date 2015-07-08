@@ -17,7 +17,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._lastTick         = 0;
    o._interval         = 10;
    o._lastDateTick     = 0;
-   o._dateInterval     = 100;
+   //o._dateInterval     = 100;
+   o._dateInterval     = 250;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -113,7 +114,7 @@ MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOper
    if (code == endCode) {
       var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
       var startDD = historyConsole.dates().at(0);
-      MO.RDate.autoParse(o._currentDate, startDD._code);
+      MO.Lang.Date.autoParse(o._currentDate, startDD._code);
    }
    // 开始播放
    o.switchPlay(true);
@@ -219,11 +220,11 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    // 创建里程碑
    var milestoneBars = o._milestoneBars = new MO.TObjects();
    var count = milestones.count();
-   for(var i = 0; i < count; i++){
-      var milestone = milestones.at(i);
+   for(var i = count - 1; i >= 0; i--){
+      var milestone = milestones.at(count - i - 1);
       var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
       frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(100 + 110 * i);
+      frame.setTop(90 + 100 * i);
       frame.setRight(-360);
       var date = new MO.TDate();
       date.parse(milestone.code());

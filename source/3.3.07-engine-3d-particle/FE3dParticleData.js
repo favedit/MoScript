@@ -45,6 +45,10 @@ MO.FE3dParticleData_onImageLoad = function FE3dParticleData_onImageLoad(event){
 MO.FE3dParticleData_construct = function FE3dParticleData_construct(){
    var o = this;
    o.__base.FE3dFaceData.construct.call(o);
+   // 设置材质
+   var material = o._material;
+   material.info().optionAlpha = true;
+   material.info().ambientColor.set(1, 1, 1, 1);
 }
 
 //==========================================================

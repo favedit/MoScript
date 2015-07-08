@@ -429,21 +429,21 @@
    // <T>变换顶点数据。</T>
    //
    // @method
-   // @param po:outputData:Array 输出数据
-   // @param poi:outputIndex:Integer 输出位置
-   // @param pi:inputData:Array 输入数据
-   // @param pii:inputIndex:Integer 输入位置
-   // @param pc:count:Integer 个数
+   // @param outputData:Array 输出数据
+   // @param outputIndex:Integer 输出位置
+   // @param inputData:Array 输入数据
+   // @param inputIndex:Integer 输入位置
+   // @param count:Integer 个数
    //==========================================================
-   MO.SMatrix4x4_transform = function SMatrix4x4_transform(po, poi, pi, pii, pc){
-      var d = this._data;
-      for(var i = 0; i < pc; i++){
-         var x = pi[pii++];
-         var y = pi[pii++];
-         var z = pi[pii++];
-         po[poi++] = (x * d[ 0]) + (y * d[ 4]) +(z * d[ 8]) + d[12];
-         po[poi++] = (x * d[ 1]) + (y * d[ 5]) +(z * d[ 9]) + d[13];
-         po[poi++] = (x * d[ 2]) + (y * d[ 6]) +(z * d[10]) + d[14];
+   MO.SMatrix4x4_transform = function SMatrix4x4_transform(outputData, outputIndex, inputData, inputIndex, count){
+      var data = this._data;
+      for(var i = 0; i < count; i++){
+         var x = inputData[inputIndex++];
+         var y = inputData[inputIndex++];
+         var z = inputData[inputIndex++];
+         outputData[outputIndex++] = (x * data[ 0]) + (y * data[ 4]) +(z * data[ 8]) + data[12];
+         outputData[outputIndex++] = (x * data[ 1]) + (y * data[ 5]) +(z * data[ 9]) + data[13];
+         outputData[outputIndex++] = (x * data[ 2]) + (y * data[ 6]) +(z * data[10]) + data[14];
       }
    }
 

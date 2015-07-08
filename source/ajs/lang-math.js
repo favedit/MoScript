@@ -1259,15 +1259,15 @@ with(MO){
       }
       return true;
    }
-   MO.SMatrix4x4_transform = function SMatrix4x4_transform(po, poi, pi, pii, pc){
-      var d = this._data;
-      for(var i = 0; i < pc; i++){
-         var x = pi[pii++];
-         var y = pi[pii++];
-         var z = pi[pii++];
-         po[poi++] = (x * d[ 0]) + (y * d[ 4]) +(z * d[ 8]) + d[12];
-         po[poi++] = (x * d[ 1]) + (y * d[ 5]) +(z * d[ 9]) + d[13];
-         po[poi++] = (x * d[ 2]) + (y * d[ 6]) +(z * d[10]) + d[14];
+   MO.SMatrix4x4_transform = function SMatrix4x4_transform(outputData, outputIndex, inputData, inputIndex, count){
+      var data = this._data;
+      for(var i = 0; i < count; i++){
+         var x = inputData[inputIndex++];
+         var y = inputData[inputIndex++];
+         var z = inputData[inputIndex++];
+         outputData[outputIndex++] = (x * data[ 0]) + (y * data[ 4]) +(z * data[ 8]) + data[12];
+         outputData[outputIndex++] = (x * data[ 1]) + (y * data[ 5]) +(z * data[ 9]) + data[13];
+         outputData[outputIndex++] = (x * data[ 2]) + (y * data[ 6]) +(z * data[10]) + data[14];
       }
    }
    MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(input, output){
@@ -2973,6 +2973,7 @@ MO.RMath = function RMath(){
    o.vector3        = null;
    o.rectangle      = null;
    o.matrix         = null;
+   o.faceCenterPositions = [-1, 1, 0, 1, 1, 0, 1, -1, 0, -1, -1, 0];
    return o;
 }
 MO.RMath.prototype.construct = function RMath_construct(){
@@ -3025,6 +3026,7 @@ MO.RMath.prototype.sign = function RMath_sign(value){
 }
 MO.RMath = new MO.RMath();
 MO.RMath.construct();
+MO.Lang.Math = MO.RMath;
 MO.RRandom = function RRandom(){
    var o = this;
    o._seed = (new Date()).getTime();

@@ -27,6 +27,8 @@ MO.RMath = function RMath(){
    o.vector3        = null;
    o.rectangle      = null;
    o.matrix         = null;
+   // @attribute
+   o.faceCenterPositions = [-1, 1, 0, 1, 1, 0, 1, -1, 0, -1, -1, 0];
    return o;
 }
 
@@ -118,3 +120,4 @@ MO.RMath.prototype.sign = function RMath_sign(value){
 // 实例化内容
 MO.RMath = new MO.RMath();
 MO.RMath.construct();
+MO.Lang.Math = MO.RMath;
