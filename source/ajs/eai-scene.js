@@ -758,7 +758,6 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
-      pop.show();
    }
 }
 MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
