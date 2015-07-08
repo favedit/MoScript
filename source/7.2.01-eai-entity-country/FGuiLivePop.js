@@ -110,11 +110,11 @@ MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
    if (passedTick < o._popDuration) {
       p = passedTick / o._popDuration;
       //p = 1 - (1 - p) * (1 - p);
-      graphic.globalAlpha = p;
+      graphic._handle.globalAlpha = p;
       graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
-      graphic.globalAlpha = 1;
       o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight * (1 - p));
       graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + p + ')');
+      graphic._handle.globalAlpha = 1;
    }
    else if (showTick < o._showDuration) {
       graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
@@ -123,19 +123,18 @@ MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
    else if (closeTick < o._closeDuration) {
       p = closeTick / o._closeDuration;
       //p = p * p;
-      graphic.globalAlpha = p;
+      graphic._handle.globalAlpha = p;
       graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
-      graphic.globalAlpha = 1;
       o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - o._riseHeight * p);
       graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + (1 - p) + ')');
+      graphic._handle.globalAlpha = 1;
    }
    else {
       o._data = null;
       o.setVisible(false);
+      o.dirty();
       return;
    }
-
-
 
    //==========================================================
    //var graphic = event.graphic;
@@ -216,6 +215,7 @@ MO.FGuiLivePop_show = function FGuiLivePop_show() {
    o = this;
    o.setVisible(true);
    o._startTick = MO.Timer.current();
+   o.dirty();
 }
 
 //==========================================================

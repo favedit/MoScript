@@ -145,6 +145,9 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
          timeControl.setLabel(date.format('HH24:MI'));
       }
    }
+   if (o._livePop.visible()) {
+      o._livePop.dirty();
+   }
 }
 
 //==========================================================
