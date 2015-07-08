@@ -161,9 +161,15 @@ with (MO) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
          graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         graphic.drawText(o.data().dayCount(), textLeft + 150, textTop + 50, '#FFA800');
-         graphic.drawText(o.data().companyCount(), textLeft + 150, textTop + 100, '#FFA800');
-         graphic.drawText(o.data().staffCount(), textLeft + 150, textTop + 150, '#FFA800');
+         var dataText = o.data().dayCount();
+         var textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 50, '#FFA800');
+         dataText = o.data().companyCount();
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFA800');
+         dataText = o.data().staffCount();
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFA800');
       }
 
       graphic._handle.globalAlpha = 1;
