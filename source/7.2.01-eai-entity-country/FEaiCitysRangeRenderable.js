@@ -144,6 +144,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'eai.citys.range';
       materialInfo.optionAlpha = true;
+      materialInfo.optionDepth = false;
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }
@@ -180,19 +181,24 @@ with(MO){
             var size = city.size();
             var width = size.width / 2;
             var height = size.height / 2;
+            var provinceEntity = city.provinceEntity();
+            var z = 0;
+            if(provinceEntity){
+               z = provinceEntity.currentZ();
+            }
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - range;
             vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + range;
             vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + range;
             vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x - range;
             vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             // 设置顶点颜色
             var color = city.rangeColor();
             var red = parseInt(color.red * 255);

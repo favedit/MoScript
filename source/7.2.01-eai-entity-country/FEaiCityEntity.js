@@ -102,9 +102,10 @@ with(MO){
    // <T>从输入流反序列化数据。</T>
    //
    // @method
-   // @param input:MStream 输入流
+   // @param level:Integer 投资级别
+   // @param investmentTotal:Number 投资总额
    //==========================================================
-   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(investmentTotal){
+   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
       var o = this;
       // 设置数据
       o._investmentCount++;

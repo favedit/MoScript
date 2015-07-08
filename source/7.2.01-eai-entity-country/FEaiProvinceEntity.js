@@ -17,10 +17,13 @@ with(MO){
       // @attribute
       o._layerDepth       = 3;
       // @attribute
+      o._currentZ         = RClass.register(o, new AGetter('_currentZ'), 0);
+      // @attribute
       o._focusTick        = 0;
       o._focusInterval    = 10;
       o._focusCurrent     = 0;
-      o._focusCount       = 1000;
+      o._focusColor       = null;
+      o._focusCount       = 200;
       //..........................................................
       // @method
       o.construct         = FEaiProvinceEntity_construct;
@@ -46,6 +49,13 @@ with(MO){
    MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
+      var colors = o._focusColors = new Array();
+      colors[0] = [0x28, 0x42, 0xB4];
+      colors[1] = [0x28, 0x42, 0xB4];
+      colors[2] = [0x1B, 0xA2, 0xBC];
+      colors[3] = [0xFF, 0xDF, 0x6F];
+      colors[4] = [0xFF, 0x6B, 0x49];
+      colors[5] = [0xFF, 0x6B, 0x49];
    }
 
    //==========================================================
@@ -286,12 +296,14 @@ with(MO){
    // <T>从输入流反序列化数据。</T>
    //
    // @method
-   // @param input:MStream 输入流
+   // @param level:Integer 投资级别
+   // @param investment:Number 投资额
    //==========================================================
-   MO.FEaiProvinceEntity_doInvestment = function FEaiProvinceEntity_doInvestment(){
+   MO.FEaiProvinceEntity_doInvestment = function FEaiProvinceEntity_doInvestment(level, investment){
       var o = this;
       o._focusTick = 0;
       o._focusCurrent = o._focusCount;
+      o._focusColor = o._focusColors[level];
    }
 
    //==========================================================
@@ -315,13 +327,11 @@ with(MO){
       //   colors[colorIndex++] = 0;
       //   colors[colorIndex++] = 255;
       //}
-
       //var renderable = o._faceRenderable;
       //renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
       //var material = renderable.material();
       //material.info().ambientColor.set(rate, rate, rate, 1);
       //material.update();
-
       //var renderable = o._borderRenderable;
       //var material = renderable.material();
       //material.info().ambientColor.set(rate, rate, rate, 1);
@@ -340,11 +350,12 @@ with(MO){
       var vertexTotal = o._vertexTotal;
       var colorIndex = 0;
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
+      var color = o._focusColor;
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x08 + ((0x08 - 0x08)* rate);
-         colors[colorIndex++] = 0x0D + ((0xB5 - 0x0D)* rate);
-         colors[colorIndex++] = 0x19 + ((0xF6 - 0x19)* rate);
+         colors[colorIndex++] = 0x08 + ((color[0] - 0x08)* rate);
+         colors[colorIndex++] = 0x0D + ((color[1] - 0x0D)* rate);
+         colors[colorIndex++] = 0x19 + ((color[2] - 0x19)* rate);
          colors[colorIndex++] = 0xFF;
       }
       // 创建三角面渲染对象
@@ -362,7 +373,7 @@ with(MO){
       if(o._focusCurrent > 0){
          var tick = RTimer.current();
          if(tick - o._focusTick > o._focusInterval){
-            var z = -o._focusCurrent / 400;
+            var z = o._currentZ = -o._focusCurrent / 60;
             // 设置坐标
             faceRenderable = o._faceRenderable;
             matrix = faceRenderable.matrix();

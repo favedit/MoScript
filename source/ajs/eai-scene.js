@@ -993,6 +993,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
+   o._mapEntity.setupCityEntities();
    o._readyProvince = true;
    o._mapEntity.countryEntity().setup(provinceEntities);
    o.processResize();
@@ -1196,7 +1197,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
+   o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o._engineInfo            = null;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;

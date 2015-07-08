@@ -153,6 +153,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'eai.citys';
       materialInfo.optionAlpha = true;
+      materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/citys.png');
@@ -194,22 +195,27 @@ with(MO){
             if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
                throw new TError('Invalid level.');
             }
+            var provinceEntity = city.provinceEntity();
+            var z = 0;
+            if(provinceEntity){
+               z = provinceEntity.currentZ();
+            }
             var coordLeft = o._levelCoordLeft[level];
             var coordRight = o._levelCoordRight[level];
             var scale = o._levelScale[level];
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + scale;
             vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + scale;
             vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             // 设置顶点纹理
             coordData[coordPosition++] = coordLeft;
             coordData[coordPosition++] = 1;

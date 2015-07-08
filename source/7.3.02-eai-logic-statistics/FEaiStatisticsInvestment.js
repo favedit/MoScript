@@ -9,49 +9,50 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._dateSetup              = false;
-   o._beginDate              = MO.Class.register(o, new MO.AGetter('_beginDate'));
-   o._endDate                = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._invementDayCurrent     = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._invementDay            = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
-   o._invementTotalCurrent   = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
-   o._invementTotal          = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute         = 2;
+   o._dateSetup               = false;
+   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._intervalMinute          = 2;
    // @attribute
-   o._mapEntity              = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
-   o._display                = MO.Class.register(o, new MO.AGetter('_display'));
+   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
    // @attribute
-   o._rankEntities           = MO.Class.register(o, new MO.AGetter('_rankEntities'));
-   o._entities               = MO.Class.register(o, new MO.AGetter('_entities'));
-   o._tableEntities          = MO.Class.register(o, new MO.AGetter('_tableEntities'));
-   o._showShapes             = MO.Class.register(o, new MO.AGetter('_showShapes'));
+   o._rankEntities            = MO.Class.register(o, new MO.AGetter('_rankEntities'));
+   o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
+   o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
+   o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
    // @attribute
-   o._tableCount             = 21;
-   o._tableInterval          = 1000;
-   o._tableTick              = 1;
-   o._dataTicker             = null;
+   o._tableCount              = 21;
+   o._tableInterval           = 1000;
+   o._tableTick               = 1;
+   o._dataTicker              = null;
    // @attribute
-   o._entityPool             = null;
-   o._shapePool              = null;
+   o._entityPool              = null;
+   o._shapePool               = null;
    // @attribute
-   o._autios                 = null;
+   o._autios                  = null;
    // @event
-   o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
+   o._listenersEntityChanged  = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onInvestment            = MO.FEaiStatisticsInvestment_onInvestment;
+   o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
    //..........................................................
    // @method
-   o.construct               = MO.FEaiStatisticsInvestment_construct;
-   o.allocEntity             = MO.FEaiStatisticsInvestment_allocEntity;
-   o.allocShape              = MO.FEaiStatisticsInvestment_allocShape;
-   o.setup                   = MO.FEaiStatisticsInvestment_setup;
+   o.construct                = MO.FEaiStatisticsInvestment_construct;
+   o.allocEntity              = MO.FEaiStatisticsInvestment_allocEntity;
+   o.allocShape               = MO.FEaiStatisticsInvestment_allocShape;
+   o.setup                    = MO.FEaiStatisticsInvestment_setup;
    // @method
-   o.calculateCurrent        = MO.FEaiStatisticsInvestment_calculateCurrent;
-   o.focusEntity             = MO.FEaiStatisticsInvestment_focusEntity;
-   o.process                 = MO.FEaiStatisticsInvestment_process;
+   o.calculateInvestmentLevel = MO.FEaiStatisticsInvestment_calculateInvestmentLevel;
+   o.calculateCurrent         = MO.FEaiStatisticsInvestment_calculateCurrent;
+   o.focusEntity              = MO.FEaiStatisticsInvestment_focusEntity;
+   o.process                  = MO.FEaiStatisticsInvestment_process;
    // @method
-   o.dispose                 = MO.FEaiStatisticsInvestment_dispose;
+   o.dispose                  = MO.FEaiStatisticsInvestment_dispose;
    return o;
 }
 
@@ -198,6 +199,27 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
 }
 
 //==========================================================
+// <T>计算投资级别。</T>
+//
+// @method
+//==========================================================
+MO.FEaiStatisticsInvestment_calculateInvestmentLevel = function FEaiStatisticsInvestment_calculateInvestmentLevel(investment){
+   var o = this;
+   if(investment >= 5000000){
+      return 5;
+   }else if(investment >= 1000000){
+      return 4;
+   }else if(investment >= 100000){
+      return 3;
+   }else if(investment >= 10000){
+      return 2;
+   }else if(investment >= 1000){
+      return 1;
+   }
+   return 0;
+}
+
+//==========================================================
 // <T>计算当前数值。</T>
 //
 // @method
@@ -238,29 +260,23 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
    var cityEntity = o._mapEntity.findCityByCard(card);
    // 显示实体
    if(cityEntity){
+      // 计算级别
+      var level = o.calculateInvestmentLevel(investment);
       // 更新省份数据
       var provinceCode = cityEntity.data().provinceCode();
       var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
       var province = provinceConsole.findByCode(provinceCode);
       var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
       if(provinceEntity){
-         provinceEntity.doInvestment();
+         provinceEntity.doInvestment(level, investment);
       }
       // 更新城市数据
-      cityEntity.addInvestmentTotal(investment);
+      cityEntity.addInvestmentTotal(level, investment);
       o._mapEntity.upload();
       // 播放声音
-      var autios = o._autios;
-      if(investment >= 5000000){
-         autios[5].play(0);
-      }else if(investment >= 1000000){
-         autios[4].play(0);
-      }else if(investment >= 100000){
-         autios[3].play(0);
-      }else if(investment >= 10000){
-         autios[2].play(0);
-      }else if(investment >= 1000){
-         autios[1].play(0);
+      var autio = o._autios[level];
+      if(autio){
+         autio.play(0);
       }
       // 创建渲染对象
       //var shape = o.allocShape();

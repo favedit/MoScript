@@ -8037,13 +8037,9 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
    }
    return true;
 }
-MO.SRectangle_testRectangle = function SRectangle_testRectangle(rectangle){
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(r) {
    var o = this;
-   var minx = Math.max(o.left, rectangle.left);
-   var miny = Math.max(o.top, rectangle.top);
-   var maxx = Math.min(o.left + o.width, rectangle.left + rectangle.width);
-   var maxy = Math.min(o.top + o.height, rectangle.top + rectangle.height);
-   return (minx < maxx) && (miny < maxy);
+   return (o.left < r.left + r.width && o.left + o.width > r.left && o.top < r.top + r.height && o.top + o.height > r.top);
 }
 MO.SRectangle_reset = function SRectangle_reset(){
    var o = this;
@@ -35193,7 +35189,7 @@ with(MO){
          return;
       }
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var timer = o._stage.timer();
       var stageStatistics = o._stage.statistics();
       var statistics = o._context.statistics();

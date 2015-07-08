@@ -19,6 +19,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    // @method
    o.construct             = MO.FEaiMapEntity_construct;
    // @method
+   o.setupCityEntities     = MO.FEaiMapEntity_setupCityEntities;
    o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.upload                = MO.FEaiMapEntity_upload;
@@ -40,6 +41,25 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>设置城市实体集合。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
+   var o = this;
+   var provinceEntities = o._provinceEntities;
+   var cityEntities = o._cityEntities;
+   var count = cityEntities.count();
+   for(var i = 0; i < count; i++){
+      var cityEntity = cityEntities.at(i);
+      var provinceCode = cityEntity.data().provinceCode();
+      var provinceEntity = provinceEntities.get(provinceCode);
+      // MO.Assert.debugNotNull(provinceEntity);
+      cityEntity.setProvinceEntity(provinceEntity);
+   }
 }
 
 //==========================================================

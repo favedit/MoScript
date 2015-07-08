@@ -21,7 +21,7 @@ with(MO){
          return;
       }
       var graphic = event.graphic;
-      var rectangle = o._clientRectangle;
+      var rectangle = event.rectangle;
       var timer = o._stage.timer();
       var stageStatistics = o._stage.statistics();
       var statistics = o._context.statistics();

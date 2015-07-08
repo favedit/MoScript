@@ -84,6 +84,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
+   o._mapEntity.setupCityEntities();
    o._readyProvince = true;
    // 初始化地图动画
    o._mapEntity.countryEntity().setup(provinceEntities);

@@ -939,7 +939,7 @@ with(MO){
       o._location.assign(o._data.location());
       o._size.set(2, 2);
    }
-   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(investmentTotal){
+   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
       var o = this;
       o._investmentCount++;
       o._investmentTotal += investmentTotal;
@@ -1174,6 +1174,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'eai.citys.range';
       materialInfo.optionAlpha = true;
+      materialInfo.optionDepth = false;
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/dot.png');
    }
@@ -1202,18 +1203,23 @@ with(MO){
             var size = city.size();
             var width = size.width / 2;
             var height = size.height / 2;
+            var provinceEntity = city.provinceEntity();
+            var z = 0;
+            if(provinceEntity){
+               z = provinceEntity.currentZ();
+            }
             vertexData[vertexPosition++] = location.x - range;
             vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + range;
             vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + range;
             vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x - range;
             vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             var color = city.rangeColor();
             var red = parseInt(color.red * 255);
             var green = parseInt(color.green * 255);
@@ -1342,6 +1348,7 @@ with(MO){
       var materialInfo = o._material.info();
       materialInfo.effectCode = 'eai.citys';
       materialInfo.optionAlpha = true;
+      materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
       o.loadUrl('/script/ars/eai/citys.png');
@@ -1375,21 +1382,26 @@ with(MO){
             if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
                throw new TError('Invalid level.');
             }
+            var provinceEntity = city.provinceEntity();
+            var z = 0;
+            if(provinceEntity){
+               z = provinceEntity.currentZ();
+            }
             var coordLeft = o._levelCoordLeft[level];
             var coordRight = o._levelCoordRight[level];
             var scale = o._levelScale[level];
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + scale;
             vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x + scale;
             vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = 0;
+            vertexData[vertexPosition++] = z;
             coordData[coordPosition++] = coordLeft;
             coordData[coordPosition++] = 1;
             coordData[coordPosition++] = coordRight;
@@ -1630,6 +1642,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
    o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
    o.construct             = MO.FEaiMapEntity_construct;
+   o.setupCityEntities     = MO.FEaiMapEntity_setupCityEntities;
    o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.upload                = MO.FEaiMapEntity_upload;
@@ -1643,6 +1656,18 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
+}
+MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
+   var o = this;
+   var provinceEntities = o._provinceEntities;
+   var cityEntities = o._cityEntities;
+   var count = cityEntities.count();
+   for(var i = 0; i < count; i++){
+      var cityEntity = cityEntities.at(i);
+      var provinceCode = cityEntity.data().provinceCode();
+      var provinceEntity = provinceEntities.get(provinceCode);
+      cityEntity.setProvinceEntity(provinceEntity);
+   }
 }
 MO.FEaiMapEntity_findProvinceByCard = function FEaiMapEntity_findProvinceByCard(code){
    var o = this;
@@ -1743,10 +1768,12 @@ with(MO){
       o._faceRenderable   = RClass.register(o, new AGetter('_faceRenderable'));
       o._borderRenderable = RClass.register(o, new AGetter('_borderRenderable'));
       o._layerDepth       = 3;
+      o._currentZ         = RClass.register(o, new AGetter('_currentZ'), 0);
       o._focusTick        = 0;
       o._focusInterval    = 10;
       o._focusCurrent     = 0;
-      o._focusCount       = 1000;
+      o._focusColor       = null;
+      o._focusCount       = 200;
       o.construct         = FEaiProvinceEntity_construct;
       o.buildFace         = FEaiProvinceEntity_buildFace;
       o.buildBorder       = FEaiProvinceEntity_buildBorder;
@@ -1761,6 +1788,13 @@ with(MO){
    MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
       var o = this;
       o.__base.FEaiEntity.construct.call(o);
+      var colors = o._focusColors = new Array();
+      colors[0] = [0x28, 0x42, 0xB4];
+      colors[1] = [0x28, 0x42, 0xB4];
+      colors[2] = [0x1B, 0xA2, 0xBC];
+      colors[3] = [0xFF, 0xDF, 0x6F];
+      colors[4] = [0xFF, 0x6B, 0x49];
+      colors[5] = [0xFF, 0x6B, 0x49];
    }
    MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context){
       var o = this;
@@ -1944,10 +1978,11 @@ with(MO){
       o.buildFace(context);
       o.buildBorder(context);
    }
-   MO.FEaiProvinceEntity_doInvestment = function FEaiProvinceEntity_doInvestment(){
+   MO.FEaiProvinceEntity_doInvestment = function FEaiProvinceEntity_doInvestment(level, investment){
       var o = this;
       o._focusTick = 0;
       o._focusCurrent = o._focusCount;
+      o._focusColor = o._focusColors[level];
    }
    MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
       var o = this;
@@ -1960,11 +1995,12 @@ with(MO){
       var vertexTotal = o._vertexTotal;
       var colorIndex = 0;
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
+      var color = o._focusColor;
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0x08 + ((0x08 - 0x08)* rate);
-         colors[colorIndex++] = 0x0D + ((0xB5 - 0x0D)* rate);
-         colors[colorIndex++] = 0x19 + ((0xF6 - 0x19)* rate);
+         colors[colorIndex++] = 0x08 + ((color[0] - 0x08)* rate);
+         colors[colorIndex++] = 0x0D + ((color[1] - 0x0D)* rate);
+         colors[colorIndex++] = 0x19 + ((color[2] - 0x19)* rate);
          colors[colorIndex++] = 0xFF;
       }
       o._faceRenderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
@@ -1974,7 +2010,7 @@ with(MO){
       if(o._focusCurrent > 0){
          var tick = RTimer.current();
          if(tick - o._focusTick > o._focusInterval){
-            var z = -o._focusCurrent / 400;
+            var z = o._currentZ = -o._focusCurrent / 60;
             faceRenderable = o._faceRenderable;
             matrix = faceRenderable.matrix();
             matrix.tz = z;
@@ -2870,37 +2906,38 @@ MO.FEaiStatisticsDate_dispose = function FEaiStatisticsDate_dispose(){
 }
 MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
-   o._dateSetup              = false;
-   o._beginDate              = MO.Class.register(o, new MO.AGetter('_beginDate'));
-   o._endDate                = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._invementDayCurrent     = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._invementDay            = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
-   o._invementTotalCurrent   = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
-   o._invementTotal          = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute         = 2;
-   o._mapEntity              = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
-   o._display                = MO.Class.register(o, new MO.AGetter('_display'));
-   o._rankEntities           = MO.Class.register(o, new MO.AGetter('_rankEntities'));
-   o._entities               = MO.Class.register(o, new MO.AGetter('_entities'));
-   o._tableEntities          = MO.Class.register(o, new MO.AGetter('_tableEntities'));
-   o._showShapes             = MO.Class.register(o, new MO.AGetter('_showShapes'));
-   o._tableCount             = 21;
-   o._tableInterval          = 1000;
-   o._tableTick              = 1;
-   o._dataTicker             = null;
-   o._entityPool             = null;
-   o._shapePool              = null;
-   o._autios                 = null;
-   o._listenersEntityChanged = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
-   o.onInvestment            = MO.FEaiStatisticsInvestment_onInvestment;
-   o.construct               = MO.FEaiStatisticsInvestment_construct;
-   o.allocEntity             = MO.FEaiStatisticsInvestment_allocEntity;
-   o.allocShape              = MO.FEaiStatisticsInvestment_allocShape;
-   o.setup                   = MO.FEaiStatisticsInvestment_setup;
-   o.calculateCurrent        = MO.FEaiStatisticsInvestment_calculateCurrent;
-   o.focusEntity             = MO.FEaiStatisticsInvestment_focusEntity;
-   o.process                 = MO.FEaiStatisticsInvestment_process;
-   o.dispose                 = MO.FEaiStatisticsInvestment_dispose;
+   o._dateSetup               = false;
+   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._intervalMinute          = 2;
+   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
+   o._rankEntities            = MO.Class.register(o, new MO.AGetter('_rankEntities'));
+   o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
+   o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
+   o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
+   o._tableCount              = 21;
+   o._tableInterval           = 1000;
+   o._tableTick               = 1;
+   o._dataTicker              = null;
+   o._entityPool              = null;
+   o._shapePool               = null;
+   o._autios                  = null;
+   o._listenersEntityChanged  = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
+   o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
+   o.construct                = MO.FEaiStatisticsInvestment_construct;
+   o.allocEntity              = MO.FEaiStatisticsInvestment_allocEntity;
+   o.allocShape               = MO.FEaiStatisticsInvestment_allocShape;
+   o.setup                    = MO.FEaiStatisticsInvestment_setup;
+   o.calculateInvestmentLevel = MO.FEaiStatisticsInvestment_calculateInvestmentLevel;
+   o.calculateCurrent         = MO.FEaiStatisticsInvestment_calculateCurrent;
+   o.focusEntity              = MO.FEaiStatisticsInvestment_focusEntity;
+   o.process                  = MO.FEaiStatisticsInvestment_process;
+   o.dispose                  = MO.FEaiStatisticsInvestment_dispose;
    return o;
 }
 MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onInvestment(event){
@@ -2996,6 +3033,21 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
+MO.FEaiStatisticsInvestment_calculateInvestmentLevel = function FEaiStatisticsInvestment_calculateInvestmentLevel(investment){
+   var o = this;
+   if(investment >= 5000000){
+      return 5;
+   }else if(investment >= 1000000){
+      return 4;
+   }else if(investment >= 100000){
+      return 3;
+   }else if(investment >= 10000){
+      return 2;
+   }else if(investment >= 1000){
+      return 1;
+   }
+   return 0;
+}
 MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment_calculateCurrent(){
    var o = this;
    var invementDay = o._invementDay;
@@ -3018,26 +3070,19 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
    var cityEntity = o._mapEntity.findCityByCard(card);
    if(cityEntity){
+      var level = o.calculateInvestmentLevel(investment);
       var provinceCode = cityEntity.data().provinceCode();
       var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
       var province = provinceConsole.findByCode(provinceCode);
       var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
       if(provinceEntity){
-         provinceEntity.doInvestment();
+         provinceEntity.doInvestment(level, investment);
       }
-      cityEntity.addInvestmentTotal(investment);
+      cityEntity.addInvestmentTotal(level, investment);
       o._mapEntity.upload();
-      var autios = o._autios;
-      if(investment >= 5000000){
-         autios[5].play(0);
-      }else if(investment >= 1000000){
-         autios[4].play(0);
-      }else if(investment >= 100000){
-         autios[3].play(0);
-      }else if(investment >= 10000){
-         autios[2].play(0);
-      }else if(investment >= 1000){
-         autios[1].play(0);
+      var autio = o._autios[level];
+      if(autio){
+         autio.play(0);
       }
    }
 }
@@ -4404,6 +4449,7 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
+   o._mapEntity.setupCityEntities();
    o._readyProvince = true;
    o._mapEntity.countryEntity().setup(provinceEntities);
    o.processResize();
@@ -4607,7 +4653,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
+   o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o._engineInfo            = null;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
