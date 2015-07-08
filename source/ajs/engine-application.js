@@ -121,6 +121,7 @@ with(MO){
    MO.FChapter_registerScene = function FChapter_registerScene(scene){
       var o = this;
       var code = scene.code();
+      MO.Assert.debugNotEmpty(code);
       scene.setApplication(o._application);
       scene.setChapter(o);
       o._scenes.set(code, scene);
@@ -202,7 +203,9 @@ with(MO){
       o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
       o._eventLeaveFrame     = null;
       o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
+      o.onProcessBefore      = MO.Method.empty;
       o.onProcess            = FScene_onProcess;
+      o.onProcessAfter       = MO.Method.empty;
       o.construct            = FScene_construct;
       o.setup                = FScene_setup;
       o.active               = FScene_active;
@@ -244,7 +247,14 @@ with(MO){
    MO.FScene_process = function FScene_process(){
       var o = this;
       if(o._statusActive){
+         o.processEnterFrameListener(o._eventEnterFrame);
+         o.onProcessBefore();
          o.onProcess();
+         if(o._activeStage){
+            o._activeStage.process();
+         }
+         o.onProcessAfter();
+         o.processLeaveFrameListener(o._eventLeaveFrame);
       }
    }
    MO.FScene_processEvent = function FScene_processEvent(event){
@@ -296,7 +306,7 @@ MO.RDesktop = function RDesktop(){
    o._application   = null;
    o._workspaces    = new MO.TDictionary();
    o._thread        = null;
-   o._interval      = 10;
+   o._interval      = 20;
    return o;
 }
 MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){

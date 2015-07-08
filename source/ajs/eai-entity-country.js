@@ -64,6 +64,7 @@ with(MO){
 with(MO){
    MO.FEaiCityEntity = function FEaiCityEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
+      o._provinceEntity         = RClass.register(o, new AGetSet('_provinceEntity'));
       o._visible                = RClass.register(o, new AGetter('_visible'), false);
       o._location               = RClass.register(o, new AGetter('_location'));
       o._size                   = RClass.register(o, new AGetter('_size'));
@@ -929,7 +930,7 @@ with(MO){
       o._focusTick        = 0;
       o._focusInterval    = 10;
       o._focusCurrent     = 0;
-      o._focusCount       = 100;
+      o._focusCount       = 1000;
       o.construct         = FEaiProvinceEntity_construct;
       o.buildFace         = FEaiProvinceEntity_buildFace;
       o.buildBorder       = FEaiProvinceEntity_buildBorder;
@@ -1139,7 +1140,7 @@ with(MO){
    }
    MO.FEaiProvinceEntity_updateColor = function FEaiProvinceEntity_updateColor(rate){
       var o = this;
-      var rate = o._focusCurrent / 100;
+      var rate = o._focusCurrent / o._focusCount;
       var vertexTotal = o._vertexTotal;
       var colorIndex = 0;
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
@@ -1157,7 +1158,7 @@ with(MO){
       if(o._focusCurrent > 0){
          var tick = RTimer.current();
          if(tick - o._focusTick > o._focusInterval){
-            var z = -o._focusCurrent / 20;
+            var z = -o._focusCurrent / 400;
             faceRenderable = o._faceRenderable;
             matrix = faceRenderable.matrix();
             matrix.tz = z;

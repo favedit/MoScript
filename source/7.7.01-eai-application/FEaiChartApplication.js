@@ -39,7 +39,10 @@ with(MO){
       var o = this;
       // 选择舞台和章节
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-      var scene = chapter.selectSceneByCode(o._sceneCode);
+      chapter.selectSceneByCode(o._sceneCode);
+      //..........................................................
+      // 修正画面大小
+      o.processResize();
       // 重置大小
       //o.onOperationResize(null);
    }
@@ -89,16 +92,16 @@ with(MO){
       // 加载资源
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
-      if(o._sceneCode == MO.EEaiScene.ChartStatistics){
-         resourceConsole.load('/chart-live.dat');
-      }else if(o._sceneCode == MO.EEaiScene.ChartHistory){
-         resourceConsole.load('/chart-history.dat');
-      }else{
-         throw new TError('Scene code is invalid.');
+      switch(o._sceneCode){
+         case MO.EEaiScene.ChartHistory:
+            resourceConsole.load('/chart-history.dat');
+            break;
+         case MO.EEaiScene.ChartLive:
+            resourceConsole.load('/chart-live.dat');
+            break;
+         default:
+            throw new TError('Scene code is invalid.');
       }
-      //..........................................................
-      // 修正画面大小
-      o.processResize();
    }
 
    //==========================================================

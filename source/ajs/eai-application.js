@@ -101,7 +101,8 @@ with(MO){
    MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
       var o = this;
       var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-      var scene = chapter.selectSceneByCode(o._sceneCode);
+      chapter.selectSceneByCode(o._sceneCode);
+      o.processResize();
    }
    MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
       var o = this;
@@ -123,14 +124,16 @@ with(MO){
       o.registerChapter(chapter);
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
-      if(o._sceneCode == MO.EEaiScene.ChartStatistics){
-         resourceConsole.load('/chart-live.dat');
-      }else if(o._sceneCode == MO.EEaiScene.ChartHistory){
-         resourceConsole.load('/chart-history.dat');
-      }else{
-         throw new TError('Scene code is invalid.');
+      switch(o._sceneCode){
+         case MO.EEaiScene.ChartHistory:
+            resourceConsole.load('/chart-history.dat');
+            break;
+         case MO.EEaiScene.ChartLive:
+            resourceConsole.load('/chart-live.dat');
+            break;
+         default:
+            throw new TError('Scene code is invalid.');
       }
-      o.processResize();
    }
    MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
       var o = this;
@@ -250,18 +253,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.context().setScale(sizeRate, sizeRate);
-   if(MO.Runtime.isPlatformPc()){
-      var hCanvas3d = o._canvas3d._hCanvas;
-      hCanvas3d.width = width;
-      hCanvas3d.height = height;
-      hCanvas3d.style.width = width + 'px';
-      hCanvas3d.style.height = height + 'px';
-      var hCanvas2d = o._canvas2d._hCanvas;
-      hCanvas2d.width = width;
-      hCanvas2d.height = height;
-      hCanvas2d.style.width = width + 'px';
-      hCanvas2d.style.height = height + 'px';
-   }
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;

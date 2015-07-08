@@ -14,7 +14,7 @@ MO.RDesktop = function RDesktop(){
    o._workspaces    = new MO.TDictionary();
    // @attribute
    o._thread        = null;
-   o._interval      = 10;
+   o._interval      = 20;
    return o;
 }
 

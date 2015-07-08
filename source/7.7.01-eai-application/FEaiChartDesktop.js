@@ -142,20 +142,20 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    canvas2d.context().setScale(sizeRate, sizeRate);
    //..........................................................
    // PC方式总是设置样式
-   if(MO.Runtime.isPlatformPc()){
-      // 设置3D画板大小
-      var hCanvas3d = o._canvas3d._hCanvas;
-      hCanvas3d.width = width;
-      hCanvas3d.height = height;
-      hCanvas3d.style.width = width + 'px';
-      hCanvas3d.style.height = height + 'px';
-      // 设置2D画板大小
-      var hCanvas2d = o._canvas2d._hCanvas;
-      hCanvas2d.width = width;
-      hCanvas2d.height = height;
-      hCanvas2d.style.width = width + 'px';
-      hCanvas2d.style.height = height + 'px';
-   }
+   //if(MO.Runtime.isPlatformPc()){
+   //   // 设置3D画板大小
+   //   var hCanvas3d = o._canvas3d._hCanvas;
+   //   hCanvas3d.width = width;
+   //   hCanvas3d.height = height;
+   //   hCanvas3d.style.width = width + 'px';
+   //   hCanvas3d.style.height = height + 'px';
+   //   // 设置2D画板大小
+   //   var hCanvas2d = o._canvas2d._hCanvas;
+   //   hCanvas2d.width = width;
+   //   hCanvas2d.height = height;
+   //   hCanvas2d.style.width = width + 'px';
+   //   hCanvas2d.style.height = height + 'px';
+   //}
 }
 
 //==========================================================

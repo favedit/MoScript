@@ -26,10 +26,10 @@ MO.EEaiScene = new function EEaiScene(){
    o.Company         = 'company';
    o.Country         = 'country';
    o.ChartHistory    = 'chart.history';
+   o.ChartLive       = 'chart.live';
    o.ChartIndustry   = 'chart.industry';
    o.ChartInvestment = 'chart.investment';
    o.ChartCustomer   = 'chart.customer';
-   o.ChartStatistics = 'chart.statistics';
    return o;
 }
 MO.Eai = new function FEai(){

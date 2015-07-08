@@ -12,10 +12,10 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._code             = MO.EEaiChapter.Chart;
    // @attribute
    o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
-   o._sceneStatistics  = MO.Class.register(o, new MO.AGetter('_sceneStatistics'));
-   o._sceneIndustry    = MO.Class.register(o, new MO.AGetter('_sceneIndustry'));
-   o._sceneInvestment  = MO.Class.register(o, new MO.AGetter('_sceneInvestment'));
-   o._sceneCustomer    = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneLive        = MO.Class.register(o, new MO.AGetter('_sceneLive'));
+   //o._sceneIndustry    = MO.Class.register(o, new MO.AGetter('_sceneIndustry'));
+   //o._sceneInvestment  = MO.Class.register(o, new MO.AGetter('_sceneInvestment'));
+   //o._sceneCustomer    = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
    //..........................................................
    // @method
    o.construct         = MO.FEaiChartChapter_construct;
@@ -49,21 +49,21 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建统计场景
-   var scene = o._sceneStatistics = MO.RClass.create(MO.FEaiChartStatisticsScene);
+   var scene = o._sceneLive = MO.RClass.create(MO.FEaiChartLiveScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建集团场景
-   var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
+   //var scene = o._sceneIndustry = MO.RClass.create(MO.FEaiChartIndustryScene);
+   //scene.linkGraphicContext(o);
+   //o.registerScene(scene);
    // 创建集团报告场景
-   var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
+   //var scene = o._sceneInvestment = MO.RClass.create(MO.FEaiChartInvestmentScene);
+   //scene.linkGraphicContext(o);
+   //o.registerScene(scene);
    // 创建公司场景
-   var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
+   //var scene = o._sceneCustomer = MO.RClass.create(MO.FEaiChartCustomerScene);
+   //scene.linkGraphicContext(o);
+   //o.registerScene(scene);
 }
 
 //==========================================================

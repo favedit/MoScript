@@ -31,6 +31,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @event
    o.onLoadData            = MO.FEaiChartScene_onLoadData;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
+   o.onProcess             = MO.FEaiChartScene_onProcess;
    //..........................................................
    // @method
    o.construct             = MO.FEaiChartScene_construct;
@@ -41,7 +42,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.active                = MO.FEaiChartScene_active;
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
-   o.process               = MO.FEaiChartScene_process;
    o.deactive              = MO.FEaiChartScene_deactive;
    // @method
    o.dispose               = MO.FEaiChartScene_dispose;
@@ -107,6 +107,22 @@ MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event)
    //matrix.setScaleAll(0.06);
    //matrix.updateForce();
    //o._activeStage.dataLayer().push(sprite);
+}
+
+//==========================================================
+// <T>注销处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartScene_onProcess = function FEaiChartScene_onProcess(){
+   var o = this;
+   o.__base.FEaiScene.onProcess.call(o);
+   // 更新精灵
+   //if(o._flagSprite){
+   //   var matrix = o._flagSprite.matrix();
+   //   matrix.ry += 0.005;
+   //   matrix.updateForce();
+   //}
 }
 
 //==========================================================
@@ -274,22 +290,6 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    o.fixMatrix(o._countryBorderDisplay.matrix());
    o.fixMatrix(o._citysRangeRenderable.matrix());
    o.fixMatrix(o._citysRenderable.matrix());
-}
-
-//==========================================================
-// <T>注销处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartScene_process = function FEaiChartScene_process(){
-   var o = this;
-   o.__base.FEaiScene.process.call(o);
-   // 更新精灵
-   //if(o._flagSprite){
-   //   var matrix = o._flagSprite.matrix();
-   //   matrix.ry += 0.005;
-   //   matrix.updateForce();
-   //}
 }
 
 //==========================================================

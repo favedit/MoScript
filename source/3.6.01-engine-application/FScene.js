@@ -24,7 +24,9 @@ with(MO){
       o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
       //..........................................................
       // @event
+      o.onProcessBefore      = MO.Method.empty;
       o.onProcess            = FScene_onProcess;
+      o.onProcessAfter       = MO.Method.empty;
       //..........................................................
       // @method
       o.construct            = FScene_construct;
@@ -113,8 +115,22 @@ with(MO){
    //==========================================================
    MO.FScene_process = function FScene_process(){
       var o = this;
+      // 检查激活状态
       if(o._statusActive){
+         // 前处理
+         o.processEnterFrameListener(o._eventEnterFrame);
+         // 前逻辑处理
+         o.onProcessBefore();
+         // 场景处理
          o.onProcess();
+         // 场景绘制
+         if(o._activeStage){
+            o._activeStage.process();
+         }
+         // 后逻辑处理
+         o.onProcessAfter();
+         // 后处理
+         o.processLeaveFrameListener(o._eventLeaveFrame);
       }
    }
 

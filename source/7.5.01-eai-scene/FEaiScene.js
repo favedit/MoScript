@@ -18,7 +18,7 @@ MO.FEaiScene = function FEaiScene(o){
    // @event
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
-   o.onProcess              = MO.FEaiScene_onProcess;
+   o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
    //..........................................................
    // @method
    o.construct              = MO.FEaiScene_construct;
@@ -65,9 +65,9 @@ MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(
 //
 // @method
 //==========================================================
-MO.FEaiScene_onProcess = function FEaiScene_onProcess(){
+MO.FEaiScene_onProcessAfter = function FEaiScene_onProcessAfter(){
    var o = this;
-   o.__base.FScene.onProcess.call(o);
+   o.__base.FScene.onProcessAfter.call(o);
    // 界面处理
    o._guiManager.process();
 }

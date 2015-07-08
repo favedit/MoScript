@@ -46,6 +46,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onProcess         = MO.FEaiChartHistoryScene_onProcess;
    //..........................................................
    // @method
    o.testReady         = MO.FEaiChartHistoryScene_testReady;
@@ -56,7 +57,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.switchPlay        = MO.FEaiChartHistoryScene_switchPlay;
    // @method
    o.active            = MO.FEaiChartHistoryScene_active;
-   o.process           = MO.FEaiChartHistoryScene_process;
    o.deactive          = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
@@ -130,6 +130,90 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
    var o = this;
    // 停止播放
    o.switchPlay(false);
+}
+
+//==========================================================
+// <T>激活处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcess.call(o);
+   // 检测首次播放
+   if (!o._statusStart) {
+      if (o.testReady()) {
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+         if (o._statusLayerLevel == 0) {
+            if (hLoading) {
+               document.body.removeChild(hLoading);
+            }
+            o.switchPlay(true);
+            o._mapAutio.play();
+            o._statusStart = true;
+         }
+      }
+   }
+   var currentTick = MO.Timer.current();
+   // 重复播放
+   if (o._playing) {
+      // 播放地图
+      var countryEntity = o._mapEntity.countryEntity();
+      if(!countryEntity.introAnimeDone()){
+         countryEntity.process();
+         return;
+      }
+      // 显示界面
+      if (!o._mapReady) {
+         o._citysRangeRenderable.setVisible(true);
+         o._citysRenderable.setVisible(true);
+         o._guiManager.show();
+         o._milestoneFrame.setVisible(false);
+         o._mapReady = true;
+      }
+      //..........................................................
+      // 计时切换日期
+      if (currentTick - o._lastTick > o._interval) {
+         if (currentTick - o._lastDateTick > o._dateInterval) {
+            o._currentDate.addDay(1);
+            var code = o._currentDate.format('YYYYMMDD')
+            var endCode = o._endDate.format('YYYYMMDD')
+            o.selectDate(code);
+            if (code == endCode) {
+               o.switchPlay(false);
+            }
+            o._lastDateTick = currentTick;
+            // 上传数据
+            o._mapEntity.upload();
+         }
+         // 调用重绘
+         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
+         o._timeline.dirty();
+         // 记录lastTick
+         o._lastTick = currentTick;
+      }
+   }
+   // 出现右侧里程碑条
+   if (o._milestoneBarShowing) {
+      var mbPassedTick = currentTick - o._milestoneBarShowTick;
+      var p = mbPassedTick / o._milestoneBarShowDuration;
+      if (p > 1) {
+         p = 1;
+         o._milestoneBarShowing = false;;
+      }
+      p = (1 - p) * (1 - p);
+      var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
+      mBar.setRight(20 + (-380 * p));
+      mBar.dirty();
+   }
+   if (o._milestoneFrame.visible()) {
+      o._milestoneFrame.dirty();
+   }
 }
 
 //==========================================================
@@ -361,92 +445,6 @@ MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
    var o = this;
    o.__base.FEaiChartScene.active.call(o);
-}
-
-//==========================================================
-// <T>激活处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartHistoryScene_process = function FEaiChartHistoryScene_process() {
-   var o = this;
-   o.__base.FEaiChartScene.process.call(o);
-   // 检测首次播放
-   if (!o._statusStart) {
-      if (o.testReady()) {
-         var hLoading = document.getElementById('id_loading');
-         if (hLoading) {
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-            o._statusLayerLevel--;
-         }
-         o._statusLayerLevel--;
-         if (o._statusLayerLevel == 0) {
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
-            o.switchPlay(true);
-            o._mapAutio.play();
-            o._statusStart = true;
-         }
-      }
-   }
-   var currentTick = MO.Timer.current();
-   // 重复播放
-   if (o._playing) {
-      // 播放地图
-      var countryEntity = o._mapEntity.countryEntity();
-      if(!countryEntity.introAnimeDone()){
-         countryEntity.process();
-         return;
-      }
-      // 显示界面
-      if (!o._mapReady) {
-         o._citysRangeRenderable.setVisible(true);
-         o._citysRenderable.setVisible(true);
-         o._guiManager.show();
-         o._milestoneFrame.setVisible(false);
-         o._mapReady = true;
-      }
-      //..........................................................
-      // 计时切换日期
-      if (currentTick - o._lastTick > o._interval) {
-         if (currentTick - o._lastDateTick > o._dateInterval) {
-            o._currentDate.addDay(1);
-            var code = o._currentDate.format('YYYYMMDD')
-            var endCode = o._endDate.format('YYYYMMDD')
-            o.selectDate(code);
-            if (code == endCode) {
-               o.switchPlay(false);
-            }
-            o._lastDateTick = currentTick;
-            // 上传数据
-            o._mapEntity.upload();
-         }
-         // 调用重绘
-         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
-         o._timeline.dirty();
-         // 记录lastTick
-         o._lastTick = currentTick;
-      }
-   }
-   // 出现右侧里程碑条
-   if (o._milestoneBarShowing) {
-      var mbPassedTick = currentTick - o._milestoneBarShowTick;
-      var p = mbPassedTick / o._milestoneBarShowDuration;
-      if (p > 1) {
-         p = 1;
-         o._milestoneBarShowing = false;;
-      }
-      p = (1 - p) * (1 - p);
-      var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
-      mBar.setRight(20 + (-380 * p));
-      mBar.dirty();
-   }
-
-   if (o._milestoneFrame.visible()) {
-      o._milestoneFrame.dirty();
-   }
-
 }
 
 //==========================================================

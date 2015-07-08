@@ -65,6 +65,7 @@ with(MO){
    MO.FChapter_registerScene = function FChapter_registerScene(scene){
       var o = this;
       var code = scene.code();
+      MO.Assert.debugNotEmpty(code);
       scene.setApplication(o._application);
       scene.setChapter(o);
       o._scenes.set(code, scene);

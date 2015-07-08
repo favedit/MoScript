@@ -10,6 +10,7 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
+      o._provinceEntity         = RClass.register(o, new AGetSet('_provinceEntity'));
       o._visible                = RClass.register(o, new AGetter('_visible'), false);
       o._location               = RClass.register(o, new AGetter('_location'));
       o._size                   = RClass.register(o, new AGetter('_size'));

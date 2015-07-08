@@ -20,7 +20,7 @@ with(MO){
       o._focusTick        = 0;
       o._focusInterval    = 10;
       o._focusCurrent     = 0;
-      o._focusCount       = 100;
+      o._focusCount       = 1000;
       //..........................................................
       // @method
       o.construct         = FEaiProvinceEntity_construct;
@@ -336,7 +336,7 @@ with(MO){
    //==========================================================
    MO.FEaiProvinceEntity_updateColor = function FEaiProvinceEntity_updateColor(rate){
       var o = this;
-      var rate = o._focusCurrent / 100;
+      var rate = o._focusCurrent / o._focusCount;
       var vertexTotal = o._vertexTotal;
       var colorIndex = 0;
       var colors = MO.TypeArray.findTemp(EDataType.Uint8, 4 * vertexTotal * 2);
@@ -362,7 +362,7 @@ with(MO){
       if(o._focusCurrent > 0){
          var tick = RTimer.current();
          if(tick - o._focusTick > o._focusInterval){
-            var z = -o._focusCurrent / 20;
+            var z = -o._focusCurrent / 400;
             // 设置坐标
             faceRenderable = o._faceRenderable;
             matrix = faceRenderable.matrix();
