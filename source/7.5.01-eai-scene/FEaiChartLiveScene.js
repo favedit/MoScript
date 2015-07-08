@@ -9,44 +9,44 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code                  = MO.EEaiScene.ChartLive;
+   o._code                   = MO.EEaiScene.ChartLive;
    // @attribute
-   o._investment            = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._investmentCurrent     = 0;
+   o._investment             = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent      = 0;
    // @attribute
-   o._ready                 = false;
-   o._mapReady              = false;
-   o._playing               = false;
-   o._lastTick              = 0;
-   o._interval              = 10;
-   o._24HLastTick           = 0;
-   o._24HTrendInterval      = 1000 * 60 * 5;
-   o._startDate             = null;
-   o._endDate               = null;
-   o._currentDate           = null;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
+   o._24HLastTick            = 0;
+   o._24HTrendInterval       = 1000 * 60 * 5;
+   o._startDate              = null;
+   o._endDate                = null;
+   o._currentDate            = null;
    // @attribute
-   o._logoBar               = null;
-   o._timeline              = null;
-   o._liveTable             = null;
-   o._livePop               = null;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
+   o._livePop                = null;
    // @attribute
-   o._statusStart           = false;
-   o._statusLayerCount      = 150;
-   o._statusLayerLevel      = 150;
+   o._statusStart            = false;
+   o._statusLayerCount       = 150;
+   o._statusLayerLevel       = 150;
    // @attribute
-   o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
+   o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
    // @event
-   o.onLiveTableChanged     = MO.FEaiChartLiveScene_onLiveTableChanged;
-   o.onProcess              = MO.FEaiChartLiveScene_onProcess;
+   o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    //..........................................................
    // @method
-   o.testReady              = MO.FEaiChartLiveScene_testReady;
+   o.testReady               = MO.FEaiChartLiveScene_testReady;
    // @method
-   o.setup                  = MO.FEaiChartLiveScene_setup;
-   o.fixMatrix              = MO.FEaiChartLiveScene_fixMatrix;
+   o.setup                   = MO.FEaiChartLiveScene_setup;
+   o.fixMatrix               = MO.FEaiChartLiveScene_fixMatrix;
    // @method
-   o.processResize          = MO.FEaiChartLiveScene_processResize;
+   o.processResize           = MO.FEaiChartLiveScene_processResize;
    return o;
 }
 
@@ -56,15 +56,20 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartLiveScene_onLiveTableChanged = function FEaiChartLiveScene_onLiveTableChanged(event) {
+MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onInvestmentDataChanged(event) {
    var o = this;
+   // 设置表格数据
    var table = o._liveTable;
    table.setRank(event.rank);
    table.setData(event.data);
    table.dirty();
-   //var pop = o._livePop;
-   //pop.setData(event.data.at(0));
-   //pop.show();
+   // 设置表格数据
+   var entity = event.entity;
+   if(entity){
+      var pop = o._livePop;
+      pop.setData(entity);
+      pop.show();
+   }
 }
 
 //==========================================================
@@ -101,7 +106,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -186,7 +191,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onLiveTableChanged);
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);

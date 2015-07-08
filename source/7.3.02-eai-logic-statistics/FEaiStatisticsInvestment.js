@@ -36,7 +36,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    // @attribute
    o._autios                  = null;
    // @event
-   o._listenersEntityChanged  = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged  = MO.RClass.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
@@ -104,6 +104,7 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    // 触发数据事件
    var dsEvent = MO.Memory.alloc(MO.SEvent);
    dsEvent.sender = o;
+   dsEvent.entity = null;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
@@ -286,6 +287,15 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       //o._display.push(shape);
       //o._showShapes.push(shape);
    }
+   //..........................................................
+   // 触发事件
+   var dsEvent = MO.Memory.alloc(MO.SEvent);
+   dsEvent.sender = o;
+   dsEvent.entity = entity;
+   dsEvent.rank = o._rankEntities;
+   dsEvent.data = o._tableEntities;
+   o.processDataChangedListener(dsEvent);
+   MO.Memory.free(dsEvent);
 }
 
 //==========================================================
@@ -339,14 +349,6 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          o._tableEntities.unshift(entity);
          // 设置实体焦点
          o.focusEntity(entity);
-         //..........................................................
-         // 触发事件
-         var dsEvent = MO.Memory.alloc(MO.SEvent);
-         dsEvent.sender = o;
-         dsEvent.rank = o._rankEntities;
-         dsEvent.data = o._tableEntities;
-         o.processDataChangedListener(dsEvent);
-         MO.Memory.free(dsEvent);
       }
       // 总值减去队列中内容，计算现在的当日和总值
       o.calculateCurrent();

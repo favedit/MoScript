@@ -33,7 +33,7 @@ MO.FEaiCityEntityConsole_construct = function FEaiCityEntityConsole_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
-   o._citys = MO.TDictionary();
+   o._citys = new MO.TDictionary();
 }
 
 //==========================================================

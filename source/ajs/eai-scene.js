@@ -402,7 +402,6 @@ MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(
    var o = this;
    var transform = o._buttonTransform;
    o._playing = flag;
-   o._buttonAudio.play(0);
    if(flag){
       o._playButton.setVisible(false);
       o._pauseButton.setVisible(true);
@@ -720,41 +719,47 @@ MO.FEaiChartInvestmentScene_deactive = function FEaiChartInvestmentScene_deactiv
 }
 MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code                  = MO.EEaiScene.ChartLive;
-   o._investment            = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._investmentCurrent     = 0;
-   o._ready                 = false;
-   o._mapReady              = false;
-   o._playing               = false;
-   o._lastTick              = 0;
-   o._interval              = 10;
-   o._24HLastTick           = 0;
-   o._24HTrendInterval      = 1000 * 60 * 5;
-   o._startDate             = null;
-   o._endDate               = null;
-   o._currentDate           = null;
-   o._logoBar               = null;
-   o._timeline              = null;
-   o._liveTable             = null;
-   o._livePop               = null;
-   o._statusStart           = false;
-   o._statusLayerCount      = 150;
-   o._statusLayerLevel      = 150;
-   o._groundAutioUrl        = '/script/ars/eai/music/statistics.mp3';
-   o.onLiveTableChanged     = MO.FEaiChartLiveScene_onLiveTableChanged;
-   o.onProcess              = MO.FEaiChartLiveScene_onProcess;
-   o.testReady              = MO.FEaiChartLiveScene_testReady;
-   o.setup                  = MO.FEaiChartLiveScene_setup;
-   o.fixMatrix              = MO.FEaiChartLiveScene_fixMatrix;
-   o.processResize          = MO.FEaiChartLiveScene_processResize;
+   o._code                   = MO.EEaiScene.ChartLive;
+   o._investment             = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent      = 0;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
+   o._24HLastTick            = 0;
+   o._24HTrendInterval       = 1000 * 60 * 5;
+   o._startDate              = null;
+   o._endDate                = null;
+   o._currentDate            = null;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
+   o._livePop                = null;
+   o._statusStart            = false;
+   o._statusLayerCount       = 150;
+   o._statusLayerLevel       = 150;
+   o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
+   o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onProcess               = MO.FEaiChartLiveScene_onProcess;
+   o.testReady               = MO.FEaiChartLiveScene_testReady;
+   o.setup                   = MO.FEaiChartLiveScene_setup;
+   o.fixMatrix               = MO.FEaiChartLiveScene_fixMatrix;
+   o.processResize           = MO.FEaiChartLiveScene_processResize;
    return o;
 }
-MO.FEaiChartLiveScene_onLiveTableChanged = function FEaiChartLiveScene_onLiveTableChanged(event) {
+MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onInvestmentDataChanged(event) {
    var o = this;
    var table = o._liveTable;
    table.setRank(event.rank);
    table.setData(event.data);
    table.dirty();
+   var entity = event.entity;
+   if(entity){
+      var pop = o._livePop;
+      pop.setData(entity);
+      pop.show();
+   }
 }
 MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
@@ -782,7 +787,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -840,7 +844,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onLiveTableChanged);
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);

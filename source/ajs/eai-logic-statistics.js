@@ -76,7 +76,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._entityPool              = null;
    o._shapePool               = null;
    o._autios                  = null;
-   o._listenersEntityChanged  = MO.RClass.register(o, new MO.AListener('_listenersEntityChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged  = MO.RClass.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
    o.construct                = MO.FEaiStatisticsInvestment_construct;
    o.allocEntity              = MO.FEaiStatisticsInvestment_allocEntity;
@@ -124,6 +124,7 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    o.calculateCurrent();
    var dsEvent = MO.Memory.alloc(MO.SEvent);
    dsEvent.sender = o;
+   dsEvent.entity = null;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
@@ -234,6 +235,13 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
          autio.play(0);
       }
    }
+   var dsEvent = MO.Memory.alloc(MO.SEvent);
+   dsEvent.sender = o;
+   dsEvent.entity = entity;
+   dsEvent.rank = o._rankEntities;
+   dsEvent.data = o._tableEntities;
+   o.processDataChangedListener(dsEvent);
+   MO.Memory.free(dsEvent);
 }
 MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
    var o = this;
@@ -267,12 +275,6 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
          var entity = entities.shift();
          o._tableEntities.unshift(entity);
          o.focusEntity(entity);
-         var dsEvent = MO.Memory.alloc(MO.SEvent);
-         dsEvent.sender = o;
-         dsEvent.rank = o._rankEntities;
-         dsEvent.data = o._tableEntities;
-         o.processDataChangedListener(dsEvent);
-         MO.Memory.free(dsEvent);
       }
       o.calculateCurrent();
       o._tableTick = currentTick;

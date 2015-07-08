@@ -142,37 +142,35 @@ with(MO){
       o.__base.FEaiApplication.dispose.call(o);
    }
 }
-with(MO){
-   MO.FEaiChartCanvas = function FEaiChartCanvas(o){
-      o = RClass.inherits(this, o, FEaiCanvas);
-      o._optionStageProcess = false;
-      o._optionResize       = false;
-      o._optionMouseCapture = false;
-      o._optionAlpha        = true;
-      o._optionAntialias    = false;
-      o._capturePosition    = null;
-      o._cameraPosition     = null;
-      o.construct           = FEaiChartCanvas_construct;
-      o.setPanel            = FEaiChartCanvas_setPanel;
-      o.dispose             = FEaiChartCanvas_dispose;
-      return o;
-   }
-   MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
-      var o = this;
-      o.__base.FEaiCanvas.construct.call(o);
-      o._logicSize = new SSize2(1920, 1080);
-      o._cameraPosition = new SPoint3();
-   }
-   MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
-      var o = this;
-      o._hPanel = hPanel;
-      hPanel.appendChild(o._hCanvas);
-   }
-   MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
-      var o = this;
-      o._cameraPosition = RObject.dispose(o._cameraPosition);
-      o.__base.FEaiCanvas.dispose.call(o);
-   }
+MO.FEaiChartCanvas = function FEaiChartCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FEaiCanvas);
+   o._optionStageProcess = false;
+   o._optionResize       = false;
+   o._optionMouseCapture = false;
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
+   o._capturePosition    = null;
+   o._cameraPosition     = null;
+   o.construct           = MO.FEaiChartCanvas_construct;
+   o.setPanel            = MO.FEaiChartCanvas_setPanel;
+   o.dispose             = MO.FEaiChartCanvas_dispose;
+   return o;
+}
+MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
+   var o = this;
+   o.__base.FEaiCanvas.construct.call(o);
+   o._logicSize = new MO.SSize2(1920, 1080);
+   o._cameraPosition = new MO.SPoint3();
+}
+MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
+   var o = this;
+   o._hPanel = hPanel;
+   hPanel.appendChild(o._hCanvas);
+}
+MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
+   var o = this;
+   o._cameraPosition = MO.Lang.Object.dispose(o._cameraPosition);
+   o.__base.FEaiCanvas.dispose.call(o);
 }
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);

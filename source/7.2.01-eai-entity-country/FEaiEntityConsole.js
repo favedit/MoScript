@@ -11,8 +11,8 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    // @attribute
    o._scopeCd         = MO.EScope.Local;
    // @attribute
-   o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
+   o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    //..........................................................
    // @method
    o.construct        = MO.FEaiEntityConsole_construct;
@@ -30,8 +30,8 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置变量
-   o._cityConsole = MO.RClass.create(MO.FEaiCityEntityConsole);
    o._provinceConsole = MO.RClass.create(MO.FEaiProvinceEntityConsole);
+   o._cityConsole = MO.RClass.create(MO.FEaiCityEntityConsole);
 }
 
 //==========================================================
@@ -41,8 +41,8 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
 //==========================================================
 MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
    var o = this;
-   o._cityConsole = RObject.dispose(o._cityConsole);
    o._provinceConsole = RObject.dispose(o._provinceConsole);
+   o._cityConsole = RObject.dispose(o._cityConsole);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }
