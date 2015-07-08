@@ -23,6 +23,8 @@ with (MO) {
       o._closeDuration = 500;
       o._fullWidth = 953;
       o._fullHeight = 896;
+      // @attribute
+      o._popupSE = null;
       //..........................................................
       // @method
       o.setup = FGuiHistoryMilestoneFrame_setup;
@@ -65,6 +67,9 @@ with (MO) {
          img.loadUrl('../ars/eai/number/' + i + '.png');
          o._numImages[i] = img;
       }
+
+      var audioConsole = MO.Console.find(MO.FAudioConsole);
+      o._popupSE = audioConsole.load('{eai.resource}/milestone/popup.mp3');
    }
 
    //==========================================================
@@ -173,6 +178,7 @@ with (MO) {
       o = this;
       o.setVisible(true);
       o._startTick = MO.Timer.current();
+      o._popupSE.play(0);
    }
 
    //==========================================================

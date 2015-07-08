@@ -422,7 +422,7 @@ MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(
    var o = this;
    var transform = o._buttonTransform;
    o._playing = flag;
-   o._buttonAudio.play(0);
+   //o._buttonAudio.play(0);
    if(flag){
       //transform.setSourceControl(o._playButton);
       //transform.setTargetControl(o._pauseButton);
