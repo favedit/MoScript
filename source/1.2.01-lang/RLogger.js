@@ -236,7 +236,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    var t = new Array();
    var f = RLogger_fatal.caller;
    while(f){
-      if(RArray.contains(t, f)){
+      if(MO.Lang.Array.contains(t, f)){
          break;
       }
       t.push(f);
