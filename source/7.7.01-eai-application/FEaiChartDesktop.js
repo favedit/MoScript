@@ -108,7 +108,7 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    // 计算比率
    var pixelRatio = MO.Browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
-   // alert('Change screen size. (size=' + width + 'x' + height + ', pixel_ratio=' + pixelRatio + ')');
+   //alert('Change screen size. (size=' + width + 'x' + height + ', pixel_ratio=' + pixelRatio + ')');
    width *= pixelRatio;
    height *= pixelRatio;
    // 计算比率
@@ -140,6 +140,22 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.context().setScale(sizeRate, sizeRate);
+   //..........................................................
+   // PC方式总是设置样式
+   if(MO.Runtime.isPlatformPc()){
+      // 设置3D画板大小
+      var hCanvas3d = o._canvas3d._hCanvas;
+      hCanvas3d.width = width;
+      hCanvas3d.height = height;
+      hCanvas3d.style.width = width + 'px';
+      hCanvas3d.style.height = height + 'px';
+      // 设置2D画板大小
+      var hCanvas2d = o._canvas2d._hCanvas;
+      hCanvas2d.width = width;
+      hCanvas2d.height = height;
+      hCanvas2d.style.width = width + 'px';
+      hCanvas2d.style.height = height + 'px';
+   }
 }
 
 //==========================================================

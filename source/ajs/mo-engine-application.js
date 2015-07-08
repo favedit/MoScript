@@ -306,6 +306,13 @@ MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){
       application.processEvent(event);
    }
 }
+MO.RDesktop.prototype.onProcess = function RDesktop_onProcess(event){
+   var o = this;
+   var application = o._application;
+   if(application){
+      application.process();
+   }
+}
 MO.RDesktop.prototype.application = function RDesktop_application(){
    return this._application;
 }
@@ -340,10 +347,7 @@ MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
 }
 MO.RDesktop.prototype.process = function RDesktop_process(){
    var o = this;
-   var application = o._application;
-   if(application){
-      application.process();
-   }
+   o.onProcess();
    MO.Timer.update();
 }
 MO.RDesktop.prototype.release = function RDesktop_release(){

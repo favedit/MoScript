@@ -2354,6 +2354,7 @@ with (MO) {
 with (MO) {
    MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
       o = RClass.inherits(this, o, FGuiTimeline);
+      o._startHeight = 20;
       o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
       return o;
    }
@@ -2364,7 +2365,7 @@ with (MO) {
       var rectangle = event.rectangle;
       var top = rectangle.top;
       var bottom = rectangle.bottom();
-      var dataTop = top + 30;
+      var dataTop = top + 30 + o._startHeight;
       var dataBottom = bottom - 50;
       var dataHeight = dataBottom - dataTop;
       var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -2379,11 +2380,16 @@ with (MO) {
       var investmentTotal = historyConsole.investmentTotal();
       var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
       var maxInves = dateData.investmentTotal();
+      var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
+      if (degreeData.investmentTotal() * 3 < investmentTotal) {
+         maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
+      }
       var pixPer10k = dataHeight * 10000 / maxInves;
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       var inves = dateData.investmentTotal();
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
+      lastY -= o._startHeight;
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
       var rateResource = rateConsole.find(EEaiRate.Line);
       while (startDate.isBefore(degreeDate)) {
@@ -2393,9 +2399,17 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var dayInvestmentTotal = dateData.investmentTotal();
             var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
+            y -= o._startHeight;
             var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
             var color = '#' + hexColor.substring(2);
+            var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
             graphic.drawLine(lastX, lastY, x, y, color, 3);
+            var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+            var bottomHexColor = RHex.format(rateResource.find(0));
+            var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
+            opGradient.addColorStop('0', bottomOpColor);
+            opGradient.addColorStop('1', opColor);
+            graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
             if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
                graphic.drawCircle(x, y, 3, 0, color, color);
@@ -2416,6 +2430,7 @@ with (MO) {
             var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
             var inves = dateData.investmentTotal();
             var y = dataBottom - inves / 10000 * pixPer10k;
+            y -= o._startHeight;
             if (startDate.date.getDate() == 1) {
                graphic.setFont('bold 16px Microsoft YaHei');
                if(inves > 100000000){
@@ -2440,11 +2455,17 @@ with (MO) {
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
          var inves = dateData.investmentTotal();
          var y = dataBottom - inves / 10000 * pixPer10k;
-         var rate = 1 - (y / dataHeight);
-         var colorIdx = parseInt(rateResource.count() * rate);
-         var hexColor = RHex.format(rateResource.find(colorIdx));
+         y -= o._startHeight;
+         var hexColor = RHex.format(rateResource.findRate(inves / investmentTotal));
          var color = '#' + hexColor.substring(2);
+         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
          graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
+         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+         var bottomHexColor = RHex.format(rateResource.find(0));
+         var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
+         opGradient.addColorStop('0', bottomOpColor);
+         opGradient.addColorStop('1', opColor);
+         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
          graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
          graphic.setFont('bold 16px Microsoft YaHei');
          if(inves > 100000000){
@@ -4585,7 +4606,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = false;
+   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o._engineInfo            = null;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
@@ -5018,6 +5039,18 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.context().setScale(sizeRate, sizeRate);
+   if(MO.Runtime.isPlatformPc()){
+      var hCanvas3d = o._canvas3d._hCanvas;
+      hCanvas3d.width = width;
+      hCanvas3d.height = height;
+      hCanvas3d.style.width = width + 'px';
+      hCanvas3d.style.height = height + 'px';
+      var hCanvas2d = o._canvas2d._hCanvas;
+      hCanvas2d.width = width;
+      hCanvas2d.height = height;
+      hCanvas2d.style.width = width + 'px';
+      hCanvas2d.style.height = height + 'px';
+   }
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;

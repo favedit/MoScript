@@ -250,6 +250,18 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.context().setScale(sizeRate, sizeRate);
+   if(MO.Runtime.isPlatformPc()){
+      var hCanvas3d = o._canvas3d._hCanvas;
+      hCanvas3d.width = width;
+      hCanvas3d.height = height;
+      hCanvas3d.style.width = width + 'px';
+      hCanvas3d.style.height = height + 'px';
+      var hCanvas2d = o._canvas2d._hCanvas;
+      hCanvas2d.width = width;
+      hCanvas2d.height = height;
+      hCanvas2d.style.width = width + 'px';
+      hCanvas2d.style.height = height + 'px';
+   }
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;

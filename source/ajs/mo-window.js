@@ -424,7 +424,9 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var capability = o._capability = new MO.SBrowserCapability();
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
-      capability.pixelRatio = pixelRatio;
+      if(MO.Runtime.isPlatformMobile()){
+         capability.pixelRatio = Math.min(pixelRatio, 3);
+      }
    }
    if(window.Worker){
       capability.optionProcess = true;

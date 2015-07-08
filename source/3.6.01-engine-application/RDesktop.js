@@ -33,6 +33,20 @@ MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){
 }
 
 //==========================================================
+// <T>响应处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.RDesktop.prototype.onProcess = function RDesktop_onProcess(event){
+   var o = this;
+   var application = o._application;
+   if(application){
+      application.process();
+   }
+}
+
+//==========================================================
 // <T>获得应用。</T>
 //
 // @method
@@ -101,10 +115,7 @@ MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
 MO.RDesktop.prototype.process = function RDesktop_process(){
    var o = this;
    // 处理应用
-   var application = o._application;
-   if(application){
-      application.process();
-   }
+   o.onProcess();
    // 更新计时器
    MO.Timer.update();
 }

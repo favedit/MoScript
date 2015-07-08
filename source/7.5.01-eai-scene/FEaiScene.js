@@ -9,7 +9,7 @@ MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
    //..........................................................
    // @attribute
-   o._optionDebug           = false;
+   o._optionDebug           = true;
    // @attribute
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    // @attribute

@@ -1196,7 +1196,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = false;
+   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o._engineInfo            = null;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;

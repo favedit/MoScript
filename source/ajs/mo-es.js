@@ -22158,6 +22158,7 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
    o._delay                = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
    o._speed                = MO.Class.register(o, new MO.AGetSet('_speed'), 1);
    o._acceleration         = MO.Class.register(o, new MO.AGetSet('_acceleration'), 0);
+   o._attenuation          = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
    o._indexBuffer          = null;
@@ -22190,6 +22191,7 @@ MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
       item.setDelay(o._delay);
       item.setSpeed(o._speed);
       item.setAcceleration(o._acceleration);
+      item.setAttenuation(o._attenuation);
       item.start();
       o.pushItem(item);
    }
@@ -22215,7 +22217,9 @@ MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
    o._direction    = MO.Class.register(o, new MO.AGetter('_direction'));
    o._speed        = MO.Class.register(o, new MO.AGetSet('_speed'));
    o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
+   o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
    o._startTick    = 0;
+   o._currentAlpha = MO.Class.register(o, new MO.AGetSet('_currentAlpha'), 0);
    o._currentSpeed = 0;
    o.construct    = MO.FE3dFireworksParticleItem_construct;
    o.start        = MO.FE3dFireworksParticleItem_start;
@@ -22231,10 +22235,12 @@ MO.FE3dFireworksParticleItem_construct = function FE3dFireworksParticleItem_cons
 MO.FE3dFireworksParticleItem_start = function FE3dFireworksParticleItem_start(){
    var o = this;
    o._currentSpeed = o._speed;
+   o._currentAlpha = 1;
    o._startTick = MO.Timer.current();
 }
 MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_processFrame(second){
    var o = this;
+   o._currentAlpha -= o._attenuation * second;
    o._currentSpeed += o._acceleration * second;
    var distance = o._currentSpeed * second;
    var position = o._position;
@@ -22255,6 +22261,7 @@ MO.FE3dParticle = function FE3dParticle(o){
    o._itemPool             = null;
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
+   o._vertexColorBuffer    = null;
    o._indexBuffer          = null;
    o.construct             = MO.FE3dParticle_construct;
    o.setup                 = MO.FE3dParticle_setup;
@@ -22288,6 +22295,10 @@ MO.FE3dParticle_setup = function FE3dParticle_setup(){
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
    o.pushVertexBuffer(buffer);
    var buffer = o._indexBuffer = context.createIndexBuffer();
    o.pushIndexBuffer(buffer);

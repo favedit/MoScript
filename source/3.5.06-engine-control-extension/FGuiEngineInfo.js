@@ -14,6 +14,7 @@ with(MO){
       o._name        = 'EngineInfo';
       o._stage       = RClass.register(o, new AGetSet('_stage'));
       o._context     = RClass.register(o, new AGetSet('_context'));
+      o._ticker      = null;
       //..........................................................
       // @method
       o.onPaintBegin = FGuiEngineInfo_onPaintBegin;
@@ -82,11 +83,8 @@ with(MO){
    //==========================================================
    MO.FGuiEngineInfo_oeUpdate = function FGuiEngineInfo_oeUpdate(event){
       var o = this;
-      // 开始绘制处理
-      var tick = RTimer.current();
-      if(tick - o._lastTick > 1000){
-         o.repaint();
-         o._lastTick = tick;
+      if(o._ticker.process()){
+         o.dirty();
       }
       return EEventStatus.Stop;
    }
@@ -100,5 +98,6 @@ with(MO){
       var o = this;
       o.__base.FGuiControl.construct.call(o);
       o._size.set(512, 256);
+      o._ticker = new MO.TTicker(1000);
    }
 }
