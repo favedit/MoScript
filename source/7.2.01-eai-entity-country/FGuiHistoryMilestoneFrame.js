@@ -128,6 +128,7 @@ with (MO) {
       else {
          o._data = null;
          o.setVisible(false);
+         o.setTop(MO.Eai.Canvas.logicSize().height - o._fullHeight)
          o.dirty();
          var dsEvent = MO.Memory.alloc(SEvent);
          dsEvent.sender = o;
