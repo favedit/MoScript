@@ -1004,8 +1004,12 @@ with(MO){
          }
          var indexes = boundary.indexes();
          var indexCount = indexes.length;
-         for(var i = 0; i < indexCount; i++){
-            faceData[faceIndex++] = vertexStart + indexes[i];
+         var faceCount = indexCount / 3;
+         for(var i = 0; i < faceCount; i++){
+            var facePosition = 3 * i;
+            faceData[faceIndex++] = vertexStart + indexes[facePosition + 2];
+            faceData[faceIndex++] = vertexStart + indexes[facePosition + 1];
+            faceData[faceIndex++] = vertexStart + indexes[facePosition    ];
          }
          vertexStart += positionCount;
       }
@@ -1020,12 +1024,6 @@ with(MO){
             vertexData[vertexIndex++] = positions[positionIndex++];
             vertexData[vertexIndex++] = o._layerDepth;
          }
-         var indexes = boundary.indexes();
-         var indexCount = indexes.length;
-         for(var i = 0; i < indexCount; i++){
-            faceData[faceIndex++] = vertexStart + indexes[i];
-         }
-         vertexStart += positionCount;
       }
       var vertexStart = 0;
       for(var n = 0; n < count; n++){
@@ -1065,7 +1063,6 @@ with(MO){
       renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
-      renderable.material().info().optionDouble = true;
    }
    MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
       var o = this;

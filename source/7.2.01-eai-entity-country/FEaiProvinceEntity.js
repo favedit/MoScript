@@ -92,9 +92,16 @@ with(MO){
          // 填充三角索引
          var indexes = boundary.indexes();
          var indexCount = indexes.length;
-         for(var i = 0; i < indexCount; i++){
-            faceData[faceIndex++] = vertexStart + indexes[i];
+         var faceCount = indexCount / 3;
+         for(var i = 0; i < faceCount; i++){
+            var facePosition = 3 * i;
+            faceData[faceIndex++] = vertexStart + indexes[facePosition + 2];
+            faceData[faceIndex++] = vertexStart + indexes[facePosition + 1];
+            faceData[faceIndex++] = vertexStart + indexes[facePosition    ];
          }
+         //for(var i = 0; i < indexCount; i++){
+         //   faceData[faceIndex++] = vertexStart + indexes[i];
+         //}
          // 修正位置
          vertexStart += positionCount;
       }
@@ -112,13 +119,13 @@ with(MO){
             vertexData[vertexIndex++] = o._layerDepth;
          }
          // 填充三角索引
-         var indexes = boundary.indexes();
-         var indexCount = indexes.length;
-         for(var i = 0; i < indexCount; i++){
-            faceData[faceIndex++] = vertexStart + indexes[i];
-         }
+         //var indexes = boundary.indexes();
+         //var indexCount = indexes.length;
+         //for(var i = 0; i < indexCount; i++){
+         //   faceData[faceIndex++] = vertexStart + indexes[i];
+         //}
          // 修正位置
-         vertexStart += positionCount;
+         //vertexStart += positionCount;
       }
       // 建立边缘数据
       var vertexStart = 0;
@@ -163,7 +170,7 @@ with(MO){
       renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
       renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
       renderable.indexBuffer().upload(faceData, faceIndex);
-      renderable.material().info().optionDouble = true;
+      //renderable.material().info().optionDouble = true;
       //renderable.setMaterialReference(o._mapEntity);
    }
 
@@ -263,7 +270,7 @@ with(MO){
       renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
       renderable.indexBuffer().setLineWidth(1);
       renderable.indexBuffer().upload(borderData, borderIndex);
-      //renderable.setMaterialReference();
+      //renderable.setMaterialReference(o._mapEntity);
    }
 
    //==========================================================

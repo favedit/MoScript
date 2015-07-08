@@ -13,7 +13,7 @@ with(MO){
       o._optionResize       = false;
       o._optionMouseCapture = false;
       o._optionAlpha        = true;
-      o._optionAntialias    = true;
+      o._optionAntialias    = false;
       o._capturePosition    = null;
       o._cameraPosition     = null;
       //..........................................................
