@@ -10,6 +10,15 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    //..........................................................
    // @attribute
    o._handle              = null;
+   // @attribute
+   o._gridSourceX         = null;
+   o._gridSourceY         = null;
+   o._gridSourceWidth     = null;
+   o._gridSourceHeight    = null;
+   o._gridDrawX           = null;
+   o._gridDrawY           = null;
+   o._gridDrawWidth       = null;
+   o._gridDrawHeight      = null;
    //..........................................................
    // @method
    o.construct            = MO.FG2dCanvasContext_construct;
@@ -55,6 +64,15 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
 MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
    var o = this;
    o.__base.FG2dContext.construct.call(o);
+
+   o._gridSourceX = new Array(3);
+   o._gridSourceY = new Array(3);
+   o._gridSourceWidth = new Array(3);
+   o._gridSourceHeight = new Array(3);
+   o._gridDrawX = new Array(3);
+   o._gridDrawY = new Array(3);
+   o._gridDrawWidth = new Array(3);
+   o._gridDrawHeight = new Array(3);
 }
 
 //==========================================================
@@ -280,36 +298,37 @@ MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(co
    } else {
       throw new TError(o, 'Unknown content type');
    }
+
    var ssize = content.size();
-   var sx = new Array();
+   var sx = o._gridSourceX;
    sx[0] = 0;
    sx[1] = padding.left;
    sx[2] = ssize.width - padding.right;
-   var sy = new Array();
+   var sy = o._gridSourceY;
    sy[0] = 0;
    sy[1] = padding.top;
    sy[2] = ssize.height - padding.bottom;
-   var dx = new Array();
+   var dx = o._gridDrawX;
    dx[0] = x;
    dx[1] = x + padding.left;
    dx[2] = x + width - padding.right;
-   var dy = new Array();
+   var dy = o._gridDrawY;
    dy[0] = y;
    dy[1] = y + padding.top;
    dy[2] = y + height - padding.bottom;
-   var sw = new Array();
+   var sw = o._gridSourceWidth;
    sw[0] = padding.left;
    sw[1] = ssize.width - padding.left - padding.right;
    sw[2] = padding.right;
-   var sh = new Array();
+   var sh = o._gridSourceHeight;
    sh[0] = padding.top;
    sh[1] = ssize.height - padding.top - padding.bottom;
    sh[2] = padding.bottom;
-   var dw = new Array();
+   var dw = o._gridDrawWidth;
    dw[0] = padding.left;
    dw[1] = width - padding.left - padding.right;
    dw[2] = padding.right;
-   var dh = new Array();
+   var dh = o._gridDrawHeight;
    dh[0] = padding.top;
    dh[1] = height - padding.top - padding.bottom;
    dh[2] = padding.bottom;
