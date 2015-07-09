@@ -326,6 +326,9 @@ MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x
    if(content.tagName == 'IMG'){
       data = content;
    }else if(MO.Class.isClass(content, MO.FImage)){
+      if(!content.testReady()){
+         return;
+      }
       data = content.image();
       if(width == null){
          width = data.size().width;
@@ -343,6 +346,9 @@ MO.FG2dCanvasContext_drawGridImage = function FG2dCanvasContext_drawGridImage(co
    var handle = o._handle;
    var data = null
    if (MO.Class.isClass(content, MO.FImage)) {
+      if(!content.testReady()){
+         return;
+      }
       data = content.image();
    } else {
       throw new TError(o, 'Unknown content type');
