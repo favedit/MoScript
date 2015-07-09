@@ -535,7 +535,7 @@ with(MO){
       materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/star.png');
+      o.loadUrl('/script/ars/eai/citys.png');
    }
    MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
       var o = this;
@@ -572,11 +572,8 @@ with(MO){
                z = provinceEntity.currentZ();
             }
             var coordLeft = o._levelCoordLeft[level];
-            coordLeft = 0;
             var coordRight = o._levelCoordRight[level];
-            coordRight = 1;
             var scale = o._levelScale[level];
-            scale = 1;
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
             vertexData[vertexPosition++] = z;
@@ -602,10 +599,6 @@ with(MO){
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
             var alpha = parseInt(color.alpha * alpha * 255);
-            var red = 255;
-            var green = 255;
-            var blue = 255;
-            var alpha = 255;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;
@@ -1840,6 +1833,7 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    o._rank                 = MO.Class.register(o, new MO.AGetSet('_rank'));
    o._data                 = MO.Class.register(o, new MO.AGetSet('_data'));
    o._rankLogoImage        = null;
+   o._rankTitleImage       = null;
    o._rankLineImage        = null;
    o._rankLinePadding      = null;
    o._rank1Image           = null;
@@ -1850,24 +1844,122 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    o._columnLabels         = null;
    o._columnDefines        = null;
    o._columnWidths         = null;
-   o._columnLabels         = null;
+   o._tableCount           = 0;
+   o._entities             = null;
+   o._lineScroll           = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onImageLoad           = MO.FGuiLiveTable_onImageLoad;
+   o.onPaintBegin          = MO.FGuiLiveTable_onPaintBegin;
+   o.oeUpdate              = MO.FGuiLiveTable_oeUpdate;
    o.construct             = MO.FGuiLiveTable_construct;
    o.setup                 = MO.FGuiLiveTable_setup;
+   o.pushEntity            = MO.FGuiLiveTable_pushEntity;
    o.drawRow               = MO.FGuiLiveTable_drawRow;
-   o.onPaintBegin          = MO.FGuiLiveTable_onPaintBegin;
    o.dispose               = MO.FGuiLiveTable_dispose;
    return o;
 }
 MO.FGuiLiveTable_onImageLoad = function FGuiLiveTable_onImageLoad() {
    this.dirty();
 }
+MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var calculateRate = event.calculateRate;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
+   var right = left + width;
+   var bottom = top + height;
+   var drawPosition = top;
+   var heightRate = height / o._size.height;
+   var drawLeft = left + 12;
+   var drawRight = right - 12;
+   var drawWidth = right - left;
+   var widthDefine = 0;
+   for(var i = 0; i < 4; i++){
+      widthDefine += o._columnDefines[i];
+   }
+   for(var i = 0; i < 4; i++){
+      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 8;
+   }
+   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
+   var titleText = '钰诚控股 - e租宝';
+   graphic.setFont(o._headFontStyle);
+   var titleWidth = graphic.textWidth(titleText);
+   var textLeft = left + (right - left) / 2 - (titleWidth / 2);
+   if(o._logoImage.testReady()){
+      graphic.drawImage(o._logoImage, textLeft - 77, top + 32, 62, 62);
+   }
+   graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
+   drawPosition += 60
+   graphic.setFont(o._rowFontStyle);
+   var tableTop = top + o._rankStart;
+   graphic.drawGridImage(o._rankLineImage, left + 6, o._rankStart, width - 22, o._rankHeight, o._rankLinePadding);
+   graphic.drawImage(o._rankTitleImage, textLeft + 85, tableTop - 6, 167, 40);
+   var rankEntity = o._rank;
+   if(rankEntity){
+      var tableText = '';
+      var tableTextWidth = 0;
+      var dataEntities = o._data;
+      var count = rankEntity.count();
+      tableTop += 80;
+      for(var i = 0; i < count; i++) {
+         var entity = rankEntity.at(i);
+         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
+      }
+   }
+   var headText = '';
+   var headTextWidth = 0;
+   var headLeft = drawLeft;
+   var headTop = top + o._headStart;
+   var headTextTop = headTop + o._headTextTop;
+   for(var i = 0; i < 4; i++){
+      var headText = o._columnLabels[i];
+      var headTextWidth = graphic.textWidth(headText);
+      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
+      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
+      headLeft += o._columnWidths[i];
+   }
+   var dataEntities = o._data;
+   if(dataEntities){
+      var tableTop = top + o._rowStart;
+      var tableText = '';
+      var tableTextWidth = 0;
+      var entities = o._entities;
+      graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
+      tableTop += 24;
+      var count = entities.count();
+      for(var i = 0; i < count; i++) {
+         var entity = entities.at(i);
+         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + o._rowHeight * i + o._lineScroll, drawWidth);
+      }
+   }
+}
+MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
+   var o = this;
+   o.__base.FGuiControl.oeUpdate.call(o, event);
+   if(event.isBefore()){
+      if(o._lineScroll < 0){
+         o._lineScroll++;
+         if(o._lineScroll == 0){
+            var entities = o._entities;
+            if(entities.count() > o._tableCount){
+               entities.pop();
+            }
+         }
+         o.dirty();
+      }
+   }
+}
 MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
-   o._currentDate = MO.TDate();
-   o._rankLinePadding = new MO.SPadding(20, 20, 20, 20);
+   o._entities = new MO.TObjects();
+   o._currentDate = new MO.TDate();
+   o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
    o._columnLabels = new Array('时间', '城市', '用户-手机', '投资额(元)');
    if(MO.Runtime.isPlatformMobile()){
@@ -1885,9 +1977,12 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var image = o._backgroundImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
    image.loadUrl('../ars/eai/live/grid.png');
+   var image = o._rankTitleImage = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('../ars/eai/live/tank-title.png');
    var image = o._rankLineImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/line.png');
+   image.loadUrl('../ars/eai/live/rank.png');
    var image = o._rank1Image = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
    image.loadUrl('../ars/eai/live/1.png');
@@ -1898,7 +1993,12 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    image.loadUrl('../ars/eai/live/3.png');
    if(MO.Runtime.isPlatformMobile()){
-      o._headFontStyle = 'bold 42px Microsoft YaHei';
+      o._tableCount = 12;
+   }else{
+      o._tableCount = 19;
+   }
+   o._headFontStyle = 'bold 38px Microsoft YaHei';
+   if(MO.Runtime.isPlatformMobile()){
       o._headStart = 120;
       o._headTextTop = 38;
       o._headHeight = 54;
@@ -1911,18 +2011,30 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
-      o._headFontStyle = 'bold 42px Microsoft YaHei';
-      o._headStart = 116;
-      o._headTextTop = 26;
-      o._headHeight = 40;
-      o._rankStart = 190;
-      o._rankHeight = 48;
+      o._rankStart = 120;
+      o._rankHeight = 219;
+      o._rankRowHeight = 40;
       o._rankIconStart = 25;
       o._rankRowUp = 32;
       o._rankRowDown = 51;
-      o._rowStart = 330;
+      o._headStart = 336;
+      o._headTextTop = 26;
+      o._headHeight = 40;
       o._rowFontStyle = '24px Microsoft YaHei';
+      o._rowStart = 382;
       o._rowHeight = 36;
+   }
+}
+MO.FGuiLiveTable_pushEntity = function FGuiLiveTable_pushEntity(entity){
+   var o = this;
+   if(!entity){
+      return null;
+   }
+   var entities = o._entities;
+   entities.unshift(entity);
+   o._lineScroll -= o._rowHeight;
+   if(entities.count() >= o._tableCount){
+      entities.pop();
    }
 }
 MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, index, x, y, width){
@@ -1935,14 +2047,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       fontColor = '#59FDE9';
    }
    if(flag){
-      if(o._rankLineImage.testReady()){
-         graphic.drawGridImage(o._rankLineImage, x - 9, y - o._rankRowUp, width - 42, o._rankRowDown, o._rankLinePadding);
-      }
       var columnWidth = widths[0];
       var imageX = x + (columnWidth * 0.5) - 23;
       var imageY = y - o._rankIconStart;
       if((index == 0) && o._rank1Image.testReady()){
-         graphic.drawImage(o._rank1Image, imageX, imageY, 46, 37);
+         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 26, 58, 65);
       }
       if((index == 1) && o._rank2Image.testReady()){
          graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
@@ -1992,79 +2101,9 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       graphic.drawText(text, investmentRight - textWidth, y, fontColor);
    }
 }
-MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
-   var o = this;
-   o.__base.FGuiControl.onPaintBegin.call(o, event);
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var calculateRate = event.calculateRate;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   var right = left + width;
-   var bottom = top + height;
-   var drawPosition = top;
-   var heightRate = height / o._size.height;
-   var drawLeft = left + 12;
-   var drawRight = right - 10;
-   var drawWidth = right - left;
-   var widthDefine = 0;
-   for(var i = 0; i < 4; i++){
-      widthDefine += o._columnDefines[i];
-   }
-   for(var i = 0; i < 4; i++){
-      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 14;
-   }
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   var titleText = '钰诚控股 - e租宝';
-   graphic.setFont(o._headFontStyle);
-   var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (right - left) / 2 - (titleWidth / 2);
-   if(o._logoImage.testReady()){
-      graphic.drawImage(o._logoImage, textLeft - 77, top + 35, 62, 62);
-   }
-   graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
-   drawPosition += 70
-   graphic.setFont(o._rowFontStyle);
-   var headText = '';
-   var headTextWidth = 0;
-   var headLeft = drawLeft;
-   var headTop = top + o._headStart;
-   var headTextTop = headTop + o._headTextTop;
-   for(var i = 0; i < 4; i++){
-      var headText = o._columnLabels[i];
-      var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
-      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
-      headLeft += o._columnWidths[i];
-   }
-   var rankEntity = o._rank;
-   if(rankEntity){
-      var tableTop = top + o._rankStart;
-      var tableText = '';
-      var tableTextWidth = 0;
-      var dataEntities = o._data;
-      var count = rankEntity.count();
-      for(var i = 0; i < count; i++) {
-         var entity = rankEntity.at(i);
-         o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankHeight * i, drawWidth);
-      }
-   }
-   var dataEntities = o._data;
-   if(dataEntities){
-      var tableTop = top + o._rowStart;
-      var tableText = '';
-      var tableTextWidth = 0;
-      var count = dataEntities.count();
-      for(var i = 0; i < count; i++) {
-         var entity = dataEntities.at(i);
-         o.drawRow(graphic, entity, false, i, drawLeft, tableTop + o._rowHeight * i, drawWidth);
-      }
-   }
-}
 MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){
    var o = this;
-   o._backgroundPadding = RObject.dispose(o._backgroundPadding);
+   o._entities = MO.Lang.Object.dispose(o._entities);
+   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    o.__base.FEaiEntity.dispose.call(o);
 }

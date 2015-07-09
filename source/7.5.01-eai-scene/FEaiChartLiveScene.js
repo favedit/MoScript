@@ -58,13 +58,14 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
 //==========================================================
 MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onInvestmentDataChanged(event) {
    var o = this;
+   var entity = event.entity;
    // 设置表格数据
    var table = o._liveTable;
    table.setRank(event.rank);
    table.setData(event.data);
+   table.pushEntity(entity);
    table.dirty();
    // 设置表格数据
-   var entity = event.entity;
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
@@ -106,7 +107,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {

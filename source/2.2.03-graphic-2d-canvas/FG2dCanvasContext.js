@@ -33,6 +33,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    // @method
    o.clear                = MO.FG2dCanvasContext_clear;
    o.clearRectangle       = MO.FG2dCanvasContext_clearRectangle;
+   o.clip                 = MO.FG2dCanvasContext_clip;
    // @method
    o.textWidth            = MO.FG2dCanvasContext_textWidth;
    // @method
@@ -169,6 +170,25 @@ MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(
 }
 
 //==========================================================
+// <T>剪裁区域。</T>
+//
+// @method
+// @param left:Integer 左位置
+// @param top:Integer 上位置
+// @param width:Integer 宽度
+// @param height:Integer 高度
+//==========================================================
+MO.FG2dCanvasContext_clip = function FG2dCanvasContext_clip(left, top, width, height){
+   var o = this;
+   var handle = o._handle;
+   //handle.strokeStyle = '#FFFFFF';
+   //handle.lineWidth = 1;
+   //handle.strokeRect(left, top, width, height);
+   handle.rect(left, top, width, height);
+   handle.clip();
+}
+
+//==========================================================
 // <T>获得文本长度。</T>
 //
 // @method
@@ -270,6 +290,12 @@ MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x
       data = content;
    }else if(MO.Class.isClass(content, MO.FImage)){
       data = content.image();
+      if(width == null){
+         width == data.size().width;
+      }
+      if(height == null){
+         height == data.size().height;
+      }
    }else{
       throw new MO.TError(o, 'Unknown content type');
    }

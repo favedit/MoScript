@@ -714,11 +714,12 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
 }
 MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onInvestmentDataChanged(event) {
    var o = this;
+   var entity = event.entity;
    var table = o._liveTable;
    table.setRank(event.rank);
    table.setData(event.data);
+   table.pushEntity(entity);
    table.dirty();
-   var entity = event.entity;
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
@@ -750,6 +751,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -1001,6 +1003,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
    o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);

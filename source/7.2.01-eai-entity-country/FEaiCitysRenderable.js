@@ -156,8 +156,8 @@ with(MO){
       materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      //o.loadUrl('/script/ars/eai/citys.png');
-      o.loadUrl('/script/ars/eai/star.png');
+      o.loadUrl('/script/ars/eai/citys.png');
+      //o.loadUrl('/script/ars/eai/star.png');
    }
 
    //==========================================================
@@ -202,11 +202,11 @@ with(MO){
                z = provinceEntity.currentZ();
             }
             var coordLeft = o._levelCoordLeft[level];
-            coordLeft = 0;
+            //coordLeft = 0;
             var coordRight = o._levelCoordRight[level];
-            coordRight = 1;
+            //coordRight = 1;
             var scale = o._levelScale[level];
-            scale = 1;
+            //scale = 1;
             // 设置顶点位置
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
@@ -235,10 +235,10 @@ with(MO){
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
             var alpha = parseInt(color.alpha * alpha * 255);
-            var red = 255;
-            var green = 255;
-            var blue = 255;
-            var alpha = 255;
+            //var red = 255;
+            //var green = 255;
+            //var blue = 255;
+            //var alpha = 255;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;

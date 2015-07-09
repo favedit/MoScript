@@ -26,7 +26,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
    // @attribute
-   o._tableCount              = 20;
+   o._tableCount              = 40;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
    o._dataTicker              = null;
@@ -183,12 +183,6 @@ MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_alloc
 //==========================================================
 MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var o = this;
-   if(MO.Runtime.isPlatformMobile()){
-      o._tableCount = 12;
-   }else{
-      o._tableCount = 20;
-   }
-   //..........................................................
    // 创建声音
    var audioConsole = MO.Console.find(MO.FAudioConsole);
    for(var i = 1; i <= 5; i++){

@@ -192,7 +192,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
-   //stage.cityRangeLayer().push(citysRangeRenderable);
+   stage.cityRangeLayer().push(citysRangeRenderable);
    o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
    // 创建城市渲染对象
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
