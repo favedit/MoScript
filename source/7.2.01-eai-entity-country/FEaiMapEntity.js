@@ -22,6 +22,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o.setupCityEntities     = MO.FEaiMapEntity_setupCityEntities;
    o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
+   o.pushProvince          = MO.FEaiMapEntity_pushProvince;
    o.upload                = MO.FEaiMapEntity_upload;
    o.process               = MO.FEaiMapEntity_process;
    // @method
@@ -51,6 +52,7 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
 MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
    var o = this;
    var provinceEntities = o._provinceEntities;
+   // 城市配置处理
    var cityEntities = o._cityEntities;
    var count = cityEntities.count();
    for(var i = 0; i < count; i++){
@@ -60,6 +62,8 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
       // MO.Assert.debugNotNull(provinceEntity);
       cityEntity.setProvinceEntity(provinceEntity);
    }
+   // 国家配置处理
+   o._countryEntity.setup(provinceEntities);
 }
 
 //==========================================================
@@ -71,6 +75,17 @@ MO.FEaiMapEntity_findProvinceByCard = function FEaiMapEntity_findProvinceByCard(
    var o = this;
    var provinceEntity = o._provinceEntities.get(code);
    return provinceEntity;
+}
+
+//==========================================================
+// <T>增加一个省份实体。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_pushProvince = function FEaiMapEntity_pushProvince(province){
+   var o = this;
+   var code = province.data().code();
+   o._provinceEntities.set(code, province);
 }
 
 //==========================================================

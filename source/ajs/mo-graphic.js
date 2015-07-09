@@ -328,10 +328,10 @@ MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x
    }else if(MO.Class.isClass(content, MO.FImage)){
       data = content.image();
       if(width == null){
-         width == data.size().width;
+         width = data.size().width;
       }
       if(height == null){
-         height == data.size().height;
+         height = data.size().height;
       }
    }else{
       throw new MO.TError(o, 'Unknown content type');

@@ -36,7 +36,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    // @attribute
    o._autios                  = null;
    // @event
-   o._listenersDataChanged  = MO.RClass.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;

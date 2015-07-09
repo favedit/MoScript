@@ -4233,10 +4233,10 @@ MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x
    }else if(MO.Class.isClass(content, MO.FImage)){
       data = content.image();
       if(width == null){
-         width == data.size().width;
+         width = data.size().width;
       }
       if(height == null){
-         height == data.size().height;
+         height = data.size().height;
       }
    }else{
       throw new MO.TError(o, 'Unknown content type');
@@ -10364,6 +10364,47 @@ MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
 }
 MO.FAudioResource = function FAudioResource(o){
    o = MO.Class.inherits(this, o, MO.FAudio);
+   return o;
+}
+MO.FImageConsole = function FImageConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o._images   = null;
+   o.construct = MO.FImageConsole_construct;
+   o.create    = MO.FImageConsole_create;
+   o.load      = MO.FImageConsole_load;
+   o.dispose   = MO.FImageConsole_dispose;
+   return o;
+}
+MO.FImageConsole_construct = function FImageConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._images = new MO.TDictionary();
+}
+MO.FImageConsole_create = function FImageConsole_create(uri){
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var image = MO.Class.create(MO.FImageResource);
+   image.loadUrl(url);
+   return image;
+}
+MO.FImageConsole_load = function FImageConsole_load(uri){
+   var o = this;
+   var images = o._images;
+   var image = images.get(uri);
+   if(!image){
+      image = o.create(uri);
+      images.set(uri, image);
+   }
+   return image;
+}
+MO.FImageConsole_dispose = function FImageConsole_dispose(){
+   var o = this;
+   o._images = MO.Lang.Object.dispose(o._images);
+   o.__base.FConsole.dispose.call(o);
+}
+MO.FImageResource = function FImageResource(o){
+   o = MO.Class.inherits(this, o, MO.FImage);
    return o;
 }
 with(MO){

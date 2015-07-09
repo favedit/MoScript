@@ -23,7 +23,7 @@ with(MO){
       o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 1000);
       o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
       o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
-      o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 60);
+      o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 200);
       o._mouseOverRiseHeight     = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
       o._mouseMoveCheckInterval  = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
       o._cameraMoveDuration      = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
@@ -110,8 +110,8 @@ with(MO){
    //==========================================================
    MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
       var pResConsole = MO.RConsole.find(FEaiResourceConsole).provinceConsole();
-      var p1Res = pResConsole.findByName(p1.data().code());
-      var p2Res = pResConsole.findByName(p2.data().code())
+      var p1Res = pResConsole.findByCode(p1.data().code());
+      var p2Res = pResConsole.findByCode(p2.data().code())
       if (p1Res.displayOrder() > p2Res.displayOrder()) {
          return 1;
       }

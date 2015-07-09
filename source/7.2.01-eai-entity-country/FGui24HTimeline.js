@@ -163,18 +163,18 @@ with (MO) {
          if (drawText) {
             graphic.setFont('bold 20px Microsoft YaHei');
             textWidth = graphic.textWidth(text);
-            graphic.drawText(text, x - textWidth / 2, middle + 20, '#FFFFFF');
+            graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
          }
 
       }
       startTime.date.setTime(bakTime);
       startTime.refresh();
-      //曲线
+      // 曲线
       var data = o._data;
       if (!data) {
          return;
       }
-      //找到最大
+      // 找到最大
       var maxInves = 0;
       for (var i = 0; i < data.length; i++) {
          var inves = parseInt(data[i].investment);
@@ -182,15 +182,13 @@ with (MO) {
             maxInves = inves;
          }
       }
-      graphic.store()
-      graphic._handle.lineCap = 'round';
-
       var pixPer10k = dataHeight * 10000 / maxInves;
       var inves = parseInt(data[0].investment);
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
-
       var ctx = graphic._handle;
+      ctx.lineCap = 'round';
+      //ctx.lineJoin = 'round';
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
@@ -204,12 +202,12 @@ with (MO) {
          y -= o._baseHeight;
          ctx.lineTo(x, y);
       }
-      var hexColor = RHex.format(rateResource.findRate(0));
+      var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
       var bottomColor = '#' + hexColor.substring(2);
-      var opBottomColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-      var hexColor = RHex.format(rateResource.findRate(1));
+      var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
+      var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
       var topColor = '#' + hexColor.substring(2);
-      var opTopColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
+      var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
       var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
       gradient.addColorStop('0', bottomColor);
       gradient.addColorStop('1', topColor);
@@ -224,11 +222,9 @@ with (MO) {
       ctx.lineTo(dataLeft, dataBottom);
       ctx.lineTo(dataLeft, lastY);
       ctx.fill();
-
       startTime.date.setTime(bakTime);
       startTime.refresh();
-      graphic.restore()
-      //统计
+      // 统计
       var lastHour = -1;
       var hourInves = 0;
       var maxHourInves = 0;
@@ -253,7 +249,7 @@ with (MO) {
       graphic.setFont('bold 24px Microsoft YaHei');
       graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
       // 输出数据文本
-      graphic.setFont('bold 22px Microsoft YaHei');
+      graphic.setFont('22px Microsoft YaHei');
       var rowStart = top + 30;
       var rowHeight = 22;
       var textWidth = graphic.textWidth('小时峰值：');

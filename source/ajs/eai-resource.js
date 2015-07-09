@@ -378,14 +378,14 @@ with(MO){
       if(index < 0){
          index = 0;
       }
-      if(index > o._count){
+      if(index >= o._count){
          index = o._count - 1;
       }
       return o._colors[index];
    }
    MO.FEaiRateResource_findRate = function FEaiRateResource_findRate(rate){
       var o = this;
-      var index = rate * o._count;
+      var index = rate * o._count - 1;
       var color = o.find(index);
       return color;
    }

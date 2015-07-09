@@ -90,7 +90,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
       widthDefine += o._columnDefines[i];
    }
    for(var i = 0; i < 4; i++){
-      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 8;
+      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
    }
    //..........................................................
    // 绘制背景
@@ -111,7 +111,7 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    // 绘制前3名
    var tableTop = top + o._rankStart;
    graphic.drawGridImage(o._rankLineImage, left + 6, o._rankStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, textLeft + 85, tableTop - 6, 167, 40);
+   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop - 6, 167, 40);
    var rankEntity = o._rank;
    if(rankEntity){
       var tableText = '';
@@ -165,6 +165,7 @@ MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
    if(event.isBefore()){
+      // 是否要刷新
       if(o._lineScroll < 0){
          o._lineScroll++;
          // 删除多余的数据
@@ -208,43 +209,31 @@ MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
 //==========================================================
 MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var o = this;
+   var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
-   var image = o._logoImage = MO.Class.create(MO.FImage);
+   var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/company.png');
    // 创建图片
-   var image = o._backgroundImage = MO.Class.create(MO.FImage);
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/grid.png');
    // 创建图片
-   var image = o._rankTitleImage = MO.Class.create(MO.FImage);
+   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/tank-title.png');
    // 创建图片
-   var image = o._rankLineImage = MO.Class.create(MO.FImage);
+   var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/rank.png');
    // 创建图片
-   var image = o._rank1Image = MO.Class.create(MO.FImage);
+   var image = o._rank1Image = imageConsole.load('{eai.resource}/live/1.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/1.png');
-   // 创建图片
-   var image = o._rank2Image = MO.Class.create(MO.FImage);
+   var image = o._rank2Image = imageConsole.load('{eai.resource}/live/2.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/2.png');
-   // 创建图片
-   var image = o._rank3Image = MO.Class.create(MO.FImage);
+   var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/live/3.png');
-   if(MO.Runtime.isPlatformMobile()){
-      o._tableCount = 12;
-   }else{
-      o._tableCount = 19;
-   }
    //..........................................................
    // 设置数据
    o._headFontStyle = 'bold 38px Microsoft YaHei';
    if(MO.Runtime.isPlatformMobile()){
+      o._tableCount = 12;
       o._headStart = 120;
       o._headTextTop = 38;
       o._headHeight = 54;
@@ -257,6 +246,7 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
+      o._tableCount = 19;
       o._rankStart = 120;
       o._rankHeight = 219;
       o._rankRowHeight = 40;
@@ -264,7 +254,7 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       o._rankRowUp = 32;
       o._rankRowDown = 51;
       o._headStart = 336;
-      o._headTextTop = 26;
+      o._headTextTop = 27;
       o._headHeight = 40;
       o._rowFontStyle = '24px Microsoft YaHei';
       o._rowStart = 382;
@@ -310,15 +300,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    }
    // 绘制底框
    if(flag){
-      //graphic.drawRectangle(o._rankLineImage, x - 9, y - o._rankRowUp, width - 15, o._rankRowDown, o._rankLinePadding);
-      //if(o._rankLineImage.testReady()){
-      //   graphic.drawGridImage(o._rankLineImage, x - 9, y - o._rankRowUp, width - 15, o._rankRowDown, o._rankLinePadding);
-      //}
       var columnWidth = widths[0];
       var imageX = x + (columnWidth * 0.5) - 23;
       var imageY = y - o._rankIconStart;
       if((index == 0) && o._rank1Image.testReady()){
-         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 26, 58, 65);
+         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 28, 58, 65);
       }
       if((index == 1) && o._rank2Image.testReady()){
          graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
