@@ -18,7 +18,6 @@ with (MO) {
       o._data = RClass.register(o, new AGetSet('_data'));
       o._startTick = 0;
       o._popDuration = 500;
-      //o._showDuration = 2000;
       o._showDuration = 5000;
       o._closeDuration = 500;
       o._fullWidth = 953;
@@ -140,9 +139,9 @@ with (MO) {
 
       graphic.setFont('bold 28px Microsoft YaHei');
       //graphic.drawText('投资总额：', textLeft, textTop, '#FFE849');
-      graphic.drawText('达成日数：', textLeft, textTop + 50, '#FFE849');
-      graphic.drawText('分公司数：', textLeft, textTop + 100, '#FFE849');
-      graphic.drawText('理财师数：', textLeft, textTop + 150, '#FFE849');
+      graphic.drawText('达成日数：', textLeft, textTop + 100, '#FFE849');
+      graphic.drawText('分公司数：', textLeft, textTop + 150, '#FFE849');
+      graphic.drawText('理财师数：', textLeft, textTop + 200, '#FFE849');
       if (o.data()) {
          //graphic.drawText(o.data().investmentTotal(), textLeft + 120, textTop, '#FFA800');
          var invesText = o.data().investmentTotal().toString();
@@ -162,15 +161,19 @@ with (MO) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
          graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         var dataText = o.data().dayCount();
+         var dataText = o.data().code();
          var textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 50, '#FFA800');
-         dataText = o.data().companyCount();
+         dataText = dataText.substring(0, 4) + "年" + dataText.substring(4, 6) + "月" + dataText.substring(6, 8) + "日";;
+         graphic.drawText(dataText, hCenter - textWidth + 20, textTop + 50, '#FFE849');
+         dataText = o.data().dayCount();
          textWidth = graphic.textWidth(dataText);
          graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFA800');
-         dataText = o.data().staffCount();
+         dataText = o.data().companyCount();
          textWidth = graphic.textWidth(dataText);
          graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFA800');
+         dataText = o.data().staffCount();
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 200, '#FFA800');
       }
 
       graphic._handle.globalAlpha = 1;
