@@ -2668,6 +2668,7 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    o._columnLabels         = null;
    o._columnDefines        = null;
    o._columnWidths         = null;
+   o._columnLabels         = null;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onImageLoad           = MO.FGuiLiveTable_onImageLoad;
    o.construct             = MO.FGuiLiveTable_construct;
@@ -2684,8 +2685,8 @@ MO.FGuiLiveTable_construct = function FGuiLiveTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._currentDate = MO.TDate();
-   o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
-   o._backgroundPadding = new MO.SPadding(60, 60, 100, 60);
+   o._rankLinePadding = new MO.SPadding(20, 20, 20, 20);
+   o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
    o._columnLabels = new Array('时间', '城市', '用户-手机', '投资额(元)');
    if(MO.Runtime.isPlatformMobile()){
       o._columnDefines = new Array(130, 130, 180, 186);
@@ -2698,22 +2699,22 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var o = this;
    var image = o._logoImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/logo.png');
+   image.loadUrl('../ars/eai/live/company.png');
    var image = o._backgroundImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/grid.png');
+   image.loadUrl('../ars/eai/live/grid.png');
    var image = o._rankLineImage = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/line.png');
+   image.loadUrl('../ars/eai/live/line.png');
    var image = o._rank1Image = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/1.png');
+   image.loadUrl('../ars/eai/live/1.png');
    var image = o._rank2Image = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/2.png');
+   image.loadUrl('../ars/eai/live/2.png');
    var image = o._rank3Image = MO.Class.create(MO.FImage);
    image.addLoadListener(o, o.onImageLoad);
-   image.loadUrl('../ars/eai/statistics/3.png');
+   image.loadUrl('../ars/eai/live/3.png');
    if(MO.Runtime.isPlatformMobile()){
       o._headFontStyle = 'bold 42px Microsoft YaHei';
       o._headStart = 120;
@@ -2772,7 +2773,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       o._currentDate.parse(entity.date());
       var text = o._currentDate.format('HH24:MI:SS');
       var textWidth = graphic.textWidth(text);
-      graphic.drawText(text, x + widths[0] / 2 - textWidth / 2, y, fontColor);
+      graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
    }
    x += widths[0];
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
@@ -2782,11 +2783,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       text = cityEntity.label();
    }
    textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[1] / 2 - textWidth / 2, y, fontColor);
+   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
    x += widths[1];
    text = entity.customer() + ' - ' + entity.phone();
    textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[2] / 2 - textWidth / 2, y, fontColor);
+   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
    x += widths[2];
    var investment = MO.Lang.Float.format(entity.investment(), null, null, 2, '0');
    var investmentRight = x + widths[3] - 15;
@@ -2823,8 +2824,8 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var bottom = top + height;
    var drawPosition = top;
    var heightRate = height / o._size.height;
-   var drawLeft = left + 32;
-   var drawRight = right - 23;
+   var drawLeft = left + 12;
+   var drawRight = right - 10;
    var drawWidth = right - left;
    var widthDefine = 0;
    for(var i = 0; i < 4; i++){
