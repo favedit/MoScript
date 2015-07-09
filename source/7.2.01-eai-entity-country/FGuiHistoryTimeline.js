@@ -10,7 +10,9 @@ with (MO) {
       o = RClass.inherits(this, o, FGuiTimeline);
       //..........................................................
       // @attribute
-      o._startHeight = 20;
+      o._startHeight = 50;
+      o._lineWidth = 5;
+      o._circleRadius = 5;
       //..........................................................
       // @method
       o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
@@ -76,7 +78,7 @@ with (MO) {
             var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
             var color = '#' + hexColor.substring(2);
             var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-            graphic.drawLine(lastX, lastY, x, y, color, 3);
+            graphic.drawLine(lastX, lastY, x, y, color, o._lineWidth);
             var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
             var bottomHexColor = RHex.format(rateResource.find(0));
             var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
@@ -85,7 +87,7 @@ with (MO) {
             graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
             if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-               graphic.drawCircle(x, y, 3, 0, color, color);
+               graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
             }
             lastX = x;
             lastY = y;
@@ -106,7 +108,7 @@ with (MO) {
             var y = dataBottom - inves / 10000 * pixPer10k;
             y -= o._startHeight;
             if (startDate.date.getDate() == 1) {
-               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.setFont('bold 22px Microsoft YaHei');
                if(inves > 100000000){
                   var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
                   var textWidth = graphic.textWidth(text);
@@ -134,15 +136,15 @@ with (MO) {
          var hexColor = RHex.format(rateResource.findRate(inves / investmentTotal));
          var color = '#' + hexColor.substring(2);
          var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
+         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, o._lineWidth);
          var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
          var bottomHexColor = RHex.format(rateResource.find(0));
          var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
          opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
-         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), o._circleRadius, 0, color, color);
+         graphic.setFont('bold 22px Microsoft YaHei');
          if(inves > 100000000){
             var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
             var textWidth = graphic.textWidth(text);

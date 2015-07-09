@@ -17,11 +17,13 @@ with (MO) {
       o._progress = RClass.register(o, new AGetSet('_progress'));
       o._unitms = RClass.register(o, new AGetSet('_unitms'), 1000 * 60 * 60 * 24);
       // @attribute
-      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
+      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 15);
+      o._degreeLineWidth = RClass.register(o, new AGetSet('_degreeLineWidth'), 3);
+      o._mainLineWidth = RClass.register(o, new AGetSet('_mainLineWidth'), 5);
       o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
       o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
       o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
-      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 40);
       //..........................................................
       // @method
       o.onPaintBegin = FGuiTimeline_onPaintBegin;
@@ -53,13 +55,13 @@ with (MO) {
       graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
       graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
 
-      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', 1);
-      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', 1);
+      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
+      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
 
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
       //主轴
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', 3);
+      graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', o._mainLineWidth);
       //游标
       var startTime = o.startTime();
       var endTime = o.endTime();
@@ -102,16 +104,16 @@ with (MO) {
       var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
       var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
       graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
-      graphic.setFont('bold 16px Microsoft YaHei');
+      graphic.setFont('bold 22px Microsoft YaHei');
       var degreeTextWidth = graphic.textWidth(degreeText);
-      graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 2 + o.triangleHeight() + 24, '#FFFFFF');
+      graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 50, '#FFFFFF');
       //刻度
       var text;
       var bakTime = startTime.date.getTime();
       //开始刻度
-      graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', 1);
+      graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', o._degreeLineWidth);
       var startTextWidth = graphic.textWidth(startText);
-      graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 20, '#FFFFFF');
+      graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, '#FFFFFF');
       switch (o.timeUnit()) {
          case EGuiTimeUnit.Second:
             startTime.addMseconds(1000);
@@ -145,10 +147,12 @@ with (MO) {
             return;
       }
       //中间刻度
-      while (!startTime.isAfter(endTime)) {
+      var alternate = true;
+      var textBottom = 0;
+      while (!startTime.isAfter(degreeTime)) {
          var span = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
          switch (o.timeUnit()) {
             case EGuiTimeUnit.Second:
                text = startTime.format('MI:SS');
@@ -181,14 +185,16 @@ with (MO) {
             default:
                return;
          }
-         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.setFont('bold 22px Microsoft YaHei');
          var textWidth = graphic.textWidth(text);
-         graphic.drawText(text, x - textWidth / 2, middle + 20, '#FFFFFF');
+         textBottom = alternate ? middle + 26 : middle + 52;
+         graphic.drawText(text, x - textWidth / 2, textBottom, '#FFFFFF');
+         //alternate = !alternate;
       }
       //结束刻度
       var span = endTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
 
       startTime.date.setTime(bakTime);
       startTime.refresh();
