@@ -255,8 +255,8 @@ with (MO) {
       // 输出数据文本
       graphic.setFont('bold 22px Microsoft YaHei');
       var rowStart = top + 30;
-      var rowHeight = 20;
-      var textWidth = graphic.textWidth('峰值：');
+      var rowHeight = 22;
+      var textWidth = graphic.textWidth('小时峰值：');
       var textHourPeakValue = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
       var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
       var textDayTotalValue = MO.Lang.Float.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
@@ -264,12 +264,12 @@ with (MO) {
       var textHourAvrgValue = MO.Lang.Float.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
       var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
       var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
-      graphic.drawText('小时峰值：', decoLeft, top + 30, '#00CFFF');
-      graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, rowStart + rowHeight * 0, '#00B5F6');
-      graphic.drawText('24小时总额：', decoLeft, top + 55, '#00CFFF');
-      graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, rowStart + rowHeight * 1, '#00B5F6');
-      graphic.drawText('每小时均值：', decoLeft, top + 80, '#00CFFF');
-      graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, rowStart + rowHeight * 2, '#00B5F6');
+      graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
+      graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
+      graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+      graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+      graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+      graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
       // 设置时间
       startTime.date.setTime(bakTime);
       startTime.refresh();
