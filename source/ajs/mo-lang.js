@@ -3153,7 +3153,7 @@ MO.FObjectPools_dispose = function FObjectPools_dispose(){
    var pools = o._pools;
    var count = pools.count();
    for(var i = 0; i < count; i++){
-      var pool = pools.valueAt(i);
+      var pool = pools.at(i);
       pool.dispose();
    }
    pools.dispose();

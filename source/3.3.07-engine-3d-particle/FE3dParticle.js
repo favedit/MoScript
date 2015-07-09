@@ -10,7 +10,6 @@ MO.FE3dParticle = function FE3dParticle(o){
    //..........................................................
    // @attribute
    o._items                = null;
-   o._itemPool             = null;
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
@@ -31,6 +30,7 @@ MO.FE3dParticle = function FE3dParticle(o){
    // @method
    o.createItem            = MO.FE3dParticle_createItem;
    o.pushItem              = MO.FE3dParticle_pushItem;
+   o.process               = MO.FE3dParticle_process;
    o.upload                = MO.FE3dParticle_upload;
    // @method
    o.dispose               = MO.FE3dParticle_dispose;
@@ -46,8 +46,7 @@ MO.FE3dParticle_construct = function FE3dParticle_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    // 设置属性
-   o._items = new MO.TObjects();
-   o._itemPool = MO.Class.create(MO.FObjectPool);
+   o._items = new MO.TLooper();
 }
 
 //==========================================================
@@ -183,6 +182,33 @@ MO.FE3dParticle_pushItem = function FE3dParticle_pushItem(item){
 //
 // @method
 //==========================================================
+MO.FE3dParticle_process = function FE3dParticle_process(){
+   var o = this;
+   o.__base.FE3dRenderable.process.call(o);
+   var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
+   // 处理所有项目
+   var items = o._items;
+   items.record();
+   while(items.next()){
+      var item = items.current();
+      if(item.currentFinish()){
+         items.removeCurrent();
+         // 释放对象
+         particleConsole.itemFree(item);
+      }
+      item.process();
+   }
+   // 更新数据
+   if(!items.isEmpty()){
+      o.upload();
+   }
+}
+
+//==========================================================
+// <T>加载位图处理。</T>
+//
+// @method
+//==========================================================
 MO.FE3dParticle_upload = function FE3dParticle_upload(){
    var o = this;
    var context = o._graphicContext;
@@ -190,17 +216,34 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
    var count = items.count();
    var vertexCount = o._vertexCount = 4 * count;
    var vertexPositionIndex = 0;
-   var vertexPositionData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 3 * vertexCount);
+   //var vertexPositionData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 3 * vertexCount);
+   var vertexPositionData = new Float32Array(3 * vertexCount);
    var vertexCoordIndex = 0;
-   var vertexCoordData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 2 * vertexCount);
+   //var vertexCoordData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 2 * vertexCount);
+   var vertexCoordData = new Float32Array(2 * vertexCount);
+   var vertexColorIndex = 0;
+   //var vertexColorData = MO.RTypeArray.findTemp(MO.EDataType.Uint8, 4 * vertexCount);
+   var vertexColorData = new Uint8Array(4 * vertexCount);
    var indexIndex = 0;
-   var indexData = MO.RTypeArray.findTemp(MO.EDataType.Uint16, 2 * 6 * count);
-   for(var i = 0; i < count; i++){
-      var item = items.at(i);
-      var matrix = item.matrix();
+   //var indexData = MO.RTypeArray.findTemp(MO.EDataType.Uint16, 2 * 6 * count);
+   var indexData = new Uint16Array(2 * 6 * count);
+   var visibleCount = 0;
+   items.record();
+   var index = 0;
+   while(items.next()){
+      var item = items.current();
+      if(!item.visible()){
+         continue;
+      }
+      var matrix = item.currentMatrix();
+      var color = item.color();
+      var red = parseInt(255 * color.red);
+      var green = parseInt(255 * color.green);
+      var blue = parseInt(255 * color.blue);
+      var alpha = parseInt(255 * item.currentAlpha());
       // 变换顶点
-      matrix.transform(vertexPositionData, 12 * i, MO.Lang.Math.faceCenterPositions, 0, 4);
-      // 设置顶点
+      matrix.transform(vertexPositionData, 12 * index, MO.Lang.Math.faceCenterPositions, 0, 4);
+      // 设置顶点纹理
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 1;
       vertexCoordData[vertexCoordIndex++] = 1;
@@ -209,18 +252,29 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 0;
+      // 设置顶点颜色
+      for(var i = 0; i < 4; i++){
+         vertexColorData[vertexColorIndex++] = red;
+         vertexColorData[vertexColorIndex++] = green;
+         vertexColorData[vertexColorIndex++] = blue;
+         vertexColorData[vertexColorIndex++] = alpha;
+      }
       // 设置索引
-      var positionIndex = 4 * i;
+      var positionIndex = 4 * index;
       indexData[indexIndex++] = positionIndex + 0;
       indexData[indexIndex++] = positionIndex + 1;
       indexData[indexIndex++] = positionIndex + 2;
       indexData[indexIndex++] = positionIndex + 0;
       indexData[indexIndex++] = positionIndex + 2;
       indexData[indexIndex++] = positionIndex + 3;
+      // 设置可见个数
+      index++;
    }
-   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, vertexCount);
-   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, vertexCount);
-   o._indexBuffer.upload(indexData, 6 * count);
+   // 上传数据
+   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, index);
+   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, index);
+   o._vertexColorBuffer.upload(vertexColorData, 4 * 1, index);
+   o._indexBuffer.upload(indexData, 6 * index);
 }
 
 //==========================================================
@@ -232,7 +286,6 @@ MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
    var o = this;
    // 释放属性
    o._items = MO.Lang.Object.dispose(o._items);
-   o._itemPool = MO.Lang.Object.dispose(o._itemPool);
    // 父处理
    o.__base.FE3dRenderable.dispose.call(o);
 }

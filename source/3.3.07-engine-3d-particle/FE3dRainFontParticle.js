@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150610
 //==========================================================
-MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
+MO.FE3dRainFontParticle = function FE3dRainFontParticle(o){
    o = MO.Class.inherits(this, o, MO.FE3dParticle);
    //..........................................................
    // @attribute
@@ -21,12 +21,12 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
    o._indexBuffer          = null;
    //..........................................................
    // @method
-   o.construct             = MO.FE3dFireworksParticle_construct;
+   o.construct             = MO.FE3dRainFontParticle_construct;
    // @method
-   o.setup                 = MO.FE3dFireworksParticle_setup;
-   o.start                 = MO.FE3dFireworksParticle_start;
+   o.setup                 = MO.FE3dRainFontParticle_setup;
+   o.start                 = MO.FE3dRainFontParticle_start;
    // @method
-   o.dispose               = MO.FE3dFireworksParticle_dispose;
+   o.dispose               = MO.FE3dRainFontParticle_dispose;
    return o;
 }
 
@@ -35,7 +35,7 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
 //
 // @method
 //==========================================================
-MO.FE3dFireworksParticle_construct = function FE3dFireworksParticle_construct(){
+MO.FE3dRainFontParticle_construct = function FE3dRainFontParticle_construct(){
    var o = this;
    o.__base.FE3dParticle.construct.call(o);
 }
@@ -45,7 +45,7 @@ MO.FE3dFireworksParticle_construct = function FE3dFireworksParticle_construct(){
 //
 // @method
 //==========================================================
-MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
+MO.FE3dRainFontParticle_setup = function FE3dRainFontParticle_setup(){
    var o = this;
    o.__base.FE3dParticle.setup.call(o);
 }
@@ -55,19 +55,21 @@ MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
 //
 // @method
 //==========================================================
-MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
+MO.FE3dRainFontParticle_start = function FE3dRainFontParticle_start(){
    var o = this;
    var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
    var count = o._itemCount;
    var angleSingle = Math.PI * 2 / count;
    for(var i = 0; i < count; i++){
-      var angle = o._angle + angleSingle * i;
+      var value = parseInt(MO.Random.get() * 360) % 360;
+      //var angle = o._angle + angleSingle * i;
       // 创建粒子项目
-      var item = particleConsole.itemAlloc(MO.FE3dFireworksParticleItem);
-      item.direction().set(Math.sin(angle), Math.cos(angle), 0);
-      item.position().set(0, 0, 0);
-      item.rotation().set(0, 0, -angle + Math.PI / 2);
-      item.scale().set(0.4, 0.4, 0.4);
+      var item = particleConsole.itemAlloc(MO.FE3dRainFontParticleItem);
+      item._particle = o;
+      item.direction().set(0, -1, 0);
+      item.position().set(0.1 * value - 12, 5, 0);
+      item.rotation().set(0, 0, -Math.PI / 2);
+      item.scale().set(0.1, 0.1, 0.1);
       item.setDelay(o._delay);
       item.setSpeed(o._speed);
       item.setAcceleration(o._acceleration);
@@ -83,7 +85,7 @@ MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
 //
 // @method
 //==========================================================
-MO.FE3dFireworksParticle_dispose = function FE3dFireworksParticle_dispose(){
+MO.FE3dRainFontParticle_dispose = function FE3dRainFontParticle_dispose(){
    var o = this;
    // 父处理
    o.__base.FE3dParticle.dispose.call(o);

@@ -22233,6 +22233,7 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
    o._itemCount            = MO.Class.register(o, new MO.AGetSet('_itemCount'), 0);
    o._delay                = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
    o._speed                = MO.Class.register(o, new MO.AGetSet('_speed'), 1);
+   o._angle                = MO.Class.register(o, new MO.AGetSet('_angle'), 0);
    o._acceleration         = MO.Class.register(o, new MO.AGetSet('_acceleration'), 0);
    o._attenuation          = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
    o._vertexPositionBuffer = null;
@@ -22241,14 +22242,12 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
    o.construct             = MO.FE3dFireworksParticle_construct;
    o.setup                 = MO.FE3dFireworksParticle_setup;
    o.start                 = MO.FE3dFireworksParticle_start;
-   o.process               = MO.FE3dFireworksParticle_process;
    o.dispose               = MO.FE3dFireworksParticle_dispose;
    return o;
 }
 MO.FE3dFireworksParticle_construct = function FE3dFireworksParticle_construct(){
    var o = this;
    o.__base.FE3dParticle.construct.call(o);
-   o._items = new MO.TObjects();
 }
 MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
    var o = this;
@@ -22256,12 +22255,14 @@ MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
 }
 MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
    var o = this;
+   var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
    var count = o._itemCount;
    var angleSingle = Math.PI * 2 / count;
    for(var i = 0; i < count; i++){
-      var angle = angleSingle * i;
-      var item = MO.Class.create(MO.FE3dFireworksParticleItem);
+      var angle = o._angle + angleSingle * i;
+      var item = particleConsole.itemAlloc(MO.FE3dFireworksParticleItem);
       item.direction().set(Math.sin(angle), Math.cos(angle), 0);
+      item.position().set(0, 0, 0);
       item.rotation().set(0, 0, -angle + Math.PI / 2);
       item.scale().set(0.4, 0.4, 0.4);
       item.setDelay(o._delay);
@@ -22272,20 +22273,8 @@ MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
       o.pushItem(item);
    }
 }
-MO.FE3dFireworksParticle_process = function FE3dFireworksParticle_process(){
-   var o = this;
-   o.__base.FE3dParticle.process.call(o);
-   var items = o._items;
-   var count = items.count();
-   for(var i = 0; i < count; i++){
-      var item = items.at(i);
-      item.process();
-   }
-   o.upload();
-}
 MO.FE3dFireworksParticle_dispose = function FE3dFireworksParticle_dispose(){
    var o = this;
-   o._items = RObject.dispose(o._items);
    o.__base.FE3dParticle.dispose.call(o);
 }
 MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
@@ -22294,8 +22283,6 @@ MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
    o._speed        = MO.Class.register(o, new MO.AGetSet('_speed'));
    o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
    o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
-   o._startTick    = 0;
-   o._currentAlpha = MO.Class.register(o, new MO.AGetSet('_currentAlpha'), 0);
    o._currentSpeed = 0;
    o.construct    = MO.FE3dFireworksParticleItem_construct;
    o.start        = MO.FE3dFireworksParticleItem_start;
@@ -22310,13 +22297,19 @@ MO.FE3dFireworksParticleItem_construct = function FE3dFireworksParticleItem_cons
 }
 MO.FE3dFireworksParticleItem_start = function FE3dFireworksParticleItem_start(){
    var o = this;
+   o.__base.FE3dParticleItem.start.call(o);
    o._currentSpeed = o._speed;
    o._currentAlpha = 1;
-   o._startTick = MO.Timer.current();
 }
 MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_processFrame(second){
    var o = this;
-   o._currentAlpha -= o._attenuation * second;
+   var attenuation = o._attenuation * second;
+   if(attenuation > o._currentAlpha){
+      o._currentAlpha = 0;
+      o._currentFinish = true;
+   }else{
+      o._currentAlpha -= attenuation;
+   }
    o._currentSpeed += o._acceleration * second;
    var distance = o._currentSpeed * second;
    var position = o._position;
@@ -22334,7 +22327,6 @@ MO.FE3dFireworksParticleItem_dispose = function FE3dFireworksParticleItem_dispos
 MO.FE3dParticle = function FE3dParticle(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._items                = null;
-   o._itemPool             = null;
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
    o._vertexColorBuffer    = null;
@@ -22350,6 +22342,7 @@ MO.FE3dParticle = function FE3dParticle(o){
    o.loadUrl               = MO.FE3dParticle_loadUrl;
    o.createItem            = MO.FE3dParticle_createItem;
    o.pushItem              = MO.FE3dParticle_pushItem;
+   o.process               = MO.FE3dParticle_process;
    o.upload                = MO.FE3dParticle_upload;
    o.dispose               = MO.FE3dParticle_dispose;
    return o;
@@ -22357,8 +22350,7 @@ MO.FE3dParticle = function FE3dParticle(o){
 MO.FE3dParticle_construct = function FE3dParticle_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._items = new MO.TObjects();
-   o._itemPool = MO.Class.create(MO.FObjectPool);
+   o._items = new MO.TLooper();
 }
 MO.FE3dParticle_setup = function FE3dParticle_setup(){
    var o = this;
@@ -22416,6 +22408,24 @@ MO.FE3dParticle_createItem = function FE3dParticle_createItem(){
 MO.FE3dParticle_pushItem = function FE3dParticle_pushItem(item){
    this._items.push(item);
 }
+MO.FE3dParticle_process = function FE3dParticle_process(){
+   var o = this;
+   o.__base.FE3dRenderable.process.call(o);
+   var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
+   var items = o._items;
+   items.record();
+   while(items.next()){
+      var item = items.current();
+      if(item.currentFinish()){
+         items.removeCurrent();
+         particleConsole.itemFree(item);
+      }
+      item.process();
+   }
+   if(!items.isEmpty()){
+      o.upload();
+   }
+}
 MO.FE3dParticle_upload = function FE3dParticle_upload(){
    var o = this;
    var context = o._graphicContext;
@@ -22423,15 +22433,28 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
    var count = items.count();
    var vertexCount = o._vertexCount = 4 * count;
    var vertexPositionIndex = 0;
-   var vertexPositionData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 3 * vertexCount);
+   var vertexPositionData = new Float32Array(3 * vertexCount);
    var vertexCoordIndex = 0;
-   var vertexCoordData = MO.RTypeArray.findTemp(MO.EDataType.Float32, 2 * vertexCount);
+   var vertexCoordData = new Float32Array(2 * vertexCount);
+   var vertexColorIndex = 0;
+   var vertexColorData = new Uint8Array(4 * vertexCount);
    var indexIndex = 0;
-   var indexData = MO.RTypeArray.findTemp(MO.EDataType.Uint16, 2 * 6 * count);
-   for(var i = 0; i < count; i++){
-      var item = items.at(i);
-      var matrix = item.matrix();
-      matrix.transform(vertexPositionData, 12 * i, MO.Lang.Math.faceCenterPositions, 0, 4);
+   var indexData = new Uint16Array(2 * 6 * count);
+   var visibleCount = 0;
+   items.record();
+   var index = 0;
+   while(items.next()){
+      var item = items.current();
+      if(!item.visible()){
+         continue;
+      }
+      var matrix = item.currentMatrix();
+      var color = item.color();
+      var red = parseInt(255 * color.red);
+      var green = parseInt(255 * color.green);
+      var blue = parseInt(255 * color.blue);
+      var alpha = parseInt(255 * item.currentAlpha());
+      matrix.transform(vertexPositionData, 12 * index, MO.Lang.Math.faceCenterPositions, 0, 4);
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 1;
       vertexCoordData[vertexCoordIndex++] = 1;
@@ -22440,23 +22463,65 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 0;
       vertexCoordData[vertexCoordIndex++] = 0;
-      var positionIndex = 4 * i;
+      for(var i = 0; i < 4; i++){
+         vertexColorData[vertexColorIndex++] = red;
+         vertexColorData[vertexColorIndex++] = green;
+         vertexColorData[vertexColorIndex++] = blue;
+         vertexColorData[vertexColorIndex++] = alpha;
+      }
+      var positionIndex = 4 * index;
       indexData[indexIndex++] = positionIndex + 0;
       indexData[indexIndex++] = positionIndex + 1;
       indexData[indexIndex++] = positionIndex + 2;
       indexData[indexIndex++] = positionIndex + 0;
       indexData[indexIndex++] = positionIndex + 2;
       indexData[indexIndex++] = positionIndex + 3;
+      index++;
    }
-   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, vertexCount);
-   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, vertexCount);
-   o._indexBuffer.upload(indexData, 6 * count);
+   o._vertexPositionBuffer.upload(vertexPositionData, 4 * 3, index);
+   o._vertexCoordBuffer.upload(vertexCoordData, 4 * 2, index);
+   o._vertexColorBuffer.upload(vertexColorData, 4 * 1, index);
+   o._indexBuffer.upload(indexData, 6 * index);
 }
 MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
    var o = this;
    o._items = MO.Lang.Object.dispose(o._items);
-   o._itemPool = MO.Lang.Object.dispose(o._itemPool);
    o.__base.FE3dRenderable.dispose.call(o);
+}
+MO.FE3dParticleConsole = function FE3dParticleConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Local;
+   o._pools    = MO.Class.register(o, new MO.AGetter('_pools'))
+   o.onLoad    = MO.FE3dParticleConsole_onLoad;
+   o.construct = MO.FE3dParticleConsole_construct;
+   o.itemAlloc = MO.FE3dParticleConsole_itemAlloc;
+   o.itemFree  = MO.FE3dParticleConsole_itemFree;
+   o.dispose   = MO.FE3dParticleConsole_dispose;
+   return o;
+}
+MO.FE3dParticleConsole_construct = function FE3dParticleConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o)
+   o._pools = MO.Class.create(MO.FObjectPools);
+}
+MO.FE3dParticleConsole_itemAlloc = function FE3dParticleConsole_itemAlloc(clazz){
+   var o = this;
+   var code = MO.Class.name(clazz);
+   var instance = o._pools.alloc(code);
+   if(!instance){
+      instance = MO.Class.create(clazz);
+   }
+   return instance;
+}
+MO.FE3dParticleConsole_itemFree = function FE3dParticleConsole_itemFree(item){
+   var o = this;
+   var code = MO.Class.name(item);
+   o._pools.free(code, item);
+}
+MO.FE3dParticleConsole_dispose = function FE3dParticleConsole_dispose(){
+   var o = this;
+   o._pools = MO.Lang.Object.dispose(o._pools);
+   o.__base.FConsole.dispose.call(o)
 }
 MO.FE3dParticleData = function FE3dParticleData(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
@@ -22478,8 +22543,10 @@ MO.FE3dParticleData_construct = function FE3dParticleData_construct(){
    var o = this;
    o.__base.FE3dFaceData.construct.call(o);
    var material = o._material;
-   material.info().optionAlpha = true;
-   material.info().ambientColor.set(1, 1, 1, 1);
+   var info = material.info();
+   info.effectCode = 'control';
+   info.optionAlpha = true;
+   info.ambientColor.set(1, 1, 1, 1);
 }
 MO.FE3dParticleData_loadUrl = function FE3dParticleData_loadUrl(url){
    var o = this;
@@ -22495,32 +22562,43 @@ MO.FE3dParticleData_dispose = function FE3dParticleData_dispose(){
 }
 MO.FE3dParticleItem = function FE3dParticleItem(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._matrix      = MO.Class.register(o, new MO.AGetter('_matrix'));
-   o._dirty       = false;
-   o._lastTick    = 0;
-   o._interval    = 10;
-   o._delay       = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
-   o._position    = MO.Class.register(o, new MO.AGetter('_position'));
-   o._rotation    = MO.Class.register(o, new MO.AGetter('_rotation'));
-   o._scale       = MO.Class.register(o, new MO.AGetter('_scale'));
-   o._data        = MO.Class.register(o, new MO.AGetSet('_data'));
-   o.construct    = MO.FE3dParticleItem_construct;
-   o.dirty        = MO.FE3dParticleItem_dirty;
-   o.processFrame = MO.FE3dParticleItem_processFrame;
-   o.process      = MO.FE3dParticleItem_process;
-   o.dispose      = MO.FE3dParticleItem_dispose;
+   o._visible       = MO.Class.register(o, new MO.AGetSet('_visible'), false);
+   o._delay         = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
+   o._interval      = MO.Class.register(o, new MO.AGetter('_interval'), 0);
+   o._position      = MO.Class.register(o, new MO.AGetter('_position'));
+   o._rotation      = MO.Class.register(o, new MO.AGetter('_rotation'));
+   o._scale         = MO.Class.register(o, new MO.AGetter('_scale'));
+   o._color         = MO.Class.register(o, new MO.AGetter('_color'));
+   o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
+   o._currentAlpha  = MO.Class.register(o, new MO.AGetSet('_currentAlpha'), 0);
+   o._currentFinish = MO.Class.register(o, new MO.AGetSet('_currentFinish'), false);
+   o._startTick     = 0;
+   o._lastTick      = 0;
+   o._statusDirty   = false;
+   o.construct      = MO.FE3dParticleItem_construct;
+   o.start          = MO.FE3dParticleItem_start;
+   o.processFrame   = MO.FE3dParticleItem_processFrame;
+   o.process        = MO.FE3dParticleItem_process;
+   o.dirty          = MO.FE3dParticleItem_dirty;
+   o.dispose        = MO.FE3dParticleItem_dispose;
    return o;
 }
 MO.FE3dParticleItem_construct = function FE3dParticleItem_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new MO.SMatrix3d();
+   o._currentMatrix = new MO.SMatrix3d();
    o._position = new MO.SPoint3(0, 0, 0);
    o._rotation = new MO.SVector3(0, 0, 0);
    o._scale = new MO.SVector3(1, 1, 1);
+   o._color = new MO.SColor4(1, 1, 1, 1);
 }
-MO.FE3dParticleItem_dirty = function FE3dParticleItem_dirty(){
-   this._dirty = true;
+MO.FE3dParticleItem_start = function FE3dParticleItem_start(){
+   var o = this;
+   o._visible = false;
+   o._currentAlpha = 1;
+   o._currentFinish = false;
+   o._startTick = MO.Timer.current();
+   o._lastTick = 0;
 }
 MO.FE3dParticleItem_processFrame = function FE3dParticleItem_processFrame(second){
    var o = this;
@@ -22528,41 +22606,174 @@ MO.FE3dParticleItem_processFrame = function FE3dParticleItem_processFrame(second
 MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
    var o = this;
    var tick = MO.Timer.current();
+   if(!o._visible){
+      if(tick - o._startTick < o._delay){
+         return;
+      }
+      o._visible = true;
+   }
    if(o._lastTick == 0){
       o._lastTick = tick;
       return false;
    }
    var span = tick - o._lastTick;
-   if(span < o._delay){
+   if(span < o._interval){
       return false;
    }
-   if(span > o._interval){
-      var second = span / 1000;
-      o.processFrame(second);
-      o._lastTick = tick;
-      if(o._dirty){
-         var matrix = o._matrix;
-         matrix.tx = o._position.x;
-         matrix.ty = o._position.y;
-         matrix.tz = o._position.z;
-         matrix.rx = o._rotation.x;
-         matrix.ry = o._rotation.y;
-         matrix.rz = o._rotation.z;
-         matrix.sx = o._scale.x;
-         matrix.sy = o._scale.y;
-         matrix.sz = o._scale.z;
-         matrix.updateForce();
-         o._dirty = false;
-      }
+   var second = span / 1000;
+   o.processFrame(second);
+   o._lastTick = tick;
+   if(o._statusDirty){
+      var matrix = o._currentMatrix;
+      matrix.tx = o._position.x;
+      matrix.ty = o._position.y;
+      matrix.tz = o._position.z;
+      matrix.rx = o._rotation.x;
+      matrix.ry = o._rotation.y;
+      matrix.rz = o._rotation.z;
+      matrix.sx = o._scale.x;
+      matrix.sy = o._scale.y;
+      matrix.sz = o._scale.z;
+      matrix.updateForce();
+      o._statusDirty = false;
    }
+}
+MO.FE3dParticleItem_dirty = function FE3dParticleItem_dirty(){
+   this._statusDirty = true;
 }
 MO.FE3dParticleItem_dispose = function FE3dParticleItem_dispose(){
    var o = this;
-   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o._currentMatrix = MO.Lang.Object.dispose(o._currentMatrix);
    o._position = MO.Lang.Object.dispose(o._position);
    o._rotation = MO.Lang.Object.dispose(o._rotation);
    o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FObject.dispose.call(o);
+}
+MO.FE3dRainFontParticle = function FE3dRainFontParticle(o){
+   o = MO.Class.inherits(this, o, MO.FE3dParticle);
+   o._itemCount            = MO.Class.register(o, new MO.AGetSet('_itemCount'), 0);
+   o._delay                = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
+   o._speed                = MO.Class.register(o, new MO.AGetSet('_speed'), 1);
+   o._angle                = MO.Class.register(o, new MO.AGetSet('_angle'), 0);
+   o._acceleration         = MO.Class.register(o, new MO.AGetSet('_acceleration'), 0);
+   o._attenuation          = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
+   o._vertexPositionBuffer = null;
+   o._vertexCoordBuffer    = null;
+   o._indexBuffer          = null;
+   o.construct             = MO.FE3dRainFontParticle_construct;
+   o.setup                 = MO.FE3dRainFontParticle_setup;
+   o.start                 = MO.FE3dRainFontParticle_start;
+   o.dispose               = MO.FE3dRainFontParticle_dispose;
+   return o;
+}
+MO.FE3dRainFontParticle_construct = function FE3dRainFontParticle_construct(){
+   var o = this;
+   o.__base.FE3dParticle.construct.call(o);
+}
+MO.FE3dRainFontParticle_setup = function FE3dRainFontParticle_setup(){
+   var o = this;
+   o.__base.FE3dParticle.setup.call(o);
+}
+MO.FE3dRainFontParticle_start = function FE3dRainFontParticle_start(){
+   var o = this;
+   var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
+   var count = o._itemCount;
+   var angleSingle = Math.PI * 2 / count;
+   for(var i = 0; i < count; i++){
+      var value = parseInt(MO.Random.get() * 360) % 360;
+      var item = particleConsole.itemAlloc(MO.FE3dRainFontParticleItem);
+      item._particle = o;
+      item.direction().set(0, -1, 0);
+      item.position().set(0.1 * value - 12, 5, 0);
+      item.rotation().set(0, 0, -Math.PI / 2);
+      item.scale().set(0.1, 0.1, 0.1);
+      item.setDelay(o._delay);
+      item.setSpeed(o._speed);
+      item.setAcceleration(o._acceleration);
+      item.setAttenuation(o._attenuation);
+      item.start();
+      o.pushItem(item);
+   }
+}
+MO.FE3dRainFontParticle_dispose = function FE3dRainFontParticle_dispose(){
+   var o = this;
+   o.__base.FE3dParticle.dispose.call(o);
+}
+MO.FE3dRainFontParticleItem = function FE3dRainFontParticleItem(o){
+   o = MO.Class.inherits(this, o, MO.FE3dParticleItem);
+   o._direction    = MO.Class.register(o, new MO.AGetter('_direction'));
+   o._speed        = MO.Class.register(o, new MO.AGetSet('_speed'));
+   o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
+   o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
+   o._currentSpeed = 0;
+   o._storeSpeed   = 0;
+   o.construct    = MO.FE3dRainFontParticleItem_construct;
+   o.start        = MO.FE3dRainFontParticleItem_start;
+   o.processFrame = MO.FE3dRainFontParticleItem_processFrame;
+   o.dispose      = MO.FE3dRainFontParticleItem_dispose;
+   return o;
+}
+MO.FE3dRainFontParticleItem_construct = function FE3dRainFontParticleItem_construct(){
+   var o = this;
+   o.__base.FE3dParticleItem.construct.call(o);
+   o._direction = new MO.SVector3();
+}
+MO.FE3dRainFontParticleItem_start = function FE3dRainFontParticleItem_start(){
+   var o = this;
+   o.__base.FE3dParticleItem.start.call(o);
+   o._currentSpeed = o._speed;
+   o._storeSpeed = 0;
+   o._currentAlpha = 1;
+   o._color.set(0.5, 0.5, 0.5, 1);
+}
+MO.FE3dRainFontParticleItem_processFrame = function FE3dRainFontParticleItem_processFrame(second){
+   var o = this;
+   var size = o._particle._graphicContext.size();
+   var position = o._position;
+   var idx = parseInt((position.x + 17) / 20 * 220);
+   var idy = parseInt((position.y + 3) * 6);
+   var index = (360 * (60 - idy) + idx) * 4;
+   var particle = o._particle;
+   var data = particle._data.data;
+   if(index >= 0 && index < data.length){
+      var r = data[index    ];
+      var g = data[index + 1];
+      var b = data[index + 2];
+      var a = data[index + 3];
+   }
+   var attenuation = o._attenuation * second;
+   if(r == 0){
+      if(attenuation > o._currentAlpha){
+         o._currentAlpha = 0;
+         o._currentFinish = true;
+      }else{
+         o._currentAlpha -= attenuation;
+      }
+   }
+   if(r > 0){
+      if(o._storeSpeed == 0){
+         o._storeSpeed = o._currentSpeed;
+         o._color.set(1, 0, 0, 1);
+      }
+      o._currentSpeed = 0.2;
+   }else{
+      if(o._storeSpeed != 0){
+         o._color.set(0.5, 0.5, 0.5, 1);
+         o._currentSpeed = o._storeSpeed;
+      }
+      o._currentSpeed += o._acceleration * second;
+   }
+   var distance = o._currentSpeed * second;
+   var direction = o._direction;
+   position.x += direction.x * distance;
+   position.y += direction.y * distance;
+   position.z += direction.z * distance;
+   o.dirty();
+}
+MO.FE3dRainFontParticleItem_dispose = function FE3dRainFontParticleItem_dispose(){
+   var o = this;
+   o._direction = MO.Lang.Object.dispose(o._direction);
+   o.__base.FE3dParticleItem.dispose.call(o);
 }
 with(MO){
    MO.FE3dMeshMergeProcessor = function FE3dMeshMergeProcessor(o){

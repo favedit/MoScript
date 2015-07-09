@@ -14,6 +14,17 @@ var particle = null;
 var ticker = null;
 //----------------------------------------------------------
 function onEnterFrame(){
+   if(ticker.process()){
+      particle.setItemCount(100);
+      //particle.setDelay(100 * i);
+      particle.setDelay(0);
+      //particle.setSpeed(0.1 + 0.1 * i);
+      particle.setSpeed(4);
+      //particle.setAngle(Math.PI * 2 / 180 * i);
+      //particle.setAcceleration(0.4 * i);
+      particle.setAttenuation(0.05);
+      particle.start();
+   }
    particle.process();
 }
 //----------------------------------------------------------
@@ -25,6 +36,13 @@ function _load(){
    MO.RBrowser.setContentPath('../..');
    // 设置环境
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 获得数据
+   var ctx = id_canvas.getContext('2d');
+   ctx.fillStyle = '#000000';
+   ctx.fillRect(0, 0, 360, 60);
+   ctx.font = 'bold 36px Microsoft YaHei';
+   ctx.fillStyle = '#FFFFFF';
+   ctx.fillText("124亿5023万", 60, 50);
    // 创建画布
    canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
    canvas.build(document);
@@ -34,30 +52,19 @@ function _load(){
    stage.region().backgroundColor().set(0, 0, 0, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
    layer = stage.spriteLayer();
-   // 创建图片
-   particle = MO.Class.create(MO.FE3dFireworksParticle);
-   particle.linkGraphicContext(context);
-   particle.setup();
-   // 设置数据
+   // 创建粒子
+   particle = context.createObject(MO.FE3dRainFontParticle);
+   particle._data = ctx.getImageData(0, 0, 360, 60);
    var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('../../ars/eai/particle/4.png');
+   particleData.loadUrl('../../ars/eai/particle/money.png');
    particle.setData(particleData);
-   // 放入画面
-   var count = 32;
-   for(var i = 0; i < count; i++){
-      particle.setItemCount(32);
-      particle.setDelay(100 * i);
-      particle.setSpeed(0.1 + 0.1 * i);
-      particle.setAngle(Math.PI * 2 / 180 * i);
-      particle.setAcceleration(0.4 * i);
-      particle.setAttenuation(0.4);
-      particle.start();
-   }
+   ticker = new MO.TTicker(500);
    stage.spriteLayer().pushRenderable(particle);
 }
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
+<CANVAS id='id_canvas' width='360' height='60' style='width:360px; height:60px'>
 </BODY>
 
 </HTML>
