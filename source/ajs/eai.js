@@ -1509,9 +1509,10 @@ with(MO){
       o._mouseMoveCheckInterval  = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
       o._cameraMoveDuration      = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
       o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-      o._playing = false;
-      o._lastTick = 0;
-      o._interval = 10;
+      o._provinceArray           = null;
+      o._playing                 = false;
+      o._lastTick                = 0;
+      o._interval                = 10;
       o._template                = RClass.register(o, new AGetSet('_template'));
       o._introAnimeDone          = RClass.register(o, new AGetSet('_introAnimeDone'), false);
       o._startTime               = RClass.register(o, new AGetSet('_startTime'));
@@ -1530,6 +1531,7 @@ with(MO){
       o.mouseOverFallAnime       = FEaiCountryEntity_mouseOverFallAnime;
       o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
       o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
+      o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
       return o;
    }
    MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
@@ -1545,7 +1547,21 @@ with(MO){
          brm.tz = o.riseDistance();
          brm.updateForce();
       }
+      var provinceArray = o._provinceArray = new Array(provinceEntities.count());
+      for (var i = 0; i < provinceEntities.count() ; i++) {
+         provinceArray[i] = provinceEntities.at(i);
+      }
+      provinceArray.sort(o.provinceShowOrderSort);
       o._startTime = MO.Timer.current();
+   }
+   MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
+      var pResConsole = MO.RConsole.find(FEaiResourceConsole).provinceConsole();
+      var p1Res = pResConsole.findByName(p1.data().code());
+      var p2Res = pResConsole.findByName(p2.data().code())
+      if (p1Res.displayOrder() > p2Res.displayOrder()) {
+         return 1;
+      }
+      return -1;
    }
    MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
       this._startTime = MO.Timer.current();
@@ -1579,9 +1595,9 @@ with(MO){
          }
       }
       var idxCap = timePassed / o.blockInterval();
-      for (var i = 0; i < o._provinceEntities.count() && i < idxCap; i++) {
-         var fr = o._provinceEntities.at(i).faceRenderable();
-         var br = o._provinceEntities.at(i).borderRenderable();
+      for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
+         var fr = o._provinceArray[i].faceRenderable();
+         var br = o._provinceArray[i].borderRenderable();
          var frm = fr.matrix();
          var brm = br.matrix();
          var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
