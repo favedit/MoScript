@@ -1353,7 +1353,7 @@ with(MO){
       materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/citys.png');
+      o.loadUrl('/script/ars/eai/star.png');
    }
    MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
       var o = this;
@@ -1390,8 +1390,11 @@ with(MO){
                z = provinceEntity.currentZ();
             }
             var coordLeft = o._levelCoordLeft[level];
+            coordLeft = 0;
             var coordRight = o._levelCoordRight[level];
+            coordRight = 1;
             var scale = o._levelScale[level];
+            scale = 1;
             vertexData[vertexPosition++] = location.x - scale;
             vertexData[vertexPosition++] = location.y + scale;
             vertexData[vertexPosition++] = z;
@@ -1417,6 +1420,10 @@ with(MO){
             var green = parseInt(color.green * 255);
             var blue = parseInt(color.blue * 255);
             var alpha = parseInt(color.alpha * alpha * 255);
+            var red = 255;
+            var green = 255;
+            var blue = 255;
+            var alpha = 255;
             for(var v = 0; v < 4; v++){
                colorData[colorPosition++] = red;
                colorData[colorPosition++] = green;
@@ -2244,23 +2251,25 @@ with (MO) {
             lastHour = hour;
          }
       }
-      graphic.setFont('bold 22px Microsoft YaHei');
+      graphic.setFont('bold 24px Microsoft YaHei');
       graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
-      graphic.setFont('bold 20px Microsoft YaHei');
+      graphic.setFont('bold 22px Microsoft YaHei');
+      var rowStart = top + 30;
+      var rowHeight = 20;
       var textWidth = graphic.textWidth('峰值：');
-      var textHourPeakValue = MO.RFloat.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+      var textHourPeakValue = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
       var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
-      var textDayTotalValue = MO.RFloat.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
+      var textDayTotalValue = MO.Lang.Float.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
       var textDayTotalWidth = graphic.textWidth(textDayTotalValue);
-      var textHourAvrgValue = MO.RFloat.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
+      var textHourAvrgValue = MO.Lang.Float.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
       var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
       var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
-      graphic.drawText('峰值：', decoLeft, top + 30, '#00CFFF');
-      graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, top + 30, '#00B5F6');
-      graphic.drawText('总额：', decoLeft, top + 55, '#00CFFF');
-      graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, top + 55, '#00B5F6');
-      graphic.drawText('均值：', decoLeft, top + 80, '#00CFFF');
-      graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, top + 80, '#00B5F6');
+      graphic.drawText('小时峰值：', decoLeft, top + 30, '#00CFFF');
+      graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, rowStart + rowHeight * 0, '#00B5F6');
+      graphic.drawText('24小时总额：', decoLeft, top + 55, '#00CFFF');
+      graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, rowStart + rowHeight * 1, '#00B5F6');
+      graphic.drawText('每小时均值：', decoLeft, top + 80, '#00CFFF');
+      graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, rowStart + rowHeight * 2, '#00B5F6');
       startTime.date.setTime(bakTime);
       startTime.refresh();
    }
@@ -2359,9 +2368,9 @@ with (MO) {
       }
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
       graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('达成日数：', textLeft, textTop + 50, '#FFE849');
-      graphic.drawText('分公司数：', textLeft, textTop + 100, '#FFE849');
-      graphic.drawText('理财师数：', textLeft, textTop + 150, '#FFE849');
+      graphic.drawText('达成日数：', textLeft, textTop + 100, '#FFE849');
+      graphic.drawText('分公司数：', textLeft, textTop + 150, '#FFE849');
+      graphic.drawText('理财师数：', textLeft, textTop + 200, '#FFE849');
       if (o.data()) {
          var invesText = o.data().investmentTotal().toString();
          if (invesText.length > 4) {
@@ -2379,15 +2388,19 @@ with (MO) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
          graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         var dataText = o.data().dayCount();
+         var dataText = o.data().code();
          var textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 50, '#FFA800');
-         dataText = o.data().companyCount();
+         dataText = dataText.substring(0, 4) + "年" + dataText.substring(4, 6) + "月" + dataText.substring(6, 8) + "日";;
+         graphic.drawText(dataText, hCenter - textWidth + 20, textTop + 50, '#FFE849');
+         dataText = o.data().dayCount();
          textWidth = graphic.textWidth(dataText);
          graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFA800');
-         dataText = o.data().staffCount();
+         dataText = o.data().companyCount();
          textWidth = graphic.textWidth(dataText);
          graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFA800');
+         dataText = o.data().staffCount();
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 200, '#FFA800');
       }
       graphic._handle.globalAlpha = 1;
    }
@@ -2405,7 +2418,9 @@ with (MO) {
 with (MO) {
    MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
       o = RClass.inherits(this, o, FGuiTimeline);
-      o._startHeight = 20;
+      o._startHeight = 50;
+      o._lineWidth = 5;
+      o._circleRadius = 5;
       o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
       return o;
    }
@@ -2454,7 +2469,7 @@ with (MO) {
             var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
             var color = '#' + hexColor.substring(2);
             var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-            graphic.drawLine(lastX, lastY, x, y, color, 3);
+            graphic.drawLine(lastX, lastY, x, y, color, o._lineWidth);
             var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
             var bottomHexColor = RHex.format(rateResource.find(0));
             var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
@@ -2463,7 +2478,7 @@ with (MO) {
             graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
             if (startDate.date.getDate() == 1) {
                var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-               graphic.drawCircle(x, y, 3, 0, color, color);
+               graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
             }
             lastX = x;
             lastY = y;
@@ -2483,7 +2498,7 @@ with (MO) {
             var y = dataBottom - inves / 10000 * pixPer10k;
             y -= o._startHeight;
             if (startDate.date.getDate() == 1) {
-               graphic.setFont('bold 16px Microsoft YaHei');
+               graphic.setFont('bold 22px Microsoft YaHei');
                if(inves > 100000000){
                   var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
                   var textWidth = graphic.textWidth(text);
@@ -2510,15 +2525,15 @@ with (MO) {
          var hexColor = RHex.format(rateResource.findRate(inves / investmentTotal));
          var color = '#' + hexColor.substring(2);
          var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, 3);
+         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, o._lineWidth);
          var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
          var bottomHexColor = RHex.format(rateResource.find(0));
          var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
          opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), 3, 0, color, color);
-         graphic.setFont('bold 16px Microsoft YaHei');
+         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), o._circleRadius, 0, color, color);
+         graphic.setFont('bold 22px Microsoft YaHei');
          if(inves > 100000000){
             var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
             var textWidth = graphic.textWidth(text);
@@ -2601,9 +2616,9 @@ MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
    var p = 0;
    if (passedTick < o._popDuration) {
       p = passedTick / o._popDuration;
-      graphic.globalAlpha = p;
+      graphic._handle.globalAlpha = p;
       graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
-      graphic.globalAlpha = 1;
+      graphic._handle.globalAlpha = 1;
       o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight * (1 - p));
       graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + p + ')');
    }
@@ -2613,15 +2628,16 @@ MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
    }
    else if (closeTick < o._closeDuration) {
       p = closeTick / o._closeDuration;
-      graphic.globalAlpha = p;
+      graphic._handle.globalAlpha = 1 - p;
       graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, o._fullWidth, o._fullHeight);
-      graphic.globalAlpha = 1;
+      graphic._handle.globalAlpha = 1;
       o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - o._riseHeight * p);
       graphic.drawText(popText, rectangle.left + (rectangle.width - popTextWidth) / 2, rectangle.top + 80, 'rgba(255, 241, 0, ' + (1 - p) + ')');
    }
    else {
       o._data = null;
       o.setVisible(false);
+      o.dirty();
       return;
    }
 }
@@ -2629,6 +2645,7 @@ MO.FGuiLivePop_show = function FGuiLivePop_show() {
    o = this;
    o.setVisible(true);
    o._startTick = MO.Timer.current();
+   o.dirty();
 }
 MO.FGuiLivePop_dispose = function FGuiLivePop_dispose(){
    var o = this;
@@ -2881,9 +2898,9 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   if(o._foreFont){
-      graphic.setFont(o._foreFont);
-   }
+   var textFont = 'bold 36px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
    var year = o._value.format('YYYY');
    var month = o._value.format('MM');
    var day = o._value.format('DD');
@@ -2898,15 +2915,23 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var widthMonth = graphic.textWidth(monthValue);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 4;
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(year);
    graphic.drawText(year, x, y, '#FFD926');
-   graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('年', unitBaseX + textWidth, unitBaseY, '#00B5F6');
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(month);
    graphic.drawText(month, x + widthYear, y, '#FFD926');
-   graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('月', unitBaseX + widthYear + textWidth, unitBaseY, '#00B5F6');
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(day);
    graphic.drawText(day, x + widthYear + widthMonth, y, '#FFD926');
-   graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('日', unitBaseX + widthYear + widthMonth + textWidth, unitBaseY, '#00B5F6');
 }
 MO.FEaiStatisticsDate_construct = function FEaiStatisticsDate_construct(){
    var o = this;
@@ -2939,7 +2964,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
-   o._tableCount              = 21;
+   o._tableCount              = 20;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
    o._dataTicker              = null;
@@ -3136,7 +3161,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
    }
    var currentTick = MO.RTimer.current();
    if(currentTick - o._tableTick > o._tableInterval){
-      if(o._tableEntities.count() > o._tableCount){
+      if(o._tableEntities.count() >= o._tableCount){
          var entity = o._tableEntities.pop();
          o._entityPool.free(entity);
       }
@@ -3352,22 +3377,28 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   graphic.setFont('bold 34px Microsoft YaHei');
+   var textFont = 'bold 38px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
    var text = '';
    var label = o._label;
    var labelLength = label.length;
    var labelNumberH = null;
    var labelH = null;
+   var widthH = 0;
    if(labelLength > 8){
       labelNumberH = label.substring(0, labelLength - 8);
       labelH = labelNumberH + '亿';
+      widthH = graphic.textWidth(labelH);
       text += labelH;
    }
    var labelNumberM = null;
    var labelM = null;
+   var widthM = 0;
    if(labelLength > 4){
       labelNumberM = label.substring(labelLength - 8, labelLength - 4);
       labelM = labelNumberM + '万';
+      widthM = graphic.textWidth(labelM);
       text += labelM;
    }
    var labelNumberL = null;
@@ -3378,30 +3409,30 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       text += labelL;
    }
    var width = graphic.textWidth(text);
-   var widthH = graphic.textWidth(labelH);
-   var widthM = graphic.textWidth(labelM);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 5;
    if(labelH != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberH);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('亿', unitBaseX + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelM != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberM);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('万', unitBaseX + widthH + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelL != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberL);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('元', unitBaseX + widthH + widthM + textWidth, unitBaseY, '#00B5F6');
    }
 }
 MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){
@@ -3822,8 +3853,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
    timeline.setRight(450);
-   timeline.setBottom(50);
-   timeline.setHeight(500);
+   timeline.setBottom(5);
+   timeline.setHeight(600);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
@@ -3838,6 +3869,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setup();
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
+   o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
 }
 MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
@@ -4279,12 +4311,12 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       }
       o._investment.process();
       var logoBar = o._logoBar;
-      var investmentDay = logoBar.findComponent('investmentDay');
-      var invementDayCurrent = o._investment.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._investment.invementTotalCurrent();
       investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      var investmentDay = logoBar.findComponent('investmentDay');
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       if(o._nowTicker.process()){
          var bar = o._logoBar;
          var date = o._nowDate;
@@ -4294,6 +4326,9 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
          var timeControl = bar.findComponent('time');
          timeControl.setLabel(date.format('HH24:MI'));
       }
+   }
+   if (o._livePop.visible()) {
+      o._livePop.dirty();
    }
 }
 MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
@@ -4318,7 +4353,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
+   frame.setLocation(0, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
    invement.linkGraphicContext(o);
@@ -4366,8 +4401,8 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
          matrix.setScale(0.3, 0.33, 0.3);
       }
    }else{
-      matrix.tx = -38;
-      matrix.ty = -13.2;
+      matrix.tx = -38.6;
+      matrix.ty = -12.8;
       matrix.tz = 0;
       matrix.setScale(0.32, 0.36, 0.32);
    }
@@ -4394,11 +4429,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
-      if(MO.Runtime.isPlatformMobile()){
-         timeline.setRight(680);
-      }else{
-         timeline.setRight(640);
-      }
+      timeline.setRight(680);
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
@@ -4414,13 +4445,9 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setDockCd(MO.EGuiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
       liveTable.setTop(10);
-      liveTable.setRight(10);
+      liveTable.setRight(0);
       liveTable.setBottom(10);
-      if(MO.Runtime.isPlatformMobile()){
-         liveTable.setWidth(660);
-      }else{
-         liveTable.setWidth(600);
-      }
+      liveTable.setWidth(650);
    }
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
@@ -4523,7 +4550,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
    o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);

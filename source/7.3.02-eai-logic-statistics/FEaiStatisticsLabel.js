@@ -39,23 +39,30 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    // 设置字体
-   graphic.setFont('bold 34px Microsoft YaHei');
+   var textFont = 'bold 38px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
+   //graphic._handle.textBaseline = 'bottom';
    // 计算位置
    var text = '';
    var label = o._label;
    var labelLength = label.length;
    var labelNumberH = null;
    var labelH = null;
+   var widthH = 0;
    if(labelLength > 8){
       labelNumberH = label.substring(0, labelLength - 8);
       labelH = labelNumberH + '亿';
+      widthH = graphic.textWidth(labelH);
       text += labelH;
    }
    var labelNumberM = null;
    var labelM = null;
+   var widthM = 0;
    if(labelLength > 4){
       labelNumberM = label.substring(labelLength - 8, labelLength - 4);
       labelM = labelNumberM + '万';
+      widthM = graphic.textWidth(labelM);
       text += labelM;
    }
    var labelNumberL = null;
@@ -66,31 +73,31 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       text += labelL;
    }
    var width = graphic.textWidth(text);
-   var widthH = graphic.textWidth(labelH);
-   var widthM = graphic.textWidth(labelM);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
    // 绘制文字
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 5;
    if(labelH != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberH);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('亿', unitBaseX + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelM != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberM);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('万', unitBaseX + widthH + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelL != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberL);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('元', unitBaseX + widthH + widthM + textWidth, unitBaseY, '#00B5F6');
    }
 }
 

@@ -341,8 +341,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
    timeline.setRight(450);
-   timeline.setBottom(50);
-   timeline.setHeight(500);
+   timeline.setBottom(5);
+   timeline.setHeight(600);
    timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
@@ -357,6 +357,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setup();
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
+   o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
 }
 MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
@@ -798,12 +799,12 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       }
       o._investment.process();
       var logoBar = o._logoBar;
-      var investmentDay = logoBar.findComponent('investmentDay');
-      var invementDayCurrent = o._investment.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._investment.invementTotalCurrent();
       investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      var investmentDay = logoBar.findComponent('investmentDay');
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       if(o._nowTicker.process()){
          var bar = o._logoBar;
          var date = o._nowDate;
@@ -813,6 +814,9 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
          var timeControl = bar.findComponent('time');
          timeControl.setLabel(date.format('HH24:MI'));
       }
+   }
+   if (o._livePop.visible()) {
+      o._livePop.dirty();
    }
 }
 MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
@@ -837,7 +841,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o._startDate.parseAuto('20140701');
    o._endDate.parseAuto('20150618');
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
+   frame.setLocation(0, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
    invement.linkGraphicContext(o);
@@ -885,8 +889,8 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
          matrix.setScale(0.3, 0.33, 0.3);
       }
    }else{
-      matrix.tx = -38;
-      matrix.ty = -13.2;
+      matrix.tx = -38.6;
+      matrix.ty = -12.8;
       matrix.tz = 0;
       matrix.setScale(0.32, 0.36, 0.32);
    }
@@ -913,11 +917,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
-      if(MO.Runtime.isPlatformMobile()){
-         timeline.setRight(680);
-      }else{
-         timeline.setRight(640);
-      }
+      timeline.setRight(680);
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
@@ -933,13 +933,9 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setDockCd(MO.EGuiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
       liveTable.setTop(10);
-      liveTable.setRight(10);
+      liveTable.setRight(0);
       liveTable.setBottom(10);
-      if(MO.Runtime.isPlatformMobile()){
-         liveTable.setWidth(660);
-      }else{
-         liveTable.setWidth(600);
-      }
+      liveTable.setWidth(650);
    }
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
@@ -1042,7 +1038,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
    o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);

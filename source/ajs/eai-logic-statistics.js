@@ -11,9 +11,9 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   if(o._foreFont){
-      graphic.setFont(o._foreFont);
-   }
+   var textFont = 'bold 36px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
    var year = o._value.format('YYYY');
    var month = o._value.format('MM');
    var day = o._value.format('DD');
@@ -28,15 +28,23 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var widthMonth = graphic.textWidth(monthValue);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 4;
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(year);
    graphic.drawText(year, x, y, '#FFD926');
-   graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('年', unitBaseX + textWidth, unitBaseY, '#00B5F6');
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(month);
    graphic.drawText(month, x + widthYear, y, '#FFD926');
-   graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('月', unitBaseX + widthYear + textWidth, unitBaseY, '#00B5F6');
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(day);
    graphic.drawText(day, x + widthYear + widthMonth, y, '#FFD926');
-   graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('日', unitBaseX + widthYear + widthMonth + textWidth, unitBaseY, '#00B5F6');
 }
 MO.FEaiStatisticsDate_construct = function FEaiStatisticsDate_construct(){
    var o = this;
@@ -69,7 +77,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
-   o._tableCount              = 21;
+   o._tableCount              = 20;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
    o._dataTicker              = null;
@@ -266,7 +274,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
    }
    var currentTick = MO.RTimer.current();
    if(currentTick - o._tableTick > o._tableInterval){
-      if(o._tableEntities.count() > o._tableCount){
+      if(o._tableEntities.count() >= o._tableCount){
          var entity = o._tableEntities.pop();
          o._entityPool.free(entity);
       }
@@ -482,22 +490,28 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   graphic.setFont('bold 34px Microsoft YaHei');
+   var textFont = 'bold 38px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
    var text = '';
    var label = o._label;
    var labelLength = label.length;
    var labelNumberH = null;
    var labelH = null;
+   var widthH = 0;
    if(labelLength > 8){
       labelNumberH = label.substring(0, labelLength - 8);
       labelH = labelNumberH + '亿';
+      widthH = graphic.textWidth(labelH);
       text += labelH;
    }
    var labelNumberM = null;
    var labelM = null;
+   var widthM = 0;
    if(labelLength > 4){
       labelNumberM = label.substring(labelLength - 8, labelLength - 4);
       labelM = labelNumberM + '万';
+      widthM = graphic.textWidth(labelM);
       text += labelM;
    }
    var labelNumberL = null;
@@ -508,30 +522,30 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       text += labelL;
    }
    var width = graphic.textWidth(text);
-   var widthH = graphic.textWidth(labelH);
-   var widthM = graphic.textWidth(labelM);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 5;
    if(labelH != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberH);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('亿', x + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('亿', unitBaseX + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelM != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberM);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('万', x + widthH + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('万', unitBaseX + widthH + textWidth, unitBaseY, '#00B5F6');
    }
    if(labelL != null){
+      graphic.setFont(textFont);
       var textWidth = graphic.textWidth(labelNumberL);
-      graphic.setFont('bold 34px Microsoft YaHei');
       graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('元', x + widthH + widthM + textWidth, y - 1, '#00B5F6');
+      graphic.setFont(unitFont);
+      graphic.drawText('元', unitBaseX + widthH + widthM + textWidth, unitBaseY, '#00B5F6');
    }
 }
 MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){

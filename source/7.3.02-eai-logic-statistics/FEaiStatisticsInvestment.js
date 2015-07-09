@@ -26,7 +26,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
    o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
    // @attribute
-   o._tableCount              = 21;
+   o._tableCount              = 20;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
    o._dataTicker              = null;
@@ -338,7 +338,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
    var currentTick = MO.RTimer.current();
    if(currentTick - o._tableTick > o._tableInterval){
       // 大于个数从尾部弹出
-      if(o._tableEntities.count() > o._tableCount){
+      if(o._tableEntities.count() >= o._tableCount){
          var entity = o._tableEntities.pop();
          o._entityPool.free(entity);
       }

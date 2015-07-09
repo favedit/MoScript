@@ -33,9 +33,9 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    // 设置字体
-   if(o._foreFont){
-      graphic.setFont(o._foreFont);
-   }
+   var textFont = 'bold 36px Microsoft YaHei';
+   var unitFont = 'bold 28px Microsoft YaHei';
+   graphic.setFont(textFont);
    // 计算位置
    var year = o._value.format('YYYY');
    var month = o._value.format('MM');
@@ -51,16 +51,26 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var widthMonth = graphic.textWidth(monthValue);
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
-   // 绘制文字
+   var unitBaseX = x + 4;
+   var unitBaseY = y - 4;
+   // 绘制年
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(year);
    graphic.drawText(year, x, y, '#FFD926');
-   graphic.drawText('年', x + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('年', unitBaseX + textWidth, unitBaseY, '#00B5F6');
+   // 绘制月
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(month);
    graphic.drawText(month, x + widthYear, y, '#FFD926');
-   graphic.drawText('月', x + widthYear + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('月', unitBaseX + widthYear + textWidth, unitBaseY, '#00B5F6');
+   // 绘制日
+   graphic.setFont(textFont);
    var textWidth = graphic.textWidth(day);
    graphic.drawText(day, x + widthYear + widthMonth, y, '#FFD926');
-   graphic.drawText('日', x + widthYear + widthMonth + textWidth, y - 1, '#00B5F6');
+   graphic.setFont(unitFont);
+   graphic.drawText('日', unitBaseX + widthYear + widthMonth + textWidth, unitBaseY, '#00B5F6');
 }
 
 //==========================================================

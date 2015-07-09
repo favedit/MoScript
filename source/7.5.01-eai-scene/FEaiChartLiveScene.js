@@ -125,14 +125,14 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       //..........................................................
       // 设置数据
       var logoBar = o._logoBar;
-      // 设置当前金额
-      var investmentDay = logoBar.findComponent('investmentDay');
-      var invementDayCurrent = o._investment.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       // 设置全部金额
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._investment.invementTotalCurrent();
       investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      // 设置当日金额
+      var investmentDay = logoBar.findComponent('investmentDay');
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       //..........................................................
       // 更新时间
       if(o._nowTicker.process()){
@@ -186,7 +186,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
+   frame.setLocation(0, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
@@ -250,8 +250,8 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
          matrix.setScale(0.3, 0.33, 0.3);
       }
    }else{
-      matrix.tx = -38;
-      matrix.ty = -13.2;
+      matrix.tx = -38.6;
+      matrix.ty = -12.8;
       matrix.tz = 0;
       matrix.setScale(0.32, 0.36, 0.32);
    }
@@ -294,11 +294,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
-      if(MO.Runtime.isPlatformMobile()){
-         timeline.setRight(680);
-      }else{
-         timeline.setRight(640);
-      }
+      timeline.setRight(680);
       timeline.setHeight(250);
    }
    //..........................................................
@@ -316,12 +312,8 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setDockCd(MO.EGuiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
       liveTable.setTop(10);
-      liveTable.setRight(10);
+      liveTable.setRight(0);
       liveTable.setBottom(10);
-      if(MO.Runtime.isPlatformMobile()){
-         liveTable.setWidth(660);
-      }else{
-         liveTable.setWidth(600);
-      }
+      liveTable.setWidth(650);
    }
 }

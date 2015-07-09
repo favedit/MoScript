@@ -353,6 +353,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._guiManager.register(milestoneFrame);
    //..........................................................
    // 隐藏全部界面
+   o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
 }
 
