@@ -30,9 +30,10 @@ with(MO){
       //..........................................................
       // @attribute
       o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-      o._playing = false;
-      o._lastTick = 0;
-      o._interval = 10;
+      o._provinceArray           = null;
+      o._playing                 = false;
+      o._lastTick                = 0;
+      o._interval                = 10;
 
       o._template                = RClass.register(o, new AGetSet('_template'));
       o._introAnimeDone          = RClass.register(o, new AGetSet('_introAnimeDone'), false);
@@ -54,6 +55,7 @@ with(MO){
       o.mouseOverFallAnime       = FEaiCountryEntity_mouseOverFallAnime;
       o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
       o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
+      o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
       return o;
    }
    
@@ -76,6 +78,11 @@ with(MO){
          brm.updateForce();
       }
 
+      var provinceArray = o._provinceArray = new Array(provinceEntities.count());
+      for (var i = 0; i < provinceEntities.count() ; i++) {
+         provinceArray[i] = provinceEntities.at(i);
+      }
+      provinceArray.sort(o.provinceShowOrderSort);
       //o.setCameraDirection(new SVector3(0.02, -0.9, 0.5));
       //o.setCameraFrom(new SPoint3());
       //o.setCameraTo(new SPoint3());
@@ -94,6 +101,21 @@ with(MO){
       //}
       ////记录开始时间
       o._startTime = MO.Timer.current();
+   }
+
+   //==========================================================
+   // <T>省份显示顺序排序。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
+      var pResConsole = MO.RConsole.find(FEaiResourceConsole).provinceConsole();
+      var p1Res = pResConsole.findByName(p1.data().code());
+      var p2Res = pResConsole.findByName(p2.data().code())
+      if (p1Res.displayOrder() > p2Res.displayOrder()) {
+         return 1;
+      }
+      return -1;
    }
 
    //==========================================================
@@ -158,9 +180,9 @@ with(MO){
       }
 
       var idxCap = timePassed / o.blockInterval();
-      for (var i = 0; i < o._provinceEntities.count() && i < idxCap; i++) {
-         var fr = o._provinceEntities.at(i).faceRenderable();
-         var br = o._provinceEntities.at(i).borderRenderable();
+      for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
+         var fr = o._provinceArray[i].faceRenderable();
+         var br = o._provinceArray[i].borderRenderable();
          var frm = fr.matrix();
          var brm = br.matrix();
          var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
