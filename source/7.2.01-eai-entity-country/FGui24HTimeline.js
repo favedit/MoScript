@@ -16,6 +16,7 @@ with (MO) {
       o._ready            = false;
       o._investmentTotal  = 0;
       // @attribute
+      o._baseHeight = 5;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
       o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
@@ -183,10 +184,15 @@ with (MO) {
       }
       graphic.store()
       graphic._handle.lineCap = 'round';
+
       var pixPer10k = dataHeight * 10000 / maxInves;
       var inves = parseInt(data[0].investment);
       var lastX = dataLeft;
       var lastY = dataBottom - inves / 10000 * pixPer10k;
+
+      var ctx = graphic._handle;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
       var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
       var rateResource = rateConsole.find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
@@ -195,29 +201,30 @@ with (MO) {
          var degreeSpan = startTime.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
          var y = dataBottom - data[i].investment / 10000 * pixPer10k;
-         var rate = data[i].investment / maxInves;
-         var colorIdx = parseInt((rateResource.count() - 1) * rate);
-         var hexColor = RHex.format(rateResource.find(colorIdx));
-         var color = '#' + hexColor.substring(2);
-         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-         var lastRate = data[i - 1].investment / maxInves;
-         var lastColorIdx = parseInt((rateResource.count() - 1) * lastRate);
-         var lastHexColor = RHex.format(rateResource.find(lastColorIdx));
-         var lastColor = '#' + lastHexColor.substring(2);
-         var lastOpColor = 'rgba(' + RHex.parse(lastHexColor.substring(2, 4)) + ',' + RHex.parse(lastHexColor.substring(4, 6)) + ',' + RHex.parse(lastHexColor.substring(6, 8)) + ',' + '0.3)';
-         var gradient = graphic.createLinearGradient(lastX, lastY, x, y);
-         gradient.addColorStop('0', lastColor);
-         gradient.addColorStop('1', color);
-         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
-         var bottomHexColor = RHex.format(rateResource.find(0));
-         var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
-         opGradient.addColorStop('0', bottomOpColor);
-         opGradient.addColorStop('1', opColor);
-         graphic.drawLine(lastX, lastY, x, y, gradient, 4);
-         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-         lastX = x;
-         lastY = y;
+         y -= o._baseHeight;
+         ctx.lineTo(x, y);
       }
+      var hexColor = RHex.format(rateResource.findRate(0));
+      var bottomColor = '#' + hexColor.substring(2);
+      var opBottomColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
+      var hexColor = RHex.format(rateResource.findRate(1));
+      var topColor = '#' + hexColor.substring(2);
+      var opTopColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
+      var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+      gradient.addColorStop('0', bottomColor);
+      gradient.addColorStop('1', topColor);
+      var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+      opGradient.addColorStop('0', opBottomColor);
+      opGradient.addColorStop('1', opTopColor);
+      ctx.strokeStyle = gradient;
+      ctx.fillStyle = opGradient;
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.lineTo(x, dataBottom);
+      ctx.lineTo(dataLeft, dataBottom);
+      ctx.lineTo(dataLeft, lastY);
+      ctx.fill();
+
       startTime.date.setTime(bakTime);
       startTime.refresh();
       graphic.restore()
