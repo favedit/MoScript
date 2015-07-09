@@ -186,7 +186,7 @@ MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    if(MO.Runtime.isPlatformMobile()){
       o._tableCount = 12;
    }else{
-      o._tableCount = 21;
+      o._tableCount = 20;
    }
    //..........................................................
    // 创建声音

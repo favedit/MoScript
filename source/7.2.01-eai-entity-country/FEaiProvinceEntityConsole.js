@@ -51,7 +51,8 @@ MO.FEaiProvinceEntityConsole_findByCode = function FEaiProvinceEntityConsole_fin
 // @param entity:FEaiProvinceEntity 省份实体
 //==========================================================
 MO.FEaiProvinceEntityConsole_push = function FEaiProvinceEntityConsole_push(entity){
-   this._provinces.set(entity.data().name(), entity);
+   var code = entity.data().code();
+   this._provinces.set(code, entity);
 }
 
 //==========================================================

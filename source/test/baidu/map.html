@@ -1,0 +1,241 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='http://api.map.baidu.com/api?v=2.0&ak=rGRly5iTwOs6wLHmEc8xQl2y'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../test/baidu/appp.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var map = null;
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+var points = null;
+var provinces = [
+   {index:0,  name:'beijing',    label:'北京',         color:'FBC5DC'},
+   {index:1,  name:'tianjing',   label:'天津',         color:'C8C1E3'},
+   {index:2,  name:'hebei',      label:'河北',         color:'E7CCAF'},
+   {index:3,  name:'shanxi',     label:'山西',         color:'FBC5DC'},
+   {index:4,  name:'neimenggu',  label:'内蒙古自治区', color:'DBEDC7'},
+   {index:5,  name:'liaoning',   label:'辽宁',         color:'FCFBBB'},
+   {index:6,  name:'jilin',      label:'吉林省',       color:'C8C1E3'},
+   {index:7,  name:'helongjiang',label:'黑龙江',       color:'E7CCAF'},
+   {index:8,  name:'shanghai',   label:'上海',         color:'FCFBBB'},
+   {index:9,  name:'jiangsu',    label:'江苏',         color:'DBECC8'},
+   {index:10, name:'zhejiang',   label:'浙江',         color:'C8C1E3'},
+   {index:11, name:'anhui',      label:'安徽',         color:'FBC5DC'},
+   {index:12, name:'fujian',     label:'福建',         color:'FEFCBF'},
+   {index:13, name:'jiangxi',    label:'江西',         color:'E7CCAF'},
+   {index:14, name:'shandong',   label:'山东',         color:'FCFBBB'},
+   {index:15, name:'henan',      label:'河南',         color:'DBECC8'},
+   {index:16, name:'hubei',      label:'湖北',         color:'C8C1E3'},
+   {index:17, name:'hunan',      label:'湖南',         color:'DBEDC7'},
+   {index:18, name:'guangdong',  label:'广东',         color:'FBC5DC'},
+   {index:19, name:'guangxi',    label:'广西',         color:'C8C1E3'},
+   {index:20, name:'hainan',     label:'海南省',       color:'FCFBBB'},
+   {index:21, name:'chongqing',  label:'重庆市',       color:'FBC5DC'},
+   {index:22, name:'sichuan',    label:'四川',         color:'FCFBBB'},
+   {index:23, name:'guizhou',    label:'贵州',         color:'E7CCAF'},
+   {index:24, name:'yunnan',     label:'云南',         color:'DBEDC7'},
+   {index:25, name:'xizang',     label:'西藏',         color:'E7CCAF'},
+   {index:26, name:'shaanxi',    label:'陕西',         color:'E7CCAF'},
+   {index:27, name:'gansu',      label:'甘肃',         color:'C8C1E3'},
+   {index:28, name:'qinghai',    label:'青海',         color:'DBEDC7'},
+   {index:29, name:'ningxia',    label:'宁夏',         color:'FBC5DC'},
+   {index:30, name:'xinjiang',   label:'新疆',         color:'FCFBBB'},
+   {index:31, name:'taiwan',     label:'台湾',         color:'DBECC8'},
+   {index:32, name:'xianggang',  label:'香港',         color:'C8C1E3'},
+   {index:33, name:'aomen',      label:'澳门',         color:'C8C1E3'},
+];
+var boundary = null;
+var finish = true;
+var sending = false;
+var activeProvinces = null;;
+//----------------------------------------------------------
+function onEnterFrame(){
+   if(finish){
+      return;
+   }
+   if(!sending){
+      for(var i = 0; i < provinces.length; i++){
+         var provincesInfo = provinces[i];
+         if(!provincesInfo.loaded){
+            if(!provincesInfo.sended){
+               return loadBoundary(provincesInfo);
+            }
+         }
+      }
+   }
+   for(var i = 0; i < provinces.length; i++){
+      var provincesInfo = provinces[i];
+      if(!provincesInfo.loaded){
+         return;
+      }
+   }
+   downloadBoundary();
+   finish = true;
+}
+//----------------------------------------------------------
+function loadBoundary(info){
+   sending = true;
+   activeProvinces = info;
+	boundary.get(info.label, function onBoundary(data){
+      var boundaries = data.boundaries;
+      var count = boundaries.length;
+      var data = new MO.TString();
+      data.push(activeProvinces.name + '\n');
+      for(var i = 0; i < count; i++){
+         var boundary = boundaries[i];
+         data.push(boundary);
+         data.push('\n');
+      }
+      activeProvinces.loaded = true;
+      activeProvinces.boundaries = boundaries;
+      activeProvinces.source = data.toString();
+      console.log('Download ' + activeProvinces.name + ' - ' + activeProvinces.label);
+      sending = false;
+   });
+}
+//----------------------------------------------------------
+function convertBoundary(province){
+   var name = province.name;
+   var boundaries = province.boundaries;
+   var datas = province.datas = new Array();
+   var count = boundaries.length;
+   for(var n = 0; n < count; n++){
+      var data = new Object();
+      var boundary = boundaries[n];
+      var points = boundary.split(';');
+      var pointCount = points.length;
+      var vertexData = new Array();
+      var vertexs = new Array();
+      var vertexSource = new MO.TString();
+      for(var i = 0; i < pointCount; i++){
+         if(points[i].indexOf(', ') != -1){
+            var point = points[i].split(', ');
+         }else{
+            var point = points[i].split(',');
+         }
+         if(point.length != 2){
+            throw new MO.TError(this, 'Length invalid.');
+         }
+         var x = parseFloat(point[0]);
+         var y = parseFloat(point[1]);
+         var vertexValue = x + ',' + y + ',0';
+         if(vertexs[vertexValue]){
+            if(i != pointCount - 1){
+               if(vertexValue == '121.838173,29.696653,0'){
+                  x -= 0.000001;
+                  vertexValue = x + ',' + y + ',0';
+               }else{
+                  console.log(name, i , pointCount, vertexValue);
+                  debugger
+               }
+            }
+         }
+         vertexs[vertexValue] = true;
+         if(i > 0){
+            vertexSource.push(';');
+         }
+         vertexSource.push(vertexValue);
+         vertexData.push(x, y, 0);
+      }
+      data.vertexes = vertexData;
+      data.vertexSource = vertexSource.toString();
+      var indexes = data.indexes = cal_index(vertexData);
+      data.indexSource = indexes.join(',');
+      datas.push(data);
+   }
+   //console.log('Convert ' + province.name + ' - ' + province.label);
+}
+//----------------------------------------------------------
+function downloadBoundary(){
+   var result = new MO.TString();
+   var count = provinces.length;
+   for(var i = 0; i < count; i++){
+      var province = provinces[i];
+      result.push('province:' + province.name + '\n');
+      result.push('color:' + province.color + '\n');
+      convertBoundary(province);
+      var datas = province.datas;
+      var dataLength = datas.length;
+      for(var di = 0; di < dataLength; di++){
+         var data = datas[di];
+         result.push('boundary:' + di);
+         result.push('\n');
+         result.push('vertex_source:' + data.vertexSource);
+         result.push('\n');
+         result.push('index_source:' + data.indexSource);
+         result.push('\n');
+      }
+   }
+   var source = result.toString();
+   MO.Browser.downloadText('data.txt', source);
+}
+//----------------------------------------------------------
+function onFileLoad(event){
+   var source = event.outputData();
+   var province = provinces[32];
+   province.loaded = true;
+   province.boundaries = new Array(source);
+   finish = false;
+}
+//----------------------------------------------------------
+function _load(){
+   // 创建地图
+   map = new BMap.Map("id_container");
+   map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+   map.enableScrollWheelZoom();
+   map.clearOverlays();
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建数据
+   boundary = new BMap.Boundary();
+   for(var i = 0; i < provinces.length; i++){
+      var province = provinces[i];
+      province.sended = false;
+      province.loaded = false;
+   }
+   // 创建画布
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(id_canvas);
+   var context = canvas.graphicContext();
+   stage = canvas._stage;
+   stage.region().backgroundColor().set(0.1, 0.1, 0.1, 1);
+   stage.addEnterFrameListener(null, onEnterFrame);
+   layer = stage.spriteLayer();
+   // 加载台湾
+   var url = '/script/test/baidu/台湾.txt';
+   var connection = MO.RConsole.find(MO.FHttpConsole).fetch(url);
+   connection.addLoadListener(null, onFileLoad);
+}
+</SCRIPT>
+<BODY scroll='auto' onload='_load()'>
+<TABLE width='100%' height='100%' border='0'>
+   <TR>
+      <TD height='40px' bgcolor='FFFF88'>
+         输入省、直辖市或县名称：<input type="text" id="districtName" style="width:80px" value="台湾">
+         <INPUT type="button" id='id_button' onclick="doBoundary()" value="轮廓">
+      </TD>
+   </TR>
+   <TR>
+      <TD>
+         <DIV id="id_container" style='width:100%;height:100%;'></DIV>
+         <DIV id="id_canvas" style='display:none'></DIV>
+      </TD>
+   </TR>
+</TABLE>
+</BODY>  
+</HTML>

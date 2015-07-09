@@ -67,7 +67,7 @@ MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiProvinceData);
       province.unserialize(input);
-      o._provinces.set(province.name(), province);
+      o._provinces.set(province.code(), province);
    }
    // 分发事件
    var event = new MO.SEvent(o);

@@ -181,6 +181,8 @@ with (MO) {
             maxInves = inves;
          }
       }
+      graphic.store()
+      graphic._handle.lineCap = 'round';
       var pixPer10k = dataHeight * 10000 / maxInves;
       var inves = parseInt(data[0].investment);
       var lastX = dataLeft;
@@ -211,13 +213,14 @@ with (MO) {
          var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
          opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
-         graphic.drawLine(lastX, lastY, x, y, gradient, 3);
+         graphic.drawLine(lastX, lastY, x, y, gradient, 4);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
          lastX = x;
          lastY = y;
       }
       startTime.date.setTime(bakTime);
       startTime.refresh();
+      graphic.restore()
       //统计
       var lastHour = -1;
       var hourInves = 0;

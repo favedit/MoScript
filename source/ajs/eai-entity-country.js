@@ -660,7 +660,7 @@ MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiProvinceData);
       province.unserialize(input);
-      o._provinces.set(province.name(), province);
+      o._provinces.set(province.code(), province);
    }
    var event = new MO.SEvent(o);
    o.processLoadListener(event);
@@ -914,12 +914,12 @@ MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
 with(MO){
    MO.FEaiProvinceData = function FEaiProvinceData(o){
       o = RClass.inherits(this, o, FEaiEntity);
-      o._name             = RClass.register(o, new AGetSet('_name'));
-      o._color            = RClass.register(o, new AGetSet('_color'));
-      o._boundaries       = RClass.register(o, new AGetter('_boundaries'));
-      o.construct         = FEaiProvinceData_construct;
-      o.unserialize       = FEaiProvinceData_unserialize;
-      o.dispose           = FEaiProvinceData_dispose;
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._color      = RClass.register(o, new AGetSet('_color'));
+      o._boundaries = RClass.register(o, new AGetter('_boundaries'));
+      o.construct   = FEaiProvinceData_construct;
+      o.unserialize = FEaiProvinceData_unserialize;
+      o.dispose     = FEaiProvinceData_dispose;
       return o;
    }
    MO.FEaiProvinceData_construct = function FEaiProvinceData_construct(){
@@ -929,7 +929,7 @@ with(MO){
    }
    MO.FEaiProvinceData_unserialize = function FEaiProvinceData_unserialize(input){
       var o = this;
-      o._name = input.readString();
+      o._code = input.readString();
       o._color = input.readUint32();
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
@@ -1052,7 +1052,7 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0x08;
          colors[colorIndex++] = 0x0D;
          colors[colorIndex++] = 0x19;
          colors[colorIndex++] = 0xFF;
@@ -1229,7 +1229,8 @@ MO.FEaiProvinceEntityConsole_findByCode = function FEaiProvinceEntityConsole_fin
    return this._provinces.get(code);
 }
 MO.FEaiProvinceEntityConsole_push = function FEaiProvinceEntityConsole_push(entity){
-   this._provinces.set(entity.data().name(), entity);
+   var code = entity.data().code();
+   this._provinces.set(code, entity);
 }
 MO.FEaiProvinceEntityConsole_dispose = function FEaiProvinceEntityConsole_dispose(monitor){
    var o = this;
@@ -1365,6 +1366,8 @@ with (MO) {
             maxInves = inves;
          }
       }
+      graphic.store()
+      graphic._handle.lineCap = 'round';
       var pixPer10k = dataHeight * 10000 / maxInves;
       var inves = parseInt(data[0].investment);
       var lastX = dataLeft;
@@ -1395,13 +1398,14 @@ with (MO) {
          var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
          opGradient.addColorStop('0', bottomOpColor);
          opGradient.addColorStop('1', opColor);
-         graphic.drawLine(lastX, lastY, x, y, gradient, 3);
+         graphic.drawLine(lastX, lastY, x, y, gradient, 4);
          graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
          lastX = x;
          lastY = y;
       }
       startTime.date.setTime(bakTime);
       startTime.refresh();
+      graphic.restore()
       var lastHour = -1;
       var hourInves = 0;
       var maxHourInves = 0;
@@ -1889,18 +1893,18 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
-      o._headFontStyle = 'bold 36px Microsoft YaHei';
+      o._headFontStyle = 'bold 42px Microsoft YaHei';
       o._headStart = 116;
       o._headTextTop = 26;
       o._headHeight = 40;
       o._rankStart = 190;
-      o._rankHeight = 44;
+      o._rankHeight = 48;
       o._rankIconStart = 25;
       o._rankRowUp = 32;
       o._rankRowDown = 51;
-      o._rowStart = 320;
-      o._rowFontStyle = '22px Microsoft YaHei';
-      o._rowHeight = 32;
+      o._rowStart = 330;
+      o._rowFontStyle = '24px Microsoft YaHei';
+      o._rowHeight = 36;
    }
 }
 MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag, index, x, y, width){
@@ -1984,8 +1988,8 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var bottom = top + height;
    var drawPosition = top;
    var heightRate = height / o._size.height;
-   var drawLeft = left + 29;
-   var drawRight = right - 20;
+   var drawLeft = left + 32;
+   var drawRight = right - 23;
    var drawWidth = right - left;
    var widthDefine = 0;
    for(var i = 0; i < 4; i++){

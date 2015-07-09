@@ -71,14 +71,14 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
-      var provinceName = provinceData.name();
-      var province = provinceConsole.findByName(provinceName);
-      // 创建实体
+      var provinceCode = provinceData.code();
+      var province = provinceConsole.findByCode(provinceCode);
+      // 创建省份实体
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setMapEntity(mapEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      provinceEntities.set(province.code(), provinceEntity);
+      provinceEntities.set(provinceCode, provinceEntity);
       provinceEntityConsole.push(provinceEntity);
       // 放入显示层
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());

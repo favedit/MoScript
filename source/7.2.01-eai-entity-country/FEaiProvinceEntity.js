@@ -158,8 +158,7 @@ with(MO){
       var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
       var positionTotal = vertexTotal * 2;
       for(var i = 0; i < positionTotal; i++){
-         //colors[colorIndex++] = 0x08;
-         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0x08;
          colors[colorIndex++] = 0x0D;
          colors[colorIndex++] = 0x19;
          colors[colorIndex++] = 0xFF;

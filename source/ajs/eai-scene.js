@@ -985,13 +985,13 @@ MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
-      var provinceName = provinceData.name();
-      var province = provinceConsole.findByName(provinceName);
+      var provinceCode = provinceData.code();
+      var province = provinceConsole.findByCode(provinceCode);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setMapEntity(mapEntity);
       provinceEntity.setData(provinceData);
       provinceEntity.build(context);
-      provinceEntities.set(province.code(), provinceEntity);
+      provinceEntities.set(provinceCode, provinceEntity);
       provinceEntityConsole.push(provinceEntity);
       countryDisplay.pushRenderable(provinceEntity.faceRenderable());
       countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());

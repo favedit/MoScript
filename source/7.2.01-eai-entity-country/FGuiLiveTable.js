@@ -118,18 +118,18 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
-      o._headFontStyle = 'bold 36px Microsoft YaHei';
+      o._headFontStyle = 'bold 42px Microsoft YaHei';
       o._headStart = 116;
       o._headTextTop = 26;
       o._headHeight = 40;
       o._rankStart = 190;
-      o._rankHeight = 44;
+      o._rankHeight = 48;
       o._rankIconStart = 25;
       o._rankRowUp = 32;
       o._rankRowDown = 51;
-      o._rowStart = 320;
-      o._rowFontStyle = '22px Microsoft YaHei';
-      o._rowHeight = 32;
+      o._rowStart = 330;
+      o._rowFontStyle = '24px Microsoft YaHei';
+      o._rowHeight = 36;
    }
 }
 
@@ -232,8 +232,8 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    var bottom = top + height;
    var drawPosition = top;
    var heightRate = height / o._size.height;
-   var drawLeft = left + 29;
-   var drawRight = right - 20;
+   var drawLeft = left + 32;
+   var drawRight = right - 23;
    var drawWidth = right - left;
    //..........................................................
    // 计算宽度

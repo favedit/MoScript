@@ -13,6 +13,7 @@ with(MO){
       o._code         = RClass.register(o, new AGetter('_code'));
       o._name         = RClass.register(o, new AGetter('_name'));
       o._label        = RClass.register(o, new AGetter('_label'));
+      o._typeCd       = RClass.register(o, new AGetter('_typeCd'));
       o._displayOrder = RClass.register(o, new AGetter('_displayOrder'));
       //..........................................................
       // @method
@@ -31,6 +32,7 @@ with(MO){
       o._code = input.readUint16();
       o._name = input.readString();
       o._label = input.readString();
+      o._typeCd = input.readString();
       o._displayOrder = input.readUint16();
    }
 }

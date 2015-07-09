@@ -10,16 +10,16 @@ with(MO){
       o = RClass.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
-      o._name             = RClass.register(o, new AGetSet('_name'));
-      o._color            = RClass.register(o, new AGetSet('_color'));
-      o._boundaries       = RClass.register(o, new AGetter('_boundaries'));
+      o._code       = RClass.register(o, new AGetSet('_code'));
+      o._color      = RClass.register(o, new AGetSet('_color'));
+      o._boundaries = RClass.register(o, new AGetter('_boundaries'));
       //..........................................................
       // @method
-      o.construct         = FEaiProvinceData_construct;
+      o.construct   = FEaiProvinceData_construct;
       // @method
-      o.unserialize       = FEaiProvinceData_unserialize;
+      o.unserialize = FEaiProvinceData_unserialize;
       // @method
-      o.dispose           = FEaiProvinceData_dispose;
+      o.dispose     = FEaiProvinceData_dispose;
       return o;
    }
 
@@ -43,7 +43,7 @@ with(MO){
    //==========================================================
    MO.FEaiProvinceData_unserialize = function FEaiProvinceData_unserialize(input){
       var o = this;
-      o._name = input.readString();
+      o._code = input.readString();
       o._color = input.readUint32();
       var count = input.readInt32();
       for(var i = 0; i < count; i++){
