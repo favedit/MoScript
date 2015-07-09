@@ -24,8 +24,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._currentDate      = null;
    // @attribute
    o._logoBar          = null;
-   o._playButton       = null;
-   o._pauseButton      = null;
+   //o._playButton       = null;
+   //o._pauseButton      = null;
    o._buttonTransform  = null;
    o._timeline         = null;
    o._milestoneFrame   = null;
@@ -256,40 +256,40 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
-   frame.setLocation(5, 5);
+   frame.setLocation(0, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 创建城市图示
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(30, 300);
-   control.setSize(120, 120);
-   control.setBackResource('url:/script/ars/eai/city-level.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   o._guiManager.register(control);
-   // 创建播放按键
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/player.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   control.addOperationDownListener(o, o.onOperationPlay);
+   //var control = o._playButton = MO.Class.create(MO.FGuiPicture);
+   //control.linkGraphicContext(o);
+   //control.setLocation(30, 300);
+   //control.setSize(120, 120);
+   //control.setBackResource('url:/script/ars/eai/city-level.png');
+   //control.psInitialize();
+   //control.build();
+   //control.setVisible(true);
    //o._guiManager.register(control);
    // 创建播放按键
-   var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/pause.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(false);
-   control.addOperationDownListener(o, o.onOperationPause);
+   //var control = o._playButton = MO.Class.create(MO.FGuiPicture);
+   //control.linkGraphicContext(o);
+   //control.setLocation(40, 730);
+   //control.setSize(196, 196);
+   //control.setBackResource('url:/script/ars/eai/player.png');
+   //control.psInitialize();
+   //control.build();
+   //control.setVisible(true);
+   //control.addOperationDownListener(o, o.onOperationPlay);
+   //o._guiManager.register(control);
+   // 创建播放按键
+   //var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
+   //control.linkGraphicContext(o);
+   //control.setLocation(40, 730);
+   //control.setSize(196, 196);
+   //control.setBackResource('url:/script/ars/eai/pause.png');
+   //control.psInitialize();
+   //control.build();
+   //control.setVisible(false);
+   //control.addOperationDownListener(o, o.onOperationPause);
    //o._guiManager.register(control);
    // 创建按键声音
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
@@ -421,20 +421,20 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
 //==========================================================
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
-   var transform = o._buttonTransform;
+   //var transform = o._buttonTransform;
    o._playing = flag;
    //o._buttonAudio.play(0);
-   if(flag){
+   //if(flag){
       //transform.setSourceControl(o._playButton);
       //transform.setTargetControl(o._pauseButton);
-      o._playButton.setVisible(false);
-      o._pauseButton.setVisible(true);
-   }else{
+      //o._playButton.setVisible(false);
+      //o._pauseButton.setVisible(true);
+   //}else{
       //transform.setSourceControl(o._pauseButton);
       //transform.setTargetControl(o._playButton);
-      o._playButton.setVisible(true);
-      o._pauseButton.setVisible(false);
-   }
+      //o._playButton.setVisible(true);
+      //o._pauseButton.setVisible(false);
+   //}
    //o._desktop.transformStart(transform);
 }
 

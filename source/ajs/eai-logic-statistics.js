@@ -29,7 +29,7 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
    var unitBaseX = x + 4;
-   var unitBaseY = y - 4;
+   var unitBaseY = y - 5;
    graphic.setFont(textFont);
    var textWidth = graphic.textWidth(year);
    graphic.drawText(year, x, y, '#FFD926');

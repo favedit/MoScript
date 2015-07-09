@@ -2916,7 +2916,7 @@ MO.FEaiStatisticsDate_onPaintLabel = function FEaiStatisticsDate_onPaintLabel(ev
    var x = rectangle.left;
    var y = rectangle.top + rectangle.height;
    var unitBaseX = x + 4;
-   var unitBaseY = y - 4;
+   var unitBaseY = y - 5;
    graphic.setFont(textFont);
    var textWidth = graphic.textWidth(year);
    graphic.drawText(year, x, y, '#FFD926');
@@ -3631,8 +3631,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._endDate          = null;
    o._currentDate      = null;
    o._logoBar          = null;
-   o._playButton       = null;
-   o._pauseButton      = null;
    o._buttonTransform  = null;
    o._timeline         = null;
    o._milestoneFrame   = null;
@@ -3787,35 +3785,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._citysRangeRenderable.setVisible(false);
    o._citysRenderable.setVisible(false);
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
-   frame.setLocation(5, 5);
+   frame.setLocation(0, 5);
    o._guiManager.register(frame);
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(30, 300);
-   control.setSize(120, 120);
-   control.setBackResource('url:/script/ars/eai/city-level.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   o._guiManager.register(control);
-   var control = o._playButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/player.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(true);
-   control.addOperationDownListener(o, o.onOperationPlay);
-   var control = o._pauseButton = MO.Class.create(MO.FGuiPicture);
-   control.linkGraphicContext(o);
-   control.setLocation(40, 730);
-   control.setSize(196, 196);
-   control.setBackResource('url:/script/ars/eai/pause.png');
-   control.psInitialize();
-   control.build();
-   control.setVisible(false);
-   control.addOperationDownListener(o, o.onOperationPause);
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
@@ -3913,15 +3884,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
    var o = this;
-   var transform = o._buttonTransform;
    o._playing = flag;
-   if(flag){
-      o._playButton.setVisible(false);
-      o._pauseButton.setVisible(true);
-   }else{
-      o._playButton.setVisible(true);
-      o._pauseButton.setVisible(false);
-   }
 }
 MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
    var o = this;
