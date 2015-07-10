@@ -5,11 +5,10 @@
 // @history 150130
 //==========================================================
 MO.FE2dCanvas = function FE2dCanvas(o){
-   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject);
+   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject, MO.MGraphicObject);
    //..........................................................
    // @attribute
    o._size      = MO.Class.register(o, new MO.AGetter('_size'));
-   o._context   = MO.Class.register(o, new MO.AGetter('_context'));
    //..........................................................
    // @html
    o._hCanvas   = null;
@@ -85,7 +84,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    hStyle.width = '100%';
    hStyle.height = '100%';
    // 创建渲染环境
-   var context = o._context = MO.Class.create(MO.FG2dCanvasContext);
+   var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
    context.linkCanvas(hCanvas);
 }
 
@@ -97,7 +96,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
 //==========================================================
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._context;
+   var context = o._graphicContext;
    var hCanvas = o._hCanvas;
    // 放入父容器
    o._hPanel = hPanel;
@@ -126,7 +125,7 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
 // @method
 //==========================================================
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
-   this._context.clear();
+   this._graphicContext.clear();
 }
 
 //==========================================================
@@ -138,7 +137,7 @@ MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
    var o = this;
    // 释放属性
    o._size = MO.RObject.dispose(o._size);
-   o._context = MO.RObject.dispose(o._context);
+   o._graphicContext = MO.RObject.dispose(o._graphicContext);
    o._hPanel = MO.RHtml.free(o._hPanel);
    o._hCanvas = MO.RHtml.free(o._hCanvas);
    // 父处理

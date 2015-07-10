@@ -1435,9 +1435,8 @@ with(MO){
    }
 }
 MO.FE2dCanvas = function FE2dCanvas(o){
-   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject);
+   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject, MO.MGraphicObject);
    o._size      = MO.Class.register(o, new MO.AGetter('_size'));
-   o._context   = MO.Class.register(o, new MO.AGetter('_context'));
    o._hCanvas   = null;
    o.onResize   = MO.FE2dCanvas_onResize;
    o.construct  = MO.FE2dCanvas_construct;
@@ -1474,12 +1473,12 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    hStyle.top = '0px';
    hStyle.width = '100%';
    hStyle.height = '100%';
-   var context = o._context = MO.Class.create(MO.FG2dCanvasContext);
+   var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
    context.linkCanvas(hCanvas);
 }
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._context;
+   var context = o._graphicContext;
    var hCanvas = o._hCanvas;
    o._hPanel = hPanel;
    hPanel.appendChild(hCanvas);
@@ -1493,12 +1492,12 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
 }
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
-   this._context.clear();
+   this._graphicContext.clear();
 }
 MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
    var o = this;
    o._size = MO.RObject.dispose(o._size);
-   o._context = MO.RObject.dispose(o._context);
+   o._graphicContext = MO.RObject.dispose(o._graphicContext);
    o._hPanel = MO.RHtml.free(o._hPanel);
    o._hCanvas = MO.RHtml.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);

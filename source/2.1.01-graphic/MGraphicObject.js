@@ -29,9 +29,9 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    if(MO.Class.isClass(context, MO.FGraphicContext)){
       o._graphicContext = context;
    }else if(MO.Class.isClass(context, MO.MGraphicObject)){
-      o._graphicContext = context._graphicContext;
+      o._graphicContext = context.graphicContext();
    }else{
-      throw new TError(o, 'Link graphic context failure. (context={1})', context);
+      throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
    MO.Assert.debugNotNull(o._graphicContext);
 }

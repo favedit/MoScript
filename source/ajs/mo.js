@@ -14506,9 +14506,9 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    if(MO.Class.isClass(context, MO.FGraphicContext)){
       o._graphicContext = context;
    }else if(MO.Class.isClass(context, MO.MGraphicObject)){
-      o._graphicContext = context._graphicContext;
+      o._graphicContext = context.graphicContext();
    }else{
-      throw new TError(o, 'Link graphic context failure. (context={1})', context);
+      throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
    MO.Assert.debugNotNull(o._graphicContext);
 }
@@ -21565,9 +21565,8 @@ with(MO){
    }
 }
 MO.FE2dCanvas = function FE2dCanvas(o){
-   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject);
+   o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject, MO.MGraphicObject);
    o._size      = MO.Class.register(o, new MO.AGetter('_size'));
-   o._context   = MO.Class.register(o, new MO.AGetter('_context'));
    o._hCanvas   = null;
    o.onResize   = MO.FE2dCanvas_onResize;
    o.construct  = MO.FE2dCanvas_construct;
@@ -21604,12 +21603,12 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    hStyle.top = '0px';
    hStyle.width = '100%';
    hStyle.height = '100%';
-   var context = o._context = MO.Class.create(MO.FG2dCanvasContext);
+   var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
    context.linkCanvas(hCanvas);
 }
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._context;
+   var context = o._graphicContext;
    var hCanvas = o._hCanvas;
    o._hPanel = hPanel;
    hPanel.appendChild(hCanvas);
@@ -21623,12 +21622,12 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
 }
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
-   this._context.clear();
+   this._graphicContext.clear();
 }
 MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
    var o = this;
    o._size = MO.RObject.dispose(o._size);
-   o._context = MO.RObject.dispose(o._context);
+   o._graphicContext = MO.RObject.dispose(o._graphicContext);
    o._hPanel = MO.RHtml.free(o._hPanel);
    o._hCanvas = MO.RHtml.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
@@ -34699,7 +34698,7 @@ MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(co
 MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var graphic = o._canvas.context();
+   var graphic = o._canvas.graphicContext();
    var desktop = o._desktop;
    var calculateSize = desktop.calculateSize();
    var calculateRate = desktop.calculateRate()
@@ -34729,7 +34728,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          }
       }
    }
-   var graphic = o._canvas.context();
+   var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       graphic.clear();
       var readyCount = readyControls.count();
@@ -34766,9 +34765,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
 }
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
-   o._readyControls = RObject.dispose(o._readyControls);
-   o._dirtyControls = RObject.dispose(o._dirtyControls);
-   o._paintEvent = RObject.dispose(o._paintEvent);
+   o._readyControls = MO.Lang.Object.dispose(o._readyControls);
+   o._dirtyControls = MO.Lang.Object.dispose(o._dirtyControls);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
@@ -35528,309 +35527,420 @@ with(MO){
       o._ticker = new MO.TTicker(1000);
    }
 }
-with(MO){
-   MO.FApplication = function FApplication(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
-      o._activeChapter       = RClass.register(o, new AGetter('_activeChapter'));
-      o._chapters            = RClass.register(o, new AGetter('_chapters'));
-      o._eventEnterFrame     = null;
-      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
-      o._eventLeaveFrame     = null;
-      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
-      o.construct            = FApplication_construct;
-      o.registerChapter      = FApplication_registerChapter;
-      o.unregisterChapter    = FApplication_unregisterChapter;
-      o.selectChapter        = FApplication_selectChapter;
-      o.selectChapterByCode  = FApplication_selectChapterByCode;
-      o.processResize        = FApplication_processResize;
-      o.processEvent         = FApplication_processEvent;
-      o.process              = FApplication_process;
-      o.dispose              = FApplication_dispose;
-      return o;
-   }
-   MO.FApplication_construct = function FApplication_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._chapters = new TDictionary();
-      o._eventEnterFrame = new SEvent();
-      o._eventLeaveFrame = new SEvent();
-   }
-   MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
-      var o = this;
-      var code = chapter.code();
-      chapter.setApplication(o);
-      o._chapters.set(code, chapter);
-   }
-   MO.FApplication_unregisterChapter = function FApplication_unregisterChapter(chapter){
-      var o = this;
-      var code = chapter.code();
-      o._chapters.set(code, null);
-   }
-   MO.FApplication_selectChapter = function FApplication_selectChapter(chapter){
-      var o = this;
-      if(o._activeChapter != chapter){
-         var activeChapter = o._activeChapter;
-         if(activeChapter){
-            activeChapter.deactive();
-            o._activeChapter = null;
-         }
-         if(chapter){
-            chapter.active();
-            o._activeChapter = chapter;
-         }
+MO.FApplication = function FApplication(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
+   o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
+   o._eventEnterFrame     = null;
+   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
+   o._eventLeaveFrame     = null;
+   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.construct            = MO.FApplication_construct;
+   o.registerChapter      = MO.FApplication_registerChapter;
+   o.unregisterChapter    = MO.FApplication_unregisterChapter;
+   o.selectChapter        = MO.FApplication_selectChapter;
+   o.selectChapterByCode  = MO.FApplication_selectChapterByCode;
+   o.processResize        = MO.FApplication_processResize;
+   o.processEvent         = MO.FApplication_processEvent;
+   o.process              = MO.FApplication_process;
+   o.dispose              = MO.FApplication_dispose;
+   return o;
+}
+MO.FApplication_construct = function FApplication_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._chapters = new MO.TDictionary();
+   o._eventEnterFrame = new MO.SEvent();
+   o._eventLeaveFrame = new MO.SEvent();
+}
+MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
+   var o = this;
+   var code = chapter.code();
+   chapter.setApplication(o);
+   o._chapters.set(code, chapter);
+}
+MO.FApplication_unregisterChapter = function FApplication_unregisterChapter(chapter){
+   var o = this;
+   var code = chapter.code();
+   o._chapters.set(code, null);
+}
+MO.FApplication_selectChapter = function FApplication_selectChapter(chapter){
+   var o = this;
+   if(o._activeChapter != chapter){
+      var activeChapter = o._activeChapter;
+      if(activeChapter){
+         activeChapter.deactive();
+         o._activeChapter = null;
       }
-   }
-   MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(code){
-      var o = this;
-      var chapter = o._chapters.get(code);
-      o.selectChapter(chapter);
-      return chapter;
-   }
-   MO.FApplication_processResize = function FApplication_processResize(){
-      var o = this;
-   }
-   MO.FApplication_processEvent = function FApplication_processEvent(event){
-      var o = this;
-      o.dispatcherEvent(event);
-      var chapter = o._activeChapter;
       if(chapter){
-         chapter.processEvent(event);
+         chapter.active();
+         o._activeChapter = chapter;
       }
-   }
-   MO.FApplication_process = function FApplication_process(){
-      var o = this;
-      o.processEnterFrameListener(o._eventEnterFrame);
-      if(o._activeChapter){
-         o._activeChapter.process();
-      }
-      o.processLeaveFrameListener(o._eventLeaveFrame);
-   }
-   MO.FApplication_dispose = function FApplication_dispose(){
-      var o = this;
-      o._activeChapter = null;
-      o._chapters = RObject.dispose(o._chapters, true);
-      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
-      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
-      o.__base.MListener.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
    }
 }
-with(MO){
-   MO.FChapter = function FChapter(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
-      o._code                = RClass.register(o, new AGetSet('_code'));
-      o._application         = RClass.register(o, new AGetSet('_application'));
-      o._scenes              = RClass.register(o, new AGetter('_scenes'));
-      o._activeScene         = RClass.register(o, new AGetter('_activeScene'));
-      o._statusSetup         = false;
-      o._statusActive        = false;
-      o._eventEnterFrame     = null;
-      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
-      o._eventLeaveFrame     = null;
-      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
-      o.construct            = FChapter_construct;
-      o.registerScene        = FChapter_registerScene;
-      o.unregisterScene      = FChapter_unregisterScene;
-      o.selectScene          = FChapter_selectScene;
-      o.selectSceneByCode    = FChapter_selectSceneByCode;
-      o.setup                = FChapter_setup;
-      o.active               = FChapter_active;
-      o.deactive             = FChapter_deactive;
-      o.processEvent         = FChapter_processEvent;
-      o.process              = FChapter_process;
-      o.dispose              = FChapter_dispose;
-      return o;
+MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(code){
+   var o = this;
+   var chapter = o._chapters.get(code);
+   o.selectChapter(chapter);
+   return chapter;
+}
+MO.FApplication_processResize = function FApplication_processResize(){
+   var o = this;
+}
+MO.FApplication_processEvent = function FApplication_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+   var chapter = o._activeChapter;
+   if(chapter){
+      chapter.processEvent(event);
    }
-   MO.FChapter_construct = function FChapter_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._scenes = new TDictionary();
-      o._eventEnterFrame = new SEvent();
-      o._eventLeaveFrame = new SEvent();
+}
+MO.FApplication_process = function FApplication_process(){
+   var o = this;
+   o.processEnterFrameListener(o._eventEnterFrame);
+   if(o._activeChapter){
+      o._activeChapter.process();
    }
-   MO.FChapter_registerScene = function FChapter_registerScene(scene){
-      var o = this;
-      var code = scene.code();
-      MO.Assert.debugNotEmpty(code);
-      scene.setApplication(o._application);
-      scene.setChapter(o);
-      o._scenes.set(code, scene);
-   }
-   MO.FChapter_unregisterScene = function FChapter_unregisterScene(scene){
-      var code = scene.code();
-      this._scenes.set(code, null);
-   }
-   MO.FChapter_selectScene = function FChapter_selectScene(scene){
-      var o = this;
-      if(o._activeScene != scene){
-         var activeScene = o._activeScene;
-         if(activeScene){
-            activeScene.deactive();
-            o._activeScene = null;
-         }
-         if(scene){
-            scene.active();
-            o._activeScene = scene;
-         }
+   o.processLeaveFrameListener(o._eventLeaveFrame);
+}
+MO.FApplication_dispose = function FApplication_dispose(){
+   var o = this;
+   o._activeChapter = null;
+   o._chapters = MO.Lang.Object.dispose(o._chapters, true);
+   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
+   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MListener.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FChapter = function FChapter(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._scenes              = MO.Class.register(o, new MO.AGetter('_scenes'));
+   o._activeScene         = MO.Class.register(o, new MO.AGetter('_activeScene'));
+   o._statusSetup         = false;
+   o._statusActive        = false;
+   o._eventEnterFrame     = null;
+   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
+   o._eventLeaveFrame     = null;
+   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.construct            = MO.FChapter_construct;
+   o.registerScene        = MO.FChapter_registerScene;
+   o.unregisterScene      = MO.FChapter_unregisterScene;
+   o.selectScene          = MO.FChapter_selectScene;
+   o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
+   o.setup                = MO.FChapter_setup;
+   o.active               = MO.FChapter_active;
+   o.deactive             = MO.FChapter_deactive;
+   o.processEvent         = MO.FChapter_processEvent;
+   o.process              = MO.FChapter_process;
+   o.dispose              = MO.FChapter_dispose;
+   return o;
+}
+MO.FChapter_construct = function FChapter_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._scenes = new MO.TDictionary();
+   o._eventEnterFrame = new MO.SEvent();
+   o._eventLeaveFrame = new MO.SEvent();
+}
+MO.FChapter_registerScene = function FChapter_registerScene(scene){
+   var o = this;
+   var code = scene.code();
+   MO.Assert.debugNotEmpty(code);
+   scene.setApplication(o._application);
+   scene.setChapter(o);
+   o._scenes.set(code, scene);
+}
+MO.FChapter_unregisterScene = function FChapter_unregisterScene(scene){
+   var code = scene.code();
+   this._scenes.set(code, null);
+}
+MO.FChapter_selectScene = function FChapter_selectScene(scene){
+   var o = this;
+   if(o._activeScene != scene){
+      var activeScene = o._activeScene;
+      if(activeScene){
+         activeScene.deactive();
+         o._activeScene = null;
       }
-   }
-   MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
-      var o = this;
-      var scene = o._scenes.get(code);
-      o.selectScene(scene);
-      return scene;
-   }
-   MO.FChapter_setup = function FChapter_setup(){
-      var o = this;
-   }
-   MO.FChapter_active = function FChapter_active(){
-      var o = this;
-      if(!o._statusSetup){
-         o.setup();
-         o._statusSetup = true;
-      }
-      o._statusActive = true;
-   }
-   MO.FChapter_deactive = function FChapter_deactive(){
-      var o = this;
-      o._statusActive = false;
-   }
-   MO.FChapter_processEvent = function FChapter_processEvent(event){
-      var o = this;
-      o.dispatcherEvent(event);
-      var scene = o._activeScene;
       if(scene){
-         scene.processEvent(event);
+         scene.active();
+         o._activeScene = scene;
       }
-   }
-   MO.FChapter_process = function FChapter_process(){
-      var o = this;
-      o.processEnterFrameListener(o._eventEnterFrame);
-      if(o._activeScene){
-         o._activeScene.process();
-      }
-      o.processLeaveFrameListener(o._eventLeaveFrame);
-   }
-   MO.FChapter_dispose = function FChapter_dispose(){
-      var o = this;
-      o._scenes = RObject.dispose(o._scenes);
-      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
-      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
-      o.__base.MListener.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
    }
 }
-with(MO){
-   MO.FScene = function FScene(o){
-      o = RClass.inherits(this, o, FObject, MListener, MGraphicObject, MEventDispatcher);
-      o._code                = RClass.register(o, new AGetSet('_code'));
-      o._application         = RClass.register(o, new AGetSet('_application'));
-      o._chapter             = RClass.register(o, new AGetSet('_chapter'));
-      o._activeStage         = RClass.register(o, new AGetSet('_activeStage'));
-      o._statusSetup         = false;
-      o._statusActive        = false;
-      o._eventEnterFrame     = null;
-      o._enterFrameListeners = RClass.register(o, new AListener('_enterFrameListeners', EEvent.EnterFrame));
-      o._eventLeaveFrame     = null;
-      o._leaveFrameListeners = RClass.register(o, new AListener('_leaveFrameListeners', EEvent.LeaveFrame));
-      o.onProcessBefore      = MO.Method.empty;
-      o.onProcess            = FScene_onProcess;
-      o.onProcessAfter       = MO.Method.empty;
-      o.construct            = FScene_construct;
-      o.setup                = FScene_setup;
-      o.active               = FScene_active;
-      o.deactive             = FScene_deactive;
-      o.processEvent         = FScene_processEvent;
-      o.process              = FScene_process;
-      o.dispose              = FScene_dispose;
-      return o;
+MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
+   var o = this;
+   var scene = o._scenes.get(code);
+   o.selectScene(scene);
+   return scene;
+}
+MO.FChapter_setup = function FChapter_setup(){
+   var o = this;
+}
+MO.FChapter_active = function FChapter_active(){
+   var o = this;
+   if(!o._statusSetup){
+      o.setup();
+      o._statusSetup = true;
    }
-   MO.FScene_onProcess = function FScene_onProcess(){
-      var o = this;
+   o._statusActive = true;
+}
+MO.FChapter_deactive = function FChapter_deactive(){
+   var o = this;
+   o._statusActive = false;
+}
+MO.FChapter_processEvent = function FChapter_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+   var scene = o._activeScene;
+   if(scene){
+      scene.processEvent(event);
+   }
+}
+MO.FChapter_process = function FChapter_process(){
+   var o = this;
+   o.processEnterFrameListener(o._eventEnterFrame);
+   if(o._activeScene){
+      o._activeScene.process();
+   }
+   o.processLeaveFrameListener(o._eventLeaveFrame);
+}
+MO.FChapter_dispose = function FChapter_dispose(){
+   var o = this;
+   o._scenes = MO.Lang.Object.dispose(o._scenes);
+   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
+   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MListener.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiApplication = function FGuiApplication(o){
+   o = MO.Class.inherits(this, o, MO.FApplication);
+   o._canvas   = MO.Class.register(o, new MO.AGetter('_canvas'));
+   o._manager  = MO.Class.register(o, new MO.AGetter('_manager'));
+   o._desktop  = MO.Class.register(o, new MO.AGetter('_desktop'));
+   o.construct = MO.FGuiApplication_construct;
+   o.setup     = MO.FGuiApplication_setup;
+   o.process   = MO.FGuiApplication_process;
+   o.dispose   = MO.FGuiApplication_dispose;
+   return o;
+}
+MO.FGuiApplication_construct = function FGuiApplication_construct(){
+   var o = this;
+   o.__base.FApplication.construct.call(o);
+   o._chapters = new MO.TDictionary();
+   o._eventEnterFrame = new MO.SEvent();
+   o._eventLeaveFrame = new MO.SEvent();
+}
+MO.FGuiApplication_setup = function FGuiApplication_setup(hPanel){
+   var o = this;
+   var desktop = o._desktop = MO.Class.create(MO.FGuiDesktop);
+   desktop.build(hPanel);
+   var canvas = o._canvas = desktop.canvas();
+   var manager = o._manager = MO.Class.create(MO.FGuiCanvasManager);
+   manager.setDesktop(desktop);
+   manager.setCanvas(canvas);
+}
+MO.FGuiApplication_process = function FGuiApplication_process(){
+   var o = this;
+   o.__base.FApplication.process.call(o);
+   o._manager.process();
+}
+MO.FGuiApplication_dispose = function FGuiApplication_dispose(){
+   var o = this;
+   o.__base.FApplication.dispose.call(o);
+}
+MO.FGuiDesktop = function FGuiDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas                = MO.Class.register(o, new MO.AGetter('_canvas'));
+   o.onOperationResize      = MO.FGuiDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FGuiDesktop_onOperationOrientation;
+   o.construct              = MO.FGuiDesktop_construct;
+   o.build                  = MO.FGuiDesktop_build;
+   o.resize                 = MO.FGuiDesktop_resize;
+   o.dispose                = MO.FGuiDesktop_dispose;
+   return o;
+}
+MO.FGuiDesktop_onOperationResize = function FGuiDesktop_onOperationResize(event){
+   var o = this;
+   o.__base.FDesktop.onOperationResize.call(o, event);
+   o.resize();
+}
+MO.FGuiDesktop_onOperationOrientation = function FGuiDesktop_onOperationOrientation(){
+   var o = this;
+   o.__base.FDesktop.onOperationOrientation.call(o, event);
+   o.resize();
+}
+MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+   o._size.set(1920, 1080);
+   o._logicSize.set(1920, 1080);
+   o._screenSize.set(0, 0);
+}
+MO.FGuiDesktop_build = function FGuiDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   var canvas = o._canvas = MO.RClass.create(MO.FE2dCanvas);
+   canvas.setDesktop(o);
+   canvas.build(hPanel);
+   canvas.setPanel(hPanel);
+   canvas._hCanvas.style.position = 'absolute';
+   o.canvasRegister(canvas);
+   MO.RE3dEngine.setup();
+}
+MO.FGuiDesktop_resize = function FGuiDesktop_resize(targetWidth, targetHeight){
+   var o = this;
+   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
+   if(o._screenSize.equalsData(width, height)){
+      return;
+   }
+   o._screenSize.set(width, height);
+   var pixelRatio = MO.Browser.capability().pixelRatio;
+   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
+   width *= pixelRatio;
+   height *= pixelRatio;
+   var widthRate = 1;
+   var heightRate = 1;
+   var logicSize = o._logicSize;
+   if(MO.Browser.isOrientationHorizontal()){
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
+   }else{
+      widthRate = width / logicSize.height;
+      heightRate = height / logicSize.width;
+      o._calculateSize.set(logicSize.height, logicSize.width);
+   }
+   var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
+   o._logicRate.set(widthRate, heightRate);
+   if(widthRate > heightRate){
+      o._calculateRate.set(widthRate / sizeRate, 1);
+   }else if(widthRate < heightRate){
+      o._calculateRate.set(1, heightRate / sizeRate);
+   }else{
+      o._calculateRate.set(1, 1);
+   }
+   o._canvas3d.resize(width, height);
+   var canvas = o._canvas;
+   canvas.resize(width, height);
+   canvas.context().setScale(sizeRate, sizeRate);
+}
+MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
+   var o = this;
+   o._canvas3d = MO.RObject.dispose(o._canvas3d);
+   o._canvas = MO.RObject.dispose(o._canvas);
+   o.__base.FDesktop.dispose.call(o);
+}
+MO.FScene = function FScene(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
+   o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._statusSetup         = false;
+   o._statusActive        = false;
+   o._eventEnterFrame     = null;
+   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
+   o._eventLeaveFrame     = null;
+   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcessBefore      = MO.Method.empty;
+   o.onProcess            = MO.FScene_onProcess;
+   o.onProcessAfter       = MO.Method.empty;
+   o.construct            = MO.FScene_construct;
+   o.setup                = MO.FScene_setup;
+   o.active               = MO.FScene_active;
+   o.deactive             = MO.FScene_deactive;
+   o.processEvent         = MO.FScene_processEvent;
+   o.process              = MO.FScene_process;
+   o.dispose              = MO.FScene_dispose;
+   return o;
+}
+MO.FScene_onProcess = function FScene_onProcess(){
+   var o = this;
+   o.processEnterFrameListener(o._eventEnterFrame);
+   if(o._activeStage){
+      o._activeStage.process();
+   }
+   o.processLeaveFrameListener(o._eventLeaveFrame);
+}
+MO.FScene_construct = function FScene_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._eventEnterFrame = new MO.SEvent();
+   o._eventLeaveFrame = new MO.SEvent();
+}
+MO.FScene_setup = function FScene_setup(){
+   var o = this;
+}
+MO.FScene_active = function FScene_active(){
+   var o = this;
+   if(!o._statusSetup){
+      o.setup();
+      o._statusSetup = true;
+   }
+   o._statusActive = true;
+}
+MO.FScene_deactive = function FScene_deactive(){
+   var o = this;
+   o._statusActive = false;
+}
+MO.FScene_process = function FScene_process(){
+   var o = this;
+   if(o._statusActive){
       o.processEnterFrameListener(o._eventEnterFrame);
+      o.onProcessBefore();
+      o.onProcess();
       if(o._activeStage){
          o._activeStage.process();
       }
+      o.onProcessAfter();
       o.processLeaveFrameListener(o._eventLeaveFrame);
    }
-   MO.FScene_construct = function FScene_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._eventEnterFrame = new SEvent();
-      o._eventLeaveFrame = new SEvent();
+}
+MO.FScene_processEvent = function FScene_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+}
+MO.FScene_dispose = function FScene_dispose(){
+   var o = this;
+   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
+   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MListener.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.RApplication = function RApplication(){
+   var o = this;
+   o._workspaces = new MO.TDictionary();
+   return o;
+}
+MO.RApplication.prototype.initialize = function RApplication_initialize(){
+   var o = this;
+   MO.RBrowser.construct();
+   MO.RWindow.connect(window);
+   MO.RKeyboard.construct();
+}
+MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
+   var o = this;
+   var name = MO.Class.name(clazz);
+   var workspaces = o._workspaces;
+   var workspace = workspaces.get(name);
+   if(workspace == null){
+      workspace = MO.Class.create(clazz);
+      workspaces.set(name, workspace);
    }
-   MO.FScene_setup = function FScene_setup(){
-      var o = this;
-   }
-   MO.FScene_active = function FScene_active(){
-      var o = this;
-      if(!o._statusSetup){
-         o.setup();
-         o._statusSetup = true;
-      }
-      o._statusActive = true;
-   }
-   MO.FScene_deactive = function FScene_deactive(){
-      var o = this;
-      o._statusActive = false;
-   }
-   MO.FScene_process = function FScene_process(){
-      var o = this;
-      if(o._statusActive){
-         o.processEnterFrameListener(o._eventEnterFrame);
-         o.onProcessBefore();
-         o.onProcess();
-         if(o._activeStage){
-            o._activeStage.process();
-         }
-         o.onProcessAfter();
-         o.processLeaveFrameListener(o._eventLeaveFrame);
-      }
-   }
-   MO.FScene_processEvent = function FScene_processEvent(event){
-      var o = this;
-      o.dispatcherEvent(event);
-   }
-   MO.FScene_dispose = function FScene_dispose(){
-      var o = this;
-      o._eventEnterFrame = RObject.dispose(o._eventEnterFrame);
-      o._eventLeaveFrame = RObject.dispose(o._eventLeaveFrame);
-      o.__base.MListener.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
+   return workspace;
+}
+MO.RApplication.prototype.release = function RApplication_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+     MO.Logger.error(e);
    }
 }
-with(MO){
-   MO.RApplication = function RApplication(){
-      var o = this;
-      o._workspaces  = new TDictionary();
-      return o;
-   }
-   MO.RApplication.prototype.initialize = function RApplication_initialize(){
-      var o = this;
-      RBrowser.construct();
-      RWindow.connect(window);
-      RKeyboard.construct();
-   }
-   MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
-      var o = this;
-      var name = RClass.name(clazz);
-      var workspaces = o._workspaces;
-      var workspace = workspaces.get(name);
-      if(workspace == null){
-         workspace = RClass.create(clazz);
-         workspaces.set(name, workspace);
-      }
-      return workspace;
-   }
-   MO.RApplication.prototype.release = function RApplication_release(){
-      try{
-         CollectGarbage();
-      }catch(e){
-        MO.Logger.error(e);
-      }
-   }
-   MO.RApplication = new RApplication();
-}
+MO.RApplication = new MO.RApplication();
 MO.RDesktop = function RDesktop(){
    var o = this;
    o._application   = null;

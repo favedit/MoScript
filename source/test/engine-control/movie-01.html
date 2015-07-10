@@ -8,15 +8,8 @@
 </HEAD>
 
 <SCRIPT>
-var guiManager = null;
-var canvas = null;
-var stage = null;
-var layer = null;
-var bitmaps = null;
-var tick = 0;
-//----------------------------------------------------------
-function onEnterFrame(){
-   guiManager.process();
+function onEnterFrame(event){
+   debugger
 }
 //----------------------------------------------------------
 function _load(){
@@ -27,11 +20,14 @@ function _load(){
    // 创建应用
    var application = MO.Desktop.initialize(MO.FGuiApplication);
    application.setup(document.body);
+   application.addEnterFrameListener(null, onEnterFrame);
    // 创建表单
    var frameConsole = MO.Console.find(MO.FGuiFrameConsole);
    var frame = frameConsole.get(application.canvas(), 'eai.country.LogoBar');
    frame.setLocation(100, 50);
-   application.manager().register(frame);
+   // 注册控件
+   var guiManager = application.manager();
+   guiManager.register(frame);
 }
 </SCRIPT>
 

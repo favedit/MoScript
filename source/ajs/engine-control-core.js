@@ -38,7 +38,7 @@ MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(co
 MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
    var o = this;
    o.__base.FGuiManager.process.call(o);
-   var graphic = o._canvas.context();
+   var graphic = o._canvas.graphicContext();
    var desktop = o._desktop;
    var calculateSize = desktop.calculateSize();
    var calculateRate = desktop.calculateRate()
@@ -68,7 +68,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          }
       }
    }
-   var graphic = o._canvas.context();
+   var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       graphic.clear();
       var readyCount = readyControls.count();
@@ -105,9 +105,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
 }
 MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
    var o = this;
-   o._readyControls = RObject.dispose(o._readyControls);
-   o._dirtyControls = RObject.dispose(o._dirtyControls);
-   o._paintEvent = RObject.dispose(o._paintEvent);
+   o._readyControls = MO.Lang.Object.dispose(o._readyControls);
+   o._dirtyControls = MO.Lang.Object.dispose(o._dirtyControls);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    o.__base.FGuiManager.dispose.call(o);
 }
 MO.FGuiChangeTransform = function FGuiChangeTransform(o){
