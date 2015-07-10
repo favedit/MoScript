@@ -15,26 +15,29 @@ var ticker = null;
 //----------------------------------------------------------
 function onEnterFrame(){
    if(ticker.process()){
-      var color = new MO.SColor4();
-      color.set(Math.random(), Math.random(), Math.random(), 1);
-      for(var x = 0; x < 8; x++){
+      var loop = 4;
+      for(var x = 0; x < loop; x++){
+         var rate = x / loop * 2;
          var count = 4;
-         particle.color().set(Math.random(), Math.random(), Math.random(), 1);
          for(var i = 0; i < count; i++){
-            var itemCount = parseInt(Math.random() * 200);
+            particle.color().set(Math.random() * rate, Math.random() * rate, Math.random() * rate, 1);
+            var itemCount = parseInt(Math.random() * 16);
+            //var itemCount = 64;
             var attenuation = Math.random();
             //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-            particle.position().set((x - 5) * 2, 0, 0);
+            //particle.position().set((x - 5) * 2, 0, 0);
+            particle.position().set(0, 2, 0);
             particle.setItemCount(itemCount);
-            particle.setDelay(10 * i + x * 150);
-            //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-            particle.setSpeed(2 + 0.4 * i);
+            particle.setDelay(10 * i + x * 200);
+            //particle.setSpeed(Math.random() * i);
+            //particle.setSpeed(2 + 0.4 * i);
             //particle.setSpeed(speed);
             //particle.setAngle(Math.PI * 2 / 90 * i);
             //particle.setAcceleration(-Math.random() );
-            particle.setAcceleration(0);
+            particle.setSpeed(4);
+            particle.acceleration().set(0, -3, 0);
             //particle.setAttenuation(attenuation);
-            particle.setAttenuation(1.2);
+            particle.setAttenuation(0.6);
             particle.start();
          }
       }
@@ -75,7 +78,7 @@ function _load(){
    var particleData = context.createObject(MO.FE3dParticleData);
    particleData.loadUrl('../../ars/eai/particle/6.png');
    particle.setData(particleData);
-   ticker = new MO.TTicker(5000);
+   ticker = new MO.TTicker(10000);
    stage.spriteLayer().pushRenderable(particle);
 }
 </SCRIPT>

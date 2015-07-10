@@ -231,7 +231,6 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
-            o._mapAutio.play();
             o._statusStart = true;
          }
       }
@@ -771,7 +770,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();
-            o._mapAutio.play();
             o._playing = true;
             o._statusStart = true;
          }
@@ -961,7 +959,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._titleBar             = null;
    o._flagSprite           = null;
    o._groundAutio          = null;
-   o._mapAutio             = null;
    o.onLoadCountry         = MO.FEaiChartScene_onLoadCountry;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
@@ -1081,7 +1078,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
-   o._mapAutio = audioConsole.load('{eai.resource}/map-enter.mp3');
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;

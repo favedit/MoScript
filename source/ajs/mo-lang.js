@@ -8323,11 +8323,14 @@ MO.SValue3 = function SValue3(x, y, z){
    o.y           = MO.Runtime.nvl(y, 0);
    o.z           = MO.Runtime.nvl(z, 0);
    o.isEmpty     = MO.SValue3_isEmpty;
+   o.equals      = MO.SValue3_equals;
+   o.equalsData  = MO.SValue3_equalsData;
    o.assign      = MO.SValue3_assign;
    o.setMin      = MO.SValue3_setMin;
    o.setMax      = MO.SValue3_setMax;
    o.set         = MO.SValue3_set;
    o.setAll      = MO.SValue3_setAll;
+   o.length      = MO.SValue3_absolute;
    o.absolute    = MO.SValue3_absolute;
    o.normalize   = MO.SValue3_normalize;
    o.negative    = MO.SValue3_negative;
@@ -8339,6 +8342,12 @@ MO.SValue3 = function SValue3(x, y, z){
 }
 MO.SValue3_isEmpty = function SValue3_isEmpty(p){
    return (this.x == 0) && (this.y == 0) && (this.z == 0);
+}
+MO.SValue3_equals = function SValue3_equals(value){
+   return (this.x == value.x) && (this.y == value.y) && (this.z == value.z);
+}
+MO.SValue3_equalsData = function SValue3_equalsData(x, y, z){
+   return (this.x == x) && (this.y == y) && (this.z == z);
 }
 MO.SValue3_assign = function SValue3_assign(value){
    this.x = value.x;

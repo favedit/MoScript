@@ -9,9 +9,11 @@ MO.FE3dParticleItem = function FE3dParticleItem(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
+   o._particle      = MO.Class.register(o, new MO.AGetSet('_particle'));
    o._visible       = MO.Class.register(o, new MO.AGetSet('_visible'), false);
    o._delay         = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
-   o._interval      = MO.Class.register(o, new MO.AGetter('_interval'), 0);
+   o._interval      = MO.Class.register(o, new MO.AGetter('_interval'), 1);
+   // @attribute
    o._position      = MO.Class.register(o, new MO.AGetter('_position'));
    o._rotation      = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._scale         = MO.Class.register(o, new MO.AGetter('_scale'));
@@ -99,7 +101,7 @@ MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
    }
    // 检查间隔
    var span = tick - o._lastTick;
-   if(span < o._interval){
+   if(span <= o._interval){
       return false;
    }
    // 检查间隔
