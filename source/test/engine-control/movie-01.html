@@ -1,4 +1,4 @@
-<HTML>
+﻿<HTML>
 <HEAD>
 <TITLE>Stage3d Example</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
@@ -8,8 +8,10 @@
 </HEAD>
 
 <SCRIPT>
+var sprite = null;
+
 function onEnterFrame(event){
-   debugger
+    sprite.dirty();
 }
 //----------------------------------------------------------
 function _load(){
@@ -21,13 +23,17 @@ function _load(){
    var application = MO.Desktop.initialize(MO.FGuiApplication);
    application.setup(document.body);
    application.addEnterFrameListener(null, onEnterFrame);
-   // 创建表单
-   var frameConsole = MO.Console.find(MO.FGuiFrameConsole);
-   var frame = frameConsole.get(application.canvas(), 'eai.country.LogoBar');
-   frame.setLocation(100, 50);
-   // 注册控件
+
    var guiManager = application.manager();
-   guiManager.register(frame);
+
+   sprite = MO.RClass.create(MO.FGuiSpriteMultimage);
+   sprite.setup('', 10, '.png');
+   sprite.setLocation(100, 100);
+   sprite.setSize(50, 50);
+   sprite.setFrameTime(100);
+   sprite.build();
+   guiManager.register(sprite);
+
 }
 </SCRIPT>
 
