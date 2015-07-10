@@ -26,7 +26,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._flagSprite           = null;
    o._groundAutio          = null;
-   o._mapAutio             = null;
    //..........................................................
    // @event
    o.onLoadCountry         = MO.FEaiChartScene_onLoadCountry;
@@ -233,7 +232,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.setVolume(0.2);
    audio.play();
    // 加载地图音乐
-   o._mapAutio = audioConsole.load('{eai.resource}/map-enter.mp3');
    //..........................................................
    // 加载标志
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);

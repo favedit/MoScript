@@ -200,7 +200,6 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
-            o._mapAutio.play();
             o._statusStart = true;
          }
       }

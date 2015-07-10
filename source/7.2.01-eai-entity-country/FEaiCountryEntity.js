@@ -44,6 +44,11 @@ with(MO){
       o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
       o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
       o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
+
+      o._mapEnterSEArray         = null;
+      o._mapDownSEArray          = null;
+      o._lastEnterSEIndex        = -1;
+      o._lastDownSEIndex         = -1;
       //..........................................................
       // @method
       o.setup                    = FEaiCountryEntity_setup;
@@ -83,6 +88,18 @@ with(MO){
          provinceArray[i] = provinceEntities.at(i);
       }
       provinceArray.sort(o.provinceShowOrderSort);
+
+      var audioConsole = MO.Console.find(MO.FAudioConsole);
+      var peCount = o._provinceEntities.count();
+      var enterSEArray = o._mapEnterSEArray = new Array(peCount);
+      var downSEArray = o._mapDownSEArray = new Array(peCount);
+      for (var i = 0; i < peCount; i++) {
+         enterSEArray[i] = audioConsole.create('{eai.resource}/map_entry/enter.wav');
+      }
+      for (var i = 0; i < peCount; i++) {
+         downSEArray[i] = audioConsole.create('{eai.resource}/map_entry/down.wav');
+      }
+
       //o.setCameraDirection(new SVector3(0.02, -0.9, 0.5));
       //o.setCameraFrom(new SPoint3());
       //o.setCameraTo(new SPoint3());
@@ -189,6 +206,12 @@ with(MO){
          var fallPercentage = 0;
          if (risePercentage > 1) {
             risePercentage = 1;
+
+            if (i == o._lastDownSEIndex + 1) {
+               o._mapDownSEArray[i].play(0);
+               o._lastDownSEIndex++;
+            }
+
             fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
             if (fallPercentage > 1) {
                fallPercentage = 1;
@@ -199,6 +222,13 @@ with(MO){
          brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
          brm.updateForce();
       }
+
+      idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
+      if (o._lastEnterSEIndex != idxCap) {
+         o._mapEnterSEArray[idxCap].play(0);
+         o._lastEnterSEIndex = idxCap;
+      }
+      
    }
    
    //==========================================================

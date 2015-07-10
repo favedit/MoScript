@@ -95,7 +95,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();
-            o._mapAutio.play();
             o._playing = true;
             o._statusStart = true;
          }
