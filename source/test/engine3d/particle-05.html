@@ -15,18 +15,32 @@ var ticker = null;
 //----------------------------------------------------------
 function onEnterFrame(){
    if(ticker.process()){
-      var count = 20;
-      for(var i = 0; i < count; i++){
-         particle.setItemCount(10);
-         particle.setDelay(100 * i);
-         particle.setSpeed(1 + 0.2 * i);
-         particle.setAngle(Math.PI * 2 / 90 * i);
-         particle.setAcceleration(0.1 * i);
-         particle.setAttenuation(0.8);
-         particle.start();
+      var color = new MO.SColor4();
+      color.set(Math.random(), Math.random(), Math.random(), 1);
+      for(var x = 0; x < 8; x++){
+         var count = 4;
+         particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+         for(var i = 0; i < count; i++){
+            var itemCount = parseInt(Math.random() * 200);
+            var attenuation = Math.random();
+            //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+            particle.position().set((x - 5) * 2, 0, 0);
+            particle.setItemCount(itemCount);
+            particle.setDelay(10 * i + x * 150);
+            //particle.setSpeed(Math.random() * 6 + 0.2 * i);
+            particle.setSpeed(2 + 0.4 * i);
+            //particle.setSpeed(speed);
+            //particle.setAngle(Math.PI * 2 / 90 * i);
+            //particle.setAcceleration(-Math.random() );
+            particle.setAcceleration(0);
+            //particle.setAttenuation(attenuation);
+            particle.setAttenuation(1.2);
+            particle.start();
+         }
       }
    }
    particle.process();
+   id_info.innerHTML = 'Particle count: ' + particle.items().count();
 }
 //----------------------------------------------------------
 function _load(){
@@ -59,7 +73,7 @@ function _load(){
    particle.setup();
    // 设置数据
    var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('../../ars/eai/particle/4.png');
+   particleData.loadUrl('../../ars/eai/particle/6.png');
    particle.setData(particleData);
    ticker = new MO.TTicker(5000);
    stage.spriteLayer().pushRenderable(particle);
@@ -67,6 +81,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
+<DIV id='id_info'>
 <CANVAS id='id_canvas' width='360' height='60' style='width:360px; height:60px'>
 </BODY>
 

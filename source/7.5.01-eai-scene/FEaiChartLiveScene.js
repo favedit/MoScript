@@ -70,6 +70,37 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
       var pop = o._livePop;
       pop.setData(entity);
       //pop.show();
+      // 显示粒子
+      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+      var cityEntity = o._mapEntity.findCityByCard(entity.card());
+      if(cityEntity){
+         var provinceEntity = cityEntity.provinceEntity();
+         var cityResource = cityEntity.data();
+         var location = cityResource.location();
+         var particle = o._particle;
+         var count = 4;
+         //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+         particle.color().set(1, 1, 0, 1);
+         for(var i = 0; i < count; i++){
+            var itemCount = parseInt(Math.random() * 100);
+            var attenuation = Math.random();
+            //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+            //particle.position().set((x - 5) * 2, 0, 0);
+            particle.setItemCount(itemCount);
+            particle.position().assign(location);
+            particle.position().z = provinceEntity.currentZ();
+            particle.setDelay(10 * i);
+            //particle.setSpeed(Math.random() * 6 + 0.2 * i);
+            particle.setSpeed(4 + 0.4 * i);
+            //particle.setSpeed(speed);
+            //particle.setAngle(Math.PI * 2 / 90 * i);
+            //particle.setAcceleration(-Math.random() );
+            particle.setAcceleration(0);
+            //particle.setAttenuation(attenuation);
+            particle.setAttenuation(0.8);
+            particle.start();
+         }
+      }
    }
 }
 
@@ -106,7 +137,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -237,6 +268,15 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //..........................................................
    // 加载国家数据
    o.loadCountry();
+   //..........................................................
+   // 创建粒子
+   var context = o._graphicContext;
+   var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
+   var particleData = context.createObject(MO.FE3dParticleData);
+   particleData.loadUrl('/script/ars/eai/particle/6.png');
+   particle.setData(particleData);
+   o.fixMatrix(particle.matrix());
+   o._activeStage.spriteLayer().pushRenderable(particle);
 }
 
 //==========================================================

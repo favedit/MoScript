@@ -9,7 +9,10 @@ MO.FE3dParticle = function FE3dParticle(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
    // @attribute
-   o._items                = null;
+   o._position             = MO.Class.register(o, new MO.AGetter('_position'));
+   o._rotation             = MO.Class.register(o, new MO.AGetter('_rotation'));
+   o._scale                = MO.Class.register(o, new MO.AGetter('_scale'));
+   o._items                = MO.Class.register(o, new MO.AGetter('_items'));
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
@@ -46,6 +49,9 @@ MO.FE3dParticle_construct = function FE3dParticle_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    // 设置属性
+   o._position = new MO.SPoint3();
+   o._rotation = new MO.SVector3();
+   o._scale = new MO.SVector3();
    o._items = new MO.TLooper();
 }
 
@@ -285,6 +291,9 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
 MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
    var o = this;
    // 释放属性
+   o._position = MO.Lang.Object.dispose(o._position);
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o._scale = MO.Lang.Object.dispose(o._scale);
    o._items = MO.Lang.Object.dispose(o._items);
    // 父处理
    o.__base.FE3dRenderable.dispose.call(o);

@@ -8327,6 +8327,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setMin      = MO.SValue3_setMin;
    o.setMax      = MO.SValue3_setMax;
    o.set         = MO.SValue3_set;
+   o.setAll      = MO.SValue3_setAll;
    o.absolute    = MO.SValue3_absolute;
    o.normalize   = MO.SValue3_normalize;
    o.negative    = MO.SValue3_negative;
@@ -8358,6 +8359,11 @@ MO.SValue3_set = function SValue3_set(x, y, z){
    this.x = x;
    this.y = y;
    this.z = z;
+}
+MO.SValue3_setAll = function SValue3_set(value){
+   this.x = value;
+   this.y = value;
+   this.z = value;
 }
 MO.SValue3_normalize = function SValue3_normalize(){
    var value = this.absolute();

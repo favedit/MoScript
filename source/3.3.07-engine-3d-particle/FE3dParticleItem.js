@@ -91,7 +91,6 @@ MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
       if(tick - o._startTick < o._delay){
          return;
       }
-      o._visible = true;
    }
    // 检查开始
    if(o._lastTick == 0){
@@ -120,6 +119,7 @@ MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
       matrix.sy = o._scale.y;
       matrix.sz = o._scale.z;
       matrix.updateForce();
+      o._visible = true;
       o._statusDirty = false;
    }
 }

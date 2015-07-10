@@ -12850,6 +12850,7 @@ with(MO){
 MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
    o = MO.Class.inherits(this, o, MO.FE3dParticle);
    o._itemCount            = MO.Class.register(o, new MO.AGetSet('_itemCount'), 0);
+   o._color                = MO.Class.register(o, new MO.AGetter('_color'), 0);
    o._delay                = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
    o._speed                = MO.Class.register(o, new MO.AGetSet('_speed'), 1);
    o._angle                = MO.Class.register(o, new MO.AGetSet('_angle'), 0);
@@ -12867,6 +12868,7 @@ MO.FE3dFireworksParticle = function FE3dFireworksParticle(o){
 MO.FE3dFireworksParticle_construct = function FE3dFireworksParticle_construct(){
    var o = this;
    o.__base.FE3dParticle.construct.call(o);
+   o._color = new MO.SColor4();
 }
 MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
    var o = this;
@@ -12874,18 +12876,21 @@ MO.FE3dFireworksParticle_setup = function FE3dFireworksParticle_setup(){
 }
 MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
    var o = this;
+   var position = o._position
    var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
    var count = o._itemCount;
    var angleSingle = Math.PI * 2 / count;
    for(var i = 0; i < count; i++){
       var angle = o._angle + angleSingle * i;
+      var scale = Math.max(Math.random(), 0.4);
       var item = particleConsole.itemAlloc(MO.FE3dFireworksParticleItem);
       item.direction().set(Math.sin(angle), Math.cos(angle), 0);
-      item.position().set(0, 0, 0);
+      item.position().assign(position);
       item.rotation().set(0, 0, -angle + Math.PI / 2);
-      item.scale().set(0.4, 0.4, 0.4);
+      item.color().assign(o._color);
+      item.scale().setAll(1);
       item.setDelay(o._delay);
-      item.setSpeed(o._speed);
+      item.setSpeed(o._speed * Math.random());
       item.setAcceleration(o._acceleration);
       item.setAttenuation(o._attenuation);
       item.start();
@@ -12894,6 +12899,7 @@ MO.FE3dFireworksParticle_start = function FE3dFireworksParticle_start(){
 }
 MO.FE3dFireworksParticle_dispose = function FE3dFireworksParticle_dispose(){
    var o = this;
+   o._color = MO.Lang.Object.dispose(o._color);
    o.__base.FE3dParticle.dispose.call(o);
 }
 MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
@@ -12902,6 +12908,7 @@ MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
    o._speed        = MO.Class.register(o, new MO.AGetSet('_speed'));
    o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
    o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
+   o._gravity      = MO.Class.register(o, new MO.AGetSet('_gravity'), 0.9);
    o._currentSpeed = 0;
    o.construct    = MO.FE3dFireworksParticleItem_construct;
    o.start        = MO.FE3dFireworksParticleItem_start;
@@ -12922,6 +12929,7 @@ MO.FE3dFireworksParticleItem_start = function FE3dFireworksParticleItem_start(){
 }
 MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_processFrame(second){
    var o = this;
+   var currentTick = MO.Timer.current();
    var attenuation = o._attenuation * second;
    if(attenuation > o._currentAlpha){
       o._currentAlpha = 0;
@@ -12929,12 +12937,14 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
    }else{
       o._currentAlpha -= attenuation;
    }
+   var time = (currentTick - o._startTick) / 1000;
+   var gravity = o._gravity * second * second;
    o._currentSpeed += o._acceleration * second;
    var distance = o._currentSpeed * second;
    var position = o._position;
    var direction = o._direction;
    position.x += direction.x * distance;
-   position.y += direction.y * distance;
+   position.y += direction.y * distance - gravity;
    position.z += direction.z * distance;
    o.dirty();
 }
@@ -12945,7 +12955,10 @@ MO.FE3dFireworksParticleItem_dispose = function FE3dFireworksParticleItem_dispos
 }
 MO.FE3dParticle = function FE3dParticle(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
-   o._items                = null;
+   o._position             = MO.Class.register(o, new MO.AGetter('_position'));
+   o._rotation             = MO.Class.register(o, new MO.AGetter('_rotation'));
+   o._scale                = MO.Class.register(o, new MO.AGetter('_scale'));
+   o._items                = MO.Class.register(o, new MO.AGetter('_items'));
    o._vertexPositionBuffer = null;
    o._vertexCoordBuffer    = null;
    o._vertexColorBuffer    = null;
@@ -12969,6 +12982,9 @@ MO.FE3dParticle = function FE3dParticle(o){
 MO.FE3dParticle_construct = function FE3dParticle_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   o._position = new MO.SPoint3();
+   o._rotation = new MO.SVector3();
+   o._scale = new MO.SVector3();
    o._items = new MO.TLooper();
 }
 MO.FE3dParticle_setup = function FE3dParticle_setup(){
@@ -13104,6 +13120,9 @@ MO.FE3dParticle_upload = function FE3dParticle_upload(){
 }
 MO.FE3dParticle_dispose = function FE3dParticle_dispose(){
    var o = this;
+   o._position = MO.Lang.Object.dispose(o._position);
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o._scale = MO.Lang.Object.dispose(o._scale);
    o._items = MO.Lang.Object.dispose(o._items);
    o.__base.FE3dRenderable.dispose.call(o);
 }
@@ -13229,7 +13248,6 @@ MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
       if(tick - o._startTick < o._delay){
          return;
       }
-      o._visible = true;
    }
    if(o._lastTick == 0){
       o._lastTick = tick;
@@ -13254,6 +13272,7 @@ MO.FE3dParticleItem_process = function FE3dParticleItem_process(){
       matrix.sy = o._scale.y;
       matrix.sz = o._scale.z;
       matrix.updateForce();
+      o._visible = true;
       o._statusDirty = false;
    }
 }

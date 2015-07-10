@@ -4307,6 +4307,28 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
+      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+      var cityEntity = o._mapEntity.findCityByCard(entity.card());
+      if(cityEntity){
+         var provinceEntity = cityEntity.provinceEntity();
+         var cityResource = cityEntity.data();
+         var location = cityResource.location();
+         var particle = o._particle;
+         var count = 4;
+         particle.color().set(1, 1, 0, 1);
+         for(var i = 0; i < count; i++){
+            var itemCount = parseInt(Math.random() * 100);
+            var attenuation = Math.random();
+            particle.setItemCount(itemCount);
+            particle.position().assign(location);
+            particle.position().z = provinceEntity.currentZ();
+            particle.setDelay(10 * i);
+            particle.setSpeed(4 + 0.4 * i);
+            particle.setAcceleration(0);
+            particle.setAttenuation(0.8);
+            particle.start();
+         }
+      }
    }
 }
 MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
@@ -4335,6 +4357,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -4428,6 +4451,13 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o._guiManager.register(livePop);
    o._guiManager.hide();
    o.loadCountry();
+   var context = o._graphicContext;
+   var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
+   var particleData = context.createObject(MO.FE3dParticleData);
+   particleData.loadUrl('/script/ars/eai/particle/6.png');
+   particle.setData(particleData);
+   o.fixMatrix(particle.matrix());
+   o._activeStage.spriteLayer().pushRenderable(particle);
 }
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
@@ -4671,6 +4701,7 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o._cityRangeLayer = MO.RClass.register(o, new MO.AGetter('_cityRangeLayer'));
    o._cityLayer      = MO.RClass.register(o, new MO.AGetter('_cityLayer'));
    o._dataLayer      = MO.RClass.register(o, new MO.AGetter('_dataLayer'));
+   o._spriteLayer    = MO.RClass.register(o, new MO.AGetter('_spriteLayer'));
    o._faceLayer      = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
    o.construct       = MO.FEaiChartStage_construct;
    return o;
@@ -4694,6 +4725,9 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    var layer = o._dataLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('DataLayer', layer);
+   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   layer.setOptionClearDepth(true);
+   o.registerLayer('SpriteLayer', layer);
    var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('FaceLayer', layer);

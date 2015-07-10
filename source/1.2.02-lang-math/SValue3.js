@@ -23,6 +23,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setMin      = MO.SValue3_setMin;
    o.setMax      = MO.SValue3_setMax;
    o.set         = MO.SValue3_set;
+   o.setAll      = MO.SValue3_setAll;
    // @method
    o.absolute    = MO.SValue3_absolute;
    o.normalize   = MO.SValue3_normalize;
@@ -92,6 +93,18 @@ MO.SValue3_set = function SValue3_set(x, y, z){
    this.x = x;
    this.y = y;
    this.z = z;
+}
+
+//==========================================================
+// <T>设置数据内容。</T>
+//
+// @method
+// @param value:Number 内容
+//==========================================================
+MO.SValue3_setAll = function SValue3_set(value){
+   this.x = value;
+   this.y = value;
+   this.z = value;
 }
 
 //==========================================================

@@ -13,6 +13,7 @@ MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
    o._speed        = MO.Class.register(o, new MO.AGetSet('_speed'));
    o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
    o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
+   o._gravity      = MO.Class.register(o, new MO.AGetSet('_gravity'), 0.9);
    // @attibute
    o._currentSpeed = 0;
    //..........................................................
@@ -58,8 +59,7 @@ MO.FE3dFireworksParticleItem_start = function FE3dFireworksParticleItem_start(){
 //==========================================================
 MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_processFrame(second){
    var o = this;
-   //var currentTick = MO.Timer.current();
-   //var time = (currentTick - o._startTick) / 1000;
+   var currentTick = MO.Timer.current();
    // 计算衰减
    var attenuation = o._attenuation * second;
    if(attenuation > o._currentAlpha){
@@ -69,12 +69,14 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
       o._currentAlpha -= attenuation;
    }
    // 计算速度
+   var time = (currentTick - o._startTick) / 1000;
+   var gravity = o._gravity * second * second;
    o._currentSpeed += o._acceleration * second;
    var distance = o._currentSpeed * second;
    var position = o._position;
    var direction = o._direction;
    position.x += direction.x * distance;
-   position.y += direction.y * distance;
+   position.y += direction.y * distance - gravity;
    position.z += direction.z * distance;
    // 脏处理
    o.dirty();
