@@ -536,6 +536,96 @@ MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
    o.rectangle = MO.RObject.dispose(o.rectangle);
    return o;
 }
+MO.FGuiAction = function FGuiAction(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MTimelineAction);
+   o._controls      = MO.Class.register(o, [new MO.AGetter('_controls')]);
+   o.construct      = MO.FGuiAction_construct;
+   o.push           = MO.FGuiAction_push;
+   o.startControl   = MO.FGuiAction_startControl;
+   o.start          = MO.FGuiAction_start;
+   o.processControl = MO.FGuiAction_processControl;
+   o.process        = MO.FGuiAction_process;
+   o.dispose        = MO.FGuiAction_dispose;
+   return o;
+}
+MO.FGuiAction_construct = function FGuiAction_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MTimelineAction.construct.call(o);
+   o._controls = new MO.TObjects();
+}
+MO.FGuiAction_push = function FGuiAction_push(control){
+   this._controls.push(control);
+}
+MO.FGuiAction_startControl = function FGuiAction_startControl(context, control){
+   var o = this;
+}
+MO.FGuiAction_start = function FGuiAction_start(context){
+   var o = this;
+   o.__base.MTimelineAction.start.call(o);
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      o.startControl(context, control);
+   }
+}
+MO.FGuiAction_processControl = function FGuiAction_processControl(context, control){
+   var o = this;
+}
+MO.FGuiAction_process = function FGuiAction_process(context){
+   var o = this;
+   o.__base.MTimelineAction.process.call(o);
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      o.processControl(context, control);
+   }
+}
+MO.FGuiAction_dispose = function FGuiAction_dispose(){
+   var o = this;
+   o._controls = MO.Lang.Object.dispose(o._controls);
+   o.__base.MTimelineAction.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiActionAlpha = function FGuiActionAlpha(o){
+   o = MO.Class.inherits(this, o, MO.FGuiAction);
+   o._alphaBegin    = MO.Class.register(o, [new MO.AGetSet('_alphaBegin')], 0);
+   o._alphaEnd      = MO.Class.register(o, [new MO.AGetSet('_alphaEnd')], 1);
+   o._alphaInterval = MO.Class.register(o, [new MO.AGetSet('_alphaInterval')], 0.1);
+   o._alphaCurrent  = 0;
+   o.construct      = MO.FGuiActionAlpha_construct;
+   o.startControl   = MO.FGuiActionAlpha_startControl;
+   o.processControl = MO.FGuiActionAlpha_processControl;
+   o.dispose        = MO.FGuiActionAlpha_dispose;
+   return o;
+}
+MO.FGuiActionAlpha_construct = function FGuiActionAlpha_construct(){
+   var o = this;
+   o.__base.FGuiAction.construct.call(o);
+}
+MO.FGuiActionAlpha_startControl = function FGuiActionAlpha_startControl(context, control){
+   var o = this;
+   o.__base.FGuiAction.startControl.call(o);
+   o._alphaCurrent = o._alphaBegin;
+}
+MO.FGuiActionAlpha_processControl = function FGuiActionAlpha_processControl(context, control){
+   var o = this;
+   o.__base.FGuiAction.processControl.call(o);
+   if(o._alphaInterval > 0){
+      o._alphaCurrent += o._alphaInterval;
+      if(o._alphaCurrent >= o._alphaEnd){
+         o._statusStop = true;
+         o._alphaCurrent = o._alphaEnd;
+      }
+   }
+   control.doActionAlpha(o._alphaCurrent);
+}
+MO.FGuiActionAlpha_dispose = function FGuiActionAlpha_dispose(){
+   var o = this;
+   o.__base.FGuiAction.dispose.call(o);
+}
 with(MO){
    MO.FGuiComponent = function FGuiComponent(o){
       o = RClass.inherits(this, o, FComponent, MProperty);

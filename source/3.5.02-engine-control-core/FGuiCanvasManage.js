@@ -22,6 +22,8 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    // @method
    o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
    // @method
+   o.doActionAlpha     = MO.FGuiCanvasManager_doActionAlpha;
+   // @method
    o.processResize     = MO.FGuiCanvasManager_processResize;
    o.processControl    = MO.FGuiCanvasManager_processControl;
    o.process           = MO.FGuiCanvasManager_process;
@@ -61,6 +63,18 @@ MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRect
          dirtyControls.pushUnique(control);
       }
    }
+}
+
+//==========================================================
+// <T>命令处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiCanvasManager_doActionAlpha = function FGuiCanvasManager_doActionAlpha(alpha){
+   var o = this;
+   var context = o._canvas.graphicContext();
+   context.setAlpha(alpha);
+   o.dirty();
 }
 
 //==========================================================

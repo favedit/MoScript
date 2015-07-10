@@ -17,8 +17,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._lastTick         = 0;
    o._interval         = 10;
    o._lastDateTick     = 0;
-   //o._dateInterval     = 100;
-   o._dateInterval     = 250;
+   o._dateInterval     = 120;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -42,6 +41,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    //..........................................................
    // @event
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onLoadCountry     = MO.FEaiChartHistoryScene_onLoadCountry;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -69,7 +69,53 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 //==========================================================
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
-   o.__base.FEaiChartScene.onLoadData.call(o, event);
+   // 设置历史数据
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var startDate = historyConsole.dates().first();
+   var endDate = historyConsole.dates().last();
+   o._currentDate.parseAuto(startDate.code());
+   o._startDate.parseAuto(startDate.code());
+   o._endDate.parseAuto(endDate.code());
+   //..........................................................
+   // 创建里程碑
+   var milestones = historyConsole.milestones();
+   var milestoneBars = o._milestoneBars = new MO.TObjects();
+   var count = milestones.count();
+   for(var i = count - 1; i >= 0; i--){
+      var milestone = milestones.at(count - i - 1);
+      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
+      frame.setVisible(false);
+      frame.setDockCd(MO.EGuiDock.Right)
+      frame.setTop(90 + 100 * i);
+      frame.setRight(-360);
+      var date = new MO.TDate();
+      date.parse(milestone.code());
+      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
+      var label = null;
+      var milestoneInvestmentTotal = milestone.investmentTotal();
+      if(milestoneInvestmentTotal >= 10000){
+         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
+      }else{
+         label = parseInt(milestoneInvestmentTotal) + '万';
+      }
+      frame.findComponent('total').setLabel(label);
+      o._guiManager.register(frame);
+      milestoneBars.push(frame);
+   }
+   //..........................................................
+   // 加载国家数据
+   o.loadCountry();
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_onLoadCountry = function FEaiChartHistoryScene_onLoadCountry(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onLoadCountry.call(o, event);
    var code = o._currentDate.format('YYYYMMDD')
    o.resetDate(code);
    o.selectDate(code);
@@ -244,12 +290,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var startDD = historyConsole.dates().at(0);
-   var endDD = historyConsole.dates().at(historyConsole.dates().count() - 1);
-   o._currentDate.parseAuto(startDD._code);
-   o._startDate.parseAuto(startDD._code);
-   o._endDate.parseAuto(endDD._code);
    //..........................................................
    o._citysRangeRenderable.setVisible(false);
    o._citysRenderable.setVisible(false);
@@ -299,32 +339,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    transform.setInterval(10);
    transform.setScale(0.1);
    //..........................................................
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
-   // 创建里程碑
-   var milestoneBars = o._milestoneBars = new MO.TObjects();
-   var count = milestones.count();
-   for(var i = count - 1; i >= 0; i--){
-      var milestone = milestones.at(count - i - 1);
-      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(90 + 100 * i);
-      frame.setRight(-360);
-      var date = new MO.TDate();
-      date.parse(milestone.code());
-      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      var label = null;
-      var milestoneInvestmentTotal = milestone.investmentTotal();
-      if(milestoneInvestmentTotal >= 10000){
-         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
-      }else{
-         label = parseInt(milestoneInvestmentTotal) + '万';
-      }
-      frame.findComponent('total').setLabel(label);
-      o._guiManager.register(frame);
-      milestoneBars.push(frame);
-   }
-   //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
@@ -343,7 +357,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.addDataChangedListener(o, o.onDateSelect);
    timeline.build();
    o._guiManager.register(timeline);
-   // 创建里程碑框
+   // 创建里程碑界面
    var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
@@ -355,6 +369,11 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    // 隐藏全部界面
    o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
+   //..........................................................
+   // 加载历史数据
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   historyConsole.addLoadListener(o, o.onLoadData);
+   historyConsole.load();
 }
 
 //==========================================================

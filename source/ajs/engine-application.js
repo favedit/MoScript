@@ -451,7 +451,7 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    thread.setInterval(o._interval);
    thread.addProcessListener(o, o.process);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.RTimer.setup();
+   MO.Timer.setup();
    var application = MO.Application = o._application = MO.Class.create(clazz);
    return application;
 }

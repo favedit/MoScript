@@ -29,7 +29,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._mapAutio             = null;
    //..........................................................
    // @event
-   o.onLoadData            = MO.FEaiChartScene_onLoadData;
+   o.onLoadCountry         = MO.FEaiChartScene_onLoadCountry;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    //..........................................................
@@ -40,6 +40,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.setup                 = MO.FEaiChartScene_setup;
    // @method
    o.active                = MO.FEaiChartScene_active;
+   o.loadCountry           = MO.FEaiChartScene_loadCountry;
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
    o.deactive              = MO.FEaiChartScene_deactive;
@@ -54,7 +55,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
+MO.FEaiChartScene_onLoadCountry = function FEaiChartScene_onLoadCountry(event){
    var o = this;
    var countryData = event.sender;
    var context = o.graphicContext();
@@ -238,11 +239,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
    //template = templateConsole.allocByCode(o, 'eai.flag.ezubao');
    //template.addLoadListener(o, o.onLoadTemplate);
-   //..........................................................
-   // 加载数据
-   var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
-   country.addLoadListener(o, o.onLoadData);
-   country.load();
 }
 
 //==========================================================
@@ -256,13 +252,17 @@ MO.FEaiChartScene_active = function FEaiChartScene_active(){
 }
 
 //==========================================================
-// <T>激活处理。</T>
+// <T>加载国家数据处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiChartScene_active = function FEaiChartScene_active(){
+MO.FEaiChartScene_loadCountry = function FEaiChartScene_loadCountry(){
    var o = this;
-   o.__base.FEaiScene.active.call(o);
+   if(!o._countryData){
+      var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
+      country.addLoadListener(o, o.onLoadCountry);
+      country.load();
+   }
 }
 
 //==========================================================
@@ -288,6 +288,16 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    o.fixMatrix(o._countryBorderDisplay.matrix());
    o.fixMatrix(o._citysRangeRenderable.matrix());
    o.fixMatrix(o._citysRenderable.matrix());
+}
+
+//==========================================================
+// <T>取消激活处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
 }
 
 //==========================================================

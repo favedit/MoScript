@@ -26,6 +26,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
    // @method
    o.setScale             = MO.FG2dCanvasContext_setScale;
+   o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    // @method
    o.store                = MO.FG2dCanvasContext_store;
@@ -110,6 +111,17 @@ MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, heigh
       o._handle.scale(width, height);
       o._scale.set(width, height);
    }
+}
+
+//==========================================================
+// <T>设置透明。</T>
+//
+// @method
+// @param alpha:Number 透明
+//==========================================================
+MO.FG2dCanvasContext_setAlpha = function FG2dCanvasContext_setAlpha(alpha){
+   var o = this;
+   this._handle.globalAlpha = alpha;
 }
 
 //==========================================================

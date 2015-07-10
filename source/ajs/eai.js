@@ -315,11 +315,24 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
    o._milestones              = MO.Class.register(o, new MO.AGetter('_milestones'));
    o._dates                   = MO.Class.register(o, new MO.AGetter('_dates'));
    o._listenersLoad           = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o.onLoad                   = MO.FEaiHistoryResourceConsole_onLoad;
    o.construct                = MO.FEaiHistoryResourceConsole_construct;
    o.unserialize              = MO.FEaiHistoryResourceConsole_unserialize;
    o.load                     = MO.FEaiHistoryResourceConsole_load;
    o.dispose                  = MO.FEaiHistoryResourceConsole_dispose;
    return o;
+}
+MO.FEaiHistoryResourceConsole_onLoad = function FEaiHistoryResourceConsole_onLoad(event){
+   var o = this;
+   var data = event.outputData();
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   o.unserialize(view);
+   view.dispose();
+   var event = new MO.SEvent();
+   o.processLoadListener(event);
+   event.dispose();
 }
 MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_construct(){
    var o = this;
@@ -337,30 +350,45 @@ MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_
    o._investmentProvinceTotal = input.readFloat();
    o._investmentCityDay = input.readFloat();
    o._investmentCityTotal = input.readFloat();
+   var provinces = o._provinces;
+   provinces.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiHistoryProvinceResource);
       province.unserialize(input);
-      o._provinces.set(province.code(), province);
+      provinces.set(province.code(), province);
    }
+   var citys = o._citys;
+   citys.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var city = MO.Class.create(MO.FEaiHistoryCityResource);
       city.unserialize(input);
-      o._citys.set(city.code(), city);
+      citys.set(city.code(), city);
    }
+   var milestones = o._milestones;
+   milestones.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var milestone = MO.Class.create(MO.FEaiHistoryMilestoneResource);
       milestone.unserialize(input);
-      o._milestones.set(milestone.code(), milestone);
+      milestones.set(milestone.code(), milestone);
    }
+   var dates = o._dates;
+   dates.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var date = MO.Class.create(MO.FEaiHistoryDateResource);
       date.unserialize(input);
-      o._dates.set(date.code(), date);
+      dates.set(date.code(), date);
    }
+}
+MO.FEaiHistoryResourceConsole_load = function FEaiHistoryResourceConsole_load(){
+   var o = this;
+   var uri = '{eai.resource}/investment.dat?date=' + MO.Lang.Date.format();
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
+   connection.addLoadListener(o, o.onLoad);
 }
 MO.FEaiHistoryResourceConsole_dispose = function FEaiHistoryResourceConsole_dispose(){
    var o = this;
@@ -552,25 +580,14 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 }
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
-   var code = input.readString();
-   if(code == "chart-live"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-   }else if(code == "chart-history"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-      o._historyConsole.unserialize(input);
-   }else{
-      throw new TError("Unserialize code failure.");
-   }
+   o._rateConsole.unserialize(input);
+   o._provinceConsole.unserialize(input);
+   o._cityConsole.unserialize(input);
+   o._cardConsole.unserialize(input);
 }
-MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(fileName){
+MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}' + fileName);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
@@ -3673,7 +3690,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._lastTick         = 0;
    o._interval         = 10;
    o._lastDateTick     = 0;
-   o._dateInterval     = 250;
+   o._dateInterval     = 120;
    o._startDate        = null;
    o._endDate          = null;
    o._currentDate      = null;
@@ -3690,6 +3707,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._milestoneBarShowTick = 0;
    o._milestoneBarShowing = false;
    o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
+   o.onLoadCountry     = MO.FEaiChartHistoryScene_onLoadCountry;
    o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
@@ -3706,7 +3724,41 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 }
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
-   o.__base.FEaiChartScene.onLoadData.call(o, event);
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var startDate = historyConsole.dates().first();
+   var endDate = historyConsole.dates().last();
+   o._currentDate.parseAuto(startDate.code());
+   o._startDate.parseAuto(startDate.code());
+   o._endDate.parseAuto(endDate.code());
+   var milestones = historyConsole.milestones();
+   var milestoneBars = o._milestoneBars = new MO.TObjects();
+   var count = milestones.count();
+   for(var i = count - 1; i >= 0; i--){
+      var milestone = milestones.at(count - i - 1);
+      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
+      frame.setVisible(false);
+      frame.setDockCd(MO.EGuiDock.Right)
+      frame.setTop(90 + 100 * i);
+      frame.setRight(-360);
+      var date = new MO.TDate();
+      date.parse(milestone.code());
+      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
+      var label = null;
+      var milestoneInvestmentTotal = milestone.investmentTotal();
+      if(milestoneInvestmentTotal >= 10000){
+         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
+      }else{
+         label = parseInt(milestoneInvestmentTotal) + '万';
+      }
+      frame.findComponent('total').setLabel(label);
+      o._guiManager.register(frame);
+      milestoneBars.push(frame);
+   }
+   o.loadCountry();
+}
+MO.FEaiChartHistoryScene_onLoadCountry = function FEaiChartHistoryScene_onLoadCountry(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onLoadCountry.call(o, event);
    var code = o._currentDate.format('YYYYMMDD')
    o.resetDate(code);
    o.selectDate(code);
@@ -3823,12 +3875,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var startDD = historyConsole.dates().at(0);
-   var endDD = historyConsole.dates().at(historyConsole.dates().count() - 1);
-   o._currentDate.parseAuto(startDD._code);
-   o._startDate.parseAuto(startDD._code);
-   o._endDate.parseAuto(endDD._code);
    o._citysRangeRenderable.setVisible(false);
    o._citysRenderable.setVisible(false);
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
@@ -3839,30 +3885,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
    transform.setInterval(10);
    transform.setScale(0.1);
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
-   var milestoneBars = o._milestoneBars = new MO.TObjects();
-   var count = milestones.count();
-   for(var i = count - 1; i >= 0; i--){
-      var milestone = milestones.at(count - i - 1);
-      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(90 + 100 * i);
-      frame.setRight(-360);
-      var date = new MO.TDate();
-      date.parse(milestone.code());
-      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      var label = null;
-      var milestoneInvestmentTotal = milestone.investmentTotal();
-      if(milestoneInvestmentTotal >= 10000){
-         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
-      }else{
-         label = parseInt(milestoneInvestmentTotal) + '万';
-      }
-      frame.findComponent('total').setLabel(label);
-      o._guiManager.register(frame);
-      milestoneBars.push(frame);
-   }
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.linkGraphicContext(o);
@@ -3889,6 +3911,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._guiManager.register(milestoneFrame);
    o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   historyConsole.addLoadListener(o, o.onLoadData);
+   historyConsole.load();
 }
 MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
    var o = this;
@@ -4310,10 +4335,15 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.01);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
       var currentTick = MO.Timer.current();
@@ -4397,6 +4427,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    livePop.build();
    o._guiManager.register(livePop);
    o._guiManager.hide();
+   o.loadCountry();
 }
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
@@ -4477,20 +4508,21 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._flagSprite           = null;
    o._groundAutio          = null;
    o._mapAutio             = null;
-   o.onLoadData            = MO.FEaiChartScene_onLoadData;
+   o.onLoadCountry         = MO.FEaiChartScene_onLoadCountry;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    o.construct             = MO.FEaiChartScene_construct;
    o.fixMatrix             = MO.FEaiChartScene_fixMatrix;
    o.setup                 = MO.FEaiChartScene_setup;
    o.active                = MO.FEaiChartScene_active;
+   o.loadCountry           = MO.FEaiChartScene_loadCountry;
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
    o.deactive              = MO.FEaiChartScene_deactive;
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
 }
-MO.FEaiChartScene_onLoadData = function FEaiChartScene_onLoadData(event){
+MO.FEaiChartScene_onLoadCountry = function FEaiChartScene_onLoadCountry(event){
    var o = this;
    var countryData = event.sender;
    var context = o.graphicContext();
@@ -4596,17 +4628,18 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.setVolume(0.2);
    audio.play();
    o._mapAutio = audioConsole.load('{eai.resource}/map-enter.mp3');
-   var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
-   country.addLoadListener(o, o.onLoadData);
-   country.load();
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
 }
-MO.FEaiChartScene_active = function FEaiChartScene_active(){
+MO.FEaiChartScene_loadCountry = function FEaiChartScene_loadCountry(){
    var o = this;
-   o.__base.FEaiScene.active.call(o);
+   if(!o._countryData){
+      var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
+      country.addLoadListener(o, o.onLoadCountry);
+      country.load();
+   }
 }
 MO.FEaiChartScene_resetDate = function FEaiChartScene_resetDate(){
    var o = this;
@@ -4618,6 +4651,10 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    o.fixMatrix(o._countryBorderDisplay.matrix());
    o.fixMatrix(o._citysRangeRenderable.matrix());
    o.fixMatrix(o._citysRenderable.matrix());
+}
+MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
+   var o = this;
+   o.__base.FEaiScene.deactive.call(o);
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
@@ -5013,16 +5050,7 @@ with(MO){
       o.registerChapter(chapter);
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
-      switch(o._sceneCode){
-         case MO.EEaiScene.ChartHistory:
-            resourceConsole.load('/chart-history.dat');
-            break;
-         case MO.EEaiScene.ChartLive:
-            resourceConsole.load('/chart-live.dat');
-            break;
-         default:
-            throw new TError('Scene code is invalid.');
-      }
+      resourceConsole.load('{eai.resource}/resource.dat');
    }
    MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
       var o = this;

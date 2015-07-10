@@ -238,11 +238,24 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
    o._milestones              = MO.Class.register(o, new MO.AGetter('_milestones'));
    o._dates                   = MO.Class.register(o, new MO.AGetter('_dates'));
    o._listenersLoad           = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o.onLoad                   = MO.FEaiHistoryResourceConsole_onLoad;
    o.construct                = MO.FEaiHistoryResourceConsole_construct;
    o.unserialize              = MO.FEaiHistoryResourceConsole_unserialize;
    o.load                     = MO.FEaiHistoryResourceConsole_load;
    o.dispose                  = MO.FEaiHistoryResourceConsole_dispose;
    return o;
+}
+MO.FEaiHistoryResourceConsole_onLoad = function FEaiHistoryResourceConsole_onLoad(event){
+   var o = this;
+   var data = event.outputData();
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   o.unserialize(view);
+   view.dispose();
+   var event = new MO.SEvent();
+   o.processLoadListener(event);
+   event.dispose();
 }
 MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_construct(){
    var o = this;
@@ -260,30 +273,45 @@ MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_
    o._investmentProvinceTotal = input.readFloat();
    o._investmentCityDay = input.readFloat();
    o._investmentCityTotal = input.readFloat();
+   var provinces = o._provinces;
+   provinces.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiHistoryProvinceResource);
       province.unserialize(input);
-      o._provinces.set(province.code(), province);
+      provinces.set(province.code(), province);
    }
+   var citys = o._citys;
+   citys.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var city = MO.Class.create(MO.FEaiHistoryCityResource);
       city.unserialize(input);
-      o._citys.set(city.code(), city);
+      citys.set(city.code(), city);
    }
+   var milestones = o._milestones;
+   milestones.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var milestone = MO.Class.create(MO.FEaiHistoryMilestoneResource);
       milestone.unserialize(input);
-      o._milestones.set(milestone.code(), milestone);
+      milestones.set(milestone.code(), milestone);
    }
+   var dates = o._dates;
+   dates.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var date = MO.Class.create(MO.FEaiHistoryDateResource);
       date.unserialize(input);
-      o._dates.set(date.code(), date);
+      dates.set(date.code(), date);
    }
+}
+MO.FEaiHistoryResourceConsole_load = function FEaiHistoryResourceConsole_load(){
+   var o = this;
+   var uri = '{eai.resource}/investment.dat?date=' + MO.Lang.Date.format();
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
+   connection.addLoadListener(o, o.onLoad);
 }
 MO.FEaiHistoryResourceConsole_dispose = function FEaiHistoryResourceConsole_dispose(){
    var o = this;
@@ -475,25 +503,14 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 }
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
-   var code = input.readString();
-   if(code == "chart-live"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-   }else if(code == "chart-history"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-      o._historyConsole.unserialize(input);
-   }else{
-      throw new TError("Unserialize code failure.");
-   }
+   o._rateConsole.unserialize(input);
+   o._provinceConsole.unserialize(input);
+   o._cityConsole.unserialize(input);
+   o._cardConsole.unserialize(input);
 }
-MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(fileName){
+MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}' + fileName);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }

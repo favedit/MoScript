@@ -10,6 +10,7 @@ MO.FGuiManager = function FGuiManager(o){
    //..........................................................
    // @attribute
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
+   o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
    // @attribute
    o._statusDirty      = false;
@@ -49,6 +50,7 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
    o.__base.FObject.construct.call(o);
    // 创建界面集合
    o._controls = new MO.TObjects();
+   o._mainTimeline = MO.Class.create(MO.FMainTimeline);
    o._transforms = new MO.TLooper();
    o._visibleControls = new MO.TObjects();
 }
@@ -222,12 +224,15 @@ MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
 //==========================================================
 MO.FGuiManager_process = function FGuiManager_process(){
    var o = this;
+   // 控件更新处理
    var controls = o._controls;
    var count = controls.count();
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
       control.psUpdate();
    }
+   // 时间处理
+   o._mainTimeline.process();
    // 变换处理
    o.processTransforms();
 }
@@ -249,6 +254,7 @@ MO.FGuiManager_dirty = function FGuiManager_dirty(){
 MO.FGuiManager_dispose = function FGuiManager_dispose(){
    var o = this;
    o._controls = MO.RObject.dispose(o._controls);
+   o._mainTimeline = MO.RObject.dispose(o._mainTimeline);
    o._transforms = MO.RObject.dispose(o._transforms);
    o._visibleControls = MO.RObject.dispose(o._visibleControls);
    // 父处理

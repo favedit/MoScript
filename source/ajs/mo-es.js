@@ -4109,6 +4109,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.construct            = MO.FG2dCanvasContext_construct;
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
    o.setScale             = MO.FG2dCanvasContext_setScale;
+   o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
@@ -4161,6 +4162,10 @@ MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, heigh
       o._handle.scale(width, height);
       o._scale.set(width, height);
    }
+}
+MO.FG2dCanvasContext_setAlpha = function FG2dCanvasContext_setAlpha(alpha){
+   var o = this;
+   this._handle.globalAlpha = alpha;
 }
 MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
    this._handle.font = font;
@@ -9652,6 +9657,86 @@ with(MO){
       o._data = null;
    }
 }
+MO.MTimelineAction = function MTimelineAction(o){
+   o = MO.Class.inherits(this, o);
+   o._code       = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._interval   = MO.Class.register(o, new MO.AGetSet('_interval'));
+   o._statusStop = false;
+   o.construct   = MO.MTimelineAction_construct;
+   o.setup       = MO.MTimelineAction_setup;
+   o.isStop      = MO.MTimelineAction_isStop;
+   o.start       = MO.MTimelineAction_start;
+   o.process     = MO.MTimelineAction_process;
+   o.dispose     = MO.MTimelineAction_dispose;
+   return o;
+}
+MO.MTimelineAction_construct = function MTimelineAction_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.MTimelineAction_setup = function MTimelineAction_setup(){
+   var o = this;
+}
+MO.MTimelineAction_isStop = function MTimelineAction_isStop(){
+   return this._statusStop;
+}
+MO.MTimelineAction_start = function MTimelineAction_start(){
+   var o = this;
+   o._statusStop = false;
+}
+MO.MTimelineAction_process = function MTimelineAction_process(){
+   var o = this;
+}
+MO.MTimelineAction_dispose = function MTimelineAction_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+}
+MO.MTimelineActions = function MTimelineActions(o){
+   o = MO.Class.inherits(this, o);
+   o._actions      = MO.Class.register(o, new MO.AGetter('_actions'));
+   o.construct     = MO.MTimelineActions_construct;
+   o.setup         = MO.MTimelineActions_setup;
+   o.pushAction    = MO.MTimelineActions_pushAction;
+   o.process       = MO.MTimelineActions_process;
+   o.dispose       = MO.MTimelineActions_dispose;
+   return o;
+}
+MO.MTimelineActions_construct = function MTimelineActions_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._actions = new MO.TObjects();
+}
+MO.MTimelineActions_setup = function MTimelineActions_setup(){
+   var o = this;
+}
+MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
+   this._actions.push(action);
+}
+MO.MTimelineActions_process = function MTimelineActions_process(context){
+   var o = this;
+   var actions = o._actions;
+   var count = actions.count();
+   for(var i = count - 1; i >= 0; i--){
+      var action = actions.at(i);
+      if(action.isStop()){
+         actions.erase(i);
+      }else{
+         action.process(context);
+      }
+   }
+}
+MO.MTimelineActions_dispose = function MTimelineActions_dispose(){
+   var o = this;
+   o._actions = MO.Lang.Obejct.dispose(o._actions);
+   o.__base.FObject.dispose.call(o);
+}
+MO.STimelineContext = function STimelineContext(){
+   var o = this;
+   o._mainTimeline = null;
+   o._timeline     = null;
+   o._action       = null;
+   return o;
+}
 MO.FCanvas = function FCanvas(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._desktop     = MO.Class.register(o, new MO.AGetSet('_desktop'));
@@ -10066,6 +10151,61 @@ MO.FDrawable = function FDrawable(o){
 MO.FDrawable_testVisible = function FDrawable_testVisible(){
    return this._visible;
 }
+MO.FMainTimeline = function FMainTimeline(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o._context   = null;
+   o._timelines = MO.Class.register(o, new MO.AGetter('_timelines'));
+   o._startTick = 0;
+   o._lastTick  = 0;
+   o._interval  = 0;
+   o.construct  = MO.FMainTimeline_construct;
+   o.setup      = MO.FMainTimeline_setup;
+   o.start      = MO.FMainTimeline_start;
+   o.process    = MO.FMainTimeline_process;
+   o.dispose    = MO.FMainTimeline_dispose;
+   return o;
+}
+MO.FMainTimeline_construct = function FMainTimeline_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MTimelineActions.construct.call(o);
+   o._context = new MO.STimelineContext();
+   o._timelines = new MO.TObjects();
+}
+MO.FMainTimeline_setup = function FMainTimeline_setup(){
+   var o = this;
+}
+MO.FMainTimeline_start = function FMainTimeline_start(){
+   var o = this;
+}
+MO.FMainTimeline_process = function FMainTimeline_process(){
+   var o = this;
+   var tick = MO.Timer.current();
+   if(tick - o._lastTick < o._interval){
+      return false;
+   }
+   o._lastTick = tick;
+   if(o._startTick == 0){
+      o._startTick = tick;
+   }
+   var span = o._startTick - tick;
+   var context = o._context;
+   context.span = span;
+   o.__base.MTimelineActions.process.call(o, context);
+   var timelines = o._timelines;
+   var count = timelines.count();
+   for(var i = 0; i < count; i++){
+      var timeline = timelines.at(i);
+      timeline.process(context);
+   }
+}
+MO.FMainTimeline_dispose = function FMainTimeline_dispose(){
+   var o = this;
+   o._timelines = MO.Lang.Object.dispose(o._timelines);
+   o._context = MO.Lang.Object.dispose(o._context);
+   o.__base.MTimelineActions.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FRegion = function FRegion(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    return o;
@@ -10216,6 +10356,35 @@ with(MO){
       o.__base.MListener.dispose.call(o);
       o.__base.FComponent.dispose.call(o);
    }
+}
+MO.FTimeline = function FTimeline(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o._mainTimeline = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
+   o._actions      = MO.Class.register(o, new MO.AGetter('_actions'));
+   o.construct     = MO.FTimeline_construct;
+   o.setup         = MO.FTimeline_setup;
+   o.process       = MO.FTimeline_process;
+   o.dispose       = MO.FTimeline_dispose;
+   return o;
+}
+MO.FTimeline_construct = function FTimeline_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MTimelineActions.construct.call(o);
+   o._actions = new MO.TObejcts();
+}
+MO.FTimeline_setup = function FTimeline_setup(){
+   var o = this;
+}
+MO.FTimeline_process = function FTimeline_process(context){
+   var o = this;
+   o.__base.MTimelineActions.process.call(o, context);
+}
+MO.FTimeline_dispose = function FTimeline_dispose(){
+   var o = this;
+   o._actions = MO.Lang.Obejct.dispose(o._actions);
+   o.__base.MTimelineActions.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.RStage = function RStage(){

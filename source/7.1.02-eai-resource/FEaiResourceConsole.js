@@ -33,9 +33,10 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
 }
 
 //==========================================================
-// <T>初始化处理。</T>
+// <T>加载数据完成处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
@@ -79,32 +80,21 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 //==========================================================
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
-   var code = input.readString();
-   if(code == "chart-live"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-   }else if(code == "chart-history"){
-      o._rateConsole.unserialize(input);
-      o._provinceConsole.unserialize(input);
-      o._cityConsole.unserialize(input);
-      o._cardConsole.unserialize(input);
-      o._historyConsole.unserialize(input);
-   }else{
-      throw new TError("Unserialize code failure.");
-   }
+   o._rateConsole.unserialize(input);
+   o._provinceConsole.unserialize(input);
+   o._cityConsole.unserialize(input);
+   o._cardConsole.unserialize(input);
 }
 
 //==========================================================
-// <T>获得组织逻辑。</T>
+// <T>加载网络数据。</T>
 //
 // @method
-// @return FEaiLogicOrganization 组织逻辑
+// @return uri:String 网络名称
 //==========================================================
-MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(fileName){
+MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}' + fileName);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }

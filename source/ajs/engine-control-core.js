@@ -7,6 +7,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o._paintEvent       = null;
    o.construct         = MO.FGuiCanvasManager_construct;
    o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
+   o.doActionAlpha     = MO.FGuiCanvasManager_doActionAlpha;
    o.processResize     = MO.FGuiCanvasManager_processResize;
    o.processControl    = MO.FGuiCanvasManager_processControl;
    o.process           = MO.FGuiCanvasManager_process;
@@ -32,6 +33,12 @@ MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRect
          dirtyControls.pushUnique(control);
       }
    }
+}
+MO.FGuiCanvasManager_doActionAlpha = function FGuiCanvasManager_doActionAlpha(alpha){
+   var o = this;
+   var context = o._canvas.graphicContext();
+   context.setAlpha(alpha);
+   o.dirty();
 }
 MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
 }
@@ -348,6 +355,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
 MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
+   o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
    o._statusDirty      = false;
    o._visibleControls  = null;
@@ -372,6 +380,7 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._controls = new MO.TObjects();
+   o._mainTimeline = MO.Class.create(MO.FMainTimeline);
    o._transforms = new MO.TLooper();
    o._visibleControls = new MO.TObjects();
 }
@@ -466,6 +475,7 @@ MO.FGuiManager_process = function FGuiManager_process(){
       var control = controls.at(i);
       control.psUpdate();
    }
+   o._mainTimeline.process();
    o.processTransforms();
 }
 MO.FGuiManager_dirty = function FGuiManager_dirty(){
@@ -474,6 +484,7 @@ MO.FGuiManager_dirty = function FGuiManager_dirty(){
 MO.FGuiManager_dispose = function FGuiManager_dispose(){
    var o = this;
    o._controls = MO.RObject.dispose(o._controls);
+   o._mainTimeline = MO.RObject.dispose(o._mainTimeline);
    o._transforms = MO.RObject.dispose(o._transforms);
    o._visibleControls = MO.RObject.dispose(o._visibleControls);
    o.__base.FObject.dispose.call(o);

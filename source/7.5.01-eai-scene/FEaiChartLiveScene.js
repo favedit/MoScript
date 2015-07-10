@@ -107,11 +107,17 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.01);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
       //..........................................................
@@ -229,6 +235,9 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
+   //..........................................................
+   // 加载国家数据
+   o.loadCountry();
 }
 
 //==========================================================

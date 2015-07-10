@@ -92,16 +92,7 @@ with(MO){
       // 加载资源
       var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
       resourceConsole.addLoadListener(o, o.onLoadResource);
-      switch(o._sceneCode){
-         case MO.EEaiScene.ChartHistory:
-            resourceConsole.load('/chart-history.dat');
-            break;
-         case MO.EEaiScene.ChartLive:
-            resourceConsole.load('/chart-live.dat');
-            break;
-         default:
-            throw new TError('Scene code is invalid.');
-      }
+      resourceConsole.load('{eai.resource}/resource.dat');
    }
 
    //==========================================================

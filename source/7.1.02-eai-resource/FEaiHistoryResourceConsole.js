@@ -22,6 +22,9 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
    // @attribute
    o._listenersLoad           = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
+   // @event
+   o.onLoad                   = MO.FEaiHistoryResourceConsole_onLoad;
+   //..........................................................
    // @method
    o.construct                = MO.FEaiHistoryResourceConsole_construct;
    // @method
@@ -30,6 +33,29 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
    // @method
    o.dispose                  = MO.FEaiHistoryResourceConsole_dispose;
    return o;
+}
+
+//==========================================================
+// <T>加载数据完成处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiHistoryResourceConsole_onLoad = function FEaiHistoryResourceConsole_onLoad(event){
+   var o = this;
+   var data = event.outputData();
+   // 创建读取流
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(data);
+   // 反序列化数据
+   o.unserialize(view);
+   // 释放资源
+   view.dispose();
+   // 分发事件
+   var event = new MO.SEvent();
+   o.processLoadListener(event);
+   event.dispose();
 }
 
 //==========================================================
@@ -63,33 +89,55 @@ MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_
    o._investmentCityDay = input.readFloat();
    o._investmentCityTotal = input.readFloat();
    // 读取省份属性
+   var provinces = o._provinces;
+   provinces.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiHistoryProvinceResource);
       province.unserialize(input);
-      o._provinces.set(province.code(), province);
+      provinces.set(province.code(), province);
    }
    // 读取城市属性
+   var citys = o._citys;
+   citys.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var city = MO.Class.create(MO.FEaiHistoryCityResource);
       city.unserialize(input);
-      o._citys.set(city.code(), city);
+      citys.set(city.code(), city);
    }
    // 读取城市属性
+   var milestones = o._milestones;
+   milestones.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var milestone = MO.Class.create(MO.FEaiHistoryMilestoneResource);
       milestone.unserialize(input);
-      o._milestones.set(milestone.code(), milestone);
+      milestones.set(milestone.code(), milestone);
    }
    // 读取日期属性
+   var dates = o._dates;
+   dates.clear();
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var date = MO.Class.create(MO.FEaiHistoryDateResource);
       date.unserialize(input);
-      o._dates.set(date.code(), date);
+      dates.set(date.code(), date);
    }
+}
+
+//==========================================================
+// <T>加载网络数据。</T>
+//
+// @method
+// @return uri:String 网络名称
+//==========================================================
+MO.FEaiHistoryResourceConsole_load = function FEaiHistoryResourceConsole_load(){
+   var o = this;
+   var uri = '{eai.resource}/investment.dat?date=' + MO.Lang.Date.format();
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var connection = MO.Console.find(MO.FHttpConsole).send(url);
+   connection.addLoadListener(o, o.onLoad);
 }
 
 //==========================================================

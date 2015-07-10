@@ -204,6 +204,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.construct            = MO.FG2dCanvasContext_construct;
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
    o.setScale             = MO.FG2dCanvasContext_setScale;
+   o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
@@ -256,6 +257,10 @@ MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, heigh
       o._handle.scale(width, height);
       o._scale.set(width, height);
    }
+}
+MO.FG2dCanvasContext_setAlpha = function FG2dCanvasContext_setAlpha(alpha){
+   var o = this;
+   this._handle.globalAlpha = alpha;
 }
 MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
    this._handle.font = font;
