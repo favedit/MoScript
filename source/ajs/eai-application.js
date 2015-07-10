@@ -250,7 +250,7 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    o._canvas3d.resize(width, height);
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
-   canvas2d.context().setScale(sizeRate, sizeRate);
+   canvas2d.graphicContext().setScale(sizeRate, sizeRate);
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
