@@ -140,7 +140,7 @@ with (MO) {
       graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
       var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
       var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      var dataTop = top + 30;
+      var dataTop = top + 60;
       var dataBottom = bottom - 30;
       var dataHeight = dataBottom - dataTop;
       // 主轴
