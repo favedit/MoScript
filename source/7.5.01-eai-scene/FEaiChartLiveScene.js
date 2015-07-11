@@ -115,7 +115,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -276,6 +276,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
 //==========================================================
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
    var o = this;
+   return;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;
@@ -376,14 +377,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(830);
-      timeline.setHeight(280);
+      timeline.setHeight(250);
    }else{
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
       timeline.setRight(680);
-      timeline.setHeight(280);
+      timeline.setHeight(250);
    }
    //..........................................................
    // 设置表格

@@ -18,7 +18,7 @@ with (MO) {
       o._data                 = RClass.register(o, new AGetSet('_data'));
       o._startTick            = 0;
       o._popDuration          = 400;
-      o._showDuration         = 0;
+      o._showDuration         = 3000;
       o._closeDuration        = 400;
       o._fullWidth            = 953;
       o._fullHeight           = 896;

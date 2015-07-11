@@ -2534,7 +2534,7 @@ with (MO) {
       o._data                 = RClass.register(o, new AGetSet('_data'));
       o._startTick            = 0;
       o._popDuration          = 400;
-      o._showDuration         = 0;
+      o._showDuration         = 3000;
       o._closeDuration        = 400;
       o._fullWidth            = 953;
       o._fullHeight           = 896;
@@ -3937,7 +3937,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._lastTick                 = 0;
    o._interval                 = 10;
    o._lastDateTick             = 0;
-   o._dateInterval             = 0;
+   o._dateInterval             = 120;
    o._startDate                = null;
    o._endDate                  = null;
    o._currentDate              = null;
@@ -4633,6 +4633,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -4735,6 +4736,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
    var o = this;
+   return;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;
@@ -4796,14 +4798,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(830);
-      timeline.setHeight(280);
+      timeline.setHeight(250);
    }else{
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
       timeline.setRight(680);
-      timeline.setHeight(280);
+      timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
    if(MO.RBrowser.isOrientationVertical()){
