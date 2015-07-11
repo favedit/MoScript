@@ -1,225 +1,223 @@
-with(MO){
-   //==========================================================
-   // <T>全国城市实体类。</T>
-   //
-   // @class
-   // @author maocy
-   // @history 150619
-   //==========================================================
-   MO.FEaiCityEntity = function FEaiCityEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity);
-      //..........................................................
-      // @attribute
-      o._provinceEntity         = RClass.register(o, new AGetSet('_provinceEntity'));
-      o._visible                = RClass.register(o, new AGetter('_visible'), false);
-      o._location               = RClass.register(o, new AGetter('_location'));
-      o._size                   = RClass.register(o, new AGetter('_size'));
-      o._alpha                  = RClass.register(o, new AGetSet('_alpha'), 1);
-      o._color                  = RClass.register(o, new AGetter('_color'));
-      o._range                  = RClass.register(o, new AGetter('_range'), 1);
-      o._rangeColor             = RClass.register(o, new AGetter('_rangeColor'));
-      // @attribute
-      o._cityTotal              = 0;
-      o._investmentCount        = 0;
-      o._investmentTotal        = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._investmentLevelTotal   = 20000;
-      o._investmentLevel        = 0;
-      o._investmentRange        = 1;
-      o._investmentRate         = 100;
-      o._investmentDirection    = 1;
-      // @attribute
-      o._stage                  = RClass.register(o, new AGetSet('_stage'));
-      o._renderable             = RClass.register(o, new AGetSet('_renderable'));
-      o._data                   = RClass.register(o, new AGetSet('_data'));
-      // @attribute
-      o._inputPoint             = null;
-      o._outputPoint            = null;
-      //..........................................................
-      // @method
-      o.construct               = FEaiCityEntity_construct;
-      // @method
-      o.calculateScreenPosition = FEaiCityEntity_calculateScreenPosition;
-      o.build                   = FEaiCityEntity_build;
-      o.addInvestmentTotal      = FEaiCityEntity_addInvestmentTotal;
-      o.reset                   = FEaiCityEntity_reset;
-      o.update                  = FEaiCityEntity_update;
-      o.process                 = FEaiCityEntity_process;
-      // @method
-      o.dispose                 = FEaiCityEntity_dispose;
-      return o;
-   }
-
-   //==========================================================
-   // <T>构造处理。</T>
-   //
+//==========================================================
+// <T>全国城市实体类。</T>
+//
+// @class
+// @author maocy
+// @history 150619
+//==========================================================
+MO.FEaiCityEntity = function FEaiCityEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   //..........................................................
+   // @attribute
+   o._provinceEntity         = MO.Class.register(o, new MO.AGetSet('_provinceEntity'));
+   o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), false);
+   o._location               = MO.Class.register(o, new MO.AGetter('_location'));
+   o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
+   o._alpha                  = MO.Class.register(o, new MO.AGetSet('_alpha'), 1);
+   o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
+   o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
+   o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
+   // @attribute
+   o._cityTotal              = 0;
+   o._investmentCount        = 0;
+   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o._investmentLevelTotal   = 20000;
+   o._investmentLevel        = 0;
+   o._investmentRange        = 1;
+   o._investmentRate         = 100;
+   o._investmentDirection    = 1;
+   // @attribute
+   o._stage                  = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._renderable             = MO.Class.register(o, new MO.AGetSet('_renderable'));
+   o._data                   = MO.Class.register(o, new MO.AGetSet('_data'));
+   // @attribute
+   o._inputPoint             = null;
+   o._outputPoint            = null;
+   //..........................................................
    // @method
-   //==========================================================
-   MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
-      var o = this;
-      o.__base.FEaiEntity.construct.call(o);
-      // 设置属性
-      o._location = new SPoint2();
-      o._size = new SSize2();
-      o._color = new SColor4(0, 0, 0, 0);
-      o._rangeColor = new SColor4(0, 0, 0, 0);
-      o._inputPoint = new SPoint3();
-      o._outputPoint = new SPoint3();
-   }
-
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
+   o.construct               = MO.FEaiCityEntity_construct;
    // @method
-   // @param position:MStream 输入流
-   //==========================================================
-   MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScreenPosition(){
-      var o = this;
-      var region = o._stage.region();
-      var vpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
-      var mMatrix = o._renderable.matrix();
-      var matrix = MO.RMath.matrix;
-      matrix.identity();
-      matrix.append(mMatrix);
-      matrix.append(vpMatrix);
-      o._inputPoint.set(o._location.x, o._location.y, 0);
-      matrix.transformPoint3(o._inputPoint, o._outputPoint);
-      return o._outputPoint;
-   }
-
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
+   o.calculateScreenPosition = MO.FEaiCityEntity_calculateScreenPosition;
+   o.build                   = MO.FEaiCityEntity_build;
+   o.addInvestmentTotal      = MO.FEaiCityEntity_addInvestmentTotal;
+   o.reset                   = MO.FEaiCityEntity_reset;
+   o.update                  = MO.FEaiCityEntity_update;
+   o.process                 = MO.FEaiCityEntity_process;
    // @method
-   // @param input:MStream 输入流
-   //==========================================================
-   MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
-      var o = this;
-      o._location.assign(o._data.location());
-      o._size.set(2, 2);
-   }
+   o.dispose                 = MO.FEaiCityEntity_dispose;
+   return o;
+}
 
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
-   // @method
-   // @param level:Integer 投资级别
-   // @param investmentTotal:Number 投资总额
-   //==========================================================
-   MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
-      var o = this;
-      // 设置数据
-      o._investmentCount++;
-      o._investmentTotal += investmentTotal;
-      //o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
-      o._investmentLevel = o._investmentLevelTotal;
-      // 获得颜色
-      var rateConsole = RConsole.find(FEaiResourceConsole).rateConsole();
-      var color = rateConsole.find(EEaiRate.Line).findRate(o._investmentTotal / 200000);
-      // 设置内容
-      o._color.set(1, 1, 1, 1);
-      o._range = RFloat.toRange(Math.log(investmentTotal) / 5, 0, 6);
-      o._rangeColor.setInteger(color);
-      o._rangeColor.alpha = 1;
-      o._investmentRange = o._range;
-      o._investmentRate = 100;
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
+   var o = this;
+   o.__base.FEaiEntity.construct.call(o);
+   // 设置属性
+   o._location = new MO.SPoint2();
+   o._size = new MO.SSize2();
+   o._color = new MO.SColor4(0, 0, 0, 0);
+   o._rangeColor = new MO.SColor4(0, 0, 0, 0);
+   o._inputPoint = new MO.SPoint3();
+   o._outputPoint = new MO.SPoint3();
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param position:MStream 输入流
+//==========================================================
+MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScreenPosition(){
+   var o = this;
+   var region = o._stage.region();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   var mMatrix = o._renderable.matrix();
+   var matrix = MO.RMath.matrix;
+   matrix.identity();
+   matrix.append(mMatrix);
+   matrix.append(vpMatrix);
+   o._inputPoint.set(o._location.x, o._location.y, 0);
+   matrix.transformPoint3(o._inputPoint, o._outputPoint);
+   return o._outputPoint;
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
+   var o = this;
+   o._location.assign(o._data.location());
+   o._size.set(2, 2);
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param level:Integer 投资级别
+// @param investmentTotal:Number 投资总额
+//==========================================================
+MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
+   var o = this;
+   // 设置数据
+   o._investmentCount++;
+   o._investmentTotal += investmentTotal;
+   //o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
+   o._investmentLevel = o._investmentLevelTotal;
+   // 获得颜色
+   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+   var color = rateConsole.find(MO.EEaiRate.Line).findRate(o._investmentTotal / 200000);
+   // 设置内容
+   o._color.set(1, 1, 1, 1);
+   o._range = MO.Lang.Float.toRange(Math.log(investmentTotal) / 5, 0, 6);
+   o._rangeColor.setInteger(color);
+   o._rangeColor.alpha = 1;
+   o._investmentRange = o._range;
+   o._investmentRate = 100;
+   o._visible = true;
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
+   var o = this;
+   o._visible = false;
+   o._alpha = 0;
+   o._cityTotal = 0;
+   o._color.set(0, 0, 0, 0);
+   o._rangeColor.set(0, 0, 0, 0);
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
+   var o = this;
+   var range = 1;
+   o._color.set(1, 1, 1, 1);
+   o._rangeColor.set(1, 1, 1, 1);
+   if(data){
+      o._cityTotal = data.investmentTotal();
+   }
+   var total = o._cityTotal;
+   if(total > 0){
       o._visible = true;
    }
+   // 计算数值
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var investmentCityTotal = historyConsole.investmentCityTotal();
+   var rateInfo = MO.Console.find(MO.FEaiResourceConsole).rateConsole().find(MO.EEaiRate.Map);
+   var rate = Math.sqrt(total / investmentCityTotal) * 4;
+   var color = rateInfo.findRate(rate);
+   range = rate * 6;
+   rate = MO.Lang.Float.toRange(rate, 0, 1);
+   o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
+   o._rangeColor.setIntAlpha(color, rate * 0.6);
+   o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
+}
 
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
-   // @method
-   // @param input:MStream 输入流
-   //==========================================================
-   MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
-      var o = this;
-      o._visible = false;
-      o._alpha = 0;
-      o._cityTotal = 0;
-      o._color.set(0, 0, 0, 0);
-      o._rangeColor.set(0, 0, 0, 0);
-   }
-
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
-   // @method
-   // @param input:MStream 输入流
-   //==========================================================
-   MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
-      var o = this;
-      var range = 1;
-      o._color.set(1, 1, 1, 1);
-      o._rangeColor.set(1, 1, 1, 1);
-      if(data){
-         o._cityTotal = data.investmentTotal();
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
+   var o = this;
+   if(o._investmentLevel > 0){
+      var rate = o._investmentLevel / o._investmentLevelTotal;
+      // 设置比率
+      if(o._investmentRate < 0){
+         o._investmentRate = 0;
+         o._investmentDirection = 4;
+      }else if(o._investmentRate > 100){
+         o._investmentRate = 100;
+         o._investmentDirection = -2;
       }
-      var total = o._cityTotal;
-      if(total > 0){
-         o._visible = true;
+      //o._investmentRate += o._investmentDirection;
+      //var rate = o._investmentRate / 100;
+      // 设置内容
+      o._color.alpha = rate;
+      //o._range = o._investmentRange * rate;
+      o._rangeColor.alpha = rate;
+      // 设置内容
+      o._investmentLevel--;
+      if(o._investmentLevel == 0){
+         o._visible = false;
       }
-      // 计算数值
-      var historyConsole = RConsole.find(FEaiResourceConsole).historyConsole();
-      var investmentCityTotal = historyConsole.investmentCityTotal();
-      var rateInfo = RConsole.find(FEaiResourceConsole).rateConsole().find(EEaiRate.Map);
-      var rate = Math.sqrt(total / investmentCityTotal) * 4;
-      var color = rateInfo.findRate(rate);
-      range = rate * 6;
-      rate = RFloat.toRange(rate, 0, 1);
-      o._alpha = RFloat.toRange(rate * 1.5, 0, 1);
-      o._rangeColor.setIntAlpha(color, rate * 0.6);
-      o._range = RFloat.toRange(Math.sqrt(range), 1, 6);
+      return true;
    }
+   return false;
+}
 
-   //==========================================================
-   // <T>从输入流反序列化数据。</T>
-   //
-   // @method
-   // @param input:MStream 输入流
-   //==========================================================
-   MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
-      var o = this;
-      if(o._investmentLevel > 0){
-         var rate = o._investmentLevel / o._investmentLevelTotal;
-         // 设置比率
-         if(o._investmentRate < 0){
-            o._investmentRate = 0;
-            o._investmentDirection = 4;
-         }else if(o._investmentRate > 100){
-            o._investmentRate = 100;
-            o._investmentDirection = -2;
-         }
-         //o._investmentRate += o._investmentDirection;
-         //var rate = o._investmentRate / 100;
-         // 设置内容
-         o._color.alpha = rate;
-         //o._range = o._investmentRange * rate;
-         o._rangeColor.alpha = rate;
-         // 设置内容
-         o._investmentLevel--;
-         if(o._investmentLevel == 0){
-            o._visible = false;
-         }
-         return true;
-      }
-      return false;
-   }
-
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
-      var o = this;
-      // 释放属性
-      o._location = RObject.dispose(o._location);
-      o._size = RObject.dispose(o._size);
-      o._color = RObject.dispose(o._color);
-      o._rangeColor = RObject.dispose(o._rangeColor);
-      o._inputPoint = RObject.dispose(o._inputPoint);
-      o._outputPoint = RObject.dispose(o._outputPoint);
-      // 父处理
-      o.__base.FEaiEntity.dispose.call(o);
-   }
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
+   var o = this;
+   // 释放属性
+   o._location = MO.Lang.Object.dispose(o._location);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._color = MO.Lang.Object.dispose(o._color);
+   o._rangeColor = MO.Lang.Object.dispose(o._rangeColor);
+   o._inputPoint = MO.Lang.Object.dispose(o._inputPoint);
+   o._outputPoint = MO.Lang.Object.dispose(o._outputPoint);
+   // 父处理
+   o.__base.FEaiEntity.dispose.call(o);
 }

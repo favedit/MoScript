@@ -9,55 +9,55 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code             = MO.EEaiScene.ChartHistory;
+   o._code                     = MO.EEaiScene.ChartHistory;
    // @attribute
-   o._ready            = false;
-   o._mapReady         = false;
-   o._playing          = false;
-   o._lastTick         = 0;
-   o._interval         = 10;
-   o._lastDateTick     = 0;
-   o._dateInterval     = 120;
-   o._startDate        = null;
-   o._endDate          = null;
-   o._currentDate      = null;
+   o._ready                    = false;
+   o._mapReady                 = false;
+   o._playing                  = false;
+   o._lastTick                 = 0;
+   o._interval                 = 10;
+   o._lastDateTick             = 0;
+   //o._dateInterval           = 120;
+   o._dateInterval             = 0;
+   o._startDate                = null;
+   o._endDate                  = null;
+   o._currentDate              = null;
    // @attribute
-   o._logoBar          = null;
-   //o._playButton       = null;
-   //o._pauseButton      = null;
-   o._buttonTransform  = null;
-   o._timeline         = null;
-   o._milestoneFrame   = null;
+   o._logoBar                  = null;
+   o._buttonTransform          = null;
+   o._timeline                 = null;
+   o._milestoneFrame           = null;
    // @attribute
-   o._buttonAudio      = null;
-   o._statusStart      = false;
-   o._statusLayerCount = 150;
-   o._statusLayerLevel = 150;
+   o._buttonAudio              = null;
+   o._statusStart              = false;
+   o._statusLayerCount         = 100;
+   o._statusLayerLevel         = 100;
    // @attribute
    o._milestoneShowed          = 0;
    o._milestoneBarShowDuration = 1000;
-   o._milestoneBarShowTick = 0;
-   o._milestoneBarShowing = false;
+   o._milestoneBarShowTick     = 0;
+   o._milestoneBarShowing      = false;
    //..........................................................
    // @event
-   o.onLoadData        = MO.FEaiChartHistoryScene_onLoadData;
-   o.onLoadCountry     = MO.FEaiChartHistoryScene_onLoadCountry;
-   o.onDateSelect      = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onMilestoneDone   = MO.FEaiChartHistoryScene_onMilestoneDone;
-   o.onOperationPlay   = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause  = MO.FEaiChartHistoryScene_onOperationPause;
-   o.onProcess         = MO.FEaiChartHistoryScene_onProcess;
+   o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
+   o.onDateSelect              = MO.FEaiChartHistoryScene_onDateSelect;
+   o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
+   o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
+   o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
+   o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
    //..........................................................
    // @method
-   o.testReady         = MO.FEaiChartHistoryScene_testReady;
+   o.testReady                 = MO.FEaiChartHistoryScene_testReady;
    // @method
-   o.setup             = MO.FEaiChartHistoryScene_setup;
-   o.resetDate         = MO.FEaiChartHistoryScene_resetDate;
-   o.selectDate        = MO.FEaiChartHistoryScene_selectDate;
-   o.switchPlay        = MO.FEaiChartHistoryScene_switchPlay;
+   o.setup                     = MO.FEaiChartHistoryScene_setup;
+   o.resetDate                 = MO.FEaiChartHistoryScene_resetDate;
+   o.selectDate                = MO.FEaiChartHistoryScene_selectDate;
+   o.switchPlay                = MO.FEaiChartHistoryScene_switchPlay;
+   o.switchLive                = MO.FEaiChartHistoryScene_switchLive;
    // @method
-   o.active            = MO.FEaiChartHistoryScene_active;
-   o.deactive          = MO.FEaiChartHistoryScene_deactive;
+   o.active                    = MO.FEaiChartHistoryScene_active;
+   o.deactive                  = MO.FEaiChartHistoryScene_deactive;
    return o;
 }
 
@@ -73,7 +73,8 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var startDate = historyConsole.dates().first();
    var endDate = historyConsole.dates().last();
-   o._currentDate.parseAuto(startDate.code());
+   //o._currentDate.parseAuto(startDate.code());
+   o._currentDate.parseAuto('20150510');
    o._startDate.parseAuto(startDate.code());
    o._endDate.parseAuto(endDate.code());
    //..........................................................
@@ -102,23 +103,6 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
       o._guiManager.register(frame);
       milestoneBars.push(frame);
    }
-   //..........................................................
-   // 加载国家数据
-   o.loadCountry();
-}
-
-//==========================================================
-// <T>数据加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartHistoryScene_onLoadCountry = function FEaiChartHistoryScene_onLoadCountry(event) {
-   var o = this;
-   o.__base.FEaiChartScene.onLoadCountry.call(o, event);
-   var code = o._currentDate.format('YYYYMMDD')
-   o.resetDate(code);
-   o.selectDate(code);
 }
 
 //==========================================================
@@ -159,8 +143,8 @@ MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOper
    var endCode = o._endDate.format('YYYYMMDD')
    if (code == endCode) {
       var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-      var startDD = historyConsole.dates().at(0);
-      MO.Lang.Date.autoParse(o._currentDate, startDD._code);
+      var startDate = historyConsole.dates().first();
+      MO.Lang.Date.autoParse(o._currentDate, startDate.code());
    }
    // 开始播放
    o.switchPlay(true);
@@ -186,6 +170,9 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
 MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
+   var mapEntity = o._mapEntity;
+   var countryDisplay = mapEntity.countryDisplay();
+   var countryBorderDisplay = mapEntity.countryBorderDisplay();
    // 检测首次播放
    if (!o._statusStart) {
       if (o.testReady()) {
@@ -208,17 +195,25 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
    // 重复播放
    if (o._playing) {
       // 播放地图
-      var countryEntity = o._mapEntity.countryEntity();
+      var countryEntity = mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
          return;
       }
       // 显示界面
       if (!o._mapReady) {
-         o._citysRangeRenderable.setVisible(true);
-         o._citysRenderable.setVisible(true);
+         // 设置显示
+         mapEntity.citysRangeRenderable().setVisible(true);
+         mapEntity.citysRenderable().setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
+         // 淡出隐藏界面
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.005);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
       //..........................................................
@@ -229,8 +224,11 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             var code = o._currentDate.format('YYYYMMDD')
             var endCode = o._endDate.format('YYYYMMDD')
             o.selectDate(code);
-            if (code == endCode) {
+            if(code == endCode){
+               // 播放完成
                o.switchPlay(false);
+               // 切换场景
+               o.switchLive();
             }
             o._lastDateTick = currentTick;
             // 上传数据
@@ -262,6 +260,19 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
 }
 
 //==========================================================
+// <T>切换完成处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_onSwitchLiveComplete = function FEaiChartHistoryScene_onSwitchLiveComplete(event){
+   var o = this;
+   // 设置应用
+   var scene = o._chapter.selectSceneByCode(MO.EEaiScene.ChartLive);
+   scene.showFace();
+}
+
+//==========================================================
 // <T>点击暂停处理。</T>
 //
 // @method
@@ -270,7 +281,7 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
 MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._readyProvince){
+      if(!o._countryReady){
          return false;
       }
       o._ready = true;
@@ -290,8 +301,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
    //..........................................................
-   o._citysRangeRenderable.setVisible(false);
-   o._citysRenderable.setVisible(false);
+   var mapEntity = o._mapEntity;
+   mapEntity.citysRangeRenderable().setVisible(false);
+   mapEntity.citysRenderable().setVisible(false);
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
@@ -366,7 +378,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._guiManager.register(milestoneFrame);
    //..........................................................
    // 隐藏全部界面
-   o._citysRangeRenderable.setVisible(false);
    o._guiManager.hide();
    //..........................................................
    // 加载历史数据
@@ -405,6 +416,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var dateData = historyConsole.dates().get(code);
    var milestone = historyConsole.milestones().get(code);
    if (milestone) {
+      return;
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
       o._milestoneFrame.dirty();
@@ -454,6 +466,23 @@ MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(
       //o._pauseButton.setVisible(false);
    //}
    //o._desktop.transformStart(transform);
+}
+
+//==========================================================
+// <T>切换场景。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_switchLive = function FEaiChartHistoryScene_switchLive(){
+   var o = this;
+   // 淡出隐藏界面
+   var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+   alphaAction.setAlphaBegin(1);
+   alphaAction.setAlphaEnd(0);
+   alphaAction.setAlphaInterval(-0.005);
+   alphaAction.addCompleteListener(o, o.onSwitchLiveComplete);
+   alphaAction.push(o._guiManager);
+   o._guiManager.mainTimeline().pushAction(alphaAction);
 }
 
 //==========================================================

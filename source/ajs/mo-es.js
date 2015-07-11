@@ -103,6 +103,7 @@ MO.EEvent = new function EEvent(){
    o.Unknown       = 'Unknown';
    o.Load          = 'Load';
    o.Process       = 'Process';
+   o.Complete      = 'Complete';
    o.EnterFrame    = 'EnterFrame';
    o.LeaveFrame    = 'LeaveFrame';
    o.Enter         = 'Enter';
@@ -9659,15 +9660,15 @@ with(MO){
 }
 MO.MTimelineAction = function MTimelineAction(o){
    o = MO.Class.inherits(this, o);
-   o._code       = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._interval   = MO.Class.register(o, new MO.AGetSet('_interval'));
-   o._statusStop = false;
-   o.construct   = MO.MTimelineAction_construct;
-   o.setup       = MO.MTimelineAction_setup;
-   o.isStop      = MO.MTimelineAction_isStop;
-   o.start       = MO.MTimelineAction_start;
-   o.process     = MO.MTimelineAction_process;
-   o.dispose     = MO.MTimelineAction_dispose;
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._interval    = MO.Class.register(o, new MO.AGetSet('_interval'));
+   o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
+   o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
+   o.construct    = MO.MTimelineAction_construct;
+   o.setup        = MO.MTimelineAction_setup;
+   o.start        = MO.MTimelineAction_start;
+   o.process      = MO.MTimelineAction_process;
+   o.dispose      = MO.MTimelineAction_dispose;
    return o;
 }
 MO.MTimelineAction_construct = function MTimelineAction_construct(){
@@ -9677,11 +9678,9 @@ MO.MTimelineAction_construct = function MTimelineAction_construct(){
 MO.MTimelineAction_setup = function MTimelineAction_setup(){
    var o = this;
 }
-MO.MTimelineAction_isStop = function MTimelineAction_isStop(){
-   return this._statusStop;
-}
 MO.MTimelineAction_start = function MTimelineAction_start(){
    var o = this;
+   o._statusStart = true;
    o._statusStop = false;
 }
 MO.MTimelineAction_process = function MTimelineAction_process(){
@@ -9689,16 +9688,15 @@ MO.MTimelineAction_process = function MTimelineAction_process(){
 }
 MO.MTimelineAction_dispose = function MTimelineAction_dispose(){
    var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 MO.MTimelineActions = function MTimelineActions(o){
    o = MO.Class.inherits(this, o);
-   o._actions      = MO.Class.register(o, new MO.AGetter('_actions'));
-   o.construct     = MO.MTimelineActions_construct;
-   o.setup         = MO.MTimelineActions_setup;
-   o.pushAction    = MO.MTimelineActions_pushAction;
-   o.process       = MO.MTimelineActions_process;
-   o.dispose       = MO.MTimelineActions_dispose;
+   o._actions   = MO.Class.register(o, new MO.AGetter('_actions'));
+   o.construct  = MO.MTimelineActions_construct;
+   o.setup      = MO.MTimelineActions_setup;
+   o.pushAction = MO.MTimelineActions_pushAction;
+   o.process    = MO.MTimelineActions_process;
+   o.dispose    = MO.MTimelineActions_dispose;
    return o;
 }
 MO.MTimelineActions_construct = function MTimelineActions_construct(){
@@ -9718,8 +9716,11 @@ MO.MTimelineActions_process = function MTimelineActions_process(context){
    var count = actions.count();
    for(var i = count - 1; i >= 0; i--){
       var action = actions.at(i);
-      if(action.isStop()){
+      if(!action.statusStart()){
+         action.start();
+      }else if(action.statusStop()){
          actions.erase(i);
+         action.dispose();
       }else{
          action.process(context);
       }

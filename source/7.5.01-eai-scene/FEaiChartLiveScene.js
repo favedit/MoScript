@@ -21,9 +21,6 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._interval               = 10;
    o._24HLastTick            = 0;
    o._24HTrendInterval       = 1000 * 60 * 5;
-   o._startDate              = null;
-   o._endDate                = null;
-   o._currentDate            = null;
    // @attribute
    o._logoBar                = null;
    o._timeline               = null;
@@ -31,19 +28,23 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._livePop                = null;
    // @attribute
    o._statusStart            = false;
-   o._statusLayerCount       = 150;
-   o._statusLayerLevel       = 150;
+   o._statusLayerCount       = 100;
+   o._statusLayerLevel       = 100;
    // @attribute
    o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartLiveScene_onSwitchComplete;
    //..........................................................
    // @method
    o.testReady               = MO.FEaiChartLiveScene_testReady;
    // @method
    o.setup                   = MO.FEaiChartLiveScene_setup;
+   o.showParticle            = MO.FEaiChartLiveScene_showParticle;
+   o.showFace                = MO.FEaiChartLiveScene_showFace;
    o.fixMatrix               = MO.FEaiChartLiveScene_fixMatrix;
    // @method
    o.processResize           = MO.FEaiChartLiveScene_processResize;
@@ -76,30 +77,7 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
       if(cityEntity){
          var provinceEntity = cityEntity.provinceEntity();
          var cityResource = cityEntity.data();
-         var location = cityResource.location();
-         var particle = o._particle;
-         var count = 4;
-         //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-         particle.color().set(1, 1, 0, 1);
-         for(var i = 0; i < count; i++){
-            var itemCount = parseInt(Math.random() * 100);
-            var attenuation = Math.random();
-            //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-            //particle.position().set((x - 5) * 2, 0, 0);
-            particle.setItemCount(itemCount);
-            particle.position().assign(location);
-            particle.position().z = provinceEntity.currentZ();
-            particle.setDelay(10 * i);
-            //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-            particle.setSpeed(4 + 0.4 * i);
-            //particle.setSpeed(speed);
-            //particle.setAngle(Math.PI * 2 / 90 * i);
-            //particle.setAcceleration(-Math.random() );
-            particle.setAcceleration(0);
-            //particle.setAttenuation(attenuation);
-            particle.setAttenuation(0.8);
-            particle.start();
-         }
+         o.showParticle(provinceEntity, cityResource);
       }
    }
 }
@@ -142,6 +120,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
+         // 淡出显示界面
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
          alphaAction.setAlphaBegin(0);
          alphaAction.setAlphaEnd(1);
@@ -188,6 +167,26 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
 }
 
 //==========================================================
+// <T>切换过程处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartLiveScene_onSwitchProcess = function FEaiChartLiveScene_onSwitchProcess(event){
+   var o = this;
+}
+
+//==========================================================
+// <T>切换完成处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartLiveScene_onSwitchComplete = function FEaiChartLiveScene_onSwitchComplete(event){
+   var o = this;
+}
+
+//==========================================================
 // <T>点击暂停处理。</T>
 //
 // @method
@@ -196,7 +195,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
 MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._readyProvince){
+      if(!o._countryReady){
          return false;
       }
       o._ready = true;
@@ -214,12 +213,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    var faceLayer = o._activeStage.faceLayer();
-   o._currentDate = new MO.TDate();
-   o._startDate = new MO.TDate();
-   o._endDate = new MO.TDate();
-   o._currentDate.parseAuto('20140701');
-   o._startDate.parseAuto('20140701');
-   o._endDate.parseAuto('20150618');
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
@@ -266,9 +259,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
-   // 加载国家数据
-   o.loadCountry();
-   //..........................................................
    // 创建粒子
    var context = o._graphicContext;
    var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
@@ -277,6 +267,55 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    particle.setData(particleData);
    o.fixMatrix(particle.matrix());
    o._activeStage.spriteLayer().pushRenderable(particle);
+}
+
+//==========================================================
+// <T>显示粒子处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
+   var o = this;
+   var particle = o._particle;
+   var location = cityResource.location();
+   var count = 4;
+   //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+   particle.color().set(1, 1, 0, 1);
+   for(var i = 0; i < count; i++){
+      var itemCount = parseInt(Math.random() * 100);
+      var attenuation = Math.random();
+      //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
+      //particle.position().set((x - 5) * 2, 0, 0);
+      particle.setItemCount(itemCount);
+      particle.position().assign(location);
+      particle.position().z = provinceEntity.currentZ();
+      particle.setDelay(10 * i);
+      //particle.setSpeed(Math.random() * 6 + 0.2 * i);
+      particle.setSpeed(4 + 0.4 * i);
+      //particle.setSpeed(speed);
+      //particle.setAngle(Math.PI * 2 / 90 * i);
+      //particle.setAcceleration(-Math.random() );
+      particle.setAcceleration(0);
+      //particle.setAttenuation(attenuation);
+      particle.setAttenuation(0.8);
+      particle.start();
+   }
+}
+
+//==========================================================
+// <T>显示表面处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
+   var o = this;
+   // 设置状态
+   o._statusStart = true;
+   o._playing = true;
+   // 重置数据
+   o._mapEntity.reset();
+   // 改变大小
+   o.processResize();
 }
 
 //==========================================================

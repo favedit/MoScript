@@ -28,45 +28,45 @@ MO.FEaiApplication_processEvent = function FEaiApplication_processEvent(event){
       desktop.processEvent(event);
    }
 }
-with(MO){
-   MO.FEaiCanvas = function FEaiCanvas(o){
-      o = RClass.inherits(this, o, FE3dCanvas);
-      o._scaleRate       = 1;
-      o._optionAlpha     = false;
-      o._optionAntialias = false;
-      o._activeStage     = RClass.register(o, new AGetter('_activeStage'));
-      o._capturePosition = null;
-      o._captureRotation = null;
-      o.construct        = FEaiCanvas_construct;
-      o.resize           = FEaiCanvas_resize;
-      o.selectStage      = FEaiCanvas_selectStage;
-      o.dispose          = FEaiCanvas_dispose;
-      return o;
+MO.FEaiCanvas = function FEaiCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCanvas);
+   o._scaleRate       = 1;
+   o._optionAlpha     = false;
+   o._optionAntialias = false;
+   o._activeStage     = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o._capturePosition = null;
+   o._captureRotation = null;
+   o.construct        = MO.FEaiCanvas_construct;
+   o.resize           = MO.FEaiCanvas_resize;
+   o.selectStage      = MO.FEaiCanvas_selectStage;
+   o.dispose          = MO.FEaiCanvas_dispose;
+   return o;
+}
+MO.FEaiCanvas_construct = function FEaiCanvas_construct(){
+   var o = this;
+   o.__base.FE3dCanvas.construct.call(o);
+   o._rotation = new MO.SVector3();
+   o._capturePosition = new MO.SPoint2();
+   o._captureRotation = new MO.SVector3();
+}
+MO.FEaiCanvas_resize = function FEaiCanvas_resize(width, height){
+   var o = this;
+   o.__base.FE3dCanvas.resize.call(o, width, height);
+   var context = o._graphicContext;
+   var size = context.size();
+   var stage = o._activeStage;
+   if(stage){
+      var projection = stage.camera().projection();
+      projection.size().set(size.width, size.height);
+      projection.update();
    }
-   MO.FEaiCanvas_construct = function FEaiCanvas_construct(){
-      var o = this;
-      o.__base.FE3dCanvas.construct.call(o);
-      o._rotation = new SVector3();
-      o._capturePosition = new SPoint2();
-      o._captureRotation = new SVector3();
-   }
-   MO.FEaiCanvas_resize = function FEaiCanvas_resize(width, height){
-      var o = this;
-      o.__base.FE3dCanvas.resize.call(o, width, height);
-      var context = o._graphicContext;
-      var size = context.size();
-      var stage = o._activeStage;
-      if(stage){
-         var projection = stage.camera().projection();
-         projection.size().set(size.width, size.height);
-         projection.update();
-      }
-   }
-   MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
-      var o = this;
+}
+MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
+   var o = this;
+   if(stage){
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
-      stage.selectTechnique(o, FE3dGeneralTechnique);
+      stage.selectTechnique(o, MO.FE3dGeneralTechnique);
       var camera = stage.region().camera();
       var projection = camera.projection();
       projection.setAngle(80);
@@ -75,63 +75,74 @@ with(MO){
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
       camera.update();
-      o._activeStage = stage;
    }
-   MO.FEaiCanvas_dispose = function FEaiCanvas_dispose(){
-      var o = this;
-      o._rotation = RObject.dispose(o._rotation);
-      o.__base.FE3dCanvas.dispose.call(o);
-   }
+   o._activeStage = stage;
 }
-with(MO){
-   MO.FEaiChartApplication = function FEaiChartApplication(o){
-      o = RClass.inherits(this, o, FEaiApplication);
-      o._sceneCode      = RClass.register(o, new AGetSet('_sceneCode'), MO.EEaiScene.ChartHistory);
-      o._chapterLoading = RClass.register(o, new AGetter('_chapterLoading'));
-      o._chapterChart   = RClass.register(o, new AGetter('_chapterChart'));
-      o._thread         = null;
-      o._interval       = 10;
-      o.onLoadResource  = FEaiChartApplication_onLoadResource;
-      o.construct       = FEaiChartApplication_construct;
-      o.createCanvas    = FEaiChartApplication_createCanvas;
-      o.setup           = FEaiChartApplication_setup;
-      o.dispose         = FEaiChartApplication_dispose;
-      return o;
-   }
-   MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
-      var o = this;
-      var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-      chapter.selectSceneByCode(o._sceneCode);
-      o.processResize();
-   }
-   MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
-      var o = this;
-      o.__base.FEaiApplication.construct.call(o);
-   }
-   MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
-      return RClass.create(FEaiChartCanvas);
-   }
-   MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
-      var o = this;
-      o.__base.FEaiApplication.setup.call(o, hPanel);
-      o._hPanel = hPanel;
-      var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
-      desktop.build(hPanel);
-      var canvas = MO.Eai.Canvas = desktop.canvas3d();
-      o.linkGraphicContext(canvas);
-      var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
-      chapter.linkGraphicContext(o);
-      o.registerChapter(chapter);
-      var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
-      resourceConsole.addLoadListener(o, o.onLoadResource);
-      resourceConsole.load('{eai.resource}/resource.dat');
-   }
-   MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
-      var o = this;
-      o._chapterLoading = RObject.dispose(o._chapterLoading);
-      o._chapterChart = RObject.dispose(o._chapterChart);
-      o.__base.FEaiApplication.dispose.call(o);
-   }
+MO.FEaiCanvas_dispose = function FEaiCanvas_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o._capturePosition = MO.Lang.Object.dispose(o._capturePosition);
+   o._captureRotation = MO.Lang.Object.dispose(o._captureRotation);
+   o.__base.FE3dCanvas.dispose.call(o);
+}
+MO.FEaiChartApplication = function FEaiChartApplication(o){
+   o = MO.Class.inherits(this, o, MO.FEaiApplication);
+   o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartHistory);
+   o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
+   o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
+   o._thread         = null;
+   o._interval       = 10;
+   o.onLoadCountry   = MO.FEaiChartApplication_onLoadCountry;
+   o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
+   o.construct       = MO.FEaiChartApplication_construct;
+   o.createCanvas    = MO.FEaiChartApplication_createCanvas;
+   o.setup           = MO.FEaiChartApplication_setup;
+   o.dispose         = MO.FEaiChartApplication_dispose;
+   return o;
+}
+MO.FEaiChartApplication_onLoadCountry = function FEaiChartApplication_onLoadCountry(event){
+   var o = this;
+   var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
+   chapter.selectSceneByCode(o._sceneCode);
+   o.processResize();
+}
+MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+   var o = this;
+   var canvas = o._desktop.canvas3d();
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.linkGraphicContext(canvas);
+   entityConsole.setup();
+   entityConsole.addLoadCountryListener(o, o.onLoadCountry);
+   entityConsole.loadCountryData();
+   o.processResize();
+}
+MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
+   var o = this;
+   o.__base.FEaiApplication.construct.call(o);
+}
+MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
+   return RClass.create(FEaiChartCanvas);
+}
+MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
+   var o = this;
+   o.__base.FEaiApplication.setup.call(o, hPanel);
+   o._hPanel = hPanel;
+   var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
+   desktop.build(hPanel);
+   var canvas = MO.Eai.Canvas = desktop.canvas3d();
+   o.linkGraphicContext(canvas);
+   var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+   chapter.linkGraphicContext(o);
+   o.registerChapter(chapter);
+   var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
+   resourceConsole.addLoadListener(o, o.onLoadResource);
+   resourceConsole.load('{eai.resource}/resource.dat');
+}
+MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
+   var o = this;
+   o._chapterLoading = RObject.dispose(o._chapterLoading);
+   o._chapterChart = RObject.dispose(o._chapterChart);
+   o.__base.FEaiApplication.dispose.call(o);
 }
 MO.FEaiChartCanvas = function FEaiChartCanvas(o){
    o = MO.Class.inherits(this, o, MO.FEaiCanvas);

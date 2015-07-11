@@ -537,15 +537,17 @@ MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
    return o;
 }
 MO.FGuiAction = function FGuiAction(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MTimelineAction);
-   o._controls      = MO.Class.register(o, [new MO.AGetter('_controls')]);
-   o.construct      = MO.FGuiAction_construct;
-   o.push           = MO.FGuiAction_push;
-   o.startControl   = MO.FGuiAction_startControl;
-   o.start          = MO.FGuiAction_start;
-   o.processControl = MO.FGuiAction_processControl;
-   o.process        = MO.FGuiAction_process;
-   o.dispose        = MO.FGuiAction_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineAction);
+   o._controls          = MO.Class.register(o, [new MO.AGetter('_controls')]);
+   o._listenersProcess  = MO.Class.register(o, new MO.AListener('_listenersProcess', MO.EEvent.Process));
+   o._listenersComplete = MO.Class.register(o, new MO.AListener('_listenersComplete', MO.EEvent.Complete));
+   o.construct          = MO.FGuiAction_construct;
+   o.push               = MO.FGuiAction_push;
+   o.startControl       = MO.FGuiAction_startControl;
+   o.start              = MO.FGuiAction_start;
+   o.processControl     = MO.FGuiAction_processControl;
+   o.process            = MO.FGuiAction_process;
+   o.dispose            = MO.FGuiAction_dispose;
    return o;
 }
 MO.FGuiAction_construct = function FGuiAction_construct(){
@@ -587,6 +589,7 @@ MO.FGuiAction_dispose = function FGuiAction_dispose(){
    var o = this;
    o._controls = MO.Lang.Object.dispose(o._controls);
    o.__base.MTimelineAction.dispose.call(o);
+   o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 MO.FGuiActionAlpha = function FGuiActionAlpha(o){
@@ -595,7 +598,10 @@ MO.FGuiActionAlpha = function FGuiActionAlpha(o){
    o._alphaEnd      = MO.Class.register(o, [new MO.AGetSet('_alphaEnd')], 1);
    o._alphaInterval = MO.Class.register(o, [new MO.AGetSet('_alphaInterval')], 0.1);
    o._alphaCurrent  = 0;
+   o._eventProcess  = null;
+   o._eventFinish   = null;
    o.construct      = MO.FGuiActionAlpha_construct;
+   o.doComplete     = MO.FGuiActionAlpha_doComplete;
    o.startControl   = MO.FGuiActionAlpha_startControl;
    o.processControl = MO.FGuiActionAlpha_processControl;
    o.dispose        = MO.FGuiActionAlpha_dispose;
@@ -604,6 +610,15 @@ MO.FGuiActionAlpha = function FGuiActionAlpha(o){
 MO.FGuiActionAlpha_construct = function FGuiActionAlpha_construct(){
    var o = this;
    o.__base.FGuiAction.construct.call(o);
+   o._eventProcess = new MO.SEvent();
+   o._eventFinish = new MO.SEvent();
+}
+MO.FGuiActionAlpha_doComplete = function FGuiActionAlpha_doComplete(){
+   var o = this;
+   var event = o._eventProcess;
+   o.processCompleteListener(event);
+   o._alphaCurrent = o._alphaEnd;
+   o._statusStop = true;
 }
 MO.FGuiActionAlpha_startControl = function FGuiActionAlpha_startControl(context, control){
    var o = this;
@@ -613,17 +628,29 @@ MO.FGuiActionAlpha_startControl = function FGuiActionAlpha_startControl(context,
 MO.FGuiActionAlpha_processControl = function FGuiActionAlpha_processControl(context, control){
    var o = this;
    o.__base.FGuiAction.processControl.call(o);
+   o._alphaCurrent += o._alphaInterval;
    if(o._alphaInterval > 0){
-      o._alphaCurrent += o._alphaInterval;
       if(o._alphaCurrent >= o._alphaEnd){
-         o._statusStop = true;
-         o._alphaCurrent = o._alphaEnd;
+         o.doComplete();
       }
+   }else if(o._alphaInterval < 0){
+      if(o._alphaCurrent <= o._alphaEnd){
+         o.doComplete();
+      }
+   }else{
+      o.doComplete();
+   }
+   if(!o._statusStop){
+      var event = o._eventProcess;
+      event.alpha = o._alphaCurrent;
+      o.processProcessListener(event);
    }
    control.doActionAlpha(o._alphaCurrent);
 }
 MO.FGuiActionAlpha_dispose = function FGuiActionAlpha_dispose(){
    var o = this;
+   o._eventProcess = MO.Lang.Object.dispose(o._eventProcess);
+   o._eventFinish = MO.Lang.Object.dispose(o._eventFinish);
    o.__base.FGuiAction.dispose.call(o);
 }
 with(MO){

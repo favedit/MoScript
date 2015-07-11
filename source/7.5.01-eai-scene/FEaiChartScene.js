@@ -14,11 +14,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._nowDate              = null;
    o._nowTicker            = null;
    // @attribute
-   o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
-   o._countryData          = null;
-   // @attribute
-   o._countryBorderDisplay = null;
-   o._countryDisplay       = null;
+   o._mapEntity            = null;
    o._citysRangeRenderable = null;
    o._citysRenderable      = null;
    // @attribute
@@ -28,7 +24,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._groundAutio          = null;
    //..........................................................
    // @event
-   o.onLoadCountry         = MO.FEaiChartScene_onLoadCountry;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    //..........................................................
@@ -39,54 +34,12 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.setup                 = MO.FEaiChartScene_setup;
    // @method
    o.active                = MO.FEaiChartScene_active;
-   o.loadCountry           = MO.FEaiChartScene_loadCountry;
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
    o.deactive              = MO.FEaiChartScene_deactive;
    // @method
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
-}
-
-//==========================================================
-// <T>数据加载处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartScene_onLoadCountry = function FEaiChartScene_onLoadCountry(event){
-   var o = this;
-   var countryData = event.sender;
-   var context = o.graphicContext();
-   var stage = o._activeStage;
-   var countryDisplay = o._countryDisplay;
-   var countryBorderDisplay = o._countryBorderDisplay;
-   //..........................................................
-   // 创建省份实体
-   var mapEntity = o._mapEntity;
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var provinceEntityConsole = MO.Console.find(MO.FEaiEntityConsole).provinceConsole();
-   var provincesData = countryData.provinces();
-   var count = provincesData.count();
-   for(var i = 0; i < count; i++){
-      provinceData = provincesData.at(i);
-      var provinceCode = provinceData.code();
-      var province = provinceConsole.findByCode(provinceCode);
-      // 创建省份实体
-      var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
-      provinceEntity.setMapEntity(mapEntity);
-      provinceEntity.setData(provinceData);
-      provinceEntity.build(context);
-      mapEntity.pushProvince(provinceEntity);
-      provinceEntityConsole.push(provinceEntity);
-      // 放入显示层
-      countryDisplay.pushRenderable(provinceEntity.faceRenderable());
-      countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
-   }
-   o._mapEntity.setupCityEntities();
-   o._readyProvince = true;
-   // 重置画面大小
-   o.processResize();
 }
 
 //==========================================================
@@ -115,6 +68,15 @@ MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event)
 MO.FEaiChartScene_onProcess = function FEaiChartScene_onProcess(){
    var o = this;
    o.__base.FEaiScene.onProcess.call(o);
+   // 检查国家准备好
+   if(!o._countryReady){
+      var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+      if(entityConsole.testCountryReady()){
+         o._countryReady = true;
+         // 重置画面大小
+         o.processResize();
+      }
+   }
    // 更新精灵
    //if(o._flagSprite){
    //   var matrix = o._flagSprite.matrix();
@@ -134,7 +96,6 @@ MO.FEaiChartScene_construct = function FEaiChartScene_construct(){
    // 创建属性
    o._nowDate = new MO.TDate();
    o._nowTicker = new MO.TTicker(10000);
-   o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
 }
 
 //==========================================================
@@ -159,20 +120,38 @@ MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
-   var context = o.graphicContext();
-   var contextSize = context.size();
+   // 获得实体控制台
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   var mapEntity = o._mapEntity = entityConsole.mapEntity();
    // 创建舞台
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
    stage.region().backgroundColor().set(0, 0, 0, 0);
    // 创建地图容器
-   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
+   var display = mapEntity.countryDisplay();
    o.fixMatrix(display.matrix());
    stage.mapLayer().pushDisplay(display);
-   var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplay);
+   var display = mapEntity.countryBorderDisplay();
    o.fixMatrix(display.matrix());
    stage.borderLayer().pushDisplay(display);
+   //..........................................................
+   // 创建城市范围渲染对象
+   var citysRangeRenderable = mapEntity.citysRangeRenderable();
+   o.fixMatrix(citysRangeRenderable.matrix());
+   stage.cityRangeLayer().push(citysRangeRenderable);
+   // 创建城市渲染对象
+   var citysRenderable = mapEntity.citysRenderable();
+   o.fixMatrix(citysRenderable.matrix());
+   stage.cityLayer().push(citysRenderable);
+   //..........................................................
+   // 加载背景音乐
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
+   audio.setLoop(true);
+   audio.setVolume(0.2);
+   audio.play();
+   //..........................................................
    // 创建背景
    //var control = o._background = MO.Class.create(MO.FGuiPicture);
    //control.linkGraphicContext(o);
@@ -184,54 +163,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //control.renderable().setOptionFull(true);
    //o._guiManager.register(control);
    //stage.groundLayer().push(control);
-   //..........................................................
-   // 创建城市范围渲染对象
-   var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
-   citysRangeRenderable.linkGraphicContext(o);
-   o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
-   o._mapEntity.setCitysRangeRenderable(citysRangeRenderable);
-   // 创建城市渲染对象
-   var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
-   citysRenderable.linkGraphicContext(o);
-   o.fixMatrix(citysRenderable.matrix());
-   stage.cityLayer().push(citysRenderable);
-   o._mapEntity.setCitysRenderable(citysRenderable);
-   // 创建城市实体
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
-   var cityEntities = o._mapEntity.cityEntities();
-   var citys = cityConsole.citys();
-   var cityCount = citys.count();
-   for(var i = 0; i < cityCount; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      // 创建实体
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setStage(o._activeStage);
-      cityEntity.setRenderable(citysRenderable);
-      cityEntity.setData(city);
-      cityEntity.build(context);
-      cityEntities.set(city.code(), cityEntity);
-      // 放入渲染对象
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-      cityEntityConsole.push(cityEntity);
-   }
-   // 上传数据
-   citysRenderable.setup();
-   citysRenderable.upload();
-   citysRangeRenderable.setup();
-   citysRangeRenderable.upload();
-   //..........................................................
-   // 加载背景音乐
-   var audioConsole = MO.Console.find(MO.FAudioConsole);
-   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
-   audio.setLoop(true);
-   audio.setVolume(0.2);
-   audio.play();
-   // 加载地图音乐
    //..........................................................
    // 加载标志
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);
@@ -247,20 +178,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
    o.__base.FEaiScene.active.call(o);
-}
-
-//==========================================================
-// <T>加载国家数据处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartScene_loadCountry = function FEaiChartScene_loadCountry(){
-   var o = this;
-   if(!o._countryData){
-      var country = o._countryData = MO.Class.create(MO.FEaiCountryData);
-      country.addLoadListener(o, o.onLoadCountry);
-      country.load();
-   }
 }
 
 //==========================================================
@@ -282,10 +199,12 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    var o = this;
    o.__base.FEaiScene.processResize.call(o);
    // 重新设置矩阵
-   o.fixMatrix(o._countryDisplay.matrix());
-   o.fixMatrix(o._countryBorderDisplay.matrix());
-   o.fixMatrix(o._citysRangeRenderable.matrix());
-   o.fixMatrix(o._citysRenderable.matrix());
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   var mapEntity = entityConsole.mapEntity();
+   o.fixMatrix(mapEntity.countryDisplay().matrix());
+   o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
+   o.fixMatrix(mapEntity.citysRangeRenderable().matrix());
+   o.fixMatrix(mapEntity.citysRenderable().matrix());
 }
 
 //==========================================================
@@ -307,7 +226,7 @@ MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
    o._nowDate = RObject.dispose(o._nowDate);
    o._nowTicker = RObject.dispose(o._nowTicker);
-   o._mapEntity = RObject.dispose(o._mapEntity);
+   o._mapEntity = null;
    // 父处理
    o.__base.FEaiScene.dispose.call(o);
 }

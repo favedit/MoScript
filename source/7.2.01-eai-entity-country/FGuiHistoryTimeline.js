@@ -10,7 +10,7 @@ with (MO) {
       o = RClass.inherits(this, o, FGuiTimeline);
       //..........................................................
       // @attribute
-      o._startHeight = 50;
+      o._startHeight = 30;
       o._lineWidth = 5;
       o._circleRadius = 5;
       //..........................................................

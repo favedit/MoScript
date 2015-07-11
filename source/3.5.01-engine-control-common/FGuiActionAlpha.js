@@ -14,9 +14,14 @@ MO.FGuiActionAlpha = function FGuiActionAlpha(o){
    o._alphaInterval = MO.Class.register(o, [new MO.AGetSet('_alphaInterval')], 0.1);
    // @property
    o._alphaCurrent  = 0;
+   // @property
+   o._eventProcess  = null;
+   o._eventFinish   = null;
    //..........................................................
    // @method
    o.construct      = MO.FGuiActionAlpha_construct;
+   // @method
+   o.doComplete     = MO.FGuiActionAlpha_doComplete;
    // @method
    o.startControl   = MO.FGuiActionAlpha_startControl;
    o.processControl = MO.FGuiActionAlpha_processControl;
@@ -33,6 +38,25 @@ MO.FGuiActionAlpha_construct = function FGuiActionAlpha_construct(){
    var o = this;
    o.__base.FGuiAction.construct.call(o);
    // 设置属性
+   o._eventProcess = new MO.SEvent();
+   o._eventFinish = new MO.SEvent();
+}
+
+//==========================================================
+// <T>开始控件。</T>
+//
+// @method
+// @param context:STimelineContext 环境
+// @param control:FGuiControl 控件
+//==========================================================
+MO.FGuiActionAlpha_doComplete = function FGuiActionAlpha_doComplete(){
+   var o = this;
+   // 事件处理
+   var event = o._eventProcess;
+   o.processCompleteListener(event);
+   // 设置状态
+   o._alphaCurrent = o._alphaEnd;
+   o._statusStop = true;
 }
 
 //==========================================================
@@ -60,12 +84,23 @@ MO.FGuiActionAlpha_processControl = function FGuiActionAlpha_processControl(cont
    var o = this;
    o.__base.FGuiAction.processControl.call(o);
    // 计算透明
+   o._alphaCurrent += o._alphaInterval;
    if(o._alphaInterval > 0){
-      o._alphaCurrent += o._alphaInterval;
       if(o._alphaCurrent >= o._alphaEnd){
-         o._statusStop = true;
-         o._alphaCurrent = o._alphaEnd;
+         o.doComplete();
       }
+   }else if(o._alphaInterval < 0){
+      if(o._alphaCurrent <= o._alphaEnd){
+         o.doComplete();
+      }
+   }else{
+      o.doComplete();
+   }
+   // 进度事件
+   if(!o._statusStop){
+      var event = o._eventProcess;
+      event.alpha = o._alphaCurrent;
+      o.processProcessListener(event);
    }
    // 设置透明
    control.doActionAlpha(o._alphaCurrent);
@@ -79,6 +114,8 @@ MO.FGuiActionAlpha_processControl = function FGuiActionAlpha_processControl(cont
 MO.FGuiActionAlpha_dispose = function FGuiActionAlpha_dispose(){
    var o = this;
    // 释放属性
+   o._eventProcess = MO.Lang.Object.dispose(o._eventProcess);
+   o._eventFinish = MO.Lang.Object.dispose(o._eventFinish);
    // 父处理
    o.__base.FGuiAction.dispose.call(o);
 }

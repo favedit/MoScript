@@ -9,19 +9,20 @@ MO.MTimelineAction = function MTimelineAction(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
-   o._code       = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._interval   = MO.Class.register(o, new MO.AGetSet('_interval'));
-   o._statusStop = false;
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._interval    = MO.Class.register(o, new MO.AGetSet('_interval'));
+   // @attribute
+   o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
+   o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
    //..........................................................
    // @method
-   o.construct   = MO.MTimelineAction_construct;
+   o.construct    = MO.MTimelineAction_construct;
    // @method
-   o.setup       = MO.MTimelineAction_setup;
-   o.isStop      = MO.MTimelineAction_isStop;
-   o.start       = MO.MTimelineAction_start;
-   o.process     = MO.MTimelineAction_process;
+   o.setup        = MO.MTimelineAction_setup;
+   o.start        = MO.MTimelineAction_start;
+   o.process      = MO.MTimelineAction_process;
    // @method
-   o.dispose     = MO.MTimelineAction_dispose;
+   o.dispose      = MO.MTimelineAction_dispose;
    return o;
 }
 
@@ -45,21 +46,13 @@ MO.MTimelineAction_setup = function MTimelineAction_setup(){
 }
 
 //==========================================================
-// <T>判断是否结束。</T>
-//
-// @method
-//==========================================================
-MO.MTimelineAction_isStop = function MTimelineAction_isStop(){
-   return this._statusStop;
-}
-
-//==========================================================
 // <T>开始处理。</T>
 //
 // @method
 //==========================================================
 MO.MTimelineAction_start = function MTimelineAction_start(){
    var o = this;
+   o._statusStart = true;
    o._statusStop = false;
 }
 
@@ -79,7 +72,4 @@ MO.MTimelineAction_process = function MTimelineAction_process(){
 //==========================================================
 MO.MTimelineAction_dispose = function MTimelineAction_dispose(){
    var o = this;
-   // 释放属性
-   // 父处理
-   o.__base.FObject.dispose.call(o);
 }

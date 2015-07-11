@@ -6,21 +6,23 @@
 // @version 150710
 //==========================================================
 MO.FGuiAction = function FGuiAction(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MTimelineAction);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineAction);
    //..........................................................
    // @attribute
-   o._controls      = MO.Class.register(o, [new MO.AGetter('_controls')]);
+   o._controls          = MO.Class.register(o, [new MO.AGetter('_controls')]);
+   o._listenersProcess  = MO.Class.register(o, new MO.AListener('_listenersProcess', MO.EEvent.Process));
+   o._listenersComplete = MO.Class.register(o, new MO.AListener('_listenersComplete', MO.EEvent.Complete));
    //..........................................................
    // @method
-   o.construct      = MO.FGuiAction_construct;
+   o.construct          = MO.FGuiAction_construct;
    // @method
-   o.push           = MO.FGuiAction_push;
-   o.startControl   = MO.FGuiAction_startControl;
-   o.start          = MO.FGuiAction_start;
-   o.processControl = MO.FGuiAction_processControl;
-   o.process        = MO.FGuiAction_process;
+   o.push               = MO.FGuiAction_push;
+   o.startControl       = MO.FGuiAction_startControl;
+   o.start              = MO.FGuiAction_start;
+   o.processControl     = MO.FGuiAction_processControl;
+   o.process            = MO.FGuiAction_process;
    // @method
-   o.dispose        = MO.FGuiAction_dispose;
+   o.dispose            = MO.FGuiAction_dispose;
    return o;
 }
 
@@ -116,5 +118,6 @@ MO.FGuiAction_dispose = function FGuiAction_dispose(){
    o._controls = MO.Lang.Object.dispose(o._controls);
    // 父处理
    o.__base.MTimelineAction.dispose.call(o);
+   o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

@@ -39,7 +39,7 @@ MO.Eai = new function FEai(){
    return o;
 }
 MO.FEaiEntity = function FEaiEntity(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    return o;
 }
 with(MO){

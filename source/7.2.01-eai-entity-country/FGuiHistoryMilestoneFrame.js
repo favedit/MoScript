@@ -10,30 +10,30 @@ with (MO) {
       o = RClass.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
-      o._bgImage = null;
-      o._numImages = null;
-      o._wanImage = null;
-      o._yiImage = null;
+      o._bgImage              = null;
+      o._numImages            = null;
+      o._wanImage             = null;
+      o._yiImage              = null;
       // @attribute
-      o._data = RClass.register(o, new AGetSet('_data'));
-      o._startTick = 0;
-      o._popDuration = 500;
-      o._showDuration = 5000;
-      o._closeDuration = 500;
-      o._fullWidth = 953;
-      o._fullHeight = 896;
+      o._data                 = RClass.register(o, new AGetSet('_data'));
+      o._startTick            = 0;
+      o._popDuration          = 400;
+      o._showDuration         = 0;
+      o._closeDuration        = 400;
+      o._fullWidth            = 953;
+      o._fullHeight           = 896;
       // @attribute
-      o._popupSE = null;
+      o._popupSE              = null;
+      // @attribute
+      o._listenersDataChanged = RClass.register(o, new AListener('_listenersDataChanged', MO.EEvent.DataChanged));
       //..........................................................
       // @method
-      o.setup = FGuiHistoryMilestoneFrame_setup;
-      o.onPaintBegin = FGuiHistoryMilestoneFrame_onPaintBegin;
-      o.onImageLoad = FGuiHistoryMilestoneFrame_onImageLoad;
-      o.show = FGuiHistoryMilestoneFrame_show;
+      o.setup                 = FGuiHistoryMilestoneFrame_setup;
+      o.onPaintBegin          = FGuiHistoryMilestoneFrame_onPaintBegin;
+      o.onImageLoad           = FGuiHistoryMilestoneFrame_onImageLoad;
+      o.show                  = FGuiHistoryMilestoneFrame_show;
       // @method
-      o.dispose = FGuiHistoryMilestoneFrame_dispose;
-      // @event
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
+      o.dispose               = FGuiHistoryMilestoneFrame_dispose;
       return o;
    }
 
@@ -44,12 +44,10 @@ with (MO) {
    //==========================================================
    MO.FGuiHistoryMilestoneFrame_setup = function FGuiHistoryMilestoneFrame_setup() {
       var o = this;
-
       o.setWidth(o._fullWidth);
       o.setHeight(o._fullHeight);
       o.setLeft((MO.Eai.Canvas.logicSize().width - o._fullWidth) / 2);
       o.setTop((MO.Eai.Canvas.logicSize().height));
-
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
       o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
@@ -66,7 +64,6 @@ with (MO) {
          img.loadUrl('../ars/eai/number/' + i + '.png');
          o._numImages[i] = img;
       }
-
       var audioConsole = MO.Console.find(MO.FAudioConsole);
       o._popupSE = audioConsole.load('{eai.resource}/milestone/popup.mp3');
    }
