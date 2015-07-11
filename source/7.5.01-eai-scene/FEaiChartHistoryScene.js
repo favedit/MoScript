@@ -33,6 +33,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._statusLayerCount         = 100;
    o._statusLayerLevel         = 100;
    // @attribute
+   o._milestoneBars            = null;
    o._milestoneShowed          = 0;
    o._milestoneBarShowDuration = 1000;
    o._milestoneBarShowTick     = 0;
@@ -78,30 +79,28 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    o._startDate.parseAuto(startDate.code());
    o._endDate.parseAuto(endDate.code());
    //..........................................................
-   // 创建里程碑
+   // 创建右侧里程碑条
    var milestones = historyConsole.milestones();
    var milestoneBars = o._milestoneBars = new MO.TObjects();
    var count = milestones.count();
-   for(var i = count - 1; i >= 0; i--){
+   for (var i = count - 1; i >= 0; i--) {
       var milestone = milestones.at(count - i - 1);
-      var frame = MO.Console.find(MO.FGuiFrameConsole).create(o, 'eai.chart.MilestoneBar');
-      frame.setVisible(false);
-      frame.setDockCd(MO.EGuiDock.Right)
-      frame.setTop(90 + 100 * i);
-      frame.setRight(-360);
-      var date = new MO.TDate();
-      date.parse(milestone.code());
-      frame.findComponent('date').setLabel(date.format('YYYY/MM/DD'));
-      var label = null;
+      var bar = MO.RClass.create(MO.FGuiHistoryMilestoneBar);
+      bar.linkGraphicContext(o);
+      bar.setName('MilestoneBar_' + i);
+      bar.setVisible(false);
+      bar.setDockCd(MO.EGuiDock.Right)
+      bar.setTop(90 + 100 * i);
       var milestoneInvestmentTotal = milestone.investmentTotal();
-      if(milestoneInvestmentTotal >= 10000){
-         label = parseInt(milestoneInvestmentTotal / 10000) + '亿';
-      }else{
-         label = parseInt(milestoneInvestmentTotal) + '万';
+      if (milestoneInvestmentTotal >= 10000) {
+         bar.setRight(-371);
+      } else {
+         bar.setRight(-341);
       }
-      frame.findComponent('total').setLabel(label);
-      o._guiManager.register(frame);
-      milestoneBars.push(frame);
+      bar.setup(milestone);
+      bar.build();
+      o._guiManager.register(bar);
+      milestoneBars.push(bar);
    }
 }
 
@@ -247,11 +246,16 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
       var p = mbPassedTick / o._milestoneBarShowDuration;
       if (p > 1) {
          p = 1;
-         o._milestoneBarShowing = false;;
+         o._milestoneBarShowing = false;
       }
       p = (1 - p) * (1 - p);
       var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
-      mBar.setRight(20 + (-380 * p));
+      if (mBar.data().investmentTotal() >= 10000) {
+         mBar.setRight(20 + (-371 * p));
+      }
+      else {
+         mBar.setRight(20 + (-341 * p));
+      }
       mBar.dirty();
    }
    if (o._milestoneFrame.visible()) {
@@ -376,6 +380,30 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.setup();
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
+   // 右侧里程碑条背景
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var milestoneBG = MO.RClass.create(MO.FGuiPicture);
+   milestoneBG.linkGraphicContext(o);
+   milestoneBG.setName('MilestoneBG_Top');
+   milestoneBG.setDockCd(MO.EGuiDock.RightTop);
+   milestoneBG.setWidth(468);
+   milestoneBG.setHeight(464);
+   milestoneBG._displayOrder = -1;
+   milestoneBG._backResource = 'url:/script/ars/eai/milestone/bar_bg_top.png';
+   milestoneBG.psInitialize();
+   milestoneBG.build();
+   o._guiManager.register(milestoneBG);
+   milestoneBG = MO.RClass.create(MO.FGuiPicture);
+   milestoneBG.linkGraphicContext(o);
+   milestoneBG.setName('MilestoneBG_Bottom');
+   milestoneBG.setDockCd(MO.EGuiDock.RightBottom);
+   milestoneBG.setWidth(468);
+   milestoneBG.setHeight(464);
+   milestoneBG._displayOrder = -1;
+   milestoneBG._backResource = 'url:/script/ars/eai/milestone/bar_bg_bottom.png';
+   milestoneBG.psInitialize();
+   milestoneBG.build();
+   o._guiManager.register(milestoneBG);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
