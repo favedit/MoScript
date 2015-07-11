@@ -784,7 +784,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();

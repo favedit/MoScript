@@ -843,11 +843,9 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
-   o._statusSetup          = false;
    o.onSetup               = MO.FEaiEntityConsole_onSetup;
    o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
    o.construct             = MO.FEaiEntityConsole_construct;
-   o.setup                 = MO.FEaiEntityConsole_setup;
    o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
    o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
    o.dispose               = MO.FEaiEntityConsole_dispose;
@@ -855,6 +853,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
 }
 MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    var o = this;
+   o.__base.FConsole.onSetup.call(o);
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
    mapEntity.setup();
@@ -917,13 +916,6 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
 }
-MO.FEaiEntityConsole_setup = function FEaiEntityConsole_setup(){
-   var o = this;
-   if(!o._statusSetup){
-      o.onSetup();
-      o._statusSetup = true;
-   }
-}
 MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
    return this._countryReady;
 }
@@ -945,17 +937,17 @@ MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
 }
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
-   o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
    o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
    o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
+   o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
+   o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
    o.construct             = MO.FEaiMapEntity_construct;
    o.setup                 = MO.FEaiMapEntity_setup;
    o.setupCityEntities     = MO.FEaiMapEntity_setupCityEntities;
-   o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
+   o.findProvinceByCode    = MO.FEaiMapEntity_findProvinceByCode;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.pushProvince          = MO.FEaiMapEntity_pushProvince;
    o.upload                = MO.FEaiMapEntity_upload;
@@ -975,10 +967,10 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var o = this;
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
-   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
-   display.linkGraphicContext(o);
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
+   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
+   display.linkGraphicContext(o);
    var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
@@ -995,7 +987,7 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
    }
    o._countryEntity.setup(provinceEntities);
 }
-MO.FEaiMapEntity_findProvinceByCard = function FEaiMapEntity_findProvinceByCard(code){
+MO.FEaiMapEntity_findProvinceByCode = function FEaiMapEntity_findProvinceByCode(code){
    var o = this;
    var provinceEntity = o._provinceEntities.get(code);
    return provinceEntity;
@@ -1007,20 +999,13 @@ MO.FEaiMapEntity_pushProvince = function FEaiMapEntity_pushProvince(province){
 }
 MO.FEaiMapEntity_findCityByCard = function FEaiMapEntity_findCityByCard(card){
    var o = this;
-   if(card.length != 4){
-      return null;
+   var cityEntity = null;
+   var cardConsole = MO.Console.find(MO.FEaiResourceConsole).cardConsole();
+   var cityCode = cardConsole.findCityCode(card);
+   if(cityCode){
+      cityEntity = o._cityEntities.get(cityCode);
    }
-   var cityEntities = o._cityEntities;
-   var cityEntity = cityEntities.get(card);
-   if(cityEntity){
-      return cityEntity;
-   }
-   var cityEntities = o._cityEntities;
-   var cityEntity = cityEntities.get(card.substring(0, 2));
-   if(cityEntity){
-      return cityEntity;
-   }
-   return null;
+   return cityEntity;
 }
 MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
    var o = this;
@@ -1068,9 +1053,13 @@ MO.FEaiMapEntity_reset = function FEaiMapEntity_reset(){
 }
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
-   o._countryEntity = MO.RObject.dispose(o._countryEntity);
-   o._provinceEntities = MO.RObject.dispose(o._provinceEntities);
-   o._cityEntities = MO.RObject.dispose(o._cityEntities);
+   o._countryEntity = MO.Lang.Object.dispose(o._countryEntity);
+   o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
+   o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
+   o._citysRenderable = MO.Lang.Object.dispose(o._citysRenderable);
+   o._citysRangeRenderable = MO.Lang.Object.dispose(o._citysRangeRenderable);
+   o._countryDisplay = MO.Lang.Object.dispose(o._countryDisplay);
+   o._countryBorderDisplay = MO.Lang.Object.dispose(o._countryBorderDisplay);
    o.__base.FEaiEntity.dispose.call(o);
 }
 MO.FEaiProvinceData = function FEaiProvinceData(o){
@@ -2224,10 +2213,10 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    }
    x += widths[0];
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntity = cityConsole.findCityByCard(entity.card());
+   var cityResource = cityConsole.findByCard(entity.card());
    text = '';
-   if (cityEntity) {
-      text = cityEntity.label();
+   if(cityResource){
+      text = cityResource.label();
    }
    textWidth = graphic.textWidth(text);
    graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);

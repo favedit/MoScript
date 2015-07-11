@@ -12,32 +12,34 @@ MO.SValue3 = function SValue3(x, y, z){
    var o = this;
    //..........................................................
    // @attribute
-   o.x           = MO.Runtime.nvl(x, 0);
-   o.y           = MO.Runtime.nvl(y, 0);
-   o.z           = MO.Runtime.nvl(z, 0);
+   o.x            = MO.Runtime.nvl(x, 0);
+   o.y            = MO.Runtime.nvl(y, 0);
+   o.z            = MO.Runtime.nvl(z, 0);
    //..........................................................
    // @method
-   o.isEmpty     = MO.SValue3_isEmpty;
+   o.isEmpty      = MO.SValue3_isEmpty;
    // @method
-   o.equals      = MO.SValue3_equals;
-   o.equalsData  = MO.SValue3_equalsData;
+   o.equals       = MO.SValue3_equals;
+   o.equalsData   = MO.SValue3_equalsData;
    // @method
-   o.assign      = MO.SValue3_assign;
-   o.setMin      = MO.SValue3_setMin;
-   o.setMax      = MO.SValue3_setMax;
-   o.set         = MO.SValue3_set;
-   o.setAll      = MO.SValue3_setAll;
+   o.assign       = MO.SValue3_assign;
+   o.setMin       = MO.SValue3_setMin;
+   o.setMax       = MO.SValue3_setMax;
+   o.set          = MO.SValue3_set;
+   o.setAll       = MO.SValue3_setAll;
    // @method
-   o.length      = MO.SValue3_absolute;
-   o.absolute    = MO.SValue3_absolute;
-   o.normalize   = MO.SValue3_normalize;
-   o.negative    = MO.SValue3_negative;
+   o.length       = MO.SValue3_absolute;
+   o.absolute     = MO.SValue3_absolute;
+   o.normalize    = MO.SValue3_normalize;
+   o.negative     = MO.SValue3_negative;
    // @method
-   o.serialize   = MO.SValue3_serialize;
-   o.unserialize = MO.SValue3_unserialize;
+   o.serialize    = MO.SValue3_serialize;
+   o.unserialize  = MO.SValue3_unserialize3;
+   o.unserialize2 = MO.SValue3_unserialize2;
+   o.unserialize3 = MO.SValue3_unserialize3;
    // @method
-   o.parse       = MO.SValue3_parse;
-   o.toString    = MO.SValue3_toString;
+   o.parse        = MO.SValue3_parse;
+   o.toString     = MO.SValue3_toString;
    return o;
 }
 
@@ -197,7 +199,18 @@ MO.SValue3_serialize = function SValue3_serialize(output){
 // @method
 // @param input:FByteStream 数据流
 //==========================================================
-MO.SValue3_unserialize = function SValue3_unserialize(input){
+MO.SValue3_unserialize2 = function SValue3_unserialize2(input){
+   this.x = input.readFloat();
+   this.y = input.readFloat();
+}
+
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param input:FByteStream 数据流
+//==========================================================
+MO.SValue3_unserialize3 = function SValue3_unserialize3(input){
    this.x = input.readFloat();
    this.y = input.readFloat();
    this.z = input.readFloat();

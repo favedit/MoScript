@@ -67,7 +67,8 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
-   o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   var cityConsole = o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   cityConsole.setResourceConsole(o);
    o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
    o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
 }

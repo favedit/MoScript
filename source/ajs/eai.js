@@ -76,24 +76,25 @@ with(MO){
   }
 }
 MO.FEaiCardResource = function FEaiCardResource(o){
-   o = RClass.inherits(this, o, FObject);
-   o._cardCode   = MO.Class.register(o, new MO.AGetter('_cardCode'));
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code       = MO.Class.register(o, new MO.AGetter('_code'));
    o._cityCode   = MO.Class.register(o, new MO.AGetter('_cityCode'));
-   o.unserialize = FEaiCardResource_unserialize;
+   o.unserialize = MO.FEaiCardResource_unserialize;
    return o;
 }
 MO.FEaiCardResource_unserialize = function FEaiCardResource_unserialize(input){
    var o = this;
-   o._cardCode = input.readUint16();
+   o._code = input.readUint16();
    o._cityCode = input.readUint16();
 }
 MO.FEaiCardResourceConsole = function FEaiCardResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._cards      = MO.Class.register(o, new MO.AGetter('_cards'));
-   o.construct   = MO.FEaiCardResourceConsole_construct;
-   o.find        = MO.FEaiCardResourceConsole_find;
-   o.unserialize = MO.FEaiCardResourceConsole_unserialize;
-   o.dispose     = MO.FEaiCardResourceConsole_dispose;
+   o._cards       = MO.Class.register(o, new MO.AGetter('_cards'));
+   o.construct    = MO.FEaiCardResourceConsole_construct;
+   o.find         = MO.FEaiCardResourceConsole_find;
+   o.findCityCode = MO.FEaiCardResourceConsole_findCityCode;
+   o.unserialize  = MO.FEaiCardResourceConsole_unserialize;
+   o.dispose      = MO.FEaiCardResourceConsole_dispose;
    return o;
 }
 MO.FEaiCardResourceConsole_construct = function FEaiCardResourceConsole_construct(){
@@ -103,6 +104,14 @@ MO.FEaiCardResourceConsole_construct = function FEaiCardResourceConsole_construc
 }
 MO.FEaiCardResourceConsole_find = function FEaiCardResourceConsole_find(code){
    return this._cards.get(code);
+}
+MO.FEaiCardResourceConsole_findCityCode = function FEaiCardResourceConsole_findCityCode(code){
+   var cityCode = null;
+   var card = this._cards.get(code);
+   if(card){
+      cityCode = card.cityCode();
+   }
+   return cityCode;
 }
 MO.FEaiCardResourceConsole_unserialize = function FEaiCardResourceConsole_unserialize(input){
    var o = this;
@@ -119,90 +128,80 @@ MO.FEaiCardResourceConsole_dispose = function FEaiCardResourceConsole_dispose(){
    o._cards = MO.Lang.Object.dispose(o._cards);
    o.__base.FConsole.dispose.call(o);
 }
-with(MO){
-   MO.FEaiCityResource = function FEaiCityResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._provinceCode  = RClass.register(o, new AGetter('_provinceCode'));
-      o._code          = RClass.register(o, new AGetter('_code'));
-      o._label         = RClass.register(o, new AGetter('_label'));
-      o._level         = RClass.register(o, new AGetter('_level'));
-      o._location      = RClass.register(o, new AGetter('_location'));
-      o.construct      = FEaiCityResource_construct;
-      o.unserialize    = FEaiCityResource_unserialize;
-      o.dispose        = FEaiCityResource_dispose;
-      return o;
+MO.FEaiCityResource = function FEaiCityResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
+   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
+   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
+   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
+   o.construct      = MO.FEaiCityResource_construct;
+   o.unserialize    = MO.FEaiCityResource_unserialize;
+   o.dispose        = MO.FEaiCityResource_dispose;
+   return o;
+}
+MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._location = new MO.SPoint3();
+}
+MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
+   var o = this;
+   o._provinceCode = input.readUint16();
+   o._code = input.readUint16();
+   o._label = input.readString();
+   o._level = input.readUint16();
+   o._location.unserialize2(input);
+}
+MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._resourceConsole = MO.Class.register(o, new MO.AGetSet('_resourceConsole'));
+   o._citys           = MO.Class.register(o, new MO.AGetter('_citys'));
+   o.construct        = MO.FEaiCityResourceConsole_construct;
+   o.find             = MO.FEaiCityResourceConsole_find;
+   o.findByCard       = MO.FEaiCityResourceConsole_findByCard;
+   o.unserialize      = MO.FEaiCityResourceConsole_unserialize;
+   o.dispose          = MO.FEaiCityResourceConsole_dispose;
+   return o;
+}
+MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._citys = new MO.TDictionary();
+}
+MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
+   return this._citys.get(code);
+}
+MO.FEaiCityResourceConsole_findByCard = function FEaiCityResourceConsole_findByCard(card) {
+   var o = this;
+   var city = null;
+   var cardConsole = o._resourceConsole.cardConsole();
+   var cityCode = cardConsole.findCityCode(card);
+   if(cityCode){
+      city = o._citys.get(cityCode);
    }
-   MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._location = new SPoint3();
-   }
-   MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
-      var o = this;
-      o._provinceCode = input.readUint16();
-      o._code = input.readUint16();
-      o._label = input.readString();
-      o._level = input.readUint16();
-      o._location.unserialize(input);
-   }
-   MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
-      var o = this;
-      o._location = RObject.dispose(o._location);
-      o.__base.FObject.dispose.call(o);
+   return city;
+}
+MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
+   var o = this;
+   var citys = o._citys;
+   var cards = o._cards;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var city = MO.Class.create(MO.FEaiCityResource);
+      city.unserialize(input);
+      citys.set(city.code(), city);
    }
 }
-with(MO){
-   MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._citys      = RClass.register(o, new AGetter('_citys'));
-      o.construct   = FEaiCityResourceConsole_construct;
-      o.find        = FEaiCityResourceConsole_find;
-      o.findCityByCard = FEaiCityResourceConsole_findCityByCard;
-      o.unserialize = FEaiCityResourceConsole_unserialize;
-      o.dispose     = FEaiCityResourceConsole_dispose;
-      return o;
-   }
-   MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._citys = new TDictionary();
-   }
-   MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
-      return this._citys.get(code);
-   }
-   MO.FEaiCityResourceConsole_findCityByCard = function FEaiCityResourceConsole_findCityByCard(card) {
-      var o = this;
-      if (card.length != 4) {
-         return null;
-      }
-      var cityEntities = o._citys;
-      var cityEntity = cityEntities.get(card);
-      if (cityEntity) {
-         return cityEntity;
-      }
-      var cityEntities = o._citys;
-      var cityEntity = cityEntities.get(card.substring(0, 2));
-      if (cityEntity) {
-         return cityEntity;
-      }
-      return null;
-   }
-   MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
-      var o = this;
-      var citys = o._citys;
-      var cards = o._cards;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var city = RClass.create(FEaiCityResource);
-         city.unserialize(input);
-         citys.set(city.code(), city);
-      }
-   }
-   MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
-      var o = this;
-      o._citys = RObject.dispose(o._citys);
-      o.__base.FConsole.dispose.call(o);
-   }
+MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
+   var o = this;
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o.__base.FConsole.dispose.call(o);
 }
 with(MO){
    MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
@@ -574,7 +573,8 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
-   o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   var cityConsole = o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   cityConsole.setResourceConsole(o);
    o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
    o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
 }
@@ -1678,11 +1678,9 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
-   o._statusSetup          = false;
    o.onSetup               = MO.FEaiEntityConsole_onSetup;
    o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
    o.construct             = MO.FEaiEntityConsole_construct;
-   o.setup                 = MO.FEaiEntityConsole_setup;
    o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
    o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
    o.dispose               = MO.FEaiEntityConsole_dispose;
@@ -1690,6 +1688,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
 }
 MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    var o = this;
+   o.__base.FConsole.onSetup.call(o);
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
    mapEntity.setup();
@@ -1752,13 +1751,6 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
 }
-MO.FEaiEntityConsole_setup = function FEaiEntityConsole_setup(){
-   var o = this;
-   if(!o._statusSetup){
-      o.onSetup();
-      o._statusSetup = true;
-   }
-}
 MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
    return this._countryReady;
 }
@@ -1780,17 +1772,17 @@ MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
 }
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
-   o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
    o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    o._citysRenderable      = MO.Class.register(o, new MO.AGetSet('_citysRenderable'));
    o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
+   o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
+   o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
    o.construct             = MO.FEaiMapEntity_construct;
    o.setup                 = MO.FEaiMapEntity_setup;
    o.setupCityEntities     = MO.FEaiMapEntity_setupCityEntities;
-   o.findProvinceByCard    = MO.FEaiMapEntity_findProvinceByCard;
+   o.findProvinceByCode    = MO.FEaiMapEntity_findProvinceByCode;
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.pushProvince          = MO.FEaiMapEntity_pushProvince;
    o.upload                = MO.FEaiMapEntity_upload;
@@ -1810,10 +1802,10 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var o = this;
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
-   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
-   display.linkGraphicContext(o);
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
+   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
+   display.linkGraphicContext(o);
    var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
@@ -1830,7 +1822,7 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
    }
    o._countryEntity.setup(provinceEntities);
 }
-MO.FEaiMapEntity_findProvinceByCard = function FEaiMapEntity_findProvinceByCard(code){
+MO.FEaiMapEntity_findProvinceByCode = function FEaiMapEntity_findProvinceByCode(code){
    var o = this;
    var provinceEntity = o._provinceEntities.get(code);
    return provinceEntity;
@@ -1842,20 +1834,13 @@ MO.FEaiMapEntity_pushProvince = function FEaiMapEntity_pushProvince(province){
 }
 MO.FEaiMapEntity_findCityByCard = function FEaiMapEntity_findCityByCard(card){
    var o = this;
-   if(card.length != 4){
-      return null;
+   var cityEntity = null;
+   var cardConsole = MO.Console.find(MO.FEaiResourceConsole).cardConsole();
+   var cityCode = cardConsole.findCityCode(card);
+   if(cityCode){
+      cityEntity = o._cityEntities.get(cityCode);
    }
-   var cityEntities = o._cityEntities;
-   var cityEntity = cityEntities.get(card);
-   if(cityEntity){
-      return cityEntity;
-   }
-   var cityEntities = o._cityEntities;
-   var cityEntity = cityEntities.get(card.substring(0, 2));
-   if(cityEntity){
-      return cityEntity;
-   }
-   return null;
+   return cityEntity;
 }
 MO.FEaiMapEntity_upload = function FEaiMapEntity_upload(){
    var o = this;
@@ -1903,9 +1888,13 @@ MO.FEaiMapEntity_reset = function FEaiMapEntity_reset(){
 }
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
-   o._countryEntity = MO.RObject.dispose(o._countryEntity);
-   o._provinceEntities = MO.RObject.dispose(o._provinceEntities);
-   o._cityEntities = MO.RObject.dispose(o._cityEntities);
+   o._countryEntity = MO.Lang.Object.dispose(o._countryEntity);
+   o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
+   o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
+   o._citysRenderable = MO.Lang.Object.dispose(o._citysRenderable);
+   o._citysRangeRenderable = MO.Lang.Object.dispose(o._citysRangeRenderable);
+   o._countryDisplay = MO.Lang.Object.dispose(o._countryDisplay);
+   o._countryBorderDisplay = MO.Lang.Object.dispose(o._countryBorderDisplay);
    o.__base.FEaiEntity.dispose.call(o);
 }
 MO.FEaiProvinceData = function FEaiProvinceData(o){
@@ -3059,10 +3048,10 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    }
    x += widths[0];
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntity = cityConsole.findCityByCard(entity.card());
+   var cityResource = cityConsole.findByCard(entity.card());
    text = '';
-   if (cityEntity) {
-      text = cityEntity.label();
+   if(cityResource){
+      text = cityResource.label();
    }
    textWidth = graphic.textWidth(text);
    graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
@@ -3318,16 +3307,15 @@ MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment
 }
 MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
    var o = this;
+   var mapEntity = o._mapEntity;
    var card = entity.card();
    var investment = entity.investment();
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntity = o._mapEntity.findCityByCard(card);
+   var cityEntity = mapEntity.findCityByCard(card);
    if(cityEntity){
       var level = o.calculateInvestmentLevel(investment);
       var provinceCode = cityEntity.data().provinceCode();
       var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-      var province = provinceConsole.findByCode(provinceCode);
-      var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
+      var provinceEntity = mapEntity.findProvinceByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
       }
@@ -4504,7 +4492,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();

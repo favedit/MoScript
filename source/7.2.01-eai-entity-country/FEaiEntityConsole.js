@@ -21,7 +21,6 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    // @attribute
    o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
-   o._statusSetup          = false;
    //..........................................................
    // @event
    o.onSetup               = MO.FEaiEntityConsole_onSetup;
@@ -30,7 +29,6 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    // @method
    o.construct             = MO.FEaiEntityConsole_construct;
    // @method
-   o.setup                 = MO.FEaiEntityConsole_setup;
    o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
    o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
    // @method
@@ -45,6 +43,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
 //==========================================================
 MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    var o = this;
+   o.__base.FConsole.onSetup.call(o);
    // 创建地图实体
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
@@ -135,19 +134,6 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    // 设置变量
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
-}
-
-//==========================================================
-// <T>配置处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiEntityConsole_setup = function FEaiEntityConsole_setup(){
-   var o = this;
-   if(!o._statusSetup){
-      o.onSetup();
-      o._statusSetup = true;
-   }
 }
 
 //==========================================================

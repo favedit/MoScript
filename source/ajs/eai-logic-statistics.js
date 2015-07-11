@@ -218,16 +218,15 @@ MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment
 }
 MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
    var o = this;
+   var mapEntity = o._mapEntity;
    var card = entity.card();
    var investment = entity.investment();
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntity = o._mapEntity.findCityByCard(card);
+   var cityEntity = mapEntity.findCityByCard(card);
    if(cityEntity){
       var level = o.calculateInvestmentLevel(investment);
       var provinceCode = cityEntity.data().provinceCode();
       var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-      var province = provinceConsole.findByCode(provinceCode);
-      var provinceEntity = o._mapEntity.findProvinceByCard(provinceCode);
+      var provinceEntity = mapEntity.findProvinceByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
       }

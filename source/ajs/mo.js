@@ -3009,8 +3009,18 @@ MO.TUnsupportError = function TUnsupportError(po, pp){
 }
 MO.FConsole = function FConsole(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._scopeCd = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   o._scopeCd     = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   o._statusSetup = false;
+   o.onSetup      = MO.Method.empty;
+   o.setup        = MO.FConsole_setup;
    return o;
+}
+MO.FConsole_setup = function FConsole_setup(){
+   var o = this;
+   if(!o._statusSetup){
+      o.onSetup();
+      o._statusSetup = true;
+   }
 }
 MO.FObject = function FObject(o){
    if(!o){o = this;}
@@ -8319,25 +8329,27 @@ MO.SSquare_dump = function SSquare_dump(d){
 }
 MO.SValue3 = function SValue3(x, y, z){
    var o = this;
-   o.x           = MO.Runtime.nvl(x, 0);
-   o.y           = MO.Runtime.nvl(y, 0);
-   o.z           = MO.Runtime.nvl(z, 0);
-   o.isEmpty     = MO.SValue3_isEmpty;
-   o.equals      = MO.SValue3_equals;
-   o.equalsData  = MO.SValue3_equalsData;
-   o.assign      = MO.SValue3_assign;
-   o.setMin      = MO.SValue3_setMin;
-   o.setMax      = MO.SValue3_setMax;
-   o.set         = MO.SValue3_set;
-   o.setAll      = MO.SValue3_setAll;
-   o.length      = MO.SValue3_absolute;
-   o.absolute    = MO.SValue3_absolute;
-   o.normalize   = MO.SValue3_normalize;
-   o.negative    = MO.SValue3_negative;
-   o.serialize   = MO.SValue3_serialize;
-   o.unserialize = MO.SValue3_unserialize;
-   o.parse       = MO.SValue3_parse;
-   o.toString    = MO.SValue3_toString;
+   o.x            = MO.Runtime.nvl(x, 0);
+   o.y            = MO.Runtime.nvl(y, 0);
+   o.z            = MO.Runtime.nvl(z, 0);
+   o.isEmpty      = MO.SValue3_isEmpty;
+   o.equals       = MO.SValue3_equals;
+   o.equalsData   = MO.SValue3_equalsData;
+   o.assign       = MO.SValue3_assign;
+   o.setMin       = MO.SValue3_setMin;
+   o.setMax       = MO.SValue3_setMax;
+   o.set          = MO.SValue3_set;
+   o.setAll       = MO.SValue3_setAll;
+   o.length       = MO.SValue3_absolute;
+   o.absolute     = MO.SValue3_absolute;
+   o.normalize    = MO.SValue3_normalize;
+   o.negative     = MO.SValue3_negative;
+   o.serialize    = MO.SValue3_serialize;
+   o.unserialize  = MO.SValue3_unserialize3;
+   o.unserialize2 = MO.SValue3_unserialize2;
+   o.unserialize3 = MO.SValue3_unserialize3;
+   o.parse        = MO.SValue3_parse;
+   o.toString     = MO.SValue3_toString;
    return o;
 }
 MO.SValue3_isEmpty = function SValue3_isEmpty(p){
@@ -8404,7 +8416,11 @@ MO.SValue3_serialize = function SValue3_serialize(output){
    output.writeFloat(this.y);
    output.writeFloat(this.z);
 }
-MO.SValue3_unserialize = function SValue3_unserialize(input){
+MO.SValue3_unserialize2 = function SValue3_unserialize2(input){
+   this.x = input.readFloat();
+   this.y = input.readFloat();
+}
+MO.SValue3_unserialize3 = function SValue3_unserialize3(input){
    this.x = input.readFloat();
    this.y = input.readFloat();
    this.z = input.readFloat();
@@ -34448,6 +34464,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EGuiAnchor.None);
    o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EGuiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
+   o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
    o._foreFont               = MO.Class.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
    o._backColor              = MO.Class.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);

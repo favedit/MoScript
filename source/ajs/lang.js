@@ -1709,8 +1709,18 @@ MO.TUnsupportError = function TUnsupportError(po, pp){
 }
 MO.FConsole = function FConsole(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._scopeCd = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   o._scopeCd     = MO.Class.register(o, new MO.AGetter('_scopeCd'), MO.EScope.Global);
+   o._statusSetup = false;
+   o.onSetup      = MO.Method.empty;
+   o.setup        = MO.FConsole_setup;
    return o;
+}
+MO.FConsole_setup = function FConsole_setup(){
+   var o = this;
+   if(!o._statusSetup){
+      o.onSetup();
+      o._statusSetup = true;
+   }
 }
 MO.FObject = function FObject(o){
    if(!o){o = this;}

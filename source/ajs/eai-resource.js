@@ -1,22 +1,23 @@
 MO.FEaiCardResource = function FEaiCardResource(o){
-   o = RClass.inherits(this, o, FObject);
-   o._cardCode   = MO.Class.register(o, new MO.AGetter('_cardCode'));
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code       = MO.Class.register(o, new MO.AGetter('_code'));
    o._cityCode   = MO.Class.register(o, new MO.AGetter('_cityCode'));
-   o.unserialize = FEaiCardResource_unserialize;
+   o.unserialize = MO.FEaiCardResource_unserialize;
    return o;
 }
 MO.FEaiCardResource_unserialize = function FEaiCardResource_unserialize(input){
    var o = this;
-   o._cardCode = input.readUint16();
+   o._code = input.readUint16();
    o._cityCode = input.readUint16();
 }
 MO.FEaiCardResourceConsole = function FEaiCardResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._cards      = MO.Class.register(o, new MO.AGetter('_cards'));
-   o.construct   = MO.FEaiCardResourceConsole_construct;
-   o.find        = MO.FEaiCardResourceConsole_find;
-   o.unserialize = MO.FEaiCardResourceConsole_unserialize;
-   o.dispose     = MO.FEaiCardResourceConsole_dispose;
+   o._cards       = MO.Class.register(o, new MO.AGetter('_cards'));
+   o.construct    = MO.FEaiCardResourceConsole_construct;
+   o.find         = MO.FEaiCardResourceConsole_find;
+   o.findCityCode = MO.FEaiCardResourceConsole_findCityCode;
+   o.unserialize  = MO.FEaiCardResourceConsole_unserialize;
+   o.dispose      = MO.FEaiCardResourceConsole_dispose;
    return o;
 }
 MO.FEaiCardResourceConsole_construct = function FEaiCardResourceConsole_construct(){
@@ -26,6 +27,14 @@ MO.FEaiCardResourceConsole_construct = function FEaiCardResourceConsole_construc
 }
 MO.FEaiCardResourceConsole_find = function FEaiCardResourceConsole_find(code){
    return this._cards.get(code);
+}
+MO.FEaiCardResourceConsole_findCityCode = function FEaiCardResourceConsole_findCityCode(code){
+   var cityCode = null;
+   var card = this._cards.get(code);
+   if(card){
+      cityCode = card.cityCode();
+   }
+   return cityCode;
 }
 MO.FEaiCardResourceConsole_unserialize = function FEaiCardResourceConsole_unserialize(input){
    var o = this;
@@ -42,90 +51,80 @@ MO.FEaiCardResourceConsole_dispose = function FEaiCardResourceConsole_dispose(){
    o._cards = MO.Lang.Object.dispose(o._cards);
    o.__base.FConsole.dispose.call(o);
 }
-with(MO){
-   MO.FEaiCityResource = function FEaiCityResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._provinceCode  = RClass.register(o, new AGetter('_provinceCode'));
-      o._code          = RClass.register(o, new AGetter('_code'));
-      o._label         = RClass.register(o, new AGetter('_label'));
-      o._level         = RClass.register(o, new AGetter('_level'));
-      o._location      = RClass.register(o, new AGetter('_location'));
-      o.construct      = FEaiCityResource_construct;
-      o.unserialize    = FEaiCityResource_unserialize;
-      o.dispose        = FEaiCityResource_dispose;
-      return o;
+MO.FEaiCityResource = function FEaiCityResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
+   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
+   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
+   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
+   o.construct      = MO.FEaiCityResource_construct;
+   o.unserialize    = MO.FEaiCityResource_unserialize;
+   o.dispose        = MO.FEaiCityResource_dispose;
+   return o;
+}
+MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._location = new MO.SPoint3();
+}
+MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
+   var o = this;
+   o._provinceCode = input.readUint16();
+   o._code = input.readUint16();
+   o._label = input.readString();
+   o._level = input.readUint16();
+   o._location.unserialize2(input);
+}
+MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._resourceConsole = MO.Class.register(o, new MO.AGetSet('_resourceConsole'));
+   o._citys           = MO.Class.register(o, new MO.AGetter('_citys'));
+   o.construct        = MO.FEaiCityResourceConsole_construct;
+   o.find             = MO.FEaiCityResourceConsole_find;
+   o.findByCard       = MO.FEaiCityResourceConsole_findByCard;
+   o.unserialize      = MO.FEaiCityResourceConsole_unserialize;
+   o.dispose          = MO.FEaiCityResourceConsole_dispose;
+   return o;
+}
+MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._citys = new MO.TDictionary();
+}
+MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
+   return this._citys.get(code);
+}
+MO.FEaiCityResourceConsole_findByCard = function FEaiCityResourceConsole_findByCard(card) {
+   var o = this;
+   var city = null;
+   var cardConsole = o._resourceConsole.cardConsole();
+   var cityCode = cardConsole.findCityCode(card);
+   if(cityCode){
+      city = o._citys.get(cityCode);
    }
-   MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._location = new SPoint3();
-   }
-   MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
-      var o = this;
-      o._provinceCode = input.readUint16();
-      o._code = input.readUint16();
-      o._label = input.readString();
-      o._level = input.readUint16();
-      o._location.unserialize(input);
-   }
-   MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
-      var o = this;
-      o._location = RObject.dispose(o._location);
-      o.__base.FObject.dispose.call(o);
+   return city;
+}
+MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
+   var o = this;
+   var citys = o._citys;
+   var cards = o._cards;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var city = MO.Class.create(MO.FEaiCityResource);
+      city.unserialize(input);
+      citys.set(city.code(), city);
    }
 }
-with(MO){
-   MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._citys      = RClass.register(o, new AGetter('_citys'));
-      o.construct   = FEaiCityResourceConsole_construct;
-      o.find        = FEaiCityResourceConsole_find;
-      o.findCityByCard = FEaiCityResourceConsole_findCityByCard;
-      o.unserialize = FEaiCityResourceConsole_unserialize;
-      o.dispose     = FEaiCityResourceConsole_dispose;
-      return o;
-   }
-   MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._citys = new TDictionary();
-   }
-   MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
-      return this._citys.get(code);
-   }
-   MO.FEaiCityResourceConsole_findCityByCard = function FEaiCityResourceConsole_findCityByCard(card) {
-      var o = this;
-      if (card.length != 4) {
-         return null;
-      }
-      var cityEntities = o._citys;
-      var cityEntity = cityEntities.get(card);
-      if (cityEntity) {
-         return cityEntity;
-      }
-      var cityEntities = o._citys;
-      var cityEntity = cityEntities.get(card.substring(0, 2));
-      if (cityEntity) {
-         return cityEntity;
-      }
-      return null;
-   }
-   MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
-      var o = this;
-      var citys = o._citys;
-      var cards = o._cards;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var city = RClass.create(FEaiCityResource);
-         city.unserialize(input);
-         citys.set(city.code(), city);
-      }
-   }
-   MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
-      var o = this;
-      o._citys = RObject.dispose(o._citys);
-      o.__base.FConsole.dispose.call(o);
-   }
+MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
+   var o = this;
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o.__base.FConsole.dispose.call(o);
 }
 with(MO){
    MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
@@ -497,7 +496,8 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
-   o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   var cityConsole = o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   cityConsole.setResourceConsole(o);
    o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
    o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
 }
