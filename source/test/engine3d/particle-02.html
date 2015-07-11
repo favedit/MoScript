@@ -35,10 +35,7 @@ function _load(){
    stage.addEnterFrameListener(null, onEnterFrame);
    layer = stage.spriteLayer();
    // 创建图片
-   particle = MO.Class.create(MO.FE3dFireworksParticle);
-   particle.linkGraphicContext(context);
-   particle.setup();
-   // 设置数据
+   particle = context.createObject(MO.FE3dFireworksParticle);
    var particleData = context.createObject(MO.FE3dParticleData);
    particleData.loadUrl('../../ars/eai/particle/4.png');
    particle.setData(particleData);
@@ -46,11 +43,10 @@ function _load(){
    var count = 32;
    for(var i = 0; i < count; i++){
       particle.setItemCount(32);
-      particle.setDelay(100 * i);
-      particle.setSpeed(0.1 + 0.1 * i);
-      particle.setAngle(Math.PI * 2 / 180 * i);
-      particle.setAcceleration(0.4 * i);
-      particle.setAttenuation(0.4);
+      particle.setItemDelay(10 * i);
+      particle.setItemSpeed(0.2 + 0.1 * i);
+      particle.itemAcceleration().set(0, -0.3 * i, 0);
+      particle.setItemAttenuation(0.8);
       particle.start();
    }
    stage.spriteLayer().pushRenderable(particle);

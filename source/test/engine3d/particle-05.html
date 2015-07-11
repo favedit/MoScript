@@ -15,29 +15,20 @@ var ticker = null;
 //----------------------------------------------------------
 function onEnterFrame(){
    if(ticker.process()){
-      var loop = 4;
+      var loop = 11;
       for(var x = 0; x < loop; x++){
          var rate = x / loop * 2;
-         var count = 4;
+         var count = 32;
          for(var i = 0; i < count; i++){
-            particle.color().set(Math.random() * rate, Math.random() * rate, Math.random() * rate, 1);
-            var itemCount = parseInt(Math.random() * 16);
-            //var itemCount = 64;
-            var attenuation = Math.random();
-            //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-            //particle.position().set((x - 5) * 2, 0, 0);
-            particle.position().set(0, 2, 0);
+            var itemCount = parseInt(Math.random() * 64);
             particle.setItemCount(itemCount);
-            particle.setDelay(10 * i + x * 200);
-            //particle.setSpeed(Math.random() * i);
-            //particle.setSpeed(2 + 0.4 * i);
-            //particle.setSpeed(speed);
-            //particle.setAngle(Math.PI * 2 / 90 * i);
-            //particle.setAcceleration(-Math.random() );
-            particle.setSpeed(4);
-            particle.acceleration().set(0, -3, 0);
-            //particle.setAttenuation(attenuation);
-            particle.setAttenuation(0.6);
+            particle.setItemDelay(200 * i);
+            particle.itemColor().set(Math.random(), Math.random(), Math.random(), 1);
+            particle.itemPosition().set(0 + x * 2 - 10, 5, 0);
+            particle.itemScale().setAll(0.05 + Math.random() * 0.05);
+            particle.setItemSpeed(0.2 + 0.2 * i * Math.random());
+            particle.itemAcceleration().set(0, -0.3, 0);
+            particle.setItemAttenuation(0.02);
             particle.start();
          }
       }
@@ -58,9 +49,9 @@ function _load(){
    var ctx = id_canvas.getContext('2d');
    ctx.fillStyle = '#000000';
    ctx.fillRect(0, 0, 360, 60);
-   ctx.font = 'bold 36px Microsoft YaHei';
+   ctx.font = 'bold 42px Microsoft YaHei';
    ctx.fillStyle = '#FFFFFF';
-   ctx.fillText("Hello World", 60, 50);
+   ctx.fillText("124亿3002万", 40, 60);
    // 创建画布
    canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
    canvas.build(document);
@@ -71,21 +62,19 @@ function _load(){
    stage.addEnterFrameListener(null, onEnterFrame);
    layer = stage.spriteLayer();
    // 创建图片
-   particle = MO.Class.create(MO.FE3dFireworksParticle);
-   particle.linkGraphicContext(context);
-   particle.setup();
-   // 设置数据
+   particle = context.createObject(MO.FE3dFireworksParticle);
+   particle._data = ctx.getImageData(0, 0, 360, 60);
    var particleData = context.createObject(MO.FE3dParticleData);
    particleData.loadUrl('../../ars/eai/particle/6.png');
    particle.setData(particleData);
-   ticker = new MO.TTicker(10000);
+   ticker = new MO.TTicker(60000);
    stage.spriteLayer().pushRenderable(particle);
 }
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
 <DIV id='id_info'>
-<CANVAS id='id_canvas' width='360' height='60' style='width:360px; height:60px'>
+<CANVAS id='id_canvas' width='360' height='60' style='width:360px; height:80px'>
 </BODY>
 
 </HTML>

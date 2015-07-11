@@ -16,10 +16,8 @@ var ticker = null;
 function onEnterFrame(){
    if(ticker.process()){
       particle.setItemCount(100);
-      //particle.setDelay(100 * i);
       particle.setDelay(0);
-      //particle.setSpeed(0.1 + 0.1 * i);
-      particle.setSpeed(4);
+      particle.setSpeed(2);
       //particle.setAngle(Math.PI * 2 / 180 * i);
       //particle.setAcceleration(0.4 * i);
       particle.setAttenuation(0.05);

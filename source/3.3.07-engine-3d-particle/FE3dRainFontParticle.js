@@ -24,6 +24,7 @@ MO.FE3dRainFontParticle = function FE3dRainFontParticle(o){
    o.construct             = MO.FE3dRainFontParticle_construct;
    // @method
    o.setup                 = MO.FE3dRainFontParticle_setup;
+   o.testInRange           = MO.FE3dRainFontParticle_testInRange;
    o.start                 = MO.FE3dRainFontParticle_start;
    // @method
    o.dispose               = MO.FE3dRainFontParticle_dispose;
@@ -51,6 +52,27 @@ MO.FE3dRainFontParticle_setup = function FE3dRainFontParticle_setup(){
 }
 
 //==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FE3dRainFontParticle_testInRange = function FE3dRainFontParticle_testInRange(x, y){
+   var o = this;
+   var position = o._position;
+   var idx = parseInt((x + 17) / 20 * 220);
+   var idy = parseInt((y + 3) * 6);
+   var index = (360 * (60 - idy) + idx) * 4;
+   var data = o._data.data;
+   if(index >= 0 && index < data.length){
+      var r = data[index    ];
+      var g = data[index + 1];
+      var b = data[index + 2];
+      var a = data[index + 3];
+   }
+   return r > 0;
+}
+
+//==========================================================
 // <T>开始处理。</T>
 //
 // @method
@@ -65,7 +87,7 @@ MO.FE3dRainFontParticle_start = function FE3dRainFontParticle_start(){
       //var angle = o._angle + angleSingle * i;
       // 创建粒子项目
       var item = particleConsole.itemAlloc(MO.FE3dRainFontParticleItem);
-      item._particle = o;
+      item.setParticle(o);
       item.direction().set(0, -1, 0);
       item.position().set(0.1 * value - 12, 5, 0);
       item.rotation().set(0, 0, -Math.PI / 2);

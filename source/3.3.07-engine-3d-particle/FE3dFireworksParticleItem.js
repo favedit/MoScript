@@ -20,11 +20,14 @@ MO.FE3dFireworksParticleItem = function FE3dFireworksParticleItem(o){
    o._currentDistance   = null;
    o._currentSpeed      = null;
    o._currentDirection  = null;
+   o._statusInRange = false;
+   o._storeSpeed      = null;
    //..........................................................
    // @method
    o.construct          = MO.FE3dFireworksParticleItem_construct;
    // @method
    o.start              = MO.FE3dFireworksParticleItem_start;
+   o.processSplit       = MO.FE3dFireworksParticleItem_processSplit;
    o.processFrame       = MO.FE3dFireworksParticleItem_processFrame;
    // @method
    o.dispose            = MO.FE3dFireworksParticleItem_dispose;
@@ -45,6 +48,7 @@ MO.FE3dFireworksParticleItem_construct = function FE3dFireworksParticleItem_cons
    o._acceleration = new MO.SVector3();
    o._currentSpeed = new MO.SVector3();
    o._currentDirection = new MO.SVector3();
+   o._storeSpeed = new MO.SVector3();
 }
 
 //==========================================================
@@ -72,11 +76,65 @@ MO.FE3dFireworksParticleItem_start = function FE3dFireworksParticleItem_start(){
 //
 // @method
 //==========================================================
+MO.FE3dFireworksParticleItem_processSplit = function FE3dFireworksParticleItem_processSplit(){
+   var o = this;
+   var particle = o._particle;
+   var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
+   for(var j = 0; j < 4; j++){
+      var count = 16;
+      var angleSingle = Math.PI * 2 / count;
+      for(var i = 0; i < count; i++){
+         var angle = angleSingle * i;
+         // 创建粒子项目
+         var item = particleConsole.itemAlloc(MO.FE3dFireworksParticleItem);
+         item.setSplittingNumber(0);
+         item.setParticle(particle);
+         item.direction().set(Math.sin(angle), Math.cos(angle), 0);
+         item.position().assign(position);
+         item.color().assign(o._color);
+         item.scale().setAll(0.2);
+         item.setDelay(0.02 * j);
+         item.setSpeed(o._speed);
+         item.acceleration().assign(o._acceleration);
+         item.setAttenuation(1);
+         item.start();
+         // 放入处理集合
+         particle.pushItem(item);
+      }
+   }
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
 MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_processFrame(second){
    var o = this;
    // 保存位置
    var priorPosition = o._priorPosition;
    priorPosition.assign(o._position);
+
+   var position = o._position;
+   var inRange = o._particle.testInRange(position.x, position.y);
+   // 计算速度
+   if(o._statusInRange != inRange){
+      if(inRange){
+         o._storeSpeed.assign(o._currentSpeed);
+         o._currentSpeed.setAll(0.01);
+         //o._currentSpeed = 0.2;
+         o._color.set(1, 0, 0, 1);
+         //o._currentAlpha = 1;
+      }else{
+         o._color.set(1, 1, 1, 1);
+         //o._currentAlpha = 0.2;
+         o._currentSpeed.assign(o._storeSpeed);
+      }
+      o._statusInRange = inRange;
+   }
+   if(inRange){
+   }
+
    // 计算距离
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;
@@ -100,7 +158,6 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
    }else{
       o._rotation.z = Math.PI * 2 - angle;
    }
-   //o._rotation.z += Math.PI / 2;
    // 修正速度
    var acceleration = o._acceleration;
    speed.x += acceleration.x * second;
@@ -114,32 +171,9 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
    }else{
       o._currentAlpha -= attenuation;
    }
-   if(o._currentDistance > o._splittingDistance && o._splittingNumber > 0){
-      var particle = o._particle;
-      var particleConsole = MO.Console.find(MO.FE3dParticleConsole);
-      for(var j = 0; j < 4; j++){
-         var count = 16;
-         var angleSingle = Math.PI * 2 / count;
-         for(var i = 0; i < count; i++){
-            var angle = angleSingle * i;
-            // 创建粒子项目
-            var item = particleConsole.itemAlloc(MO.FE3dFireworksParticleItem);
-            item.setSplittingNumber(0);
-            item.setParticle(particle);
-            item.direction().set(Math.sin(angle), Math.cos(angle), 0);
-            item.position().assign(position);
-            item.color().assign(o._color);
-            item.scale().setAll(0.2);
-            item.setDelay(0.02 * j);
-            //item.setSpeed(o._speed * Math.random());
-            item.setSpeed(o._speed);
-            item.acceleration().assign(o._acceleration);
-            item.setAttenuation(1);
-            item.start();
-            // 放入处理集合
-            particle.pushItem(item);
-         }
-      }
+   // 分裂处理
+   if((o._splittingNumber > 0) && (o._currentDistance > o._splittingDistance)){
+      o.processSplit();
       o._splittingNumber--;
       if(o._splittingNumber == 0){
          o._currentFinish = true;

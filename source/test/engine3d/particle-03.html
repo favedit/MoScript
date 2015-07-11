@@ -18,11 +18,10 @@ function onEnterFrame(){
       var count = 20;
       for(var i = 0; i < count; i++){
          particle.setItemCount(10);
-         particle.setDelay(100 * i);
-         particle.setSpeed(1 + 0.2 * i);
-         particle.setAngle(Math.PI * 2 / 90 * i);
-         particle.setAcceleration(0.1 * i);
-         particle.setAttenuation(0.8);
+         particle.setItemDelay(100 * i);
+         particle.setItemSpeed(1 + 0.2 * i);
+         //particle.setItemAcceleration(0.1 * i);
+         particle.setItemAttenuation(0.8);
          particle.start();
       }
    }

@@ -14,6 +14,7 @@ MO.FE3dRainFontParticleItem = function FE3dRainFontParticleItem(o){
    o._acceleration = MO.Class.register(o, new MO.AGetSet('_acceleration'), 1);
    o._attenuation  = MO.Class.register(o, new MO.AGetSet('_attenuation'), 0);
    // @attibute
+   o._statusInRange = false;
    o._currentSpeed = 0;
    o._storeSpeed   = 0;
    //..........................................................
@@ -48,9 +49,10 @@ MO.FE3dRainFontParticleItem_start = function FE3dRainFontParticleItem_start(){
    var o = this;
    o.__base.FE3dParticleItem.start.call(o);
    // 设置参数
+   o._statusInRange = false;
    o._currentSpeed = o._speed;
    o._storeSpeed = 0;
-   o._currentAlpha = 1;
+   o._currentAlpha = 0.2;
    o._color.set(0.5, 0.5, 0.5, 1);
 }
 
@@ -66,43 +68,32 @@ MO.FE3dRainFontParticleItem_processFrame = function FE3dRainFontParticleItem_pro
    // 计算区域
    var size = o._particle._graphicContext.size();
    var position = o._position;
-   var idx = parseInt((position.x + 17) / 20 * 220);
-   var idy = parseInt((position.y + 3) * 6);
-   var index = (360 * (60 - idy) + idx) * 4;
-   var particle = o._particle;
-   var data = particle._data.data;
-   if(index >= 0 && index < data.length){
-      var r = data[index    ];
-      var g = data[index + 1];
-      var b = data[index + 2];
-      var a = data[index + 3];
-   }
+   var inRange = o._particle.testInRange(position.x, position.y);
    // 计算衰减
    var attenuation = o._attenuation * second;
-   if(r == 0){
-      if(attenuation > o._currentAlpha){
-         o._currentAlpha = 0;
-         o._currentFinish = true;
-      }else{
-         o._currentAlpha -= attenuation;
-      }
-   }
+   //if(r == 0){
+   //   if(attenuation > o._currentAlpha){
+   //      o._currentAlpha = 0;
+   //      o._currentFinish = true;
+   //   }else{
+   //      //o._currentAlpha -= attenuation;
+   //   }
+   //}
    // 计算速度
-   if(r > 0){
-      if(o._storeSpeed == 0){
+   if(o._statusInRange != inRange){
+      if(inRange){
          o._storeSpeed = o._currentSpeed;
+         o._currentSpeed = 0.2;
          o._color.set(1, 0, 0, 1);
-         //o._currentAlpha = 1;
-      }
-      o._currentSpeed = 0.2;
-   }else{
-      if(o._storeSpeed != 0){
-         o._color.set(0.5, 0.5, 0.5, 1);
-         //o._currentAlpha = 0.5;
+         o._currentAlpha = 1;
+      }else{
+         o._color.set(1, 1, 1, 1);
+         o._currentAlpha = 0.2;
          o._currentSpeed = o._storeSpeed;
       }
-      o._currentSpeed += o._acceleration * second;
+      o._statusInRange = inRange;
    }
+   // 计算位置
    var distance = o._currentSpeed * second;
    var direction = o._direction;
    position.x += direction.x * distance;
