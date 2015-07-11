@@ -1558,7 +1558,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       graphic.clear();
-      readyControls.sort(onSortControl);
+      readyControls.sort(o.onSortControl);
       var readyCount = readyControls.count();
       for(var i = 0; i < readyCount; i++){
          var control = readyControls.at(i);
@@ -1578,7 +1578,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             o.filterByRectangle(dirtyControls, controlRectangle)
          }
       }
-      dirtyControls.sort(onSortControl);
+      dirtyControls.sort(o.onSortControl);
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);

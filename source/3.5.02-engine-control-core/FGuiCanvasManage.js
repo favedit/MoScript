@@ -162,7 +162,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       // 清空画板
       graphic.clear();
       // 排序控件
-      readyControls.sort(onSortControl);
+      readyControls.sort(o.onSortControl);
       // 绘制处理
       var readyCount = readyControls.count();
       for(var i = 0; i < readyCount; i++){
@@ -186,7 +186,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          }
       }
       // 排序控件
-      dirtyControls.sort(onSortControl);
+      dirtyControls.sort(o.onSortControl);
       // 绘制处理
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){

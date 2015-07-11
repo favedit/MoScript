@@ -153,7 +153,7 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
    var startDate = historyConsole.dates().first();
    var endDate = historyConsole.dates().last();
-   o._currentDate.parseAuto('20150510');
+   o._currentDate.parseAuto(startDate.code());
    o._startDate.parseAuto(startDate.code());
    o._endDate.parseAuto(endDate.code());
    var milestones = historyConsole.milestones();
@@ -389,7 +389,6 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
    var dateData = historyConsole.dates().get(code);
    var milestone = historyConsole.milestones().get(code);
    if (milestone) {
-      return;
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
       o._milestoneFrame.dirty();
