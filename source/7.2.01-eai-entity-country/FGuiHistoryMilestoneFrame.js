@@ -103,7 +103,7 @@ with (MO) {
       var showTick = passedTick - o._popDuration;
       var closeTick = passedTick - o._showDuration - o._popDuration;
       //var slideDistance = (MO.Eai.Canvas.logicSize().width + rectangle.width) / 2;
-      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100 - o._fullHeight;
+      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 50 - o._fullHeight;
       var p = 0;
       if (passedTick < o._popDuration) {
          p = passedTick / o._popDuration;
@@ -119,7 +119,7 @@ with (MO) {
          p = p * p;
          graphic._handle.globalAlpha = 1 - p;
          //o.setLeft((MO.Eai.Canvas.logicSize().width - rectangle.width) / 2 + slideDistance * p);
-         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 100 - slideDistance * p);
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 50 - slideDistance * p);
       }
       else {
          o._data = null;
@@ -136,9 +136,9 @@ with (MO) {
 
       graphic.setFont('bold 28px Microsoft YaHei');
       //graphic.drawText('投资总额：', textLeft, textTop, '#FFE849');
-      graphic.drawText('达成日数：', textLeft, textTop + 100, '#FFE849');
-      graphic.drawText('分公司数：', textLeft, textTop + 150, '#FFE849');
-      graphic.drawText('理财师数：', textLeft, textTop + 200, '#FFE849');
+      graphic.drawText('达成日数：', textLeft, textTop + 50, '#FF9103');
+      graphic.drawText('分公司数：', textLeft, textTop + 100, '#FF9103');
+      graphic.drawText('理财师数：', textLeft, textTop + 150, '#FF9103');
       if (o.data()) {
          //graphic.drawText(o.data().investmentTotal(), textLeft + 120, textTop, '#FFA800');
          var invesText = o.data().investmentTotal().toString();
@@ -157,20 +157,58 @@ with (MO) {
          for (var i = 0; i < invesText.length; i++) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
-         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         var dataText = o.data().code();
-         var textWidth = graphic.textWidth(dataText);
-         dataText = dataText.substring(0, 4) + "年" + dataText.substring(4, 6) + "月" + dataText.substring(6, 8) + "日";;
-         graphic.drawText(dataText, hCenter - textWidth + 20, textTop + 50, '#FFE849');
+         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, unitImgSize.width, unitImgSize.height);
+
+         var dataText = '';
+         var textWidth = 0;
+
+         graphic.setFont('48px Microsoft YaHei');
+         var dateTextTop = rectangle.top + 280;
+         var codeText = o.data().code();
+         dataText = codeText.substring(0, 4) + "年" + codeText.substring(4, 6) + "月" + codeText.substring(6, 8) + "日达成";
+         textWidth = graphic.textWidth(dataText);
+         var dateTextLeft = hCenter - textWidth / 2 - 10;
+         dataText = codeText.substring(0, 4);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+
+         dataText = '年';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+
+         dataText = codeText.substring(4, 6);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+
+         dataText = '月';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+
+         dataText = codeText.substring(6, 8);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+
+         dataText = '日达成';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+
+
+         graphic.setFont('bold 28px Microsoft YaHei');
          dataText = o.data().dayCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 50, '#FFEE78');
          dataText = o.data().companyCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFEE78');
          dataText = o.data().staffCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 200, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFEE78');
       }
 
       graphic._handle.globalAlpha = 1;
