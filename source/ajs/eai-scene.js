@@ -973,14 +973,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(830);
-      timeline.setHeight(250);
+      timeline.setHeight(280);
    }else{
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
       timeline.setRight(680);
-      timeline.setHeight(250);
+      timeline.setHeight(280);
    }
    var liveTable = o._liveTable;
    if(MO.RBrowser.isOrientationVertical()){
