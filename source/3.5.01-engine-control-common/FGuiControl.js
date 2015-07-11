@@ -469,10 +469,10 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       bottom *= calculateRate.height;
    }
    // 计算顶层停靠位置
-   if(dockCd == MO.EGuiDock.Bottom){
+   if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
       top = bottom - height;
    }
-   if(dockCd == MO.EGuiDock.Right){
+   if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
       left = right - width;
    }
    if((anchorCd & MO.EGuiAnchor.Left) && (anchorCd & MO.EGuiAnchor.Right)){

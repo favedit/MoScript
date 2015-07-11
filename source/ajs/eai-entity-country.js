@@ -1604,6 +1604,92 @@ with (MO) {
    }
 }
 with (MO) {
+   MO.FGuiHistoryMilestoneBar = function FGuiHistoryMilestoneBar(o) {
+      o = RClass.inherits(this, o, FGuiControl);
+      o._bgImage = null;
+      o._wanBGImage = null;
+      o._yiBGImage = null;
+      o._numImages = null;
+      o._wanImage = null;
+      o._yiImage = null;
+      o._data = RClass.register(o, new AGetSet('_data'));
+      o._fullWidth = 0;
+      o._fullHeight = 0;
+      o.setup = FGuiHistoryMilestoneBar_setup;
+      o.onPaintBegin = FGuiHistoryMilestoneBar_onPaintBegin;
+      o.dispose = FGuiHistoryMilestoneBar_dispose;
+      return o;
+   }
+   MO.FGuiHistoryMilestoneBar_setup = function FGuiHistoryMilestoneBar_setup(data) {
+      var o = this;
+      o._data = data;
+      var imageConsole = MO.Console.find(MO.FImageConsole);
+      o._wanBGImage = imageConsole.load('{eai.resource}/milestone/bar_wan.png');
+      o._yiBGImage = imageConsole.load('{eai.resource}/milestone/bar_yi.png');
+      o._wanImage = imageConsole.load('{eai.resource}/number_2/wan.png');
+      o._yiImage = imageConsole.load('{eai.resource}/number_2/yi.png');
+      o._numImages = new Array(10);
+      for (var i = 0; i < 10; i++) {
+         o._numImages[i] = imageConsole.load('{eai.resource}/number_2/' + i + '.png');
+      }
+      var milestoneInvestmentTotal = data.investmentTotal();
+      if (milestoneInvestmentTotal >= 10000) {
+         o._bgImage = o._yiBGImage;
+         o.setWidth(371);
+         o.setHeight(80);
+      } else {
+         o._bgImage = o._wanBGImage;
+         o.setWidth(341);
+         o.setHeight(76);
+      }
+   }
+   MO.FGuiHistoryMilestoneBar_onPaintBegin = function FGuiHistoryMilestoneBar_onPaintBegin(event) {
+      var o = this;
+      if (!o._data) {
+         return;
+      }
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = o._clientRectangle;
+      var bgSize = o._bgImage._size;
+      graphic.drawImage(o._bgImage, rectangle.left, rectangle.top, bgSize.width, bgSize.height);
+      var textLeft = rectangle.left + 25;
+      var textTop = rectangle.top + rectangle.height / 2;
+      var drawFactor = 1;
+      var invesText = o.data().investmentTotal().toString();
+      if (invesText.length > 4) {
+         drawFactor = 0.53;
+         graphic.setFont('22px Microsoft YaHei');
+         textTop += 10;
+         invesText = invesText.substring(0, invesText.length - 4);
+         var unitImage = o._yiImage;
+      }
+      else {
+         drawFactor = 0.35;
+         graphic.setFont('18px Microsoft YaHei');
+         textTop += 6;
+         var unitImage = o._wanImage;
+      }
+      var codeText = o.data().code();
+      var dataText = codeText.substring(0, 4) + "年" + codeText.substring(4, 6) + "月" + codeText.substring(6, 8) + "日";
+      var textWidth = graphic.textWidth(dataText);
+      graphic.drawText(dataText, textLeft, textTop, '#FFEE78');
+      var numImgSize = o._numImages[0]._size;
+      var unitImgSize = o._yiImage._size;
+      var numWidth = invesText.length * numImgSize.width * drawFactor + unitImgSize.width * drawFactor;
+      var numLeft = rectangle.left + rectangle.width - numWidth - 55;
+      var numTop = rectangle.top + (rectangle.height - numImgSize.height * drawFactor) / 2;
+      for (var i = 0; i < invesText.length; i++) {
+         graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width * drawFactor, numTop, numImgSize.width * drawFactor, numImgSize.height * drawFactor);
+      }
+      graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width * drawFactor, numTop, unitImgSize.width * drawFactor, unitImgSize.height * drawFactor);
+   }
+   MO.FGuiHistoryMilestoneBar_dispose = function FGuiHistoryMilestoneBar_dispose() {
+      var o = this;
+      o.__base.FGuiControl.dispose.call(o);
+   }
+}
+with (MO) {
    MO.FGuiHistoryMilestoneFrame = function FGuiHistoryMilestoneFrame(o) {
       o = RClass.inherits(this, o, FGuiControl);
       o._bgImage              = null;
@@ -1669,7 +1755,7 @@ with (MO) {
       var passedTick = MO.Timer.current() - o._startTick;
       var showTick = passedTick - o._popDuration;
       var closeTick = passedTick - o._showDuration - o._popDuration;
-      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 100 - o._fullHeight;
+      var slideDistance = (MO.Eai.Canvas.logicSize().height + o._fullHeight) / 2 + 50 - o._fullHeight;
       var p = 0;
       if (passedTick < o._popDuration) {
          p = passedTick / o._popDuration;
@@ -1683,7 +1769,7 @@ with (MO) {
          p = closeTick / o._closeDuration;
          p = p * p;
          graphic._handle.globalAlpha = 1 - p;
-         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 100 - slideDistance * p);
+         o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 - 50 - slideDistance * p);
       }
       else {
          o._data = null;
@@ -1697,9 +1783,9 @@ with (MO) {
       }
       graphic.drawImage(o._bgImage, hCenter - bgSize.width / 2, rectangle.top, bgSize.width, bgSize.height);
       graphic.setFont('bold 28px Microsoft YaHei');
-      graphic.drawText('达成日数：', textLeft, textTop + 100, '#FFE849');
-      graphic.drawText('分公司数：', textLeft, textTop + 150, '#FFE849');
-      graphic.drawText('理财师数：', textLeft, textTop + 200, '#FFE849');
+      graphic.drawText('达成日数：', textLeft, textTop + 50, '#FF9103');
+      graphic.drawText('分公司数：', textLeft, textTop + 100, '#FF9103');
+      graphic.drawText('理财师数：', textLeft, textTop + 150, '#FF9103');
       if (o.data()) {
          var invesText = o.data().investmentTotal().toString();
          if (invesText.length > 4) {
@@ -1716,20 +1802,49 @@ with (MO) {
          for (var i = 0; i < invesText.length; i++) {
             graphic.drawImage(o._numImages[invesText[i]], numLeft + i * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
          }
-         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, numImgSize.width, numImgSize.height);
-         var dataText = o.data().code();
-         var textWidth = graphic.textWidth(dataText);
-         dataText = dataText.substring(0, 4) + "年" + dataText.substring(4, 6) + "月" + dataText.substring(6, 8) + "日";;
-         graphic.drawText(dataText, hCenter - textWidth + 20, textTop + 50, '#FFE849');
+         graphic.drawImage(unitImage, numLeft + invesText.length * numImgSize.width, rectangle.top + 320, unitImgSize.width, unitImgSize.height);
+         var dataText = '';
+         var textWidth = 0;
+         graphic.setFont('48px Microsoft YaHei');
+         var dateTextTop = rectangle.top + 280;
+         var codeText = o.data().code();
+         dataText = codeText.substring(0, 4) + "年" + codeText.substring(4, 6) + "月" + codeText.substring(6, 8) + "日达成";
+         textWidth = graphic.textWidth(dataText);
+         var dateTextLeft = hCenter - textWidth / 2 - 10;
+         dataText = codeText.substring(0, 4);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+         dataText = '年';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+         dataText = codeText.substring(4, 6);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+         dataText = '月';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+         dataText = codeText.substring(6, 8);
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FFEE78');
+         dateTextLeft += textWidth;
+         dataText = '日达成';
+         textWidth = graphic.textWidth(dataText);
+         graphic.drawText(dataText, dateTextLeft, dateTextTop, '#FF9103');
+         dateTextLeft += textWidth;
+         graphic.setFont('bold 28px Microsoft YaHei');
          dataText = o.data().dayCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 50, '#FFEE78');
          dataText = o.data().companyCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 100, '#FFEE78');
          dataText = o.data().staffCount();
          textWidth = graphic.textWidth(dataText);
-         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 200, '#FFA800');
+         graphic.drawText(dataText, textLeft + 250 - textWidth, textTop + 150, '#FFEE78');
       }
       graphic._handle.globalAlpha = 1;
    }

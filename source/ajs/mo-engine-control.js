@@ -1084,10 +1084,10 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       right *= calculateRate.width;
       bottom *= calculateRate.height;
    }
-   if(dockCd == MO.EGuiDock.Bottom){
+   if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
       top = bottom - height;
    }
-   if(dockCd == MO.EGuiDock.Right){
+   if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
       left = right - width;
    }
    if((anchorCd & MO.EGuiAnchor.Left) && (anchorCd & MO.EGuiAnchor.Right)){
@@ -1473,6 +1473,7 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o._readyControls    = null;
    o._dirtyControls    = null;
    o._paintEvent       = null;
+   o.onSortControl     = MO.FGuiCanvasManager_onSortControl;
    o.construct         = MO.FGuiCanvasManager_construct;
    o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
    o.doActionAlpha     = MO.FGuiCanvasManager_doActionAlpha;
@@ -1481,6 +1482,12 @@ MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o.process           = MO.FGuiCanvasManager_process;
    o.dispose           = MO.FGuiCanvasManager_dispose;
    return o;
+}
+MO.FGuiCanvasManager_onSortControl = function FGuiCanvasManager_onSortControl(source, target){
+   var o = this;
+   var sourceOrder = source.displayOrder();
+   var targetOrder = target.displayOrder();
+   return sourceOrder - targetOrder;
 }
 MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
    var o = this;
@@ -1497,6 +1504,10 @@ MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRect
       var control = controls.at(i);
       var clientRectangle = control.clientRectangle();
       if(rectangle.testRectangle(clientRectangle)){
+         if(!control._flagDirty){
+            control._flagDirty = true;
+            o.filterByRectangle(dirtyControls, clientRectangle);
+         }
          control.dirty();
          dirtyControls.pushUnique(control);
       }
@@ -1539,6 +1550,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             if(control.isDirtyAll()){
                o._statusDirty = true;
             }
+            control._flagDirty = false;
             readyControls.push(control)
          }
       }
@@ -1546,6 +1558,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       graphic.clear();
+      readyControls.sort(onSortControl);
       var readyCount = readyControls.count();
       for(var i = 0; i < readyCount; i++){
          var control = readyControls.at(i);
@@ -1561,9 +1574,11 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          if(control.testDirty()){
             var controlRectangle = control.clientRectangle();
             dirtyControls.push(control);
+            control._flagDirty = true;
             o.filterByRectangle(dirtyControls, controlRectangle)
          }
       }
+      dirtyControls.sort(onSortControl);
       var dirtyCount = dirtyControls.count();
       for(var i = 0; i < dirtyCount; i++){
          var control = dirtyControls.at(i);
