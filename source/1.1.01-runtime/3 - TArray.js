@@ -121,7 +121,7 @@ MO.TArray_get = function TArray_get(n){
 // @param value:Object 对象
 //==========================================================
 MO.TArray_set = function TArray_set(index, value){
-   if((index >= 0) && (n < this._length)){
+   if ((index >= 0) && (index < this._length)) {
       this._memory[index] = value;
    }
 }

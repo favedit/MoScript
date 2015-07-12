@@ -9,10 +9,13 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiLabel);
    //..........................................................
    // @attribute
-   o._value        = MO.Class.register(o, new MO.AGetSet('_value'), '0');
-   o._currentValue = '0';
+   o._value        = MO.Class.register(o, new MO.AGetter('_value'), '0');
+   o._originValue = '0';
    // @attribute
-   o._ticker       = null;
+   o._startTick    = 0;
+   o._rolling      = false;
+   o._rollingDuration = 1000;
+   o._rollingPages = null;
    //..........................................................
    // @method
    o.onPaintLabel  = MO.FEaiStatisticsLabel_onPaintLabel;
@@ -23,7 +26,7 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    // @method
    o.construct     = MO.FEaiStatisticsLabel_construct;
    // @method
-   o.updateValue   = MO.FEaiStatisticsLabel_updateValue;
+   o.setValue      = MO.FEaiStatisticsLabel_setValue;
    // @method
    o.dispose       = MO.FEaiStatisticsLabel_dispose;
    return o;
@@ -38,67 +41,107 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
+   //设置剪裁范围
+   graphic.clip(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    // 设置字体
    var textFont = 'bold 38px Microsoft YaHei';
    var unitFont = 'bold 28px Microsoft YaHei';
    graphic.setFont(textFont);
    //graphic._handle.textBaseline = 'bottom';
-   // 计算位置
-   var text = '';
-   var label = o._label;
-   var labelLength = label.length;
-   var labelNumberH = null;
-   var labelH = null;
-   var widthH = 0;
-   if(labelLength > 8){
-      labelNumberH = label.substring(0, labelLength - 8);
-      labelH = labelNumberH + '亿';
-      widthH = graphic.textWidth(labelH);
-      text += labelH;
+
+   var baseX = rectangle.left;
+   var baseY = rectangle.top + rectangle.height;
+   var unitTextX = baseX + 6;
+   var unitTextY = baseY - 4;
+   var drawedText = '';
+   var passedTick = MO.Timer.current() - o._startTick;
+   if (passedTick > o._rollingDuration) {
+      passedTick = o._rollingDuration;
+      o._rolling = false;
    }
-   var labelNumberM = null;
-   var labelM = null;
-   var widthM = 0;
-   if(labelLength > 4){
-      labelNumberM = label.substring(labelLength - 8, labelLength - 4);
-      labelM = labelNumberM + '万';
-      widthM = graphic.textWidth(labelM);
-      text += labelM;
-   }
-   var labelNumberL = null;
-   var labelL = null;
-   if(labelLength > 0){
-      labelNumberL = label.substring(labelLength - 4, labelLength);
-      labelL = labelNumberL + '元';
-      text += labelL;
-   }
-   var width = graphic.textWidth(text);
-   var x = rectangle.left;
-   var y = rectangle.top + rectangle.height;
-   // 绘制文字
-   var unitBaseX = x + 4;
-   var unitBaseY = y - 5;
-   if(labelH != null){
+
+   for (var i = 0; i < o._value.length; i++) {
+      var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
+      var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
+      var currentNum = parseInt(numString.charAt(numString.length - 1));
+      var nextNum = currentNum == 9 ? 0 : currentNum + 1;
+      var rate = passedValue - parseInt(passedValue);
+
       graphic.setFont(textFont);
-      var textWidth = graphic.textWidth(labelNumberH);
-      graphic.drawText(labelNumberH, x, y, '#FFD926');
-      graphic.setFont(unitFont);
-      graphic.drawText('亿', unitBaseX + textWidth, unitBaseY, '#00B5F6');
+      var drawedTextWidth = graphic.textWidth(drawedText);
+      var textColor = '';
+      if (i < o._originValue.length - 8) {
+         textColor = '#FFD926';
+      }
+      else if (i < o._originValue.length - 4) {
+         textColor = '#FF7200';
+      }
+      else if (i < o._originValue.length) {
+         textColor = '#FD0000';
+      }
+      graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
+      graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
+      drawedText += currentNum;
+
+
+      if (i == o._originValue.length - 9) {
+         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.setFont(unitFont);
+         graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '亿';
+      }
+      else if (i == o._originValue.length - 5) {
+         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.setFont(unitFont);
+         graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '万';
+      }
+      else if (i == o._originValue.length -1) {
+         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.setFont(unitFont);
+         graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '元';
+      }
+
    }
-   if(labelM != null){
-      graphic.setFont(textFont);
-      var textWidth = graphic.textWidth(labelNumberM);
-      graphic.drawText(labelNumberM, x + widthH, y, '#FF7200');
-      graphic.setFont(unitFont);
-      graphic.drawText('万', unitBaseX + widthH + textWidth, unitBaseY, '#00B5F6');
+
+   if (o._rolling == false) {
+      o._originValue = o._value;
    }
-   if(labelL != null){
-      graphic.setFont(textFont);
-      var textWidth = graphic.textWidth(labelNumberL);
-      graphic.drawText(labelNumberL, x + widthH + widthM, y, '#FD0000');
-      graphic.setFont(unitFont);
-      graphic.drawText('元', unitBaseX + widthH + widthM + textWidth, unitBaseY, '#00B5F6');
+
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
+   var o = this;
+   if (o._value == value) {
+      return;
    }
+
+   o._value = value;
+   //计算实际需要转过的页数
+   var originValue = o._originValue;
+   var lengthDiff = value.length - originValue.length;
+   while (lengthDiff > 0) {
+      originValue = '0' + originValue;
+      lengthDiff--;
+   }
+   o._originValue = originValue;
+   o._rollingPages.clear();
+   o._rollingPages._length = value.length;
+   for (var i = 0; i < value.length; i++) {
+      //var pages = parseInt(value.substring(0, i + 1)) - parseInt(originValue.substring(0, i + 1));
+      var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
+      pages = pages < 0 ? pages + 10 : pages;
+      o._rollingPages.set(i, pages);
+   }
+
+   o._startTick = MO.Timer.current();
+   o._rolling = true;
 }
 
 //==========================================================
@@ -110,15 +153,11 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
 MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){
    var o = this;
    o.__base.FGuiLabel.oeUpdate.call(o, event);
-   // 更新内容
-   var value = o._value;
-   var currentValue = o._currentValue;
-   if(value != currentValue){
-      if(o._ticker.process()){
-         o.updateValue();
-         o.dirty();
-      }
+
+   if (o._rolling) {
+      o.dirty();
    }
+
    return MO.EEventStatus.Stop;
 }
 
@@ -130,42 +169,8 @@ MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){
 MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct(){
    var o = this;
    o.__base.FGuiLabel.construct.call(o);
-   // 计时器
-   o._ticker = new MO.TTicker(200);
-}
 
-//==========================================================
-// <T>更新处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiStatisticsLabel_updateValue = function FEaiStatisticsLabel_updateValue(){
-   var o = this;
-   var value = o._value;
-   var currentValue = o._currentValue;
-   var length = value.length;
-   var result = '';
-   var changed = false;
-   for(var i = length - 1; i >= 0; i--){
-      var vchar = value.charAt(i);
-      vchar = parseInt(vchar);
-      var cchar = currentValue.charAt(i);
-      if(cchar == ''){
-         cchar = 0;
-      }else{
-         cchar = parseInt(cchar);
-      }
-      if(!changed && vchar != cchar){
-         cchar++;
-         if(cchar > 9){
-            cchar = 0;
-         }
-         changed = true;
-      }
-      result = cchar + result;
-   }
-   o._label = result;
-   o._currentValue = result;
+   o._rollingPages = new MO.TArray();
 }
 
 //==========================================================
