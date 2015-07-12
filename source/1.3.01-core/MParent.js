@@ -46,7 +46,7 @@ MO.MParent_isParent = function MParent_isParent(value){
 MO.MParent_findParent = function MParent_findParent(clazz){
    var find = this;
    if(clazz){
-      while(RClass.isClass(find._parent, clazz)){
+      while(MO.Class.isClass(find._parent, clazz)){
          find = find.parent();
       }
    }else{

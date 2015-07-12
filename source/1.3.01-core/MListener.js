@@ -156,6 +156,6 @@ MO.MListener_dispose = function MListener_dispose(){
          var listeners = listenerss.at(i);
          listeners.dispose();
       }
-      o._listenerss = MO.RObject.dispose(listenerss);
+      o._listenerss = MO.Lang.Object.dispose(listenerss);
    }
 }

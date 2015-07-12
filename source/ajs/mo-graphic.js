@@ -3101,38 +3101,38 @@ with(MO){
       var o = this;
       var p = o.findParameter(pn);
       if(p == null){
-         throw new TError(o, 'Bind invalid parameter. (name={1})', pn);
+         throw new MO.TError(o, 'Bind invalid parameter. (name={1})', pn);
       }
       var d = null;
       var t = pv.constructor;
       if((t == Float32Array) || (t == SMatrix3d) || (t == SPerspectiveMatrix3d)){
          d = pv;
       }else if(t == SColor4){
-         d = RTypeArray.float4();
+         d = MO.Lang.TypeArray.float4();
          d[0] = pv.red;
          d[1] = pv.green;
          d[2] = pv.blue;
          d[3] = pv.alpha;
       }else if((t == SPoint3) || (t == SVector3)){
-         d = RTypeArray.float3();
+         d = MO.Lang.TypeArray.float3();
          d[0] = pv.x;
          d[1] = pv.y;
          d[2] = pv.z;
       }else if((t == SPoint4) || (t == SVector4)){
-         d = RTypeArray.float4();
+         d = MO.Lang.TypeArray.float4();
          d[0] = pv.x;
          d[1] = pv.y;
          d[2] = pv.z;
          d[3] = pv.w;
       }else{
-         throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
+         throw new MO.TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
       }
       if(p.attachData(d)){
          o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
       }
    }
    MO.FG3dProgram_setParameter4 = function FG3dProgram_setParameter4(pn, px, py, pz, pw){
-      var v = RTypeArray.float4();
+      var v = MO.Lang.TypeArray.float4();
       v[0] = px;
       v[1] = py;
       v[2] = pz;
@@ -3149,11 +3149,11 @@ with(MO){
    }
    MO.FG3dProgram_dispose = function FG3dProgram_dispose(){
       var o = this;
-      o._attributes = RObject.dispose(o._attributes, true);
-      o._parameters = RObject.dispose(o._parameters, true);
-      o._samplers = RObject.dispose(o._samplers, true);
-      o._vertexShader = RObject.dispose(o._vertexShader);
-      o._fragmentShader = RObject.dispose(o._fragmentShader);
+      o._attributes = MO.Lang.Object.dispose(o._attributes, true);
+      o._parameters = MO.Lang.Object.dispose(o._parameters, true);
+      o._samplers = MO.Lang.Object.dispose(o._samplers, true);
+      o._vertexShader = MO.Lang.Object.dispose(o._vertexShader);
+      o._fragmentShader = MO.Lang.Object.dispose(o._fragmentShader);
       o.__base.FG3dObject.dispose.call(o);
    }
 }

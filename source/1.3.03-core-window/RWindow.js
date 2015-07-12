@@ -572,11 +572,11 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    o._hDocument = null;
    o._hContainer = null;
    // @attribute
-   o._eventMouse = MO.RObject.dispose(o._eventMouse);
-   o._eventKey = MO.RObject.dispose(o._eventKey);
-   o._eventResize = MO.RObject.dispose(o._eventResize);
-   o._eventOrientation = MO.RObject.dispose(o._eventOrientation);
-   o._eventUnload = MO.RObject.dispose(o._eventUnload);
+   o._eventMouse = MO.Lang.Object.dispose(o._eventMouse);
+   o._eventKey = MO.Lang.Object.dispose(o._eventKey);
+   o._eventResize = MO.Lang.Object.dispose(o._eventResize);
+   o._eventOrientation = MO.Lang.Object.dispose(o._eventOrientation);
+   o._eventUnload = MO.Lang.Object.dispose(o._eventUnload);
 }
 //..........................................................
 // 实例化内容

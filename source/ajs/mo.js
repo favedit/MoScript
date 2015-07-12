@@ -8693,105 +8693,99 @@ MO.RRandom.prototype.rand = function RRandom_rand(seed){
 }
 MO.RRandom = new MO.RRandom();
 MO.Random = MO.RRandom;
-with(MO){
-   MO.AListener = function AListener(name, linker){
-      var o = this;
-      ASource.call(o, name, ESource.Listener, linker);
-      o.build = AListener_build;
-      return o;
-   }
-   MO.AListener_build = function AListener_build(clazz, instance){
-      var o = this;
-      var addListener = 'add' + o._linker + 'Listener';
-      instance[addListener] = RListener.makeAddListener(addListener, o._linker);
-      var setListener = 'set' + o._linker + 'Listener';
-      instance[setListener] = RListener.makeSetListener(setListener, o._linker);
-      var removeListener = 'remove' + o._linker + 'Listener';
-      instance[removeListener] = RListener.makeRemoveListener(removeListener, o._linker);
-      var clearListeners = 'clear' + o._linker + 'Listeners';
-      instance[clearListeners] = RListener.makeClearListener(clearListeners, o._linker);
-      var processListener = 'process' + o._linker + 'Listener';
-      instance[processListener] = RListener.makeProcessListener(processListener, o._linker);
-   }
+MO.AListener = function AListener(name, linker){
+   var o = this;
+   MO.ASource.call(o, name, MO.ESource.Listener, linker);
+   o.build = MO.AListener_build;
+   return o;
 }
-with(MO){
-   MO.AStyle = function AStyle(n, s){
-      var o = this;
-      AAnnotation.call(o, n);
-      o._annotationCd = EAnnotation.Style;
-      o._duplicate    = true;
-      o._style        = s;
-      o.code          = AStyle_code;
-      o.style         = AStyle_style;
-      o.build         = AStyle_build;
-      o.toString      = AStyle_toString;
-      if(s == null){
-         var v = null;
-         if(RString.startsWith(n, '_style')){
-            v = n.substring(6);
-         }else if(RString.startsWith(n, 'style')){
-            v = n.substring(5);
-         }
-         if(v == null){
-            throw new TError('Style name is empty.');
-         }
-         o._style = v;
-      }
-      return o;
-   }
-   MO.AStyle_code = function AStyle_code(){
-      return this._style;
-   }
-   MO.AStyle_style = function AStyle_style(){
-      return this._style;
-   }
-   MO.AStyle_build = function AStyle_build(v){
-      var o = this;
-      v[o._name] = null;
-   }
-   MO.AStyle_toString = function AStyle_toString(){
-      var o = this;
-      return 'style=' + o._style;
-   }
+MO.AListener_build = function AListener_build(clazz, instance){
+   var o = this;
+   var addListener = 'add' + o._linker + 'Listener';
+   instance[addListener] = MO.RListener.makeAddListener(addListener, o._linker);
+   var setListener = 'set' + o._linker + 'Listener';
+   instance[setListener] = MO.RListener.makeSetListener(setListener, o._linker);
+   var removeListener = 'remove' + o._linker + 'Listener';
+   instance[removeListener] = MO.RListener.makeRemoveListener(removeListener, o._linker);
+   var clearListeners = 'clear' + o._linker + 'Listeners';
+   instance[clearListeners] = MO.RListener.makeClearListener(clearListeners, o._linker);
+   var processListener = 'process' + o._linker + 'Listener';
+   instance[processListener] = MO.RListener.makeProcessListener(processListener, o._linker);
 }
-with(MO){
-   MO.AStyleIcon = function AStyleIcon(n, s){
-      var o = this;
-      AAnnotation.call(o, n);
-      o._annotationCd = EAnnotation.Style;
-      o._style        = s;
-      o.code          = AStyleIcon_code;
-      o.style         = AStyleIcon_style;
-      o.build         = AStyleIcon_build;
-      o.toString      = AStyleIcon_toString;
-      if(s == null){
-         var v = null;
-         if(RString.startsWith(n, '_style')){
-            v = n.substring(6);
-         }else if(RString.startsWith(n, 'style')){
-            v = n.substring(5);
-         }
-         if(v == null){
-            throw new TError('Style name is empty.');
-         }
-         o._style = v;
+MO.AStyle = function AStyle(name, style){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Style;
+   o._duplicate    = true;
+   o._style        = style;
+   o.code          = MO.AStyle_code;
+   o.style         = MO.AStyle_style;
+   o.build         = MO.AStyle_build;
+   o.toString      = MO.AStyle_toString;
+   if(style == null){
+      var value = null;
+      if(MO.Lang.String.startsWith(name, '_style')){
+         value = name.substring(6);
+      }else if(MO.Lang.String.startsWith(name, 'style')){
+         value = name.substring(5);
       }
-      return o;
+      if(value == null){
+         throw new MO.TError('Style name is empty.');
+      }
+      o._style = value;
    }
-   MO.AStyleIcon_code = function AStyleIcon_code(){
-      return this._style;
+   return o;
+}
+MO.AStyle_code = function AStyle_code(){
+   return this._style;
+}
+MO.AStyle_style = function AStyle_style(){
+   return this._style;
+}
+MO.AStyle_build = function AStyle_build(value){
+   var o = this;
+   value[o._name] = null;
+}
+MO.AStyle_toString = function AStyle_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
+MO.AStyleIcon = function AStyleIcon(name, style){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Style;
+   o._style        = style;
+   o.code          = MO.AStyleIcon_code;
+   o.style         = MO.AStyleIcon_style;
+   o.build         = MO.AStyleIcon_build;
+   o.toString      = MO.AStyleIcon_toString;
+   if(style == null){
+      var value = null;
+      if(MO.Lang.String.startsWith(name, '_style')){
+         value = name.substring(6);
+      }else if(MO.Lang.String.startsWith(name, 'style')){
+         value = name.substring(5);
+      }
+      if(value == null){
+         throw new MO.TError('Style name is empty.');
+      }
+      o._style = value;
    }
-   MO.AStyleIcon_style = function AStyleIcon_style(){
-      return this._style;
-   }
-   MO.AStyleIcon_build = function AStyleIcon_build(v){
-      var o = this;
-      v[o._name] = null;
-   }
-   MO.AStyleIcon_toString = function AStyleIcon_toString(){
-      var o = this;
-      return 'style=' + o._style;
-   }
+   return o;
+}
+MO.AStyleIcon_code = function AStyleIcon_code(){
+   return this._style;
+}
+MO.AStyleIcon_style = function AStyleIcon_style(){
+   return this._style;
+}
+MO.AStyleIcon_build = function AStyleIcon_build(value){
+   var o = this;
+   value[o._name] = null;
+}
+MO.AStyleIcon_toString = function AStyleIcon_toString(){
+   var o = this;
+   return 'style=' + o._style;
 }
 MO.EEvent = new function EEvent(){
    var o = this;
@@ -9514,7 +9508,7 @@ MO.MListener_dispose = function MListener_dispose(){
          var listeners = listenerss.at(i);
          listeners.dispose();
       }
-      o._listenerss = MO.RObject.dispose(listenerss);
+      o._listenerss = MO.Lang.Object.dispose(listenerss);
    }
 }
 MO.MListenerLoad = function MListenerLoad(o){
@@ -9609,7 +9603,7 @@ MO.MParent_isParent = function MParent_isParent(value){
 MO.MParent_findParent = function MParent_findParent(clazz){
    var find = this;
    if(clazz){
-      while(RClass.isClass(find._parent, clazz)){
+      while(MO.Class.isClass(find._parent, clazz)){
          find = find.parent();
       }
    }else{
@@ -9671,1168 +9665,1122 @@ MO.MProperty_propertySave = function MProperty_propertySave(xconfig){
       }
    }
 }
-with(MO){
-   MO.SClickEvent = function SClickEvent(sender){
-      var o = this;
-      SEvent.call(o, sender);
-      return o;
+MO.SClickEvent = function SClickEvent(sender){
+   var o = this;
+   MO.SEvent.call(o, sender);
+   return o;
+}
+MO.SEvent = function SEvent(sender){
+   var o = this;
+   o.code       = null;
+   o.annotation = null;
+   o.listener   = null;
+   o.sender     = sender;
+   o.source     = null;
+   o.hEvent     = null;
+   o.hSender    = null;
+   o.hSource    = null;
+   o.ohProcess  = null;
+   o.onProcess  = null;
+   o.process    = null;
+   o.dispose    = MO.SEvent_dispose;
+   return o;
+}
+MO.SEvent_dispose = function SEvent_dispose(){
+   var o = this;
+   for(var name in o){
+      o[name] = null;
    }
 }
-with(MO){
-   MO.SEvent = function SEvent(sender){
-      var o = this;
-      o.code       = null;
-      o.annotation = null;
-      o.listener   = null;
-      o.sender     = sender;
-      o.source     = null;
-      o.hEvent     = null;
-      o.hSender    = null;
-      o.hSource    = null;
-      o.ohProcess  = null;
-      o.onProcess  = null;
-      o.process    = null;
-      o.dispose    = SEvent_dispose;
-      return o;
+MO.SKeyboardEvent = function SKeyboardEvent(){
+   var o = this;
+   MO.SEvent.call(o);
+   o.altKey      = false;
+   o.shiftKey    = false;
+   o.ctrlKey     = false;
+   o.keyCode     = 0;
+   o.attachEvent = MO.SKeyboardEvent_attachEvent;
+   o.cancel      = MO.SKeyboardEvent_cancel;
+   return o;
+}
+MO.SKeyboardEvent_attachEvent = function SKeyboardEvent_attachEvent(p){
+   var o = this;
+   o.altKey = p.altKey;
+   o.shiftKey = p.shiftKey;
+   o.ctrlKey = p.ctrlKey;
+   o.keyCode = p.keyCode;
+}
+MO.SKeyboardEvent_cancel = function SKeyboardEvent_cancel(){
+   var o = this;
+   o.hEvent.returnValue = false;
+}
+MO.SMouseEvent = function SMouseEvent(){
+   var o = this;
+   MO.SEvent.call(o);
+   o.button      = null;
+   o.mouseLeft   = false;
+   o.mouseMiddle = false;
+   o.mouseRight  = false;
+   o.altKey      = false;
+   o.ctrlKey     = false;
+   o.x           = 0;
+   o.y           = 0;
+   o.offsetX     = 0;
+   o.offsetY     = 0;
+   o.clientX     = 0;
+   o.clientY     = 0;
+   o.deltaX      = 0;
+   o.deltaY      = 0;
+   o.deltaZ      = 0;
+   o.attachEvent = MO.SMouseEvent_attachEvent;
+   return o;
+}
+MO.SMouseEvent_attachEvent = function SMouseEvent_attachEvent(event){
+   var o = this;
+   var hs = o.hSource = MO.RHtml.eventSource(event);
+   if(hs){
+      o.source = hs.__linker;
    }
-   MO.SEvent_dispose = function SEvent_dispose(){
-      var o = this;
-      for(var name in o){
-         o[name] = null;
-      }
+   o.button = event.button;
+   o.mouseLeft = (event.button == MO.EMouseButton.Left);
+   o.mouseMiddle = (event.button == MO.EMouseButton.Middle);
+   o.mouseRight = (event.button == MO.EMouseButton.Right);
+   o.altKey = event.altKey;
+   o.ctrlKey = event.ctrlKey;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
+      o.x = event.pageX;
+      o.y = event.pageY;
+      o.offsetX = event.layerX;
+      o.offsetY = event.layerY;
+   }else{
+      o.x = event.x;
+      o.y = event.y;
+      o.offsetX = event.offsetX;
+      o.offsetY = event.offsetY;
+   }
+   o.clientX = event.clientX;
+   o.clientY = event.clientY;
+   o.deltaX = event.deltaX;
+   o.deltaY = event.deltaY;
+   o.deltaZ = event.deltaZ;
+}
+MO.SResizeEvent = function SResizeEvent(){
+   var o = this;
+   MO.SEvent.call(o);
+   o.width       = null;
+   o.height      = null;
+   o.attachEvent = MO.SResizeEvent_attachEvent;
+   return o;
+}
+MO.SResizeEvent_attachEvent = function SResizeEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = MO.RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
    }
 }
-with(MO){
-   MO.SKeyboardEvent = function SKeyboardEvent(){
-      var o = this;
-      SEvent.call(o);
-      o.altKey      = false;
-      o.shiftKey    = false;
-      o.ctrlKey     = false;
-      o.keyCode     = 0;
-      o.attachEvent = SKeyboardEvent_attachEvent;
-      o.cancel      = SKeyboardEvent_cancel;
-      return o;
+MO.SXmlEvent = function SXmlEvent(){
+   var o = this;
+   MO.SEvent.call(o);
+   o.connection = null;
+   o.document   = null;
+   o.root       = null;
+   return o;
+}
+MO.THtmlItem = function THtmlItem(){
+   var o = this;
+   o._link  = null;
+   o._links = new Object();
+   o.get    = MO.THtmlItem_get;
+   o.set    = MO.THtmlItem_set;
+   return o;
+}
+MO.THtmlItem_get = function THtmlItem_get(name){
+   return this._links[name];
+}
+MO.THtmlItem_set = function THtmlItem_set(name, value){
+   this._links[name] = value;
+}
+MO.TXmlDocument = function TXmlDocument(){
+   var o = this;
+   o._root   = null;
+   o.create  = MO.TXmlDocument_create;
+   o.root    = MO.TXmlDocument_root;
+   o.setRoot = MO.TXmlDocument_setRoot;
+   o.xml     = MO.TXmlDocument_xml;
+   o.dump    = MO.TXmlDocument_dump;
+   return o;
+}
+MO.TXmlDocument_create = function TXmlDocument_create(n, a, v){
+   var r = new MO.TXmlNode();
+   r._name = n;
+   r._attributes = a;
+   r._value = v;
+   return r;
+}
+MO.TXmlDocument_root = function TXmlDocument_root(){
+   var o = this;
+   var r = o._root;
+   if(!r){
+      r = o._root = new MO.TXmlNode();
+      r._name = 'Configuration';
    }
-   MO.SKeyboardEvent_attachEvent = function SKeyboardEvent_attachEvent(p){
-      var o = this;
-      o.altKey = p.altKey;
-      o.shiftKey = p.shiftKey;
-      o.ctrlKey = p.ctrlKey;
-      o.keyCode = p.keyCode;
-   }
-   MO.SKeyboardEvent_cancel = function SKeyboardEvent_cancel(){
-      var o = this;
-      o.hEvent.returnValue = false;
+   return r;
+}
+MO.TXmlDocument_setRoot = function TXmlDocument_setRoot(p){
+   var o = this;
+   if(!o._root){
+      o._root = p;
+   }else{
+      throw new MO.TError(o, 'Root node is already exists.');
    }
 }
-with(MO){
-   MO.SMouseEvent = function SMouseEvent(){
-      var o = this;
-      SEvent.call(o);
-      o.button      = null;
-      o.mouseLeft   = false;
-      o.mouseMiddle = false;
-      o.mouseRight  = false;
-      o.altKey      = false;
-      o.ctrlKey     = false;
-      o.x           = 0;
-      o.y           = 0;
-      o.offsetX     = 0;
-      o.offsetY     = 0;
-      o.clientX     = 0;
-      o.clientY     = 0;
-      o.deltaX      = 0;
-      o.deltaY      = 0;
-      o.deltaZ      = 0;
-      o.attachEvent = SMouseEvent_attachEvent;
-      return o;
-   }
-   MO.SMouseEvent_attachEvent = function SMouseEvent_attachEvent(event){
-      var o = this;
-      var hs = o.hSource = RHtml.eventSource(event);
-      if(hs){
-         o.source = hs.__linker;
-      }
-      o.button = event.button;
-      o.mouseLeft = (event.button == EMouseButton.Left);
-      o.mouseMiddle = (event.button == EMouseButton.Middle);
-      o.mouseRight = (event.button == EMouseButton.Right);
-      o.altKey = event.altKey;
-      o.ctrlKey = event.ctrlKey;
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         o.x = event.pageX;
-         o.y = event.pageY;
-         o.offsetX = event.layerX;
-         o.offsetY = event.layerY;
-      }else{
-         o.x = event.x;
-         o.y = event.y;
-         o.offsetX = event.offsetX;
-         o.offsetY = event.offsetY;
-      }
-      o.clientX = event.clientX;
-      o.clientY = event.clientY;
-      o.deltaX = event.deltaX;
-      o.deltaY = event.deltaY;
-      o.deltaZ = event.deltaZ;
-   }
+MO.TXmlDocument_xml = function TXmlDocument_xml(){
+   var xml = new MO.TString();
+   xml.append("<?xml version='1.0' encoding='UTF-8'?>");
+   this.root().innerXml(xml, 0);
+   return xml.flush();
 }
-with(MO){
-   MO.SResizeEvent = function SResizeEvent(){
-      var o = this;
-      SEvent.call(o);
-      o.width       = null;
-      o.height      = null;
-      o.attachEvent = SResizeEvent_attachEvent;
-      return o;
-   }
-   MO.SResizeEvent_attachEvent = function SResizeEvent_attachEvent(p){
-      var o = this;
-      var hs = o.hSource = RHtml.eventSource(p);
-      if(hs){
-         o.source = hs.__linker;
-      }
-   }
+MO.TXmlDocument_dump = function TXmlDocument_dump(){
+   var o = this;
+   var r = new MO.TString();
+   r.appendLine(MO.RClass.name(o));
+   o.root().dump(r);
+   return r.flush();
 }
-with(MO){
-   MO.SXmlEvent = function SXmlEvent(){
-      var o = this;
-      SEvent.call(o);
-      o.connection = null;
-      o.document   = null;
-      o.root       = null;
-      return o;
-   }
+MO.TXmlNode = function TXmlNode(name){
+   var o = this;
+   MO.TNode.call(o, name);
+   o.create   = MO.TXmlNode_create;
+   o.innerXml = MO.TXmlNode_innerXml;
+   o.xml      = MO.TXmlNode_xml;
+   o.toString = MO.TXmlNode_toString;
+   return o;
 }
-with(MO){
-   MO.THtmlItem = function THtmlItem(){
-      var o = this;
-      o._link  = null;
-      o._links = new Object();
-      o.get    = THtmlItem_get;
-      o.set    = THtmlItem_set;
-      return o;
-   }
-   MO.THtmlItem_get = function THtmlItem_get(n){
-      return this._links[n];
-   }
-   MO.THtmlItem_set = function THtmlItem_set(n, v){
-      this._links[n] = v;
-   }
-}
-with(MO){
-   MO.TXmlDocument = function TXmlDocument(){
-      var o = this;
-      o._root   = null;
-      o.create  = TXmlDocument_create;
-      o.root    = TXmlDocument_root;
-      o.setRoot = TXmlDocument_setRoot;
-      o.xml     = TXmlDocument_xml;
-      o.dump    = TXmlDocument_dump;
-      return o;
-   }
-   MO.TXmlDocument_create = function TXmlDocument_create(n, a, v){
-      var r = new TXmlNode();
-      r._name = n;
-      r._attributes = a;
-      r._value = v;
-      return r;
-   }
-   MO.TXmlDocument_root = function TXmlDocument_root(){
-      var o = this;
-      var r = o._root;
-      if(!r){
-         r = o._root = new TXmlNode();
-         r._name = 'Configuration';
-      }
-      return r;
-   }
-   MO.TXmlDocument_setRoot = function TXmlDocument_setRoot(p){
-      var o = this;
-      if(!o._root){
-         o._root = p;
-      }else{
-         throw new TError(o, 'Root node is already exists.');
-      }
-   }
-   MO.TXmlDocument_xml = function TXmlDocument_xml(){
-      var s = new TString();
-      s.append("<?xml version='1.0' encoding='UTF-8'?>");
-      this.root().innerXml(s, 0);
-      return s.flush();
-   }
-   MO.TXmlDocument_dump = function TXmlDocument_dump(){
-      var o = this;
-      var r = new TString();
-      r.appendLine(RClass.name(o));
-      o.root().dump(r);
-      return r.flush();
-   }
-}
-with(MO){
-   MO.TXmlNode = function TXmlNode(name){
-      var o = this;
-      TNode.call(o, name);
-      o.create   = TXmlNode_create;
-      o.innerXml = TXmlNode_innerXml;
-      o.xml      = TXmlNode_xml;
-      o.toString = TXmlNode_toString;
-      return o;
-   }
-   MO.TXmlNode_create = function TXmlNode_create(n, a){
-      var o = this;
-      var r = new TXmlNode();
-      r._name = n;
-      r._attributes = a;
-      if(!RClass.isClass(a, TAttributes)){
-         var a = arguments;
-         var len = a.length;
-         for(var n = 1; n < len; n += 2){
-            if(n + 1 < len){
-               r.set(a[n], a[n+1]);
-            }else{
-               r._value = a[n];
-            }
+MO.TXmlNode_create = function TXmlNode_create(n, a){
+   var o = this;
+   var r = new MO.TXmlNode();
+   r._name = n;
+   r._attributes = a;
+   if(!MO.Class.isClass(a, MO.TAttributes)){
+      var a = arguments;
+      var len = a.length;
+      for(var n = 1; n < len; n += 2){
+         if(n + 1 < len){
+            r.set(a[n], a[n+1]);
+         }else{
+            r._value = a[n];
          }
       }
-      o.push(r);
-      return r;
    }
-   MO.TXmlNode_innerXml = function TXmlNode_innerXml(s, l){
-      var o = this;
+   o.push(r);
+   return r;
+}
+MO.TXmlNode_innerXml = function TXmlNode_innerXml(s, l){
+   var o = this;
+   s.appendRepeat('   ', l);
+   s.append('<', o._name);
+   var as = o._attributes;
+   if(as){
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         s.append(' ', as.name(n), '="');
+         MO.RXml.buildText(s, as.value(n));
+         s.append('"');
+      }
+   }
+   if(!o._nodes && (o._value == null)){
+      s.append('/');
+   }
+   s.append('>\n');
+   var ns = o._nodes;
+   if(ns){
+      var c = ns.count();
+      for(var n = 0; n < c; n++){
+         ns.get(n).innerXml(s, l + 1);
+      }
+   }
+   MO.RXml.buildText(s, o._value)
+   if(o._nodes || o._value != null){
       s.appendRepeat('   ', l);
-      s.append('<', o._name);
-      var as = o._attributes;
-      if(as){
-         var ac = as.count();
-         for(var n = 0; n < ac; n++){
-            s.append(' ', as.name(n), '="');
-            RXml.buildText(s, as.value(n));
-            s.append('"');
-         }
-      }
-      if(!o._nodes && (o._value == null)){
-         s.append('/');
-      }
-      s.append('>\n');
-      var ns = o._nodes;
-      if(ns){
-         var c = ns.count();
-         for(var n = 0; n < c; n++){
-            ns.get(n).innerXml(s, l + 1);
-         }
-      }
-      RXml.buildText(s, o._value)
-      if(o._nodes || o._value != null){
-         s.appendRepeat('   ', l);
-         s.append('</', o._name, '>');
-         s.append('\n');
-      }
-      return s;
+      s.append('</', o._name, '>');
+      s.append('\n');
    }
-   MO.TXmlNode_xml = function TXmlNode_xml(){
-      var s = new TString();
-      this.innerXml(s, 0);
-      return s.flush();
+   return s;
+}
+MO.TXmlNode_xml = function TXmlNode_xml(){
+   var xml = new MO.TString();
+   this.innerXml(xml, 0);
+   return xml.flush();
+}
+MO.TXmlNode_toString = function TXmlNode_toString(){
+   return this.xml().toString();
+}
+MO.FBytes = function FBytes(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView);
+   o._memory   = MO.Class.register(o, new MO.AGetter('_memory'));
+   o.construct = MO.FBytes_construct;
+   o.dispose   = MO.FBytes_dispose;
+   return o;
+}
+MO.FBytes_construct = function FBytes_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._memory = new ArrayBuffer();
+   o._viewer = new DataView(o._memory);
+}
+MO.FBytes_dispose = function FBytes_dispose(){
+   var o = this;
+   o._memory = null;
+   o._viewer = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FClassFactory = function FClassFactory(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._classes   = null;
+   o.construct  = MO.FClassFactory_construct;
+   o.register   = MO.FClassFactory_register;
+   o.unregister = MO.FClassFactory_unregister;
+   o.create     = MO.FClassFactory_create;
+   o.dispose    = MO.FClassFactory_dispose;
+   return o;
+}
+MO.FClassFactory_construct = function FClassFactory_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._classes = new MO.TDictionary();
+}
+MO.FClassFactory_register = function FClassFactory_register(n, c){
+   this._classes.set(n, c);
+}
+MO.FClassFactory_unregister = function FClassFactory_unregister(n){
+   this._classes.set(n, null);
+}
+MO.FClassFactory_create = function FClassFactory_create(n){
+   var o = this;
+   var c = o._classes.get(n);
+   if(!c){
+      throw new MO.TError('Create unregister class. (name={1})', n);
    }
-   MO.TXmlNode_toString = function TXmlNode_toString(){
-      return this.xml().toString();
+   return MO.Class.create(c);
+}
+MO.FClassFactory_dispose = function FClassFactory_dispose(){
+   var o = this;
+   o._classes = MO.Lang.Object.dispose(o._classes);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FComponent = function FComponent(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MParent);
+   o._code   = MO.Class.register(o, new MO.AGetSet('_code'));
+   o.dispose = MO.FComponent_dispose;
+   return o;
+}
+MO.FComponent_dispose = function FComponent_dispose(){
+   var o = this;
+   o.__base.MParent.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDataStream = function FDataStream(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView, MO.MDataStream);
+   o._length   = MO.Class.register(o, new MO.AGetter('_length'), 0);
+   o._memory   = MO.Class.register(o, new MO.AGetter('_memory'));
+   o._viewer   = null;
+   o.construct = MO.FDataStream_construct;
+   o.setLength = MO.FDataStream_setLength;
+   o.flip      = MO.FDataStream_flip;
+   o.dispose   = MO.FDataStream_dispose;
+   return o;
+}
+MO.FDataStream_construct = function FDataStream_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FDataStream_setLength = function FDataStream_setLength(length){
+   var o = this;
+   o._length = length;
+   o._memory = new ArrayBuffer(length);
+   o._viewer = new DataView(o._memory);
+}
+MO.FDataStream_flip = function FDataStream_flip(){
+   var o = this;
+   o._length = o._position;
+   o._position = 0;
+}
+MO.FDataStream_dispose = function FDataStream_dispose(){
+   var o = this;
+   o._viewer = null;
+   o._memory = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDataView = function FDataView(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView, MO.MDataStream);
+   o.link    = MO.FDataView_link;
+   o.dispose = MO.FDataView_dispose;
+   return o;
+}
+MO.FDataView_link = function FDataView_link(data){
+   var o = this;
+   o._memory = data;
+   o._viewer = new DataView(data);
+}
+MO.FDataView_dispose = function FDataView_dispose(){
+   var o = this;
+   o._viewer = null;
+   o._memory = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FFileReader = function FFileReader(o){
+   o = RClass.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o._reader        = null;
+   o._fileName      = MO.Class.register(o, new MO.AGetter('_fileName'));
+   o._length        = MO.Class.register(o, new MO.AGetter('_length'), 0);
+   o._data          = MO.Class.register(o, new MO.AGetter('_data'));
+   o._statusLoading = false;
+   o.ohloadStart    = MO.FFileReader_ohLoadStart;
+   o.ohLoad         = MO.FFileReader_ohLoad;
+   o.ohLoadEnd      = MO.FFileReader_ohLoadEnd;
+   o.ohProgress     = MO.FFileReader_ohProgress;
+   o.construct      = MO.FFileReader_construct;
+   o.loadFile       = MO.FFileReader_loadFile;
+   o.dispose        = MO.FFileReader_dispose;
+   return o;
+}
+MO.FFileReader_ohLoadStart = function FFileReader_ohLoadStart(){
+   var o = this.__linker;
+}
+MO.FFileReader_ohLoad = function FFileReader_ohLoad(){
+   var o = this.__linker;
+}
+MO.FFileReader_ohLoadEnd = function FFileReader_ohLoadEnd(){
+   var o = this.__linker;
+   var reader = o._reader;
+   o._statusFree = true;
+   if(reader.error){
+      MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
+   }else{
+      o._length = reader.result.byteLength;
+      o._data = reader.result;
+      var event = new MO.SEvent(o);
+      o.processLoadListener(event);
+      event.dispose();
    }
 }
-with(MO){
-   MO.FBytes = function FBytes(o){
-      o = RClass.inherits(this, o, FObject, MDataView);
-      o._memory   = RClass.register(o, new AGetter('_memory'));
-      o.construct = FBytes_construct;
-      o.dispose   = FBytes_dispose;
-      return o;
-   }
-   MO.FBytes_construct = function FBytes_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._memory = new ArrayBuffer();
-      o._viewer = new DataView(o._memory);
-   }
-   MO.FBytes_dispose = function FBytes_dispose(){
-      var o = this;
-      o._memory = null;
-      o._viewer = null;
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FFileReader_ohProgress = function FFileReader_ohProgress(){
+   var o = this.__linker;
 }
-with(MO){
-   MO.FClassFactory = function FClassFactory(o){
-      o = RClass.inherits(this, o, FObject);
-      o._classes   = null;
-      o.construct  = FClassFactory_construct;
-      o.register   = FClassFactory_register;
-      o.unregister = FClassFactory_unregister;
-      o.create     = FClassFactory_create;
-      o.dispose    = FClassFactory_dispose;
-      return o;
-   }
-   MO.FClassFactory_construct = function FClassFactory_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._classes = new TDictionary();
-   }
-   MO.FClassFactory_register = function FClassFactory_register(n, c){
-      this._classes.set(n, c);
-   }
-   MO.FClassFactory_unregister = function FClassFactory_unregister(n){
-      this._classes.set(n, null);
-   }
-   MO.FClassFactory_create = function FClassFactory_create(n){
-      var o = this;
-      var c = o._classes.get(n);
-      if(!c){
-         throw new TError('Create unregister class. (name={1})', n);
-      }
-      return RClass.create(c);
-   }
-   MO.FClassFactory_dispose = function FClassFactory_dispose(){
-      var o = this;
-      o._classes = RObject.dispose(o._classes);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FFileReader_construct = function FFileReader_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   var reader = o._reader = new FileReader();
+   reader.__linker = o;
+   reader.onloadstart = o.ohLoadStart;
+   reader.onload = o.ohLoad;
+   reader.onloadend = o.ohLoadEnd;
+   reader.onprogress = o.ohProgress;
 }
-with(MO){
-   MO.FComponent = function FComponent(o){
-      o = RClass.inherits(this, o, FObject, MParent);
-      o._code   = RClass.register(o, new AGetSet('_code'));
-      o.dispose = FComponent_dispose;
-      return o;
-   }
-   MO.FComponent_dispose = function FComponent_dispose(){
-      var o = this;
-      o.__base.MParent.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FFileReader_loadFile = function FFileReader_loadFile(file){
+   var o = this;
+   o._fileName = file.name;
+   o._length = file.size;
+   var reader = o._reader;
+   reader.readAsArrayBuffer(file);
 }
-with(MO){
-   MO.FDataStream = function FDataStream(o){
-      o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
-      o._length   = RClass.register(o, new AGetter('_length'), 0);
-      o._memory   = RClass.register(o, new AGetter('_memory'));
-      o._viewer   = null;
-      o.construct = FDataStream_construct;
-      o.setLength = FDataStream_setLength;
-      o.flip      = FDataStream_flip;
-      o.dispose   = FDataStream_dispose;
-      return o;
-   }
-   MO.FDataStream_construct = function FDataStream_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-   }
-   MO.FDataStream_setLength = function FDataStream_setLength(length){
-      var o = this;
-      o._length = length;
-      o._memory = new ArrayBuffer(length);
-      o._viewer = new DataView(o._memory);
-   }
-   MO.FDataStream_flip = function FDataStream_flip(){
-      var o = this;
-      o._length = o._position;
-      o._position = 0;
-   }
-   MO.FDataStream_dispose = function FDataStream_dispose(){
-      var o = this;
-      o._viewer = null;
-      o._memory = null;
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FFileReader_dispose = function FFileReader_dispose(){
+   var o = this;
+   var reader = o._reader = new FileReader();
+   reader.__linker = null;
+   reader.onloadstart = null;
+   reader.onload = null;
+   reader.onloadend = null;
+   reader.onprogress = null;
+   o._reader = null;
+   o._fileName = null;
+   o._data = null;
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FDataView = function FDataView(o){
-      o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
-      o.link    = FDataView_link;
-      o.dispose = FDataView_dispose;
-      return o;
-   }
-   MO.FDataView_link = function FDataView_link(data){
-      var o = this;
-      o._memory = data;
-      o._viewer = new DataView(data);
-   }
-   MO.FDataView_dispose = function FDataView_dispose(){
-      var o = this;
-      o._viewer = null;
-      o._memory = null;
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FHttpConnection = function FHttpConnection(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad, MO.MListenerProcess);
+   o._asynchronous        = false;
+   o._methodCd            = MO.EHttpMethod.Get;
+   o._contentCd           = MO.EHttpContent.Binary;
+   o._url                 = null;
+   o._input               = null;
+   o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
+   o._output              = null;
+   o._outputData          = MO.Class.register(o, new MO.AGetter('_outputData'));
+   o._connection          = null;
+   o._contentLength       = 0;
+   o._statusFree          = true;
+   o.onConnectionSend     = MO.FHttpConnection_onConnectionSend;
+   o.onConnectionReady    = MO.FHttpConnection_onConnectionReady;
+   o.onConnectionComplete = MO.FHttpConnection_onConnectionComplete;
+   o.construct            = MO.FHttpConnection_construct;
+   o.setHeaders           = MO.FHttpConnection_setHeaders;
+   o.setOutputData        = MO.FHttpConnection_setOutputData;
+   o.content              = MO.FHttpConnection_content;
+   o.sendSync             = MO.FHttpConnection_sendSync;
+   o.sendAsync            = MO.FHttpConnection_sendAsync;
+   o.send                 = MO.FHttpConnection_send;
+   o.dispose              = MO.FHttpConnection_dispose;
+   return o;
 }
-with(MO){
-   MO.FFileReader = function FFileReader(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
-      o._reader        = null;
-      o._fileName      = RClass.register(o, new AGetter('_fileName'));
-      o._length        = RClass.register(o, new AGetter('_length'), 0);
-      o._data          = RClass.register(o, new AGetter('_data'));
-      o._statusLoading = false;
-      o.ohloadStart    = FFileReader_ohLoadStart;
-      o.ohLoad         = FFileReader_ohLoad;
-      o.ohLoadEnd      = FFileReader_ohLoadEnd;
-      o.ohProgress     = FFileReader_ohProgress;
-      o.construct      = FFileReader_construct;
-      o.loadFile       = FFileReader_loadFile;
-      o.dispose        = FFileReader_dispose;
-      return o;
-   }
-   MO.FFileReader_ohLoadStart = function FFileReader_ohLoadStart(){
-      var o = this.__linker;
-   }
-   MO.FFileReader_ohLoad = function FFileReader_ohLoad(){
-      var o = this.__linker;
-   }
-   MO.FFileReader_ohLoadEnd = function FFileReader_ohLoadEnd(){
-      var o = this.__linker;
-      var reader = o._reader;
-      o._statusFree = true;
-      if(reader.error){
-         MO.Logger.error(o, 'Load file failure. (error={1])', reader.error);
+MO.FHttpConnection_onConnectionSend = function FHttpConnection_onConnectionSend(){
+   var o = this;
+   var input = o._input;
+   if(input){
+      if(input.constructor == String){
+         o._inputData = input;
+         o._contentLength = input.length;
+      }else if(input.constructor == ArrayBuffer){
+         o._inputData = input;
+         o._contentLength = input.byteLength;
       }else{
-         o._length = reader.result.byteLength;
-         o._data = reader.result;
-         var event = new SEvent(o);
-         o.processLoadListener(event);
-         event.dispose();
+         throw new MO.TError('Unknown send data type.');
       }
-   }
-   MO.FFileReader_ohProgress = function FFileReader_ohProgress(){
-      var o = this.__linker;
-   }
-   MO.FFileReader_construct = function FFileReader_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      var reader = o._reader = new FileReader();
-      reader.__linker = o;
-      reader.onloadstart = o.ohLoadStart;
-      reader.onload = o.ohLoad;
-      reader.onloadend = o.ohLoadEnd;
-      reader.onprogress = o.ohProgress;
-   }
-   MO.FFileReader_loadFile = function FFileReader_loadFile(file){
-      var o = this;
-      o._fileName = file.name;
-      o._length = file.size;
-      var reader = o._reader;
-      reader.readAsArrayBuffer(file);
-   }
-   MO.FFileReader_dispose = function FFileReader_dispose(){
-      var o = this;
-      var reader = o._reader = new FileReader();
-      reader.__linker = null;
-      reader.onloadstart = null;
-      reader.onload = null;
-      reader.onloadend = null;
-      reader.onprogress = null;
-      o._reader = null;
-      o._fileName = null;
-      o._data = null;
-      o.__base.MListenerLoad.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
    }
 }
-with(MO){
-   MO.FHttpConnection = function FHttpConnection(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad, MListenerProcess);
-      o._asynchronous        = false;
-      o._methodCd            = EHttpMethod.Get;
-      o._contentCd           = EHttpContent.Binary;
-      o._url                 = null;
-      o._input               = null;
-      o._inputData           = RClass.register(o, new AGetSet('_inputData'));
-      o._output              = null;
-      o._outputData          = RClass.register(o, new AGetter('_outputData'));
-      o._connection          = null;
-      o._contentLength       = 0;
-      o._statusFree          = true;
-      o.onConnectionSend     = FHttpConnection_onConnectionSend;
-      o.onConnectionReady    = FHttpConnection_onConnectionReady;
-      o.onConnectionComplete = FHttpConnection_onConnectionComplete;
-      o.construct            = FHttpConnection_construct;
-      o.setHeaders           = FHttpConnection_setHeaders;
-      o.setOutputData        = FHttpConnection_setOutputData;
-      o.content              = FHttpConnection_content;
-      o.sendSync             = FHttpConnection_sendSync;
-      o.sendAsync            = FHttpConnection_sendAsync;
-      o.send                 = FHttpConnection_send;
-      o.dispose              = FHttpConnection_dispose;
-      return o;
-   }
-   MO.FHttpConnection_onConnectionSend = function FHttpConnection_onConnectionSend(){
-      var o = this;
-      var input = o._input;
-      if(input){
-         if(input.constructor == String){
-            o._inputData = input;
-            o._contentLength = input.length;
-         }else if(input.constructor == ArrayBuffer){
-            o._inputData = input;
-            o._contentLength = input.byteLength;
-         }else{
-            throw new TError('Unknown send data type.');
-         }
-      }
-   }
-   MO.FHttpConnection_onConnectionReady = function FHttpConnection_onConnectionReady(){
-      var o = this._linker;
-      if(o._asynchronous){
-         var connection = o._connection;
-         if(connection.readyState == EHttpStatus.Loaded){
-            if(connection.status == 200){
-               o.setOutputData();
-               o.onConnectionComplete();
-            }else{
-               MO.Logger.fatal(o, 'Connection failure. (url={1})', o._url);
-            }
-         }
-      }
-   }
-   MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionComplete(){
-      var o = this;
-      o._statusFree = true;
-      o.processLoadListener(o);
-   }
-   MO.FHttpConnection_construct = function FHttpConnection_construct(){
-      var o = this;
-      var c = o._connection = RXml.createConnection();
-      c._linker = o;
-      c.onreadystatechange = o.onConnectionReady;
-   }
-   MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
-      var o = this;
+MO.FHttpConnection_onConnectionReady = function FHttpConnection_onConnectionReady(){
+   var o = this._linker;
+   if(o._asynchronous){
       var connection = o._connection;
-      if(o._contentCd == EHttpContent.Binary){
-         if(RBrowser.isBrowser(EBrowser.Explorer)){
-            connection.setRequestHeader('Accept-Charset', 'x-user-defined');
+      if(connection.readyState == MO.EHttpStatus.Loaded){
+         if(connection.status == 200){
+            o.setOutputData();
+            o.onConnectionComplete();
+         }else{
+            MO.Logger.fatal(o, 'Connection failure. (url={1})', o._url);
+         }
+      }
+   }
+}
+MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionComplete(){
+   var o = this;
+   o._statusFree = true;
+   o.processLoadListener(o);
+}
+MO.FHttpConnection_construct = function FHttpConnection_construct(){
+   var o = this;
+   var c = o._connection = MO.RXml.createConnection();
+   c._linker = o;
+   c.onreadystatechange = o.onConnectionReady;
+}
+MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
+   var o = this;
+   var connection = o._connection;
+   if(o._contentCd == MO.EHttpContent.Binary){
+      if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+         connection.setRequestHeader('Accept-Charset', 'x-user-defined');
+         connection.responseType = 'arraybuffer';
+      }else{
+         connection.overrideMimeType('text/plain; charset=x-user-defined');
+         if(o._asynchronous){
             connection.responseType = 'arraybuffer';
-         }else{
-            connection.overrideMimeType('text/plain; charset=x-user-defined');
-            if(o._asynchronous){
-               connection.responseType = 'arraybuffer';
-            }
-         }
-      }else{
-         connection.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-      }
-      if(!RBrowser.isBrowser(EBrowser.Chrome)){
-         if(o._contentLength > 0){
-            connection.setRequestHeader('content-length', o._contentLength);
          }
       }
+   }else{
+      connection.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
-   MO.FHttpConnection_setOutputData = function FHttpConnection_setOutputData(){
-      var o = this;
-      var connection = o._connection;
-      if(o._contentCd == EHttpContent.Binary){
-         o._outputData = connection.response;
-      }else{
-         o._outputData = connection.responseText;
+   if(!MO.RBrowser.isBrowser(MO.EBrowser.Chrome)){
+      if(o._contentLength > 0){
+         connection.setRequestHeader('content-length', o._contentLength);
       }
-   }
-   MO.FHttpConnection_content = function FHttpConnection_content(){
-      return this._outputData;
-   }
-   MO.FHttpConnection_sendSync = function FHttpConnection_sendSync(){
-      var o = this;
-      var connection = o._connection;
-      connection.open(o._methodCd, o._url, false);
-      o.setHeaders(connection, 0);
-      connection.send(o._inputData);
-      o.setOutputData();
-      o.onConnectionComplete();
-      MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
-   }
-   MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
-      var o = this;
-      var connection = o._connection;
-      connection.open(o._methodCd, o._url, true);
-      o.setHeaders(connection, 0);
-      connection.send(o._inputData);
-      MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
-   }
-   MO.FHttpConnection_send = function FHttpConnection_send(url, data){
-      var o = this;
-      o._url = url;
-      o._input = data;
-      o._methodCd = (data != null) ? EHttpMethod.Post : EHttpMethod.Get;
-      o._statusFree = false;
-      o.onConnectionSend();
-      if(o._asynchronous){
-         o.sendAsync();
-      }else{
-         o.sendSync();
-      }
-      return o.content();
-   }
-   MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
-      var o = this;
-      o._input = null;
-      o._inputData = null;
-      o._output = null;
-      o._outputData = null;
-      var connection = o._connection;
-      if(connection){
-         connection.onreadystatechange = null;
-         o._connection = null;
-      }
-      o.__base.MListenerLoad.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
    }
 }
-with(MO){
-   MO.FXmlConnection = function FXmlConnection(o){
-      o = RClass.inherits(this, o, FHttpConnection);
-      o._contentCd           = EHttpContent.Text;
-      o._inputNode           = null;
-      o._outputNode          = null;
-      o.onConnectionSend     = FXmlConnection_onConnectionSend;
-      o.onConnectionComplete = FXmlConnection_onConnectionComplete;
-      o.content              = FXmlConnection_content;
-      return o;
+MO.FHttpConnection_setOutputData = function FHttpConnection_setOutputData(){
+   var o = this;
+   var connection = o._connection;
+   if(o._contentCd == MO.EHttpContent.Binary){
+      o._outputData = connection.response;
+   }else{
+      o._outputData = connection.responseText;
    }
-   MO.FXmlConnection_onConnectionSend = function FXmlConnection_onConnectionSend(){
-      var o = this;
-      var d = o._input;
-      if(d){
-         var s = null;
-         if(d.constructor == String){
-            s = d;
-            o._inputNode = null;
-         }else if(d.constructor == TXmlNode){
-            var x = new TXmlDocument();
-            x.setRoot(d);
-            s = x.xml();
-            o._inputNode = d;
-         }else if(d.constructor == TXmlDocument){
-            s = d.xml();
-            o._inputNode = d.root();
-         }else{
-            throw new TError('Unknown send data type.');
-         }
-         o._inputData = s;
-         o._contentLength = s.length;
-      }
+}
+MO.FHttpConnection_content = function FHttpConnection_content(){
+   return this._outputData;
+}
+MO.FHttpConnection_sendSync = function FHttpConnection_sendSync(){
+   var o = this;
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, false);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
+   o.setOutputData();
+   o.onConnectionComplete();
+   MO.Logger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+}
+MO.FHttpConnection_sendAsync = function FHttpConnection_sendAsync(){
+   var o = this;
+   var connection = o._connection;
+   connection.open(o._methodCd, o._url, true);
+   o.setHeaders(connection, 0);
+   connection.send(o._inputData);
+   MO.Logger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+}
+MO.FHttpConnection_send = function FHttpConnection_send(url, data){
+   var o = this;
+   o._url = url;
+   o._input = data;
+   o._methodCd = (data != null) ? MO.EHttpMethod.Post : MO.EHttpMethod.Get;
+   o._statusFree = false;
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
    }
-   MO.FXmlConnection_onConnectionComplete = function FXmlConnection_onConnectionComplete(){
-      var o = this;
-      var c = o._connection;
-      var e = null;
-      if(c.responseXML){
-         e = c.responseXML.documentElement;
-      }else if(c.responseXml){
-         e = c.responseXml.documentElement;
-      }else{
-         throw new TError(o, "Fetch xml data failure.");
-      }
-      if(!e){
-         return RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', o._url, c._outputText)
-      }
-      var d = new TXmlDocument();
-      RXml.buildNode(d, null, e);
-      var r = o._outputNode = d.root();
-      o._statusFree = true;
-      var e = new SXmlEvent();
-      e.connection = o;
-      e.document = d;
-      e.root = r;
-      e.parameters = o._parameters;
-      o.processLoadListener(e);
-      e.dispose();
-      if(o._asynchronous){
-         o._input = null;
+   return o.content();
+}
+MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
+   var o = this;
+   o._input = null;
+   o._inputData = null;
+   o._output = null;
+   o._outputData = null;
+   var connection = o._connection;
+   if(connection){
+      connection.onreadystatechange = null;
+      o._connection = null;
+   }
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FXmlConnection = function FXmlConnection(o){
+   o = MO.Class.inherits(this, o, MO.FHttpConnection);
+   o._contentCd           = MO.EHttpContent.Text;
+   o._inputNode           = null;
+   o._outputNode          = null;
+   o.onConnectionSend     = MO.FXmlConnection_onConnectionSend;
+   o.onConnectionComplete = MO.FXmlConnection_onConnectionComplete;
+   o.content              = MO.FXmlConnection_content;
+   return o;
+}
+MO.FXmlConnection_onConnectionSend = function FXmlConnection_onConnectionSend(){
+   var o = this;
+   var d = o._input;
+   if(d){
+      var s = null;
+      if(d.constructor == String){
+         s = d;
          o._inputNode = null;
-         o._output = null;
-         o._outputNode = null;
-         o._parameters = null;
+      }else if(d.constructor == MO.TXmlNode){
+         var x = new MO.TXmlDocument();
+         x.setRoot(d);
+         s = x.xml();
+         o._inputNode = d;
+      }else if(d.constructor == MO.TXmlDocument){
+         s = d.xml();
+         o._inputNode = d.root();
+      }else{
+         throw new MO.TError('Unknown send data type.');
       }
-   }
-   MO.FXmlConnection_content = function FXmlConnection_content(){
-      return this._outputNode;
+      o._inputData = s;
+      o._contentLength = s.length;
    }
 }
-with(MO){
-   MO.FXmlData = function FXmlData(o){
-      o = RClass.inherits(this, o, FObject);
-      o._ready    = null;
-      o._config   = null;
-      o.testReady = FXmlData_testReady;
-      return o;
+MO.FXmlConnection_onConnectionComplete = function FXmlConnection_onConnectionComplete(){
+   var o = this;
+   var c = o._connection;
+   var e = null;
+   if(c.responseXML){
+      e = c.responseXML.documentElement;
+   }else if(c.responseXml){
+      e = c.responseXml.documentElement;
+   }else{
+      throw new MO.TError(o, "Fetch xml data failure.");
    }
-   MO.FXmlData_testReady = function FXmlData_testReady(){
-      return this._ready;
+   if(!e){
+      return MO.RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', o._url, c._outputText)
+   }
+   var d = new MO.TXmlDocument();
+   MO.RXml.buildNode(d, null, e);
+   var r = o._outputNode = d.root();
+   o._statusFree = true;
+   var e = new MO.SXmlEvent();
+   e.connection = o;
+   e.document = d;
+   e.root = r;
+   e.parameters = o._parameters;
+   o.processLoadListener(e);
+   e.dispose();
+   if(o._asynchronous){
+      o._input = null;
+      o._inputNode = null;
+      o._output = null;
+      o._outputNode = null;
+      o._parameters = null;
    }
 }
-with(MO){
-   MO.REngine = function REngine(){
-      var o = this;
-      o._spaces    = new Object();
-      o.Global     = new Object();
-      o.Top        = new Object();
-      o.Local      = new Object();
-      o.onRelease  = REngine_onRelease;
-      o.register   = REngine_register;
-      o.initialize = REngine_initialize;
-      o.connect    = REngine_connect;
-      o.buildSpace = REngine_buildSpace;
-      o.find       = REngine_find;
-      o.findGlobal = REngine_findGlobal;
-      o.findTop    = REngine_findTop;
-      o.findLocal  = REngine_findLocal;
-      return o;
-   }
-   MO.REngine_onRelease = function REngine_onRelease(){
-      RConsole.release();
-      REvent.release();
-      CollectGarbage();
-   }
-   MO.REngine_register = function REngine_register(s){
-      var o = this;
-      var p = o._spaces[s.space];
-      if(!p){
-         p = o._spaces[s.space] = new Object();
-      }
-      p[s.name] = s;
-   }
-   MO.REngine_initialize = function REngine_initialize(){
-      var o = this;
-      RConsole.initialize();
-   }
-   MO.REngine_connect = function REngine_connect(){
-      var o = this;
-      RConsole.initialize();
-   }
-   MO.REngine_buildSpace = function REngine_buildSpace(t, p){
-      var o = this;
-      for(var n in p){
-         if(RString.startsWith(n, 'R')){
-            t[n.substring(1)] = p[n].instance;
-         }
-      }
-   }
-   MO.REngine_find = function REngine_find(s, n){
-      var r = null;
-      var s = this._spaces[s];
-      if(s){
-         r = s[n];
-         if(r){
-            return r.instance;
-         }
-      }
-      return null;
-   }
-   MO.REngine_findGlobal = function REngine_findGlobal(n){
-      return this.find(ESpace.Global, n);
-   }
-   MO.REngine_findTop = function REngine_findTop(n){
-      return top.REngine.find(ESpace.Top, n);
-   }
-   MO.REngine_findLocal = function REngine_findLocal(n){
-      return this.find(ESpace.Local, n);
-   }
-   MO.REngine = new REngine();
+MO.FXmlConnection_content = function FXmlConnection_content(){
+   return this._outputNode;
 }
-with(MO){
-   MO.RKeyboard = function RKeyboard(){
-      var o = this;
-      o._status      = new Array();
-      o.onKeyDown    = RKeyboard_onKeyDown;
-      o.onKeyUp      = RKeyboard_onKeyUp;
-      o.construct    = RKeyboard_construct;
-      o.isControlKey = RKeyboard_isControlKey;
-      o.isIntegerKey = RKeyboard_isIntegerKey;
-      o.isFloatKey   = RKeyboard_isFloatKey;
-      o.isNumKey     = RKeyboard_isNumKey;
-      o.isPress      = RKeyboard_isPress;
-      o.fixCase      = RKeyboard_fixCase;
-      o.fixPattern   = RKeyboard_fixPattern;
-      o.fixChars     = RKeyboard_fixChars;
-      return o;
+MO.FXmlData = function FXmlData(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._ready    = null;
+   o._config   = null;
+   o.testReady = MO.FXmlData_testReady;
+   return o;
+}
+MO.FXmlData_testReady = function FXmlData_testReady(){
+   return this._ready;
+}
+MO.REngine = function REngine(){
+   var o = this;
+   o._spaces    = new Object();
+   o.Global     = new Object();
+   o.Top        = new Object();
+   o.Local      = new Object();
+   o.onRelease  = MO.REngine_onRelease;
+   o.register   = MO.REngine_register;
+   o.initialize = MO.REngine_initialize;
+   o.connect    = MO.REngine_connect;
+   o.buildSpace = MO.REngine_buildSpace;
+   o.find       = MO.REngine_find;
+   o.findGlobal = MO.REngine_findGlobal;
+   o.findTop    = MO.REngine_findTop;
+   o.findLocal  = MO.REngine_findLocal;
+   return o;
+}
+MO.REngine_onRelease = function REngine_onRelease(){
+   MO.RConsole.release();
+   MO.REvent.release();
+   CollectGarbage();
+}
+MO.REngine_register = function REngine_register(s){
+   var o = this;
+   var p = o._spaces[s.space];
+   if(!p){
+      p = o._spaces[s.space] = new Object();
    }
-   MO.RKeyboard_onKeyDown = function RKeyboard_onKeyDown(p){
-      var o = this;
-      var c = p.keyCode;
-      o._status[c] = EKeyStatus.Press;
-   }
-   MO.RKeyboard_onKeyUp = function RKeyboard_onKeyUp(p){
-      var o = this;
-      var c = p.keyCode;
-      o._status[c] = EKeyStatus.Normal;
-   }
-   MO.RKeyboard_construct = function RKeyboard_construct(){
-      var o = this;
-      var s = o._status;
-      for(var i = 0; i < 256; i++){
-         s[i] = EKeyStatus.Normal;
+   p[s.name] = s;
+}
+MO.REngine_initialize = function REngine_initialize(){
+   var o = this;
+   MO.RConsole.initialize();
+}
+MO.REngine_connect = function REngine_connect(){
+   var o = this;
+   MO.RConsole.initialize();
+}
+MO.REngine_buildSpace = function REngine_buildSpace(t, p){
+   var o = this;
+   for(var n in p){
+      if(MO.Lang.String.startsWith(n, 'R')){
+         t[n.substring(1)] = p[n].instance;
       }
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-      RWindow.lsnsKeyUp.register(o, o.onKeyUp);
    }
-   MO.RKeyboard_isControlKey = function RKeyboard_isControlKey(p){
-      var s = EKeyCode.ControlKeys;
-      for(var i = s.length - 1; i >= 0; i--){
-         if(s[i] == p){
-            return true;
-         }
+}
+MO.REngine_find = function REngine_find(s, n){
+   var r = null;
+   var s = this._spaces[s];
+   if(s){
+      r = s[n];
+      if(r){
+         return r.instance;
       }
-      return false;
    }
-   MO.RKeyboard_isIntegerKey = function RKeyboard_isIntegerKey(c){
-      return EKeyCode.integerCodes[c];
+   return null;
+}
+MO.REngine_findGlobal = function REngine_findGlobal(n){
+   return this.find(MO.ESpace.Global, n);
+}
+MO.REngine_findTop = function REngine_findTop(n){
+   return top.MO.REngine.find(MO.ESpace.Top, n);
+}
+MO.REngine_findLocal = function REngine_findLocal(n){
+   return this.find(MO.ESpace.Local, n);
+}
+MO.REngine = new MO.REngine();
+MO.RKeyboard = function RKeyboard(){
+   var o = this;
+   o._status      = new Array();
+   o.onKeyDown    = MO.RKeyboard_onKeyDown;
+   o.onKeyUp      = MO.RKeyboard_onKeyUp;
+   o.construct    = MO.RKeyboard_construct;
+   o.isControlKey = MO.RKeyboard_isControlKey;
+   o.isIntegerKey = MO.RKeyboard_isIntegerKey;
+   o.isFloatKey   = MO.RKeyboard_isFloatKey;
+   o.isNumKey     = MO.RKeyboard_isNumKey;
+   o.isPress      = MO.RKeyboard_isPress;
+   o.fixCase      = MO.RKeyboard_fixCase;
+   o.fixPattern   = MO.RKeyboard_fixPattern;
+   o.fixChars     = MO.RKeyboard_fixChars;
+   return o;
+}
+MO.RKeyboard_onKeyDown = function RKeyboard_onKeyDown(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = MO.EKeyStatus.Press;
+}
+MO.RKeyboard_onKeyUp = function RKeyboard_onKeyUp(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = MO.EKeyStatus.Normal;
+}
+MO.RKeyboard_construct = function RKeyboard_construct(){
+   var o = this;
+   var s = o._status;
+   for(var i = 0; i < 256; i++){
+      s[i] = MO.EKeyStatus.Normal;
    }
-   MO.RKeyboard_isFloatKey = function RKeyboard_isFloatKey(c){
-      return EKeyCode.floatCodes[c];
-   }
-   MO.RKeyboard_isNumKey = function RKeyboard_isNumKey(c){
-      if(p >= 96 && p <= 105){
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   MO.RWindow.lsnsKeyUp.register(o, o.onKeyUp);
+}
+MO.RKeyboard_isControlKey = function RKeyboard_isControlKey(p){
+   var s = MO.EKeyCode.ControlKeys;
+   for(var i = s.length - 1; i >= 0; i--){
+      if(s[i] == p){
          return true;
       }
-      return false;
    }
-   MO.RKeyboard_isPress = function RKeyboard_isPress(p){
-      var o = this;
-      var v = o._status[p];
-      return v == EKeyStatus.Press;
-   }
-   MO.RKeyboard_fixCase = function RKeyboard_fixCase(e, c){
-      if(e && c){
-         var k = e.keyCode;
-         if(ECase.Upper == c){
-            k = String.fromCharCode(k).toUpperCase().charCodeAt(0)
-         }else if(ECase.Lower == c){
-            k = String.fromCharCode(k).toLowerCase().charCodeAt(0)
-         }
-         e.keyCode = k;
-      }
-   }
-   MO.RKeyboard_fixPattern = function RKeyboard_fixPattern(e, p){
-      if(p){
-         var k = e.keyCode;
-         if(!this.isControlKeyPress(k)){
-            if(!RString.isPattern(String.fromCharCode(k), p)){
-               e.keyCode = 0;
-               return false;
-            }
-         }
-      }
-      return true;
-   }
-   MO.RKeyboard_fixChars = function RKeyboard_fixChars(e, p){
-      if(p){
-         var k = e.keyCode;
-         if(this.isNumKey(k)){
-       	  k = e.keyCode = e.keyCode - 48;
-         }
-         if(!this.isControlKeyPress(k)){
-            if(!RString.inChars(String.fromCharCode(k), p)){
-               e.keyCode = 0;
-               e.returnValue = false;
-               return false;
-            }
-         }
-      }
-      return true;
-   }
-   MO.RKeyboard = new RKeyboard();
+   return false;
 }
-with(MO){
-   MO.RLoader = function RLoader(){
-      var o = this;
-      o._loading      = new TArray();
-      o._loaded       = new TArray()
-      o._waits        = new TArray()
-      o._intervalId   = null;
-      o.hWindow       = null;
-      o.onInterval    = RLoader_onInterval;
-      o.intervalStart = RLoader_intervalStart;
-      o.intervalStop  = RLoader_intervalStop;
-      o.loadJsFile    = RLoader_loadJsFile;
-      o.loadJs        = RLoader_loadJs;
-      o.loaded        = RLoader_loaded;
-      o.wait          = RLoader_wait;
-      o.waitJs        = RLoader_waitJs;
-      o.dispose       = RLoader_dispose;
-      return o;
+MO.RKeyboard_isIntegerKey = function RKeyboard_isIntegerKey(c){
+   return MO.EKeyCode.integerCodes[c];
+}
+MO.RKeyboard_isFloatKey = function RKeyboard_isFloatKey(c){
+   return MO.EKeyCode.floatCodes[c];
+}
+MO.RKeyboard_isNumKey = function RKeyboard_isNumKey(c){
+   if(p >= 96 && p <= 105){
+      return true;
    }
-   MO.RLoader_dispose = function RLoader_dispose(){
-      var o = this;
+   return false;
+}
+MO.RKeyboard_isPress = function RKeyboard_isPress(p){
+   var o = this;
+   var v = o._status[p];
+   return v == MO.EKeyStatus.Press;
+}
+MO.RKeyboard_fixCase = function RKeyboard_fixCase(e, c){
+   if(e && c){
+      var k = e.keyCode;
+      if(ECase.Upper == c){
+         k = String.fromCharCode(k).toUpperCase().charCodeAt(0)
+      }else if(ECase.Lower == c){
+         k = String.fromCharCode(k).toLowerCase().charCodeAt(0)
+      }
+      e.keyCode = k;
+   }
+}
+MO.RKeyboard_fixPattern = function RKeyboard_fixPattern(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(!this.isControlKeyPress(k)){
+         if(!MO.Lang.String.isPattern(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+MO.RKeyboard_fixChars = function RKeyboard_fixChars(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(this.isNumKey(k)){
+    	  k = e.keyCode = e.keyCode - 48;
+      }
+      if(!this.isControlKeyPress(k)){
+         if(!MO.Lang.String.inChars(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            e.returnValue = false;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+MO.RKeyboard = new MO.RKeyboard();
+MO.RLoader = function RLoader(){
+   var o = this;
+   o._loading      = new MO.TArray();
+   o._loaded       = new MO.TArray()
+   o._waits        = new MO.TArray()
+   o._intervalId   = null;
+   o.hWindow       = null;
+   o.onInterval    = MO.RLoader_onInterval;
+   o.intervalStart = MO.RLoader_intervalStart;
+   o.intervalStop  = MO.RLoader_intervalStop;
+   o.loadJsFile    = MO.RLoader_loadJsFile;
+   o.loadJs        = MO.RLoader_loadJs;
+   o.loaded        = MO.RLoader_loaded;
+   o.wait          = MO.RLoader_wait;
+   o.waitJs        = MO.RLoader_waitJs;
+   o.dispose       = MO.RLoader_dispose;
+   return o;
+}
+MO.RLoader_dispose = function RLoader_dispose(){
+   var o = this;
+   o.intervalStop();
+   o.hWindow = null;
+}
+MO.RLoader_onInterval = function RLoader_onInterval(){
+   var o = this;
+   var ws = o._waits;
+   var c = ws.length;
+   for(var n=0; n<c; n++){
+      var l = ws.get(n);
+      if(l){
+         if(l.check(o._loaded)){
+            l.invoke.invoke();
+            ws.set(n, null);
+         }
+      }
+   }
+   ws.compress();
+   if(ws.isEmpty()){
       o.intervalStop();
+   }
+}
+MO.RLoader_intervalStart = function RLoader_intervalStart(){
+   var o = this;
+   if(!o._intervalId){
+      o.hWindow = window;
+      o._intervalId = window.setInterval(function(){o.onInterval();}, 10);
+   }
+}
+MO.RLoader_intervalStop = function RLoader_intervalStop(){
+   var o = this;
+   var w = o.hWindow;
+   if(w && o._intervalId){
+      w.clearInterval(o._intervalId);
       o.hWindow = null;
+      o._intervalId = null;
    }
-   MO.RLoader_onInterval = function RLoader_onInterval(){
-      var o = this;
-      var ws = o._waits;
-      var c = ws.length;
-      for(var n=0; n<c; n++){
-         var l = ws.get(n);
-         if(l){
-            if(l.check(o._loaded)){
-               l.invoke.invoke();
-               ws.set(n, null);
-            }
-         }
-      }
-      ws.compress();
-      if(ws.isEmpty()){
-         o.intervalStop();
-      }
-   }
-   MO.RLoader_intervalStart = function RLoader_intervalStart(){
-      var o = this;
-      if(!o._intervalId){
-         o.hWindow = window;
-         o._intervalId = window.setInterval(function(){o.onInterval();}, 10);
-      }
-   }
-   MO.RLoader_intervalStop = function RLoader_intervalStop(){
-      var o = this;
-      var w = o.hWindow;
-      if(w && o._intervalId){
-         w.clearInterval(o._intervalId);
-         o.hWindow = null;
-         o._intervalId = null;
-      }
-   }
-   MO.RLoader_loadJsFile = function RLoader_loadJsFile(id, src){
-      var o = this;
-      var d = RWindow.hDocument;
-      var h = d.getElementsByTagName("head")[0];
-      if(document.getElementById(id) == null){
-         var url = top.RContext.location(src);
-         var hs = RWindow.createElement('SCRIPT');
-         hs.id = id;
-         hs.type = 'text/javascript';
-         hs.src = url;
-         if(d.attachEvent){
-            hs.onreadystatechange = function(){
-               var s = hs.readyState;
-               if('loaded' == s || 'complete' == s){
-                  hs.onreadystatechange = null;
-                  o._loading.extract(id);
-                  o._loaded.push(id);
-               }
-            }
-         }else{
-            hs.onload = function(){
-               if(d.readyState == 'complete'){
-                  hs.onload = null;
-                  o._loading.extract(id);
-                  o._loaded.push(id);
-               }
-            }
-         }
-         h.appendChild(hs);
-      }
-   }
-   MO.RLoader_loadJs = function RLoader_loadJs(ps){
-      var as = arguments;
-      var c = as.length;
-      for(var n = 0; n < c; n++){
-         var p = as[n];
-         this.loadJsFile('js:' + p, '/ajs/' + p.replace(/\./g, '/') + '.js');
-      }
-   }
-   MO.RLoader_loaded = function RLoader_loaded(id){
-      var o = this;
-      o._loading.extract(id);
-      o._loaded.push(id);
-   }
-   MO.RLoader_wait = function RLoader_wait(invoke, ids){
-      var o = this;
-      var l = new TLoaderListener();
-      l.invoke = invoke;
-      var c = arguments.length;
-      for(var n = 1; n < c; n++){
-         l.ids.push(arguments[n]);
-      }
-      o._waits.push(l);
-      o.intervalStart();
-   }
-   MO.RLoader_waitJs = function RLoader_waitJs(invoke, ids){
-      var o = this;
-      var l = new TLoaderListener();
-      l.invoke = invoke;
-      var as = arguments;
-      var c = as.length;
-      for(var n = 1; n < c; n++){
-         l.ids.push('js:' + as[n]);
-      }
-      o._waits.push(l);
-      o.intervalStart();
-   }
-   MO.RLoader = new RLoader();
 }
-with(MO){
-   MO.RMessage = function RMessage(){
-      var o = this;
-      o._hasError     = false;
-      o._messages     = null;
-      o.push          = RMessage_push;
-      o.fatal         = RMessage_fatal;
-      o.confirmResult = false;
-      o.error         = RMessage_error;
-      o.warn          = RMessage_warn;
-      o.onWindowClose = RMessage_onWindowClose;
-      o.confirm       = RMessage_confirm;
-      o.info          = RMessage_info;
-      return o;
-   }
-   MO.RMessage_push = function RMessage_push(msg){
-      if(!this._messages){
-         this._messages = new FLoopList();
-      }
-      this._messages.push(msg);
-   }
-   MO.RMessage_fatal = function RMessage_fatal(sf, er, ms, pm){
-      var o = this;
-      if(o._hasError){
-         return;
-      }
-      o._hasError = true;
-      var s = new TString();
-      var t = new Array();
-      var f = RMessage_fatal.caller;
-      while(f){
-         if(RArray.contains(t, f)){
-            break;
-         }
-         t.push(f);
-         f = f.caller;
-      }
-      var c = t.length;
-      for(var n = 0; n < c; n++){
-         f = t[n];
-         if(n > 0){
-            s.appendLine();
-         }
-         s.append('   ' + (c - n) + ': ' + RMethod.name(f));
-      }
-      var m = new TString();
-      m.appendLine(RContext.get('RMessage:fatal'));
-      m.appendLine(RString.repeat('-', 60));
-      m.append(RClass.dump(sf), ': ');
-      if(ms){
-         var ag = arguments;
-         c = ag.length;
-         for(var n = 3; n < c; n++){
-            var p = ag[n];
-            if('function' == typeof(p)){
-               p = RMethod.name(p);
+MO.RLoader_loadJsFile = function RLoader_loadJsFile(id, src){
+   var o = this;
+   var d = MO.RWindow.hDocument;
+   var h = d.getElementsByTagName("head")[0];
+   if(document.getElementById(id) == null){
+      var url = top.MO.RContext.location(src);
+      var hs = MO.RWindow.createElement('SCRIPT');
+      hs.id = id;
+      hs.type = 'text/javascript';
+      hs.src = url;
+      if(d.attachEvent){
+         hs.onreadystatechange = function(){
+            var s = hs.readyState;
+            if('loaded' == s || 'complete' == s){
+               hs.onreadystatechange = null;
+               o._loading.extract(id);
+               o._loaded.push(id);
             }
-            var pi = n - 2;
-            ms = ms.replace('{' + pi + '}', p);
+         }
+      }else{
+         hs.onload = function(){
+            if(d.readyState == 'complete'){
+               hs.onload = null;
+               o._loading.extract(id);
+               o._loaded.push(id);
+            }
          }
       }
-      m.appendLine(ms);
-      m.appendLine(RString.repeat('-', 60));
-      m.appendLine('Stack:');
-      m.append(s);
-      alert(m);
+      h.appendChild(hs);
    }
-   MO.RMessage_error = function RMessage_error(self, method, msg, params){
-      if(this._hasError){
-         return;
-      }
-      this._hasError = true;
-      throw new Error(msg);
-   }
-   MO.RMessage_warn = function RMessage_warn(self, message, params){
-      var s = new TString();
-      var n = 0;
-      var aw = top.RControl.create(FAlertWindow);
-      aw.setText(message);
-      aw.show();
-   }
-   MO.RMessage_info = function RMessage_info(self, message, params){
-      var s = new TString();
-      var n = 0;
-      var aw = top.RControl.create(FInfoWindow);
-      aw.setText(message);
-      aw.show();
-   }
-   MO.RMessage_confirm = function RMessage_confirm(message,callback){
-      var o = this;
-      var ls = top.RControl.create(FConfirmWindow);
-      ls.setText(message);
-      ls.lsns.register(o, callback);
-      ls.show();
-   }
-   MO.RMessage_onWindowClose = function RMessage_onWindowClose(v){
-      this.confirmResult = v;
-   }
-   MO.RMessage = new RMessage();
 }
-with(MO){
-   MO.RListener = function RListener(){
-      var o = this;
-      o._listeners = new Object();
-      return o;
+MO.RLoader_loadJs = function RLoader_loadJs(ps){
+   var as = arguments;
+   var c = as.length;
+   for(var n = 0; n < c; n++){
+      var p = as[n];
+      this.loadJsFile('js:' + p, '/ajs/' + p.replace(/\./g, '/') + '.js');
    }
-   MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.addListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.setListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
-         method = new Function('owner', 'callback', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.clearListeners(\''+ code +'\');';
-         method = new Function(source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
-      var o = this;
-      var method = null;
-      if(o._listeners[methodName]){
-         method = o._listeners[methodName];
-      }else{
-         var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
-         method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
-         o._listeners[methodName] = method;
-      }
-      return method;
-   }
-   MO.RListener = new RListener();
 }
+MO.RLoader_loaded = function RLoader_loaded(id){
+   var o = this;
+   o._loading.extract(id);
+   o._loaded.push(id);
+}
+MO.RLoader_wait = function RLoader_wait(invoke, ids){
+   var o = this;
+   var l = new MO.TLoaderListener();
+   l.invoke = invoke;
+   var c = arguments.length;
+   for(var n = 1; n < c; n++){
+      l.ids.push(arguments[n]);
+   }
+   o._waits.push(l);
+   o.intervalStart();
+}
+MO.RLoader_waitJs = function RLoader_waitJs(invoke, ids){
+   var o = this;
+   var l = new MO.TLoaderListener();
+   l.invoke = invoke;
+   var as = arguments;
+   var c = as.length;
+   for(var n = 1; n < c; n++){
+      l.ids.push('js:' + as[n]);
+   }
+   o._waits.push(l);
+   o.intervalStart();
+}
+MO.RLoader = new MO.RLoader();
+MO.RMessage = function RMessage(){
+   var o = this;
+   o._hasError     = false;
+   o._messages     = null;
+   o.push          = MO.RMessage_push;
+   o.fatal         = MO.RMessage_fatal;
+   o.confirmResult = false;
+   o.error         = MO.RMessage_error;
+   o.warn          = MO.RMessage_warn;
+   o.onWindowClose = MO.RMessage_onWindowClose;
+   o.confirm       = MO.RMessage_confirm;
+   o.info          = MO.RMessage_info;
+   return o;
+}
+MO.RMessage_push = function RMessage_push(msg){
+   if(!this._messages){
+      this._messages = new FLoopList();
+   }
+   this._messages.push(msg);
+}
+MO.RMessage_fatal = function RMessage_fatal(sf, er, ms, pm){
+   var o = this;
+   if(o._hasError){
+      return;
+   }
+   o._hasError = true;
+   var s = new MO.TString();
+   var t = new Array();
+   var f = MO.RMessage_fatal.caller;
+   while(f){
+      if(MO.Lang.Array.contains(t, f)){
+         break;
+      }
+      t.push(f);
+      f = f.caller;
+   }
+   var c = t.length;
+   for(var n = 0; n < c; n++){
+      f = t[n];
+      if(n > 0){
+         s.appendLine();
+      }
+      s.append('   ' + (c - n) + ': ' + MO.Method.name(f));
+   }
+   var m = new MO.TString();
+   m.appendLine(MO.RContext.get('RMessage:fatal'));
+   m.appendLine(MO.Lang.String.repeat('-', 60));
+   m.append(MO.Class.dump(sf), ': ');
+   if(ms){
+      var ag = arguments;
+      c = ag.length;
+      for(var n = 3; n < c; n++){
+         var p = ag[n];
+         if('function' == typeof(p)){
+            p = MO.Method.name(p);
+         }
+         var pi = n - 2;
+         ms = ms.replace('{' + pi + '}', p);
+      }
+   }
+   m.appendLine(ms);
+   m.appendLine(MO.String.repeat('-', 60));
+   m.appendLine('Stack:');
+   m.append(s);
+   alert(m);
+}
+MO.RMessage_error = function RMessage_error(self, method, msg, params){
+   if(this._hasError){
+      return;
+   }
+   this._hasError = true;
+   throw new Error(msg);
+}
+MO.RMessage_warn = function RMessage_warn(self, message, params){
+   var s = new MO.TString();
+   var n = 0;
+   var aw = top.MO.RControl.create(MO.FAlertWindow);
+   aw.setText(message);
+   aw.show();
+}
+MO.RMessage_info = function RMessage_info(self, message, params){
+   var s = new MO.TString();
+   var n = 0;
+   var aw = top.MO.RControl.create(MO.FInfoWindow);
+   aw.setText(message);
+   aw.show();
+}
+MO.RMessage_confirm = function RMessage_confirm(message,callback){
+   var o = this;
+   var ls = top.MO.RControl.create(MO.FConfirmWindow);
+   ls.setText(message);
+   ls.lsns.register(o, callback);
+   ls.show();
+}
+MO.RMessage_onWindowClose = function RMessage_onWindowClose(v){
+   this.confirmResult = v;
+}
+MO.RMessage = new MO.RMessage();
+MO.RListener = function RListener(){
+   var o = this;
+   o._listeners = new Object();
+   return o;
+}
+MO.RListener.prototype.makeAddListener = function RListener_makeAddListener(methodName, code){
+   var o = this;
+   var method = null;
+   if(o._listeners[methodName]){
+      method = o._listeners[methodName];
+   }else{
+      var source = 'return this.addListener(\''+ code +'\',owner,callback);';
+      method = new Function('owner', 'callback', source);
+      o._listeners[methodName] = method;
+   }
+   return method;
+}
+MO.RListener.prototype.makeSetListener = function RListener_makeSetListener(methodName, code){
+   var o = this;
+   var method = null;
+   if(o._listeners[methodName]){
+      method = o._listeners[methodName];
+   }else{
+      var source = 'return this.setListener(\''+ code +'\',owner,callback);';
+      method = new Function('owner', 'callback', source);
+      o._listeners[methodName] = method;
+   }
+   return method;
+}
+MO.RListener.prototype.makeRemoveListener = function RListener_makeRemoveListener(methodName, code){
+   var o = this;
+   var method = null;
+   if(o._listeners[methodName]){
+      method = o._listeners[methodName];
+   }else{
+      var source = 'return this.removeListener(\''+ code +'\',owner,callback);';
+      method = new Function('owner', 'callback', source);
+      o._listeners[methodName] = method;
+   }
+   return method;
+}
+MO.RListener.prototype.makeClearListener = function RListener_makeClearListener(methodName, code){
+   var o = this;
+   var method = null;
+   if(o._listeners[methodName]){
+      method = o._listeners[methodName];
+   }else{
+      var source = 'return this.clearListeners(\''+ code +'\');';
+      method = new Function(source);
+      o._listeners[methodName] = method;
+   }
+   return method;
+}
+MO.RListener.prototype.makeProcessListener = function RListener_makeProcessListener(methodName, code){
+   var o = this;
+   var method = null;
+   if(o._listeners[methodName]){
+      method = o._listeners[methodName];
+   }else{
+      var source = 'return this.processListener(\''+ code +'\', p1, p2, p3, p4, p5, p6);';
+      method = new Function('p1', 'p2', 'p3', 'p4', 'p5', 'p6', source);
+      o._listeners[methodName] = method;
+   }
+   return method;
+}
+MO.RListener = new MO.RListener();
 MO.RResource = function RResource(){
    var o = this;
    o.uriIcon  = '/ars/icon/';
@@ -10853,67 +10801,65 @@ MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
    var o = this;
 }
 MO.RResource = new MO.RResource();
-with(MO){
-   MO.RStyle = function RStyle(){
-      var o = this;
-      o._connected = false;
-      o._rules     = new TMap();
-      o.connect    = RStyle_connect;
-      o.has        = RStyle_has;
-      o.nvl        = RStyle_nvl;
-      o.style      = RStyle_style;
-      return o;
-   }
-   MO.RStyle_connect = function RStyle_connect(){
-      var o = this;
-      if(o._connected){
-         return;
-      }
-      var s = o._rules;
-      var ds = document.styleSheets;
-      var dc = ds.length;
-      for(var n = 0; n < dc; n++){
-         var rs = ds[n].cssRules;
-         if(rs){
-            var rc = rs.length;
-            for(var i = 0; i < rc; i++){
-               var r = rs[i];
-               s.set(r.selectorText, r);
-            }
-         }
-      }
-      o._connected = true;
-   }
-   MO.RStyle_has = function RStyle_has(s){
-      var o = this;
-      if(!o._connected){
-         o.connect();
-      }
-      if(s){
-         return this._rules.contains('.' + s.toLowerCase());
-      }
-      return false;
-   }
-   MO.RStyle_nvl = function RStyle_nvl(s, n){
-      var o = this;
-      o.connect();
-      var a = arguments;
-      var c = a.length;
-      for(var n = 0; n < c; n++){
-         var s = a[n];
-         if(s){
-            if(o._rules.contains('.' + s.toLowerCase())){
-               return s;
-            }
-         }
-      }
-      return null;
-   }
-   MO.RStyle_style = function RStyle_style(c, n){
-      return RClass.name(c) + '_' + n;
-   }
-   MO.RStyle = new RStyle();
+MO.RStyle = function RStyle(){
+   var o = this;
+   o._connected = false;
+   o._rules     = new MO.TMap();
+   o.connect    = MO.RStyle_connect;
+   o.has        = MO.RStyle_has;
+   o.nvl        = MO.RStyle_nvl;
+   o.style      = MO.RStyle_style;
+   return o;
 }
+MO.RStyle_connect = function RStyle_connect(){
+   var o = this;
+   if(o._connected){
+      return;
+   }
+   var s = o._rules;
+   var ds = document.styleSheets;
+   var dc = ds.length;
+   for(var n = 0; n < dc; n++){
+      var rs = ds[n].cssRules;
+      if(rs){
+         var rc = rs.length;
+         for(var i = 0; i < rc; i++){
+            var r = rs[i];
+            s.set(r.selectorText, r);
+         }
+      }
+   }
+   o._connected = true;
+}
+MO.RStyle_has = function RStyle_has(s){
+   var o = this;
+   if(!o._connected){
+      o.connect();
+   }
+   if(s){
+      return this._rules.contains('.' + s.toLowerCase());
+   }
+   return false;
+}
+MO.RStyle_nvl = function RStyle_nvl(s, n){
+   var o = this;
+   o.connect();
+   var a = arguments;
+   var c = a.length;
+   for(var n = 0; n < c; n++){
+      var s = a[n];
+      if(s){
+         if(o._rules.contains('.' + s.toLowerCase())){
+            return s;
+         }
+      }
+   }
+   return null;
+}
+MO.RStyle_style = function RStyle_style(c, n){
+   return MO.Class.name(c) + '_' + n;
+}
+MO.RStyle = new MO.RStyle();
 MO.RTypeArray = function RTypeArray(){
    var o = this;
    o._float3 = null;
@@ -10974,8 +10920,7 @@ MO.RTypeArray.prototype.findTemp = function RTypeArray_findTemp(typeCd, length){
    }
    return result;
 }
-MO.RTypeArray = new MO.RTypeArray();
-MO.TypeArray = MO.RTypeArray;
+MO.Lang.TypeArray = new MO.RTypeArray();
 MO.FTag = function FTag(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._name      = 'Tag';
@@ -12632,74 +12577,70 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.pixelRatio    = 1;
    return o;
 }
-with(MO){
-   MO.STouchEvent = function STouchEvent(){
-      var o = this;
-      o.dispose = STouchEvent_dispose;
-      return o;
+MO.STouchEvent = function STouchEvent(){
+   var o = this;
+   o.dispose = MO.STouchEvent_dispose;
+   return o;
+}
+MO.STouchEvent_dispose = function STouchEvent_dispose(){
+   var o = this;
+}
+MO.TDumpItem = function TDumpItem(){
+   var o = this;
+   o.hParent      = null;
+   o.hPanel       = null;
+   o.hDocument    = null;
+   o.hTable       = null;
+   o.hText        = null;
+   o.hRow         = null;
+   o.link         = null;
+   o.level        = 0;
+   o.caption      = null;
+   o.children     = new Array();
+   o.items        = new Array();
+   o.loaded       = false;
+   o.innerDisplay = false;
+   o.display      = false;
+   o.create       = MO.TDumpItem_create;
+   o.push         = MO.TDumpItem_push;
+   o.innerShow    = MO.TDumpItem_innerShow;
+   o.show         = MO.TDumpItem_show;
+   return o;
+}
+MO.TDumpItem_create = function TDumpItem_create(){
+   var o = this;
+   var r = o.children[o.children.length] = new MO.TDumpItem();
+   return r;
+}
+MO.TDumpItem_push = function TDumpItem_push(v){
+   var o = this;
+   o.items[o.items.length] = v;
+}
+MO.TDumpItem_innerShow = function TDumpItem_innerShow(v){
+   var o = this;
+   var c = o.items.length;
+   for(var n = 0; n < c; n++){
+      var tr = o.items[n];
+      MO.RHtml.visibleSet(tr, v);
    }
-   MO.STouchEvent_dispose = function STouchEvent_dispose(){
-      var o = this;
+   var c = o.children.length;
+   for(var n = 0; n < c; n++){
+      var d = o.children[n];
+      MO.RHtml.visibleSet(d.hRow, v);
+      if(v){
+         d.show(d.innerDisplay);
+      }else{
+         d.innerDisplay = d.display;
+         d.show(false);
+      }
    }
 }
-with(MO){
-   MO.TDumpItem = function TDumpItem(){
-      var o = this;
-      o.hParent      = null;
-      o.hPanel       = null;
-      o.hDocument    = null;
-      o.hTable       = null;
-      o.hText        = null;
-      o.hRow         = null;
-      o.link         = null;
-      o.level        = 0;
-      o.caption      = null;
-      o.children     = new Array();
-      o.items        = new Array();
-      o.loaded       = false;
-      o.innerDisplay = false;
-      o.display      = false;
-      o.create       = TDumpItem_create;
-      o.push         = TDumpItem_push;
-      o.innerShow    = TDumpItem_innerShow;
-      o.show         = TDumpItem_show;
-      return o;
-   }
-   MO.TDumpItem_create = function TDumpItem_create(){
-      var o = this;
-      var r = o.children[o.children.length] = new TDumpItem();
-      return r;
-   }
-   MO.TDumpItem_push = function TDumpItem_push(v){
-      var o = this;
-      o.items[o.items.length] = v;
-   }
-   MO.TDumpItem_innerShow = function TDumpItem_innerShow(v){
-      var o = this;
-      var c = o.items.length;
-      for(var n = 0; n < c; n++){
-         var tr = o.items[n];
-         RHtml.visibleSet(tr, v);
-      }
-      var c = o.children.length;
-      for(var n = 0; n < c; n++){
-         var d = o.children[n];
-         RHtml.visibleSet(d.hRow, v);
-         if(v){
-            d.show(d.innerDisplay);
-         }else{
-            d.innerDisplay = d.display;
-            d.show(false);
-         }
-      }
-   }
-   MO.TDumpItem_show = function TDumpItem_show(v){
-      var o = this;
-      o.display = v;
-      var label = RString.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
-      o.hText.innerHTML = RHtml.toHtml(label);
-      o.innerShow(v);
-   }
+MO.TDumpItem_show = function TDumpItem_show(v){
+   var o = this;
+   o.display = v;
+   var label = MO.Lang.String.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
+   o.hText.innerHTML = MO.RHtml.toHtml(label);
+   o.innerShow(v);
 }
 MO.FAudio = function FAudio(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
@@ -12771,203 +12712,193 @@ MO.FAudio_dispose = function FAudio_dispose(){
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FImage = function FImage(o){
-      o = RClass.inherits(this, o, FObject, MListenerLoad);
-      o._optionAlpha   = RClass.register(o, new AGetter('_optionAlpha'), true);
-      o._ready         = false;
-      o._size          = RClass.register(o, new AGetter('_size'));
-      o._url           = RClass.register(o, new AGetter('_url'));
-      o._hImage        = null;
-      o.ohLoad         = FImage_ohLoad;
-      o.ohError        = FImage_ohError;
-      o.construct      = FImage_construct;
-      o.image          = FImage_image;
-      o.testReady      = FImage_testReady;
-      o.loadUrl        = FImage_loadUrl;
-      o.dispose        = FImage_dispose;
-      return o;
+MO.FImage = function FImage(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o._optionAlpha   = MO.Class.register(o, new MO.AGetter('_optionAlpha'), true);
+   o._ready         = false;
+   o._size          = MO.Class.register(o, new MO.AGetter('_size'));
+   o._url           = MO.Class.register(o, new MO.AGetter('_url'));
+   o._hImage        = null;
+   o.ohLoad         = MO.FImage_ohLoad;
+   o.ohError        = MO.FImage_ohError;
+   o.construct      = MO.FImage_construct;
+   o.image          = MO.FImage_image;
+   o.testReady      = MO.FImage_testReady;
+   o.loadUrl        = MO.FImage_loadUrl;
+   o.dispose        = MO.FImage_dispose;
+   return o;
+}
+MO.FImage_ohLoad = function FImage_ohLoad(){
+   var o = this.__linker;
+   var hImage = o._hImage;
+   o._size.set(hImage.naturalWidth, hImage.naturalHeight);
+   o._ready = true;
+   var event = new MO.SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
+}
+MO.FImage_ohError = function FImage_ohError(p){
+   var o = this.__linker;
+   var url = o._url;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+}
+MO.FImage_construct = function FImage_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2();
+}
+MO.FImage_image = function FImage_image(){
+   return this._hImage;
+}
+MO.FImage_testReady = function FImage_testReady(){
+   return this._ready;
+}
+MO.FImage_loadUrl = function FImage_loadUrl(url){
+   var o = this;
+   o._url = url;
+   var hImage = o._hImage;
+   if(!hImage){
+      hImage = o._hImage = new Image();
+      hImage.__linker = o;
+      hImage.onload = o.ohLoad;
+      hImage.onerror = o.ohError;
    }
-   MO.FImage_ohLoad = function FImage_ohLoad(){
-      var o = this.__linker;
-      var hImage = o._hImage;
-      o._size.set(hImage.naturalWidth, hImage.naturalHeight);
-      o._ready = true;
-      var event = new SEvent(o);
-      o.processLoadListener(event);
-      event.dispose();
-   }
-   MO.FImage_ohError = function FImage_ohError(p){
-      var o = this.__linker;
-      var url = o._url;
-      MO.Logger.error(o, 'Load image failure. (url={1})', url);
-   }
-   MO.FImage_construct = function FImage_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._size = new SSize2();
-   }
-   MO.FImage_image = function FImage_image(){
-      return this._hImage;
-   }
-   MO.FImage_testReady = function FImage_testReady(){
-      return this._ready;
-   }
-   MO.FImage_loadUrl = function FImage_loadUrl(url){
-      var o = this;
-      o._url = url;
-      var hImage = o._hImage;
-      if(!hImage){
-         hImage = o._hImage = new Image();
-         hImage.__linker = o;
-         hImage.onload = o.ohLoad;
-         hImage.onerror = o.ohError;
+   hImage.src = url;
+}
+MO.FImage_dispose = function FImage_dispose(){
+   var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._hImage = MO.RHtml.free(o._hImage);
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FTouchTracker = function FTouchTracker(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerTouchZoom);
+   o._touchsLength   = null;
+   o._touchs         = null;
+   o._touchPool      = null;
+   o._touchZoomEvent = null;
+   o.construct       = MO.FTouchTracker_construct;
+   o.calculateLength = MO.FTouchTracker_calculateLength;
+   o.eventStart      = MO.FTouchTracker_eventStart;
+   o.eventMove       = MO.FTouchTracker_eventMove;
+   o.eventStop       = MO.FTouchTracker_eventStop;
+   o.dispose         = MO.FTouchTracker_dispose;
+   return o;
+}
+MO.FTouchTracker_construct = function FTouchTracker_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._touchs = new MO.TObjects();
+   o._touchPool = MO.Class.create(MO.FObjectPool);
+   o._touchZoomEvent = new MO.SEvent(o);
+}
+MO.FTouchTracker_calculateLength = function FTouchTracker_calculateLength(hEvent){
+   var o = this;
+   var total = 0;
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var hTouche1 = hTouches[i];
+         var hTouche2 = (i == count - 1) ? hTouches[0] : hTouches[i + 1];
+         var cx = hTouche1.clientX - hTouche2.clientX;
+         var cy = hTouche1.clientY - hTouche2.clientY;
+         var length = Math.sqrt(cx * cx + cy * cy);
+         total += length;
       }
-      hImage.src = url;
    }
-   MO.FImage_dispose = function FImage_dispose(){
-      var o = this;
-      o._size = RObject.dispose(o._size);
-      o._hImage = RHtml.free(o._hImage);
-      o.__base.MListenerLoad.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
+   return total;
+}
+MO.FTouchTracker_eventStart = function FTouchTracker_eventStart(hEvent){
+   var o = this;
+   var touchs = o._touchs;
+   touchs.clear();
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   for(var i = 0; i < count; i++){
+      var hTouche = hTouches[i];
+      var touch = new STouchEvent();
+      touch.clientX = hTouche.clientX;
+      touch.clientY = hTouche.clientY;
+      touchs.push(touch);
+   }
+   o._touchsLength = o.calculateLength(hEvent);
+}
+MO.FTouchTracker_eventMove = function FTouchTracker_eventMove(hEvent){
+   var o = this;
+   var touchs = o._touchs;
+   var hTouches = hEvent.touches;
+   var count = hTouches.length;
+   for(var i = 0; i < count; i++){
+      var hTouche = hTouches[i];
+      var touch = touchs.at(i);
+      touch.clientX = hTouche.clientX;
+      touch.clientY = hTouche.clientY;
+   }
+   var touchsLength = o.calculateLength(hEvent);
+   if(o._touchsLength != touchsLength){
+      var event = o._touchZoomEvent;
+      event.touchsLength = touchsLength;
+      event.delta = touchsLength - o._touchsLength;
+      o.processTouchZoomListener(event);
+      o._touchsLength = touchsLength;
    }
 }
-with(MO){
-   MO.FTouchTracker = function FTouchTracker(o){
-      o = RClass.inherits(this, o, FObject, MListenerTouchZoom);
-      o._touchsLength   = null;
-      o._touchs         = null;
-      o._touchPool      = null;
-      o._touchZoomEvent = null;
-      o.construct       = FTouchTracker_construct;
-      o.calculateLength = FTouchTracker_calculateLength;
-      o.eventStart      = FTouchTracker_eventStart;
-      o.eventMove       = FTouchTracker_eventMove;
-      o.eventStop       = FTouchTracker_eventStop;
-      o.dispose         = FTouchTracker_dispose;
-      return o;
-   }
-   MO.FTouchTracker_construct = function FTouchTracker_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._touchs = new TObjects();
-      o._touchPool = RClass.create(FObjectPool);
-      o._touchZoomEvent = new SEvent(o);
-   }
-   MO.FTouchTracker_calculateLength = function FTouchTracker_calculateLength(hEvent){
-      var o = this;
-      var total = 0;
-      var hTouches = hEvent.touches;
-      var count = hTouches.length;
-      if(count > 0){
-         for(var i = 0; i < count; i++){
-            var hTouche1 = hTouches[i];
-            var hTouche2 = (i == count - 1) ? hTouches[0] : hTouches[i + 1];
-            var cx = hTouche1.clientX - hTouche2.clientX;
-            var cy = hTouche1.clientY - hTouche2.clientY;
-            var length = Math.sqrt(cx * cx + cy * cy);
-            total += length;
-         }
-      }
-      return total;
-   }
-   MO.FTouchTracker_eventStart = function FTouchTracker_eventStart(hEvent){
-      var o = this;
-      var touchs = o._touchs;
-      touchs.clear();
-      var hTouches = hEvent.touches;
-      var count = hTouches.length;
-      for(var i = 0; i < count; i++){
-         var hTouche = hTouches[i];
-         var touch = new STouchEvent();
-         touch.clientX = hTouche.clientX;
-         touch.clientY = hTouche.clientY;
-         touchs.push(touch);
-      }
-      o._touchsLength = o.calculateLength(hEvent);
-   }
-   MO.FTouchTracker_eventMove = function FTouchTracker_eventMove(hEvent){
-      var o = this;
-      var touchs = o._touchs;
-      var hTouches = hEvent.touches;
-      var count = hTouches.length;
-      for(var i = 0; i < count; i++){
-         var hTouche = hTouches[i];
-         var touch = touchs.at(i);
-         touch.clientX = hTouche.clientX;
-         touch.clientY = hTouche.clientY;
-      }
-      var touchsLength = o.calculateLength(hEvent);
-      if(o._touchsLength != touchsLength){
-         var event = o._touchZoomEvent;
-         event.touchsLength = touchsLength;
-         event.delta = touchsLength - o._touchsLength;
-         o.processTouchZoomListener(event);
-         o._touchsLength = touchsLength;
-      }
-   }
-   MO.FTouchTracker_eventStop = function FTouchTracker_eventStop(hEvent){
-      var o = this;
-   }
-   MO.FTouchTracker_dispose = function FTouchTracker_dispose(){
-      var o = this;
-      o._touchs = RObject.dispose(o._touchs);
-      o._touchZoomEvent = RObject.dispose(o._touchZoomEvent);
-      o.__base.MListenerTouchZoom.dispose.call(o);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FTouchTracker_eventStop = function FTouchTracker_eventStop(hEvent){
+   var o = this;
 }
-with(MO){
-   MO.FWindowStorage = function FWindowStorage(o){
-      o = RClass.inherits(this, o, FObject);
-      o._scopeCd  = null;
-      o._storage  = null;
-      o.scopeCd   = FWindowStorage_scopeCd;
-      o.link      = FWindowStorage_link;
-      o.get       = FWindowStorage_get;
-      o.set       = FWindowStorage_set;
-      o.remove    = FWindowStorage_remove;
-      o.clear     = FWindowStorage_clear;
-      o.dispose   = FWindowStorage_dispose;
-      o.innerDump = FWindowStorage_innerDump;
-      return o;
-   }
-   MO.FWindowStorage_scopeCd = function FWindowStorage_scopeCd(){
-      return this._scopeCd;
-   }
-   MO.FWindowStorage_link = function FWindowStorage_link(storage){
-      this._storage = storage;
-   }
-   MO.FWindowStorage_get = function FWindowStorage_get(name){
-      return this._storage.getItem(name);
-   }
-   MO.FWindowStorage_set = function FWindowStorage_set(name, value){
-      this._storage.setItem(name, value);
-   }
-   MO.FWindowStorage_remove = function FWindowStorage_remove(name){
-      this._storage.removeItem(name);
-   }
-   MO.FWindowStorage_clear = function FWindowStorage_clear(){
-      this._storage.clear();
-   }
-   MO.FWindowStorage_dispose = function FWindowStorage_dispose(){
-      var o = this;
-      o._storage  = null;
-      o.__base.FObject.dispose.call(o);
-   }
-   MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
-      var o = this;
-      var storage = o._storage;
-      var count = storage.length;
-      for(var i = 0; i < count; i++){
-         var name = storage.key(i);
-         var value = storage.getItem(name);
-         if(i > 0){
-            dump.append(';');
-         }
-         dump.append(name + '=' + value);
+MO.FTouchTracker_dispose = function FTouchTracker_dispose(){
+   var o = this;
+   o._touchs = MO.Lang.Object.dispose(o._touchs);
+   o._touchZoomEvent = MO.Lang.Object.dispose(o._touchZoomEvent);
+   o.__base.MListenerTouchZoom.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FWindowStorage = function FWindowStorage(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._scopeCd  = MO.Class.register(o, new MO.AGetter('_scopeCd'));
+   o._storage  = null;
+   o.link      = MO.FWindowStorage_link;
+   o.get       = MO.FWindowStorage_get;
+   o.set       = MO.FWindowStorage_set;
+   o.remove    = MO.FWindowStorage_remove;
+   o.clear     = MO.FWindowStorage_clear;
+   o.dispose   = MO.FWindowStorage_dispose;
+   o.innerDump = MO.FWindowStorage_innerDump;
+   return o;
+}
+MO.FWindowStorage_link = function FWindowStorage_link(storage){
+   this._storage = storage;
+}
+MO.FWindowStorage_get = function FWindowStorage_get(name){
+   return this._storage.getItem(name);
+}
+MO.FWindowStorage_set = function FWindowStorage_set(name, value){
+   this._storage.setItem(name, value);
+}
+MO.FWindowStorage_remove = function FWindowStorage_remove(name){
+   this._storage.removeItem(name);
+}
+MO.FWindowStorage_clear = function FWindowStorage_clear(){
+   this._storage.clear();
+}
+MO.FWindowStorage_dispose = function FWindowStorage_dispose(){
+   var o = this;
+   o._storage  = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
+   var o = this;
+   var storage = o._storage;
+   var count = storage.length;
+   for(var i = 0; i < count; i++){
+      var name = storage.key(i);
+      var value = storage.getItem(name);
+      if(i > 0){
+         dump.append(';');
       }
+      dump.append(name + '=' + value);
    }
 }
 MO.RBrowser = function RBrowser(){
@@ -13149,833 +13080,823 @@ MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, te
 }
 MO.RBrowser = new MO.RBrowser();
 MO.Browser = MO.RBrowser;
-with(MO){
-   MO.RBuilder = function RBuilder(){
-      return this;
-   }
-   MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
-      var o = this;
-      var d = null;
-      if(h.ownerDocument){
-         d = h.ownerDocument;
-      }else if(h.hDocument){
-         d = h.hDocument;
-      }else{
-         d = h;
-      }
-      var h = d.createElement(t);
-      if(s){
-         h.className = s;
-      }
-      return h;
-   }
-   MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
-      var r = this.create(d, 'IMG', RString.nvl(s, 'Tag_Icon'));
-      r.align = 'absmiddle';
-      if(u){
-         r.src = RResource.iconPath(u);
-      }
-      if(w){
-         r.style.width = w + 'px';
-      }
-      if(h){
-         r.style.height = h + 'px';
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
-      var r = this.create(d, 'IMG', u);
-      if(u){
-         r.src = RResource.imagePath(u);
-      }
-      if(w){
-         r.style.width = w;
-      }
-      if(h){
-         r.style.height = h;
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
-      var r = this.create(d, 'SPAN', s);
-      if(v){
-         r.innerHTML = v;
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.createButton = function RBuilder_createButton(d, s){
-      var r = this.create(d, "INPUT", s);
-      r.type = 'button';
-      return r;
-   }
-   MO.RBuilder.prototype.createCheck = function RBuilder_createCheck(d, s){
-      var r = this.create(d, "INPUT", s);
-      r.type = 'checkbox';
-      return r;
-   }
-   MO.RBuilder.prototype.createRadio = function RBuilder_createRadio(d, s){
-      var r = this.create(d, "INPUT", s);
-      r.type = 'radio';
-      return r;
-   }
-   MO.RBuilder.prototype.createEdit = function RBuilder_createEdit(d, s){
-      var r = this.create(d, "INPUT", s);
-      r.type = 'text';
-      return r;
-   }
-   MO.RBuilder.prototype.createFile = function RBuilder_createFile(d, s){
-      var r = this.create(d, "INPUT", s);
-      r.type = 'file';
-      return r;
-   }
-   MO.RBuilder.prototype.createSpan = function RBuilder_createSpan(d, s){
-      return this.create(d, 'SPAN', s);
-   }
-   MO.RBuilder.prototype.createDiv = function RBuilder_createDiv(d, s){
-      return this.create(d, 'DIV', s);
-   }
-   MO.RBuilder.prototype.createTable = function RBuilder_createTable(d, s, b, cs, cp){
-      var h = this.create(d, 'TABLE', s);
-      if(b){
-         h.border = RInteger.nvl(b);
-      }
-      h.cellSpacing = RInteger.nvl(cs);
-      h.cellPadding = RInteger.nvl(cp);
-      return h;
-   }
-   MO.RBuilder.prototype.createTableRow = function RBuilder_createTableRow(d, s){
-      var h = this.create(d, 'TR', s);
-      return h;
-   }
-   MO.RBuilder.prototype.createTableCell = function RBuilder_createTableCell(d, s){
-      var h = this.create(d, 'TD', s);
-      return h;
-   }
-   MO.RBuilder.prototype.createFragment = function RBuilder_createFragment(document){
-      var hDocument = null;
-      if(document.ownerDocument){
-         hDocument = document.ownerDocument;
-      }else if(document.hDocument){
-         hDocument = document.hDocument;
-      }else{
-         hDocument = document;
-      }
-      var hElement = hDocument.createDocumentFragment();
-      hElement.__fragment = true;
-      return hElement;
-   }
-   MO.RBuilder.prototype.append = function RBuilder_append(p, t, s){
-      var r = RBuilder.create(p.ownerDocument, t, s);
-      if(p){
-         p.appendChild(r);
-      }else{
-         this.hDocument.body.appendChild(r);
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
-      var r = this.createIcon(p.ownerDocument, s, u, w, h);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendImage = function RBuilder_appendImage(p, s, u, w, h){
-      var r = this.createImage(p.ownerDocument, s, u, w, h);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendEmpty = function RBuilder_appendEmpty(p, w, h){
-      var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendText = function RBuilder_appendText(p, s, v){
-      var r = this.createText(p.ownerDocument, s, v);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendButton = function RBuilder_appendButton(p, s){
-      var r = this.createButton(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendCheck = function RBuilder_appendCheck(p, s){
-      var r = this.createCheck(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendRadio = function RBuilder_appendRadio(p, s){
-      var r = this.createRadio(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendEdit = function RBuilder_appendEdit(p, s){
-      var r = this.createEdit(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendFile = function RBuilder_appendFile(p, s){
-      var r = this.createFile(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendSpan = function RBuilder_appendSpan(p, s){
-      var r = this.createSpan(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendDiv = function RBuilder_appendDiv(p, s){
-      var r = this.createDiv(p.ownerDocument, s);
-      p.appendChild(r);
-      return r;
-   }
-   MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
-      var r = this.createTable(p.ownerDocument, s, b, cs, cp);
-      if(p){
-         p.appendChild(r);
-      }else{
-         this.hDocument.body.appendChild(r);
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
-      var r = null;
-      if(i == null){
-         if(RBrowser.isBrowser(EBrowser.Explorer)){
-            r = p.insertRow();
-         }else{
-            r = p.insertRow(-1);
-         }
-      }else{
-         r = p.insertRow(i);
-      }
-      if(s){
-         r.className = s;
-      }
-      if(h){
-         r.height = h;
-      }
-      return r;
-   }
-   MO.RBuilder.prototype.appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
-      var o = this;
-      var hr = o.appendTableRow(p, null, null, w);
-      var hc = o.appendTableCell(hr, s, null, h);
-      return hc;
-   }
-   MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
-      var o = this;
-      var r = null;
-      if(i == null){
-         r = o.create(p, 'TD', s);
-         p.appendChild(r);
-      }else{
-         r = p.insertCell(i);
-      }
-      if(s){
-         r.className = s;
-      }
-      if(w){
-         r.width = w;
-      }
-      return r;
-   }
-   MO.RBuilder = new RBuilder();
-   MO.Builder = MO.RBuilder;
+MO.RBuilder = function RBuilder(){
+   return this;
 }
-with(MO){
-   MO.RContext = function RContext(){
-      var o = this;
-      o._location   = null;
-      o._contexts   = new Object();
-      o.contextPath = null;
-      o.contextTag  = null;
-      o.themeId     = null;
-      o.languageId  = null;
-      return o;
+MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
+   var o = this;
+   var d = null;
+   if(h.ownerDocument){
+      d = h.ownerDocument;
+   }else if(h.hDocument){
+      d = h.hDocument;
+   }else{
+      d = h;
    }
-   MO.RContext.prototype.location = function RContext_location(s){
-      var o = this;
-      var r = o._location;
-      if(r == null){
-         var l = window.location;
-         var hr = l.href;
-         var pn = l.pathname;
-         r = hr.substring(0, hr.indexOf(pn))
-         if(o.contextPath){
-            r += o.contextPath;
-         }
-         o._location = r;
-      }
-      if(s){
-         r += s;
-      }
-      return r;
+   var h = d.createElement(t);
+   if(s){
+      h.className = s;
    }
-   MO.RContext.prototype.context = function RContext_context(s){
-      var o = this;
-      if(s != null){
-         if(RString.endsWith(s, '.wv')){
-            return o.contextPath + '/' + s;
-         }else if(RString.startsWith(s, '#')){
-            return o.contextPath + o.contextTag + s.substr(1);
-         }
-         return o.contextPath + s;
-      }
-      return o.contextPath;
-   }
-   MO.RContext.prototype.initialize = function RContext_initialize(s){
-      var o = this;
-      for(var n in s){
-         var ls = s[n];
-         for(var nc in ls){
-            var v = ls[nc];
-            var fn = n + ':' + nc;
-            o._contexts[fn] = new TContext(n, nc, v);
-         }
-      }
-   }
-   MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
-      var o = this;
-      var r = o._contexts[p];
-      if(!r){
-         return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
-      }
-      return RString.format(r.text, p1, p2, p3, p4, p5)
-   }
-   MO.RContext.prototype.find = function RContext_find(s, c){
-      var o = this;
-      var id = s + ':' + c;
-      var r = o._contexts[id];
-      if(!r){
-         return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
-      }
-      return r.text;
-   }
-   MO.RContext = new RContext();
+   return h;
 }
-with(MO){
-   MO.RDump = function RDump(){
-      var o = this;
-      o.LINE_SINGLE = '------------------------------';
-      o.LINE_DOUBLE = '==============================';
-      o.LINE_DOT    = '..............................';
-      o.LINE_STAR   = '******************************';
-      return o;
+MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
+   var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
+   r.align = 'absmiddle';
+   if(u){
+      r.src = RResource.iconPath(u);
    }
-   MO.RDump.prototype.onclick = function RDump_onclick(){
-      var o = this;
-      var d = o.link;
-      if(o.link){
-         if(d.loaded){
-            d.show(!d.display);
-         }else{
-            RDump.dumpInner(o.link);
-            d.loaded = true;
-            d.show(true);
-         }
-      }
+   if(w){
+      r.style.width = w + 'px';
    }
-   MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
-      var t = RClass.typeOf(v);
-      switch(t){
-         case 'Unknown':
-            return '@unknown';
-         case 'Function':
-            return RMethod.name(v) + '@Function';
-         case 'Array':
-            return '@<Array>';
-      }
-      return v;
+   if(h){
+      r.style.height = h + 'px';
    }
-   MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
-      if(v == null){
-         return 'null';
-      }
-      switch(t){
-         case 'Unknown':
-            return 'unknown';
-         case 'Undefined':
-            return 'undefined';
-         case 'Boolean':
-         case 'Number':
-            return v.toString();
-         case 'String':
-            return v.length + ':\'' + RString.toLine(v) + '\'';
-         case 'Function':
-            if(v.__virtual){
-               return 'virtual';
-            }
-            return RMethod.name(v, true);
-         case 'Array':
-            return '@<Array@' + RClass.code(v) + '> length=' + v.length;
-         case 'Html':
-            return '@<' + v.tagName + '>';
-         default:
-            if(v.constructor == TClass){
-               return '@<' + v.name + '@' + RClass.code(v) + '>';
-            }
-            if(v.constructor == Function){
-               return "@" + v.toString();
-            }
-            try{
-               for(var name in v){
-                  return '@<Object@' + RClass.code(v) + '>';
-               }
-            }catch(e){}
-            return '<Object@' + RClass.code(v) + '>';
-      }
+   return r;
+}
+MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
+   var r = this.create(d, 'IMG', u);
+   if(u){
+      r.src = RResource.imagePath(u);
    }
-   MO.RDump.prototype.dumpInner = function RDump_dumpInner(di){
-      var hTable  = di.hTable;
-      var hParent = di.hParent;
-      var hInsRow = di.hRow;
-      var level   = di.level;
-      var obj     = di.link;
-      var type    = RClass.typeOf(obj, true);
-      var vcls    = obj.__class;
-      var names = new Array();
-      for(var name in obj){
-         names[names.length] = name;
-      }
-      if(RString.endsWith(type, 'Array')){
-         RArray.reverse(names, 0, names.length - 1);
+   if(w){
+      r.style.width = w;
+   }
+   if(h){
+      r.style.height = h;
+   }
+   return r;
+}
+MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
+   var r = this.create(d, 'SPAN', s);
+   if(v){
+      r.innerHTML = v;
+   }
+   return r;
+}
+MO.RBuilder.prototype.createButton = function RBuilder_createButton(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'button';
+   return r;
+}
+MO.RBuilder.prototype.createCheck = function RBuilder_createCheck(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'checkbox';
+   return r;
+}
+MO.RBuilder.prototype.createRadio = function RBuilder_createRadio(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'radio';
+   return r;
+}
+MO.RBuilder.prototype.createEdit = function RBuilder_createEdit(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'text';
+   return r;
+}
+MO.RBuilder.prototype.createFile = function RBuilder_createFile(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'file';
+   return r;
+}
+MO.RBuilder.prototype.createSpan = function RBuilder_createSpan(d, s){
+   return this.create(d, 'SPAN', s);
+}
+MO.RBuilder.prototype.createDiv = function RBuilder_createDiv(d, s){
+   return this.create(d, 'DIV', s);
+}
+MO.RBuilder.prototype.createTable = function RBuilder_createTable(d, s, b, cs, cp){
+   var h = this.create(d, 'TABLE', s);
+   if(b){
+      h.border = MO.Lang.Integer.nvl(b);
+   }
+   h.cellSpacing = MO.Lang.Integer.nvl(cs);
+   h.cellPadding = MO.Lang.Integer.nvl(cp);
+   return h;
+}
+MO.RBuilder.prototype.createTableRow = function RBuilder_createTableRow(d, s){
+   var h = this.create(d, 'TR', s);
+   return h;
+}
+MO.RBuilder.prototype.createTableCell = function RBuilder_createTableCell(d, s){
+   var h = this.create(d, 'TD', s);
+   return h;
+}
+MO.RBuilder.prototype.createFragment = function RBuilder_createFragment(document){
+   var hDocument = null;
+   if(document.ownerDocument){
+      hDocument = document.ownerDocument;
+   }else if(document.hDocument){
+      hDocument = document.hDocument;
+   }else{
+      hDocument = document;
+   }
+   var hElement = hDocument.createDocumentFragment();
+   hElement.__fragment = true;
+   return hElement;
+}
+MO.RBuilder.prototype.append = function RBuilder_append(p, t, s){
+   var r = this.create(p.ownerDocument, t, s);
+   if(p){
+      p.appendChild(r);
+   }else{
+      this.hDocument.body.appendChild(r);
+   }
+   return r;
+}
+MO.RBuilder.prototype.appendIcon = function RBuilder_appendIcon(p, s, u, w, h){
+   var r = this.createIcon(p.ownerDocument, s, u, w, h);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendImage = function RBuilder_appendImage(p, s, u, w, h){
+   var r = this.createImage(p.ownerDocument, s, u, w, h);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendEmpty = function RBuilder_appendEmpty(p, w, h){
+   var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendText = function RBuilder_appendText(p, s, v){
+   var r = this.createText(p.ownerDocument, s, v);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendButton = function RBuilder_appendButton(p, s){
+   var r = this.createButton(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendCheck = function RBuilder_appendCheck(p, s){
+   var r = this.createCheck(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendRadio = function RBuilder_appendRadio(p, s){
+   var r = this.createRadio(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendEdit = function RBuilder_appendEdit(p, s){
+   var r = this.createEdit(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendFile = function RBuilder_appendFile(p, s){
+   var r = this.createFile(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendSpan = function RBuilder_appendSpan(p, s){
+   var r = this.createSpan(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendDiv = function RBuilder_appendDiv(p, s){
+   var r = this.createDiv(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
+   var r = this.createTable(p.ownerDocument, s, b, cs, cp);
+   if(p){
+      p.appendChild(r);
+   }else{
+      this.hDocument.body.appendChild(r);
+   }
+   return r;
+}
+MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
+   var r = null;
+   if(i == null){
+      if(MO.RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertRow();
       }else{
-         RArray.sort(names, true);
+         r = p.insertRow(-1);
       }
-      var items = new Array();
-      var c = names.length;
-      if(c > 2000){
-         c = 2000;
+   }else{
+      r = p.insertRow(i);
+   }
+   if(s){
+      r.className = s;
+   }
+   if(h){
+      r.height = h;
+   }
+   return r;
+}
+MO.RBuilder.prototype.appendTableRowCell = function RBuilder_appendTableRowCell(p, s, w, h){
+   var o = this;
+   var hr = o.appendTableRow(p, null, null, w);
+   var hc = o.appendTableCell(hr, s, null, h);
+   return hc;
+}
+MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, i, w){
+   var o = this;
+   var r = null;
+   if(i == null){
+      r = o.create(p, 'TD', s);
+      p.appendChild(r);
+   }else{
+      r = p.insertCell(i);
+   }
+   if(s){
+      r.className = s;
+   }
+   if(w){
+      r.width = w;
+   }
+   return r;
+}
+MO.RBuilder = new MO.RBuilder();
+MO.Builder = MO.RBuilder;
+MO.RContext = function RContext(){
+   var o = this;
+   o._location   = null;
+   o._contexts   = new Object();
+   o.contextPath = null;
+   o.contextTag  = null;
+   o.themeId     = null;
+   o.languageId  = null;
+   return o;
+}
+MO.RContext.prototype.location = function RContext_location(s){
+   var o = this;
+   var r = o._location;
+   if(r == null){
+      var l = window.location;
+      var hr = l.href;
+      var pn = l.pathname;
+      r = hr.substring(0, hr.indexOf(pn))
+      if(o.contextPath){
+         r += o.contextPath;
       }
-      for(var n = 0; n < c; n++){
-         var name = names[n];
-         var value = '{error}';
+      o._location = r;
+   }
+   if(s){
+      r += s;
+   }
+   return r;
+}
+MO.RContext.prototype.context = function RContext_context(s){
+   var o = this;
+   if(s != null){
+      if(MO.Lang.String.endsWith(s, '.wv')){
+         return o.contextPath + '/' + s;
+      }else if(MO.Lang.String.startsWith(s, '#')){
+         return o.contextPath + o.contextTag + s.substr(1);
+      }
+      return o.contextPath + s;
+   }
+   return o.contextPath;
+}
+MO.RContext.prototype.initialize = function RContext_initialize(s){
+   var o = this;
+   for(var n in s){
+      var ls = s[n];
+      for(var nc in ls){
+         var v = ls[nc];
+         var fn = n + ':' + nc;
+         o._contexts[fn] = new MO.TContext(n, nc, v);
+      }
+   }
+}
+MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
+   var o = this;
+   var r = o._contexts[p];
+   if(!r){
+      return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
+   }
+   return MO.Lang.String.format(r.text, p1, p2, p3, p4, p5)
+}
+MO.RContext.prototype.find = function RContext_find(s, c){
+   var o = this;
+   var id = s + ':' + c;
+   var r = o._contexts[id];
+   if(!r){
+      return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
+   }
+   return r.text;
+}
+MO.RContext = new MO.RContext();
+MO.RDump = function RDump(){
+   var o = this;
+   o.LINE_SINGLE = '------------------------------';
+   o.LINE_DOUBLE = '==============================';
+   o.LINE_DOT    = '..............................';
+   o.LINE_STAR   = '******************************';
+   return o;
+}
+MO.RDump.prototype.onclick = function RDump_onclick(){
+   var o = this;
+   var d = o.link;
+   if(o.link){
+      if(d.loaded){
+         d.show(!d.display);
+      }else{
+         MO.RDump.dumpInner(o.link);
+         d.loaded = true;
+         d.show(true);
+      }
+   }
+}
+MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
+   var t = RClass.typeOf(v);
+   switch(t){
+      case 'Unknown':
+         return '@unknown';
+      case 'Function':
+         return MO.Method.name(v) + '@Function';
+      case 'Array':
+         return '@<Array>';
+   }
+   return v;
+}
+MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
+   if(v == null){
+      return 'null';
+   }
+   switch(t){
+      case 'Unknown':
+         return 'unknown';
+      case 'Undefined':
+         return 'undefined';
+      case 'Boolean':
+      case 'Number':
+         return v.toString();
+      case 'String':
+         return v.length + ':\'' + MO.String.toLine(v) + '\'';
+      case 'Function':
+         if(v.__virtual){
+            return 'virtual';
+         }
+         return MO.Method.name(v, true);
+      case 'Array':
+         return '@<Array@' + MO.Class.code(v) + '> length=' + v.length;
+      case 'Html':
+         return '@<' + v.tagName + '>';
+      default:
+         if(v.constructor == MO.TClass){
+            return '@<' + v.name + '@' + MO.Class.code(v) + '>';
+         }
+         if(v.constructor == Function){
+            return "@" + v.toString();
+         }
          try{
-            value = obj[name];
+            for(var name in v){
+               return '@<Object@' + MO.Class.code(v) + '>';
+            }
          }catch(e){}
-         var stype = RClass.safeTypeOf(value, true);
-         var type = RClass.safeTypeOf(value, true);
-         var info = null;
-         var infoFormat = true;
-         if(vcls){
-            var ann = vcls.attributeFind(name);
-            if(ann){
-               type = 'Annotation<' + RMethod.name(ann.constructor) + '>'
-               if(value && value.constructor == Function){
-                  info = "<FONT color='green'>" + RMethod.name(value) + "</FONT>";
-               }else{
-                  info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
-               }
-               infoFormat = false;
-            }
-         }
-         if(info == null){
-            info = this.typeInfo(value, type);
-         }
-         var rdi = null;
-         var index = hInsRow ? hInsRow.rowIndex + 1 : 0;
-         var hRow = RBuilder.appendTableRow(hTable, null, index);
-         hRow.bgColor = '#FFFFFF';
-         if(RString.startsWith(info, '@')){
-            hRow.style.cursor = 'pointer';
-            hRow.onclick = this.onclick;
-            hRow.bgColor = '#FFF0E0';
-            rdi = hRow.link = di.create();
-            rdi.link = value;
-            rdi.level = level;
-            rdi.caption = name;
-            rdi.hTable = hTable;
-            rdi.level = level + 1;
-            rdi.hRow = hRow;
-         }else{
-            di.push(hRow);
-         }
-         if((type == 'Function') && (info == 'virtual')){
-            hRow.bgColor = '#E0F0FF';
-         }
-         var hCell = RBuilder.appendTableCell(hRow);
-         var icon = RString.startsWith(info, '@') ? ' +' : '  ';
-         var label = RString.repeat('   ', level) + icon + ' ' + name
-         hCell.innerHTML = RHtml.toHtml(label);
-         hCell.style.borderBottom = '1px solid #F0F0F0';
-         hCell.width = '240px'
-         if(rdi){
-            rdi.hText = hCell;
-         }
-         var hCell = RBuilder.appendTableCell(hRow);
-         hCell.innerHTML = RHtml.toHtml(type);
-         hCell.style.borderBottom = '1px solid #F0F0F0';
-         if(type == 'Function'){
-            hCell.style.color = '#3333FF';
-         }else{
-            hCell.style.color = '#FF3333';
-         }
-         hCell.width = '200px'
-         var hCell = RBuilder.appendTableCell(hRow);
-         if(RString.startsWith(info, '@')){
-            info = info.substr(1);
-         }
-         if(infoFormat){
-            hCell.innerHTML = RHtml.toHtml(info);
-         }else{
-            hCell.innerHTML = info;
-         }
-         hCell.style.borderBottom = '1px solid #F0F0F0';
-      }
-      hTable.width = '100%'
+         return '<Object@' + MO.Class.code(v) + '>';
    }
-   MO.RDump.prototype.dump = function RDump_dump(value, hPanel){
-      if(!hPanel){
-         hPanel = RBuilder.append(null, 'DIV')
-      }
-      var s = new TString();
-      s.append('<', RClass.safeTypeOf(value));
-      if(value && value.tagName){
-         s.append(' - ', value.tagName);
-      }
-      s.appendLine('@' + RClass.code(value) + '>');
-      var hPanel = RBuilder.append(hPanel, 'DIV');
-      hPanel.style.border = '1px solid #BBBBBB';
-      hPanel.style.backgroundColor = '#E0E0EB';
-      var hTitleTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
-      var hRow = RBuilder.appendTableRow(hTitleTable);
-      var hCell = RBuilder.appendTableCell(hRow);
-      hTitleTable.width = '100%'
-      hCell.style.padding = 2;
-      hCell.style.borderBottom = '1px solid gray';
-      hCell.style.backgroundColor = '#E0E0EB';
-      RHtml.textSet(hCell, s.toString());
-      var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
-      hTable.style.width = '100%';
-      var di = new TDumpItem();
-      di.hTable = hTable;
-      di.hRow = null;
-      di.hParent = hPanel;
-      di.link = value;
-      di.level = 0;
-      this.dumpInner(di);
-   }
-   MO.RDump.prototype.appendLevel = function RDump_appendLevel(r, l){
-      for(var n = 0; n < l; n++){
-         r.append('   ');
-      }
-   }
-   MO.RDump.prototype.stack = function RDump_stack(){
-      var o = RDump_stack.caller;
-      var s = new TString();
-      while(o){
-         s.append(RMethod.name(o));
-         o = o.caller;
-         if(o){
-            s.appendLine();
-         }
-      }
-      MO.Logger.debug(this, s);
-   }
-   MO.RDump = new RDump();
 }
-with(MO){
-   MO.RHtml = function RHtml(){
-      var o = this;
-      o._nextUid        = 1;
-      o._links          = new Object();
-      o._clientPosition = new MO.SPoint2();
-      return o;
+MO.RDump.prototype.dumpInner = function RDump_dumpInner(di){
+   var hTable  = di.hTable;
+   var hParent = di.hParent;
+   var hInsRow = di.hRow;
+   var level   = di.level;
+   var obj     = di.link;
+   var type    = MO.Class.typeOf(obj, true);
+   var vcls    = obj.__class;
+   var names = new Array();
+   for(var name in obj){
+      names[names.length] = name;
    }
-   MO.RHtml.prototype.uid = function RHtml_uid(v){
-      var r = v.__puuid;
-      if(r == null){
-         r = v.__puuid = RHtml._nextUid++;
-      }
-      return r;
+   if(MO.Lang.String.endsWith(type, 'Array')){
+      MO.Lang.Array.reverse(names, 0, names.length - 1);
+   }else{
+      MO.Lang.Array.sort(names, true);
    }
-   MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
-      var r = null;
-      var s = h.style.display;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = (s == 'inline');
-      }else{
-         r = (s != 'none');
-      }
-      return r;
+   var items = new Array();
+   var c = names.length;
+   if(c > 2000){
+      c = 2000;
    }
-   MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
-      var s = null;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         s = v ? 'inline' : 'none';
-      }else{
-         s = v ? null : 'none';
-      }
-      h.style.display = s;
-   }
-   MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
-      var r = null;
-      var s = h.style.display;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = (s == 'block');
-      }else{
-         r = (s != 'none');
-      }
-      return r;
-   }
-   MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
-      var s = null;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         s = v ? '' : 'none';
-      }else{
-         s = v ? null : 'none';
-      }
-      h.style.display = s;
-   }
-   MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
-      var r = null;
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         r = h.textContent;
-      }else{
-         r = h.innerText;
-      }
-      return r;
-   }
-   MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         h.textContent = v;
-      }else{
-         h.innerText = v;
-      }
-   }
-   MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
-      return RBool.toString(h.checked);
-   }
-   MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
-      h.checked = RBool.isTrue(v);
-   }
-   MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
-      if(hs){
-         var c = hs.length;
-         for(var n = 0; n < c; n++){
-            var h = hs[n];
-            if(h.checked){
-               return h.value;
+   for(var n = 0; n < c; n++){
+      var name = names[n];
+      var value = '{error}';
+      try{
+         value = obj[name];
+      }catch(e){}
+      var stype = MO.Class.safeTypeOf(value, true);
+      var type = MO.Class.safeTypeOf(value, true);
+      var info = null;
+      var infoFormat = true;
+      if(vcls){
+         var ann = vcls.attributeFind(name);
+         if(ann){
+            type = 'Annotation<' + MO.Method.name(ann.constructor) + '>'
+            if(value && value.constructor == Function){
+               info = "<FONT color='green'>" + MO.Method.name(value) + "</FONT>";
+            }else{
+               info = value + "<FONT color='green'> - (" + MO.RHtml.toHtml(ann.toString()) + ")</FONT>";
             }
+            infoFormat = false;
          }
       }
-      return null;
+      if(info == null){
+         info = this.typeInfo(value, type);
+      }
+      var rdi = null;
+      var index = hInsRow ? hInsRow.rowIndex + 1 : 0;
+      var hRow = MO.RBuilder.appendTableRow(hTable, null, index);
+      hRow.bgColor = '#FFFFFF';
+      if(MO.Lang.String.startsWith(info, '@')){
+         hRow.style.cursor = 'pointer';
+         hRow.onclick = this.onclick;
+         hRow.bgColor = '#FFF0E0';
+         rdi = hRow.link = di.create();
+         rdi.link = value;
+         rdi.level = level;
+         rdi.caption = name;
+         rdi.hTable = hTable;
+         rdi.level = level + 1;
+         rdi.hRow = hRow;
+      }else{
+         di.push(hRow);
+      }
+      if((type == 'Function') && (info == 'virtual')){
+         hRow.bgColor = '#E0F0FF';
+      }
+      var hCell = MO.RBuilder.appendTableCell(hRow);
+      var icon = MO.Lang.String.startsWith(info, '@') ? ' +' : '  ';
+      var label = MO.Lang.String.repeat('   ', level) + icon + ' ' + name
+      hCell.innerHTML = MO.RHtml.toHtml(label);
+      hCell.style.borderBottom = '1px solid #F0F0F0';
+      hCell.width = '240px'
+      if(rdi){
+         rdi.hText = hCell;
+      }
+      var hCell = MO.RBuilder.appendTableCell(hRow);
+      hCell.innerHTML = MO.RHtml.toHtml(type);
+      hCell.style.borderBottom = '1px solid #F0F0F0';
+      if(type == 'Function'){
+         hCell.style.color = '#3333FF';
+      }else{
+         hCell.style.color = '#FF3333';
+      }
+      hCell.width = '200px'
+      var hCell = MO.RBuilder.appendTableCell(hRow);
+      if(MO.Lang.String.startsWith(info, '@')){
+         info = info.substr(1);
+      }
+      if(infoFormat){
+         hCell.innerHTML = MO.RHtml.toHtml(info);
+      }else{
+         hCell.innerHTML = info;
+      }
+      hCell.style.borderBottom = '1px solid #F0F0F0';
    }
-   MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
-      if(hs){
-         var c = hs.length;
-         for(var n=0; n < c; n++){
-            var h = hs[n];
-            if(h.value == v){
-               h.checked = true;
+   hTable.width = '100%'
+}
+MO.RDump.prototype.dump = function RDump_dump(value, hPanel){
+   if(!hPanel){
+      hPanel = MO.RBuilder.append(null, 'DIV')
+   }
+   var s = new MO.TString();
+   s.append('<', MO.Class.safeTypeOf(value));
+   if(value && value.tagName){
+      s.append(' - ', value.tagName);
+   }
+   s.appendLine('@' + MO.Class.code(value) + '>');
+   var hPanel = MO.RBuilder.append(hPanel, 'DIV');
+   hPanel.style.border = '1px solid #BBBBBB';
+   hPanel.style.backgroundColor = '#E0E0EB';
+   var hTitleTable = MO.RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   var hRow = MO.RBuilder.appendTableRow(hTitleTable);
+   var hCell = MO.RBuilder.appendTableCell(hRow);
+   hTitleTable.width = '100%'
+   hCell.style.padding = 2;
+   hCell.style.borderBottom = '1px solid gray';
+   hCell.style.backgroundColor = '#E0E0EB';
+   MO.RHtml.textSet(hCell, s.toString());
+   var hTable = MO.RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   hTable.style.width = '100%';
+   var di = new MO.TDumpItem();
+   di.hTable = hTable;
+   di.hRow = null;
+   di.hParent = hPanel;
+   di.link = value;
+   di.level = 0;
+   this.dumpInner(di);
+}
+MO.RDump.prototype.appendLevel = function RDump_appendLevel(r, l){
+   for(var n = 0; n < l; n++){
+      r.append('   ');
+   }
+}
+MO.RDump.prototype.stack = function RDump_stack(){
+   var o = RDump_stack.caller;
+   var s = new MO.TString();
+   while(o){
+      s.append(MO.Method.name(o));
+      o = o.caller;
+      if(o){
+         s.appendLine();
+      }
+   }
+   MO.Logger.debug(this, s);
+}
+MO.RDump = new MO.RDump();
+MO.RHtml = function RHtml(){
+   var o = this;
+   o._nextUid        = 1;
+   o._links          = new Object();
+   o._clientPosition = new MO.SPoint2();
+   return o;
+}
+MO.RHtml.prototype.uid = function RHtml_uid(v){
+   var r = v.__puuid;
+   if(r == null){
+      r = v.__puuid = this._nextUid++;
+   }
+   return r;
+}
+MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
+   var r = null;
+   var s = h.style.display;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      r = (s == 'inline');
+   }else{
+      r = (s != 'none');
+   }
+   return r;
+}
+MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
+   var s = null;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      s = v ? 'inline' : 'none';
+   }else{
+      s = v ? null : 'none';
+   }
+   h.style.display = s;
+}
+MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
+   var r = null;
+   var s = h.style.display;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      r = (s == 'block');
+   }else{
+      r = (s != 'none');
+   }
+   return r;
+}
+MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
+   var s = null;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      s = v ? '' : 'none';
+   }else{
+      s = v ? null : 'none';
+   }
+   h.style.display = s;
+}
+MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
+   var r = null;
+   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+      r = h.textContent;
+   }else{
+      r = h.innerText;
+   }
+   return r;
+}
+MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
+   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+      h.textContent = v;
+   }else{
+      h.innerText = v;
+   }
+}
+MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
+   return MO.Lang.Bool.toString(h.checked);
+}
+MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
+   h.checked = MO.Lang.Bool.isTrue(v);
+}
+MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
+   if(hs){
+      var c = hs.length;
+      for(var n = 0; n < c; n++){
+         var h = hs[n];
+         if(h.checked){
+            return h.value;
+         }
+      }
+   }
+   return null;
+}
+MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
+   if(hs){
+      var c = hs.length;
+      for(var n=0; n < c; n++){
+         var h = hs[n];
+         if(h.value == v){
+            h.checked = true;
+            break;
+         }
+      }
+   }
+}
+MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
+   if(h){
+      h.style.cursor = v;
+   }
+}
+MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
+   var o = this;
+   var u = o.uid(h);
+   var i = o._links[u];
+   return i ? i.get(n) : null;
+}
+MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
+   var o = this;
+   var ls = o._links;
+   var u = o.uid(h);
+   var i = ls[u];
+   if(!i){
+      i = ls[u] = new MO.THtmlItem();
+      i._link = h;
+   }
+   i.set(n, v);
+}
+MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
+   var o = this;
+   var position = o._clientPosition;
+   position.set(0, 0);
+   while(hTag != hTop){
+      position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
+      position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
+      hTag = hTag.offsetParent;
+   }
+   return position;
+}
+MO.RHtml.prototype.clientX = function RHtml_clientX(p, t){
+   var r = 0;
+   while(p != t){
+      r += p.offsetLeft - p.scrollLeft;
+      p = p.offsetParent;
+   }
+   return r;
+}
+MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
+   var r = 0;
+   while(p != t){
+      r += p.offsetTop - p.scrollTop;
+      p = p.offsetParent;
+   }
+   return r;
+}
+MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
+   if(s.width){
+      h.style.width = s.width + 'px';
+   }
+   if(s.height){
+      h.style.height = s.height + 'px';
+   }
+}
+MO.RHtml.prototype.toText = function RHtml_toText(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/&lt;/, '<');
+      p = p.replace(/&gt;/g, '>');
+      p = p.replace(/&nbsp;/g, ' ');
+      p = p.replace(/<BR>/g, '\n');
+   }
+   return p;
+}
+MO.RHtml.prototype.toHtml = function RHtml_toHtml(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/</g, '&lt;');
+      p = p.replace(/>/g, '&gt;');
+      p = p.replace(/ /g, '&nbsp;');
+      p = p.replace(/\n/g, '<BR>');
+      p = p.replace(/\\n/g, '<BR>');
+      p = p.replace(/\r/g, '');
+      p = p.replace(/\\r/g, '');
+   }
+   return p;
+}
+MO.RHtml.prototype.eventSource = function RHtml_eventSource(p){
+   return p.srcElement ? p.srcElement : p.target;
+}
+MO.RHtml.prototype.get = function RHtml_get(name){
+   return document.getElementById(name);
+}
+MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
+}
+MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
+   if(ph.tagName != 'TABLE'){
+      throw new MO.TError('Html table is invalid.');
+   }
+   if(ps == pt){
+      return false;
+   }
+   if(ph.moveRow){
+      ph.moveRow(ps, pt);
+   }else{
+      var hb = ph.getElementsByTagName('tbody')[0];
+      var sr = hb.rows[ps];
+      var tr = hb.rows[pt];
+      if((sr == null) || (tr == null)){
+         return false;
+      }
+      var nr = null;
+      if(ps <= pt){
+         nr = tr;
+         while(nr = nr.nextSibling){
+            if(nr.tagName == 'TR'){
                break;
             }
          }
       }
-   }
-   MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
-      if(h){
-         h.style.cursor = v;
-      }
-   }
-   MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
-      var o = this;
-      var u = o.uid(h);
-      var i = o._links[u];
-      return i ? i.get(n) : null;
-   }
-   MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
-      var o = this;
-      var ls = o._links;
-      var u = o.uid(h);
-      var i = ls[u];
-      if(!i){
-         i = ls[u] = new THtmlItem();
-         i._link = h;
-      }
-      i.set(n, v);
-   }
-   MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
-      var o = this;
-      var position = o._clientPosition;
-      position.set(0, 0);
-      while(hTag != hTop){
-         position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
-         position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
-         hTag = hTag.offsetParent;
-      }
-      return position;
-   }
-   MO.RHtml.prototype.clientX = function RHtml_clientX(p, t){
-      var r = 0;
-      while(p != t){
-         r += p.offsetLeft - p.scrollLeft;
-         p = p.offsetParent;
-      }
-      return r;
-   }
-   MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
-      var r = 0;
-      while(p != t){
-         r += p.offsetTop - p.scrollTop;
-         p = p.offsetParent;
-      }
-      return r;
-   }
-   MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
-      if(s.width){
-         h.style.width = s.width + 'px';
-      }
-      if(s.height){
-         h.style.height = s.height + 'px';
-      }
-   }
-   MO.RHtml.prototype.toText = function RHtml_toText(p){
-      if(p != null){
-         p = p.toString();
-         p = p.replace(/&lt;/, '<');
-         p = p.replace(/&gt;/g, '>');
-         p = p.replace(/&nbsp;/g, ' ');
-         p = p.replace(/<BR>/g, '\n');
-      }
-      return p;
-   }
-   MO.RHtml.prototype.toHtml = function RHtml_toHtml(p){
-      if(p != null){
-         p = p.toString();
-         p = p.replace(/</g, '&lt;');
-         p = p.replace(/>/g, '&gt;');
-         p = p.replace(/ /g, '&nbsp;');
-         p = p.replace(/\n/g, '<BR>');
-         p = p.replace(/\\n/g, '<BR>');
-         p = p.replace(/\r/g, '');
-         p = p.replace(/\\r/g, '');
-      }
-      return p;
-   }
-   MO.RHtml.prototype.eventSource = function RHtml_eventSource(p){
-      return p.srcElement ? p.srcElement : p.target;
-   }
-   MO.RHtml.prototype.get = function RHtml_get(name){
-      return document.getElementById(name);
-   }
-   MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
-      if(tag && t){
-         typeName = typeName.toLowerCase();
-         while(tag){
-            if(tag.tagName.toLowerCase() == typeName){
-               return tag;
-            }
-            tag = tag.parentElement;
-         }
-      }
-      return null;
-   }
-   MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
-      while(h){
-         var f = h.__linker;
-         if(f){
-            if(RClass.isClass(f, c)){
-               return f;
-            }
-         }
-         h = h.parentElement;
-      }
-      return null;
-   }
-   MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
-      while(h){
-         var f = h[n];
-         if(f){
-            return f;
-         }
-         h = h.parentElement;
-      }
-      return null;
-   }
-   MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
-      if(ph.tagName != 'TABLE'){
-         throw new TError('Html table is invalid.');
-      }
-      if(ps == pt){
-         return false;
-      }
-      if(ph.moveRow){
-         ph.moveRow(ps, pt);
+      if(nr == null){
+         hb.insertBefore(sr, tr);
       }else{
-         var hb = ph.getElementsByTagName('tbody')[0];
-         var sr = hb.rows[ps];
-         var tr = hb.rows[pt];
-         if((sr == null) || (tr == null)){
-            return false;
-         }
-         var nr = null;
-         if(ps <= pt){
-            nr = tr;
-            while(nr = nr.nextSibling){
-               if(nr.tagName == 'TR'){
-                  break;
-               }
-            }
-         }
          if(nr == null){
-            hb.insertBefore(sr, tr);
+            hb.appendChild(sr);
          }else{
-            if(nr == null){
-               hb.appendChild(sr);
-            }else{
-               hb.insertBefore(sr, nr);
-            }
+            hb.insertBefore(sr, nr);
          }
       }
-      return true;
    }
-   MO.RHtml.prototype.free = function RHtml_free(p){
-      return null;
-   }
-   MO.RHtml = new RHtml();
+   return true;
 }
-with(MO){
-   MO.RValue = function RValue(){
-      var o = this;
-      o.float1    = null;
-      o.float2    = null;
-      o.float3    = null;
-      o.float4    = null;
-      o.float9    = null;
-      o.float12   = null;
-      o.float16   = null;
-      o.double1   = null;
-      o.double2   = null;
-      o.double3   = null;
-      o.double4   = null;
-      o.double16  = null;
-      o.double16  = null;
-      o.double64  = null;
-      o.construct();
-      return o;
-   }
-   MO.RValue.prototype.construct = function RValue_construct(){
-      var o = this;
-      if(RBrowser.supportHtml5()){
-         o.float1 = new Float32Array(1);
-         o.float2 = new Float32Array(2);
-         o.float3 = new Float32Array(3);
-         o.float4 = new Float32Array(4);
-         o.float9 = new Float32Array(9);
-         o.float12 = new Float32Array(12);
-         o.float16 = new Float32Array(16);
-         o.double1 = new Float64Array(1);
-         o.double2 = new Float64Array(2);
-         o.double3 = new Float64Array(3);
-         o.double4 = new Float64Array(4);
-         o.double9 = new Float64Array(9);
-         o.double12 = new Float64Array(12);
-         o.double16 = new Float64Array(16);
-      }
-   }
-   MO.RValue = new RValue();
+MO.RHtml.prototype.free = function RHtml_free(p){
+   return null;
 }
+MO.RHtml = new MO.RHtml();
+MO.RValue = function RValue(){
+   var o = this;
+   o.float1    = null;
+   o.float2    = null;
+   o.float3    = null;
+   o.float4    = null;
+   o.float9    = null;
+   o.float12   = null;
+   o.float16   = null;
+   o.double1   = null;
+   o.double2   = null;
+   o.double3   = null;
+   o.double4   = null;
+   o.double16  = null;
+   o.double16  = null;
+   o.double64  = null;
+   o.construct();
+   return o;
+}
+MO.RValue.prototype.construct = function RValue_construct(){
+   var o = this;
+   if(MO.RBrowser.supportHtml5()){
+      o.float1 = new Float32Array(1);
+      o.float2 = new Float32Array(2);
+      o.float3 = new Float32Array(3);
+      o.float4 = new Float32Array(4);
+      o.float9 = new Float32Array(9);
+      o.float12 = new Float32Array(12);
+      o.float16 = new Float32Array(16);
+      o.double1 = new Float64Array(1);
+      o.double2 = new Float64Array(2);
+      o.double3 = new Float64Array(3);
+      o.double4 = new Float64Array(4);
+      o.double9 = new Float64Array(9);
+      o.double12 = new Float64Array(12);
+      o.double16 = new Float64Array(16);
+   }
+}
+MO.RValue = new MO.RValue();
 MO.RWindow = function RWindow(){
    var o = this;
    o._optionSelect     = true;
@@ -14274,253 +14195,251 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
-   o._eventMouse = MO.RObject.dispose(o._eventMouse);
-   o._eventKey = MO.RObject.dispose(o._eventKey);
-   o._eventResize = MO.RObject.dispose(o._eventResize);
-   o._eventOrientation = MO.RObject.dispose(o._eventOrientation);
-   o._eventUnload = MO.RObject.dispose(o._eventUnload);
+   o._eventMouse = MO.Lang.Object.dispose(o._eventMouse);
+   o._eventKey = MO.Lang.Object.dispose(o._eventKey);
+   o._eventResize = MO.Lang.Object.dispose(o._eventResize);
+   o._eventOrientation = MO.Lang.Object.dispose(o._eventOrientation);
+   o._eventUnload = MO.Lang.Object.dispose(o._eventUnload);
 }
 MO.RWindow = new MO.RWindow();
 MO.Window = MO.RWindow;
-with(MO){
-   MO.RXml = function RXml(){
-      var o = this;
-      o.httpActiveX = false;
-      o.httpVendor  = null;
-      o.domActiveX  = false;
-      o.domVendor   = null;
-      o.construct();
-      return o;
-   }
-   MO.RXml.prototype.construct = function RXml_construct(){
-      var o = this;
-      var d = window.document;
-      if(window.ActiveXObject && !window.XMLHttpRequest){
-         var vs = ["MSXml2.XmlHTTP", "Microsoft.XmlHTTP", "MSXml.XmlHTTP", "MSXml3.XmlHTTP"];
-         var c = vs.length;
-         for(var n = 0; n < c; n++){
-            var v = vs[n];
-            try{
-               r = new ActiveXObject(v);
-               o.httpActiveX = true;
-               o.httpVendor = v;
-               break;
-            }catch(e){
-               m = e;
-            }
-         }
-      }else if(window.XMLHttpRequest){
+MO.RXml = function RXml(){
+   var o = this;
+   o.httpActiveX = false;
+   o.httpVendor  = null;
+   o.domActiveX  = false;
+   o.domVendor   = null;
+   o.construct();
+   return o;
+}
+MO.RXml.prototype.construct = function RXml_construct(){
+   var o = this;
+   var d = window.document;
+   if(window.ActiveXObject && !window.XMLHttpRequest){
+      var vs = ["MSXml2.XmlHTTP", "Microsoft.XmlHTTP", "MSXml.XmlHTTP", "MSXml3.XmlHTTP"];
+      var c = vs.length;
+      for(var n = 0; n < c; n++){
+         var v = vs[n];
          try{
-            var r = new XMLHttpRequest();
-            o.httpActiveX = false;
+            r = new ActiveXObject(v);
+            o.httpActiveX = true;
+            o.httpVendor = v;
+            break;
          }catch(e){
             m = e;
          }
-      }else{
-         alert('Unknown http vendor.');
       }
-      if(window.ActiveXObject || !window.DOMParser){
-         var vs = ["MSXml2.DOMDocument", "Microsoft.XmlDOM", "MSXml.DOMDocument", "MSXml3.XmlDOM"];
-         var c = vs.length;
-         for(var n = 0; n < c; n++){
-            var v = vs[n];
-            try{
-               var r = new ActiveXObject(v);
-               o.domActiveX = true;
-               o.domVendor = v;
-               break;
-            }catch(e){
-               m = e;
-            }
-         }
-      }else if(window.DOMParser && d && d.implementation && d.implementation.createDocument){
+   }else if(window.XMLHttpRequest){
+      try{
+         var r = new XMLHttpRequest();
+         o.httpActiveX = false;
+      }catch(e){
+         m = e;
+      }
+   }else{
+      alert('Unknown http vendor.');
+   }
+   if(window.ActiveXObject || !window.DOMParser){
+      var vs = ["MSXml2.DOMDocument", "Microsoft.XmlDOM", "MSXml.DOMDocument", "MSXml3.XmlDOM"];
+      var c = vs.length;
+      for(var n = 0; n < c; n++){
+         var v = vs[n];
          try{
-            var r = document.implementation.createDocument('', '', null);
-            o.domActiveX = false;
+            var r = new ActiveXObject(v);
+            o.domActiveX = true;
+            o.domVendor = v;
+            break;
          }catch(e){
             m = e;
          }
-      }else{
-         alert('Unknown dom vendor.');
       }
+   }else if(window.DOMParser && d && d.implementation && d.implementation.createDocument){
+      try{
+         var r = document.implementation.createDocument('', '', null);
+         o.domActiveX = false;
+      }catch(e){
+         m = e;
+      }
+   }else{
+      alert('Unknown dom vendor.');
    }
-   MO.RXml.prototype.isNode = function RXml_isNode(n){
-      return RClass.isName(n, 'TNode');
+}
+MO.RXml.prototype.isNode = function RXml_isNode(n){
+   return RClass.isName(n, 'TNode');
+}
+MO.RXml.prototype.createConnection = function RXml_createConnection(){
+   var o = this;
+   var r = null;
+   if(o.httpActiveX){
+      r = new ActiveXObject(o.httpVendor);
+   }else{
+      r = new XMLHttpRequest();
    }
-   MO.RXml.prototype.createConnection = function RXml_createConnection(){
-      var o = this;
-      var r = null;
-      if(o.httpActiveX){
-         r = new ActiveXObject(o.httpVendor);
-      }else{
-         r = new XMLHttpRequest();
-      }
-      if(!r){
-         alert('Create xml connection failure. (message=' + m + ')');
-      }
-      return r;
+   if(!r){
+      alert('Create xml connection failure. (message=' + m + ')');
    }
-   MO.RXml.prototype.createDocument = function RXml_createDocument(){
-      var o = this;
-      var r = null;
-      if(o.domActiveX){
-         r = new ActiveXObject(o.domVendor);
-      }else{
-         r = document.implementation.createDocument('', '', null);
-      }
-      if(!r){
-         alert('Create xml document failure. (message=' + m + ')');
-      }
-      return r;
+   return r;
+}
+MO.RXml.prototype.createDocument = function RXml_createDocument(){
+   var o = this;
+   var r = null;
+   if(o.domActiveX){
+      r = new ActiveXObject(o.domVendor);
+   }else{
+      r = document.implementation.createDocument('', '', null);
    }
-   MO.RXml.prototype.formatText = function RXml_formatText(s){
-      if(s != null){
-         s = s.replace(/\\n/g, '\n');
-      }
-      return s;
+   if(!r){
+      alert('Create xml document failure. (message=' + m + ')');
    }
-   MO.RXml.prototype.buildText = function RXml_buildText(s, v){
-      if(v != null){
-         v = v.toString();
-         var c = v.length;
-         for(var i = 0; i < c; i++){
-            var ch = v.charAt(i);
-            switch(ch){
-               case '<':
-                  s.append('&lt;');
-                  break;
-               case '>':
-                  s.append('&gt;');
-                  break;
-               case '"':
-                  s.append('&quot;');
-                  break;
-               case '&':
-                  s.append('&amp;');
-                  break;
-               case '\r':
-                  continue;
-               case '\n':
-                  s.append('\\n');
-                  break;
-               default:
-                  s.append(ch);
-            }
+   return r;
+}
+MO.RXml.prototype.formatText = function RXml_formatText(s){
+   if(s != null){
+      s = s.replace(/\\n/g, '\n');
+   }
+   return s;
+}
+MO.RXml.prototype.buildText = function RXml_buildText(s, v){
+   if(v != null){
+      v = v.toString();
+      var c = v.length;
+      for(var i = 0; i < c; i++){
+         var ch = v.charAt(i);
+         switch(ch){
+            case '<':
+               s.append('&lt;');
+               break;
+            case '>':
+               s.append('&gt;');
+               break;
+            case '"':
+               s.append('&quot;');
+               break;
+            case '&':
+               s.append('&amp;');
+               break;
+            case '\r':
+               continue;
+            case '\n':
+               s.append('\\n');
+               break;
+            default:
+               s.append(ch);
          }
       }
-      return s;
    }
-   MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
-      var xas = null;
-      var eas = pe.attributes;
-      if(eas){
-         var eac = eas.length;
-         if(eac > 0){
-            xas = new TAttributes();
-            for(var n = 0; n < eac; n++){
-               var ea = eas[n];
-               if(ea.nodeName){
-                  xas.set(ea.nodeName, RXml.formatText(ea.value));
-               }
-            }
-         }
-      }
-      var xt = new TString();
-      xt.append(pe.value);
-      var ecs = pe.childNodes
-      if(ecs){
-         var ecc = ecs.length;
-         for(var n = 0; n < ecc; n++){
-            var en = ecs[n];
-            var ect = en.nodeType;
-            if(ect == ENodeType.Text){
-               xt.append(en.nodeValue);
-            }else if(ect == ENodeType.Data){
-               xt.append(en.data);
-            }
-         }
-      }
-      var xc = pd.create(pe.nodeName, xas, RString.trim(xt.toString()));
-      if(pn){
-         pn.push(xc);
-      }else{
-         pd._root = xc;
-      }
-      if(ecs){
-         var cc = ecs.length;
-         for(var n = 0; n < cc; n++){
-            if(ecs[n].nodeType == ENodeType.Node){
-               this.buildNode(pd, xc, ecs[n]);
+   return s;
+}
+MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
+   var xas = null;
+   var eas = pe.attributes;
+   if(eas){
+      var eac = eas.length;
+      if(eac > 0){
+         xas = new MO.TAttributes();
+         for(var n = 0; n < eac; n++){
+            var ea = eas[n];
+            if(ea.nodeName){
+               xas.set(ea.nodeName, this.formatText(ea.value));
             }
          }
       }
    }
-   MO.RXml.prototype.makeString = function RXml_makeString(s){
-      var o = this;
-      var x = null;
-      if(o.domActiveX){
-         x = new ActiveXObject(o.domVendor);
-         x.async = false;
-         x.loadXML(s);
-      }else{
-         var p = new DOMParser();
-         x = p.parseFromString(s, 'text/xml');
+   var xt = new MO.TString();
+   xt.append(pe.value);
+   var ecs = pe.childNodes
+   if(ecs){
+      var ecc = ecs.length;
+      for(var n = 0; n < ecc; n++){
+         var en = ecs[n];
+         var ect = en.nodeType;
+         if(ect == MO.ENodeType.Text){
+            xt.append(en.nodeValue);
+         }else if(ect == MO.ENodeType.Data){
+            xt.append(en.data);
+         }
       }
-      return x;
    }
-   MO.RXml.prototype.makeNode = function RXml_makeNode(p){
-      var o = this;
-      if(p.documentElement){
-         var d = new TXmlDocument();
-         o.buildNode(d, null, p.documentElement);
+   var xc = pd.create(pe.nodeName, xas, MO.Lang.String.trim(xt.toString()));
+   if(pn){
+      pn.push(xc);
+   }else{
+      pd._root = xc;
+   }
+   if(ecs){
+      var cc = ecs.length;
+      for(var n = 0; n < cc; n++){
+         if(ecs[n].nodeType == MO.ENodeType.Node){
+            this.buildNode(pd, xc, ecs[n]);
+         }
+      }
+   }
+}
+MO.RXml.prototype.makeString = function RXml_makeString(s){
+   var o = this;
+   var x = null;
+   if(o.domActiveX){
+      x = new ActiveXObject(o.domVendor);
+      x.async = false;
+      x.loadXML(s);
+   }else{
+      var p = new DOMParser();
+      x = p.parseFromString(s, 'text/xml');
+   }
+   return x;
+}
+MO.RXml.prototype.makeNode = function RXml_makeNode(p){
+   var o = this;
+   if(p.documentElement){
+      var d = new MO.TXmlDocument();
+      o.buildNode(d, null, p.documentElement);
+      return d.root();
+   }else if(p.tagName == 'SCRIPT'){
+      var s = p.textContent;
+      if(!s){
+         s = p.text;
+      }
+      if(s){
+         var d = new MO.TXmlDocument();
+         var xd = o.makeString(s)
+         o.buildNode(d, null, xd.documentElement);
          return d.root();
-      }else if(p.tagName == 'SCRIPT'){
-         var s = p.textContent;
-         if(!s){
-            s = p.text;
-         }
-         if(s){
-            var d = new TXmlDocument();
-            var xd = o.makeString(s)
-            o.buildNode(d, null, xd.documentElement);
-            return d.root();
-         }
       }
+   }
+   return null;
+}
+MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
+   var d = new MO.TXmlDocument();
+   if(p.documentElement){
+      this.buildNode(d, null, p.documentElement);
+   }
+   return d;
+}
+MO.RXml.prototype.unpack = function RXml_unpack(s, n){
+   var o = this;
+   if(MO.Lang.String.isEmpty(s)){
       return null;
    }
-   MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
-      var d = new TXmlDocument();
-      if(p.documentElement){
-         RXml.buildNode(d, null, p.documentElement);
-      }
-      return d;
+   if(!n){
+      n = new MO.TNode();
    }
-   MO.RXml.prototype.unpack = function RXml_unpack(s, n){
-      var o = this;
-      if(RString.isEmpty(s)){
-         return null;
-      }
-      if(!n){
-         n = new TNode();
-      }
-      var np = new TAttributes();
-      np.unpack(s);
-      n.name = np.get('name');
-      n.value = np.get('value');
-      if(np.contains('attributes')){
-         n.attributes().unpack(np.get('attributes'));
-      }
-      if(np.contains('nodes')){
-         var ns = new TStrings();
-         ns.unpack(np.get('nodes'));
-         for(var i=0; i<ns.count; i++){
-            o.unpack(ns.get(i), n.create());
-         }
-      }
-      return n;
+   var np = new MO.TAttributes();
+   np.unpack(s);
+   n.name = np.get('name');
+   n.value = np.get('value');
+   if(np.contains('attributes')){
+      n.attributes().unpack(np.get('attributes'));
    }
-   MO.RXml = new RXml();
+   if(np.contains('nodes')){
+      var ns = new MO.TStrings();
+      ns.unpack(np.get('nodes'));
+      for(var i = 0; i < ns.count; i++){
+         o.unpack(ns.get(i), n.create());
+      }
+   }
+   return n;
 }
+MO.RXml = new MO.RXml();
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');
@@ -17624,38 +17543,38 @@ with(MO){
       var o = this;
       var p = o.findParameter(pn);
       if(p == null){
-         throw new TError(o, 'Bind invalid parameter. (name={1})', pn);
+         throw new MO.TError(o, 'Bind invalid parameter. (name={1})', pn);
       }
       var d = null;
       var t = pv.constructor;
       if((t == Float32Array) || (t == SMatrix3d) || (t == SPerspectiveMatrix3d)){
          d = pv;
       }else if(t == SColor4){
-         d = RTypeArray.float4();
+         d = MO.Lang.TypeArray.float4();
          d[0] = pv.red;
          d[1] = pv.green;
          d[2] = pv.blue;
          d[3] = pv.alpha;
       }else if((t == SPoint3) || (t == SVector3)){
-         d = RTypeArray.float3();
+         d = MO.Lang.TypeArray.float3();
          d[0] = pv.x;
          d[1] = pv.y;
          d[2] = pv.z;
       }else if((t == SPoint4) || (t == SVector4)){
-         d = RTypeArray.float4();
+         d = MO.Lang.TypeArray.float4();
          d[0] = pv.x;
          d[1] = pv.y;
          d[2] = pv.z;
          d[3] = pv.w;
       }else{
-         throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
+         throw new MO.TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
       }
       if(p.attachData(d)){
          o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
       }
    }
    MO.FG3dProgram_setParameter4 = function FG3dProgram_setParameter4(pn, px, py, pz, pw){
-      var v = RTypeArray.float4();
+      var v = MO.Lang.TypeArray.float4();
       v[0] = px;
       v[1] = py;
       v[2] = pz;
@@ -17672,11 +17591,11 @@ with(MO){
    }
    MO.FG3dProgram_dispose = function FG3dProgram_dispose(){
       var o = this;
-      o._attributes = RObject.dispose(o._attributes, true);
-      o._parameters = RObject.dispose(o._parameters, true);
-      o._samplers = RObject.dispose(o._samplers, true);
-      o._vertexShader = RObject.dispose(o._vertexShader);
-      o._fragmentShader = RObject.dispose(o._fragmentShader);
+      o._attributes = MO.Lang.Object.dispose(o._attributes, true);
+      o._parameters = MO.Lang.Object.dispose(o._parameters, true);
+      o._samplers = MO.Lang.Object.dispose(o._samplers, true);
+      o._vertexShader = MO.Lang.Object.dispose(o._vertexShader);
+      o._fragmentShader = MO.Lang.Object.dispose(o._fragmentShader);
       o.__base.FG3dObject.dispose.call(o);
    }
 }

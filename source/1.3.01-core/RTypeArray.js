@@ -103,5 +103,4 @@ MO.RTypeArray.prototype.findTemp = function RTypeArray_findTemp(typeCd, length){
 }
 //..........................................................
 // 实例化内容
-MO.RTypeArray = new MO.RTypeArray();
-MO.TypeArray = MO.RTypeArray;
+MO.Lang.TypeArray = new MO.RTypeArray();

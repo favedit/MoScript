@@ -1,506 +1,505 @@
-﻿with(MO){
-   //==========================================================
-   // <T>页面对象的管理类。</T>
-   //
-   // @reference
-   // @author maocy
-   // @version 141229
-   //==========================================================
-   MO.RHtml = function RHtml(){
-      var o = this;
-      //..........................................................
-      // @attribute
-      o._nextUid        = 1;
-      o._links          = new Object();
-      o._clientPosition = new MO.SPoint2();
-      return o;
+﻿//==========================================================
+// <T>页面对象的管理类。</T>
+//
+// @reference
+// @author maocy
+// @version 141229
+//==========================================================
+MO.RHtml = function RHtml(){
+   var o = this;
+   //..........................................................
+   // @attribute
+   o._nextUid        = 1;
+   o._links          = new Object();
+   o._clientPosition = new MO.SPoint2();
+   return o;
+}
+
+//==========================================================
+// <T>获得对象的唯一编号。</T>
+// <P>外部会引用这个函数，不要在内部使用this对象。</P>
+//
+// @method
+// @param v:value:Object 对象
+// @return Integer 编号
+//==========================================================
+MO.RHtml.prototype.uid = function RHtml_uid(v){
+   var r = v.__puuid;
+   if(r == null){
+      r = v.__puuid = this._nextUid++;
    }
-   
-   //==========================================================
-   // <T>获得对象的唯一编号。</T>
-   // <P>外部会引用这个函数，不要在内部使用this对象。</P>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @return Integer 编号
-   //==========================================================
-   MO.RHtml.prototype.uid = function RHtml_uid(v){
-      var r = v.__puuid;
-      if(r == null){
-         r = v.__puuid = RHtml._nextUid++;
-      }
-      return r;
+   return r;
+}
+
+//==========================================================
+// <T>获得显示性。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @return Boolean 显示性
+//==========================================================
+MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
+   var r = null;
+   var s = h.style.display;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      r = (s == 'inline');
+   }else{
+      r = (s != 'none');
    }
-   
-   //==========================================================
-   // <T>获得显示性。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @return Boolean 显示性
-   //==========================================================
-   MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
-      var r = null;
-      var s = h.style.display;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = (s == 'inline');
-      }else{
-         r = (s != 'none');
-      }
-      return r;
+   return r;
+}
+
+//==========================================================
+// <T>设置显示性。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @param v:visible:Boolean 显示性
+//==========================================================
+MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
+   var s = null;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      s = v ? 'inline' : 'none';
+   }else{
+      s = v ? null : 'none';
    }
-   
-   //==========================================================
-   // <T>设置显示性。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @param v:visible:Boolean 显示性
-   //==========================================================
-   MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
-      var s = null;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         s = v ? 'inline' : 'none';
-      }else{
-         s = v ? null : 'none';
-      }
-      h.style.display = s;
+   h.style.display = s;
+}
+
+//==========================================================
+// <T>获得可见性。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @return Boolean 可见性
+//==========================================================
+MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
+   var r = null;
+   var s = h.style.display;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      r = (s == 'block');
+   }else{
+      r = (s != 'none');
    }
-   
-   //==========================================================
-   // <T>获得可见性。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @return Boolean 可见性
-   //==========================================================
-   MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
-      var r = null;
-      var s = h.style.display;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = (s == 'block');
-      }else{
-         r = (s != 'none');
-      }
-      return r;
+   return r;
+}
+
+//==========================================================
+// <T>设置可见性。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @param v:visible:Boolean 可见性
+//==========================================================
+MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
+   var s = null;
+   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
+      s = v ? '' : 'none';
+   }else{
+      s = v ? null : 'none';
    }
-   
-   //==========================================================
-   // <T>设置可见性。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @param v:visible:Boolean 可见性
-   //==========================================================
-   MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
-      var s = null;
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         s = v ? '' : 'none';
-      }else{
-         s = v ? null : 'none';
-      }
-      h.style.display = s;
+   h.style.display = s;
+}
+
+//==========================================================
+// <T>获得文本内容。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @return String 文本内容
+//==========================================================
+MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
+   var r = null;
+   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+      r = h.textContent;
+   }else{
+      r = h.innerText;
    }
-   
-   //==========================================================
-   // <T>获得文本内容。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @return String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
-      var r = null;
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         r = h.textContent;
-      }else{
-         r = h.innerText;
-      }
-      return r;
+   return r;
+}
+
+//==========================================================
+// <T>设置文本内容。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @param v:value:String 文本内容
+//==========================================================
+MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
+   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+      h.textContent = v;
+   }else{
+      h.innerText = v;
    }
-   
-   //==========================================================
-   // <T>设置文本内容。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @param v:value:String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         h.textContent = v;
-      }else{
-         h.innerText = v;
-      }
-   }
-   
-   //==========================================================
-   // <T>获得复选框内容。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @return String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
-      return RBool.toString(h.checked);
-   }
-   
-   //==========================================================
-   // <T>设置复选框内容。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面对象
-   // @param v:value:String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
-      h.checked = RBool.isTrue(v);
-   }
-   
-   //==========================================================
-   // <T>获得单选框内容。</T>
-   //
-   // @method
-   // @param hs:html:HtmlTag 页面对象
-   // @return String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
-      if(hs){
-         var c = hs.length;
-         for(var n = 0; n < c; n++){
-            var h = hs[n];
-            if(h.checked){
-               return h.value;
-            }
+}
+
+//==========================================================
+// <T>获得复选框内容。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @return String 文本内容
+//==========================================================
+MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
+   return MO.Lang.Bool.toString(h.checked);
+}
+
+//==========================================================
+// <T>设置复选框内容。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面对象
+// @param v:value:String 文本内容
+//==========================================================
+MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
+   h.checked = MO.Lang.Bool.isTrue(v);
+}
+
+//==========================================================
+// <T>获得单选框内容。</T>
+//
+// @method
+// @param hs:html:HtmlTag 页面对象
+// @return String 文本内容
+//==========================================================
+MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
+   if(hs){
+      var c = hs.length;
+      for(var n = 0; n < c; n++){
+         var h = hs[n];
+         if(h.checked){
+            return h.value;
          }
       }
-      return null;
    }
-   
-   //==========================================================
-   // <T>设置单选框内容。</T>
-   //
-   // @method
-   // @param hs:html:HtmlTag 页面对象
-   // @param v:value:String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
-      if(hs){
-         var c = hs.length;
-         for(var n=0; n < c; n++){
-            var h = hs[n];
-            if(h.value == v){
-               h.checked = true;
+   return null;
+}
+
+//==========================================================
+// <T>设置单选框内容。</T>
+//
+// @method
+// @param hs:html:HtmlTag 页面对象
+// @param v:value:String 文本内容
+//==========================================================
+MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
+   if(hs){
+      var c = hs.length;
+      for(var n=0; n < c; n++){
+         var h = hs[n];
+         if(h.value == v){
+            h.checked = true;
+            break;
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>设置鼠标样式。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param v:value:String 文本内容
+//==========================================================
+MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
+   if(h){
+      h.style.cursor = v;
+   }
+}
+
+//==========================================================
+// <T>获得页面对象上的存储信息。</T>
+//
+// @method
+// @param hs:html:HtmlTag 页面对象
+// @param n:name:String 名称
+// @return Object 内容
+//==========================================================
+MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
+   var o = this;
+   var u = o.uid(h);
+   var i = o._links[u];
+   return i ? i.get(n) : null;
+}
+
+//==========================================================
+// <T>设置页面对象上的存储信息。</T>
+//
+// @method
+// @param hs:html:HtmlTag 页面对象
+// @param n:name:String 名称
+// @param v:value:Object 内容
+//==========================================================
+MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
+   var o = this;
+   var ls = o._links;
+   var u = o.uid(h);
+   var i = ls[u];
+   if(!i){
+      i = ls[u] = new MO.THtmlItem();
+      i._link = h;
+   }
+   i.set(n, v);
+}
+
+//==========================================================
+// <T>计算一个控件到指定容器的位置。</T>
+// 计算 table的 offsets. 
+// 计算 绝对定位的元素(position:absolute). 
+// 在其它容器内出现的Scroll offsets(scrollLeft,scrollTop). 
+// 所有父元素溢出的边框(overflow:visible). 
+// 误算绝对定位的父元素. 
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
+//==========================================================
+MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
+   var o = this;
+   var position = o._clientPosition;
+   position.set(0, 0);
+   while(hTag != hTop){
+      position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
+      position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
+      //if('absolute' != RHtml.currentStyle(h).position){
+      //break;
+      //}
+      hTag = hTag.offsetParent;
+   }
+   return position;
+}
+
+//==========================================================
+// <T>计算一个页面元素到左侧的距离。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
+// @return Intger 距离
+//==========================================================
+MO.RHtml.prototype.clientX = function RHtml_clientX(p, t){
+   var r = 0;
+   while(p != t){
+      r += p.offsetLeft - p.scrollLeft;
+      p = p.offsetParent;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>计算一个页面元素到上侧的距离。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
+// @return Intger 距离
+//==========================================================
+MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
+   var r = 0;
+   while(p != t){
+      r += p.offsetTop - p.scrollTop;
+      p = p.offsetParent;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>设置页面元素大小。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param s:size:SSize2 大小
+//==========================================================
+MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
+   if(s.width){
+      h.style.width = s.width + 'px';
+   }
+   if(s.height){
+      h.style.height = s.height + 'px';
+   }
+}
+
+//==========================================================
+// <T>将页面内容转换成文本内容。</T>
+//
+// @method
+// @param p:html:String 页面内容
+// @return String 文本内容
+//==========================================================
+MO.RHtml.prototype.toText = function RHtml_toText(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/&lt;/, '<');
+      p = p.replace(/&gt;/g, '>');
+      p = p.replace(/&nbsp;/g, ' ');
+      p = p.replace(/<BR>/g, '\n');
+   }
+   return p;
+}
+
+//==========================================================
+// <T>将文本内容转换成页面内容。</T>
+//
+// @method
+// @param p:text:String 文本内容
+// @return String 页面内容
+//==========================================================
+MO.RHtml.prototype.toHtml = function RHtml_toHtml(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/</g, '&lt;');
+      p = p.replace(/>/g, '&gt;');
+      p = p.replace(/ /g, '&nbsp;');
+      p = p.replace(/\n/g, '<BR>');
+      p = p.replace(/\\n/g, '<BR>');
+      p = p.replace(/\r/g, '');
+      p = p.replace(/\\r/g, '');
+   }
+   return p;
+}
+
+//==========================================================
+// <T>获得事件来源。</T>
+//
+// @method
+// @param p:event:HtmlEvent 页面事件
+//==========================================================
+MO.RHtml.prototype.eventSource = function RHtml_eventSource(p){
+   return p.srcElement ? p.srcElement : p.target;
+}
+
+//==========================================================
+// <T>根据名称获得页面元素。</T>
+//
+// @method
+// @param name:String 名称
+// @return HtmlTag 页面元素
+//==========================================================
+MO.RHtml.prototype.get = function RHtml_get(name){
+   return document.getElementById(name);
+}
+
+//==========================================================
+// <T>根据名称获得指定类型的页面元素。</T>
+//
+// @method
+// @param name:String 名称
+// @param typeName:String 类型名称
+// @return HtmlTag 页面元素
+//==========================================================
+MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param c:class:Class 类对象
+// @return FObject 对象
+//==========================================================
+MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+
+//==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param n:name:String 属性名称
+// @return FObject 对象
+//==========================================================
+MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+
+//==========================================================
+// <T>移动表格中的一行。</T>
+//
+// @param ph:hTable
+// @param ps:sourceIndex
+// @param pt:targetIndex
+//==========================================================
+MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
+   // 检查参数
+   if(ph.tagName != 'TABLE'){
+      throw new MO.TError('Html table is invalid.');
+   }
+   if(ps == pt){
+      return false;
+   }
+   // 移动处理
+   if(ph.moveRow){
+      // 原始处理
+      ph.moveRow(ps, pt);
+   }else{
+      // 兼容处理
+      var hb = ph.getElementsByTagName('tbody')[0];
+      var sr = hb.rows[ps];
+      var tr = hb.rows[pt];
+      if((sr == null) || (tr == null)){
+         return false;
+      }
+      var nr = null;
+      if(ps <= pt){
+         nr = tr;
+         while(nr = nr.nextSibling){
+            if(nr.tagName == 'TR'){
                break;
             }
          }
       }
-   }
-   
-   //==========================================================
-   // <T>设置鼠标样式。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面元素
-   // @param v:value:String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
-      if(h){
-         h.style.cursor = v;
-      }
-   }
-   
-   //==========================================================
-   // <T>获得页面对象上的存储信息。</T>
-   //
-   // @method
-   // @param hs:html:HtmlTag 页面对象
-   // @param n:name:String 名称
-   // @return Object 内容
-   //==========================================================
-   MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
-      var o = this;
-      var u = o.uid(h);
-      var i = o._links[u];
-      return i ? i.get(n) : null;
-   }
-   
-   //==========================================================
-   // <T>设置页面对象上的存储信息。</T>
-   //
-   // @method
-   // @param hs:html:HtmlTag 页面对象
-   // @param n:name:String 名称
-   // @param v:value:Object 内容
-   //==========================================================
-   MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
-      var o = this;
-      var ls = o._links;
-      var u = o.uid(h);
-      var i = ls[u];
-      if(!i){
-         i = ls[u] = new THtmlItem();
-         i._link = h;
-      }
-      i.set(n, v);
-   }
-   
-   //==========================================================
-   // <T>计算一个控件到指定容器的位置。</T>
-   // 计算 table的 offsets. 
-   // 计算 绝对定位的元素(position:absolute). 
-   // 在其它容器内出现的Scroll offsets(scrollLeft,scrollTop). 
-   // 所有父元素溢出的边框(overflow:visible). 
-   // 误算绝对定位的父元素. 
-   //
-   // @method
-   // @param h:html:HtmlTag 页面元素
-   // @param t:top:HtmlTag 顶层元素
-   //==========================================================
-   MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
-      var o = this;
-      var position = o._clientPosition;
-      position.set(0, 0);
-      while(hTag != hTop){
-         position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
-         position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
-         //if('absolute' != RHtml.currentStyle(h).position){
-         //break;
-         //}
-         hTag = hTag.offsetParent;
-      }
-      return position;
-   }
-   
-   //==========================================================
-   // <T>计算一个页面元素到左侧的距离。</T>
-   //
-   // @method
-   // @param p:html:HtmlTag 页面元素
-   // @param t:top:HtmlTag 顶层元素
-   // @return Intger 距离
-   //==========================================================
-   MO.RHtml.prototype.clientX = function RHtml_clientX(p, t){
-      var r = 0;
-      while(p != t){
-         r += p.offsetLeft - p.scrollLeft;
-         p = p.offsetParent;
-      }
-      return r;
-   }
-   
-   //==========================================================
-   // <T>计算一个页面元素到上侧的距离。</T>
-   //
-   // @method
-   // @param p:html:HtmlTag 页面元素
-   // @param t:top:HtmlTag 顶层元素
-   // @return Intger 距离
-   //==========================================================
-   MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
-      var r = 0;
-      while(p != t){
-         r += p.offsetTop - p.scrollTop;
-         p = p.offsetParent;
-      }
-      return r;
-   }
-   
-   //==========================================================
-   // <T>设置页面元素大小。</T>
-   //
-   // @method
-   // @param h:html:HtmlTag 页面元素
-   // @param s:size:SSize2 大小
-   //==========================================================
-   MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
-      if(s.width){
-         h.style.width = s.width + 'px';
-      }
-      if(s.height){
-         h.style.height = s.height + 'px';
-      }
-   }
-   
-   //==========================================================
-   // <T>将页面内容转换成文本内容。</T>
-   //
-   // @method
-   // @param p:html:String 页面内容
-   // @return String 文本内容
-   //==========================================================
-   MO.RHtml.prototype.toText = function RHtml_toText(p){
-      if(p != null){
-         p = p.toString();
-         p = p.replace(/&lt;/, '<');
-         p = p.replace(/&gt;/g, '>');
-         p = p.replace(/&nbsp;/g, ' ');
-         p = p.replace(/<BR>/g, '\n');
-      }
-      return p;
-   }
-   
-   //==========================================================
-   // <T>将文本内容转换成页面内容。</T>
-   //
-   // @method
-   // @param p:text:String 文本内容
-   // @return String 页面内容
-   //==========================================================
-   MO.RHtml.prototype.toHtml = function RHtml_toHtml(p){
-      if(p != null){
-         p = p.toString();
-         p = p.replace(/</g, '&lt;');
-         p = p.replace(/>/g, '&gt;');
-         p = p.replace(/ /g, '&nbsp;');
-         p = p.replace(/\n/g, '<BR>');
-         p = p.replace(/\\n/g, '<BR>');
-         p = p.replace(/\r/g, '');
-         p = p.replace(/\\r/g, '');
-      }
-      return p;
-   }
-   
-   //==========================================================
-   // <T>获得事件来源。</T>
-   //
-   // @method
-   // @param p:event:HtmlEvent 页面事件
-   //==========================================================
-   MO.RHtml.prototype.eventSource = function RHtml_eventSource(p){
-      return p.srcElement ? p.srcElement : p.target;
-   }
-   
-   //==========================================================
-   // <T>根据名称获得页面元素。</T>
-   //
-   // @method
-   // @param name:String 名称
-   // @return HtmlTag 页面元素
-   //==========================================================
-   MO.RHtml.prototype.get = function RHtml_get(name){
-      return document.getElementById(name);
-   }
-   
-   //==========================================================
-   // <T>根据名称获得指定类型的页面元素。</T>
-   //
-   // @method
-   // @param name:String 名称
-   // @param typeName:String 类型名称
-   // @return HtmlTag 页面元素
-   //==========================================================
-   MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
-      if(tag && t){
-         typeName = typeName.toLowerCase();
-         while(tag){
-            if(tag.tagName.toLowerCase() == typeName){
-               return tag;
-            }
-            tag = tag.parentElement;
-         }
-      }
-      return null;
-   }
-   
-   //==========================================================
-   // <T>查找关联对象。</T>
-   //
-   // @method
-   // @param h:html:HtmlEvent 页面元素
-   // @param c:class:Class 类对象
-   // @return FObject 对象
-   //==========================================================
-   MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
-      while(h){
-         var f = h.__linker;
-         if(f){
-            if(RClass.isClass(f, c)){
-               return f;
-            }
-         }
-         h = h.parentElement;
-      }
-      return null;
-   }
-   
-   //==========================================================
-   // <T>查找关联对象。</T>
-   //
-   // @method
-   // @param h:html:HtmlEvent 页面元素
-   // @param n:name:String 属性名称
-   // @return FObject 对象
-   //==========================================================
-   MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
-      while(h){
-         var f = h[n];
-         if(f){
-            return f;
-         }
-         h = h.parentElement;
-      }
-      return null;
-   }
-   
-   //==========================================================
-   // <T>移动表格中的一行。</T>
-   //
-   // @param ph:hTable
-   // @param ps:sourceIndex
-   // @param pt:targetIndex
-   //==========================================================
-   MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
-      // 检查参数
-      if(ph.tagName != 'TABLE'){
-         throw new TError('Html table is invalid.');
-      }
-      if(ps == pt){
-         return false;
-      }
-      // 移动处理
-      if(ph.moveRow){
-         // 原始处理
-         ph.moveRow(ps, pt);
+      if(nr == null){
+         hb.insertBefore(sr, tr);
       }else{
-         // 兼容处理
-         var hb = ph.getElementsByTagName('tbody')[0];
-         var sr = hb.rows[ps];
-         var tr = hb.rows[pt];
-         if((sr == null) || (tr == null)){
-            return false;
-         }
-         var nr = null;
-         if(ps <= pt){
-            nr = tr;
-            while(nr = nr.nextSibling){
-               if(nr.tagName == 'TR'){
-                  break;
-               }
-            }
-         }
          if(nr == null){
-            hb.insertBefore(sr, tr);
+            hb.appendChild(sr);
          }else{
-            if(nr == null){
-               hb.appendChild(sr);
-            }else{
-               hb.insertBefore(sr, nr);
-            }
+            hb.insertBefore(sr, nr);
          }
       }
-      return true;
    }
-   
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @method
-   // @param p:html:HtmlTag 页面标签
-   //==========================================================
-   MO.RHtml.prototype.free = function RHtml_free(p){
-      return null;
-   }
-   
+   return true;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面标签
+//==========================================================
+MO.RHtml.prototype.free = function RHtml_free(p){
+   return null;
+}
+
 //   //==========================================================
 //   MO.RHtml.prototype.clone = function RHtml_clone(o, s, t){
 //      if(!t){
@@ -989,7 +988,6 @@
 //      }
 //      return nowTR;
 //   }
-   //..........................................................
-   // 实例化内容
-   MO.RHtml = new RHtml();
-}
+//..........................................................
+// 实例化内容
+MO.RHtml = new MO.RHtml();
