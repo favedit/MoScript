@@ -127,26 +127,27 @@ MO.RRuntime.prototype.className = function RRuntime_className(value){
    return null;
 }
 MO.Runtime = new MO.RRuntime();
-MO.TArray = function TArray(){
+MO.TArray = function TArray(length){
    var o = this;
-   o._length  = 0;
-   o._memory  = new Array();
-   o.isEmpty  = MO.TArray_isEmpty;
-   o.length   = MO.TArray_length;
-   o.memory   = MO.TArray_memory;
-   o.contains = MO.TArray_contains;
-   o.indexOf  = MO.TArray_indexOf;
-   o.get      = MO.TArray_get;
-   o.set      = MO.TArray_set;
-   o.push     = MO.TArray_push;
-   o.swap     = MO.TArray_swap;
-   o.sort     = MO.TArray_sort;
-   o.erase    = MO.TArray_erase;
-   o.remove   = MO.TArray_remove;
-   o.compress = MO.TArray_compress;
-   o.clear    = MO.TArray_clear;
-   o.dispose  = MO.TArray_dispose;
-   o.dump     = MO.TArray_dump;
+   o._length   = MO.Runtime.nvl(length, 0);
+   o._memory   = new Array();
+   o.isEmpty   = MO.TArray_isEmpty;
+   o.length    = MO.TArray_length;
+   o.setLength = MO.TArray_setLength;
+   o.memory    = MO.TArray_memory;
+   o.contains  = MO.TArray_contains;
+   o.indexOf   = MO.TArray_indexOf;
+   o.get       = MO.TArray_get;
+   o.set       = MO.TArray_set;
+   o.push      = MO.TArray_push;
+   o.swap      = MO.TArray_swap;
+   o.sort      = MO.TArray_sort;
+   o.erase     = MO.TArray_erase;
+   o.remove    = MO.TArray_remove;
+   o.compress  = MO.TArray_compress;
+   o.clear     = MO.TArray_clear;
+   o.dispose   = MO.TArray_dispose;
+   o.dump      = MO.TArray_dump;
    return o;
 }
 MO.TArray_isEmpty = function TArray_isEmpty(){
@@ -154,6 +155,9 @@ MO.TArray_isEmpty = function TArray_isEmpty(){
 }
 MO.TArray_length = function TArray_length(){
    return this._length;
+}
+MO.TArray_setLength = function TArray_setLength(length){
+   this._length = length;
 }
 MO.TArray_memory = function TArray_memory(){
    return this._memory;
@@ -174,9 +178,9 @@ MO.TArray_indexOf = function TArray_indexOf(v){
 MO.TArray_get = function TArray_get(n){
    return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
-MO.TArray_set = function TArray_set(n, v){
-   if((n >= 0) && (n < this._length)){
-      this._memory[n] = v;
+MO.TArray_set = function TArray_set(index, value){
+   if((index >= 0) && (n < this._length)){
+      this._memory[index] = value;
    }
 }
 MO.TArray_push = function TArray_push(){

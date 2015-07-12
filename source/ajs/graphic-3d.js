@@ -188,95 +188,93 @@ with(MO){
       o._allRenderables = RObject.free(o._allRenderables);
    }
 }
-with(MO){
-   MO.MG3dRenderable = function MG3dRenderable(o){
-      o = RClass.inherits(this, o, MGraphicRenderable);
-      o._optionMerge   = false;
-      o._currentMatrix = RClass.register(o, new AGetter('_currentMatrix'));
-      o._matrix        = RClass.register(o, new AGetter('_matrix'));
-      o._material      = RClass.register(o, new AGetSet('_material'));
-      o._activeInfo    = RClass.register(o, new AGetter('_activeInfo'));
-      o._infos         = null;
-      o.construct      = MG3dRenderable_construct;
-      o.activeEffect   = MG3dRenderable_activeEffect;
-      o.effectFind     = MG3dRenderable_effectFind;
-      o.effectSet      = MG3dRenderable_effectSet;
-      o.infos          = MG3dRenderable_infos;
-      o.selectInfo     = MG3dRenderable_selectInfo;
-      o.resetInfos     = MG3dRenderable_resetInfos;
-      o.testVisible    = RMethod.emptyTrue;
-      o.update         = RMethod.empty;
-      o.dispose        = MG3dRenderable_dispose;
-      return o;
-   }
-   MO.MG3dRenderable_construct = function MG3dRenderable_construct(){
-      var o = this;
-      o._currentMatrix = new SMatrix3d();
-      o._matrix = new SMatrix3d();
-   }
-   MO.MG3dRenderable_activeEffect = function MG3dRenderable_activeEffect(){
-      var info = this._activeInfo;
-      return info ? info.effect : null;
-   }
-   MO.MG3dRenderable_effectFind = function MG3dRenderable_effectFind(code){
-      var o = this;
-      var infos = o._infos;
-      if(infos){
-         var info = infos.get(code);
-         if(info){
-            return info.effect;
-         }
-      }
-      return null;
-   }
-   MO.MG3dRenderable_effectSet = function MG3dRenderable_effectSet(code, effect){
-      var o = this;
-      var infos = o.infos();
+MO.MG3dRenderable = function MG3dRenderable(o){
+   o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
+   o._optionMerge   = false;
+   o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
+   o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
+   o._material      = MO.Class.register(o, new MO.AGetSet('_material'));
+   o._activeInfo    = MO.Class.register(o, new MO.AGetter('_activeInfo'));
+   o._infos         = null;
+   o.construct      = MO.MG3dRenderable_construct;
+   o.activeEffect   = MO.MG3dRenderable_activeEffect;
+   o.effectFind     = MO.MG3dRenderable_effectFind;
+   o.effectSet      = MO.MG3dRenderable_effectSet;
+   o.infos          = MO.MG3dRenderable_infos;
+   o.selectInfo     = MO.MG3dRenderable_selectInfo;
+   o.resetInfos     = MO.MG3dRenderable_resetInfos;
+   o.testVisible    = MO.Method.emptyTrue;
+   o.update         = MO.Method.empty;
+   o.dispose        = MO.MG3dRenderable_dispose;
+   return o;
+}
+MO.MG3dRenderable_construct = function MG3dRenderable_construct(){
+   var o = this;
+   o._currentMatrix = new MO.SMatrix3d();
+   o._matrix = new MO.SMatrix3d();
+}
+MO.MG3dRenderable_activeEffect = function MG3dRenderable_activeEffect(){
+   var info = this._activeInfo;
+   return info ? info.effect : null;
+}
+MO.MG3dRenderable_effectFind = function MG3dRenderable_effectFind(code){
+   var o = this;
+   var infos = o._infos;
+   if(infos){
       var info = infos.get(code);
-      if(!info){
-         info = new SG3dRenderableInfo();
-         infos.set(code, info)
-      }
-      info.effect = effect;
-   }
-   MO.MG3dRenderable_infos = function MG3dRenderable_infos(){
-      var o = this;
-      var infos = o._infos;
-      if(!infos){
-         infos = o._infos = new TDictionary();
-      }
-      return infos;
-   }
-   MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(code){
-      var o = this;
-      var infos = o.infos();
-      var info = infos.get(code);
-      if(!info){
-         info = new SG3dRenderableInfo();
-         infos.set(code, info)
-      }
-      o._activeInfo = info;
-      return info;
-   }
-   MO.MG3dRenderable_resetInfos = function MG3dRenderable_resetInfos(){
-      var o = this;
-      var infos = o._infos;
-      if(infos){
-         var count = infos.count();
-         for(var i = 0; i < count; i++){
-            var info = infos.at(i);
-            info.reset();
-         }
+      if(info){
+         return info.effect;
       }
    }
-   MO.MG3dRenderable_dispose = function MG3dRenderable_dispose(){
-      var o = this;
-      o._currentMatrix = RObject.dispose(o._currentMatrix);
-      o._matrix = RObject.dispose(o._matrix);
-      o._material = RObject.dispose(o._material);
-      o._activeInfo = null;
-      o._infos = RObject.dispose(o._infos);
+   return null;
+}
+MO.MG3dRenderable_effectSet = function MG3dRenderable_effectSet(code, effect){
+   var o = this;
+   var infos = o.infos();
+   var info = infos.get(code);
+   if(!info){
+      info = new MO.SG3dRenderableInfo();
+      infos.set(code, info)
    }
+   info.effect = effect;
+}
+MO.MG3dRenderable_infos = function MG3dRenderable_infos(){
+   var o = this;
+   var infos = o._infos;
+   if(!infos){
+      infos = o._infos = new MO.TDictionary();
+   }
+   return infos;
+}
+MO.MG3dRenderable_selectInfo = function MG3dRenderable_selectInfo(code){
+   var o = this;
+   var infos = o.infos();
+   var info = infos.get(code);
+   if(!info){
+      info = new MO.SG3dRenderableInfo();
+      infos.set(code, info)
+   }
+   o._activeInfo = info;
+   return info;
+}
+MO.MG3dRenderable_resetInfos = function MG3dRenderable_resetInfos(){
+   var o = this;
+   var infos = o._infos;
+   if(infos){
+      var count = infos.count();
+      for(var i = 0; i < count; i++){
+         var info = infos.at(i);
+         info.reset();
+      }
+   }
+}
+MO.MG3dRenderable_dispose = function MG3dRenderable_dispose(){
+   var o = this;
+   o._currentMatrix = MO.Lang.Object.dispose(o._currentMatrix);
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o._material = MO.Lang.Object.dispose(o._material);
+   o._activeInfo = null;
+   o._infos = MO.Lang.Object.dispose(o._infos);
 }
 with(MO){
    MO.SG3dEffectInfo = function SG3dEffectInfo(){
@@ -642,243 +640,232 @@ with(MO){
       o.layout = RObject.dispose(o.layout);
    }
 }
-with(MO){
-   MO.FG3dAnimation = function FG3dAnimation(o){
-      o = RClass.inherits(this, o, FObject);
-      o._baseTick    = 0;
-      o._currentTick = 0;
-      o._lastTick    = 0
-      o._bones       = null;
-      o.construct    = FG3dAnimation_construct;
-      o.findBone     = FG3dAnimation_findBone;
-      o.process      = FG3dAnimation_process;
-      o.dispose      = FG3dAnimation_dispose;
-      return o;
-   }
-   MO.FG3dAnimation_construct = function FG3dAnimation_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._bones = new TObjects();
-   }
-   MO.FG3dAnimation_findBone = function FG3dAnimation_findBone(p){
-      var o = this;
-      var bs = o._bones;
-      var c = bs.count();
-      for(var i = 0; i < c; i++){
-         var b = bs.get(i);
-         if(b.boneId() == p){
-            return b;
-         }
+MO.FG3dAnimation = function FG3dAnimation(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._baseTick    = 0;
+   o._currentTick = 0;
+   o._lastTick    = 0
+   o._bones       = null;
+   o.construct    = MO.FG3dAnimation_construct;
+   o.findBone     = MO.FG3dAnimation_findBone;
+   o.process      = MO.FG3dAnimation_process;
+   o.dispose      = MO.FG3dAnimation_dispose;
+   return o;
+}
+MO.FG3dAnimation_construct = function FG3dAnimation_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._bones = new MO.TObjects();
+}
+MO.FG3dAnimation_findBone = function FG3dAnimation_findBone(p){
+   var o = this;
+   var bs = o._bones;
+   var c = bs.count();
+   for(var i = 0; i < c; i++){
+      var b = bs.get(i);
+      if(b.boneId() == p){
+         return b;
       }
-      return null;
    }
-   MO.FG3dAnimation_process = function FG3dAnimation_process(){
-      var o = this;
-      var t = RTimer.current();
-      if(o._lastTick == 0){
-         o._lastTick = t;
-      }
-      o._currentTick = (t - o._lastTick + o._baseTick) / 1000;
-      var bs = o._bones;
-      var c = bs.count();
-      for(var i = 0; i < c; i++){
-         var b = bs.get(i);
-         b.update(o._currentTick);
-      }
-      return true;
-   }
-   MO.FG3dAnimation_dispose = function FG3dAnimation_dispose(){
-      var o = this;
-      o._bones.dispose();
-      o._bones = null;
-      o.__base.FObject.dispose.call(o);
-   }
+   return null;
 }
-with(MO){
-   MO.FG3dBaseMaterial = function FG3dBaseMaterial(o){
-      o = RClass.inherits(this, o, FObject);
-      o._name       = null;
-      o._info       = RClass.register(o, new AGetter('_info'));
-      o.construct   = FG3dBaseMaterial_construct;
-      o.assignInfo  = FG3dBaseMaterial_assignInfo;
-      o.assign      = FG3dBaseMaterial_assign;
-      o.calculate   = FG3dBaseMaterial_calculate;
-      return o;
+MO.FG3dAnimation_process = function FG3dAnimation_process(){
+   var o = this;
+   var t = MO.Timer.current();
+   if(o._lastTick == 0){
+      o._lastTick = t;
    }
-   MO.FG3dBaseMaterial_construct = function FG3dBaseMaterial_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._info = new SG3dMaterialInfo();
+   o._currentTick = (t - o._lastTick + o._baseTick) / 1000;
+   var bs = o._bones;
+   var c = bs.count();
+   for(var i = 0; i < c; i++){
+      var b = bs.get(i);
+      b.update(o._currentTick);
    }
-   MO.FG3dBaseMaterial_assignInfo = function FG3dBaseMaterial_assignInfo(info){
-      this._info.assign(info);
-   }
-   MO.FG3dBaseMaterial_assign = function FG3dBaseMaterial_assign(material){
-      this._info.assign(material.info());
-   }
-   MO.FG3dBaseMaterial_calculate = function FG3dBaseMaterial_calculate(material){
-      this._info.calculate(material.info());
-   }
+   return true;
 }
-with(MO){
-   MO.FG3dBone = function FG3dBone(o){
-      o = RClass.inherits(this, o, FObject);
-      o._boneId   = 0;
-      o._modeId   = null;
-      o.update    = FG3dBone_update;
-      return o;
-   }
-   MO.FG3dBone_update = function FG3dBone_update(p){
-   }
+MO.FG3dAnimation_dispose = function FG3dAnimation_dispose(){
+   var o = this;
+   o._bones.dispose();
+   o._bones = null;
+   o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FG3dCamera = function FG3dCamera(o){
-      o = RClass.inherits(this, o, FObject);
-      o._matrix          = RClass.register(o, new AGetter('_matrix'));
-      o._position        = RClass.register(o, new AGetter('_position'));
-      o._target          = null;
-      o._direction       = RClass.register(o, new AGetter('_direction'));
-      o._directionTarget = null;
-      o._centerFront     = 0.6;
-      o._centerBack      = 1.0;
-      o._focalNear       = 0.1;
-      o._focalFar        = 200.0;
-      o._frustum         = RClass.register(o, new AGetter('_frustum'));
-      o._planes          = RClass.register(o, new AGetter('_planes'));
-      o._viewport        = null;
-      o.__axisUp         = null;
-      o.__axisX          = null;
-      o.__axisY          = null;
-      o.__axisZ          = null;
-      o.construct        = FG3dCamera_construct;
-      o.setPosition      = FG3dCamera_setPosition;
-      o.setDirection     = FG3dCamera_setDirection;
-      o.doWalk           = FG3dCamera_doWalk;
-      o.doStrafe         = FG3dCamera_doStrafe;
-      o.doFly            = FG3dCamera_doFly;
-      o.doPitch          = FG3dCamera_doPitch;
-      o.doYaw            = FG3dCamera_doYaw;
-      o.doRoll           = FG3dCamera_doRoll;
-      o.lookAt           = FG3dCamera_lookAt;
-      o.update           = FG3dCamera_update;
-      o.updateFrustum    = FG3dCamera_updateFrustum;
-      return o;
-   }
-   MO.FG3dCamera_construct = function FG3dCamera_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._position = new SPoint3();
-      o._target = new SPoint3();
-      o._direction = new SVector3();
-      o._directionTarget = new SVector3();
-      o._frustum = new SFrustum();
-      o._planes = new SFrustumPlanes();
-      o._viewport = RClass.create(FG3dViewport);
-      o.__axisUp = new SVector3();
-      o.__axisUp.set(0, 1, 0);
-      o.__axisX = new SVector3();
-      o.__axisY = new SVector3();
-      o.__axisZ = new SVector3();
-   }
-   MO.FG3dCamera_setPosition = function FG3dCamera_setPosition(x, y, z){
-      this._position.set(x, y, z);
-   }
-   MO.FG3dCamera_setDirection = function FG3dCamera_setDirection(x, y, z){
-      var o = this;
-      o._direction.set(x, y, z);
-      o._directionTarget.set(x, y, z);
-   }
-   MO.FG3dCamera_doWalk = function FG3dCamera_doWalk(p){
-      var o = this;
-      o._position.x += o._direction.x * p;
-      o._position.z += o._direction.z * p;
-   }
-   MO.FG3dCamera_doStrafe = function FG3dCamera_doStrafe(p){
-      var o = this;
-      o._position.x += o.__axisY.x * p;
-      o._position.z += o.__axisY.z * p;
-   }
-   MO.FG3dCamera_doFly = function FG3dCamera_doFly(p){
-      var o = this;
-      o._position.y += p;
-   }
-   MO.FG3dCamera_doPitch = function FG3dCamera_doPitch(p){
-      throw new TFatal(o, 'Unsupport.')
-   }
-   MO.FG3dCamera_doYaw = function FG3dCamera_doYaw(p){
-      throw new TFatal(o, 'Unsupport.')
-   }
-   MO.FG3dCamera_doRoll = function FG3dCamera_doRoll(p){
-      throw new TFatal(o, 'Unsupport.')
-   }
-   MO.FG3dCamera_lookAt = function FG3dCamera_lookAt(x, y, z){
-      var o = this;
-      var p = o._position;
-      var d = o._direction;
-      o._target.set(x, y, z);
-      d.set(x - p.x, y - p.y, z - p.z);
-      d.normalize();
-      o._directionTarget.assign(d);
-   }
-   MO.FG3dCamera_update = function FG3dCamera_update(){
-      var o = this;
-      var ax = o.__axisX;
-      var ay = o.__axisY;
-      var az = o.__axisZ;
-      az.assign(o._direction);
-      az.normalize();
-      o.__axisUp.cross2(ax, az);
-      ax.normalize();
-      az.cross2(ay, ax);
-      ay.normalize();
-      var d = o._matrix.data();
-      d[ 0] = ax.x;
-      d[ 1] = ay.x;
-      d[ 2] = az.x;
-      d[ 3] = 0.0;
-      d[ 4] = ax.y;
-      d[ 5] = ay.y;
-      d[ 6] = az.y;
-      d[ 7] = 0.0;
-      d[ 8] = ax.z;
-      d[ 9] = ay.z;
-      d[10] = az.z;
-      d[11] = 0.0;
-      d[12] = -ax.dotPoint3(o._position);
-      d[13] = -ay.dotPoint3(o._position);
-      d[14] = -az.dotPoint3(o._position);
-      d[15] = 1.0;
-   }
-   MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
-      var o = this;
-      var m = RMath.matrix;
-      m.assign(o._matrix);
-      m.append(o._projection.matrix());
-      o._planes.updateVision(m.data());
-   }
+MO.FG3dBaseMaterial = function FG3dBaseMaterial(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._name       = null;
+   o._info       = MO.Class.register(o, new MO.AGetter('_info'));
+   o.construct   = MO.FG3dBaseMaterial_construct;
+   o.assignInfo  = MO.FG3dBaseMaterial_assignInfo;
+   o.assign      = MO.FG3dBaseMaterial_assign;
+   o.calculate   = MO.FG3dBaseMaterial_calculate;
+   return o;
 }
-with(MO){
-   MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
-      o = RClass.inherits(this, o, FG3dLight);
-      o._camera    = RClass.register(o, new AGetter('_camera'));
-      o._viewport  = RClass.register(o, new AGetter('_viewport'));
-      o._direction = RClass.register(o, new AGetter('_direction'));
-      o.construct  = FG3dDirectionalLight_construct;
-      o.dispose    = FG3dDirectionalLight_dispose;
-      return o;
-   }
-   MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
-      var o = this;
-      o.__base.FG3dLight.construct.call(o);
-      o._camera = RClass.create(FG3dPerspectiveCamera);
-      o._direction = new SVector3();
-   }
-   MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
-      var o = this;
-      o._camera = RObject.dispose(o._camera);
-      o.__base.FG3dLight.dispose.call(o);
-   }
+MO.FG3dBaseMaterial_construct = function FG3dBaseMaterial_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._info = new MO.SG3dMaterialInfo();
+}
+MO.FG3dBaseMaterial_assignInfo = function FG3dBaseMaterial_assignInfo(info){
+   this._info.assign(info);
+}
+MO.FG3dBaseMaterial_assign = function FG3dBaseMaterial_assign(material){
+   this._info.assign(material.info());
+}
+MO.FG3dBaseMaterial_calculate = function FG3dBaseMaterial_calculate(material){
+   this._info.calculate(material.info());
+}
+MO.FG3dBone = function FG3dBone(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._boneId   = 0;
+   o._modeId   = null;
+   o.update    = MO.FG3dBone_update;
+   return o;
+}
+MO.FG3dBone_update = function FG3dBone_update(p){
+}
+MO.FG3dCamera = function FG3dCamera(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix          = MO.Class.register(o, new MO.AGetter('_matrix'));
+   o._position        = MO.Class.register(o, new MO.AGetter('_position'));
+   o._target          = null;
+   o._direction       = MO.Class.register(o, new MO.AGetter('_direction'));
+   o._directionTarget = null;
+   o._centerFront     = 0.6;
+   o._centerBack      = 1.0;
+   o._focalNear       = 0.1;
+   o._focalFar        = 200.0;
+   o._frustum         = MO.Class.register(o, new MO.AGetter('_frustum'));
+   o._planes          = MO.Class.register(o, new MO.AGetter('_planes'));
+   o._viewport        = null;
+   o.__axisUp         = null;
+   o.__axisX          = null;
+   o.__axisY          = null;
+   o.__axisZ          = null;
+   o.construct        = MO.FG3dCamera_construct;
+   o.setPosition      = MO.FG3dCamera_setPosition;
+   o.setDirection     = MO.FG3dCamera_setDirection;
+   o.doWalk           = MO.FG3dCamera_doWalk;
+   o.doStrafe         = MO.FG3dCamera_doStrafe;
+   o.doFly            = MO.FG3dCamera_doFly;
+   o.doPitch          = MO.FG3dCamera_doPitch;
+   o.doYaw            = MO.FG3dCamera_doYaw;
+   o.doRoll           = MO.FG3dCamera_doRoll;
+   o.lookAt           = MO.FG3dCamera_lookAt;
+   o.update           = MO.FG3dCamera_update;
+   o.updateFrustum    = MO.FG3dCamera_updateFrustum;
+   return o;
+}
+MO.FG3dCamera_construct = function FG3dCamera_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
+   o._position = new MO.SPoint3();
+   o._target = new MO.SPoint3();
+   o._direction = new MO.SVector3();
+   o._directionTarget = new MO.SVector3();
+   o._frustum = new MO.SFrustum();
+   o._planes = new MO.SFrustumPlanes();
+   o._viewport = MO.Class.create(MO.FG3dViewport);
+   o.__axisUp = new MO.SVector3(0, 1, 0);
+   o.__axisX = new MO.SVector3();
+   o.__axisY = new MO.SVector3();
+   o.__axisZ = new MO.SVector3();
+}
+MO.FG3dCamera_setPosition = function FG3dCamera_setPosition(x, y, z){
+   this._position.set(x, y, z);
+}
+MO.FG3dCamera_setDirection = function FG3dCamera_setDirection(x, y, z){
+   var o = this;
+   o._direction.set(x, y, z);
+   o._directionTarget.set(x, y, z);
+}
+MO.FG3dCamera_doWalk = function FG3dCamera_doWalk(p){
+   var o = this;
+   o._position.x += o._direction.x * p;
+   o._position.z += o._direction.z * p;
+}
+MO.FG3dCamera_doStrafe = function FG3dCamera_doStrafe(p){
+   var o = this;
+   o._position.x += o.__axisY.x * p;
+   o._position.z += o.__axisY.z * p;
+}
+MO.FG3dCamera_doFly = function FG3dCamera_doFly(p){
+   var o = this;
+   o._position.y += p;
+}
+MO.FG3dCamera_doPitch = function FG3dCamera_doPitch(p){
+   throw new MO.TFatal(o, 'Unsupport.')
+}
+MO.FG3dCamera_doYaw = function FG3dCamera_doYaw(p){
+   throw new MO.TFatal(o, 'Unsupport.')
+}
+MO.FG3dCamera_doRoll = function FG3dCamera_doRoll(p){
+   throw new MO.TFatal(o, 'Unsupport.')
+}
+MO.FG3dCamera_lookAt = function FG3dCamera_lookAt(x, y, z){
+   var o = this;
+   var p = o._position;
+   var d = o._direction;
+   o._target.set(x, y, z);
+   d.set(x - p.x, y - p.y, z - p.z);
+   d.normalize();
+   o._directionTarget.assign(d);
+}
+MO.FG3dCamera_update = function FG3dCamera_update(){
+   var o = this;
+   var ax = o.__axisX;
+   var ay = o.__axisY;
+   var az = o.__axisZ;
+   az.assign(o._direction);
+   az.normalize();
+   o.__axisUp.cross2(ax, az);
+   ax.normalize();
+   az.cross2(ay, ax);
+   ay.normalize();
+   var d = o._matrix.data();
+   d[ 0] = ax.x;
+   d[ 1] = ay.x;
+   d[ 2] = az.x;
+   d[ 3] = 0.0;
+   d[ 4] = ax.y;
+   d[ 5] = ay.y;
+   d[ 6] = az.y;
+   d[ 7] = 0.0;
+   d[ 8] = ax.z;
+   d[ 9] = ay.z;
+   d[10] = az.z;
+   d[11] = 0.0;
+   d[12] = -ax.dotPoint3(o._position);
+   d[13] = -ay.dotPoint3(o._position);
+   d[14] = -az.dotPoint3(o._position);
+   d[15] = 1.0;
+}
+MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
+   var o = this;
+   var m = MO.Lang.Math.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
+}
+MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
+   o = MO.Class.inherits(this, o, MO.FG3dLight);
+   o._camera    = MO.Class.register(o, new MO.AGetter('_camera'));
+   o._viewport  = MO.Class.register(o, new MO.AGetter('_viewport'));
+   o._direction = MO.Class.register(o, new MO.AGetter('_direction'));
+   o.construct  = MO.FG3dDirectionalLight_construct;
+   o.dispose    = MO.FG3dDirectionalLight_dispose;
+   return o;
+}
+MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
+   var o = this;
+   o.__base.FG3dLight.construct.call(o);
+   o._camera = MO.Class.create(MO.FG3dPerspectiveCamera);
+   o._direction = new MO.SVector3();
+}
+MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
+   var o = this;
+   o._camera = MO.Lang.Object.dispose(o._camera);
+   o.__base.FG3dLight.dispose.call(o);
 }
 with(MO){
    MO.FG3dEffect = function FG3dEffect(o){
