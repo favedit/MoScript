@@ -2610,7 +2610,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Enum.decode(MO.EScope, scopeCd));
+   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Lang.Enum.decode(MO.EScope, scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -2950,13 +2950,13 @@ MO.REnum.prototype.decode = function REnum_decode(instance, value){
    var o = this;
    var result = o.tryDecode(instance, value);
    if(result == null){
-      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value);
+      throw new MO.TError(o, 'Invalid value (enum={1}, value={2})', MO.Class.dump(instance), value);
    }
    return result;
 }
 MO.REnum.prototype.parse = MO.REnum.prototype.encode;
 MO.REnum = new MO.REnum();
-MO.Enum = MO.REnum
+MO.Lang.Enum = MO.REnum;
 MO.RFile = function RFile(){
    var o = this;
    o.pictures = ['jpg', 'png', 'gif', 'bmp'];

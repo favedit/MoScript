@@ -169,7 +169,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Enum.decode(MO.EScope, scopeCd));
+   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Lang.Enum.decode(MO.EScope, scopeCd));
    return console;
 }
 

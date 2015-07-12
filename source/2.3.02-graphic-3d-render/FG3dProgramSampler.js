@@ -41,8 +41,8 @@ MO.FG3dProgramSampler_loadConfig = function FG3dProgramSampler_loadConfig(xconfi
    var o = this;
    o._name = xconfig.get('name');
    o._linker = xconfig.get('linker');
-   o._bind = MO.RBoolean.parse(xconfig.get('bind', 'Y'));
-   o._formatCd = MO.REnum.encode(MO.EG3dTexture, xconfig.get('format', 'Flat2d'));
+   o._bind = MO.Lang.Boolean.parse(xconfig.get('bind', 'Y'));
+   o._formatCd = MO.Lang.Enum.encode(MO.EG3dTexture, xconfig.get('format', 'Flat2d'));
 }
 
 //==========================================================

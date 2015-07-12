@@ -82,7 +82,7 @@ MO.REnum.prototype.decode = function REnum_decode(instance, value){
    var o = this;
    var result = o.tryDecode(instance, value);
    if(result == null){
-      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value); 
+      throw new MO.TError(o, 'Invalid value (enum={1}, value={2})', MO.Class.dump(instance), value); 
    }
    return result;
 }
@@ -91,4 +91,4 @@ MO.REnum.prototype.parse = MO.REnum.prototype.encode;
 //..........................................................
 // 实例化内容
 MO.REnum = new MO.REnum();
-MO.Enum = MO.REnum
+MO.Lang.Enum = MO.REnum;
