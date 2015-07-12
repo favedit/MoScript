@@ -11,7 +11,6 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    // @attribute
    o._currentDate          = null;
    o._rank                 = MO.Class.register(o, new MO.AGetSet('_rank'));
-   o._data                 = MO.Class.register(o, new MO.AGetSet('_data'));
    // @attribute
    o._rankLogoImage        = null;
    o._rankTitleImage       = null;
@@ -97,13 +96,10 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    //..........................................................
    // 绘制标题
-   var titleText = '钰诚控股 - e租宝';
+   var titleText = '全球实时投资数据展示中心(中国)';
    graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (right - left) / 2 - (titleWidth / 2);
-   if(o._logoImage.testReady()){
-      graphic.drawImage(o._logoImage, textLeft - 77, top + 32, 62, 62);
-   }
+   var textLeft = left + (width - titleWidth) * 0.5;
    graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
    drawPosition += 60
    //..........................................................
@@ -116,7 +112,6 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    if(rankEntity){
       var tableText = '';
       var tableTextWidth = 0;
-      var dataEntities = o._data;
       var count = rankEntity.count();
       tableTop += 80;
       for(var i = 0; i < count; i++) {
@@ -140,12 +135,11 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    }
    //..........................................................
    // 绘制即时列表
-   var dataEntities = o._data;
-   if(dataEntities){
+   var entities = o._entities;
+   if(!entities.isEmpty()){
       var tableTop = top + o._rowStart;
       var tableText = '';
       var tableTextWidth = 0;
-      var entities = o._entities;
       graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
       tableTop += 24;
       var count = entities.count();
@@ -231,7 +225,7 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    // 设置数据
-   o._headFontStyle = 'bold 38px Microsoft YaHei';
+   o._headFontStyle = 'bold 36px Microsoft YaHei';
    if(MO.Runtime.isPlatformMobile()){
       o._tableCount = 12;
       o._headStart = 120;
@@ -314,10 +308,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       }
    }
    // 绘制时间
+   var textWidth = 0;
    if(!flag){
       o._currentDate.parse(entity.date());
       var text = o._currentDate.format('HH24:MI:SS');
-      var textWidth = graphic.textWidth(text);
+      textWidth = graphic.textWidth(text);
       graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
    }
    // 绘制城市
@@ -353,9 +348,8 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
       graphic.drawText(low, investmentRight - lowWidth, y, '#59FDE9');
    } else {
-      text = investment;
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, investmentRight - textWidth, y, fontColor);
+      textWidth = graphic.textWidth(investment);
+      graphic.drawText(investment, investmentRight - textWidth, y, fontColor);
    }
 }
 

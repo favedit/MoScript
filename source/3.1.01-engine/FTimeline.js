@@ -6,11 +6,10 @@
 // @history 150710
 //==========================================================
 MO.FTimeline = function FTimeline(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimeline, MO.MTimelines);
    //..........................................................
    // @attribute
    o._mainTimeline = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
-   o._actions      = MO.Class.register(o, new MO.AGetter('_actions'));
    //..........................................................
    // @method
    o.construct     = MO.FTimeline_construct;
@@ -52,7 +51,10 @@ MO.FTimeline_setup = function FTimeline_setup(){
 //==========================================================
 MO.FTimeline_process = function FTimeline_process(context){
    var o = this;
+   // 命令处理
    o.__base.MTimelineActions.process.call(o, context);
+   // 时间线处理
+   o.__base.MTimelines.process.call(o, context);
 }
 
 //==========================================================

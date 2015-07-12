@@ -8,6 +8,7 @@
 MO.FEaiApplication = function FEaiApplication(o){
    o = MO.Class.inherits(this, o, MO.FApplication);
    //..........................................................
+   // @attribute
    o._desktop      = MO.Class.register(o, new MO.AGetter('_desktop'));
    //..........................................................
    // @method

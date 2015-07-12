@@ -6,11 +6,10 @@
 // @history 150710
 //==========================================================
 MO.FMainTimeline = function FMainTimeline(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimeline, MO.MTimelines);
    //..........................................................
    // @attribute
    o._context   = null;
-   o._timelines = MO.Class.register(o, new MO.AGetter('_timelines'));
    // @attribute
    o._startTick = 0;
    o._lastTick  = 0;
@@ -76,18 +75,13 @@ MO.FMainTimeline_process = function FMainTimeline_process(){
    if(o._startTick == 0){
       o._startTick = tick;
    }
-   var span = o._startTick - tick;
+   // 设置环境
    var context = o._context;
-   context.span = span;
-   // 处理
+   context.tick = o._startTick - tick;
+   // 命令处理
    o.__base.MTimelineActions.process.call(o, context);
-   // 所有时间线处理
-   var timelines = o._timelines;
-   var count = timelines.count();
-   for(var i = 0; i < count; i++){
-      var timeline = timelines.at(i);
-      timeline.process(context);
-   }
+   // 时间线处理
+   o.__base.MTimelines.process.call(o, context);
 }
 
 //==========================================================

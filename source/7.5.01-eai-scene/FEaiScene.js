@@ -10,10 +10,9 @@ MO.FEaiScene = function FEaiScene(o){
    //..........................................................
    // @attribute
    o._optionDebug           = false;
+   //o._optionDebug           = true;
    // @attribute
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
-   // @attribute
-   o._engineInfo            = null;
    //..........................................................
    // @event
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
@@ -101,11 +100,7 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    guiManager.setup();
    // 创建控件
    if(o._optionDebug){
-      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-      control.linkGraphicContext(o);
-      control.setContext(o.graphicContext());
-      control.location().set(10, 300);
-      control.build();
+      var control = o._application.dynamicInfo();
       guiManager.register(control);
    }
 }
@@ -120,7 +115,8 @@ MO.FEaiScene_active = function FEaiScene_active(){
    o.__base.FScene.active.call(o);
    var stage = o._activeStage;
    if(o._optionDebug){
-      o._engineInfo.setStage(stage);
+      var control = o._application.dynamicInfo();
+      control.setStage(stage);
    }
    MO.Eai.Canvas.selectStage(stage);
 }

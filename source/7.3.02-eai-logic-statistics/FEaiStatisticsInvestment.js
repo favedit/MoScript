@@ -24,7 +24,6 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._rankEntities            = MO.Class.register(o, new MO.AGetter('_rankEntities'));
    o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
-   o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
    // @attribute
    o._tableCount              = 40;
    o._tableInterval           = 1000;
@@ -32,7 +31,6 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._dataTicker              = null;
    // @attribute
    o._entityPool              = null;
-   o._shapePool               = null;
    // @attribute
    o._autios                  = null;
    // @event
@@ -89,13 +87,14 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    //..........................................................
    // 设置实体集合
    var dataset = content.collection;
+   var entities = o._entities;
    if(dataset){
       var count = dataset.length;
       for(var i = 0; i < count; i++){
          var row = dataset[i];
          var entity = o.allocEntity();
          entity.loadData(row);
-         o._entities.push(entity);
+         entities.push(entity);
       }
    }
    // 计算当前内容
@@ -111,7 +110,7 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    MO.Memory.free(dsEvent);
    //..........................................................
    // 计算间隔
-   var entityCount = o._entities.count();
+   var entityCount = entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
    o._tableTick = 0;
 }
@@ -128,7 +127,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
    o._entities = new MO.TObjects();
-   o._showShapes = new MO.TObjects();
    o._tableEntities = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -141,7 +139,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    // 创建缓冲
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
-   o._shapePool = MO.Class.create(MO.FObjectPool);
 }
 
 //==========================================================
@@ -157,23 +154,6 @@ MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allo
       entity = MO.Class.create(MO.FEaiStatisticsInvestmentEntity);
    }
    return entity;
-}
-
-//==========================================================
-// <T>收集形状。</T>
-//
-// @method
-// @return FEaiStatisticsInvestmentShape 形状
-//==========================================================
-MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_allocShape(){
-   var o = this;
-   var shape = o._shapePool.alloc();
-   if(!shape){
-      shape = MO.Class.create(MO.FEaiStatisticsInvestmentShape);
-      shape.linkGraphicContext(o);
-      shape.setup();
-   }
-   return shape;
 }
 
 //==========================================================
@@ -271,13 +251,6 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
       if(autio){
          autio.play(0);
       }
-      // 创建渲染对象
-      //var shape = o.allocShape();
-      //shape.setCityEntity(cityEntity)
-      //shape.setEntity(entity)
-      //shape.dirty()
-      //o._display.push(shape);
-      //o._showShapes.push(shape);
    }
    //..........................................................
    // 触发事件
@@ -351,17 +324,12 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
    // 地图处理
    o._mapEntity.process();
    //..........................................................
-   // 测试释放实体
-   var shapes = o._showShapes;
-   var count = shapes.count();
-   for(var i = count - 1; i >= 0; i--){
-      var shape = shapes.at(i);
-      if(shape._finish){
-         shapes.erase(i)
-         o._display.removeRenderable(shape);
-         o._shapePool.free(shape);
-      }
-   }
+   // 设置信息
+   var dynamicInfo = MO.Desktop.application().dynamicInfo();
+   dynamicInfo._investmentEntityCount = o._entities.count();
+   dynamicInfo._investmentTableEntityCount = o._tableEntities.count();
+   dynamicInfo._investmentPoolItemCount = o._entityPool.items().count();
+   dynamicInfo._investmentPoolFreeCount = o._entityPool.frees().count();
 }
 
 //==========================================================
@@ -372,7 +340,6 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
 MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
    var o = this;
    o._entities = MO.RObject.dispose(o._entities);
-   o._showShapes = MO.RObject.dispose(o._showShapes);
    o._dataTicker = MO.RObject.dispose(o._dataTicker);
    // 父处理
    o.__base.FObject.dispose.call(o);

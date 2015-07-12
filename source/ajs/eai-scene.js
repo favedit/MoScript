@@ -144,8 +144,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.selectDate                = MO.FEaiChartHistoryScene_selectDate;
    o.switchPlay                = MO.FEaiChartHistoryScene_switchPlay;
    o.switchLive                = MO.FEaiChartHistoryScene_switchLive;
-   o.active                    = MO.FEaiChartHistoryScene_active;
-   o.deactive                  = MO.FEaiChartHistoryScene_deactive;
+   o.processResize             = MO.FEaiChartHistoryScene_processResize;
    return o;
 }
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
@@ -314,7 +313,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
-   frame.setLocation(0, 5);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
@@ -426,13 +425,13 @@ MO.FEaiChartHistoryScene_switchLive = function FEaiChartHistoryScene_switchLive(
    alphaAction.push(o._guiManager);
    o._guiManager.mainTimeline().pushAction(alphaAction);
 }
-MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
+MO.FEaiChartHistoryScene_processResize = function FEaiChartHistoryScene_processResize(){
    var o = this;
-   o.__base.FEaiChartScene.active.call(o);
-}
-MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive() {
-   var o = this;
-   o.__base.FEaiChartScene.deactive.call(o);
+   o.__base.FEaiChartScene.processResize.call(o);
+   var control = o._southSea;
+   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setRight(520);
+   control.setBottom(180);
 }
 MO.FEaiChartIndustryScene = function FEaiChartIndustryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
@@ -770,7 +769,6 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    var entity = event.entity;
    var table = o._liveTable;
    table.setRank(event.rank);
-   table.setData(event.data);
    table.pushEntity(entity);
    table.dirty();
    if(entity){
@@ -871,7 +869,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var dataLayer = o._activeStage.dataLayer();
    var faceLayer = o._activeStage.faceLayer();
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(0, 5);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
    invement.linkGraphicContext(o);
@@ -968,6 +966,10 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    if(MO.RBrowser.isOrientationVertical()){
    }else{
    }
+   var control = o._southSea;
+   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setRight(710);
+   control.setBottom(220);
    var timeline = o._timeline;
    if(MO.RBrowser.isOrientationVertical()){
       timeline.setDockCd(MO.EGuiDock.Bottom);
@@ -1010,8 +1012,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._mapEntity            = null;
    o._citysRangeRenderable = null;
    o._citysRenderable      = null;
-   o._titleBar             = null;
    o._flagSprite           = null;
+   o._southSea             = null;
    o._groundAutio          = null;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
@@ -1080,6 +1082,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
+   var control = o._southSea = MO.Class.create(MO.FGuiPicture);
+   control.setDisplayOrder(-10);
+   control.size().set(134, 203);
+   control.setBackResource('url:/script/ars/eai/south-sea.png');
+   control.psInitialize();
+   control.build();
+   o._guiManager.register(control);
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
@@ -1193,6 +1202,71 @@ MO.FEaiCountryScene_deactive = function FEaiCountryScene_deactive(){
    var frame = o._countryLogoBar
    layer.removeRenderable(frame.renderable());
 }
+MO.FEaiDynamicInfo = function FEaiDynamicInfo(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._lastTick    = 0;
+   o._name        = 'EngineInfo';
+   o._stage       = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._context     = MO.Class.register(o, new MO.AGetSet('_context'));
+   o._ticker      = null;
+   o.onPaintBegin = MO.FEaiDynamicInfo_onPaintBegin;
+   o.oeUpdate     = MO.FEaiDynamicInfo_oeUpdate;
+   o.construct    = MO.FEaiDynamicInfo_construct;
+   return o;
+}
+MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if(o._stage == null){
+      return;
+   }
+   if(o._context == null){
+      return;
+   }
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var timer = o._stage.timer();
+   var stageStatistics = o._stage.statistics();
+   var statistics = o._context.statistics();
+   var line = 20;
+   var locationX = 10;
+   var locationY = rectangle.top + line;
+   graphic.setFont('16px sans-serif');
+   graphic.drawText('Frame         : ' + MO.Timer.rate() + ' Span [' + stageStatistics._frame.toString() + ']', locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw          : Count=' + statistics.frameDrawCount() + ' Triangle=' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Const    : Count=' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Alloc    : Buffer=' + statistics.frameBufferCount() + ' Texture=' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Total    : Program=' + statistics.programTotal() + ' Layout=' + statistics.layoutTotal() + ' Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   var mapEntity = entityConsole.mapEntity();
+   var provinceEntities = mapEntity.provinceEntities();
+   var cityEntities = mapEntity.cityEntities();
+   locationY += line;
+   graphic.drawText('Entity        : Province=' + provinceEntities.count() + ' City=' + cityEntities.count(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Investment    : Entity=' + o._investmentEntityCount + ' Table=' + o._investmentTableEntityCount + ' PoolItem=' + o._investmentPoolItemCount + ' PoolFree=' + o._investmentPoolFreeCount, locationX, locationY, '#FFFFFF');
+}
+MO.FEaiDynamicInfo_oeUpdate = function FEaiDynamicInfo_oeUpdate(event){
+   var o = this;
+   if(o._ticker.process()){
+      o.dirty();
+   }
+   return MO.EEventStatus.Stop;
+}
+MO.FEaiDynamicInfo_construct = function FEaiDynamicInfo_construct(){
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+   o._size.set(512, 256);
+   o._ticker = new MO.TTicker(1000);
+}
 MO.FEaiGroupReportScene = function FEaiGroupReportScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._code = MO.EEaiScene.GroupReport;
@@ -1207,7 +1281,6 @@ MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
    o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
-   o._engineInfo            = null;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
@@ -1250,11 +1323,7 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    guiManager.setCanvas(canvas2d);
    guiManager.setup();
    if(o._optionDebug){
-      var control = o._engineInfo = MO.Class.create(MO.FGuiEngineInfo);
-      control.linkGraphicContext(o);
-      control.setContext(o.graphicContext());
-      control.location().set(10, 300);
-      control.build();
+      var control = o._application.dynamicInfo();
       guiManager.register(control);
    }
 }
@@ -1263,7 +1332,8 @@ MO.FEaiScene_active = function FEaiScene_active(){
    o.__base.FScene.active.call(o);
    var stage = o._activeStage;
    if(o._optionDebug){
-      o._engineInfo.setStage(stage);
+      var control = o._application.dynamicInfo();
+      control.setStage(stage);
    }
    MO.Eai.Canvas.selectStage(stage);
 }

@@ -13,6 +13,8 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    // @attribute
+   o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   // @attribute
    o._thread         = null;
    o._interval       = 10;
    //..........................................................
@@ -101,6 +103,13 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
    o.linkGraphicContext(canvas);
    //..........................................................
+   // 创建动态信息
+   var control = o._dynamicInfo = MO.Class.create(MO.FEaiDynamicInfo);
+   control.linkGraphicContext(canvas);
+   control.setContext(canvas.graphicContext());
+   control.location().set(10, 300);
+   control.build();
+   //..........................................................
    // 创建图表舞台
    var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
@@ -119,8 +128,9 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
 //==========================================================
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
    var o = this;
-   o._chapterLoading = RObject.dispose(o._chapterLoading);
-   o._chapterChart = RObject.dispose(o._chapterChart);
+   o._chapterLoading = MO.Lang.Object.dispose(o._chapterLoading);
+   o._chapterChart = MO.Lang.Object.dispose(o._chapterChart);
+   o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);
    // 父处理
    o.__base.FEaiApplication.dispose.call(o);
 }

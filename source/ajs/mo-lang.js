@@ -3064,8 +3064,8 @@ MO.FObject_dump = function FObject_dump(){
 }
 MO.FObjectPool = function FObjectPool(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._items      = null;
-   o._frees      = null;
+   o._items      = MO.Class.register(o, new MO.AGetter('_items'));
+   o._frees      = MO.Class.register(o, new MO.AGetter('_frees'));
    o._allocCount = 0;
    o._freeCount  = 0;
    o.construct   = MO.FObjectPool_construct;

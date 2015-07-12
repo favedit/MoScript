@@ -90,6 +90,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartHistory);
    o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
+   o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    o._thread         = null;
    o._interval       = 10;
    o.onLoadCountry   = MO.FEaiChartApplication_onLoadCountry;
@@ -131,6 +132,11 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    desktop.build(hPanel);
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
    o.linkGraphicContext(canvas);
+   var control = o._dynamicInfo = MO.Class.create(MO.FEaiDynamicInfo);
+   control.linkGraphicContext(canvas);
+   control.setContext(canvas.graphicContext());
+   control.location().set(10, 300);
+   control.build();
    var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
@@ -140,8 +146,9 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
 }
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
    var o = this;
-   o._chapterLoading = RObject.dispose(o._chapterLoading);
-   o._chapterChart = RObject.dispose(o._chapterChart);
+   o._chapterLoading = MO.Lang.Object.dispose(o._chapterLoading);
+   o._chapterChart = MO.Lang.Object.dispose(o._chapterChart);
+   o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);
    o.__base.FEaiApplication.dispose.call(o);
 }
 MO.FEaiChartCanvas = function FEaiChartCanvas(o){

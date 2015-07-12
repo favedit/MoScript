@@ -18,9 +18,8 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._citysRangeRenderable = null;
    o._citysRenderable      = null;
    // @attribute
-   o._titleBar             = null;
-   // @attribute
    o._flagSprite           = null;
+   o._southSea             = null;
    o._groundAutio          = null;
    //..........................................................
    // @event
@@ -151,6 +150,15 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
+   //..........................................................
+   // 创建南海
+   var control = o._southSea = MO.Class.create(MO.FGuiPicture);
+   control.setDisplayOrder(-10);
+   control.size().set(134, 203);
+   control.setBackResource('url:/script/ars/eai/south-sea.png');
+   control.psInitialize();
+   control.build();
+   o._guiManager.register(control);
    //..........................................................
    // 创建背景
    //var control = o._background = MO.Class.create(MO.FGuiPicture);

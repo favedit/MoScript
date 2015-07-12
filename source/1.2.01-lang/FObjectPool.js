@@ -9,8 +9,8 @@ MO.FObjectPool = function FObjectPool(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._items      = null;
-   o._frees      = null;
+   o._items      = MO.Class.register(o, new MO.AGetter('_items'));
+   o._frees      = MO.Class.register(o, new MO.AGetter('_frees'));
    // @attribute
    o._allocCount = 0;
    o._freeCount  = 0;

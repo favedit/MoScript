@@ -57,8 +57,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.switchPlay                = MO.FEaiChartHistoryScene_switchPlay;
    o.switchLive                = MO.FEaiChartHistoryScene_switchLive;
    // @method
-   o.active                    = MO.FEaiChartHistoryScene_active;
-   o.deactive                  = MO.FEaiChartHistoryScene_deactive;
+   o.processResize             = MO.FEaiChartHistoryScene_processResize;
    return o;
 }
 
@@ -311,7 +310,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
-   frame.setLocation(0, 5);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 创建城市图示
@@ -513,21 +512,18 @@ MO.FEaiChartHistoryScene_switchLive = function FEaiChartHistoryScene_switchLive(
 }
 
 //==========================================================
-// <T>激活处理。</T>
+// <T>大小事件处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartHistoryScene_active = function FEaiChartHistoryScene_active() {
+MO.FEaiChartHistoryScene_processResize = function FEaiChartHistoryScene_processResize(){
    var o = this;
-   o.__base.FEaiChartScene.active.call(o);
-}
-
-//==========================================================
-// <T>注销处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartHistoryScene_deactive = function FEaiChartHistoryScene_deactive() {
-   var o = this;
-   o.__base.FEaiChartScene.deactive.call(o);
+   o.__base.FEaiChartScene.processResize.call(o);
+   //..........................................................
+   // 设置南海
+   var control = o._southSea;
+   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setRight(520);
+   control.setBottom(180);
 }

@@ -1346,123 +1346,133 @@ with (MO) {
       graphic._handle.drawImage(o._sequenceImages[o._currentFrame].image(), rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    }
 }
-with(MO){
-   MO.RGuiControl = function RGuiControl(){
-      var o = this;
-      o.PREFIX    = 'FGui';
-      return o;
-   }
-   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
-      var o = this;
-      var result = null;
-      if(type){
-         var name = null
-         var tn = null;
-         if(type.constructor == String){
-            if(!RString.startsWith(type, o.PREFIX)){
-               name = o.PREFIX + type;
-            }
-         }else if(type.constructor == TXmlNode){
-            name = type.get('type');
-            if(RString.isEmpty(name)){
-               name = type.name();
-               if(!RString.startsWith(name, o.PREFIX)){
-                  name = o.PREFIX + name;
-               }
-            }else{
-               tn = name;
+MO.RGuiColor = function RGuiColor(){
+   var o = this;
+   return o;
+}
+MO.RGuiColor.prototype.makeRgbString = function RGuiColor_makeRgbString(color, alpha){
+   var red = color.substring(2, 4);
+   var green = color.substring(4, 6);
+   var blue = color.substring(6, 8);
+   var result = 'rgba(' + MO.Lang.Hex.parse(red) + ',' + MO.Lang.Hex.parse(green) + ',' + MO.Lang.Hex.parse(blue) + ',' + alpha + ')';
+   return result;
+}
+MO.GuiColor = new MO.RGuiColor();
+MO.RGuiControl = function RGuiControl(){
+   var o = this;
+   o.PREFIX    = 'FGui';
+   return o;
+}
+MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
+   var o = this;
+   var result = null;
+   if(type){
+      var name = null
+      var tn = null;
+      if(type.constructor == String){
+         if(!MO.Lang.String.startsWith(type, o.PREFIX)){
+            name = o.PREFIX + type;
+         }
+      }else if(type.constructor == MO.TXmlNode){
+         name = type.get('type');
+         if(MO.Lang.String.isEmpty(name)){
+            name = type.name();
+            if(!MO.Lang.String.startsWith(name, o.PREFIX)){
+               name = o.PREFIX + name;
             }
          }else{
-            throw new TError(o, 'Unknown parameter. (type={1})', type);
+            tn = name;
          }
-         result = RClass.create(name);
-         if(tn){
-            result.__typed = true;
-         }
+      }else{
+         throw new MO.TError(o, 'Unknown parameter. (type={1})', type);
       }
-      if(result == null){
-         throw new TError(o, 'Create instance failure. (type={1})', type);
-      }
-      return result;
-   }
-   MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
-      var o = this;
-      var e = null;
-      var p = control[name];
-      if(!RMethod.isEmpty(p) || m){
-         var cz = RClass.find(control.constructor);
-         var a = cz.annotation(EAnnotation.Event, n);
-         e = a.create();
-         e.annotation = a;
-         e.source = control;
-         e.hSource = h;
-         e.ohProcess = m;
-         e.onProcess = p;
-         e.process = RUiEvent.onProcess;
-         RUiEvent.find(h).push(a.linker(), e);
-         RHtml.linkSet(h, '_plink', c);
-         a.bind(h, u);
-      }
-      return e;
-   }
-   MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentControl, control, xconfig, attributes){
-      var o = this;
-      if((control == null) || (xconfig == null)){
-         return;
-      }
-      if(RClass.isClass(control, MProperty)){
-         control.propertyLoad(xconfig);
-      }
-      var linker = xconfig.get('linker');
-      if(linker && parentControl){
-         parentControl[linker] = control;
-      }
-      if(RClass.isClass(control, FGuiControl)){
-      }
-      if(control.__typed){
-         parentControl = control;
-      }
-      if(RClass.isClass(control, MGuiContainer) && xconfig.hasNode()){
-         var nodes = xconfig.nodes();
-         var nodeCount = nodes.count();
-         for(var i = 0; i < nodeCount; i++){
-            var xnode = nodes.at(i);
-            var child = control.createChild(xnode);
-            if(!child){
-               throw new TError('Invalid create child.');
-            }
-            o.innerbuild(parentControl, child, xnode, attributes);
-            control.push(child);
-         }
-      }
-      if(RClass.isClass(control, FGuiControl)){
+      result = MO.Class.create(name);
+      if(tn){
+         result.__typed = true;
       }
    }
-   MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, attributes){
-      var o = this;
-      if(!control){
-         control = o.newInstance(xconfig);
-      }
-      o.innerbuild(control, control, xconfig, attributes);
-      return control;
+   if(result == null){
+      throw new MO.TError(o, 'Create instance failure. (type={1})', type);
    }
-   MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
-      var o = this;
-      control.propertySave(xconfig);
-      if(control.hasComponent()){
-         var components = control.components();
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            var className = RClass.name(component);
-            if(RString.startsWith(className, 'FGui')){
-               className = className.substring(4);
-            }
-            var xchild = xconfig.create(className);
-            o.saveConfig(component, xchild);
-         }
-      }
-      return xconfig;
-   }
-   MO.RGuiControl = new RGuiControl();
+   return result;
 }
+MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
+   var o = this;
+   var e = null;
+   var p = control[name];
+   if(!MO.Method.isEmpty(p) || m){
+      var cz = MO.Class.find(control.constructor);
+      var a = cz.annotation(EAnnotation.Event, n);
+      e = a.create();
+      e.annotation = a;
+      e.source = control;
+      e.hSource = h;
+      e.ohProcess = m;
+      e.onProcess = p;
+      e.process = MO.RUiEvent.onProcess;
+      MO.RUiEvent.find(h).push(a.linker(), e);
+      MO.RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
+   }
+   return e;
+}
+MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentControl, control, xconfig, attributes){
+   var o = this;
+   if((control == null) || (xconfig == null)){
+      return;
+   }
+   if(MO.Class.isClass(control, MO.MProperty)){
+      control.propertyLoad(xconfig);
+   }
+   var linker = xconfig.get('linker');
+   if(linker && parentControl){
+      parentControl[linker] = control;
+   }
+   if(MO.Class.isClass(control, MO.FGuiControl)){
+   }
+   if(control.__typed){
+      parentControl = control;
+   }
+   if(MO.Class.isClass(control, MO.MGuiContainer) && xconfig.hasNode()){
+      var nodes = xconfig.nodes();
+      var nodeCount = nodes.count();
+      for(var i = 0; i < nodeCount; i++){
+         var xnode = nodes.at(i);
+         var child = control.createChild(xnode);
+         if(!child){
+            throw new MO.TError('Invalid create child.');
+         }
+         o.innerbuild(parentControl, child, xnode, attributes);
+         control.push(child);
+      }
+   }
+   if(MO.Class.isClass(control, MO.FGuiControl)){
+   }
+}
+MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, attributes){
+   var o = this;
+   if(!control){
+      control = o.newInstance(xconfig);
+   }
+   o.innerbuild(control, control, xconfig, attributes);
+   return control;
+}
+MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
+   var o = this;
+   control.propertySave(xconfig);
+   if(control.hasComponent()){
+      var components = control.components();
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         var className = MO.Class.name(component);
+         if(MO.Lang.String.startsWith(className, 'FGui')){
+            className = className.substring(4);
+         }
+         var xchild = xconfig.create(className);
+         o.saveConfig(component, xchild);
+      }
+   }
+   return xconfig;
+}
+MO.RGuiControl = new MO.RGuiControl();

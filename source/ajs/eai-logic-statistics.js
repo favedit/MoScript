@@ -76,13 +76,11 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._rankEntities            = MO.Class.register(o, new MO.AGetter('_rankEntities'));
    o._entities                = MO.Class.register(o, new MO.AGetter('_entities'));
    o._tableEntities           = MO.Class.register(o, new MO.AGetter('_tableEntities'));
-   o._showShapes              = MO.Class.register(o, new MO.AGetter('_showShapes'));
    o._tableCount              = 40;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
    o._dataTicker              = null;
    o._entityPool              = null;
-   o._shapePool               = null;
    o._autios                  = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
@@ -120,13 +118,14 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
       }
    }
    var dataset = content.collection;
+   var entities = o._entities;
    if(dataset){
       var count = dataset.length;
       for(var i = 0; i < count; i++){
          var row = dataset[i];
          var entity = o.allocEntity();
          entity.loadData(row);
-         o._entities.push(entity);
+         entities.push(entity);
       }
    }
    o.calculateCurrent();
@@ -137,7 +136,7 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
    MO.Memory.free(dsEvent);
-   var entityCount = o._entities.count();
+   var entityCount = entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
    o._tableTick = 0;
 }
@@ -147,7 +146,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
    o._entities = new MO.TObjects();
-   o._showShapes = new MO.TObjects();
    o._tableEntities = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -157,7 +155,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    table._headLineCount = 1;
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
-   o._shapePool = MO.Class.create(MO.FObjectPool);
 }
 MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allocEntity(){
    var o = this;
@@ -166,16 +163,6 @@ MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allo
       entity = MO.Class.create(MO.FEaiStatisticsInvestmentEntity);
    }
    return entity;
-}
-MO.FEaiStatisticsInvestment_allocShape = function FEaiStatisticsInvestment_allocShape(){
-   var o = this;
-   var shape = o._shapePool.alloc();
-   if(!shape){
-      shape = MO.Class.create(MO.FEaiStatisticsInvestmentShape);
-      shape.linkGraphicContext(o);
-      shape.setup();
-   }
-   return shape;
 }
 MO.FEaiStatisticsInvestment_setup = function FEaiStatisticsInvestment_setup(){
    var o = this;
@@ -282,21 +269,15 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
       o._tableTick = currentTick;
    }
    o._mapEntity.process();
-   var shapes = o._showShapes;
-   var count = shapes.count();
-   for(var i = count - 1; i >= 0; i--){
-      var shape = shapes.at(i);
-      if(shape._finish){
-         shapes.erase(i)
-         o._display.removeRenderable(shape);
-         o._shapePool.free(shape);
-      }
-   }
+   var dynamicInfo = MO.Desktop.application().dynamicInfo();
+   dynamicInfo._investmentEntityCount = o._entities.count();
+   dynamicInfo._investmentTableEntityCount = o._tableEntities.count();
+   dynamicInfo._investmentPoolItemCount = o._entityPool.items().count();
+   dynamicInfo._investmentPoolFreeCount = o._entityPool.frees().count();
 }
 MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
    var o = this;
    o._entities = MO.RObject.dispose(o._entities);
-   o._showShapes = MO.RObject.dispose(o._showShapes);
    o._dataTicker = MO.RObject.dispose(o._dataTicker);
    o.__base.FObject.dispose.call(o);
 }

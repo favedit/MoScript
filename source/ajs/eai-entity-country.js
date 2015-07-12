@@ -1859,138 +1859,138 @@ with (MO) {
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
-with (MO) {
-   MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
-      o = RClass.inherits(this, o, FGuiTimeline);
-      o._startHeight = 30;
-      o._lineWidth = 5;
-      o._circleRadius = 5;
-      o.onPaintBegin = FGuiHistoryTimeline_onPaintBegin;
-      return o;
+MO.FGuiHistoryTimeline = function FGuiHistoryTimeline(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiTimeline);
+   o._startHeight     = 30;
+   o._lineWidth       = 5;
+   o._circleRadius    = 5;
+   o._timeFontColor   = '#00B5F6';
+   o._cursorFontColor = '#59FDE9';
+   o.onPaintBegin     = MO.FGuiHistoryTimeline_onPaintBegin;
+   return o;
+}
+MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiTimeline.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var top = rectangle.top;
+   var bottom = rectangle.bottom();
+   var dataTop = top + 30 + o._startHeight;
+   var dataBottom = bottom - 50;
+   var dataHeight = dataBottom - dataTop;
+   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
+   var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
+   var startDate = o.startTime();
+   var endDate = o.endTime();
+   var degreeDate = o.degreeTime();
+   var bakTime = startDate.date.getTime();
+   var timeSpan = endDate.date.getTime() - startDate.date.getTime();
+   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
+   var investmentTotal = historyConsole.investmentTotal();
+   var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
+   var maxInves = dateData.investmentTotal();
+   var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
+   if (degreeData.investmentTotal() * 3 < investmentTotal) {
+      maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
    }
-   MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(event) {
-      var o = this;
-      o.__base.FGuiTimeline.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      var top = rectangle.top;
-      var bottom = rectangle.bottom();
-      var dataTop = top + 30 + o._startHeight;
-      var dataBottom = bottom - 50;
-      var dataHeight = dataBottom - dataTop;
-      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-      var dataLeft = rectangle.left + 5 + decoLineMargin + o.decoLineWidth();
-      var dataRight = rectangle.left + rectangle.width - 5 - decoLineMargin - o.decoLineWidth();
-      var startDate = o.startTime();
-      var endDate = o.endTime();
-      var degreeDate = o.degreeTime();
-      var bakTime = startDate.date.getTime();
-      var timeSpan = endDate.date.getTime() - startDate.date.getTime();
-      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-      var investmentTotal = historyConsole.investmentTotal();
-      var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
-      var maxInves = dateData.investmentTotal();
-      var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
-      if (degreeData.investmentTotal() * 3 < investmentTotal) {
-         maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
-      }
-      var pixPer10k = dataHeight * 10000 / maxInves;
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
-      var inves = dateData.investmentTotal();
-      var lastX = dataLeft;
-      var lastY = dataBottom - inves / 10000 * pixPer10k;
-      lastY -= o._startHeight;
-      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-      var rateResource = rateConsole.find(EEaiRate.Line);
-      while (startDate.isBefore(degreeDate)) {
-         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
-         if (dateData) {
-            var degreeSpan = startDate.date.getTime() - bakTime;
-            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-            var dayInvestmentTotal = dateData.investmentTotal();
-            var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
-            y -= o._startHeight;
-            var hexColor = RHex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
-            var color = '#' + hexColor.substring(2);
-            var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-            graphic.drawLine(lastX, lastY, x, y, color, o._lineWidth);
-            var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
-            var bottomHexColor = RHex.format(rateResource.find(0));
-            var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
-            opGradient.addColorStop('0', bottomOpColor);
-            opGradient.addColorStop('1', opColor);
-            graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-            if (startDate.date.getDate() == 1) {
-               var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-               graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
-            }
-            lastX = x;
-            lastY = y;
-            startDate.addDay(1);
-         }else{
-            break;
-         }
-      }
-      startDate.date.setTime(bakTime);
-      startDate.refresh();
-      while (startDate.isBefore(degreeDate)) {
-         var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
-         if (dateData) {
-            var degreeSpan = startDate.date.getTime() - bakTime;
-            var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-            var inves = dateData.investmentTotal();
-            var y = dataBottom - inves / 10000 * pixPer10k;
-            y -= o._startHeight;
-            if (startDate.date.getDate() == 1) {
-               graphic.setFont('bold 22px Microsoft YaHei');
-               if(inves > 100000000){
-                  var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
-                  var textWidth = graphic.textWidth(text);
-                  graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
-               }else{
-                  var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-                  var textWidth = graphic.textWidth(text);
-                  graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
-               }
-            }
-            startDate.addDay(1);
-         }
-         else {
-            break;
-         }
-      }
+   var pixPer10k = dataHeight * 10000 / maxInves;
+   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var inves = dateData.investmentTotal();
+   var lastX = dataLeft;
+   var lastY = dataBottom - inves / 10000 * pixPer10k;
+   lastY -= o._startHeight;
+   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   while (startDate.isBefore(degreeDate)) {
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
-         var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
+         var degreeSpan = startDate.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+         var dayInvestmentTotal = dateData.investmentTotal();
+         var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
+         y -= o._startHeight;
+         var hexColor = MO.Lang.Hex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
+         var color = '#' + hexColor.substring(2);
+         var opColor = MO.GuiColor.makeRgbString(hexColor, 0.3);
+         graphic.drawLine(lastX, lastY, x, y, color, o._lineWidth);
+         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+         var bottomHexColor = MO.Lang.Hex.format(rateResource.find(0));
+         var bottomOpColor = MO.GuiColor.makeRgbString(bottomHexColor, 0.3);
+         opGradient.addColorStop('0', bottomOpColor);
+         opGradient.addColorStop('1', opColor);
+         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
+         if (startDate.date.getDate() == 1) {
+            var text = MO.Lang.Float.unitFormat(inves, 0, 0, 0, 0, 10000, '万');
+            graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
+         }
+         lastX = x;
+         lastY = y;
+         startDate.addDay(1);
+      }else{
+         break;
+      }
+   }
+   startDate.date.setTime(bakTime);
+   startDate.refresh();
+   while (startDate.isBefore(degreeDate)) {
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      if (dateData) {
+         var degreeSpan = startDate.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
          var inves = dateData.investmentTotal();
          var y = dataBottom - inves / 10000 * pixPer10k;
          y -= o._startHeight;
-         var hexColor = RHex.format(rateResource.findRate(inves / investmentTotal));
-         var color = '#' + hexColor.substring(2);
-         var opColor = 'rgba(' + RHex.parse(hexColor.substring(2, 4)) + ',' + RHex.parse(hexColor.substring(4, 6)) + ',' + RHex.parse(hexColor.substring(6, 8)) + ',' + '0.3)';
-         graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, o._lineWidth);
-         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
-         var bottomHexColor = RHex.format(rateResource.find(0));
-         var bottomOpColor = 'rgba(' + RHex.parse(bottomHexColor.substring(2, 4)) + ',' + RHex.parse(bottomHexColor.substring(4, 6)) + ',' + RHex.parse(bottomHexColor.substring(6, 8)) + ',' + '0.3)';
-         opGradient.addColorStop('0', bottomOpColor);
-         opGradient.addColorStop('1', opColor);
-         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-         graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), o._circleRadius, 0, color, color);
-         graphic.setFont('bold 22px Microsoft YaHei');
-         if(inves > 100000000){
-            var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
-            var textWidth = graphic.textWidth(text);
-            graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
-         }else{
-            var text = MO.RFloat.unitFormat(inves, 0, 0, 2, 0, 10000, '万');
-            var textWidth = graphic.textWidth(text);
-            graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
+         if (startDate.date.getDate() == 1) {
+            graphic.setFont('bold 22px Microsoft YaHei');
+            if(inves > 100000000){
+               var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+               var textWidth = graphic.textWidth(text);
+               graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
+            }else{
+               var text = parseInt(inves / 10000) + '万';
+               var textWidth = graphic.textWidth(text);
+               graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
+            }
          }
+         startDate.addDay(1);
       }
-      startDate.date.setTime(bakTime);
-      startDate.refresh();
+      else {
+         break;
+      }
    }
+   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   if (dateData) {
+      var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
+      var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      var inves = dateData.investmentTotal();
+      var y = dataBottom - inves / 10000 * pixPer10k;
+      y -= o._startHeight;
+      var hexColor = MO.Lang.Hex.format(rateResource.findRate(inves / investmentTotal));
+      var color = '#' + hexColor.substring(2);
+      var opColor = MO.GuiColor.makeRgbString(hexColor, 0.3);
+      graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, o._lineWidth);
+      var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
+      var bottomHexColor = MO.Lang.Hex.format(rateResource.find(0));
+      var bottomOpColor = MO.GuiColor.makeRgbString(bottomHexColor, 0.3);
+      opGradient.addColorStop('0', bottomOpColor);
+      opGradient.addColorStop('1', opColor);
+      graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
+      graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), o._circleRadius, 0, color, color);
+      graphic.setFont('bold 22px Microsoft YaHei');
+      if(inves > 100000000){
+         var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+         var textWidth = graphic.textWidth(text);
+         graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
+      }else{
+         var text = parseInt(inves / 10000) +  '万';
+         var textWidth = graphic.textWidth(text);
+         graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
+      }
+   }
+   startDate.date.setTime(bakTime);
+   startDate.refresh();
 }
 MO.FGuiLivePop = function FGuiLivePop(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -2100,7 +2100,6 @@ MO.FGuiLiveTable = function FGuiLiveTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._currentDate          = null;
    o._rank                 = MO.Class.register(o, new MO.AGetSet('_rank'));
-   o._data                 = MO.Class.register(o, new MO.AGetSet('_data'));
    o._rankLogoImage        = null;
    o._rankTitleImage       = null;
    o._rankLineImage        = null;
@@ -2155,13 +2154,10 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
       o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
    }
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   var titleText = '钰诚控股 - e租宝';
+   var titleText = '全球实时投资数据展示中心(中国)';
    graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (right - left) / 2 - (titleWidth / 2);
-   if(o._logoImage.testReady()){
-      graphic.drawImage(o._logoImage, textLeft - 77, top + 32, 62, 62);
-   }
+   var textLeft = left + (width - titleWidth) * 0.5;
    graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
    drawPosition += 60
    graphic.setFont(o._rowFontStyle);
@@ -2172,7 +2168,6 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    if(rankEntity){
       var tableText = '';
       var tableTextWidth = 0;
-      var dataEntities = o._data;
       var count = rankEntity.count();
       tableTop += 80;
       for(var i = 0; i < count; i++) {
@@ -2192,12 +2187,11 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
       graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
       headLeft += o._columnWidths[i];
    }
-   var dataEntities = o._data;
-   if(dataEntities){
+   var entities = o._entities;
+   if(!entities.isEmpty()){
       var tableTop = top + o._rowStart;
       var tableText = '';
       var tableTextWidth = 0;
-      var entities = o._entities;
       graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
       tableTop += 24;
       var count = entities.count();
@@ -2255,7 +2249,7 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
-   o._headFontStyle = 'bold 38px Microsoft YaHei';
+   o._headFontStyle = 'bold 36px Microsoft YaHei';
    if(MO.Runtime.isPlatformMobile()){
       o._tableCount = 12;
       o._headStart = 120;
@@ -2320,10 +2314,11 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
          graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
       }
    }
+   var textWidth = 0;
    if(!flag){
       o._currentDate.parse(entity.date());
       var text = o._currentDate.format('HH24:MI:SS');
-      var textWidth = graphic.textWidth(text);
+      textWidth = graphic.textWidth(text);
       graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
    }
    x += widths[0];
@@ -2356,9 +2351,8 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
       graphic.drawText(low, investmentRight - lowWidth, y, '#59FDE9');
    } else {
-      text = investment;
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, investmentRight - textWidth, y, fontColor);
+      textWidth = graphic.textWidth(investment);
+      graphic.drawText(investment, investmentRight - textWidth, y, fontColor);
    }
 }
 MO.FGuiLiveTable_dispose = function FGuiLiveTable_dispose(){

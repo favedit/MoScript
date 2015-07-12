@@ -3064,8 +3064,8 @@ MO.FObject_dump = function FObject_dump(){
 }
 MO.FObjectPool = function FObjectPool(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._items      = null;
-   o._frees      = null;
+   o._items      = MO.Class.register(o, new MO.AGetter('_items'));
+   o._frees      = MO.Class.register(o, new MO.AGetter('_frees'));
    o._allocCount = 0;
    o._freeCount  = 0;
    o.construct   = MO.FObjectPool_construct;
@@ -20275,36 +20275,13 @@ with(MO){
       o._data = null;
    }
 }
-MO.MTimelineAction = function MTimelineAction(o){
-   o = MO.Class.inherits(this, o);
-   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._interval    = MO.Class.register(o, new MO.AGetSet('_interval'));
-   o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
-   o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
-   o.construct    = MO.MTimelineAction_construct;
-   o.setup        = MO.MTimelineAction_setup;
-   o.start        = MO.MTimelineAction_start;
-   o.process      = MO.MTimelineAction_process;
-   o.dispose      = MO.MTimelineAction_dispose;
+MO.MTimeline = function MTimeline(o){
+   o = MO.Class.inherits(this, o, MO.MTimelineWorker);
    return o;
 }
-MO.MTimelineAction_construct = function MTimelineAction_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.MTimelineAction_setup = function MTimelineAction_setup(){
-   var o = this;
-}
-MO.MTimelineAction_start = function MTimelineAction_start(){
-   var o = this;
-   o._statusStart = true;
-   o._statusStop = false;
-}
-MO.MTimelineAction_process = function MTimelineAction_process(){
-   var o = this;
-}
-MO.MTimelineAction_dispose = function MTimelineAction_dispose(){
-   var o = this;
+MO.MTimelineAction = function MTimelineAction(o){
+   o = MO.Class.inherits(this, o, MO.MTimelineWorker);
+   return o;
 }
 MO.MTimelineActions = function MTimelineActions(o){
    o = MO.Class.inherits(this, o);
@@ -20329,24 +20306,145 @@ MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
 }
 MO.MTimelineActions_process = function MTimelineActions_process(context){
    var o = this;
+   var tick = context.tick;
    var actions = o._actions;
    var count = actions.count();
    for(var i = count - 1; i >= 0; i--){
       var action = actions.at(i);
+      var actionTick = tick - action.tick;
+      if(actionTick < 0){
+         continue;
+      }
       if(!action.statusStart()){
          action.start();
       }else if(action.statusStop()){
          actions.erase(i);
          action.dispose();
       }else{
+         var duration = action.duration();
+         if(duration != 0){
+            if(actionTick > duration){
+               action.stop();
+               continue;
+            }
+         }
+         context.tick = actionTick;
          action.process(context);
       }
    }
+   context.tick = tick;
 }
 MO.MTimelineActions_dispose = function MTimelineActions_dispose(){
    var o = this;
    o._actions = MO.Lang.Obejct.dispose(o._actions);
    o.__base.FObject.dispose.call(o);
+}
+MO.MTimelines = function MTimelines(o){
+   o = MO.Class.inherits(this, o);
+   o._timelines   = MO.Class.register(o, new MO.AGetter('_timelines'));
+   o.construct    = MO.MTimelines_construct;
+   o.setup        = MO.MTimelines_setup;
+   o.pushTimeline = MO.MTimelines_pushTimeline;
+   o.process      = MO.MTimelines_process;
+   o.dispose      = MO.MTimelines_dispose;
+   return o;
+}
+MO.MTimelines_construct = function MTimelines_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._timelines = new MO.TObjects();
+}
+MO.MTimelines_setup = function MTimelines_setup(){
+   var o = this;
+}
+MO.MTimelines_pushTimeline = function MTimelines_pushTimeline(timeline){
+   this._timelines.push(timeline);
+}
+MO.MTimelines_process = function MTimelines_process(context){
+   var o = this;
+   var tick = context.tick;
+   var timelines = o._timelines;
+   var count = timelines.count();
+   for(var i = count - 1; i >= 0; i--){
+      var timeline = timelines.at(i);
+      var timelineTick = tick - timeline.tick;
+      if(timelineTick < 0){
+         continue;
+      }
+      if(!timeline.statusStart()){
+         timeline.start();
+      }else if(timeline.statusStop()){
+         timelines.erase(i);
+         timeline.dispose();
+      }else{
+         var duration = timeline.duration();
+         if(duration != 0){
+            if(timelineTick > duration){
+               timeline.stop();
+               continue;
+            }
+         }
+         context.tick = timelineTick;
+         timeline.process(context);
+      }
+   }
+   context.tick = tick;
+}
+MO.MTimelines_dispose = function MTimelines_dispose(){
+   var o = this;
+   o._timelines = MO.Lang.Obejct.dispose(o._timelines);
+   o.__base.FObject.dispose.call(o);
+}
+MO.MTimelineWorker = function MTimelineWorker(o){
+   o = MO.Class.inherits(this, o);
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._tick        = MO.Class.register(o, new MO.AGetSet('_tick'), 0);
+   o._duration    = MO.Class.register(o, new MO.AGetSet('_duration'), 0);
+   o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
+   o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
+   o.onStart      = MO.MTimelineWorker_onStart;
+   o.onStop       = MO.MTimelineWorker_onStop;
+   o.construct    = MO.MTimelineWorker_construct;
+   o.setup        = MO.MTimelineWorker_setup;
+   o.start        = MO.MTimelineWorker_start;
+   o.process      = MO.MTimelineWorker_process;
+   o.stop         = MO.MTimelineWorker_stop;
+   o.dispose      = MO.MTimelineWorker_dispose;
+   return o;
+}
+MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(){
+   var o = this;
+}
+MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(){
+   var o = this;
+}
+MO.MTimelineWorker_construct = function MTimelineWorker_construct(){
+   var o = this;
+}
+MO.MTimelineWorker_setup = function MTimelineWorker_setup(){
+   var o = this;
+   o._statusStart = false;
+}
+MO.MTimelineWorker_start = function MTimelineWorker_start(){
+   var o = this;
+   if(!o._statusStart){
+      o.onStart();
+      o._statusStart = true;
+   }
+   o._statusStop = false;
+}
+MO.MTimelineWorker_process = function MTimelineWorker_process(){
+   var o = this;
+}
+MO.MTimelineWorker_stop = function MTimelineWorker_stop(){
+   var o = this;
+   if(!o._statusStop){
+      o.onStop();
+      o._statusStop = true;
+   }
+}
+MO.MTimelineWorker_dispose = function MTimelineWorker_dispose(){
+   var o = this;
 }
 MO.STimelineContext = function STimelineContext(){
    var o = this;
@@ -20770,9 +20868,8 @@ MO.FDrawable_testVisible = function FDrawable_testVisible(){
    return this._visible;
 }
 MO.FMainTimeline = function FMainTimeline(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimeline, MO.MTimelines);
    o._context   = null;
-   o._timelines = MO.Class.register(o, new MO.AGetter('_timelines'));
    o._startTick = 0;
    o._lastTick  = 0;
    o._interval  = 0;
@@ -20806,16 +20903,10 @@ MO.FMainTimeline_process = function FMainTimeline_process(){
    if(o._startTick == 0){
       o._startTick = tick;
    }
-   var span = o._startTick - tick;
    var context = o._context;
-   context.span = span;
+   context.tick = o._startTick - tick;
    o.__base.MTimelineActions.process.call(o, context);
-   var timelines = o._timelines;
-   var count = timelines.count();
-   for(var i = 0; i < count; i++){
-      var timeline = timelines.at(i);
-      timeline.process(context);
-   }
+   o.__base.MTimelines.process.call(o, context);
 }
 MO.FMainTimeline_dispose = function FMainTimeline_dispose(){
    var o = this;
@@ -20976,9 +21067,8 @@ with(MO){
    }
 }
 MO.FTimeline = function FTimeline(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimeline, MO.MTimelines);
    o._mainTimeline = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
-   o._actions      = MO.Class.register(o, new MO.AGetter('_actions'));
    o.construct     = MO.FTimeline_construct;
    o.setup         = MO.FTimeline_setup;
    o.process       = MO.FTimeline_process;
@@ -20997,6 +21087,7 @@ MO.FTimeline_setup = function FTimeline_setup(){
 MO.FTimeline_process = function FTimeline_process(context){
    var o = this;
    o.__base.MTimelineActions.process.call(o, context);
+   o.__base.MTimelines.process.call(o, context);
 }
 MO.FTimeline_dispose = function FTimeline_dispose(){
    var o = this;
@@ -35030,126 +35121,136 @@ with (MO) {
       graphic._handle.drawImage(o._sequenceImages[o._currentFrame].image(), rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    }
 }
-with(MO){
-   MO.RGuiControl = function RGuiControl(){
-      var o = this;
-      o.PREFIX    = 'FGui';
-      return o;
-   }
-   MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
-      var o = this;
-      var result = null;
-      if(type){
-         var name = null
-         var tn = null;
-         if(type.constructor == String){
-            if(!RString.startsWith(type, o.PREFIX)){
-               name = o.PREFIX + type;
-            }
-         }else if(type.constructor == TXmlNode){
-            name = type.get('type');
-            if(RString.isEmpty(name)){
-               name = type.name();
-               if(!RString.startsWith(name, o.PREFIX)){
-                  name = o.PREFIX + name;
-               }
-            }else{
-               tn = name;
+MO.RGuiColor = function RGuiColor(){
+   var o = this;
+   return o;
+}
+MO.RGuiColor.prototype.makeRgbString = function RGuiColor_makeRgbString(color, alpha){
+   var red = color.substring(2, 4);
+   var green = color.substring(4, 6);
+   var blue = color.substring(6, 8);
+   var result = 'rgba(' + MO.Lang.Hex.parse(red) + ',' + MO.Lang.Hex.parse(green) + ',' + MO.Lang.Hex.parse(blue) + ',' + alpha + ')';
+   return result;
+}
+MO.GuiColor = new MO.RGuiColor();
+MO.RGuiControl = function RGuiControl(){
+   var o = this;
+   o.PREFIX    = 'FGui';
+   return o;
+}
+MO.RGuiControl.prototype.newInstance = function RGuiControl_newInstance(type){
+   var o = this;
+   var result = null;
+   if(type){
+      var name = null
+      var tn = null;
+      if(type.constructor == String){
+         if(!MO.Lang.String.startsWith(type, o.PREFIX)){
+            name = o.PREFIX + type;
+         }
+      }else if(type.constructor == MO.TXmlNode){
+         name = type.get('type');
+         if(MO.Lang.String.isEmpty(name)){
+            name = type.name();
+            if(!MO.Lang.String.startsWith(name, o.PREFIX)){
+               name = o.PREFIX + name;
             }
          }else{
-            throw new TError(o, 'Unknown parameter. (type={1})', type);
+            tn = name;
          }
-         result = RClass.create(name);
-         if(tn){
-            result.__typed = true;
-         }
+      }else{
+         throw new MO.TError(o, 'Unknown parameter. (type={1})', type);
       }
-      if(result == null){
-         throw new TError(o, 'Create instance failure. (type={1})', type);
-      }
-      return result;
-   }
-   MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
-      var o = this;
-      var e = null;
-      var p = control[name];
-      if(!RMethod.isEmpty(p) || m){
-         var cz = RClass.find(control.constructor);
-         var a = cz.annotation(EAnnotation.Event, n);
-         e = a.create();
-         e.annotation = a;
-         e.source = control;
-         e.hSource = h;
-         e.ohProcess = m;
-         e.onProcess = p;
-         e.process = RUiEvent.onProcess;
-         RUiEvent.find(h).push(a.linker(), e);
-         RHtml.linkSet(h, '_plink', c);
-         a.bind(h, u);
-      }
-      return e;
-   }
-   MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentControl, control, xconfig, attributes){
-      var o = this;
-      if((control == null) || (xconfig == null)){
-         return;
-      }
-      if(RClass.isClass(control, MProperty)){
-         control.propertyLoad(xconfig);
-      }
-      var linker = xconfig.get('linker');
-      if(linker && parentControl){
-         parentControl[linker] = control;
-      }
-      if(RClass.isClass(control, FGuiControl)){
-      }
-      if(control.__typed){
-         parentControl = control;
-      }
-      if(RClass.isClass(control, MGuiContainer) && xconfig.hasNode()){
-         var nodes = xconfig.nodes();
-         var nodeCount = nodes.count();
-         for(var i = 0; i < nodeCount; i++){
-            var xnode = nodes.at(i);
-            var child = control.createChild(xnode);
-            if(!child){
-               throw new TError('Invalid create child.');
-            }
-            o.innerbuild(parentControl, child, xnode, attributes);
-            control.push(child);
-         }
-      }
-      if(RClass.isClass(control, FGuiControl)){
+      result = MO.Class.create(name);
+      if(tn){
+         result.__typed = true;
       }
    }
-   MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, attributes){
-      var o = this;
-      if(!control){
-         control = o.newInstance(xconfig);
-      }
-      o.innerbuild(control, control, xconfig, attributes);
-      return control;
+   if(result == null){
+      throw new MO.TError(o, 'Create instance failure. (type={1})', type);
    }
-   MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
-      var o = this;
-      control.propertySave(xconfig);
-      if(control.hasComponent()){
-         var components = control.components();
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            var className = RClass.name(component);
-            if(RString.startsWith(className, 'FGui')){
-               className = className.substring(4);
-            }
-            var xchild = xconfig.create(className);
-            o.saveConfig(component, xchild);
-         }
-      }
-      return xconfig;
-   }
-   MO.RGuiControl = new RGuiControl();
+   return result;
 }
+MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control, name, h, m, u){
+   var o = this;
+   var e = null;
+   var p = control[name];
+   if(!MO.Method.isEmpty(p) || m){
+      var cz = MO.Class.find(control.constructor);
+      var a = cz.annotation(EAnnotation.Event, n);
+      e = a.create();
+      e.annotation = a;
+      e.source = control;
+      e.hSource = h;
+      e.ohProcess = m;
+      e.onProcess = p;
+      e.process = MO.RUiEvent.onProcess;
+      MO.RUiEvent.find(h).push(a.linker(), e);
+      MO.RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
+   }
+   return e;
+}
+MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentControl, control, xconfig, attributes){
+   var o = this;
+   if((control == null) || (xconfig == null)){
+      return;
+   }
+   if(MO.Class.isClass(control, MO.MProperty)){
+      control.propertyLoad(xconfig);
+   }
+   var linker = xconfig.get('linker');
+   if(linker && parentControl){
+      parentControl[linker] = control;
+   }
+   if(MO.Class.isClass(control, MO.FGuiControl)){
+   }
+   if(control.__typed){
+      parentControl = control;
+   }
+   if(MO.Class.isClass(control, MO.MGuiContainer) && xconfig.hasNode()){
+      var nodes = xconfig.nodes();
+      var nodeCount = nodes.count();
+      for(var i = 0; i < nodeCount; i++){
+         var xnode = nodes.at(i);
+         var child = control.createChild(xnode);
+         if(!child){
+            throw new MO.TError('Invalid create child.');
+         }
+         o.innerbuild(parentControl, child, xnode, attributes);
+         control.push(child);
+      }
+   }
+   if(MO.Class.isClass(control, MO.FGuiControl)){
+   }
+}
+MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, attributes){
+   var o = this;
+   if(!control){
+      control = o.newInstance(xconfig);
+   }
+   o.innerbuild(control, control, xconfig, attributes);
+   return control;
+}
+MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, xconfig){
+   var o = this;
+   control.propertySave(xconfig);
+   if(control.hasComponent()){
+      var components = control.components();
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         var className = MO.Class.name(component);
+         if(MO.Lang.String.startsWith(className, 'FGui')){
+            className = className.substring(4);
+         }
+         var xchild = xconfig.create(className);
+         o.saveConfig(component, xchild);
+      }
+   }
+   return xconfig;
+}
+MO.RGuiControl = new MO.RGuiControl();
 MO.FGuiCanvasManager = function FGuiCanvasManager(o){
    o = MO.Class.inherits(this, o, MO.FGuiManager);
    o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
@@ -35752,201 +35853,202 @@ MO.FGuiPicture = function FGuiPicture(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    return o;
 }
-with (MO) {
-   MO.FGuiTimeline = function FGuiTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl);
-      o._timeUnit = RClass.register(o, new AGetSet('_timeUnit'));
-      o._startTime = RClass.register(o, new AGetSet('_startTime'));
-      o._endTime = RClass.register(o, new AGetSet('_endTime'));
-      o._degreeTime = RClass.register(o, new AGetSet('_degreeTime'));
-      o._progress = RClass.register(o, new AGetSet('_progress'));
-      o._unitms = RClass.register(o, new AGetSet('_unitms'), 1000 * 60 * 60 * 24);
-      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 15);
-      o._degreeLineWidth = RClass.register(o, new AGetSet('_degreeLineWidth'), 3);
-      o._mainLineWidth = RClass.register(o, new AGetSet('_mainLineWidth'), 5);
-      o._triangleWidth = RClass.register(o, new AGetSet('_triangleWidth'), 10);
-      o._triangleHeight = RClass.register(o, new AGetSet('_triangleHeight'), 12);
-      o._decoLineGap = RClass.register(o, new AGetSet('_decoLineGap'), 10);
-      o._decoLineWidth = RClass.register(o, new AGetSet('_decoLineWidth'), 40);
-      o.onPaintBegin = FGuiTimeline_onPaintBegin;
-      o.onOperationDown = FGuiTimeline_onOperationDown;
-      o._dataChangedListeners = RClass.register(o, new AListener('_dataChangedListeners', EEvent.DataChanged));
-      return o;
+MO.FGuiTimeline = function FGuiTimeline(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._timeUnit             = MO.Class.register(o, new MO.AGetSet('_timeUnit'));
+   o._startTime            = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._endTime              = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._degreeTime           = MO.Class.register(o, new MO.AGetSet('_degreeTime'));
+   o._progress             = MO.Class.register(o, new MO.AGetSet('_progress'));
+   o._unitms               = MO.Class.register(o, new MO.AGetSet('_unitms'), 1000 * 60 * 60 * 24);
+   o._degreeLineHeight     = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 15);
+   o._degreeLineWidth      = MO.Class.register(o, new MO.AGetSet('_degreeLineWidth'), 3);
+   o._mainLineWidth        = MO.Class.register(o, new MO.AGetSet('_mainLineWidth'), 5);
+   o._triangleWidth        = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
+   o._triangleHeight       = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
+   o._decoLineGap          = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
+   o._decoLineWidth        = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 40);
+   o._timeFontColor        = '#FFFFFF';
+   o._cursorFontColor      = '#FFFFFF';
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o.onPaintBegin          = MO.FGuiTimeline_onPaintBegin;
+   o.onOperationDown       = MO.FGuiTimeline_onOperationDown;
+   return o;
+}
+MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var top = rectangle.top;
+   var bottom = rectangle.top + rectangle.height;
+   var middle = bottom - 50;
+   var decoLeft = rectangle.left + 5;
+   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+   graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
+   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
+   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', o._mainLineWidth);
+   var startTime = o.startTime();
+   var endTime = o.endTime();
+   var degreeTime = o.degreeTime();
+   var degreeText;
+   var startText;
+   switch (o.timeUnit()) {
+      case MO.EGuiTimeUnit.Second:
+         startText = startTime.format('MI:SS.MISS');
+         degreeText = degreeTime.format('MI:SS.MISS');
+         break;
+      case MO.EGuiTimeUnit.Minute:
+         startText = startTime.format('HH24:MI:SS');
+         degreeText = degreeTime.format('HH24:MI:SS');
+         break;
+      case MO.EGuiTimeUnit.Hour:
+         startText = startTime.format('HH24:MI');
+         degreeText = degreeTime.format('HH24:MI');
+         break;
+      case MO.EGuiTimeUnit.Day:
+         startText = startTime.format('MM-DD:HH24');
+         degreeText = degreeTime.format('MM-DD:HH24');
+         break;
+      case MO.EGuiTimeUnit.Week:
+         startText = startTime.format('MM-DD');
+         degreeText = degreeTime.format('MM-DD');
+         break;
+      case MO.EGuiTimeUnit.Month:
+         startText = startTime.format('YYYY-MM-DD');
+         degreeText = degreeTime.format('YYYY-MM-DD');
+         break;
+      case MO.EGuiTimeUnit.Year:
+         startText = startTime.format('YYYY-MM');
+         degreeText = degreeTime.format('YYYY-MM');
+         break;
+      default:
+         return;
    }
-   MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      var top = rectangle.top;
-      var bottom = rectangle.top + rectangle.height;
-      var middle = bottom - 50;
-      var decoLeft = rectangle.left + 5;
-      var decoRight = rectangle.left + rectangle.width - 5;
-      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-      graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
-      graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
-      graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
-      graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
-      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
-      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', o._mainLineWidth);
-      var startTime = o.startTime();
-      var endTime = o.endTime();
-      var degreeTime = o.degreeTime();
-      var degreeText;
-      var startText;
-      switch (o.timeUnit()) {
-         case EGuiTimeUnit.Second:
-            startText = startTime.format('MI:SS.MISS');
-            degreeText = degreeTime.format('MI:SS.MISS');
-            break;
-         case EGuiTimeUnit.Minute:
-            startText = startTime.format('HH24:MI:SS');
-            degreeText = degreeTime.format('HH24:MI:SS');
-            break;
-         case EGuiTimeUnit.Hour:
-            startText = startTime.format('HH24:MI');
-            degreeText = degreeTime.format('HH24:MI');
-            break;
-         case EGuiTimeUnit.Day:
-            startText = startTime.format('MM-DD:HH24');
-            degreeText = degreeTime.format('MM-DD:HH24');
-            break;
-         case EGuiTimeUnit.Week:
-            startText = startTime.format('MM-DD');
-            degreeText = degreeTime.format('MM-DD');
-            break;
-         case EGuiTimeUnit.Month:
-            startText = startTime.format('YYYY-MM-DD');
-            degreeText = degreeTime.format('YYYY-MM-DD');
-            break;
-         case EGuiTimeUnit.Year:
-            startText = startTime.format('YYYY-MM');
-            degreeText = degreeTime.format('YYYY-MM');
-            break;
-         default:
-            return;
-      }
-      var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-      var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
-      var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
-      graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
-      graphic.setFont('bold 22px Microsoft YaHei');
-      var degreeTextWidth = graphic.textWidth(degreeText);
-      graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 50, '#FFFFFF');
-      var text;
-      var bakTime = startTime.date.getTime();
-      graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', o._degreeLineWidth);
-      var startTextWidth = graphic.textWidth(startText);
-      graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, '#FFFFFF');
-      switch (o.timeUnit()) {
-         case EGuiTimeUnit.Second:
-            startTime.addMseconds(1000);
-            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
-            break;
-         case EGuiTimeUnit.Minute:
-            startTime.addMseconds(1000 * 60);
-            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
-            break;
-         case EGuiTimeUnit.Hour:
-            startTime.addMseconds(1000 * 60 * 60);
-            startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
-            break;
-         case EGuiTimeUnit.Day:
-            startTime.addDay(1);
-            startTime.parseAuto(startTime.format('YYYYMMDD'));
-            break;
-         case EGuiTimeUnit.Week:
-            startTime.addDay(7);
-            startTime.parseAuto(startTime.format('YYYYMMDD'));
-            break;
-         case EGuiTimeUnit.Month:
-            startTime.addMonth(1);
-            startTime.parseAuto(startTime.format('YYYYMM'));
-            break;
-         case EGuiTimeUnit.Year:
-            startTime.addYear(1);
-            startTime.parseAuto(startTime.format('YYYY'));
-            break;
-         default:
-            return;
-      }
-      var alternate = true;
-      var textBottom = 0;
-      while (!startTime.isAfter(degreeTime)) {
-         var span = startTime.date.getTime() - bakTime;
-         var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-         graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
-         switch (o.timeUnit()) {
-            case EGuiTimeUnit.Second:
-               text = startTime.format('MI:SS');
-               startTime.addMseconds(1000);
-               break;
-            case EGuiTimeUnit.Minute:
-               text = startTime.format('HH24:MI');
-               startTime.addMseconds(1000 * 60);
-               break;
-            case EGuiTimeUnit.Hour:
-               text = startTime.format('HH24:00');
-               startTime.addMseconds(1000 * 60 * 60);
-               break;
-            case EGuiTimeUnit.Day:
-               text = startTime.format('MM-DD');
-               startTime.addDay(1);
-               break;
-            case EGuiTimeUnit.Week:
-               text = startTime.format('MM-DD');
-               startTime.addDay(7);
-               break;
-            case EGuiTimeUnit.Month:
-               text = startTime.format('YYYY-MM');
-               startTime.addMonth(1);
-               break;
-            case EGuiTimeUnit.Year:
-               text = startTime.format('YYYY');
-               startTime.addYear(1);
-               break;
-            default:
-               return;
-         }
-         graphic.setFont('bold 22px Microsoft YaHei');
-         var textWidth = graphic.textWidth(text);
-         textBottom = alternate ? middle + 26 : middle + 52;
-         graphic.drawText(text, x - textWidth / 2, textBottom, '#FFFFFF');
-      }
-      var span = endTime.date.getTime() - bakTime;
+   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+   var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
+   var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
+   graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
+   graphic.setFont('bold 22px Microsoft YaHei');
+   var degreeTextWidth = graphic.textWidth(degreeText);
+   graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 50, o._cursorFontColor);
+   var text;
+   var bakTime = startTime.date.getTime();
+   graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', o._degreeLineWidth);
+   var startTextWidth = graphic.textWidth(startText);
+   graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, o._cursorFontColor);
+   switch (o.timeUnit()) {
+      case MO.EGuiTimeUnit.Second:
+         startTime.addMseconds(1000);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Minute:
+         startTime.addMseconds(1000 * 60);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Hour:
+         startTime.addMseconds(1000 * 60 * 60);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Day:
+         startTime.addDay(1);
+         startTime.parseAuto(startTime.format('YYYYMMDD'));
+         break;
+      case MO.EGuiTimeUnit.Week:
+         startTime.addDay(7);
+         startTime.parseAuto(startTime.format('YYYYMMDD'));
+         break;
+      case MO.EGuiTimeUnit.Month:
+         startTime.addMonth(1);
+         startTime.parseAuto(startTime.format('YYYYMM'));
+         break;
+      case MO.EGuiTimeUnit.Year:
+         startTime.addYear(1);
+         startTime.parseAuto(startTime.format('YYYY'));
+         break;
+      default:
+         return;
+   }
+   var alternate = true;
+   var textBottom = 0;
+   while (!startTime.isAfter(degreeTime)) {
+      var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
-      startTime.date.setTime(bakTime);
-      startTime.refresh();
-   }
-   MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
-      if (!event.flag) {
-         return;
+      switch (o.timeUnit()) {
+         case MO.EGuiTimeUnit.Second:
+            text = startTime.format('MI:SS');
+            startTime.addMseconds(1000);
+            break;
+         case MO.EGuiTimeUnit.Minute:
+            text = startTime.format('HH24:MI');
+            startTime.addMseconds(1000 * 60);
+            break;
+         case MO.EGuiTimeUnit.Hour:
+            text = startTime.format('HH24:00');
+            startTime.addMseconds(1000 * 60 * 60);
+            break;
+         case MO.EGuiTimeUnit.Day:
+            text = startTime.format('MM-DD');
+            startTime.addDay(1);
+            break;
+         case MO.EGuiTimeUnit.Week:
+            text = startTime.format('MM-DD');
+            startTime.addDay(7);
+            break;
+         case MO.EGuiTimeUnit.Month:
+            text = startTime.format('YYYY-MM');
+            startTime.addMonth(1);
+            break;
+         case MO.EGuiTimeUnit.Year:
+            text = startTime.format('YYYY');
+            startTime.addYear(1);
+            break;
+         default:
+            return;
       }
-      var o = this;
-      o.__base.FGuiControl.onOperationDown.call(o, event);
-      var rectangle = event.rectangle;
-      var bottom = rectangle.top + rectangle.height;
-      var decoLeft = rectangle.left + 5;
-      var decoRight = rectangle.left + rectangle.width - 5;
-      var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-      var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
-      var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-      var x = event.locationX;
-      if (event.locationY > bottom - 30) {
-         if (x > dataLeft && x < dataRight) {
-            var rate = (x - dataLeft) / (dataRight - dataLeft);
-            var msDate = o.startTime().date.getTime() + (o.endTime().date.getTime() - o.startTime().date.getTime()) * rate;
-            var dsEvent = MO.Memory.alloc(SEvent);
-            dsEvent.sender = o;
-            var selectedDate = MO.Memory.alloc(TDate);
-            selectedDate.date.setTime(msDate);
-            selectedDate.refresh();
-            dsEvent.date = selectedDate.parseAuto(selectedDate.format('YYYYMMDD'));
-            o.processDataChangedListener(dsEvent);
-         }
+      graphic.setFont('bold 22px Microsoft YaHei');
+      var textWidth = graphic.textWidth(text);
+      textBottom = alternate ? middle + 26 : middle + 52;
+      graphic.drawText(text, x - textWidth / 2, textBottom, o._timeFontColor);
+   }
+   var span = endTime.date.getTime() - bakTime;
+   var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+   graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, o._cursorFontColor, o._degreeLineWidth);
+   startTime.date.setTime(bakTime);
+   startTime.refresh();
+}
+MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
+   if (!event.flag) {
+      return;
+   }
+   var o = this;
+   o.__base.FGuiControl.onOperationDown.call(o, event);
+   var rectangle = event.rectangle;
+   var bottom = rectangle.top + rectangle.height;
+   var decoLeft = rectangle.left + 5;
+   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+   var x = event.locationX;
+   if (event.locationY > bottom - 30) {
+      if (x > dataLeft && x < dataRight) {
+         var rate = (x - dataLeft) / (dataRight - dataLeft);
+         var msDate = o.startTime().date.getTime() + (o.endTime().date.getTime() - o.startTime().date.getTime()) * rate;
+         var dsEvent = MO.Memory.alloc(SEvent);
+         dsEvent.sender = o;
+         var selectedDate = MO.Memory.alloc(TDate);
+         selectedDate.date.setTime(msDate);
+         selectedDate.refresh();
+         dsEvent.date = selectedDate.parseAuto(selectedDate.format('YYYYMMDD'));
+         o.processDataChangedListener(dsEvent);
+         MO.Memory.free(dsEvent);
       }
    }
 }
@@ -35975,75 +36077,73 @@ with(MO){
       return o;
    }
 }
-with(MO){
-   MO.FGuiEngineInfo = function FGuiEngineInfo(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o._lastTick    = 0;
-      o._name        = 'EngineInfo';
-      o._stage       = RClass.register(o, new AGetSet('_stage'));
-      o._context     = RClass.register(o, new AGetSet('_context'));
-      o._ticker      = null;
-      o.onPaintBegin = FGuiEngineInfo_onPaintBegin;
-      o.oeUpdate     = FGuiEngineInfo_oeUpdate;
-      o.construct    = FGuiEngineInfo_construct;
-      return o;
+MO.FGuiEngineInfo = function FGuiEngineInfo(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._lastTick    = 0;
+   o._name        = 'EngineInfo';
+   o._stage       = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._context     = MO.Class.register(o, new MO.AGetSet('_context'));
+   o._ticker      = null;
+   o.onPaintBegin = MO.FGuiEngineInfo_onPaintBegin;
+   o.oeUpdate     = MO.FGuiEngineInfo_oeUpdate;
+   o.construct    = MO.FGuiEngineInfo_construct;
+   return o;
+}
+MO.FGuiEngineInfo_onPaintBegin = function FGuiEngineInfo_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if(o._stage == null){
+      return;
    }
-   MO.FGuiEngineInfo_onPaintBegin = function FGuiEngineInfo_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      if(o._stage == null){
-         return;
-      }
-      if(o._context == null){
-         return;
-      }
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      var timer = o._stage.timer();
-      var stageStatistics = o._stage.statistics();
-      var statistics = o._context.statistics();
-      var line = 20;
-      var locationX = 10;
-      var locationY = rectangle.top + line;
-      graphic.setFont('16px sans-serif');
-      graphic.drawText('Frame         : ' + RTimer.rate(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Draw          : ' + statistics.frameDrawCount(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Draw Const    : ' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Draw Buffer   : ' + statistics.frameBufferCount(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Draw Texture  : ' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Draw Triangle : ' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Total Program : ' + statistics.programTotal(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Total Layout  : ' + statistics.layoutTotal(), locationX, locationY, '#FFFFFF');
-      locationY += line;
-      graphic.drawText('Total Buffer  : Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
-      locationY += line;
+   if(o._context == null){
+      return;
    }
-   MO.FGuiEngineInfo_oeUpdate = function FGuiEngineInfo_oeUpdate(event){
-      var o = this;
-      if(o._ticker.process()){
-         o.dirty();
-      }
-      return EEventStatus.Stop;
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var timer = o._stage.timer();
+   var stageStatistics = o._stage.statistics();
+   var statistics = o._context.statistics();
+   var line = 20;
+   var locationX = 10;
+   var locationY = rectangle.top + line;
+   graphic.setFont('16px sans-serif');
+   graphic.drawText('Frame         : ' + MO.Timer.rate(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw          : ' + statistics.frameDrawCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Const    : ' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Buffer   : ' + statistics.frameBufferCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Texture  : ' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Triangle : ' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Program : ' + statistics.programTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Layout  : ' + statistics.layoutTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Buffer  : Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+}
+MO.FGuiEngineInfo_oeUpdate = function FGuiEngineInfo_oeUpdate(event){
+   var o = this;
+   if(o._ticker.process()){
+      o.dirty();
    }
-   MO.FGuiEngineInfo_construct = function FGuiEngineInfo_construct(){
-      var o = this;
-      o.__base.FGuiControl.construct.call(o);
-      o._size.set(512, 256);
-      o._ticker = new MO.TTicker(1000);
-   }
+   return MO.EEventStatus.Stop;
+}
+MO.FGuiEngineInfo_construct = function FGuiEngineInfo_construct(){
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+   o._size.set(512, 256);
+   o._ticker = new MO.TTicker(1000);
 }
 MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);

@@ -63,7 +63,6 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    // 设置表格数据
    var table = o._liveTable;
    table.setRank(event.rank);
-   table.setData(event.data);
    table.pushEntity(entity);
    table.dirty();
    // 设置表格数据
@@ -216,7 +215,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(0, 5);
+   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
@@ -368,6 +367,12 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       //frame.setLocation(0, 10);
       //frame.setSize(1, 1);
    }
+   //..........................................................
+   // 设置南海
+   var control = o._southSea;
+   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setRight(710);
+   control.setBottom(220);
    //..........................................................
    // 设置时间轴
    var timeline = o._timeline;
