@@ -315,6 +315,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
+   var controlInvestment = o._logoBar.findComponent('investment');
+   controlInvestment.setRollingDuration(100);
    var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
    audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
@@ -408,7 +410,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var controlDate = o._logoBar.findComponent('date');
       controlDate.setValue(code);
       var controlInvestment = o._logoBar.findComponent('investment');
-      controlInvestment.setLabel(parseInt(dateData.investmentTotal()).toString());
+      controlInvestment.setValue(parseInt(dateData.investmentTotal()).toString());
    }
 }
 MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){

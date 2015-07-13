@@ -66,45 +66,41 @@ MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
    o._hCanvas = MO.RHtml.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
 }
-with(MO){
-   MO.FE2dCanvasConsole = function FE2dCanvasConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd    = EScope.Local;
-      o._pools      = null;
-      o.construct   = FE2dCanvasConsole_construct;
-      o.allocBySize = FE2dCanvasConsole_allocBySize;
-      o.free        = FE2dCanvasConsole_free;
-      return o;
-   }
-   MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._pools = RClass.create(FObjectPools);
-   }
-   MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
-      var o = this;
-      var pools = o._pools;
-      var code = width + 'x' + height;
-      var canvas = pools.alloc(code);
-      if(!canvas){
-         canvas = RClass.create(FE2dCanvas);
-         canvas.size().set(width, height);
-         canvas.build(RWindow._hDocument);
-      }
-      canvas.reset();
-      return canvas;
-   }
-   MO.FE2dCanvasConsole_free = function FE2dCanvasConsole_free(canvas){
-      var o = this;
-      var pools = o._pools;
-      var size = canvas.size();
-      var code = size.width + 'x' + size.height;
-      pools.free(code, canvas);
-   }
+MO.FE2dCanvasConsole = function FE2dCanvasConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd    = MO.EScope.Local;
+   o._pools      = null;
+   o.construct   = MO.FE2dCanvasConsole_construct;
+   o.allocBySize = MO.FE2dCanvasConsole_allocBySize;
+   o.free        = MO.FE2dCanvasConsole_free;
+   return o;
 }
-with(MO){
-   MO.FE2dDrawable = function FE2dDrawable(o){
-      o = RClass.inherits(this, o, FDrawable);
-      return o;
+MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._pools = MO.Class.create(MO.FObjectPools);
+}
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+   var o = this;
+   var pools = o._pools;
+   var code = width + 'x' + height;
+   var canvas = pools.alloc(code);
+   if(!canvas){
+      canvas = MO.Class.create(FE2dCanvas);
+      canvas.size().set(width, height);
+      canvas.build(MO.RWindow._hDocument);
    }
+   canvas.reset();
+   return canvas;
+}
+MO.FE2dCanvasConsole_free = function FE2dCanvasConsole_free(canvas){
+   var o = this;
+   var pools = o._pools;
+   var size = canvas.size();
+   var code = size.width + 'x' + size.height;
+   pools.free(code, canvas);
+}
+MO.FE2dDrawable = function FE2dDrawable(o){
+   o = MO.Class.inherits(this, o, MO.FDrawable);
+   return o;
 }

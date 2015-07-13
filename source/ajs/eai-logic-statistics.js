@@ -451,17 +451,17 @@ with(MO){
 }
 MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiLabel);
-   o._value        = MO.Class.register(o, new MO.AGetter('_value'), '0');
-   o._originValue = '0';
-   o._startTick    = 0;
-   o._rolling      = false;
-   o._rollingDuration = 1000;
-   o._rollingPages = null;
-   o.onPaintLabel  = MO.FEaiStatisticsLabel_onPaintLabel;
-   o.oeUpdate      = MO.FEaiStatisticsLabel_oeUpdate;
-   o.construct     = MO.FEaiStatisticsLabel_construct;
-   o.setValue      = MO.FEaiStatisticsLabel_setValue;
-   o.dispose       = MO.FEaiStatisticsLabel_dispose;
+   o._value           = MO.Class.register(o, new MO.AGetter('_value'), '0');
+   o._originValue     = '0';
+   o._startTick       = 0;
+   o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
+   o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
+   o._rollingPages    = null;
+   o.onPaintLabel     = MO.FEaiStatisticsLabel_onPaintLabel;
+   o.oeUpdate         = MO.FEaiStatisticsLabel_oeUpdate;
+   o.construct        = MO.FEaiStatisticsLabel_construct;
+   o.setValue         = MO.FEaiStatisticsLabel_setValue;
+   o.dispose          = MO.FEaiStatisticsLabel_dispose;
    return o;
 }
 MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(event){
@@ -470,7 +470,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var rectangle = event.rectangle;
    graphic.clip(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    var textFont = 'bold 38px Microsoft YaHei';
-   var unitFont = 'bold 28px Microsoft YaHei';
+   var unitFont = 'bold 24px Microsoft YaHei';
    graphic.setFont(textFont);
    var baseX = rectangle.left;
    var baseY = rectangle.top + rectangle.height;
@@ -524,12 +524,16 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    }
    if (o._rolling == false) {
       o._originValue = o._value;
+      o._rollingPages.clear();
    }
 }
 MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var o = this;
    if (o._value == value) {
       return;
+   }
+   if (o._rolling) {
+      o._originValue = o._value;
    }
    o._value = value;
    var originValue = o._originValue;
