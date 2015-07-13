@@ -283,7 +283,6 @@ with(MO){
       o.testReady             = FEaiCitysRangeRenderable_testReady;
       o.setup                 = FEaiCitysRangeRenderable_setup;
       o.upload                = FEaiCitysRangeRenderable_upload;
-      o.loadUrl               = FEaiCitysRangeRenderable_loadUrl;
       o.dispose               = FEaiCitysRangeRenderable_dispose;
       return o;
    }
@@ -358,7 +357,10 @@ with(MO){
       materialInfo.optionAlpha = true;
       materialInfo.optionDepth = false;
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/dot.png');
+      var image = MO.Class.create(MO.FImage);
+      image.addLoadListener(o, o.onImageLoad);
+      image.loadUrl('{eai.resource}/dot.png');
+      o._ready = false;
    }
    MO.FEaiCitysRangeRenderable_upload = function FEaiCitysRangeRenderable_upload(){
       var o = this;
@@ -419,13 +421,6 @@ with(MO){
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
       o._indexBuffer.setCount(3 * 2 * count);
    }
-   MO.FEaiCitysRangeRenderable_loadUrl = function FEaiCitysRangeRenderable_loadUrl(url){
-      var o = this;
-      var image = RClass.create(FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl(url);
-      o._ready = false;
-   }
    MO.FEaiCitysRangeRenderable_dispose = function FEaiCitysRangeRenderable_dispose(){
       var o = this;
       o._texture = RObject.dispose(o._texture);
@@ -455,7 +450,6 @@ with(MO){
       o.testReady             = FEaiCitysRenderable_testReady;
       o.setup                 = FEaiCitysRenderable_setup;
       o.upload                = FEaiCitysRenderable_upload;
-      o.loadUrl               = FEaiCitysRenderable_loadUrl;
       o.dispose               = FEaiCitysRenderable_dispose;
       return o;
    }
@@ -533,7 +527,10 @@ with(MO){
       materialInfo.optionDepth = false;
       materialInfo.ambientColor.setHex('#FFFFFF');
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/citys.png');
+      var image = MO.Class.create(FImage);
+      image.addLoadListener(o, o.onImageLoad);
+      image.loadUrl('{eai.resource}/citys.png');
+      o._ready = false;
    }
    MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
       var o = this;
@@ -610,13 +607,6 @@ with(MO){
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
       o._indexBuffer.setCount(3 * 2 * count);
    }
-   MO.FEaiCitysRenderable_loadUrl = function FEaiCitysRenderable_loadUrl(url){
-      var o = this;
-      var image = RClass.create(FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl(url);
-      o._ready = false;
-   }
    MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
       var o = this;
       o._texture = RObject.dispose(o._texture);
@@ -666,7 +656,7 @@ MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
 }
 MO.FEaiCountryData_load = function FEaiCountryData_load(){
    var o = this;
-   var url = '/script/ars/eai/country.dat';
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/country.dat');
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoaded);
 }
@@ -1720,18 +1710,18 @@ with (MO) {
       o.setTop((MO.Eai.Canvas.logicSize().height));
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
-      o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
+      o._bgImage.loadUrl('{eai.resource}/milestone/bg.png');
       o._wanImage = MO.Class.create(MO.FImage);
       o._wanImage.addLoadListener(o, o.onImageLoad);
-      o._wanImage.loadUrl('../ars/eai/number/wan.png');
+      o._wanImage.loadUrl('{eai.resource}/number/wan.png');
       o._yiImage = MO.Class.create(MO.FImage);
       o._yiImage.addLoadListener(o, o.onImageLoad);
-      o._yiImage.loadUrl('../ars/eai/number/yi.png');
+      o._yiImage.loadUrl('{eai.resource}/number/yi.png');
       o._numImages = new Array(10);
       for (var i = 0; i < 10; i++) {
          var img = MO.Class.create(MO.FImage);
          img.addLoadListener(o, o.onImageLoad);
-         img.loadUrl('../ars/eai/number/' + i + '.png');
+         img.loadUrl('{eai.resource}/number/' + i + '.png');
          o._numImages[i] = img;
       }
       var audioConsole = MO.Console.find(MO.FAudioConsole);
@@ -2025,7 +2015,7 @@ MO.FGuiLivePop_setup = function FGuiLivePop_setup() {
    o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight);
    o._bgImage = MO.Class.create(MO.FImage);
    o._bgImage.addLoadListener(o, o.onImageLoad);
-   o._bgImage.loadUrl('../ars/eai/invespop.png');
+   o._bgImage.loadUrl('{eai.resource}/invespop.png');
 }
 MO.FGuiLivePop_onImageLoad = function FGuiLivePop_onImageLoad() {
    this.dirty();

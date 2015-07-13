@@ -207,7 +207,7 @@ MO.TClass_style = function TClass_style(n){
    var a = null;
    var p = o;
    while(p){
-      var as = p._annotations[EAnnotation.Style];
+      var as = p._annotations[MO.EAnnotation.Style];
       if(as){
          a = as[n];
          if(a){

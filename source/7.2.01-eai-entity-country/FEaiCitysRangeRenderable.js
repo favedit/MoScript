@@ -32,7 +32,6 @@ with(MO){
       // @method
       o.setup                 = FEaiCitysRangeRenderable_setup;
       o.upload                = FEaiCitysRangeRenderable_upload;
-      o.loadUrl               = FEaiCitysRangeRenderable_loadUrl;
       // @method
       o.dispose               = FEaiCitysRangeRenderable_dispose;
       return o;
@@ -146,7 +145,12 @@ with(MO){
       materialInfo.optionAlpha = true;
       materialInfo.optionDepth = false;
       o._material._textures = o._textures;
-      o.loadUrl('/script/ars/eai/dot.png');
+      // 加载图片
+      var image = MO.Class.create(MO.FImage);
+      image.addLoadListener(o, o.onImageLoad);
+      image.loadUrl('{eai.resource}/dot.png');
+      // 设置属性
+      o._ready = false;
    }
 
    //==========================================================
@@ -217,21 +221,6 @@ with(MO){
       o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
       // 设置索引数据
       o._indexBuffer.setCount(3 * 2 * count);
-   }
-
-   //==========================================================
-   // <T>加载处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FEaiCitysRangeRenderable_loadUrl = function FEaiCitysRangeRenderable_loadUrl(url){
-      var o = this;
-      // 加载图片
-      var image = RClass.create(FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl(url);
-      // 设置属性
-      o._ready = false;
    }
 
    //==========================================================

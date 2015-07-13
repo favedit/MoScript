@@ -1996,6 +1996,162 @@ with(MO){
       o._controlExecute.addClickListener(o, o.onExecuteClick);
    }
 }
+MO.FDssCanvas = function FDssCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCanvas);
+   o._optionStageProcess = false;
+   o._optionResize       = false;
+   o._optionMouseCapture = false;
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
+   o._capturePosition    = null;
+   o._cameraPosition     = null;
+   o._scaleRate          = 1;
+   o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.construct           = MO.FDssCanvas_construct;
+   o.setPanel            = MO.FDssCanvas_setPanel;
+   o.resize              = MO.FDssCanvas_resize;
+   o.selectStage         = MO.FDssCanvas_selectStage;
+   o.dispose             = MO.FDssCanvas_dispose;
+   return o;
+}
+MO.FDssCanvas_construct = function FDssCanvas_construct(){
+   var o = this;
+   o.__base.FE3dCanvas.construct.call(o);
+   o._rotation = new MO.SVector3();
+   o._capturePosition = new MO.SPoint2();
+   o._captureRotation = new MO.SVector3();
+   o._logicSize = new MO.SSize2(1920, 1080);
+   o._cameraPosition = new MO.SPoint3();
+}
+MO.FDssCanvas_setPanel = function FDssCanvas_setPanel(hPanel){
+   var o = this;
+   o._hPanel = hPanel;
+   hPanel.appendChild(o._hCanvas);
+}
+MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
+   var o = this;
+   o.__base.FE3dCanvas.resize.call(o, width, height);
+   var context = o._graphicContext;
+   var size = context.size();
+   var stage = o._activeStage;
+   if(stage){
+      var projection = stage.camera().projection();
+      projection.size().set(size.width, size.height);
+      projection.update();
+   }
+}
+MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
+   var o = this;
+   if(stage){
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.setAngle(80);
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
+   o._activeStage = stage;
+}
+MO.FDssCanvas_dispose = function FDssCanvas_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o._capturePosition = MO.Lang.Object.dispose(o._capturePosition);
+   o._captureRotation = MO.Lang.Object.dispose(o._captureRotation);
+   o.__base.FE3dCanvas.dispose.call(o);
+}
+MO.FDssDesktop = function FDssDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onOperationResize      = MO.FDssDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FDssDesktop_onOperationOrientation;
+   o.construct              = MO.FDssDesktop_construct;
+   o.build                  = MO.FDssDesktop_build;
+   o.resize                 = MO.FDssDesktop_resize;
+   o.dispose                = MO.FDssDesktop_dispose;
+   return o;
+}
+MO.FDssDesktop_onOperationResize = function FDssDesktop_onOperationResize(event){
+   var o = this;
+   o.__base.FDesktop.onOperationResize.call(o, event);
+   o.resize();
+}
+MO.FDssDesktop_onOperationOrientation = function FDssDesktop_onOperationOrientation(){
+   var o = this;
+   o.__base.FDesktop.onOperationOrientation.call(o, event);
+   o.resize();
+}
+MO.FDssDesktop_construct = function FDssDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+}
+MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   canvas3d.setDesktop(o);
+   canvas3d.build(hPanel);
+   canvas3d.setPanel(hPanel);
+   o.canvasRegister(canvas3d);
+   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas2d.setDesktop(o);
+   canvas2d.build(hPanel);
+   canvas2d.setPanel(hPanel);
+   canvas2d._hCanvas.style.position = 'absolute';
+   o.canvasRegister(canvas2d);
+   MO.RE3dEngine.setup();
+}
+MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
+   var o = this;
+   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
+   if(o._screenSize.equalsData(width, height)){
+      return;
+   }
+   o._screenSize.set(width, height);
+   var pixelRatio = MO.Browser.capability().pixelRatio;
+   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
+   width *= pixelRatio;
+   height *= pixelRatio;
+   var widthRate = 1;
+   var heightRate = 1;
+   var logicSize = o._logicSize;
+   if(MO.Browser.isOrientationHorizontal()){
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
+   }else{
+      widthRate = width / logicSize.height;
+      heightRate = height / logicSize.width;
+      o._calculateSize.set(logicSize.height, logicSize.width);
+   }
+   var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
+   o._logicRate.set(widthRate, heightRate);
+   if(widthRate > heightRate){
+      o._calculateRate.set(widthRate / sizeRate, 1);
+   }else if(widthRate < heightRate){
+      o._calculateRate.set(1, heightRate / sizeRate);
+   }else{
+      o._calculateRate.set(1, 1);
+   }
+   o._canvas3d.resize(width, height);
+   var canvas2d = o._canvas2d;
+   canvas2d.resize(width, height);
+   canvas2d.graphicContext().setScale(sizeRate, sizeRate);
+}
+MO.FDssDesktop_dispose = function FDssDesktop_dispose(){
+   var o = this;
+   o._canvas3d = MO.RObject.dispose(o._canvas3d);
+   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o.__base.FDesktop.dispose.call(o);
+}
 with(MO){
    MO.FDsSystemTabBar = function FDsSystemTabBar(o){
       o = RClass.inherits(this, o, FUiTabBar);
@@ -4400,11 +4556,7 @@ with(MO){
    }
    MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
       var o = this;
-      var v = o._rotation;
-      if(v){
-         v.dispose();
-         o._rotation = null;
-      }
+      o._rotation = MO.Lang.Obejct.dispose(o._rotation)
       o.__base.FDsCanvas.dispose.call(o);
    }
 }

@@ -149,15 +149,16 @@ MO.FAudio_play = function FAudio_play(position){
 MO.FAudio_pause = function FAudio_pause(){
    this._hAudio.pause();
 }
-MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
       hAudio.__linker = o;
    }
+   o._url = url;
    hAudio.src = url;
 }
 MO.FAudio_dispose = function FAudio_dispose(){
@@ -207,9 +208,9 @@ MO.FImage_image = function FImage_image(){
 MO.FImage_testReady = function FImage_testReady(){
    return this._ready;
 }
-MO.FImage_loadUrl = function FImage_loadUrl(url){
+MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -217,6 +218,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(url){
       hImage.onload = o.ohLoad;
       hImage.onerror = o.ohError;
    }
+   o._url = url;
    hImage.src = url;
 }
 MO.FImage_dispose = function FImage_dispose(){
@@ -557,7 +559,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = RResource.iconPath(u);
+      r.src = MO.RResource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -570,7 +572,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
 MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
    var r = this.create(d, 'IMG', u);
    if(u){
-      r.src = RResource.imagePath(u);
+      r.src = MO.RResource.imagePath(u);
    }
    if(w){
       r.style.width = w;
@@ -724,7 +726,7 @@ MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, c
 MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
    var r = null;
    if(i == null){
-      if(MO.RBrowser.isBrowser(EBrowser.Explorer)){
+      if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
          r = p.insertRow();
       }else{
          r = p.insertRow(-1);
@@ -1115,7 +1117,7 @@ MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
    return r;
 }
 MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;
@@ -1142,7 +1144,7 @@ MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
 MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
    if(hs){
       var c = hs.length;
-      for(var n=0; n < c; n++){
+      for(var n = 0; n < c; n++){
          var h = hs[n];
          if(h.value == v){
             h.checked = true;
@@ -1529,14 +1531,14 @@ MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       case MO.EScope.Local:
          var storage = o._localStorage;
          if(!storage){
-            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.localStorage);
          }
          return storage;
       case MO.EScope.Session:
          var storage = o._sessionStorage;
          if(!storage){
-            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.sessionStorage);
          }
          return storage;
@@ -1547,7 +1549,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
    var o = this;
    var h = o._hDisablePanel;
    if(!h){
-      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
       h.style.zIndex = 5000;
    }
    var hi = o._hDisableImage;
@@ -1557,7 +1559,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       hi.style.margin = o._hContainer.offsetHeight / 2;
       hi.style.display = 'none';
    }
-   RHtml.visibleSet(hi, f);
+   MO.RHtml.visibleSet(hi, f);
    return h;
 }
 MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){

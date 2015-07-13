@@ -155,7 +155,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var control = o._southSea = MO.Class.create(MO.FGuiPicture);
    control.setDisplayOrder(-10);
    control.size().set(134, 203);
-   control.setBackResource('url:/script/ars/eai/south-sea.png');
+   control.setBackResource('url:{eai.resource}/south-sea.png');
    control.psInitialize();
    control.build();
    o._guiManager.register(control);

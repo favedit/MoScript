@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='N'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_model_matrix' format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <Parameter name='vc_bone_matrix'  format='Float4x4'/>
+   <Parameter name='fc_index'        format='Float4'/>
+   <!--=====================================================-->
+   <Attribute name='va_position'     linker='position' format='Float4'/>
+   <Attribute name='va_coord'        linker='coord'    format='Float2'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'        linker='diffuse'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 变换矩阵声明
+      uniform mat4 vc_model_matrix;
+      //uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
+      uniform mat4 vc_bone_matrix[40];
+      uniform mat4 vc_vp_matrix;
+      //..........................................................
+      // 属性流声明
+      attribute vec3 va_position;
+      <shader:true source='vertex.attribute.coord'>
+      attribute vec2 va_coord;
+      </shader:true>
+      //..........................................................
+      // 属性流声明
+      varying vec4 v_model_position;
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(){
+         // 获得输入坐标
+         vec4 inputPosition = vec4(va_position, 1.0);
+         // 计算骨骼坐标
+         vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         // 计算模型坐标
+         vec4 modelPosition = position * vc_model_matrix;
+         // 计算最终坐标
+         gl_Position = modelPosition * vc_vp_matrix;
+         v_model_position = modelPosition;
+         // 设置纹理
+         <shader:true source='vertex.attribute.coord'>
+         v_coord = va_coord;
+         </shader:true>
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision highp float;
+      #endif
+      //..........................................................
+      // 声明常量
+      uniform vec4 fc_index;
+      //..........................................................
+      // 声明插值器
+      varying vec4 v_model_position;
+      varying vec4 v_position;
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 声明取样器
+      <shader:true source='support.ambient.sampler'>
+      uniform sampler2D fs_diffuse;
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(void){
+         //............................................................
+         // 计算环境颜色
+         <shader:true source='support.ambient'>
+         <shader:true source='support.ambient.sampler'>
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         if(color.a < fc_index.x){
+            discard;
+         }
+         </shader:true>
+         //............................................................
+         gl_FragColor = fc_index;
+      }
+   ]]></Source>
+</Configuration>

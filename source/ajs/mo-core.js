@@ -2825,7 +2825,7 @@ MO.FDragConsole_onMouseDown = function FDragConsole_onMouseDown(p){
    if(!es){
       return;
    }
-   if(!RClass.isClass(es, MO.MUiDragable)){
+   if(!MO.Class.isClass(es, MO.MUiDragable)){
       return;
    }
    MO.RWindow.setOptionSelect(false);

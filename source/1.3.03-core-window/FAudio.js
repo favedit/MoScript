@@ -133,11 +133,11 @@ MO.FAudio_pause = function FAudio_pause(){
 // <T>加载网络地址资源。</T>
 //
 // @method
-// @param url:String 网络地址
+// @param uri:String 网络地址
 //==========================================================
-MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    // 创建图片
    var hAudio = o._hAudio;
    if(!hAudio){
@@ -148,6 +148,7 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(url){
       //hAudio.onerror = o.ohError;
    }
    // 加载图片
+   o._url = url;
    hAudio.src = url;
 }
 

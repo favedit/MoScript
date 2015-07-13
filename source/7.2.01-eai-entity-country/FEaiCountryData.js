@@ -82,7 +82,7 @@ MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
 //==========================================================
 MO.FEaiCountryData_load = function FEaiCountryData_load(){
    var o = this;
-   var url = '/script/ars/eai/country.dat';
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/country.dat');
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoaded);
 }

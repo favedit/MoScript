@@ -1,0 +1,143 @@
+/* ------------------------------------------------------ */
+/* html                                                   */
+/* ------------------------------------------------------ */
+html{
+   width:100%;
+   height:100%;
+}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+body{
+   width:100%;
+   height:100%;
+   margin: 0px;
+   padding: 0px;
+   overflow: hidden;
+   -webkit-user-select:none;
+   -webkit-touch-callout: none;
+   -webkit-text-size-adjust: none;
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/* ------------------------------------------------------ */
+/* Href                                                   */
+/* ------------------------------------------------------ */
+a{
+   text-decoration:none;
+   color :blue;
+}
+
+a:hover{
+   text-decoration:underline;
+}
+
+/* ------------------------------------------------------ */
+/* Text                                                   */
+/* ------------------------------------------------------ */
+td{
+   font-family:"Microsoft YaHei"; 
+   font-size:9pt;
+}
+
+div{
+   font-family:"Microsoft YaHei";
+   font-size:9pt;
+}
+
+span{
+   font-family:"Microsoft YaHei";
+   font-size:9pt;
+}
+
+th{
+   font-family:"Microsoft YaHei"; 
+   font-size:9pt;
+}
+
+/* ------------------------------------------------------ */
+/* Input                                                  */
+/* ------------------------------------------------------ */
+input{
+   font-family:"NSimSun";
+   font-size:9pt;
+}
+
+select{
+   font-family:"NSimSun";
+   font-size:9pt;
+   border:1px solid #999999;
+}
+
+textarea{
+   font-family:"NSimSun"; font-size:9pt;
+   border:1px solid #999999;
+}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+.bodyCatalog{
+   margin:0; padding:0;
+}
+
+.bodyMain{
+   margin:0; padding:0;
+   background-color:#FFFFDD;
+}
+
+.bodyLogic{
+   margin:0; padding:0;
+}
+
+.Tag_Check{
+   border:0; cursor:hand;
+}
+
+/* ------------------------------------------------------ */
+/* DataGrid                                               */
+/* ------------------------------------------------------ */
+.DataGrid_Ground{
+   border:2px solid #1DACE5;
+   border-radius: 6px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Title{
+}
+
+.DataGrid_Border{
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.5);
+}
+
+.DataGrid_Row{
+   color: #1DACE5;
+   border:1px solid #1DACE5;
+   border-radius: 3px;
+   background-color:rgba(10, 39, 69, 0.3);
+}
+
+/* ------------------------------------------------------ */
+/* Investment_DataGrid                                    */
+/* ------------------------------------------------------ */
+.Investment_DataGrid_RowTitle{
+   color: #FFFFFF;
+   border:1px solid #1DACE5;
+   background-color:#006699;
+}
+
+.Investment_DataGrid_RowCell{
+   font-size:16pt;
+}
+
+.Investment_DataGrid_Row{
+   color: #1DACE5;
+   background-color:rgba(10, 39, 69, 0.3);
+}
+
+.Investment_DataGrid_Cell{
+   font-size:16pt;
+}

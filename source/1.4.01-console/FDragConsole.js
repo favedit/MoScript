@@ -43,7 +43,7 @@ MO.FDragConsole_onMouseDown = function FDragConsole_onMouseDown(p){
       return;
    }
    // 检查类型
-   if(!RClass.isClass(es, MO.MUiDragable)){
+   if(!MO.Class.isClass(es, MO.MUiDragable)){
       return;
    }
    // 拖拽处理

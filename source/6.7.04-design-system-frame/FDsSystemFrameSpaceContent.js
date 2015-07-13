@@ -378,11 +378,7 @@ with(MO){
    MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
       var o = this;
       // 释放旋转
-      var v = o._rotation;
-      if(v){
-         v.dispose();
-         o._rotation = null;
-      }
+      o._rotation = MO.Lang.Obejct.dispose(o._rotation)
       // 父处理
       o.__base.FDsCanvas.dispose.call(o);
    }

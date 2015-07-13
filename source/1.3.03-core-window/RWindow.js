@@ -369,14 +369,14 @@ MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       case MO.EScope.Local:
          var storage = o._localStorage;
          if(!storage){
-            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.localStorage);
          }
          return storage;
       case MO.EScope.Session:
          var storage = o._sessionStorage;
          if(!storage){
-            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.sessionStorage);
          }
          return storage;
@@ -396,7 +396,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
    // 创建面板
    var h = o._hDisablePanel;
    if(!h){
-      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
       h.style.zIndex = 5000;
    }
    // 创建图片
@@ -407,7 +407,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       hi.style.margin = o._hContainer.offsetHeight / 2;
       hi.style.display = 'none';
    }
-   RHtml.visibleSet(hi, f);
+   MO.RHtml.visibleSet(hi, f);
    return h;
 }
 

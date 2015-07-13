@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='Y' source='SrcAlpha' target='OneMinusSrcAlpha'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_position'            format='Float4'/>
+   <!--=====================================================-->
+   <Attribute name='va_instance'    linker='instance'    format='Float1'/>
+   <Attribute name='va_position'    linker='position'    format='Float4'/>
+   <Attribute name='va_color'       linker='color'       format='Byte4Normal'/>
+   <Attribute name='va_coord'       linker='coord'       format='Float2'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'     linker='diffuse'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 变换矩阵声明
+      <shader:true source='option.instance'>
+         uniform vec4 vc_position[<shader:write source='instance.count'/>];
+      </shader:true>
+      <shader:false source='option.instance'>
+         uniform vec4 vc_position;
+      </shader:false>
+      //..........................................................
+      // 属性流声明
+      <shader:true source='option.instance'>
+         attribute float va_instance;
+      </shader:true>
+      attribute vec3 va_position;
+      <shader:true source='vertex.attribute.color'>
+         attribute vec4 va_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+         attribute vec2 va_coord;
+      </shader:true>
+      //..........................................................
+      // 属性流声明
+      <shader:true source='vertex.attribute.color'>
+      varying vec4 v_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(){
+         // 计算模型坐标
+         <shader:true source='option.instance'>
+            vec4 vcPosition = vc_position[int(va_instance)];
+         </shader:true>
+         <shader:false source='option.instance'>
+            vec4 vcPosition = vc_position;
+         </shader:false>
+         vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
+         position.xy = va_position.xy * vcPosition.xy;
+         position.xy += vcPosition.zw;
+         // 计算最终坐标
+         gl_Position = position;
+         // 设置颜色
+         <shader:true source='vertex.attribute.color'>
+            v_color = va_color * 1.0625;
+         </shader:true>
+         // 设置纹理
+         <shader:true source='vertex.attribute.coord'>
+            v_coord = va_coord;
+         </shader:true>
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision highp float;
+      #endif
+      //..........................................................
+      // 声明插值器
+      varying vec4 v_position;
+      <shader:true source='vertex.attribute.color'>
+      varying vec4 v_color;
+      </shader:true>
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
+      </shader:true>
+      //..........................................................
+      // 声明取样器
+      <shader:true source='support.ambient.sampler'>
+      uniform sampler2D fs_diffuse;
+      </shader:true>
+      //..........................................................
+      // 处理
+      void main(void){
+         vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+         //............................................................
+         // 计算环境颜色
+         <shader:true source='option.ambient'>
+            <shader:true source='support.ambient'>
+               <shader:true source='support.ambient.sampler'>
+                  color = texture2D(fs_diffuse, v_coord);
+               </shader:true>
+            </shader:true>
+            <shader:equals source='technique.mode' value='result'>
+               result = color;
+               //result = vec4(1.0 - color.a, 1.0 - color.a, 1.0 - color.a, 1.0);
+            </shader:equals>
+         </shader:true>
+         //............................................................
+         gl_FragColor = result;
+      }
+   ]]></Source>
+</Configuration>

@@ -179,7 +179,7 @@ MO.TArray_get = function TArray_get(n){
    return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
 MO.TArray_set = function TArray_set(index, value){
-   if((index >= 0) && (n < this._length)){
+   if ((index >= 0) && (index < this._length)) {
       this._memory[index] = value;
    }
 }
@@ -1696,7 +1696,7 @@ MO.TClass_style = function TClass_style(n){
    var a = null;
    var p = o;
    while(p){
-      var as = p._annotations[EAnnotation.Style];
+      var as = p._annotations[MO.EAnnotation.Style];
       if(as){
          a = as[n];
          if(a){
@@ -2705,7 +2705,7 @@ MO.TNode_get = function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
 }
 MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return RInteger.parse(this.get(n, v));
+   return MO.Lang.Integer.parse(this.get(n, v));
 }
 MO.TNode_set = function TNode_set(n, v){
    if(v != null){
@@ -4699,7 +4699,7 @@ MO.RLogger.prototype.output = function RLogger_output(s, p){
 MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
    var o = this;
    var name = null;
-   var caller = MO.Logger_debug.caller;
+   var caller = MO.Logger.debug.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4767,7 +4767,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
 MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_warn.caller;
+   var caller = MO.Logger.warn.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4801,7 +4801,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
 MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_error.caller;
+   var caller = MO.Logger.error.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4840,7 +4840,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger_fatal.caller;
+   var f = RLogger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;
@@ -11524,7 +11524,7 @@ MO.FDragConsole_onMouseDown = function FDragConsole_onMouseDown(p){
    if(!es){
       return;
    }
-   if(!RClass.isClass(es, MO.MUiDragable)){
+   if(!MO.Class.isClass(es, MO.MUiDragable)){
       return;
    }
    MO.RWindow.setOptionSelect(false);
@@ -12660,15 +12660,16 @@ MO.FAudio_play = function FAudio_play(position){
 MO.FAudio_pause = function FAudio_pause(){
    this._hAudio.pause();
 }
-MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
       hAudio.__linker = o;
    }
+   o._url = url;
    hAudio.src = url;
 }
 MO.FAudio_dispose = function FAudio_dispose(){
@@ -12718,9 +12719,9 @@ MO.FImage_image = function FImage_image(){
 MO.FImage_testReady = function FImage_testReady(){
    return this._ready;
 }
-MO.FImage_loadUrl = function FImage_loadUrl(url){
+MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -12728,6 +12729,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(url){
       hImage.onload = o.ohLoad;
       hImage.onerror = o.ohError;
    }
+   o._url = url;
    hImage.src = url;
 }
 MO.FImage_dispose = function FImage_dispose(){
@@ -13068,7 +13070,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = RResource.iconPath(u);
+      r.src = MO.RResource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -13081,7 +13083,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
 MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
    var r = this.create(d, 'IMG', u);
    if(u){
-      r.src = RResource.imagePath(u);
+      r.src = MO.RResource.imagePath(u);
    }
    if(w){
       r.style.width = w;
@@ -13235,7 +13237,7 @@ MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, c
 MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
    var r = null;
    if(i == null){
-      if(MO.RBrowser.isBrowser(EBrowser.Explorer)){
+      if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
          r = p.insertRow();
       }else{
          r = p.insertRow(-1);
@@ -13626,7 +13628,7 @@ MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
    return r;
 }
 MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;
@@ -13653,7 +13655,7 @@ MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
 MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
    if(hs){
       var c = hs.length;
-      for(var n=0; n < c; n++){
+      for(var n = 0; n < c; n++){
          var h = hs[n];
          if(h.value == v){
             h.checked = true;
@@ -14040,14 +14042,14 @@ MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       case MO.EScope.Local:
          var storage = o._localStorage;
          if(!storage){
-            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.localStorage);
          }
          return storage;
       case MO.EScope.Session:
          var storage = o._sessionStorage;
          if(!storage){
-            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.sessionStorage);
          }
          return storage;
@@ -14058,7 +14060,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
    var o = this;
    var h = o._hDisablePanel;
    if(!h){
-      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
       h.style.zIndex = 5000;
    }
    var hi = o._hDisableImage;
@@ -14068,7 +14070,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       hi.style.margin = o._hContainer.offsetHeight / 2;
       hi.style.display = 'none';
    }
-   RHtml.visibleSet(hi, f);
+   MO.RHtml.visibleSet(hi, f);
    return h;
 }
 MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
@@ -34057,7 +34059,8 @@ MO.SGuiImage_load = function SGuiImage_load(){
    o.ready = false;
    var url = null;
    if(MO.Lang.String.startsWith(o.resource, 'url:')){
-      url = o.resource.substring(4);
+      var uri = o.resource.substring(4);
+      url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    }else{
       throw new MO.TError('Invalid url.');
    }
@@ -75224,6 +75227,162 @@ with(MO){
       o._controlExecute.addClickListener(o, o.onExecuteClick);
    }
 }
+MO.FDssCanvas = function FDssCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCanvas);
+   o._optionStageProcess = false;
+   o._optionResize       = false;
+   o._optionMouseCapture = false;
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
+   o._capturePosition    = null;
+   o._cameraPosition     = null;
+   o._scaleRate          = 1;
+   o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.construct           = MO.FDssCanvas_construct;
+   o.setPanel            = MO.FDssCanvas_setPanel;
+   o.resize              = MO.FDssCanvas_resize;
+   o.selectStage         = MO.FDssCanvas_selectStage;
+   o.dispose             = MO.FDssCanvas_dispose;
+   return o;
+}
+MO.FDssCanvas_construct = function FDssCanvas_construct(){
+   var o = this;
+   o.__base.FE3dCanvas.construct.call(o);
+   o._rotation = new MO.SVector3();
+   o._capturePosition = new MO.SPoint2();
+   o._captureRotation = new MO.SVector3();
+   o._logicSize = new MO.SSize2(1920, 1080);
+   o._cameraPosition = new MO.SPoint3();
+}
+MO.FDssCanvas_setPanel = function FDssCanvas_setPanel(hPanel){
+   var o = this;
+   o._hPanel = hPanel;
+   hPanel.appendChild(o._hCanvas);
+}
+MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
+   var o = this;
+   o.__base.FE3dCanvas.resize.call(o, width, height);
+   var context = o._graphicContext;
+   var size = context.size();
+   var stage = o._activeStage;
+   if(stage){
+      var projection = stage.camera().projection();
+      projection.size().set(size.width, size.height);
+      projection.update();
+   }
+}
+MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
+   var o = this;
+   if(stage){
+      stage.linkGraphicContext(o);
+      stage.region().linkGraphicContext(o);
+      stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.setAngle(80);
+      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
+   o._activeStage = stage;
+}
+MO.FDssCanvas_dispose = function FDssCanvas_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o._capturePosition = MO.Lang.Object.dispose(o._capturePosition);
+   o._captureRotation = MO.Lang.Object.dispose(o._captureRotation);
+   o.__base.FE3dCanvas.dispose.call(o);
+}
+MO.FDssDesktop = function FDssDesktop(o){
+   o = MO.Class.inherits(this, o, MO.FDesktop);
+   o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
+   o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
+   o.onOperationResize      = MO.FDssDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FDssDesktop_onOperationOrientation;
+   o.construct              = MO.FDssDesktop_construct;
+   o.build                  = MO.FDssDesktop_build;
+   o.resize                 = MO.FDssDesktop_resize;
+   o.dispose                = MO.FDssDesktop_dispose;
+   return o;
+}
+MO.FDssDesktop_onOperationResize = function FDssDesktop_onOperationResize(event){
+   var o = this;
+   o.__base.FDesktop.onOperationResize.call(o, event);
+   o.resize();
+}
+MO.FDssDesktop_onOperationOrientation = function FDssDesktop_onOperationOrientation(){
+   var o = this;
+   o.__base.FDesktop.onOperationOrientation.call(o, event);
+   o.resize();
+}
+MO.FDssDesktop_construct = function FDssDesktop_construct(){
+   var o = this;
+   o.__base.FDesktop.construct.call(o);
+}
+MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
+   var o = this;
+   o.__base.FDesktop.build.call(o, hPanel);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   canvas3d.setDesktop(o);
+   canvas3d.build(hPanel);
+   canvas3d.setPanel(hPanel);
+   o.canvasRegister(canvas3d);
+   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   canvas2d.setDesktop(o);
+   canvas2d.build(hPanel);
+   canvas2d.setPanel(hPanel);
+   canvas2d._hCanvas.style.position = 'absolute';
+   o.canvasRegister(canvas2d);
+   MO.RE3dEngine.setup();
+}
+MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
+   var o = this;
+   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
+   if(o._screenSize.equalsData(width, height)){
+      return;
+   }
+   o._screenSize.set(width, height);
+   var pixelRatio = MO.Browser.capability().pixelRatio;
+   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
+   width *= pixelRatio;
+   height *= pixelRatio;
+   var widthRate = 1;
+   var heightRate = 1;
+   var logicSize = o._logicSize;
+   if(MO.Browser.isOrientationHorizontal()){
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
+   }else{
+      widthRate = width / logicSize.height;
+      heightRate = height / logicSize.width;
+      o._calculateSize.set(logicSize.height, logicSize.width);
+   }
+   var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
+   o._logicRate.set(widthRate, heightRate);
+   if(widthRate > heightRate){
+      o._calculateRate.set(widthRate / sizeRate, 1);
+   }else if(widthRate < heightRate){
+      o._calculateRate.set(1, heightRate / sizeRate);
+   }else{
+      o._calculateRate.set(1, 1);
+   }
+   o._canvas3d.resize(width, height);
+   var canvas2d = o._canvas2d;
+   canvas2d.resize(width, height);
+   canvas2d.graphicContext().setScale(sizeRate, sizeRate);
+}
+MO.FDssDesktop_dispose = function FDssDesktop_dispose(){
+   var o = this;
+   o._canvas3d = MO.RObject.dispose(o._canvas3d);
+   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o.__base.FDesktop.dispose.call(o);
+}
 with(MO){
    MO.FDsSystemTabBar = function FDsSystemTabBar(o){
       o = RClass.inherits(this, o, FUiTabBar);
@@ -77628,11 +77787,7 @@ with(MO){
    }
    MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
       var o = this;
-      var v = o._rotation;
-      if(v){
-         v.dispose();
-         o._rotation = null;
-      }
+      o._rotation = MO.Lang.Obejct.dispose(o._rotation)
       o.__base.FDsCanvas.dispose.call(o);
    }
 }

@@ -179,7 +179,7 @@ MO.TArray_get = function TArray_get(n){
    return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
 MO.TArray_set = function TArray_set(index, value){
-   if((index >= 0) && (n < this._length)){
+   if ((index >= 0) && (index < this._length)) {
       this._memory[index] = value;
    }
 }
@@ -1696,7 +1696,7 @@ MO.TClass_style = function TClass_style(n){
    var a = null;
    var p = o;
    while(p){
-      var as = p._annotations[EAnnotation.Style];
+      var as = p._annotations[MO.EAnnotation.Style];
       if(as){
          a = as[n];
          if(a){
@@ -2705,7 +2705,7 @@ MO.TNode_get = function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
 }
 MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return RInteger.parse(this.get(n, v));
+   return MO.Lang.Integer.parse(this.get(n, v));
 }
 MO.TNode_set = function TNode_set(n, v){
    if(v != null){
@@ -4699,7 +4699,7 @@ MO.RLogger.prototype.output = function RLogger_output(s, p){
 MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
    var o = this;
    var name = null;
-   var caller = MO.Logger_debug.caller;
+   var caller = MO.Logger.debug.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4767,7 +4767,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
 MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_warn.caller;
+   var caller = MO.Logger.warn.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4801,7 +4801,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
 MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_error.caller;
+   var caller = MO.Logger.error.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4840,7 +4840,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger_fatal.caller;
+   var f = RLogger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;

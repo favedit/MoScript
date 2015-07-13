@@ -50,7 +50,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = RResource.iconPath(u);
+      r.src = MO.RResource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -75,7 +75,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
 MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
    var r = this.create(d, 'IMG', u);
    if(u){
-      r.src = RResource.imagePath(u);
+      r.src = MO.RResource.imagePath(u);
    }
    if(w){
       r.style.width = w;
@@ -483,7 +483,7 @@ MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, c
 MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
    var r = null;
    if(i == null){
-      if(MO.RBrowser.isBrowser(EBrowser.Explorer)){
+      if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
          r = p.insertRow();
       }else{
          r = p.insertRow(-1);
@@ -534,7 +534,7 @@ MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, 
    if(i == null){
       r = o.create(p, 'TD', s);
       p.appendChild(r);
-      //if(RBrowser.isBrowser(EBrowser.Explorer)){
+      //if(RBrowser.isBrowser(MO.EBrowser.Explorer)){
       //   r = p.insertCell();
       //}else{
       //   r = p.insertCell(-1);

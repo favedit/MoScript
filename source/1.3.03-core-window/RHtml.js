@@ -126,7 +126,7 @@ MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
 // @param v:value:String 文本内容
 //==========================================================
 MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;
@@ -185,7 +185,7 @@ MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
 MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
    if(hs){
       var c = hs.length;
-      for(var n=0; n < c; n++){
+      for(var n = 0; n < c; n++){
          var h = hs[n];
          if(h.value == v){
             h.checked = true;

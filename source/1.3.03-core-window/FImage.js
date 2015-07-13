@@ -96,11 +96,11 @@ MO.FImage_testReady = function FImage_testReady(){
 // <T>加载网络地址资源。</T>
 //
 // @method
-// @param p:url:String 网络地址
+// @param uri:String 网络地址
 //==========================================================
-MO.FImage_loadUrl = function FImage_loadUrl(url){
+MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    // 创建图片
    var hImage = o._hImage;
    if(!hImage){
@@ -110,6 +110,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(url){
       hImage.onerror = o.ohError;
    }
    // 加载图片
+   o._url = url;
    hImage.src = url;
 }
 

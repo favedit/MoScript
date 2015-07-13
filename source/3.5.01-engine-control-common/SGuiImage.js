@@ -53,7 +53,8 @@ MO.SGuiImage_load = function SGuiImage_load(){
    o.ready = false;
    var url = null;
    if(MO.Lang.String.startsWith(o.resource, 'url:')){
-      url = o.resource.substring(4);
+      var uri = o.resource.substring(4);
+      url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    }else{
       throw new MO.TError('Invalid url.');
    }

@@ -202,7 +202,7 @@ MO.TNode_get = function TNode_get(n, v){
 // @return Integer 数字内容
 //==========================================================
 MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return RInteger.parse(this.get(n, v));
+   return MO.Lang.Integer.parse(this.get(n, v));
 }
 
 //==========================================================

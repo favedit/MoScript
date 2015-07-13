@@ -179,7 +179,7 @@ MO.TArray_get = function TArray_get(n){
    return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
 MO.TArray_set = function TArray_set(index, value){
-   if((index >= 0) && (n < this._length)){
+   if ((index >= 0) && (index < this._length)) {
       this._memory[index] = value;
    }
 }
@@ -1696,7 +1696,7 @@ MO.TClass_style = function TClass_style(n){
    var a = null;
    var p = o;
    while(p){
-      var as = p._annotations[EAnnotation.Style];
+      var as = p._annotations[MO.EAnnotation.Style];
       if(as){
          a = as[n];
          if(a){
@@ -2705,7 +2705,7 @@ MO.TNode_get = function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
 }
 MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return RInteger.parse(this.get(n, v));
+   return MO.Lang.Integer.parse(this.get(n, v));
 }
 MO.TNode_set = function TNode_set(n, v){
    if(v != null){
@@ -4699,7 +4699,7 @@ MO.RLogger.prototype.output = function RLogger_output(s, p){
 MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
    var o = this;
    var name = null;
-   var caller = MO.Logger_debug.caller;
+   var caller = MO.Logger.debug.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4767,7 +4767,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
 MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_warn.caller;
+   var caller = MO.Logger.warn.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4801,7 +4801,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
 MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_error.caller;
+   var caller = MO.Logger.error.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -4840,7 +4840,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger_fatal.caller;
+   var f = RLogger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;
@@ -11524,7 +11524,7 @@ MO.FDragConsole_onMouseDown = function FDragConsole_onMouseDown(p){
    if(!es){
       return;
    }
-   if(!RClass.isClass(es, MO.MUiDragable)){
+   if(!MO.Class.isClass(es, MO.MUiDragable)){
       return;
    }
    MO.RWindow.setOptionSelect(false);
@@ -12660,15 +12660,16 @@ MO.FAudio_play = function FAudio_play(position){
 MO.FAudio_pause = function FAudio_pause(){
    this._hAudio.pause();
 }
-MO.FAudio_loadUrl = function FAudio_loadUrl(url){
+MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
       hAudio.__linker = o;
    }
+   o._url = url;
    hAudio.src = url;
 }
 MO.FAudio_dispose = function FAudio_dispose(){
@@ -12718,9 +12719,9 @@ MO.FImage_image = function FImage_image(){
 MO.FImage_testReady = function FImage_testReady(){
    return this._ready;
 }
-MO.FImage_loadUrl = function FImage_loadUrl(url){
+MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   o._url = url;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -12728,6 +12729,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(url){
       hImage.onload = o.ohLoad;
       hImage.onerror = o.ohError;
    }
+   o._url = url;
    hImage.src = url;
 }
 MO.FImage_dispose = function FImage_dispose(){
@@ -13068,7 +13070,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = RResource.iconPath(u);
+      r.src = MO.RResource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -13081,7 +13083,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
 MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
    var r = this.create(d, 'IMG', u);
    if(u){
-      r.src = RResource.imagePath(u);
+      r.src = MO.RResource.imagePath(u);
    }
    if(w){
       r.style.width = w;
@@ -13235,7 +13237,7 @@ MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, c
 MO.RBuilder.prototype.appendTableRow = function RBuilder_appendTableRow(p, s, i, h){
    var r = null;
    if(i == null){
-      if(MO.RBrowser.isBrowser(EBrowser.Explorer)){
+      if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
          r = p.insertRow();
       }else{
          r = p.insertRow(-1);
@@ -13626,7 +13628,7 @@ MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
    return r;
 }
 MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
+   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;
@@ -13653,7 +13655,7 @@ MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
 MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
    if(hs){
       var c = hs.length;
-      for(var n=0; n < c; n++){
+      for(var n = 0; n < c; n++){
          var h = hs[n];
          if(h.value == v){
             h.checked = true;
@@ -14040,14 +14042,14 @@ MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
       case MO.EScope.Local:
          var storage = o._localStorage;
          if(!storage){
-            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.localStorage);
          }
          return storage;
       case MO.EScope.Session:
          var storage = o._sessionStorage;
          if(!storage){
-            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
             storage.link(window.sessionStorage);
          }
          return storage;
@@ -14058,7 +14060,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
    var o = this;
    var h = o._hDisablePanel;
    if(!h){
-      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
       h.style.zIndex = 5000;
    }
    var hi = o._hDisableImage;
@@ -14068,7 +14070,7 @@ MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
       hi.style.margin = o._hContainer.offsetHeight / 2;
       hi.style.display = 'none';
    }
-   RHtml.visibleSet(hi, f);
+   MO.RHtml.visibleSet(hi, f);
    return h;
 }
 MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
@@ -34057,7 +34059,8 @@ MO.SGuiImage_load = function SGuiImage_load(){
    o.ready = false;
    var url = null;
    if(MO.Lang.String.startsWith(o.resource, 'url:')){
-      url = o.resource.substring(4);
+      var uri = o.resource.substring(4);
+      url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    }else{
       throw new MO.TError('Invalid url.');
    }

@@ -278,12 +278,6 @@
          <File source='/ajs/mo-design.js'/>
          <File source='/ajs/mo-design-logic.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-es.js'>
-         <File source='/ajs/mo-core.js'/>
-         <File source='/ajs/mo-graphic.js'/>
-         <File source='/ajs/mo-engine.js'/>
-         <File source='/ajs/engine-3d-server.js'/>
-      </FileMerger>
       <FileMerger target='/ajs/eai.js'>
          <File source='/ajs/eai-common.js'/>
          <File source='/ajs/eai-resource.js'/>
@@ -298,8 +292,22 @@
          <File source='/ajs/eai-application.js'/>
          <File source='/ajs/eai-space.js'/>
       </FileMerger>
+      <FileMerger target='/ajs/mo-es.js'>
+         <File source='/ajs/mo-core.js'/>
+         <File source='/ajs/mo-graphic.js'/>
+         <File source='/ajs/mo-engine.js'/>
+         <File source='/ajs/engine-3d-server.js'/>
+      </FileMerger>
       <FileMerger target='/ajs/mo-demo.js'>
          <File source='/ajs/demo.js'/>
+      </FileMerger>
+      <!-- MoPlatform -->
+      <FileMerger target='/ajs/mp.js'>
+         <File source='/ajs/lzma-d.js'/>
+         <File source='/ajs/lzma.js'/>
+         <File source='/ajs/mo.js'/>
+         <File source='/ajs/eai.js'/>
+         <File source='/ajs/context_cn.js'/>
       </FileMerger>
    </FileMergerCollection>
 </Configuration>
