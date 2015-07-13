@@ -904,7 +904,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var context = o._graphicContext;
    var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
    var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('/script/ars/eai/particle/6.png');
+   particleData.loadUrl('{eai.resource}/particle/6.png');
    particle.setData(particleData);
    o.fixMatrix(particle.matrix());
    o._activeStage.spriteLayer().pushRenderable(particle);
