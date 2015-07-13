@@ -312,6 +312,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
+   var controlInvestment = o._logoBar.findComponent('investment');
+   controlInvestment.setRollingDuration(100);
    //..........................................................
    // 创建城市图示
    //var control = o._playButton = MO.Class.create(MO.FGuiPicture);
@@ -466,7 +468,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       var controlDate = o._logoBar.findComponent('date');
       controlDate.setValue(code);
       var controlInvestment = o._logoBar.findComponent('investment');
-      controlInvestment.setLabel(parseInt(dateData.investmentTotal()).toString());
+      controlInvestment.setValue(parseInt(dateData.investmentTotal()).toString());
    }
 }
 

@@ -9,26 +9,26 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiLabel);
    //..........................................................
    // @attribute
-   o._value        = MO.Class.register(o, new MO.AGetter('_value'), '0');
-   o._originValue = '0';
+   o._value           = MO.Class.register(o, new MO.AGetter('_value'), '0');
+   o._originValue     = '0';
    // @attribute
-   o._startTick    = 0;
-   o._rolling      = false;
-   o._rollingDuration = 1000;
-   o._rollingPages = null;
+   o._startTick       = 0;
+   o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
+   o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
+   o._rollingPages    = null;
    //..........................................................
    // @method
-   o.onPaintLabel  = MO.FEaiStatisticsLabel_onPaintLabel;
+   o.onPaintLabel     = MO.FEaiStatisticsLabel_onPaintLabel;
    //..........................................................
    // @process
-   o.oeUpdate      = MO.FEaiStatisticsLabel_oeUpdate;
+   o.oeUpdate         = MO.FEaiStatisticsLabel_oeUpdate;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiStatisticsLabel_construct;
+   o.construct        = MO.FEaiStatisticsLabel_construct;
    // @method
-   o.setValue      = MO.FEaiStatisticsLabel_setValue;
+   o.setValue         = MO.FEaiStatisticsLabel_setValue;
    // @method
-   o.dispose       = MO.FEaiStatisticsLabel_dispose;
+   o.dispose          = MO.FEaiStatisticsLabel_dispose;
    return o;
 }
 
@@ -107,6 +107,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
 
    if (o._rolling == false) {
       o._originValue = o._value;
+      o._rollingPages.clear();
    }
 
 }
@@ -120,6 +121,10 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var o = this;
    if (o._value == value) {
       return;
+   }
+
+   if (o._rolling) {
+      o._originValue = o._value;
    }
 
    o._value = value;
