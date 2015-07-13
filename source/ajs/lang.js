@@ -3536,7 +3536,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger.fatal.caller;
+   var f = MO.Logger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;
@@ -3580,7 +3580,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
 MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_show.caller;
+   var caller = MO.Logger.show.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){

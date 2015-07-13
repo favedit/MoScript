@@ -7,7 +7,6 @@
 MO.FDssCanvas = function FDssCanvas(o){
    o = MO.Class.inherits(this, o, MO.FE3dCanvas);
    //..........................................................
-   //..........................................................
    // @attribute
    o._optionStageProcess = false;
    o._optionResize       = false;

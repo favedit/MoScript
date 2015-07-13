@@ -5009,7 +5009,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger.fatal.caller;
+   var f = MO.Logger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;
@@ -5053,7 +5053,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
 MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_show.caller;
+   var caller = MO.Logger.show.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -13931,25 +13931,25 @@ MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
    }
    return null;
 }
-MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
-   while(h){
-      var f = h.__linker;
-      if(f){
-         if(RClass.isClass(f, c)){
-            return f;
+MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(hTag, clazz){
+   while(hTag){
+      var linker = hTag.__linker;
+      if(linker){
+         if(MO.Class.isClass(linker, clazz)){
+            return linker;
          }
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }
-MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
-   while(h){
-      var f = h[n];
-      if(f){
-         return f;
+MO.RHtml.prototype.searchObject = function RHtml_searchObject(hTag, name){
+   while(hTag){
+      var flag = hTag[name];
+      if(flag){
+         return flag;
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }
@@ -35624,10 +35624,14 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
    o._visibleControls = new MO.TObjects();
 }
 MO.FGuiManager_register = function FGuiManager_register(control){
-   this._controls.push(control);
+   var o = this;
+   o._controls.push(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_unregister = function FGuiManager_unregister(control){
-   this._controls.remove(control);
+   var o = this;
+   o._controls.remove(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
    var o = this;
@@ -39953,351 +39957,358 @@ with(MO){
       o.__base.FUiControl.dispose.call(o);
    }
 }
-with(MO){
-   MO.FUiControl = function FUiControl(o){
-      o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding, MUiMargin);
-      o._wrapCd        = RClass.register(o, [new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine), new AGetSet('_wrapCd')]);
-      o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
-      o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
-      o._hint          = RClass.register(o, new APtyString('_hint'));
-      o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-      o._layoutCd      = EUiLayout.Display;
-      o._sizeCd        = EUiSize.Normal;
-      o._statusVisible = true;
-      o._statusEnable  = true;
-      o._statusBuild   = false;
-      o._statusBuilded = false;
-      o._storage       = null;
-      o._hParent       = null;
-      o._hPanel        = null;
-      o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FUiControl_onEnter);
-      o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FUiControl_onLeave);
-      o.onBuildPanel   = FUiControl_onBuildPanel;
-      o.onBuild        = FUiControl_onBuild;
-      o.onBuilded      = RMethod.empty;
-      o.oeMode         = FUiControl_oeMode;
-      o.oeEnable       = FUiControl_oeEnable;
-      o.oeVisible      = FUiControl_oeVisible;
-      o.oeResize       = FUiControl_oeResize;
-      o.oeRefresh      = FUiControl_oeRefresh;
-      o.construct      = FUiControl_construct;
-      o.topControl     = FUiControl_topControl;
-      o.panel          = FUiControl_panel;
-      o.isVisible      = FUiControl_isVisible;
-      o.setVisible     = FUiControl_setVisible;
-      o.show           = FUiControl_show;
-      o.hide           = FUiControl_hide;
-      o.isEnable       = FUiControl_isEnable;
-      o.setEnable      = FUiControl_setEnable;
-      o.enable         = FUiControl_enable;
-      o.disable        = FUiControl_disable;
-      o.attachEvent    = FUiControl_attachEvent;
-      o.linkEvent      = FUiControl_linkEvent;
-      o.callEvent      = FUiControl_callEvent;
-      o.psMode         = FUiControl_psMode;
-      o.psDesign       = FUiControl_psDesign;
-      o.psEnable       = FUiControl_psEnable;
-      o.psVisible      = FUiControl_psVisible;
-      o.psResize       = FUiControl_psResize;
-      o.psRefresh      = FUiControl_psRefresh;
-      o.isBuild        = FUiControl_isBuild;
-      o.build          = FUiControl_build;
-      o.builded        = FUiControl_builded;
-      o.refresh        = FUiControl_refresh;
-      o.setPanel       = FUiControl_setPanel;
-      o.dispose        = FUiControl_dispose;
-      return o;
-   }
-   MO.FUiControl_onEnter = function FUiControl_onEnter(e){
-      var o = this;
-      RConsole.find(FUiFocusConsole).enter(o);
-      if(o._hint){
-         RWindow.setStatus(o._hint);
-      }
-   }
-   MO.FUiControl_onLeave = function FUiControl_onLeave(e){
-      var o = this;
-      RConsole.find(FUiFocusConsole).leave(o);
-      if(o._hint){
-         RWindow.setStatus();
-      }
-   }
-   MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-   }
-   MO.FUiControl_onBuild = function FUiControl_onBuild(p){
-      var o = this;
-      o.onBuildPanel(p);
-      if(o._statusVisible != o._visible){
-         o.setVisible(o._visible);
-      }
-      var h = o._hPanel;
-      RHtml.linkSet(h, 'control', o);
-      o.attachEvent('onEnter', h);
-      o.attachEvent('onLeave', h);
-      o.refreshBounds();
-      o.refreshPadding();
-      o.refreshMargin();
-   }
-   MO.FUiControl_oeMode = function FUiControl_oeMode(e){
-      var o = this;
-      o._displayCd = e.displayCd;
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
-      var o = this;
-      if(e.isBefore()){
-         o.setEnable(e.enable);
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
-      var o = this;
-      if(e.isBefore()){
-         o.setVisible(e.visible);
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeResize = function FUiControl_oeResize(p){
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_construct = function FUiControl_construct(){
-      var o = this;
-      o.__base.FUiComponent.construct.call(o);
-      o.__base.MUiStyle.construct.call(o);
-      o.__base.MUiSize.construct.call(o);
-      o.__base.MUiPadding.construct.call(o);
-      o.__base.MUiMargin.construct.call(o);
-   }
-   MO.FUiControl_topControl = function FUiControl_topControl(c){
-      var r = this;
-      if(c){
-         while(r._parent){
-            if(RClass.isClass(r._parent, c)){
-               return r._parent;
-            }
-            r = r._parent;
-         }
-         if(!RClass.isClass(r, c)){
-            return null;
-         }
-      }else{
-         while(r._parent){
-            if(!RClass.isClass(r._parent, FUiControl)){
-               break;
-            }
-            r = r._parent;
-         }
-      }
-      return r;
-   }
-   MO.FUiControl_panel = function FUiControl_panel(p){
-      var o = this;
-      switch(p){
-         case EPanel.Parent:
-            return o._hParent;
-         case EPanel.Container:
-         case EPanel.Size:
-            return o._hPanel;
-      }
-      return null;
-   }
-   MO.FUiControl_isVisible = function FUiControl_isVisible(){
-      return this._statusVisible;
-   }
-   MO.FUiControl_setVisible = function FUiControl_setVisible(p){
-      var o = this;
-      o._statusVisible = p;
-      var h = o.panel(EPanel.Container);
-      if(h){
-         RHtml.visibleSet(h, p);
-      }
-   }
-   MO.FUiControl_show = function FUiControl_show(){
-      var o = this;
-      if(!o._statusVisible){
-         o.setVisible(true);
-      }
-   }
-   MO.FUiControl_hide = function FUiControl_hide(){
-      var o = this;
-      if(o._statusVisible){
-         o.setVisible(false);
-      }
-   }
-   MO.FUiControl_isEnable = function FUiControl_isEnable(){
-      return this._statusEnable;
-   }
-   MO.FUiControl_setEnable = function FUiControl_setEnable(p){
-      var o = this;
-      o._statusEnable = p;
-      var h = o.panel(EPanel.Container);
-      if(h){
-         h.style.disabled = !p;
-      }
-   }
-   MO.FUiControl_enable = function FUiControl_enable(){
-      var o = this;
-      if(!o._statusEnable){
-         o.setEnable(true);
-      }
-   }
-   MO.FUiControl_disable = function FUiControl_disable(){
-      var o = this;
-      if(o._statusEnable){
-         o.setEnable(false);
-      }
-   }
-   MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
-      return RUiControl.attachEvent(this, n, h, m, u);
-   }
-   MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
-      return RUiControl.linkEvent(this, t, n, h, m);
-   }
-   MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
-      var o = this;
-      var es = o._events;
-      if(es){
-         var ec = es.get(n);
-         if(ec){
-            ec.invoke(s, s, e);
-         }
-      }
-   }
-   MO.FUiControl_psMode = function FUiControl_psMode(p){
-      var o = this;
-      var e = new TEventProcess(o, 'oeMode', FUiControl);
-      e.displayCd = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
-      var o = this;
-      RConsole.find(FDesignConsole).setFlag(m, f, o);
-      var e = new TEventProcess(o, 'oeDesign', MDesign)
-      e.mode = m;
-      e.flag = f;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psEnable = function FUiControl_psEnable(v){
-      var o = this;
-      var e = new TEventProcess(o, 'oeEnable', FUiControl)
-      e.enable = v;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psVisible = function FUiControl_psVisible(v){
-      var o = this;
-      var e = new TEventProcess(o, 'oeVisible', FUiControl);
-      e.visible = v;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psResize = function FUiControl_psResize(){
-      var o = this;
-      var e = new TEventProcess(o, 'oeResize', FUiControl);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
-      var o = this;
-      var e = new TEventProcess(o, 'oeRefresh', FUiControl);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_isBuild = function FUiControl_isBuild(){
-      return this._statusBuild;
-   }
-   MO.FUiControl_build = function FUiControl_build(p){
-      var o = this;
-      if(o._statusBuild){
-         throw new TError(o, 'Current control is already builded.');
-      }
-      var d = null;
-      if(p.createElement){
-         d = p;
-      }else if(p.ownerDocument && p.ownerDocument.createElement){
-         d = p.ownerDocument;
-      }else if(p.hDocument){
-         d = p.hDocument;
-      }else{
-         throw new TError("Build document is invalid. (document={1})", p);
-      }
-      var a = new SArguments();
-      a.owner = o;
-      a.hDocument = d;
-      o.onBuild(a);
-      a.owner = null;
-      a.hDocument = null;
-      RObject.free(a);
-      o._statusBuild = true;
-   }
-   MO.FUiControl_builded = function FUiControl_builded(p){
-      var o = this;
-      if(!o._statusBuild){
-         throw new TError(o, 'Current control is not build.');
-      }
-      if(o._statusBuilded){
-         throw new TError(o, 'Current control is already builded.');
-      }
-      o.onBuilded(p);
-      o._statusBuilded = true;
-   }
-   MO.FUiControl_refresh = function FUiControl_refresh(){
-      var o = this;
-      if(!o._statusBuild){
-         throw new TError(o, 'Current control is not build.');
-      }
-   }
-   MO.FUiControl_setPanel = function FUiControl_setPanel(h){
-      var o = this;
-      o._hParent = h;
-      h.appendChild(o._hPanel);
-   }
-   MO.FUiControl_dispose = function FUiControl_dispose(){
-      var o = this;
-      o._disable = null;
-      o._wrapCd = null;
-      o._hint = null;
-      o._styleContainer = null;
-      o._statusVisible = null;
-      o._statusEnable = null;
-      o._statusBuild = null;
-      o._hParent = null;
-      o._hPanel = RHtml.free(o._hPanel);
-      o.__base.MUiMargin.dispose.call(o);
-      o.__base.MUiPadding.dispose.call(o);
-      o.__base.MUiSize.dispose.call(o);
-      o.__base.MUiStyle.dispose.call(o);
-      o.__base.FUiComponent.dispose.call(o);
+MO.FUiControl = function FUiControl(o){
+   o = MO.Class.inherits(this, o, MO.FUiComponent, MO.MUiStyle, MO.MUiSize, MO.MUiPadding, MO.MUiMargin);
+   o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
+   o._visible       = MO.Class.register(o, new MO.APtyBoolean('_visible'), true);
+   o._disable       = MO.Class.register(o, new MO.APtyBoolean('_disable'), false);
+   o._hint          = MO.Class.register(o, new MO.APtyString('_hint'));
+   o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._layoutCd      = MO.EUiLayout.Display;
+   o._sizeCd        = MO.EUiSize.Normal;
+   o._statusVisible = true;
+   o._statusEnable  = true;
+   o._statusBuild   = false;
+   o._statusBuilded = false;
+   o._storage       = null;
+   o._hParent       = null;
+   o._hPanel        = null;
+   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FUiControl_onEnter);
+   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FUiControl_onLeave);
+   o.onBuildPanel   = MO.FUiControl_onBuildPanel;
+   o.onBuild        = MO.FUiControl_onBuild;
+   o.onBuilded      = MO.Method.empty;
+   o.oeMode         = MO.FUiControl_oeMode;
+   o.oeEnable       = MO.FUiControl_oeEnable;
+   o.oeVisible      = MO.FUiControl_oeVisible;
+   o.oeResize       = MO.FUiControl_oeResize;
+   o.oeRefresh      = MO.FUiControl_oeRefresh;
+   o.oeFrame        = MO.FUiControl_oeFrame;
+   o.construct      = MO.FUiControl_construct;
+   o.topControl     = MO.FUiControl_topControl;
+   o.panel          = MO.FUiControl_panel;
+   o.isVisible      = MO.FUiControl_isVisible;
+   o.setVisible     = MO.FUiControl_setVisible;
+   o.show           = MO.FUiControl_show;
+   o.hide           = MO.FUiControl_hide;
+   o.isEnable       = MO.FUiControl_isEnable;
+   o.setEnable      = MO.FUiControl_setEnable;
+   o.enable         = MO.FUiControl_enable;
+   o.disable        = MO.FUiControl_disable;
+   o.attachEvent    = MO.FUiControl_attachEvent;
+   o.linkEvent      = MO.FUiControl_linkEvent;
+   o.callEvent      = MO.FUiControl_callEvent;
+   o.psMode         = MO.FUiControl_psMode;
+   o.psDesign       = MO.FUiControl_psDesign;
+   o.psEnable       = MO.FUiControl_psEnable;
+   o.psVisible      = MO.FUiControl_psVisible;
+   o.psResize       = MO.FUiControl_psResize;
+   o.psRefresh      = MO.FUiControl_psRefresh;
+   o.psFrame        = MO.FUiControl_psFrame;
+   o.isBuild        = MO.FUiControl_isBuild;
+   o.build          = MO.FUiControl_build;
+   o.builded        = MO.FUiControl_builded;
+   o.refresh        = MO.FUiControl_refresh;
+   o.setPanel       = MO.FUiControl_setPanel;
+   o.dispose        = MO.FUiControl_dispose;
+   return o;
+}
+MO.FUiControl_onEnter = function FUiControl_onEnter(e){
+   var o = this;
+   MO.Console.find(MO.FUiFocusConsole).enter(o);
+   if(o._hint){
+      MO.RWindow.setStatus(o._hint);
    }
 }
-with(MO){
-   MO.FUiWorkspace = function FUiWorkspace(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
-      o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-      o._frames      = null;
-      o._hContainer  = null;
-      o.onBuildPanel = FUiWorkspace_onBuildPanel;
-      o.appendChild  = FUiWorkspace_appendChild;
-      return o;
+MO.FUiControl_onLeave = function FUiControl_onLeave(e){
+   var o = this;
+   MO.Console.find(MO.FUiFocusConsole).leave(o);
+   if(o._hint){
+      MO.RWindow.setStatus();
    }
-   MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
+}
+MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.RBuilder.createDiv(p, o.styleName('Panel'));
+}
+MO.FUiControl_onBuild = function FUiControl_onBuild(p){
+   var o = this;
+   o.onBuildPanel(p);
+   if(o._statusVisible != o._visible){
+      o.setVisible(o._visible);
    }
-   MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
-      var o = this;
-      if(RClass.isClass(control, FUiFrameSet)){
-         o._hPanel.appendChild(control._hPanel);
-      }else{
-         throw new TError(o, 'Unknown child type.');
+   var h = o._hPanel;
+   MO.RHtml.linkSet(h, 'control', o);
+   o.attachEvent('onEnter', h);
+   o.attachEvent('onLeave', h);
+   o.refreshBounds();
+   o.refreshPadding();
+   o.refreshMargin();
+}
+MO.FUiControl_oeMode = function FUiControl_oeMode(e){
+   var o = this;
+   o._displayCd = e.displayCd;
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
+   var o = this;
+   if(e.isBefore()){
+      o.setEnable(e.enable);
+   }
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
+   var o = this;
+   if(e.isBefore()){
+      o.setVisible(e.visible);
+   }
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeResize = function FUiControl_oeResize(p){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeFrame = function FUiControl_oeFrame(event){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_construct = function FUiControl_construct(){
+   var o = this;
+   o.__base.FUiComponent.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
+   o.__base.MUiSize.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
+}
+MO.FUiControl_topControl = function FUiControl_topControl(c){
+   var r = this;
+   if(c){
+      while(r._parent){
+         if(MO.Class.isClass(r._parent, c)){
+            return r._parent;
+         }
+         r = r._parent;
       }
+      if(!MO.Class.isClass(r, c)){
+         return null;
+      }
+   }else{
+      while(r._parent){
+         if(!MO.Class.isClass(r._parent, FUiControl)){
+            break;
+         }
+         r = r._parent;
+      }
+   }
+   return r;
+}
+MO.FUiControl_panel = function FUiControl_panel(p){
+   var o = this;
+   switch(p){
+      case MO.EPanel.Parent:
+         return o._hParent;
+      case MO.EPanel.Container:
+      case MO.EPanel.Size:
+         return o._hPanel;
+   }
+   return null;
+}
+MO.FUiControl_isVisible = function FUiControl_isVisible(){
+   return this._statusVisible;
+}
+MO.FUiControl_setVisible = function FUiControl_setVisible(p){
+   var o = this;
+   o._statusVisible = p;
+   var h = o.panel(MO.EPanel.Container);
+   if(h){
+      MO.RHtml.visibleSet(h, p);
+   }
+}
+MO.FUiControl_show = function FUiControl_show(){
+   var o = this;
+   if(!o._statusVisible){
+      o.setVisible(true);
+   }
+}
+MO.FUiControl_hide = function FUiControl_hide(){
+   var o = this;
+   if(o._statusVisible){
+      o.setVisible(false);
+   }
+}
+MO.FUiControl_isEnable = function FUiControl_isEnable(){
+   return this._statusEnable;
+}
+MO.FUiControl_setEnable = function FUiControl_setEnable(p){
+   var o = this;
+   o._statusEnable = p;
+   var h = o.panel(EPanel.Container);
+   if(h){
+      h.style.disabled = !p;
+   }
+}
+MO.FUiControl_enable = function FUiControl_enable(){
+   var o = this;
+   if(!o._statusEnable){
+      o.setEnable(true);
+   }
+}
+MO.FUiControl_disable = function FUiControl_disable(){
+   var o = this;
+   if(o._statusEnable){
+      o.setEnable(false);
+   }
+}
+MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
+   return MO.RUiControl.attachEvent(this, n, h, m, u);
+}
+MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
+   return MO.RUiControl.linkEvent(this, t, n, h, m);
+}
+MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
+   var o = this;
+   var es = o._events;
+   if(es){
+      var ec = es.get(n);
+      if(ec){
+         ec.invoke(s, s, e);
+      }
+   }
+}
+MO.FUiControl_psMode = function FUiControl_psMode(p){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeMode', MO.FUiControl);
+   e.displayCd = p;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
+   var o = this;
+   MO.Console.find(FDesignConsole).setFlag(m, f, o);
+   var e = new MO.TEventProcess(o, 'oeDesign', MO.MDesign)
+   e.mode = m;
+   e.flag = f;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psEnable = function FUiControl_psEnable(v){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeEnable', MO.FUiControl)
+   e.enable = v;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psVisible = function FUiControl_psVisible(v){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeVisible', MO.FUiControl);
+   e.visible = v;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psResize = function FUiControl_psResize(){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeResize', MO.FUiControl);
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeRefresh', MO.FUiControl);
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psFrame = function FUiControl_psFrame(){
+   var o = this;
+   var event = new MO.TEventProcess(o, 'oeFrame', MO.FUiControl);
+   o.process(event);
+   event.dispose();
+}
+MO.FUiControl_isBuild = function FUiControl_isBuild(){
+   return this._statusBuild;
+}
+MO.FUiControl_build = function FUiControl_build(p){
+   var o = this;
+   if(o._statusBuild){
+      throw new MO.TError(o, 'Current control is already builded.');
+   }
+   var d = null;
+   if(p.createElement){
+      d = p;
+   }else if(p.ownerDocument && p.ownerDocument.createElement){
+      d = p.ownerDocument;
+   }else if(p.hDocument){
+      d = p.hDocument;
+   }else{
+      throw new MO.TError("Build document is invalid. (document={1})", p);
+   }
+   var a = new MO.SArguments();
+   a.owner = o;
+   a.hDocument = d;
+   o.onBuild(a);
+   a.owner = null;
+   a.hDocument = null;
+   MO.Lang.Object.free(a);
+   o._statusBuild = true;
+}
+MO.FUiControl_builded = function FUiControl_builded(p){
+   var o = this;
+   if(!o._statusBuild){
+      throw new MO.TError(o, 'Current control is not build.');
+   }
+   if(o._statusBuilded){
+      throw new MO.TError(o, 'Current control is already builded.');
+   }
+   o.onBuilded(p);
+   o._statusBuilded = true;
+}
+MO.FUiControl_refresh = function FUiControl_refresh(){
+   var o = this;
+   if(!o._statusBuild){
+      throw new MO.TError(o, 'Current control is not build.');
+   }
+}
+MO.FUiControl_setPanel = function FUiControl_setPanel(h){
+   var o = this;
+   o._hParent = h;
+   h.appendChild(o._hPanel);
+}
+MO.FUiControl_dispose = function FUiControl_dispose(){
+   var o = this;
+   o._disable = null;
+   o._wrapCd = null;
+   o._hint = null;
+   o._styleContainer = null;
+   o._statusVisible = null;
+   o._statusEnable = null;
+   o._statusBuild = null;
+   o._hParent = null;
+   o._hPanel = MO.RHtml.free(o._hPanel);
+   o.__base.MUiMargin.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiStyle.dispose.call(o);
+   o.__base.FUiComponent.dispose.call(o);
+}
+MO.FUiWorkspace = function FUiWorkspace(o){
+   o = MO.Class.inherits(this, o, MO.FUiContainer, MO.MUiDescribeFrame);
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._frames      = null;
+   o._hContainer  = null;
+   o.onBuildPanel = MO.FUiWorkspace_onBuildPanel;
+   o.appendChild  = MO.FUiWorkspace_appendChild;
+   return o;
+}
+MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.RBuilder.createDiv(event, o.styleName('Panel'));
+}
+MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
+   var o = this;
+   if(MO.Class.isClass(control, MO.FUiFrameSet)){
+      o._hPanel.appendChild(control._hPanel);
+   }else{
+      throw new MO.TError(o, 'Unknown child type.');
    }
 }
 with(MO){
@@ -42483,42 +42494,54 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd         = EScope.Local;
-      o._activeWorkspace = null;
-      o._workspaces      = null;
-      o.onResize         = FUiWorkspaceConsole_onResize;
-      o.construct        = FUiWorkspaceConsole_construct;
-      o.active           = FUiWorkspaceConsole_active;
-      o.resize           = FUiWorkspaceConsole_resize;
-      o.dispose          = FUiWorkspaceConsole_dispose;
-      return o;
+MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd         = MO.EScope.Local;
+   o._activeWorkspace = null;
+   o._workspaces      = null;
+   o._thread          = null;
+   o._interval        = 100;
+   o.onResize         = MO.FUiWorkspaceConsole_onResize;
+   o.onProcess        = MO.FUiWorkspaceConsole_onProcess;
+   o.construct        = MO.FUiWorkspaceConsole_construct;
+   o.active           = MO.FUiWorkspaceConsole_active;
+   o.resize           = MO.FUiWorkspaceConsole_resize;
+   o.dispose          = MO.FUiWorkspaceConsole_dispose;
+   return o;
+}
+MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
+   var o = this;
+   var workspace = o._activeWorkspace;
+   if(workspace){
+      workspace.psResize();
    }
-   MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
-      var o = this;
-      var w = o._activeWorkspace;
-      if(w){
-         w.psResize();
-      }
+}
+MO.FUiWorkspaceConsole_onProcess = function FUiWorkspaceConsole_onProcess(event){
+   var o = this;
+   var workspace = o._activeWorkspace;
+   if(workspace){
+      workspace.psFrame(event);
    }
-   MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._workspaces = new TDictionary();
-      RWindow.lsnsResize.register(o, o.onResize);
-   }
-   MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
-      this._activeWorkspace = p;
-   }
-   MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
-      this.onResize();
-   }
-   MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
-      var o = this;
-      o.__base.FConsole.dispose.call(o);
-   }
+}
+MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._workspaces = new MO.TDictionary();
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+}
+MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
+   this._activeWorkspace = p;
+}
+MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
+   this.onResize();
+}
+MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }
 MO.EUiSplitStyle = new function EUiSplitStyle(){
    var o = this;
@@ -55523,7 +55546,9 @@ with(MO){
    }
    MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
       var o = this;
-      o._hContainer.appendChild(control._hPanel);
+      if(control._hPanel){
+         o._hContainer.appendChild(control._hPanel);
+      }
    }
    MO.FUiFramePage_removeChild = function FUiFramePage_removeChild(control){
       var o = this;
@@ -75495,7 +75520,7 @@ MO.FDssDesktop_construct = function FDssDesktop_construct(){
 MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FDssCanvas);
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
@@ -77398,91 +77423,89 @@ with(MO){
       o.__base.FDsSystemFrameComponentProperty.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
-      o = RClass.inherits(this, o, FDsSystemDesignFrameSet);
-      o._frameName   = 'system.design.frame.FrameSet';
-      o.onBuilded    = FDsSystemFrameFrameSet_onBuilded;
-      o.construct    = FDsSystemFrameFrameSet_construct;
-      o.selectObject = FDsSystemFrameFrameSet_selectObject;
-      o.load         = FDsSystemFrameFrameSet_load;
-      o.dispose      = FDsSystemFrameFrameSet_dispose;
-      return o;
+MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FDsSystemDesignFrameSet);
+   o._frameName   = 'system.design.frame.FrameSet';
+   o.onBuilded    = MO.FDsSystemFrameFrameSet_onBuilded;
+   o.construct    = MO.FDsSystemFrameFrameSet_construct;
+   o.selectObject = MO.FDsSystemFrameFrameSet_selectObject;
+   o.load         = MO.FDsSystemFrameFrameSet_load;
+   o.dispose      = MO.FDsSystemFrameFrameSet_dispose;
+   return o;
+}
+MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
+   o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var spliter = o._propertySpliter = o.searchControl('propertySpliter');
+   spliter.setAlignCd(MO.EUiAlign.Right);
+   spliter.setSizeHtml(o._frameProperty._hPanel);
+   var control = o._catalogToolbar = MO.Class.create(MO.FDsSystemFrameCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FDsSystemFrameCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   var control = o._spaceToolBar = MO.Class.create(MO.FDsSystemFrameSpaceToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSpaceToolBar.push(control);
+   var control = o._spaceContent = MO.Class.create(MO.FDsSystemFrameSpaceContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(o._frameSpaceContent._hPanel);
+   o._frameSpaceContent.push(control);
+   var control = o._propertyToolbar = MO.Class.create(MO.FDsSystemFramePropertyToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._framePropertyToolBar.push(control);
+}
+MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.construct.call(o);
+}
+MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
+   var o = this;
+   var activeFrame = o._spaceContent._activeFrame;
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
    }
-   MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
-      o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
-      o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
-      o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
-      var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
-      spliter.setAlignCd(EUiAlign.Left);
-      spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-      spliter.setAlignCd(EUiAlign.Right);
-      spliter.setSizeHtml(o._frameProperty._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsSystemFrameCatalogToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsSystemFrameCatalogContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.build(event);
-      o._frameCatalogContent.push(control);
-      var control = o._spaceToolBar = RClass.create(FDsSystemFrameSpaceToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._frameSpaceToolBar.push(control);
-      var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.build(o._frameSpaceContent._hPanel);
-      o._frameSpaceContent.push(control);
-      var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._framePropertyToolBar.push(control);
+   var frame = o.findPropertyFrame(propertyFrame);
+   frame.show();
+   if(typeGroup == MO.EUiTreeNodeGroup.Container){
+      frame.loadObject(activeFrame, activeFrame);
+   }else{
+      var activeControl = activeFrame.findComponent(controlName);
+      frame.loadObject(activeFrame, activeControl);
+      o._spaceContent.selectControl(activeControl);
    }
-   MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.construct.call(o);
+}
+MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
+   var o = this;
+   if(name){
+      o._spaceContent.loadFrame(name);
    }
-   MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
-      var o = this;
-      var activeFrame = o._spaceContent._activeFrame;
-      var frames = o._propertyFrames;
-      var count = frames.count();
-      for(var i = 0; i < count; i++){
-         var frame = frames.at(i);
-         frame.hide();
-      }
-      var frame = o.findPropertyFrame(propertyFrame);
-      frame.show();
-      if(typeGroup == EUiTreeNodeGroup.Container){
-         frame.loadObject(activeFrame, activeFrame);
-      }else{
-         var activeControl = activeFrame.findComponent(controlName);
-         frame.loadObject(activeFrame, activeControl);
-         o._spaceContent.selectControl(activeControl);
-      }
-   }
-   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
-      var o = this;
-      if(name){
-         o._spaceContent.loadFrame(name);
-      }
-   }
-   MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.dispose.call(o);
-   }
+}
+MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.dispose.call(o);
 }
 with(MO){
    MO.FDsSystemFrameMenuBar = function FDsSystemFrameMenuBar(o){
@@ -77710,255 +77733,267 @@ with(MO){
       o.__base.FUiToolBar.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
-      o._scaleRate          = 1;
-      o._optionAlpha        = false;
-      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
-      o._activeFrame        = null;
-      o._activeControls     = null;
-      o._capturePosition    = null;
-      o._captureRotation    = null;
-      o.onEnterFrame        = FDsSystemFrameSpaceContent_onEnterFrame;
-      o.onMouseCaptureStart = FDsSystemFrameSpaceContent_onMouseCaptureStart;
-      o.onMouseCapture      = FDsSystemFrameSpaceContent_onMouseCapture;
-      o.onMouseCaptureStop  = FDsSystemFrameSpaceContent_onMouseCaptureStop;
-      o.onResize            = FDsSystemFrameSpaceContent_onResize;
-      o.onProcess           = FDsSystemFrameSpaceContent_onProcess;
-      o.onKeyDown           = FDsSystemFrameSpaceContent_onKeyDown;
-      o.oeResize            = FDsSystemFrameSpaceContent_oeResize;
-      o.construct           = FDsSystemFrameSpaceContent_construct;
-      o.build               = FDsSystemFrameSpaceContent_build;
-      o.controlAction       = FDsSystemFrameSpaceContent_controlAction;
-      o.selectControl       = FDsSystemFrameSpaceContent_selectControl;
-      o.loadFrame           = FDsSystemFrameSpaceContent_loadFrame;
-      o.dispose             = FDsSystemFrameSpaceContent_dispose;
-      return o;
+MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
+   o = MO.Class.inherits(this, o, MO.FUiControl, MO.MGraphicObject);
+   o._scaleRate          = 1;
+   o._optionAlpha        = false;
+   o._desktop            = MO.Class.register(o, new MO.AGetter('_desktop'));
+   o._guiManager         = MO.Class.register(o, new MO.AGetter('_guiManager'));
+   o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o._activeFrame        = null;
+   o._activeControls     = null;
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.onEnterFrame        = MO.FDsSystemFrameSpaceContent_onEnterFrame;
+   o.onMouseCaptureStart = MO.FDsSystemFrameSpaceContent_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDsSystemFrameSpaceContent_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDsSystemFrameSpaceContent_onMouseCaptureStop;
+   o.onResize            = MO.FDsSystemFrameSpaceContent_onResize;
+   o.onProcess           = MO.FDsSystemFrameSpaceContent_onProcess;
+   o.onKeyDown           = MO.FDsSystemFrameSpaceContent_onKeyDown;
+   o.oeResize            = MO.FDsSystemFrameSpaceContent_oeResize;
+   o.oeFrame             = MO.FDsSystemFrameSpaceContent_oeFrame;
+   o.construct           = MO.FDsSystemFrameSpaceContent_construct;
+   o.build               = MO.FDsSystemFrameSpaceContent_build;
+   o.controlAction       = MO.FDsSystemFrameSpaceContent_controlAction;
+   o.selectControl       = MO.FDsSystemFrameSpaceContent_selectControl;
+   o.loadFrame           = MO.FDsSystemFrameSpaceContent_loadFrame;
+   o.dispose             = MO.FDsSystemFrameSpaceContent_dispose;
+   return o;
+}
+MO.FDsSystemFrameSpaceContent_onEnterFrame = function FDsSystemFrameSpaceContent_onEnterFrame(){
+   var o = this;
+   var stage = o._activeStage;
+   if(!stage){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onEnterFrame = function FDsSystemFrameSpaceContent_onEnterFrame(){
-      var o = this;
-      var stage = o._activeStage;
-      if(!stage){
-         return;
-      }
-      var c = stage.camera();
-      var d = 0.5;
-      var r = 0.05;
-      var kw = RKeyboard.isPress(EKeyCode.W);
-      var ks = RKeyboard.isPress(EKeyCode.S);
-      if(kw && !ks){
-         c.doWalk(d);
-      }
-      if(!kw && ks){
-         c.doWalk(-d);
-      }
-      var ka = RKeyboard.isPress(EKeyCode.A);
-      var kd = RKeyboard.isPress(EKeyCode.D);
-      if(ka && !kd){
-         c.doYaw(r);
-      }
-      if(!ka && kd){
-         c.doYaw(-r);
-      }
-      var kq = RKeyboard.isPress(EKeyCode.Q);
-      var ke = RKeyboard.isPress(EKeyCode.E);
-      if(kq && !ke){
-         c.doFly(d);
-      }
-      if(!kq && ke){
-         c.doFly(-d);
-      }
-      var kz = RKeyboard.isPress(EKeyCode.Z);
-      var kw = RKeyboard.isPress(EKeyCode.X);
-      if(kz && !kw){
-         c.doPitch(r);
-      }
-      if(!kz && kw){
-         c.doPitch(-r);
-      }
-      c.update();
-      if(o._optionRotation){
-         var r = o._rotation;
-         var ls = stage.layers();
-         var c = ls.count();
-         for(var i = 0; i < c; i++){
-            var l = ls.value(i);
-            var m = l.matrix();
-            m.setRotation(0, r.y, 0);
-            m.update();
-         }
-         r.y += 0.01;
-      }
+   var c = stage.camera();
+   var d = 0.5;
+   var r = 0.05;
+   var kw = MO.RKeyboard.isPress(MO.EKeyCode.W);
+   var ks = MO.RKeyboard.isPress(MO.EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(d);
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCaptureStart = function FDsSystemFrameSpaceContent_onMouseCaptureStart(p){
-      var o = this;
-      var s = o._activeStage;
-      if(!s){
-         return;
+   if(!kw && ks){
+      c.doWalk(-d);
+   }
+   var ka = MO.RKeyboard.isPress(MO.EKeyCode.A);
+   var kd = MO.RKeyboard.isPress(MO.EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = MO.RKeyboard.isPress(MO.EKeyCode.Q);
+   var ke = MO.RKeyboard.isPress(MO.EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var kz = MO.RKeyboard.isPress(MO.EKeyCode.Z);
+   var kw = MO.RKeyboard.isPress(MO.EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var ls = stage.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
       }
-      var r = o._activeStage.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
-      var r = st.test(r, p.offsetX, p.offsetY);
-      o._capturePosition.set(p.clientX, p.clientY);
-      o._captureRotation.assign(s.camera()._rotation);
+      r.y += 0.01;
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCapture = function FDsSystemFrameSpaceContent_onMouseCapture(p){
-      var o = this;
-      var s = o._activeStage;
-      if(!s){
-         return;
-      }
-      var cx = p.clientX - o._capturePosition.x;
-      var cy = p.clientY - o._capturePosition.y;
-      var c = o._activeStage.camera();
-      var r = c.rotation();
-      var cr = o._captureRotation;
-      r.x = cr.x + cy * 0.003;
-      r.y = cr.y + cx * 0.003;
+}
+MO.FDsSystemFrameSpaceContent_onMouseCaptureStart = function FDsSystemFrameSpaceContent_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceContent_onMouseCaptureStop(p){
+   var r = o._activeStage.region();
+   var st = MO.Console.find(MO.FG3dTechniqueConsole).find(o._graphicContext, MO.FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+}
+MO.FDsSystemFrameSpaceContent_onMouseCapture = function FDsSystemFrameSpaceContent_onMouseCapture(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
-      var o = this;
-      o.__base.FDsCanvas.onResize.call(o, event);
-      var c = o._graphicContext;
-      var cs = c.size();
-      var s = o._activeStage;
-      if(s){
-         var rp = s.camera().projection();
-         rp.size().set(cs.width, cs.height);
-         rp.update();
-      }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var c = o._activeStage.camera();
+   var r = c.rotation();
+   var cr = o._captureRotation;
+   r.x = cr.x + cy * 0.003;
+   r.y = cr.y + cx * 0.003;
+}
+MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceContent_onMouseCaptureStop(p){
+}
+MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
+   var o = this;
+   o.__base.FUiControl.onResize.call(o, event);
+   var c = o._graphicContext;
+   var cs = c.size();
+   var s = o._activeStage;
+   if(s){
+      var rp = s.camera().projection();
+      rp.size().set(cs.width, cs.height);
+      rp.update();
    }
-   MO.FDsSystemFrameSpaceContent_onProcess = function FDsSystemFrameSpaceContent_onProcess(event){
-      var o = this;
-      var frame = o._activeFrame;
-      if(frame){
-         frame.psUpdate();
-      }
+}
+MO.FDsSystemFrameSpaceContent_onProcess = function FDsSystemFrameSpaceContent_onProcess(event){
+   var o = this;
+   var frame = o._activeFrame;
+   if(frame){
+      frame.psUpdate();
    }
-   MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
-      var o = this;
-      var location = control.location();
-      var size = control.size();
-      switch(keyCode){
-         case EKeyCode.A:
-            location.x--;
-            return true;
-         case EKeyCode.W:
-            location.y--;
-            return true;
-         case EKeyCode.D:
-            location.x++;
-            return true;
-         case EKeyCode.S:
-            location.y++;
-            return true;
-         case EKeyCode.J:
-            size.width--;
-            return true;
-         case EKeyCode.I:
-            size.height--;
-            return true;
-         case EKeyCode.L:
-            size.width++;
-            return true;
-         case EKeyCode.K:
-            size.height++;
-            return true;
-      }
-      return false;
+}
+MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
+   var o = this;
+   var location = control.location();
+   var size = control.size();
+   switch(keyCode){
+      case MO.EKeyCode.A:
+         location.x--;
+         return true;
+      case MO.EKeyCode.W:
+         location.y--;
+         return true;
+      case MO.EKeyCode.D:
+         location.x++;
+         return true;
+      case MO.EKeyCode.S:
+         location.y++;
+         return true;
+      case MO.EKeyCode.J:
+         size.width--;
+         return true;
+      case MO.EKeyCode.I:
+         size.height--;
+         return true;
+      case MO.EKeyCode.L:
+         size.width++;
+         return true;
+      case MO.EKeyCode.K:
+         size.height++;
+         return true;
    }
-   MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
-      var o = this;
-      var keyCode = event.keyCode;
-      var controls = o._activeControls;
-      if(!controls.isEmpty()){
-         var changed = false;
-         var count = controls.count();
-         for(var i = 0; i < count; i++){
-            var control = controls.at(i);
-            if(o.controlAction(keyCode, control)){
-               changed = true;
-            }
-         }
-         if(changed){
-            o._activeFrame.build();
+   return false;
+}
+MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
+   var o = this;
+   var keyCode = event.keyCode;
+   var controls = o._activeControls;
+   if(!controls.isEmpty()){
+      var changed = false;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(o.controlAction(keyCode, control)){
+            changed = true;
          }
       }
-   }
-   MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(p){
-      var o = this;
-      o.__base.FDsCanvas.oeResize.call(o, p);
-      var hp = o._hPanel;
-      var w = hp.offsetWidth;
-      var h = hp.offsetHeight;
-      var s = o._activeSpace;
-      if(s){
-         var cp = s.camera().projection();
-         cp.size().set(w, h);
-         cp.update();
+      if(changed){
+         o._activeFrame.build();
       }
-      return EEventStatus.Stop;
    }
-   MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
-      var o = this;
-      o.__base.FDsCanvas.construct.call(o);
-      o._rotation = new SVector3();
-      o._activeControls = new TObjects();
-      o._capturePosition = new SPoint2();
-      o._captureRotation = new SVector3();
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
+   var o = this;
+   o.__base.FUiControl.oeResize.call(o, event);
+   return;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeSpace;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
    }
-   MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
-      var o = this;
-      o.__base.FDsCanvas.build.call(o, hPanel);
-      o.setPanel(hPanel);
-      var stage = o._activeStage = MO.RClass.create(MO.FDsStage);
-      stage.linkGraphicContext(o);
-      var region = stage.region();
-      region.linkGraphicContext(o);
-      region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
-      stage.selectTechnique(o, FE3dGeneralTechnique);
-      var camera = region.camera();
-      var projection = camera.projection();
-      projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
-      projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
-      stage.addEnterFrameListener(o, o.onProcess);
-      RStage.register('design.frame.stage', stage);
+   return MO.EEventStatus.Stop;
+}
+MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFrame(event){
+   var o = this;
+   o.__base.FUiControl.oeFrame.call(o, event);
+   o._guiManager.process();
+   return MO.EEventStatus.Stop;
+}
+MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
+   var o = this;
+   o.__base.FUiControl.construct.call(o);
+   o._rotation = new MO.SVector3();
+   o._activeControls = new MO.TObjects();
+   o._capturePosition = new MO.SPoint2();
+   o._captureRotation = new MO.SVector3();
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
+   var o = this;
+   var desktop = o._desktop = MO.Class.create(MO.FDssDesktop);
+   desktop.build(hPanel);
+   o.linkGraphicContext(desktop.canvas3d());
+   var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
+   guiManager.linkGraphicContext(desktop.canvas3d());
+   guiManager.setDesktop(desktop);
+   guiManager.setCanvas(desktop.canvas2d());
+   guiManager.setup();
+   return;
+   o.__base.FUiControl.build.call(o, hPanel);
+   o.setPanel(hPanel);
+   var stage = o._activeStage = MO.Class.create(MO.FDsStage);
+   stage.linkGraphicContext(o);
+   var region = stage.region();
+   region.linkGraphicContext(o);
+   region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
+   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+   var camera = region.camera();
+   var projection = camera.projection();
+   projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
+   projection.update();
+   camera.position().set(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   stage.addEnterFrameListener(o, o.onProcess);
+   MO.RStage.register('design.frame.stage', stage);
+}
+MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
+   var o = this;
+   var controls = o._activeControls;
+   controls.clear();
+   controls.push(control);
+}
+MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
+   var o = this;
+   var frame = o._activeFrame;
+   if(frame){
+      o._guiManager.unregister(frame);
+      o._activeFrame = null;
    }
-   MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
-      var o = this;
-      var controls = o._activeControls;
-      controls.clear();
-      controls.push(control);
-   }
-   MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
-      var o = this;
-      var context = o._graphicContext;
-      var stage = o._activeStage;
-      var layer = stage.faceLayer();
-      var frame = o._activeFrame;
-      if(frame){
-         var renderable = frame.renderable();
-         layer.removeRenderable(renderable);
-         o._activeFrame = null;
-      }
-      var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
-      var frame = o._activeFrame = frameConsole.get(context, code);
-      var renderable = frame.renderable();
-      renderable.setLocation(10, 10);
-      layer.pushRenderable(renderable);
-   }
-   MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
-      var o = this;
-      o._rotation = MO.Lang.Obejct.dispose(o._rotation)
-      o.__base.FDsCanvas.dispose.call(o);
-   }
+   var frameConsole = MO.Console.find(MO.FGuiFrameConsole);
+   frame = o._activeFrame = frameConsole.get(o, code);
+   frame.setLocation(0, 0);
+   o._guiManager.register(frame);
+}
+MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Obejct.dispose(o._rotation)
+   o.__base.FUiControl.dispose.call(o);
 }
 with(MO){
    MO.FDsSystemFrameSpaceToolBar = function FDsSystemFrameSpaceToolBar(o){

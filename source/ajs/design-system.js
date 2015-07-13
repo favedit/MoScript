@@ -97,7 +97,7 @@ MO.FDssDesktop_construct = function FDssDesktop_construct(){
 MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FDssCanvas);
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);

@@ -4840,7 +4840,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    o._statusError = true;
    var s = new MO.TString();
    var t = new Array();
-   var f = RLogger.fatal.caller;
+   var f = MO.Logger.fatal.caller;
    while(f){
       if(MO.Lang.Array.contains(t, f)){
          break;
@@ -4884,7 +4884,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
 MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
    var o = this;
    var name = null;
-   var caller = MO.Logger_show.caller;
+   var caller = MO.Logger.show.caller;
    if(caller){
       name = MO.Method.name(caller);
    }else if(arguments.caller){
@@ -13762,25 +13762,25 @@ MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
    }
    return null;
 }
-MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
-   while(h){
-      var f = h.__linker;
-      if(f){
-         if(RClass.isClass(f, c)){
-            return f;
+MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(hTag, clazz){
+   while(hTag){
+      var linker = hTag.__linker;
+      if(linker){
+         if(MO.Class.isClass(linker, clazz)){
+            return linker;
          }
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }
-MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
-   while(h){
-      var f = h[n];
-      if(f){
-         return f;
+MO.RHtml.prototype.searchObject = function RHtml_searchObject(hTag, name){
+   while(hTag){
+      var flag = hTag[name];
+      if(flag){
+         return flag;
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }
@@ -35455,10 +35455,14 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
    o._visibleControls = new MO.TObjects();
 }
 MO.FGuiManager_register = function FGuiManager_register(control){
-   this._controls.push(control);
+   var o = this;
+   o._controls.push(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_unregister = function FGuiManager_unregister(control){
-   this._controls.remove(control);
+   var o = this;
+   o._controls.remove(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
    var o = this;

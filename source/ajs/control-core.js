@@ -1715,40 +1715,52 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd         = EScope.Local;
-      o._activeWorkspace = null;
-      o._workspaces      = null;
-      o.onResize         = FUiWorkspaceConsole_onResize;
-      o.construct        = FUiWorkspaceConsole_construct;
-      o.active           = FUiWorkspaceConsole_active;
-      o.resize           = FUiWorkspaceConsole_resize;
-      o.dispose          = FUiWorkspaceConsole_dispose;
-      return o;
+MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd         = MO.EScope.Local;
+   o._activeWorkspace = null;
+   o._workspaces      = null;
+   o._thread          = null;
+   o._interval        = 100;
+   o.onResize         = MO.FUiWorkspaceConsole_onResize;
+   o.onProcess        = MO.FUiWorkspaceConsole_onProcess;
+   o.construct        = MO.FUiWorkspaceConsole_construct;
+   o.active           = MO.FUiWorkspaceConsole_active;
+   o.resize           = MO.FUiWorkspaceConsole_resize;
+   o.dispose          = MO.FUiWorkspaceConsole_dispose;
+   return o;
+}
+MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
+   var o = this;
+   var workspace = o._activeWorkspace;
+   if(workspace){
+      workspace.psResize();
    }
-   MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
-      var o = this;
-      var w = o._activeWorkspace;
-      if(w){
-         w.psResize();
-      }
+}
+MO.FUiWorkspaceConsole_onProcess = function FUiWorkspaceConsole_onProcess(event){
+   var o = this;
+   var workspace = o._activeWorkspace;
+   if(workspace){
+      workspace.psFrame(event);
    }
-   MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._workspaces = new TDictionary();
-      RWindow.lsnsResize.register(o, o.onResize);
-   }
-   MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
-      this._activeWorkspace = p;
-   }
-   MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
-      this.onResize();
-   }
-   MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
-      var o = this;
-      o.__base.FConsole.dispose.call(o);
-   }
+}
+MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._workspaces = new MO.TDictionary();
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.RWindow.lsnsResize.register(o, o.onResize);
+}
+MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
+   this._activeWorkspace = p;
+}
+MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
+   this.onResize();
+}
+MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }

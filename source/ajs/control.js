@@ -2996,351 +2996,358 @@ with(MO){
       o.__base.FUiControl.dispose.call(o);
    }
 }
-with(MO){
-   MO.FUiControl = function FUiControl(o){
-      o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding, MUiMargin);
-      o._wrapCd        = RClass.register(o, [new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine), new AGetSet('_wrapCd')]);
-      o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
-      o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
-      o._hint          = RClass.register(o, new APtyString('_hint'));
-      o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-      o._layoutCd      = EUiLayout.Display;
-      o._sizeCd        = EUiSize.Normal;
-      o._statusVisible = true;
-      o._statusEnable  = true;
-      o._statusBuild   = false;
-      o._statusBuilded = false;
-      o._storage       = null;
-      o._hParent       = null;
-      o._hPanel        = null;
-      o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FUiControl_onEnter);
-      o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FUiControl_onLeave);
-      o.onBuildPanel   = FUiControl_onBuildPanel;
-      o.onBuild        = FUiControl_onBuild;
-      o.onBuilded      = RMethod.empty;
-      o.oeMode         = FUiControl_oeMode;
-      o.oeEnable       = FUiControl_oeEnable;
-      o.oeVisible      = FUiControl_oeVisible;
-      o.oeResize       = FUiControl_oeResize;
-      o.oeRefresh      = FUiControl_oeRefresh;
-      o.construct      = FUiControl_construct;
-      o.topControl     = FUiControl_topControl;
-      o.panel          = FUiControl_panel;
-      o.isVisible      = FUiControl_isVisible;
-      o.setVisible     = FUiControl_setVisible;
-      o.show           = FUiControl_show;
-      o.hide           = FUiControl_hide;
-      o.isEnable       = FUiControl_isEnable;
-      o.setEnable      = FUiControl_setEnable;
-      o.enable         = FUiControl_enable;
-      o.disable        = FUiControl_disable;
-      o.attachEvent    = FUiControl_attachEvent;
-      o.linkEvent      = FUiControl_linkEvent;
-      o.callEvent      = FUiControl_callEvent;
-      o.psMode         = FUiControl_psMode;
-      o.psDesign       = FUiControl_psDesign;
-      o.psEnable       = FUiControl_psEnable;
-      o.psVisible      = FUiControl_psVisible;
-      o.psResize       = FUiControl_psResize;
-      o.psRefresh      = FUiControl_psRefresh;
-      o.isBuild        = FUiControl_isBuild;
-      o.build          = FUiControl_build;
-      o.builded        = FUiControl_builded;
-      o.refresh        = FUiControl_refresh;
-      o.setPanel       = FUiControl_setPanel;
-      o.dispose        = FUiControl_dispose;
-      return o;
-   }
-   MO.FUiControl_onEnter = function FUiControl_onEnter(e){
-      var o = this;
-      RConsole.find(FUiFocusConsole).enter(o);
-      if(o._hint){
-         RWindow.setStatus(o._hint);
-      }
-   }
-   MO.FUiControl_onLeave = function FUiControl_onLeave(e){
-      var o = this;
-      RConsole.find(FUiFocusConsole).leave(o);
-      if(o._hint){
-         RWindow.setStatus();
-      }
-   }
-   MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-   }
-   MO.FUiControl_onBuild = function FUiControl_onBuild(p){
-      var o = this;
-      o.onBuildPanel(p);
-      if(o._statusVisible != o._visible){
-         o.setVisible(o._visible);
-      }
-      var h = o._hPanel;
-      RHtml.linkSet(h, 'control', o);
-      o.attachEvent('onEnter', h);
-      o.attachEvent('onLeave', h);
-      o.refreshBounds();
-      o.refreshPadding();
-      o.refreshMargin();
-   }
-   MO.FUiControl_oeMode = function FUiControl_oeMode(e){
-      var o = this;
-      o._displayCd = e.displayCd;
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
-      var o = this;
-      if(e.isBefore()){
-         o.setEnable(e.enable);
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
-      var o = this;
-      if(e.isBefore()){
-         o.setVisible(e.visible);
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeResize = function FUiControl_oeResize(p){
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
-      return EEventStatus.Continue;
-   }
-   MO.FUiControl_construct = function FUiControl_construct(){
-      var o = this;
-      o.__base.FUiComponent.construct.call(o);
-      o.__base.MUiStyle.construct.call(o);
-      o.__base.MUiSize.construct.call(o);
-      o.__base.MUiPadding.construct.call(o);
-      o.__base.MUiMargin.construct.call(o);
-   }
-   MO.FUiControl_topControl = function FUiControl_topControl(c){
-      var r = this;
-      if(c){
-         while(r._parent){
-            if(RClass.isClass(r._parent, c)){
-               return r._parent;
-            }
-            r = r._parent;
-         }
-         if(!RClass.isClass(r, c)){
-            return null;
-         }
-      }else{
-         while(r._parent){
-            if(!RClass.isClass(r._parent, FUiControl)){
-               break;
-            }
-            r = r._parent;
-         }
-      }
-      return r;
-   }
-   MO.FUiControl_panel = function FUiControl_panel(p){
-      var o = this;
-      switch(p){
-         case EPanel.Parent:
-            return o._hParent;
-         case EPanel.Container:
-         case EPanel.Size:
-            return o._hPanel;
-      }
-      return null;
-   }
-   MO.FUiControl_isVisible = function FUiControl_isVisible(){
-      return this._statusVisible;
-   }
-   MO.FUiControl_setVisible = function FUiControl_setVisible(p){
-      var o = this;
-      o._statusVisible = p;
-      var h = o.panel(EPanel.Container);
-      if(h){
-         RHtml.visibleSet(h, p);
-      }
-   }
-   MO.FUiControl_show = function FUiControl_show(){
-      var o = this;
-      if(!o._statusVisible){
-         o.setVisible(true);
-      }
-   }
-   MO.FUiControl_hide = function FUiControl_hide(){
-      var o = this;
-      if(o._statusVisible){
-         o.setVisible(false);
-      }
-   }
-   MO.FUiControl_isEnable = function FUiControl_isEnable(){
-      return this._statusEnable;
-   }
-   MO.FUiControl_setEnable = function FUiControl_setEnable(p){
-      var o = this;
-      o._statusEnable = p;
-      var h = o.panel(EPanel.Container);
-      if(h){
-         h.style.disabled = !p;
-      }
-   }
-   MO.FUiControl_enable = function FUiControl_enable(){
-      var o = this;
-      if(!o._statusEnable){
-         o.setEnable(true);
-      }
-   }
-   MO.FUiControl_disable = function FUiControl_disable(){
-      var o = this;
-      if(o._statusEnable){
-         o.setEnable(false);
-      }
-   }
-   MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
-      return RUiControl.attachEvent(this, n, h, m, u);
-   }
-   MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
-      return RUiControl.linkEvent(this, t, n, h, m);
-   }
-   MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
-      var o = this;
-      var es = o._events;
-      if(es){
-         var ec = es.get(n);
-         if(ec){
-            ec.invoke(s, s, e);
-         }
-      }
-   }
-   MO.FUiControl_psMode = function FUiControl_psMode(p){
-      var o = this;
-      var e = new TEventProcess(o, 'oeMode', FUiControl);
-      e.displayCd = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
-      var o = this;
-      RConsole.find(FDesignConsole).setFlag(m, f, o);
-      var e = new TEventProcess(o, 'oeDesign', MDesign)
-      e.mode = m;
-      e.flag = f;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psEnable = function FUiControl_psEnable(v){
-      var o = this;
-      var e = new TEventProcess(o, 'oeEnable', FUiControl)
-      e.enable = v;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psVisible = function FUiControl_psVisible(v){
-      var o = this;
-      var e = new TEventProcess(o, 'oeVisible', FUiControl);
-      e.visible = v;
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psResize = function FUiControl_psResize(){
-      var o = this;
-      var e = new TEventProcess(o, 'oeResize', FUiControl);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
-      var o = this;
-      var e = new TEventProcess(o, 'oeRefresh', FUiControl);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiControl_isBuild = function FUiControl_isBuild(){
-      return this._statusBuild;
-   }
-   MO.FUiControl_build = function FUiControl_build(p){
-      var o = this;
-      if(o._statusBuild){
-         throw new TError(o, 'Current control is already builded.');
-      }
-      var d = null;
-      if(p.createElement){
-         d = p;
-      }else if(p.ownerDocument && p.ownerDocument.createElement){
-         d = p.ownerDocument;
-      }else if(p.hDocument){
-         d = p.hDocument;
-      }else{
-         throw new TError("Build document is invalid. (document={1})", p);
-      }
-      var a = new SArguments();
-      a.owner = o;
-      a.hDocument = d;
-      o.onBuild(a);
-      a.owner = null;
-      a.hDocument = null;
-      RObject.free(a);
-      o._statusBuild = true;
-   }
-   MO.FUiControl_builded = function FUiControl_builded(p){
-      var o = this;
-      if(!o._statusBuild){
-         throw new TError(o, 'Current control is not build.');
-      }
-      if(o._statusBuilded){
-         throw new TError(o, 'Current control is already builded.');
-      }
-      o.onBuilded(p);
-      o._statusBuilded = true;
-   }
-   MO.FUiControl_refresh = function FUiControl_refresh(){
-      var o = this;
-      if(!o._statusBuild){
-         throw new TError(o, 'Current control is not build.');
-      }
-   }
-   MO.FUiControl_setPanel = function FUiControl_setPanel(h){
-      var o = this;
-      o._hParent = h;
-      h.appendChild(o._hPanel);
-   }
-   MO.FUiControl_dispose = function FUiControl_dispose(){
-      var o = this;
-      o._disable = null;
-      o._wrapCd = null;
-      o._hint = null;
-      o._styleContainer = null;
-      o._statusVisible = null;
-      o._statusEnable = null;
-      o._statusBuild = null;
-      o._hParent = null;
-      o._hPanel = RHtml.free(o._hPanel);
-      o.__base.MUiMargin.dispose.call(o);
-      o.__base.MUiPadding.dispose.call(o);
-      o.__base.MUiSize.dispose.call(o);
-      o.__base.MUiStyle.dispose.call(o);
-      o.__base.FUiComponent.dispose.call(o);
+MO.FUiControl = function FUiControl(o){
+   o = MO.Class.inherits(this, o, MO.FUiComponent, MO.MUiStyle, MO.MUiSize, MO.MUiPadding, MO.MUiMargin);
+   o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
+   o._visible       = MO.Class.register(o, new MO.APtyBoolean('_visible'), true);
+   o._disable       = MO.Class.register(o, new MO.APtyBoolean('_disable'), false);
+   o._hint          = MO.Class.register(o, new MO.APtyString('_hint'));
+   o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._layoutCd      = MO.EUiLayout.Display;
+   o._sizeCd        = MO.EUiSize.Normal;
+   o._statusVisible = true;
+   o._statusEnable  = true;
+   o._statusBuild   = false;
+   o._statusBuilded = false;
+   o._storage       = null;
+   o._hParent       = null;
+   o._hPanel        = null;
+   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FUiControl_onEnter);
+   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FUiControl_onLeave);
+   o.onBuildPanel   = MO.FUiControl_onBuildPanel;
+   o.onBuild        = MO.FUiControl_onBuild;
+   o.onBuilded      = MO.Method.empty;
+   o.oeMode         = MO.FUiControl_oeMode;
+   o.oeEnable       = MO.FUiControl_oeEnable;
+   o.oeVisible      = MO.FUiControl_oeVisible;
+   o.oeResize       = MO.FUiControl_oeResize;
+   o.oeRefresh      = MO.FUiControl_oeRefresh;
+   o.oeFrame        = MO.FUiControl_oeFrame;
+   o.construct      = MO.FUiControl_construct;
+   o.topControl     = MO.FUiControl_topControl;
+   o.panel          = MO.FUiControl_panel;
+   o.isVisible      = MO.FUiControl_isVisible;
+   o.setVisible     = MO.FUiControl_setVisible;
+   o.show           = MO.FUiControl_show;
+   o.hide           = MO.FUiControl_hide;
+   o.isEnable       = MO.FUiControl_isEnable;
+   o.setEnable      = MO.FUiControl_setEnable;
+   o.enable         = MO.FUiControl_enable;
+   o.disable        = MO.FUiControl_disable;
+   o.attachEvent    = MO.FUiControl_attachEvent;
+   o.linkEvent      = MO.FUiControl_linkEvent;
+   o.callEvent      = MO.FUiControl_callEvent;
+   o.psMode         = MO.FUiControl_psMode;
+   o.psDesign       = MO.FUiControl_psDesign;
+   o.psEnable       = MO.FUiControl_psEnable;
+   o.psVisible      = MO.FUiControl_psVisible;
+   o.psResize       = MO.FUiControl_psResize;
+   o.psRefresh      = MO.FUiControl_psRefresh;
+   o.psFrame        = MO.FUiControl_psFrame;
+   o.isBuild        = MO.FUiControl_isBuild;
+   o.build          = MO.FUiControl_build;
+   o.builded        = MO.FUiControl_builded;
+   o.refresh        = MO.FUiControl_refresh;
+   o.setPanel       = MO.FUiControl_setPanel;
+   o.dispose        = MO.FUiControl_dispose;
+   return o;
+}
+MO.FUiControl_onEnter = function FUiControl_onEnter(e){
+   var o = this;
+   MO.Console.find(MO.FUiFocusConsole).enter(o);
+   if(o._hint){
+      MO.RWindow.setStatus(o._hint);
    }
 }
-with(MO){
-   MO.FUiWorkspace = function FUiWorkspace(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
-      o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-      o._frames      = null;
-      o._hContainer  = null;
-      o.onBuildPanel = FUiWorkspace_onBuildPanel;
-      o.appendChild  = FUiWorkspace_appendChild;
-      return o;
+MO.FUiControl_onLeave = function FUiControl_onLeave(e){
+   var o = this;
+   MO.Console.find(MO.FUiFocusConsole).leave(o);
+   if(o._hint){
+      MO.RWindow.setStatus();
    }
-   MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(event, o.styleName('Panel'));
+}
+MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.RBuilder.createDiv(p, o.styleName('Panel'));
+}
+MO.FUiControl_onBuild = function FUiControl_onBuild(p){
+   var o = this;
+   o.onBuildPanel(p);
+   if(o._statusVisible != o._visible){
+      o.setVisible(o._visible);
    }
-   MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
-      var o = this;
-      if(RClass.isClass(control, FUiFrameSet)){
-         o._hPanel.appendChild(control._hPanel);
-      }else{
-         throw new TError(o, 'Unknown child type.');
+   var h = o._hPanel;
+   MO.RHtml.linkSet(h, 'control', o);
+   o.attachEvent('onEnter', h);
+   o.attachEvent('onLeave', h);
+   o.refreshBounds();
+   o.refreshPadding();
+   o.refreshMargin();
+}
+MO.FUiControl_oeMode = function FUiControl_oeMode(e){
+   var o = this;
+   o._displayCd = e.displayCd;
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
+   var o = this;
+   if(e.isBefore()){
+      o.setEnable(e.enable);
+   }
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
+   var o = this;
+   if(e.isBefore()){
+      o.setVisible(e.visible);
+   }
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeResize = function FUiControl_oeResize(p){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_oeFrame = function FUiControl_oeFrame(event){
+   return MO.EEventStatus.Continue;
+}
+MO.FUiControl_construct = function FUiControl_construct(){
+   var o = this;
+   o.__base.FUiComponent.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
+   o.__base.MUiSize.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
+}
+MO.FUiControl_topControl = function FUiControl_topControl(c){
+   var r = this;
+   if(c){
+      while(r._parent){
+         if(MO.Class.isClass(r._parent, c)){
+            return r._parent;
+         }
+         r = r._parent;
       }
+      if(!MO.Class.isClass(r, c)){
+         return null;
+      }
+   }else{
+      while(r._parent){
+         if(!MO.Class.isClass(r._parent, FUiControl)){
+            break;
+         }
+         r = r._parent;
+      }
+   }
+   return r;
+}
+MO.FUiControl_panel = function FUiControl_panel(p){
+   var o = this;
+   switch(p){
+      case MO.EPanel.Parent:
+         return o._hParent;
+      case MO.EPanel.Container:
+      case MO.EPanel.Size:
+         return o._hPanel;
+   }
+   return null;
+}
+MO.FUiControl_isVisible = function FUiControl_isVisible(){
+   return this._statusVisible;
+}
+MO.FUiControl_setVisible = function FUiControl_setVisible(p){
+   var o = this;
+   o._statusVisible = p;
+   var h = o.panel(MO.EPanel.Container);
+   if(h){
+      MO.RHtml.visibleSet(h, p);
+   }
+}
+MO.FUiControl_show = function FUiControl_show(){
+   var o = this;
+   if(!o._statusVisible){
+      o.setVisible(true);
+   }
+}
+MO.FUiControl_hide = function FUiControl_hide(){
+   var o = this;
+   if(o._statusVisible){
+      o.setVisible(false);
+   }
+}
+MO.FUiControl_isEnable = function FUiControl_isEnable(){
+   return this._statusEnable;
+}
+MO.FUiControl_setEnable = function FUiControl_setEnable(p){
+   var o = this;
+   o._statusEnable = p;
+   var h = o.panel(EPanel.Container);
+   if(h){
+      h.style.disabled = !p;
+   }
+}
+MO.FUiControl_enable = function FUiControl_enable(){
+   var o = this;
+   if(!o._statusEnable){
+      o.setEnable(true);
+   }
+}
+MO.FUiControl_disable = function FUiControl_disable(){
+   var o = this;
+   if(o._statusEnable){
+      o.setEnable(false);
+   }
+}
+MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
+   return MO.RUiControl.attachEvent(this, n, h, m, u);
+}
+MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
+   return MO.RUiControl.linkEvent(this, t, n, h, m);
+}
+MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
+   var o = this;
+   var es = o._events;
+   if(es){
+      var ec = es.get(n);
+      if(ec){
+         ec.invoke(s, s, e);
+      }
+   }
+}
+MO.FUiControl_psMode = function FUiControl_psMode(p){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeMode', MO.FUiControl);
+   e.displayCd = p;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
+   var o = this;
+   MO.Console.find(FDesignConsole).setFlag(m, f, o);
+   var e = new MO.TEventProcess(o, 'oeDesign', MO.MDesign)
+   e.mode = m;
+   e.flag = f;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psEnable = function FUiControl_psEnable(v){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeEnable', MO.FUiControl)
+   e.enable = v;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psVisible = function FUiControl_psVisible(v){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeVisible', MO.FUiControl);
+   e.visible = v;
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psResize = function FUiControl_psResize(){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeResize', MO.FUiControl);
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
+   var o = this;
+   var e = new MO.TEventProcess(o, 'oeRefresh', MO.FUiControl);
+   o.process(e);
+   e.dispose();
+}
+MO.FUiControl_psFrame = function FUiControl_psFrame(){
+   var o = this;
+   var event = new MO.TEventProcess(o, 'oeFrame', MO.FUiControl);
+   o.process(event);
+   event.dispose();
+}
+MO.FUiControl_isBuild = function FUiControl_isBuild(){
+   return this._statusBuild;
+}
+MO.FUiControl_build = function FUiControl_build(p){
+   var o = this;
+   if(o._statusBuild){
+      throw new MO.TError(o, 'Current control is already builded.');
+   }
+   var d = null;
+   if(p.createElement){
+      d = p;
+   }else if(p.ownerDocument && p.ownerDocument.createElement){
+      d = p.ownerDocument;
+   }else if(p.hDocument){
+      d = p.hDocument;
+   }else{
+      throw new MO.TError("Build document is invalid. (document={1})", p);
+   }
+   var a = new MO.SArguments();
+   a.owner = o;
+   a.hDocument = d;
+   o.onBuild(a);
+   a.owner = null;
+   a.hDocument = null;
+   MO.Lang.Object.free(a);
+   o._statusBuild = true;
+}
+MO.FUiControl_builded = function FUiControl_builded(p){
+   var o = this;
+   if(!o._statusBuild){
+      throw new MO.TError(o, 'Current control is not build.');
+   }
+   if(o._statusBuilded){
+      throw new MO.TError(o, 'Current control is already builded.');
+   }
+   o.onBuilded(p);
+   o._statusBuilded = true;
+}
+MO.FUiControl_refresh = function FUiControl_refresh(){
+   var o = this;
+   if(!o._statusBuild){
+      throw new MO.TError(o, 'Current control is not build.');
+   }
+}
+MO.FUiControl_setPanel = function FUiControl_setPanel(h){
+   var o = this;
+   o._hParent = h;
+   h.appendChild(o._hPanel);
+}
+MO.FUiControl_dispose = function FUiControl_dispose(){
+   var o = this;
+   o._disable = null;
+   o._wrapCd = null;
+   o._hint = null;
+   o._styleContainer = null;
+   o._statusVisible = null;
+   o._statusEnable = null;
+   o._statusBuild = null;
+   o._hParent = null;
+   o._hPanel = MO.RHtml.free(o._hPanel);
+   o.__base.MUiMargin.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiStyle.dispose.call(o);
+   o.__base.FUiComponent.dispose.call(o);
+}
+MO.FUiWorkspace = function FUiWorkspace(o){
+   o = MO.Class.inherits(this, o, MO.FUiContainer, MO.MUiDescribeFrame);
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._frames      = null;
+   o._hContainer  = null;
+   o.onBuildPanel = MO.FUiWorkspace_onBuildPanel;
+   o.appendChild  = MO.FUiWorkspace_appendChild;
+   return o;
+}
+MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.RBuilder.createDiv(event, o.styleName('Panel'));
+}
+MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
+   var o = this;
+   if(MO.Class.isClass(control, MO.FUiFrameSet)){
+      o._hPanel.appendChild(control._hPanel);
+   }else{
+      throw new MO.TError(o, 'Unknown child type.');
    }
 }
 with(MO){

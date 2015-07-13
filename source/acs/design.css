@@ -534,6 +534,7 @@
 }
 
 .FDsSystemDesignFrameSet_Space_Content{
+   position: relative;
    background: #EEEEEE;
 }
 

@@ -73,7 +73,7 @@ MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    // 创建3D画板
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   var canvas3d = o._canvas3d = MO.RClass.create(MO.FDssCanvas);
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
@@ -141,22 +141,6 @@ MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setScale(sizeRate, sizeRate);
-   //..........................................................
-   // PC方式总是设置样式
-   //if(MO.Runtime.isPlatformPc()){
-   //   // 设置3D画板大小
-   //   var hCanvas3d = o._canvas3d._hCanvas;
-   //   hCanvas3d.width = width;
-   //   hCanvas3d.height = height;
-   //   hCanvas3d.style.width = width + 'px';
-   //   hCanvas3d.style.height = height + 'px';
-   //   // 设置2D画板大小
-   //   var hCanvas2d = o._canvas2d._hCanvas;
-   //   hCanvas2d.width = width;
-   //   hCanvas2d.height = height;
-   //   hCanvas2d.style.width = width + 'px';
-   //   hCanvas2d.style.height = height + 'px';
-   //}
 }
 
 //==========================================================

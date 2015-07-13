@@ -89,7 +89,9 @@ with(MO){
    //==========================================================
    MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
       var o = this;
-      o._hContainer.appendChild(control._hPanel);
+      if(control._hPanel){
+         o._hContainer.appendChild(control._hPanel);
+      }
    }
 
    //==========================================================

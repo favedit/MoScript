@@ -1251,25 +1251,25 @@ MO.RHtml.prototype.parent = function RHtml_parent(tag, typeName){
    }
    return null;
 }
-MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(h, c){
-   while(h){
-      var f = h.__linker;
-      if(f){
-         if(RClass.isClass(f, c)){
-            return f;
+MO.RHtml.prototype.searchLinker = function RHtml_searchLinker(hTag, clazz){
+   while(hTag){
+      var linker = hTag.__linker;
+      if(linker){
+         if(MO.Class.isClass(linker, clazz)){
+            return linker;
          }
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }
-MO.RHtml.prototype.searchObject = function RHtml_searchObject(h, n){
-   while(h){
-      var f = h[n];
-      if(f){
-         return f;
+MO.RHtml.prototype.searchObject = function RHtml_searchObject(hTag, name){
+   while(hTag){
+      var flag = hTag[name];
+      if(flag){
+         return flag;
       }
-      h = h.parentElement;
+      hTag = hTag.parentElement;
    }
    return null;
 }

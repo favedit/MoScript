@@ -400,10 +400,14 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
    o._visibleControls = new MO.TObjects();
 }
 MO.FGuiManager_register = function FGuiManager_register(control){
-   this._controls.push(control);
+   var o = this;
+   o._controls.push(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_unregister = function FGuiManager_unregister(control){
-   this._controls.remove(control);
+   var o = this;
+   o._controls.remove(control);
+   o._statusDirty = true;
 }
 MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
    var o = this;

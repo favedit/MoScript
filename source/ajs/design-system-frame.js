@@ -322,91 +322,89 @@ with(MO){
       o.__base.FDsSystemFrameComponentProperty.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
-      o = RClass.inherits(this, o, FDsSystemDesignFrameSet);
-      o._frameName   = 'system.design.frame.FrameSet';
-      o.onBuilded    = FDsSystemFrameFrameSet_onBuilded;
-      o.construct    = FDsSystemFrameFrameSet_construct;
-      o.selectObject = FDsSystemFrameFrameSet_selectObject;
-      o.load         = FDsSystemFrameFrameSet_load;
-      o.dispose      = FDsSystemFrameFrameSet_dispose;
-      return o;
+MO.FDsSystemFrameFrameSet = function FDsSystemFrameFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FDsSystemDesignFrameSet);
+   o._frameName   = 'system.design.frame.FrameSet';
+   o.onBuilded    = MO.FDsSystemFrameFrameSet_onBuilded;
+   o.construct    = MO.FDsSystemFrameFrameSet_construct;
+   o.selectObject = MO.FDsSystemFrameFrameSet_selectObject;
+   o.load         = MO.FDsSystemFrameFrameSet_load;
+   o.dispose      = MO.FDsSystemFrameFrameSet_dispose;
+   return o;
+}
+MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
+   o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var spliter = o._propertySpliter = o.searchControl('propertySpliter');
+   spliter.setAlignCd(MO.EUiAlign.Right);
+   spliter.setSizeHtml(o._frameProperty._hPanel);
+   var control = o._catalogToolbar = MO.Class.create(MO.FDsSystemFrameCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FDsSystemFrameCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   var control = o._spaceToolBar = MO.Class.create(MO.FDsSystemFrameSpaceToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSpaceToolBar.push(control);
+   var control = o._spaceContent = MO.Class.create(MO.FDsSystemFrameSpaceContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(o._frameSpaceContent._hPanel);
+   o._frameSpaceContent.push(control);
+   var control = o._propertyToolbar = MO.Class.create(MO.FDsSystemFramePropertyToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._framePropertyToolBar.push(control);
+}
+MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.construct.call(o);
+}
+MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
+   var o = this;
+   var activeFrame = o._spaceContent._activeFrame;
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
    }
-   MO.FDsSystemFrameFrameSet_onBuilded = function FDsSystemFrameFrameSet_onBuilded(event){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.onBuilded.call(o, event);
-      o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
-      o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
-      o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
-      o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
-      var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
-      spliter.setAlignCd(EUiAlign.Left);
-      spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-      spliter.setAlignCd(EUiAlign.Right);
-      spliter.setSizeHtml(o._frameProperty._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsSystemFrameCatalogToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsSystemFrameCatalogContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.build(event);
-      o._frameCatalogContent.push(control);
-      var control = o._spaceToolBar = RClass.create(FDsSystemFrameSpaceToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._frameSpaceToolBar.push(control);
-      var control = o._spaceContent = RClass.create(FDsSystemFrameSpaceContent);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.build(o._frameSpaceContent._hPanel);
-      o._frameSpaceContent.push(control);
-      var control = o._propertyToolbar = RClass.create(FDsSystemFramePropertyToolBar);
-      control._workspace = o._workspace;
-      control._frameSet = o;
-      control.buildDefine(event);
-      o._framePropertyToolBar.push(control);
+   var frame = o.findPropertyFrame(propertyFrame);
+   frame.show();
+   if(typeGroup == MO.EUiTreeNodeGroup.Container){
+      frame.loadObject(activeFrame, activeFrame);
+   }else{
+      var activeControl = activeFrame.findComponent(controlName);
+      frame.loadObject(activeFrame, activeControl);
+      o._spaceContent.selectControl(activeControl);
    }
-   MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.construct.call(o);
+}
+MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
+   var o = this;
+   if(name){
+      o._spaceContent.loadFrame(name);
    }
-   MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectObject(typeGroup, propertyFrame, controlName){
-      var o = this;
-      var activeFrame = o._spaceContent._activeFrame;
-      var frames = o._propertyFrames;
-      var count = frames.count();
-      for(var i = 0; i < count; i++){
-         var frame = frames.at(i);
-         frame.hide();
-      }
-      var frame = o.findPropertyFrame(propertyFrame);
-      frame.show();
-      if(typeGroup == EUiTreeNodeGroup.Container){
-         frame.loadObject(activeFrame, activeFrame);
-      }else{
-         var activeControl = activeFrame.findComponent(controlName);
-         frame.loadObject(activeFrame, activeControl);
-         o._spaceContent.selectControl(activeControl);
-      }
-   }
-   MO.FDsSystemFrameFrameSet_load = function FDsSystemFrameFrameSet_load(name){
-      var o = this;
-      if(name){
-         o._spaceContent.loadFrame(name);
-      }
-   }
-   MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
-      var o = this;
-      o.__base.FDsSystemDesignFrameSet.dispose.call(o);
-   }
+}
+MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
+   var o = this;
+   o.__base.FDsSystemDesignFrameSet.dispose.call(o);
 }
 with(MO){
    MO.FDsSystemFrameMenuBar = function FDsSystemFrameMenuBar(o){
@@ -634,255 +632,267 @@ with(MO){
       o.__base.FUiToolBar.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
-      o._scaleRate          = 1;
-      o._optionAlpha        = false;
-      o._activeStage        = RClass.register(o, new AGetter('_activeStage'));
-      o._activeFrame        = null;
-      o._activeControls     = null;
-      o._capturePosition    = null;
-      o._captureRotation    = null;
-      o.onEnterFrame        = FDsSystemFrameSpaceContent_onEnterFrame;
-      o.onMouseCaptureStart = FDsSystemFrameSpaceContent_onMouseCaptureStart;
-      o.onMouseCapture      = FDsSystemFrameSpaceContent_onMouseCapture;
-      o.onMouseCaptureStop  = FDsSystemFrameSpaceContent_onMouseCaptureStop;
-      o.onResize            = FDsSystemFrameSpaceContent_onResize;
-      o.onProcess           = FDsSystemFrameSpaceContent_onProcess;
-      o.onKeyDown           = FDsSystemFrameSpaceContent_onKeyDown;
-      o.oeResize            = FDsSystemFrameSpaceContent_oeResize;
-      o.construct           = FDsSystemFrameSpaceContent_construct;
-      o.build               = FDsSystemFrameSpaceContent_build;
-      o.controlAction       = FDsSystemFrameSpaceContent_controlAction;
-      o.selectControl       = FDsSystemFrameSpaceContent_selectControl;
-      o.loadFrame           = FDsSystemFrameSpaceContent_loadFrame;
-      o.dispose             = FDsSystemFrameSpaceContent_dispose;
-      return o;
+MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
+   o = MO.Class.inherits(this, o, MO.FUiControl, MO.MGraphicObject);
+   o._scaleRate          = 1;
+   o._optionAlpha        = false;
+   o._desktop            = MO.Class.register(o, new MO.AGetter('_desktop'));
+   o._guiManager         = MO.Class.register(o, new MO.AGetter('_guiManager'));
+   o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
+   o._activeFrame        = null;
+   o._activeControls     = null;
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.onEnterFrame        = MO.FDsSystemFrameSpaceContent_onEnterFrame;
+   o.onMouseCaptureStart = MO.FDsSystemFrameSpaceContent_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDsSystemFrameSpaceContent_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDsSystemFrameSpaceContent_onMouseCaptureStop;
+   o.onResize            = MO.FDsSystemFrameSpaceContent_onResize;
+   o.onProcess           = MO.FDsSystemFrameSpaceContent_onProcess;
+   o.onKeyDown           = MO.FDsSystemFrameSpaceContent_onKeyDown;
+   o.oeResize            = MO.FDsSystemFrameSpaceContent_oeResize;
+   o.oeFrame             = MO.FDsSystemFrameSpaceContent_oeFrame;
+   o.construct           = MO.FDsSystemFrameSpaceContent_construct;
+   o.build               = MO.FDsSystemFrameSpaceContent_build;
+   o.controlAction       = MO.FDsSystemFrameSpaceContent_controlAction;
+   o.selectControl       = MO.FDsSystemFrameSpaceContent_selectControl;
+   o.loadFrame           = MO.FDsSystemFrameSpaceContent_loadFrame;
+   o.dispose             = MO.FDsSystemFrameSpaceContent_dispose;
+   return o;
+}
+MO.FDsSystemFrameSpaceContent_onEnterFrame = function FDsSystemFrameSpaceContent_onEnterFrame(){
+   var o = this;
+   var stage = o._activeStage;
+   if(!stage){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onEnterFrame = function FDsSystemFrameSpaceContent_onEnterFrame(){
-      var o = this;
-      var stage = o._activeStage;
-      if(!stage){
-         return;
-      }
-      var c = stage.camera();
-      var d = 0.5;
-      var r = 0.05;
-      var kw = RKeyboard.isPress(EKeyCode.W);
-      var ks = RKeyboard.isPress(EKeyCode.S);
-      if(kw && !ks){
-         c.doWalk(d);
-      }
-      if(!kw && ks){
-         c.doWalk(-d);
-      }
-      var ka = RKeyboard.isPress(EKeyCode.A);
-      var kd = RKeyboard.isPress(EKeyCode.D);
-      if(ka && !kd){
-         c.doYaw(r);
-      }
-      if(!ka && kd){
-         c.doYaw(-r);
-      }
-      var kq = RKeyboard.isPress(EKeyCode.Q);
-      var ke = RKeyboard.isPress(EKeyCode.E);
-      if(kq && !ke){
-         c.doFly(d);
-      }
-      if(!kq && ke){
-         c.doFly(-d);
-      }
-      var kz = RKeyboard.isPress(EKeyCode.Z);
-      var kw = RKeyboard.isPress(EKeyCode.X);
-      if(kz && !kw){
-         c.doPitch(r);
-      }
-      if(!kz && kw){
-         c.doPitch(-r);
-      }
-      c.update();
-      if(o._optionRotation){
-         var r = o._rotation;
-         var ls = stage.layers();
-         var c = ls.count();
-         for(var i = 0; i < c; i++){
-            var l = ls.value(i);
-            var m = l.matrix();
-            m.setRotation(0, r.y, 0);
-            m.update();
-         }
-         r.y += 0.01;
-      }
+   var c = stage.camera();
+   var d = 0.5;
+   var r = 0.05;
+   var kw = MO.RKeyboard.isPress(MO.EKeyCode.W);
+   var ks = MO.RKeyboard.isPress(MO.EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(d);
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCaptureStart = function FDsSystemFrameSpaceContent_onMouseCaptureStart(p){
-      var o = this;
-      var s = o._activeStage;
-      if(!s){
-         return;
+   if(!kw && ks){
+      c.doWalk(-d);
+   }
+   var ka = MO.RKeyboard.isPress(MO.EKeyCode.A);
+   var kd = MO.RKeyboard.isPress(MO.EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = MO.RKeyboard.isPress(MO.EKeyCode.Q);
+   var ke = MO.RKeyboard.isPress(MO.EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var kz = MO.RKeyboard.isPress(MO.EKeyCode.Z);
+   var kw = MO.RKeyboard.isPress(MO.EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var ls = stage.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
       }
-      var r = o._activeStage.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
-      var r = st.test(r, p.offsetX, p.offsetY);
-      o._capturePosition.set(p.clientX, p.clientY);
-      o._captureRotation.assign(s.camera()._rotation);
+      r.y += 0.01;
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCapture = function FDsSystemFrameSpaceContent_onMouseCapture(p){
-      var o = this;
-      var s = o._activeStage;
-      if(!s){
-         return;
-      }
-      var cx = p.clientX - o._capturePosition.x;
-      var cy = p.clientY - o._capturePosition.y;
-      var c = o._activeStage.camera();
-      var r = c.rotation();
-      var cr = o._captureRotation;
-      r.x = cr.x + cy * 0.003;
-      r.y = cr.y + cx * 0.003;
+}
+MO.FDsSystemFrameSpaceContent_onMouseCaptureStart = function FDsSystemFrameSpaceContent_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceContent_onMouseCaptureStop(p){
+   var r = o._activeStage.region();
+   var st = MO.Console.find(MO.FG3dTechniqueConsole).find(o._graphicContext, MO.FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+}
+MO.FDsSystemFrameSpaceContent_onMouseCapture = function FDsSystemFrameSpaceContent_onMouseCapture(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
    }
-   MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
-      var o = this;
-      o.__base.FDsCanvas.onResize.call(o, event);
-      var c = o._graphicContext;
-      var cs = c.size();
-      var s = o._activeStage;
-      if(s){
-         var rp = s.camera().projection();
-         rp.size().set(cs.width, cs.height);
-         rp.update();
-      }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var c = o._activeStage.camera();
+   var r = c.rotation();
+   var cr = o._captureRotation;
+   r.x = cr.x + cy * 0.003;
+   r.y = cr.y + cx * 0.003;
+}
+MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceContent_onMouseCaptureStop(p){
+}
+MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
+   var o = this;
+   o.__base.FUiControl.onResize.call(o, event);
+   var c = o._graphicContext;
+   var cs = c.size();
+   var s = o._activeStage;
+   if(s){
+      var rp = s.camera().projection();
+      rp.size().set(cs.width, cs.height);
+      rp.update();
    }
-   MO.FDsSystemFrameSpaceContent_onProcess = function FDsSystemFrameSpaceContent_onProcess(event){
-      var o = this;
-      var frame = o._activeFrame;
-      if(frame){
-         frame.psUpdate();
-      }
+}
+MO.FDsSystemFrameSpaceContent_onProcess = function FDsSystemFrameSpaceContent_onProcess(event){
+   var o = this;
+   var frame = o._activeFrame;
+   if(frame){
+      frame.psUpdate();
    }
-   MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
-      var o = this;
-      var location = control.location();
-      var size = control.size();
-      switch(keyCode){
-         case EKeyCode.A:
-            location.x--;
-            return true;
-         case EKeyCode.W:
-            location.y--;
-            return true;
-         case EKeyCode.D:
-            location.x++;
-            return true;
-         case EKeyCode.S:
-            location.y++;
-            return true;
-         case EKeyCode.J:
-            size.width--;
-            return true;
-         case EKeyCode.I:
-            size.height--;
-            return true;
-         case EKeyCode.L:
-            size.width++;
-            return true;
-         case EKeyCode.K:
-            size.height++;
-            return true;
-      }
-      return false;
+}
+MO.FDsSystemFrameSpaceContent_controlAction = function FDsSystemFrameSpaceContent_controlAction(keyCode, control){
+   var o = this;
+   var location = control.location();
+   var size = control.size();
+   switch(keyCode){
+      case MO.EKeyCode.A:
+         location.x--;
+         return true;
+      case MO.EKeyCode.W:
+         location.y--;
+         return true;
+      case MO.EKeyCode.D:
+         location.x++;
+         return true;
+      case MO.EKeyCode.S:
+         location.y++;
+         return true;
+      case MO.EKeyCode.J:
+         size.width--;
+         return true;
+      case MO.EKeyCode.I:
+         size.height--;
+         return true;
+      case MO.EKeyCode.L:
+         size.width++;
+         return true;
+      case MO.EKeyCode.K:
+         size.height++;
+         return true;
    }
-   MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
-      var o = this;
-      var keyCode = event.keyCode;
-      var controls = o._activeControls;
-      if(!controls.isEmpty()){
-         var changed = false;
-         var count = controls.count();
-         for(var i = 0; i < count; i++){
-            var control = controls.at(i);
-            if(o.controlAction(keyCode, control)){
-               changed = true;
-            }
-         }
-         if(changed){
-            o._activeFrame.build();
+   return false;
+}
+MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_onKeyDown(event){
+   var o = this;
+   var keyCode = event.keyCode;
+   var controls = o._activeControls;
+   if(!controls.isEmpty()){
+      var changed = false;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(o.controlAction(keyCode, control)){
+            changed = true;
          }
       }
-   }
-   MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(p){
-      var o = this;
-      o.__base.FDsCanvas.oeResize.call(o, p);
-      var hp = o._hPanel;
-      var w = hp.offsetWidth;
-      var h = hp.offsetHeight;
-      var s = o._activeSpace;
-      if(s){
-         var cp = s.camera().projection();
-         cp.size().set(w, h);
-         cp.update();
+      if(changed){
+         o._activeFrame.build();
       }
-      return EEventStatus.Stop;
    }
-   MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
-      var o = this;
-      o.__base.FDsCanvas.construct.call(o);
-      o._rotation = new SVector3();
-      o._activeControls = new TObjects();
-      o._capturePosition = new SPoint2();
-      o._captureRotation = new SVector3();
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
+   var o = this;
+   o.__base.FUiControl.oeResize.call(o, event);
+   return;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeSpace;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
    }
-   MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
-      var o = this;
-      o.__base.FDsCanvas.build.call(o, hPanel);
-      o.setPanel(hPanel);
-      var stage = o._activeStage = MO.RClass.create(MO.FDsStage);
-      stage.linkGraphicContext(o);
-      var region = stage.region();
-      region.linkGraphicContext(o);
-      region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
-      stage.selectTechnique(o, FE3dGeneralTechnique);
-      var camera = region.camera();
-      var projection = camera.projection();
-      projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
-      projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
-      stage.addEnterFrameListener(o, o.onProcess);
-      RStage.register('design.frame.stage', stage);
+   return MO.EEventStatus.Stop;
+}
+MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFrame(event){
+   var o = this;
+   o.__base.FUiControl.oeFrame.call(o, event);
+   o._guiManager.process();
+   return MO.EEventStatus.Stop;
+}
+MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
+   var o = this;
+   o.__base.FUiControl.construct.call(o);
+   o._rotation = new MO.SVector3();
+   o._activeControls = new MO.TObjects();
+   o._capturePosition = new MO.SPoint2();
+   o._captureRotation = new MO.SVector3();
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(hPanel){
+   var o = this;
+   var desktop = o._desktop = MO.Class.create(MO.FDssDesktop);
+   desktop.build(hPanel);
+   o.linkGraphicContext(desktop.canvas3d());
+   var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
+   guiManager.linkGraphicContext(desktop.canvas3d());
+   guiManager.setDesktop(desktop);
+   guiManager.setCanvas(desktop.canvas2d());
+   guiManager.setup();
+   return;
+   o.__base.FUiControl.build.call(o, hPanel);
+   o.setPanel(hPanel);
+   var stage = o._activeStage = MO.Class.create(MO.FDsStage);
+   stage.linkGraphicContext(o);
+   var region = stage.region();
+   region.linkGraphicContext(o);
+   region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
+   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+   var camera = region.camera();
+   var projection = camera.projection();
+   projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
+   projection.update();
+   camera.position().set(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   stage.addEnterFrameListener(o, o.onProcess);
+   MO.RStage.register('design.frame.stage', stage);
+}
+MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
+   var o = this;
+   var controls = o._activeControls;
+   controls.clear();
+   controls.push(control);
+}
+MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
+   var o = this;
+   var frame = o._activeFrame;
+   if(frame){
+      o._guiManager.unregister(frame);
+      o._activeFrame = null;
    }
-   MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
-      var o = this;
-      var controls = o._activeControls;
-      controls.clear();
-      controls.push(control);
-   }
-   MO.FDsSystemFrameSpaceContent_loadFrame = function FDsSystemFrameSpaceContent_loadFrame(code){
-      var o = this;
-      var context = o._graphicContext;
-      var stage = o._activeStage;
-      var layer = stage.faceLayer();
-      var frame = o._activeFrame;
-      if(frame){
-         var renderable = frame.renderable();
-         layer.removeRenderable(renderable);
-         o._activeFrame = null;
-      }
-      var frameConsole = MO.RConsole.find(MO.FGuiFrameConsole);
-      var frame = o._activeFrame = frameConsole.get(context, code);
-      var renderable = frame.renderable();
-      renderable.setLocation(10, 10);
-      layer.pushRenderable(renderable);
-   }
-   MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
-      var o = this;
-      o._rotation = MO.Lang.Obejct.dispose(o._rotation)
-      o.__base.FDsCanvas.dispose.call(o);
-   }
+   var frameConsole = MO.Console.find(MO.FGuiFrameConsole);
+   frame = o._activeFrame = frameConsole.get(o, code);
+   frame.setLocation(0, 0);
+   o._guiManager.register(frame);
+}
+MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Obejct.dispose(o._rotation)
+   o.__base.FUiControl.dispose.call(o);
 }
 with(MO){
    MO.FDsSystemFrameSpaceToolBar = function FDsSystemFrameSpaceToolBar(o){
