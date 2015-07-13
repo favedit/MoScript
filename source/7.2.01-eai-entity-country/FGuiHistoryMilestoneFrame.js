@@ -50,18 +50,18 @@ with (MO) {
       o.setTop((MO.Eai.Canvas.logicSize().height));
       o._bgImage = MO.Class.create(MO.FImage);
       o._bgImage.addLoadListener(o, o.onImageLoad);
-      o._bgImage.loadUrl('../ars/eai/milestone/bg.png');
+      o._bgImage.loadUrl('{eai.resource}/milestone/bg.png');
       o._wanImage = MO.Class.create(MO.FImage);
       o._wanImage.addLoadListener(o, o.onImageLoad);
-      o._wanImage.loadUrl('../ars/eai/number/wan.png');
+      o._wanImage.loadUrl('{eai.resource}/number/wan.png');
       o._yiImage = MO.Class.create(MO.FImage);
       o._yiImage.addLoadListener(o, o.onImageLoad);
-      o._yiImage.loadUrl('../ars/eai/number/yi.png');
+      o._yiImage.loadUrl('{eai.resource}/number/yi.png');
       o._numImages = new Array(10);
       for (var i = 0; i < 10; i++) {
          var img = MO.Class.create(MO.FImage);
          img.addLoadListener(o, o.onImageLoad);
-         img.loadUrl('../ars/eai/number/' + i + '.png');
+         img.loadUrl('{eai.resource}/number/' + i + '.png');
          o._numImages[i] = img;
       }
       var audioConsole = MO.Console.find(MO.FAudioConsole);

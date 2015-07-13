@@ -59,7 +59,7 @@ MO.FGuiLivePop_setup = function FGuiLivePop_setup() {
    o.setTop((MO.Eai.Canvas.logicSize().height - o._fullHeight) / 2 + o._riseHeight);
    o._bgImage = MO.Class.create(MO.FImage);
    o._bgImage.addLoadListener(o, o.onImageLoad);
-   o._bgImage.loadUrl('../ars/eai/invespop.png');
+   o._bgImage.loadUrl('{eai.resource}/invespop.png');
 }
 
 //==========================================================
