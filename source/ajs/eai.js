@@ -3664,6 +3664,7 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
    o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
    o._rollingPages    = null;
+   o._noRolling       = MO.Class.register(o, new MO.AGetSet('_noRolling'), false);
    o.onPaintLabel     = MO.FEaiStatisticsLabel_onPaintLabel;
    o.oeUpdate         = MO.FEaiStatisticsLabel_oeUpdate;
    o.construct        = MO.FEaiStatisticsLabel_construct;
@@ -3685,7 +3686,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var unitTextY = baseY - 4;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
-   if (passedTick > o._rollingDuration) {
+   if (passedTick > o._rollingDuration || o._noRolling) {
       passedTick = o._rollingDuration;
       o._rolling = false;
    }
@@ -4119,7 +4120,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var controlInvestment = o._logoBar.findComponent('investment');
-   controlInvestment.setRollingDuration(100);
+   controlInvestment.setNoRolling(true);
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
    transform.setInterval(10);
    transform.setScale(0.1);
