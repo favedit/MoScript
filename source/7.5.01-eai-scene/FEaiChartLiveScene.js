@@ -31,7 +31,7 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    // @attribute
-   o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
+   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;

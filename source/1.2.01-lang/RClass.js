@@ -584,8 +584,9 @@ MO.RClass.prototype.build = function RClass_build(clazz){
    //..........................................................
    // 删除类中所有空属性
    if(MO.Runtime.isRelease()){
-      for(var name in clazz.instance){
-         var value = clazz.instance[name];
+      var instance = clazz.instance;
+      for(var name in instance){
+         var value = instance[name];
          if(value == null){
             delete clazz.instance[name];
          }

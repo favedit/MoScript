@@ -54,6 +54,66 @@ MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
    o._audios = MO.Lang.Object.dispose(o._audios);
    o.__base.FConsole.dispose.call(o);
 }
+MO.FAudioContextConsole = function FAudioContextConsole(o) {
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd        = MO.EScope.Global;
+   o._context        = null;
+   o._audioBuffers   = null;
+   o.construct       = MO.FAudioContextConsole_construct;
+   o.load            = MO.FAudioContextConsole_load;
+   o.create          = MO.FAudioContextConsole_create;
+   o.isLoaded        = MO.FAudioContextConsole_isLoaded;
+   return o;
+}
+MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   try {
+      o._context = new AudioContext();
+   } catch (e) {
+      try {
+         o._context = new webkitAudioContext();
+      } catch (e) {
+         alert('Current Webbrowser does not support Web Audio API.');
+      }
+   }
+   o._audioBuffers = new MO.TDictionary();
+}
+MO.FAudioContextConsole_create = function FAudioContextConsole_create(uri) {
+   var o = this;
+   var context = o._context;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var audioBufferSourceNode = context.createBufferSource();
+   audioBufferSourceNode.buffer = o._audioBuffers.get(url);
+   audioBufferSourceNode.connect(context.destination)
+   return audioBufferSourceNode;
+}
+MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
+   var o = this;
+   var context = o._context;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var buffer = o._audioBuffers.get(url);
+   if (buffer) {
+      return true;
+   }
+   return false;
+}
+MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, successCallback) {
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var request = new XMLHttpRequest();
+   request.open('GET', url, true);
+   request.responseType = 'arraybuffer';
+   request.onload = function () {
+      o._context.decodeAudioData(request.response, function (buffer) {
+         o._audioBuffers.set(url, buffer);
+         if (successCallback) {
+            successCallback.call(owner, uri);
+         }
+      });
+   }
+   request.send();
+}
 MO.FAudioResource = function FAudioResource(o){
    o = MO.Class.inherits(this, o, MO.FAudio);
    return o;

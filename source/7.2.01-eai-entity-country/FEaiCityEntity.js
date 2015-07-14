@@ -20,11 +20,13 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    // @attribute
    o._cityTotal              = 0;
    o._investmentCount        = 0;
-   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
-   o._investmentLevelTotal   = 20000;
+   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'), 0);
    o._investmentLevel        = 0;
-   o._investmentRange        = 1;
-   o._investmentRate         = 100;
+   o._investmentLast         = 0;
+   o._investmentRateTotal    = 0;
+   o._investmentRate         = 0;
+   o._investmentAlpha        = 0;
+   o._investmentRange        = 0;
    o._investmentDirection    = 1;
    // @attribute
    o._stage                  = MO.Class.register(o, new MO.AGetSet('_stage'));
@@ -102,25 +104,31 @@ MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
 //
 // @method
 // @param level:Integer 投资级别
-// @param investmentTotal:Number 投资总额
+// @param investment:Number 投资额
 //==========================================================
-MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
+MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investment){
    var o = this;
    // 设置数据
    o._investmentCount++;
-   o._investmentTotal += investmentTotal;
-   //o._investmentLevel = o._investmentLevelTotal * Math.log(investmentTotal);
-   o._investmentLevel = o._investmentLevelTotal;
+   o._investmentTotal += investment;
+   // 检查现在数据是否比上一次大
+   if(investment < o._investmentLast){
+      return;
+   }
    // 获得颜色
    var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var color = rateConsole.find(MO.EEaiRate.Line).findRate(o._investmentTotal / 200000);
+   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   var color = rateResource.findRate(investment / 100000);
    // 设置内容
    o._color.set(1, 1, 1, 1);
-   o._range = MO.Lang.Float.toRange(Math.log(investmentTotal) / 5, 0, 6);
    o._rangeColor.setInteger(color);
    o._rangeColor.alpha = 1;
-   o._investmentRange = o._range;
-   o._investmentRate = 100;
+   // 设置比率内容
+   o._investmentLast = investment;
+   o._investmentRateTotal = (level + 1) * 100000;
+   o._investmentRate = o._investmentRateTotal;
+   o._investmentRange = Math.log(investment) / 4;
+   o._investmentAlpha = MO.Lang.Float.toRange(0.2 * level, 0, 1);
    o._visible = true;
 }
 
@@ -178,30 +186,23 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
 //==========================================================
 MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
    var o = this;
-   if(o._investmentLevel > 0){
-      var rate = o._investmentLevel / o._investmentLevelTotal;
-      // 设置比率
-      if(o._investmentRate < 0){
-         o._investmentRate = 0;
-         o._investmentDirection = 4;
-      }else if(o._investmentRate > 100){
-         o._investmentRate = 100;
-         o._investmentDirection = -2;
-      }
-      //o._investmentRate += o._investmentDirection;
-      //var rate = o._investmentRate / 100;
+   if(o._investmentRate > 0){
+      var rate = o._investmentRate / o._investmentRateTotal;
       // 设置内容
-      o._color.alpha = rate;
-      //o._range = o._investmentRange * rate;
-      o._rangeColor.alpha = rate;
+      o._range = o._investmentRange * rate;
+      o._color.alpha = o._investmentAlpha * rate;
+      o._rangeColor.alpha = o._investmentAlpha * rate;
       // 设置内容
-      o._investmentLevel--;
-      if(o._investmentLevel == 0){
-         o._visible = false;
-      }
+      o._investmentRate--;
       return true;
+   }else{
+      o._investmentLast = 0;
+      o._investmentRate = 0;
+      o._investmentRange = 0;
+      o._investmentAlpha = 0;
+      o._visible = false;
+      return false;
    }
-   return false;
 }
 
 //==========================================================

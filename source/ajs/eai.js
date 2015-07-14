@@ -460,52 +460,50 @@ with(MO){
       o.__base.FConsole.dispose.call(o);
    }
 }
-with(MO){
-   MO.FEaiRateResource = function FEaiRateResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._count      = RClass.register(o, new AGetter('_count'));
-      o._colors     = RClass.register(o, new AGetter('_colors'));
-      o.construct   = FEaiRateResource_construct;
-      o.find        = FEaiRateResource_find;
-      o.findRate    = FEaiRateResource_findRate;
-      o.unserialize = FEaiRateResource_unserialize;
-      o.dispose     = FEaiRateResource_dispose;
-      return o;
+MO.FEaiRateResource = function FEaiRateResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._count      = MO.Class.register(o, new MO.AGetter('_count'));
+   o._colors     = MO.Class.register(o, new MO.AGetter('_colors'));
+   o.construct   = MO.FEaiRateResource_construct;
+   o.find        = MO.FEaiRateResource_find;
+   o.findRate    = MO.FEaiRateResource_findRate;
+   o.unserialize = MO.FEaiRateResource_unserialize;
+   o.dispose     = MO.FEaiRateResource_dispose;
+   return o;
+}
+MO.FEaiRateResource_construct = function FEaiRateResource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FEaiRateResource_find = function FEaiRateResource_find(value){
+   var o = this;
+   var index = parseInt(value);
+   if(index < 0){
+      index = 0;
    }
-   MO.FEaiRateResource_construct = function FEaiRateResource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
+   if(index >= o._count){
+      index = o._count - 1;
    }
-   MO.FEaiRateResource_find = function FEaiRateResource_find(value){
-      var o = this;
-      var index = parseInt(value);
-      if(index < 0){
-         index = 0;
-      }
-      if(index >= o._count){
-         index = o._count - 1;
-      }
-      return o._colors[index];
+   return o._colors[index];
+}
+MO.FEaiRateResource_findRate = function FEaiRateResource_findRate(rate){
+   var o = this;
+   var index = rate * o._count;
+   var color = o.find(index);
+   return color;
+}
+MO.FEaiRateResource_unserialize = function FEaiRateResource_unserialize(input){
+   var o = this;
+   var count = o._count = input.readInt32();
+   var colors = o._colors = new Uint32Array(count);
+   for(var i = 0; i < count; i++){
+      colors[i] = input.readUint32();
    }
-   MO.FEaiRateResource_findRate = function FEaiRateResource_findRate(rate){
-      var o = this;
-      var index = rate * o._count - 1;
-      var color = o.find(index);
-      return color;
-   }
-   MO.FEaiRateResource_unserialize = function FEaiRateResource_unserialize(input){
-      var o = this;
-      var count = o._count = input.readInt32();
-      var colors = o._colors = new Uint32Array(count);
-      for(var i = 0; i < count; i++){
-         colors[i] = input.readUint32();
-      }
-   }
-   MO.FEaiRateResource_dispose = function FEaiRateResource_dispose(){
-      var o = this;
-      o._colors = null;
-      o.__base.FObject.dispose.call(o);
-   }
+}
+MO.FEaiRateResource_dispose = function FEaiRateResource_dispose(){
+   var o = this;
+   o._colors = null;
+   o.__base.FObject.dispose.call(o);
 }
 with(MO){
    MO.FEaiRateResourceConsole = function FEaiRateResourceConsole(o){
@@ -870,31 +868,29 @@ with(MO){
       o.__base.FEaiEntity.dispose.call(o);
    }
 }
-with(MO){
-   MO.FEaiCityEffect = function FEaiCityEffect(o){
-      o = RClass.inherits(this, o, FG3dAutomaticEffect);
-      o._code          = 'eai.city';
-      o.drawRenderable = FEaiCityEffect_drawRenderable;
-      return o;
-   }
-   MO.FEaiCityEffect_drawRenderable = function FEaiCityEffect_drawRenderable(region, renderable){
-      var o = this;
-      var context = o._graphicContext;
-      var program = o._program;
-      var matrix = renderable.currentMatrix();
-      var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
-      var material = renderable.material();
-      var info = material.info();
-      o.bindMaterial(material);
-      program.setParameter('vc_model_matrix', matrix);
-      program.setParameter('vc_vp_matrix', cameraVpMatrix);
-      program.setParameter4('fc_alpha', info.alphaBase, info.alphaRate, info.alphaLevel, info.alphaMerge);
-      program.setParameter('fc_ambient_color', info.ambientColor);
-      o.bindAttributes(renderable);
-      o.bindSamplers(renderable);
-      var indexBuffer = renderable.indexBuffers().first();
-      context.drawTriangles(indexBuffer);
-   }
+MO.FEaiCityEffect = function FEaiCityEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.city';
+   o.drawRenderable = MO.FEaiCityEffect_drawRenderable;
+   return o;
+}
+MO.FEaiCityEffect_drawRenderable = function FEaiCityEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.currentMatrix();
+   var cameraVpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', cameraVpMatrix);
+   program.setParameter4('fc_alpha', info.alphaBase, info.alphaRate, info.alphaLevel, info.alphaMerge);
+   program.setParameter('fc_ambient_color', info.ambientColor);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   var indexBuffer = renderable.indexBuffers().first();
+   context.drawTriangles(indexBuffer);
 }
 MO.FEaiCityEntity = function FEaiCityEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
@@ -908,11 +904,13 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
    o._cityTotal              = 0;
    o._investmentCount        = 0;
-   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
-   o._investmentLevelTotal   = 20000;
+   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'), 0);
    o._investmentLevel        = 0;
-   o._investmentRange        = 1;
-   o._investmentRate         = 100;
+   o._investmentLast         = 0;
+   o._investmentRateTotal    = 0;
+   o._investmentRate         = 0;
+   o._investmentAlpha        = 0;
+   o._investmentRange        = 0;
    o._investmentDirection    = 1;
    o._stage                  = MO.Class.register(o, new MO.AGetSet('_stage'));
    o._renderable             = MO.Class.register(o, new MO.AGetSet('_renderable'));
@@ -957,19 +955,24 @@ MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
    o._location.assign(o._data.location());
    o._size.set(2, 2);
 }
-MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investmentTotal){
+MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTotal(level, investment){
    var o = this;
    o._investmentCount++;
-   o._investmentTotal += investmentTotal;
-   o._investmentLevel = o._investmentLevelTotal;
+   o._investmentTotal += investment;
+   if(investment < o._investmentLast){
+      return;
+   }
    var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var color = rateConsole.find(MO.EEaiRate.Line).findRate(o._investmentTotal / 200000);
+   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   var color = rateResource.findRate(investment / 100000);
    o._color.set(1, 1, 1, 1);
-   o._range = MO.Lang.Float.toRange(Math.log(investmentTotal) / 5, 0, 6);
    o._rangeColor.setInteger(color);
    o._rangeColor.alpha = 1;
-   o._investmentRange = o._range;
-   o._investmentRate = 100;
+   o._investmentLast = investment;
+   o._investmentRateTotal = (level + 1) * 100000;
+   o._investmentRate = o._investmentRateTotal;
+   o._investmentRange = Math.log(investment) / 4;
+   o._investmentAlpha = MO.Lang.Float.toRange(0.2 * level, 0, 1);
    o._visible = true;
 }
 MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
@@ -1005,24 +1008,21 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
 }
 MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
    var o = this;
-   if(o._investmentLevel > 0){
-      var rate = o._investmentLevel / o._investmentLevelTotal;
-      if(o._investmentRate < 0){
-         o._investmentRate = 0;
-         o._investmentDirection = 4;
-      }else if(o._investmentRate > 100){
-         o._investmentRate = 100;
-         o._investmentDirection = -2;
-      }
-      o._color.alpha = rate;
-      o._rangeColor.alpha = rate;
-      o._investmentLevel--;
-      if(o._investmentLevel == 0){
-         o._visible = false;
-      }
+   if(o._investmentRate > 0){
+      var rate = o._investmentRate / o._investmentRateTotal;
+      o._range = o._investmentRange * rate;
+      o._color.alpha = o._investmentAlpha * rate;
+      o._rangeColor.alpha = o._investmentAlpha * rate;
+      o._investmentRate--;
       return true;
+   }else{
+      o._investmentLast = 0;
+      o._investmentRate = 0;
+      o._investmentRange = 0;
+      o._investmentAlpha = 0;
+      o._visible = false;
+      return false;
    }
-   return false;
 }
 MO.FEaiCityEntity_dispose = function FEaiCityEntity_dispose(){
    var o = this;
@@ -1077,380 +1077,374 @@ MO.FEaiCityEntityConsole_dispose = function FEaiCityEntityConsole_dispose(monito
    o._citys = RObject.dispose(o._citys);
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FEaiCityRangeEffect = function FEaiCityRangeEffect(o){
-      o = RClass.inherits(this, o, FG3dAutomaticEffect);
-      o._code          = 'eai.city.range';
-      o.drawRenderable = FEaiCityRangeEffect_drawRenderable;
-      return o;
-   }
-   MO.FEaiCityRangeEffect_drawRenderable = function FEaiCityRangeEffect_drawRenderable(region, renderable){
-      var o = this;
-      var context = o._graphicContext;
-      var program = o._program;
-      var matrix = renderable.currentMatrix();
-      var cameraVpMatrix = region.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
-      var material = renderable.material();
-      var info = material.info();
-      o.bindMaterial(material);
-      program.setParameter('vc_model_matrix', matrix);
-      program.setParameter('vc_vp_matrix', cameraVpMatrix);
-      o.bindAttributes(renderable);
-      o.bindSamplers(renderable);
-      var indexBuffer = renderable.indexBuffers().first();
-      context.drawTriangles(indexBuffer);
-   }
+MO.FEaiCityRangeEffect = function FEaiCityRangeEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.city.range';
+   o.drawRenderable = MO.FEaiCityRangeEffect_drawRenderable;
+   return o;
 }
-with(MO){
-   MO.FEaiCitysRangeRenderable = function FEaiCitysRangeRenderable(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
-      o._ready                = false;
-      o._image                = null;
-      o._citys                = RClass.register(o, new AGetter('_citys'));
-      o._citySize             = RClass.register(o, new AGetter('_citySize'));
-      o._vertexPositionBuffer = null;
-      o._vertexColorBuffer    = null;
-      o._vertexCoordBuffer    = null;
-      o._indexBuffer          = null;
-      o._texture              = null;
-      o.onImageLoad           = FEaiCitysRangeRenderable_onImageLoad;
-      o.construct             = FEaiCitysRangeRenderable_construct;
-      o.testReady             = FEaiCitysRangeRenderable_testReady;
-      o.setup                 = FEaiCitysRangeRenderable_setup;
-      o.upload                = FEaiCitysRangeRenderable_upload;
-      o.dispose               = FEaiCitysRangeRenderable_dispose;
-      return o;
-   }
-   MO.FEaiCitysRangeRenderable_onImageLoad = function FEaiCitysRangeRenderable_onImageLoad(event){
-      var o = this;
-      var image = event.sender;
-      o._texture.upload(image);
-      image.dispose();
-      o._ready = true;
-   }
-   MO.FEaiCitysRangeRenderable_construct = function FEaiCitysRangeRenderable_construct(){
-      var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
-      o._citys = new TObjects();
-      o._material = RClass.create(FE3dMaterial);
-   }
-   MO.FEaiCitysRangeRenderable_testReady = function FEaiCitysRangeRenderable_testReady(){
-      return this._ready;
-   }
-   MO.FEaiCitysRangeRenderable_setup = function FEaiCitysRangeRenderable_setup(){
-      var o = this;
-      var context = o._graphicContext;
-      var citys = o._citys;
-      var count = citys.count();
-      var vertexCount = o._vertexCount = 4 * count;
-      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setCode('position');
-      buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      o.pushVertexBuffer(buffer);
-      var position = 0;
-      var data = new Float32Array(2 * vertexCount);
-      for(var i = 0; i < count; i++){
-         data[position++] = 0;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 1;
-         data[position++] = 0;
-         data[position++] = 0;
-         data[position++] = 0;
-      }
-      var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
-      buffer.setCode('coord');
-      buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      buffer.upload(data, 4 * 2, vertexCount);
-      o.pushVertexBuffer(buffer);
-      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setCode('color');
-      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
-      o.pushVertexBuffer(buffer);
-      var indexCount = 3 * 2 * count;
-      var position = 0;
-      var data = new Uint16Array(indexCount);
-      for(var i = 0; i < count; i++){
-         var index = 4 * i;
-         data[position++] = index + 0;
-         data[position++] = index + 1;
-         data[position++] = index + 2;
-         data[position++] = index + 0;
-         data[position++] = index + 2;
-         data[position++] = index + 3;
-      }
-      var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, indexCount);
-      o.pushIndexBuffer(buffer);
-      var texture = o._texture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
-      o.pushTexture(texture, 'diffuse');
-      var materialInfo = o._material.info();
-      materialInfo.effectCode = 'eai.citys.range';
-      materialInfo.optionAlpha = true;
-      materialInfo.optionDepth = false;
-      o._material._textures = o._textures;
-      var image = MO.Class.create(MO.FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl('{eai.resource}/dot.png');
-      o._ready = false;
-   }
-   MO.FEaiCitysRangeRenderable_upload = function FEaiCitysRangeRenderable_upload(){
-      var o = this;
-      var context = o._graphicContext;
-      var citys = o._citys;
-      var total = citys.count();
-      var count = 0;
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         if(city.visible()){
-            count++;
-         }
-      }
-      var vertexCount = o._vertexCount = 4 * count;
-      var vertexPosition = 0;
-      var vertexData = new Float32Array(3 * vertexCount);
-      var colorPosition = 0;
-      var colorData = new Uint8Array(4 * vertexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         if(city.visible()){
-            var location = city.location();
-            var range = city.range();
-            var size = city.size();
-            var width = size.width / 2;
-            var height = size.height / 2;
-            var provinceEntity = city.provinceEntity();
-            var z = 0;
-            if(provinceEntity){
-               z = provinceEntity.currentZ();
-            }
-            vertexData[vertexPosition++] = location.x - range;
-            vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x + range;
-            vertexData[vertexPosition++] = location.y + range;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x + range;
-            vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x - range;
-            vertexData[vertexPosition++] = location.y - range;
-            vertexData[vertexPosition++] = z;
-            var color = city.rangeColor();
-            var red = parseInt(color.red * 255);
-            var green = parseInt(color.green * 255);
-            var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * 255);
-            for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = red;
-               colorData[colorPosition++] = green;
-               colorData[colorPosition++] = blue;
-               colorData[colorPosition++] = alpha;
-            }
-         }
-      }
-      o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      o._indexBuffer.setCount(3 * 2 * count);
-   }
-   MO.FEaiCitysRangeRenderable_dispose = function FEaiCitysRangeRenderable_dispose(){
-      var o = this;
-      o._texture = RObject.dispose(o._texture);
-      o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);
-      o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
-      o._indexBuffer = RObject.dispose(o._indexBuffer);
-      o.__base.FE3dRenderable.dispose.call(o);
-   }
+MO.FEaiCityRangeEffect_drawRenderable = function FEaiCityRangeEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.currentMatrix();
+   var cameraVpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', cameraVpMatrix);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   var indexBuffer = renderable.indexBuffers().first();
+   context.drawTriangles(indexBuffer);
 }
-with(MO){
-   MO.FEaiCitysRenderable = function FEaiCitysRenderable(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
-      o._ready                = false;
-      o._image                = null;
-      o._levelCoordLeft       = null;
-      o._levelCoordRight      = null;
-      o._levelScale           = null;
-      o._citys                = RClass.register(o, new AGetter('_citys'));
-      o._level                = RClass.register(o, new AGetSet('_level'));
-      o._citySize             = RClass.register(o, new AGetter('_citySize'));
-      o._vertexPositionBuffer = null;
-      o._vertexCoordBuffer    = null;
-      o._indexBuffer          = null;
-      o._texture              = null;
-      o.onImageLoad           = FEaiCitysRenderable_onImageLoad;
-      o.construct             = FEaiCitysRenderable_construct;
-      o.testReady             = FEaiCitysRenderable_testReady;
-      o.setup                 = FEaiCitysRenderable_setup;
-      o.upload                = FEaiCitysRenderable_upload;
-      o.dispose               = FEaiCitysRenderable_dispose;
-      return o;
+MO.FEaiCitysRangeRenderable = function FEaiCitysRangeRenderable(o){
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o._ready                = false;
+   o._image                = null;
+   o._citys                = MO.Class.register(o, new MO.AGetter('_citys'));
+   o._citySize             = MO.Class.register(o, new MO.AGetter('_citySize'));
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._vertexCoordBuffer    = null;
+   o._indexBuffer          = null;
+   o._texture              = null;
+   o.onImageLoad           = MO.FEaiCitysRangeRenderable_onImageLoad;
+   o.construct             = MO.FEaiCitysRangeRenderable_construct;
+   o.testReady             = MO.FEaiCitysRangeRenderable_testReady;
+   o.setup                 = MO.FEaiCitysRangeRenderable_setup;
+   o.upload                = MO.FEaiCitysRangeRenderable_upload;
+   o.dispose               = MO.FEaiCitysRangeRenderable_dispose;
+   return o;
+}
+MO.FEaiCitysRangeRenderable_onImageLoad = function FEaiCitysRangeRenderable_onImageLoad(event){
+   var o = this;
+   var image = event.sender;
+   o._texture.upload(image);
+   image.dispose();
+   o._ready = true;
+}
+MO.FEaiCitysRangeRenderable_construct = function FEaiCitysRangeRenderable_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._citys = new MO.TObjects();
+   o._material = MO.Class.create(MO.FE3dMaterial);
+}
+MO.FEaiCitysRangeRenderable_testReady = function FEaiCitysRangeRenderable_testReady(){
+   return this._ready;
+}
+MO.FEaiCitysRangeRenderable_setup = function FEaiCitysRangeRenderable_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var citys = o._citys;
+   var count = citys.count();
+   var vertexCount = o._vertexCount = 4 * count;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var position = 0;
+   var data = new Float32Array(2 * vertexCount);
+   for(var i = 0; i < count; i++){
+      data[position++] = 0;
+      data[position++] = 1;
+      data[position++] = 1;
+      data[position++] = 1;
+      data[position++] = 1;
+      data[position++] = 0;
+      data[position++] = 0;
+      data[position++] = 0;
    }
-   MO.FEaiCitysRenderable_onImageLoad = function FEaiCitysRenderable_onImageLoad(event){
-      var o = this;
-      var image = event.sender;
-      o._texture.upload(image);
-      image.dispose();
-      o._ready = true;
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(data, 4 * 2, vertexCount);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+   o.pushVertexBuffer(buffer);
+   var indexCount = 3 * 2 * count;
+   var position = 0;
+   var data = new Uint16Array(indexCount);
+   for(var i = 0; i < count; i++){
+      var index = 4 * i;
+      data[position++] = index + 0;
+      data[position++] = index + 1;
+      data[position++] = index + 2;
+      data[position++] = index + 0;
+      data[position++] = index + 2;
+      data[position++] = index + 3;
    }
-   MO.FEaiCitysRenderable_construct = function FEaiCitysRenderable_construct(){
-      var o = this;
-      o.__base.FE3dRenderable.construct.call(o);
-      o._citys = new TObjects();
-      o._material = RClass.create(FE3dMaterial);
-      var data = o._levelCoordLeft = new Object();
-      data[1] = 0.0;
-      data[2] = 0.25;
-      data[3] = 0.5;
-      data[4] = 0.75;
-      var data = o._levelCoordRight = new Object();
-      data[1] = 0.25;
-      data[2] = 0.5;
-      data[3] = 0.75;
-      data[4] = 1.0;
-      var data = o._levelScale = new Object();
-      data[1] = 0.7;
-      data[2] = 0.5;
-      data[3] = 0.4;
-      data[4] = 0.2;
-   }
-   MO.FEaiCitysRenderable_testReady = function FEaiCitysRenderable_testReady(){
-      return this._ready;
-   }
-   MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
-      var o = this;
-      var context = o._graphicContext;
-      var citys = o._citys;
-      var count = citys.count();
-      var vertexCount = o._vertexCount = 4 * count;
-      var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-      buffer.setCode('position');
-      buffer.setFormatCd(EG3dAttributeFormat.Float3);
-      o.pushVertexBuffer(buffer);
-      var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
-      buffer.setCode('coord');
-      buffer.setFormatCd(EG3dAttributeFormat.Float2);
-      o.pushVertexBuffer(buffer);
-      var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-      buffer.setCode('color');
-      buffer.setFormatCd(EG3dAttributeFormat.Byte4Normal);
-      o.pushVertexBuffer(buffer);
-      var indexCount = 3 * 2 * count;
-      var position = 0;
-      var data = new Uint16Array(indexCount);
-      for(var i = 0; i < count; i++){
-         var index = 4 * i;
-         data[position++] = index + 0;
-         data[position++] = index + 1;
-         data[position++] = index + 2;
-         data[position++] = index + 0;
-         data[position++] = index + 2;
-         data[position++] = index + 3;
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.upload(data, indexCount);
+   o.pushIndexBuffer(buffer);
+   var texture = o._texture = context.createFlatTexture();
+   texture.setOptionFlipY(true);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   o.pushTexture(texture, 'diffuse');
+   var materialInfo = o._material.info();
+   materialInfo.effectCode = 'eai.citys.range';
+   materialInfo.optionAlpha = true;
+   materialInfo.optionDepth = false;
+   o._material._textures = o._textures;
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('{eai.resource}/dot.png');
+   o._ready = false;
+}
+MO.FEaiCitysRangeRenderable_upload = function FEaiCitysRangeRenderable_upload(){
+   var o = this;
+   var context = o._graphicContext;
+   var citys = o._citys;
+   var total = citys.count();
+   var count = 0;
+   for(var i = 0; i < total; i++){
+      var city = citys.at(i);
+      if(city.visible()){
+         count++;
       }
-      var buffer = o._indexBuffer = context.createIndexBuffer();
-      buffer.upload(data, indexCount);
-      o.pushIndexBuffer(buffer);
-      var texture = o._texture = context.createFlatTexture();
-      texture.setOptionFlipY(true);
-      texture.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
-      o.pushTexture(texture, 'diffuse');
-      var materialInfo = o._material.info();
-      materialInfo.effectCode = 'eai.citys';
-      materialInfo.optionAlpha = true;
-      materialInfo.optionDepth = false;
-      materialInfo.ambientColor.setHex('#FFFFFF');
-      o._material._textures = o._textures;
-      var image = MO.Class.create(FImage);
-      image.addLoadListener(o, o.onImageLoad);
-      image.loadUrl('{eai.resource}/citys.png');
-      o._ready = false;
    }
-   MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
-      var o = this;
-      var context = o._graphicContext;
-      var citys = o._citys;
-      var total = citys.count();
-      var count = 0;
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         if(city.visible()){
-            count++;
+   var vertexCount = o._vertexCount = 4 * count;
+   var vertexPosition = 0;
+   var vertexData = new Float32Array(3 * vertexCount);
+   var colorPosition = 0;
+   var colorData = new Uint8Array(4 * vertexCount);
+   for(var i = 0; i < total; i++){
+      var city = citys.at(i);
+      if(city.visible()){
+         var location = city.location();
+         var range = city.range();
+         var size = city.size();
+         var width = size.width / 2;
+         var height = size.height / 2;
+         var provinceEntity = city.provinceEntity();
+         var z = 0;
+         if(provinceEntity){
+            z = provinceEntity.currentZ();
+         }
+         vertexData[vertexPosition++] = location.x - range;
+         vertexData[vertexPosition++] = location.y + range;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x + range;
+         vertexData[vertexPosition++] = location.y + range;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x + range;
+         vertexData[vertexPosition++] = location.y - range;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x - range;
+         vertexData[vertexPosition++] = location.y - range;
+         vertexData[vertexPosition++] = z;
+         var color = city.rangeColor();
+         var red = parseInt(color.red * 255);
+         var green = parseInt(color.green * 255);
+         var blue = parseInt(color.blue * 255);
+         var alpha = parseInt(color.alpha * 255);
+         for(var v = 0; v < 4; v++){
+            colorData[colorPosition++] = red;
+            colorData[colorPosition++] = green;
+            colorData[colorPosition++] = blue;
+            colorData[colorPosition++] = alpha;
          }
       }
-      var vertexCount = o._vertexCount = 4 * count;
-      var vertexPosition = 0;
-      var vertexData = new Float32Array(3 * vertexCount);
-      var coordPosition = 0;
-      var coordData = new Float32Array(2 * vertexCount);
-      var colorPosition = 0;
-      var colorData = new Uint8Array(4 * vertexCount);
-      for(var i = 0; i < total; i++){
-         var city = citys.at(i);
-         if(city.visible()){
-            var range = city.range() * 255;
-            var alpha = city.alpha();
-            var location = city.location();
-            var level = city.data().level();
-            if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
-               throw new TError('Invalid level.');
-            }
-            var provinceEntity = city.provinceEntity();
-            var z = 0;
-            if(provinceEntity){
-               z = provinceEntity.currentZ();
-            }
-            var coordLeft = o._levelCoordLeft[level];
-            var coordRight = o._levelCoordRight[level];
-            var scale = o._levelScale[level];
-            vertexData[vertexPosition++] = location.x - scale;
-            vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x + scale;
-            vertexData[vertexPosition++] = location.y + scale;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x + scale;
-            vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = z;
-            vertexData[vertexPosition++] = location.x - scale;
-            vertexData[vertexPosition++] = location.y - scale;
-            vertexData[vertexPosition++] = z;
-            coordData[coordPosition++] = coordLeft;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = coordRight;
-            coordData[coordPosition++] = 1;
-            coordData[coordPosition++] = coordRight;
-            coordData[coordPosition++] = 0;
-            coordData[coordPosition++] = coordLeft;
-            coordData[coordPosition++] = 0;
-            var color = city.color();
-            var red = parseInt(color.red * 255);
-            var green = parseInt(color.green * 255);
-            var blue = parseInt(color.blue * 255);
-            var alpha = parseInt(color.alpha * alpha * 255);
-            for(var v = 0; v < 4; v++){
-               colorData[colorPosition++] = red;
-               colorData[colorPosition++] = green;
-               colorData[colorPosition++] = blue;
-               colorData[colorPosition++] = alpha;
-            }
+   }
+   o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
+   o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
+   o._indexBuffer.setCount(3 * 2 * count);
+}
+MO.FEaiCitysRangeRenderable_dispose = function FEaiCitysRangeRenderable_dispose(){
+   var o = this;
+   o._texture = MO.Lang.Object.dispose(o._texture);
+   o._vertexPositionBuffer = MO.Lang.Object.dispose(o._vertexPositionBuffer);
+   o._vertexCoordBuffer = MO.Lang.Object.dispose(o._vertexCoordBuffer);
+   o._indexBuffer = MO.Lang.Object.dispose(o._indexBuffer);
+   o.__base.FE3dRenderable.dispose.call(o);
+}
+MO.FEaiCitysRenderable = function FEaiCitysRenderable(o){
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o._ready                = false;
+   o._image                = null;
+   o._levelCoordLeft       = null;
+   o._levelCoordRight      = null;
+   o._levelScale           = null;
+   o._citys                = MO.Class.register(o, new MO.AGetter('_citys'));
+   o._level                = MO.Class.register(o, new MO.AGetSet('_level'));
+   o._citySize             = MO.Class.register(o, new MO.AGetter('_citySize'));
+   o._vertexPositionBuffer = null;
+   o._vertexCoordBuffer    = null;
+   o._indexBuffer          = null;
+   o._texture              = null;
+   o.onImageLoad           = MO.FEaiCitysRenderable_onImageLoad;
+   o.construct             = MO.FEaiCitysRenderable_construct;
+   o.testReady             = MO.FEaiCitysRenderable_testReady;
+   o.setup                 = MO.FEaiCitysRenderable_setup;
+   o.upload                = MO.FEaiCitysRenderable_upload;
+   o.dispose               = MO.FEaiCitysRenderable_dispose;
+   return o;
+}
+MO.FEaiCitysRenderable_onImageLoad = function FEaiCitysRenderable_onImageLoad(event){
+   var o = this;
+   var image = event.sender;
+   o._texture.upload(image);
+   image.dispose();
+   o._ready = true;
+}
+MO.FEaiCitysRenderable_construct = function FEaiCitysRenderable_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._citys = new MO.TObjects();
+   o._material = MO.Class.create(MO.FE3dMaterial);
+   var data = o._levelCoordLeft = new Object();
+   data[1] = 0.0;
+   data[2] = 0.25;
+   data[3] = 0.5;
+   data[4] = 0.75;
+   var data = o._levelCoordRight = new Object();
+   data[1] = 0.25;
+   data[2] = 0.5;
+   data[3] = 0.75;
+   data[4] = 1.0;
+   var data = o._levelScale = new Object();
+   data[1] = 0.7;
+   data[2] = 0.5;
+   data[3] = 0.4;
+   data[4] = 0.2;
+}
+MO.FEaiCitysRenderable_testReady = function FEaiCitysRenderable_testReady(){
+   return this._ready;
+}
+MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var citys = o._citys;
+   var count = citys.count();
+   var vertexCount = o._vertexCount = 4 * count;
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+   o.pushVertexBuffer(buffer);
+   var indexCount = 3 * 2 * count;
+   var position = 0;
+   var data = new Uint16Array(indexCount);
+   for(var i = 0; i < count; i++){
+      var index = 4 * i;
+      data[position++] = index + 0;
+      data[position++] = index + 1;
+      data[position++] = index + 2;
+      data[position++] = index + 0;
+      data[position++] = index + 2;
+      data[position++] = index + 3;
+   }
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.upload(data, indexCount);
+   o.pushIndexBuffer(buffer);
+   var texture = o._texture = context.createFlatTexture();
+   texture.setOptionFlipY(true);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   o.pushTexture(texture, 'diffuse');
+   var materialInfo = o._material.info();
+   materialInfo.effectCode = 'eai.citys';
+   materialInfo.optionAlpha = true;
+   materialInfo.optionDepth = false;
+   materialInfo.ambientColor.setHex('#FFFFFF');
+   o._material._textures = o._textures;
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('{eai.resource}/citys.png');
+   o._ready = false;
+}
+MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
+   var o = this;
+   var context = o._graphicContext;
+   var citys = o._citys;
+   var total = citys.count();
+   var count = 0;
+   for(var i = 0; i < total; i++){
+      var city = citys.at(i);
+      if(city.visible()){
+         count++;
+      }
+   }
+   var vertexCount = o._vertexCount = 4 * count;
+   var vertexPosition = 0;
+   var vertexData = new Float32Array(3 * vertexCount);
+   var coordPosition = 0;
+   var coordData = new Float32Array(2 * vertexCount);
+   var colorPosition = 0;
+   var colorData = new Uint8Array(4 * vertexCount);
+   for(var i = 0; i < total; i++){
+      var city = citys.at(i);
+      if(city.visible()){
+         var range = city.range() * 255;
+         var alpha = city.alpha();
+         var location = city.location();
+         var level = city.data().level();
+         if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
+            throw new TError('Invalid level.');
+         }
+         var provinceEntity = city.provinceEntity();
+         var z = 0;
+         if(provinceEntity){
+            z = provinceEntity.currentZ();
+         }
+         var coordLeft = o._levelCoordLeft[level];
+         var coordRight = o._levelCoordRight[level];
+         var scale = o._levelScale[level];
+         vertexData[vertexPosition++] = location.x - scale;
+         vertexData[vertexPosition++] = location.y + scale;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x + scale;
+         vertexData[vertexPosition++] = location.y + scale;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x + scale;
+         vertexData[vertexPosition++] = location.y - scale;
+         vertexData[vertexPosition++] = z;
+         vertexData[vertexPosition++] = location.x - scale;
+         vertexData[vertexPosition++] = location.y - scale;
+         vertexData[vertexPosition++] = z;
+         coordData[coordPosition++] = coordLeft;
+         coordData[coordPosition++] = 1;
+         coordData[coordPosition++] = coordRight;
+         coordData[coordPosition++] = 1;
+         coordData[coordPosition++] = coordRight;
+         coordData[coordPosition++] = 0;
+         coordData[coordPosition++] = coordLeft;
+         coordData[coordPosition++] = 0;
+         var color = city.color();
+         var red = parseInt(color.red * 255);
+         var green = parseInt(color.green * 255);
+         var blue = parseInt(color.blue * 255);
+         var alpha = parseInt(color.alpha * alpha * 255);
+         for(var v = 0; v < 4; v++){
+            colorData[colorPosition++] = red;
+            colorData[colorPosition++] = green;
+            colorData[colorPosition++] = blue;
+            colorData[colorPosition++] = alpha;
          }
       }
-      o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
-      o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
-      o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
-      o._indexBuffer.setCount(3 * 2 * count);
    }
-   MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
-      var o = this;
-      o._texture = RObject.dispose(o._texture);
-      o._vertexPositionBuffer = RObject.dispose(o._vertexPositionBuffer);
-      o._vertexCoordBuffer = RObject.dispose(o._vertexCoordBuffer);
-      o._vertexColorBuffer = RObject.dispose(o._vertexColorBuffer);
-      o._indexBuffer = RObject.dispose(o._indexBuffer);
-      o.__base.FE3dRenderable.dispose.call(o);
-   }
+   o._vertexPositionBuffer.upload(vertexData, 4 * 3, vertexCount);
+   o._vertexCoordBuffer.upload(coordData, 4 * 2, vertexCount);
+   o._vertexColorBuffer.upload(colorData, 1 * 4, vertexCount);
+   o._indexBuffer.setCount(3 * 2 * count);
+}
+MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
+   var o = this;
+   o._texture = MO.Lang.Object.dispose(o._texture);
+   o._vertexPositionBuffer = MO.Lang.Object.dispose(o._vertexPositionBuffer);
+   o._vertexCoordBuffer = MO.Lang.Object.dispose(o._vertexCoordBuffer);
+   o._vertexColorBuffer = MO.Lang.Object.dispose(o._vertexColorBuffer);
+   o._indexBuffer = MO.Lang.Object.dispose(o._indexBuffer);
+   o.__base.FE3dRenderable.dispose.call(o);
 }
 MO.FEaiCountryData = function FEaiCountryData(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
@@ -1503,6 +1497,8 @@ MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
 with(MO){
    MO.FEaiCountryEntity = function FEaiCountryEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
+      o._enterSELoaded           = false;
+      o._downSELoaded            = false;
       o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
       o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
@@ -1541,6 +1537,9 @@ with(MO){
       o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
       o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
       o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
+      o.onEnterSELoaded          = FEaiCountryEntity_onEnterSELoaded;
+      o.onDownSELoaded           = FEaiCountryEntity_onDownSELoaded;
+      o.isReady                  = FEaiCountryEntity_isReady;
       return o;
    }
    MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
@@ -1561,17 +1560,37 @@ with(MO){
          provinceArray[i] = provinceEntities.at(i);
       }
       provinceArray.sort(o.provinceShowOrderSort);
-      var audioConsole = MO.Console.find(MO.FAudioConsole);
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+      audioContextConsole.load('{eai.resource}/map_entry/enter.wav', o, o.onEnterSELoaded);
+      audioContextConsole.load('{eai.resource}/map_entry/down.wav', o, o.onDownSELoaded);
+   }
+   MO.FEaiCountryEntity_onEnterSELoaded = function FEaiCountryEntity_onEnterSELoaded(uri) {
+      var o = this;
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
       var peCount = o._provinceEntities.count();
       var enterSEArray = o._mapEnterSEArray = new Array(peCount);
+      for (var i = 0; i < peCount; i++) {
+         enterSEArray[i] = audioContextConsole.create(uri);
+      }
+      o._enterSELoaded = true;
+   }
+   MO.FEaiCountryEntity_onDownSELoaded = function FEaiCountryEntity_onDownSELoaded(uri) {
+      var o = this;
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+      var peCount = o._provinceEntities.count();
       var downSEArray = o._mapDownSEArray = new Array(peCount);
       for (var i = 0; i < peCount; i++) {
-         enterSEArray[i] = audioConsole.create('{eai.resource}/map_entry/enter.wav');
+         downSEArray[i] = audioContextConsole.create(uri);
       }
-      for (var i = 0; i < peCount; i++) {
-         downSEArray[i] = audioConsole.create('{eai.resource}/map_entry/down.wav');
+      o._downSELoaded = true;
+   }
+   MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
+      var o = this;
+      if (o._enterSELoaded && o._downSELoaded) {
+         o._startTime = MO.Timer.current();
+         return true;
       }
-      o._startTime = MO.Timer.current();
+      return false;
    }
    MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
       var pResConsole = MO.RConsole.find(FEaiResourceConsole).provinceConsole();
@@ -1624,7 +1643,7 @@ with(MO){
          if (risePercentage > 1) {
             risePercentage = 1;
             if (i == o._lastDownSEIndex + 1) {
-               o._mapDownSEArray[i].play(0);
+               o._mapDownSEArray[i].start();
                o._lastDownSEIndex++;
             }
             fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
@@ -1639,7 +1658,7 @@ with(MO){
       }
       idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
       if (o._lastEnterSEIndex != idxCap) {
-         o._mapEnterSEArray[idxCap].play(0);
+         o._mapEnterSEArray[idxCap].start();
          o._lastEnterSEIndex = idxCap;
       }
    }
@@ -1742,7 +1761,7 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
 }
 MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
-   return this._countryReady;
+   return this._countryReady && this._mapEntity.countryEntity().isReady();
 }
 MO.FEaiEntityConsole_loadCountryData = function FEaiEntityConsole_loadCountryData(){
    var o = this;
@@ -3907,7 +3926,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._buttonTransform          = null;
    o._timeline                 = null;
    o._milestoneFrame           = null;
-   o._buttonAudio              = null;
    o._statusStart              = false;
    o._statusLayerCount         = 100;
    o._statusLayerLevel         = 100;
@@ -4102,8 +4120,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._guiManager.register(frame);
    var controlInvestment = o._logoBar.findComponent('investment');
    controlInvestment.setRollingDuration(100);
-   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
    transform.setInterval(10);
    transform.setScale(0.1);
@@ -4538,7 +4554,7 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
-   o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
+   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
@@ -4719,7 +4735,7 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
-      if(MO.RBrowser.isOrientationVertical()){
+      if(MO.Window.Browser.isOrientationVertical()){
          matrix.tx = -14.58;
          matrix.ty = -2.2;
          matrix.tz = 0;
@@ -4747,7 +4763,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    control.setRight(710);
    control.setBottom(220);
    var timeline = o._timeline;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
@@ -4763,7 +4779,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       liveTable.setDockCd(MO.EGuiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);

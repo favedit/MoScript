@@ -18,7 +18,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._interval                 = 10;
    o._lastDateTick             = 0;
    o._dateInterval             = 120;
-   //o._dateInterval             = 0;
    o._startDate                = null;
    o._endDate                  = null;
    o._currentDate              = null;
@@ -28,7 +27,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._timeline                 = null;
    o._milestoneFrame           = null;
    // @attribute
-   o._buttonAudio              = null;
+   //o._buttonAudio              = null;
    o._statusStart              = false;
    o._statusLayerCount         = 100;
    o._statusLayerLevel         = 100;
@@ -348,8 +347,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    //control.addOperationDownListener(o, o.onOperationPause);
    //o._guiManager.register(control);
    // 创建按键声音
-   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/button.mp3');
+   //var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
+   //audio.loadUrl('/script/ars/eai/button.mp3');
    // 创建交换器
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
    transform.setInterval(10);

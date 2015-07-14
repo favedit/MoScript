@@ -59,10 +59,10 @@ MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
 }
 
 //==========================================================
-// <T>从输入流反序列化数据。</T>
+// <T>建立几何体表面。</T>
 //
 // @method
-// @param input:MStream 输入流
+// @param context:FGraphicContext 图形环境
 //==========================================================
 MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context){
    var o = this;
@@ -175,10 +175,10 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
 }
 
 //==========================================================
-// <T>从输入流反序列化数据。</T>
+// <T>建立几何体边线。</T>
 //
 // @method
-// @param input:MStream 输入流
+// @param context:FGraphicContext 图形环境
 //==========================================================
 MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(context){
    var o = this;

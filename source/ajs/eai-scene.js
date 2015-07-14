@@ -122,7 +122,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._buttonTransform          = null;
    o._timeline                 = null;
    o._milestoneFrame           = null;
-   o._buttonAudio              = null;
    o._statusStart              = false;
    o._statusLayerCount         = 100;
    o._statusLayerLevel         = 100;
@@ -317,8 +316,6 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._guiManager.register(frame);
    var controlInvestment = o._logoBar.findComponent('investment');
    controlInvestment.setRollingDuration(100);
-   var audio = o._buttonAudio = MO.Class.create(MO.FAudio);
-   audio.loadUrl('/script/ars/eai/button.mp3');
    var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
    transform.setInterval(10);
    transform.setScale(0.1);
@@ -753,7 +750,7 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
-   o._groundAutioUrl         = '/script/ars/eai/music/statistics.mp3';
+   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
@@ -934,7 +931,7 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
-      if(MO.RBrowser.isOrientationVertical()){
+      if(MO.Window.Browser.isOrientationVertical()){
          matrix.tx = -14.58;
          matrix.ty = -2.2;
          matrix.tz = 0;
@@ -962,7 +959,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    control.setRight(710);
    control.setBottom(220);
    var timeline = o._timeline;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
@@ -978,7 +975,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       liveTable.setDockCd(MO.EGuiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);
