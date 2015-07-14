@@ -19,6 +19,8 @@ MO.FAudioContextConsole = function FAudioContextConsole(o) {
    o.load            = MO.FAudioContextConsole_load;
    o.create          = MO.FAudioContextConsole_create;
    o.isLoaded        = MO.FAudioContextConsole_isLoaded;
+   o.onLoad          = MO.FAudioContextConsole_onLoad;
+   o.onError         = MO.FAudioContextConsole_onError;
    // @method
 
    return o;
@@ -90,16 +92,38 @@ MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, su
    var o = this;
 
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var request = new XMLHttpRequest();
-   request.open('GET', url, true);
-   request.responseType = 'arraybuffer';
-   request.onload = function () {
-      o._context.decodeAudioData(request.response, function (buffer) {
-         o._audioBuffers.set(url, buffer);
-         if (successCallback) {
-            successCallback.call(owner, uri);
-         }
-      });
-   }
-   request.send();
+
+   var conn = MO.RConsole.find(MO.FHttpConsole).sendAsync(url);
+   conn.addLoadListener(o, o.onLoad);
+   conn.uri = uri;
+   conn.owner = owner;
+   conn.successCallback = successCallback;
+}
+
+//==========================================================
+// <T>检查音频是否加载完成。</T>
+//
+// @method
+// @param uri:String 网络地址
+// @return bool 是否已加载
+//==========================================================
+MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
+   var o = this;
+   o._context.decodeAudioData(conn.outputData(), function (buffer) {
+      o._audioBuffers.set(conn._url, buffer);
+      if (conn.successCallback) {
+         conn.successCallback.call(conn.owner, conn.uri);
+      }
+   },o.onError);
+}
+
+//==========================================================
+// <T>检查音频是否加载完成。</T>
+//
+// @method
+// @param uri:String 网络地址
+// @return bool 是否已加载
+//==========================================================
+MO.FAudioContextConsole_onError = function FAudioContextConsole_onError() {
+   alert('decodeAudioData Failed');
 }
