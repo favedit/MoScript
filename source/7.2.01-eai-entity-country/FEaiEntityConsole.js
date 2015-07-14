@@ -143,7 +143,7 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
 // @return 是否准备好
 //==========================================================
 MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
-   return this._countryReady;
+   return this._countryReady && this._mapEntity.countryEntity().isReady();
 }
 
 //==========================================================

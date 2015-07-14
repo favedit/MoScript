@@ -17,6 +17,9 @@ with(MO){
       //o._fallDistance          = RClass.register(o, new APtyNumber('_fallDistance'), 50);
       //o._blockInterval         = RClass.register(o, new APtyNumber('_blockInterval'), 60);
       //o._mouseOverRiseHeight   = RClass.register(o, new APtyNumber('_mouseOverRiseHeight'), 10);
+      o._enterSELoaded           = false;
+      o._downSELoaded            = false;
+
       o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
       o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
@@ -61,6 +64,9 @@ with(MO){
       o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
       o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
       o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
+      o.onEnterSELoaded          = FEaiCountryEntity_onEnterSELoaded;
+      o.onDownSELoaded           = FEaiCountryEntity_onDownSELoaded;
+      o.isReady                  = FEaiCountryEntity_isReady;
       return o;
    }
    
@@ -89,35 +95,56 @@ with(MO){
       }
       provinceArray.sort(o.provinceShowOrderSort);
 
-      var audioConsole = MO.Console.find(MO.FAudioConsole);
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+      audioContextConsole.load('{eai.resource}/map_entry/enter.wav', o, o.onEnterSELoaded);
+      audioContextConsole.load('{eai.resource}/map_entry/down.wav', o, o.onDownSELoaded);
+   }
+
+   //==========================================================
+   // <T>音频加载完成。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_onEnterSELoaded = function FEaiCountryEntity_onEnterSELoaded(uri) {
+      var o = this;
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
       var peCount = o._provinceEntities.count();
       var enterSEArray = o._mapEnterSEArray = new Array(peCount);
+      for (var i = 0; i < peCount; i++) {
+         enterSEArray[i] = audioContextConsole.create(uri);
+      }
+      o._enterSELoaded = true;
+   }
+
+   //==========================================================
+   // <T>音频加载完成。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_onDownSELoaded = function FEaiCountryEntity_onDownSELoaded(uri) {
+      var o = this;
+      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+      var peCount = o._provinceEntities.count();
       var downSEArray = o._mapDownSEArray = new Array(peCount);
       for (var i = 0; i < peCount; i++) {
-         enterSEArray[i] = audioConsole.create('{eai.resource}/map_entry/enter.wav');
+         downSEArray[i] = audioContextConsole.create(uri);
       }
-      for (var i = 0; i < peCount; i++) {
-         downSEArray[i] = audioConsole.create('{eai.resource}/map_entry/down.wav');
-      }
+      o._downSELoaded = true;
+   }
 
-      //o.setCameraDirection(new SVector3(0.02, -0.9, 0.5));
-      //o.setCameraFrom(new SPoint3());
-      //o.setCameraTo(new SPoint3());
-      //o.setMouseOverFallArray(new TObjects());
-      //o.setTemplate(template);
-      //o.setMouseMoveLastCheck(new Date());
-      ////设置相机位置视角
-      //var camera = region.camera();
-      //camera.setPosition(3, 24, -0.5);
-      //camera.setDirection(o.cameraDirection().x, o.cameraDirection().y, o.cameraDirection().z);
-      ////打开Alpha
-      //var sprite = o.template().sprite();
-      //for (var i = 0; i < sprite.renderables().count(); i++){
-      //   var renderable = sprite.renderables().at(i);
-      //   renderable.material().info().optionAlpha = true;
-      //}
-      ////记录开始时间
-      o._startTime = MO.Timer.current();
+   //==========================================================
+   // <T>音频加载完成。</T>
+   //
+   // @method
+   //==========================================================
+   MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
+      var o = this;
+      if (o._enterSELoaded && o._downSELoaded) {
+         ////记录开始时间
+         o._startTime = MO.Timer.current();
+         return true;
+      }
+      return false;
    }
 
    //==========================================================
@@ -208,7 +235,7 @@ with(MO){
             risePercentage = 1;
 
             if (i == o._lastDownSEIndex + 1) {
-               o._mapDownSEArray[i].play(0);
+               o._mapDownSEArray[i].start();
                o._lastDownSEIndex++;
             }
 
@@ -225,7 +252,7 @@ with(MO){
 
       idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
       if (o._lastEnterSEIndex != idxCap) {
-         o._mapEnterSEArray[idxCap].play(0);
+         o._mapEnterSEArray[idxCap].start();
          o._lastEnterSEIndex = idxCap;
       }
       
