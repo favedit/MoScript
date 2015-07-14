@@ -7,21 +7,6 @@ MO.EGuiAnchor = new function EGuiAnchor(){
    o.Bottom = 8;
    return o;
 }
-MO.EGuiDock = new function EGuiDock(){
-   var o = this;
-   o.None        = 'None';
-   o.LeftTop     = 'LeftTop';
-   o.Left        = 'Left';
-   o.LeftBottom  = 'LeftBottom';
-   o.Top         = 'Top';
-   o.RightTop    = 'RightTop';
-   o.Right       = 'Right';
-   o.RightBottom = 'RightBottom';
-   o.Bottom      = 'Bottom';
-   o.Center      = 'Center';
-   o.Fill        = 'Fill';
-   return o;
-}
 MO.EGuiTimeUnit = new function EGuiTimeUnit() {
    var o = this;
    o.Second = 'second';
@@ -616,7 +601,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    o._visible                = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
    o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EGuiAnchor.None);
-   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EGuiDock.LeftTop);
+   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
@@ -884,10 +869,10 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       right *= calculateRate.width;
       bottom *= calculateRate.height;
    }
-   if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
+   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
       top = bottom - height;
    }
-   if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
+   if((dockCd == MO.EUiDock.RightTop) || (dockCd == MO.EUiDock.Right) || (dockCd == MO.EUiDock.RightBottom)){
       left = right - width;
    }
    if((anchorCd & MO.EGuiAnchor.Left) && (anchorCd & MO.EGuiAnchor.Right)){

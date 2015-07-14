@@ -1,204 +1,3 @@
-with(MO){
-   MO.APtyBoolean = function APtyBoolean(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : false;
-      o.build    = APtyBoolean_build;
-      o.load     = APtyBoolean_load;
-      o.save     = APtyBoolean_save;
-      o.toString = APtyBoolean_toString;
-      return o;
-   }
-   MO.APtyBoolean_build = function APtyBoolean_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyBoolean_load = function APtyBoolean_load(v, x){
-      var o = this;
-      v[o._name] = RBoolean.parse(x.get(o._linker));
-   }
-   MO.APtyBoolean_save = function APtyBoolean_save(v, x){
-      var o = this;
-      var d = v[o._name];
-      if(d){
-         x.set(o._linker, RBoolean.toString(d));
-      }
-   }
-   MO.APtyBoolean_toString = function APtyBoolean_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
-with(MO){
-   MO.APtyBorder = function APtyBorder(name, linker){
-      var o = this;
-      AProperty.call(o, name, linker);
-      o.load     = APtyBorder_load;
-      o.save     = APtyBorder_save;
-      o.toString = APtyBorder_toString;
-      return o;
-   }
-   MO.APtyBorder_load = function APtyBorder_load(instance, xconfig){
-      var o = this;
-      var value = xconfig.get(o._linker);
-      instance[o._name].parse(value);
-   }
-   MO.APtyBorder_save = function APtyBorder_save(instance, xconfig){
-      var o = this;
-      var value = instance[o._name];
-   }
-   MO.APtyBorder_toString = function APtyBorder_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
-   }
-}
-with(MO){
-   MO.APtyInteger = function APtyInteger(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value   = RInteger.nvl(v);
-      o.build    = APtyInteger_build;
-      o.load     = APtyInteger_load;
-      o.save     = APtyInteger_save;
-      o.toString = APtyInteger_toString;
-      return o;
-   }
-   MO.APtyInteger_build = function APtyInteger_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyInteger_load = function APtyInteger_load(v, x){
-      var o = this;
-      v[o._name] = RInteger.parse(x.get(o._linker));
-   }
-   MO.APtyInteger_save = function APtyInteger_save(v, x){
-      var o = this;
-      x.set(o._linker, RInteger.toString(v[o._name]));
-   }
-   MO.APtyInteger_toString = function APtyInteger_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
-with(MO){
-   MO.APtyPadding = function APtyPadding(name, linker, left, top, right, bottom){
-      var o = this;
-      AProperty.call(o, name, linker);
-      o._left    = RInteger.nvl(left);
-      o._top     = RInteger.nvl(top);
-      o._right   = RInteger.nvl(right);
-      o._bottom  = RInteger.nvl(bottom);
-      o.load     = APtyPadding_load;
-      o.save     = APtyPadding_save;
-      o.toString = APtyPadding_toString;
-      return o;
-   }
-   MO.APtyPadding_load = function APtyPadding_load(instance, xconfig){
-      var o = this;
-      var name = o._name;
-      var value = xconfig.get(o._linker);
-      var padding = instance[name];
-      if(!padding){
-         padding = instance[name] = new SPadding();
-      }
-      padding.parse(value);
-   }
-   MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
-      var o = this;
-      var name = o._name;
-      var padding = instance[name];
-      if(padding){
-         if(!padding.isEmpty()){
-            var value = padding.toString()
-            xconfig.set(o._linker, value);
-         }
-      }
-   }
-   MO.APtyPadding_toString = function APtyPadding_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
-   }
-}
-with(MO){
-   MO.APtyPoint2 = function APtyPoint2(name, linker, x, y){
-      var o = this;
-      AProperty.call(o, name, linker);
-      o._x       = RInteger.nvl(x);
-      o._y       = RInteger.nvl(y);
-      o.load     = APtyPoint2_load;
-      o.save     = APtyPoint2_save;
-      o.toString = APtyPoint2_toString;
-      return o;
-   }
-   MO.APtyPoint2_load = function APtyPoint2_load(instance, xconfig){
-      var o = this;
-      var value = xconfig.get(o._linker);
-      instance[o._name].parse(value);
-   }
-   MO.APtyPoint2_save = function APtyPoint2_save(instance, xconfig){
-      var o = this;
-      var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
-      }
-   }
-   MO.APtyPoint2_toString = function APtyPoint2_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
-   }
-}
-with(MO){
-   MO.APtySize2 = function APtySize2(name, linker, width, height){
-      var o = this;
-      AProperty.call(o, name, linker);
-      o._width   = RInteger.nvl(width);
-      o._height  = RInteger.nvl(height);
-      o.load     = APtySize2_load;
-      o.save     = APtySize2_save;
-      o.toString = APtySize2_toString;
-      return o;
-   }
-   MO.APtySize2_load = function APtySize2_load(instance, xconfig){
-      var o = this;
-      var value = xconfig.get(o._linker);
-      instance[o._name].parse(value);
-   }
-   MO.APtySize2_save = function APtySize2_save(instance, xconfig){
-      var o = this;
-      var value = instance[o._name];
-      if(!value.isEmpty()){
-         xconfig.set(o._linker, value.toString());
-      }
-   }
-   MO.APtySize2_toString = function APtySize2_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
-   }
-}
-with(MO){
-   MO.APtyString = function APtyString(n, l, v){
-      var o = this;
-      AProperty.call(o, n, l);
-      o._value    = v ? v : null;
-      o.build    = APtyString_build;
-      o.toString = APtyString_toString;
-      return o;
-   }
-   MO.APtyString_build = function APtyString_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._value;
-      }
-   }
-   MO.APtyString_toString = function APtyString_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
-}
 MO.EGuiAnchor = new function EGuiAnchor(){
    var o = this;
    o.None   = 0;
@@ -206,21 +5,6 @@ MO.EGuiAnchor = new function EGuiAnchor(){
    o.Top    = 2;
    o.Right  = 4;
    o.Bottom = 8;
-   return o;
-}
-MO.EGuiDock = new function EGuiDock(){
-   var o = this;
-   o.None        = 'None';
-   o.LeftTop     = 'LeftTop';
-   o.Left        = 'Left';
-   o.LeftBottom  = 'LeftBottom';
-   o.Top         = 'Top';
-   o.RightTop    = 'RightTop';
-   o.Right       = 'Right';
-   o.RightBottom = 'RightBottom';
-   o.Bottom      = 'Bottom';
-   o.Center      = 'Center';
-   o.Fill        = 'Fill';
    return o;
 }
 MO.EGuiTimeUnit = new function EGuiTimeUnit() {
@@ -817,7 +601,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    o._visible                = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
    o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EGuiAnchor.None);
-   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EGuiDock.LeftTop);
+   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
@@ -1085,10 +869,10 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
       right *= calculateRate.width;
       bottom *= calculateRate.height;
    }
-   if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
+   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
       top = bottom - height;
    }
-   if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
+   if((dockCd == MO.EUiDock.RightTop) || (dockCd == MO.EUiDock.Right) || (dockCd == MO.EUiDock.RightBottom)){
       left = right - width;
    }
    if((anchorCd & MO.EGuiAnchor.Left) && (anchorCd & MO.EGuiAnchor.Right)){
@@ -1477,3 +1261,913 @@ MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, x
    return xconfig;
 }
 MO.RGuiControl = new MO.RGuiControl();
+MO.FGuiCanvasManager = function FGuiCanvasManager(o){
+   o = MO.Class.inherits(this, o, MO.FGuiManager);
+   o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
+   o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
+   o._readyControls    = null;
+   o._dirtyControls    = null;
+   o._paintEvent       = null;
+   o.onSortControl     = MO.FGuiCanvasManager_onSortControl;
+   o.construct         = MO.FGuiCanvasManager_construct;
+   o.filterByRectangle = MO.FGuiCanvasManager_filterByRectangle;
+   o.doActionAlpha     = MO.FGuiCanvasManager_doActionAlpha;
+   o.processResize     = MO.FGuiCanvasManager_processResize;
+   o.processControl    = MO.FGuiCanvasManager_processControl;
+   o.process           = MO.FGuiCanvasManager_process;
+   o.dispose           = MO.FGuiCanvasManager_dispose;
+   return o;
+}
+MO.FGuiCanvasManager_onSortControl = function FGuiCanvasManager_onSortControl(source, target){
+   var o = this;
+   var sourceOrder = source.displayOrder();
+   var targetOrder = target.displayOrder();
+   return sourceOrder - targetOrder;
+}
+MO.FGuiCanvasManager_construct = function FGuiCanvasManager_construct(){
+   var o = this;
+   o.__base.FGuiManager.construct.call(o);
+   o._readyControls = new MO.TObjects();
+   o._dirtyControls = new MO.TObjects();
+   o._paintEvent = new MO.SGuiPaintEvent();
+}
+MO.FGuiCanvasManager_filterByRectangle = function FGuiCanvasManager_filterByRectangle(dirtyControls, rectangle){
+   var o = this;
+   var controls = o._readyControls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      var clientRectangle = control.clientRectangle();
+      if(rectangle.testRectangle(clientRectangle)){
+         if(!control._flagDirty){
+            control._flagDirty = true;
+            o.filterByRectangle(dirtyControls, clientRectangle);
+         }
+         control.dirty();
+         dirtyControls.pushUnique(control);
+      }
+   }
+}
+MO.FGuiCanvasManager_doActionAlpha = function FGuiCanvasManager_doActionAlpha(alpha){
+   var o = this;
+   var context = o._canvas.graphicContext();
+   context.setAlpha(alpha);
+   o.dirty();
+}
+MO.FGuiCanvasManager_processResize = function FGuiCanvasManager_processResize(control){
+}
+MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(control){
+   var o = this;
+   o.__base.FGuiManager.process.call(o);
+   var graphic = o._canvas.graphicContext();
+   var desktop = o._desktop;
+   var calculateSize = desktop.calculateSize();
+   var calculateRate = desktop.calculateRate()
+   var event = o._paintEvent;
+   event.optionContainer = true;
+   event.graphic = graphic;
+   event.parentRectangle.set(0, 0, calculateSize.width, calculateSize.height);
+   event.calculateRate = calculateRate;
+   event.rectangle.reset();
+   control.paint(event);
+}
+MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
+   var o = this;
+   o.__base.FGuiManager.process.call(o);
+   var readyControls = o._readyControls;
+   readyControls.clear();
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      if(control.processReady()){
+         if(control.visible()){
+            if(control.isDirtyAll()){
+               o._statusDirty = true;
+            }
+            control._flagDirty = false;
+            readyControls.push(control)
+         }
+      }
+   }
+   var graphic = o._canvas.graphicContext();
+   if(o._statusDirty){
+      graphic.clear();
+      readyControls.sort(o.onSortControl);
+      var readyCount = readyControls.count();
+      for(var i = 0; i < readyCount; i++){
+         var control = readyControls.at(i);
+         o.processControl(control);
+      }
+      o._statusDirty = false;
+   }else{
+      var dirtyControls = o._dirtyControls;
+      dirtyControls.clear();
+      var readCount = readyControls.count();
+      for(var i = 0; i < readCount; i++){
+         var control = readyControls.at(i);
+         if(control.testDirty()){
+            var controlRectangle = control.clientRectangle();
+            dirtyControls.push(control);
+            control._flagDirty = true;
+            o.filterByRectangle(dirtyControls, controlRectangle)
+         }
+      }
+      dirtyControls.sort(o.onSortControl);
+      var dirtyCount = dirtyControls.count();
+      for(var i = 0; i < dirtyCount; i++){
+         var control = dirtyControls.at(i);
+         var clientRectangle = control.clientRectangle();
+         if(!clientRectangle.isEmpty()){
+            graphic.clearRectangle(clientRectangle);
+         }
+      }
+      for(var i = 0; i < dirtyCount; i++){
+         var control = dirtyControls.at(i);
+         o.processControl(control);
+      }
+   }
+}
+MO.FGuiCanvasManager_dispose = function FGuiCanvasManager_dispose(){
+   var o = this;
+   o._readyControls = MO.Lang.Object.dispose(o._readyControls);
+   o._dirtyControls = MO.Lang.Object.dispose(o._dirtyControls);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
+   o.__base.FGuiManager.dispose.call(o);
+}
+MO.FGuiChangeTransform = function FGuiChangeTransform(o){
+   o = MO.Class.inherits(this, o, MO.FGuiTransform);
+   o._changeCd      = MO.Class.register(o, new MO.AGetSet('_changeCd'));
+   o._interval      = MO.Class.register(o, new MO.AGetSet('_interval'));
+   o._scale         = MO.Class.register(o, new MO.AGetSet('_scale'));
+   o._sourceControl = MO.Class.register(o, new MO.AGetSet('_sourceControl'));
+   o._targetControl = MO.Class.register(o, new MO.AGetSet('_targetControl'));
+   o._sourceRectangle = null;
+   o._targetRectangle = null;
+   o._current         = 0;
+   o._middleCount     = 100;
+   o._endCount        = 200;
+   o.construct      = MO.FGuiChangeTransform_construct;
+   o.start          = MO.FGuiChangeTransform_start;
+   o.process        = MO.FGuiChangeTransform_process;
+   o.dispose        = MO.FGuiChangeTransform_dispose;
+   return o;
+}
+MO.FGuiChangeTransform_construct = function FGuiChangeTransform_construct(){
+   var o = this;
+   o.__base.FGuiTransform.construct.call(o);
+   o._sourceRectangle = new MO.SRectangle();
+   o._targetRectangle = new MO.SRectangle();
+}
+MO.FGuiChangeTransform_start = function FGuiChangeTransform_start(){
+   var o = this;
+   o.__base.FGuiTransform.start.call(o);
+   o._current = 0;
+   var control = o._sourceControl;
+   o._sourceRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
+   var control = o._targetControl;
+   o._targetRectangle.set(control.location().x, control.location().y, control.size().width, control.size().height);
+}
+MO.FGuiChangeTransform_process = function FGuiChangeTransform_process(){
+   var o = this;
+   var sourceControl = o._sourceControl;
+   var targetControl = o._targetControl;
+   if(o._current < o._middleCount){
+      var index = o._middleCount - o._current;
+      var rate = index / o._middleCount;
+      sourceControl.size().set(o._sourceRectangle.width * rate, o._sourceRectangle.height * rate);
+   }else if(o._current == o._middleCount){
+      sourceControl.setVisible(false);
+      targetControl.setVisible(true);
+   }else if(o._current > o._middleCount){
+      var index = o._endCount - o._current;
+      var rate = index / o._middleCount;
+      targetControl.size().set(o._sourceRectangle.width * rate, o._sourceRectangle.height * rate);
+   }else if(o._current == o._endCount){
+      sourceControl.setLocation(o._targetRectangle.left, o._targetRectangle.top);
+      sourceControl.setSize(o._targetRectangle.width, o._targetRectangle.height);
+      targetControl.setLocation(o._sourceRectangle.left, o._sourceRectangle.top);
+      targetControl.setSize(o._sourceRectangle.width, o._sourceRectangle.height);
+      o._finish = true;
+   }
+   o._current++;
+}
+MO.FGuiChangeTransform_dispose = function FGuiChangeTransform_dispose(){
+   var o = this;
+   o.__base.FGuiTransform.dispose.call(o);
+}
+with(MO){
+   MO.FGuiFrameConsole = function FGuiFrameConsole(o){
+      o = RClass.inherits(this, o, FConsole);
+      o._scopeCd         = EScope.Local;
+      o._frames          = null;
+      o.construct        = FGuiFrameConsole_construct;
+      o.createFrame      = FGuiFrameConsole_createFrame;
+      o.create           = FGuiFrameConsole_create;
+      o.find             = FGuiFrameConsole_find;
+      o.get              = FGuiFrameConsole_get;
+      o.alloc            = FGuiFrameConsole_alloc;
+      o.free             = FGuiFrameConsole_free;
+      o.dispose          = FGuiFrameConsole_dispose;
+      return o;
+   }
+   MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
+      var o = this;
+      o.__base.FConsole.construct.call(o);
+      o._frames = new TDictionary();
+   }
+   MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
+      var o = this;
+      var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
+      var xframe = describeConsole.load(name);
+      var frame = RGuiControl.build(null, xframe, null, null);
+      frame.linkGraphicContext(context);
+      frame.psInitialize();
+      frame.build();
+      return frame;
+   }
+   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
+      var o = this;
+      var frame = o.createFrame(context, null, name);
+      return frame;
+   }
+   MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
+      return this._frames.get(name);
+   }
+   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
+      var o = this;
+      var frames = o._frames;
+      var frame = frames.get(name);
+      if(!frame){
+         frame = o.createFrame(context, null, name);
+         frames.set(name, frame);
+      }
+      return frame;
+   }
+   MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
+   }
+   MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
+      f.setVisible(false);
+      this._freeFrames.push(f);
+   }
+   MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
+      var o = this;
+      o._frames = RObject.dispose(o._frames, true);
+      o.__base.FConsole.construct.call(o);
+   }
+}
+MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd     = MO.EScope.Global;
+   o._serviceCode = 'cloud.describe.frame';
+   o._defines     = MO.Class.register(o, new MO.AGetter('_defines'));
+   o.construct    = MO.FGuiFrameDescribeConsole_construct;
+   o.load         = MO.FGuiFrameDescribeConsole_load;
+   o.dispose      = MO.FGuiFrameDescribeConsole_dispose;
+   return o;
+}
+MO.FGuiFrameDescribeConsole_construct = function FGuiFrameDescribeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._defines = new MO.TDictionary();
+}
+MO.FGuiFrameDescribeConsole_load = function FGuiFrameDescribeConsole_load(name){
+   var o = this;
+   var defines = o._defines;
+   var xconfig = defines.get(name);
+   if(xconfig){
+      return xconfig;
+   }
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'query');
+   var xframe = xroot.create('Frame');
+   xframe.set('name', name);
+   var url = MO.Window.Browser.hostPath('/' + o._serviceCode + '.ws');
+   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xframes = xresult.nodes();
+   var count = xframes.count();
+   for(var i = 0; i < count; i++){
+      var xframe = xframes.at(i);
+      var frameName = xframe.get('name');
+      defines.set(frameName, xframe);
+   }
+   var xframe = defines.get(name);
+   if(!xframe){
+      throw new MO.TError(o, 'Unknown frame. (name={1})', name);
+   }
+   return xframe;
+}
+MO.FGuiFrameDescribeConsole_dispose = function FGuiFrameDescribeConsole_dispose(){
+   var o = this;
+   o._defines = MO.Lang.Object.dispose(o._defines, true);
+   o.__base.FConsole.dispose.call(o);
+}
+MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.gui';
+   o.drawRenderable = MO.FGuiGeneralColorEffect_drawRenderable;
+   return o;
+}
+MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawRenderable(region, renderable){
+   var o = this;
+   if(!MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
+      throw new MO.TError('Invalid renderable.');
+   }
+   var control = renderable.control();
+   var adjustSize = renderable.adjustSize();
+   var controlLocation = control.location();
+   var controlSize = control.size();
+   var dockCd = control.dockCd();
+   var context = o._graphicContext;
+   var logicSize = context.logicSize();
+   var contextSize = context.size();
+   var contextRatio = context.ratio();
+   var contextSizeRatio = context.sizeRatio();
+   var radioWidth = contextSize.width * contextRatio;
+   var radioHeight = contextSize.height * contextRatio;
+   var sizeWidth = contextSize.width * contextSizeRatio.width;
+   var sizeHeight = contextSize.height * contextSizeRatio.height;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var x = y = width = height = 0;
+   if(renderable._optionFull){
+      x = controlLocation.x / sizeWidth * 2 - 1;
+      y = 1 - controlLocation.y / sizeHeight * 2;
+      width = adjustSize.width / sizeWidth * 2;
+      height = adjustSize.height / sizeHeight * 2;
+   }else{
+      var contextRatioX = (contextSizeRatio.width > contextSizeRatio.height) ? 1 : contextSizeRatio.height / contextSizeRatio.width;
+      if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Left) || (dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Fill)){
+         x = controlLocation.x / sizeWidth * 2 - 1;
+      }else if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
+         x = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
+      }else{
+         throw new MO.TError(o, 'Invalid dock.');
+      }
+      var y = 0;
+      var contextRatioY = (contextSizeRatio.width > contextSizeRatio.height) ? 1 : contextSizeRatio.height / contextSizeRatio.width;
+      if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Top) || (dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Fill)){
+         y = 1 - controlLocation.y / sizeHeight * 2;
+      }else if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
+         y = 1 - (logicSize.height - controlLocation.y - controlSize.height / contextRatioY) / sizeHeight * 2;
+      }else{
+         throw new MO.TError(o, 'Invalid dock.');
+      }
+      if((dockCd == MO.EGuiDock.Fill)){
+         var right = logicSize.width - controlLocation.x - controlSize.width;
+         var x1 = controlLocation.x / sizeWidth * 2 - 1;
+         var x2 = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
+         width = x2 - x1;
+         height = adjustSize.height / radioHeight * 2;
+      }else{
+         width = adjustSize.width / radioWidth * 2;
+         height = adjustSize.height / radioHeight * 2;
+      }
+   }
+   o._program.setParameter4('vc_position', x, y, width, height);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FGuiManager = function FGuiManager(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
+   o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
+   o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
+   o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
+   o._statusDirty      = false;
+   o._visibleControls  = null;
+   o.construct         = MO.FGuiManager_construct;
+   o.register          = MO.FGuiManager_register;
+   o.unregister        = MO.FGuiManager_unregister;
+   o.transformStart    = MO.FGuiManager_transformStart;
+   o.setup             = MO.FGuiManager_setup;
+   o.isDirty           = MO.FGuiManager_isDirty;
+   o.setVisible        = MO.FGuiManager_setVisible;
+   o.show              = MO.FGuiManager_show;
+   o.hide              = MO.FGuiManager_hide;
+   o.processResize     = MO.FGuiManager_processResize;
+   o.processEvent      = MO.FGuiManager_processEvent;
+   o.processTransforms = MO.FGuiManager_processTransforms;
+   o.process           = MO.FGuiManager_process;
+   o.dirty             = MO.FGuiManager_dirty;
+   o.dispose           = MO.FGuiManager_dispose;
+   return o;
+}
+MO.FGuiManager_construct = function FGuiManager_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._controls = new MO.TObjects();
+   o._mainTimeline = MO.Class.create(MO.FMainTimeline);
+   o._transforms = new MO.TLooper();
+   o._visibleControls = new MO.TObjects();
+}
+MO.FGuiManager_register = function FGuiManager_register(control){
+   var o = this;
+   o._controls.push(control);
+   o._statusDirty = true;
+}
+MO.FGuiManager_unregister = function FGuiManager_unregister(control){
+   var o = this;
+   o._controls.remove(control);
+   o._statusDirty = true;
+}
+MO.FGuiManager_transformStart = function FGuiManager_transformStart(transform){
+   var o = this;
+   transform.start();
+   o._transforms.pushUnique(transform);
+}
+MO.FGuiManager_setup = function FGuiManager_setup(){
+   var o = this;
+   var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('general.color.gui', MO.FGuiGeneralColorEffect);
+}
+MO.FGuiManager_isDirty = function FGuiManager_isDirty(){
+   return this._statusDirty;
+}
+MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.setVisible(value);
+   }
+}
+MO.FGuiManager_show = function FGuiManager_show(){
+   this.setVisible(true);
+}
+MO.FGuiManager_hide = function FGuiManager_hide(){
+   this.setVisible(false);
+}
+MO.FGuiManager_processResize = function FGuiManager_processResize(event){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.psResize();
+   }
+}
+MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
+   var o = this;
+   o.dispatcherEvent(event);
+   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
+      var context = o._graphicContext;
+      var ratio = context.ratio();
+      var locationX = event.clientX * ratio;
+      var locationY = event.clientY * ratio;
+      var visibleControls = o._visibleControls;
+      visibleControls.clear();
+      var controls = o._controls;
+      var count = controls.count();
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.visible()){
+            visibleControls.push(control);
+         }
+      }
+      var count = visibleControls.count();
+      for(var i = 0; i < count; i++){
+         var control = visibleControls.at(i);
+         var location = control.location();
+         event.locationX = locationX - location.x;
+         event.locationY = locationY - location.y;
+         control.processEvent(event);
+      }
+   }
+}
+MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
+   var o = this;
+   var transforms = o._transforms;
+   transforms.record();
+   while(transforms.next()){
+      var transform = transforms.current();
+      transform.process();
+      if(transform.isFinish()){
+         transforms.removeCurrent();
+      }
+   }
+}
+MO.FGuiManager_process = function FGuiManager_process(){
+   var o = this;
+   var controls = o._controls;
+   var count = controls.count();
+   for(var i = 0; i < count; i++){
+      var control = controls.at(i);
+      control.psUpdate();
+   }
+   o._mainTimeline.process();
+   o.processTransforms();
+}
+MO.FGuiManager_dirty = function FGuiManager_dirty(){
+   this._statusDirty = true;
+}
+MO.FGuiManager_dispose = function FGuiManager_dispose(){
+   var o = this;
+   o._controls = MO.RObject.dispose(o._controls);
+   o._mainTimeline = MO.RObject.dispose(o._mainTimeline);
+   o._transforms = MO.RObject.dispose(o._transforms);
+   o._visibleControls = MO.RObject.dispose(o._visibleControls);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiTransform = function FGuiTransform(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._finish   = false;
+   o.construct = MO.FGuiTransform_construct;
+   o.isFinish  = MO.FGuiTransform_isFinish;
+   o.start     = MO.FGuiTransform_start;
+   o.process   = MO.FGuiTransform_process;
+   o.dispose   = MO.FGuiTransform_dispose;
+   return o;
+}
+MO.FGuiTransform_construct = function FGuiTransform_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FGuiTransform_isFinish = function FGuiTransform_isFinish(){
+   return this._finish;
+}
+MO.FGuiTransform_start = function FGuiTransform_start(){
+   var o = this;
+   o._finish = false;
+}
+MO.FGuiTransform_process = function FGuiTransform_process(){
+   var o = this;
+}
+MO.FGuiTransform_dispose = function FGuiTransform_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+}
+with(MO){
+   MO.FGuiButton = function FGuiButton(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o.onPaintBegin = FGuiButton_onPaintBegin;
+      return o;
+   }
+   MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = event.rectangle;
+      if(o._label){
+         if(o._foreFont){
+            graphic.setFont(o._foreFont);
+         }
+         var width = graphic.textWidth(o._label);
+         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+         var y = rectangle.top + rectangle.height * 0.5 + 3;
+         graphic.drawText(o._label, x, y, o._foreColor);
+      }
+   }
+}
+with(MO){
+   MO.FGuiLabel = function FGuiLabel(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      o.onPaintLabel = FGuiLabel_onPaintLabel;
+      o.onPaintBegin = FGuiLabel_onPaintBegin;
+      o.setLabel     = FGuiLabel_setLabel;
+      return o;
+   }
+   MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      var graphic = event.graphic;
+      var rectangle = event.rectangle;
+      if(o._foreFont){
+         graphic.setFont(o._foreFont);
+      }
+      var width = graphic.textWidth(o._label);
+      var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+      var y = rectangle.top + rectangle.height * 0.5 + 3;
+      graphic.drawText(o._label, x, y, o._foreColor);
+   }
+   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+      var o = this;
+      o.__base.FGuiControl.onPaintBegin.call(o, event);
+      if(o._label){
+         o.onPaintLabel(event);
+      }
+   }
+   MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
+      var o = this;
+      if(o._label != label){
+         o.dirty();
+      }
+      o.__base.FGuiControl.setLabel.call(o, label);
+   }
+}
+with(MO){
+   MO.FGuiPanel = function FGuiPanel(o){
+      o = RClass.inherits(this, o, FGuiControl);
+      return o;
+   }
+}
+MO.FGuiPicture = function FGuiPicture(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   return o;
+}
+MO.FGuiTimeline = function FGuiTimeline(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._timeUnit             = MO.Class.register(o, new MO.AGetSet('_timeUnit'));
+   o._startTime            = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._endTime              = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._degreeTime           = MO.Class.register(o, new MO.AGetSet('_degreeTime'));
+   o._progress             = MO.Class.register(o, new MO.AGetSet('_progress'));
+   o._unitms               = MO.Class.register(o, new MO.AGetSet('_unitms'), 1000 * 60 * 60 * 24);
+   o._degreeLineHeight     = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 15);
+   o._degreeLineWidth      = MO.Class.register(o, new MO.AGetSet('_degreeLineWidth'), 3);
+   o._mainLineWidth        = MO.Class.register(o, new MO.AGetSet('_mainLineWidth'), 5);
+   o._triangleWidth        = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
+   o._triangleHeight       = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
+   o._decoLineGap          = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
+   o._decoLineWidth        = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 40);
+   o._timeFontColor        = '#FFFFFF';
+   o._cursorFontColor      = '#FFFFFF';
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o.onPaintBegin          = MO.FGuiTimeline_onPaintBegin;
+   o.onOperationDown       = MO.FGuiTimeline_onOperationDown;
+   return o;
+}
+MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var top = rectangle.top;
+   var bottom = rectangle.top + rectangle.height;
+   var middle = bottom - 50;
+   var decoLeft = rectangle.left + 5;
+   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+   graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#FFFFFF', '#FFFFFF');
+   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
+   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#25E8FF', o._mainLineWidth);
+   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#25E8FF', o._mainLineWidth);
+   var startTime = o.startTime();
+   var endTime = o.endTime();
+   var degreeTime = o.degreeTime();
+   var degreeText;
+   var startText;
+   switch (o.timeUnit()) {
+      case MO.EGuiTimeUnit.Second:
+         startText = startTime.format('MI:SS.MISS');
+         degreeText = degreeTime.format('MI:SS.MISS');
+         break;
+      case MO.EGuiTimeUnit.Minute:
+         startText = startTime.format('HH24:MI:SS');
+         degreeText = degreeTime.format('HH24:MI:SS');
+         break;
+      case MO.EGuiTimeUnit.Hour:
+         startText = startTime.format('HH24:MI');
+         degreeText = degreeTime.format('HH24:MI');
+         break;
+      case MO.EGuiTimeUnit.Day:
+         startText = startTime.format('MM-DD:HH24');
+         degreeText = degreeTime.format('MM-DD:HH24');
+         break;
+      case MO.EGuiTimeUnit.Week:
+         startText = startTime.format('MM-DD');
+         degreeText = degreeTime.format('MM-DD');
+         break;
+      case MO.EGuiTimeUnit.Month:
+         startText = startTime.format('YYYY-MM-DD');
+         degreeText = degreeTime.format('YYYY-MM-DD');
+         break;
+      case MO.EGuiTimeUnit.Year:
+         startText = startTime.format('YYYY-MM');
+         degreeText = degreeTime.format('YYYY-MM');
+         break;
+      default:
+         return;
+   }
+   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+   var degreeSpan = degreeTime.date.getTime() - startTime.date.getTime() + o.unitms() * o.progress();
+   var degreeX = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
+   graphic.drawTriangle(degreeX, middle + 2, degreeX - o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), degreeX + o.triangleWidth() / 2, middle + 2 + o.triangleHeight(), 1, '#FFFFFF', '#FFFFFF');
+   graphic.setFont('bold 22px Microsoft YaHei');
+   var degreeTextWidth = graphic.textWidth(degreeText);
+   graphic.drawText(degreeText, degreeX - degreeTextWidth / 2, middle + 50, o._cursorFontColor);
+   var text;
+   var bakTime = startTime.date.getTime();
+   graphic.drawLine(dataLeft, middle - o.degreeLineHeight(), dataLeft, middle, '#FFFFFF', o._degreeLineWidth);
+   var startTextWidth = graphic.textWidth(startText);
+   graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, o._cursorFontColor);
+   switch (o.timeUnit()) {
+      case MO.EGuiTimeUnit.Second:
+         startTime.addMseconds(1000);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Minute:
+         startTime.addMseconds(1000 * 60);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Hour:
+         startTime.addMseconds(1000 * 60 * 60);
+         startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
+         break;
+      case MO.EGuiTimeUnit.Day:
+         startTime.addDay(1);
+         startTime.parseAuto(startTime.format('YYYYMMDD'));
+         break;
+      case MO.EGuiTimeUnit.Week:
+         startTime.addDay(7);
+         startTime.parseAuto(startTime.format('YYYYMMDD'));
+         break;
+      case MO.EGuiTimeUnit.Month:
+         startTime.addMonth(1);
+         startTime.parseAuto(startTime.format('YYYYMM'));
+         break;
+      case MO.EGuiTimeUnit.Year:
+         startTime.addYear(1);
+         startTime.parseAuto(startTime.format('YYYY'));
+         break;
+      default:
+         return;
+   }
+   var alternate = true;
+   var textBottom = 0;
+   while (!startTime.isAfter(degreeTime)) {
+      var span = startTime.date.getTime() - bakTime;
+      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
+      switch (o.timeUnit()) {
+         case MO.EGuiTimeUnit.Second:
+            text = startTime.format('MI:SS');
+            startTime.addMseconds(1000);
+            break;
+         case MO.EGuiTimeUnit.Minute:
+            text = startTime.format('HH24:MI');
+            startTime.addMseconds(1000 * 60);
+            break;
+         case MO.EGuiTimeUnit.Hour:
+            text = startTime.format('HH24:00');
+            startTime.addMseconds(1000 * 60 * 60);
+            break;
+         case MO.EGuiTimeUnit.Day:
+            text = startTime.format('MM-DD');
+            startTime.addDay(1);
+            break;
+         case MO.EGuiTimeUnit.Week:
+            text = startTime.format('MM-DD');
+            startTime.addDay(7);
+            break;
+         case MO.EGuiTimeUnit.Month:
+            text = startTime.format('YYYY-MM');
+            startTime.addMonth(1);
+            break;
+         case MO.EGuiTimeUnit.Year:
+            text = startTime.format('YYYY');
+            startTime.addYear(1);
+            break;
+         default:
+            return;
+      }
+      graphic.setFont('bold 22px Microsoft YaHei');
+      var textWidth = graphic.textWidth(text);
+      textBottom = alternate ? middle + 26 : middle + 52;
+      graphic.drawText(text, x - textWidth / 2, textBottom, o._timeFontColor);
+   }
+   var span = endTime.date.getTime() - bakTime;
+   var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+   graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, o._cursorFontColor, o._degreeLineWidth);
+   startTime.date.setTime(bakTime);
+   startTime.refresh();
+}
+MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
+   if (!event.flag) {
+      return;
+   }
+   var o = this;
+   o.__base.FGuiControl.onOperationDown.call(o, event);
+   var rectangle = event.rectangle;
+   var bottom = rectangle.top + rectangle.height;
+   var decoLeft = rectangle.left + 5;
+   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+   var x = event.locationX;
+   if (event.locationY > bottom - 30) {
+      if (x > dataLeft && x < dataRight) {
+         var rate = (x - dataLeft) / (dataRight - dataLeft);
+         var msDate = o.startTime().date.getTime() + (o.endTime().date.getTime() - o.startTime().date.getTime()) * rate;
+         var dsEvent = MO.Memory.alloc(SEvent);
+         dsEvent.sender = o;
+         var selectedDate = MO.Memory.alloc(TDate);
+         selectedDate.date.setTime(msDate);
+         selectedDate.refresh();
+         dsEvent.date = selectedDate.parseAuto(selectedDate.format('YYYYMMDD'));
+         o.processDataChangedListener(dsEvent);
+         MO.Memory.free(dsEvent);
+      }
+   }
+}
+with(MO){
+   MO.FGuiGridControl = function FGuiGridControl(o){
+      o = RClass.inherits(this, o, FProcessServer);
+      o._typeName  = null;
+      o._groupName = null;
+      o._name      = null;
+      o.name  = FGuiGridControl_name;
+      return o;
+   }
+   MO.FGuiGridControl_name = function FGuiGridControl_name(){
+      return this._name;
+   }
+}
+with(MO){
+   MO.FGuiBar = function FGuiBar(o){
+      o = RClass.inherits(this, o, FGuiFrame);
+      return o;
+   }
+}
+with(MO){
+   MO.FGuiWindow = function FGuiWindow(o){
+      o = RClass.inherits(this, o, FGuiFrame);
+      return o;
+   }
+}
+MO.FGuiDesignAnchor = function FGuiDesignAnchor(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o.construct = MO.FGuiDesignAnchor_construct;
+   o.dispose   = MO.FGuiDesignAnchor_dispose;
+   return o;
+}
+MO.FGuiDesignAnchor_construct = function FGuiDesignAnchor_construct(){
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+}
+MO.FGuiDesignAnchor_dispose = function FGuiDesignAnchor_dispose(){
+   var o = this;
+   o.__base.FGuiControl.dispose.call(o);
+}
+MO.FGuiEngineInfo = function FGuiEngineInfo(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._lastTick    = 0;
+   o._name        = 'EngineInfo';
+   o._stage       = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._context     = MO.Class.register(o, new MO.AGetSet('_context'));
+   o._ticker      = null;
+   o.onPaintBegin = MO.FGuiEngineInfo_onPaintBegin;
+   o.oeUpdate     = MO.FGuiEngineInfo_oeUpdate;
+   o.construct    = MO.FGuiEngineInfo_construct;
+   return o;
+}
+MO.FGuiEngineInfo_onPaintBegin = function FGuiEngineInfo_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if(o._stage == null){
+      return;
+   }
+   if(o._context == null){
+      return;
+   }
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var timer = o._stage.timer();
+   var stageStatistics = o._stage.statistics();
+   var statistics = o._context.statistics();
+   var line = 20;
+   var locationX = 10;
+   var locationY = rectangle.top + line;
+   graphic.setFont('16px sans-serif');
+   graphic.drawText('Frame         : ' + MO.Timer.rate(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Span    : ' + stageStatistics._frame.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw          : ' + statistics.frameDrawCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Const    : ' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Buffer   : ' + statistics.frameBufferCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Texture  : ' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Draw Triangle : ' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Program : ' + statistics.programTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Layout  : ' + statistics.layoutTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText('Total Buffer  : Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
+   locationY += line;
+}
+MO.FGuiEngineInfo_oeUpdate = function FGuiEngineInfo_oeUpdate(event){
+   var o = this;
+   if(o._ticker.process()){
+      o.dirty();
+   }
+   return MO.EEventStatus.Stop;
+}
+MO.FGuiEngineInfo_construct = function FGuiEngineInfo_construct(){
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+   o._size.set(512, 256);
+   o._ticker = new MO.TTicker(1000);
+}

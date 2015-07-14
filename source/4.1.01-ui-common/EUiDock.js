@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150506
 //==========================================================
-MO.EGuiDock = new function EGuiDock(){
+MO.EUiDock = new function EUiDock(){
    var o = this;
    // @attribute
    o.None        = 'None';

@@ -124,7 +124,6 @@ MO.EUiDirection = new function EUiDirection(){
    o.Vertical   = 'V';
    return o;
 }
-MO.EUiDock = MO.EGuiDock;
 MO.EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
@@ -138,39 +137,6 @@ MO.EUiLabelPosition = new function EUiLabelPosition(){
    o.Right  = 'right';
    o.Top    = 'top';
    o.Bottom = 'bottom';
-   return o;
-}
-MO.EUiLayer = new function EUiLayer(){
-   var o = this;
-   o.Default = 20000;
-   o.Shadow  =  6000;
-   o.Disable =  5000;
-   o.Drap    = 10000;
-   o.Window  = 20000;
-   o.Drop    = 40000;
-   o.Editor  = 10000;
-   o.Border  = 20000;
-   o.Move    = 25000;
-   o.Search  = 45000;
-   o.Message = 45000;
-   return o;
-}
-MO.EUiLayout = new function EUiLayout(){
-   var o = this;
-   o.Display = 'P';
-   o.Search  = 'S';
-   o.Design  = 'G';
-   o.Insert  = 'I';
-   o.Update  = 'U';
-   o.Delete  = 'D';
-   o.Zoom    = 'Z';
-   return o;
-}
-MO.EUiMerge = new function EUiMerge(){
-   var o = this;
-   o.Append   = 'append';
-   o.Override = 'override';
-   o.Disable  = 'disable';
    return o;
 }
 MO.EPanel = new function EPanel(){

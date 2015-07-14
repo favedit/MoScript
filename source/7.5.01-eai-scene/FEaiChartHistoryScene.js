@@ -87,7 +87,7 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
       bar.linkGraphicContext(o);
       bar.setName('MilestoneBar_' + i);
       bar.setVisible(false);
-      bar.setDockCd(MO.EGuiDock.Right)
+      bar.setDockCd(MO.EUiDock.Right)
       bar.setTop(90 + 100 * i);
       var milestoneInvestmentTotal = milestone.investmentTotal();
       if (milestoneInvestmentTotal >= 10000) {
@@ -359,7 +359,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.linkGraphicContext(o);
    timeline.setName('Timeline');
-   timeline.setDockCd(MO.EGuiDock.Bottom);
+   timeline.setDockCd(MO.EUiDock.Bottom);
    timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
    timeline.setLeft(50);
    timeline.setRight(450);
@@ -385,7 +385,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    var milestoneBG = MO.RClass.create(MO.FGuiPicture);
    milestoneBG.linkGraphicContext(o);
    milestoneBG.setName('MilestoneBG_Top');
-   milestoneBG.setDockCd(MO.EGuiDock.RightTop);
+   milestoneBG.setDockCd(MO.EUiDock.RightTop);
    milestoneBG.setWidth(468);
    milestoneBG.setHeight(464);
    milestoneBG._displayOrder = -1;
@@ -396,7 +396,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneBG = MO.RClass.create(MO.FGuiPicture);
    milestoneBG.linkGraphicContext(o);
    milestoneBG.setName('MilestoneBG_Bottom');
-   milestoneBG.setDockCd(MO.EGuiDock.RightBottom);
+   milestoneBG.setDockCd(MO.EUiDock.RightBottom);
    milestoneBG.setWidth(468);
    milestoneBG.setHeight(464);
    milestoneBG._displayOrder = -1;
@@ -524,7 +524,7 @@ MO.FEaiChartHistoryScene_processResize = function FEaiChartHistoryScene_processR
    //..........................................................
    // 设置南海
    var control = o._southSea;
-   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setDockCd(MO.EUiDock.RightBottom);
    control.setRight(520);
    control.setBottom(180);
 }

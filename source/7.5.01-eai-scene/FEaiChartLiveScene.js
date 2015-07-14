@@ -370,21 +370,21 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    //..........................................................
    // 设置南海
    var control = o._southSea;
-   control.setDockCd(MO.EGuiDock.RightBottom);
+   control.setDockCd(MO.EUiDock.RightBottom);
    control.setRight(710);
    control.setBottom(220);
    //..........................................................
    // 设置时间轴
    var timeline = o._timeline;
    if(MO.Window.Browser.isOrientationVertical()){
-      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(830);
       timeline.setHeight(250);
    }else{
-      timeline.setDockCd(MO.EGuiDock.Bottom);
+      timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
@@ -395,7 +395,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    // 设置表格
    var liveTable = o._liveTable;
    if(MO.Window.Browser.isOrientationVertical()){
-      liveTable.setDockCd(MO.EGuiDock.Bottom);
+      liveTable.setDockCd(MO.EUiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);
       liveTable.setRight(10);
@@ -403,7 +403,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setWidth(1060);
       liveTable.setHeight(800);
    }else{
-      liveTable.setDockCd(MO.EGuiDock.Right);
+      liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
       liveTable.setTop(10);
       liveTable.setRight(0);

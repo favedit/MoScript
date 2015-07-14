@@ -170,6 +170,23 @@
          <File source='/ajs/engine-3d-shape.js'/>
          <File source='/ajs/engine-3d-particle.js'/>
       </FileMerger>
+      <FileMerger target='/ajs/mo-ui.js'>
+         <File source='/ajs/ui-common.js'/>
+         <File source='/ajs/ui-core.js'/>
+         <File source='/ajs/ui-console.js'/>
+         <File source='/ajs/ui-form.js'/>
+         <File source='/ajs/ui-table.js'/>
+         <File source='/ajs/ui-application.js'/>
+      </FileMerger>
+      <FileMerger target='/ajs/mo-gui.js'>
+         <File source='/ajs/gui-common.js'/>
+         <File source='/ajs/gui-core.js'/>
+         <File source='/ajs/gui-form.js'/>
+         <File source='/ajs/gui-table.js'/>
+         <File source='/ajs/gui-frame.js'/>
+         <File source='/ajs/gui-extension.js'/>
+      </FileMerger>
+      <!--
       <FileMerger target='/ajs/mo-engine-control.js'>
          <File source='/ajs/engine-control-common.js'/>
          <File source='/ajs/engine-control-core.js'/>
@@ -189,6 +206,7 @@
          <File source='/ajs/game-scene.js'/>
          <File source='/ajs/game-stage.js'/>
       </FileMerger>
+      -->
       <FileMerger target='/ajs/mo-base-control.js'>
          <File source='/ajs/control.js'/>
          <File source='/ajs/control-core.js'/>
@@ -268,8 +286,8 @@
          <File source='/ajs/mo-window.js'/>
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
-         <File source='/ajs/mo-engine-control.js'/>
-         <File source='/ajs/mo-engine-application.js'/>
+         <File source='/ajs/mo-ui.js'/>
+         <File source='/ajs/mo-gui.js'/>
          <File source='/ajs/mo-game.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo.js'>
@@ -278,9 +296,8 @@
          <File source='/ajs/mo-window.js'/>
          <File source='/ajs/mo-graphic.js'/>
          <File source='/ajs/mo-engine.js'/>
-         <File source='/ajs/mo-engine-control.js'/>
-         <File source='/ajs/mo-engine-application.js'/>
-         <File source='/ajs/mo-game.js'/>
+         <File source='/ajs/mo-ui.js'/>
+         <File source='/ajs/mo-gui.js'/>
          <File source='/ajs/mo-control.js'/>
          <File source='/ajs/mo-design.js'/>
          <File source='/ajs/mo-design-logic.js'/>
