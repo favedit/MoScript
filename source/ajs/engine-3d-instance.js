@@ -16,14 +16,13 @@ MO.FE3dAnimation = function FE3dAnimation(o){
 }
 MO.FE3dCamera = function FE3dCamera(o){
    o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
-   o._rotation       = null;
+   o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
    o._quaternion     = null;
    o._quaternionX    = null;
    o._quaternionY    = null;
    o._quaternionZ    = null;
    o.construct       = MO.FE3dCamera_construct;
-   o.rotation        = MO.FE3dCamera_rotation;
    o.doMoveX         = MO.FE3dCamera_doMoveX;
    o.doMoveY         = MO.FE3dCamera_doMoveY;
    o.doMoveZ         = MO.FE3dCamera_doMoveZ;
@@ -45,9 +44,6 @@ MO.FE3dCamera_construct = function FE3dCamera_construct(){
    o._quaternionX = new MO.SQuaternion();
    o._quaternionY = new MO.SQuaternion();
    o._quaternionZ = new MO.SQuaternion();
-}
-MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
-   return this._rotation;
 }
 MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
    this._position.x += value;
@@ -95,9 +91,9 @@ MO.FE3dCamera_commitResource = function FE3dCamera_commitResource(){
 MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
    var r = o._rotation;
-   o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(RMath.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(RMath.vectorAxisZ, r.z);
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
    var q = o._quaternion.identity();
    q.mul(o._quaternionX);
    q.mul(o._quaternionY);

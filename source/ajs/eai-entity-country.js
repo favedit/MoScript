@@ -1499,7 +1499,7 @@ with (MO) {
       startTime.date.setTime(bakTime);
       startTime.refresh();
       var data = o._data;
-      if (!data) {
+      if (!data || data.length < 1) {
          return;
       }
       var maxInves = 0;

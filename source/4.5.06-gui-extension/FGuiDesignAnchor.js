@@ -1,17 +1,16 @@
 //==========================================================
-// <T>设计界面管理器。</T>
+// <T>设计锚点。</T>
 //
 // @class
 // @author maocy
 // @version 150714
 //==========================================================
-MO.FDssGuiManage = function FDssGuiManage(o){
-   o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
-   //..........................................................
+MO.FGuiDesignAnchor = function FGuiDesignAnchor(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    // @method
-   o.construct = MO.FDssGuiManage_construct;
+   o.construct = MO.FGuiDesignAnchor_construct;
    // @method
-   o.dispose   = MO.FDssGuiManage_dispose;
+   o.dispose   = MO.FGuiDesignAnchor_dispose;
    return o;
 }
 
@@ -20,18 +19,18 @@ MO.FDssGuiManage = function FDssGuiManage(o){
 //
 // @method
 //==========================================================
-MO.FDssGuiManage_construct = function FDssGuiManage_construct(){
+MO.FGuiDesignAnchor_construct = function FGuiDesignAnchor_construct(){
    var o = this;
-   o.__base.FGuiCanvasManage.construct.call(o);
+   o.__base.FGuiControl.construct.call(o);
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>析构处理。</T>
 //
 // @method
 //==========================================================
-MO.FDssGuiManage_dispose = function FDssGuiManage_dispose(){
+MO.FGuiDesignAnchor_dispose = function FGuiDesignAnchor_dispose(){
    var o = this;
    // 父处理
-   o.__base.FGuiCanvasManage.dispose.call(o);
+   o.__base.FGuiControl.dispose.call(o);
 }

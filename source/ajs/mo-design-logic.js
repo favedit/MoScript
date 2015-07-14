@@ -2154,136 +2154,16 @@ MO.FDssDesktop_dispose = function FDssDesktop_dispose(){
 }
 MO.FDssGuiManage = function FDssGuiManage(o){
    o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
-   o._desktop          = MO.Class.register(o, new MO.AGetSet('_desktop'));
-   o._canvas           = MO.Class.register(o, new MO.AGetSet('_canvas'));
-   o._readyControls    = null;
-   o._dirtyControls    = null;
-   o._paintEvent       = null;
-   o.onSortControl     = MO.FDssGuiManage_onSortControl;
-   o.construct         = MO.FDssGuiManage_construct;
-   o.filterByRectangle = MO.FDssGuiManage_filterByRectangle;
-   o.doActionAlpha     = MO.FDssGuiManage_doActionAlpha;
-   o.processResize     = MO.FDssGuiManage_processResize;
-   o.processControl    = MO.FDssGuiManage_processControl;
-   o.process           = MO.FDssGuiManage_process;
-   o.dispose           = MO.FDssGuiManage_dispose;
+   o.construct = MO.FDssGuiManage_construct;
+   o.dispose   = MO.FDssGuiManage_dispose;
    return o;
-}
-MO.FDssGuiManage_onSortControl = function FDssGuiManage_onSortControl(source, target){
-   var o = this;
-   var sourceOrder = source.displayOrder();
-   var targetOrder = target.displayOrder();
-   return sourceOrder - targetOrder;
 }
 MO.FDssGuiManage_construct = function FDssGuiManage_construct(){
    var o = this;
    o.__base.FGuiCanvasManage.construct.call(o);
-   o._readyControls = new MO.TObjects();
-   o._dirtyControls = new MO.TObjects();
-   o._paintEvent = new MO.SGuiPaintEvent();
-}
-MO.FDssGuiManage_filterByRectangle = function FDssGuiManage_filterByRectangle(dirtyControls, rectangle){
-   var o = this;
-   var controls = o._readyControls;
-   var count = controls.count();
-   for(var i = 0; i < count; i++){
-      var control = controls.at(i);
-      var clientRectangle = control.clientRectangle();
-      if(rectangle.testRectangle(clientRectangle)){
-         if(!control._flagDirty){
-            control._flagDirty = true;
-            o.filterByRectangle(dirtyControls, clientRectangle);
-         }
-         control.dirty();
-         dirtyControls.pushUnique(control);
-      }
-   }
-}
-MO.FDssGuiManage_doActionAlpha = function FDssGuiManage_doActionAlpha(alpha){
-   var o = this;
-   var context = o._canvas.graphicContext();
-   context.setAlpha(alpha);
-   o.dirty();
-}
-MO.FDssGuiManage_processResize = function FDssGuiManage_processResize(control){
-}
-MO.FDssGuiManage_processControl = function FDssGuiManage_processControl(control){
-   var o = this;
-   o.__base.FGuiCanvasManage.process.call(o);
-   var graphic = o._canvas.graphicContext();
-   var desktop = o._desktop;
-   var calculateSize = desktop.calculateSize();
-   var calculateRate = desktop.calculateRate()
-   var event = o._paintEvent;
-   event.optionContainer = true;
-   event.graphic = graphic;
-   event.parentRectangle.set(0, 0, calculateSize.width, calculateSize.height);
-   event.calculateRate = calculateRate;
-   event.rectangle.reset();
-   control.paint(event);
-}
-MO.FDssGuiManage_process = function FDssGuiManage_process(){
-   var o = this;
-   o.__base.FGuiCanvasManage.process.call(o);
-   var readyControls = o._readyControls;
-   readyControls.clear();
-   var controls = o._controls;
-   var count = controls.count();
-   for(var i = 0; i < count; i++){
-      var control = controls.at(i);
-      if(control.processReady()){
-         if(control.visible()){
-            if(control.isDirtyAll()){
-               o._statusDirty = true;
-            }
-            control._flagDirty = false;
-            readyControls.push(control)
-         }
-      }
-   }
-   var graphic = o._canvas.graphicContext();
-   if(o._statusDirty){
-      graphic.clear();
-      readyControls.sort(o.onSortControl);
-      var readyCount = readyControls.count();
-      for(var i = 0; i < readyCount; i++){
-         var control = readyControls.at(i);
-         o.processControl(control);
-      }
-      o._statusDirty = false;
-   }else{
-      var dirtyControls = o._dirtyControls;
-      dirtyControls.clear();
-      var readCount = readyControls.count();
-      for(var i = 0; i < readCount; i++){
-         var control = readyControls.at(i);
-         if(control.testDirty()){
-            var controlRectangle = control.clientRectangle();
-            dirtyControls.push(control);
-            control._flagDirty = true;
-            o.filterByRectangle(dirtyControls, controlRectangle)
-         }
-      }
-      dirtyControls.sort(o.onSortControl);
-      var dirtyCount = dirtyControls.count();
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         var clientRectangle = control.clientRectangle();
-         if(!clientRectangle.isEmpty()){
-            graphic.clearRectangle(clientRectangle);
-         }
-      }
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         o.processControl(control);
-      }
-   }
 }
 MO.FDssGuiManage_dispose = function FDssGuiManage_dispose(){
    var o = this;
-   o._readyControls = MO.Lang.Object.dispose(o._readyControls);
-   o._dirtyControls = MO.Lang.Object.dispose(o._dirtyControls);
-   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    o.__base.FGuiCanvasManage.dispose.call(o);
 }
 with(MO){

@@ -2334,7 +2334,7 @@ with (MO) {
       startTime.date.setTime(bakTime);
       startTime.refresh();
       var data = o._data;
-      if (!data) {
+      if (!data || data.length < 1) {
          return;
       }
       var maxInves = 0;
@@ -3258,7 +3258,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute          = 2;
+   o._intervalMinute          = 1;
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
    o._rankEntities            = MO.Class.register(o, new MO.AGetter('_rankEntities'));
@@ -4688,17 +4688,10 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    livePop.build();
    o._guiManager.register(livePop);
    o._guiManager.hide();
-   var context = o._graphicContext;
-   var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('{eai.resource}/particle/6.png');
-   particle.setData(particleData);
-   o.fixMatrix(particle.matrix());
-   o._activeStage.spriteLayer().pushRenderable(particle);
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
-   var o = this;
    return;
+   var o = this;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;

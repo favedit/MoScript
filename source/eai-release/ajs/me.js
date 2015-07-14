@@ -4333,7 +4333,7 @@ MO.RFloat = function RFloat(){
    return o;
 }
 MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
-   return MO.String.isPattern(p, 'n');
+   return MO.Lang.String.isPattern(p, 'n');
 }
 MO.RFloat.prototype.parse = function RFloat_parse(source){
    if(source == null){
@@ -4342,7 +4342,7 @@ MO.RFloat.prototype.parse = function RFloat_parse(source){
    if(source == ''){
       return 0;
    }
-   var value = MO.String.trim(source.toString());
+   var value = MO.Lang.String.trim(source.toString());
    if(value == null){
       return 0;
    }
@@ -12597,7 +12597,7 @@ MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
 MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    var o = this;
    o._optionSelect = select;
-   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
       o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
 }
@@ -27435,14 +27435,13 @@ MO.FE3dAnimation = function FE3dAnimation(o){
 }
 MO.FE3dCamera = function FE3dCamera(o){
    o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
-   o._rotation       = null;
+   o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
    o._quaternion     = null;
    o._quaternionX    = null;
    o._quaternionY    = null;
    o._quaternionZ    = null;
    o.construct       = MO.FE3dCamera_construct;
-   o.rotation        = MO.FE3dCamera_rotation;
    o.doMoveX         = MO.FE3dCamera_doMoveX;
    o.doMoveY         = MO.FE3dCamera_doMoveY;
    o.doMoveZ         = MO.FE3dCamera_doMoveZ;
@@ -27464,9 +27463,6 @@ MO.FE3dCamera_construct = function FE3dCamera_construct(){
    o._quaternionX = new MO.SQuaternion();
    o._quaternionY = new MO.SQuaternion();
    o._quaternionZ = new MO.SQuaternion();
-}
-MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
-   return this._rotation;
 }
 MO.FE3dCamera_doMoveX = function FE3dCamera_doMoveX(value){
    this._position.x += value;
@@ -27514,9 +27510,9 @@ MO.FE3dCamera_commitResource = function FE3dCamera_commitResource(){
 MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
    var r = o._rotation;
-   o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(RMath.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(RMath.vectorAxisZ, r.z);
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
    var q = o._quaternion.identity();
    q.mul(o._quaternionX);
    q.mul(o._quaternionY);
@@ -34756,6 +34752,7 @@ MO.FApplication = function FApplication(o){
    o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
    o._eventLeaveFrame     = null;
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
@@ -34766,6 +34763,13 @@ MO.FApplication = function FApplication(o){
    o.process              = MO.FApplication_process;
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+MO.FApplication_onProcess = function FApplication_onProcess(event){
+   var o = this;
+   var chapter = o._activeChapter;
+   if(chapter){
+      chapter.process();
+   }
 }
 MO.FApplication_construct = function FApplication_construct(){
    var o = this;
@@ -34819,9 +34823,7 @@ MO.FApplication_processEvent = function FApplication_processEvent(event){
 MO.FApplication_process = function FApplication_process(){
    var o = this;
    o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeChapter){
-      o._activeChapter.process();
-   }
+   o.onProcess();
    o.processLeaveFrameListener(o._eventLeaveFrame);
 }
 MO.FApplication_dispose = function FApplication_dispose(){
@@ -35139,9 +35141,9 @@ MO.RApplication = function RApplication(){
 }
 MO.RApplication.prototype.initialize = function RApplication_initialize(){
    var o = this;
-   MO.RBrowser.construct();
-   MO.RWindow.connect(window);
-   MO.RKeyboard.construct();
+   MO.Window.Browser.construct();
+   MO.Window.connect(window);
+   MO.Window.Keyboard.construct();
 }
 MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
    var o = this;

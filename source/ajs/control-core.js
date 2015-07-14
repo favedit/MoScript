@@ -1715,6 +1715,40 @@ with(MO){
       }
    }
 }
+MO.FUiWorkspaceApplication = function FUiWorkspaceApplication(o){
+   o = MO.Class.inherits(this, o, MO.FApplication);
+   o._workspaces      = MO.Class.register(o, new MO.AGetter('_workspaces'));
+   o._activeWorkspace = MO.Class.register(o, new MO.AGetter('_activeWorkspace'));
+   o.onProcess        = MO.FUiWorkspaceApplication_onProcess;
+   o.selectWorkspace  = MO.FUiWorkspaceApplication_selectWorkspace;
+   o.processResize    = MO.FUiWorkspaceApplication_processResize;
+   o.processEvent     = MO.FUiWorkspaceApplication_processEvent;
+   return o;
+}
+MO.FUiWorkspaceApplication_onProcess = function FUiWorkspaceApplication_onProcess(){
+   var o = this;
+   var workspace = o._activeWorkspace
+   if(workspace){
+      workspace.psFrame();
+   }
+}
+MO.FUiWorkspaceApplication_selectWorkspace = function FUiWorkspaceApplication_selectWorkspace(clazz){
+   var o = this;
+   var workspace = o._activeWorkspace = MO.Class.create(clazz);
+   return workspace;
+}
+MO.FUiWorkspaceApplication_processResize = function FUiWorkspaceApplication_processResize(){
+   var o = this;
+}
+MO.FUiWorkspaceApplication_processEvent = function FUiWorkspaceApplication_processEvent(event){
+   var o = this;
+   return;
+   o.dispatcherEvent(event);
+   var chapter = o._activeWorkspace;
+   if(chapter){
+      chapter.processEvent(event);
+   }
+}
 MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd         = MO.EScope.Local;

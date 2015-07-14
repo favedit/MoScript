@@ -8,7 +8,7 @@ MO.FE3dCamera = function FE3dCamera(o){
    o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
    //..........................................................
    // 四元数
-   o._rotation       = null;
+   o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
    o._quaternion     = null;
    o._quaternionX    = null;
@@ -17,8 +17,6 @@ MO.FE3dCamera = function FE3dCamera(o){
    //..........................................................
    // @method
    o.construct       = MO.FE3dCamera_construct;
-   // @method
-   o.rotation        = MO.FE3dCamera_rotation;
    // @method
    o.doMoveX         = MO.FE3dCamera_doMoveX;
    o.doMoveY         = MO.FE3dCamera_doMoveY;
@@ -49,16 +47,6 @@ MO.FE3dCamera_construct = function FE3dCamera_construct(){
    o._quaternionX = new MO.SQuaternion();
    o._quaternionY = new MO.SQuaternion();
    o._quaternionZ = new MO.SQuaternion();
-}
-
-//==========================================================
-// <T>获得旋转弧度。</T>
-//
-// @method
-// @return SVector3 旋转弧度
-//==========================================================
-MO.FE3dCamera_rotation = function FE3dCamera_rotation(){
-   return this._rotation;
 }
 
 //==========================================================
@@ -178,9 +166,9 @@ MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
    // 计算旋转分量
    var r = o._rotation;
-   o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(RMath.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(RMath.vectorAxisZ, r.z);
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
    // 计算旋转
    var q = o._quaternion.identity();
    q.mul(o._quaternionX);

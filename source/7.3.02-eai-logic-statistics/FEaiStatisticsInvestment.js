@@ -16,7 +16,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute          = 2;
+   o._intervalMinute          = 1;
    // @attribute
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
@@ -130,7 +130,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._tableEntities = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
-   // 5分钟定时
+   // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建表格
    var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);

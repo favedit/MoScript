@@ -3027,7 +3027,7 @@ MO.RFloat = function RFloat(){
    return o;
 }
 MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
-   return MO.String.isPattern(p, 'n');
+   return MO.Lang.String.isPattern(p, 'n');
 }
 MO.RFloat.prototype.parse = function RFloat_parse(source){
    if(source == null){
@@ -3036,7 +3036,7 @@ MO.RFloat.prototype.parse = function RFloat_parse(source){
    if(source == ''){
       return 0;
    }
-   var value = MO.String.trim(source.toString());
+   var value = MO.Lang.String.trim(source.toString());
    if(value == null){
       return 0;
    }

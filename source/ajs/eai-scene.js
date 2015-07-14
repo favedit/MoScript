@@ -903,17 +903,10 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    livePop.build();
    o._guiManager.register(livePop);
    o._guiManager.hide();
-   var context = o._graphicContext;
-   var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('{eai.resource}/particle/6.png');
-   particle.setData(particleData);
-   o.fixMatrix(particle.matrix());
-   o._activeStage.spriteLayer().pushRenderable(particle);
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
-   var o = this;
    return;
+   var o = this;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;

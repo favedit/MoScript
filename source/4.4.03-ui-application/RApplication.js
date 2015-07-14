@@ -21,11 +21,11 @@ MO.RApplication = function RApplication(){
 MO.RApplication.prototype.initialize = function RApplication_initialize(){
    var o = this;
    // 构造浏览管理器
-   MO.RBrowser.construct();
+   MO.Window.Browser.construct();
    // 构造窗口管理器
-   MO.RWindow.connect(window);
+   MO.Window.connect(window);
    // 构造键盘管理器
-   MO.RKeyboard.construct();
+   MO.Window.Keyboard.construct();
 }
 
 //==========================================================

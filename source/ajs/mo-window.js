@@ -185,7 +185,7 @@ MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
 MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    var o = this;
    o._optionSelect = select;
-   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
       o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
 }

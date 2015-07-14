@@ -6,6 +6,7 @@ MO.FApplication = function FApplication(o){
    o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
    o._eventLeaveFrame     = null;
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
@@ -16,6 +17,13 @@ MO.FApplication = function FApplication(o){
    o.process              = MO.FApplication_process;
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+MO.FApplication_onProcess = function FApplication_onProcess(event){
+   var o = this;
+   var chapter = o._activeChapter;
+   if(chapter){
+      chapter.process();
+   }
 }
 MO.FApplication_construct = function FApplication_construct(){
    var o = this;
@@ -69,9 +77,7 @@ MO.FApplication_processEvent = function FApplication_processEvent(event){
 MO.FApplication_process = function FApplication_process(){
    var o = this;
    o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeChapter){
-      o._activeChapter.process();
-   }
+   o.onProcess();
    o.processLeaveFrameListener(o._eventLeaveFrame);
 }
 MO.FApplication_dispose = function FApplication_dispose(){
@@ -389,9 +395,9 @@ MO.RApplication = function RApplication(){
 }
 MO.RApplication.prototype.initialize = function RApplication_initialize(){
    var o = this;
-   MO.RBrowser.construct();
-   MO.RWindow.connect(window);
-   MO.RKeyboard.construct();
+   MO.Window.Browser.construct();
+   MO.Window.connect(window);
+   MO.Window.Keyboard.construct();
 }
 MO.RApplication.prototype.findWorkspace = function RApplication_findWorkspace(clazz){
    var o = this;

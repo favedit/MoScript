@@ -32,21 +32,28 @@
       <PathMerger source='/3.3.07-engine-3d-particle'        target='/ajs/engine-3d-particle.js'/>
       <PathMerger source='/3.4.01-engine-3d-server'          target='/ajs/engine-3d-server.js'/>
 
-      <PathMerger source='/3.5.01-engine-control-common'     target='/ajs/engine-control-common.js'/>
-      <PathMerger source='/3.5.02-engine-control-core'       target='/ajs/engine-control-core.js'/>
-      <PathMerger source='/3.5.03-engine-control-form'       target='/ajs/engine-control-form.js'/>
-      <PathMerger source='/3.5.04-engine-control-table'      target='/ajs/engine-control-table.js'/>
-      <PathMerger source='/3.5.05-engine-control-frame'      target='/ajs/engine-control-frame.js'/>
-      <PathMerger source='/3.5.06-engine-control-extension'  target='/ajs/engine-control-extension.js'/>
+      <PathMerger source='/4.1.01-ui-common'                 target='/ajs/ui-common.js'/>
+      <PathMerger source='/4.2.01-ui-core'                   target='/ajs/ui-core.js'/>
+      <PathMerger source='/4.3.01-ui-console'                target='/ajs/ui-console.js'/>
+      <PathMerger source='/4.4.01-ui-form'                   target='/ajs/ui-form.js'/>
+      <PathMerger source='/4.4.02-ui-table'                  target='/ajs/ui-table.js'/>
+      <PathMerger source='/4.4.03-ui-application'            target='/ajs/ui-application.js'/>
 
-      <PathMerger source='/3.6.01-engine-application'        target='/ajs/engine-application.js'/>
+      <PathMerger source='/4.5.01-gui-common'                target='/ajs/gui-common.js'/>
+      <PathMerger source='/4.5.02-gui-core'                  target='/ajs/gui-core.js'/>
+      <PathMerger source='/4.5.03-gui-form'                  target='/ajs/gui-form.js'/>
+      <PathMerger source='/4.5.04-gui-table'                 target='/ajs/gui-table.js'/>
+      <PathMerger source='/4.5.05-gui-frame'                 target='/ajs/gui-frame.js'/>
+      <PathMerger source='/4.5.06-gui-extension'             target='/ajs/gui-extension.js'/>
 
+      <!--
       <PathMerger source='/4.1.01-game'                      target='/ajs/game.js'/>
       <PathMerger source='/4.2.01-game-core'                 target='/ajs/game-core.js'/>
       <PathMerger source='/4.3.01-game-template'             target='/ajs/game-template.js'/>
       <PathMerger source='/4.4.01-game-entity'               target='/ajs/game-entity.js'/>
       <PathMerger source='/4.5.01-game-scene'                target='/ajs/game-scene.js'/>
       <PathMerger source='/4.6.01-game-stage'                target='/ajs/game-stage.js'/>
+      -->
 
       <PathMerger source='/5.1.01-control'                   target='/ajs/control.js'/>
       <PathMerger source='/5.2.01-control-core'              target='/ajs/control-core.js'/>

@@ -259,13 +259,13 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o._guiManager.hide();
    //..........................................................
    // 创建粒子
-   var context = o._graphicContext;
-   var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   var particleData = context.createObject(MO.FE3dParticleData);
-   particleData.loadUrl('{eai.resource}/particle/6.png');
-   particle.setData(particleData);
-   o.fixMatrix(particle.matrix());
-   o._activeStage.spriteLayer().pushRenderable(particle);
+   //var context = o._graphicContext;
+   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
+   //var particleData = context.createObject(MO.FE3dParticleData);
+   //particleData.loadUrl('{eai.resource}/particle/6.png');
+   //particle.setData(particleData);
+   //o.fixMatrix(particle.matrix());
+   //o._activeStage.spriteLayer().pushRenderable(particle);
 }
 
 //==========================================================
@@ -274,8 +274,8 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
 // @method
 //==========================================================
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
-   var o = this;
    return;
+   var o = this;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;
@@ -326,7 +326,7 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
    if(MO.Runtime.isPlatformMobile()){
-      if(MO.RBrowser.isOrientationVertical()){
+      if(MO.Window.Browser.isOrientationVertical()){
          matrix.tx = -14.58;
          matrix.ty = -2.2;
          matrix.tz = 0;
@@ -360,7 +360,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    //..........................................................
    // 设置大小
    //var frame = o._logoBar;
-   //if(MO.RBrowser.isOrientationVertical()){
+   //if(MO.Window.Browser.isOrientationVertical()){
       //frame.setLocation(0, 10);
       //frame.setScale(0.8, 0.8);
    //}else{
@@ -376,7 +376,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    //..........................................................
    // 设置时间轴
    var timeline = o._timeline;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       timeline.setDockCd(MO.EGuiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
@@ -394,7 +394,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    //..........................................................
    // 设置表格
    var liveTable = o._liveTable;
-   if(MO.RBrowser.isOrientationVertical()){
+   if(MO.Window.Browser.isOrientationVertical()){
       liveTable.setDockCd(MO.EGuiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);

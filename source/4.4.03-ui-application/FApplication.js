@@ -17,6 +17,9 @@ MO.FApplication = function FApplication(o){
    o._eventLeaveFrame     = null;
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
    //..........................................................
+   // @event
+   o.onProcess            = MO.FApplication_onProcess;
+   //..........................................................
    // @method
    o.construct            = MO.FApplication_construct;
    // @method
@@ -31,6 +34,21 @@ MO.FApplication = function FApplication(o){
    // @method
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+
+//==========================================================
+// <T>逻辑事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FApplication_onProcess = function FApplication_onProcess(event){
+   var o = this;
+   // 章节处理
+   var chapter = o._activeChapter;
+   if(chapter){
+      chapter.process();
+   }
 }
 
 //==========================================================
@@ -146,9 +164,7 @@ MO.FApplication_process = function FApplication_process(){
    // 前处理
    o.processEnterFrameListener(o._eventEnterFrame);
    // 场景处理
-   if(o._activeChapter){
-      o._activeChapter.process();
-   }
+   o.onProcess();
    // 后处理
    o.processLeaveFrameListener(o._eventLeaveFrame);
 }
