@@ -313,7 +313,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var controlInvestment = o._logoBar.findComponent('investment');
-   controlInvestment.setRollingDuration(100);
+   controlInvestment.setNoRolling(true);
    //..........................................................
    // 创建城市图示
    //var control = o._playButton = MO.Class.create(MO.FGuiPicture);

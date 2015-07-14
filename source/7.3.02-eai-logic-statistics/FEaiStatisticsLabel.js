@@ -16,6 +16,7 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
    o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
    o._rollingPages    = null;
+   o._noRolling       = MO.Class.register(o, new MO.AGetSet('_noRolling'), false);
    //..........................................................
    // @method
    o.onPaintLabel     = MO.FEaiStatisticsLabel_onPaintLabel;
@@ -55,7 +56,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var unitTextY = baseY - 4;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
-   if (passedTick > o._rollingDuration) {
+   if (passedTick > o._rollingDuration || o._noRolling) {
       passedTick = o._rollingDuration;
       o._rolling = false;
    }
