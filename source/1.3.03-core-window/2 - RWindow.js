@@ -289,7 +289,7 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    // 关联鼠标事件
-   if(MO.Browser.supportHtml5()){
+   if(MO.Window.Browser.supportHtml5()){
       hContainer.addEventListener('mousedown', o.ohMouseDown, true);
       hContainer.addEventListener('mousemove', o.ohMouseMove, true);
       hContainer.addEventListener('mouseup', o.ohMouseUp, true);
@@ -542,7 +542,7 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    var hDocument = o._hDocument;
    var hContainer = o._hContainer;
    // 关联鼠标事件
-   if(MO.Browser.supportHtml5()){
+   if(MO.Window.Browser.supportHtml5()){
       hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
       hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
       hContainer.removeEventListener('mouseup', o.ohMouseUp, true);

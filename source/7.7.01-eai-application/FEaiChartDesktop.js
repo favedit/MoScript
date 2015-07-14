@@ -106,7 +106,7 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    o._screenSize.set(width, height);
    //..........................................................
    // 计算比率
-   var pixelRatio = MO.Browser.capability().pixelRatio;
+   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
    //alert('Change screen size. (size=' + width + 'x' + height + ', pixel_ratio=' + pixelRatio + ')');
    width *= pixelRatio;
@@ -115,7 +115,7 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    var widthRate = 1;
    var heightRate = 1;
    var logicSize = o._logicSize;
-   if(MO.Browser.isOrientationHorizontal()){
+   if(MO.Window.Browser.isOrientationHorizontal()){
       widthRate = width / logicSize.width;
       heightRate = height / logicSize.height;
       o._calculateSize.set(logicSize.width, logicSize.height);

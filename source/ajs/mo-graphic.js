@@ -603,7 +603,7 @@ MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
    var camera = o._camera;
    var projection = camera.projection();
    camera.updateFrustum();
-   var pixelRatio = MO.Browser.capability().pixelRatio;
+   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
    var ratioMatrix = o._ratioMatrix.identity();
    o._cameraPosition.assign(camera.position());
    o._cameraDirection.assign(camera.direction());

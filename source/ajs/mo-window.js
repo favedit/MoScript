@@ -23,6 +23,312 @@ MO.ESoftware = new function ESoftware(){
    o.Apple = 4;
    return o;
 }
+MO.RWindow = function RWindow(){
+   var o = this;
+   o._optionSelect     = true;
+   o._statusEnable     = true;
+   o._disableDeep      = 0;
+   o._localStorage     = null;
+   o._sessionStorage   = null;
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
+   o._eventMouse       = new MO.SMouseEvent();
+   o._eventKey         = new MO.SKeyboardEvent();
+   o._eventResize      = new MO.SResizeEvent();
+   o._eventOrientation = new MO.SEvent();
+   o._eventUnload      = new MO.SEvent();
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
+   o._hDisablePanel    = null;
+   o._hDisableImage    = null;
+   o.lsnsLoad          = new MO.TListeners();
+   o.lsnsUnload        = new MO.TListeners();
+   o.lsnsMouseDown     = new MO.TListeners();
+   o.lsnsMouseUp       = new MO.TListeners();
+   o.lsnsMouseOver     = new MO.TListeners();
+   o.lsnsMouseMove     = new MO.TListeners();
+   o.lsnsMouseWheel    = new MO.TListeners();
+   o.lsnsKeyDown       = new MO.TListeners();
+   o.lsnsKeyUp         = new MO.TListeners();
+   o.lsnsKeyPress      = new MO.TListeners();
+   o.lsnsResize        = new MO.TListeners();
+   o.lsnsOrientation   = new MO.TListeners();
+   return o;
+}
+MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventMouse;
+   event.code = MO.EEvent.MouseDown;
+   event.attachEvent(hEvent);
+   o.lsnsMouseDown.process(event);
+}
+MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventMouse;
+   event.code = MO.EEvent.MouseMove;
+   event.attachEvent(hEvent);
+   o.lsnsMouseMove.process(event);
+}
+MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventMouse;
+   event.code = MO.EEvent.MouseUp;
+   event.attachEvent(hEvent);
+   o.lsnsMouseUp.process(event);
+}
+MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventMouse;
+   event.code = MO.EEvent.MouseWheel;
+   event.attachEvent(hEvent);
+   o.lsnsMouseWheel.process(event);
+}
+MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyDown.process(event);
+}
+MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyUp.process(event);
+}
+MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventKey;
+   event.attachEvent(hEvent);
+   o.lsnsKeyPress.process(event);
+}
+MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
+   var o = MO.RWindow;
+   if(!hEvent){
+      hEvent = o._hWindow.event;
+   }
+   var event = o._eventResize;
+   event.code = MO.EEvent.Resize;
+   event.attachEvent(hEvent);
+   o.lsnsResize.process(event);
+}
+MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
+   return MO.RWindow._optionSelect;
+}
+MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
+   var o = MO.RWindow;
+   MO.Browser.refreshOrientation();
+   var event = o._eventOrientation;
+   event.code = MO.EEvent.Orientation;
+   event.orientationCd = MO.Browser.orientationCd();
+   o.lsnsOrientation.process(event);
+}
+MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
+   var o = MO.RWindow;
+   var event = o._eventUnload;
+   o.lsnsUnload.process(event);
+   MO.RWindow.dispose();
+}
+MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
+   var o = this;
+   var hWindow = o._hWindow = hHtml;
+   var hDocument = o._hDocument = hWindow.document;
+   var hContainer = o._hContainer = hDocument.body;
+   if(MO.Window.Browser.supportHtml5()){
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hWindow.addEventListener('orientationchange', o.ohOrientation);
+   }else{
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onmousewheel = o.ohMouseWheel;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
+      hWindow.onorientationchange = o.ohOrientation;
+   }
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
+}
+MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
+   return this._optionSelect;
+}
+MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
+   var o = this;
+   o._optionSelect = select;
+   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = select ? '' : 'none';
+   }
+}
+MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
+   top.document.title = MO.Lang.String.nvl(value);
+}
+MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
+   window.status = MO.Lang.String.nvl(value);
+}
+MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
+   var o = this;
+   switch(scopeCd){
+      case MO.EScope.Local:
+         var storage = o._localStorage;
+         if(!storage){
+            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
+            storage.link(window.localStorage);
+         }
+         return storage;
+      case MO.EScope.Session:
+         var storage = o._sessionStorage;
+         if(!storage){
+            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
+            storage.link(window.sessionStorage);
+         }
+         return storage;
+   }
+   throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
+}
+MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
+   var o = this;
+   var h = o._hDisablePanel;
+   if(!h){
+      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h.style.zIndex = 5000;
+   }
+   var hi = o._hDisableImage;
+   if(!hi){
+      hi = o._hDisableImage = MO.RBuilder.appendIcon(h);
+      hi.src = MO.RResource.iconPath('control.RWindow_Loading');
+      hi.style.margin = o._hContainer.offsetHeight / 2;
+      hi.style.display = 'none';
+   }
+   MO.RHtml.visibleSet(hi, f);
+   return h;
+}
+MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
+   this._hContainer.disabled = true;
+}
+MO.RWindow.prototype.windowEnable = function RWindow_windowEnable(){
+   this._hContainer.disabled = false;
+}
+MO.RWindow.prototype.isEnable = function RWindow_isEnable(){
+   return this._statusEnable;
+}
+MO.RWindow.prototype.enable = function RWindow_enable(){
+   var o = this;
+   o._disableDeep--;
+   if(o._disableDeep == 0){
+      o.setEnable(true);
+   }
+}
+MO.RWindow.prototype.disable = function RWindow_disable(){
+   var o = this;
+   if(o._disableDeep == 0){
+      o.setEnable(false);
+   }
+   o._disableDeep++;
+}
+MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
+   var o = this;
+   var h = o.makeDisablePanel(f);
+   var st = h.style;
+   if(!v){
+      var hd = o._hDocument;
+      var s = o._hDisablePanel.style;
+      s.left = '0px';
+      s.top = '0px';
+      s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
+      s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
+      if(!h._linked){
+         o._hContainer.appendChild(h);
+         h._linked = true;
+      }
+   }else{
+      o.windowEnable();
+      if(h._linked){
+         o._hContainer.removeChild(h);
+         h._linked = false;
+      }
+   }
+   o._statusEnable = v;
+}
+MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
+   MO.Assert.debugNotNull(control);
+   this._hContainer.appendChild(hPanel);
+}
+MO.RWindow.prototype.redirect = function RWindow_redirect(){
+}
+MO.RWindow.prototype.historyForward = function RWindow_historyForward(){
+}
+MO.RWindow.prototype.historyBack = function RWindow_historyBack(){
+}
+MO.RWindow.prototype.dispose = function RWindow_dispose(){
+   var o = this;
+   var hWindow = o._hWindow;
+   var hDocument = o._hDocument;
+   var hContainer = o._hContainer;
+   if(MO.Window.Browser.supportHtml5()){
+      hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.removeEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.removeEventListener('keydown', o.ohKeyDown, true);
+      hContainer.removeEventListener('keyup', o.ohKeyUp, true);
+      hContainer.removeEventListener('keypress', o.ohKeyPress, true);
+      hWindow.removeEventListener('orientationchange', o.ohOrientation);
+   }else{
+      hContainer.onmousedown = null;
+      hContainer.onmousemove = null;
+      hContainer.onmouseup = null;
+      hContainer.onmousewheel = null;
+      hContainer.onkeydown = null;
+      hContainer.onkeyup = null;
+      hContainer.onkeypress = null;
+      hWindow.onorientationchange = null;
+   }
+   hContainer.onresize = null;
+   hContainer.onselectstart = null;
+   hContainer.onunload = null;
+   o._localStorage = MO.RObject.dispose(o._localStorage);
+   o._sessionStorage = MO.RObject.dispose(o._sessionStorage);
+   o._hWindow = null;
+   o._hDocument = null;
+   o._hContainer = null;
+   o._eventMouse = MO.Lang.Object.dispose(o._eventMouse);
+   o._eventKey = MO.Lang.Object.dispose(o._eventKey);
+   o._eventResize = MO.Lang.Object.dispose(o._eventResize);
+   o._eventOrientation = MO.Lang.Object.dispose(o._eventOrientation);
+   o._eventUnload = MO.Lang.Object.dispose(o._eventUnload);
+}
+MO.RWindow = new MO.RWindow();
+MO.Window = MO.RWindow;
 MO.SBrowserCapability = function SBrowserCapability(){
    var o = this;
    o.optionProcess = false;
@@ -535,7 +841,7 @@ MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, te
    this.downloadBlob(fileName, blob);
 }
 MO.RBrowser = new MO.RBrowser();
-MO.Browser = MO.RBrowser;
+MO.Window.Browser = MO.RBrowser;
 MO.RBuilder = function RBuilder(){
    return this;
 }
@@ -766,7 +1072,7 @@ MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, 
    return r;
 }
 MO.RBuilder = new MO.RBuilder();
-MO.Builder = MO.RBuilder;
+MO.Window.Builder = MO.RBuilder;
 MO.RContext = function RContext(){
    var o = this;
    o._location   = null;
@@ -1314,6 +1620,96 @@ MO.RHtml.prototype.free = function RHtml_free(p){
    return null;
 }
 MO.RHtml = new MO.RHtml();
+MO.RKeyboard = function RKeyboard(){
+   var o = this;
+   o._status = new Array();
+   return o;
+}
+MO.RKeyboard.prototype.onKeyDown = function RKeyboard_onKeyDown(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = MO.EKeyStatus.Press;
+}
+MO.RKeyboard.prototype.onKeyUp = function RKeyboard_onKeyUp(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = MO.EKeyStatus.Normal;
+}
+MO.RKeyboard.prototype.construct = function RKeyboard_construct(){
+   var o = this;
+   var s = o._status;
+   for(var i = 0; i < 256; i++){
+      s[i] = MO.EKeyStatus.Normal;
+   }
+   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   MO.RWindow.lsnsKeyUp.register(o, o.onKeyUp);
+}
+MO.RKeyboard.prototype.isControlKey = function RKeyboard_isControlKey(p){
+   var s = MO.EKeyCode.ControlKeys;
+   for(var i = s.length - 1; i >= 0; i--){
+      if(s[i] == p){
+         return true;
+      }
+   }
+   return false;
+}
+MO.RKeyboard.prototype.isIntegerKey = function RKeyboard_isIntegerKey(c){
+   return MO.EKeyCode.integerCodes[c];
+}
+MO.RKeyboard.prototype.isFloatKey = function RKeyboard_isFloatKey(c){
+   return MO.EKeyCode.floatCodes[c];
+}
+MO.RKeyboard.prototype.isNumKey = function RKeyboard_isNumKey(c){
+   if(p >= 96 && p <= 105){
+      return true;
+   }
+   return false;
+}
+MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(p){
+   var o = this;
+   var v = o._status[p];
+   return v == MO.EKeyStatus.Press;
+}
+MO.RKeyboard.prototype.fixCase = function RKeyboard_fixCase(e, c){
+   if(e && c){
+      var k = e.keyCode;
+      if(ECase.Upper == c){
+         k = String.fromCharCode(k).toUpperCase().charCodeAt(0)
+      }else if(ECase.Lower == c){
+         k = String.fromCharCode(k).toLowerCase().charCodeAt(0)
+      }
+      e.keyCode = k;
+   }
+}
+MO.RKeyboard.prototype.fixPattern = function RKeyboard_fixPattern(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(!this.isControlKeyPress(k)){
+         if(!MO.Lang.String.isPattern(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+MO.RKeyboard.prototype.fixChars = function RKeyboard_fixChars(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(this.isNumKey(k)){
+    	  k = e.keyCode = e.keyCode - 48;
+      }
+      if(!this.isControlKeyPress(k)){
+         if(!MO.Lang.String.inChars(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            e.returnValue = false;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+MO.Window.Keyboard = new MO.RKeyboard();
 MO.RValue = function RValue(){
    var o = this;
    o.float1    = null;
@@ -1353,312 +1749,6 @@ MO.RValue.prototype.construct = function RValue_construct(){
    }
 }
 MO.RValue = new MO.RValue();
-MO.RWindow = function RWindow(){
-   var o = this;
-   o._optionSelect     = true;
-   o._statusEnable     = true;
-   o._disableDeep      = 0;
-   o._localStorage     = null;
-   o._sessionStorage   = null;
-   o._hWindow          = null;
-   o._hDocument        = null;
-   o._hContainer       = null;
-   o._eventMouse       = new MO.SMouseEvent();
-   o._eventKey         = new MO.SKeyboardEvent();
-   o._eventResize      = new MO.SResizeEvent();
-   o._eventOrientation = new MO.SEvent();
-   o._eventUnload      = new MO.SEvent();
-   o._hWindow          = null;
-   o._hDocument        = null;
-   o._hContainer       = null;
-   o._hDisablePanel    = null;
-   o._hDisableImage    = null;
-   o.lsnsLoad          = new MO.TListeners();
-   o.lsnsUnload        = new MO.TListeners();
-   o.lsnsMouseDown     = new MO.TListeners();
-   o.lsnsMouseUp       = new MO.TListeners();
-   o.lsnsMouseOver     = new MO.TListeners();
-   o.lsnsMouseMove     = new MO.TListeners();
-   o.lsnsMouseWheel    = new MO.TListeners();
-   o.lsnsKeyDown       = new MO.TListeners();
-   o.lsnsKeyUp         = new MO.TListeners();
-   o.lsnsKeyPress      = new MO.TListeners();
-   o.lsnsResize        = new MO.TListeners();
-   o.lsnsOrientation   = new MO.TListeners();
-   return o;
-}
-MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventMouse;
-   event.code = MO.EEvent.MouseDown;
-   event.attachEvent(hEvent);
-   o.lsnsMouseDown.process(event);
-}
-MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventMouse;
-   event.code = MO.EEvent.MouseMove;
-   event.attachEvent(hEvent);
-   o.lsnsMouseMove.process(event);
-}
-MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventMouse;
-   event.code = MO.EEvent.MouseUp;
-   event.attachEvent(hEvent);
-   o.lsnsMouseUp.process(event);
-}
-MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventMouse;
-   event.code = MO.EEvent.MouseWheel;
-   event.attachEvent(hEvent);
-   o.lsnsMouseWheel.process(event);
-}
-MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventKey;
-   event.attachEvent(hEvent);
-   o.lsnsKeyDown.process(event);
-}
-MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventKey;
-   event.attachEvent(hEvent);
-   o.lsnsKeyUp.process(event);
-}
-MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventKey;
-   event.attachEvent(hEvent);
-   o.lsnsKeyPress.process(event);
-}
-MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
-   var o = MO.RWindow;
-   if(!hEvent){
-      hEvent = o._hWindow.event;
-   }
-   var event = o._eventResize;
-   event.code = MO.EEvent.Resize;
-   event.attachEvent(hEvent);
-   o.lsnsResize.process(event);
-}
-MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.RWindow._optionSelect;
-}
-MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.RWindow;
-   MO.Browser.refreshOrientation();
-   var event = o._eventOrientation;
-   event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Browser.orientationCd();
-   o.lsnsOrientation.process(event);
-}
-MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.RWindow;
-   var event = o._eventUnload;
-   o.lsnsUnload.process(event);
-   MO.RWindow.dispose();
-}
-MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
-   var o = this;
-   var hWindow = o._hWindow = hHtml;
-   var hDocument = o._hDocument = hWindow.document;
-   var hContainer = o._hContainer = hDocument.body;
-   if(MO.Browser.supportHtml5()){
-      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
-      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
-      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
-      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
-      hContainer.addEventListener('keydown', o.ohKeyDown, true);
-      hContainer.addEventListener('keyup', o.ohKeyUp, true);
-      hContainer.addEventListener('keypress', o.ohKeyPress, true);
-      hWindow.addEventListener('orientationchange', o.ohOrientation);
-   }else{
-      hContainer.onmousedown = o.ohMouseDown;
-      hContainer.onmousemove = o.ohMouseMove;
-      hContainer.onmouseup = o.ohMouseUp;
-      hContainer.onmousewheel = o.ohMouseWheel;
-      hContainer.onkeydown = o.ohKeyDown;
-      hContainer.onkeyup = o.ohKeyUp;
-      hContainer.onkeypress = o.ohKeyPress;
-      hWindow.onorientationchange = o.ohOrientation;
-   }
-   hContainer.onresize = o.ohResize;
-   hContainer.onselectstart = o.ohSelect;
-   hContainer.onunload = o.ohUnload;
-}
-MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
-   return this._optionSelect;
-}
-MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
-   var o = this;
-   o._optionSelect = select;
-   if(MO.Browser.isBrowser(MO.EBrowser.FireFox)){
-      o._hContainer.style.MozUserSelect = select ? '' : 'none';
-   }
-}
-MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
-   top.document.title = MO.Lang.String.nvl(value);
-}
-MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
-   window.status = MO.Lang.String.nvl(value);
-}
-MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
-   var o = this;
-   switch(scopeCd){
-      case MO.EScope.Local:
-         var storage = o._localStorage;
-         if(!storage){
-            storage = o._localStorage = MO.Class.create(MO.FWindowStorage);
-            storage.link(window.localStorage);
-         }
-         return storage;
-      case MO.EScope.Session:
-         var storage = o._sessionStorage;
-         if(!storage){
-            storage = o._sessionStorage = MO.Class.create(MO.FWindowStorage);
-            storage.link(window.sessionStorage);
-         }
-         return storage;
-   }
-   throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
-}
-MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
-   var o = this;
-   var h = o._hDisablePanel;
-   if(!h){
-      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
-      h.style.zIndex = 5000;
-   }
-   var hi = o._hDisableImage;
-   if(!hi){
-      hi = o._hDisableImage = MO.RBuilder.appendIcon(h);
-      hi.src = MO.RResource.iconPath('control.RWindow_Loading');
-      hi.style.margin = o._hContainer.offsetHeight / 2;
-      hi.style.display = 'none';
-   }
-   MO.RHtml.visibleSet(hi, f);
-   return h;
-}
-MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
-   this._hContainer.disabled = true;
-}
-MO.RWindow.prototype.windowEnable = function RWindow_windowEnable(){
-   this._hContainer.disabled = false;
-}
-MO.RWindow.prototype.isEnable = function RWindow_isEnable(){
-   return this._statusEnable;
-}
-MO.RWindow.prototype.enable = function RWindow_enable(){
-   var o = this;
-   o._disableDeep--;
-   if(o._disableDeep == 0){
-      o.setEnable(true);
-   }
-}
-MO.RWindow.prototype.disable = function RWindow_disable(){
-   var o = this;
-   if(o._disableDeep == 0){
-      o.setEnable(false);
-   }
-   o._disableDeep++;
-}
-MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
-   var o = this;
-   var h = o.makeDisablePanel(f);
-   var st = h.style;
-   if(!v){
-      var hd = o._hDocument;
-      var s = o._hDisablePanel.style;
-      s.left = '0px';
-      s.top = '0px';
-      s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
-      s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
-      if(!h._linked){
-         o._hContainer.appendChild(h);
-         h._linked = true;
-      }
-   }else{
-      o.windowEnable();
-      if(h._linked){
-         o._hContainer.removeChild(h);
-         h._linked = false;
-      }
-   }
-   o._statusEnable = v;
-}
-MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
-   this._hContainer.appendChild(hPanel);
-}
-MO.RWindow.prototype.redirect = function RWindow_redirect(){
-}
-MO.RWindow.prototype.historyForward = function RWindow_historyForward(){
-}
-MO.RWindow.prototype.historyBack = function RWindow_historyBack(){
-}
-MO.RWindow.prototype.dispose = function RWindow_dispose(){
-   var o = this;
-   var hWindow = o._hWindow;
-   var hDocument = o._hDocument;
-   var hContainer = o._hContainer;
-   if(MO.Browser.supportHtml5()){
-      hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
-      hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
-      hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
-      hContainer.removeEventListener('mousewheel', o.ohMouseWheel, true);
-      hContainer.removeEventListener('keydown', o.ohKeyDown, true);
-      hContainer.removeEventListener('keyup', o.ohKeyUp, true);
-      hContainer.removeEventListener('keypress', o.ohKeyPress, true);
-      hWindow.removeEventListener('orientationchange', o.ohOrientation);
-   }else{
-      hContainer.onmousedown = null;
-      hContainer.onmousemove = null;
-      hContainer.onmouseup = null;
-      hContainer.onmousewheel = null;
-      hContainer.onkeydown = null;
-      hContainer.onkeyup = null;
-      hContainer.onkeypress = null;
-      hWindow.onorientationchange = null;
-   }
-   hContainer.onresize = null;
-   hContainer.onselectstart = null;
-   hContainer.onunload = null;
-   o._localStorage = MO.RObject.dispose(o._localStorage);
-   o._sessionStorage = MO.RObject.dispose(o._sessionStorage);
-   o._hWindow = null;
-   o._hDocument = null;
-   o._hContainer = null;
-   o._eventMouse = MO.Lang.Object.dispose(o._eventMouse);
-   o._eventKey = MO.Lang.Object.dispose(o._eventKey);
-   o._eventResize = MO.Lang.Object.dispose(o._eventResize);
-   o._eventOrientation = MO.Lang.Object.dispose(o._eventOrientation);
-   o._eventUnload = MO.Lang.Object.dispose(o._eventUnload);
-}
-MO.RWindow = new MO.RWindow();
-MO.Window = MO.RWindow;
 MO.RXml = function RXml(){
    var o = this;
    o.httpActiveX = false;

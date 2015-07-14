@@ -65,17 +65,17 @@ MO.RDesktop.prototype.application = function RDesktop_application(){
 MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    var o = this;
    // 构造浏览管理器
-   MO.Browser.construct();
+   MO.Window.Browser.construct();
    // 构造窗口管理器
-   MO.RWindow.connect(window);
+   MO.Window.connect(window);
    // 构造键盘管理器
-   MO.RKeyboard.construct();
+   MO.Window.Keyboard.construct();
    // 监听事件
-   MO.RWindow.lsnsMouseDown.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsMouseMove.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsMouseUp.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsResize.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsOrientation.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseDown.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseMove.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseUp.register(o, o.onProcessEvent);
+   MO.Window.lsnsResize.register(o, o.onProcessEvent);
+   MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    // 创建线程
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);

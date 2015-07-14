@@ -12,6 +12,8 @@ var MO = new function MoSpace(){
    o.Lang    = new function MoLangSpace(){return this;}
    o.Stream  = new function MoStreamSpace(){return this;}
    o.Core    = new function MoCoreSpace(){return this;}
+   o.Gui     = new function MoGuiSpace(){return this;}
+   o.Dui     = new function MoDuiSpace(){return this;}
    return o;
 }
 

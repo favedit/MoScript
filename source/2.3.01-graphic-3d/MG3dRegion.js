@@ -149,7 +149,7 @@ MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
    var projection = camera.projection();
    camera.updateFrustum();
    // 修正屏幕比例
-   var pixelRatio = MO.Browser.capability().pixelRatio;
+   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
    var ratioMatrix = o._ratioMatrix.identity();
    //ratioMatrix.setScaleAll(pixelRatio);
    //ratioMatrix.update();

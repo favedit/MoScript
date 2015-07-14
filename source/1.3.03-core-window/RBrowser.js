@@ -334,4 +334,4 @@ MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, te
 //..........................................................
 // 实例化内容
 MO.RBrowser = new MO.RBrowser();
-MO.Browser = MO.RBrowser;
+MO.Window.Browser = MO.RBrowser;

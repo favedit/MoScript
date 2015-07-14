@@ -553,4 +553,4 @@ MO.RBuilder.prototype.appendTableCell = function RBuilder_appendTableCell(p, s, 
 //..........................................................
 // 实例化内容
 MO.RBuilder = new MO.RBuilder();
-MO.Builder = MO.RBuilder;
+MO.Window.Builder = MO.RBuilder;

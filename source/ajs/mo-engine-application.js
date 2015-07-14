@@ -439,14 +439,14 @@ MO.RDesktop.prototype.application = function RDesktop_application(){
 }
 MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    var o = this;
-   MO.Browser.construct();
-   MO.RWindow.connect(window);
-   MO.RKeyboard.construct();
-   MO.RWindow.lsnsMouseDown.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsMouseMove.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsMouseUp.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsResize.register(o, o.onProcessEvent);
-   MO.RWindow.lsnsOrientation.register(o, o.onProcessEvent);
+   MO.Window.Browser.construct();
+   MO.Window.connect(window);
+   MO.Window.Keyboard.construct();
+   MO.Window.lsnsMouseDown.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseMove.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseUp.register(o, o.onProcessEvent);
+   MO.Window.lsnsResize.register(o, o.onProcessEvent);
+   MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
    thread.addProcessListener(o, o.process);

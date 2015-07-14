@@ -9,24 +9,7 @@ MO.RKeyboard = function RKeyboard(){
    var o = this;
    //..........................................................
    // @attribute
-   o._status      = new Array();
-   //..........................................................
-   // @event
-   o.onKeyDown    = MO.RKeyboard_onKeyDown;
-   o.onKeyUp      = MO.RKeyboard_onKeyUp;
-   //..........................................................
-   // @method
-   o.construct    = MO.RKeyboard_construct;
-   // @method
-   o.isControlKey = MO.RKeyboard_isControlKey;
-   o.isIntegerKey = MO.RKeyboard_isIntegerKey;
-   o.isFloatKey   = MO.RKeyboard_isFloatKey;
-   o.isNumKey     = MO.RKeyboard_isNumKey;
-   o.isPress      = MO.RKeyboard_isPress;
-   // @method
-   o.fixCase      = MO.RKeyboard_fixCase;
-   o.fixPattern   = MO.RKeyboard_fixPattern;
-   o.fixChars     = MO.RKeyboard_fixChars;
+   o._status = new Array();
    return o;
 }
 
@@ -36,7 +19,7 @@ MO.RKeyboard = function RKeyboard(){
 // @method
 // @param p:event:SEvent 事件
 //===========================================================
-MO.RKeyboard_onKeyDown = function RKeyboard_onKeyDown(p){
+MO.RKeyboard.prototype.onKeyDown = function RKeyboard_onKeyDown(p){
    var o = this;
    var c = p.keyCode;
    o._status[c] = MO.EKeyStatus.Press;
@@ -48,7 +31,7 @@ MO.RKeyboard_onKeyDown = function RKeyboard_onKeyDown(p){
 // @method
 // @param p:event:SEvent 事件
 //===========================================================
-MO.RKeyboard_onKeyUp = function RKeyboard_onKeyUp(p){
+MO.RKeyboard.prototype.onKeyUp = function RKeyboard_onKeyUp(p){
    var o = this;
    var c = p.keyCode;
    o._status[c] = MO.EKeyStatus.Normal;
@@ -59,7 +42,7 @@ MO.RKeyboard_onKeyUp = function RKeyboard_onKeyUp(p){
 //
 // @method
 //===========================================================
-MO.RKeyboard_construct = function RKeyboard_construct(){
+MO.RKeyboard.prototype.construct = function RKeyboard_construct(){
    var o = this;
    // 设置状态
    var s = o._status;
@@ -78,7 +61,7 @@ MO.RKeyboard_construct = function RKeyboard_construct(){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否
 //===========================================================
-MO.RKeyboard_isControlKey = function RKeyboard_isControlKey(p){
+MO.RKeyboard.prototype.isControlKey = function RKeyboard_isControlKey(p){
    var s = MO.EKeyCode.ControlKeys;
    for(var i = s.length - 1; i >= 0; i--){
       if(s[i] == p){
@@ -95,7 +78,7 @@ MO.RKeyboard_isControlKey = function RKeyboard_isControlKey(p){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否
 //===========================================================
-MO.RKeyboard_isIntegerKey = function RKeyboard_isIntegerKey(c){
+MO.RKeyboard.prototype.isIntegerKey = function RKeyboard_isIntegerKey(c){
    return MO.EKeyCode.integerCodes[c];
 }
 
@@ -106,7 +89,7 @@ MO.RKeyboard_isIntegerKey = function RKeyboard_isIntegerKey(c){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否
 //===========================================================
-MO.RKeyboard_isFloatKey = function RKeyboard_isFloatKey(c){
+MO.RKeyboard.prototype.isFloatKey = function RKeyboard_isFloatKey(c){
    return MO.EKeyCode.floatCodes[c];
 }
 
@@ -117,7 +100,7 @@ MO.RKeyboard_isFloatKey = function RKeyboard_isFloatKey(c){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否
 //===========================================================
-MO.RKeyboard_isNumKey = function RKeyboard_isNumKey(c){
+MO.RKeyboard.prototype.isNumKey = function RKeyboard_isNumKey(c){
    if(p >= 96 && p <= 105){
       return true;
    }
@@ -131,7 +114,7 @@ MO.RKeyboard_isNumKey = function RKeyboard_isNumKey(c){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否按下
 //===========================================================
-MO.RKeyboard_isPress = function RKeyboard_isPress(p){
+MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(p){
    var o = this;
    // 设置状态
    var v = o._status[p];
@@ -146,7 +129,7 @@ MO.RKeyboard_isPress = function RKeyboard_isPress(p){
 // @param c:case:ECharCase 大小写类型
 // @return String 修正后的字符
 //===========================================================
-MO.RKeyboard_fixCase = function RKeyboard_fixCase(e, c){
+MO.RKeyboard.prototype.fixCase = function RKeyboard_fixCase(e, c){
    if(e && c){
       var k = e.keyCode;
       if(ECase.Upper == c){
@@ -166,7 +149,7 @@ MO.RKeyboard_fixCase = function RKeyboard_fixCase(e, c){
 // @param c:case:ECharCase 大小写类型
 // @return String 修正后的字符
 //===========================================================
-MO.RKeyboard_fixPattern = function RKeyboard_fixPattern(e, p){
+MO.RKeyboard.prototype.fixPattern = function RKeyboard_fixPattern(e, p){
    if(p){
       var k = e.keyCode;
       if(!this.isControlKeyPress(k)){
@@ -187,7 +170,7 @@ MO.RKeyboard_fixPattern = function RKeyboard_fixPattern(e, p){
 // @param c:case:ECharCase 大小写类型
 // @return String 修正后的字符
 //===========================================================
-MO.RKeyboard_fixChars = function RKeyboard_fixChars(e, p){
+MO.RKeyboard.prototype.fixChars = function RKeyboard_fixChars(e, p){
    if(p){
       var k = e.keyCode;
       if(this.isNumKey(k)){
@@ -205,4 +188,4 @@ MO.RKeyboard_fixChars = function RKeyboard_fixChars(e, p){
 }
 //..........................................................
 // 实例化内容
-MO.RKeyboard = new MO.RKeyboard();
+MO.Window.Keyboard = new MO.RKeyboard();

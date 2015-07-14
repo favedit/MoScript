@@ -4655,7 +4655,7 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    var faceLayer = o._activeStage.faceLayer();
-   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
@@ -4749,10 +4749,6 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    o.fixMatrix(o._investment.display().matrix());
-   var frame = o._logoBar;
-   if(MO.RBrowser.isOrientationVertical()){
-   }else{
-   }
    var control = o._southSea;
    control.setDockCd(MO.EGuiDock.RightBottom);
    control.setRight(710);
@@ -5464,14 +5460,14 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
       return;
    }
    o._screenSize.set(width, height);
-   var pixelRatio = MO.Browser.capability().pixelRatio;
+   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
    width *= pixelRatio;
    height *= pixelRatio;
    var widthRate = 1;
    var heightRate = 1;
    var logicSize = o._logicSize;
-   if(MO.Browser.isOrientationHorizontal()){
+   if(MO.Window.Browser.isOrientationHorizontal()){
       widthRate = width / logicSize.width;
       heightRate = height / logicSize.height;
       o._calculateSize.set(logicSize.width, logicSize.height);

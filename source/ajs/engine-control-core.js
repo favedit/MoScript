@@ -253,54 +253,52 @@ with(MO){
       o.__base.FConsole.construct.call(o);
    }
 }
-with(MO){
-   MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd     = EScope.Global;
-      o._serviceCode = 'cloud.describe.frame';
-      o._defines     = RClass.register(o, new AGetter('_defines'));
-      o.construct    = FGuiFrameDescribeConsole_construct;
-      o.load         = FGuiFrameDescribeConsole_load;
-      o.dispose      = FGuiFrameDescribeConsole_dispose;
-      return o;
+MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd     = MO.EScope.Global;
+   o._serviceCode = 'cloud.describe.frame';
+   o._defines     = MO.Class.register(o, new MO.AGetter('_defines'));
+   o.construct    = MO.FGuiFrameDescribeConsole_construct;
+   o.load         = MO.FGuiFrameDescribeConsole_load;
+   o.dispose      = MO.FGuiFrameDescribeConsole_dispose;
+   return o;
+}
+MO.FGuiFrameDescribeConsole_construct = function FGuiFrameDescribeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._defines = new MO.TDictionary();
+}
+MO.FGuiFrameDescribeConsole_load = function FGuiFrameDescribeConsole_load(name){
+   var o = this;
+   var defines = o._defines;
+   var xconfig = defines.get(name);
+   if(xconfig){
+      return xconfig;
    }
-   MO.FGuiFrameDescribeConsole_construct = function FGuiFrameDescribeConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._defines = new TDictionary();
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'query');
+   var xframe = xroot.create('Frame');
+   xframe.set('name', name);
+   var url = MO.Window.Browser.hostPath('/' + o._serviceCode + '.ws');
+   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xframes = xresult.nodes();
+   var count = xframes.count();
+   for(var i = 0; i < count; i++){
+      var xframe = xframes.at(i);
+      var frameName = xframe.get('name');
+      defines.set(frameName, xframe);
    }
-   MO.FGuiFrameDescribeConsole_load = function FGuiFrameDescribeConsole_load(name){
-      var o = this;
-      var defines = o._defines;
-      var xconfig = defines.get(name);
-      if(xconfig){
-         return xconfig;
-      }
-      var xdocument = new TXmlDocument();
-      var xroot = xdocument.root();
-      xroot.set('action', 'query');
-      var xframe = xroot.create('Frame');
-      xframe.set('name', name);
-      var url = MO.Browser.hostPath('/' + o._serviceCode + '.ws');
-      var xresult = RConsole.find(FXmlConsole).send(url, xdocument);
-      var xframes = xresult.nodes();
-      var count = xframes.count();
-      for(var i = 0; i < count; i++){
-         var xframe = xframes.at(i);
-         var frameName = xframe.get('name');
-         defines.set(frameName, xframe);
-      }
-      var xframe = defines.get(name);
-      if(!xframe){
-         throw new TError(o, 'Unknown frame. (name={1})', name);
-      }
-      return xframe;
+   var xframe = defines.get(name);
+   if(!xframe){
+      throw new MO.TError(o, 'Unknown frame. (name={1})', name);
    }
-   MO.FGuiFrameDescribeConsole_dispose = function FGuiFrameDescribeConsole_dispose(){
-      var o = this;
-      o._defines = RObject.dispose(o._defines, true);
-      o.__base.FConsole.dispose.call(o);
-   }
+   return xframe;
+}
+MO.FGuiFrameDescribeConsole_dispose = function FGuiFrameDescribeConsole_dispose(){
+   var o = this;
+   o._defines = MO.Lang.Object.dispose(o._defines, true);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
    o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
