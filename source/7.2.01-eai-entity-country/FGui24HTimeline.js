@@ -171,7 +171,7 @@ with (MO) {
       startTime.refresh();
       // 曲线
       var data = o._data;
-      if (!data) {
+      if (!data || data.length < 1) {
          return;
       }
       // 找到最大
