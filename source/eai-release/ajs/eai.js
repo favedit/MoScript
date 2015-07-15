@@ -1615,7 +1615,7 @@ with(MO){
          }
       }
       if (!o._enterSEPlaying) {
-         o._mapEnterSE.start();
+         o._mapEnterSE.start(0);
          o._enterSEPlaying = true;
       }
       var idxCap = timePassed / o.blockInterval();
@@ -3045,14 +3045,14 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    drawPosition += 60
    graphic.setFont(o._rowFontStyle);
    var tableTop = top + o._rankStart;
-   graphic.drawGridImage(o._rankLineImage, left + 6, o._rankStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop - 6, 167, 40);
+   graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
+   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 167, 40);
    var rankEntity = o._rank;
    if(rankEntity){
       var tableText = '';
       var tableTextWidth = 0;
       var count = rankEntity.count();
-      tableTop += 80;
+      tableTop += 90;
       for(var i = 0; i < count; i++) {
          var entity = rankEntity.at(i);
          o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
@@ -3133,32 +3133,39 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
    o._headFontStyle = 'bold 36px Microsoft YaHei';
-   if(MO.Runtime.isPlatformMobile()){
-      o._tableCount = 12;
-      o._headStart = 120;
-      o._headTextTop = 38;
-      o._headHeight = 54;
-      o._rankStart = 220;
-      o._rankHeight = 60;
-      o._rankIconStart = 30;
-      o._rankRowUp = 46;
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if(isVertical){
+      o._tableCount = 11;
+      o._rankStart = 100;
+      o._rankTitleStart = -5;
+      o._rankHeight = 249;
+      o._rankRowHeight = 50;
+      o._rankIconStart = 22;
+      o._rankTextStart = 8;
+      o._rankRowUp = 36;
       o._rankRowDown = 68;
-      o._rowStart = 400;
+      o._headStart = 352;
+      o._headTextTop = 37;
+      o._headHeight = 54;
+      o._rowStart = 418;
+      o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
       o._tableCount = 19;
-      o._rankStart = 120;
+      o._rankStart = 110;
+      o._rankTitleStart = 0;
       o._rankHeight = 219;
       o._rankRowHeight = 40;
       o._rankIconStart = 25;
+      o._rankTextStart = 0;
       o._rankRowUp = 32;
       o._rankRowDown = 51;
       o._headStart = 336;
       o._headTextTop = 27;
       o._headHeight = 40;
       o._rowFontStyle = '24px Microsoft YaHei';
-      o._rowStart = 382;
+      o._rowStart = 384;
       o._rowHeight = 36;
    }
 }
@@ -3197,6 +3204,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
          graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
       }
    }
+   y += o._rankTextStart;
    var textWidth = 0;
    if(!flag){
       o._currentDate.parse(entity.date());
@@ -4784,18 +4792,12 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
 }
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
-   if(MO.Runtime.isPlatformMobile()){
-      if(MO.Window.Browser.isOrientationVertical()){
-         matrix.tx = -14.58;
-         matrix.ty = -2.2;
-         matrix.tz = 0;
-         matrix.setScale(0.14, 0.16, 0.14);
-      }else{
-         matrix.tx = -36.8;
-         matrix.ty = -11.6;
-         matrix.tz = 0;
-         matrix.setScale(0.3, 0.33, 0.3);
-      }
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if(isVertical){
+      matrix.tx = -14.58;
+      matrix.ty = -1.9;
+      matrix.tz = 0;
+      matrix.setScale(0.14, 0.16, 0.14);
    }else{
       matrix.tx = -38.6;
       matrix.ty = -12.8;
@@ -4807,18 +4809,25 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
 MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(){
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
+   var isVertical = MO.Window.Browser.isOrientationVertical()
    o.fixMatrix(o._investment.display().matrix());
    var control = o._southSea;
-   control.setDockCd(MO.EUiDock.RightBottom);
-   control.setRight(710);
-   control.setBottom(220);
+   if(isVertical){
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(100);
+   }else{
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(710);
+      control.setBottom(260);
+   }
    var timeline = o._timeline;
-   if(MO.Window.Browser.isOrientationVertical()){
+   if(isVertical){
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
       timeline.setRight(10);
-      timeline.setBottom(830);
+      timeline.setBottom(920);
       timeline.setHeight(250);
    }else{
       timeline.setDockCd(MO.EUiDock.Bottom);
@@ -4829,14 +4838,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
-   if(MO.Window.Browser.isOrientationVertical()){
+   if(isVertical){
       liveTable.setDockCd(MO.EUiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
       liveTable.setWidth(1060);
-      liveTable.setHeight(800);
+      liveTable.setHeight(900);
    }else{
       liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
@@ -5208,7 +5217,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
+   o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;

@@ -232,7 +232,7 @@ with(MO){
       }
 
       if (!o._enterSEPlaying) {
-         o._mapEnterSE.start();
+         o._mapEnterSE.start(0);
          o._enterSEPlaying = true;
       }
       

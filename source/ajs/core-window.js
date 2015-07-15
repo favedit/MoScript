@@ -139,10 +139,10 @@ MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.RWindow;
-   MO.Browser.refreshOrientation();
+   MO.Window.Browser.refreshOrientation();
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Browser.orientationCd();
+   event.orientationCd = MO.Window.Browser.orientationCd();
    o.lsnsOrientation.process(event);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){

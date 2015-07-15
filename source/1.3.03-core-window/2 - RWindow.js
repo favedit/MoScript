@@ -252,11 +252,11 @@ MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.RWindow;
    // 刷新方向
-   MO.Browser.refreshOrientation();
+   MO.Window.Browser.refreshOrientation();
    // 分发消息
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Browser.orientationCd();
+   event.orientationCd = MO.Window.Browser.orientationCd();
    o.lsnsOrientation.process(event);
 }
 

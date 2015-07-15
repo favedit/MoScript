@@ -22,7 +22,6 @@ MO.FAudioContextConsole = function FAudioContextConsole(o) {
    o.onLoad          = MO.FAudioContextConsole_onLoad;
    o.onError         = MO.FAudioContextConsole_onError;
    // @method
-
    return o;
 }
 
@@ -34,17 +33,19 @@ MO.FAudioContextConsole = function FAudioContextConsole(o) {
 MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    var o = this;
    o.__base.FConsole.construct.call(o);
-
-   try {
-      o._context = new AudioContext();
-   } catch (e) {
-      try {
-         o._context = new webkitAudioContext();
-      } catch (e) {
-         alert('Current Webbrowser does not support Web Audio API.');
-      }
-   }
+   // 设置属性
    o._audioBuffers = new MO.TDictionary();
+   // 创建环境
+   var context = null;
+   if(window.AudioContext){
+      context = new AudioContext();
+   }else if(window.webkitAudioContext){
+      context = new webkitAudioContext();
+   }
+   if(!context){
+      throw new MO.TError(o, 'Invalid audio context.');
+   }
+   o._context = context;
 }
 
 //==========================================================
@@ -90,9 +91,7 @@ MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
 //==========================================================
 MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, successCallback) {
    var o = this;
-
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-
    var conn = MO.RConsole.find(MO.FHttpConsole).sendAsync(url);
    conn.addLoadListener(o, o.onLoad);
    conn.uri = uri;
@@ -114,7 +113,7 @@ MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
       if (conn.successCallback) {
          conn.successCallback.call(conn.owner, conn.uri);
       }
-   },o.onError);
+   }, o.onError);
 }
 
 //==========================================================

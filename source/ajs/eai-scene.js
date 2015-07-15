@@ -939,18 +939,12 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
 }
 MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    var o = this;
-   if(MO.Runtime.isPlatformMobile()){
-      if(MO.Window.Browser.isOrientationVertical()){
-         matrix.tx = -14.58;
-         matrix.ty = -2.2;
-         matrix.tz = 0;
-         matrix.setScale(0.14, 0.16, 0.14);
-      }else{
-         matrix.tx = -36.8;
-         matrix.ty = -11.6;
-         matrix.tz = 0;
-         matrix.setScale(0.3, 0.33, 0.3);
-      }
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if(isVertical){
+      matrix.tx = -14.58;
+      matrix.ty = -1.9;
+      matrix.tz = 0;
+      matrix.setScale(0.14, 0.16, 0.14);
    }else{
       matrix.tx = -38.6;
       matrix.ty = -12.8;
@@ -962,18 +956,25 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
 MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(){
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
+   var isVertical = MO.Window.Browser.isOrientationVertical()
    o.fixMatrix(o._investment.display().matrix());
    var control = o._southSea;
-   control.setDockCd(MO.EUiDock.RightBottom);
-   control.setRight(710);
-   control.setBottom(220);
+   if(isVertical){
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(100);
+   }else{
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(710);
+      control.setBottom(260);
+   }
    var timeline = o._timeline;
-   if(MO.Window.Browser.isOrientationVertical()){
+   if(isVertical){
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
       timeline.setLeft(10);
       timeline.setRight(10);
-      timeline.setBottom(830);
+      timeline.setBottom(920);
       timeline.setHeight(250);
    }else{
       timeline.setDockCd(MO.EUiDock.Bottom);
@@ -984,14 +985,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
-   if(MO.Window.Browser.isOrientationVertical()){
+   if(isVertical){
       liveTable.setDockCd(MO.EUiDock.Bottom);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
       liveTable.setLeft(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
       liveTable.setWidth(1060);
-      liveTable.setHeight(800);
+      liveTable.setHeight(900);
    }else{
       liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
@@ -1363,7 +1364,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
+   o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;

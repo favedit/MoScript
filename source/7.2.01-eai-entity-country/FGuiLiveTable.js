@@ -106,14 +106,14 @@ MO.FGuiLiveTable_onPaintBegin = function FGuiLiveTable_onPaintBegin(event) {
    graphic.setFont(o._rowFontStyle);
    // 绘制前3名
    var tableTop = top + o._rankStart;
-   graphic.drawGridImage(o._rankLineImage, left + 6, o._rankStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop - 6, 167, 40);
+   graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
+   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 167, 40);
    var rankEntity = o._rank;
    if(rankEntity){
       var tableText = '';
       var tableTextWidth = 0;
       var count = rankEntity.count();
-      tableTop += 80;
+      tableTop += 90;
       for(var i = 0; i < count; i++) {
          var entity = rankEntity.at(i);
          o.drawRow(graphic, entity, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
@@ -226,32 +226,39 @@ MO.FGuiLiveTable_setup = function FGuiLiveTable_setup() {
    //..........................................................
    // 设置数据
    o._headFontStyle = 'bold 36px Microsoft YaHei';
-   if(MO.Runtime.isPlatformMobile()){
-      o._tableCount = 12;
-      o._headStart = 120;
-      o._headTextTop = 38;
-      o._headHeight = 54;
-      o._rankStart = 220;
-      o._rankHeight = 60;
-      o._rankIconStart = 30;
-      o._rankRowUp = 46;
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if(isVertical){
+      o._tableCount = 11;
+      o._rankStart = 100;
+      o._rankTitleStart = -5;
+      o._rankHeight = 249;
+      o._rankRowHeight = 50;
+      o._rankIconStart = 22;
+      o._rankTextStart = 8;
+      o._rankRowUp = 36;
       o._rankRowDown = 68;
-      o._rowStart = 400;
+      o._headStart = 352;
+      o._headTextTop = 37;
+      o._headHeight = 54;
+      o._rowStart = 418;
+      o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
       o._rowHeight = 46;
    }else{
       o._tableCount = 19;
-      o._rankStart = 120;
+      o._rankStart = 110;
+      o._rankTitleStart = 0;
       o._rankHeight = 219;
       o._rankRowHeight = 40;
       o._rankIconStart = 25;
+      o._rankTextStart = 0;
       o._rankRowUp = 32;
       o._rankRowDown = 51;
       o._headStart = 336;
       o._headTextTop = 27;
       o._headHeight = 40;
       o._rowFontStyle = '24px Microsoft YaHei';
-      o._rowStart = 382;
+      o._rowStart = 384;
       o._rowHeight = 36;
    }
 }
@@ -307,6 +314,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
          graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
       }
    }
+   y += o._rankTextStart;
    // 绘制时间
    var textWidth = 0;
    if(!flag){
