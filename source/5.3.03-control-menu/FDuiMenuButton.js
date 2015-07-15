@@ -17,7 +17,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiMenuButton = function FUiMenuButton(o){
-      o = RClass.inherits(this, o, FUiControl, MUiMenuButton, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MUiMenuButton, MListenerClick);
       //..........................................................
       // @property
       o._icon            = RClass.register(o, new APtyString('_icon'));
@@ -84,7 +84,7 @@ with(MO){
    //==========================================================
    MO.FUiMenuButton_onBuild = function FUiMenuButton_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       // 设置面板
       var h = o._hPanel;
       o.attachEvent('onMouseDown', h);
@@ -234,7 +234,7 @@ with(MO){
    //==========================================================
    MO.FUiMenuButton_setEnable = function FUiMenuButton_setEnable(p){
       var o = this;
-      o.__base.FUiControl.setEnable.call(o, p);
+      o.__base.FDuiControl.setEnable.call(o, p);
       // 允许处理
       if(p){
          o._hPanel.className = o.style('Button');
@@ -286,6 +286,6 @@ with(MO){
       o._hSpacePanel = RHtml.free(o._hSpacePanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);
       // 父处理
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

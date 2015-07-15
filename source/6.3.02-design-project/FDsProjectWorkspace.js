@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @property
       o._frameName            = 'design3d.project.Workspace';
@@ -69,7 +69,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectWorkspace_onBuilded = function FDsProjectWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       //..........................................................
       // 设置工具区
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
@@ -246,7 +246,7 @@ with(MO){
    MO.FDsProjectWorkspace_construct = function FDsProjectWorkspace_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       // 设置属性
       o._frameSets = new TDictionary();
       o._propertyFrames = new TDictionary();
@@ -370,7 +370,7 @@ with(MO){
    MO.FDsProjectWorkspace_dispose = function FDsProjectWorkspace_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       // 设置属性
       o._propertyFrames.dispose();
       o._propertyFrames = null;

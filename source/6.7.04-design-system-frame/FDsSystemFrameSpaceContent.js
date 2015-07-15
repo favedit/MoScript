@@ -5,7 +5,7 @@
 // @history 150130
 //==========================================================
 MO.FDsSystemFrameSpaceContent = function FDsSystemFrameSpaceContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiControl, MO.MGraphicObject);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MGraphicObject);
    //..........................................................
    // @attribute
    o._scaleRate          = 1;
@@ -175,7 +175,7 @@ MO.FDsSystemFrameSpaceContent_onMouseCaptureStop = function FDsSystemFrameSpaceC
 //==========================================================
 MO.FDsSystemFrameSpaceContent_onResize = function FDsSystemFrameSpaceContent_onResize(){
    var o = this;
-   o.__base.FUiControl.onResize.call(o, event);
+   o.__base.FDuiControl.onResize.call(o, event);
    // 获得相机信息
    var c = o._graphicContext;
    var cs = c.size();
@@ -276,7 +276,7 @@ MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_on
 //==========================================================
 MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
    var o = this;
-   o.__base.FUiControl.oeResize.call(o, event);
+   o.__base.FDuiControl.oeResize.call(o, event);
    return;
    // 获得大小
    var hp = o._hPanel;
@@ -302,7 +302,7 @@ MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeR
 //==========================================================
 MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFrame(event){
    var o = this;
-   o.__base.FUiControl.oeFrame.call(o, event);
+   o.__base.FDuiControl.oeFrame.call(o, event);
    // 界面处理
    o._guiManager.process();
    // 设置范围
@@ -316,7 +316,7 @@ MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFr
 //==========================================================
 MO.FDsSystemFrameSpaceContent_construct = function FDsSystemFrameSpaceContent_construct(){
    var o = this;
-   o.__base.FUiControl.construct.call(o);
+   o.__base.FDuiControl.construct.call(o);
    o._rotation = new MO.SVector3();
    o._activeControls = new MO.TObjects();
    o._capturePosition = new MO.SPoint2();
@@ -342,7 +342,7 @@ MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(
    guiManager.setCanvas(desktop.canvas2d());
    guiManager.setup();
    return;
-   o.__base.FUiControl.build.call(o, hPanel);
+   o.__base.FDuiControl.build.call(o, hPanel);
    // 设置显示
    o.setPanel(hPanel);
    // 创建舞台
@@ -368,7 +368,7 @@ MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(
 // <T>选择控件。</T>
 //
 // @method
-// @param control:FUiControl 控件
+// @param control:FDuiControl 控件
 //==========================================================
 MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
    var o = this;
@@ -408,5 +408,5 @@ MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_disp
    // 释放旋转
    o._rotation = MO.Lang.Obejct.dispose(o._rotation)
    // 父处理
-   o.__base.FUiControl.dispose.call(o);
+   o.__base.FDuiControl.dispose.call(o);
 }

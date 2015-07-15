@@ -1,6 +1,6 @@
 with(MO){
    MO.FUiPageControl = function FUiPageControl(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._sizeCd          = EUiSize.Horizontal;
       o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
       o._styleTitlePanel = RClass.register(o, new AStyle('_styleTitlePanel'));
@@ -36,7 +36,7 @@ with(MO){
    }
    MO.FUiPageControl_onBuild = function FUiPageControl_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       var h = o._hPanel;
       var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
       var hf = o.hTitleForm = RBuilder.appendTable(hc, o.styleName('TitleForm'));
@@ -58,7 +58,7 @@ with(MO){
    }
    MO.FUiPageControl_oeRefresh = function FUiPageControl_oeRefresh(event){
       var o = this;
-      var r = o.__base.FUiContainer.oeRefresh.call(o, event);
+      var r = o.__base.FDuiContainer.oeRefresh.call(o, event);
       if(event.isBefore()){
          if(o._sheets.count()){
             if(o._activeSheet){
@@ -75,7 +75,7 @@ with(MO){
    }
    MO.FUiPageControl_construct = function FUiPageControl_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._sheets = new TDictionary();
    }
    MO.FUiPageControl_appendChild = function FUiPageControl_appendChild(control){
@@ -159,11 +159,11 @@ with(MO){
          component._index = sheets.count();
          sheets.set(component.name(), component);
       }
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
    }
    MO.FUiPageControl_dispose = function FUiPageControl_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
@@ -305,7 +305,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTabBar = function FUiTabBar(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       o._sizeCd          = EUiSize.Horizontal;
       o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
       o._styleTitlePanel = RClass.register(o, new AStyle('_styleTitlePanel'));
@@ -343,7 +343,7 @@ with(MO){
    }
    MO.FUiTabBar_onBuild = function FUiTabBar_onBuild(p){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, p);
+      o.__base.FDuiContainer.onBuild.call(o, p);
       var h = o._hPanel;
       var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
       hc.vAlign = 'bottom';
@@ -366,7 +366,7 @@ with(MO){
    }
    MO.FUiTabBar_oeRefresh = function FUiTabBar_oeRefresh(p){
       var o = this;
-      var r = o.__base.FUiContainer.oeRefresh.call(o, p);
+      var r = o.__base.FDuiContainer.oeRefresh.call(o, p);
       if(p.isBefore()){
          if(o._buttons.count()){
             if(o._activeButton){
@@ -383,7 +383,7 @@ with(MO){
    }
    MO.FUiTabBar_construct = function FUiTabBar_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._buttons = new TDictionary();
    }
    MO.FUiTabBar_activeButton = function FUiTabBar_activeButton(){
@@ -468,16 +468,16 @@ with(MO){
          component._index = buttons.count();
          buttons.set(component.name(), component);
       }
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
    }
    MO.FUiTabBar_dispose = function FUiTabBar_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiTabButton = function FUiTabButton(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       o._icon              = RClass.register(o, new APtyString('_icon'));
       o._formName          = RClass.register(o, new APtyString('_formName'));
       o._formLink          = RClass.register(o, new APtyString('_formLink'));
@@ -550,7 +550,7 @@ with(MO){
    }
    MO.FUiTabButton_construct = function FUiTabButton_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       o.lsnsSelect = new TListeners();
    }
    MO.FUiTabButton_innerSelect = function FUiTabButton_innerSelect(p){
@@ -603,7 +603,7 @@ with(MO){
       o._hBottom = RMemory.free(o._hBottom);
       o._hBottomR = RMemory.free(o._hBottomR);
       o._hRight = RMemory.free(o._hRight);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
    MO.FUiTabButton_innerDump = function FUiTabButton_innerDump(s, l){
       var o = this;

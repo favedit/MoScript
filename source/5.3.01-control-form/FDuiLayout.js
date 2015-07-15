@@ -20,7 +20,7 @@ with(MO){
    // @version 150122
    //==========================================================
    MO.FUiLayout = function FUiLayout(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
       o._styleForm      = RClass.register(o, new AStyle('_styleForm', 'Form'));
@@ -103,7 +103,7 @@ with(MO){
    //==========================================================
    MO.FUiLayout_oeDesign = function FUiLayout_oeDesign(p){
       var o = this;
-      o.__base.FUiContainer.oeDesign.call(o, p);
+      o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
          switch(p.layoutCd){
             case EDesign.Move:
@@ -129,7 +129,7 @@ with(MO){
    //==========================================================
    MO.FUiLayout_oeResize = function FUiLayout_oeResize(p){
       var o = this;
-      o.__base.FUiContainer.oeResize.call(o, p);
+      o.__base.FDuiContainer.oeResize.call(o, p);
       if(p.isAfter()){
          o.resize();
       }
@@ -143,7 +143,7 @@ with(MO){
    //==========================================================
    MO.FUiLayout_oeRefresh = function FUiLayout_oeRefresh(p){
       var o = this;
-      o.__base.FUiContainer.oeDesign.call(o, p);
+      o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
          o.resize();
       }
@@ -427,6 +427,6 @@ with(MO){
       o._hPanelTable = null;
       o._hPanel = null;
       o._hContainer = null;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

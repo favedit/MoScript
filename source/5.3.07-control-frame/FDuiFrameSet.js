@@ -7,7 +7,7 @@ with(MO){
    // @version 150120
    //==========================================================
    MO.FUiFrameSet = function FUiFrameSet(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property String 提示信息
       o._sizeCd       = EUiSize.Fill;
@@ -55,7 +55,7 @@ with(MO){
    //==========================================================
    MO.FUiFrameSet_construct = function FUiFrameSet_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._frames = new TObjects();
    }
 
@@ -128,7 +128,7 @@ with(MO){
    // <T>增加一个控件。</T>
    //
    // @method
-   // @param p:control:FUiControl 控件
+   // @param p:control:FDuiControl 控件
    //==========================================================
    MO.FUiFrameSet_appendChild = function FUiFrameSet_appendChild(p){
       var o = this;
@@ -140,7 +140,7 @@ with(MO){
          o.appendSpliter(p);
          return;
       }
-      o.__base.FUiContainer.appendChild.call(o, p);
+      o.__base.FDuiContainer.appendChild.call(o, p);
    }
 
    //==========================================================
@@ -151,6 +151,6 @@ with(MO){
    MO.FUiFrameSet_dispose = function FUiFrameSet_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

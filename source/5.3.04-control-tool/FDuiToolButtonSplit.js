@@ -25,7 +25,7 @@ with(MO){
    //==========================================================
    MO.FUiToolButtonSplit_onBuild = function FUiToolButtonSplit_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.className = o.styleName('Panel');
    }
 }

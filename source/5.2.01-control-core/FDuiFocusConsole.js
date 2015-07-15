@@ -271,7 +271,7 @@ with(MO){
    //==========================================================
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
-      var c = RHtml.searchLinker(p, FUiControl);
+      var c = RHtml.searchLinker(p, FDuiControl);
       MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){

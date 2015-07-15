@@ -21,7 +21,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FUiTabButton = function FUiTabButton(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @property
       o._icon              = RClass.register(o, new APtyString('_icon'));
@@ -148,7 +148,7 @@ with(MO){
    MO.FUiTabButton_construct = function FUiTabButton_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       // 设置属性
       o.lsnsSelect = new TListeners();
    }
@@ -241,7 +241,7 @@ with(MO){
       o._hBottomR = RMemory.free(o._hBottomR);
       o._hRight = RMemory.free(o._hRight);
       // 父处理
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 
    //==========================================================

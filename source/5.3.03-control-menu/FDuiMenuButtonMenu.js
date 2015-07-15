@@ -7,7 +7,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiMenuButtonMenu = function FUiMenuButtonMenu(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       // Property
       o._action       = RClass.register(o, new APtyString('action', null));
       o._target       = RClass.register(o, new APtyString('target', null));
@@ -44,7 +44,7 @@ with(MO){
    // ------------------------------------------------------------
    MO.FUiMenuButtonMenu_oeBuild = function FUiMenuButtonMenu_oeBuild(event){
       var o = this;
-      o.base.FUiControl.oeBuild.call(o, event);
+      o.base.FDuiControl.oeBuild.call(o, event);
       var h = o.hPanel;
       o.hButton = RBuilder.appendTable(o.hPanel, o.style('Button'));
       o.linkClickEvent(o.hButton);
@@ -66,7 +66,7 @@ with(MO){
    // ------------------------------------------------------------
    MO.FUiMenuButtonMenu_oeEnable = function FUiMenuButtonMenu_oeEnable(event){
       var o = this;
-      o.base.FUiControl.oeEnable.call(o, event);
+      o.base.FDuiControl.oeEnable.call(o, event);
       o.hPanel.className = o.style('Button');
       if(o._iconDisable && o._icon){
          o.hIcon.src = RRes._iconPath(o._icon);
@@ -76,7 +76,7 @@ with(MO){
    // ------------------------------------------------------------
    MO.FUiMenuButtonMenu_oeDisable = function FUiMenuButtonMenu_oeDisable(event){
       var o = this;
-      o.base.FUiControl.oeDisable.call(o, event);
+      o.base.FDuiControl.oeDisable.call(o, event);
       o.hPanel.className = o.style('Disable');
       if(o._iconDisable){
          o.hIcon.src = RRes._iconPath(o._iconDisable);
@@ -134,12 +134,12 @@ with(MO){
    // ------------------------------------------------------------
    MO.FUiMenuButtonMenu_construct = function FUiMenuButtonMenu_construct(){
       var o = this;
-      o.base.FUiControl.construct.call(o);
+      o.base.FDuiControl.construct.call(o);
    }
    // ------------------------------------------------------------
    MO.FUiMenuButtonMenu_dispose = function FUiMenuButtonMenu_dispose(){
       var o = this;
-      o.base.FUiControl.dispose.call(o);
+      o.base.FDuiControl.dispose.call(o);
       RMemory.freeHtml(o.hPanel);
       RMemory.freeHtml(o.hButton);
       o.hPanel = null;

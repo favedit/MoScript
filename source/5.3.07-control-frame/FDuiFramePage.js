@@ -7,7 +7,7 @@ with(MO){
    // @version 150120
    //==========================================================
    MO.FUiFramePage = function FUiFramePage(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
       o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));
@@ -49,7 +49,7 @@ with(MO){
    //==========================================================
    MO.FUiFramePage_onBuild = function FUiFramePage_onBuild(p){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, p);
+      o.__base.FDuiContainer.onBuild.call(o, p);
       var h = o._hPanel;
       if(o._scrollCd != EUiScroll.None){
          var hc = o._hContainer = RBuilder.appendDiv(h, o.styleName('Container'));
@@ -85,7 +85,7 @@ with(MO){
    // <T>增加一个控件。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param control:FDuiControl 控件
    //==========================================================
    MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
       var o = this;
@@ -98,7 +98,7 @@ with(MO){
    // <T>移除一个控件。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param control:FDuiControl 控件
    //==========================================================
    MO.FUiFramePage_removeChild = function FUiFramePage_removeChild(control){
       var o = this;

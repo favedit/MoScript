@@ -16,7 +16,7 @@ with(MO){
    // @version 150420
    //==========================================================
    MO.FUiLayoutVertical = function FUiLayoutVertical(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
@@ -71,6 +71,6 @@ with(MO){
    MO.FUiLayoutVertical_dispose = function FUiLayoutVertical_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

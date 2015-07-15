@@ -7,7 +7,7 @@ with(MO){
    // @history 150318
    //==========================================================
    MO.FUiDataAction = function FUiDataAction(o){
-      o = RClass.inherits(this, o, FUiComponent, MInvoke);
+      o = RClass.inherits(this, o, FDuiComponent, MInvoke);
       //..........................................................
       // @property
       o._action        = RClass.register(o, new APtyString('_action'));

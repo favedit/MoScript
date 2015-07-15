@@ -19,7 +19,7 @@ with(MO){
    // @history 150224
    //==========================================================
    MO.FUiListBox = function FUiListBox(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
+      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick);
       //..........................................................
       // @property
       o._sizeCd      = EUiSize.Horizontal

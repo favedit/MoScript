@@ -12,7 +12,7 @@ with(MO){
    // @version 150420
    //==========================================================
    MO.FUiLayoutHorizontal = function FUiLayoutHorizontal(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
@@ -50,7 +50,7 @@ with(MO){
    //==========================================================
    MO.FUiLayoutHorizontal_onBuild = function FUiLayoutHorizontal_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event)
+      o.__base.FDuiContainer.onBuild.call(o, event)
       // 创建横向容器
       o._hLine = RBuilder.appendTableRow(o._hPanel);
    }
@@ -86,6 +86,6 @@ with(MO){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
       // 父处理
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

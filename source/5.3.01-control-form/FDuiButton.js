@@ -7,7 +7,7 @@ with(MO){
    // @history 150329
    //==========================================================
    MO.FUiButton = function FUiButton(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @attribute
       o._labelPositionCd   = RClass.register(o, new APtyString('_labelPositionCd'), EUiPosition.Left);
@@ -77,7 +77,7 @@ with(MO){
    //==========================================================
    MO.FUiButton_onBuild = function FUiButton_onBuild(e){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, e);
+      o.__base.FDuiControl.onBuild.call(o, e);
       // 设置底板
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
@@ -216,7 +216,7 @@ with(MO){
    //==========================================================
    MO.FUiButton_oeMode = function FUiButton_oeMode(e){
       var o = this;
-      o.__base.FUiControl.oeMode.call(o, e);
+      o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       return EEventStatus.Stop;
    }
@@ -329,7 +329,7 @@ with(MO){
    //==========================================================
    MO.FUiButton_dispose = function FUiButton_dispose(){
       var o = this;
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
       o._hForm = null;
       o._hFormEnd = null;
       o._hLabel = null;

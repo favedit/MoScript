@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150317
 //==========================================================
-MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
+MO.FDuiWorkspaceConsole = function FDuiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -18,16 +18,16 @@ MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
    o._interval        = 100;
    //..........................................................
    // @event
-   o.onResize         = MO.FUiWorkspaceConsole_onResize;
-   o.onProcess        = MO.FUiWorkspaceConsole_onProcess;
+   o.onResize         = MO.FDuiWorkspaceConsole_onResize;
+   o.onProcess        = MO.FDuiWorkspaceConsole_onProcess;
    //..........................................................
    // @method
-   o.construct        = MO.FUiWorkspaceConsole_construct;
+   o.construct        = MO.FDuiWorkspaceConsole_construct;
    // @method
-   o.active           = MO.FUiWorkspaceConsole_active;
-   o.resize           = MO.FUiWorkspaceConsole_resize;
+   o.active           = MO.FDuiWorkspaceConsole_active;
+   o.resize           = MO.FDuiWorkspaceConsole_resize;
    // @method
-   o.dispose          = MO.FUiWorkspaceConsole_dispose;
+   o.dispose          = MO.FDuiWorkspaceConsole_dispose;
    return o;
 }
 
@@ -36,7 +36,7 @@ MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
+MO.FDuiWorkspaceConsole_onResize = function FDuiWorkspaceConsole_onResize(p){
    var o = this;
    var workspace = o._activeWorkspace;
    if(workspace){
@@ -49,7 +49,7 @@ MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
 //
 // @method
 //==========================================================
-MO.FUiWorkspaceConsole_onProcess = function FUiWorkspaceConsole_onProcess(event){
+MO.FDuiWorkspaceConsole_onProcess = function FDuiWorkspaceConsole_onProcess(event){
    var o = this;
    var workspace = o._activeWorkspace;
    if(workspace){
@@ -62,7 +62,7 @@ MO.FUiWorkspaceConsole_onProcess = function FUiWorkspaceConsole_onProcess(event)
 //
 // @method
 //==========================================================
-MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
+MO.FDuiWorkspaceConsole_construct = function FDuiWorkspaceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
@@ -80,9 +80,9 @@ MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
 // <T>激活一个工作台。</T>
 //
 // @method
-// @param p:workspace:FUiWorkspace 工作台
+// @param p:workspace:FDuiWorkspace 工作台
 //==========================================================
-MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
+MO.FDuiWorkspaceConsole_active = function FDuiWorkspaceConsole_active(p){
    this._activeWorkspace = p;
 }
 
@@ -91,7 +91,7 @@ MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
 //
 // @method
 //==========================================================
-MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
+MO.FDuiWorkspaceConsole_resize = function FDuiWorkspaceConsole_resize(){
    this.onResize();
 }
 
@@ -104,7 +104,7 @@ MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
+MO.FDuiWorkspaceConsole_dispose = function FDuiWorkspaceConsole_dispose(){
    var o = this;
    // 父处理
    o.__base.FConsole.dispose.call(o);

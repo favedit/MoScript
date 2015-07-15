@@ -16,7 +16,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiTreeNode = function FUiTreeNode(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDataProperties);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDataProperties);
       //..........................................................
       // @property
       o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
@@ -153,7 +153,7 @@ with(MO){
    MO.FUiTreeNode_onBuild = function FUiTreeNode_onBuild(p){
       var o = this;
       var t = o._tree;
-      var r = o.__base.FUiContainer.onBuild.call(o, p);
+      var r = o.__base.FDuiContainer.onBuild.call(o, p);
       // 建立底板
       var hp = o._hPanel;
       o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
@@ -293,7 +293,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeNode_construct = function FUiTreeNode_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
    }
 
    //==========================================================
@@ -331,7 +331,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeNode_setLabel = function FUiTreeNode_setLabel(p){
       var o = this;
-      o.__base.FUiContainer.setLabel.call(o, p)
+      o.__base.FDuiContainer.setLabel.call(o, p)
       // 设置显示内容
       var h = o._hLabel;
       if(h){
@@ -760,7 +760,7 @@ with(MO){
    // <T>追加一个字控件。</T>
    //
    // @method
-   // @param p:control:FUiControl 控件
+   // @param p:control:FDuiControl 控件
    //==========================================================
    MO.FUiTreeNode_appendChild = function FUiTreeNode_appendChild(p){
       var o = this;
@@ -792,7 +792,7 @@ with(MO){
    MO.FUiTreeNode_push = function FUiTreeNode_push(component){
       var o = this;
       var tree = o._tree;
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
       // 增加一个树节点
       if(RClass.isClass(component, FUiTreeNode)){
          o._child = true;
@@ -834,7 +834,7 @@ with(MO){
          o._nodes.remove(component);
       }
       // 父处理
-      o.__base.FUiContainer.remove.call(o, component);
+      o.__base.FDuiContainer.remove.call(o, component);
    }
 
    //==========================================================
@@ -952,7 +952,7 @@ with(MO){
    MO.FUiTreeNode_propertyLoad = function FUiTreeNode_propertyLoad(x){
       var o = this;
       var t = o._tree;
-      o.__base.FUiContainer.propertyLoad.call(o, x);
+      o.__base.FDuiContainer.propertyLoad.call(o, x);
       // 加载属性
       var attributes = o._attributes;
       if(attributes){
@@ -972,7 +972,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeNode_propertySave = function FUiTreeNode_propertySave(x){
       var o = this;
-      o.__base.FUiContainer.propertySave.call(o, x);
+      o.__base.FDuiContainer.propertySave.call(o, x);
       // Property
       var t = o.type();
       x.set('type_code', t._code);
@@ -1011,7 +1011,7 @@ with(MO){
       o._hIcon = null;
       o._hCheck = null;
       o._hLabel = null;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 
    //==========================================================

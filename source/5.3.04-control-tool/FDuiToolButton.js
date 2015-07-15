@@ -17,7 +17,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiToolButton = function FUiToolButton(o){
-      o = RClass.inherits(this, o, FUiControl, MUiToolButton, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MUiToolButton, MListenerClick);
       //..........................................................
       // @property
       o._icon            = RClass.register(o, new APtyString('_icon'));
@@ -129,7 +129,7 @@ with(MO){
    //==========================================================
    MO.FUiToolButton_onBuild = function FUiToolButton_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       // 建立面板
       o.onBuildButton(p);
    }
@@ -275,7 +275,7 @@ with(MO){
    //==========================================================
    MO.FUiToolButton_setEnable = function FUiToolButton_setEnable(p){
       var o = this;
-      o.__base.FUiControl.oeEnable.call(o, e);
+      o.__base.FDuiControl.oeEnable.call(o, e);
       o._disabled = !e.enable;
       // 设置图标
       if(e.enable && o._icon){
@@ -344,6 +344,6 @@ with(MO){
       o._hSpacePanel = RHtml.free(o._hSpacePanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);
       // 父处理
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

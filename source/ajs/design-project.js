@@ -1784,7 +1784,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.project.Workspace';
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -1824,7 +1824,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_onBuilded = function FDsProjectWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameBody = o.searchControl('bodyFrame');
@@ -1897,7 +1897,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_construct = function FDsProjectWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._frameSets = new TDictionary();
       o._propertyFrames = new TDictionary();
    }
@@ -1976,7 +1976,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_dispose = function FDsProjectWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }

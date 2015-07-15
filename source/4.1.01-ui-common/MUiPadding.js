@@ -5,18 +5,18 @@
 // @author maocy
 // @version 150611
 //==========================================================
-MO.MGuiPadding = function MGuiPadding(o){
+MO.MUiPadding = function MUiPadding(o){
    o = MO.RClass.inherits(this, o);
    //..........................................................
    // @property 填充结构
    o._padding   = MO.RClass.register(o, [new MO.APtyPadding('_padding'), new MO.AGetter('_padding')]);
    //..........................................................
    // @method
-   o.construct  = MO.MGuiPadding_construct;
+   o.construct  = MO.MUiPadding_construct;
    // @method
-   o.setPadding = MO.MGuiPadding_setPadding;
+   o.setPadding = MO.MUiPadding_setPadding;
    // @method
-   o.dispose    = MO.MGuiPadding_dispose;
+   o.dispose    = MO.MUiPadding_dispose;
    return o;
 }
 
@@ -25,7 +25,7 @@ MO.MGuiPadding = function MGuiPadding(o){
 //
 // @method
 //==========================================================
-MO.MGuiPadding_construct = function MGuiPadding_construct(){
+MO.MUiPadding_construct = function MUiPadding_construct(){
    var o = this;
    o._padding = new MO.SPadding();
 }
@@ -39,7 +39,7 @@ MO.MGuiPadding_construct = function MGuiPadding_construct(){
 // @param right:Integer 右空白
 // @param bottom:Integer 下空白
 //==========================================================
-MO.MGuiPadding_setPadding = function MGuiPadding_setPadding(left, top, right, bottom){
+MO.MUiPadding_setPadding = function MUiPadding_setPadding(left, top, right, bottom){
    this._padding.set(left, top, right, bottom);
 }
 
@@ -48,8 +48,8 @@ MO.MGuiPadding_setPadding = function MGuiPadding_setPadding(left, top, right, bo
 //
 // @method
 //==========================================================
-MO.MGuiPadding_dispose = function MGuiPadding_dispose(){
+MO.MUiPadding_dispose = function MUiPadding_dispose(){
    var o = this;
    // 释放属性
-   o._padding = MO.RObject.dispose(o._padding);
+   o._padding = MO.Lang.Object.dispose(o._padding);
 }

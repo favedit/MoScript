@@ -14,17 +14,11 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.FUiControl = function FUiControl(o){
-   o = MO.Class.inherits(this, o, MO.FUiComponent, MO.MUiStyle, MO.MUiSize, MO.MUiPadding, MO.MUiMargin);
+MO.FDuiControl = function FDuiControl(o){
+   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiSize, MO.MUiMargin, MO.MUiPadding, MO.MUiStyle);
    //..........................................................
    // @property Boolean 是否回行
    o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
-   // @property Boolean 是否禁止
-   o._visible       = MO.Class.register(o, new MO.APtyBoolean('_visible'), true);
-   // @property Boolean 是否禁止
-   o._disable       = MO.Class.register(o, new MO.APtyBoolean('_disable'), false);
-   // @property String 提示信息
-   o._hint          = MO.Class.register(o, new MO.APtyString('_hint'));
    //..........................................................
    // @style
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
@@ -54,8 +48,8 @@ MO.FUiControl = function FUiControl(o){
    o._hPanel        = null;
    //..........................................................
    // @event
-   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FUiControl_onEnter);
-   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FUiControl_onLeave);
+   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FDuiControl_onEnter);
+   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FDuiControl_onLeave);
    //o.onMouseOver    = MO.Class.register(o, new AEventMouseOver('onMouseOver'));
    //o.onMouseOut     = MO.Class.register(o, new AEventMouseOut('onMouseOut'));
    //o.onMouseDown    = MO.Class.register(o, new AEventMouseDown('onMouseDown'));
@@ -64,53 +58,48 @@ MO.FUiControl = function FUiControl(o){
    //o.onDoubleClick  = MO.Class.register(o, new AEventDoubleClick('onDoubleClick'));
    //o.onResize       = MO.Class.register(o, new AEventResize('onResize'));
    // @event
-   o.onBuildPanel   = MO.FUiControl_onBuildPanel;
-   o.onBuild        = MO.FUiControl_onBuild;
+   o.onBuildPanel   = MO.FDuiControl_onBuildPanel;
+   o.onBuild        = MO.FDuiControl_onBuild;
    o.onBuilded      = MO.Method.empty;
    //..........................................................
    // @process
-   o.oeMode         = MO.FUiControl_oeMode;
-   o.oeEnable       = MO.FUiControl_oeEnable;
-   o.oeVisible      = MO.FUiControl_oeVisible;
-   o.oeResize       = MO.FUiControl_oeResize;
-   o.oeRefresh      = MO.FUiControl_oeRefresh;
-   o.oeFrame        = MO.FUiControl_oeFrame;
+   o.oeMode         = MO.FDuiControl_oeMode;
    //..........................................................
    // @method
-   o.construct      = MO.FUiControl_construct;
+   o.construct      = MO.FDuiControl_construct;
    // @method
-   o.topControl     = MO.FUiControl_topControl;
-   o.panel          = MO.FUiControl_panel;
+   o.topControl     = MO.FDuiControl_topControl;
+   o.panel          = MO.FDuiControl_panel;
    // @method
-   o.isVisible      = MO.FUiControl_isVisible;
-   o.setVisible     = MO.FUiControl_setVisible;
-   o.show           = MO.FUiControl_show;
-   o.hide           = MO.FUiControl_hide;
+   o.isVisible      = MO.FDuiControl_isVisible;
+   o.setVisible     = MO.FDuiControl_setVisible;
+   o.show           = MO.FDuiControl_show;
+   o.hide           = MO.FDuiControl_hide;
    // @method
-   o.isEnable       = MO.FUiControl_isEnable;
-   o.setEnable      = MO.FUiControl_setEnable;
-   o.enable         = MO.FUiControl_enable;
-   o.disable        = MO.FUiControl_disable;
+   o.isEnable       = MO.FDuiControl_isEnable;
+   o.setEnable      = MO.FDuiControl_setEnable;
+   o.enable         = MO.FDuiControl_enable;
+   o.disable        = MO.FDuiControl_disable;
    // @method
-   o.attachEvent    = MO.FUiControl_attachEvent;
-   o.linkEvent      = MO.FUiControl_linkEvent;
-   o.callEvent      = MO.FUiControl_callEvent;
+   o.setMargin      = MO.FDuiControl_setMargin;
+   o.refreshMargin  = MO.FDuiControl_refreshMargin;
+   o.setPadding     = MO.FDuiControl_setPadding;
+   o.refreshPadding = MO.FDuiControl_refreshPadding;
    // @method
-   o.psMode         = MO.FUiControl_psMode;
-   o.psDesign       = MO.FUiControl_psDesign;
-   o.psEnable       = MO.FUiControl_psEnable;
-   o.psVisible      = MO.FUiControl_psVisible;
-   o.psResize       = MO.FUiControl_psResize;
-   o.psRefresh      = MO.FUiControl_psRefresh;
-   o.psFrame        = MO.FUiControl_psFrame;
+   o.attachEvent    = MO.FDuiControl_attachEvent;
+   o.linkEvent      = MO.FDuiControl_linkEvent;
+   o.callEvent      = MO.FDuiControl_callEvent;
    // @method
-   o.isBuild        = MO.FUiControl_isBuild;
-   o.build          = MO.FUiControl_build;
-   o.builded        = MO.FUiControl_builded;
-   o.refresh        = MO.FUiControl_refresh;
-   o.setPanel       = MO.FUiControl_setPanel;
+   o.psMode         = MO.FDuiControl_psMode;
+   o.psDesign       = MO.FDuiControl_psDesign;
    // @method
-   o.dispose        = MO.FUiControl_dispose;
+   o.isBuild        = MO.FDuiControl_isBuild;
+   o.build          = MO.FDuiControl_build;
+   o.builded        = MO.FDuiControl_builded;
+   o.refresh        = MO.FDuiControl_refresh;
+   o.setPanel       = MO.FDuiControl_setPanel;
+   // @method
+   o.dispose        = MO.FDuiControl_dispose;
    return o;
 }
 
@@ -120,7 +109,7 @@ MO.FUiControl = function FUiControl(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiControl_onEnter = function FUiControl_onEnter(e){
+MO.FDuiControl_onEnter = function FDuiControl_onEnter(e){
    var o = this;
    MO.Console.find(MO.FUiFocusConsole).enter(o);
    if(o._hint){
@@ -134,7 +123,7 @@ MO.FUiControl_onEnter = function FUiControl_onEnter(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiControl_onLeave = function FUiControl_onLeave(e){
+MO.FDuiControl_onLeave = function FDuiControl_onLeave(e){
    var o = this;
    MO.Console.find(MO.FUiFocusConsole).leave(o);
    if(o._hint){
@@ -149,7 +138,7 @@ MO.FUiControl_onLeave = function FUiControl_onLeave(e){
 // @method
 // @param p:event:MO.TEventProcess 事件处理
 //==========================================================
-MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
+MO.FDuiControl_onBuildPanel = function FDuiControl_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.RBuilder.createDiv(p, o.styleName('Panel'));
 }
@@ -160,7 +149,7 @@ MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-MO.FUiControl_onBuild = function FUiControl_onBuild(p){
+MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
    var o = this;
    // 建立控件容器
    o.onBuildPanel(p);
@@ -201,72 +190,9 @@ MO.FUiControl_onBuild = function FUiControl_onBuild(p){
 // @param e:event:MO.TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-MO.FUiControl_oeMode = function FUiControl_oeMode(e){
+MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
    var o = this;
    o._displayCd = e.displayCd;
-   return MO.EEventStatus.Continue;
-}
-
-//==========================================================
-// <T>改变当前控件的操作模式。</T>
-//
-// @method
-// @param e:event:MO.TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
-   var o = this;
-   if(e.isBefore()){
-      o.setEnable(e.enable);
-   }
-   return MO.EEventStatus.Continue;
-}
-
-//==========================================================
-// <T>改变当前控件的显示模式。</T>
-//
-// @method
-// @param e:event:MO.TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
-   var o = this;
-   if(e.isBefore()){
-      o.setVisible(e.visible);
-   }
-   return MO.EEventStatus.Continue;
-}
-
-//==========================================================
-// <T>改变当前控件的显示大小。</T>
-//
-// @method
-// @param p:event:MO.TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-MO.FUiControl_oeResize = function FUiControl_oeResize(p){
-   return MO.EEventStatus.Continue;
-}
-
-//==========================================================
-// <T>刷新当前控件的显示内容。</T>
-//
-// @method
-// @param e:event:MO.TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
-   return MO.EEventStatus.Continue;
-}
-
-//==========================================================
-// <T>刷新当前控件的逐帧内容。</T>
-//
-// @method
-// @param event:MO.TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-MO.FUiControl_oeFrame = function FUiControl_oeFrame(event){
    return MO.EEventStatus.Continue;
 }
 
@@ -275,13 +201,13 @@ MO.FUiControl_oeFrame = function FUiControl_oeFrame(event){
 //
 // @method
 //==========================================================
-MO.FUiControl_construct = function FUiControl_construct(){
+MO.FDuiControl_construct = function FDuiControl_construct(){
    var o = this;
-   o.__base.FUiComponent.construct.call(o);
-   o.__base.MUiStyle.construct.call(o);
+   o.__base.FDuiComponent.construct.call(o);
    o.__base.MUiSize.construct.call(o);
-   o.__base.MUiPadding.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
 }
 
 //==========================================================
@@ -289,9 +215,9 @@ MO.FUiControl_construct = function FUiControl_construct(){
 //
 // @method
 // @param c:class:Class 类
-// @return FUiControl 父控件
+// @return FDuiControl 父控件
 //==========================================================
-MO.FUiControl_topControl = function FUiControl_topControl(c){
+MO.FDuiControl_topControl = function FDuiControl_topControl(c){
    var r = this;
    if(c){
       while(r._parent){
@@ -305,7 +231,7 @@ MO.FUiControl_topControl = function FUiControl_topControl(c){
       }
    }else{
       while(r._parent){
-         if(!MO.Class.isClass(r._parent, FUiControl)){
+         if(!MO.Class.isClass(r._parent, FDuiControl)){
             break;
          }
          r = r._parent;
@@ -321,7 +247,7 @@ MO.FUiControl_topControl = function FUiControl_topControl(c){
 // @param p:value:EPanel 底板类型
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FUiControl_panel = function FUiControl_panel(p){
+MO.FDuiControl_panel = function FDuiControl_panel(p){
    var o = this;
    switch(p){
       case MO.EPanel.Parent:
@@ -339,7 +265,7 @@ MO.FUiControl_panel = function FUiControl_panel(p){
 // @method
 // @return Boolean 是否显示
 //==========================================================
-MO.FUiControl_isVisible = function FUiControl_isVisible(){
+MO.FDuiControl_isVisible = function FDuiControl_isVisible(){
    return this._statusVisible;
 }
 
@@ -349,7 +275,7 @@ MO.FUiControl_isVisible = function FUiControl_isVisible(){
 // @method
 // @param p:visible:Boolean 是否显示
 //==========================================================
-MO.FUiControl_setVisible = function FUiControl_setVisible(p){
+MO.FDuiControl_setVisible = function FDuiControl_setVisible(p){
    var o = this;
    o._statusVisible = p;
    // 设置布局底板的可见性
@@ -370,7 +296,7 @@ MO.FUiControl_setVisible = function FUiControl_setVisible(p){
 //
 // @method
 //==========================================================
-MO.FUiControl_show = function FUiControl_show(){
+MO.FDuiControl_show = function FDuiControl_show(){
    var o = this;
    if(!o._statusVisible){
       o.setVisible(true);
@@ -382,7 +308,7 @@ MO.FUiControl_show = function FUiControl_show(){
 //
 // @method
 //==========================================================
-MO.FUiControl_hide = function FUiControl_hide(){
+MO.FDuiControl_hide = function FDuiControl_hide(){
    var o = this;
    if(o._statusVisible){
       o.setVisible(false);
@@ -395,7 +321,7 @@ MO.FUiControl_hide = function FUiControl_hide(){
 // @method
 // @return Boolean 是否可以
 //==========================================================
-MO.FUiControl_isEnable = function FUiControl_isEnable(){
+MO.FDuiControl_isEnable = function FDuiControl_isEnable(){
    return this._statusEnable;
 }
 
@@ -405,7 +331,7 @@ MO.FUiControl_isEnable = function FUiControl_isEnable(){
 // @method
 // @param p:enable:Boolean 是否可操作
 //==========================================================
-MO.FUiControl_setEnable = function FUiControl_setEnable(p){
+MO.FDuiControl_setEnable = function FDuiControl_setEnable(p){
    var o = this;
    o._statusEnable = p;
    var h = o.panel(EPanel.Container);
@@ -419,7 +345,7 @@ MO.FUiControl_setEnable = function FUiControl_setEnable(p){
 //
 // @method
 //==========================================================
-MO.FUiControl_enable = function FUiControl_enable(){
+MO.FDuiControl_enable = function FDuiControl_enable(){
    var o = this;
    if(!o._statusEnable){
       o.setEnable(true);
@@ -431,11 +357,129 @@ MO.FUiControl_enable = function FUiControl_enable(){
 //
 // @method
 //==========================================================
-MO.FUiControl_disable = function FUiControl_disable(){
+MO.FDuiControl_disable = function FDuiControl_disable(){
    var o = this;
    if(o._statusEnable){
       o.setEnable(false);
    }
+}
+
+//==========================================================
+// <T>设置填充空白。</T>
+//
+// @method
+// @param left:Integer 左空白
+// @param top:Integer 上空白
+// @param right:Integer 右空白
+// @param bottom:Integer 下空白
+//==========================================================
+MO.FDuiControl_setMargin = function FDuiControl_setMargin(left, top, right, bottom){
+   var o = this;
+   var padding = o._padding;
+   var hPanel = o.panel(MO.EPanel.Container);
+   // 获得样式
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   // 设置左空白
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.marginLeft = (left == 0) ? null : left + 'px';
+      }
+   }
+   // 设置上空白
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.marginTop = (top == 0) ? null : top + 'px';
+      }
+   }
+   // 设置右空白
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.marginRight = (right == 0) ? null : right + 'px';
+      }
+   }
+   // 设置下空白
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
+      }
+   }
+}
+
+//==========================================================
+// <T>刷新填充空白。</T>
+//
+// @method
+//==========================================================
+MO.FDuiControl_refreshMargin = function FDuiControl_refreshMargin(){
+   var o = this;
+   var p = o._margin;
+   o.setMargin(p.left, p.top, p.right, p.bottom);
+}
+
+//==========================================================
+// <T>设置填充空白。</T>
+//
+// @method
+// @param left:Integer 左空白
+// @param top:Integer 上空白
+// @param right:Integer 右空白
+// @param bottom:Integer 下空白
+//==========================================================
+MO.FDuiControl_setPadding = function FDuiControl_setPadding(left, top, right, bottom){
+   var o = this;
+   var padding = o._padding;
+   var hPanel = o.panel(MO.EPanel.Container);
+   // 获得样式
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   // 设置左空白
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.paddingLeft = (left == 0) ? null : left + 'px';
+      }
+   }
+   // 设置上空白
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.paddingTop = (top == 0) ? null : top + 'px';
+      }
+   }
+   // 设置右空白
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.paddingRight = (right == 0) ? null : right + 'px';
+      }
+   }
+   // 设置下空白
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
+      }
+   }
+}
+
+//==========================================================
+// <T>刷新填充空白。</T>
+//
+// @method
+//==========================================================
+MO.FDuiControl_refreshPadding = function FDuiControl_refreshPadding(){
+   var o = this;
+   var p = o._padding;
+   o.setPadding(p.left, p.top, p.right, p.bottom);
 }
 
 //==========================================================
@@ -452,7 +496,7 @@ MO.FUiControl_disable = function FUiControl_disable(){
 // @return TEvent 关联的事件对象
 // @see RControl.attachEvent
 //==========================================================
-MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
+MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
    return MO.RUiControl.attachEvent(this, n, h, m, u);
 }
 
@@ -466,14 +510,14 @@ MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
 //    可以通过事件对象的发出者访问到该发出对象。</P>
 //
 // @method
-// @param t:target:FUiControl 到达者控件
+// @param t:target:FDuiControl 到达者控件
 // @param n:name:String 注册过的事件名称
 // @param h:hPanel:HTML 页面元素
 // @param m:method:Function 立即函数
 // @return TEvent 关联的事件对象
 // @see RControl.linkEvent
 //==========================================================
-MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
+MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(t, n, h, m){
    return MO.RUiControl.linkEvent(this, t, n, h, m);
 }
 
@@ -482,10 +526,10 @@ MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
 //
 // @method
 // @param n:name:String 事件名称
-// @param s:source:FUiControl 事件源
+// @param s:source:FDuiControl 事件源
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
+MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
    var o = this;
    var es = o._events;
    if(es){
@@ -502,10 +546,10 @@ MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
 // @method
 // @param p:displayMode:EDisplayMode 显示模式
 //==========================================================
-MO.FUiControl_psMode = function FUiControl_psMode(p){
+MO.FDuiControl_psMode = function FDuiControl_psMode(p){
    var o = this;
    // 创建事件
-   var e = new MO.TEventProcess(o, 'oeMode', MO.FUiControl);
+   var e = new MO.TEventProcess(o, 'oeMode', MO.FDuiControl);
    e.displayCd = p;
    // 处理消息
    o.process(e);
@@ -519,7 +563,7 @@ MO.FUiControl_psMode = function FUiControl_psMode(p){
 // @param m:mode:EDesign 设计模式
 // @param f:flag:Boolean 开始还是结束
 //==========================================================
-MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
+MO.FDuiControl_psDesign = function FDuiControl_psDesign(m, f){
    var o = this;
    MO.Console.find(FDesignConsole).setFlag(m, f, o);
    // 创建事件
@@ -532,87 +576,12 @@ MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
 }
 
 //==========================================================
-// <T>分发改变控件可操作和禁止的事件。</T>
-//
-// @method
-// @param v:enable:Boolean 是否可操作
-//==========================================================
-MO.FUiControl_psEnable = function FUiControl_psEnable(v){
-   var o = this;
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeEnable', MO.FUiControl)
-   e.enable = v;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件隐藏和显示的事件。</T>
-//
-// @method
-// @param v:visible:Boolean 是否可见
-//==========================================================
-MO.FUiControl_psVisible = function FUiControl_psVisible(v){
-   var o = this;
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeVisible', MO.FUiControl);
-   e.visible = v;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件大小的事件。</T>
-//
-// @method
-//==========================================================
-MO.FUiControl_psResize = function FUiControl_psResize(){
-   var o = this;
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeResize', MO.FUiControl);
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发控件刷新的事件。</T>
-//
-// @method
-// @param t:type:String 刷新类型
-//==========================================================
-MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
-   var o = this;
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeRefresh', MO.FUiControl);
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发控件帧的事件。</T>
-//
-// @method
-//==========================================================
-MO.FUiControl_psFrame = function FUiControl_psFrame(){
-   var o = this;
-   // 创建事件
-   var event = new MO.TEventProcess(o, 'oeFrame', MO.FUiControl);
-   // 处理消息
-   o.process(event);
-   event.dispose();
-}
-
-//==========================================================
 // <T>判断是否已经构建。</T>
 //
 // @method
 // @return Boolean 是否构建
 //==========================================================
-MO.FUiControl_isBuild = function FUiControl_isBuild(){
+MO.FDuiControl_isBuild = function FDuiControl_isBuild(){
    return this._statusBuild;
 }
 
@@ -623,7 +592,7 @@ MO.FUiControl_isBuild = function FUiControl_isBuild(){
 // @method
 // @param p:html:HtmlTag 页面元素
 //==========================================================
-MO.FUiControl_build = function FUiControl_build(p){
+MO.FDuiControl_build = function FDuiControl_build(p){
    var o = this;
    // 检查状态
    if(o._statusBuild){
@@ -658,7 +627,7 @@ MO.FUiControl_build = function FUiControl_build(p){
 // @method
 // @param p:html:HtmlTag 页面元素
 //==========================================================
-MO.FUiControl_builded = function FUiControl_builded(p){
+MO.FDuiControl_builded = function FDuiControl_builded(p){
    var o = this;
    // 检查状态
    if(!o._statusBuild){
@@ -680,7 +649,7 @@ MO.FUiControl_builded = function FUiControl_builded(p){
 //
 // @method
 //==========================================================
-MO.FUiControl_refresh = function FUiControl_refresh(){
+MO.FDuiControl_refresh = function FDuiControl_refresh(){
    var o = this;
    // 检查状态
    if(!o._statusBuild){
@@ -694,7 +663,7 @@ MO.FUiControl_refresh = function FUiControl_refresh(){
 // @method
 // @param h:hPanel:HtmlTag 页面元素
 //==========================================================
-MO.FUiControl_setPanel = function FUiControl_setPanel(h){
+MO.FDuiControl_setPanel = function FDuiControl_setPanel(h){
    var o = this;
    o._hParent = h;
    h.appendChild(o._hPanel);
@@ -705,7 +674,7 @@ MO.FUiControl_setPanel = function FUiControl_setPanel(h){
 //
 // @method
 //==========================================================
-MO.FUiControl_dispose = function FUiControl_dispose(){
+MO.FDuiControl_dispose = function FDuiControl_dispose(){
    var o = this;
    // 释放属性
    o._disable = null;
@@ -721,9 +690,10 @@ MO.FUiControl_dispose = function FUiControl_dispose(){
    o._hParent = null;
    o._hPanel = MO.RHtml.free(o._hPanel);
    // 释放处理
-   o.__base.MUiMargin.dispose.call(o);
-   o.__base.MUiPadding.dispose.call(o);
-   o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
-   o.__base.FUiComponent.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiMargin.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiControl.dispose.call(o);
+   o.__base.FDuiComponent.dispose.call(o);
 }

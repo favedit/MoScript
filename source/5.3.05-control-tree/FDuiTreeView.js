@@ -19,7 +19,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiTreeView = function FUiTreeView(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
       o._optionCheck        = RClass.register(o, new APtyBoolean('_optionCheck'), false);
@@ -132,7 +132,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeView_onBuild = function FUiTreeView_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       // 关联事件
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
@@ -245,7 +245,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeView_construct = function FUiTreeView_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       // 初始化变量
       o._attributes = new TAttributes();
       o._nodeTypes = new TDictionary();
@@ -417,7 +417,7 @@ with(MO){
    // <T>追加子控件。</T>
    //
    // @method
-   // @param p:child:FUiControl 子控件
+   // @param p:child:FDuiControl 子控件
    //==========================================================
    MO.FUiTreeView_appendChild = function FUiTreeView_appendChild(child){
       var o = this;
@@ -577,7 +577,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeView_push = function FUiTreeView_push(control){
       var o = this;
-      o.__base.FUiContainer.push.call(o, control);
+      o.__base.FDuiContainer.push.call(o, control);
       // 增加节点
       control._tree = o;
       if(RClass.isClass(control, FUiTreeColumn)){
@@ -908,7 +908,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeView_dispose = function FUiTreeView_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
       // 清空属性
       var ns = o._nodes;
       if(ns){

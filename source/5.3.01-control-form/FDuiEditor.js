@@ -7,7 +7,7 @@ with(MO){
    // @version 150224
    //==========================================================
    MO.FUiEditor = function FUiEditor(o){
-      o = RClass.inherits(this, o, FUiControl, MUiFocus);
+      o = RClass.inherits(this, o, FDuiControl, MUiFocus);
       //..........................................................
       // @property
       o._visible       = false;
@@ -126,7 +126,7 @@ with(MO){
    //==========================================================
    MO.FUiEditor_onBuild = function FUiEditor_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.style.zIndex = EUiLayer.Editor;
    }
 
@@ -174,7 +174,7 @@ with(MO){
       }else if(p == EPanel.Focus){
          return o._hEdit;
       }
-      return o.__base.FUiControl.panel.call(o, p);
+      return o.__base.FDuiControl.panel.call(o, p);
    }
 
    //==========================================================
@@ -256,7 +256,7 @@ with(MO){
    //==========================================================
    MO.FUiEditor_setVisible = function FUiEditor_setVisible(p){
       var o = this;
-      o.__base.FUiControl.setVisible.call(o, p);
+      o.__base.FDuiControl.setVisible.call(o, p);
       if(p){
          o.editBegin();
          o.focus();
@@ -270,7 +270,7 @@ with(MO){
    //==========================================================
    MO.FUiEditor_dispose = function FUiEditor_dispose(){
       var o = this;
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
       o._hEdit = null;
    }
 }

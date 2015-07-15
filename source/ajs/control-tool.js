@@ -6,7 +6,7 @@ with(MO){
 }
 with(MO){
    MO.FUiToolBar = function FUiToolBar(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
       o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
       o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
@@ -27,7 +27,7 @@ with(MO){
    }
    MO.FUiToolBar_appendChild = function FUiToolBar_appendChild(control){
       var o = this;
-      o.__base.FUiContainer.appendChild.call(o, control);
+      o.__base.FDuiContainer.appendChild.call(o, control);
       if(RClass.isClass(control, MUiToolButton)){
          var h = o._hPanel;
          var hl = o._hLine;
@@ -53,17 +53,17 @@ with(MO){
          p._hParent = null;
          p._hParentLine = null;
       }
-      o.__base.FUiContainer.removeChild.call(o, p);
+      o.__base.FDuiContainer.removeChild.call(o, p);
    }
    MO.FUiToolBar_dispose = function FUiToolBar_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiToolButton = function FUiToolButton(o){
-      o = RClass.inherits(this, o, FUiControl, MUiToolButton, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MUiToolButton, MListenerClick);
       o._icon            = RClass.register(o, new APtyString('_icon'));
       o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
       o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
@@ -131,7 +131,7 @@ with(MO){
    }
    MO.FUiToolButton_onBuild = function FUiToolButton_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       o.onBuildButton(p);
    }
    MO.FUiToolButton_onEnter = function FUiToolButton_onEnter(e){
@@ -191,7 +191,7 @@ with(MO){
    }
    MO.FUiToolButton_setEnable = function FUiToolButton_setEnable(p){
       var o = this;
-      o.__base.FUiControl.oeEnable.call(o, e);
+      o.__base.FDuiControl.oeEnable.call(o, e);
       o._disabled = !e.enable;
       if(e.enable && o._icon){
          var is = RResource.iconPath(o._icon);
@@ -239,7 +239,7 @@ with(MO){
       o._hIcon = RHtml.free(o._hIcon);
       o._hSpacePanel = RHtml.free(o._hSpacePanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
@@ -521,7 +521,7 @@ with(MO){
    }
    MO.FUiToolButtonSplit_onBuild = function FUiToolButtonSplit_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.className = o.styleName('Panel');
    }
 }

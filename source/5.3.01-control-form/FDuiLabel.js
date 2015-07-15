@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FUiLabel = function FUiLabel(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @event
       o.onBuild = FUiLabel_onBuild;
@@ -26,7 +26,7 @@ with(MO){
    //==========================================================
    MO.FUiLabel_onBuild = function FUiLabel_onBuild(event){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, event);
+      o.__base.FDuiControl.onBuild.call(o, event);
    }
 
    //==========================================================

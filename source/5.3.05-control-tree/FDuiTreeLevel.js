@@ -7,7 +7,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiTreeLevel = function FUiTreeLevel(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property
       o._id        = RClass.register(o, new APtyString('_id'));

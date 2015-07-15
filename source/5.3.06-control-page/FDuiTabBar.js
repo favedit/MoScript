@@ -25,7 +25,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FUiTabBar = function FUiTabBar(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property
       o._sizeCd          = EUiSize.Horizontal;
@@ -95,7 +95,7 @@ with(MO){
    //==========================================================
    MO.FUiTabBar_onBuild = function FUiTabBar_onBuild(p){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, p);
+      o.__base.FDuiContainer.onBuild.call(o, p);
       // 获得底板
       var h = o._hPanel;
       // 建立标题区
@@ -133,7 +133,7 @@ with(MO){
    //==========================================================
    MO.FUiTabBar_oeRefresh = function FUiTabBar_oeRefresh(p){
       var o = this;
-      var r = o.__base.FUiContainer.oeRefresh.call(o, p);
+      var r = o.__base.FDuiContainer.oeRefresh.call(o, p);
       if(p.isBefore()){
          // Select first
          if(o._buttons.count()){
@@ -163,7 +163,7 @@ with(MO){
    MO.FUiTabBar_construct = function FUiTabBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       // 设置属性
       o._buttons = new TDictionary();
    }
@@ -312,7 +312,7 @@ with(MO){
          buttons.set(component.name(), component);
       }
       // 父处理
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
    }
 
    //==========================================================
@@ -322,6 +322,6 @@ with(MO){
    //==========================================================
    MO.FUiTabBar_dispose = function FUiTabBar_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

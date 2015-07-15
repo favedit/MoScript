@@ -38,7 +38,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareWorkspace = function FDsShareWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
+      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.share.Workspace';
       o._storageCode          = o._frameName;
       o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
@@ -59,7 +59,7 @@ with(MO){
    }
    MO.FDsShareWorkspace_onBuilded = function FDsShareWorkspace_onBuilded(event){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, event);
+      o.__base.FDuiWorkspace.onBuilded.call(o, event);
       o._frameMenuBar._hPanel.className = o.styleName('Menubar_Ground');
       o._frameBody._hPanel.className = o.styleName('Body_Ground');
       o._frameStatusBar._hPanel.className = o.styleName('Statusbar_Ground');
@@ -79,7 +79,7 @@ with(MO){
    }
    MO.FDsShareWorkspace_construct = function FDsShareWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._frameSets = new TDictionary();
    }
    MO.FDsShareWorkspace_selectFrameSet = function FDsShareWorkspace_selectFrameSet(name, guid){
@@ -179,6 +179,6 @@ with(MO){
    MO.FDsShareWorkspace_dispose = function FDsShareWorkspace_dispose(){
       var o = this;
       o._frameSets = RObject.dispose(o._frameSets);
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

@@ -23,12 +23,12 @@ with(MO){
    // │└------------┴--------------------------------------┘              │
    // └----------------------------------------------------------------------┘
    //
-   // @class FUiContainer, MForm, MDataset, MValue, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
+   // @class FDuiContainer, MForm, MDataset, MValue, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
    // @history 090922 MAOCY 创建
    //==========================================================
    MO.FUiGridControl = function FUiGridControl(o) {
-      //o = RClass.inherits(this, o, FUiContainer, MValue, MDataset, MDisplay, MUiFocus, MForm, MProgress, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
-      o = RClass.inherits(this, o, FUiContainer);
+      //o = RClass.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MUiFocus, MForm, MProgress, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
       o._displayCount        = RClass.register(o, new APtyInteger('_displayCount'), 20);
@@ -336,7 +336,7 @@ with(MO){
          o.height = '100%';
       }
       // 父类处理
-      o.__base.FUiContainer.onBuild.call(o, p);
+      o.__base.FDuiContainer.onBuild.call(o, p);
       //..........................................................
       // 标题顶层标题区
       var hc = o._hTitlePanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
@@ -531,7 +531,7 @@ with(MO){
    //==========================================================
    MO.FUiGridControl_construct = function FUiGridControl_construct() {
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       //o.__base.MDataset.construct.call(o);
       // 初始化
       o._buttons = new TDictionary();
@@ -591,7 +591,7 @@ with(MO){
    //==========================================================
    MO.FUiGridControl_appendChild = function FUiGridControl_appendChild(p){
       var o = this;
-      o.__base.FUiContainer.appendChild.call(o, p);
+      o.__base.FDuiContainer.appendChild.call(o, p);
       // 类型处理
       if(RClass.isClass(p, FColumn)){
          o.appendColumn(p);
@@ -615,7 +615,7 @@ with(MO){
          o._buttons.set(p.name(), p);
       }
       // 父处理
-      o.__base.FUiContainer.push.call(o, p);
+      o.__base.FDuiContainer.push.call(o, p);
    }
 
    //==========================================================
@@ -1058,7 +1058,7 @@ with(MO){
       var o = this;
       o.dispUpdate = true;
       o.dispDelete = true;
-      o.__base.FUiContainer.oeMode.call(o, e);
+      o.__base.FDuiContainer.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       // 根据工作模式获得设置信息
       o._editable = o.canEdit(e.mode);
@@ -1592,7 +1592,7 @@ with(MO){
    //==========================================================
    MO.FUiGridControl_setVisible = function FUiGridControl_setVisible(v){
       var o = this;
-      o.__base.FUiContainer.setVisible.call(o, v);
+      o.__base.FDuiContainer.setVisible.call(o, v);
       o.__base.MUiHorizontal.setVisible.call(o, v);
    }
 
@@ -1631,7 +1631,7 @@ with(MO){
    //==========================================================
    MO.FUiGridControl_dispose = function FUiGridControl_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
       o.hBorderPanel = null;
       o._hDelayPanel = null;
       o._hDelayForm = null;
@@ -1713,7 +1713,7 @@ with(MO){
    // ------------------------------------------------------------
    MO.FUiGridControl_createChild = function FUiGridControl_createChild(config) {
       var o = this;
-      var c = o.__base.FUiContainer.createChild.call(o, config);
+      var c = o.__base.FDuiContainer.createChild.call(o, config);
       if(RClass.isClass(c, FGridRow)){
          c.table = o;
          c.row = o.dsLoadRowNode(config);

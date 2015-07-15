@@ -14,7 +14,7 @@ with(MO){
    // @history 150224
    //==========================================================
    MO.FUiListViewItem = function FUiListViewItem(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @style
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
@@ -79,7 +79,7 @@ with(MO){
    MO.FUiListViewItem_onBuild = function FUiListViewItem_onBuild(p){
       var o = this;
       // 建立控件
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var hPanel = o._hPanel;
       //..........................................................
       // 建立边框
@@ -112,7 +112,7 @@ with(MO){
    //==========================================================
    MO.FUiListViewItem_onEnter = function FUiListViewItem_onEnter(){
       var o = this;
-      o.__base.FUiControl.onEnter.call(o);
+      o.__base.FDuiControl.onEnter.call(o);
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
    }
 
@@ -124,7 +124,7 @@ with(MO){
    MO.FUiListViewItem_onLeave = function FUiListViewItem_onLeave(){
       var o = this;
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FUiControl.onLeave.call(o);
+      o.__base.FDuiControl.onLeave.call(o);
    }
 
    //==========================================================
@@ -209,6 +209,6 @@ with(MO){
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hIcon = RHtml.free(o._hIcon);
       o._hLabel = RHtml.free(o._hLabel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

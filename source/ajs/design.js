@@ -370,7 +370,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCanvas = function FDsCanvas(o){
-      o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FDuiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
       o._servicePreview      = 'cloud.resource.preview';
       o._resourceTypeCd      = null;
       o._optionRotation      = false;
@@ -405,7 +405,7 @@ with(MO){
    }
    MO.FDsCanvas_onBuild = function FDsCanvas_onBuild(event){
       var o = this;
-      o.__base.FUiCanvas.onBuild.call(o, event);
+      o.__base.FDuiCanvas.onBuild.call(o, event);
       var hPanel = o._hPanel;
       hPanel.__linker = o;
       hPanel.style.width = '100%';
@@ -523,7 +523,7 @@ with(MO){
    }
    MO.FDsCanvas_oeResize = function FDsCanvas_oeResize(p){
       var o = this;
-      o.__base.FUiCanvas.oeResize.call(o, p);
+      o.__base.FDuiCanvas.oeResize.call(o, p);
       var hp = o._hPanel;
       var w = hp.offsetWidth;
       var h = hp.offsetHeight - 6;
@@ -537,7 +537,7 @@ with(MO){
    }
    MO.FDsCanvas_construct = function FDsCanvas_construct(){
       var o = this;
-      o.__base.FUiCanvas.construct.call(o);
+      o.__base.FDuiCanvas.construct.call(o);
       o._capturePosition = new SPoint2();
       o._captureMatrix = new SMatrix3d();
       o._rotation = new SVector3();
@@ -604,7 +604,7 @@ with(MO){
    MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
       var o = this;
       o._rotation = RObject.dispose(o._rotation);
-      o.__base.FUiCanvas.dispose.call(o);
+      o.__base.FDuiCanvas.dispose.call(o);
    }
 }
 with(MO){

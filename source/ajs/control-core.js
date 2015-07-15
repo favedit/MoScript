@@ -654,7 +654,7 @@ with(MO){
    }
    MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       var o = this;
-      var c = RHtml.searchLinker(p, FUiControl);
+      var c = RHtml.searchLinker(p, FDuiControl);
       MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
       if(c){
          if(o._focusControl != c){
@@ -1715,32 +1715,32 @@ with(MO){
       }
    }
 }
-MO.FUiWorkspaceApplication = function FUiWorkspaceApplication(o){
+MO.FDuiWorkspaceApplication = function FDuiWorkspaceApplication(o){
    o = MO.Class.inherits(this, o, MO.FApplication);
    o._workspaces      = MO.Class.register(o, new MO.AGetter('_workspaces'));
    o._activeWorkspace = MO.Class.register(o, new MO.AGetter('_activeWorkspace'));
-   o.onProcess        = MO.FUiWorkspaceApplication_onProcess;
-   o.selectWorkspace  = MO.FUiWorkspaceApplication_selectWorkspace;
-   o.processResize    = MO.FUiWorkspaceApplication_processResize;
-   o.processEvent     = MO.FUiWorkspaceApplication_processEvent;
+   o.onProcess        = MO.FDuiWorkspaceApplication_onProcess;
+   o.selectWorkspace  = MO.FDuiWorkspaceApplication_selectWorkspace;
+   o.processResize    = MO.FDuiWorkspaceApplication_processResize;
+   o.processEvent     = MO.FDuiWorkspaceApplication_processEvent;
    return o;
 }
-MO.FUiWorkspaceApplication_onProcess = function FUiWorkspaceApplication_onProcess(){
+MO.FDuiWorkspaceApplication_onProcess = function FDuiWorkspaceApplication_onProcess(){
    var o = this;
    var workspace = o._activeWorkspace
    if(workspace){
       workspace.psFrame();
    }
 }
-MO.FUiWorkspaceApplication_selectWorkspace = function FUiWorkspaceApplication_selectWorkspace(clazz){
+MO.FDuiWorkspaceApplication_selectWorkspace = function FDuiWorkspaceApplication_selectWorkspace(clazz){
    var o = this;
    var workspace = o._activeWorkspace = MO.Class.create(clazz);
    return workspace;
 }
-MO.FUiWorkspaceApplication_processResize = function FUiWorkspaceApplication_processResize(){
+MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_processResize(){
    var o = this;
 }
-MO.FUiWorkspaceApplication_processEvent = function FUiWorkspaceApplication_processEvent(event){
+MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
    return;
    o.dispatcherEvent(event);
@@ -1749,36 +1749,36 @@ MO.FUiWorkspaceApplication_processEvent = function FUiWorkspaceApplication_proce
       chapter.processEvent(event);
    }
 }
-MO.FUiWorkspaceConsole = function FUiWorkspaceConsole(o){
+MO.FDuiWorkspaceConsole = function FDuiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd         = MO.EScope.Local;
    o._activeWorkspace = null;
    o._workspaces      = null;
    o._thread          = null;
    o._interval        = 100;
-   o.onResize         = MO.FUiWorkspaceConsole_onResize;
-   o.onProcess        = MO.FUiWorkspaceConsole_onProcess;
-   o.construct        = MO.FUiWorkspaceConsole_construct;
-   o.active           = MO.FUiWorkspaceConsole_active;
-   o.resize           = MO.FUiWorkspaceConsole_resize;
-   o.dispose          = MO.FUiWorkspaceConsole_dispose;
+   o.onResize         = MO.FDuiWorkspaceConsole_onResize;
+   o.onProcess        = MO.FDuiWorkspaceConsole_onProcess;
+   o.construct        = MO.FDuiWorkspaceConsole_construct;
+   o.active           = MO.FDuiWorkspaceConsole_active;
+   o.resize           = MO.FDuiWorkspaceConsole_resize;
+   o.dispose          = MO.FDuiWorkspaceConsole_dispose;
    return o;
 }
-MO.FUiWorkspaceConsole_onResize = function FUiWorkspaceConsole_onResize(p){
+MO.FDuiWorkspaceConsole_onResize = function FDuiWorkspaceConsole_onResize(p){
    var o = this;
    var workspace = o._activeWorkspace;
    if(workspace){
       workspace.psResize();
    }
 }
-MO.FUiWorkspaceConsole_onProcess = function FUiWorkspaceConsole_onProcess(event){
+MO.FDuiWorkspaceConsole_onProcess = function FDuiWorkspaceConsole_onProcess(event){
    var o = this;
    var workspace = o._activeWorkspace;
    if(workspace){
       workspace.psFrame(event);
    }
 }
-MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
+MO.FDuiWorkspaceConsole_construct = function FDuiWorkspaceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._workspaces = new MO.TDictionary();
@@ -1788,13 +1788,13 @@ MO.FUiWorkspaceConsole_construct = function FUiWorkspaceConsole_construct(){
    MO.Console.find(MO.FThreadConsole).start(thread);
    MO.RWindow.lsnsResize.register(o, o.onResize);
 }
-MO.FUiWorkspaceConsole_active = function FUiWorkspaceConsole_active(p){
+MO.FDuiWorkspaceConsole_active = function FDuiWorkspaceConsole_active(p){
    this._activeWorkspace = p;
 }
-MO.FUiWorkspaceConsole_resize = function FUiWorkspaceConsole_resize(){
+MO.FDuiWorkspaceConsole_resize = function FDuiWorkspaceConsole_resize(){
    this.onResize();
 }
-MO.FUiWorkspaceConsole_dispose = function FUiWorkspaceConsole_dispose(){
+MO.FDuiWorkspaceConsole_dispose = function FDuiWorkspaceConsole_dispose(){
    var o = this;
    o.__base.FConsole.dispose.call(o);
 }

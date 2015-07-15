@@ -19,7 +19,7 @@ with(MO){
    // @history 150224
    //==========================================================
    MO.FUiListView = function FUiListView(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
+      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
       //..........................................................
       // @property
       o._sizeCd           = EUiSize.Horizontal
@@ -75,7 +75,7 @@ with(MO){
    //==========================================================
    MO.FUiListView_onBuild = function FUiListView_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       // 关联事件
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
@@ -109,7 +109,7 @@ with(MO){
    //==========================================================
    MO.FUiListView_construct = function FUiListView_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._itemPool = RClass.create(FObjectPool);
    }
 

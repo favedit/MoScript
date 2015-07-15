@@ -12,7 +12,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiToolBar = function FUiToolBar(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property EUiAlign 对齐枚举
       o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
@@ -56,12 +56,12 @@ with(MO){
    // <T>追加一个子控件。</T>
    //
    // @method
-   // @param control:FUiControl 子控件
+   // @param control:FDuiControl 子控件
    //==========================================================
    MO.FUiToolBar_appendChild = function FUiToolBar_appendChild(control){
       var o = this;
       // 父处理
-      o.__base.FUiContainer.appendChild.call(o, control);
+      o.__base.FDuiContainer.appendChild.call(o, control);
       // 按键处理
       if(RClass.isClass(control, MUiToolButton)){
          var h = o._hPanel;
@@ -88,7 +88,7 @@ with(MO){
    // <T>移除一个子控件。</T>
    //
    // @method
-   // @param p:control:FUiControl 子控件
+   // @param p:control:FDuiControl 子控件
    //==========================================================
    MO.FUiToolBar_removeChild = function FUiToolBar_removeChild(p){
       var o = this;
@@ -101,7 +101,7 @@ with(MO){
          p._hParentLine = null;
       }
       // 父处理
-      o.__base.FUiContainer.removeChild.call(o, p);
+      o.__base.FDuiContainer.removeChild.call(o, p);
    }
 
    //==========================================================
@@ -112,6 +112,6 @@ with(MO){
    MO.FUiToolBar_dispose = function FUiToolBar_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

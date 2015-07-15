@@ -738,7 +738,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -770,7 +770,7 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_onBuild = function FDsTemplateWorkspace_onBuild(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuild.call(o, p);
+      o.__base.FDuiWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
       var fs = o._framesetMain = RClass.create(FUiFrameSet);
@@ -888,7 +888,7 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_construct = function FDsTemplateWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
    }
    MO.FDsTemplateWorkspace_templatePropertyFrame = function FDsTemplateWorkspace_templatePropertyFrame(){
       var o = this;
@@ -940,6 +940,6 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_dispose = function FDsTemplateWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

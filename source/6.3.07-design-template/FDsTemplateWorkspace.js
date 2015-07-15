@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @style
       o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -59,7 +59,7 @@ with(MO){
    //==========================================================
    MO.FDsTemplateWorkspace_onBuild = function FDsTemplateWorkspace_onBuild(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuild.call(o, p);
+      o.__base.FDuiWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
       // 建立主框架
@@ -224,7 +224,7 @@ with(MO){
    MO.FDsTemplateWorkspace_construct = function FDsTemplateWorkspace_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
    }
 
    //==========================================================
@@ -317,6 +317,6 @@ with(MO){
    MO.FDsTemplateWorkspace_dispose = function FDsTemplateWorkspace_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

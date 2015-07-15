@@ -40,166 +40,6 @@ MO.ERowStatus = new function ERowStatusFace(){
    return o;
 }
 with(MO){
-   MO.MListenerBlur = function MListenerBlur(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addBlurListener     = MListenerBlur_addBlurListener;
-      o.processBlurListener = MListenerBlur_processBlurListener;
-      return o;
-   }
-   MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
-      return this.addListener(EEvent.Blur, w, m);
-   }
-   MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerClick = function MListenerClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addClickListener     = MListenerClick_addClickListener;
-      o.setClickListener     = MListenerClick_setClickListener;
-      o.removeClickListener  = MListenerClick_removeClickListener;
-      o.processClickListener = MListenerClick_processClickListener;
-      return o;
-   }
-   MO.MListenerClick_addClickListener = function MListenerClick_addClickListener(owner, method){
-      return this.addListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_setClickListener = function MListenerClick_setClickListener(owner, method){
-      return this.setListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_removeClickListener = function MListenerClick_removeClickListener(owner, method){
-      return this.removeListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_processClickListener = function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerDataChanged = function MListenerDataChanged(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
-      o.processDataChangedListener = MListenerDataChanged_processDataChangedListener;
-      return o;
-   }
-   MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_addDataChangedListener(w, m){
-      return this.addListener(EEvent.DataChanged, w, m);
-   }
-   MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerDoubleClick = function MListenerDoubleClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
-      o.setDoubleClickListener     = MListenerDoubleClick_setDoubleClickListener;
-      o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
-      return o;
-   }
-   MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
-      return this.addListener(EEvent.DoubleClick, owner, method);
-   }
-   MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
-      return this.setListener(EEvent.DoubleClick, owner, method);
-   }
-   MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerEnter = function MListenerEnter(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addEnterListener     = MListenerEnter_addEnterListener;
-      o.processEnterListener = MListenerEnter_processEnterListener;
-      return o;
-   }
-   MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
-      return this.addListener(EEvent.Enter, w, m);
-   }
-   MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Enter, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerFocus = function MListenerFocus(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addFocusListener     = MListenerFocus_addFocusListener;
-      o.processFocusListener = MListenerFocus_processFocusListener;
-      return o;
-   }
-   MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
-      return this.addListener(EEvent.Focus, w, m);
-   }
-   MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Focus, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerItemClick = function MListenerItemClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addItemClickListener     = MListenerItemClick_addItemClickListener;
-      o.processItemClickListener = MListenerItemClick_processItemClickListener;
-      return o;
-   }
-   MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
-      return this.addListener(EEvent.ItemClick, w, m);
-   }
-   MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.ItemClick, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerLeave = function MListenerLeave(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addLeaveListener     = MListenerLeave_addLeaveListener;
-      o.processLeaveListener = MListenerLeave_processLeaveListener;
-      return o;
-   }
-   MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
-      return this.addListener(EEvent.Leave, w, m);
-   }
-   MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerResult = function MListenerResult(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addResultListener     = MListenerResult_addResultListener;
-      o.removeResultListener  = MListenerResult_removeResultListener;
-      o.processResultListener = MListenerResult_processResultListener;
-      o.clearResultListeners  = MListenerResult_clearResultListeners;
-      return o;
-   }
-   MO.MListenerResult_addResultListener = function MListenerResult_addResultListener(owner, method){
-      return this.addListener(EEvent.Result, owner, method);
-   }
-   MO.MListenerResult_removeResultListener = function MListenerResult_removeResultListener(owner, method){
-      return this.removeListener(EEvent.Result, owner, method);
-   }
-   MO.MListenerResult_processResultListener = function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Result, p1, p2, p3, p4, p5);
-   }
-   MO.MListenerResult_clearResultListeners = function MListenerResult_clearResultListeners(){
-      return this.clearListeners(EEvent.Result);
-   }
-}
-with(MO){
-   MO.MListenerSelected = function MListenerSelected(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addSelectedListener     = MListenerSelected_addSelectedListener;
-      o.processSelectedListener = MListenerSelected_processSelectedListener;
-      return o;
-   }
-   MO.MListenerSelected_addSelectedListener = function MListenerSelected_addSelectedListener(w, m){
-      return this.addListener(EEvent.Selected, w, m);
-   }
-   MO.MListenerSelected_processSelectedListener = function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
    MO.MUiContainer = function MUiContainer(o){
       o = RClass.inherits(this, o);
       o.createChild = MUiContainer_createChild;
@@ -938,132 +778,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.MUiMargin = function MUiMargin(o){
-      o = RClass.inherits(this, o);
-      o._margin       = RClass.register(o, new APtyPadding('_margin'));
-      o.construct     = MUiMargin_construct;
-      o.margin        = MUiMargin_margin;
-      o.setMargin     = MUiMargin_setMargin;
-      o.refreshMargin = MUiMargin_refreshMargin;
-      o.dispose       = MUiMargin_dispose;
-      return o;
-   }
-   MO.MUiMargin_construct = function MUiMargin_construct(){
-      var o = this;
-      o._margin = new SPadding();
-   }
-   MO.MUiMargin_margin = function MUiMargin_margin(){
-      return this._margin;
-   }
-   MO.MUiMargin_setMargin = function MUiMargin_setMargin(left, top, right, bottom){
-      var o = this;
-      var padding = o._padding;
-      var hPanel = o.panel(EPanel.Container);
-      var hStyle = null;
-      if(hPanel && !hPanel.__fragment){
-         hStyle = hPanel.style;
-      }
-      if(left != null){
-         padding.left = left;
-         if(hStyle){
-            hStyle.marginLeft = (left == 0) ? null : left + 'px';
-         }
-      }
-      if(top != null){
-         padding.top = top;
-         if(hStyle){
-            hStyle.marginTop = (top == 0) ? null : top + 'px';
-         }
-      }
-      if(right != null){
-         padding.right= right;
-         if(hStyle){
-            hStyle.marginRight = (right == 0) ? null : right + 'px';
-         }
-      }
-      if(bottom != null){
-         padding.bottom = bottom;
-         if(hStyle){
-            hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
-         }
-      }
-   }
-   MO.MUiMargin_refreshMargin = function MUiMargin_refreshMargin(){
-      var o = this;
-      var p = o._margin;
-      o.setMargin(p.left, p.top, p.right, p.bottom);
-   }
-   MO.MUiMargin_dispose = function MUiMargin_dispose(){
-      var o = this;
-      o._margin = RObject.dispose(o._margin);
-   }
-}
-with(MO){
-   MO.MUiPadding = function MUiPadding(o){
-      o = RClass.inherits(this, o);
-      o._padding       = RClass.register(o, new APtyPadding('_padding'));
-      o.construct      = MUiPadding_construct;
-      o.padding        = MUiPadding_padding;
-      o.setPadding     = MUiPadding_setPadding;
-      o.refreshPadding = MUiPadding_refreshPadding;
-      o.dispose        = MUiPadding_dispose;
-      return o;
-   }
-   MO.MUiPadding_construct = function MUiPadding_construct(){
-      var o = this;
-      o._padding = new SPadding();
-   }
-   MO.MUiPadding_padding = function MUiPadding_padding(){
-      return this._padding;
-   }
-   MO.MUiPadding_setPadding = function MUiPadding_setPadding(left, top, right, bottom){
-      var o = this;
-      var padding = o._padding;
-      var hPanel = o.panel(EPanel.Container);
-      var hStyle = null;
-      if(hPanel && !hPanel.__fragment){
-         hStyle = hPanel.style;
-      }
-      if(left != null){
-         padding.left = left;
-         if(hStyle){
-            hStyle.paddingLeft = (left == 0) ? null : left + 'px';
-         }
-      }
-      if(top != null){
-         padding.top = top;
-         if(hStyle){
-            hStyle.paddingTop = (top == 0) ? null : top + 'px';
-         }
-      }
-      if(right != null){
-         padding.right= right;
-         if(hStyle){
-            hStyle.paddingRight = (right == 0) ? null : right + 'px';
-         }
-      }
-      if(bottom != null){
-         padding.bottom = bottom;
-         if(hStyle){
-            hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
-         }
-      }
-   }
-   MO.MUiPadding_refreshPadding = function MUiPadding_refreshPadding(){
-      var o = this;
-      var p = o._padding;
-      o.setPadding(p.left, p.top, p.right, p.bottom);
-   }
-   MO.MUiPadding_dispose = function MUiPadding_dispose(){
-      var o = this;
-      var v = o._padding;
-      if(v){
-         v.dispose();
-         o._padding = null;
-      }
-   }
-}
-with(MO){
    MO.MUiPopup = function MUiPopup(o){
       o = RClass.inherits(this, o);
       o._opener = null;
@@ -1083,7 +797,6 @@ with(MO){
 with(MO){
    MO.MUiSize = function MUiSize(o){
       o = RClass.inherits(this, o);
-      o._dockCd         = RClass.register(o, new APtyString('_dockCd'));
       o._location       = RClass.register(o, new APtyPoint2('_location'));
       o._size           = RClass.register(o, new APtySize2('_size'));
       o.construct       = MUiSize_construct;
@@ -1489,6 +1202,166 @@ with(MO){
    }
 }
 with(MO){
+   MO.MListenerBlur = function MListenerBlur(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addBlurListener     = MListenerBlur_addBlurListener;
+      o.processBlurListener = MListenerBlur_processBlurListener;
+      return o;
+   }
+   MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
+      return this.addListener(EEvent.Blur, w, m);
+   }
+   MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerClick = function MListenerClick(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addClickListener     = MListenerClick_addClickListener;
+      o.setClickListener     = MListenerClick_setClickListener;
+      o.removeClickListener  = MListenerClick_removeClickListener;
+      o.processClickListener = MListenerClick_processClickListener;
+      return o;
+   }
+   MO.MListenerClick_addClickListener = function MListenerClick_addClickListener(owner, method){
+      return this.addListener(EEvent.Click, owner, method);
+   }
+   MO.MListenerClick_setClickListener = function MListenerClick_setClickListener(owner, method){
+      return this.setListener(EEvent.Click, owner, method);
+   }
+   MO.MListenerClick_removeClickListener = function MListenerClick_removeClickListener(owner, method){
+      return this.removeListener(EEvent.Click, owner, method);
+   }
+   MO.MListenerClick_processClickListener = function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerDataChanged = function MListenerDataChanged(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
+      o.processDataChangedListener = MListenerDataChanged_processDataChangedListener;
+      return o;
+   }
+   MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_addDataChangedListener(w, m){
+      return this.addListener(EEvent.DataChanged, w, m);
+   }
+   MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerDoubleClick = function MListenerDoubleClick(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
+      o.setDoubleClickListener     = MListenerDoubleClick_setDoubleClickListener;
+      o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
+      return o;
+   }
+   MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
+      return this.addListener(EEvent.DoubleClick, owner, method);
+   }
+   MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
+      return this.setListener(EEvent.DoubleClick, owner, method);
+   }
+   MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerEnter = function MListenerEnter(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addEnterListener     = MListenerEnter_addEnterListener;
+      o.processEnterListener = MListenerEnter_processEnterListener;
+      return o;
+   }
+   MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
+      return this.addListener(EEvent.Enter, w, m);
+   }
+   MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Enter, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerFocus = function MListenerFocus(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addFocusListener     = MListenerFocus_addFocusListener;
+      o.processFocusListener = MListenerFocus_processFocusListener;
+      return o;
+   }
+   MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
+      return this.addListener(EEvent.Focus, w, m);
+   }
+   MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Focus, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerItemClick = function MListenerItemClick(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addItemClickListener     = MListenerItemClick_addItemClickListener;
+      o.processItemClickListener = MListenerItemClick_processItemClickListener;
+      return o;
+   }
+   MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
+      return this.addListener(EEvent.ItemClick, w, m);
+   }
+   MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.ItemClick, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerLeave = function MListenerLeave(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addLeaveListener     = MListenerLeave_addLeaveListener;
+      o.processLeaveListener = MListenerLeave_processLeaveListener;
+      return o;
+   }
+   MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
+      return this.addListener(EEvent.Leave, w, m);
+   }
+   MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
+   MO.MListenerResult = function MListenerResult(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addResultListener     = MListenerResult_addResultListener;
+      o.removeResultListener  = MListenerResult_removeResultListener;
+      o.processResultListener = MListenerResult_processResultListener;
+      o.clearResultListeners  = MListenerResult_clearResultListeners;
+      return o;
+   }
+   MO.MListenerResult_addResultListener = function MListenerResult_addResultListener(owner, method){
+      return this.addListener(EEvent.Result, owner, method);
+   }
+   MO.MListenerResult_removeResultListener = function MListenerResult_removeResultListener(owner, method){
+      return this.removeListener(EEvent.Result, owner, method);
+   }
+   MO.MListenerResult_processResultListener = function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Result, p1, p2, p3, p4, p5);
+   }
+   MO.MListenerResult_clearResultListeners = function MListenerResult_clearResultListeners(){
+      return this.clearListeners(EEvent.Result);
+   }
+}
+with(MO){
+   MO.MListenerSelected = function MListenerSelected(o){
+      o = RClass.inherits(this, o, MListener);
+      o.addSelectedListener     = MListenerSelected_addSelectedListener;
+      o.processSelectedListener = MListenerSelected_processSelectedListener;
+      return o;
+   }
+   MO.MListenerSelected_addSelectedListener = function MListenerSelected_addSelectedListener(w, m){
+      return this.addListener(EEvent.Selected, w, m);
+   }
+   MO.MListenerSelected_processSelectedListener = function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
+      this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
+   }
+}
+with(MO){
    MO.SServiceInfo = function SServiceInfo(){
       var o = this;
       o.service = null;
@@ -1846,380 +1719,201 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.FUiCanvas = function FUiCanvas(o){
-      o = RClass.inherits(this, o, FUiControl);
-      o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
-      o.onBuildPanel = FUiCanvas_onBuildPanel;
-      o.construct    = FUiCanvas_construct;
-      o.dispose      = FUiCanvas_dispose;
-      return o;
+MO.FDuiCanvas = function FDuiCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   o._styleCanvas = MO.Class.register(o, new MO.AStyle('_styleCanvas'));
+   o.onBuildPanel = MO.FDuiCanvas_onBuildPanel;
+   o.construct    = MO.FDuiCanvas_construct;
+   o.dispose      = MO.FDuiCanvas_dispose;
+   return o;
+}
+MO.FDuiCanvas_onBuildPanel = function FDuiCanvas_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.create(event, 'CANVAS', o.styleName('Canvas'));
+}
+MO.FDuiCanvas_construct = function FDuiCanvas_construct(){
+   var o = this;
+   o.__base.FDuiControl.construct.call(o);
+}
+MO.FDuiCanvas_dispose = function FDuiCanvas_dispose(){
+   var o = this;
+   o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiComponent = function FDuiComponent(o){
+   o = MO.Class.inherits(this, o, MO.FComponent, MO.MUiComponent, MO.MProperty, MO.MClone);
+   o.dispose = MO.FDuiComponent_dispose;
+   return o;
+}
+MO.FDuiComponent_dispose = function FDuiComponent_dispose(){
+   var o = this;
+   o.__base.MUiComponent.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
+}
+MO.FDuiContainer = function FDuiContainer(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
+   o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
+   o._controls           = null;
+   o.oeDesign            = MO.Method.empty;
+   o.construct           = MO.FDuiContainer_construct;
+   o.hasControl          = MO.FDuiContainer_hasControl;
+   o.findControl         = MO.FDuiContainer_findControl;
+   o.searchControl       = MO.FDuiContainer_searchControl;
+   o.controls            = MO.FDuiContainer_controls;
+   o.panel               = MO.FDuiContainer_panel;
+   o.focusFirstControl   = MO.FDuiContainer_focusFirstControl;
+   o.setControlsProperty = MO.FDuiContainer_setControlsProperty;
+   o.storeConfig         = MO.FDuiContainer_storeConfig;
+   o.push                = MO.FDuiContainer_push;
+   o.remove              = MO.FDuiContainer_remove;
+   o.clear               = MO.FDuiContainer_clear;
+   o.dispose             = MO.FDuiContainer_dispose;
+   return o;
+}
+MO.FDuiContainer_construct = function FDuiContainer_construct(){
+   var o = this;
+   o.__base.FDuiControl.construct.call(o);
+}
+MO.FDuiContainer_hasControl = function FDuiContainer_hasControl(){
+   var cs = this._controls;
+   return cs ? !cs.isEmpty() : false;
+}
+MO.FDuiContainer_findControl = function FDuiContainer_findControl(p){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      var cc = cs.count();
+      for(var i = 0; i < cc; i++){
+         var c = cs.value(i);
+         if(c.name() == p){
+            return c;
+         }
+      }
    }
-   MO.FUiCanvas_onBuildPanel = function FUiCanvas_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.create(event, 'CANVAS', o.styleName('Canvas'));
+   return null;
+}
+MO.FDuiContainer_searchControl = function FDuiContainer_searchControl(p){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      var cc = cs.count();
+      for(var i = 0; i < cc; i++){
+         var c = cs.value(i);
+         if(c.name() == p){
+            return c;
+         }
+         if(MO.Class.isClass(c, MO.FDuiContainer)){
+            var f = c.searchControl(p);
+            if(f){
+               return f;
+            }
+         }
+      }
    }
-   MO.FUiCanvas_construct = function FUiCanvas_construct(){
-      var o = this;
-      o.__base.FUiControl.construct.call(o);
+   return null;
+}
+MO.FDuiContainer_controls = function FDuiContainer_controls(){
+   var o = this;
+   var r = o._controls;
+   if(r == null){
+      r = new MO.TDictionary();
+      o._controls = r;
    }
-   MO.FUiCanvas_dispose = function FUiCanvas_dispose(){
-      var o = this;
-      o.__base.FUiControl.dispose.call(o);
+   return r;
+}
+MO.FDuiContainer_panel = function FDuiContainer_panel(t){
+   var o = this;
+   if(t == MO.EPanel.Container){
+      return o._hPanel;
+   }
+   return o.__base.FDuiControl.panel.call(o, t);
+}
+MO.FDuiContainer_focusFirstControl = function FDuiContainer_focusFirstControl(){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      var c = cs.count();
+      for(var i = 0; i < c; i++){
+         var p = cs.valueAt(i);
+         if(MO.Class.isClass(c, MO.MUiFocus) && c.testFocus()){
+            if(!MO.Class.isClass(c, MO.FCalendar) && !MO.Class.isClass(c, MO.FSelect)  && !MO.Class.isClass(c, MO.FNumber)){
+                return c.focus();
+            }
+         }
+      }
+      MO.Console.find(MO.FFocusConsole).focus(o);
    }
 }
-with(MO){
-   MO.FUiComponent = function FUiComponent(o){
-      o = RClass.inherits(this, o, FComponent, MProperty, MClone);
-      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
-      o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
-      o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
-      o._parent       = null;
-      o._components   = null;
-      o._tag          = RClass.register(o, new AGetSet('_tag'));
-      o.oeInitialize  = FUiComponent_oeInitialize;
-      o.oeRelease     = FUiComponent_oeRelease;
-      o.topComponent  = FUiComponent_topComponent;
-      o.hasComponent  = FUiComponent_hasComponent;
-      o.findComponent = FUiComponent_findComponent;
-      o.components    = FUiComponent_components;
-      o.push          = FUiComponent_push;
-      o.remove        = FUiComponent_remove;
-      o.clear         = FUiComponent_clear;
-      o.process       = FUiComponent_process;
-      o.psInitialize  = FUiComponent_psInitialize;
-      o.psRelease     = FUiComponent_psRelease;
-      o.toString      = FUiComponent_toString;
-      o.dispose       = FUiComponent_dispose;
-      o.innerDumpInfo = FUiComponent_innerDumpInfo;
-      o.innerDump     = FUiComponent_innerDump;
-      return o;
-   }
-   MO.FUiComponent_oeInitialize = function FUiComponent_oeInitialize(e){
-      return EEventStatus.Continue;
-   }
-   MO.FUiComponent_oeRelease = function FUiComponent_oeRelease(e){
-      return EEventStatus.Continue;
-   }
-   MO.FUiComponent_topComponent = function FUiComponent_topComponent(c){
-      var p = this;
-      if(c){
-         while(RClass.isClass(p._parent, c)){
-            p = p._parent;
-         }
-      }else{
-         while(p._parent){
-            p = p._parent;
-         }
+MO.FDuiContainer_setControlsProperty = function FDuiContainer_setControlsProperty(p, vs){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         c[p] = vs[n];
       }
-      return p;
-   }
-   MO.FUiComponent_hasComponent = function FUiComponent_hasComponent(){
-      var s = this._components;
-      return s ? !s.isEmpty() : false;
-   }
-   MO.FUiComponent_findComponent = function FUiComponent_findComponent(p){
-      var s = this._components;
-      return s ? s.get(p) : null;
-   }
-   MO.FUiComponent_components = function FUiComponent_components(){
-      var o = this;
-      var r = o._components;
-      if(r == null){
-         r = new TDictionary();
-         o._components = r;
-      }
-      return r;
-   }
-   MO.FUiComponent_push = function FUiComponent_push(p){
-      var o = this;
-      if(RClass.isClass(p, FUiComponent)){
-         var s = o.components();
-         p._parent = o;
-         if(p._name == null){
-            p._name = s.count();
-         }
-         s.set(p._name, p);
-      }
-   }
-   MO.FUiComponent_remove = function FUiComponent_remove(component){
-      var o = this;
-      if(!RClass.isClass(component, FUiComponent)){
-         throw new TError(o, 'Parameter is not componet. (component={1})', component);
-      }
-      var components = o._components;
-      if(!components.contains(component.name())){
-         throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
-      }
-      components.removeValue(component);
-   }
-   MO.FUiComponent_clear = function FUiComponent_clear(p){
-      var o = this;
-      var s = o._components;
-      if(s){
-         s.clear();
-      }
-   }
-   MO.FUiComponent_process = function FUiComponent_process(event){
-      var o = this;
-      var valid = o.__base[event.clazz];
-      if(valid){
-         event.invokeCd = EEventInvoke.Before;
-         var callback = o[event.invoke];
-         if(!callback){
-            return MO.Logger.fatal(o, null, 'Process invoke before is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
-         }
-         var result = callback.call(o, event);
-         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
-            return result;
-         }
-      }
-      if(RClass.isClass(o, MUiContainer)){
-         var components = o._components;
-         if(components){
-            var count = components.count();
-            if(count){
-               for(var i = 0; i < count; i++){
-                  var component = components.at(i);
-                  var result = component.process(event);
-                  if(result == EEventStatus.Cancel){
-                     return result;
-                  }
-               }
-            }
-         }
-      }
-      if(valid){
-         event.invokeCd = EEventInvoke.After;
-         var callback = o[event.invoke];
-         if(!callback){
-            return MO.Logger.fatal(o, null, 'Process invoke after is null. (sender={1}, invoke={2})', RClass.dump(o), event.invoke);
-         }
-         var result = callback.call(o, event);
-         if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
-            return result;
-         }
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FUiComponent_psInitialize = function FUiComponent_psInitialize(){
-      var o = this;
-      var e = new TEventProcess(o, 'oeInitialize', FUiComponent);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiComponent_psRelease = function FUiComponent_psRelease(){
-      var o = this;
-      var e = new TEventProcess(o, 'oeRelease', FUiComponent);
-      o.process(e);
-      e.dispose();
-   }
-   MO.FUiComponent_toString = function FUiComponent_toString(){
-      var o = this;
-      return RClass.dump(o) + ':label=' + o._label;
-   }
-   MO.FUiComponent_dispose = function FUiComponent_dispose(){
-      var o = this;
-      o._parent = null;
-      o._name = null;
-      o._label = null;
-      o._tag = null;
-      o._components = RObject.dispose(o._components, true);
-      o.__base.FComponent.dispose.call(o);
-   }
-   MO.FUiComponent_innerDumpInfo = function FUiComponent_innerDumpInfo(s){
-      var o = this;
-      s.append(RClass.dump(o));
-      s.append(',name=', o._name);
-      s.append(',label=', o._label);
-   }
-   MO.FUiComponent_innerDump = function FUiComponent_innerDump(s, l){
-      var o = this;
-      o.innerdumpInfo(s);
-      var ps = o.components;
-      if(ps){
-         s.appendLine();
-         var c = ps.count;
-         for(var n = 0; n < c; n++){
-            var p = ps.value(n);
-            if(p){
-               p.innerDump(s, l + 1);
-            }
-         }
-      }
-      return s;
    }
 }
-with(MO){
-   MO.FUiContainer = function FUiContainer(o){
-      o = RClass.inherits(this, o, FUiControl, MUiContainer);
-      o._scrollCd           = RClass.register(o, new APtyEnum('_scrollCd', null, EUiScroll, EUiScroll.None));
-      o._controls           = null;
-      o.oeDesign            = RMethod.empty;
-      o.construct           = FUiContainer_construct;
-      o.hasControl          = FUiContainer_hasControl;
-      o.findControl         = FUiContainer_findControl;
-      o.searchControl       = FUiContainer_searchControl;
-      o.controls            = FUiContainer_controls;
-      o.panel               = FUiContainer_panel;
-      o.focusFirstControl   = FUiContainer_focusFirstControl;
-      o.setControlsProperty = FUiContainer_setControlsProperty;
-      o.storeConfig         = FUiContainer_storeConfig;
-      o.push                = FUiContainer_push;
-      o.remove              = FUiContainer_remove;
-      o.clear               = FUiContainer_clear;
-      o.dispose             = FUiContainer_dispose;
-      return o;
-   }
-   MO.FUiContainer_construct = function FUiContainer_construct(){
-      var o = this;
-      o.__base.FUiControl.construct.call(o);
-   }
-   MO.FUiContainer_hasControl = function FUiContainer_hasControl(){
-      var cs = this._controls;
-      return cs ? !cs.isEmpty() : false;
-   }
-   MO.FUiContainer_findControl = function FUiContainer_findControl(p){
-      var o = this;
-      var cs = o._controls;
-      if(cs){
-         var cc = cs.count();
-         for(var i = 0; i < cc; i++){
-            var c = cs.value(i);
-            if(c.name() == p){
-               return c;
-            }
+MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
+   var o = this;
+   x.name = MO.Class.name(o);
+   o.saveConfig(x);
+   var ps = o._components;
+   if(ps){
+      var c = ps.count();
+      for(var i = 0; i < c; i++){
+         var p = ps.value(i);
+         var xp = x.create(MO.Class.name(p));
+         if(MO.Class.isClass(p, MO.FDuiContainer)){
+            p.storeConfig(xp);
+         }else{
+            p.saveConfig(xp);
          }
       }
-      return null;
-   }
-   MO.FUiContainer_searchControl = function FUiContainer_searchControl(p){
-      var o = this;
-      var cs = o._controls;
-      if(cs){
-         var cc = cs.count();
-         for(var i = 0; i < cc; i++){
-            var c = cs.value(i);
-            if(c.name() == p){
-               return c;
-            }
-            if(RClass.isClass(c, FUiContainer)){
-               var f = c.searchControl(p);
-               if(f){
-                  return f;
-               }
-            }
-         }
-      }
-      return null;
-   }
-   MO.FUiContainer_controls = function FUiContainer_controls(){
-      var o = this;
-      var r = o._controls;
-      if(r == null){
-         r = new TDictionary();
-         o._controls = r;
-      }
-      return r;
-   }
-   MO.FUiContainer_panel = function FUiContainer_panel(t){
-      var o = this;
-      if(t == EPanel.Container){
-         return o._hPanel;
-      }
-      return o.__base.FUiControl.panel.call(o, t);
-   }
-   MO.FUiContainer_focusFirstControl = function FUiContainer_focusFirstControl(){
-      var o = this;
-      var cs = o._components;
-      if(cs){
-         var c = cs.count();
-         for(var i = 0; i < c; i++){
-            var p = cs.valueAt(i);
-            if(RClass.isClass(c, MUiFocus) && c.testFocus()){
-               if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
-                   return c.focus();
-               }
-            }
-         }
-         RConsole.find(FFocusConsole).focus(o);
-      }
-   }
-   MO.FUiContainer_setControlsProperty = function FUiContainer_setControlsProperty(p, vs){
-      var o = this;
-      var cs = o._controls;
-      if(cs){
-         for(var i = cs.count() - 1; i >= 0; i--){
-            var c = cs.value(i);
-            c[p] = vs[n];
-         }
-      }
-   }
-   MO.FUiContainer_storeConfig = function FUiContainer_storeConfig(x){
-      var o = this;
-      x.name = RClass.name(o);
-      o.saveConfig(x);
-      var ps = o._components;
-      if(ps){
-         var c = ps.count();
-         for(var i = 0; i < c; i++){
-            var p = ps.value(i);
-            var xp = x.create(RClass.name(p));
-            if(RClass.isClass(p, FUiContainer)){
-               p.storeConfig(xp);
-            }else{
-               p.saveConfig(xp);
-            }
-         }
-      }
-   }
-   MO.FUiContainer_push = function FUiContainer_push(p){
-      var o = this;
-      o.__base.FUiControl.push.call(o, p);
-      if(RClass.isClass(p, FUiControl)){
-         o.controls().set(p._name, p);
-         o.appendChild(p);
-      }
-   }
-   MO.FUiContainer_remove = function FUiContainer_remove(component){
-      var o = this;
-      if(RClass.isClass(component, FUiControl)){
-         var controls = o._controls;
-         if(!controls.contains(component.name())){
-            throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
-         }
-         controls.removeValue(component);
-         o.removeChild(component);
-      }
-      o.__base.FUiControl.remove.call(o, component);
-   }
-   MO.FUiContainer_clear = function FUiContainer_clear(){
-      var o = this;
-      var s = o._controls;
-      if(s){
-         for(var i = s.count() - 1; i >= 0; i--){
-            o.removeChild(s.valueAt(i));
-         }
-         s.clear();
-      }
-      o.__base.FUiControl.clear.call(o);
-   }
-   MO.FUiContainer_dispose = function FUiContainer_dispose(){
-      var o = this;
-      var v = o._controls;
-      if(v){
-         v.dispose();
-         o._controls = null;
-      }
-      o.__base.FUiControl.dispose.call(o);
    }
 }
-MO.FUiControl = function FUiControl(o){
-   o = MO.Class.inherits(this, o, MO.FUiComponent, MO.MUiStyle, MO.MUiSize, MO.MUiPadding, MO.MUiMargin);
+MO.FDuiContainer_push = function FDuiContainer_push(p){
+   var o = this;
+   o.__base.FDuiControl.push.call(o, p);
+   if(MO.Class.isClass(p, MO.FDuiControl)){
+      o.controls().set(p._name, p);
+      o.appendChild(p);
+   }
+}
+MO.FDuiContainer_remove = function FDuiContainer_remove(component){
+   var o = this;
+   if(MO.Class.isClass(component, MO.FDuiControl)){
+      var controls = o._controls;
+      if(!controls.contains(component.name())){
+         throw new MO.TError(o, 'Parameter component is not in this component. (name={1})', component.name());
+      }
+      controls.removeValue(component);
+      o.removeChild(component);
+   }
+   o.__base.FDuiControl.remove.call(o, component);
+}
+MO.FDuiContainer_clear = function FDuiContainer_clear(){
+   var o = this;
+   var s = o._controls;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         o.removeChild(s.at(i));
+      }
+      s.clear();
+   }
+   o.__base.FDuiControl.clear.call(o);
+}
+MO.FDuiContainer_dispose = function FDuiContainer_dispose(){
+   var o = this;
+   var v = o._controls;
+   if(v){
+      v.dispose();
+      o._controls = null;
+   }
+   o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiControl = function FDuiControl(o){
+   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiSize, MO.MUiMargin, MO.MUiPadding, MO.MUiStyle);
    o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
-   o._visible       = MO.Class.register(o, new MO.APtyBoolean('_visible'), true);
-   o._disable       = MO.Class.register(o, new MO.APtyBoolean('_disable'), false);
-   o._hint          = MO.Class.register(o, new MO.APtyString('_hint'));
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._layoutCd      = MO.EUiLayout.Display;
    o._sizeCd        = MO.EUiSize.Normal;
@@ -2230,65 +1924,59 @@ MO.FUiControl = function FUiControl(o){
    o._storage       = null;
    o._hParent       = null;
    o._hPanel        = null;
-   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FUiControl_onEnter);
-   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FUiControl_onLeave);
-   o.onBuildPanel   = MO.FUiControl_onBuildPanel;
-   o.onBuild        = MO.FUiControl_onBuild;
+   o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FDuiControl_onEnter);
+   o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FDuiControl_onLeave);
+   o.onBuildPanel   = MO.FDuiControl_onBuildPanel;
+   o.onBuild        = MO.FDuiControl_onBuild;
    o.onBuilded      = MO.Method.empty;
-   o.oeMode         = MO.FUiControl_oeMode;
-   o.oeEnable       = MO.FUiControl_oeEnable;
-   o.oeVisible      = MO.FUiControl_oeVisible;
-   o.oeResize       = MO.FUiControl_oeResize;
-   o.oeRefresh      = MO.FUiControl_oeRefresh;
-   o.oeFrame        = MO.FUiControl_oeFrame;
-   o.construct      = MO.FUiControl_construct;
-   o.topControl     = MO.FUiControl_topControl;
-   o.panel          = MO.FUiControl_panel;
-   o.isVisible      = MO.FUiControl_isVisible;
-   o.setVisible     = MO.FUiControl_setVisible;
-   o.show           = MO.FUiControl_show;
-   o.hide           = MO.FUiControl_hide;
-   o.isEnable       = MO.FUiControl_isEnable;
-   o.setEnable      = MO.FUiControl_setEnable;
-   o.enable         = MO.FUiControl_enable;
-   o.disable        = MO.FUiControl_disable;
-   o.attachEvent    = MO.FUiControl_attachEvent;
-   o.linkEvent      = MO.FUiControl_linkEvent;
-   o.callEvent      = MO.FUiControl_callEvent;
-   o.psMode         = MO.FUiControl_psMode;
-   o.psDesign       = MO.FUiControl_psDesign;
-   o.psEnable       = MO.FUiControl_psEnable;
-   o.psVisible      = MO.FUiControl_psVisible;
-   o.psResize       = MO.FUiControl_psResize;
-   o.psRefresh      = MO.FUiControl_psRefresh;
-   o.psFrame        = MO.FUiControl_psFrame;
-   o.isBuild        = MO.FUiControl_isBuild;
-   o.build          = MO.FUiControl_build;
-   o.builded        = MO.FUiControl_builded;
-   o.refresh        = MO.FUiControl_refresh;
-   o.setPanel       = MO.FUiControl_setPanel;
-   o.dispose        = MO.FUiControl_dispose;
+   o.oeMode         = MO.FDuiControl_oeMode;
+   o.construct      = MO.FDuiControl_construct;
+   o.topControl     = MO.FDuiControl_topControl;
+   o.panel          = MO.FDuiControl_panel;
+   o.isVisible      = MO.FDuiControl_isVisible;
+   o.setVisible     = MO.FDuiControl_setVisible;
+   o.show           = MO.FDuiControl_show;
+   o.hide           = MO.FDuiControl_hide;
+   o.isEnable       = MO.FDuiControl_isEnable;
+   o.setEnable      = MO.FDuiControl_setEnable;
+   o.enable         = MO.FDuiControl_enable;
+   o.disable        = MO.FDuiControl_disable;
+   o.setMargin      = MO.FDuiControl_setMargin;
+   o.refreshMargin  = MO.FDuiControl_refreshMargin;
+   o.setPadding     = MO.FDuiControl_setPadding;
+   o.refreshPadding = MO.FDuiControl_refreshPadding;
+   o.attachEvent    = MO.FDuiControl_attachEvent;
+   o.linkEvent      = MO.FDuiControl_linkEvent;
+   o.callEvent      = MO.FDuiControl_callEvent;
+   o.psMode         = MO.FDuiControl_psMode;
+   o.psDesign       = MO.FDuiControl_psDesign;
+   o.isBuild        = MO.FDuiControl_isBuild;
+   o.build          = MO.FDuiControl_build;
+   o.builded        = MO.FDuiControl_builded;
+   o.refresh        = MO.FDuiControl_refresh;
+   o.setPanel       = MO.FDuiControl_setPanel;
+   o.dispose        = MO.FDuiControl_dispose;
    return o;
 }
-MO.FUiControl_onEnter = function FUiControl_onEnter(e){
+MO.FDuiControl_onEnter = function FDuiControl_onEnter(e){
    var o = this;
    MO.Console.find(MO.FUiFocusConsole).enter(o);
    if(o._hint){
       MO.RWindow.setStatus(o._hint);
    }
 }
-MO.FUiControl_onLeave = function FUiControl_onLeave(e){
+MO.FDuiControl_onLeave = function FDuiControl_onLeave(e){
    var o = this;
    MO.Console.find(MO.FUiFocusConsole).leave(o);
    if(o._hint){
       MO.RWindow.setStatus();
    }
 }
-MO.FUiControl_onBuildPanel = function FUiControl_onBuildPanel(p){
+MO.FDuiControl_onBuildPanel = function FDuiControl_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.RBuilder.createDiv(p, o.styleName('Panel'));
 }
-MO.FUiControl_onBuild = function FUiControl_onBuild(p){
+MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
    var o = this;
    o.onBuildPanel(p);
    if(o._statusVisible != o._visible){
@@ -2302,43 +1990,20 @@ MO.FUiControl_onBuild = function FUiControl_onBuild(p){
    o.refreshPadding();
    o.refreshMargin();
 }
-MO.FUiControl_oeMode = function FUiControl_oeMode(e){
+MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
    var o = this;
    o._displayCd = e.displayCd;
    return MO.EEventStatus.Continue;
 }
-MO.FUiControl_oeEnable = function FUiControl_oeEnable(e){
+MO.FDuiControl_construct = function FDuiControl_construct(){
    var o = this;
-   if(e.isBefore()){
-      o.setEnable(e.enable);
-   }
-   return MO.EEventStatus.Continue;
-}
-MO.FUiControl_oeVisible = function FUiControl_oeVisible(e){
-   var o = this;
-   if(e.isBefore()){
-      o.setVisible(e.visible);
-   }
-   return MO.EEventStatus.Continue;
-}
-MO.FUiControl_oeResize = function FUiControl_oeResize(p){
-   return MO.EEventStatus.Continue;
-}
-MO.FUiControl_oeRefresh = function FUiControl_oeRefresh(e){
-   return MO.EEventStatus.Continue;
-}
-MO.FUiControl_oeFrame = function FUiControl_oeFrame(event){
-   return MO.EEventStatus.Continue;
-}
-MO.FUiControl_construct = function FUiControl_construct(){
-   var o = this;
-   o.__base.FUiComponent.construct.call(o);
-   o.__base.MUiStyle.construct.call(o);
+   o.__base.FDuiComponent.construct.call(o);
    o.__base.MUiSize.construct.call(o);
-   o.__base.MUiPadding.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
 }
-MO.FUiControl_topControl = function FUiControl_topControl(c){
+MO.FDuiControl_topControl = function FDuiControl_topControl(c){
    var r = this;
    if(c){
       while(r._parent){
@@ -2352,7 +2017,7 @@ MO.FUiControl_topControl = function FUiControl_topControl(c){
       }
    }else{
       while(r._parent){
-         if(!MO.Class.isClass(r._parent, FUiControl)){
+         if(!MO.Class.isClass(r._parent, FDuiControl)){
             break;
          }
          r = r._parent;
@@ -2360,7 +2025,7 @@ MO.FUiControl_topControl = function FUiControl_topControl(c){
    }
    return r;
 }
-MO.FUiControl_panel = function FUiControl_panel(p){
+MO.FDuiControl_panel = function FDuiControl_panel(p){
    var o = this;
    switch(p){
       case MO.EPanel.Parent:
@@ -2371,10 +2036,10 @@ MO.FUiControl_panel = function FUiControl_panel(p){
    }
    return null;
 }
-MO.FUiControl_isVisible = function FUiControl_isVisible(){
+MO.FDuiControl_isVisible = function FDuiControl_isVisible(){
    return this._statusVisible;
 }
-MO.FUiControl_setVisible = function FUiControl_setVisible(p){
+MO.FDuiControl_setVisible = function FDuiControl_setVisible(p){
    var o = this;
    o._statusVisible = p;
    var h = o.panel(MO.EPanel.Container);
@@ -2382,22 +2047,22 @@ MO.FUiControl_setVisible = function FUiControl_setVisible(p){
       MO.RHtml.visibleSet(h, p);
    }
 }
-MO.FUiControl_show = function FUiControl_show(){
+MO.FDuiControl_show = function FDuiControl_show(){
    var o = this;
    if(!o._statusVisible){
       o.setVisible(true);
    }
 }
-MO.FUiControl_hide = function FUiControl_hide(){
+MO.FDuiControl_hide = function FDuiControl_hide(){
    var o = this;
    if(o._statusVisible){
       o.setVisible(false);
    }
 }
-MO.FUiControl_isEnable = function FUiControl_isEnable(){
+MO.FDuiControl_isEnable = function FDuiControl_isEnable(){
    return this._statusEnable;
 }
-MO.FUiControl_setEnable = function FUiControl_setEnable(p){
+MO.FDuiControl_setEnable = function FDuiControl_setEnable(p){
    var o = this;
    o._statusEnable = p;
    var h = o.panel(EPanel.Container);
@@ -2405,25 +2070,101 @@ MO.FUiControl_setEnable = function FUiControl_setEnable(p){
       h.style.disabled = !p;
    }
 }
-MO.FUiControl_enable = function FUiControl_enable(){
+MO.FDuiControl_enable = function FDuiControl_enable(){
    var o = this;
    if(!o._statusEnable){
       o.setEnable(true);
    }
 }
-MO.FUiControl_disable = function FUiControl_disable(){
+MO.FDuiControl_disable = function FDuiControl_disable(){
    var o = this;
    if(o._statusEnable){
       o.setEnable(false);
    }
 }
-MO.FUiControl_attachEvent = function FUiControl_attachEvent(n, h, m, u){
+MO.FDuiControl_setMargin = function FDuiControl_setMargin(left, top, right, bottom){
+   var o = this;
+   var padding = o._padding;
+   var hPanel = o.panel(MO.EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.marginLeft = (left == 0) ? null : left + 'px';
+      }
+   }
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.marginTop = (top == 0) ? null : top + 'px';
+      }
+   }
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.marginRight = (right == 0) ? null : right + 'px';
+      }
+   }
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.marginBottom = (bottom == 0) ? null : bottom + 'px';
+      }
+   }
+}
+MO.FDuiControl_refreshMargin = function FDuiControl_refreshMargin(){
+   var o = this;
+   var p = o._margin;
+   o.setMargin(p.left, p.top, p.right, p.bottom);
+}
+MO.FDuiControl_setPadding = function FDuiControl_setPadding(left, top, right, bottom){
+   var o = this;
+   var padding = o._padding;
+   var hPanel = o.panel(MO.EPanel.Container);
+   var hStyle = null;
+   if(hPanel && !hPanel.__fragment){
+      hStyle = hPanel.style;
+   }
+   if(left != null){
+      padding.left = left;
+      if(hStyle){
+         hStyle.paddingLeft = (left == 0) ? null : left + 'px';
+      }
+   }
+   if(top != null){
+      padding.top = top;
+      if(hStyle){
+         hStyle.paddingTop = (top == 0) ? null : top + 'px';
+      }
+   }
+   if(right != null){
+      padding.right= right;
+      if(hStyle){
+         hStyle.paddingRight = (right == 0) ? null : right + 'px';
+      }
+   }
+   if(bottom != null){
+      padding.bottom = bottom;
+      if(hStyle){
+         hStyle.paddingBottom = (bottom == 0) ? null : bottom + 'px';
+      }
+   }
+}
+MO.FDuiControl_refreshPadding = function FDuiControl_refreshPadding(){
+   var o = this;
+   var p = o._padding;
+   o.setPadding(p.left, p.top, p.right, p.bottom);
+}
+MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
    return MO.RUiControl.attachEvent(this, n, h, m, u);
 }
-MO.FUiControl_linkEvent = function FUiControl_linkEvent(t, n, h, m){
+MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(t, n, h, m){
    return MO.RUiControl.linkEvent(this, t, n, h, m);
 }
-MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
+MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
    var o = this;
    var es = o._events;
    if(es){
@@ -2433,14 +2174,14 @@ MO.FUiControl_callEvent = function FUiControl_callEvent(n, s, e){
       }
    }
 }
-MO.FUiControl_psMode = function FUiControl_psMode(p){
+MO.FDuiControl_psMode = function FDuiControl_psMode(p){
    var o = this;
-   var e = new MO.TEventProcess(o, 'oeMode', MO.FUiControl);
+   var e = new MO.TEventProcess(o, 'oeMode', MO.FDuiControl);
    e.displayCd = p;
    o.process(e);
    e.dispose();
 }
-MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
+MO.FDuiControl_psDesign = function FDuiControl_psDesign(m, f){
    var o = this;
    MO.Console.find(FDesignConsole).setFlag(m, f, o);
    var e = new MO.TEventProcess(o, 'oeDesign', MO.MDesign)
@@ -2449,42 +2190,10 @@ MO.FUiControl_psDesign = function FUiControl_psDesign(m, f){
    o.process(e);
    e.dispose();
 }
-MO.FUiControl_psEnable = function FUiControl_psEnable(v){
-   var o = this;
-   var e = new MO.TEventProcess(o, 'oeEnable', MO.FUiControl)
-   e.enable = v;
-   o.process(e);
-   e.dispose();
-}
-MO.FUiControl_psVisible = function FUiControl_psVisible(v){
-   var o = this;
-   var e = new MO.TEventProcess(o, 'oeVisible', MO.FUiControl);
-   e.visible = v;
-   o.process(e);
-   e.dispose();
-}
-MO.FUiControl_psResize = function FUiControl_psResize(){
-   var o = this;
-   var e = new MO.TEventProcess(o, 'oeResize', MO.FUiControl);
-   o.process(e);
-   e.dispose();
-}
-MO.FUiControl_psRefresh = function FUiControl_psRefresh(t){
-   var o = this;
-   var e = new MO.TEventProcess(o, 'oeRefresh', MO.FUiControl);
-   o.process(e);
-   e.dispose();
-}
-MO.FUiControl_psFrame = function FUiControl_psFrame(){
-   var o = this;
-   var event = new MO.TEventProcess(o, 'oeFrame', MO.FUiControl);
-   o.process(event);
-   event.dispose();
-}
-MO.FUiControl_isBuild = function FUiControl_isBuild(){
+MO.FDuiControl_isBuild = function FDuiControl_isBuild(){
    return this._statusBuild;
 }
-MO.FUiControl_build = function FUiControl_build(p){
+MO.FDuiControl_build = function FDuiControl_build(p){
    var o = this;
    if(o._statusBuild){
       throw new MO.TError(o, 'Current control is already builded.');
@@ -2508,7 +2217,7 @@ MO.FUiControl_build = function FUiControl_build(p){
    MO.Lang.Object.free(a);
    o._statusBuild = true;
 }
-MO.FUiControl_builded = function FUiControl_builded(p){
+MO.FDuiControl_builded = function FDuiControl_builded(p){
    var o = this;
    if(!o._statusBuild){
       throw new MO.TError(o, 'Current control is not build.');
@@ -2519,18 +2228,18 @@ MO.FUiControl_builded = function FUiControl_builded(p){
    o.onBuilded(p);
    o._statusBuilded = true;
 }
-MO.FUiControl_refresh = function FUiControl_refresh(){
+MO.FDuiControl_refresh = function FDuiControl_refresh(){
    var o = this;
    if(!o._statusBuild){
       throw new MO.TError(o, 'Current control is not build.');
    }
 }
-MO.FUiControl_setPanel = function FUiControl_setPanel(h){
+MO.FDuiControl_setPanel = function FDuiControl_setPanel(h){
    var o = this;
    o._hParent = h;
    h.appendChild(o._hPanel);
 }
-MO.FUiControl_dispose = function FUiControl_dispose(){
+MO.FDuiControl_dispose = function FDuiControl_dispose(){
    var o = this;
    o._disable = null;
    o._wrapCd = null;
@@ -2541,26 +2250,27 @@ MO.FUiControl_dispose = function FUiControl_dispose(){
    o._statusBuild = null;
    o._hParent = null;
    o._hPanel = MO.RHtml.free(o._hPanel);
-   o.__base.MUiMargin.dispose.call(o);
-   o.__base.MUiPadding.dispose.call(o);
-   o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
-   o.__base.FUiComponent.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiMargin.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiControl.dispose.call(o);
+   o.__base.FDuiComponent.dispose.call(o);
 }
-MO.FUiWorkspace = function FUiWorkspace(o){
-   o = MO.Class.inherits(this, o, MO.FUiContainer, MO.MUiDescribeFrame);
+MO.FDuiWorkspace = function FDuiWorkspace(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
    o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._frames      = null;
    o._hContainer  = null;
-   o.onBuildPanel = MO.FUiWorkspace_onBuildPanel;
-   o.appendChild  = MO.FUiWorkspace_appendChild;
+   o.onBuildPanel = MO.FDuiWorkspace_onBuildPanel;
+   o.appendChild  = MO.FDuiWorkspace_appendChild;
    return o;
 }
-MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
+MO.FDuiWorkspace_onBuildPanel = function FDuiWorkspace_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.RBuilder.createDiv(event, o.styleName('Panel'));
 }
-MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
+MO.FDuiWorkspace_appendChild = function FDuiWorkspace_appendChild(control){
    var o = this;
    if(MO.Class.isClass(control, MO.FUiFrameSet)){
       o._hPanel.appendChild(control._hPanel);
@@ -2677,7 +2387,7 @@ with(MO){
       if(l && pr){
          pr[l] = pc;
       }
-      if(RClass.isClass(pc, FUiControl)){
+      if(RClass.isClass(pc, FDuiControl)){
          if(!pc.isBuild()){
             pc.build(ph);
          }else{
@@ -2700,7 +2410,7 @@ with(MO){
             pc.push(c);
          }
       }
-      if(RClass.isClass(pc, FUiControl)){
+      if(RClass.isClass(pc, FDuiControl)){
          pc.builded(ph);
       }
    }

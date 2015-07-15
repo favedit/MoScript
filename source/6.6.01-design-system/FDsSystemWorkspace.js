@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSystemWorkspace = function FDsSystemWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
+      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
       //..........................................................
       // @property
       o._frameName            = 'system.design.Workspace';
@@ -48,7 +48,7 @@ with(MO){
    //==========================================================
    MO.FDsSystemWorkspace_onBuilded = function FDsSystemWorkspace_onBuilded(event){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, event);
+      o.__base.FDuiWorkspace.onBuilded.call(o, event);
       //..........................................................
       // 设置样式
       o._frameMenuBar._hPanel.className = o.styleName('MenuBar_Ground');
@@ -80,7 +80,7 @@ with(MO){
    MO.FDsSystemWorkspace_construct = function FDsSystemWorkspace_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       // 设置属性
       o._frameSets = new TDictionary();
    }
@@ -222,6 +222,6 @@ with(MO){
       // 设置属性
       o._frameSets = RObject.dispose(o._frameSets, true);
       // 父处理
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

@@ -291,7 +291,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
       o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -318,7 +318,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_onBuilded = function FDsBitmapWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       var frame = o._frameBody = o.searchControl('bodyFrame');
@@ -387,7 +387,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_construct = function FDsBitmapWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsBitmapWorkspace_findPropertyFrame = function FDsBitmapWorkspace_findPropertyFrame(p){
@@ -409,7 +409,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_dispose = function FDsBitmapWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }

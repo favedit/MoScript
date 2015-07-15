@@ -1,6 +1,6 @@
 with(MO){
    MO.FUiDataAction = function FUiDataAction(o){
-      o = RClass.inherits(this, o, FUiComponent, MInvoke);
+      o = RClass.inherits(this, o, FDuiComponent, MInvoke);
       o._action        = RClass.register(o, new APtyString('_action'));
       o._service       = RClass.register(o, new APtyString('_service'));
       o._execute       = RClass.register(o, new APtyString('_execute'));

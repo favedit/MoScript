@@ -66,7 +66,7 @@ with(MO){
    // <T>显示一个控件。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param control:FDuiControl 控件
    //==========================================================
    MO.FUiPopupConsole_show = function FUiPopupConsole_show(control){
       var o = this;
@@ -82,7 +82,7 @@ with(MO){
    // <T>隐藏一个控件。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param control:FDuiControl 控件
    //==========================================================
    MO.FUiPopupConsole_hide = function FUiPopupConsole_hide(control){
       var o = this;

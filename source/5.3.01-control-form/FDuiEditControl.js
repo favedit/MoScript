@@ -19,7 +19,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiEditControl = function FUiEditControl(o){
-      o = RClass.inherits(this, o, FUiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
       //..........................................................
       // @property
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
@@ -236,7 +236,7 @@ with(MO){
       //   }
       //}
       // 建立控件
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var hc = o._hPanel;
       //..........................................................
       // 建立标签和控件区域
@@ -306,7 +306,7 @@ with(MO){
    //==========================================================
    MO.FUiEditControl_oeMode = function FUiEditControl_oeMode(e){
       var o = this;
-      o.__base.FUiControl.oeMode.call(o, e);
+      o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       // 根据工作模式获得设置信息
       o._editable = o.canEdit(e.mode);
@@ -352,7 +352,7 @@ with(MO){
    MO.FUiEditControl_construct = function FUiEditControl_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       o.__base.MUiEditChange.construct.call(o);
       o.__base.MUiEditDrop.construct.call(o);
       // 设置属性
@@ -374,7 +374,7 @@ with(MO){
       }else if(EPanel.Focus == t){
          return o.hEdit;
       }
-      return o.__base.FUiControl.panel.call(o, t);
+      return o.__base.FDuiControl.panel.call(o, t);
    }
 
    //==========================================================
@@ -449,6 +449,6 @@ with(MO){
       // 父处理
       o.__base.MUiEditDrop.dispose.call(o);
       o.__base.MUiEditChange.dispose.call(o);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

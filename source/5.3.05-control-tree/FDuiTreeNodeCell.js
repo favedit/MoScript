@@ -14,7 +14,7 @@ with(MO){
    // @version 150307
    //==========================================================
    MO.FUiTreeNodeCell = function FUiTreeNodeCell(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick, MListenerDoubleClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick, MListenerDoubleClick);
       //..........................................................
       // @style
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
@@ -67,7 +67,7 @@ with(MO){
    MO.FUiTreeNodeCell_onBuild = function FUiTreeNodeCell_onBuild(p){
       var o = this;
       var t = o._tree;
-      var r = o.__base.FUiControl.onBuild.call(o, p);
+      var r = o.__base.FDuiControl.onBuild.call(o, p);
       // 建立底板
       var h = o._hPanel;
       o.attachEvent('onClick', h);
@@ -109,7 +109,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeNodeCell_construct = function FUiTreeNodeCell_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       // 初始化变量
       o._attributes = new TAttributes();
    }

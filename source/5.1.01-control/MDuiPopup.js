@@ -20,7 +20,7 @@ with(MO){
    // <T>获得打开控件。</T>
    //
    // @method
-   // @return FUiControl 控件
+   // @return FDuiControl 控件
    //==========================================================
    MO.MUiPopup_opener = function MUiPopup_opener(){
       return this._opener;

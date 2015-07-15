@@ -5,18 +5,18 @@
 // @author maocy
 // @version 150611
 //==========================================================
-MO.MGuiMargin = function MGuiMargin(o){
+MO.MUiMargin = function MUiMargin(o){
    o = MO.RClass.inherits(this, o);
    //..........................................................
    // @property 填充结构
    o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);
    //..........................................................
    // @method
-   o.construct = MO.MGuiMargin_construct;
+   o.construct = MO.MUiMargin_construct;
    // @method
-   o.setMargin = MO.MGuiMargin_setMargin;
+   o.setMargin = MO.MUiMargin_setMargin;
    // @method
-   o.dispose   = MO.MGuiMargin_dispose;
+   o.dispose   = MO.MUiMargin_dispose;
    return o;
 }
 
@@ -25,7 +25,7 @@ MO.MGuiMargin = function MGuiMargin(o){
 //
 // @method
 //==========================================================
-MO.MGuiMargin_construct = function MGuiMargin_construct(){
+MO.MUiMargin_construct = function MUiMargin_construct(){
    var o = this;
    o._margin = new MO.SPadding();
 }
@@ -39,7 +39,7 @@ MO.MGuiMargin_construct = function MGuiMargin_construct(){
 // @param right:Integer 右空白
 // @param bottom:Integer 下空白
 //==========================================================
-MO.MGuiMargin_setMargin = function MGuiMargin_setMargin(left, top, right, bottom){
+MO.MUiMargin_setMargin = function MUiMargin_setMargin(left, top, right, bottom){
    this._margin.set(left, top, right, bottom);
 }
 
@@ -48,8 +48,8 @@ MO.MGuiMargin_setMargin = function MGuiMargin_setMargin(left, top, right, bottom
 //
 // @method
 //==========================================================
-MO.MGuiMargin_dispose = function MGuiMargin_dispose(){
+MO.MUiMargin_dispose = function MUiMargin_dispose(){
    var o = this;
    // 释放属性
-   o._margin = MO.RObject.dispose(o._margin);
+   o._margin = MO.Lang.Object.dispose(o._margin);
 }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiMenuButtonSplit = function FUiMenuButtonSplit(o){
-      o = RClass.inherits(this, o, FUiControl, MUiMenuButton);
+      o = RClass.inherits(this, o, FDuiControl, MUiMenuButton);
       //..........................................................
       // @style
       o._stylePanelHorizontal = RClass.register(o, new AStyle('_stylePanelHorizontal'));
@@ -26,7 +26,7 @@ with(MO){
    //==========================================================
    MO.FUiMenuButtonSplit_onBuild = function FUiMenuButtonSplit_onBuild(event){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, event);
+      o.__base.FDuiControl.onBuild.call(o, event);
       var hPanel = o._hPanel;
       if(RClass.isClass(o._parent, FUiMenuBar)){
          hPanel.className = o.styleName('PanelVertical');

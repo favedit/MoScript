@@ -11,7 +11,7 @@ with(MO){
 }
 with(MO){
    MO.FUiFramePage = function FUiFramePage(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));
       o._hContainer     = null;
       o.onBuildPanel    = FUiFramePage_onBuildPanel;
@@ -29,7 +29,7 @@ with(MO){
    }
    MO.FUiFramePage_onBuild = function FUiFramePage_onBuild(p){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, p);
+      o.__base.FDuiContainer.onBuild.call(o, p);
       var h = o._hPanel;
       if(o._scrollCd != EUiScroll.None){
          var hc = o._hContainer = RBuilder.appendDiv(h, o.styleName('Container'));
@@ -61,7 +61,7 @@ with(MO){
 }
 with(MO){
    MO.FUiFrameSet = function FUiFrameSet(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       o._sizeCd       = EUiSize.Fill;
       o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
       o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
@@ -81,7 +81,7 @@ with(MO){
    }
    MO.FUiFrameSet_construct = function FUiFrameSet_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._frames = new TObjects();
    }
    MO.FUiFrameSet_appendFrame = function FUiFrameSet_appendFrame(frame){
@@ -140,16 +140,16 @@ with(MO){
          o.appendSpliter(p);
          return;
       }
-      o.__base.FUiContainer.appendChild.call(o, p);
+      o.__base.FDuiContainer.appendChild.call(o, p);
    }
    MO.FUiFrameSet_dispose = function FUiFrameSet_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiFrameSpliter = function FUiFrameSpliter(o){
-      o = RClass.inherits(this, o, FUiControl, MUiDragable);
+      o = RClass.inherits(this, o, FDuiControl, MUiDragable);
       o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
       o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
       o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));
@@ -188,7 +188,7 @@ with(MO){
    }
    MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p)
+      o.__base.FDuiControl.onBuild.call(o, p)
       var fs = o._frameset;
       var h = o._hPanel;
       h.style.zIndex = EUiLayer.Drap;
@@ -302,7 +302,7 @@ with(MO){
    }
    MO.FUiFrameSpliter_construct = function FUiFrameSpliter_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
    }
    MO.FUiFrameSpliter_alignCd = function FUiFrameSpliter_alignCd(){
       return this._alignCd;
@@ -352,7 +352,7 @@ with(MO){
       }else if(c == EUiAlign.Right){
          o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
       }
-      RConsole.find(FUiWorkspaceConsole).resize();
+      RConsole.find(FDuiWorkspaceConsole).resize();
    }
    MO.FUiFrameSpliter_dispose = function FUiFrameSpliter_dispose(){
       var o = this;
@@ -366,7 +366,7 @@ with(MO){
          RHtml.free(h);
          o._hSize = null;
       }
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){

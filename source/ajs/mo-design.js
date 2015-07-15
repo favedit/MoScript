@@ -370,7 +370,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCanvas = function FDsCanvas(o){
-      o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FDuiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
       o._servicePreview      = 'cloud.resource.preview';
       o._resourceTypeCd      = null;
       o._optionRotation      = false;
@@ -405,7 +405,7 @@ with(MO){
    }
    MO.FDsCanvas_onBuild = function FDsCanvas_onBuild(event){
       var o = this;
-      o.__base.FUiCanvas.onBuild.call(o, event);
+      o.__base.FDuiCanvas.onBuild.call(o, event);
       var hPanel = o._hPanel;
       hPanel.__linker = o;
       hPanel.style.width = '100%';
@@ -523,7 +523,7 @@ with(MO){
    }
    MO.FDsCanvas_oeResize = function FDsCanvas_oeResize(p){
       var o = this;
-      o.__base.FUiCanvas.oeResize.call(o, p);
+      o.__base.FDuiCanvas.oeResize.call(o, p);
       var hp = o._hPanel;
       var w = hp.offsetWidth;
       var h = hp.offsetHeight - 6;
@@ -537,7 +537,7 @@ with(MO){
    }
    MO.FDsCanvas_construct = function FDsCanvas_construct(){
       var o = this;
-      o.__base.FUiCanvas.construct.call(o);
+      o.__base.FDuiCanvas.construct.call(o);
       o._capturePosition = new SPoint2();
       o._captureMatrix = new SMatrix3d();
       o._rotation = new SVector3();
@@ -604,7 +604,7 @@ with(MO){
    MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
       var o = this;
       o._rotation = RObject.dispose(o._rotation);
-      o.__base.FUiCanvas.dispose.call(o);
+      o.__base.FDuiCanvas.dispose.call(o);
    }
 }
 with(MO){
@@ -6867,7 +6867,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.project.Workspace';
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -6907,7 +6907,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_onBuilded = function FDsProjectWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameBody = o.searchControl('bodyFrame');
@@ -6980,7 +6980,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_construct = function FDsProjectWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._frameSets = new TDictionary();
       o._propertyFrames = new TDictionary();
    }
@@ -7059,7 +7059,7 @@ with(MO){
    }
    MO.FDsProjectWorkspace_dispose = function FDsProjectWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
@@ -8997,7 +8997,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceWorkspace = function FDsResourceWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.resource.Workspace';
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -9034,7 +9034,7 @@ with(MO){
    }
    MO.FDsResourceWorkspace_onBuilded = function FDsResourceWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       var frame = o._frameBody = o.searchControl('bodyFrame');
@@ -9116,7 +9116,7 @@ with(MO){
    }
    MO.FDsResourceWorkspace_construct = function FDsResourceWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsResourceWorkspace_findPropertyFrame = function FDsResourceWorkspace_findPropertyFrame(p){
@@ -9138,7 +9138,7 @@ with(MO){
    }
    MO.FDsResourceWorkspace_dispose = function FDsResourceWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
@@ -9436,7 +9436,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
       o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -9463,7 +9463,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_onBuilded = function FDsBitmapWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       var frame = o._frameBody = o.searchControl('bodyFrame');
@@ -9532,7 +9532,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_construct = function FDsBitmapWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsBitmapWorkspace_findPropertyFrame = function FDsBitmapWorkspace_findPropertyFrame(p){
@@ -9554,7 +9554,7 @@ with(MO){
    }
    MO.FDsBitmapWorkspace_dispose = function FDsBitmapWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
@@ -10406,7 +10406,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialWorkspace = function FDsMaterialWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
       o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -10433,7 +10433,7 @@ with(MO){
    }
    MO.FDsMaterialWorkspace_onBuilded = function FDsMaterialWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       var frame = o._frameBody = o.searchControl('bodyFrame');
@@ -10502,7 +10502,7 @@ with(MO){
    }
    MO.FDsMaterialWorkspace_construct = function FDsMaterialWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsMaterialWorkspace_findPropertyFrame = function FDsMaterialWorkspace_findPropertyFrame(p){
@@ -10524,7 +10524,7 @@ with(MO){
    }
    MO.FDsMaterialWorkspace_dispose = function FDsMaterialWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
@@ -11613,7 +11613,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelWorkspace = function FDsModelWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.mesh.Workspace';
       o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -11640,7 +11640,7 @@ with(MO){
    }
    MO.FDsModelWorkspace_onBuilded = function FDsModelWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var frame = o._frameToolBar = o.searchControl('toolbarFrame');
       frame._hPanel.className = o.styleName('Toolbar_Ground');
       var frame = o._frameBody = o.searchControl('bodyFrame');
@@ -11709,7 +11709,7 @@ with(MO){
    }
    MO.FDsModelWorkspace_construct = function FDsModelWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsModelWorkspace_findPropertyFrame = function FDsModelWorkspace_findPropertyFrame(p){
@@ -11731,7 +11731,7 @@ with(MO){
    }
    MO.FDsModelWorkspace_dispose = function FDsModelWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
@@ -12476,7 +12476,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -12508,7 +12508,7 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_onBuild = function FDsTemplateWorkspace_onBuild(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuild.call(o, p);
+      o.__base.FDuiWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
       var fs = o._framesetMain = RClass.create(FUiFrameSet);
@@ -12626,7 +12626,7 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_construct = function FDsTemplateWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
    }
    MO.FDsTemplateWorkspace_templatePropertyFrame = function FDsTemplateWorkspace_templatePropertyFrame(){
       var o = this;
@@ -12678,7 +12678,7 @@ with(MO){
    }
    MO.FDsTemplateWorkspace_dispose = function FDsTemplateWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
    }
 }
 with(MO){
@@ -13496,7 +13496,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.scene.Workspace';
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -13523,7 +13523,7 @@ with(MO){
    }
    MO.FDsSceneWorkspace_onBuilded = function FDsSceneWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       var f = o._frameToolBar = o.searchControl('toolbarFrame');
       f._hPanel.className = o.styleName('Toolbar_Ground');
       var f = o._frameCatalog = o.searchControl('catalogFrame');
@@ -13640,7 +13640,7 @@ with(MO){
    }
    MO.FDsSceneWorkspace_construct = function FDsSceneWorkspace_construct(){
       var o = this;
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsSceneWorkspace_findPropertyFrame = function FDsSceneWorkspace_findPropertyFrame(p){
@@ -13660,7 +13660,7 @@ with(MO){
    }
    MO.FDsSceneWorkspace_dispose = function FDsSceneWorkspace_dispose(){
       var o = this;
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }

@@ -21,7 +21,7 @@ with(MO){
    //
    // @method
    // @param p:config:TXmlNode 配置节点
-   // @return FUiControl 控件
+   // @return FDuiControl 控件
    //==========================================================
    MO.MUiContainer_createChild = function MUiContainer_createChild(p){
       // 创建实例

@@ -163,7 +163,7 @@ MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentCont
 // </P>
 //
 // @method
-// @param control:FUiControl 控件对象
+// @param control:FDuiControl 控件对象
 // @param xconfig:TXmlNode 配置节点
 // @param attributes:Object 属性集合
 //===========================================================
@@ -192,7 +192,7 @@ MO.RGuiControl.prototype.build = function RGuiControl_build(control, xconfig, at
 // </P>
 //
 // @method
-// @param control:FUiControl 控件对象
+// @param control:FDuiControl 控件对象
 // @param xconfig:TXmlNode 配置节点
 // @param attributes:Object 属性集合
 //===========================================================

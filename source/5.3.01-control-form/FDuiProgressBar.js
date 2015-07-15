@@ -12,7 +12,7 @@ with(MO){
    // @history 150405
    //==========================================================
    MO.FUiProgressBar = function FUiProgressBar(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @style
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
@@ -57,7 +57,7 @@ with(MO){
    //==========================================================
    MO.FUiProgressBar_onBuild = function FUiProgressBar_onBuild(event){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, event);
+      o.__base.FDuiControl.onBuild.call(o, event);
       // 建立进度
       var hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
       o.hProgress = RBuilder.appendTableCell(hLine);
@@ -127,7 +127,7 @@ with(MO){
       var o = this;
       o._hForm = RHtml.free(o._hForm);
       // 父处理
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
    // ------------------------------------------------------------
    //function FUiProgressBar_formatValue(text){

@@ -58,7 +58,7 @@ with(MO){
    // <T>构建指定表单名称的控件对象，并放置在指定HTML页面ID的位置。</T>
    //
    // @method
-   // @param c:control:FUiControl 控件
+   // @param c:control:FDuiControl 控件
    // @param n:name:String 名称
    // @return FUiFrame 页面控件
    //==========================================================
@@ -123,9 +123,9 @@ with(MO){
    // <T>根据类名查找表单实例，如果不存在则使用类创建实例。</T>
    //
    // @method
-   // @param control:FUiControl 控件对象
+   // @param control:FDuiControl 控件对象
    // @param clazz:Function 类对象
-   // @return FUiControl 页面控件
+   // @return FDuiControl 页面控件
    //==========================================================
    MO.FUiFrameConsole_findByClass = function FUiFrameConsole_findByClass(control, clazz){
       var o = this;
@@ -144,7 +144,7 @@ with(MO){
    // <T>根据名称查找表单实例，如果不存在则创建一个。</T>
    //
    // @method
-   // @param c:control:FUiControl 控件
+   // @param c:control:FDuiControl 控件
    // @param n:name:String 名称
    // @param h:html:HtmlTag 页面元素
    // @return FUiFrame 页面控件

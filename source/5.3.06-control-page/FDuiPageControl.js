@@ -25,7 +25,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FUiPageControl = function FUiPageControl(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
       o._sizeCd          = EUiSize.Horizontal;
@@ -93,7 +93,7 @@ with(MO){
    //==========================================================
    MO.FUiPageControl_onBuild = function FUiPageControl_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       // 获得底板
       var h = o._hPanel;
       // 建立标题区
@@ -133,7 +133,7 @@ with(MO){
    //==========================================================
    MO.FUiPageControl_oeRefresh = function FUiPageControl_oeRefresh(event){
       var o = this;
-      var r = o.__base.FUiContainer.oeRefresh.call(o, event);
+      var r = o.__base.FDuiContainer.oeRefresh.call(o, event);
       if(event.isBefore()){
          // Select first
          if(o._sheets.count()){
@@ -163,7 +163,7 @@ with(MO){
    MO.FUiPageControl_construct = function FUiPageControl_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       // 设置属性
       o._sheets = new TDictionary();
    }
@@ -301,7 +301,7 @@ with(MO){
          sheets.set(component.name(), component);
       }
       // 父处理
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
    }
 
    //==========================================================
@@ -311,6 +311,6 @@ with(MO){
    //==========================================================
    MO.FUiPageControl_dispose = function FUiPageControl_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

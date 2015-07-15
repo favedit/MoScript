@@ -7,7 +7,7 @@ with(MO){
    // @history 150402
    //==========================================================
    MO.FUiPopupMenu = function FUiPopupMenu(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiPopup);
+      o = RClass.inherits(this, o, FDuiContainer, MUiPopup);
       //..........................................................
       // @style
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
@@ -51,7 +51,7 @@ with(MO){
    //==========================================================
    MO.FUiPopupMenu_onBuild = function FUiPopupMenu_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       var hPanel = o._hPanel;
       // 建立表单
       var hForm = o._hForm = RBuilder.appendTable(hPanel, o.styleName('Form'));
@@ -100,7 +100,7 @@ with(MO){
    // <T>追加子控件。</T>
    //
    // @method
-   // @param control:FUiControl 控件
+   // @param control:FDuiControl 控件
    //==========================================================
    MO.FUiPopupMenu_appendChild = function FUiPopupMenu_appendChild(control){
       var o = this;
@@ -179,6 +179,6 @@ with(MO){
       o._hLabel = RMemory.free(o._hLabel);
       o._hLastRow = RMemory.free(o._hLastRow);
       // 父处理
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }

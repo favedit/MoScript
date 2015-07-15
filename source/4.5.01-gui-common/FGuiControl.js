@@ -6,14 +6,11 @@
 // @version 150610
 //==========================================================
 MO.FGuiControl = function FGuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MGuiMargin, MO.MGuiPadding, MO.MGuiBorder);
+   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
    //..........................................................
    // @property
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    // @property
-   o._visible                = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
-   o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EUiAnchor.None);
-   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
@@ -78,11 +75,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.dirty                   = MO.FGuiControl_dirty;
    o.dirtyAll                = MO.FGuiControl_dirtyAll;
    // @method
-   o.psEnable                = MO.FGuiControl_psEnable;
-   o.psVisible               = MO.FGuiControl_psVisible;
-   o.psResize                = MO.FGuiControl_psResize;
    o.psPaint                 = MO.FGuiControl_psPaint;
-   o.psRefresh               = MO.FGuiControl_psRefresh;
    o.psUpdate                = MO.FGuiControl_psUpdate;
    // @method
    o.dispose                 = MO.FGuiControl_dispose;
@@ -287,8 +280,8 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    var o = this;
    o.__base.FGuiComponent.construct.call(o);
    o.__base.MGuiSize.construct.call(o);
-   o.__base.MGuiMargin.construct.call(o);
-   o.__base.MGuiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    // 创建属性
    o._clientRectangle = new MO.SRectangle();
@@ -621,52 +614,6 @@ MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
 }
 
 //==========================================================
-// <T>分发改变控件可操作和禁止的事件。</T>
-//
-// @method
-// @param enable:Boolean 是否可操作
-//==========================================================
-MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
-   var o = this;
-   // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeEnable', MO.FGuiControl)
-   event.enable = enable;
-   // 处理消息
-   o.process(event);
-   event.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件隐藏和显示的事件。</T>
-//
-// @method
-// @param visible:Boolean 是否可见
-//==========================================================
-MO.FGuiControl_psVisible = function FGuiControl_psVisible(visible){
-   var o = this;
-   // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeVisible', MO.FGuiControl);
-   event.visible = visible;
-   // 处理消息
-   o.process(event);
-   event.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件大小的事件。</T>
-//
-// @method
-//==========================================================
-MO.FGuiControl_psResize = function FGuiControl_psResize(){
-   var o = this;
-   // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeResize', MO.FGuiControl);
-   // 处理消息
-   o.process(event);
-   event.dispose();
-}
-
-//==========================================================
 // <T>绘制处理。</T>
 //
 // @method
@@ -674,21 +621,7 @@ MO.FGuiControl_psResize = function FGuiControl_psResize(){
 MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
    var o = this;
    // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeParint', MO.FGuiControl);
-   // 处理消息
-   o.process(event);
-   event.dispose();
-}
-
-//==========================================================
-// <T>分发控件刷新的事件。</T>
-//
-// @method
-//==========================================================
-MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
-   var o = this;
-   // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeRefresh', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oeParint', MO.FGuiControl);
    // 处理消息
    o.process(event);
    event.dispose();
@@ -702,7 +635,7 @@ MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
 MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
    var o = this;
    // 创建事件
-   var event = new MO.SGuiDispatchEvent(o, 'oeUpdate', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oeUpdate', MO.FGuiControl);
    // 处理消息
    o.process(event);
    event.dispose();
@@ -722,10 +655,11 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._clientScale = MO.RObject.dispose(o._clientScale);
    // 父处理
    o.__base.MGuiBorder.dispose.call(o);
-   o.__base.MGuiPadding.dispose.call(o);
-   o.__base.MGuiMargin.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiMargin.dispose.call(o);
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MRenderableLinker.dispose.call(o);
    o.__base.MGraphicObject.dispose.call(o);
+   o.__base.MUiControl.dispose.call(o);
    o.__base.FGuiComponent.dispose.call(o);
 }

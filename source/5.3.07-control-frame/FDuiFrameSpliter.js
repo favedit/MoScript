@@ -7,7 +7,7 @@ with(MO){
    // @version 150120
    //==========================================================
    MO.FUiFrameSpliter = function FUiFrameSpliter(o){
-      o = RClass.inherits(this, o, FUiControl, MUiDragable);
+      o = RClass.inherits(this, o, FDuiControl, MUiDragable);
       //..........................................................
       // @style
       o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
@@ -75,7 +75,7 @@ with(MO){
    //==========================================================
    MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p)
+      o.__base.FDuiControl.onBuild.call(o, p)
       var fs = o._frameset;
       var h = o._hPanel;
       h.style.zIndex = EUiLayer.Drap;
@@ -249,7 +249,7 @@ with(MO){
    //==========================================================
    MO.FUiFrameSpliter_construct = function FUiFrameSpliter_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
    }
 
    //==========================================================
@@ -337,7 +337,7 @@ with(MO){
          o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
       }
       // 调整工作台尺寸
-      RConsole.find(FUiWorkspaceConsole).resize();
+      RConsole.find(FDuiWorkspaceConsole).resize();
    }
 
    //==========================================================
@@ -359,6 +359,6 @@ with(MO){
          o._hSize = null;
       }
       // 父处理
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

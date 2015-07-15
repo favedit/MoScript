@@ -81,44 +81,6 @@ with(MO){
       return o;
    }
 }
-MO.MGuiMargin = function MGuiMargin(o){
-   o = MO.RClass.inherits(this, o);
-   o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);
-   o.construct = MO.MGuiMargin_construct;
-   o.setMargin = MO.MGuiMargin_setMargin;
-   o.dispose   = MO.MGuiMargin_dispose;
-   return o;
-}
-MO.MGuiMargin_construct = function MGuiMargin_construct(){
-   var o = this;
-   o._margin = new MO.SPadding();
-}
-MO.MGuiMargin_setMargin = function MGuiMargin_setMargin(left, top, right, bottom){
-   this._margin.set(left, top, right, bottom);
-}
-MO.MGuiMargin_dispose = function MGuiMargin_dispose(){
-   var o = this;
-   o._margin = MO.RObject.dispose(o._margin);
-}
-MO.MGuiPadding = function MGuiPadding(o){
-   o = MO.RClass.inherits(this, o);
-   o._padding   = MO.RClass.register(o, [new MO.APtyPadding('_padding'), new MO.AGetter('_padding')]);
-   o.construct  = MO.MGuiPadding_construct;
-   o.setPadding = MO.MGuiPadding_setPadding;
-   o.dispose    = MO.MGuiPadding_dispose;
-   return o;
-}
-MO.MGuiPadding_construct = function MGuiPadding_construct(){
-   var o = this;
-   o._padding = new MO.SPadding();
-}
-MO.MGuiPadding_setPadding = function MGuiPadding_setPadding(left, top, right, bottom){
-   this._padding.set(left, top, right, bottom);
-}
-MO.MGuiPadding_dispose = function MGuiPadding_dispose(){
-   var o = this;
-   o._padding = MO.RObject.dispose(o._padding);
-}
 with(MO){
    MO.MGuiSize = function MGuiSize(o){
       o = RClass.inherits(this, o);
@@ -192,37 +154,6 @@ with(MO){
       o._location = RObject.dispose(o._location);
       o._size = RObject.dispose(o._size);
       o._scale = RObject.dispose(o._scale);
-   }
-}
-with(MO){
-   MO.SGuiDispatchEvent = function SGuiDispatchEvent(owner, invokeName, clazz){
-      var o = this;
-      o.owner    = owner;
-      o.invoke   = invokeName;
-      o.clazz    = RClass.name(clazz);
-      o.invokeCd = EEventInvoke.Unknown;
-      o.isBefore = SGuiDispatchEvent_isBefore;
-      o.isAfter  = SGuiDispatchEvent_isAfter;
-      o.dispose  = SGuiDispatchEvent_dispose;
-      o.dump     = SGuiDispatchEvent_dump;
-      return o;
-   }
-   MO.SGuiDispatchEvent_isBefore = function SGuiDispatchEvent_isBefore(){
-      return this.invokeCd == EEventInvoke.Before;
-   }
-   MO.SGuiDispatchEvent_isAfter = function SGuiDispatchEvent_isAfter(){
-      return this.invokeCd == EEventInvoke.After;
-   }
-   MO.SGuiDispatchEvent_dispose = function SGuiDispatchEvent_dispose(){
-      var o = this;
-      o.owner = null;
-      o.invoke = null;
-      o.clazz = null;
-      o.invokeCd = null;
-   }
-   MO.SGuiDispatchEvent_dump = function SGuiDispatchEvent_dump(){
-      var o = this;
-      return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
    }
 }
 MO.SGuiImage = function SGuiImage(){
@@ -418,157 +349,15 @@ MO.FGuiActionAlpha_dispose = function FGuiActionAlpha_dispose(){
    o._eventFinish = MO.Lang.Object.dispose(o._eventFinish);
    o.__base.FGuiAction.dispose.call(o);
 }
-with(MO){
-   MO.FGuiComponent = function FGuiComponent(o){
-      o = RClass.inherits(this, o, FComponent, MProperty);
-      o._guid         = RClass.register(o, [new APtyString('_guid'), new AGetSet('_guid')]);
-      o._name         = RClass.register(o, [new APtyString('_name'), new AGetSet('_name')]);
-      o._label        = RClass.register(o, [new APtyString('_label'), new AGetSet('_label')]);
-      o._components   = null;
-      o._tag          = RClass.register(o, new AGetSet('_tag'));
-      o.oeInitialize  = FGuiComponent_oeInitialize;
-      o.oeRelease     = FGuiComponent_oeRelease;
-      o.topComponent  = FGuiComponent_topComponent;
-      o.hasComponent  = FGuiComponent_hasComponent;
-      o.findComponent = FGuiComponent_findComponent;
-      o.components    = FGuiComponent_components;
-      o.push          = FGuiComponent_push;
-      o.remove        = FGuiComponent_remove;
-      o.clear         = FGuiComponent_clear;
-      o.process       = FGuiComponent_process;
-      o.psInitialize  = FGuiComponent_psInitialize;
-      o.psRelease     = FGuiComponent_psRelease;
-      o.toString      = FGuiComponent_toString;
-      o.dispose       = FGuiComponent_dispose;
-      return o;
-   }
-   MO.FGuiComponent_oeInitialize = function FGuiComponent_oeInitialize(e){
-      return EEventStatus.Continue;
-   }
-   MO.FGuiComponent_oeRelease = function FGuiComponent_oeRelease(e){
-      return EEventStatus.Continue;
-   }
-   MO.FGuiComponent_topComponent = function FGuiComponent_topComponent(clazz){
-      var component = this;
-      if(clazz){
-         while(RClass.isClass(component._parent, clazz)){
-            component = component._parent;
-         }
-      }else{
-         while(component._parent){
-            component = component._parent;
-         }
-      }
-      return component;
-   }
-   MO.FGuiComponent_hasComponent = function FGuiComponent_hasComponent(){
-      var components = this._components;
-      return components ? !components.isEmpty() : false;
-   }
-   MO.FGuiComponent_findComponent = function FGuiComponent_findComponent(name){
-      var components = this._components;
-      return components ? components.get(name) : null;
-   }
-   MO.FGuiComponent_components = function FGuiComponent_components(){
-      var o = this;
-      var components = o._components;
-      if(components == null){
-         components = new TDictionary();
-         o._components = components;
-      }
-      return components;
-   }
-   MO.FGuiComponent_push = function FGuiComponent_push(component){
-      var o = this;
-      if(RClass.isClass(component, FGuiComponent)){
-         var components = o.components();
-         component._parent = o;
-         if(component._name == null){
-            component._name = component.count();
-         }
-         components.set(component._name, component);
-      }
-   }
-   MO.FGuiComponent_remove = function FGuiComponent_remove(component){
-      var o = this;
-      if(!RClass.isClass(component, FGuiComponent)){
-         throw new TError(o, 'Parameter is not componet. (component={1})', component);
-      }
-      var components = o._components;
-      if(!components.contains(component.name())){
-         throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
-      }
-      components.removeValue(component);
-   }
-   MO.FGuiComponent_clear = function FGuiComponent_clear(){
-      var o = this;
-      var components = o._components;
-      if(components){
-         components.clear();
-      }
-   }
-   MO.FGuiComponent_process = function FGuiComponent_process(event){
-      var o = this;
-      var valid = o.__base[event.clazz];
-      if(valid){
-         event.invokeCd = EEventInvoke.Before;
-         var callback = o[event.invoke];
-         if(callback){
-            var result = callback.call(o, event);
-            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
-               return result;
-            }
-         }
-      }
-      if(RClass.isClass(o, MGuiContainer)){
-         var components = o._components;
-         if(components){
-            var count = components.count();
-            if(count){
-               for(var i = 0; i < count; i++){
-                  var component = components.at(i);
-                  var result = component.process(event);
-                  if(result == EEventStatus.Cancel){
-                     return result;
-                  }
-               }
-            }
-         }
-      }
-      if(valid){
-         event.invokeCd = EEventInvoke.After;
-         var callback = o[event.invoke];
-         if(callback){
-            var result = callback.call(o, event);
-            if((result == EEventStatus.Stop) || (result == EEventStatus.Cancel)){
-               return result;
-            }
-         }
-      }
-      return EEventStatus.Continue;
-   }
-   MO.FGuiComponent_psInitialize = function FGuiComponent_psInitialize(){
-      var o = this;
-      var event = new SGuiDispatchEvent(o, 'oeInitialize', FGuiComponent);
-      o.process(event);
-      event.dispose();
-   }
-   MO.FGuiComponent_psRelease = function FGuiComponent_psRelease(){
-      var o = this;
-      var event = new SGuiDispatchEvent(o, 'oeRelease', FGuiComponent);
-      o.process(event);
-      event.dispose();
-   }
-   MO.FGuiComponent_toString = function FGuiComponent_toString(){
-      var o = this;
-      return RClass.dump(o) + ':label=' + o._label;
-   }
-   MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
-      var o = this;
-      o._components = RObject.dispose(o._components, true);
-      o._tag = null;
-      o.__base.FComponent.dispose.call(o);
-   }
+MO.FGuiComponent = function FGuiComponent(o){
+   o = MO.Class.inherits(this, o, MO.FComponent, MO.MUiComponent, MO.MProperty);
+   o.dispose = MO.FGuiComponent_dispose;
+   return o;
+}
+MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
+   var o = this;
+   o.__base.MUiComponent.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }
 with(MO){
    MO.FGuiContainer = function FGuiContainer(o){
@@ -577,11 +366,8 @@ with(MO){
    }
 }
 MO.FGuiControl = function FGuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MGuiMargin, MO.MGuiPadding, MO.MGuiBorder);
+   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
-   o._visible                = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
-   o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EUiAnchor.None);
-   o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
@@ -630,11 +416,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
    o.dirtyAll                = MO.FGuiControl_dirtyAll;
-   o.psEnable                = MO.FGuiControl_psEnable;
-   o.psVisible               = MO.FGuiControl_psVisible;
-   o.psResize                = MO.FGuiControl_psResize;
    o.psPaint                 = MO.FGuiControl_psPaint;
-   o.psRefresh               = MO.FGuiControl_psRefresh;
    o.psUpdate                = MO.FGuiControl_psUpdate;
    o.dispose                 = MO.FGuiControl_dispose;
    return o;
@@ -752,8 +534,8 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    var o = this;
    o.__base.FGuiComponent.construct.call(o);
    o.__base.MGuiSize.construct.call(o);
-   o.__base.MGuiMargin.construct.call(o);
-   o.__base.MGuiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    o._clientRectangle = new MO.SRectangle();
    o._clientScale = new MO.SSize2();
@@ -937,41 +719,15 @@ MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
    }
    return false;
 }
-MO.FGuiControl_psEnable = function FGuiControl_psEnable(enable){
-   var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeEnable', MO.FGuiControl)
-   event.enable = enable;
-   o.process(event);
-   event.dispose();
-}
-MO.FGuiControl_psVisible = function FGuiControl_psVisible(visible){
-   var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeVisible', MO.FGuiControl);
-   event.visible = visible;
-   o.process(event);
-   event.dispose();
-}
-MO.FGuiControl_psResize = function FGuiControl_psResize(){
-   var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeResize', MO.FGuiControl);
-   o.process(event);
-   event.dispose();
-}
 MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
    var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeParint', MO.FGuiControl);
-   o.process(event);
-   event.dispose();
-}
-MO.FGuiControl_psRefresh = function FGuiControl_psRefresh(){
-   var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeRefresh', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oeParint', MO.FGuiControl);
    o.process(event);
    event.dispose();
 }
 MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
    var o = this;
-   var event = new MO.SGuiDispatchEvent(o, 'oeUpdate', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oeUpdate', MO.FGuiControl);
    o.process(event);
    event.dispose();
 }
@@ -982,11 +738,12 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
    o._clientScale = MO.RObject.dispose(o._clientScale);
    o.__base.MGuiBorder.dispose.call(o);
-   o.__base.MGuiPadding.dispose.call(o);
-   o.__base.MGuiMargin.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiMargin.dispose.call(o);
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MRenderableLinker.dispose.call(o);
    o.__base.MGraphicObject.dispose.call(o);
+   o.__base.MUiControl.dispose.call(o);
    o.__base.FGuiComponent.dispose.call(o);
 }
 with(MO){

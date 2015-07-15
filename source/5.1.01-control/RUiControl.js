@@ -73,7 +73,7 @@ with(MO){
    // <T>连接一个页面事件。</T>
    //
    // @method
-   // @param c:control:FUiControl 控件对象
+   // @param c:control:FDuiControl 控件对象
    // @param n:name:String 事件名称
    // @param h:html:HtmlTag 页面元素
    // @param m:method:Function 处理函数
@@ -113,7 +113,7 @@ with(MO){
    // @param pc:parent:FComponent 父组件
    // @param px:config:TXmlNode 配置节点
    // @param pa:attributes:Object 参数集合
-   // @return FUiControl 控件对象
+   // @return FDuiControl 控件对象
    //===========================================================
    MO.RUiControl.prototype.innerCreate = function RUiControl_innerCreate(pc, px, pa){
       var o = this;
@@ -153,10 +153,10 @@ with(MO){
    // </P>
    //
    // @method
-   // @param pc:control:FUiControl 控件对象
+   // @param pc:control:FDuiControl 控件对象
    // @param px:config:TXmlNode 配置节点
    // @param pa:attributes:Object 属性集合
-   // @return FUiControl 控件对象
+   // @return FDuiControl 控件对象
    //===========================================================
    MO.RUiControl.prototype.create = function RUiControl_create(pc, px, pa){
       var o = this;
@@ -204,7 +204,7 @@ with(MO){
    // <T>根据配置信息内部构件一个控件。</T>
    //
    // @method
-   // @param pc:control:FUiControl 控件对象
+   // @param pc:control:FDuiControl 控件对象
    // @param px:config:TXmlNode 配置节点
    // @param pa:attribute:Object 属性集合
    //===========================================================
@@ -223,7 +223,7 @@ with(MO){
          pr[l] = pc;
       }
       // 构建处理
-      if(RClass.isClass(pc, FUiControl)){
+      if(RClass.isClass(pc, FDuiControl)){
          if(!pc.isBuild()){
             pc.build(ph);
          }else{
@@ -249,7 +249,7 @@ with(MO){
          }
       }
       // 构建完成处理
-      if(RClass.isClass(pc, FUiControl)){
+      if(RClass.isClass(pc, FDuiControl)){
          pc.builded(ph);
       }
    }
@@ -268,7 +268,7 @@ with(MO){
    // </P>
    //
    // @method
-   // @param c:control:FUiControl 控件对象
+   // @param c:control:FDuiControl 控件对象
    // @param x:config:TXmlNode 配置节点
    // @param a:attribute:Object 属性集合
    // @param h:panel:HtmlTag 页面元素
@@ -330,8 +330,8 @@ with(MO){
 
 
    // ------------------------------------------------------------
-   // tc:targetControl:FUiControl
-   // sc:senderControl:FUiControl
+   // tc:targetControl:FDuiControl
+   // sc:senderControl:FDuiControl
    // n:name:String 注册过的事件名称
    // h:html:HTML 注册过的事件名称
    // m:method:Function 即时处理函数

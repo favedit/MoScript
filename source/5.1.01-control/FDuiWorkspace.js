@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.FUiWorkspace = function FUiWorkspace(o){
-   o = MO.Class.inherits(this, o, MO.FUiContainer, MO.MUiDescribeFrame);
+MO.FDuiWorkspace = function FDuiWorkspace(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
    //..........................................................
    // @style
    o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
@@ -18,10 +18,10 @@ MO.FUiWorkspace = function FUiWorkspace(o){
    o._hContainer  = null;
    //..........................................................
    // @event
-   o.onBuildPanel = MO.FUiWorkspace_onBuildPanel;
+   o.onBuildPanel = MO.FDuiWorkspace_onBuildPanel;
    //..........................................................
    // @method
-   o.appendChild  = MO.FUiWorkspace_appendChild;
+   o.appendChild  = MO.FDuiWorkspace_appendChild;
    return o;
 }
 
@@ -31,7 +31,7 @@ MO.FUiWorkspace = function FUiWorkspace(o){
 // @method
 // @param event:TEventProcess 处理事件
 //==========================================================
-MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
+MO.FDuiWorkspace_onBuildPanel = function FDuiWorkspace_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.RBuilder.createDiv(event, o.styleName('Panel'));
    //o._hPanel = RBuilder.createFragment(event);
@@ -41,9 +41,9 @@ MO.FUiWorkspace_onBuildPanel = function FUiWorkspace_onBuildPanel(event){
 // <T>增加一个控件。</T>
 //
 // @method
-// @param control:FUiControl 控件
+// @param control:FDuiControl 控件
 //==========================================================
-MO.FUiWorkspace_appendChild = function FUiWorkspace_appendChild(control){
+MO.FDuiWorkspace_appendChild = function FDuiWorkspace_appendChild(control){
    var o = this;
    if(MO.Class.isClass(control, MO.FUiFrameSet)){
       o._hPanel.appendChild(control._hPanel);

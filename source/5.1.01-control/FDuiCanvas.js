@@ -1,54 +1,52 @@
-with(MO){
-   //==========================================================
-   // <T>界面画板象。</T>
-   //
-   // @class
-   // @author maocy
-   // @history 150127
-   //==========================================================
-   MO.FUiCanvas = function FUiCanvas(o){
-      o = RClass.inherits(this, o, FUiControl);
-      //..........................................................
-      // @style
-      o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
-      //..........................................................
-      // @event
-      o.onBuildPanel = FUiCanvas_onBuildPanel;
-      //..........................................................
-      // @method
-      o.construct    = FUiCanvas_construct;
-      o.dispose      = FUiCanvas_dispose;
-      return o;
-   }
-
-   //==========================================================
-   // <T>创建一个控件容器。</T>
-   //
+//==========================================================
+// <T>界面画板象。</T>
+//
+// @class
+// @author maocy
+// @history 150127
+//==========================================================
+MO.FDuiCanvas = function FDuiCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   //..........................................................
+   // @style
+   o._styleCanvas = MO.Class.register(o, new MO.AStyle('_styleCanvas'));
+   //..........................................................
+   // @event
+   o.onBuildPanel = MO.FDuiCanvas_onBuildPanel;
+   //..........................................................
    // @method
-   // @param event:TEventProcess 事件
-   //==========================================================
-   MO.FUiCanvas_onBuildPanel = function FUiCanvas_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.create(event, 'CANVAS', o.styleName('Canvas'));
-   }
+   o.construct    = MO.FDuiCanvas_construct;
+   o.dispose      = MO.FDuiCanvas_dispose;
+   return o;
+}
 
-   //==========================================================
-   // <T>构造处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FUiCanvas_construct = function FUiCanvas_construct(){
-      var o = this;
-      o.__base.FUiControl.construct.call(o);
-   }
+//==========================================================
+// <T>创建一个控件容器。</T>
+//
+// @method
+// @param event:TEventProcess 事件
+//==========================================================
+MO.FDuiCanvas_onBuildPanel = function FDuiCanvas_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.create(event, 'CANVAS', o.styleName('Canvas'));
+}
 
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @method
-   //==========================================================
-   MO.FUiCanvas_dispose = function FUiCanvas_dispose(){
-      var o = this;
-      o.__base.FUiControl.dispose.call(o);
-   }
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCanvas_construct = function FDuiCanvas_construct(){
+   var o = this;
+   o.__base.FDuiControl.construct.call(o);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCanvas_dispose = function FDuiCanvas_dispose(){
+   var o = this;
+   o.__base.FDuiControl.dispose.call(o);
 }

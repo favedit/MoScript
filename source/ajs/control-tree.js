@@ -6,7 +6,7 @@ MO.EUiTreeNodeGroup = new function EUiTreeNodeGroup(){
 }
 with(MO){
    MO.FUiTreeColumn = function FUiTreeColumn(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o._icon        = RClass.register(o, new APtyString('_icon'));
       o._dataName    = RClass.register(o, new APtyString('_dataName'));
       o._display     = RClass.register(o, new APtyBoolean('_display'), EBoolean.False);
@@ -17,7 +17,7 @@ with(MO){
    }
    MO.FUiTreeColumn_oeBuild = function FUiTreeColumn_oeBuild(event){
       var o = this;
-      var r = o.__base.FUiControl.oeBuild.call(o, event);
+      var r = o.__base.FDuiControl.oeBuild.call(o, event);
       var h = o.hPanel;
       h.innerText = RString.nvl(o.label);
       h.noWrap = true;
@@ -35,7 +35,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTreeLevel = function FUiTreeLevel(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o._id        = RClass.register(o, new APtyString('_id'));
       o._color     = RClass.register(o, new APtyString('_color'));
       o._backColor = RClass.register(o, new APtyString('_backColor'));
@@ -44,7 +44,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTreeNode = function FUiTreeNode(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiDataProperties);
+      o = RClass.inherits(this, o, FDuiContainer, MUiDataProperties);
       o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
       o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
       o._typeGroup        = RClass.register(o, [new APtyString('_typeGroup'), new AGetSet('_typeGroup')]);
@@ -131,7 +131,7 @@ with(MO){
    MO.FUiTreeNode_onBuild = function FUiTreeNode_onBuild(p){
       var o = this;
       var t = o._tree;
-      var r = o.__base.FUiContainer.onBuild.call(o, p);
+      var r = o.__base.FDuiContainer.onBuild.call(o, p);
       var hp = o._hPanel;
       o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
       o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
@@ -231,7 +231,7 @@ with(MO){
    }
    MO.FUiTreeNode_construct = function FUiTreeNode_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
    }
    MO.FUiTreeNode_type = function FUiTreeNode_type(){
       var o = this;
@@ -248,7 +248,7 @@ with(MO){
    }
    MO.FUiTreeNode_setLabel = function FUiTreeNode_setLabel(p){
       var o = this;
-      o.__base.FUiContainer.setLabel.call(o, p)
+      o.__base.FDuiContainer.setLabel.call(o, p)
       var h = o._hLabel;
       if(h){
          var s = '';
@@ -516,7 +516,7 @@ with(MO){
    MO.FUiTreeNode_push = function FUiTreeNode_push(component){
       var o = this;
       var tree = o._tree;
-      o.__base.FUiContainer.push.call(o, component);
+      o.__base.FDuiContainer.push.call(o, component);
       if(RClass.isClass(component, FUiTreeNode)){
          o._child = true;
          o._statusLoaded = true;
@@ -545,7 +545,7 @@ with(MO){
       if(RClass.isClass(component, FUiTreeNode)){
          o._nodes.remove(component);
       }
-      o.__base.FUiContainer.remove.call(o, component);
+      o.__base.FDuiContainer.remove.call(o, component);
    }
    MO.FUiTreeNode_removeSelf = function FUiTreeNode_removeSelf(){
       var o = this;
@@ -621,7 +621,7 @@ with(MO){
    MO.FUiTreeNode_propertyLoad = function FUiTreeNode_propertyLoad(x){
       var o = this;
       var t = o._tree;
-      o.__base.FUiContainer.propertyLoad.call(o, x);
+      o.__base.FDuiContainer.propertyLoad.call(o, x);
       var attributes = o._attributes;
       if(attributes){
          attributes.append(x.attrs);
@@ -633,7 +633,7 @@ with(MO){
    }
    MO.FUiTreeNode_propertySave = function FUiTreeNode_propertySave(x){
       var o = this;
-      o.__base.FUiContainer.propertySave.call(o, x);
+      o.__base.FDuiContainer.propertySave.call(o, x);
       var t = o.type();
       x.set('type_code', t._code);
       x.set('storage', t._storage);
@@ -654,7 +654,7 @@ with(MO){
       o._hIcon = null;
       o._hCheck = null;
       o._hLabel = null;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
    MO.FUiTreeNode_innerDump = function FUiTreeNode_innerDump(s){
       var o = this;
@@ -789,7 +789,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTreeNodeCell = function FUiTreeNodeCell(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick, MListenerDoubleClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick, MListenerDoubleClick);
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
       o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
       o._tree             = null;
@@ -817,7 +817,7 @@ with(MO){
    MO.FUiTreeNodeCell_onBuild = function FUiTreeNodeCell_onBuild(p){
       var o = this;
       var t = o._tree;
-      var r = o.__base.FUiControl.onBuild.call(o, p);
+      var r = o.__base.FDuiControl.onBuild.call(o, p);
       var h = o._hPanel;
       o.attachEvent('onClick', h);
       o.attachEvent('onDoubleClick', h);
@@ -838,7 +838,7 @@ with(MO){
    }
    MO.FUiTreeNodeCell_construct = function FUiTreeNodeCell_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       o._attributes = new TAttributes();
    }
    MO.FUiTreeNodeCell_icon = function FUiTreeNodeCell_icon(){
@@ -859,7 +859,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTreeNodeType = function FUiTreeNodeType(o){
-      o = RClass.inherits(this, o, FUiComponent);
+      o = RClass.inherits(this, o, FDuiComponent);
       o._code       = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
       o._storage    = RClass.register(o, [new APtyString('_storage'), new AGetSet('_storage')]);
       o._icon       = RClass.register(o, [new APtyString('_icon'), new AGetSet('_icon')]);
@@ -874,7 +874,7 @@ with(MO){
    }
    MO.FUiTreeNodeType_construct = function FUiTreeNodeType_construct(){
       var o = this;
-      o.__base.FUiComponent.construct.call(o);
+      o.__base.FDuiComponent.construct.call(o);
    }
    MO.FUiTreeNodeType_get = function FUiTreeNodeType_get(name){
       var attributes = this._attributes;
@@ -898,7 +898,7 @@ with(MO){
 }
 with(MO){
    MO.FUiTreeView = function FUiTreeView(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._optionCheck        = RClass.register(o, new APtyBoolean('_optionCheck'), false);
       o._indent             = RClass.register(o, new APtyInteger('_indent'), 16);
       o._stylePanel         = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
@@ -971,7 +971,7 @@ with(MO){
    }
    MO.FUiTreeView_onBuild = function FUiTreeView_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
       var hr = RBuilder.appendTableRow(o._hPanel);
@@ -1045,7 +1045,7 @@ with(MO){
    }
    MO.FUiTreeView_construct = function FUiTreeView_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._attributes = new TAttributes();
       o._nodeTypes = new TDictionary();
       o._nodeColumns = new TDictionary();
@@ -1231,7 +1231,7 @@ with(MO){
    }
    MO.FUiTreeView_push = function FUiTreeView_push(control){
       var o = this;
-      o.__base.FUiContainer.push.call(o, control);
+      o.__base.FDuiContainer.push.call(o, control);
       control._tree = o;
       if(RClass.isClass(control, FUiTreeColumn)){
          o._nodeColumns.set(control.name(), control);
@@ -1448,7 +1448,7 @@ with(MO){
    }
    MO.FUiTreeView_dispose = function FUiTreeView_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
       var ns = o._nodes;
       if(ns){
          ns.dispose();

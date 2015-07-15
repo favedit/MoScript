@@ -7,7 +7,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiTreeNodeType = function FUiTreeNodeType(o){
-      o = RClass.inherits(this, o, FUiComponent);
+      o = RClass.inherits(this, o, FDuiComponent);
       //..........................................................
       // @oroperty
       o._code       = RClass.register(o, [new APtyString('_code'), new AGetSet('_code')]);
@@ -34,7 +34,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeNodeType_construct = function FUiTreeNodeType_construct(){
       var o = this;
-      o.__base.FUiComponent.construct.call(o);
+      o.__base.FDuiComponent.construct.call(o);
    }
 
    //==========================================================

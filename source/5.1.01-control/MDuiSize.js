@@ -10,7 +10,6 @@ with(MO){
       o = RClass.inherits(this, o);
       //..........................................................
       // @property
-      o._dockCd         = RClass.register(o, new APtyString('_dockCd'));
       o._location       = RClass.register(o, new APtyPoint2('_location'));
       o._size           = RClass.register(o, new APtySize2('_size'));
       //..........................................................

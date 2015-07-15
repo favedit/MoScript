@@ -7,7 +7,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsCanvas = function FDsCanvas(o){
-      o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
+      o = RClass.inherits(this, o, FDuiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
       //..........................................................
       // @property
       o._servicePreview      = 'cloud.resource.preview';
@@ -67,7 +67,7 @@ with(MO){
    //==========================================================
    MO.FDsCanvas_onBuild = function FDsCanvas_onBuild(event){
       var o = this;
-      o.__base.FUiCanvas.onBuild.call(o, event);
+      o.__base.FDuiCanvas.onBuild.call(o, event);
       // 创建渲染环境
       var hPanel = o._hPanel;
       hPanel.__linker = o;
@@ -256,7 +256,7 @@ with(MO){
    //==========================================================
    MO.FDsCanvas_oeResize = function FDsCanvas_oeResize(p){
       var o = this;
-      o.__base.FUiCanvas.oeResize.call(o, p);
+      o.__base.FDuiCanvas.oeResize.call(o, p);
       // 获得大小
       var hp = o._hPanel;
       var w = hp.offsetWidth;
@@ -286,7 +286,7 @@ with(MO){
    //==========================================================
    MO.FDsCanvas_construct = function FDsCanvas_construct(){
       var o = this;
-      o.__base.FUiCanvas.construct.call(o);
+      o.__base.FDuiCanvas.construct.call(o);
       o._capturePosition = new SPoint2();
       o._captureMatrix = new SMatrix3d();
       o._rotation = new SVector3();
@@ -404,6 +404,6 @@ with(MO){
       // 释放旋转
       o._rotation = RObject.dispose(o._rotation);
       // 父处理
-      o.__base.FUiCanvas.dispose.call(o);
+      o.__base.FDuiCanvas.dispose.call(o);
    }
 }

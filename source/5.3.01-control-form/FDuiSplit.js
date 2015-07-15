@@ -7,8 +7,8 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FUiSplit = function FUiSplit(o){
-      //o = RClass.inherits(this, o, FUiControl, MDesign, MDisplay, MUiHorizontal);
-      o = RClass.inherits(this, o, FUiControl);
+      //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MUiHorizontal);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property
       //o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
@@ -104,7 +104,7 @@ with(MO){
    //==========================================================
    MO.FUiSplit_oeBuild = function FUiSplit_oeBuild(e){
       var o = this;
-      o.base.FUiControl.oeBuild.call(o, e);
+      o.base.FDuiControl.oeBuild.call(o, e);
       o.height = 2;
       // Text
       if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
@@ -148,7 +148,7 @@ with(MO){
    //==========================================================
    MO.FUiSplit_oeMode = function FUiSplit_oeMode(e){
       var o = this;
-      var r = o.base.FUiControl.oeMode.call(o, e);
+      var r = o.base.FDuiControl.oeMode.call(o, e);
       o.base.MDisplay.oeMode.call(o, e);
       o.extend(o._editExtend);
       return r;
@@ -211,7 +211,7 @@ with(MO){
    //==========================================================
    MO.FUiSplit_dispose = function FUiSplit_dispose(){
       var o = this;
-      o.base.FUiControl.dispose.call(o);
+      o.base.FDuiControl.dispose.call(o);
       if(o.__lines){
          o.__lines.release();
          o.__lines = null;

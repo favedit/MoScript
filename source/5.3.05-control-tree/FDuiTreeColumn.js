@@ -7,7 +7,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiTreeColumn = function FUiTreeColumn(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property
       o._icon        = RClass.register(o, new APtyString('_icon'));
@@ -32,7 +32,7 @@ with(MO){
    //==========================================================
    MO.FUiTreeColumn_oeBuild = function FUiTreeColumn_oeBuild(event){
       var o = this;
-      var r = o.__base.FUiControl.oeBuild.call(o, event);
+      var r = o.__base.FDuiControl.oeBuild.call(o, event);
       var h = o.hPanel;
       h.innerText = RString.nvl(o.label);
       h.noWrap = true;

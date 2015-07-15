@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150714
 //==========================================================
-MO.FUiWorkspaceApplication = function FUiWorkspaceApplication(o){
+MO.FDuiWorkspaceApplication = function FDuiWorkspaceApplication(o){
    o = MO.Class.inherits(this, o, MO.FApplication);
    //..........................................................
    // @style
@@ -13,13 +13,13 @@ MO.FUiWorkspaceApplication = function FUiWorkspaceApplication(o){
    o._activeWorkspace = MO.Class.register(o, new MO.AGetter('_activeWorkspace'));
    //..........................................................
    // @event
-   o.onProcess        = MO.FUiWorkspaceApplication_onProcess;
+   o.onProcess        = MO.FDuiWorkspaceApplication_onProcess;
    //..........................................................
    // @method
-   o.selectWorkspace  = MO.FUiWorkspaceApplication_selectWorkspace;
+   o.selectWorkspace  = MO.FDuiWorkspaceApplication_selectWorkspace;
    // @method
-   o.processResize    = MO.FUiWorkspaceApplication_processResize;
-   o.processEvent     = MO.FUiWorkspaceApplication_processEvent;
+   o.processResize    = MO.FDuiWorkspaceApplication_processResize;
+   o.processEvent     = MO.FDuiWorkspaceApplication_processEvent;
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.FUiWorkspaceApplication = function FUiWorkspaceApplication(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWorkspaceApplication_onProcess = function FUiWorkspaceApplication_onProcess(){
+MO.FDuiWorkspaceApplication_onProcess = function FDuiWorkspaceApplication_onProcess(){
    var o = this;
    // 工作空间处理
    var workspace = o._activeWorkspace
@@ -42,9 +42,9 @@ MO.FUiWorkspaceApplication_onProcess = function FUiWorkspaceApplication_onProces
 // <T>增加一个控件。</T>
 //
 // @method
-// @param control:FUiControl 控件
+// @param control:FDuiControl 控件
 //==========================================================
-MO.FUiWorkspaceApplication_selectWorkspace = function FUiWorkspaceApplication_selectWorkspace(clazz){
+MO.FDuiWorkspaceApplication_selectWorkspace = function FDuiWorkspaceApplication_selectWorkspace(clazz){
    var o = this;
    var workspace = o._activeWorkspace = MO.Class.create(clazz);
    return workspace;
@@ -56,7 +56,7 @@ MO.FUiWorkspaceApplication_selectWorkspace = function FUiWorkspaceApplication_se
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWorkspaceApplication_processResize = function FUiWorkspaceApplication_processResize(){
+MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_processResize(){
    var o = this;
 }
 
@@ -66,7 +66,7 @@ MO.FUiWorkspaceApplication_processResize = function FUiWorkspaceApplication_proc
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWorkspaceApplication_processEvent = function FUiWorkspaceApplication_processEvent(event){
+MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
    return;
    // 处理事件

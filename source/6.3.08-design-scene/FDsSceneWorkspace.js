@@ -7,7 +7,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
-      o = RClass.inherits(this, o, FUiWorkspace);
+      o = RClass.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.scene.Workspace';
@@ -57,7 +57,7 @@ with(MO){
    //==========================================================
    MO.FDsSceneWorkspace_onBuilded = function FDsSceneWorkspace_onBuilded(p){
       var o = this;
-      o.__base.FUiWorkspace.onBuilded.call(o, p);
+      o.__base.FDuiWorkspace.onBuilded.call(o, p);
       //..........................................................
       // 设置工具区
       var f = o._frameToolBar = o.searchControl('toolbarFrame');
@@ -234,7 +234,7 @@ with(MO){
    MO.FDsSceneWorkspace_construct = function FDsSceneWorkspace_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.construct.call(o);
+      o.__base.FDuiWorkspace.construct.call(o);
       // 设置属性
       o._propertyFrames = new TDictionary();
    }
@@ -275,7 +275,7 @@ with(MO){
    MO.FDsSceneWorkspace_dispose = function FDsSceneWorkspace_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiWorkspace.dispose.call(o);
+      o.__base.FDuiWorkspace.dispose.call(o);
       // 设置属性
       o._propertyFrames.dispose();
       o._propertyFrames = null;

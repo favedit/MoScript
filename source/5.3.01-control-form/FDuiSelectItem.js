@@ -14,7 +14,7 @@ with(MO){
    // @version 150224
    //==========================================================
    MO.FUiSelectItem = function FUiSelectItem(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @property
       o._icon             = RClass.register(o, new APtyString('_icon'));
@@ -72,7 +72,7 @@ with(MO){
    //==========================================================
    MO.FUiSelectItem_onBuild = function FUiSelectItem_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       // 设置面板
       var h = o._hPanel;
       o.attachEvent('onMouseDown', h);
@@ -100,7 +100,7 @@ with(MO){
    //==========================================================
    MO.FUiSelectItem_onEnter = function FUiSelectItem_onEnter(){
       var o = this;
-      o.__base.FUiControl.onEnter.call(o);
+      o.__base.FDuiControl.onEnter.call(o);
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
    }
 
@@ -112,7 +112,7 @@ with(MO){
    MO.FUiSelectItem_onLeave = function FUiSelectItem_onLeave(){
       var o = this;
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FUiControl.onLeave.call(o);
+      o.__base.FDuiControl.onLeave.call(o);
    }
 
    //==========================================================
@@ -178,6 +178,6 @@ with(MO){
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);
       o._hNotePanel = RHtml.free(o._hNotePanel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }

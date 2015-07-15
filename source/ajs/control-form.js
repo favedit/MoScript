@@ -464,7 +464,7 @@ with(MO){
 }
 with(MO){
    MO.FUiButton = function FUiButton(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       o._labelPositionCd   = RClass.register(o, new APtyString('_labelPositionCd'), EUiPosition.Left);
       o._icon              = RClass.register(o, new APtyString('_icon'));
       o._action            = RClass.register(o, new APtyString('_action'));
@@ -486,7 +486,7 @@ with(MO){
    }
    MO.FUiButton_onBuild = function FUiButton_onBuild(e){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, e);
+      o.__base.FDuiControl.onBuild.call(o, e);
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
       var hForm = RBuilder.appendTable(hPanel, o.styleName('Form'));
@@ -548,7 +548,7 @@ with(MO){
    }
    MO.FUiButton_oeMode = function FUiButton_oeMode(e){
       var o = this;
-      o.__base.FUiControl.oeMode.call(o, e);
+      o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       return EEventStatus.Stop;
    }
@@ -583,7 +583,7 @@ with(MO){
    }
    MO.FUiButton_dispose = function FUiButton_dispose(){
       var o = this;
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
       o._hForm = null;
       o._hFormEnd = null;
       o._hLabel = null;
@@ -3240,7 +3240,7 @@ with(MO){
 }
 with(MO){
    MO.FUiEditControl = function FUiEditControl(o){
-      o = RClass.inherits(this, o, FUiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
       o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
       o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -3322,7 +3322,7 @@ with(MO){
    }
    MO.FUiEditControl_onBuild = function FUiEditControl_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var hc = o._hPanel;
       var hlp = null;
       var hep = null;
@@ -3362,7 +3362,7 @@ with(MO){
    }
    MO.FUiEditControl_oeMode = function FUiEditControl_oeMode(e){
       var o = this;
-      o.__base.FUiControl.oeMode.call(o, e);
+      o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       o._editable = o.canEdit(e.mode);
       o._validable = o.canValid(e.mode);
@@ -3388,7 +3388,7 @@ with(MO){
    }
    MO.FUiEditControl_construct = function FUiEditControl_construct(){
       var o = this;
-      o.__base.FUiControl.construct.call(o);
+      o.__base.FDuiControl.construct.call(o);
       o.__base.MUiEditChange.construct.call(o);
       o.__base.MUiEditDrop.construct.call(o);
       o._labelSize = new SSize2(100, 20);
@@ -3401,7 +3401,7 @@ with(MO){
       }else if(EPanel.Focus == t){
          return o.hEdit;
       }
-      return o.__base.FUiControl.panel.call(o, t);
+      return o.__base.FDuiControl.panel.call(o, t);
    }
    MO.FUiEditControl_label = function FUiEditControl_label(p){
       return this._label;
@@ -3444,12 +3444,12 @@ with(MO){
       o._hDropPanel = RHtml.free(o._hDropPanel);
       o.__base.MUiEditDrop.dispose.call(o);
       o.__base.MUiEditChange.dispose.call(o);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiEditor = function FUiEditor(o){
-      o = RClass.inherits(this, o, FUiControl, MUiFocus);
+      o = RClass.inherits(this, o, FDuiControl, MUiFocus);
       o._visible       = false;
       o._statusVisible = false;
       o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
@@ -3517,7 +3517,7 @@ with(MO){
    }
    MO.FUiEditor_onBuild = function FUiEditor_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.style.zIndex = EUiLayer.Editor;
    }
    MO.FUiEditor_get = function FUiEditor_get(name){
@@ -3541,7 +3541,7 @@ with(MO){
       }else if(p == EPanel.Focus){
          return o._hEdit;
       }
-      return o.__base.FUiControl.panel.call(o, p);
+      return o.__base.FDuiControl.panel.call(o, p);
    }
    MO.FUiEditor_linkControl = function FUiEditor_linkControl(c){
       var o = this;
@@ -3580,7 +3580,7 @@ with(MO){
    }
    MO.FUiEditor_setVisible = function FUiEditor_setVisible(p){
       var o = this;
-      o.__base.FUiControl.setVisible.call(o, p);
+      o.__base.FDuiControl.setVisible.call(o, p);
       if(p){
          o.editBegin();
          o.focus();
@@ -3588,7 +3588,7 @@ with(MO){
    }
    MO.FUiEditor_dispose = function FUiEditor_dispose(){
       var o = this;
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
       o._hEdit = null;
    }
 }
@@ -4127,7 +4127,7 @@ with(MO){
 }
 with(MO){
    MO.FUiLabel = function FUiLabel(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o.onBuild = FUiLabel_onBuild;
       o.get     = FUiLabel_get;
       o.set     = FUiLabel_set;
@@ -4135,7 +4135,7 @@ with(MO){
    }
    MO.FUiLabel_onBuild = function FUiLabel_onBuild(event){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, event);
+      o.__base.FDuiControl.onBuild.call(o, event);
    }
    MO.FUiLabel_get = function FUiLabel_get(){
       return this._hPanel.innerHTML;
@@ -4146,7 +4146,7 @@ with(MO){
 }
 with(MO){
    MO.FUiLayout = function FUiLayout(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._styleForm      = RClass.register(o, new AStyle('_styleForm', 'Form'));
       o._lastSplit      = null;
       o._hPanelForm     = null;
@@ -4186,7 +4186,7 @@ with(MO){
    }
    MO.FUiLayout_oeDesign = function FUiLayout_oeDesign(p){
       var o = this;
-      o.__base.FUiContainer.oeDesign.call(o, p);
+      o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
          switch(p.layoutCd){
             case EDesign.Move:
@@ -4205,14 +4205,14 @@ with(MO){
    }
    MO.FUiLayout_oeResize = function FUiLayout_oeResize(p){
       var o = this;
-      o.__base.FUiContainer.oeResize.call(o, p);
+      o.__base.FDuiContainer.oeResize.call(o, p);
       if(p.isAfter()){
          o.resize();
       }
    }
    MO.FUiLayout_oeRefresh = function FUiLayout_oeRefresh(p){
       var o = this;
-      o.__base.FUiContainer.oeDesign.call(o, p);
+      o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
          o.resize();
       }
@@ -4438,12 +4438,12 @@ with(MO){
       o._hPanelTable = null;
       o._hPanel = null;
       o._hContainer = null;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiLayoutHorizontal = function FUiLayoutHorizontal(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
       o._hLine       = null;
       o.onBuildPanel = FUiLayoutHorizontal_onBuildPanel;
@@ -4458,7 +4458,7 @@ with(MO){
    }
    MO.FUiLayoutHorizontal_onBuild = function FUiLayoutHorizontal_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event)
+      o.__base.FDuiContainer.onBuild.call(o, event)
       o._hLine = RBuilder.appendTableRow(o._hPanel);
    }
    MO.FUiLayoutHorizontal_appendChild = function FUiLayoutHorizontal_appendChild(control){
@@ -4477,12 +4477,12 @@ with(MO){
    MO.FUiLayoutHorizontal_dispose = function FUiLayoutHorizontal_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiLayoutVertical = function FUiLayoutVertical(o){
-      o = RClass.inherits(this, o, FUiContainer);
+      o = RClass.inherits(this, o, FDuiContainer);
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
       o._hLine       = null;
       o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
@@ -4505,12 +4505,12 @@ with(MO){
    }
    MO.FUiLayoutVertical_dispose = function FUiLayoutVertical_dispose(){
       var o = this;
-      o.__base.FUiContainer.dispose.call(o);
+      o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiListBox = function FUiListBox(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
+      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick);
       o._sizeCd      = EUiSize.Horizontal
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
       o._hForm       = null;
@@ -4577,7 +4577,7 @@ with(MO){
 }
 with(MO){
    MO.FUiListItem = function FUiListItem(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
       o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
       o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
@@ -4606,7 +4606,7 @@ with(MO){
    }
    MO.FUiListItem_onBuild = function FUiListItem_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var h = o._hPanel;
       o._hIconPanel = RBuilder.appendTableCell(h, o.styleName('IconPanel'))
       if(o._icon){
@@ -4620,13 +4620,13 @@ with(MO){
    }
    MO.FUiListItem_onEnter = function FUiListItem_onEnter(){
       var o = this;
-      o.__base.FUiControl.onEnter.call(o);
+      o.__base.FDuiControl.onEnter.call(o);
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
    }
    MO.FUiListItem_onLeave = function FUiListItem_onLeave(){
       var o = this;
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FUiControl.onLeave.call(o);
+      o.__base.FDuiControl.onLeave.call(o);
    }
    MO.FUiListItem_onClick = function FUiListItem_onClick(p){
       var o = this;
@@ -4656,12 +4656,12 @@ with(MO){
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hIcon = RHtml.free(o._hIcon);
       o._hLabel = RHtml.free(o._hLabel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
    MO.FUiListView = function FUiListView(o){
-      o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
+      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
       o._sizeCd           = EUiSize.Horizontal
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
       o._focusItem        = null;
@@ -4687,7 +4687,7 @@ with(MO){
    }
    MO.FUiListView_onBuild = function FUiListView_onBuild(event){
       var o = this;
-      o.__base.FUiContainer.onBuild.call(o, event);
+      o.__base.FDuiContainer.onBuild.call(o, event);
       var hPanel = o._hPanel;
       o.attachEvent('onClick', hPanel);
    }
@@ -4703,7 +4703,7 @@ with(MO){
    }
    MO.FUiListView_construct = function FUiListView_construct(){
       var o = this;
-      o.__base.FUiContainer.construct.call(o);
+      o.__base.FDuiContainer.construct.call(o);
       o._itemPool = RClass.create(FObjectPool);
    }
    MO.FUiListView_focusItem = function FUiListView_focusItem(){
@@ -4781,7 +4781,7 @@ with(MO){
 }
 with(MO){
    MO.FUiListViewItem = function FUiListViewItem(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
       o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
       o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
@@ -4819,7 +4819,7 @@ with(MO){
    }
    MO.FUiListViewItem_onBuild = function FUiListViewItem_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var hPanel = o._hPanel;
       var hBorder = o._hBorder = RBuilder.appendDiv(hPanel, o.styleName('Normal'));
       var hTable = o._hForm = RBuilder.appendTable(hBorder, o.styleName('Form'));
@@ -4840,13 +4840,13 @@ with(MO){
    }
    MO.FUiListViewItem_onEnter = function FUiListViewItem_onEnter(){
       var o = this;
-      o.__base.FUiControl.onEnter.call(o);
+      o.__base.FDuiControl.onEnter.call(o);
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
    }
    MO.FUiListViewItem_onLeave = function FUiListViewItem_onLeave(){
       var o = this;
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FUiControl.onLeave.call(o);
+      o.__base.FDuiControl.onLeave.call(o);
    }
    MO.FUiListViewItem_onClick = function FUiListViewItem_onClick(event){
       var o = this;
@@ -4890,7 +4890,7 @@ with(MO){
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hIcon = RHtml.free(o._hIcon);
       o._hLabel = RHtml.free(o._hLabel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
@@ -5885,7 +5885,7 @@ with(MO){
 }
 with(MO){
    MO.FUiProgressBar = function FUiProgressBar(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
       o._rate        = 0;
       o._hForm       = null;
@@ -5902,7 +5902,7 @@ with(MO){
    }
    MO.FUiProgressBar_onBuild = function FUiProgressBar_onBuild(event){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, event);
+      o.__base.FDuiControl.onBuild.call(o, event);
       var hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
       o.hProgress = RBuilder.appendTableCell(hLine);
       o.hEmpty = RBuilder.appendTableCell(hLine);
@@ -5917,7 +5917,7 @@ with(MO){
    MO.FUiProgressBar_dispose = function FUiProgressBar_dispose(){
       var o = this;
       o._hForm = RHtml.free(o._hForm);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
@@ -6323,7 +6323,7 @@ with(MO){
 }
 with(MO){
    MO.FUiSelectItem = function FUiSelectItem(o){
-      o = RClass.inherits(this, o, FUiControl, MListenerClick);
+      o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       o._icon             = RClass.register(o, new APtyString('_icon'));
       o._note             = RClass.register(o, new APtyString('_note'));
       o._dataValue        = RClass.register(o, new APtyString('_dataValue'));
@@ -6354,7 +6354,7 @@ with(MO){
    }
    MO.FUiSelectItem_onBuild = function FUiSelectItem_onBuild(p){
       var o = this;
-      o.__base.FUiControl.onBuild.call(o, p);
+      o.__base.FDuiControl.onBuild.call(o, p);
       var h = o._hPanel;
       o.attachEvent('onMouseDown', h);
       var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
@@ -6370,13 +6370,13 @@ with(MO){
    }
    MO.FUiSelectItem_onEnter = function FUiSelectItem_onEnter(){
       var o = this;
-      o.__base.FUiControl.onEnter.call(o);
+      o.__base.FDuiControl.onEnter.call(o);
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
    }
    MO.FUiSelectItem_onLeave = function FUiSelectItem_onLeave(){
       var o = this;
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FUiControl.onLeave.call(o);
+      o.__base.FDuiControl.onLeave.call(o);
    }
    MO.FUiSelectItem_onMouseDown = function FUiSelectItem_onMouseDown(){
       var o = this;
@@ -6409,7 +6409,7 @@ with(MO){
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);
       o._hNotePanel = RHtml.free(o._hNotePanel);
-      o.__base.FUiControl.dispose.call(o);
+      o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
@@ -6565,7 +6565,7 @@ with(MO){
 }
 with(MO){
    MO.FUiSplit = function FUiSplit(o){
-      o = RClass.inherits(this, o, FUiControl);
+      o = RClass.inherits(this, o, FDuiControl);
       return o;
    }
    MO.FUiSplit_onSplitMouseEnter = function FUiSplit_onSplitMouseEnter(e){
@@ -6594,7 +6594,7 @@ with(MO){
    }
    MO.FUiSplit_oeBuild = function FUiSplit_oeBuild(e){
       var o = this;
-      o.base.FUiControl.oeBuild.call(o, e);
+      o.base.FDuiControl.oeBuild.call(o, e);
       o.height = 2;
       if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
          var hf = o.hForm;
@@ -6628,7 +6628,7 @@ with(MO){
    }
    MO.FUiSplit_oeMode = function FUiSplit_oeMode(e){
       var o = this;
-      var r = o.base.FUiControl.oeMode.call(o, e);
+      var r = o.base.FDuiControl.oeMode.call(o, e);
       o.base.MDisplay.oeMode.call(o, e);
       o.extend(o._editExtend);
       return r;
@@ -6660,7 +6660,7 @@ with(MO){
    }
    MO.FUiSplit_dispose = function FUiSplit_dispose(){
       var o = this;
-      o.base.FUiControl.dispose.call(o);
+      o.base.FDuiControl.dispose.call(o);
       if(o.__lines){
          o.__lines.release();
          o.__lines = null;
