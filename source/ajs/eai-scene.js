@@ -130,6 +130,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._milestoneBarShowDuration = 1000;
    o._milestoneBarShowTick     = 0;
    o._milestoneBarShowing      = false;
+   o._bgm                      = null;
+   o._bgmPlaying               = false;
    o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect              = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -235,6 +237,10 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
          countryEntity.process();
          return;
       }
+      if (!o._bgmPlaying) {
+         o._bgm.play(0);
+         o._bgmPlaying = true;
+      }
       if (!o._mapReady) {
          mapEntity.citysRangeRenderable().setVisible(true);
          mapEntity.citysRenderable().setVisible(true);
@@ -308,6 +314,9 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
+   o._groundAutio.pause();
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   o._bgm = audioConsole.load('{eai.resource}/historyBGM.wav');
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);

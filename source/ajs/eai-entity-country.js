@@ -663,11 +663,11 @@ with(MO){
    MO.FEaiCountryEntity = function FEaiCountryEntity(o){
       o = RClass.inherits(this, o, FEaiEntity);
       o._enterSELoaded           = false;
-      o._downSELoaded            = false;
+      o._enterSEPlaying          = false;
       o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
       o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
-      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 1000);
+      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 600);
       o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
       o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
       o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 200);
@@ -688,10 +688,7 @@ with(MO){
       o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
       o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
       o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
-      o._mapEnterSEArray         = null;
-      o._mapDownSEArray          = null;
-      o._lastEnterSEIndex        = -1;
-      o._lastDownSEIndex         = -1;
+      o._mapEnterSE              = null;
       o.setup                    = FEaiCountryEntity_setup;
       o.start                    = FEaiCountryEntity_start;
       o.process                  = FEaiCountryEntity_process;
@@ -703,7 +700,6 @@ with(MO){
       o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
       o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
       o.onEnterSELoaded          = FEaiCountryEntity_onEnterSELoaded;
-      o.onDownSELoaded           = FEaiCountryEntity_onDownSELoaded;
       o.isReady                  = FEaiCountryEntity_isReady;
       return o;
    }
@@ -726,34 +722,20 @@ with(MO){
       }
       provinceArray.sort(o.provinceShowOrderSort);
       var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
-      audioContextConsole.load('{eai.resource}/map_entry/enter.wav', o, o.onEnterSELoaded);
-      audioContextConsole.load('{eai.resource}/map_entry/down.wav', o, o.onDownSELoaded);
+      audioContextConsole.load('{eai.resource}/map_entry/enter.mp3', o, o.onEnterSELoaded);
    }
    MO.FEaiCountryEntity_onEnterSELoaded = function FEaiCountryEntity_onEnterSELoaded(uri) {
       var o = this;
       var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
       var peCount = o._provinceEntities.count();
-      var enterSEArray = o._mapEnterSEArray = new Array(peCount);
-      for (var i = 0; i < peCount; i++) {
-         enterSEArray[i] = audioContextConsole.create(uri);
-      }
+      o._mapEnterSE = audioContextConsole.create(uri);
       o._enterSELoaded = true;
-   }
-   MO.FEaiCountryEntity_onDownSELoaded = function FEaiCountryEntity_onDownSELoaded(uri) {
-      var o = this;
-      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
-      var peCount = o._provinceEntities.count();
-      var downSEArray = o._mapDownSEArray = new Array(peCount);
-      for (var i = 0; i < peCount; i++) {
-         downSEArray[i] = audioContextConsole.create(uri);
-      }
-      o._downSELoaded = true;
    }
    MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
       var o = this;
-      if (o._enterSELoaded && o._downSELoaded) {
-         o._startTime = MO.Timer.current();
-         return true;
+      if (o._enterSELoaded) {
+            o._startTime = MO.Timer.current();
+            return true;
       }
       return false;
    }
@@ -797,21 +779,21 @@ with(MO){
             RWindow.lsnsMouseDown.push(listener);
          }
       }
+      if (!o._enterSEPlaying) {
+         o._mapEnterSE.start();
+         o._enterSEPlaying = true;
+      }
       var idxCap = timePassed / o.blockInterval();
       for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
          var fr = o._provinceArray[i].faceRenderable();
          var br = o._provinceArray[i].borderRenderable();
          var frm = fr.matrix();
          var brm = br.matrix();
-         var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
+         var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
          var fallPercentage = 0;
          if (risePercentage > 1) {
             risePercentage = 1;
-            if (i == o._lastDownSEIndex + 1) {
-               o._mapDownSEArray[i].start();
-               o._lastDownSEIndex++;
-            }
-            fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
+            fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
             if (fallPercentage > 1) {
                fallPercentage = 1;
             }
@@ -822,10 +804,6 @@ with(MO){
          brm.updateForce();
       }
       idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
-      if (o._lastEnterSEIndex != idxCap) {
-         o._mapEnterSEArray[idxCap].start();
-         o._lastEnterSEIndex = idxCap;
-      }
    }
    MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event){
       var o = this;
@@ -1768,6 +1746,7 @@ with (MO) {
       o._fullWidth            = 953;
       o._fullHeight           = 896;
       o._popupSE              = null;
+      o._100yiSE              = null;
       o._listenersDataChanged = RClass.register(o, new AListener('_listenersDataChanged', MO.EEvent.DataChanged));
       o.setup                 = FGuiHistoryMilestoneFrame_setup;
       o.onPaintBegin          = FGuiHistoryMilestoneFrame_onPaintBegin;
@@ -1800,6 +1779,7 @@ with (MO) {
       }
       var audioConsole = MO.Console.find(MO.FAudioConsole);
       o._popupSE = audioConsole.load('{eai.resource}/milestone/popup.mp3');
+      o._100yiSE = audioConsole.load('{eai.resource}/milestone/100yi.mp3');
    }
    MO.FGuiHistoryMilestoneFrame_onImageLoad = function FGuiHistoryMilestoneFrame_onImageLoad() {
       this.dirty();
@@ -1916,6 +1896,10 @@ with (MO) {
       o = this;
       o.setVisible(true);
       o._startTick = MO.Timer.current();
+      var inves = o.data().investmentTotal();
+      if (inves == 1000000) {
+         o._100yiSE.play(0);
+      }
       o._popupSE.play(0);
    }
    MO.FGuiHistoryMilestoneFrame_dispose = function FGuiHistoryMilestoneFrame_dispose() {
