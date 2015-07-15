@@ -35706,19 +35706,26 @@ with(MO){
       return o;
    }
 }
-MO.FGuiDesignAnchor = function FGuiDesignAnchor(o){
-   o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o.construct = MO.FGuiDesignAnchor_construct;
-   o.dispose   = MO.FGuiDesignAnchor_dispose;
-   return o;
+MO.FGuiDesignAnchor = function FGuiDesignAnchor(o) {
+    o = MO.Class.inherits(this, o, MO.FGuiControl);
+    o.construct = MO.FGuiDesignAnchor_construct;
+    o.onPaintBegin = FGuiDesignAnchor_onPaintBegin;
+    o.dispose = MO.FGuiDesignAnchor_dispose;
+    return o;
 }
-MO.FGuiDesignAnchor_construct = function FGuiDesignAnchor_construct(){
-   var o = this;
-   o.__base.FGuiControl.construct.call(o);
+MO.FGuiDesignAnchor_construct = function FGuiDesignAnchor_construct() {
+    var o = this;
+    o.__base.FGuiControl.construct.call(o);
 }
-MO.FGuiDesignAnchor_dispose = function FGuiDesignAnchor_dispose(){
-   var o = this;
-   o.__base.FGuiControl.dispose.call(o);
+MO.FGuiDesignAnchor_onPaintBegin = function FGuiDesignAnchor_onPaintBegin(event){
+    var o = this;
+    o.__base.FGuiControl.onPaintBegin.call(o,event);
+    var graphic = event.graphic;
+    var rectangle = event.rectangle;
+}
+MO.FGuiDesignAnchor_dispose = function FGuiDesignAnchor_dispose() {
+    var o = this;
+    o.__base.FGuiControl.dispose.call(o);
 }
 MO.FGuiDesignRule = function FGuiDesignRule(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
