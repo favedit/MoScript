@@ -65,7 +65,6 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), false);
    o._location               = MO.Class.register(o, new MO.AGetter('_location'));
    o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
-   o._alpha                  = MO.Class.register(o, new MO.AGetSet('_alpha'), 1);
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
@@ -129,23 +128,23 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
    if(investment < o._investmentLast){
       return;
    }
+   var range = 200000;
    var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.Line);
-   var color = rateResource.findRate(investment / 100000);
+   var rateResource = rateConsole.find(MO.EEaiRate.InvestmentRange);
+   var color = rateResource.findRate(investment / range);
    o._color.set(1, 1, 1, 1);
    o._rangeColor.setInteger(color);
    o._rangeColor.alpha = 1;
    o._investmentLast = investment;
    o._investmentRateTotal = (level + 1) * 100000;
    o._investmentRate = o._investmentRateTotal;
-   o._investmentRange = Math.log(investment) / 4;
-   o._investmentAlpha = MO.Lang.Float.toRange(0.2 * level, 0, 1);
+   o._investmentRange = Math.log(investment * investment) / 10;
+   o._investmentAlpha = 8;
    o._visible = true;
 }
 MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
    var o = this;
    o._visible = false;
-   o._alpha = 0;
    o._cityTotal = 0;
    o._color.set(0, 0, 0, 0);
    o._rangeColor.set(0, 0, 0, 0);
@@ -177,8 +176,9 @@ MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
    if(o._investmentRate > 0){
       var rate = o._investmentRate / o._investmentRateTotal;
       o._range = o._investmentRange * rate;
-      o._color.alpha = o._investmentAlpha * rate;
-      o._rangeColor.alpha = o._investmentAlpha * rate;
+      var alpha = Math.min(o._investmentAlpha * rate, 1);
+      o._color.alpha = alpha;
+      o._rangeColor.alpha = alpha;
       o._investmentRate--;
       return true;
    }else{
@@ -551,7 +551,6 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
       var city = citys.at(i);
       if(city.visible()){
          var range = city.range() * 255;
-         var alpha = city.alpha();
          var location = city.location();
          var level = city.data().level();
          if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
@@ -589,7 +588,7 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
          var red = parseInt(color.red * 255);
          var green = parseInt(color.green * 255);
          var blue = parseInt(color.blue * 255);
-         var alpha = parseInt(color.alpha * alpha * 255);
+         var alpha = parseInt(color.alpha * 255);
          for(var v = 0; v < 4; v++){
             colorData[colorPosition++] = red;
             colorData[colorPosition++] = green;

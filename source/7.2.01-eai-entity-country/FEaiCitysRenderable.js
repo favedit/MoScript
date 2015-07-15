@@ -192,7 +192,6 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
       var city = citys.at(i);
       if(city.visible()){
          var range = city.range() * 255;
-         var alpha = city.alpha();
          var location = city.location();
          var level = city.data().level();
          if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
@@ -236,7 +235,7 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
          var red = parseInt(color.red * 255);
          var green = parseInt(color.green * 255);
          var blue = parseInt(color.blue * 255);
-         var alpha = parseInt(color.alpha * alpha * 255);
+         var alpha = parseInt(color.alpha * 255);
          for(var v = 0; v < 4; v++){
             colorData[colorPosition++] = red;
             colorData[colorPosition++] = green;

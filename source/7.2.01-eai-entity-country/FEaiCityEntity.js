@@ -13,7 +13,6 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), false);
    o._location               = MO.Class.register(o, new MO.AGetter('_location'));
    o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
-   o._alpha                  = MO.Class.register(o, new MO.AGetSet('_alpha'), 1);
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
@@ -116,9 +115,10 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
       return;
    }
    // 获得颜色
+   var range = 200000;
    var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.Line);
-   var color = rateResource.findRate(investment / 100000);
+   var rateResource = rateConsole.find(MO.EEaiRate.InvestmentRange);
+   var color = rateResource.findRate(investment / range);
    // 设置内容
    o._color.set(1, 1, 1, 1);
    o._rangeColor.setInteger(color);
@@ -127,8 +127,8 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
    o._investmentLast = investment;
    o._investmentRateTotal = (level + 1) * 100000;
    o._investmentRate = o._investmentRateTotal;
-   o._investmentRange = Math.log(investment) / 4;
-   o._investmentAlpha = MO.Lang.Float.toRange(0.2 * level, 0, 1);
+   o._investmentRange = Math.log(investment * investment) / 10;
+   o._investmentAlpha = 8;
    o._visible = true;
 }
 
@@ -141,7 +141,6 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
 MO.FEaiCityEntity_reset = function FEaiCityEntity_reset(){
    var o = this;
    o._visible = false;
-   o._alpha = 0;
    o._cityTotal = 0;
    o._color.set(0, 0, 0, 0);
    o._rangeColor.set(0, 0, 0, 0);
@@ -173,7 +172,6 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
    var color = rateInfo.findRate(rate);
    range = rate * 6;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
-   //o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
    o._rangeColor.setIntAlpha(color, rate * 0.6);
    o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
 }
@@ -188,10 +186,12 @@ MO.FEaiCityEntity_process = function FEaiCityEntity_process(data){
    var o = this;
    if(o._investmentRate > 0){
       var rate = o._investmentRate / o._investmentRateTotal;
-      // 设置内容
+      // 设置范围
       o._range = o._investmentRange * rate;
-      o._color.alpha = o._investmentAlpha * rate;
-      o._rangeColor.alpha = o._investmentAlpha * rate;
+      // 设置透明
+      var alpha = Math.min(o._investmentAlpha * rate, 1);
+      o._color.alpha = alpha;
+      o._rangeColor.alpha = alpha;
       // 设置内容
       o._investmentRate--;
       return true;
