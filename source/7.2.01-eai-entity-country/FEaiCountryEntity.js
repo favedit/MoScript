@@ -23,7 +23,7 @@ with(MO){
       o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
       o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
       o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
-      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 1000);
+      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 600);
       o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
       o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
       o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 200);
@@ -229,7 +229,7 @@ with(MO){
          var br = o._provinceArray[i].borderRenderable();
          var frm = fr.matrix();
          var brm = br.matrix();
-         var risePercentage = (timePassed - o.blockInterval() * i) / o.riseDuration();
+         var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
          var fallPercentage = 0;
          if (risePercentage > 1) {
             risePercentage = 1;
@@ -239,7 +239,7 @@ with(MO){
                o._lastDownSEIndex++;
             }
 
-            fallPercentage = (timePassed - o.blockInterval() * i - o.riseDuration()) / o.fallDuration();
+            fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
             if (fallPercentage > 1) {
                fallPercentage = 1;
             }
