@@ -24,6 +24,7 @@ with (MO) {
       o._fullHeight           = 896;
       // @attribute
       o._popupSE              = null;
+      o._100yiSE              = null;
       // @attribute
       o._listenersDataChanged = RClass.register(o, new AListener('_listenersDataChanged', MO.EEvent.DataChanged));
       //..........................................................
@@ -66,6 +67,7 @@ with (MO) {
       }
       var audioConsole = MO.Console.find(MO.FAudioConsole);
       o._popupSE = audioConsole.load('{eai.resource}/milestone/popup.mp3');
+      o._100yiSE = audioConsole.load('{eai.resource}/milestone/100yi.mp3');
    }
 
    //==========================================================
@@ -223,6 +225,10 @@ with (MO) {
       o = this;
       o.setVisible(true);
       o._startTick = MO.Timer.current();
+      var inves = o.data().investmentTotal();
+      if (inves == 1000000) {
+         o._100yiSE.play(0);
+      }
       o._popupSE.play(0);
    }
 
