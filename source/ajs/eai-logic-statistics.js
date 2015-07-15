@@ -239,6 +239,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
       return;
    }
    var systemDate = system.currentDate();
+   systemDate.truncMinute();
    if(!o._dateSetup){
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);

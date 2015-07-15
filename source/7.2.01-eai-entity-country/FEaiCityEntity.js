@@ -173,7 +173,7 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
    var color = rateInfo.findRate(rate);
    range = rate * 6;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
-   o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
+   //o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
    o._rangeColor.setIntAlpha(color, rate * 0.6);
    o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
 }

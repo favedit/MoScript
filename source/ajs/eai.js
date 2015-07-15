@@ -1003,7 +1003,6 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
    var color = rateInfo.findRate(rate);
    range = rate * 6;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
-   o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
    o._rangeColor.setIntAlpha(color, rate * 0.6);
    o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
 }
@@ -2242,6 +2241,7 @@ with (MO) {
       o._data             = null;
       o._ready            = false;
       o._investmentTotal  = 0;
+      o._intervalMiniute  = 10;
       o._baseHeight = 5;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
@@ -2266,20 +2266,19 @@ with (MO) {
       if (!o._ready) {
          return;
       }
-      var startTime = o._startTime;
-      var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-      var nowTick = systemLogic.currentDate();
-      startTime.assign(nowTick);
-      startTime.setSecond(0);
-      startTime.setMinute(0);
+      if(!systemLogic.testReady()){
+         return;
+      }
+      var currentDate = systemLogic.currentDate();
+      currentDate.truncMinute(o._intervalMiniute);
+      var startTime = o._startTime;
+      startTime.assign(currentDate);
       startTime.addDay(-1);
-      endTime.assign(nowTick);
-      endTime.setSecond(0);
-      endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
-      endTime.refresh();
+      var endTime = o._endTime;
+      endTime.assign(currentDate);
       var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, o._startTime.format('YYYYMMDDHH24MISS'), o._endTime.format('YYYYMMDDHH24MISS'), 60 * 15);
+      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, startTime.format(), endTime.format(), 60 * o._intervalMiniute);
    }
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
@@ -2343,7 +2342,7 @@ with (MO) {
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
          graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          text = startTime.format('HH24:00');
-         startTime.addMseconds(1000 * 60 * 60);
+         startTime.addHour(1);
          drawText = !drawText;
          if (drawText) {
             graphic.setFont('bold 20px Microsoft YaHei');
@@ -3447,6 +3446,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
       return;
    }
    var systemDate = system.currentDate();
+   systemDate.truncMinute();
    if(!o._dateSetup){
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);

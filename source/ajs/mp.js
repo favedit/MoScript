@@ -2252,7 +2252,13 @@ MO.TDate = function TDate(date){
    o.addDay       = MO.TDate_addDay;
    o.addHour      = MO.TDate_addHour;
    o.addMinute    = MO.TDate_addMinute;
-   o.addMseconds  = MO.TDate_addMseconds;
+   o.addSecond    = MO.TDate_addSecond;
+   o.add          = MO.TDate_add;
+   o.truncDay     = MO.TDate_truncDay;
+   o.truncHour    = MO.TDate_truncHour;
+   o.truncMinute  = MO.TDate_truncMinute;
+   o.truncSecond  = MO.TDate_truncSecond;
+   o.trunc        = MO.TDate_trunc;
    o.get          = MO.TDate_get;
    o.set          = MO.TDate_set;
    o.parse        = MO.TDate_parse;
@@ -2341,32 +2347,84 @@ MO.TDate_setNow = function TDate_setNow(){
 }
 MO.TDate_addYear = function TDate_addYear(value){
    var o = this;
-   o.date.setFullYear(o.date.getFullYear() + parseInt(value));
+   var year = o.date.getFullYear();
+   o.date.setFullYear(year + MO.Lang.Integer.nvl(value, 1));
    o.refresh();
 }
 MO.TDate_addMonth = function TDate_addMonth(value){
    var o = this;
-   o.date.setMonth(o.date.getMonth() + parseInt(value));
+   var month = o.date.getMonth();
+   o.date.setMonth(month + MO.Lang.Integer.nvl(value, 1));
    o.refresh();
 }
 MO.TDate_addDay = function TDate_addDay(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60 * 24);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * 60 * 24 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 MO.TDate_addHour = function TDate_addHour(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * 60 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 MO.TDate_addMinute = function TDate_addMinute(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
-MO.TDate_addMseconds = function TDate_addMseconds(value){
+MO.TDate_addSecond = function TDate_addSecond(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value));
+   var time = o.date.getTime();
+   var tick = time + (1000 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_add = function TDate_add(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time + MO.Lang.Integer.nvl(value, 1);
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_truncDay = function TDate_truncDay(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * 60 * 24 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_truncHour = function TDate_truncHour(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * 60 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_truncMinute = function TDate_truncMinute(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_truncSecond = function TDate_truncSecond(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+MO.TDate_trunc = function TDate_trunc(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 MO.TDate_get = function TDate_get(value){
@@ -4708,8 +4766,14 @@ MO.RInteger = function RInteger(){
 MO.RInteger.prototype.isInt = function RInteger_isInt(v){
    return MO.Lang.String.isPattern(v, 'n');
 }
-MO.RInteger.prototype.nvl = function RInteger_nvl(v, d){
-   return v ? v : (d ? d : 0);
+MO.RInteger.prototype.nvl = function RInteger_nvl(value, defaultValue){
+   if(value != null){
+      return parseInt(value);
+   }
+   if(defaultValue != null){
+      return defaultValue;
+   }
+   return 0;
 }
 MO.RInteger.prototype.strideByte = function RInteger_strideByte(value){
    if(value > 65535){
@@ -77627,7 +77691,6 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
    var color = rateInfo.findRate(rate);
    range = rate * 6;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
-   o._alpha = MO.Lang.Float.toRange(rate * 1.5, 0, 1);
    o._rangeColor.setIntAlpha(color, rate * 0.6);
    o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
 }
@@ -78866,6 +78929,7 @@ with (MO) {
       o._data             = null;
       o._ready            = false;
       o._investmentTotal  = 0;
+      o._intervalMiniute  = 10;
       o._baseHeight = 5;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
       o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
@@ -78890,20 +78954,19 @@ with (MO) {
       if (!o._ready) {
          return;
       }
-      var startTime = o._startTime;
-      var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-      var nowTick = systemLogic.currentDate();
-      startTime.assign(nowTick);
-      startTime.setSecond(0);
-      startTime.setMinute(0);
+      if(!systemLogic.testReady()){
+         return;
+      }
+      var currentDate = systemLogic.currentDate();
+      currentDate.truncMinute(o._intervalMiniute);
+      var startTime = o._startTime;
+      startTime.assign(currentDate);
       startTime.addDay(-1);
-      endTime.assign(nowTick);
-      endTime.setSecond(0);
-      endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
-      endTime.refresh();
+      var endTime = o._endTime;
+      endTime.assign(currentDate);
       var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, o._startTime.format('YYYYMMDDHH24MISS'), o._endTime.format('YYYYMMDDHH24MISS'), 60 * 15);
+      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, startTime.format(), endTime.format(), 60 * o._intervalMiniute);
    }
    MO.FGui24HTimeline_on24HDataFetch = function FGui24HTimeline_on24HDataFetch(event) {
       var o = this;
@@ -78967,7 +79030,7 @@ with (MO) {
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
          graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          text = startTime.format('HH24:00');
-         startTime.addMseconds(1000 * 60 * 60);
+         startTime.addHour(1);
          drawText = !drawText;
          if (drawText) {
             graphic.setFont('bold 20px Microsoft YaHei');
@@ -80071,6 +80134,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
       return;
    }
    var systemDate = system.currentDate();
+   systemDate.truncMinute();
    if(!o._dateSetup){
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);

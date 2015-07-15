@@ -15,6 +15,7 @@ with (MO) {
       o._data             = null;
       o._ready            = false;
       o._investmentTotal  = 0;
+      o._intervalMiniute  = 10;
       // @attribute
       o._baseHeight = 5;
       o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
@@ -56,20 +57,22 @@ with (MO) {
       if (!o._ready) {
          return;
       }
-      var startTime = o._startTime;
-      var endTime = o._endTime;
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-      var nowTick = systemLogic.currentDate();
-      startTime.assign(nowTick);
-      startTime.setSecond(0);
-      startTime.setMinute(0);
+      if(!systemLogic.testReady()){
+         return;
+      }
+      var currentDate = systemLogic.currentDate();
+      currentDate.truncMinute(o._intervalMiniute);
+      // 设置开始时间
+      var startTime = o._startTime;
+      startTime.assign(currentDate);
       startTime.addDay(-1);
-      endTime.assign(nowTick);
-      endTime.setSecond(0);
-      endTime.setMinute(parseInt(endTime.date.getMinutes() / 15) * 15);
-      endTime.refresh();
+      // 设置结束时间
+      var endTime = o._endTime;
+      endTime.assign(currentDate);
+      // 发送数据
       var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, o._startTime.format('YYYYMMDDHH24MISS'), o._endTime.format('YYYYMMDDHH24MISS'), 60 * 15);
+      statisticsLogic.doInvestmentTrend(o, o.on24HDataFetch, startTime.format(), endTime.format(), 60 * o._intervalMiniute);
    }
 
    //==========================================================
@@ -158,7 +161,7 @@ with (MO) {
          var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
          graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
          text = startTime.format('HH24:00');
-         startTime.addMseconds(1000 * 60 * 60);
+         startTime.addHour(1);
          drawText = !drawText;
          if (drawText) {
             graphic.setFont('bold 20px Microsoft YaHei');

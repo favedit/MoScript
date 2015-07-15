@@ -32,12 +32,18 @@ MO.RInteger.prototype.isInt = function RInteger_isInt(v){
 // <T>获取非空内容。</T>
 //
 // @method
-// @param v:value:Integer 数字
-// @param d:default:Integer 默认内容
+// @param value:Integer 数字
+// @param defaultValue:Integer 默认内容
 // @return Integer 非空内容
 //==========================================================
-MO.RInteger.prototype.nvl = function RInteger_nvl(v, d){
-   return v ? v : (d ? d : 0);
+MO.RInteger.prototype.nvl = function RInteger_nvl(value, defaultValue){
+   if(value != null){
+      return parseInt(value);
+   }
+   if(defaultValue != null){
+      return defaultValue;
+   }
+   return 0;
 }
 
 //============================================================

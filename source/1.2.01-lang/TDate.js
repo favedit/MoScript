@@ -44,7 +44,14 @@ MO.TDate = function TDate(date){
    o.addDay       = MO.TDate_addDay;
    o.addHour      = MO.TDate_addHour;
    o.addMinute    = MO.TDate_addMinute;
-   o.addMseconds  = MO.TDate_addMseconds;
+   o.addSecond    = MO.TDate_addSecond;
+   o.add          = MO.TDate_add;
+   // @method
+   o.truncDay     = MO.TDate_truncDay;
+   o.truncHour    = MO.TDate_truncHour;
+   o.truncMinute  = MO.TDate_truncMinute;
+   o.truncSecond  = MO.TDate_truncSecond;
+   o.trunc        = MO.TDate_trunc;
    // @method
    o.get          = MO.TDate_get;
    o.set          = MO.TDate_set;
@@ -256,7 +263,8 @@ MO.TDate_setNow = function TDate_setNow(){
 //===========================================================
 MO.TDate_addYear = function TDate_addYear(value){
    var o = this;
-   o.date.setFullYear(o.date.getFullYear() + parseInt(value));
+   var year = o.date.getFullYear();
+   o.date.setFullYear(year + MO.Lang.Integer.nvl(value, 1));
    o.refresh();
 }
 
@@ -268,7 +276,8 @@ MO.TDate_addYear = function TDate_addYear(value){
 //===========================================================
 MO.TDate_addMonth = function TDate_addMonth(value){
    var o = this;
-   o.date.setMonth(o.date.getMonth() + parseInt(value));
+   var month = o.date.getMonth();
+   o.date.setMonth(month + MO.Lang.Integer.nvl(value, 1));
    o.refresh();
 }
 
@@ -280,7 +289,9 @@ MO.TDate_addMonth = function TDate_addMonth(value){
 //===========================================================
 MO.TDate_addDay = function TDate_addDay(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60 * 24);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * 60 * 24 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 
@@ -292,7 +303,9 @@ MO.TDate_addDay = function TDate_addDay(value){
 //===========================================================
 MO.TDate_addHour = function TDate_addHour(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60 * 60);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * 60 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 
@@ -304,7 +317,9 @@ MO.TDate_addHour = function TDate_addHour(value){
 //===========================================================
 MO.TDate_addMinute = function TDate_addMinute(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value) * 1000 * 60);
+   var time = o.date.getTime();
+   var tick = time + (1000 * 60 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 
@@ -314,9 +329,95 @@ MO.TDate_addMinute = function TDate_addMinute(value){
 // @method
 // @param value:Integer 秒数
 //===========================================================
-MO.TDate_addMseconds = function TDate_addMseconds(value){
+MO.TDate_addSecond = function TDate_addSecond(value){
    var o = this;
-   o.date.setTime(o.date.getTime() + parseInt(value));
+   var time = o.date.getTime();
+   var tick = time + (1000 * MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>增加指定的毫秒。<T>
+//
+// @method
+// @param value:Integer 毫秒数
+//===========================================================
+MO.TDate_add = function TDate_add(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time + MO.Lang.Integer.nvl(value, 1);
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>截取掉天时间。<T>
+//
+// @method
+// @param value:Integer 天数
+//===========================================================
+MO.TDate_truncDay = function TDate_truncDay(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * 60 * 24 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>截取掉小时时间。<T>
+//
+// @method
+// @param value:Integer 小时数
+//===========================================================
+MO.TDate_truncHour = function TDate_truncHour(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * 60 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>截取掉分钟时间。<T>
+//
+// @method
+// @param value:Integer 分钟数
+//===========================================================
+MO.TDate_truncMinute = function TDate_truncMinute(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * 60 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>截取掉秒时间。<T>
+//
+// @method
+// @param value:Integer 秒数
+//===========================================================
+MO.TDate_truncSecond = function TDate_truncSecond(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % (1000 * MO.Lang.Integer.nvl(value, 1)));
+   o.date.setTime(tick);
+   o.refresh();
+}
+
+//===========================================================
+// <T>截取掉毫秒时间。<T>
+//
+// @method
+// @param value:Integer 毫秒数
+//===========================================================
+MO.TDate_trunc = function TDate_trunc(value){
+   var o = this;
+   var time = o.date.getTime();
+   var tick = time - (time % MO.Lang.Integer.nvl(value, 1));
+   o.date.setTime(tick);
    o.refresh();
 }
 

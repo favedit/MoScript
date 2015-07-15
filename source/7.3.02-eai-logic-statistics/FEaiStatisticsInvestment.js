@@ -278,6 +278,7 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
       return;
    }
    var systemDate = system.currentDate();
+   systemDate.truncMinute();
    //..........................................................
    // 设置首次时间
    if(!o._dateSetup){
