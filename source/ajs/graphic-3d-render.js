@@ -231,8 +231,15 @@ MO.SG3dLayoutSampler_dispose = function SG3dLayoutSampler_dispose(){
 MO.FG3dBuffer = function FG3dBuffer(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    o._code   = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._data   = MO.Class.register(o, new MO.AGetSet('_data'));
    o.isValid = MO.Method.virtual(o, 'isValid');
+   o.dispose = MO.FG3dBuffer_dispose;
    return o;
+}
+MO.FG3dBuffer_dispose = function FG3dBuffer_dispose(){
+   var o = this;
+   o._data = null;
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);

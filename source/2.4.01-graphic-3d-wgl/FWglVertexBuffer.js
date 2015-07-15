@@ -51,12 +51,16 @@ MO.FWglVertexBuffer_isValid = function FWglVertexBuffer_isValid(){
 // @param data:Array 数据
 // @param stride:Integer 宽度
 // @param count:Integer 总数
+// @param remain:Boolean 保留数据
 //==========================================================
-MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count){
+MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count, remain){
    var o = this;
    var context = o._graphicContext;
    var graphics = context._handle;
    // 设置数据
+   if(remain){
+      o._data = data;
+   }
    o._stride = stride;
    o._count = count;
    // 获得数据

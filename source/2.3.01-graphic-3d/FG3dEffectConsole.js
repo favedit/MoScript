@@ -132,6 +132,7 @@ MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInf
    effectInfo.optionMerge = renderable._optionMerge;
    if(effectInfo.optionMerge){
       effectInfo.mergeCount = renderable.mergeMaxCount();
+      effectInfo.mergeStride = renderable.mergeStride();
    }
    // 设置材质
    var mi = renderable.material().info();

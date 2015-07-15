@@ -15,7 +15,7 @@ MO.FE3dRenderable = function FE3dRenderable(o){
    // @attribute
    o._calculateMatrix   = null;
    // @attribute
-   o._vertexCount       = MO.Class.register(o, new MO.AGetter('_vertexCount'));
+   o._vertexCount       = MO.Class.register(o, new MO.AGetSet('_vertexCount'));
    o._vertexBuffers     = MO.Class.register(o, new MO.AGetter('_vertexBuffers'));
    o._indexBuffers      = MO.Class.register(o, new MO.AGetter('_indexBuffers'));
    // @attribute

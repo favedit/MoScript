@@ -76,7 +76,7 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    var vertexIndex = 0;
    var vertexData = new Float32Array(3 * vertexTotal * 2);
    var faceIndex = 0;
-   var faceData = new Uint16Array(indexTotal * 2 + 3 * 2 * vertexTotal);
+   var faceData = new Uint16Array(indexTotal + 3 * 2 * vertexTotal);
    // 建立上层数据
    for(var n = 0; n < count; n++){
       var boundary = boundaries.at(n);
@@ -165,11 +165,13 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable.setVertexCount(vertexTotal * 2);
    renderable.linkGraphicContext(context);
    renderable.setup();
-   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
-   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
-   renderable.indexBuffer().upload(faceData, faceIndex);
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.indexBuffer().upload(faceData, faceIndex, true);
+   renderable.material().info().effectCode = 'eai.map.face';
    //renderable.material().info().optionDouble = true;
    //renderable.setMaterialReference(o._mapEntity);
 }
@@ -265,12 +267,13 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
    renderable.linkGraphicContext(context);
    renderable.setup();
-   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2);
-   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
+   renderable.setVertexCount(vertexTotal * 2);
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
    renderable.indexBuffer().setLineWidth(1);
-   renderable.indexBuffer().upload(borderData, borderIndex);
-   //renderable.setMaterialReference(o._mapEntity);
+   renderable.indexBuffer().upload(borderData, borderIndex, true);
+   renderable.material().info().effectCode = 'eai.map.face';
 }
 
 //==========================================================
@@ -323,9 +326,9 @@ MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
    var o = this;
    var investmentTotal = data.investmentTotal();
    var rate = Math.sqrt(investmentTotal) / 100;
-   //if(rate > 255){
-   //   rate = 255;
-   //}
+   if(rate > 255){
+      rate = 255;
+   }
    //var colorIndex = 0;
    //var colors = o.colorsData;
    //for(var i = 0; i < o._vertexTotal; i++){
@@ -353,20 +356,14 @@ MO.FEaiProvinceEntity_update = function FEaiProvinceEntity_update(data){
 //==========================================================
 MO.FEaiProvinceEntity_updateColor = function FEaiProvinceEntity_updateColor(rate){
    var o = this;
-   var rate = o._focusCurrent / o._focusCount;
-   var vertexTotal = o._vertexTotal;
-   var colorIndex = 0;
-   var colors = MO.Lang.TypeArray.findTemp(MO.EDataType.Uint8, 4 * vertexTotal * 2);
    var color = o._focusColor;
-   var positionTotal = vertexTotal * 2;
-   for(var i = 0; i < positionTotal; i++){
-      colors[colorIndex++] = 0x08 + ((color[0] - 0x08)* rate);
-      colors[colorIndex++] = 0x0D + ((color[1] - 0x0D)* rate);
-      colors[colorIndex++] = 0x19 + ((color[2] - 0x19)* rate);
-      colors[colorIndex++] = 0xFF;
-   }
-   // 创建三角面渲染对象
-   o._faceRenderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2);
+   var rate = o._focusCurrent / o._focusCount;
+   // 计算颜色
+   var red = 0x08 + ((color[0] - 0x08)* rate);
+   var green = 0x0D + ((color[1] - 0x0D)* rate);
+   var blue = 0x19 + ((color[2] - 0x19)* rate);
+   var alpha = 0xFF;
+   o._faceRenderable.color().set(red / 255, green / 255, blue / 255, alpha / 255);
 }
 
 //==========================================================

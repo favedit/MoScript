@@ -1610,6 +1610,7 @@ MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInf
    effectInfo.optionMerge = renderable._optionMerge;
    if(effectInfo.optionMerge){
       effectInfo.mergeCount = renderable.mergeMaxCount();
+      effectInfo.mergeStride = renderable.mergeStride();
    }
    var mi = renderable.material().info();
    effectInfo.optionNormalInvert = mi.optionNormalInvert;
@@ -2677,8 +2678,15 @@ MO.SG3dLayoutSampler_dispose = function SG3dLayoutSampler_dispose(){
 MO.FG3dBuffer = function FG3dBuffer(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    o._code   = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._data   = MO.Class.register(o, new MO.AGetSet('_data'));
    o.isValid = MO.Method.virtual(o, 'isValid');
+   o.dispose = MO.FG3dBuffer_dispose;
    return o;
+}
+MO.FG3dBuffer_dispose = function FG3dBuffer_dispose(){
+   var o = this;
+   o._data = null;
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
@@ -3369,87 +3377,89 @@ MO.FG3dAutomaticEffect_setup = function FG3dAutomaticEffect_setup(){
    var cp = c.capability();
    o._supportLayout = cp.optionLayout;
 }
-MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagContext, pc){
+MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagContext, info){
    var o = this;
    var context = o._graphicContext;
    var capability = context.capability();
    var flag = new MO.TString();
-   flag.append(pc.techniqueModeCode)
-   tagContext.set("technique.mode", pc.techniqueModeCode);
-   var om = o._optionMerge = pc.optionMerge;
+   flag.append(info.techniqueModeCode)
+   tagContext.set("technique.mode", info.techniqueModeCode);
+   var om = o._optionMerge = info.optionMerge;
    if(om){
-      var mc = pc.mergeCount;
-      flag.append("|OI" + mc);
+      var mergeCount = info.mergeCount;
+      var mergeStride = info.mergeStride;
+      flag.append("|OI" + mergeCount);
       tagContext.setBoolean("option.instance", true);
-      tagContext.set("instance.count", mc);
+      tagContext.set("instance.count", mergeCount);
+      tagContext.set("instance.length", mergeStride * mergeCount);
    }
    if(capability.optionMaterialMap){
       flag.append("|OM");
       tagContext.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
-   if(pc.optionNormalInvert){
+   if(info.optionNormalInvert){
       flag.append("|ON");
       tagContext.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
-   if(pc.optionColor){
+   if(info.optionColor){
       flag.append("|OC");
       tagContext.setBoolean("option.color", true);
       o.optionAmbient = true;
    }
-   if(pc.optionAmbient){
+   if(info.optionAmbient){
       flag.append("|OA");
       tagContext.setBoolean("option.ambient", true);
       o.optionAmbient = true;
    }
-   if(pc.optionDiffuse){
+   if(info.optionDiffuse){
       flag.append("|OD");
       tagContext.setBoolean("option.diffuse", true);
       o.optionDiffuse = true;
    }
-   if(pc.optionSpecular){
+   if(info.optionSpecular){
       flag.append("|OS");
       tagContext.setBoolean("option.specular", true);
       o.optionSpecular = true;
    }
-   if(pc.optionReflect){
+   if(info.optionReflect){
       flag.append("|ORL");
       tagContext.setBoolean("option.reflect", true);
       o.optionReflect = true;
    }
-   if(pc.optionRefract){
+   if(info.optionRefract){
       flag.append("|ORF");
       tagContext.setBoolean("option.refract", true);
       o.optionRefract = true;
    }
-   var ac = pc.attributeContains(MO.EG3dAttribute.Color);
+   var ac = info.attributeContains(MO.EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
       flag.append("|AC");
       tagContext.setBoolean("vertex.attribute.color", true);
    }
-   var ad = pc.attributeContains(MO.EG3dAttribute.Coord);
+   var ad = info.attributeContains(MO.EG3dAttribute.Coord);
    o._dynamicVertexCoord = (o._supportVertexCoord && ad);
    if(o._dynamicVertexCoord){
       flag.append("|AD");
       tagContext.setBoolean("vertex.attribute.coord", true);
    }
-   var an = pc.attributeContains(MO.EG3dAttribute.Normal);
+   var an = info.attributeContains(MO.EG3dAttribute.Normal);
    o._dynamicVertexNormal = (o._supportVertexNormal && an);
    if(o._dynamicVertexNormal){
       flag.append("|AN");
       tagContext.setBoolean("vertex.attribute.normal", true);
    }
-   var ab = pc.attributeContains(MO.EG3dAttribute.Binormal);
-   var at = pc.attributeContains(MO.EG3dAttribute.Tangent);
+   var ab = info.attributeContains(MO.EG3dAttribute.Binormal);
+   var at = info.attributeContains(MO.EG3dAttribute.Tangent);
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
       flag.append("|ANF");
       tagContext.setBoolean("vertex.attribute.normal.full", true);
    }
-   o._dynamicVertexNormalCompress = pc.optionNormalCompress;
+   o._dynamicVertexNormalCompress = info.optionNormalCompress;
    if(o._dynamicVertexNormalCompress){
       flag.append("|ANC");
       tagContext.setBoolean("vertex.attribute.normal.compress", true);
@@ -3457,22 +3467,22 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){
       flag.append("|SI");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.instance", true);
       }
    }
    o._dynamicSkeleton = o._supportSkeleton;
    if(o._dynamicSkeleton){
       flag.append("|SS");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.skeleton", true);
       }
    }
-   var sdf  = pc.samplerContains(MO.EG3dSampler.Diffuse);
+   var sdf  = info.samplerContains(MO.EG3dSampler.Diffuse);
    o._dynamicAlpha = o._supportAlpha;
    if(o._dynamicAlpha){
       flag.append("|RA");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.alpha", true);
       }
       o._optionBlendMode = true;
@@ -3482,79 +3492,79 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicAmbient = o._supportAmbient;
    if(o._dynamicAmbient){
       flag.append("|TA");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.ambient", true);
       }
       if(sdf){
          flag.append("|TAS");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.ambient.sampler", true);
          }
       }
    }
-   if(pc.samplerContains(MO.EG3dSampler.Alpha)){
+   if(info.samplerContains(MO.EG3dSampler.Alpha)){
       tagContext.setBoolean("support.alpha.sampler", true);
    }
-   var snr = pc.samplerContains(MO.EG3dSampler.Normal);
+   var snr = info.samplerContains(MO.EG3dSampler.Normal);
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);
    if(o._supportDiffuse){
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.diffuse", true);
       }
       if(snr){
          flag.append("|TDD");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.dump", true);
             tagContext.setBoolean("support.diffuse.dump", true);
          }
       }else if(o._dynamicVertexNormal){
          flag.append("|TDN");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.diffuse.normal", true);
          }
       }
    }
    o._dynamicDiffuseView = (o._supportDiffuseView && (o._dynamicVertexNormal || snr));
    if(o._supportDiffuseView){
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.diffuse.view", true);
       }
       if(snr){
          flag.append("|TDVD");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.dump", true);
             tagContext.setBoolean("support.diffuse.view.dump", true);
          }
       }else if(o._dynamicVertexNormal){
          flag.append("|TDVN");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.diffuse.view.normal", true);
          }
       }
    }
-   var spc = pc.samplerContains(MO.EG3dSampler.SpecularColor);
-   var spl = pc.samplerContains(MO.EG3dSampler.SpecularLevel);
+   var spc = info.samplerContains(MO.EG3dSampler.SpecularColor);
+   var spl = info.samplerContains(MO.EG3dSampler.SpecularLevel);
    o._dynamicSpecularColor = (o._supportSpecularColor && spc);
    o._dynamicSpecularLevel = (o._supportSpecularLevel && spl);
    if((o._dynamicSpecularColor || o._dynamicSpecularLevel) && o._dynamicVertexNormal){
       flag.append("|TS");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.specular", true);
       }
       if(o._dynamicSpecularColor){
          flag.append("|TSC");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
          flag.append("|TSL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.level", true);
          }
       }else{
          flag.append("|NSL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.normal", true);
          }
       }
@@ -3562,81 +3572,81 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicSpecularView = o._supportSpecularView;
    if(o._dynamicSpecularView && o._dynamicVertexNormal){
       flag.append("|TSV");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.specular.view", true);
       }
       if(o._dynamicSpecularColor){
          flag.append("|TSVC");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
          flag.append("|TSVL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.level", true);
          }
       }else{
          flag.append("|NSVL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.normal", true);
          }
       }
    }
-   var slg = pc.samplerContains(MO.EG3dSampler.Light);
+   var slg = info.samplerContains(MO.EG3dSampler.Light);
    o._dynamicLight = (o._supportLight && slg);
    if(o._dynamicLight){
       flag.append("|TL");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.light", true);
       }
    }
-   var slr = pc.samplerContains(MO.EG3dSampler.Reflect);
+   var slr = info.samplerContains(MO.EG3dSampler.Reflect);
    o._dynamicReflect = (o._supportReflect && slr);
    if(o._dynamicReflect){
       flag.append("|TRL");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.reflect", true);
       }
    }
-   var slf = pc.samplerContains(MO.EG3dSampler.Refract);
+   var slf = info.samplerContains(MO.EG3dSampler.Refract);
    o._dynamicRefract = (o._supportRefract && slf);
    if(o._dynamicRefract){
       flag.append("|TRF");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.refract", true);
       }
    }
-   var sle = pc.samplerContains(MO.EG3dSampler.Emissive);
+   var sle = info.samplerContains(MO.EG3dSampler.Emissive);
    o._dynamicEmissive = (o._supportEmissive && sle);
    if(o._dynamicEmissive){
       flag.append("|TLE");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.emissive", true);
       }
    }
-   var shg = pc.samplerContains(MO.EG3dSampler.Height);
+   var shg = info.samplerContains(MO.EG3dSampler.Height);
    o._dynamicHeight = (o._supportHeight && shg);
    if(o._dynamicHeight){
       flag.append("|TH");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.height", true);
       }
    }
-   var sen = pc.samplerContains(MO.EG3dSampler.Environment);
+   var sen = info.samplerContains(MO.EG3dSampler.Environment);
    o._dynamicEnvironment = (o._supportEnvironment && sen);
    if(o._dynamicEnvironment){
       flag.append("|TE");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.environment", true);
       }
    }
    if(o._dynamicSkeleton){
-      var boneCount = capability.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      var boneCount = capability.calculateBoneCount(info.vertexBoneCount, info.vertexCount);
       flag.append("|B" + boneCount);
       tagContext.set("bone.count", boneCount);
       tagContext.set("bone.array.count", boneCount * 3);
@@ -4943,7 +4953,7 @@ MO.FWglFragmentShader_upload = function FWglFragmentShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;
@@ -4974,40 +4984,43 @@ MO.FWglIndexBuffer_setup = function FWglIndexBuffer_setup(){
 }
 MO.FWglIndexBuffer_isValid = function FWglIndexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._handle;
-   return g.isBuffer(o._handle);
+   var handle = o._graphicContext._handle;
+   return handle.isBuffer(o._handle);
 }
-MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(pd, pc){
+MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(data, count, remain){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._handle;
-   o._count = pc;
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+   var context = o._graphicContext;
+   var handle = context._handle;
+   if(remain){
+      o._data = data;
+   }
+   o._count = count;
+   var memory = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
       if(o._strideCd == MO.EG3dIndexStride.Uint16){
-         d = new Uint16Array(pd);
+         memory = new Uint16Array(data);
       }else if(o._strideCd == MO.EG3dIndexStride.Uint32){
-         d = new Uint32Array(pd);
+         memory = new Uint32Array(data);
       }else{
          throw new TError(o, 'Index stride is invalid.');
       }
-   }else if(pd.constructor == Uint16Array){
+   }else if(data.constructor == Uint16Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint16){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
-   }else if(pd.constructor == Uint32Array){
+      memory = data;
+   }else if(data.constructor == Uint32Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint32){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
+      memory = data;
    }else{
-      throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
+      throw new TError(o, 'Upload index data type is invalid. (value={1})', data);
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._handle);
-   c.checkError('bindBuffer', 'Bind buffer failure.');
-   g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
+   handle.bindBuffer(handle.ELEMENT_ARRAY_BUFFER, o._handle);
+   context.checkError('bindBuffer', 'Bind buffer failure.');
+   handle.bufferData(handle.ELEMENT_ARRAY_BUFFER, memory, handle.STATIC_DRAW);
+   context.checkError('bufferData', 'Upload buffer data. (count={1})', count);
 }
 MO.FWglIndexBuffer_dispose = function FWglIndexBuffer_dispose(){
    var o = this;
@@ -5338,10 +5351,13 @@ MO.FWglVertexBuffer_isValid = function FWglVertexBuffer_isValid(){
    var graphic = o._graphicContext._handle;
    return graphic.isBuffer(o._handle);
 }
-MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count){
+MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count, remain){
    var o = this;
    var context = o._graphicContext;
    var graphics = context._handle;
+   if(remain){
+      o._data = data;
+   }
    o._stride = stride;
    o._count = count;
    var arrays = null;
@@ -5421,7 +5437,7 @@ MO.FWglVertexShader_upload = function FWglVertexShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;

@@ -1125,6 +1125,7 @@ MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInf
    effectInfo.optionMerge = renderable._optionMerge;
    if(effectInfo.optionMerge){
       effectInfo.mergeCount = renderable.mergeMaxCount();
+      effectInfo.mergeStride = renderable.mergeStride();
    }
    var mi = renderable.material().info();
    effectInfo.optionNormalInvert = mi.optionNormalInvert;

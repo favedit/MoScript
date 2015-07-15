@@ -27,6 +27,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    var o = this;
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
    // 选取效果器
+   effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
 }

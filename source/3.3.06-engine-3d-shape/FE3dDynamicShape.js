@@ -4,23 +4,24 @@
 // @author maocy
 // @history 150106
 //==========================================================
-MO.FE3rDynamicModel = function FE3rDynamicModel(o){
-   o = MO.Class.inherits(this, o, MO.FE3rObject);
+MO.FE3dDynamicShape = function FE3dDynamicShape(o){
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
    //..........................................................
    // @attribute
-   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
-   o._updateDate    = 0;
+   o._mergeMaxCount      = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride        = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   // @attribute
+   o._sourceRenderables  = MO.Class.register(o, new MO.AGetter('_sourceRenderables'));
+   o._meshes             = MO.Class.register(o, new MO.AGetter('_meshes'));
    //..........................................................
    // @method
-   o.construct      = MO.FE3rDynamicModel_construct;
+   o.construct           = MO.FE3dDynamicShape_construct;
    // @method
-   o.createMesh     = MO.FE3rDynamicModel_createMesh;
-   o.pushRenderable = MO.FE3rDynamicModel_pushRenderable;
-   o.build          = MO.FE3rDynamicModel_build;
-   o.update         = MO.FE3rDynamicModel_update;
+   o.createMesh          = MO.FE3dDynamicShape_createMesh;
+   o.pushMergeRenderable = MO.FE3dDynamicShape_pushMergeRenderable;
+   o.build               = MO.FE3dDynamicShape_build;
+   // @method
+   o.dispose             = MO.FE3dDynamicShape_dispose;
    return o;
 }
 
@@ -29,35 +30,40 @@ MO.FE3rDynamicModel = function FE3rDynamicModel(o){
 //
 // @method
 //==========================================================
-MO.FE3rDynamicModel_construct = function FE3rDynamicModel_construct(){
+MO.FE3dDynamicShape_construct = function FE3dDynamicShape_construct(){
    var o = this;
-   o.__base.FE3rObject.construct.call(o);
-   o._renderables = new MO.TObjects();
+   o.__base.FE3dDisplay.construct.call(o);
+   // 设置属性
+   o._sourceRenderables = new MO.TObjects();
    o._meshes = new MO.TObjects();
+   // 设置材质
+   o._material = MO.Class.create(MO.FE3dMaterial);
 }
 
 //==========================================================
 // <T>创建网格。</T>
 //
 // @method
-// @return FE3rDynamicMesh 动态网格
+// @return FE3dDynamicMesh 动态网格
 //==========================================================
-MO.FE3rDynamicModel_createMesh = function FE3rDynamicModel_createMesh(){
+MO.FE3dDynamicShape_createMesh = function FE3dDynamicShape_createMesh(){
    var o = this;
-   var m = MO.Class.create(MO.FE3rDynamicMesh);
-   m._model = o;
-   m.linkGraphicContext(o);
-   o._meshes.push(m);
-   return m;
+   var mesh = MO.Class.create(MO.FE3dDynamicMesh);
+   mesh.linkGraphicContext(o);
+   mesh.setShape(o);
+   o._meshes.push(mesh);
+   o.pushRenderable(mesh);
+   return mesh;
 }
 
 //==========================================================
 // <T>增加一个渲染对象。</T>
 //
 // @method
+// @param renderable:FE3dDisplay 渲染对象
 //==========================================================
-MO.FE3rDynamicModel_pushRenderable = function FE3rDynamicModel_pushRenderable(p){
-   this._renderables.push(p);
+MO.FE3dDynamicShape_pushMergeRenderable = function FE3dDynamicShape_pushMergeRenderable(renderable){
+   this._sourceRenderables.push(renderable);
 }
 
 //==========================================================
@@ -65,10 +71,10 @@ MO.FE3rDynamicModel_pushRenderable = function FE3rDynamicModel_pushRenderable(p)
 //
 // @method
 //==========================================================
-MO.FE3rDynamicModel_build = function FE3rDynamicModel_build(){
+MO.FE3dDynamicShape_build = function FE3dDynamicShape_build(){
    var o = this;
-   var renderables = o._renderables;
-   var meshes = o._meshes;
+   var renderables = o._sourceRenderables;
+   var meshes = o.renderables();
    // 生成渲染对象
    var count = renderables.count();
    if(count > 0){
@@ -93,15 +99,20 @@ MO.FE3rDynamicModel_build = function FE3rDynamicModel_build(){
       mesh.build();
       mergeMax = Math.max(mergeMax, mesh.mergeCount());
    }
+   // 设置最大数量
    o._mergeMaxCount = mergeMax;
 }
 
 //==========================================================
-// <T>更新处理。</T>
+// <T>释放处理。</T>
 //
 // @method
 //==========================================================
-MO.FE3rDynamicModel_update = function FE3rDynamicModel_update(p){
+MO.FE3dDynamicShape_dispose = function FE3dDynamicShape_dispose(){
    var o = this;
-   o._updateDate = MO.Timer.current();
+   // 释放属性
+   o._sourceRenderables = MO.Lang.Object.dispose(o._sourceRenderables);
+   o._meshes = MO.Lang.Object.dispose(o._meshes);
+   // 释放属性
+   o.__base.FE3dDisplay.dispose.call(o);
 }

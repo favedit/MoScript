@@ -2031,7 +2031,7 @@ MO.FE3dRenderable = function FE3dRenderable(o){
    o._outline           = null;
    o._outlineVisible    = true;
    o._calculateMatrix   = null;
-   o._vertexCount       = MO.Class.register(o, new MO.AGetter('_vertexCount'));
+   o._vertexCount       = MO.Class.register(o, new MO.AGetSet('_vertexCount'));
    o._vertexBuffers     = MO.Class.register(o, new MO.AGetter('_vertexBuffers'));
    o._indexBuffers      = MO.Class.register(o, new MO.AGetter('_indexBuffers'));
    o._materialReference = MO.Class.register(o, new MO.AGetSet('_materialReference'));
@@ -5480,11 +5480,11 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
    switch(code){
       case 'position':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 3 * position, d, 0, 3 * dataCount);
+         MO.Lang.Float.copy(data, 3 * position, d, 0, 3 * dataCount);
          break;
       case 'coord':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 2 * position, d, 0, 2 * dataCount);
+         MO.Lang.Float.copy(data, 2 * position, d, 0, 2 * dataCount);
          break;
       case 'color':
       case "normal":
@@ -5493,7 +5493,7 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
       case "bone_index":
       case "bone_weight":
          var d = new Uint8Array(resource._data);
-         MO.RByte.copy(data, 4 * position, d, 0, 4 * dataCount);
+         MO.Lang.Byte.copy(data, 4 * position, d, 0, 4 * dataCount);
          break;
       default:
          throw new MO.TError("Unknown code");
@@ -5570,7 +5570,8 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
    o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = 0;
+   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
    o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
@@ -10635,6 +10636,21 @@ MO.FE3dTemplateRenderable_dispose = function FE3dTemplateRenderable_dispose(){
    var o = this;
    o.__base.FE3dMeshRenderable.dispose.call(o);
 }
+MO.ME3dDynamicRenderable = function ME3dDynamicRenderable(o){
+   o = MO.Class.inherits(this, o);
+   o._color    = MO.Class.register(o, new MO.AGetter('_color'));
+   o.construct = MO.ME3dDynamicRenderable_construct;
+   o.dispose   = MO.ME3dDynamicRenderable_dispose;
+   return o;
+}
+MO.ME3dDynamicRenderable_construct = function ME3dDynamicRenderable_construct(){
+   var o = this;
+   o._color = new MO.SColor4(1, 1, 1, 1);
+}
+MO.ME3dDynamicRenderable_dispose = function ME3dDynamicRenderable_dispose(){
+   var o = this;
+   o._color = MO.Lang.Object.dispose(o._color);
+}
 MO.SE3dRulerPrecision = function SE3dRulerPrecision(o){
    var o = this;
    o.interval = 1;
@@ -10978,17 +10994,19 @@ MO.FE3dCube_setup = function FE3dCube_setup(p){
    mi.ambientColor.set(1, 1, 1, 1);
 }
 MO.FE3dDataBox = function FE3dDataBox(o){
-   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable, MO.ME3dDynamicRenderable);
    o._vertexPositionBuffer = MO.Class.register(o, new MO.AGetter('_vertexPositionBuffer'));
    o._vertexColorBuffer    = MO.Class.register(o, new MO.AGetter('_vertexColorBuffer'));
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dDataBox_construct;
    o.setup                 = MO.FE3dDataBox_setup;
+   o.dispose               = MO.FE3dDataBox_dispose;
    return o;
 }
 MO.FE3dDataBox_construct = function FE3dDataBox_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   o.__base.ME3dDynamicRenderable.construct.call(o);
    o._material = MO.Class.create(MO.FE3dMaterial);
 }
 MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
@@ -11007,6 +11025,12 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    var info = o.material().info();
    info.effectCode = 'control';
    info.ambientColor.set(1, 1, 1, 1);
+}
+MO.FE3dDataBox_dispose = function FE3dDataBox_dispose(){
+   var o = this;
+   o._material = MO.Class.create(MO.FE3dMaterial);
+   o.__base.ME3dDynamicRenderable.dispose.call(o);
+   o.__base.FE3dRenderable.dispose.call(o);
 }
 MO.FE3dDimensional = function FE3dDimensional(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
@@ -11127,6 +11151,267 @@ MO.FE3dDimensional_setup = function FE3dDimensional_setup(){
    var materialInfo = o.material().info();
    materialInfo.effectCode = 'control';
    materialInfo.ambientColor.set(1, 1, 1, 1);
+}
+MO.FE3dDynamicMesh = function FE3dDynamicMesh(o){
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o._shape            = MO.Class.register(o, new MO.AGetSet('_shape'));
+   o._optionMerge      = true;
+   o._vertexPosition   = 0;
+   o._vertexTotal      = 0;
+   o._indexPosition    = 0;
+   o._indexTotal       = 0;
+   o._mergeRenderables = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
+   o.construct         = MO.FE3dDynamicMesh_construct;
+   o.mergeCount        = MO.FE3dDynamicMesh_mergeCount;
+   o.mergeMaxCount     = MO.FE3dDynamicMesh_mergeMaxCount;
+   o.mergeStride       = MO.FE3dDynamicMesh_mergeStride;
+   o.syncVertexBuffer  = MO.FE3dDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable   = MO.FE3dDynamicMesh_mergeRenderable;
+   o.mergeVertexBuffer = MO.FE3dDynamicMesh_mergeVertexBuffer;
+   o.mergeIndexBuffer  = MO.FE3dDynamicMesh_mergeIndexBuffer;
+   o.build             = MO.FE3dDynamicMesh_build;
+   o.dispose           = MO.FE3dDynamicMesh_dispose;
+   return o;
+}
+MO.FE3dDynamicMesh_construct = function FE3dDynamicMesh_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._mergeRenderables = new MO.TObjects();
+}
+MO.FE3dDynamicMesh_mergeCount = function FE3dDynamicMesh_mergeCount(){
+   return this._mergeRenderables.count();
+}
+MO.FE3dDynamicMesh_mergeMaxCount = function FE3dDynamicMesh_mergeMaxCount(){
+   return this._shape.mergeMaxCount();
+}
+MO.FE3dDynamicMesh_mergeStride = function FE3dDynamicMesh_mergeStride(){
+   return this._shape.mergeStride();
+}
+MO.FE3dDynamicMesh_syncVertexBuffer = function FE3dDynamicMesh_syncVertexBuffer(vertexBuffer){
+   var o = this;
+   var code = vertexBuffer.code();
+   var buffer = o._vertexBuffers.get(code);
+   if(!buffer){
+      var formatCd = vertexBuffer.formatCd();
+      var vertexTotal = o._vertexTotal;
+      buffer = o._graphicContext.createVertexBuffer();
+      buffer.setCode(code);
+      buffer.setFormatCd(formatCd);
+      buffer.setStride(vertexBuffer.stride());
+      var bufferData = null;
+      switch(formatCd){
+         case MO.EG3dAttributeFormat.Float1:
+            bufferData = new Float32Array(1 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float2:
+            bufferData = new Float32Array(2 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float3:
+            bufferData = new Float32Array(3 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float4:
+            bufferData = new Float32Array(4 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Byte4:
+         case MO.EG3dAttributeFormat.Byte4Normal:
+            bufferData = new Uint8Array(4 * vertexTotal);
+            break;
+         default:
+            throw new MO.TError("Unknown code");
+      }
+      buffer.setData(bufferData);
+      o.pushVertexBuffer(buffer);
+   }
+   return buffer;
+}
+MO.FE3dDynamicMesh_mergeRenderable = function FE3dDynamicMesh_mergeRenderable(renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   var vertexCount = renderable.vertexCount();
+   var indexBuffer = renderable.indexBuffers().first();
+   var indexCount = indexBuffer.count();
+   var mergeCount = capability.mergeCount;
+   if(o._mergeRenderables.count() >= mergeCount){
+      return false;
+   }
+   var vertexLimit = o._vertexTotal + vertexCount;
+   if(capability.optionIndex32){
+      if(vertexLimit > MO.Lang.Integer.MAX_UINT32){
+         return false;
+      }
+   }else{
+      if(vertexLimit > MO.Lang.Integer.MAX_UINT16){
+         return false;
+      }
+   }
+   o._vertexTotal += vertexCount;
+   o._indexTotal += indexCount;
+   o._mergeRenderables.push(renderable);
+   return true;
+}
+MO.FE3dDynamicMesh_mergeVertexBuffer = function FE3dDynamicMesh_mergeVertexBuffer(vertexBuffer){
+   var o = this;
+   var position = o._vertexPosition;
+   var count = vertexBuffer.count();
+   var formatCd = vertexBuffer.formatCd();
+   var stride = vertexBuffer.stride();
+   var data = vertexBuffer.data();
+   var mergeVertexBuffer = o.syncVertexBuffer(vertexBuffer);
+   var mergeData = mergeVertexBuffer.data();
+   switch(formatCd){
+      case MO.EG3dAttributeFormat.Float1:
+      case MO.EG3dAttributeFormat.Float2:
+      case MO.EG3dAttributeFormat.Float3:
+      case MO.EG3dAttributeFormat.Float4:
+         MO.Lang.Float.copy(mergeData, (stride / 4) * position, data, 0, (stride / 4) * count);
+         break;
+      case MO.EG3dAttributeFormat.Byte4:
+      case MO.EG3dAttributeFormat.Byte4Normal:
+         MO.Lang.Byte.copy(mergeData, stride * position, data, 0, stride * count);
+         break;
+      default:
+         throw new MO.TError("Unknown code");
+   }
+}
+MO.FE3dDynamicMesh_mergeIndexBuffer = function FE3dDynamicMesh_mergeIndexBuffer(indexBuffer){
+   var o = this;
+   var vertexPosition = o._vertexPosition;
+   var indexPosition = o._indexPosition;
+   var drawModeCd = indexBuffer.drawModeCd();
+   var data = indexBuffer.data();
+   var mergeData = o._indexBuffer.data();
+   var renderableCount = indexBuffer.count();
+   for(var i = 0; i < renderableCount; i++){
+      mergeData[indexPosition++] = vertexPosition + data[i]
+   }
+   o._indexBuffer.setDrawModeCd(drawModeCd);
+}
+MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
+   var o = this;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var renderables = o._mergeRenderables;
+   var renderableCount = renderables.count();
+   var renderable = renderables.first();
+   o._material = renderable.material();
+   o._textures = renderable.textures();
+   var instanceVertexData = new Float32Array(vertexTotal);
+   var instanceVertexBuffer = o._instanceVertexBuffer = context.createVertexBuffer();
+   instanceVertexBuffer.setCode('instance');
+   instanceVertexBuffer.setStride(4);
+   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setData(instanceVertexData);
+   o.pushVertexBuffer(instanceVertexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
+   if(capability.optionIndex32){
+      indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      indexBuffer.setData(new Uint32Array(indexTotal));
+   }else{
+      indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint16);
+      indexBuffer.setData(new Uint16Array(indexTotal));
+   }
+   indexBuffer.setCount(indexTotal);
+   o.pushIndexBuffer(indexBuffer);
+   for(var n = 0; n < renderableCount; n++){
+      var renderable = renderables.at(n);
+      var vertexCount = renderable.vertexCount();
+      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, vertexCount, n);
+      var vertexBuffers = renderable.vertexBuffers();
+      var vertexBufferCount = vertexBuffers.count();
+      for(var i = 0; i < vertexBufferCount; i++){
+         var vertexBuffer = vertexBuffers.at(i);
+         o.mergeVertexBuffer(vertexBuffer);
+      }
+      var indexBuffer = renderable.indexBuffers().first();
+      var indexCount = indexBuffer.count();
+      o.mergeIndexBuffer(indexBuffer);
+      o._vertexPosition += vertexCount;
+      o._indexPosition += indexCount;
+   }
+   var vertexBuffers = o._vertexBuffers;
+   var vertexBufferCount = vertexBuffers.count();
+   for(var i = 0; i < vertexBufferCount; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      var vertexData = vertexBuffer.data();
+      var vertexStride = vertexBuffer.stride();
+      vertexBuffer.upload(vertexData, vertexStride, vertexTotal);
+      vertexBuffer.setData(null);
+   }
+   var indexData = o._indexBuffer.data();
+   o._indexBuffer.upload(indexData, indexTotal);
+   o._indexBuffer.setData(null);
+}
+MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
+   var o = this;
+   o._mergeRenderables = MO.Lang.Object.dispose(o._mergeRenderables);
+   o.__base.FE3dRenderable.dispose.call(o);
+}
+MO.FE3dDynamicShape = function FE3dDynamicShape(o){
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o._mergeMaxCount      = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride        = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   o._sourceRenderables  = MO.Class.register(o, new MO.AGetter('_sourceRenderables'));
+   o._meshes             = MO.Class.register(o, new MO.AGetter('_meshes'));
+   o.construct           = MO.FE3dDynamicShape_construct;
+   o.createMesh          = MO.FE3dDynamicShape_createMesh;
+   o.pushMergeRenderable = MO.FE3dDynamicShape_pushMergeRenderable;
+   o.build               = MO.FE3dDynamicShape_build;
+   o.dispose             = MO.FE3dDynamicShape_dispose;
+   return o;
+}
+MO.FE3dDynamicShape_construct = function FE3dDynamicShape_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o._sourceRenderables = new MO.TObjects();
+   o._meshes = new MO.TObjects();
+   o._material = MO.Class.create(MO.FE3dMaterial);
+}
+MO.FE3dDynamicShape_createMesh = function FE3dDynamicShape_createMesh(){
+   var o = this;
+   var mesh = MO.Class.create(MO.FE3dDynamicMesh);
+   mesh.linkGraphicContext(o);
+   mesh.setShape(o);
+   o._meshes.push(mesh);
+   o.pushRenderable(mesh);
+   return mesh;
+}
+MO.FE3dDynamicShape_pushMergeRenderable = function FE3dDynamicShape_pushMergeRenderable(renderable){
+   this._sourceRenderables.push(renderable);
+}
+MO.FE3dDynamicShape_build = function FE3dDynamicShape_build(){
+   var o = this;
+   var renderables = o._sourceRenderables;
+   var meshes = o.renderables();
+   var count = renderables.count();
+   if(count > 0){
+      var mesh = o.createMesh();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         if(!mesh.mergeRenderable(renderable)){
+            mesh = o.createMesh();
+            if(!mesh.mergeRenderable(renderable)){
+               throw new MO.TError(o, 'Merge renderable failure.');
+            }
+         }
+      }
+   }
+   var mergeMax = 0;
+   var count = meshes.count();
+   for(var i = 0; i < count; i++){
+      var mesh = meshes.at(i);
+      mesh.build();
+      mergeMax = Math.max(mergeMax, mesh.mergeCount());
+   }
+   o._mergeMaxCount = mergeMax;
+}
+MO.FE3dDynamicShape_dispose = function FE3dDynamicShape_dispose(){
+   var o = this;
+   o._sourceRenderables = MO.Lang.Object.dispose(o._sourceRenderables);
+   o._meshes = MO.Lang.Object.dispose(o._meshes);
+   o.__base.FE3dDisplay.dispose.call(o);
 }
 MO.FE3dFace = function FE3dFace(o){
    o = MO.Class.inherits(this, o, MO.FE3dMeshRenderable, MO.MListener);

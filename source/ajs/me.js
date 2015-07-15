@@ -16075,6 +16075,7 @@ MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInf
    effectInfo.optionMerge = renderable._optionMerge;
    if(effectInfo.optionMerge){
       effectInfo.mergeCount = renderable.mergeMaxCount();
+      effectInfo.mergeStride = renderable.mergeStride();
    }
    var mi = renderable.material().info();
    effectInfo.optionNormalInvert = mi.optionNormalInvert;
@@ -17142,8 +17143,15 @@ MO.SG3dLayoutSampler_dispose = function SG3dLayoutSampler_dispose(){
 MO.FG3dBuffer = function FG3dBuffer(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    o._code   = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._data   = MO.Class.register(o, new MO.AGetSet('_data'));
    o.isValid = MO.Method.virtual(o, 'isValid');
+   o.dispose = MO.FG3dBuffer_dispose;
    return o;
+}
+MO.FG3dBuffer_dispose = function FG3dBuffer_dispose(){
+   var o = this;
+   o._data = null;
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
@@ -17834,87 +17842,89 @@ MO.FG3dAutomaticEffect_setup = function FG3dAutomaticEffect_setup(){
    var cp = c.capability();
    o._supportLayout = cp.optionLayout;
 }
-MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagContext, pc){
+MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagContext, info){
    var o = this;
    var context = o._graphicContext;
    var capability = context.capability();
    var flag = new MO.TString();
-   flag.append(pc.techniqueModeCode)
-   tagContext.set("technique.mode", pc.techniqueModeCode);
-   var om = o._optionMerge = pc.optionMerge;
+   flag.append(info.techniqueModeCode)
+   tagContext.set("technique.mode", info.techniqueModeCode);
+   var om = o._optionMerge = info.optionMerge;
    if(om){
-      var mc = pc.mergeCount;
-      flag.append("|OI" + mc);
+      var mergeCount = info.mergeCount;
+      var mergeStride = info.mergeStride;
+      flag.append("|OI" + mergeCount);
       tagContext.setBoolean("option.instance", true);
-      tagContext.set("instance.count", mc);
+      tagContext.set("instance.count", mergeCount);
+      tagContext.set("instance.length", mergeStride * mergeCount);
    }
    if(capability.optionMaterialMap){
       flag.append("|OM");
       tagContext.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
-   if(pc.optionNormalInvert){
+   if(info.optionNormalInvert){
       flag.append("|ON");
       tagContext.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
-   if(pc.optionColor){
+   if(info.optionColor){
       flag.append("|OC");
       tagContext.setBoolean("option.color", true);
       o.optionAmbient = true;
    }
-   if(pc.optionAmbient){
+   if(info.optionAmbient){
       flag.append("|OA");
       tagContext.setBoolean("option.ambient", true);
       o.optionAmbient = true;
    }
-   if(pc.optionDiffuse){
+   if(info.optionDiffuse){
       flag.append("|OD");
       tagContext.setBoolean("option.diffuse", true);
       o.optionDiffuse = true;
    }
-   if(pc.optionSpecular){
+   if(info.optionSpecular){
       flag.append("|OS");
       tagContext.setBoolean("option.specular", true);
       o.optionSpecular = true;
    }
-   if(pc.optionReflect){
+   if(info.optionReflect){
       flag.append("|ORL");
       tagContext.setBoolean("option.reflect", true);
       o.optionReflect = true;
    }
-   if(pc.optionRefract){
+   if(info.optionRefract){
       flag.append("|ORF");
       tagContext.setBoolean("option.refract", true);
       o.optionRefract = true;
    }
-   var ac = pc.attributeContains(MO.EG3dAttribute.Color);
+   var ac = info.attributeContains(MO.EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
       flag.append("|AC");
       tagContext.setBoolean("vertex.attribute.color", true);
    }
-   var ad = pc.attributeContains(MO.EG3dAttribute.Coord);
+   var ad = info.attributeContains(MO.EG3dAttribute.Coord);
    o._dynamicVertexCoord = (o._supportVertexCoord && ad);
    if(o._dynamicVertexCoord){
       flag.append("|AD");
       tagContext.setBoolean("vertex.attribute.coord", true);
    }
-   var an = pc.attributeContains(MO.EG3dAttribute.Normal);
+   var an = info.attributeContains(MO.EG3dAttribute.Normal);
    o._dynamicVertexNormal = (o._supportVertexNormal && an);
    if(o._dynamicVertexNormal){
       flag.append("|AN");
       tagContext.setBoolean("vertex.attribute.normal", true);
    }
-   var ab = pc.attributeContains(MO.EG3dAttribute.Binormal);
-   var at = pc.attributeContains(MO.EG3dAttribute.Tangent);
+   var ab = info.attributeContains(MO.EG3dAttribute.Binormal);
+   var at = info.attributeContains(MO.EG3dAttribute.Tangent);
    var af = (an && ab && at);
    o._dynamicVertexNormalFull = (o._supportVertexNormalFull && af);
    if(o._dynamicVertexNormalFull){
       flag.append("|ANF");
       tagContext.setBoolean("vertex.attribute.normal.full", true);
    }
-   o._dynamicVertexNormalCompress = pc.optionNormalCompress;
+   o._dynamicVertexNormalCompress = info.optionNormalCompress;
    if(o._dynamicVertexNormalCompress){
       flag.append("|ANC");
       tagContext.setBoolean("vertex.attribute.normal.compress", true);
@@ -17922,22 +17932,22 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicInstance = (o._supportInstance && capability.optionInstance);
    if(o._dynamicInstance){
       flag.append("|SI");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.instance", true);
       }
    }
    o._dynamicSkeleton = o._supportSkeleton;
    if(o._dynamicSkeleton){
       flag.append("|SS");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.skeleton", true);
       }
    }
-   var sdf  = pc.samplerContains(MO.EG3dSampler.Diffuse);
+   var sdf  = info.samplerContains(MO.EG3dSampler.Diffuse);
    o._dynamicAlpha = o._supportAlpha;
    if(o._dynamicAlpha){
       flag.append("|RA");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.alpha", true);
       }
       o._optionBlendMode = true;
@@ -17947,79 +17957,79 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicAmbient = o._supportAmbient;
    if(o._dynamicAmbient){
       flag.append("|TA");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.ambient", true);
       }
       if(sdf){
          flag.append("|TAS");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.ambient.sampler", true);
          }
       }
    }
-   if(pc.samplerContains(MO.EG3dSampler.Alpha)){
+   if(info.samplerContains(MO.EG3dSampler.Alpha)){
       tagContext.setBoolean("support.alpha.sampler", true);
    }
-   var snr = pc.samplerContains(MO.EG3dSampler.Normal);
+   var snr = info.samplerContains(MO.EG3dSampler.Normal);
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);
    if(o._supportDiffuse){
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.diffuse", true);
       }
       if(snr){
          flag.append("|TDD");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.dump", true);
             tagContext.setBoolean("support.diffuse.dump", true);
          }
       }else if(o._dynamicVertexNormal){
          flag.append("|TDN");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.diffuse.normal", true);
          }
       }
    }
    o._dynamicDiffuseView = (o._supportDiffuseView && (o._dynamicVertexNormal || snr));
    if(o._supportDiffuseView){
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.diffuse.view", true);
       }
       if(snr){
          flag.append("|TDVD");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.dump", true);
             tagContext.setBoolean("support.diffuse.view.dump", true);
          }
       }else if(o._dynamicVertexNormal){
          flag.append("|TDVN");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.diffuse.view.normal", true);
          }
       }
    }
-   var spc = pc.samplerContains(MO.EG3dSampler.SpecularColor);
-   var spl = pc.samplerContains(MO.EG3dSampler.SpecularLevel);
+   var spc = info.samplerContains(MO.EG3dSampler.SpecularColor);
+   var spl = info.samplerContains(MO.EG3dSampler.SpecularLevel);
    o._dynamicSpecularColor = (o._supportSpecularColor && spc);
    o._dynamicSpecularLevel = (o._supportSpecularLevel && spl);
    if((o._dynamicSpecularColor || o._dynamicSpecularLevel) && o._dynamicVertexNormal){
       flag.append("|TS");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.specular", true);
       }
       if(o._dynamicSpecularColor){
          flag.append("|TSC");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
          flag.append("|TSL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.level", true);
          }
       }else{
          flag.append("|NSL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.normal", true);
          }
       }
@@ -18027,81 +18037,81 @@ MO.FG3dAutomaticEffect_buildInfo = function FG3dAutomaticEffect_buildInfo(tagCon
    o._dynamicSpecularView = o._supportSpecularView;
    if(o._dynamicSpecularView && o._dynamicVertexNormal){
       flag.append("|TSV");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.specular.view", true);
       }
       if(o._dynamicSpecularColor){
          flag.append("|TSVC");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.color", true);
          }
       }
       if(o._dynamicSpecularLevel){
          flag.append("|TSVL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.level", true);
          }
       }else{
          flag.append("|NSVL");
-         if(pc){
+         if(info){
             tagContext.setBoolean("support.specular.view.normal", true);
          }
       }
    }
-   var slg = pc.samplerContains(MO.EG3dSampler.Light);
+   var slg = info.samplerContains(MO.EG3dSampler.Light);
    o._dynamicLight = (o._supportLight && slg);
    if(o._dynamicLight){
       flag.append("|TL");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.light", true);
       }
    }
-   var slr = pc.samplerContains(MO.EG3dSampler.Reflect);
+   var slr = info.samplerContains(MO.EG3dSampler.Reflect);
    o._dynamicReflect = (o._supportReflect && slr);
    if(o._dynamicReflect){
       flag.append("|TRL");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.reflect", true);
       }
    }
-   var slf = pc.samplerContains(MO.EG3dSampler.Refract);
+   var slf = info.samplerContains(MO.EG3dSampler.Refract);
    o._dynamicRefract = (o._supportRefract && slf);
    if(o._dynamicRefract){
       flag.append("|TRF");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.refract", true);
       }
    }
-   var sle = pc.samplerContains(MO.EG3dSampler.Emissive);
+   var sle = info.samplerContains(MO.EG3dSampler.Emissive);
    o._dynamicEmissive = (o._supportEmissive && sle);
    if(o._dynamicEmissive){
       flag.append("|TLE");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.sampler.light", true);
          tagContext.setBoolean("support.emissive", true);
       }
    }
-   var shg = pc.samplerContains(MO.EG3dSampler.Height);
+   var shg = info.samplerContains(MO.EG3dSampler.Height);
    o._dynamicHeight = (o._supportHeight && shg);
    if(o._dynamicHeight){
       flag.append("|TH");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.height", true);
       }
    }
-   var sen = pc.samplerContains(MO.EG3dSampler.Environment);
+   var sen = info.samplerContains(MO.EG3dSampler.Environment);
    o._dynamicEnvironment = (o._supportEnvironment && sen);
    if(o._dynamicEnvironment){
       flag.append("|TE");
-      if(pc){
+      if(info){
          tagContext.setBoolean("support.environment", true);
       }
    }
    if(o._dynamicSkeleton){
-      var boneCount = capability.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      var boneCount = capability.calculateBoneCount(info.vertexBoneCount, info.vertexCount);
       flag.append("|B" + boneCount);
       tagContext.set("bone.count", boneCount);
       tagContext.set("bone.array.count", boneCount * 3);
@@ -19408,7 +19418,7 @@ MO.FWglFragmentShader_upload = function FWglFragmentShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;
@@ -19439,40 +19449,43 @@ MO.FWglIndexBuffer_setup = function FWglIndexBuffer_setup(){
 }
 MO.FWglIndexBuffer_isValid = function FWglIndexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._handle;
-   return g.isBuffer(o._handle);
+   var handle = o._graphicContext._handle;
+   return handle.isBuffer(o._handle);
 }
-MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(pd, pc){
+MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(data, count, remain){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._handle;
-   o._count = pc;
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+   var context = o._graphicContext;
+   var handle = context._handle;
+   if(remain){
+      o._data = data;
+   }
+   o._count = count;
+   var memory = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
       if(o._strideCd == MO.EG3dIndexStride.Uint16){
-         d = new Uint16Array(pd);
+         memory = new Uint16Array(data);
       }else if(o._strideCd == MO.EG3dIndexStride.Uint32){
-         d = new Uint32Array(pd);
+         memory = new Uint32Array(data);
       }else{
          throw new TError(o, 'Index stride is invalid.');
       }
-   }else if(pd.constructor == Uint16Array){
+   }else if(data.constructor == Uint16Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint16){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
-   }else if(pd.constructor == Uint32Array){
+      memory = data;
+   }else if(data.constructor == Uint32Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint32){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
+      memory = data;
    }else{
-      throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
+      throw new TError(o, 'Upload index data type is invalid. (value={1})', data);
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._handle);
-   c.checkError('bindBuffer', 'Bind buffer failure.');
-   g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
+   handle.bindBuffer(handle.ELEMENT_ARRAY_BUFFER, o._handle);
+   context.checkError('bindBuffer', 'Bind buffer failure.');
+   handle.bufferData(handle.ELEMENT_ARRAY_BUFFER, memory, handle.STATIC_DRAW);
+   context.checkError('bufferData', 'Upload buffer data. (count={1})', count);
 }
 MO.FWglIndexBuffer_dispose = function FWglIndexBuffer_dispose(){
    var o = this;
@@ -19803,10 +19816,13 @@ MO.FWglVertexBuffer_isValid = function FWglVertexBuffer_isValid(){
    var graphic = o._graphicContext._handle;
    return graphic.isBuffer(o._handle);
 }
-MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count){
+MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count, remain){
    var o = this;
    var context = o._graphicContext;
    var graphics = context._handle;
+   if(remain){
+      o._data = data;
+   }
    o._stride = stride;
    o._count = count;
    var arrays = null;
@@ -19886,7 +19902,7 @@ MO.FWglVertexShader_upload = function FWglVertexShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;
@@ -22055,7 +22071,7 @@ MO.FE3dRenderable = function FE3dRenderable(o){
    o._outline           = null;
    o._outlineVisible    = true;
    o._calculateMatrix   = null;
-   o._vertexCount       = MO.Class.register(o, new MO.AGetter('_vertexCount'));
+   o._vertexCount       = MO.Class.register(o, new MO.AGetSet('_vertexCount'));
    o._vertexBuffers     = MO.Class.register(o, new MO.AGetter('_vertexBuffers'));
    o._indexBuffers      = MO.Class.register(o, new MO.AGetter('_indexBuffers'));
    o._materialReference = MO.Class.register(o, new MO.AGetSet('_materialReference'));
@@ -25504,11 +25520,11 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
    switch(code){
       case 'position':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 3 * position, d, 0, 3 * dataCount);
+         MO.Lang.Float.copy(data, 3 * position, d, 0, 3 * dataCount);
          break;
       case 'coord':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 2 * position, d, 0, 2 * dataCount);
+         MO.Lang.Float.copy(data, 2 * position, d, 0, 2 * dataCount);
          break;
       case 'color':
       case "normal":
@@ -25517,7 +25533,7 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
       case "bone_index":
       case "bone_weight":
          var d = new Uint8Array(resource._data);
-         MO.RByte.copy(data, 4 * position, d, 0, 4 * dataCount);
+         MO.Lang.Byte.copy(data, 4 * position, d, 0, 4 * dataCount);
          break;
       default:
          throw new MO.TError("Unknown code");
@@ -25594,7 +25610,8 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
    o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = 0;
+   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
    o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
@@ -30659,6 +30676,21 @@ MO.FE3dTemplateRenderable_dispose = function FE3dTemplateRenderable_dispose(){
    var o = this;
    o.__base.FE3dMeshRenderable.dispose.call(o);
 }
+MO.ME3dDynamicRenderable = function ME3dDynamicRenderable(o){
+   o = MO.Class.inherits(this, o);
+   o._color    = MO.Class.register(o, new MO.AGetter('_color'));
+   o.construct = MO.ME3dDynamicRenderable_construct;
+   o.dispose   = MO.ME3dDynamicRenderable_dispose;
+   return o;
+}
+MO.ME3dDynamicRenderable_construct = function ME3dDynamicRenderable_construct(){
+   var o = this;
+   o._color = new MO.SColor4(1, 1, 1, 1);
+}
+MO.ME3dDynamicRenderable_dispose = function ME3dDynamicRenderable_dispose(){
+   var o = this;
+   o._color = MO.Lang.Object.dispose(o._color);
+}
 MO.SE3dRulerPrecision = function SE3dRulerPrecision(o){
    var o = this;
    o.interval = 1;
@@ -31002,17 +31034,19 @@ MO.FE3dCube_setup = function FE3dCube_setup(p){
    mi.ambientColor.set(1, 1, 1, 1);
 }
 MO.FE3dDataBox = function FE3dDataBox(o){
-   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable, MO.ME3dDynamicRenderable);
    o._vertexPositionBuffer = MO.Class.register(o, new MO.AGetter('_vertexPositionBuffer'));
    o._vertexColorBuffer    = MO.Class.register(o, new MO.AGetter('_vertexColorBuffer'));
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dDataBox_construct;
    o.setup                 = MO.FE3dDataBox_setup;
+   o.dispose               = MO.FE3dDataBox_dispose;
    return o;
 }
 MO.FE3dDataBox_construct = function FE3dDataBox_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
+   o.__base.ME3dDynamicRenderable.construct.call(o);
    o._material = MO.Class.create(MO.FE3dMaterial);
 }
 MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
@@ -31031,6 +31065,12 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    var info = o.material().info();
    info.effectCode = 'control';
    info.ambientColor.set(1, 1, 1, 1);
+}
+MO.FE3dDataBox_dispose = function FE3dDataBox_dispose(){
+   var o = this;
+   o._material = MO.Class.create(MO.FE3dMaterial);
+   o.__base.ME3dDynamicRenderable.dispose.call(o);
+   o.__base.FE3dRenderable.dispose.call(o);
 }
 MO.FE3dDimensional = function FE3dDimensional(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
@@ -31151,6 +31191,267 @@ MO.FE3dDimensional_setup = function FE3dDimensional_setup(){
    var materialInfo = o.material().info();
    materialInfo.effectCode = 'control';
    materialInfo.ambientColor.set(1, 1, 1, 1);
+}
+MO.FE3dDynamicMesh = function FE3dDynamicMesh(o){
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o._shape            = MO.Class.register(o, new MO.AGetSet('_shape'));
+   o._optionMerge      = true;
+   o._vertexPosition   = 0;
+   o._vertexTotal      = 0;
+   o._indexPosition    = 0;
+   o._indexTotal       = 0;
+   o._mergeRenderables = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
+   o.construct         = MO.FE3dDynamicMesh_construct;
+   o.mergeCount        = MO.FE3dDynamicMesh_mergeCount;
+   o.mergeMaxCount     = MO.FE3dDynamicMesh_mergeMaxCount;
+   o.mergeStride       = MO.FE3dDynamicMesh_mergeStride;
+   o.syncVertexBuffer  = MO.FE3dDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable   = MO.FE3dDynamicMesh_mergeRenderable;
+   o.mergeVertexBuffer = MO.FE3dDynamicMesh_mergeVertexBuffer;
+   o.mergeIndexBuffer  = MO.FE3dDynamicMesh_mergeIndexBuffer;
+   o.build             = MO.FE3dDynamicMesh_build;
+   o.dispose           = MO.FE3dDynamicMesh_dispose;
+   return o;
+}
+MO.FE3dDynamicMesh_construct = function FE3dDynamicMesh_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._mergeRenderables = new MO.TObjects();
+}
+MO.FE3dDynamicMesh_mergeCount = function FE3dDynamicMesh_mergeCount(){
+   return this._mergeRenderables.count();
+}
+MO.FE3dDynamicMesh_mergeMaxCount = function FE3dDynamicMesh_mergeMaxCount(){
+   return this._shape.mergeMaxCount();
+}
+MO.FE3dDynamicMesh_mergeStride = function FE3dDynamicMesh_mergeStride(){
+   return this._shape.mergeStride();
+}
+MO.FE3dDynamicMesh_syncVertexBuffer = function FE3dDynamicMesh_syncVertexBuffer(vertexBuffer){
+   var o = this;
+   var code = vertexBuffer.code();
+   var buffer = o._vertexBuffers.get(code);
+   if(!buffer){
+      var formatCd = vertexBuffer.formatCd();
+      var vertexTotal = o._vertexTotal;
+      buffer = o._graphicContext.createVertexBuffer();
+      buffer.setCode(code);
+      buffer.setFormatCd(formatCd);
+      buffer.setStride(vertexBuffer.stride());
+      var bufferData = null;
+      switch(formatCd){
+         case MO.EG3dAttributeFormat.Float1:
+            bufferData = new Float32Array(1 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float2:
+            bufferData = new Float32Array(2 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float3:
+            bufferData = new Float32Array(3 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Float4:
+            bufferData = new Float32Array(4 * vertexTotal);
+            break;
+         case MO.EG3dAttributeFormat.Byte4:
+         case MO.EG3dAttributeFormat.Byte4Normal:
+            bufferData = new Uint8Array(4 * vertexTotal);
+            break;
+         default:
+            throw new MO.TError("Unknown code");
+      }
+      buffer.setData(bufferData);
+      o.pushVertexBuffer(buffer);
+   }
+   return buffer;
+}
+MO.FE3dDynamicMesh_mergeRenderable = function FE3dDynamicMesh_mergeRenderable(renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   var vertexCount = renderable.vertexCount();
+   var indexBuffer = renderable.indexBuffers().first();
+   var indexCount = indexBuffer.count();
+   var mergeCount = capability.mergeCount;
+   if(o._mergeRenderables.count() >= mergeCount){
+      return false;
+   }
+   var vertexLimit = o._vertexTotal + vertexCount;
+   if(capability.optionIndex32){
+      if(vertexLimit > MO.Lang.Integer.MAX_UINT32){
+         return false;
+      }
+   }else{
+      if(vertexLimit > MO.Lang.Integer.MAX_UINT16){
+         return false;
+      }
+   }
+   o._vertexTotal += vertexCount;
+   o._indexTotal += indexCount;
+   o._mergeRenderables.push(renderable);
+   return true;
+}
+MO.FE3dDynamicMesh_mergeVertexBuffer = function FE3dDynamicMesh_mergeVertexBuffer(vertexBuffer){
+   var o = this;
+   var position = o._vertexPosition;
+   var count = vertexBuffer.count();
+   var formatCd = vertexBuffer.formatCd();
+   var stride = vertexBuffer.stride();
+   var data = vertexBuffer.data();
+   var mergeVertexBuffer = o.syncVertexBuffer(vertexBuffer);
+   var mergeData = mergeVertexBuffer.data();
+   switch(formatCd){
+      case MO.EG3dAttributeFormat.Float1:
+      case MO.EG3dAttributeFormat.Float2:
+      case MO.EG3dAttributeFormat.Float3:
+      case MO.EG3dAttributeFormat.Float4:
+         MO.Lang.Float.copy(mergeData, (stride / 4) * position, data, 0, (stride / 4) * count);
+         break;
+      case MO.EG3dAttributeFormat.Byte4:
+      case MO.EG3dAttributeFormat.Byte4Normal:
+         MO.Lang.Byte.copy(mergeData, stride * position, data, 0, stride * count);
+         break;
+      default:
+         throw new MO.TError("Unknown code");
+   }
+}
+MO.FE3dDynamicMesh_mergeIndexBuffer = function FE3dDynamicMesh_mergeIndexBuffer(indexBuffer){
+   var o = this;
+   var vertexPosition = o._vertexPosition;
+   var indexPosition = o._indexPosition;
+   var drawModeCd = indexBuffer.drawModeCd();
+   var data = indexBuffer.data();
+   var mergeData = o._indexBuffer.data();
+   var renderableCount = indexBuffer.count();
+   for(var i = 0; i < renderableCount; i++){
+      mergeData[indexPosition++] = vertexPosition + data[i]
+   }
+   o._indexBuffer.setDrawModeCd(drawModeCd);
+}
+MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
+   var o = this;
+   var context = o._graphicContext;
+   var capability = context.capability();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var renderables = o._mergeRenderables;
+   var renderableCount = renderables.count();
+   var renderable = renderables.first();
+   o._material = renderable.material();
+   o._textures = renderable.textures();
+   var instanceVertexData = new Float32Array(vertexTotal);
+   var instanceVertexBuffer = o._instanceVertexBuffer = context.createVertexBuffer();
+   instanceVertexBuffer.setCode('instance');
+   instanceVertexBuffer.setStride(4);
+   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setData(instanceVertexData);
+   o.pushVertexBuffer(instanceVertexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
+   if(capability.optionIndex32){
+      indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      indexBuffer.setData(new Uint32Array(indexTotal));
+   }else{
+      indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint16);
+      indexBuffer.setData(new Uint16Array(indexTotal));
+   }
+   indexBuffer.setCount(indexTotal);
+   o.pushIndexBuffer(indexBuffer);
+   for(var n = 0; n < renderableCount; n++){
+      var renderable = renderables.at(n);
+      var vertexCount = renderable.vertexCount();
+      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, vertexCount, n);
+      var vertexBuffers = renderable.vertexBuffers();
+      var vertexBufferCount = vertexBuffers.count();
+      for(var i = 0; i < vertexBufferCount; i++){
+         var vertexBuffer = vertexBuffers.at(i);
+         o.mergeVertexBuffer(vertexBuffer);
+      }
+      var indexBuffer = renderable.indexBuffers().first();
+      var indexCount = indexBuffer.count();
+      o.mergeIndexBuffer(indexBuffer);
+      o._vertexPosition += vertexCount;
+      o._indexPosition += indexCount;
+   }
+   var vertexBuffers = o._vertexBuffers;
+   var vertexBufferCount = vertexBuffers.count();
+   for(var i = 0; i < vertexBufferCount; i++){
+      var vertexBuffer = vertexBuffers.at(i);
+      var vertexData = vertexBuffer.data();
+      var vertexStride = vertexBuffer.stride();
+      vertexBuffer.upload(vertexData, vertexStride, vertexTotal);
+      vertexBuffer.setData(null);
+   }
+   var indexData = o._indexBuffer.data();
+   o._indexBuffer.upload(indexData, indexTotal);
+   o._indexBuffer.setData(null);
+}
+MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
+   var o = this;
+   o._mergeRenderables = MO.Lang.Object.dispose(o._mergeRenderables);
+   o.__base.FE3dRenderable.dispose.call(o);
+}
+MO.FE3dDynamicShape = function FE3dDynamicShape(o){
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o._mergeMaxCount      = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride        = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   o._sourceRenderables  = MO.Class.register(o, new MO.AGetter('_sourceRenderables'));
+   o._meshes             = MO.Class.register(o, new MO.AGetter('_meshes'));
+   o.construct           = MO.FE3dDynamicShape_construct;
+   o.createMesh          = MO.FE3dDynamicShape_createMesh;
+   o.pushMergeRenderable = MO.FE3dDynamicShape_pushMergeRenderable;
+   o.build               = MO.FE3dDynamicShape_build;
+   o.dispose             = MO.FE3dDynamicShape_dispose;
+   return o;
+}
+MO.FE3dDynamicShape_construct = function FE3dDynamicShape_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o._sourceRenderables = new MO.TObjects();
+   o._meshes = new MO.TObjects();
+   o._material = MO.Class.create(MO.FE3dMaterial);
+}
+MO.FE3dDynamicShape_createMesh = function FE3dDynamicShape_createMesh(){
+   var o = this;
+   var mesh = MO.Class.create(MO.FE3dDynamicMesh);
+   mesh.linkGraphicContext(o);
+   mesh.setShape(o);
+   o._meshes.push(mesh);
+   o.pushRenderable(mesh);
+   return mesh;
+}
+MO.FE3dDynamicShape_pushMergeRenderable = function FE3dDynamicShape_pushMergeRenderable(renderable){
+   this._sourceRenderables.push(renderable);
+}
+MO.FE3dDynamicShape_build = function FE3dDynamicShape_build(){
+   var o = this;
+   var renderables = o._sourceRenderables;
+   var meshes = o.renderables();
+   var count = renderables.count();
+   if(count > 0){
+      var mesh = o.createMesh();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         if(!mesh.mergeRenderable(renderable)){
+            mesh = o.createMesh();
+            if(!mesh.mergeRenderable(renderable)){
+               throw new MO.TError(o, 'Merge renderable failure.');
+            }
+         }
+      }
+   }
+   var mergeMax = 0;
+   var count = meshes.count();
+   for(var i = 0; i < count; i++){
+      var mesh = meshes.at(i);
+      mesh.build();
+      mergeMax = Math.max(mergeMax, mesh.mergeCount());
+   }
+   o._mergeMaxCount = mergeMax;
+}
+MO.FE3dDynamicShape_dispose = function FE3dDynamicShape_dispose(){
+   var o = this;
+   o._sourceRenderables = MO.Lang.Object.dispose(o._sourceRenderables);
+   o._meshes = MO.Lang.Object.dispose(o._meshes);
+   o.__base.FE3dDisplay.dispose.call(o);
 }
 MO.FE3dFace = function FE3dFace(o){
    o = MO.Class.inherits(this, o, MO.FE3dMeshRenderable, MO.MListener);
@@ -32600,7 +32901,7 @@ MO.AEventInputChanged_attach = function AEventInputChanged_attach(e, h){
 }
 MO.AEventInputChanged_bind = function AEventInputChanged_bind(h, u){
    var o = this;
-   if(MO.Window.Browser.isBrowser(EBrowser.Explorer)){
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
       h.onpropertychange = MO.RUiEvent.ohEvent;
    }else{
       h.addEventListener('input', MO.RUiEvent.ohEvent);

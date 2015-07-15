@@ -40,51 +40,55 @@ MO.FWglIndexBuffer_setup = function FWglIndexBuffer_setup(){
 //==========================================================
 MO.FWglIndexBuffer_isValid = function FWglIndexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._handle;
-   return g.isBuffer(o._handle);
+   var handle = o._graphicContext._handle;
+   return handle.isBuffer(o._handle);
 }
 
 //==========================================================
 // <T>上传数据</T>
 //
 // @method
-// @param pd:data:Uin16Array 数据
-// @param pc:count:Integer 总数
+// @param data:Uin16Array 数据
+// @param count:Integer 总数
+// @param remain:Boolean 保留数据
 //==========================================================
-MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(pd, pc){
+MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(data, count, remain){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._handle;
+   var context = o._graphicContext;
+   var handle = context._handle;
    // 设置数据
-   o._count = pc;
+   if(remain){
+      o._data = data;
+   }
+   o._count = count;
    // 获得数据
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+   var memory = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
       if(o._strideCd == MO.EG3dIndexStride.Uint16){
-         d = new Uint16Array(pd);
+         memory = new Uint16Array(data);
       }else if(o._strideCd == MO.EG3dIndexStride.Uint32){
-         d = new Uint32Array(pd);
+         memory = new Uint32Array(data);
       }else{
          throw new TError(o, 'Index stride is invalid.');
       }
-   }else if(pd.constructor == Uint16Array){
+   }else if(data.constructor == Uint16Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint16){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
-   }else if(pd.constructor == Uint32Array){
+      memory = data;
+   }else if(data.constructor == Uint32Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint32){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
+      memory = data;
    }else{
-      throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
+      throw new TError(o, 'Upload index data type is invalid. (value={1})', data);
    }
    // 上传数据
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._handle);
-   c.checkError('bindBuffer', 'Bind buffer failure.');
-   g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
+   handle.bindBuffer(handle.ELEMENT_ARRAY_BUFFER, o._handle);
+   context.checkError('bindBuffer', 'Bind buffer failure.');
+   handle.bufferData(handle.ELEMENT_ARRAY_BUFFER, memory, handle.STATIC_DRAW);
+   context.checkError('bufferData', 'Upload buffer data. (count={1})', count);
 }
 
 //==========================================================

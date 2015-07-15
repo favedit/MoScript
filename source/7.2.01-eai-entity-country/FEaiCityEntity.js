@@ -77,7 +77,7 @@ MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScr
    var region = o._stage.region();
    var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
    var mMatrix = o._renderable.matrix();
-   var matrix = MO.RMath.matrix;
+   var matrix = MO.Lang.Math.matrix;
    matrix.identity();
    matrix.append(mMatrix);
    matrix.append(vpMatrix);

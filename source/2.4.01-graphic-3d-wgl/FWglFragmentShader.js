@@ -71,7 +71,7 @@ MO.FWglFragmentShader_upload = function FWglFragmentShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader); 
       o._handle = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;

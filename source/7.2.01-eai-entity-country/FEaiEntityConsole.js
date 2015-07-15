@@ -82,8 +82,8 @@ MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(ev
       mapEntity.pushProvince(provinceEntity);
       provinceEntityConsole.push(provinceEntity);
       // 放入显示层
-      countryDisplay.pushRenderable(provinceEntity.faceRenderable());
-      countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
+      //countryDisplay.pushRenderable(provinceEntity.faceRenderable());
+      //countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    //..........................................................
    // 创建城市实体

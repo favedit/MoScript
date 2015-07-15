@@ -1013,7 +1013,7 @@ MO.FWglFragmentShader_upload = function FWglFragmentShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;
@@ -1044,40 +1044,43 @@ MO.FWglIndexBuffer_setup = function FWglIndexBuffer_setup(){
 }
 MO.FWglIndexBuffer_isValid = function FWglIndexBuffer_isValid(){
    var o = this;
-   var g = o._graphicContext._handle;
-   return g.isBuffer(o._handle);
+   var handle = o._graphicContext._handle;
+   return handle.isBuffer(o._handle);
 }
-MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(pd, pc){
+MO.FWglIndexBuffer_upload = function FWglIndexBuffer_upload(data, count, remain){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._handle;
-   o._count = pc;
-   var d = null;
-   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+   var context = o._graphicContext;
+   var handle = context._handle;
+   if(remain){
+      o._data = data;
+   }
+   o._count = count;
+   var memory = null;
+   if((data.constructor == Array) || (data.constructor == ArrayBuffer)){
       if(o._strideCd == MO.EG3dIndexStride.Uint16){
-         d = new Uint16Array(pd);
+         memory = new Uint16Array(data);
       }else if(o._strideCd == MO.EG3dIndexStride.Uint32){
-         d = new Uint32Array(pd);
+         memory = new Uint32Array(data);
       }else{
          throw new TError(o, 'Index stride is invalid.');
       }
-   }else if(pd.constructor == Uint16Array){
+   }else if(data.constructor == Uint16Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint16){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
-   }else if(pd.constructor == Uint32Array){
+      memory = data;
+   }else if(data.constructor == Uint32Array){
       if(o._strideCd != MO.EG3dIndexStride.Uint32){
          throw new TError(o, 'Index stride16 is invalid.');
       }
-      d = pd;
+      memory = data;
    }else{
-      throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
+      throw new TError(o, 'Upload index data type is invalid. (value={1})', data);
    }
-   g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._handle);
-   c.checkError('bindBuffer', 'Bind buffer failure.');
-   g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
+   handle.bindBuffer(handle.ELEMENT_ARRAY_BUFFER, o._handle);
+   context.checkError('bindBuffer', 'Bind buffer failure.');
+   handle.bufferData(handle.ELEMENT_ARRAY_BUFFER, memory, handle.STATIC_DRAW);
+   context.checkError('bufferData', 'Upload buffer data. (count={1})', count);
 }
 MO.FWglIndexBuffer_dispose = function FWglIndexBuffer_dispose(){
    var o = this;
@@ -1408,10 +1411,13 @@ MO.FWglVertexBuffer_isValid = function FWglVertexBuffer_isValid(){
    var graphic = o._graphicContext._handle;
    return graphic.isBuffer(o._handle);
 }
-MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count){
+MO.FWglVertexBuffer_upload = function FWglVertexBuffer_upload(data, stride, count, remain){
    var o = this;
    var context = o._graphicContext;
    var graphics = context._handle;
+   if(remain){
+      o._data = data;
+   }
    o._stride = stride;
    o._count = count;
    var arrays = null;
@@ -1491,7 +1497,7 @@ MO.FWglVertexShader_upload = function FWglVertexShader_upload(source){
       var info = graphic.getShaderInfoLog(shader);
       graphic.deleteShader(shader);
       o._handle = null;
-      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
+      throw new MO.TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', info, source);
    }
    o._source = source;
    return true;

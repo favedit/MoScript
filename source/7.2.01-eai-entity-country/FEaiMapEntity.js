@@ -17,6 +17,9 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
    o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
    o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
+   // @attribute
+   o._provinceFaceShape    = MO.Class.register(o, new MO.AGetter('_provinceFaceShape'));
+   o._provinceBorderShape  = MO.Class.register(o, new MO.AGetter('_provinceBorderShape'));
    //..........................................................
    // @method
    o.construct             = MO.FEaiMapEntity_construct;
@@ -62,11 +65,18 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var citysRangeRenderable = o._citysRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    // 创建城市显示对象
-   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplay);
+   var display = o._countryDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
    // 创建城市范围显示对象
-   var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplay);
+   var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
+   // 创建动态形状
+   var faceShape = o._provinceFaceShape = MO.Class.create(MO.FE3dDynamicShape);
+   faceShape.linkGraphicContext(o);
+   o._countryDisplay.push(faceShape);
+   var borderShape = o._provinceBorderShape = MO.Class.create(MO.FE3dDynamicShape);
+   borderShape.linkGraphicContext(o);
+   o._countryBorderDisplay.push(borderShape);
 }
 
 //==========================================================
@@ -89,6 +99,20 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
    }
    // 国家配置处理
    o._countryEntity.setup(provinceEntities);
+   //..........................................................
+   // 合并省份处理
+   var faceShape = o._provinceFaceShape;
+   var borderShape = o._provinceBorderShape;
+   var count = provinceEntities.count();
+   for(var i = 0; i < count; i++){
+      var provinceEntity = provinceEntities.at(i);
+      var faceRenderable = provinceEntity.faceRenderable();
+      faceShape.pushMergeRenderable(faceRenderable);
+      var borderRenderable = provinceEntity.borderRenderable();
+      borderShape.pushMergeRenderable(borderRenderable);
+   }
+   faceShape.build();
+   borderShape.build();
 }
 
 //==========================================================

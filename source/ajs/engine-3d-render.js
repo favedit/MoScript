@@ -449,11 +449,11 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
    switch(code){
       case 'position':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 3 * position, d, 0, 3 * dataCount);
+         MO.Lang.Float.copy(data, 3 * position, d, 0, 3 * dataCount);
          break;
       case 'coord':
          var d = new Float32Array(resource._data);
-         RFloat.copy(data, 2 * position, d, 0, 2 * dataCount);
+         MO.Lang.Float.copy(data, 2 * position, d, 0, 2 * dataCount);
          break;
       case 'color':
       case "normal":
@@ -462,7 +462,7 @@ MO.FE3rDynamicMesh_mergeVertexBuffer = function FE3rDynamicMesh_mergeVertexBuffe
       case "bone_index":
       case "bone_weight":
          var d = new Uint8Array(resource._data);
-         MO.RByte.copy(data, 4 * position, d, 0, 4 * dataCount);
+         MO.Lang.Byte.copy(data, 4 * position, d, 0, 4 * dataCount);
          break;
       default:
          throw new MO.TError("Unknown code");
@@ -539,7 +539,8 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
    o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = 0;
+   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
    o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
