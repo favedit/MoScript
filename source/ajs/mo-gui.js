@@ -2103,6 +2103,20 @@ MO.FGuiDesignAnchor_dispose = function FGuiDesignAnchor_dispose(){
    var o = this;
    o.__base.FGuiControl.dispose.call(o);
 }
+MO.FGuiDesignRule = function FGuiDesignRule(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o.construct = MO.FGuiDesignRule_construct;
+   o.dispose   = MO.FGuiDesignRule_dispose;
+   return o;
+}
+MO.FGuiDesignRule_construct = function FGuiDesignRule_construct(){
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+}
+MO.FGuiDesignRule_dispose = function FGuiDesignRule_dispose(){
+   var o = this;
+   o.__base.FGuiControl.dispose.call(o);
+}
 MO.FGuiEngineInfo = function FGuiEngineInfo(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._lastTick    = 0;
