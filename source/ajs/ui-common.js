@@ -641,6 +641,100 @@ MO.APtyString_toString = function APtyString_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._value;
 }
+MO.EUiAlign = new function EUiAlign(){
+   var o = this;
+   o.Left        = 'left';
+   o.Center      = 'center';
+   o.Right       = 'right';
+   o.Top         = 'up';
+   o.Middle      = 'middle';
+   o.Bottom      = 'down';
+   o.BottomLeft  = 'bl';
+   o.BottomRight = 'br';
+   return o;
+}
+MO.EUiAnchor = new function EUiAnchor(){
+   var o = this;
+   o.None   = 0;
+   o.Left   = 1;
+   o.Top    = 2;
+   o.Right  = 4;
+   o.Bottom = 8;
+   return o;
+}
+MO.EUiBorder = new function EUiBorder(){
+   var o = this;
+   o.None          = 0;
+   o.Square        = 1;
+   o.Round         = 2;
+   o.RoundIcon     = 3;
+   o.RoundDrop     = 4;
+   o.RoundTitle    = 5;
+   o.RoundIconDrop = 6;
+   return o;
+}
+MO.EUiBorderStyle = new function EUiBorderStyle(){
+   var o = this;
+   o.Readonly = 1;
+   o.Edit     = 2;
+   o.Hover    = 3;
+   return o;
+}
+MO.EUiColor = new function EUiColor(){
+   var o = this;
+   o.ReadonlyBackgroundColor = '#FEFECB';
+   o.Normal        = '#FFFFFF';
+   o.Select        = '#F8C59A';
+   o.Valid         = '#FFCCCC';
+   o.Invalid       = '#FFCCCC';
+   o.Edit          = '#FFFFFF';
+   o.EditHover     = '#EBFFFF';
+   o.Require       = '#FF0000';
+   o.Text          = '#000000';
+   o.TextEdit      = '#0066FF';
+   o.TextReadonly  = '#333333';
+   o.TextInvalid   = 'red';
+   o.Delete        = '#DDDDDD';
+   o.ColumnReadonly = '#FFFFFF';
+   o.Rows          = new Array('#FFFFFF', '#FAFAFA');
+   o.RowSelect     = '#cde5ff';
+   o.RowHover      = '#E8E8FF';
+   o.RowEdit       = '#FFFFFF';
+   o.RowEditSelect = '#FDEBDB';
+   o.RowEditHover  = '#F8F8E0';
+   return o;
+}
+MO.EUiCursor = new function EUiCursor(){
+   var o = this;
+   o.Default   = 'default';
+   o.Auto      = 'auto';
+   o.NorthWest = 'NW';
+   o.SouthWest = 'SW';
+   o.SouthEast = 'SE';
+   o.NorthEast = 'NE';
+   o.West      = 'W';
+   o.South     = 'S';
+   o.East      = 'E';
+   o.North     = 'N';
+   o.Pointer   = 'pointer';
+   o.Cross     = 'crosshair';
+   o.Move      = 'move';
+   return o;
+}
+MO.EUiDialog = new function EUiDialog(){
+   var o = this;
+   o.Confirm = 1;
+   o.Info    = 2
+   o.Warn    = 3;
+   o.Error   = 4;
+   return o;
+}
+MO.EUiDirection = new function EUiDirection(){
+   var o = this;
+   o.Horizontal = 'H';
+   o.Vertical   = 'V';
+   return o;
+}
 MO.EUiDock = new function EUiDock(){
    var o = this;
    o.None        = 'None';
@@ -654,6 +748,21 @@ MO.EUiDock = new function EUiDock(){
    o.Bottom      = 'Bottom';
    o.Center      = 'Center';
    o.Fill        = 'Fill';
+   return o;
+}
+MO.EUiLabelMode = new function EUiLabelMode(){
+   var o = this;
+   o.All    = 'A';
+   o.Label  = 'L';
+   o.Hidden = 'H';
+   return o;
+}
+MO.EUiLabelPosition = new function EUiLabelPosition(){
+   var o = this;
+   o.Left   = 'left';
+   o.Right  = 'right';
+   o.Top    = 'top';
+   o.Bottom = 'bottom';
    return o;
 }
 MO.EUiLayer = new function EUiLayer(){
@@ -688,4 +797,137 @@ MO.EUiMerge = new function EUiMerge(){
    o.Override = 'override';
    o.Disable  = 'disable';
    return o;
+}
+MO.EPanel = new function EPanel(){
+   var o = this;
+   o.Container = 0;
+   o.Parent    = 1;
+   o.Size      = 8;
+   o.Border    = 2;
+   o.Edit      = 3;
+   o.Focus     = 4;
+   o.Design    = 5;
+   o.Scroll    = 6;
+   o.Shadow    = 7;
+   o.Move      = 9;
+   o.Disable   = 10;
+   o.Drop      = 11;
+   return o;
+}
+MO.EUiPosition = new function EUiPosition(){
+   var o = this;
+   o.Left   = 'left';
+   o.Right  = 'right';
+   o.Top    = 'top';
+   o.Bottom = 'bottom';
+   o.Center = 'center';
+   o.Before     = 1;
+   o.After      = 2;
+   o.LineBefore = 3;
+   o.LineAfter  = 4;
+   return o;
+}
+MO.EUiScroll = new function EUiScroll(){
+   var o = this;
+   o.None           = 'N';
+   o.Horizontal     = 'H';
+   o.HorizontalAuto = 'HA';
+   o.Vertical       = 'V';
+   o.VerticalAuto   = 'VA';
+   o.Both           = 'B';
+   o.BothAuto       = 'BA';
+   return o;
+}
+MO.EUiSize = new function EUiSize(){
+   var o = this;
+   o.Normal     = 0
+   o.Horizontal = 1
+   o.Vertical   = 2
+   o.Fill       = 3;
+   o.Both       = 4;
+   return o;
+}
+MO.EUiTimeUnit = new function EUiTimeUnit() {
+   var o = this;
+   o.Second = 'second';
+   o.Minute = 'minute';
+   o.Hour   = 'hour';
+   o.Day    = 'day';
+   o.Week   = 'week';
+   o.Month  = 'month';
+   o.Year   = 'year';
+   return o;
+}
+MO.EUiWrap = new function EUiWrap(){
+   var o = this;
+   o.NextLine = 0;
+   o.SameLine = 1;
+   return o;
+}
+MO.MPropertyCheck = function MPropertyCheck(o){
+   o = MO.Class.inherits(this, o);
+   o._valueTrue  = MO.Class.register(o, new MO.APtyString('_valueTrue'), MO.EBoolean.True);
+   o._valueFalse = MO.Class.register(o, new MO.APtyString('_valueFalse'), MO.EBoolean.False);
+   return o;
+}
+MO.MPropertyEdit = function MPropertyEdit(o){
+   o = MO.Class.inherits(this, o, MO.MUiEditValidator, MO.MUiEditReference, MO.MUiEditZoom);
+   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
+   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
+   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
+   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
+   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
+   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
+   o.oeValid         = MO.MPropertyEdit_oeValid;
+   return o;
+}
+MO.MPropertyEdit_oeValid = function MPropertyEdit_oeValid(e){
+   var o = this;
+   var r = MO.EEventStatus.Stop;
+   if(o._visible && o._validable){
+      var t = o.text();
+      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
+         e.controls.push(o);
+         return r;
+      }
+      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
+         e.controls.push(o);
+         return r;
+      }
+   }
+   return r;
+}
+MO.MPropertyNumber = function MPropertyNumber(o){
+   o = MO.Class.inherits(this, o);
+   o._valueMin       = MO.Class.register(o, new MO.APtyNumber('_valueMin'));
+   o._valueMax       = MO.Class.register(o, new MO.APtyNumber('_valueMax'));
+   o._valuePrecision = MO.Class.register(o, new MO.APtyInteger('_valuePrecision'), 3);
+   return o;
+}
+MO.MPropertySelect = function MPropertySelect(o){
+   o = MO.Class.inherits(this, o, MO.MUiEditValidator, MO.MUiEditReference, MO.MUiEditZoom);
+   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
+   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
+   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
+   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
+   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
+   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
+   o.oeValid         = MO.MPropertySelect_oeValid;
+   return o;
+}
+MO.MPropertySelect_oeValid = function MPropertySelect_oeValid(e){
+   var o = this;
+   var r = MO.EEventStatus.Stop;
+   if(o._visible && o._validable){
+      var t = o.text();
+      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
+         e.controls.push(o);
+         return r;
+      }
+      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
+         e.controls.push(o);
+         return r;
+      }
+   }
+   return r;
 }

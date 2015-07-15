@@ -1,23 +1,3 @@
-MO.EGuiAnchor = new function EGuiAnchor(){
-   var o = this;
-   o.None   = 0;
-   o.Left   = 1;
-   o.Top    = 2;
-   o.Right  = 4;
-   o.Bottom = 8;
-   return o;
-}
-MO.EGuiTimeUnit = new function EGuiTimeUnit() {
-   var o = this;
-   o.Second = 'second';
-   o.Minute = 'minute';
-   o.Hour   = 'hour';
-   o.Day    = 'day';
-   o.Week   = 'week';
-   o.Month  = 'month';
-   o.Year   = 'year';
-   return o;
-}
 MO.MGuiBorder = function MGuiBorder(o){
    o = MO.RClass.inherits(this, o);
    o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
@@ -600,7 +580,7 @@ MO.FGuiControl = function FGuiControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MGuiMargin, MO.MGuiPadding, MO.MGuiBorder);
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    o._visible                = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
-   o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EGuiAnchor.None);
+   o._anchorCd               = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EUiAnchor.None);
    o._dockCd                 = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
@@ -875,15 +855,15 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    if((dockCd == MO.EUiDock.RightTop) || (dockCd == MO.EUiDock.Right) || (dockCd == MO.EUiDock.RightBottom)){
       left = right - width;
    }
-   if((anchorCd & MO.EGuiAnchor.Left) && (anchorCd & MO.EGuiAnchor.Right)){
+   if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
       width = right - left;
-   }else if(o._anchorCd & MO.EGuiAnchor.Left){
+   }else if(o._anchorCd & MO.EUiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
    }
-   if((anchorCd & MO.EGuiAnchor.Top) && (o._anchorCd & MO.EGuiAnchor.Bottom)){
+   if((anchorCd & MO.EUiAnchor.Top) && (o._anchorCd & MO.EUiAnchor.Bottom)){
       height = bottom - top;
-   }else if(o._anchorCd & MO.EGuiAnchor.Top){
+   }else if(o._anchorCd & MO.EUiAnchor.Top){
       top = (parentBottom - height - o._bottom) * calculateRate.height;
       height = bottom - top;
    }
@@ -1911,31 +1891,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
    var degreeText;
    var startText;
    switch (o.timeUnit()) {
-      case MO.EGuiTimeUnit.Second:
+      case MO.EUiTimeUnit.Second:
          startText = startTime.format('MI:SS.MISS');
          degreeText = degreeTime.format('MI:SS.MISS');
          break;
-      case MO.EGuiTimeUnit.Minute:
+      case MO.EUiTimeUnit.Minute:
          startText = startTime.format('HH24:MI:SS');
          degreeText = degreeTime.format('HH24:MI:SS');
          break;
-      case MO.EGuiTimeUnit.Hour:
+      case MO.EUiTimeUnit.Hour:
          startText = startTime.format('HH24:MI');
          degreeText = degreeTime.format('HH24:MI');
          break;
-      case MO.EGuiTimeUnit.Day:
+      case MO.EUiTimeUnit.Day:
          startText = startTime.format('MM-DD:HH24');
          degreeText = degreeTime.format('MM-DD:HH24');
          break;
-      case MO.EGuiTimeUnit.Week:
+      case MO.EUiTimeUnit.Week:
          startText = startTime.format('MM-DD');
          degreeText = degreeTime.format('MM-DD');
          break;
-      case MO.EGuiTimeUnit.Month:
+      case MO.EUiTimeUnit.Month:
          startText = startTime.format('YYYY-MM-DD');
          degreeText = degreeTime.format('YYYY-MM-DD');
          break;
-      case MO.EGuiTimeUnit.Year:
+      case MO.EUiTimeUnit.Year:
          startText = startTime.format('YYYY-MM');
          degreeText = degreeTime.format('YYYY-MM');
          break;
@@ -1955,31 +1935,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
    var startTextWidth = graphic.textWidth(startText);
    graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, o._cursorFontColor);
    switch (o.timeUnit()) {
-      case MO.EGuiTimeUnit.Second:
+      case MO.EUiTimeUnit.Second:
          startTime.addMseconds(1000);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Minute:
+      case MO.EUiTimeUnit.Minute:
          startTime.addMseconds(1000 * 60);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Hour:
+      case MO.EUiTimeUnit.Hour:
          startTime.addMseconds(1000 * 60 * 60);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Day:
+      case MO.EUiTimeUnit.Day:
          startTime.addDay(1);
          startTime.parseAuto(startTime.format('YYYYMMDD'));
          break;
-      case MO.EGuiTimeUnit.Week:
+      case MO.EUiTimeUnit.Week:
          startTime.addDay(7);
          startTime.parseAuto(startTime.format('YYYYMMDD'));
          break;
-      case MO.EGuiTimeUnit.Month:
+      case MO.EUiTimeUnit.Month:
          startTime.addMonth(1);
          startTime.parseAuto(startTime.format('YYYYMM'));
          break;
-      case MO.EGuiTimeUnit.Year:
+      case MO.EUiTimeUnit.Year:
          startTime.addYear(1);
          startTime.parseAuto(startTime.format('YYYY'));
          break;
@@ -1993,31 +1973,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
       switch (o.timeUnit()) {
-         case MO.EGuiTimeUnit.Second:
+         case MO.EUiTimeUnit.Second:
             text = startTime.format('MI:SS');
             startTime.addMseconds(1000);
             break;
-         case MO.EGuiTimeUnit.Minute:
+         case MO.EUiTimeUnit.Minute:
             text = startTime.format('HH24:MI');
             startTime.addMseconds(1000 * 60);
             break;
-         case MO.EGuiTimeUnit.Hour:
+         case MO.EUiTimeUnit.Hour:
             text = startTime.format('HH24:00');
             startTime.addMseconds(1000 * 60 * 60);
             break;
-         case MO.EGuiTimeUnit.Day:
+         case MO.EUiTimeUnit.Day:
             text = startTime.format('MM-DD');
             startTime.addDay(1);
             break;
-         case MO.EGuiTimeUnit.Week:
+         case MO.EUiTimeUnit.Week:
             text = startTime.format('MM-DD');
             startTime.addDay(7);
             break;
-         case MO.EGuiTimeUnit.Month:
+         case MO.EUiTimeUnit.Month:
             text = startTime.format('YYYY-MM');
             startTime.addMonth(1);
             break;
-         case MO.EGuiTimeUnit.Year:
+         case MO.EUiTimeUnit.Year:
             text = startTime.format('YYYY');
             startTime.addYear(1);
             break;

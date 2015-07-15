@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150701
 //==========================================================
-MO.EGuiAnchor = new function EGuiAnchor(){
+MO.EUiAnchor = new function EUiAnchor(){
    var o = this;
    // @attribute
    o.None   = 0;

@@ -197,7 +197,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    timeline.setTop(MO.Eai.Canvas._size.height - 400);
    timeline.setWidth(MO.Eai.Canvas._size.width - 500);
    timeline.setHeight(350);
-   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
+   timeline.setTimeUnit(MO.EUiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);

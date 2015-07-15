@@ -373,12 +373,12 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.linkGraphicContext(o);
    timeline.setName('Timeline');
    timeline.setDockCd(MO.EUiDock.Bottom);
-   timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+   timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    timeline.setLeft(50);
    timeline.setRight(450);
    timeline.setBottom(5);
    timeline.setHeight(600);
-   timeline.setTimeUnit(MO.EGuiTimeUnit.Month);
+   timeline.setTimeUnit(MO.EUiTimeUnit.Month);
    timeline.setStartTime(o._startDate);
    timeline.setEndTime(o._endDate);
    timeline.setDegreeTime(o._currentDate);

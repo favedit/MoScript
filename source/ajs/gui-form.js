@@ -112,31 +112,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
    var degreeText;
    var startText;
    switch (o.timeUnit()) {
-      case MO.EGuiTimeUnit.Second:
+      case MO.EUiTimeUnit.Second:
          startText = startTime.format('MI:SS.MISS');
          degreeText = degreeTime.format('MI:SS.MISS');
          break;
-      case MO.EGuiTimeUnit.Minute:
+      case MO.EUiTimeUnit.Minute:
          startText = startTime.format('HH24:MI:SS');
          degreeText = degreeTime.format('HH24:MI:SS');
          break;
-      case MO.EGuiTimeUnit.Hour:
+      case MO.EUiTimeUnit.Hour:
          startText = startTime.format('HH24:MI');
          degreeText = degreeTime.format('HH24:MI');
          break;
-      case MO.EGuiTimeUnit.Day:
+      case MO.EUiTimeUnit.Day:
          startText = startTime.format('MM-DD:HH24');
          degreeText = degreeTime.format('MM-DD:HH24');
          break;
-      case MO.EGuiTimeUnit.Week:
+      case MO.EUiTimeUnit.Week:
          startText = startTime.format('MM-DD');
          degreeText = degreeTime.format('MM-DD');
          break;
-      case MO.EGuiTimeUnit.Month:
+      case MO.EUiTimeUnit.Month:
          startText = startTime.format('YYYY-MM-DD');
          degreeText = degreeTime.format('YYYY-MM-DD');
          break;
-      case MO.EGuiTimeUnit.Year:
+      case MO.EUiTimeUnit.Year:
          startText = startTime.format('YYYY-MM');
          degreeText = degreeTime.format('YYYY-MM');
          break;
@@ -156,31 +156,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
    var startTextWidth = graphic.textWidth(startText);
    graphic.drawText(startText, dataLeft - startTextWidth / 2, middle + 50, o._cursorFontColor);
    switch (o.timeUnit()) {
-      case MO.EGuiTimeUnit.Second:
+      case MO.EUiTimeUnit.Second:
          startTime.addMseconds(1000);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Minute:
+      case MO.EUiTimeUnit.Minute:
          startTime.addMseconds(1000 * 60);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Hour:
+      case MO.EUiTimeUnit.Hour:
          startTime.addMseconds(1000 * 60 * 60);
          startTime.parseAuto(startTime.format('YYYYMMDDHH24MISS'));
          break;
-      case MO.EGuiTimeUnit.Day:
+      case MO.EUiTimeUnit.Day:
          startTime.addDay(1);
          startTime.parseAuto(startTime.format('YYYYMMDD'));
          break;
-      case MO.EGuiTimeUnit.Week:
+      case MO.EUiTimeUnit.Week:
          startTime.addDay(7);
          startTime.parseAuto(startTime.format('YYYYMMDD'));
          break;
-      case MO.EGuiTimeUnit.Month:
+      case MO.EUiTimeUnit.Month:
          startTime.addMonth(1);
          startTime.parseAuto(startTime.format('YYYYMM'));
          break;
-      case MO.EGuiTimeUnit.Year:
+      case MO.EUiTimeUnit.Year:
          startTime.addYear(1);
          startTime.parseAuto(startTime.format('YYYY'));
          break;
@@ -194,31 +194,31 @@ MO.FGuiTimeline_onPaintBegin = function FGuiTimeline_onPaintBegin(event) {
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', o._degreeLineWidth);
       switch (o.timeUnit()) {
-         case MO.EGuiTimeUnit.Second:
+         case MO.EUiTimeUnit.Second:
             text = startTime.format('MI:SS');
             startTime.addMseconds(1000);
             break;
-         case MO.EGuiTimeUnit.Minute:
+         case MO.EUiTimeUnit.Minute:
             text = startTime.format('HH24:MI');
             startTime.addMseconds(1000 * 60);
             break;
-         case MO.EGuiTimeUnit.Hour:
+         case MO.EUiTimeUnit.Hour:
             text = startTime.format('HH24:00');
             startTime.addMseconds(1000 * 60 * 60);
             break;
-         case MO.EGuiTimeUnit.Day:
+         case MO.EUiTimeUnit.Day:
             text = startTime.format('MM-DD');
             startTime.addDay(1);
             break;
-         case MO.EGuiTimeUnit.Week:
+         case MO.EUiTimeUnit.Week:
             text = startTime.format('MM-DD');
             startTime.addDay(7);
             break;
-         case MO.EGuiTimeUnit.Month:
+         case MO.EUiTimeUnit.Month:
             text = startTime.format('YYYY-MM');
             startTime.addMonth(1);
             break;
-         case MO.EGuiTimeUnit.Year:
+         case MO.EUiTimeUnit.Year:
             text = startTime.format('YYYY');
             startTime.addYear(1);
             break;

@@ -5,7 +5,7 @@
 // @author sunpeng
 // @version 150618
 //==========================================================
-MO.EGuiTimeUnit = new function EGuiTimeUnit() {
+MO.EUiTimeUnit = new function EUiTimeUnit() {
    var o = this;
    // @attribute
    o.Second = 'second';

@@ -379,14 +379,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    var timeline = o._timeline;
    if(isVertical){
       timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(920);
       timeline.setHeight(250);
    }else{
       timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Right);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
       timeline.setRight(680);
@@ -397,7 +397,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    var liveTable = o._liveTable;
    if(isVertical){
       liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Right);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
       liveTable.setLeft(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
@@ -405,7 +405,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setHeight(900);
    }else{
       liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EGuiAnchor.Left | MO.EGuiAnchor.Top | MO.EGuiAnchor.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
       liveTable.setTop(10);
       liveTable.setRight(0);
       liveTable.setBottom(10);
