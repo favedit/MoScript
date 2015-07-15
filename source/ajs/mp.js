@@ -76642,6 +76642,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.GroupReport     = 'group.report';
    o.Company         = 'company';
    o.Country         = 'country';
+   o.ChartTotal      = 'chart.total';
    o.ChartHistory    = 'chart.history';
    o.ChartLive       = 'chart.live';
    o.ChartIndustry   = 'chart.industry';
@@ -81416,6 +81417,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o._optionMapCountry     = true;
    o._readyProvince        = false;
    o._nowDate              = null;
    o._nowTicker            = null;
@@ -81487,18 +81489,22 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var citysRenderable = mapEntity.citysRenderable();
    o.fixMatrix(citysRenderable.matrix());
    stage.cityLayer().push(citysRenderable);
+   var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
+   systemConsole.refresh();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
    var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
-   var control = o._southSea = MO.Class.create(MO.FGuiPicture);
-   control.setDisplayOrder(-10);
-   control.size().set(134, 203);
-   control.setBackResource('url:{eai.resource}/south-sea.png');
-   control.psInitialize();
-   control.build();
-   o._guiManager.register(control);
+   if(o._optionMapCountry){
+      var control = o._southSea = MO.Class.create(MO.FGuiPicture);
+      control.setDisplayOrder(-10);
+      control.size().set(134, 203);
+      control.setBackResource('url:{eai.resource}/south-sea.png');
+      control.psInitialize();
+      control.build();
+      o._guiManager.register(control);
+   }
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
@@ -81566,6 +81572,88 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('FaceLayer', layer);
+}
+MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o._optionMapCountry = false;
+   o._code             = MO.EEaiScene.ChartTotal;
+   o._currentDate      = null;
+   o._statusStart      = false;
+   o._statusLayerCount = 100;
+   o._statusLayerLevel = 100;
+   o.onInvestment      = MO.FEaiChartTotalScene_onInvestment;
+   o.onProcess         = MO.FEaiChartTotalScene_onProcess;
+   o.construct         = MO.FEaiChartTotalScene_construct;
+   o.setup             = MO.FEaiChartTotalScene_setup;
+   o.testReady         = MO.FEaiChartTotalScene_testReady;
+   return o;
+}
+MO.FEaiChartTotalScene_onInvestment = function FEaiChartTotalScene_onInvestment(event){
+   var o = this;
+   var content = event.content;
+   debugger
+}
+MO.FEaiChartTotalScene_onProcess = function FEaiChartTotalScene_onProcess() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcess.call(o);
+   if(!o._statusStart){
+      if(o.testReady()){
+         var hLoading = document.getElementById('id_loading');
+         if(hLoading){
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+         if(o._statusLayerLevel == 0){
+            if(hLoading){
+               document.body.removeChild(hLoading);
+            }
+            o._playing = true;
+            o._statusStart = true;
+         }
+      }
+   }
+   if (o._playing) {
+      if (!o._mapReady) {
+         o._guiManager.show();
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.01);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
+         o._mapReady = true;
+      }
+      if(o._dataTicker.process()){
+         var system = MO.Console.find(MO.FEaiLogicConsole).system();
+         if(system.testReady()){
+            var systemDate = system.currentDate();
+            var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
+            statistics.doInvestmentDynamic(o, o.onInvestment, systemDate.format(), systemDate.format());
+         }
+      }
+   }
+}
+MO.FEaiChartTotalScene_construct = function FEaiChartTotalScene_construct(){
+   var o = this;
+   o.__base.FEaiChartScene.construct.call(o);
+   o._currentDate = new MO.TDate();
+   o._dataTicker = new MO.TTicker(1000 * 30);
+}
+MO.FEaiChartTotalScene_setup = function FEaiChartTotalScene_setup() {
+   var o = this;
+   o.__base.FEaiChartScene.setup.call(o);
+   o._guiManager.hide();
+}
+MO.FEaiChartTotalScene_testReady = function FEaiChartTotalScene_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._countryReady){
+         return false;
+      }
+      o._ready = true;
+   }
+   return o._ready;
 }
 MO.FEaiCompanyScene = function FEaiCompanyScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
@@ -81774,13 +81862,14 @@ with(MO){
 }
 MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
-   o._code             = MO.EEaiChapter.Chart;
-   o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
-   o._sceneLive        = MO.Class.register(o, new MO.AGetter('_sceneLive'));
-   o.construct         = MO.FEaiChartChapter_construct;
-   o.setup             = MO.FEaiChartChapter_setup;
-   o.process           = MO.FEaiChartChapter_process;
-   o.dispose           = MO.FEaiChartChapter_dispose;
+   o._code         = MO.EEaiChapter.Chart;
+   o._sceneTotal   = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
+   o._sceneHistory = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneLive    = MO.Class.register(o, new MO.AGetter('_sceneLive'));
+   o.construct     = MO.FEaiChartChapter_construct;
+   o.setup         = MO.FEaiChartChapter_setup;
+   o.process       = MO.FEaiChartChapter_process;
+   o.dispose       = MO.FEaiChartChapter_dispose;
    return o;
 }
 MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
@@ -81789,6 +81878,9 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 }
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
+   var scene = o._sceneTotal = MO.RClass.create(MO.FEaiChartTotalScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);

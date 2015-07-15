@@ -13,6 +13,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.Company         = 'company';
    o.Country         = 'country';
    // 图表
+   o.ChartTotal      = 'chart.total';
    o.ChartHistory    = 'chart.history';
    o.ChartLive       = 'chart.live';
    // 图表

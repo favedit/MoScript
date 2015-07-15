@@ -6,13 +6,14 @@ with(MO){
 }
 MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChapter);
-   o._code             = MO.EEaiChapter.Chart;
-   o._sceneHistory     = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
-   o._sceneLive        = MO.Class.register(o, new MO.AGetter('_sceneLive'));
-   o.construct         = MO.FEaiChartChapter_construct;
-   o.setup             = MO.FEaiChartChapter_setup;
-   o.process           = MO.FEaiChartChapter_process;
-   o.dispose           = MO.FEaiChartChapter_dispose;
+   o._code         = MO.EEaiChapter.Chart;
+   o._sceneTotal   = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
+   o._sceneHistory = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneLive    = MO.Class.register(o, new MO.AGetter('_sceneLive'));
+   o.construct     = MO.FEaiChartChapter_construct;
+   o.setup         = MO.FEaiChartChapter_setup;
+   o.process       = MO.FEaiChartChapter_process;
+   o.dispose       = MO.FEaiChartChapter_dispose;
    return o;
 }
 MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
@@ -21,6 +22,9 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 }
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
+   var scene = o._sceneTotal = MO.RClass.create(MO.FEaiChartTotalScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
    var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);

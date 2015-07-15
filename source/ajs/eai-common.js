@@ -25,6 +25,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.GroupReport     = 'group.report';
    o.Company         = 'company';
    o.Country         = 'country';
+   o.ChartTotal      = 'chart.total';
    o.ChartHistory    = 'chart.history';
    o.ChartLive       = 'chart.live';
    o.ChartIndustry   = 'chart.industry';

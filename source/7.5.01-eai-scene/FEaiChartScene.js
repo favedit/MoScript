@@ -9,6 +9,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    //..........................................................
    // @attribute
+   o._optionMapCountry     = true;
    o._readyProvince        = false;
    // @attribute
    o._nowDate              = null;
@@ -144,6 +145,10 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o.fixMatrix(citysRenderable.matrix());
    stage.cityLayer().push(citysRenderable);
    //..........................................................
+   // 刷新系统信息
+   var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
+   systemConsole.refresh();
+   //..........................................................
    // 加载背景音乐
    var audioConsole = MO.Console.find(MO.FAudioConsole);
    var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground.mp3');
@@ -152,13 +157,15 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    audio.play();
    //..........................................................
    // 创建南海
-   var control = o._southSea = MO.Class.create(MO.FGuiPicture);
-   control.setDisplayOrder(-10);
-   control.size().set(134, 203);
-   control.setBackResource('url:{eai.resource}/south-sea.png');
-   control.psInitialize();
-   control.build();
-   o._guiManager.register(control);
+   if(o._optionMapCountry){
+      var control = o._southSea = MO.Class.create(MO.FGuiPicture);
+      control.setDisplayOrder(-10);
+      control.size().set(134, 203);
+      control.setBackResource('url:{eai.resource}/south-sea.png');
+      control.psInitialize();
+      control.build();
+      o._guiManager.register(control);
+   }
    //..........................................................
    // 创建背景
    //var control = o._background = MO.Class.create(MO.FGuiPicture);
