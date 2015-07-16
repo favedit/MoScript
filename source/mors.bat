@@ -21,6 +21,9 @@ COPY /Y %JS_HOME%\9.1.01-context\*.js %JS_HOME%\ajs\
 @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\me.js  --js_output_file ajs\release\me.js
 @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\eai.js --js_output_file ajs\release\eai.js
 
+@XCOPY /E /Y %JS_HOME%\ars\eai                %JS_HOME%\eai-release\ars\eai
+@XCOPY /E /Y %JS_HOME%\ars\shader             %JS_HOME%\eai-release\ars\shader
+
 @COPY /Y %JS_HOME%\ajs\release\lzma.js        %JS_HOME%\eai-release\ajs\lzma.js
 @COPY /Y %JS_HOME%\ajs\release\lzma_worker.js %JS_HOME%\eai-release\ajs\lzma_worker.js
 @COPY /Y %JS_HOME%\ajs\release\me.js          %JS_HOME%\eai-release\ajs\me.js
