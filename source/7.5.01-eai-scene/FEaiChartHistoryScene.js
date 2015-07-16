@@ -315,7 +315,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    // 加载背景音乐
    o._groundAutio.pause();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.wav');
+   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
    //..........................................................
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
