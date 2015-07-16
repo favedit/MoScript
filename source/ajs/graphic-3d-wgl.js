@@ -16,6 +16,7 @@ MO.FWglContext = function FWglContext(o){
    o._data9              = null;
    o._data16             = null;
    o.construct           = MO.FWglContext_construct;
+   o.isValid             = MO.FWglContext_isValid;
    o.linkCanvas          = MO.FWglContext_linkCanvas;
    o.parameters          = MO.FWglContext_parameters;
    o.extensions          = MO.FWglContext_extensions;
@@ -58,6 +59,9 @@ MO.FWglContext_construct = function FWglContext_construct(){
    o._recordBuffers = new MO.TObjects();
    o._recordSamplers = new MO.TObjects();
 }
+MO.FWglContext_isValid = function FWglContext_isValid(){
+   return this._handle;
+}
 MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    var o = this;
    o.__base.FG3dContext.linkCanvas.call(o, hCanvas)
@@ -77,7 +81,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
-         MO.Window.lsnsDeviceError.process(event);
+         MO.Window.processDeviceError(event);
          event.dispose();
          return;
       }
@@ -87,7 +91,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var event = new MO.SEvent(o);
       event.code = MO.EGraphicError.UnsupportWebGL;
       event.message = "Canvas can't support WebGL technique.";
-      MO.Window.lsnsDeviceError.process(event);
+      MO.Window.processDeviceError(event);
       event.dispose();
       return;
    }

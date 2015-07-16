@@ -12678,6 +12678,7 @@ MO.ESoftware = new function ESoftware(){
 MO.RWindow = function RWindow(){
    var o = this;
    o._optionSelect     = true;
+   o._statusError      = false;
    o._statusEnable     = true;
    o._disableDeep      = 0;
    o._localStorage     = null;
@@ -12841,6 +12842,17 @@ MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
       o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
+}
+MO.RWindow.prototype.statusError = function RWindow_statusError(){
+   return this._statusError;
+}
+MO.RWindow.prototype.setStatusError = function RWindow_setStatusError(value){
+   this._statusError = value;
+}
+MO.RWindow.prototype.processDeviceError = function RWindow_processDeviceError(event){
+   var o = this;
+   o._statusError = true;
+   o.lsnsDeviceError.process(event);
 }
 MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
    top.document.title = MO.Lang.String.nvl(value);
@@ -18626,6 +18638,7 @@ MO.FWglContext = function FWglContext(o){
    o._data9              = null;
    o._data16             = null;
    o.construct           = MO.FWglContext_construct;
+   o.isValid             = MO.FWglContext_isValid;
    o.linkCanvas          = MO.FWglContext_linkCanvas;
    o.parameters          = MO.FWglContext_parameters;
    o.extensions          = MO.FWglContext_extensions;
@@ -18668,6 +18681,9 @@ MO.FWglContext_construct = function FWglContext_construct(){
    o._recordBuffers = new MO.TObjects();
    o._recordSamplers = new MO.TObjects();
 }
+MO.FWglContext_isValid = function FWglContext_isValid(){
+   return this._handle;
+}
 MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    var o = this;
    o.__base.FG3dContext.linkCanvas.call(o, hCanvas)
@@ -18687,7 +18703,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
-         MO.Window.lsnsDeviceError.process(event);
+         MO.Window.processDeviceError(event);
          event.dispose();
          return;
       }
@@ -18697,7 +18713,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var event = new MO.SEvent(o);
       event.code = MO.EGraphicError.UnsupportWebGL;
       event.message = "Canvas can't support WebGL technique.";
-      MO.Window.lsnsDeviceError.process(event);
+      MO.Window.processDeviceError(event);
       event.dispose();
       return;
    }
@@ -82567,6 +82583,10 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
    desktop.build(hPanel);
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
+   var context = canvas.graphicContext();
+   if(!context.isValid()){
+      return;
+   }
    o.linkGraphicContext(canvas);
    var control = o._dynamicInfo = MO.Class.create(MO.FEaiDynamicInfo);
    control.linkGraphicContext(canvas);

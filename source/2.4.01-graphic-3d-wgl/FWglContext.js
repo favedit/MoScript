@@ -32,6 +32,7 @@ MO.FWglContext = function FWglContext(o){
    // @method
    o.construct           = MO.FWglContext_construct;
    // @method
+   o.isValid             = MO.FWglContext_isValid;
    o.linkCanvas          = MO.FWglContext_linkCanvas;
    // @method
    o.parameters          = MO.FWglContext_parameters;
@@ -89,6 +90,16 @@ MO.FWglContext_construct = function FWglContext_construct(){
 }
 
 //==========================================================
+// <T>获得是否有效。</T>
+//
+// @method
+// @return Boolean 是否有效
+//==========================================================
+MO.FWglContext_isValid = function FWglContext_isValid(){
+   return this._handle;
+}
+
+//==========================================================
 // <T>关联页面画布标签。</T>
 //
 // @method
@@ -117,7 +128,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
-         MO.Window.lsnsDeviceError.process(event);
+         MO.Window.processDeviceError(event);
          event.dispose();
          return;
       }
@@ -127,7 +138,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var event = new MO.SEvent(o);
       event.code = MO.EGraphicError.UnsupportWebGL;
       event.message = "Canvas can't support WebGL technique.";
-      MO.Window.lsnsDeviceError.process(event);
+      MO.Window.processDeviceError(event);
       event.dispose();
       return;
    }

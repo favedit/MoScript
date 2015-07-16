@@ -26,6 +26,7 @@ MO.ESoftware = new function ESoftware(){
 MO.RWindow = function RWindow(){
    var o = this;
    o._optionSelect     = true;
+   o._statusError      = false;
    o._statusEnable     = true;
    o._disableDeep      = 0;
    o._localStorage     = null;
@@ -189,6 +190,17 @@ MO.RWindow.prototype.setOptionSelect = function RWindow_setOptionSelect(select){
    if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
       o._hContainer.style.MozUserSelect = select ? '' : 'none';
    }
+}
+MO.RWindow.prototype.statusError = function RWindow_statusError(){
+   return this._statusError;
+}
+MO.RWindow.prototype.setStatusError = function RWindow_setStatusError(value){
+   this._statusError = value;
+}
+MO.RWindow.prototype.processDeviceError = function RWindow_processDeviceError(event){
+   var o = this;
+   o._statusError = true;
+   o.lsnsDeviceError.process(event);
 }
 MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
    top.document.title = MO.Lang.String.nvl(value);

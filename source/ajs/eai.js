@@ -5568,6 +5568,10 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
    desktop.build(hPanel);
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
+   var context = canvas.graphicContext();
+   if(!context.isValid()){
+      return;
+   }
    o.linkGraphicContext(canvas);
    var control = o._dynamicInfo = MO.Class.create(MO.FEaiDynamicInfo);
    control.linkGraphicContext(canvas);
