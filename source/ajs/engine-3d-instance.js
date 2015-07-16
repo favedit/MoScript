@@ -1925,11 +1925,12 @@ MO.FE3dSimpleStage_deactive = function FE3dSimpleStage_deactive(){
    o.__base.FE3dStage.deactive.call(o);
 }
 MO.FE3dSpace = function FE3dSpace(o){
-   o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FE3dStage, MO.MListener);
    o._dataReady            = false;
    o._resource             = MO.Class.register(o, new MO.AGetSet('_resource'));
    o._materials            = MO.Class.register(o, new MO.AGetter('_materials'));
    o._dirty                = false;
+   o._loadListeners        = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    o.onProcess             = MO.FE3dSpace_onProcess;
    o.construct             = MO.FE3dSpace_construct;
    o.linkGraphicContext    = MO.FE3dSpace_linkGraphicContext;

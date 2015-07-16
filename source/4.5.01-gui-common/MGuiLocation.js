@@ -1,19 +1,17 @@
-with(MO){
-   //==========================================================
-   // <T>位置接口。</T>
-   //
-   // @face
-   // @author maocy
-   // @version 150627
-   //==========================================================
-   MO.MGuiLocation = function MGuiLocation(o){
-      o = RClass.inherits(this, o);
-      //..........................................................
-      // @property
-      o._left   = RClass.register(o, [new APtyInteger('_left'), new AGetSet('_left')]);
-      o._right  = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')]);
-      o._top    = RClass.register(o, [new APtyInteger('_top'), new AGetSet('_top')]);
-      o._bottom = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')]);
-      return o;
-   }
+//==========================================================
+// <T>位置接口。</T>
+//
+// @face
+// @author maocy
+// @version 150627
+//==========================================================
+MO.MGuiLocation = function MGuiLocation(o){
+   o = MO.Class.inherits(this, o);
+   //..........................................................
+   // @property
+   o._left   = MO.Class.register(o, [new MO.APtyInteger('_left'), new MO.AGetSet('_left')]);
+   o._right  = MO.Class.register(o, [new MO.APtyInteger('_right'), new MO.AGetSet('_right')]);
+   o._top    = MO.Class.register(o, [new MO.APtyInteger('_top'), new MO.AGetSet('_top')]);
+   o._bottom = MO.Class.register(o, [new MO.APtyInteger('_bottom'), new MO.AGetSet('_bottom')]);
+   return o;
 }

@@ -149,10 +149,10 @@ MO.RStage.prototype.start = function RStage_start(interval){
       return;
    }
    // 引擎配置
-   RE3dEngine.setup();
+   MO.RE3dEngine.setup();
    // 激活舞台
    o.active();
-   RTimer.setup();
+   MO.Timer.setup();
    // 计算间隔时间
    if(interval == null){
       interval = o._interval;

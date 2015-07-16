@@ -37,6 +37,6 @@ MO.MGuiBorder_construct = function MGuiBorder_construct(){
 //==========================================================
 MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
    var o = this;
-   o._borderInner = MO.RObject.dispose(o._borderInner);
-   o._borderOuter = MO.RObject.dispose(o._borderOuter);
+   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
+   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
 }

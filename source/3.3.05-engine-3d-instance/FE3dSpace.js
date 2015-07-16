@@ -5,13 +5,15 @@
 // @history 150106
 //==========================================================
 MO.FE3dSpace = function FE3dSpace(o){
-   o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FE3dStage, MO.MListener);
    //..........................................................
    // @attribute
    o._dataReady            = false;
    o._resource             = MO.Class.register(o, new MO.AGetSet('_resource'));
    o._materials            = MO.Class.register(o, new MO.AGetter('_materials'));
    o._dirty                = false;
+   // @attribute
+   o._loadListeners        = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    //..........................................................
    // @event
    o.onProcess             = MO.FE3dSpace_onProcess;

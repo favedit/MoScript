@@ -986,9 +986,9 @@ MO.RStage.prototype.start = function RStage_start(interval){
    if(o._started){
       return;
    }
-   RE3dEngine.setup();
+   MO.RE3dEngine.setup();
    o.active();
-   RTimer.setup();
+   MO.Timer.setup();
    if(interval == null){
       interval = o._interval;
    }
@@ -1476,7 +1476,7 @@ MO.FResourceDataConsole_construct = function FResourceDataConsole_construct(){
    o._loadDatas  = new MO.TObjects();
    o._processDatas = new MO.TObjects();
    o._pipelinePool  = MO.Class.create(MO.FObjectPool);
-   var capability = MO.RBrowser.capability();
+   var capability = MO.Window.Browser.capability();
    if(!capability.optionProcess){
       var pipeline = o._pipeline = MO.Class.create(FResourceSinglePipeline);
       pipeline.setConsole(o);
@@ -1490,7 +1490,7 @@ MO.FResourceDataConsole_allocPipeline = function FResourceDataConsole_allocPipel
    var o = this;
    var pool = o._pipelinePool;
    if(!pool.hasFree()){
-      var pipeline = MO.Class.create(FResourceThreadPipeline);
+      var pipeline = MO.Class.create(MO.FResourceThreadPipeline);
       pipeline.setConsole(o);
       pool.push(pipeline);
    }
@@ -4935,7 +4935,7 @@ MO.FE3sVendor_makeUrl = function FE3sVendor_makeUrl(){
       }else{
          r += '&';
       }
-      r += 'date=' + RDate.format();
+      r += 'date=' + MO.Lang.Date.format();
    }
    return r;
 }
@@ -9472,11 +9472,12 @@ MO.FE3dSimpleStage_deactive = function FE3dSimpleStage_deactive(){
    o.__base.FE3dStage.deactive.call(o);
 }
 MO.FE3dSpace = function FE3dSpace(o){
-   o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FE3dStage, MO.MListener);
    o._dataReady            = false;
    o._resource             = MO.Class.register(o, new MO.AGetSet('_resource'));
    o._materials            = MO.Class.register(o, new MO.AGetter('_materials'));
    o._dirty                = false;
+   o._loadListeners        = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    o.onProcess             = MO.FE3dSpace_onProcess;
    o.construct             = MO.FE3dSpace_construct;
    o.linkGraphicContext    = MO.FE3dSpace_linkGraphicContext;

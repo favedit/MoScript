@@ -1240,6 +1240,75 @@ MO.MUiPadding_dispose = function MUiPadding_dispose(){
    var o = this;
    o._padding = MO.Lang.Object.dispose(o._padding);
 }
+MO.MUiStorage = function MUiStorage(o){
+   o = MO.Class.inherits(this, o);
+   o._storageCode      = null;
+   o._storageObject    = null;
+   o.storageGet        = MO.MUiStorage_storageGet;
+   o.storageGetBoolean = MO.MUiStorage_storageGetBoolean;
+   o.storageSet        = MO.MUiStorage_storageSet;
+   o.storageUpdate     = MO.MUiStorage_storageUpdate;
+   o.dispose           = MO.MUiStorage_dispose;
+   return o;
+}
+MO.MUiStorage_storageGet = function MUiStorage_storageGet(name, defaultValue){
+   var o = this;
+   if(name == null){
+      throw new MO.TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      var storge = MO.Window.storage(MO.EScope.Local);
+      var value = storge.get(o._storageCode);
+      object = o._storageObject = MO.Json.parse(value, Object);
+   }
+   if(object){
+      var value = object[name];
+      if(value != null){
+         return value;
+      }
+   }
+   return defaultValue;
+}
+MO.MUiStorage_storageGetBoolean = function MUiStorage_storageGetBoolean(name, defaultValue){
+   var o = this;
+   var value = o.storageGet(name, defaultValue);
+   return MO.Lang.Boolean.parse(value);
+}
+MO.MUiStorage_storageSet = function MUiStorage_storageSet(name, value){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      object = o._storageObject = new Object();
+   }
+   object[name] = value;
+}
+MO.MUiStorage_storageUpdate = function MUiStorage_storageUpdate(){
+   var o = this;
+   var object = o._storageObject;
+   if(object){
+      var storge = MO.Window.storage(MO.EScope.Local);
+      var value = MO.Json.toString(object);
+      storge.set(o._storageCode, value);
+   }
+}
+MO.MUiStorage_dispose = function MUiStorage_dispose(){
+   var o = this;
+   o._storageCode = null;
+   o._storageObject = null;
+}
+MO.MUiValue = function MUiValue(o){
+   o = MO.Class.inherits(this, o);
+   o.get = MO.Method.empty;
+   o.set = MO.Method.empty;
+   return o;
+}
+MO.Ui = new function MoUiSpace(){return this;}
+MO.Gui = new function MoGuiSpace(){return this;}
+MO.Dui = new function MoDuiSpace(){return this;}
 MO.SUiDispatchEvent = function SUiDispatchEvent(owner, invokeName, clazz){
    var o = this;
    MO.SEvent.call(o);

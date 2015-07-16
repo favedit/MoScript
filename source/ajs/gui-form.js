@@ -1,38 +1,14 @@
-with(MO){
-   MO.FGuiButton = function FGuiButton(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o.onPaintBegin = FGuiButton_onPaintBegin;
-      return o;
-   }
-   MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      if(o._label){
-         if(o._foreFont){
-            graphic.setFont(o._foreFont);
-         }
-         var width = graphic.textWidth(o._label);
-         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
-         var y = rectangle.top + rectangle.height * 0.5 + 3;
-         graphic.drawText(o._label, x, y, o._foreColor);
-      }
-   }
+MO.FGuiButton = function FGuiButton(o){
+   o = RClass.inherits(this, o, MO.FGuiControl);
+   o.onPaintBegin = MO.FGuiButton_onPaintBegin;
+   return o;
 }
-with(MO){
-   MO.FGuiLabel = function FGuiLabel(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o.onPaintLabel = FGuiLabel_onPaintLabel;
-      o.onPaintBegin = FGuiLabel_onPaintBegin;
-      o.setLabel     = FGuiLabel_setLabel;
-      return o;
-   }
-   MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
+MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   if(o._label){
       if(o._foreFont){
          graphic.setFont(o._foreFont);
       }
@@ -41,26 +17,44 @@ with(MO){
       var y = rectangle.top + rectangle.height * 0.5 + 3;
       graphic.drawText(o._label, x, y, o._foreColor);
    }
-   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      if(o._label){
-         o.onPaintLabel(event);
-      }
+}
+MO.FGuiLabel = function FGuiLabel(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o.onPaintLabel = MO.FGuiLabel_onPaintLabel;
+   o.onPaintBegin = MO.FGuiLabel_onPaintBegin;
+   o.setLabel     = MO.FGuiLabel_setLabel;
+   return o;
+}
+MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   if(o._foreFont){
+      graphic.setFont(o._foreFont);
    }
-   MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
-      var o = this;
-      if(o._label != label){
-         o.dirty();
-      }
-      o.__base.FGuiControl.setLabel.call(o, label);
+   var width = graphic.textWidth(o._label);
+   var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+   var y = rectangle.top + rectangle.height * 0.5 + 3;
+   graphic.drawText(o._label, x, y, o._foreColor);
+}
+MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if(o._label){
+      o.onPaintLabel(event);
    }
 }
-with(MO){
-   MO.FGuiPanel = function FGuiPanel(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      return o;
+MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
+   var o = this;
+   if(o._label != label){
+      o.dirty();
    }
+   o.__base.FGuiControl.setLabel.call(o, label);
+}
+MO.FGuiPanel = function FGuiPanel(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   return o;
 }
 MO.FGuiPicture = function FGuiPicture(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);

@@ -474,7 +474,7 @@ MO.FResourceDataConsole_construct = function FResourceDataConsole_construct(){
    o._loadDatas  = new MO.TObjects();
    o._processDatas = new MO.TObjects();
    o._pipelinePool  = MO.Class.create(MO.FObjectPool);
-   var capability = MO.RBrowser.capability();
+   var capability = MO.Window.Browser.capability();
    if(!capability.optionProcess){
       var pipeline = o._pipeline = MO.Class.create(FResourceSinglePipeline);
       pipeline.setConsole(o);
@@ -488,7 +488,7 @@ MO.FResourceDataConsole_allocPipeline = function FResourceDataConsole_allocPipel
    var o = this;
    var pool = o._pipelinePool;
    if(!pool.hasFree()){
-      var pipeline = MO.Class.create(FResourceThreadPipeline);
+      var pipeline = MO.Class.create(MO.FResourceThreadPipeline);
       pipeline.setConsole(o);
       pool.push(pipeline);
    }

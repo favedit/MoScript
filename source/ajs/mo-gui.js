@@ -13,23 +13,21 @@ MO.MGuiBorder_construct = function MGuiBorder_construct(){
 }
 MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
    var o = this;
-   o._borderInner = MO.RObject.dispose(o._borderInner);
-   o._borderOuter = MO.RObject.dispose(o._borderOuter);
+   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
+   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
 }
-with(MO){
-   MO.MGuiContainer = function MGuiContainer(o){
-      o = RClass.inherits(this, o);
-      o.createChild = MGuiContainer_createChild;
-      o.appendChild = RMethod.empty;
-      o.removeChild = RMethod.empty;
-      return o;
-   }
-   MO.MGuiContainer_createChild = function MGuiContainer_createChild(xconfig){
-      var o = this;
-      var child = RGuiControl.newInstance(xconfig);
-      child._parent = o;
-      return child;
-   }
+MO.MGuiContainer = function MGuiContainer(o){
+   o = MO.Class.inherits(this, o);
+   o.createChild = MO.MGuiContainer_createChild;
+   o.appendChild = MO.Method.empty;
+   o.removeChild = MO.Method.empty;
+   return o;
+}
+MO.MGuiContainer_createChild = function MGuiContainer_createChild(xconfig){
+   var o = this;
+   var child = MO.RGuiControl.newInstance(xconfig);
+   child._parent = o;
+   return child;
 }
 MO.MGuiDispatcher = function MGuiDispatcher(o){
    o = MO.Class.inherits(this, o);
@@ -71,90 +69,86 @@ MO.MGuiDispatcher_dispatcherEvent = function MGuiDispatcher_dispatcherEvent(even
          throw new MO.TError('Unknown event type.');
    }
 }
-with(MO){
-   MO.MGuiLocation = function MGuiLocation(o){
-      o = RClass.inherits(this, o);
-      o._left   = RClass.register(o, [new APtyInteger('_left'), new AGetSet('_left')]);
-      o._right  = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')]);
-      o._top    = RClass.register(o, [new APtyInteger('_top'), new AGetSet('_top')]);
-      o._bottom = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')]);
-      return o;
-   }
+MO.MGuiLocation = function MGuiLocation(o){
+   o = MO.Class.inherits(this, o);
+   o._left   = MO.Class.register(o, [new MO.APtyInteger('_left'), new MO.AGetSet('_left')]);
+   o._right  = MO.Class.register(o, [new MO.APtyInteger('_right'), new MO.AGetSet('_right')]);
+   o._top    = MO.Class.register(o, [new MO.APtyInteger('_top'), new MO.AGetSet('_top')]);
+   o._bottom = MO.Class.register(o, [new MO.APtyInteger('_bottom'), new MO.AGetSet('_bottom')]);
+   return o;
 }
-with(MO){
-   MO.MGuiSize = function MGuiSize(o){
-      o = RClass.inherits(this, o);
-      o._location   = RClass.register(o, [new APtyPoint2('_location'), new AGetter('_location')]);
-      o._right      = RClass.register(o, [new APtyInteger('_right'), new AGetSet('_right')], 0);
-      o._bottom     = RClass.register(o, [new APtyInteger('_bottom'), new AGetSet('_bottom')], 0);
-      o._size       = RClass.register(o, [new APtySize2('_size'), new AGetter('_size')]);
-      o._scale      = RClass.register(o, [new APtySize2('_scale'), new AGetter('_scale')]);
-      o.construct   = MGuiSize_construct;
-      o.left        = MGuiSize_left;
-      o.setLeft     = MGuiSize_setLeft;
-      o.top         = MGuiSize_top;
-      o.setTop      = MGuiSize_setTop;
-      o.setLocation = MGuiSize_setLocation;
-      o.width       = MGuiSize_width;
-      o.setWidth    = MGuiSize_setWidth;
-      o.height      = MGuiSize_height;
-      o.setHeight   = MGuiSize_setHeight;
-      o.setSize     = MGuiSize_setSize;
-      o.setScale    = MGuiSize_setScale;
-      o.setBounds   = MGuiSize_setBounds;
-      o.dispose     = MGuiSize_dispose;
-      return o;
-   }
-   MO.MGuiSize_construct = function MGuiSize_construct(){
-      var o = this;
-      o._location = new SPoint2(0, 0);
-      o._size = new SSize2(128, 128);
-      o._scale = new SSize2(1, 1);
-   }
-   MO.MGuiSize_left = function MGuiSize_left(){
-      return this._location.x;
-   }
-   MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
-      this.setLocation(value, this._location.y);
-   }
-   MO.MGuiSize_top = function MGuiSize_top(){
-      return this._location.y;
-   }
-   MO.MGuiSize_setTop = function MGuiSize_setTop(value){
-      this.setLocation(this._location.x, value);
-   }
-   MO.MGuiSize_setLocation = function MGuiSize_setLocation(x, y){
-      this._location.set(x, y);
-   }
-   MO.MGuiSize_width = function MGuiSize_width(){
-      return this._size.width;
-   }
-   MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
-      this.setSize(value, this._size.height);
-   }
-   MO.MGuiSize_height = function MGuiSize_height(){
-      return this._size.height;
-   }
-   MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
-      this.setSize(this._size.width, value);
-   }
-   MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
-      this._size.set(width, height);
-   }
-   MO.MGuiSize_setScale = function MGuiSize_setScale(width, height){
-      this._scale.set(width, height);
-   }
-   MO.MGuiSize_setBounds = function MGuiSize_setBounds(left, top, width, height){
-      var o = this;
-      o.setLocation(left, top);
-      o.setSize(width, height);
-   }
-   MO.MGuiSize_dispose = function MGuiSize_dispose(){
-      var o = this;
-      o._location = RObject.dispose(o._location);
-      o._size = RObject.dispose(o._size);
-      o._scale = RObject.dispose(o._scale);
-   }
+MO.MGuiSize = function MGuiSize(o){
+   o = MO.Class.inherits(this, o);
+   o._location   = MO.Class.register(o, [new MO.APtyPoint2('_location'), new MO.AGetter('_location')]);
+   o._right      = MO.Class.register(o, [new MO.APtyInteger('_right'), new MO.AGetSet('_right')], 0);
+   o._bottom     = MO.Class.register(o, [new MO.APtyInteger('_bottom'), new MO.AGetSet('_bottom')], 0);
+   o._size       = MO.Class.register(o, [new MO.APtySize2('_size'), new MO.AGetter('_size')]);
+   o._scale      = MO.Class.register(o, [new MO.APtySize2('_scale'), new MO.AGetter('_scale')]);
+   o.construct   = MO.MGuiSize_construct;
+   o.left        = MO.MGuiSize_left;
+   o.setLeft     = MO.MGuiSize_setLeft;
+   o.top         = MO.MGuiSize_top;
+   o.setTop      = MO.MGuiSize_setTop;
+   o.setLocation = MO.MGuiSize_setLocation;
+   o.width       = MO.MGuiSize_width;
+   o.setWidth    = MO.MGuiSize_setWidth;
+   o.height      = MO.MGuiSize_height;
+   o.setHeight   = MO.MGuiSize_setHeight;
+   o.setSize     = MO.MGuiSize_setSize;
+   o.setScale    = MO.MGuiSize_setScale;
+   o.setBounds   = MO.MGuiSize_setBounds;
+   o.dispose     = MO.MGuiSize_dispose;
+   return o;
+}
+MO.MGuiSize_construct = function MGuiSize_construct(){
+   var o = this;
+   o._location = new MO.SPoint2(0, 0);
+   o._size = new MO.SSize2(128, 128);
+   o._scale = new MO.SSize2(1, 1);
+}
+MO.MGuiSize_left = function MGuiSize_left(){
+   return this._location.x;
+}
+MO.MGuiSize_setLeft = function MGuiSize_setLeft(value){
+   this.setLocation(value, this._location.y);
+}
+MO.MGuiSize_top = function MGuiSize_top(){
+   return this._location.y;
+}
+MO.MGuiSize_setTop = function MGuiSize_setTop(value){
+   this.setLocation(this._location.x, value);
+}
+MO.MGuiSize_setLocation = function MGuiSize_setLocation(x, y){
+   this._location.set(x, y);
+}
+MO.MGuiSize_width = function MGuiSize_width(){
+   return this._size.width;
+}
+MO.MGuiSize_setWidth = function MGuiSize_setWidth(value){
+   this.setSize(value, this._size.height);
+}
+MO.MGuiSize_height = function MGuiSize_height(){
+   return this._size.height;
+}
+MO.MGuiSize_setHeight = function MGuiSize_setHeight(value){
+   this.setSize(this._size.width, value);
+}
+MO.MGuiSize_setSize = function MGuiSize_setSize(width, height){
+   this._size.set(width, height);
+}
+MO.MGuiSize_setScale = function MGuiSize_setScale(width, height){
+   this._scale.set(width, height);
+}
+MO.MGuiSize_setBounds = function MGuiSize_setBounds(left, top, width, height){
+   var o = this;
+   o.setLocation(left, top);
+   o.setSize(width, height);
+}
+MO.MGuiSize_dispose = function MGuiSize_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o._size = RObject.dispose(o._size);
+   o._scale = RObject.dispose(o._scale);
 }
 MO.SGuiImage = function SGuiImage(){
    var o = this;
@@ -359,11 +353,9 @@ MO.FGuiComponent_dispose = function FGuiComponent_dispose(){
    o.__base.MUiComponent.dispose.call(o);
    o.__base.FComponent.dispose.call(o);
 }
-with(MO){
-   MO.FGuiContainer = function FGuiContainer(o){
-      o = RClass.inherits(this, o, FGuiControl, MGuiContainer);
-      return o;
-   }
+MO.FGuiContainer = function FGuiContainer(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MGuiContainer);
+   return o;
 }
 MO.FGuiControl = function FGuiControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
@@ -746,127 +738,121 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o.__base.MUiControl.dispose.call(o);
    o.__base.FGuiComponent.dispose.call(o);
 }
-with(MO){
-   MO.FGuiControlRenderable = function FGuiControlRenderable(o){
-      o = RClass.inherits(this, o, FE3dFaceData);
-      o._optionFull = RClass.register(o, new AGetSet('_optionFull'));
-      o._control    = RClass.register(o, new AGetSet('_control'));
-      o._graphic    = null;
-      o.construct   = FGuiControlRenderable_construct;
-      o.setup       = FGuiControlRenderable_setup;
-      o.setLocation = FGuiControlRenderable_setLocation;
-      o.setSize     = FGuiControlRenderable_setSize;
-      o.beginDraw   = FGuiControlRenderable_beginDraw;
-      o.endDraw     = FGuiControlRenderable_endDraw;
-      o.dispose     = FGuiControlRenderable_dispose;
-      return o;
+MO.FGuiControlRenderable = function FGuiControlRenderable(o){
+   o = MO.Class.inherits(this, o, MO.FE3dFaceData);
+   o._optionFull = MO.Class.register(o, new MO.AGetSet('_optionFull'));
+   o._control    = MO.Class.register(o, new MO.AGetSet('_control'));
+   o._graphic    = null;
+   o.construct   = MO.FGuiControlRenderable_construct;
+   o.setup       = MO.FGuiControlRenderable_setup;
+   o.setLocation = MO.FGuiControlRenderable_setLocation;
+   o.setSize     = MO.FGuiControlRenderable_setSize;
+   o.beginDraw   = MO.FGuiControlRenderable_beginDraw;
+   o.endDraw     = MO.FGuiControlRenderable_endDraw;
+   o.dispose     = MO.FGuiControlRenderable_dispose;
+   return o;
+}
+MO.FGuiControlRenderable_construct = function FGuiControlRenderable_construct(){
+   var o = this;
+   o.__base.FE3dFaceData.construct.call(o);
+}
+MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
+   var o = this;
+   o.__base.FE3dFaceData.setup.call(o);
+   var materialInfo = o._material.info();
+   materialInfo.effectCode = 'gui';
+   materialInfo.optionAlpha = true;
+   materialInfo.optionDepth = false;
+   materialInfo.optionDouble = true;
+}
+MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
+   var o = this;
+   o._matrix.setTranslate(x, y, 0);
+}
+MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
+   var o = this;
+   o._size.set(width, height);
+}
+MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
+   var o = this;
+   var size = o._size;
+   var adjustWidth = MO.Lang.Integer.pow2(size.width);
+   var adjustHeight = MO.Lang.Integer.pow2(size.height);
+   o._adjustSize.set(adjustWidth, adjustHeight);
+   o._matrix.setScale(adjustWidth, adjustHeight, 1);
+   var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
+   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+   var graphic = o._graphic = canvas.context();
+   return graphic;
+}
+MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
+   var o = this;
+   var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
+   o._texture.upload(o._canvas);
+   var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
+   canvasConsole.free(o._canvas);
+   o._canvas = null;
+   o._graphic = null;
+   o._ready = true;
+}
+MO.FGuiControlRenderable_dispose = function FGuiControlRenderable_dispose(){
+   var o = this;
+   o.__base.FE3dFaceData.dispose.call(o);
+}
+MO.FGuiFrame = function FGuiFrame(o){
+   o = MO.Class.inherits(this, o, MO.FGuiContainer);
+   return o;
+}
+MO.FGuiSpriteMultimage = function FGuiSpriteMultimage(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._sequenceImages = null;
+   o._frameTime      = MO.Class.register(o, new MO.AGetSet('_frameTime'));
+   o._ready          = MO.Class.register(o, new MO.AGetSet('_ready'), false);
+   o._imageCount     = 0;
+   o._imageToLoad    = 0;
+   o._lastTick       = 0;
+   o._currentFrame   = 0;
+   o.setup           = FGuiSpriteMultimage_setup;
+   o.onPaintBegin    = FGuiSpriteMultimage_onPaintBegin;
+   o.onImageLoad     = FGuiSpriteMultimage_onImageLoad;
+   return o;
+}
+MO.FGuiSpriteMultimage_setup = function FGuiSpriteMultimage_setup(sequenceImageUrl, imageCount, ext) {
+   var o = this;
+   o._imageCount = imageCount;
+   o._imageToLoad = imageCount;
+   var images = o._sequenceImages = new Array(imageCount);
+   for (var i = 0; i < imageCount; i++) {
+      images[i] = MO.Class.create(MO.FImage);
+      images[i].addLoadListener(o, o.onImageLoad);
+      images[i].loadUrl(sequenceImageUrl + i + ext);
    }
-   MO.FGuiControlRenderable_construct = function FGuiControlRenderable_construct(){
-      var o = this;
-      o.__base.FE3dFaceData.construct.call(o);
-   }
-   MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
-      var o = this;
-      o.__base.FE3dFaceData.setup.call(o);
-      var materialInfo = o._material.info();
-      materialInfo.effectCode = 'gui';
-      materialInfo.optionAlpha = true;
-      materialInfo.optionDepth = false;
-      materialInfo.optionDouble = true;
-   }
-   MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
-      var o = this;
-      o._matrix.setTranslate(x, y, 0);
-   }
-   MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
-      var o = this;
-      o._size.set(width, height);
-   }
-   MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
-      var o = this;
-      var size = o._size;
-      var adjustWidth = RInteger.pow2(size.width);
-      var adjustHeight = RInteger.pow2(size.height);
-      o._adjustSize.set(adjustWidth, adjustHeight);
-      o._matrix.setScale(adjustWidth, adjustHeight, 1);
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-      var graphic = o._graphic = canvas.context();
-      return graphic;
-   }
-   MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
-      var o = this;
-      var graphic = o._graphic;
-      MO.Assert.debugNotNull(graphic);
-      o._texture.upload(o._canvas);
-      var canvasConsole = RConsole.find(FE2dCanvasConsole);
-      canvasConsole.free(o._canvas);
-      o._canvas = null;
-      o._graphic = null;
+}
+MO.FGuiSpriteMultimage_onImageLoad = function FGuiSpriteMultimage_onImageLoad() {
+   var o = this;
+   if (--o._imageToLoad == 0) {
       o._ready = true;
-   }
-   MO.FGuiControlRenderable_dispose = function FGuiControlRenderable_dispose(){
-      var o = this;
-      o.__base.FE3dFaceData.dispose.call(o);
+      o._lastTick = MO.Timer.current();
+      o.dirty();
    }
 }
-with(MO){
-   MO.FGuiFrame = function FGuiFrame(o){
-      o = RClass.inherits(this, o, FGuiContainer);
-      return o;
+MO.FGuiSpriteMultimage_onPaintBegin = function FGuiSpriteMultimage_onPaintBegin(event) {
+   var o = this;
+   if (!o._ready) {
+      return;
    }
-}
-with (MO) {
-   MO.FGuiSpriteMultimage = function FGuiSpriteMultimage(o) {
-      o = RClass.inherits(this, o, FGuiControl);
-      o._sequenceImages = null;
-      o._frameTime = RClass.register(o, new AGetSet('_frameTime'));
-      o._ready = RClass.register(o, new AGetSet('_ready'), false);
-      o._imageCount = 0;
-      o._imageToLoad = 0;
-      o._lastTick = 0;
-      o._currentFrame = 0;
-      o.setup = FGuiSpriteMultimage_setup;
-      o.onPaintBegin = FGuiSpriteMultimage_onPaintBegin;
-      o.onImageLoad = FGuiSpriteMultimage_onImageLoad;
-      return o;
-   }
-   MO.FGuiSpriteMultimage_setup = function FGuiSpriteMultimage_setup(sequenceImageUrl, imageCount, ext) {
-      var o = this;
-      o._imageCount = imageCount;
-      o._imageToLoad = imageCount;
-      var images = o._sequenceImages = new Array(imageCount);
-      for (var i = 0; i < imageCount; i++) {
-         images[i] = MO.Class.create(MO.FImage);
-         images[i].addLoadListener(o, o.onImageLoad);
-         images[i].loadUrl(sequenceImageUrl + i + ext);
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var passedTick = MO.Timer.current() - o._lastTick;
+   if (passedTick > o._frameTime) {
+      if (++o._currentFrame > o._imageCount - 1) {
+         o._currentFrame = 0;
       }
+      o._lastTick = MO.Timer.current();
    }
-   MO.FGuiSpriteMultimage_onImageLoad = function FGuiSpriteMultimage_onImageLoad() {
-      var o = this;
-      if (--o._imageToLoad == 0) {
-         o._ready = true;
-         o._lastTick = MO.Timer.current();
-         o.dirty();
-      }
-   }
-   MO.FGuiSpriteMultimage_onPaintBegin = function FGuiSpriteMultimage_onPaintBegin(event) {
-      var o = this;
-      if (!o._ready) {
-         return;
-      }
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      var passedTick = MO.Timer.current() - o._lastTick;
-      if (passedTick > o._frameTime) {
-         if (++o._currentFrame > o._imageCount - 1) {
-            o._currentFrame = 0;
-         }
-         o._lastTick = MO.Timer.current();
-      }
-      graphic._handle.drawImage(o._sequenceImages[o._currentFrame].image(), rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-   }
+   graphic._handle.drawImage(o._sequenceImages[o._currentFrame].image(), rectangle.left, rectangle.top, rectangle.width, rectangle.height);
 }
 MO.RGuiColor = function RGuiColor(){
    var o = this;
@@ -1197,65 +1183,63 @@ MO.FGuiChangeTransform_dispose = function FGuiChangeTransform_dispose(){
    var o = this;
    o.__base.FGuiTransform.dispose.call(o);
 }
-with(MO){
-   MO.FGuiFrameConsole = function FGuiFrameConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd         = EScope.Local;
-      o._frames          = null;
-      o.construct        = FGuiFrameConsole_construct;
-      o.createFrame      = FGuiFrameConsole_createFrame;
-      o.create           = FGuiFrameConsole_create;
-      o.find             = FGuiFrameConsole_find;
-      o.get              = FGuiFrameConsole_get;
-      o.alloc            = FGuiFrameConsole_alloc;
-      o.free             = FGuiFrameConsole_free;
-      o.dispose          = FGuiFrameConsole_dispose;
-      return o;
+MO.FGuiFrameConsole = function FGuiFrameConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd    = MO.EScope.Local;
+   o._frames     = null;
+   o.construct   = MO.FGuiFrameConsole_construct;
+   o.createFrame = MO.FGuiFrameConsole_createFrame;
+   o.create      = MO.FGuiFrameConsole_create;
+   o.find        = MO.FGuiFrameConsole_find;
+   o.get         = MO.FGuiFrameConsole_get;
+   o.alloc       = MO.FGuiFrameConsole_alloc;
+   o.free        = MO.FGuiFrameConsole_free;
+   o.dispose     = MO.FGuiFrameConsole_dispose;
+   return o;
+}
+MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._frames = new MO.TDictionary();
+}
+MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
+   var o = this;
+   var describeConsole = MO.Console.find(MO.FGuiFrameDescribeConsole);
+   var xframe = describeConsole.load(name);
+   var frame = MO.RGuiControl.build(null, xframe, null, null);
+   frame.linkGraphicContext(context);
+   frame.psInitialize();
+   frame.build();
+   return frame;
+}
+MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
+   var o = this;
+   var frame = o.createFrame(context, null, name);
+   return frame;
+}
+MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
+   return this._frames.get(name);
+}
+MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
+   var o = this;
+   var frames = o._frames;
+   var frame = frames.get(name);
+   if(!frame){
+      frame = o.createFrame(context, null, name);
+      frames.set(name, frame);
    }
-   MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._frames = new TDictionary();
-   }
-   MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
-      var o = this;
-      var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
-      var xframe = describeConsole.load(name);
-      var frame = RGuiControl.build(null, xframe, null, null);
-      frame.linkGraphicContext(context);
-      frame.psInitialize();
-      frame.build();
-      return frame;
-   }
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
-      var o = this;
-      var frame = o.createFrame(context, null, name);
-      return frame;
-   }
-   MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
-      return this._frames.get(name);
-   }
-   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
-      var o = this;
-      var frames = o._frames;
-      var frame = frames.get(name);
-      if(!frame){
-         frame = o.createFrame(context, null, name);
-         frames.set(name, frame);
-      }
-      return frame;
-   }
-   MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
-   }
-   MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
-      f.setVisible(false);
-      this._freeFrames.push(f);
-   }
-   MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
-      var o = this;
-      o._frames = RObject.dispose(o._frames, true);
-      o.__base.FConsole.construct.call(o);
-   }
+   return frame;
+}
+MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
+}
+MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
+   f.setVisible(false);
+   this._freeFrames.push(f);
+}
+MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
+   var o = this;
+   o._frames = MO.Lang.Object.dispose(o._frames, true);
+   o.__base.FConsole.construct.call(o);
 }
 MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -1539,41 +1523,17 @@ MO.FGuiTransform_dispose = function FGuiTransform_dispose(){
    var o = this;
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FGuiButton = function FGuiButton(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o.onPaintBegin = FGuiButton_onPaintBegin;
-      return o;
-   }
-   MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
-      if(o._label){
-         if(o._foreFont){
-            graphic.setFont(o._foreFont);
-         }
-         var width = graphic.textWidth(o._label);
-         var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
-         var y = rectangle.top + rectangle.height * 0.5 + 3;
-         graphic.drawText(o._label, x, y, o._foreColor);
-      }
-   }
+MO.FGuiButton = function FGuiButton(o){
+   o = RClass.inherits(this, o, MO.FGuiControl);
+   o.onPaintBegin = MO.FGuiButton_onPaintBegin;
+   return o;
 }
-with(MO){
-   MO.FGuiLabel = function FGuiLabel(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      o.onPaintLabel = FGuiLabel_onPaintLabel;
-      o.onPaintBegin = FGuiLabel_onPaintBegin;
-      o.setLabel     = FGuiLabel_setLabel;
-      return o;
-   }
-   MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      var graphic = event.graphic;
-      var rectangle = event.rectangle;
+MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   if(o._label){
       if(o._foreFont){
          graphic.setFont(o._foreFont);
       }
@@ -1582,26 +1542,44 @@ with(MO){
       var y = rectangle.top + rectangle.height * 0.5 + 3;
       graphic.drawText(o._label, x, y, o._foreColor);
    }
-   MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
-      var o = this;
-      o.__base.FGuiControl.onPaintBegin.call(o, event);
-      if(o._label){
-         o.onPaintLabel(event);
-      }
+}
+MO.FGuiLabel = function FGuiLabel(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o.onPaintLabel = MO.FGuiLabel_onPaintLabel;
+   o.onPaintBegin = MO.FGuiLabel_onPaintBegin;
+   o.setLabel     = MO.FGuiLabel_setLabel;
+   return o;
+}
+MO.FGuiLabel_onPaintLabel = function FGuiLabel_onPaintLabel(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   if(o._foreFont){
+      graphic.setFont(o._foreFont);
    }
-   MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
-      var o = this;
-      if(o._label != label){
-         o.dirty();
-      }
-      o.__base.FGuiControl.setLabel.call(o, label);
+   var width = graphic.textWidth(o._label);
+   var x = rectangle.left + rectangle.width * 0.5 - width * 0.5;
+   var y = rectangle.top + rectangle.height * 0.5 + 3;
+   graphic.drawText(o._label, x, y, o._foreColor);
+}
+MO.FGuiLabel_onPaintBegin = function FGuiLabel_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if(o._label){
+      o.onPaintLabel(event);
    }
 }
-with(MO){
-   MO.FGuiPanel = function FGuiPanel(o){
-      o = RClass.inherits(this, o, FGuiControl);
-      return o;
+MO.FGuiLabel_setLabel = function FGuiLabel_setLabel(label){
+   var o = this;
+   if(o._label != label){
+      o.dirty();
    }
+   o.__base.FGuiControl.setLabel.call(o, label);
+}
+MO.FGuiPanel = function FGuiPanel(o){
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   return o;
 }
 MO.FGuiPicture = function FGuiPicture(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -1806,24 +1784,20 @@ MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
       }
    }
 }
-with(MO){
-   MO.FGuiGridControl = function FGuiGridControl(o){
-      o = RClass.inherits(this, o, FProcessServer);
-      o._typeName  = null;
-      o._groupName = null;
-      o._name      = null;
-      o.name  = FGuiGridControl_name;
-      return o;
-   }
-   MO.FGuiGridControl_name = function FGuiGridControl_name(){
-      return this._name;
-   }
+MO.FGuiGridControl = function FGuiGridControl(o){
+   o = MO.Class.inherits(this, o, MO.FProcessServer);
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
+   o.name  = MO.FGuiGridControl_name;
+   return o;
 }
-with(MO){
-   MO.FGuiBar = function FGuiBar(o){
-      o = RClass.inherits(this, o, FGuiFrame);
-      return o;
-   }
+MO.FGuiGridControl_name = function FGuiGridControl_name(){
+   return this._name;
+}
+MO.FGuiBar = function FGuiBar(o){
+   o = MO.Class.inherits(this, o, MO.FGuiFrame);
+   return o;
 }
 MO.FGuiChartTotal = function FGuiChartTotal(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -1976,11 +1950,9 @@ MO.FGuiChartTotal_dispose = function FGuiChartTotal_dispose() {
    var o = this;
    o.__base.FGuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FGuiWindow = function FGuiWindow(o){
-      o = RClass.inherits(this, o, FGuiFrame);
-      return o;
-   }
+MO.FGuiWindow = function FGuiWindow(o){
+   o = MO.Class.inherits(this, o, MO.FGuiFrame);
+   return o;
 }
 MO.FGuiDesignAnchor = function FGuiDesignAnchor(o) {
     o = MO.Class.inherits(this, o, MO.FGuiControl);

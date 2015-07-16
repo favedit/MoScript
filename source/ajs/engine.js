@@ -986,9 +986,9 @@ MO.RStage.prototype.start = function RStage_start(interval){
    if(o._started){
       return;
    }
-   RE3dEngine.setup();
+   MO.RE3dEngine.setup();
    o.active();
-   RTimer.setup();
+   MO.Timer.setup();
    if(interval == null){
       interval = o._interval;
    }

@@ -39,1683 +39,1521 @@ MO.ERowStatus = new function ERowStatusFace(){
    o.Delete  = 'D';
    return o;
 }
-with(MO){
-   MO.MUiContainer = function MUiContainer(o){
-      o = RClass.inherits(this, o);
-      o.createChild = MUiContainer_createChild;
-      o.appendChild = RMethod.empty;
-      o.removeChild = RMethod.empty;
-      return o;
-   }
-   MO.MUiContainer_createChild = function MUiContainer_createChild(p){
-      var c = RUiControl.newInstance(p);
-      c._parent = this;
-      return c;
-   }
+MO.MUiContainer = function MUiContainer(o){
+   o = MO.Class.inherits(this, o);
+   o.createChild = MO.MUiContainer_createChild;
+   o.appendChild = MO.Method.empty;
+   o.removeChild = MO.Method.empty;
+   return o;
 }
-with(MO){
-   MO.MUiDataProperties = function MUiDataProperties(o){
-      o = RClass.inherits(this, o);
-      o._dataProperties = null;
-      o.dataProperties  = MUiDataProperties_dataProperties;
-      o.dataPropertyGet = MUiDataProperties_dataPropertyGet;
-      o.dataPropertySet = MUiDataProperties_dataPropertySet;
-      return o;
-   }
-   MO.MUiDataProperties_dataProperties = function MUiDataProperties_dataProperties(n, c){
-      var o = this;
-      var d = o._dataProperties;
-      if(d == null){
-         d = o._dataProperties = new TDictionary();
-      }
-      return d;
-   }
-   MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(n){
-      var o = this;
-      var d = o._dataProperties;
-      return d ? d.get(n) : null;
-   }
-   MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(n, v){
-      this.dataProperties().set(n, v);
-   }
+MO.MUiContainer_createChild = function MUiContainer_createChild(p){
+   var c = MO.RUiControl.newInstance(p);
+   c._parent = this;
+   return c;
 }
-with(MO){
-   MO.MUiDescribeFrame = function MUiDescribeFrame(o){
-      o = RClass.inherits(this, o);
-      o._frameName  = null;
-      o.buildDefine = MUiDescribeFrame_buildDefine;
-      return o;
-   }
-   MO.MUiDescribeFrame_buildDefine = function MUiDescribeFrame_buildDefine(hDocument, frameName){
-      var o = this;
-      if(RString.isEmpty(frameName)){
-         frameName = o._frameName;
-      }
-      var frameConsole = RConsole.find(FUiDescribeFrameConsole);
-      var xconfig = frameConsole.load(frameName);
-      RUiControl.build(o, xconfig, null, hDocument);
-   }
+MO.MUiDataProperties = function MUiDataProperties(o){
+   o = MO.Class.inherits(this, o);
+   o._dataProperties = null;
+   o.dataProperties  = MO.MUiDataProperties_dataProperties;
+   o.dataPropertyGet = MO.MUiDataProperties_dataPropertyGet;
+   o.dataPropertySet = MO.MUiDataProperties_dataPropertySet;
+   return o;
 }
-with(MO){
-   MO.MUiDesign = function MUiDesign(o){
-      o = RClass.inherits(this, o);
-      o._statusDesign      = false;
-      o._storage       = null;
-      o.oeDesign      = MUiDesign_oeDesign;
-      o.onDesignEnter = RClass.register(o, new AEventMouseEnter('onDesignEnter'), MUiDesign_onDesignEnter);
-      o.onDesignLeave = RClass.register(o, new AEventMouseEnter('onDesignLeave'), MUiDesign_onDesignLeave);
-      o.onDesignBegin = RClass.register(o, new AEventMouseEnter('onDesignBegin'), MUiDesign_onDesignBegin);
-      o.onDesignEnd   = RClass.register(o, new AEventMouseEnter('onDesignEnd'), MUiDesign_onDesignEnd);
-      return o;
+MO.MUiDataProperties_dataProperties = function MUiDataProperties_dataProperties(n, c){
+   var o = this;
+   var d = o._dataProperties;
+   if(d == null){
+      d = o._dataProperties = new MO.TDictionary();
    }
-   MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
-      if(e.isBefore()){
-         switch(e.mode){
-            case EDesign.Move:
-               var o = this;
-               var h = o._hPanel;
-               if(e.flag){
-                  o.isDesign = true;
-                  RHtml.link(h, 'className', h.className);
-                  RHtml.link(h, 'onmousedown', h.onmousedown);
-                  h.onmousedown = null;
-                  o.onDesignEnter();
-               }else{
-                  o.isDesign = false;
-                  h.className = RHtml.findLink(h, 'className');
-                  var omd = RHtml.findLink(h, 'onmousedown');
-                  if(omd){
-                     h.onmousedown = omd;
-                  }
-               }
-               break;
-            case EDesign.Border:
-               var o = this;
-               var h = o._hPanel;
-               if(e.flag){
-                  RHtml.link(h, 'styleBorder', h.style.border);
-                  h.style.border = '1 solid red';
-               }else{
-                  h.style.border = RHtml.findLink(h, 'styleBorder');
-               }
-               break;
-         }
-      }
-   }
-   MO.MUiDesign_onDesignEnter = function MUiDesign_onDesignEnter(p){
-      var o = this;
-      o._hPanel.className = o.style('Design');
-   }
-   MO.MUiDesign_onDesignLeave = function MUiDesign_onDesignLeave(p){
-   }
-   MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
-      var o = this;
-      var g = o._storage = RObject.nvlObj(o._storage);
-      g.designStyle = o._hPanel.className;
-      g.designLayer = o._hPanel.zIndex;
-      o._hPanel.className = o.style('DesignDrag');
-      o._statusDesign = true;
-   }
-   MO.MUiDesign_onDesignEnd = function MUiDesign_onDesignEnd(p){
-      var o = this;
-      var g = o._storage = RObject.nvlObj(o._storage);
-      o._hPanel.className = g.designStyle;
-      o._hPanel.zIndex = g.designLayer;
-      o._statusDesign = false;
-   }
+   return d;
 }
-with(MO){
-   MO.MUiDisplay = function MUiDisplay(o){
-      o = RClass.inherits(this, o);
-      o._dispDisplay = RClass.register(o, new APtySet(null, '_dispDisplay', 'disp_mode', EDisplayMode.Display, false));
-      o._dispSearch  = RClass.register(o, new APtySet(null, '_dispSearch', 'disp_mode', EDisplayMode.Search, false));
-      o._dispInsert  = RClass.register(o, new APtySet(null, '_dispInsert', 'disp_mode', EDisplayMode.Insert, false));
-      o._dispUpdate  = RClass.register(o, new APtySet(null, '_dispUpdate', 'disp_mode', EDisplayMode.Update, false));
-      o._dispDelete  = RClass.register(o, new APtySet(null, '_dispDelete', 'disp_mode', EDisplayMode.Delete, false));
-      o._dispZoom    = RClass.register(o, new APtySet(null, '_dispZoom', 'disp_mode', EDisplayMode.Zoom, false));
-      o._dispAlign   = RClass.register(o, new APtyString(null, '_dispAlign', null, EAlign.Left));
-      o._visible    = true;
-      o.oeMode      = MUiDisplay_oeMode;
-      o.canVisible  = MUiDisplay_canVisible;
-      return o;
-   }
-   MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(e){
-      var o = this;
-      if(e.isBefore()){
-         var v = true;
-         if(!o.base.MUiDisplayAble){
-            v = o.canVisible(e.mode);
-         }
-         o.setVisible(v);
-      }
-   }
-   MO.MUiDisplay_canVisible = function MUiDisplay_canVisible(m){
-      var o = this;
-      switch(RString.nvl(m, o._emode)){
-         case EMode.Display:
-            return o.dispList;
-         case EMode.Search:
-            return o.dispSearch;
-         case EMode.Insert:
-            return o.dispInsert;
-         case EMode.Update:
-            return o.dispUpdate;
-         case EMode.Delete:
-            return o.dispDelete;
-         case EMode.Zoom:
-            return o.dispZoom;
-      }
-   }
+MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(n){
+   var o = this;
+   var d = o._dataProperties;
+   return d ? d.get(n) : null;
 }
-with(MO){
-   MO.MUiDragable = function MUiDragable(o){
-      o = RClass.inherits(this, o);
-      o.onDragStart = RMethod.virtual(o, 'onDragStart');
-      o.onDragMove  = RMethod.virtual(o, 'onDragMove');
-      o.onDragStop  = RMethod.virtual(o, 'onDragStop');
-      return o;
-   }
+MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(n, v){
+   this.dataProperties().set(n, v);
 }
-with(MO){
-   MO.MUiDropable = function MUiDropable(o){
-      o = RClass.inherits(this, o);
-      o._styleDrop         = RClass.register(o, new AStyle('_styleDrop'));
-      o._styleIconDrop     = RClass.register(o, new AStyleIcon('_styleIconDrop'));
-      o._hDropPanel        = null;
-      o._hDrop             = null;
-      o.onBuildDrop       = MUiDropable_onBuildDrop;
-      o.onDropEnter       = RClass.register(o, new AEventMouseEnter('onDropEnter'));
-      o.onDropLeave       = RClass.register(o, new AEventMouseLeave('onDropLeave'));
-      o.onDropClick       = RClass.register(o, new AEventClick('onDropClick'), MUiDropable_onDropClick);
-      o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MUiDropable_onDropDoubleClick);
-      o.canDrop           = MUiDropable_canDrop;
-      return o;
-   }
-   MO.MUiDropable_onBuildDrop = function MUiDropable_onBuildDrop(hPanel){
-      var o = this;
-      o._hDropPanel = hPanel;
-      hPanel.className = o.styleName('Drop', MUiDropable);
-      var hDrop = o.hDrop = RBuilder.appendIcon(hPanel, null, 'control.drop');
-      hDrop.style.width =16;
-      hDrop.style.borderLeft = '1 solid #CCCCCC';
-      hDrop.style.cursor = 'hand';
-   }
-   MO.MUiDropable_onDropClick = function MUiDropable_onDropClick(){
-      var o = this;
-      if(o._editable){
-         o.drop();
-      }
-   }
-   MO.MUiDropable_onDropDoubleClick = function MUiDropable_onDropDoubleClick(){
-      var o = this;
-      if(o._editable){
-         o.drop();
-      }
-   }
-   MO.MUiDropable_canDrop = function MUiDropable_canDrop(){
-      var o = this;
-      if(RClass.isClass(o, MUiDesign)){
-         return !RConsole.find(FUiDesignConsole).canDesignMove;
-      }
-      return true;
-   }
+MO.MUiDescribeFrame = function MUiDescribeFrame(o){
+   o = MO.Class.inherits(this, o);
+   o._frameName  = null;
+   o.buildDefine = MO.MUiDescribeFrame_buildDefine;
+   return o;
 }
-with(MO){
-   MO.MUiEditable = function MUiEditable(o){
-      o = RClass.inherits(this, o);
-      return o;
+MO.MUiDescribeFrame_buildDefine = function MUiDescribeFrame_buildDefine(hDocument, frameName){
+   var o = this;
+   if(MO.Lang.String.isEmpty(frameName)){
+      frameName = o._frameName;
    }
-   MO.MUiEditable_testEdit = function MUiEditable_testEdit(m){
-      var o = this;
-      switch(RString.nvl(m, o._emode)){
-         case EMode.Insert:
-            return o.editInsert;
-         case EMode.Update:
-            return o.editUpdate;
-         case EMode.Delete:
-            return o.editDelete;
-         case EMode.Zoom:
-            return o.editZoom;
-      }
-   }
+   var frameConsole = MO.Console.find(MO.FUiDescribeFrameConsole);
+   var xconfig = frameConsole.load(frameName);
+   MO.RUiControl.build(o, xconfig, null, hDocument);
 }
-with(MO){
-   MO.MUiEditChange = function MUiEditChange(o){
-      o = RClass.inherits(this, o);
-      o._styleChangePanel = RClass.register(o, new AStyle('_styleChangePanel'));
-      o._styleChangeIcon  = RClass.register(o, new AStyle('_styleChangeIcon'));
-      o._hChangePanel     = null;
-      o._hChangeIcon      = null;
-      o.onBuildEditChange = MUiEditChange_onBuildEditChange;
-      o.onChangeEnter     = RClass.register(o, new AEventMouseEnter('onChangeEnter'), MUiEditChange_onChangeEnter);
-      o.onChangeLeave     = RClass.register(o, new AEventMouseLeave('onChangeLeave'), MUiEditChange_onChangeLeave);
-      o.onChangeClick     = RClass.register(o, new AEventClick('onChangeClick'), MUiEditChange_onChangeClick);
-      o.construct         = MUiEditChange_construct;
-      o.changeSet         = MUiEditChange_changeSet;
-      o.dispose           = MUiEditChange_dispose;
-      return o;
-   }
-   MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p){
-      var o = this;
-      var h = o._hChangePanel;
-      h.className = o.styleName('ChangePanel', MUiEditChange);
-      h.style.verticalAlign = 'top';
-      h.width = 5;
-      o.attachEvent('onChangeEnter', h, o.onChangeEnter);
-      o.attachEvent('onChangeLeave', h, o.onChangeLeave);
-      o.attachEvent('onChangeClick', h, o.onChangeClick);
-      var hi = o._hChangeIcon = RBuilder.appendIcon(h, o.styleName('ChangeIcon', MUiEditChange), 'control.change');
-      hi._pname = 'change.icon';
-   }
-   MO.MUiEditChange_onChangeEnter = function MUiEditChange_onChangeEnter(e){
-      var o = this;
-   }
-   MO.MUiEditChange_onChangeLeave = function MUiEditChange_onChangeLeave(e){
-      var o = this;
-   }
-   MO.MUiEditChange_onChangeClick = function MUiEditChange_onChangeClick(e){
-   }
-   MO.MUiEditChange_construct = function MUiEditChange_construct(){
-   }
-   MO.MUiEditChange_changeSet = function MUiEditChange_changeSet(p){
-   }
-   MO.MUiEditChange_dispose = function MUiEditChange_dispose(){
-      var o = this;
-      RHtml.free(o._hChangeIcon);
-      o._hChangeIcon = null;
-      RHtml.free(o._hChangePanel);
-      o._hChangePanel = null;
-   }
+MO.MUiDesign = function MUiDesign(o){
+   o = MO.Class.inherits(this, o);
+   o._statusDesign      = false;
+   o._storage       = null;
+   o.oeDesign      = MO.MUiDesign_oeDesign;
+   o.onDesignEnter = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnter'), MO.MUiDesign_onDesignEnter);
+   o.onDesignLeave = MO.Class.register(o, new MO.AEventMouseEnter('onDesignLeave'), MO.MUiDesign_onDesignLeave);
+   o.onDesignBegin = MO.Class.register(o, new MO.AEventMouseEnter('onDesignBegin'), MO.MUiDesign_onDesignBegin);
+   o.onDesignEnd   = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnd'), MO.MUiDesign_onDesignEnd);
+   return o;
 }
-with(MO){
-   MO.MUiEditDescriptor = function MUiEditDescriptor(o){
-      o = RClass.inherits(this, o, MEditable);
-      o._dataName          = RClass.register(o, new APtyString(null, '_dataName'));
-      o._dataCode          = RClass.register(o, new APtyString(null, '_dataCode'));
-      o._dataDefault       = RClass.register(o, new APtyString(null, '_dataDefault'));
-      o._labelIcon         = RClass.register(o, new APtyString(null, '_labelIcon'));
-      o._labelIconDisable  = RClass.register(o, new APtyString(null, '_labelIconDisable'));
-      o._labelColor        = RClass.register(o, new APtyString(null, '_labelColor'));
-      o._labelAlign        = RClass.register(o, new APtyString(null, '_labelAlign', null, EAlign.Left));
-      o._labelValign       = RClass.register(o, new APtyString(null, '_labelValign', null, EAlign.Middle));
-      o._editSearch        = RClass.register(o, new APtySet(null, '_editSearch', 'editAccess', EEditConfig.Search, false));
-      o._editCopy          = RClass.register(o, new APtySet(null, '_editCopy', 'editAccess', EEditConfig.Copy, false));
-      o._editAlign         = RClass.register(o, new APtyString(null, '_editAlign', null, EAlign.Left));
-      o._editValign        = RClass.register(o, new APtyString(null, '_editValign', null, EAlign.Middle));
-      o._editFormat        = RClass.register(o, new APtyString(null, '_editFormat'));
-      o._editUnit          = RClass.register(o, new APtyString(null, '_editUnit'));
-      o._editTip           = RClass.register(o, new APtyString(null, '_editTip'));
-      o._validInsert       = RClass.register(o, new APtySet(null, '_validInsert', 'validAccess', EDisplayMode.Insert, false));
-      o._validUpdate       = RClass.register(o, new APtySet(null, '_validUpdate', 'validAccess', EDisplayMode.Update, false));
-      o._validDelete       = RClass.register(o, new APtySet(null, '_validDelete', 'validAccess', EDisplayMode.Delete, false));
-      o._validRequire      = RClass.register(o, new APtyBoolean(null, '_validRequire', null, false));
-      return o;
-   }
-   MO.MUiEditDescriptor_onDataEnter = function MUiEditDescriptor_onDataEnter(s, e){
-      var o = this;
-      if(s.__progress){
-         return;
-      }
-      if(s._editable){
-         s._hover = true;
-         s.refreshStyle();
-      }
-      if(o.editTip){
-         o.__tip = window.status;
-      }
-   }
-   MO.MUiEditDescriptor_onDataLeave = function MUiEditDescriptor_onDataLeave(s, e){
-      var o = this;
-      if(s.__progress){
-         return;
-      }
-      if(s._editable){
-         o._hover = false;
-         o.refreshStyle();
-      }
-      if(o.editTip){
-         window.status = o.__tip;
-      }
-   }
-   MO.MUiEditDescriptor_onDataKeyDown = function MUiEditDescriptor_onDataKeyDown(s, e){
-      var o = this;
-      if(s._editable && !s._disabled){
-         s._invalidText = o.validText(s.text());
-         s.refreshStyle();
-      }
-   }
-   MO.MUiEditDescriptor_onDataChange = function MUiEditDescriptor_onDataChange(s, e){
-      var o = this;
-      if(s._editable && !s._disabled){
-         if(s.isTextChanged()){
-            var t = s.text();
-            var vt = s._invalidText = o.validText(t);
-            if(vt){
-               s.refreshStyle();
+MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
+   if(e.isBefore()){
+      switch(e.mode){
+         case MO.EDesign.Move:
+            var o = this;
+            var h = o._hPanel;
+            if(e.flag){
+               o.isDesign = true;
+               MO.RHtml.link(h, 'className', h.className);
+               MO.RHtml.link(h, 'onmousedown', h.onmousedown);
+               h.onmousedown = null;
+               o.onDesignEnter();
             }else{
+               o.isDesign = false;
+               h.className = MO.RHtml.findLink(h, 'className');
+               var omd = MO.RHtml.findLink(h, 'onmousedown');
+               if(omd){
+                  h.onmousedown = omd;
+               }
             }
-            o.callEvent('onDataChange', o, o.__changedEvent);
-         }
+            break;
+         case MO.EDesign.Border:
+            var o = this;
+            var h = o._hPanel;
+            if(e.flag){
+               MO.RHtml.link(h, 'styleBorder', h.style.border);
+               h.style.border = '1 solid red';
+            }else{
+               h.style.border = MO.RHtml.findLink(h, 'styleBorder');
+            }
+            break;
       }
    }
-   MO.MUiEditDescriptor_onDataEditEnd = function MUiEditDescriptor_onDataEditEnd(s, e){
-      var o = this;
-      var vt = s._invalidText = o.validText(s.text());
-      if(vt){
-         MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
-      }else{
-         s.commitValue();
+}
+MO.MUiDesign_onDesignEnter = function MUiDesign_onDesignEnter(p){
+   var o = this;
+   o._hPanel.className = o.style('Design');
+}
+MO.MUiDesign_onDesignLeave = function MUiDesign_onDesignLeave(p){
+}
+MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
+   var o = this;
+   var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
+   g.designStyle = o._hPanel.className;
+   g.designLayer = o._hPanel.zIndex;
+   o._hPanel.className = o.style('DesignDrag');
+   o._statusDesign = true;
+}
+MO.MUiDesign_onDesignEnd = function MUiDesign_onDesignEnd(p){
+   var o = this;
+   var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
+   o._hPanel.className = g.designStyle;
+   o._hPanel.zIndex = g.designLayer;
+   o._statusDesign = false;
+}
+MO.MUiDisplay = function MUiDisplay(o){
+   o = MO.Class.inherits(this, o);
+   o._dispDisplay = MO.Class.register(o, new MO.APtySet(null, '_dispDisplay', 'disp_mode', MO.EDisplayMode.Display, false));
+   o._dispSearch  = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'disp_mode', MO.EDisplayMode.Search, false));
+   o._dispInsert  = MO.Class.register(o, new MO.APtySet(null, '_dispInsert', 'disp_mode', MO.EDisplayMode.Insert, false));
+   o._dispUpdate  = MO.Class.register(o, new MO.APtySet(null, '_dispUpdate', 'disp_mode', MO.EDisplayMode.Update, false));
+   o._dispDelete  = MO.Class.register(o, new MO.APtySet(null, '_dispDelete', 'disp_mode', MO.EDisplayMode.Delete, false));
+   o._dispZoom    = MO.Class.register(o, new MO.APtySet(null, '_dispZoom', 'disp_mode', MO.EDisplayMode.Zoom, false));
+   o._dispAlign   = MO.Class.register(o, new MO.APtyString(null, '_dispAlign', null, MO.EAlign.Left));
+   o._visible    = true;
+   o.oeMode      = MO.MUiDisplay_oeMode;
+   o.canVisible  = MO.MUiDisplay_canVisible;
+   return o;
+}
+MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(e){
+   var o = this;
+   if(e.isBefore()){
+      var v = true;
+      if(!o.base.MUiDisplayAble){
+         v = o.canVisible(e.mode);
       }
-      if(s.isTextChanged()){
-   	   o.callEvent('onDataChange', o, o.__changedEvent);
-      }
+      o.setVisible(v);
+   }
+}
+MO.MUiDisplay_canVisible = function MUiDisplay_canVisible(m){
+   var o = this;
+   switch(RString.nvl(m, o._emode)){
+      case MO.EMode.Display:
+         return o.dispList;
+      case MO.EMode.Search:
+         return o.dispSearch;
+      case MO.EMode.Insert:
+         return o.dispInsert;
+      case MO.EMode.Update:
+         return o.dispUpdate;
+      case MO.EMode.Delete:
+         return o.dispDelete;
+      case MO.EMode.Zoom:
+         return o.dispZoom;
+   }
+}
+MO.MUiDragable = function MUiDragable(o){
+   o = MO.Class.inherits(this, o);
+   o.onDragStart = MO.Method.virtual(o, 'onDragStart');
+   o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
+   o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
+   return o;
+}
+MO.MUiDropable = function MUiDropable(o){
+   o = MO.Class.inherits(this, o);
+   o._styleDrop         = MO.Class.register(o, new MO.AStyle('_styleDrop'));
+   o._styleIconDrop     = MO.Class.register(o, new MO.AStyleIcon('_styleIconDrop'));
+   o._hDropPanel        = null;
+   o._hDrop             = null;
+   o.onBuildDrop       = MO.MUiDropable_onBuildDrop;
+   o.onDropEnter       = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'));
+   o.onDropLeave       = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'));
+   o.onDropClick       = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiDropable_onDropClick);
+   o.onDropDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDropDoubleClick'), MO.MUiDropable_onDropDoubleClick);
+   o.canDrop           = MO.MUiDropable_canDrop;
+   return o;
+}
+MO.MUiDropable_onBuildDrop = function MUiDropable_onBuildDrop(hPanel){
+   var o = this;
+   o._hDropPanel = hPanel;
+   hPanel.className = o.styleName('Drop', MO.MUiDropable);
+   var hDrop = o.hDrop = MO.RBuilder.appendIcon(hPanel, null, 'control.drop');
+   hDrop.style.width =16;
+   hDrop.style.borderLeft = '1 solid #CCCCCC';
+   hDrop.style.cursor = 'hand';
+}
+MO.MUiDropable_onDropClick = function MUiDropable_onDropClick(){
+   var o = this;
+   if(o._editable){
+      o.drop();
+   }
+}
+MO.MUiDropable_onDropDoubleClick = function MUiDropable_onDropDoubleClick(){
+   var o = this;
+   if(o._editable){
+      o.drop();
+   }
+}
+MO.MUiDropable_canDrop = function MUiDropable_canDrop(){
+   var o = this;
+   if(MO.Class.isClass(o, MO.MUiDesign)){
+      return !MO.Console.find(MO.FUiDesignConsole).canDesignMove;
+   }
+   return true;
+}
+MO.MUiEditable = function MUiEditable(o){
+   o = MO.Class.inherits(this, o);
+   return o;
+}
+MO.MUiEditable_testEdit = function MUiEditable_testEdit(m){
+   var o = this;
+   switch(MO.Lang.String.nvl(m, o._emode)){
+      case MO.EMode.Insert:
+         return o.editInsert;
+      case MO.EMode.Update:
+         return o.editUpdate;
+      case MO.EMode.Delete:
+         return o.editDelete;
+      case MO.EMode.Zoom:
+         return o.editZoom;
+   }
+}
+MO.MUiEditChange = function MUiEditChange(o){
+   o = MO.Class.inherits(this, o);
+   o._styleChangePanel = MO.Class.register(o, new MO.AStyle('_styleChangePanel'));
+   o._styleChangeIcon  = MO.Class.register(o, new MO.AStyle('_styleChangeIcon'));
+   o._hChangePanel     = null;
+   o._hChangeIcon      = null;
+   o.onBuildEditChange = MO.MUiEditChange_onBuildEditChange;
+   o.onChangeEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onChangeEnter'), MO.MUiEditChange_onChangeEnter);
+   o.onChangeLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onChangeLeave'), MO.MUiEditChange_onChangeLeave);
+   o.onChangeClick     = MO.Class.register(o, new MO.AEventClick('onChangeClick'), MO.MUiEditChange_onChangeClick);
+   o.construct         = MO.MUiEditChange_construct;
+   o.changeSet         = MO.MUiEditChange_changeSet;
+   o.dispose           = MO.MUiEditChange_dispose;
+   return o;
+}
+MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p){
+   var o = this;
+   var h = o._hChangePanel;
+   h.className = o.styleName('ChangePanel', MO.MUiEditChange);
+   h.style.verticalAlign = 'top';
+   h.width = 5;
+   o.attachEvent('onChangeEnter', h, o.onChangeEnter);
+   o.attachEvent('onChangeLeave', h, o.onChangeLeave);
+   o.attachEvent('onChangeClick', h, o.onChangeClick);
+   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MUiEditChange), 'control.change');
+   hi._pname = 'change.icon';
+}
+MO.MUiEditChange_onChangeEnter = function MUiEditChange_onChangeEnter(e){
+   var o = this;
+}
+MO.MUiEditChange_onChangeLeave = function MUiEditChange_onChangeLeave(e){
+   var o = this;
+}
+MO.MUiEditChange_onChangeClick = function MUiEditChange_onChangeClick(e){
+}
+MO.MUiEditChange_construct = function MUiEditChange_construct(){
+}
+MO.MUiEditChange_changeSet = function MUiEditChange_changeSet(p){
+}
+MO.MUiEditChange_dispose = function MUiEditChange_dispose(){
+   var o = this;
+   o._hChangeIcon = MO.Window.Html.free(o._hChangeIcon);
+   o._hChangePanel = MO.Window.Html.free(o._hChangePanel);
+}
+MO.MUiEditDescriptor = function MUiEditDescriptor(o){
+   o = MO.Class.inherits(this, o, MO.MEditable);
+   o._dataName          = MO.Class.register(o, new MO.APtyString(null, '_dataName'));
+   o._dataCode          = MO.Class.register(o, new MO.APtyString(null, '_dataCode'));
+   o._dataDefault       = MO.Class.register(o, new MO.APtyString(null, '_dataDefault'));
+   o._labelIcon         = MO.Class.register(o, new MO.APtyString(null, '_labelIcon'));
+   o._labelIconDisable  = MO.Class.register(o, new MO.APtyString(null, '_labelIconDisable'));
+   o._labelColor        = MO.Class.register(o, new MO.APtyString(null, '_labelColor'));
+   o._labelAlign        = MO.Class.register(o, new MO.APtyString(null, '_labelAlign', null, MO.EAlign.Left));
+   o._labelValign       = MO.Class.register(o, new MO.APtyString(null, '_labelValign', null, MO.EAlign.Middle));
+   o._editSearch        = MO.Class.register(o, new MO.APtySet(null, '_editSearch', 'editAccess', MO.EEditConfig.Search, false));
+   o._editCopy          = MO.Class.register(o, new MO.APtySet(null, '_editCopy', 'editAccess', MO.EEditConfig.Copy, false));
+   o._editAlign         = MO.Class.register(o, new MO.APtyString(null, '_editAlign', null, MO.EAlign.Left));
+   o._editValign        = MO.Class.register(o, new MO.APtyString(null, '_editValign', null, MO.EAlign.Middle));
+   o._editFormat        = MO.Class.register(o, new MO.APtyString(null, '_editFormat'));
+   o._editUnit          = MO.Class.register(o, new MO.APtyString(null, '_editUnit'));
+   o._editTip           = MO.Class.register(o, new MO.APtyString(null, '_editTip'));
+   o._validInsert       = MO.Class.register(o, new MO.APtySet(null, '_validInsert', 'validAccess', MO.EDisplayMode.Insert, false));
+   o._validUpdate       = MO.Class.register(o, new MO.APtySet(null, '_validUpdate', 'validAccess', MO.EDisplayMode.Update, false));
+   o._validDelete       = MO.Class.register(o, new MO.APtySet(null, '_validDelete', 'validAccess', MO.EDisplayMode.Delete, false));
+   o._validRequire      = MO.Class.register(o, new MO.APtyBoolean(null, '_validRequire', null, false));
+   return o;
+}
+MO.MUiEditDescriptor_onDataEnter = function MUiEditDescriptor_onDataEnter(s, e){
+   var o = this;
+   if(s.__progress){
+      return;
+   }
+   if(s._editable){
+      s._hover = true;
       s.refreshStyle();
    }
-   MO.MUiEditDescriptor_oeSaveCode = function MUiEditDescriptor_oeSaveCode(e){
-      var o = this;
-      if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
-         e.values.set(o.dataName, o.dataCode);
-      }
-      return EEventStatus.Stop;
-   }
-   MO.MUiEditDescriptor_canValid = function MUiEditDescriptor_canValid(m){
-      var o = this;
-      switch(RString.nvl(m, o._emode)){
-         case EMode.Insert:
-            return o.validInsert;
-         case EMode.Update:
-            return o.validUpdate;
-         case EMode.Delete:
-            return o.validDelete;
-      }
-   }
-   MO.MUiEditDescriptor_formatValue = function MUiEditDescriptor_formatValue(v){
-      return RString.nvl(v);
-   }
-   MO.MUiEditDescriptor_formatText = function MUiEditDescriptor_formatText(t){
-      return RString.nvl(t);
-   }
-   MO.MUiEditDescriptor_validText = function MUiEditDescriptor_validText(t){
-      var o = this;
+   if(o.editTip){
+      o.__tip = window.status;
    }
 }
-with(MO){
-   MO.MUiEditDrop = function MUiEditDrop(o){
-      o = RClass.inherits(this, o);
-      o._styleDropPanel = RClass.register(o, new AStyle('_styleDropPanel'));
-      o._styleDropIcon  = RClass.register(o, new AStyle('_styleDropIcon'));
-      o._hDropPanel     = null;
-      o._hDropIcon      = null;
-      o.onBuildEditDrop = MUiEditDrop_onBuildEditDrop;
-      o.onDropEnter     = RClass.register(o, new AEventMouseEnter('onDropEnter'), MUiEditDrop_onDropEnter);
-      o.onDropLeave     = RClass.register(o, new AEventMouseLeave('onDropLeave'), MUiEditDrop_onDropLeave);
-      o.onDropClick     = RClass.register(o, new AEventClick('onDropClick'), MUiEditDrop_onDropClick);
-      o.construct       = MUiEditDrop_construct;
-      o.dispose         = MUiEditDrop_dispose;
-      return o;
+MO.MUiEditDescriptor_onDataLeave = function MUiEditDescriptor_onDataLeave(s, e){
+   var o = this;
+   if(s.__progress){
+      return;
    }
-   MO.MUiEditDrop_onBuildEditDrop = function MUiEditDrop_onBuildEditDrop(p){
-      var o = this;
-      var h = o._hDropPanel;
-      h.className = o.styleName('DropPanel', MUiEditDrop);
-      h.width = 11;
-      o.attachEvent('onDropEnter', h);
-      o.attachEvent('onDropLeave', h);
-      o.attachEvent('onDropClick', h);
-      var hi = o._hDropIcon = RBuilder.appendIcon(h, o.styleName('DropIcon', MUiEditDrop), 'control.drop');
-      hi.align = 'center';
+   if(s._editable){
+      o._hover = false;
+      o.refreshStyle();
    }
-   MO.MUiEditDrop_onDropEnter = function MUiEditDrop_onDropEnter(e){
-      var o = this;
-   }
-   MO.MUiEditDrop_onDropLeave = function MUiEditDrop_onDropLeave(e){
-      var o = this;
-   }
-   MO.MUiEditDrop_onDropClick = function MUiEditDrop_onDropClick(e){
-   }
-   MO.MUiEditDrop_construct = function MUiEditDrop_construct(){
-   }
-   MO.MUiEditDrop_dispose = function MUiEditDrop_dispose(){
-      var o = this;
-      RHtml.free(o._hDropIcon);
-      o._hDropIcon = null;
-      RHtml.free(o._hDropPanel);
-      o._hDropPanel = null;
+   if(o.editTip){
+      window.status = o.__tip;
    }
 }
-with(MO){
-   MO.MUiEditFormator = function MUiEditFormator(o){
-      o = RClass.inherits(this, o);
-      o.formatText  = MUiEditFormator_formatText;
-      o.formatValue = MUiEditFormator_formatValue;
-      return o;
-   }
-   MO.MUiEditFormator_formatText = function MUiEditFormator_formatText(value){
-      return value;
-   }
-   MO.MUiEditFormator_formatValue = function MUiEditFormator_formatValue(text){
-      return text;
+MO.MUiEditDescriptor_onDataKeyDown = function MUiEditDescriptor_onDataKeyDown(s, e){
+   var o = this;
+   if(s._editable && !s._disabled){
+      s._invalidText = o.validText(s.text());
+      s.refreshStyle();
    }
 }
-with(MO){
-   MO.MUiEditReference = function MUiEditReference(o){
-      o = RClass.inherits(this, o);
-      o._lovService    = RClass.register(o, new APtyString('_lovService'));
-      o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
-      o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
-      o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
-      o._lovOrder      = RClass.register(o, new APtyString('_lovOrder'));
-      o._listView     = null;
-      o.onListSelected = RMethod.empty;
-      o.canListView    = MUiEditReference_canListView;
-      o.setLabelStyle  = MUiEditReference_setLabelStyle;
-      o.doListView     = MUiEditReference_doListView;
-      return o;
-   }
-   MO.MUiEditReference_onListClick = function MUiEditReference_onListClick(e){
-      var o = this;
-      if(o.canListView()){
-         o.doListView();
-      }
-   }
-   MO.MUiEditReference_canListView = function MUiEditReference_canListView(){
-      return !RString.isEmpty(this._lovReference) && this._editable;
-   }
-   MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
-      var o = this;
-      if(!RString.isEmpty(o.lovRefer)){
-         o.hLabel.style.cursor = 'hand';
-         o.attachEvent('onListClick', o.hLabel);
-         o.hLabel.className = 'RLine_Underline';
-      }
-   }
-   MO.MUiEditReference_doListView = function MUiEditReference_doListView(cvs){
-      var o = this;
-      var v = o._listView;
-      if(!v){
-         v = o._listView = top.RControl.create(top.FListWindow);
-      }
-      v.linkConsole = RConsole;
-      v.linkLovControl(o);
-      v.show();
-      v.fetch(cvs);
-   }
-}
-with(MO){
-   MO.MUiEditValidator = function MUiEditValidator(o){
-      o = RClass.inherits(this, o);
-      o._validable = false;
-      o._valid     = true;
-      o._validText = null;
-      o.oeValid    = RMethod.empty;
-      return o;
-   }
-}
-with(MO){
-   MO.MUiEditValue = function MUiEditValue(o){
-      o = RClass.inherits(this, o, MUiEditFormator);
-      o._dataValue      = RClass.register(o, new APtyString('_dataValue'));
-      o._statusEditable = true;
-      o._statusEditing  = false;
-      o._statusInvalid  = true;
-      o._recordText     = null;
-      o._recordValue    = null;
-      o.isTextChanged   = MUiEditValue_isTextChanged;
-      o.isValueChanged  = MUiEditValue_isValueChanged;
-      o.formator        = MUiEditValue_formator;
-      o.text            = MUiEditValue_text;
-      o.setText         = MUiEditValue_setText;
-      o.get             = MUiEditValue_get;
-      o.set             = MUiEditValue_set;
-      o.clearValue      = MUiEditValue_clearValue;
-      o.resetValue      = MUiEditValue_resetValue;
-      o.loadValue       = MUiEditValue_loadValue;
-      o.saveValue       = MUiEditValue_saveValue;
-      o.recordValue     = MUiEditValue_recordValue;
-      o.validValue      = RMethod.empty;
-      o.setEditAble     = MUiEditValue_setEditAble;
-      o.doFocus         = MUiEditValue_doFocus;
-      o.doBlur          = MUiEditValue_doBlur;
-      return o;
-   }
-   MO.MUiEditValue_isTextChanged = function MUiEditValue_isTextChanged(){
-      var o = this;
-      var text = o.text();
-      return RString.equals(o._recordText, text);
-   }
-   MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
-      var o = this;
-      var value = o.get();
-      return RString.equals(o._recordValue, value);
-   }
-   MO.MUiEditValue_formator = function MUiEditValue_formator(){
-      return this;
-   }
-   MO.MUiEditValue_text = function MUiEditValue_text(){
-   }
-   MO.MUiEditValue_setText = function MUiEditValue_setText(text){
-   }
-   MO.MUiEditValue_get = function MUiEditValue_get(){
-      var o = this;
-      var text = o.text();
-      var value = o._dataValue = o.formator().formatValue(text)
-      return value;
-   }
-   MO.MUiEditValue_set = function MUiEditValue_set(value){
-      var o = this;
-      o._dataValue = RString.nvl(value);
-      var text = o.formator().formatText(value)
-      o.setText(text);
-   }
-   MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
-      var o = this;
-      o._dataValue = RString.EMPTY;
-      o.set(RString.EMPTY);
-   }
-   MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
-      var o = this;
-      o._dataValue = value;
-      o.set(value);
-   }
-   MO.MUiEditValue_loadValue = function MUiEditValue_loadValue(c, t){
-      var o = this;
-   }
-   MO.MUiEditValue_saveValue = function MUiEditValue_saveValue(c, t){
-      var o = this;
-   }
-   MO.MUiEditValue_recordValue = function MUiEditValue_recordValue(){
-      var o = this;
-      o._recordText = o.text();
-      o._recordValue = o.get();
-   }
-   MO.MUiEditValue_setEditAble = function MUiEditValue_setEditAble(flag){
-      var o = this;
-      o._statusEditable = flag;
-   }
-   MO.MUiEditValue_doFocus = function MUiEditValue_doFocus(){
-      var o = this;
-      if(o._statusEditable){
-         o._statusEditing = true;
-      }
-   }
-   MO.MUiEditValue_doBlur = function MUiEditValue_doBlur(){
-      var o = this;
-      if(o._statusEditable && o._statusEditing){
-         o._statusEditing = false;
-      }
-   }
-   MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
-      var o = this;
-      var d = o.descriptor();
-      if(!RString.isEmpty(d.dataName)){
-         o.clearValue();
-         o.dataValue = o.reget();
-      }
-      return EEventStatus.Stop;
-   }
-   MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
-      var o = this;
-      var d = o.descriptor();
-      if(!RString.isEmpty(d.dataName)){
-         o.resetValue();
-         o.dataValue = o.reget();
-      }
-      return EEventStatus.Stop;
-   }
-   MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
-      var o = this;
-      var d = o.descriptor();
-      var vs = e.values;
-      var dn = d.dataName;
-      if(!RString.isEmpty(dn)){
-         if(vs.contains(dn)){
-            var v = vs.nvl(dn);
-            if(RControl.isInfo(v)){
-               o.setInfoPack(v);
-            }else{
-           	 if(RControl.isGroup(v)){
-           		 o.setGroupPack(v);
-           	 }else{
-                    o.loadValue(vs);
-           	 }
-            }
-            o.recordValue();
-            o.dataValue = o.reget();
+MO.MUiEditDescriptor_onDataChange = function MUiEditDescriptor_onDataChange(s, e){
+   var o = this;
+   if(s._editable && !s._disabled){
+      if(s.isTextChanged()){
+         var t = s.text();
+         var vt = s._invalidText = o.validText(t);
+         if(vt){
+            s.refreshStyle();
+         }else{
          }
+         o.callEvent('onDataChange', o, o.__changedEvent);
       }
-      return EEventStatus.Stop;
    }
-   MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
-      var o = this;
-      var d = o.descriptor();
-      if(!RString.isEmpty(d.dataName)){
-         o.saveValue(e.values);
-      }
-      return EEventStatus.Stop;
+}
+MO.MUiEditDescriptor_onDataEditEnd = function MUiEditDescriptor_onDataEditEnd(s, e){
+   var o = this;
+   var vt = s._invalidText = o.validText(s.text());
+   if(vt){
+      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
+   }else{
+      s.commitValue();
    }
-   MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
-      var o = this;
-      var d = o.descriptor();
-      if(!RString.isEmpty(d.dataName)){
+   if(s.isTextChanged()){
+	   o.callEvent('onDataChange', o, o.__changedEvent);
+   }
+   s.refreshStyle();
+}
+MO.MUiEditDescriptor_oeSaveCode = function MUiEditDescriptor_oeSaveCode(e){
+   var o = this;
+   if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
+      e.values.set(o.dataName, o.dataCode);
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditDescriptor_canValid = function MUiEditDescriptor_canValid(m){
+   var o = this;
+   switch(MO.Lang.String.nvl(m, o._emode)){
+      case MO.EMode.Insert:
+         return o.validInsert;
+      case MO.EMode.Update:
+         return o.validUpdate;
+      case MO.EMode.Delete:
+         return o.validDelete;
+   }
+}
+MO.MUiEditDescriptor_formatValue = function MUiEditDescriptor_formatValue(v){
+   return MO.Lang.String.nvl(v);
+}
+MO.MUiEditDescriptor_formatText = function MUiEditDescriptor_formatText(t){
+   return MO.Lang.String.nvl(t);
+}
+MO.MUiEditDescriptor_validText = function MUiEditDescriptor_validText(t){
+   var o = this;
+}
+MO.MUiEditDrop = function MUiEditDrop(o){
+   o = MO.Class.inherits(this, o);
+   o._styleDropPanel = MO.Class.register(o, new MO.AStyle('_styleDropPanel'));
+   o._styleDropIcon  = MO.Class.register(o, new MO.AStyle('_styleDropIcon'));
+   o._hDropPanel     = null;
+   o._hDropIcon      = null;
+   o.onBuildEditDrop = MO.MUiEditDrop_onBuildEditDrop;
+   o.onDropEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'), MO.MUiEditDrop_onDropEnter);
+   o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MUiEditDrop_onDropLeave);
+   o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiEditDrop_onDropClick);
+   o.construct       = MO.MUiEditDrop_construct;
+   o.dispose         = MO.MUiEditDrop_dispose;
+   return o;
+}
+MO.MUiEditDrop_onBuildEditDrop = function MUiEditDrop_onBuildEditDrop(p){
+   var o = this;
+   var h = o._hDropPanel;
+   h.className = o.styleName('DropPanel', MUiEditDrop);
+   h.width = 11;
+   o.attachEvent('onDropEnter', h);
+   o.attachEvent('onDropLeave', h);
+   o.attachEvent('onDropClick', h);
+   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MUiEditDrop), 'control.drop');
+   hi.align = 'center';
+}
+MO.MUiEditDrop_onDropEnter = function MUiEditDrop_onDropEnter(e){
+   var o = this;
+}
+MO.MUiEditDrop_onDropLeave = function MUiEditDrop_onDropLeave(e){
+   var o = this;
+}
+MO.MUiEditDrop_onDropClick = function MUiEditDrop_onDropClick(e){
+}
+MO.MUiEditDrop_construct = function MUiEditDrop_construct(){
+}
+MO.MUiEditDrop_dispose = function MUiEditDrop_dispose(){
+   var o = this;
+   o._hDropIcon = MO.Window.Html.free(o._hDropIcon);
+   o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
+}
+MO.MUiEditFormator = function MUiEditFormator(o){
+   o = MO.Class.inherits(this, o);
+   o.formatText  = MO.MUiEditFormator_formatText;
+   o.formatValue = MO.MUiEditFormator_formatValue;
+   return o;
+}
+MO.MUiEditFormator_formatText = function MUiEditFormator_formatText(value){
+   return value;
+}
+MO.MUiEditFormator_formatValue = function MUiEditFormator_formatValue(text){
+   return text;
+}
+MO.MUiEditReference = function MUiEditReference(o){
+   o = MO.Class.inherits(this, o);
+   o._lovService    = MO.Class.register(o, new MO.APtyString('_lovService'));
+   o._lovReference  = MO.Class.register(o, new MO.APtyString('_lovReference'));
+   o._lovFields     = MO.Class.register(o, new MO.APtyString('_lovFields'));
+   o._lovWhere      = MO.Class.register(o, new MO.APtyString('_lovWhere'));
+   o._lovOrder      = MO.Class.register(o, new MO.APtyString('_lovOrder'));
+   o._listView      = null;
+   o.onListSelected = MO.Method.empty;
+   o.canListView    = MO.MUiEditReference_canListView;
+   o.setLabelStyle  = MO.MUiEditReference_setLabelStyle;
+   o.doListView     = MO.MUiEditReference_doListView;
+   return o;
+}
+MO.MUiEditReference_onListClick = function MUiEditReference_onListClick(e){
+   var o = this;
+   if(o.canListView()){
+      o.doListView();
+   }
+}
+MO.MUiEditReference_canListView = function MUiEditReference_canListView(){
+   return !MO.Lang.String.isEmpty(this._lovReference) && this._editable;
+}
+MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
+   var o = this;
+   if(!MO.Lang.String.isEmpty(o.lovRefer)){
+      o.hLabel.style.cursor = 'hand';
+      o.attachEvent('onListClick', o.hLabel);
+      o.hLabel.className = 'RLine_Underline';
+   }
+}
+MO.MUiEditReference_doListView = function MUiEditReference_doListView(cvs){
+   var o = this;
+   var v = o._listView;
+   if(!v){
+      v = o._listView = top.MO.RControl.create(top.MO.FListWindow);
+   }
+   v.linkConsole = MO.RConsole;
+   v.linkLovControl(o);
+   v.show();
+   v.fetch(cvs);
+}
+MO.MUiEditValidator = function MUiEditValidator(o){
+   o = MO.Class.inherits(this, o);
+   o._validable = false;
+   o._valid     = true;
+   o._validText = null;
+   o.oeValid    = MO.Method.empty;
+   return o;
+}
+MO.MUiEditValue = function MUiEditValue(o){
+   o = MO.Class.inherits(this, o, MO.MUiEditFormator);
+   o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
+   o._statusEditable = true;
+   o._statusEditing  = false;
+   o._statusInvalid  = true;
+   o._recordText     = null;
+   o._recordValue    = null;
+   o.isTextChanged   = MO.MUiEditValue_isTextChanged;
+   o.isValueChanged  = MO.MUiEditValue_isValueChanged;
+   o.formator        = MO.MUiEditValue_formator;
+   o.text            = MO.MUiEditValue_text;
+   o.setText         = MO.MUiEditValue_setText;
+   o.get             = MO.MUiEditValue_get;
+   o.set             = MO.MUiEditValue_set;
+   o.clearValue      = MO.MUiEditValue_clearValue;
+   o.resetValue      = MO.MUiEditValue_resetValue;
+   o.loadValue       = MO.MUiEditValue_loadValue;
+   o.saveValue       = MO.MUiEditValue_saveValue;
+   o.recordValue     = MO.MUiEditValue_recordValue;
+   o.validValue      = MO.Method.empty;
+   o.setEditAble     = MO.MUiEditValue_setEditAble;
+   o.doFocus         = MO.MUiEditValue_doFocus;
+   o.doBlur          = MO.MUiEditValue_doBlur;
+   return o;
+}
+MO.MUiEditValue_isTextChanged = function MUiEditValue_isTextChanged(){
+   var o = this;
+   var text = o.text();
+   return MO.Lang.String.equals(o._recordText, text);
+}
+MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
+   var o = this;
+   var value = o.get();
+   return MO.Lang.String.equals(o._recordValue, value);
+}
+MO.MUiEditValue_formator = function MUiEditValue_formator(){
+   return this;
+}
+MO.MUiEditValue_text = function MUiEditValue_text(){
+}
+MO.MUiEditValue_setText = function MUiEditValue_setText(text){
+}
+MO.MUiEditValue_get = function MUiEditValue_get(){
+   var o = this;
+   var text = o.text();
+   var value = o._dataValue = o.formator().formatValue(text)
+   return value;
+}
+MO.MUiEditValue_set = function MUiEditValue_set(value){
+   var o = this;
+   o._dataValue = MO.Lang.String.nvl(value);
+   var text = o.formator().formatText(value)
+   o.setText(text);
+}
+MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
+   var o = this;
+   o._dataValue = MO.Lang.String.EMPTY;
+   o.set(MO.Lang.String.EMPTY);
+}
+MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
+   var o = this;
+   o._dataValue = value;
+   o.set(value);
+}
+MO.MUiEditValue_loadValue = function MUiEditValue_loadValue(c, t){
+   var o = this;
+}
+MO.MUiEditValue_saveValue = function MUiEditValue_saveValue(c, t){
+   var o = this;
+}
+MO.MUiEditValue_recordValue = function MUiEditValue_recordValue(){
+   var o = this;
+   o._recordText = o.text();
+   o._recordValue = o.get();
+}
+MO.MUiEditValue_setEditAble = function MUiEditValue_setEditAble(flag){
+   var o = this;
+   o._statusEditable = flag;
+}
+MO.MUiEditValue_doFocus = function MUiEditValue_doFocus(){
+   var o = this;
+   if(o._statusEditable){
+      o._statusEditing = true;
+   }
+}
+MO.MUiEditValue_doBlur = function MUiEditValue_doBlur(){
+   var o = this;
+   if(o._statusEditable && o._statusEditing){
+      o._statusEditing = false;
+   }
+}
+MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.clearValue();
+      o.dataValue = o.reget();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.resetValue();
+      o.dataValue = o.reget();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
+   var o = this;
+   var d = o.descriptor();
+   var vs = e.values;
+   var dn = d.dataName;
+   if(!MO.Lang.String.isEmpty(dn)){
+      if(vs.contains(dn)){
+         var v = vs.nvl(dn);
+         if(RControl.isInfo(v)){
+            o.setInfoPack(v);
+         }else{
+        	 if(RControl.isGroup(v)){
+        		 o.setGroupPack(v);
+        	 }else{
+                 o.loadValue(vs);
+        	 }
+         }
          o.recordValue();
-      }
-      return EEventStatus.Stop;
-   }
-   MO.MUiEditValue_commitValue = function MUiEditValue_commitValue(){
-      this.__commitValue = RString.nvl(this.reget());
-   }
-   MO.MUiEditValue_reget = function MUiEditValue_reget(){
-      return this.descriptor().formatValue(this.text());
-   }
-   MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
-      var o = this;
-      var f = o._info;
-      if(!f){
-         f = o._info = new TControlInfo();
-      }
-      f.unpack(v);
-      var d = o.descriptor();
-      d.setInfo(f);
-      if(d != o){
-         o.setInfo(f);
+         o.dataValue = o.reget();
       }
    }
-   MO.MUiEditValue_setInfo = function MUiEditValue_setInfo(f){
-      this.set(f.value);
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.saveValue(e.values);
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.recordValue();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_commitValue = function MUiEditValue_commitValue(){
+   this.__commitValue = MO.Lang.String.nvl(this.reget());
+}
+MO.MUiEditValue_reget = function MUiEditValue_reget(){
+   return this.descriptor().formatValue(this.text());
+}
+MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
+   var o = this;
+   var f = o._info;
+   if(!f){
+      f = o._info = new MO.TControlInfo();
+   }
+   f.unpack(v);
+   var d = o.descriptor();
+   d.setInfo(f);
+   if(d != o){
+      o.setInfo(f);
    }
 }
-with(MO){
-   MO.MUiEditZoom = function MUiEditZoom(o){
-      o = RClass.inherits(this, o);
-      o._zoomReference = RClass.register(o, new APtyString('_zoomReference'));
-      o._zoomField     = RClass.register(o, new APtyString('_zoomField'));
-      o.testZoom   = MUiEditZoom_testZoom;
-      o.doZoom     = MUiEditZoom_doZoom;
-      return o;
-   }
-   MO.MUiEditZoom_testZoom = function MUiEditZoom_testZoom(){
-      return !RString.isEmpty(this._zoomReference);
-   }
-   MO.MUiEditZoom_doZoom = function MUiEditZoom_doZoom(p){
-      RFormSpace.doZoom(this, p);
+MO.MUiEditValue_setInfo = function MUiEditValue_setInfo(f){
+   this.set(f.value);
+}
+MO.MUiEditZoom = function MUiEditZoom(o){
+   o = MO.Class.inherits(this, o);
+   o._zoomReference = MO.Class.register(o, new MO.APtyString('_zoomReference'));
+   o._zoomField     = MO.Class.register(o, new MO.APtyString('_zoomField'));
+   o.testZoom       = MO.MUiEditZoom_testZoom;
+   o.doZoom         = MO.MUiEditZoom_doZoom;
+   return o;
+}
+MO.MUiEditZoom_testZoom = function MUiEditZoom_testZoom(){
+   return !MO.Lang.String.isEmpty(this._zoomReference);
+}
+MO.MUiEditZoom_doZoom = function MUiEditZoom_doZoom(p){
+   MO.RFormSpace.doZoom(this, p);
+}
+MO.MUiFocus = function MUiFocus(o){
+   o = MO.Class.inherits(this, o);
+   o.onFocus   = MO.Class.register(o, new MO.AEventFocus('onFocus'), MO.MUiFocus_onFocus);
+   o.onBlur    = MO.Class.register(o, new MO.AEventBlur('onBlur'));
+   o.testFocus = MO.Method.emptyTrue;
+   o.testBlur  = MO.Method.emptyTrue;
+   o.doFocus   = MO.Method.empty;
+   o.doBlur    = MO.Method.empty;
+   o.focus     = MO.MUiFocus_focus;
+   o.blur      = MO.MUiFocus_blur;
+   return o;
+}
+MO.MUiFocus_onFocus = function MUiFocus_onFocus(e){
+   MO.Console.find(MO.FUiFocusConsole).focus(this, e);
+}
+MO.MUiFocus_focus = function MUiFocus_focus(){
+   MO.Console.find(MO.FUiFocusConsole).focus(this);
+}
+MO.MUiFocus_blur = function MUiFocus_blur(){
+   MO.Console.find(MO.FUiFocusConsole).blur(this);
+}
+MO.MUiHorizontal = function MUiHorizontal(o){
+   o = MO.Class.inherits(this, o);
+   o.setVisible = MO.MUiHorizontal_setVisible;
+   return o;
+}
+MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
+   var o = this;
+   var h = o.hPanelLine;
+   if(h){
+      MO.RHtml.displaySet(h, p);
    }
 }
-with(MO){
-   MO.MUiFocus = function MUiFocus(o){
-      o = RClass.inherits(this, o);
-      o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MUiFocus_onFocus);
-      o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
-      o.testFocus = RMethod.emptyTrue;
-      o.testBlur  = RMethod.emptyTrue;
-      o.doFocus   = RMethod.empty;
-      o.doBlur    = RMethod.empty;
-      o.focus     = MUiFocus_focus;
-      o.blur      = MUiFocus_blur;
-      return o;
-   }
-   MO.MUiFocus_onFocus = function MUiFocus_onFocus(e){
-      RConsole.find(FUiFocusConsole).focus(this, e);
-   }
-   MO.MUiFocus_focus = function MUiFocus_focus(){
-      RConsole.find(FUiFocusConsole).focus(this);
-   }
-   MO.MUiFocus_blur = function MUiFocus_blur(){
-      RConsole.find(FUiFocusConsole).blur(this);
-   }
+MO.MUiPopup = function MUiPopup(o){
+   o = MO.Class.inherits(this, o);
+   o._opener = null;
+   o.opener  = MO.MUiPopup_opener;
 }
-with(MO){
-   MO.MUiHorizontal = function MUiHorizontal(o){
-      o = RClass.inherits(this, o);
-      o.setVisible = MUiHorizontal_setVisible;
-      return o;
+MO.MUiPopup_opener = function MUiPopup_opener(){
+   return this._opener;
+}
+MO.MUiProgress = function MUiProgress(o){
+   o = MO.Class.inherits(this, o);
+   o.oeProgress = MO.Method.virtual(o, 'oeProgress');
+   return o;
+}
+MO.MUiSize = function MUiSize(o){
+   o = MO.Class.inherits(this, o);
+   o._location       = MO.Class.register(o, new MO.APtyPoint2('_location'));
+   o._size           = MO.Class.register(o, new MO.APtySize2('_size'));
+   o.construct       = MO.MUiSize_construct;
+   o.dockCd          = MO.MUiSize_dockCd;
+   o.setDockCd       = MO.MUiSize_setDockCd;
+   o.left            = MO.MUiSize_left;
+   o.setLeft         = MO.MUiSize_setLeft;
+   o.top             = MO.MUiSize_top;
+   o.setTop          = MO.MUiSize_setTop;
+   o.location        = MO.MUiSize_location;
+   o.setLocation     = MO.MUiSize_setLocation;
+   o.refreshLocation = MO.MUiSize_refreshLocation;
+   o.width           = MO.MUiSize_width;
+   o.setWidth        = MO.MUiSize_setWidth;
+   o.height          = MO.MUiSize_height;
+   o.setHeight       = MO.MUiSize_setHeight;
+   o.size            = MO.MUiSize_size;
+   o.setSize         = MO.MUiSize_setSize;
+   o.refreshSize     = MO.MUiSize_refreshSize;
+   o.setBounds       = MO.MUiSize_setBounds;
+   o.refreshBounds   = MO.MUiSize_refreshBounds;
+   o.dispose         = MO.MUiSize_dispose;
+   o.innerDump       = MO.MUiSize_innerDump;
+   return o;
+}
+MO.MUiSize_construct = function MUiSize_construct(){
+   var o = this;
+   o._location = new MO.SPoint2();
+   o._size = new MO.SUiSize2();
+}
+MO.MUiSize_dockCd = function MUiSize_dockCd(){
+   return this._dockCd;
+}
+MO.MUiSize_setDockCd = function MUiSize_setDockCd(dockCd){
+   this._dockCd = dockCd;
+}
+MO.MUiSize_left = function MUiSize_left(){
+   return this._location.x;
+}
+MO.MUiSize_setLeft = function MUiSize_setLeft(p){
+   this.setLocation(p, null);
+}
+MO.MUiSize_top = function MUiSize_top(){
+   return this._location.y;
+}
+MO.MUiSize_setTop = function MUiSize_setTop(p){
+   this.setLocation(null, p);
+}
+MO.MUiSize_location = function MUiSize_location(){
+   return this._location;
+}
+MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
+   var o = this;
+   var hPanel = o.panel(MO.EPanel.Size);
+   if(x != null){
+      o._location.x = x;
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.left = (x == 0) ? null : x + 'px';
+      }
    }
-   MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
-      var o = this;
-      var h = o.hPanelLine;
-      if(h){
-         RHtml.displaySet(h, p);
+   if(y != null){
+      o._location.y = y;
+      if(hPanel && !hPanel.__fragment){
+         hPanel.style.top = (y == 0) ? null : y + 'px';
       }
    }
 }
-with(MO){
-   MO.MUiPopup = function MUiPopup(o){
-      o = RClass.inherits(this, o);
-      o._opener = null;
-      o.opener  = MUiPopup_opener;
-   }
-   MO.MUiPopup_opener = function MUiPopup_opener(){
-      return this._opener;
-   }
+MO.MUiSize_refreshLocation = function MUiSize_refreshLocation(){
+   var o = this;
+   o.setLocation(o._location.x, o._location.y);
 }
-with(MO){
-   MO.MUiProgress = function MUiProgress(o){
-      o = RClass.inherits(this, o);
-      o.oeProgress = RMethod.virtual(o, 'oeProgress');
-      return o;
-   }
+MO.MUiSize_width = function MUiSize_width(){
+   return this._size.width;
 }
-with(MO){
-   MO.MUiSize = function MUiSize(o){
-      o = RClass.inherits(this, o);
-      o._location       = RClass.register(o, new APtyPoint2('_location'));
-      o._size           = RClass.register(o, new APtySize2('_size'));
-      o.construct       = MUiSize_construct;
-      o.dockCd          = MUiSize_dockCd;
-      o.setDockCd       = MUiSize_setDockCd;
-      o.left            = MUiSize_left;
-      o.setLeft         = MUiSize_setLeft;
-      o.top             = MUiSize_top;
-      o.setTop          = MUiSize_setTop;
-      o.location        = MUiSize_location;
-      o.setLocation     = MUiSize_setLocation;
-      o.refreshLocation = MUiSize_refreshLocation;
-      o.width           = MUiSize_width;
-      o.setWidth        = MUiSize_setWidth;
-      o.height          = MUiSize_height;
-      o.setHeight       = MUiSize_setHeight;
-      o.size            = MUiSize_size;
-      o.setSize         = MUiSize_setSize;
-      o.refreshSize     = MUiSize_refreshSize;
-      o.setBounds       = MUiSize_setBounds;
-      o.refreshBounds   = MUiSize_refreshBounds;
-      o.dispose         = MUiSize_dispose;
-      o.innerDump       = MUiSize_innerDump;
-      return o;
-   }
-   MO.MUiSize_construct = function MUiSize_construct(){
-      var o = this;
-      o._location = new SPoint2();
-      o._size = new SUiSize2();
-   }
-   MO.MUiSize_dockCd = function MUiSize_dockCd(){
-      return this._dockCd;
-   }
-   MO.MUiSize_setDockCd = function MUiSize_setDockCd(dockCd){
-      this._dockCd = dockCd;
-   }
-   MO.MUiSize_left = function MUiSize_left(){
-      return this._location.x;
-   }
-   MO.MUiSize_setLeft = function MUiSize_setLeft(p){
-      this.setLocation(p, null);
-   }
-   MO.MUiSize_top = function MUiSize_top(){
-      return this._location.y;
-   }
-   MO.MUiSize_setTop = function MUiSize_setTop(p){
-      this.setLocation(null, p);
-   }
-   MO.MUiSize_location = function MUiSize_location(){
-      return this._location;
-   }
-   MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
-      var o = this;
-      var hPanel = o.panel(EPanel.Size);
-      if(x != null){
-         o._location.x = x;
-         if(hPanel && !hPanel.__fragment){
-            hPanel.style.left = (x == 0) ? null : x + 'px';
-         }
-      }
-      if(y != null){
-         o._location.y = y;
-         if(hPanel && !hPanel.__fragment){
-            hPanel.style.top = (y == 0) ? null : y + 'px';
-         }
-      }
-   }
-   MO.MUiSize_refreshLocation = function MUiSize_refreshLocation(){
-      var o = this;
-      o.setLocation(o._location.x, o._location.y);
-   }
-   MO.MUiSize_width = function MUiSize_width(){
-      return this._size.width;
-   }
-   MO.MUiSize_setWidth = function MUiSize_setWidth(p){
-      this.setSize(p, null);
-   }
-   MO.MUiSize_height = function MUiSize_height(){
-      return this._size.width;
-   }
-   MO.MUiSize_setHeight = function MUiSize_setHeight(p){
-      this.setSize(null, p);
-   }
-   MO.MUiSize_size = function MUiSize_size(){
-      return this._size;
-   }
-   MO.MUiSize_setSize = function MUiSize_setSize(width, height){
-      var o = this;
-      var hPanel = o.panel(EPanel.Size);
-      if(width != null){
-         o._size.width = width;
-         if(hPanel && !hPanel.__fragment){
-            if(hPanel.tagName == 'TD'){
-               if(width != 0){
-                  hPanel.width = width;
-               }
+MO.MUiSize_setWidth = function MUiSize_setWidth(p){
+   this.setSize(p, null);
+}
+MO.MUiSize_height = function MUiSize_height(){
+   return this._size.width;
+}
+MO.MUiSize_setHeight = function MUiSize_setHeight(p){
+   this.setSize(null, p);
+}
+MO.MUiSize_size = function MUiSize_size(){
+   return this._size;
+}
+MO.MUiSize_setSize = function MUiSize_setSize(width, height){
+   var o = this;
+   var hPanel = o.panel(MO.EPanel.Size);
+   if(width != null){
+      o._size.width = width;
+      if(hPanel && !hPanel.__fragment){
+         if(hPanel.tagName == 'TD'){
+            if(width != 0){
+               hPanel.width = width;
+            }
+         }else{
+            if(MO.Lang.String.contains(width, '%')){
+               hPanel.style.width = width;
             }else{
-               if(RString.contains(width, '%')){
-                  hPanel.style.width = width;
-               }else{
-                  hPanel.style.width = (width == 0) ? null : width + 'px';
-               }
+               hPanel.style.width = (width == 0) ? null : width + 'px';
             }
          }
       }
-      if(height != null){
-         o._size.height = height;
-         if(hPanel && !hPanel.__fragment){
-            if(hPanel.tagName == 'TD'){
-               if(height != 0){
-                  hPanel.height = height;
-               }
+   }
+   if(height != null){
+      o._size.height = height;
+      if(hPanel && !hPanel.__fragment){
+         if(hPanel.tagName == 'TD'){
+            if(height != 0){
+               hPanel.height = height;
+            }
+         }else{
+            if(MO.Lang.String.contains(height, '%')){
+               hPanel.style.height = height;
             }else{
-               if(RString.contains(height, '%')){
-                  hPanel.style.height = height;
-               }else{
-                  hPanel.style.height = (height == 0) ? null : height + 'px';
-               }
+               hPanel.style.height = (height == 0) ? null : height + 'px';
             }
          }
       }
    }
-   MO.MUiSize_refreshSize = function MUiSize_refreshSize(){
-      var o = this;
-      o.setSize(o._size.width, o._size.height);
+}
+MO.MUiSize_refreshSize = function MUiSize_refreshSize(){
+   var o = this;
+   o.setSize(o._size.width, o._size.height);
+}
+MO.MUiSize_setBounds = function MUiSize_setBounds(l, t, w, h){
+   var o = this;
+   o.setLocation(l, t);
+   o.setSize(w, h);
+}
+MO.MUiSize_refreshBounds = function MUiSize_refreshBounds(){
+   var o = this;
+   o.refreshLocation();
+   o.refreshSize();
+}
+MO.MUiSize_dispose = function MUiSize_dispose(){
+   var o = this;
+   var v = o._location;
+   if(v){
+      v.dispose();
+      o._location = null;
    }
-   MO.MUiSize_setBounds = function MUiSize_setBounds(l, t, w, h){
-      var o = this;
-      o.setLocation(l, t);
-      o.setSize(w, h);
-   }
-   MO.MUiSize_refreshBounds = function MUiSize_refreshBounds(){
-      var o = this;
-      o.refreshLocation();
-      o.refreshSize();
-   }
-   MO.MUiSize_dispose = function MUiSize_dispose(){
-      var o = this;
-      var v = o._location;
-      if(v){
-         v.dispose();
-         o._location = null;
-      }
-      var v = o._size;
-      if(v){
-         v.dispose();
-         o._size = null;
-      }
-   }
-   MO.MUiSize_innerDump = function MUiSize_innerDump(s, l){
-      var o = this;
-      s.append('MUiSize:');
-      s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
+   var v = o._size;
+   if(v){
+      v.dispose();
+      o._size = null;
    }
 }
-with(MO){
-   MO.MUiSizeable = function MUiSizeable(o){
-      o = RClass.inherits(this, o);
-      o.isSizeable  = true;
-      o.onSize      = null;
-      o.inSizeRange = RMethod.virtual(o, 'inSizeRange');
-      o.cursor      = MUiSizeable_cursor;
-      o.setCursor   = MUiSizeable_setCursor;
-      o.resize      = MUiSizeable_resize;
-      o.setBounds   = MUiSizeable_setBounds;
-      o.startDrag   = MUiSizeable_startDrag;
-      o.stopDrag    = MUiSizeable_stopDrag;
-      return o;
+MO.MUiSize_innerDump = function MUiSize_innerDump(s, l){
+   var o = this;
+   s.append('MUiSize:');
+   s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
+}
+MO.MUiSizeable = function MUiSizeable(o){
+   o = MO.Class.inherits(this, o);
+   o.isSizeable  = true;
+   o.onSize      = null;
+   o.inSizeRange = MO.Method.virtual(o, 'inSizeRange');
+   o.cursor      = MO.MUiSizeable_cursor;
+   o.setCursor   = MO.MUiSizeable_setCursor;
+   o.resize      = MO.MUiSizeable_resize;
+   o.setBounds   = MO.MUiSizeable_setBounds;
+   o.startDrag   = MO.MUiSizeable_startDrag;
+   o.stopDrag    = MO.MUiSizeable_stopDrag;
+   return o;
+}
+MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
+   var o = this;
+   var src = MO.Window.source();
+   if(!o.inSizeRange(src)){
+      return MO.ECursor.Default;
    }
-   MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
-      var o = this;
-      var src = RWindow.source();
-      if(!o.inSizeRange(src)){
-         return ECursor.Default;
+   var hObj = o.panel(MO.EPanel.Border);
+   var r = MO.Window.Html.rect(hObj);
+   var pos = MO.Window.offsetPos();
+   var p = new MO.TPoint(pos.x-r.left, pos.y-r.top);
+   while(src){
+      p.x += src.offsetLeft + src.clientLeft;
+      p.y += src.offsetTop + src.clientTop;
+      if(src == hObj){
+         break;
       }
-      var hObj = this.panel(EPanel.Border);
-      var r = RHtml.rect(hObj);
-      var pos = RWindow.offsetPos();
-      var p = new TPoint(pos.x-r.left, pos.y-r.top);
-      while(src){
-         p.x += src.offsetLeft + src.clientLeft;
-         p.y += src.offsetTop + src.clientTop;
-         if(src == hObj){
-            break;
-         }
-         src = src.offsetParent;
-      }
-      var border = EMoveSize.Border;
-      var range = EMoveSize.Range;
-      x = p.x;
-      y = p.y;
-      var right = r.width();
-      var bottom = r.height();
-      if(x>=0 && x<=range && y>=0 && y<=range){
-         return ECursor.NorthWest;
-      }else if(x>=0 && x<=range && y>=bottom-range && y<=bottom){
-         return ECursor.SouthWest;
-      }else if(x>=right-range && x<=right && y>=bottom-range && y<=bottom){
-         return ECursor.SouthEast;
-      }else if(x>=right-range && x<=right && y>=0 && y<=range){
-         return ECursor.NorthEast;
-      }else if(x>=0 && x<border && y>range && y<bottom-range){
-         return ECursor.West;
-      }else if(x>range && x<right-range && y>=bottom-border && y<=bottom){
-         return ECursor.South;
-      }else if(x>=right-border && x<=right && y>range && y<bottom-range){
-         return ECursor.East;
-      }else if(x>range && x<right-range && y>=0 && y<border){
-         return ECursor.North;
-      }
-      return ECursor.Default;
+      src = src.offsetParent;
    }
-   MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
-      if(!cursor){
-         cursor = this.cursor();
-      }
-      var h = this.panel(EPanel.Size);
-      if(h){
-         h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
-      }
+   var border = MO.EMoveSize.Border;
+   var range = MO.EMoveSize.Range;
+   x = p.x;
+   y = p.y;
+   var right = r.width();
+   var bottom = r.height();
+   if(x>=0 && x<=range && y>=0 && y<=range){
+      return MO.ECursor.NorthWest;
+   }else if(x>=0 && x<=range && y>=bottom-range && y<=bottom){
+      return MO.ECursor.SouthWest;
+   }else if(x>=right-range && x<=right && y>=bottom-range && y<=bottom){
+      return MO.ECursor.SouthEast;
+   }else if(x>=right-range && x<=right && y>=0 && y<=range){
+      return MO.ECursor.NorthEast;
+   }else if(x>=0 && x<border && y>range && y<bottom-range){
+      return MO.ECursor.West;
+   }else if(x>range && x<right-range && y>=bottom-border && y<=bottom){
+      return MO.ECursor.South;
+   }else if(x>=right-border && x<=right && y>range && y<bottom-range){
+      return MO.ECursor.East;
+   }else if(x>range && x<right-range && y>=0 && y<border){
+      return MO.ECursor.North;
    }
-   MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
-      var sizeable = false;
-      var hStyle = this.htmlPanel(EPanel.Border).style;
-      if(width != null){
-         width = Math.max(parseInt(width), EMoveSize.MinWidth);
-         if(this.width != width){
-            this.width = width;
-            hStyle.pixelWidth = width;
-            sizeable = true;
-         }
-      }
-      if(height != null){
-         height = Math.max(parseInt(height), EMoveSize.MinHeight);
-         if(this.height != height){
-            this.height = height;
-            hStyle.pixelHeight = height;
-            sizeable = true;
-         }
-      }
-      if(sizeable && this.onSize){
-         this.onSize();
-      }
+   return ECursor.Default;
+}
+MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
+   if(!cursor){
+      cursor = this.cursor();
    }
-   MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
-      var sizeable = false;
-      var st = this.htmlPanel(EPanel.Border).style;
-      if(left != null){
-         if(right == null || (right != null && right-left > EMoveSize.MinWidth)){
-            left = Math.max(left, 0);
-         }else{
-            left = this.left;
-         }
-         if(force || this.left != left){
-            this.left = left;
-            st.pixelLeft = left;
-            sizeable = true;
-         }
-      }
-      if(top != null){
-         if(bottom == null || (bottom != null && bottom-top > EMoveSize.MinHeight)){
-            top = Math.max(top, 0);
-         }else{
-            top = this.top;
-         }
-         if(force || this.top != top){
-            this.top = top;
-            st.pixelTop = top;
-            sizeable = true;
-         }
-      }
-      if(right != null){
-         var width = Math.max(right-this.left+1, EMoveSize.MinWidth);
-         if(force || this.width != width){
-            this.width = width;
-            st.pixelWidth = this.width;
-            sizeable = true;
-         }
-      }
-      if(bottom != null){
-         var height = Math.max(bottom-this.top+1, EMoveSize.MinHeight);
-         if(force || this.height != height){
-            this.height = height;
-            st.pixelHeight = this.height;
-            sizeable = true;
-         }
-      }
-      if(sizeable && this.onSize){
-         this.onSize();
-      }
-   }
-   MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
-   }
-   MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
+   var h = this.panel(MO.EPanel.Size);
+   if(h){
+      h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
    }
 }
-with(MO){
-   MO.MUiStorage = function MUiStorage(o){
-      o = RClass.inherits(this, o);
-      o._storageCode      = null;
-      o._storageObject    = null;
-      o.storageGet        = MUiStorage_storageGet;
-      o.storageGetBoolean = MUiStorage_storageGetBoolean;
-      o.storageSet        = MUiStorage_storageSet;
-      o.storageUpdate     = MUiStorage_storageUpdate;
-      o.dispose           = MUiStorage_dispose;
-      return o;
-   }
-   MO.MUiStorage_storageGet = function MUiStorage_storageGet(name, defaultValue){
-      var o = this;
-      if(name == null){
-         throw new TError(o, 'Name is empty.');
-      }
-      var object = o._storageObject;
-      if(!object){
-         var storge = RWindow.storage(EScope.Local);
-         var value = storge.get(o._storageCode);
-         object = o._storageObject = MO.Json.parse(value, Object);
-      }
-      if(object){
-         var value = object[name];
-         if(value != null){
-            return value;
-         }
-      }
-      return defaultValue;
-   }
-   MO.MUiStorage_storageGetBoolean = function MUiStorage_storageGetBoolean(name, defaultValue){
-      var o = this;
-      var value = o.storageGet(name, defaultValue);
-      return RBoolean.parse(value);
-   }
-   MO.MUiStorage_storageSet = function MUiStorage_storageSet(name, value){
-      var o = this;
-      if(name == null){
-         throw new TError(o, 'Name is empty.');
-      }
-      var object = o._storageObject;
-      if(!object){
-         object = o._storageObject = new Object();
-      }
-      object[name] = value;
-   }
-   MO.MUiStorage_storageUpdate = function MUiStorage_storageUpdate(){
-      var o = this;
-      var object = o._storageObject;
-      if(object){
-         var storge = RWindow.storage(EScope.Local);
-         var value = MO.Json.toString(object);
-         storge.set(o._storageCode, value);
+MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
+   var sizeable = false;
+   var hStyle = this.htmlPanel(EPanel.Border).style;
+   if(width != null){
+      width = Math.max(parseInt(width), EMoveSize.MinWidth);
+      if(this.width != width){
+         this.width = width;
+         hStyle.pixelWidth = width;
+         sizeable = true;
       }
    }
-   MO.MUiStorage_dispose = function MUiStorage_dispose(){
-      var o = this;
-      o._storageCode = null;
-      o._storageObject = null;
-   }
-}
-with(MO){
-   MO.MUiStyle = function MUiStyle(o){
-      o = RClass.inherits(this, o);
-      o.construct     = RMethod.empty;
-      o.styleName     = MUiStyle_styleName;
-      o.styleIcon     = MUiStyle_styleIcon;
-      o.styleIconPath = MUiStyle_styleIconPath;
-      o.dispose       = RMethod.empty;
-      return o;
-   }
-   MO.MUiStyle_styleName = function MUiStyle_styleName(n, c){
-      var o = this;
-      var f = c ? c : o;
-      var tn = RClass.name(f);
-      var t = RClass.forName(tn);
-      return t.style(n);
-   }
-   MO.MUiStyle_styleIcon = function MUiStyle_styleIcon(n, c){
-      return RClass.name(c ? c : this, true) + '_' + n;
-   }
-   MO.MUiStyle_styleIconPath = function MUiStyle_styleIconPath(n, c){
-      return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
-   }
-}
-with(MO){
-   MO.MUiValue = function MUiValue(o){
-      o = RClass.inherits(this, o);
-      o.get = RMethod.empty;
-      o.set = RMethod.empty;
-      return o;
-   }
-}
-with(MO){
-   MO.MUiVertical = function MUiVertical(o){
-      o = RClass.inherits(this, o);
-      o.setVisible = MUiHorizontal_setVisible;
-      return o;
-   }
-   MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
-      var o = this;
-      var h = o.hPanelLine;
-      if(h){
-         RHtml.displaySet(h, p);
+   if(height != null){
+      height = Math.max(parseInt(height), EMoveSize.MinHeight);
+      if(this.height != height){
+         this.height = height;
+         hStyle.pixelHeight = height;
+         sizeable = true;
       }
    }
-}
-with(MO){
-   MO.MListenerBlur = function MListenerBlur(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addBlurListener     = MListenerBlur_addBlurListener;
-      o.processBlurListener = MListenerBlur_processBlurListener;
-      return o;
-   }
-   MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
-      return this.addListener(EEvent.Blur, w, m);
-   }
-   MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
+   if(sizeable && this.onSize){
+      this.onSize();
    }
 }
-with(MO){
-   MO.MListenerClick = function MListenerClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addClickListener     = MListenerClick_addClickListener;
-      o.setClickListener     = MListenerClick_setClickListener;
-      o.removeClickListener  = MListenerClick_removeClickListener;
-      o.processClickListener = MListenerClick_processClickListener;
-      return o;
-   }
-   MO.MListenerClick_addClickListener = function MListenerClick_addClickListener(owner, method){
-      return this.addListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_setClickListener = function MListenerClick_setClickListener(owner, method){
-      return this.setListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_removeClickListener = function MListenerClick_removeClickListener(owner, method){
-      return this.removeListener(EEvent.Click, owner, method);
-   }
-   MO.MListenerClick_processClickListener = function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerDataChanged = function MListenerDataChanged(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
-      o.processDataChangedListener = MListenerDataChanged_processDataChangedListener;
-      return o;
-   }
-   MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_addDataChangedListener(w, m){
-      return this.addListener(EEvent.DataChanged, w, m);
-   }
-   MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerDoubleClick = function MListenerDoubleClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
-      o.setDoubleClickListener     = MListenerDoubleClick_setDoubleClickListener;
-      o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
-      return o;
-   }
-   MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
-      return this.addListener(EEvent.DoubleClick, owner, method);
-   }
-   MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
-      return this.setListener(EEvent.DoubleClick, owner, method);
-   }
-   MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerEnter = function MListenerEnter(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addEnterListener     = MListenerEnter_addEnterListener;
-      o.processEnterListener = MListenerEnter_processEnterListener;
-      return o;
-   }
-   MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
-      return this.addListener(EEvent.Enter, w, m);
-   }
-   MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Enter, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerFocus = function MListenerFocus(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addFocusListener     = MListenerFocus_addFocusListener;
-      o.processFocusListener = MListenerFocus_processFocusListener;
-      return o;
-   }
-   MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
-      return this.addListener(EEvent.Focus, w, m);
-   }
-   MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Focus, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerItemClick = function MListenerItemClick(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addItemClickListener     = MListenerItemClick_addItemClickListener;
-      o.processItemClickListener = MListenerItemClick_processItemClickListener;
-      return o;
-   }
-   MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
-      return this.addListener(EEvent.ItemClick, w, m);
-   }
-   MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.ItemClick, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerLeave = function MListenerLeave(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addLeaveListener     = MListenerLeave_addLeaveListener;
-      o.processLeaveListener = MListenerLeave_processLeaveListener;
-      return o;
-   }
-   MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
-      return this.addListener(EEvent.Leave, w, m);
-   }
-   MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.MListenerResult = function MListenerResult(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addResultListener     = MListenerResult_addResultListener;
-      o.removeResultListener  = MListenerResult_removeResultListener;
-      o.processResultListener = MListenerResult_processResultListener;
-      o.clearResultListeners  = MListenerResult_clearResultListeners;
-      return o;
-   }
-   MO.MListenerResult_addResultListener = function MListenerResult_addResultListener(owner, method){
-      return this.addListener(EEvent.Result, owner, method);
-   }
-   MO.MListenerResult_removeResultListener = function MListenerResult_removeResultListener(owner, method){
-      return this.removeListener(EEvent.Result, owner, method);
-   }
-   MO.MListenerResult_processResultListener = function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Result, p1, p2, p3, p4, p5);
-   }
-   MO.MListenerResult_clearResultListeners = function MListenerResult_clearResultListeners(){
-      return this.clearListeners(EEvent.Result);
-   }
-}
-with(MO){
-   MO.MListenerSelected = function MListenerSelected(o){
-      o = RClass.inherits(this, o, MListener);
-      o.addSelectedListener     = MListenerSelected_addSelectedListener;
-      o.processSelectedListener = MListenerSelected_processSelectedListener;
-      return o;
-   }
-   MO.MListenerSelected_addSelectedListener = function MListenerSelected_addSelectedListener(w, m){
-      return this.addListener(EEvent.Selected, w, m);
-   }
-   MO.MListenerSelected_processSelectedListener = function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
-      this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
-   }
-}
-with(MO){
-   MO.SServiceInfo = function SServiceInfo(){
-      var o = this;
-      o.service = null;
-      o.action  = null;
-      o.url     = null;
-      return o;
-   }
-}
-with(MO){
-   MO.SUiSize2 = function SUiSize2(width, height){
-      var o = this;
-      SSize2.call(o, width, height);
-      o.parse = SUiSize2_parse;
-      return o;
-   }
-   MO.SUiSize2_parse = function SUiSize2_parse(source){
-      var o = this;
-      var items = source.split(',')
-      if(items.length == 2){
-         var width = items[0];
-         if(RString.contains(width, '%')){
-            o.width = width;
-         }else{
-            o.width = parseInt(width);
-         }
-         var height = items[1];
-         if(RString.contains(height, '%')){
-            o.height = height;
-         }else{
-            o.height = parseInt(height);
-         }
+MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
+   var sizeable = false;
+   var st = this.htmlPanel(EPanel.Border).style;
+   if(left != null){
+      if(right == null || (right != null && right-left > EMoveSize.MinWidth)){
+         left = Math.max(left, 0);
       }else{
-         throw new TError(o, "Parse value failure. (value={1})", items);
+         left = this.left;
+      }
+      if(force || this.left != left){
+         this.left = left;
+         st.pixelLeft = left;
+         sizeable = true;
       }
    }
-}
-with(MO){
-   MO.TDatasetFetchArg = function TDatasetFetchArg(o){
-      if(!o){o = this;}
-      o.datasets   = new TDictionary();
-      o.saveConfig = TDatasetFetchArg_saveConfig;
-      o.process    = TDatasetFetchArg_process;
-      return o;
-   }
-   MO.TDatasetFetchArg_saveConfig = function TDatasetFetchArg_saveConfig(p){
-      var o = this;
-      p.set('name', o.name);
-   }
-   MO.TDatasetFetchArg_process = function TDatasetFetchArg_process(){
-      var o = this;
-      if(o.owner){
-         o.callback.call(o.owner, o);
+   if(top != null){
+      if(bottom == null || (bottom != null && bottom-top > EMoveSize.MinHeight)){
+         top = Math.max(top, 0);
       }else{
-         o.callback(o);
+         top = this.top;
+      }
+      if(force || this.top != top){
+         this.top = top;
+         st.pixelTop = top;
+         sizeable = true;
       }
    }
-   MO.TDatasetFetchArg_push = function TDatasetFetchArg_push(v){
-      var o = this;
-      if(RClass.isClass(v, TSearchItem)){
-         o.searchs.push(v);
-      }else if(RClass.isClass(v, TOrderItem)){
-         o.orders.push(v);
+   if(right != null){
+      var width = Math.max(right-this.left+1, EMoveSize.MinWidth);
+      if(force || this.width != width){
+         this.width = width;
+         st.pixelWidth = this.width;
+         sizeable = true;
       }
    }
-   MO.TDatasetFetchArg_invoke = function TDatasetFetchArg_invoke(){
-      var o = this;
-      if(o.callback){
-         o.callback.invoke(o);
+   if(bottom != null){
+      var height = Math.max(bottom-this.top+1, EMoveSize.MinHeight);
+      if(force || this.height != height){
+         this.height = height;
+         st.pixelHeight = this.height;
+         sizeable = true;
       }
+   }
+   if(sizeable && this.onSize){
+      this.onSize();
    }
 }
-with(MO){
-   MO.TEvent = function TEvent(owner, code, proc){
-      var o = this;
-      o.owner     = owner;
-      o.code      = code;
-      o.type      = null;
-      o.onProcess = proc;
-      o.isBefore  = TEvent_isBefore;
-      o.isAfter   = TEvent_isAfter;
-      o.process   = TEvent_process;
-      o.dump      = TEvent_dump;
-      return o;
+MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
+}
+MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
+}
+MO.MUiStyle = function MUiStyle(o){
+   o = MO.Class.inherits(this, o);
+   o.construct     = MO.Method.empty;
+   o.styleName     = MO.MUiStyle_styleName;
+   o.styleIcon     = MO.MUiStyle_styleIcon;
+   o.styleIconPath = MO.MUiStyle_styleIconPath;
+   o.dispose       = MO.Method.empty;
+   return o;
+}
+MO.MUiStyle_styleName = function MUiStyle_styleName(n, c){
+   var o = this;
+   var f = c ? c : o;
+   var tn = MO.Class.name(f);
+   var t = MO.Class.forName(tn);
+   return t.style(n);
+}
+MO.MUiStyle_styleIcon = function MUiStyle_styleIcon(n, c){
+   return MO.Class.name(c ? c : this, true) + '_' + n;
+}
+MO.MUiStyle_styleIconPath = function MUiStyle_styleIconPath(n, c){
+   return MO.RResource.iconPath(MO.Class.name(c ? c : this, true) + '_' + n);
+}
+MO.MUiVertical = function MUiVertical(o){
+   o = MO.Class.inherits(this, o);
+   o.setVisible = MO.MUiHorizontal_setVisible;
+   return o;
+}
+MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
+   var o = this;
+   var h = o.hPanelLine;
+   if(h){
+      MO.Window.Html.displaySet(h, p);
    }
-   MO.TEvent_isBefore = function TEvent_isBefore(){
-      return (EEventType.Before == this.type);
-   }
-   MO.TEvent_isAfter = function TEvent_isAfter(){
-      return (EEventType.After == this.type);
-   }
-   MO.TEvent_process = function TEvent_process(){
-      var o = this;
-      if(!o.onProcess){
-         return RMessage.fatal(o, null, 'Process event is null. (owner={1})', RClass.dump(o.owner));
-      }
-      var sp = new TSpeed(o, 'Process event (owner={0}, process={1})', o.owner, RMethod.name(o.onProcess));
-      if(o.owner){
-         o.onProcess.call(o.owner, o);
+}
+MO.MListenerBlur = function MListenerBlur(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addBlurListener     = MO.MListenerBlur_addBlurListener;
+   o.processBlurListener = MO.MListenerBlur_processBlurListener;
+   return o;
+}
+MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
+   return this.addListener(MO.EEvent.Blur, w, m);
+}
+MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Blur, p1, p2, p3, p4, p5);
+}
+MO.MListenerClick = function MListenerClick(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addClickListener     = MO.MListenerClick_addClickListener;
+   o.setClickListener     = MO.MListenerClick_setClickListener;
+   o.removeClickListener  = MO.MListenerClick_removeClickListener;
+   o.processClickListener = MO.MListenerClick_processClickListener;
+   return o;
+}
+MO.MListenerClick_addClickListener = function MListenerClick_addClickListener(owner, method){
+   return this.addListener(MO.EEvent.Click, owner, method);
+}
+MO.MListenerClick_setClickListener = function MListenerClick_setClickListener(owner, method){
+   return this.setListener(MO.EEvent.Click, owner, method);
+}
+MO.MListenerClick_removeClickListener = function MListenerClick_removeClickListener(owner, method){
+   return this.removeListener(MO.EEvent.Click, owner, method);
+}
+MO.MListenerClick_processClickListener = function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Click, p1, p2, p3, p4, p5);
+}
+MO.MListenerDataChanged = function MListenerDataChanged(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addDataChangedListener     = MO.MListenerDataChanged_addDataChangedListener;
+   o.processDataChangedListener = MO.MListenerDataChanged_processDataChangedListener;
+   return o;
+}
+MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_addDataChangedListener(w, m){
+   return this.addListener(MO.EEvent.DataChanged, w, m);
+}
+MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.DataChanged, p1, p2, p3, p4, p5);
+}
+MO.MListenerDoubleClick = function MListenerDoubleClick(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addDoubleClickListener     = MO.MListenerDoubleClick_addDoubleClickListener;
+   o.setDoubleClickListener     = MO.MListenerDoubleClick_setDoubleClickListener;
+   o.processDoubleClickListener = MO.MListenerDoubleClick_processDoubleClickListener;
+   return o;
+}
+MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
+   return this.addListener(MO.EEvent.DoubleClick, owner, method);
+}
+MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
+   return this.setListener(MO.EEvent.DoubleClick, owner, method);
+}
+MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.DoubleClick, p1, p2, p3, p4, p5);
+}
+MO.MListenerEnter = function MListenerEnter(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addEnterListener     = MO.MListenerEnter_addEnterListener;
+   o.processEnterListener = MO.MListenerEnter_processEnterListener;
+   return o;
+}
+MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
+   return this.addListener(MO.EEvent.Enter, w, m);
+}
+MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Enter, p1, p2, p3, p4, p5);
+}
+MO.MListenerFocus = function MListenerFocus(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addFocusListener     = MO.MListenerFocus_addFocusListener;
+   o.processFocusListener = MO.MListenerFocus_processFocusListener;
+   return o;
+}
+MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
+   return this.addListener(MO.EEvent.Focus, w, m);
+}
+MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Focus, p1, p2, p3, p4, p5);
+}
+MO.MListenerItemClick = function MListenerItemClick(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addItemClickListener     = MListenerItemClick_addItemClickListener;
+   o.processItemClickListener = MListenerItemClick_processItemClickListener;
+   return o;
+}
+MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
+   return this.addListener(MO.EEvent.ItemClick, w, m);
+}
+MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.ItemClick, p1, p2, p3, p4, p5);
+}
+MO.MListenerLeave = function MListenerLeave(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addLeaveListener     = MO.MListenerLeave_addLeaveListener;
+   o.processLeaveListener = MO.MListenerLeave_processLeaveListener;
+   return o;
+}
+MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
+   return this.addListener(MO.EEvent.Leave, w, m);
+}
+MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Leave, p1, p2, p3, p4, p5);
+}
+MO.MListenerResult = function MListenerResult(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addResultListener     = MO.MListenerResult_addResultListener;
+   o.removeResultListener  = MO.MListenerResult_removeResultListener;
+   o.processResultListener = MO.MListenerResult_processResultListener;
+   o.clearResultListeners  = MO.MListenerResult_clearResultListeners;
+   return o;
+}
+MO.MListenerResult_addResultListener = function MListenerResult_addResultListener(owner, method){
+   return this.addListener(MO.EEvent.Result, owner, method);
+}
+MO.MListenerResult_removeResultListener = function MListenerResult_removeResultListener(owner, method){
+   return this.removeListener(MO.EEvent.Result, owner, method);
+}
+MO.MListenerResult_processResultListener = function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Result, p1, p2, p3, p4, p5);
+}
+MO.MListenerResult_clearResultListeners = function MListenerResult_clearResultListeners(){
+   return this.clearListeners(MO.EEvent.Result);
+}
+MO.MListenerSelected = function MListenerSelected(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o.addSelectedListener     = MO.MListenerSelected_addSelectedListener;
+   o.processSelectedListener = MO.MListenerSelected_processSelectedListener;
+   return o;
+}
+MO.MListenerSelected_addSelectedListener = function MListenerSelected_addSelectedListener(w, m){
+   return this.addListener(MO.EEvent.Selected, w, m);
+}
+MO.MListenerSelected_processSelectedListener = function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
+   this.processListener(MO.EEvent.Selected, p1, p2, p3, p4, p5);
+}
+MO.SServiceInfo = function SServiceInfo(){
+   var o = this;
+   o.service = null;
+   o.action  = null;
+   o.url     = null;
+   return o;
+}
+MO.SUiSize2 = function SUiSize2(width, height){
+   var o = this;
+   MO.SSize2.call(o, width, height);
+   o.parse = MO.SUiSize2_parse;
+   return o;
+}
+MO.SUiSize2_parse = function SUiSize2_parse(source){
+   var o = this;
+   var items = source.split(',')
+   if(items.length == 2){
+      var width = items[0];
+      if(MO.Lang.String.contains(width, '%')){
+         o.width = width;
       }else{
-         o.onProcess();
+         o.width = parseInt(width);
       }
-      sp.record();
-   }
-   MO.TEvent_dump = function TEvent_dump(){
-      return RClass.typeOf(this) + ' [' + this.owner + ',' + this.type + '-' + this.code + ']';
+      var height = items[1];
+      if(MO.Lang.String.contains(height, '%')){
+         o.height = height;
+      }else{
+         o.height = parseInt(height);
+      }
+   }else{
+      throw new MO.TError(o, "Parse value failure. (value={1})", items);
    }
 }
-with(MO){
-   MO.TEventProcess = function TEventProcess(po, pm, pc){
-      var o = this;
-      o.owner    = po;
-      o.invoke   = pm;
-      o.clazz    = RClass.name(pc);
-      o.invokeCd = EEventInvoke.Unknown;
-      o.isBefore = TEventProcess_isBefore;
-      o.isAfter  = TEventProcess_isAfter;
-      o.dispose  = TEventProcess_dispose;
-      o.dump     = TEventProcess_dump;
-      return o;
-   }
-   MO.TEventProcess_isBefore = function TEventProcess_isBefore(){
-      return this.invokeCd == EEventInvoke.Before;
-   }
-   MO.TEventProcess_isAfter = function TEventProcess_isAfter(){
-      return this.invokeCd == EEventInvoke.After;
-   }
-   MO.TEventProcess_dispose = function TEventProcess_dispose(){
-      var o = this;
-      o.owner = null;
-      o.invoke = null;
-      o.clazz = null;
-      o.invokeCd = null;
-   }
-   MO.TEventProcess_dump = function TEventProcess_dump(){
-      var o = this;
-      return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
+MO.TDatasetFetchArg = function TDatasetFetchArg(o){
+   if(!o){o = this;}
+   o.datasets   = new MO.TDictionary();
+   o.saveConfig = MO.TDatasetFetchArg_saveConfig;
+   o.process    = MO.TDatasetFetchArg_process;
+   return o;
+}
+MO.TDatasetFetchArg_saveConfig = function TDatasetFetchArg_saveConfig(p){
+   var o = this;
+   p.set('name', o.name);
+}
+MO.TDatasetFetchArg_process = function TDatasetFetchArg_process(){
+   var o = this;
+   if(o.owner){
+      o.callback.call(o.owner, o);
+   }else{
+      o.callback(o);
    }
 }
-with(MO){
-   MO.THtmlEvent = function THtmlEvent(){
-      var o = this;
-      o.linker  = null;
-      o.events  = new Object();
-      o.push    = THtmlEvent_push;
-      o.dispose = THtmlEvent_dispose;
-      o.dump    = THtmlEvent_dump;
-      return o;
+MO.TDatasetFetchArg_push = function TDatasetFetchArg_push(v){
+   var o = this;
+   if(RClass.isClass(v, TSearchItem)){
+      o.searchs.push(v);
+   }else if(RClass.isClass(v, TOrderItem)){
+      o.orders.push(v);
    }
-   MO.THtmlEvent_push = function THtmlEvent_push(pn, pe){
-      var o = this;
-      var ess = o.events;
-      var es = ess[pn];
-      if(!es){
-         es = new Array();
-         es.handle = pe.handle;
-         ess[pn] = es;
-      }
-      var c = es.length;
-      if(c > 0){
-         var fn = pe.annotation.name();
-         for(var i = 0; i < c; i++){
-            var e = es[i];
-            var en = e.annotation.name();
-            if(en == fn){
-               throw new TError(o, 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', en, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
-            }
+}
+MO.TDatasetFetchArg_invoke = function TDatasetFetchArg_invoke(){
+   var o = this;
+   if(o.callback){
+      o.callback.invoke(o);
+   }
+}
+MO.TEvent = function TEvent(owner, code, proc){
+   var o = this;
+   o.owner     = owner;
+   o.code      = code;
+   o.type      = null;
+   o.onProcess = proc;
+   o.isBefore  = MO.TEvent_isBefore;
+   o.isAfter   = MO.TEvent_isAfter;
+   o.process   = MO.TEvent_process;
+   o.dump      = MO.TEvent_dump;
+   return o;
+}
+MO.TEvent_isBefore = function TEvent_isBefore(){
+   return (EEventType.Before == this.type);
+}
+MO.TEvent_isAfter = function TEvent_isAfter(){
+   return (EEventType.After == this.type);
+}
+MO.TEvent_process = function TEvent_process(){
+   var o = this;
+   if(!o.onProcess){
+      return RMessage.fatal(o, null, 'Process event is null. (owner={1})', RClass.dump(o.owner));
+   }
+   var sp = new TSpeed(o, 'Process event (owner={0}, process={1})', o.owner, RMethod.name(o.onProcess));
+   if(o.owner){
+      o.onProcess.call(o.owner, o);
+   }else{
+      o.onProcess();
+   }
+   sp.record();
+}
+MO.TEvent_dump = function TEvent_dump(){
+   return RClass.typeOf(this) + ' [' + this.owner + ',' + this.type + '-' + this.code + ']';
+}
+MO.TEventProcess = function TEventProcess(po, pm, pc){
+   var o = this;
+   o.owner    = po;
+   o.invoke   = pm;
+   o.clazz    = MO.Class.name(pc);
+   o.invokeCd = MO.EEventInvoke.Unknown;
+   o.isBefore = MO.TEventProcess_isBefore;
+   o.isAfter  = MO.TEventProcess_isAfter;
+   o.dispose  = MO.TEventProcess_dispose;
+   o.dump     = MO.TEventProcess_dump;
+   return o;
+}
+MO.TEventProcess_isBefore = function TEventProcess_isBefore(){
+   return this.invokeCd == MO.EEventInvoke.Before;
+}
+MO.TEventProcess_isAfter = function TEventProcess_isAfter(){
+   return this.invokeCd == MO.EEventInvoke.After;
+}
+MO.TEventProcess_dispose = function TEventProcess_dispose(){
+   var o = this;
+   o.owner = null;
+   o.invoke = null;
+   o.clazz = null;
+   o.invokeCd = null;
+}
+MO.TEventProcess_dump = function TEventProcess_dump(){
+   var o = this;
+   return RClass.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + RMethod.name(o.invoke);
+}
+MO.THtmlEvent = function THtmlEvent(){
+   var o = this;
+   o.linker  = null;
+   o.events  = new Object();
+   o.push    = MO.THtmlEvent_push;
+   o.dispose = MO.THtmlEvent_dispose;
+   o.dump    = MO.THtmlEvent_dump;
+   return o;
+}
+MO.THtmlEvent_push = function THtmlEvent_push(pn, pe){
+   var o = this;
+   var ess = o.events;
+   var es = ess[pn];
+   if(!es){
+      es = new Array();
+      es.handle = pe.handle;
+      ess[pn] = es;
+   }
+   var c = es.length;
+   if(c > 0){
+      var fn = pe.annotation.name();
+      for(var i = 0; i < c; i++){
+         var e = es[i];
+         var en = e.annotation.name();
+         if(en == fn){
+            throw new TError(o, 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', en, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
          }
       }
-      es[es.length] = pe;
    }
-   MO.THtmlEvent_dispose = function THtmlEvent_dispose(){
-      var o = this;
-      for(var n in o.events){
-         var e = o.events[n];
-         if(e.length){
-            o.linker[e.handle] = null;
-         }
-      }
-      if(o.linker.linker){
-         o.linker.removeAttribute('link');
+   es[es.length] = pe;
+}
+MO.THtmlEvent_dispose = function THtmlEvent_dispose(){
+   var o = this;
+   for(var n in o.events){
+      var e = o.events[n];
+      if(e.length){
+         o.linker[e.handle] = null;
       }
    }
-   MO.THtmlEvent_dump = function THtmlEvent_dump(){
-      var o = this;
-      var ess = o.events;
-      var r = new TString();
-      for(var en in ess){
-         var es = ess[en];
-         var ec = es.length;
-         r.append('event=' + en + ' (count=' + ec + ')\n');
-         for(var n = 0; n < ec; n++){
-            var e = es[n];
-            r.append('   ' + n + ' source=' + RClass.dump(e.source) + ', event=' + RClass.dump(e) + '\n');
-         }
-      }
-      return r.flush();
-   }
-   MO.THtmlEvent_load = function THtmlEvent_load(e){
-      var o = this;
-      o.ctrlKey = e.ctrlKey;
-      o.keyCode = e.keyCode;
+   if(o.linker.linker){
+      o.linker.removeAttribute('link');
    }
 }
-with(MO){
-   MO.TOrderItem = function TOrderItem(o){
-      if(!o){o = this;}
-      return o;
+MO.THtmlEvent_dump = function THtmlEvent_dump(){
+   var o = this;
+   var ess = o.events;
+   var r = new TString();
+   for(var en in ess){
+      var es = ess[en];
+      var ec = es.length;
+      r.append('event=' + en + ' (count=' + ec + ')\n');
+      for(var n = 0; n < ec; n++){
+         var e = es[n];
+         r.append('   ' + n + ' source=' + RClass.dump(e.source) + ', event=' + RClass.dump(e) + '\n');
+      }
    }
-   MO.TOrderItem_set = function TOrderItem_set(n, t){
-      var o = this;
-      o.name = n;
-      o.type = t;
+   return r.flush();
+}
+MO.THtmlEvent_load = function THtmlEvent_load(e){
+   var o = this;
+   o.ctrlKey = e.ctrlKey;
+   o.keyCode = e.keyCode;
+}
+MO.TOrderItem = function TOrderItem(o){
+   var o = this;
+   return o;
+}
+MO.TOrderItem_set = function TOrderItem_set(n, t){
+   var o = this;
+   o.name = n;
+   o.type = t;
+}
+MO.TOrderItem_toNode = function TOrderItem_toNode(){
+   var o = this;
+   var n = new MO.TNode('OrderItem');
+   n.set('name', o.name);
+   n.set('type', o.type);
+   return n;
+}
+MO.TOrderItem_pack = function TOrderItem_pack(){
+   var o = this;
+   var as = new MO.TAttributes();
+   as.set("name", o.name);
+   as.set("type", o.type);
+   return as.pack();
+}
+MO.TOrderItem_unpack = function TOrderItem_unpack(s){
+   var o = this;
+   var as = new MO.TAttributes();
+   as.unpack(s);
+   o.name = as.get("name");
+   o.type = as.get("type");
+}
+MO.TOrderItems = function TOrderItems(){
+   var o = this;
+   MO.TObjects.call(o);
+}
+MO.TOrderItems_pack = function TOrderItems_pack(){
+   var o = this;
+   var ts = new MO.TStrings();
+   var len = o.count;
+   for(var n = 0; n < len; n++){
+      var s = o.get(n).pack();
+      ts.push(s);
    }
-   MO.TOrderItem_toNode = function TOrderItem_toNode(){
-      var o = this;
-      var n = new TNode('OrderItem');
-      n.set('name', o.name);
-      n.set('type', o.type);
-      return n;
-   }
-   MO.TOrderItem_pack = function TOrderItem_pack(){
-      var o = this;
-      var as = new TAttributes();
-      as.set("name", o.name);
-      as.set("type", o.type);
-      return as.pack();
-   }
-   MO.TOrderItem_unpack = function TOrderItem_unpack(s){
-      var o = this;
-      var as = new TAttributes();
-      as.unpack(s);
-      o.name = as.get("name");
-      o.type = as.get("type");
+   return ts.pack();
+}
+MO.TOrderItems_unpack = function TOrderItems_unpack(p){
+   var o = this;
+   o.clear();
+   var ts = new MO.TStrings();
+   ts.unpack(p);
+   for(var n = 0; n < ts.count; n++){
+      t = ts.get(n);
+      var ti = new TOrderItem();
+      ti.unpack(t);
+      o.push(ti);
    }
 }
-with(MO){
-   MO.TOrderItems = function TOrderItems(o){
-      if(!o){o = this;}
-      TObjects(o);
+MO.TSearchItem = function TSearchItem(){
+   var o = this;
+   return o;
+}
+MO.TSearchItem_set = function TSearchItem_set(n, v, t, f){
+   var o = this;
+   o.name  = n;
+   o.type  = MO.Lang.String.nvl(t, MO.ESearch.Equals);
+   o.value = v;
+   o.format = f;
+}
+MO.TSearchItem_toNode = function TSearchItem_toNode(){
+   var o = this;
+   var n = new MO.TNode('SearchItem');
+   n.set('name', o.name);
+   n.set('type', o.type);
+   n.set('value', o.value);
+   n.set('format', o.format);
+   return n;
+}
+MO.TSearchItem_equals = function TSearchItem_equals(s){
+   var o = this;
+   if(o.name == s.name && o.type == s.type && o.value == s.value){
+	   return true;
    }
-   MO.TOrderItems_pack = function TOrderItems_pack(){
+   return false;
+}
+MO.TSearchItem_pack = function TSearchItem_pack(){
+   var o = this;
+   var as = new MO.TAttributes();
+   as.set("name", o.name);
+   as.set("type", o.type);
+   as.set("value", o.value);
+   as.set("format", o.format);
+   return as.pack();
+}
+MO.TSearchItem_unpack = function TSearchItem_unpack(s){
+   var o = this;
+   var as = new MO.TAttributes();
+   as.unpack(s);
+   o.name  = as.get("name");
+   o.type  = as.get("type");
+   o.value = as.get("value");
+   o.format = as.get("format");
+}
+MO.TSearchItems = function TSearchItems(){
+   var o = this;
+   MO.TObjects.call(o);
+}
+MO.TSearchItems_pack = function TSearchItems_pack(){
+   var o = this;
+   var ts = new MO.TStrings();
+   var len = o.count;
+   for(var n = 0; n < len; n++){
+      var s = o.get(n).pack();
+      ts.push(s);
+   }
+   return ts.pack();
+}
+MO.TSearchItems_removeAll = function TSearchItems_removeAll(v){
+   if(null != v){
       var o = this;
-      var ts = new TStrings();
-      var len = o.count;
-      for(var n = 0; n < len; n++){
-         var s = o.get(n).pack();
-         ts.push(s);
+      var n = 0;
+      var c = o.count;
+      for(var i=n; i<c; i++){
+         if(!o.memory[i].equals(v)){
+            o.memory[n++] = o.memory[i];
+         }
       }
-      return ts.pack();
+      o.count = n;
    }
-   MO.TOrderItems_unpack = function TOrderItems_unpack(p){
-      var o = this;
-      o.clear();
-      var ts = new TStrings();
-      ts.unpack(p);
-      for(var n = 0; n < ts.count; n++){
-         t = ts.get(n);
-         var ti = new TOrderItem();
-         ti.unpack(t);
+}
+MO.TSearchItems_unpack = function TSearchItems_unpack(p){
+   var o = this;
+   o.clear();
+   var ts = new MO.TStrings();
+   ts.unpack(p);
+   for(var n = 0; n < ts.count; n++){
+      t = ts.get(n);
+      var ti = new TSearchItem();
+      ti.unpack(t);
+      if(!MO.Lang.String.isEmpty(ti.name)){
          o.push(ti);
       }
-   }
-}
-with(MO){
-   MO.TSearchItem = function TSearchItem(o){
-      if(!o){o = this;}
-      return o;
-   }
-   MO.TSearchItem_set = function TSearchItem_set(n, v, t, f){
-      var o = this;
-      o.name  = n;
-      o.type  = RString.nvl(t, ESearch.Equals);
-      o.value = v;
-      o.format = f;
-   }
-   MO.TSearchItem_toNode = function TSearchItem_toNode(){
-      var o = this;
-      var n = new TNode('SearchItem');
-      n.set('name', o.name);
-      n.set('type', o.type);
-      n.set('value', o.value);
-      n.set('format', o.format);
-      return n;
-   }
-   MO.TSearchItem_equals = function TSearchItem_equals(s){
-      var o = this;
-      if(o.name == s.name && o.type == s.type && o.value == s.value){
-   	   return true;
-      }
-      return false;
-   }
-   MO.TSearchItem_pack = function TSearchItem_pack(){
-      var o = this;
-      var as = new TAttributes();
-      as.set("name", o.name);
-      as.set("type", o.type);
-      as.set("value", o.value);
-      as.set("format", o.format);
-      return as.pack();
-   }
-   MO.TSearchItem_unpack = function TSearchItem_unpack(s){
-      var o = this;
-      var as = new TAttributes();
-      as.unpack(s);
-      o.name  = as.get("name");
-      o.type  = as.get("type");
-      o.value = as.get("value");
-      o.format = as.get("format");
-   }
-}
-with(MO){
-   MO.TSearchItems = function TSearchItems(o){
-      if(!o){o = this;}
-      TObjects(o);
-   }
-   MO.TSearchItems_pack = function TSearchItems_pack(){
-      var o = this;
-      var ts = new TStrings();
-      var len = o.count;
-      for(var n = 0; n < len; n++){
-         var s = o.get(n).pack();
-         ts.push(s);
-      }
-      return ts.pack();
-   }
-   MO.TSearchItems_removeAll = function TSearchItems_removeAll(v){
-      if(null != v){
-         var o = this;
-         var n = 0;
-         var c = o.count;
-         for(var i=n; i<c; i++){
-            if(!o.memory[i].equals(v)){
-               o.memory[n++] = o.memory[i];
-            }
-         }
-         o.count = n;
-      }
-   }
-   MO.TSearchItems_unpack = function TSearchItems_unpack(p){
-      var o = this;
-      o.clear();
-      var ts = new TStrings();
-      ts.unpack(p);
-      for(var n = 0; n < ts.count; n++){
-         t = ts.get(n);
-         var ti = new TSearchItem();
-         ti.unpack(t);
-         if(!RString.isEmpty(ti.name)){
-            o.push(ti);
-         }
-         else{
-            o.clear();
-            RMessage.fatal(this, 'unpack', 'Invalid value (value={1})', p);
-         }
+      else{
+         o.clear();
+         MO.RMessage.fatal(this, 'unpack', 'Invalid value (value={1})', p);
       }
    }
 }
@@ -2278,469 +2116,462 @@ MO.FDuiWorkspace_appendChild = function FDuiWorkspace_appendChild(control){
       throw new MO.TError(o, 'Unknown child type.');
    }
 }
-with(MO){
-   MO.RUiControl = function RUiControl(){
-      var o = this;
-      o.PREFIX    = 'FUi';
-      o.inMoving  = false;
-      o.inSizing  = false;
-      o.inDesign  = false;
-      o.instances = new TObjects();
-      o.events    = new TMap();
-      o.controls  = new TMap();
-      return o;
-   }
-   MO.RUiControl.prototype.newInstance = function RUiControl_newInstance(p){
-      var o = this;
-      var r = null;
-      if(p){
-         var n = null
-         var tn = null;
-         if(p.constructor == String){
-            if(!RString.startsWith(p, o.PREFIX)){
-               n = o.PREFIX + p;
-            }
-         }else if(p.constructor == TXmlNode){
-            n = p.get('type');
-            if(RString.isEmpty(n)){
-               n = p.name();
-               if(!RString.startsWith(n, o.PREFIX)){
-                  n = o.PREFIX + n;
-               }
-            }else{
-               tn = n;
+MO.RUiControl = function RUiControl(){
+   var o = this;
+   o.PREFIX    = 'FUi';
+   o.inMoving  = false;
+   o.inSizing  = false;
+   o.inDesign  = false;
+   o.instances = new MO.TObjects();
+   o.events    = new MO.TMap();
+   o.controls  = new MO.TMap();
+   return o;
+}
+MO.RUiControl.prototype.newInstance = function RUiControl_newInstance(p){
+   var o = this;
+   var r = null;
+   if(p){
+      var n = null
+      var tn = null;
+      if(p.constructor == String){
+         if(!RString.startsWith(p, o.PREFIX)){
+            n = o.PREFIX + p;
+         }
+      }else if(p.constructor == MO.TXmlNode){
+         n = p.get('type');
+         if(MO.Lang.String.isEmpty(n)){
+            n = p.name();
+            if(!MO.Lang.String.startsWith(n, o.PREFIX)){
+               n = o.PREFIX + n;
             }
          }else{
-            throw new TError(o, 'Unknown parameter. (name={p})', p);
+            tn = n;
          }
-         r = RClass.create(n);
-         if(tn){
-            r.__typed = true;
-         }
-      }
-      if(r == null){
-         throw new TError(o, 'Create instance failure. (name={p})', p);
-      }
-      return r;
-   }
-   MO.RUiControl.prototype.attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
-      var o = this;
-      var e = null;
-      var p = c[n];
-      if(!RMethod.isEmpty(p) || m){
-         var cz = RClass.find(c.constructor);
-         var a = cz.annotation(EAnnotation.Event, n);
-         e = a.create();
-         e.annotation = a;
-         e.source = c;
-         e.hSource = h;
-         e.ohProcess = m;
-         e.onProcess = p;
-         e.process = RUiEvent.onProcess;
-         RUiEvent.find(h).push(a.linker(), e);
-         RHtml.linkSet(h, '_plink', c);
-         a.bind(h, u);
-      }
-      return e;
-   }
-   MO.RUiControl.prototype.innerCreate = function RUiControl_innerCreate(pc, px, pa){
-      var o = this;
-      if((pc == null) || (px == null)){
-         return;
-      }
-      if(RClass.isClass(pc, MProperty)){
-         pc.propertyLoad(px)
-      }
-      if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
-         var ns = px.nodes();
-         var nc = ns.count();
-         for(var i = 0; i < nc; i++){
-            var n = ns.get(i);
-            var c = pc.createChild(n, pa);
-            if(c){
-               o.innerCreate(c, n, pa);
-               pc.push(c);
-            }
-         }
-      }
-   }
-   MO.RUiControl.prototype.create = function RUiControl_create(pc, px, pa){
-      var o = this;
-      var c = null;
-      if(pc){
-         c = pc;
       }else{
-         c = RUiControl.newInstance(px.name());
+         throw new TError(o, 'Unknown parameter. (name={p})', p);
       }
-      o.innerCreate(c, px, pa);
-      return c;
+      r = MO.Class.create(n);
+      if(tn){
+         r.__typed = true;
+      }
    }
-   MO.RUiControl.prototype.innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
-      var o = this;
-      if((pc == null) || (px == null)){
-         return;
-      }
-      if(RClass.isClass(pc, MProperty)){
-         pc.propertyLoad(px);
-      }
-      var l = px.get('linker');
-      if(l && pr){
-         pr[l] = pc;
-      }
-      if(RClass.isClass(pc, FDuiControl)){
-         if(!pc.isBuild()){
-            pc.build(ph);
-         }else{
-            pc.refresh();
-         }
-      }
-      if(pc.__typed){
-         pr = pc;
-      }
-      if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
-         var ns = px.nodes();
-         var nc = ns.count();
-         for(var i = 0; i < nc; i++){
-            var n = ns.get(i);
-            var c = pc.createChild(n);
-            if(!c){
-               throw new TError('Invalid create child.');
-            }
-            o.innerbuild(pr, c, n, pa, ph);
+   if(r == null){
+      throw new MO.TError(o, 'Create instance failure. (name={p})', p);
+   }
+   return r;
+}
+MO.RUiControl.prototype.attachEvent = function RUiControl_attachEvent(c, n, h, m, u){
+   var o = this;
+   var e = null;
+   var p = c[n];
+   if(!MO.Method.isEmpty(p) || m){
+      var cz = MO.Class.find(c.constructor);
+      var a = cz.annotation(MO.EAnnotation.Event, n);
+      e = a.create();
+      e.annotation = a;
+      e.source = c;
+      e.hSource = h;
+      e.ohProcess = m;
+      e.onProcess = p;
+      e.process = MO.RUiEvent.onProcess;
+      MO.RUiEvent.find(h).push(a.linker(), e);
+      MO.RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
+   }
+   return e;
+}
+MO.RUiControl.prototype.innerCreate = function RUiControl_innerCreate(pc, px, pa){
+   var o = this;
+   if((pc == null) || (px == null)){
+      return;
+   }
+   if(MO.Class.isClass(pc, MO.MProperty)){
+      pc.propertyLoad(px)
+   }
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         var n = ns.get(i);
+         var c = pc.createChild(n, pa);
+         if(c){
+            o.innerCreate(c, n, pa);
             pc.push(c);
          }
       }
-      if(RClass.isClass(pc, FDuiControl)){
-         pc.builded(ph);
-      }
    }
-   MO.RUiControl.prototype.build = function RUiControl_build(c, x, a, h){
-      var o = this;
-      if(!c){
-         c = RUiControl.newInstance(x);
-      }
-      o.innerbuild(c, c, x, a, h);
-      return c;
-   }
-   MO.RUiControl.prototype.setStyleScroll = function RUiControl_setStyleScroll(h, c){
-      var s = h.style;
-      switch(c){
-         case EUiScroll.None:
-            s.overflowX = '';
-            s.overflowY = '';
-            break;
-         case EUiScroll.Horizontal:
-            s.overflowX = 'scroll';
-            break;
-         case EUiScroll.HorizontalAuto:
-            s.overflowX = 'auto';
-            break;
-         case EUiScroll.Vertical:
-            s.overflowY = 'scroll';
-            break;
-         case EUiScroll.VerticalAuto:
-            s.overflowY = 'auto';
-            break;
-         case EUiScroll.Both:
-            s.overflow = 'scroll';
-            break;
-         case EUiScroll.BothAuto:
-            s.overflow = 'auto';
-            break;
-         default:
-            throw new TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
-      }
-   }
-   MO.RUiControl.prototype.linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
-      var o = this;
-      var p = tc[n];
-      if(!RMethod.isEmpty(p) || m){
-         var cz = RClass.find(c.constructor);
-         var a = cz.annotation(EAnnotation.Event, n);
-         var e = new a.constructor();
-         e.name = a.name;
-         e.source = tc;
-         e.sender = sc;
-         e.hSource = h;
-         e.ohProcess = m;
-         e.onProcess = p;
-         e.process = RUiEvent.onProcess;
-         RUiEvent.find(h).push(e.type, e);
-         h[e.handle] = RUiEvent.ohEvent;
-         RHtml.linkSet(h, '_plink', tc);
-         return e;
-      }
-   }
-   MO.RUiControl.prototype.find = function RUiControl_find(c){
-      var o = this;
-      var r = null;
-      if(c){
-         if(c.constructor == Function){
-            c = RMethod.name(c);
-         }else if(c.constructor != String){
-            RMsg.fatal(o, null, 'Param invlid (class={0})', c);
-         }
-         var cs = o.controls;
-         var r = cs.get(c);
-         if(!r){
-            r = new TControl(c);
-            cs.set(c, r);
-         }
-      }
-      return r;
-   }
-   MO.RUiControl.prototype.fromNode = function RUiControl_fromNode(x, h){
-      if(x){
-         return this.create(x, h);
-      }
-   }
-   MO.RUiControl.prototype.fromXml = function RUiControl_fromXml(xml, hPanel, mode){
-      var c = null;
-      var x = RXml.makeNode(xml);
-      if(x){
-         c = this.create(x, hPanel, mode);
-      }
-      return c;
-   }
-   MO.RUiControl.prototype.toNode = function RUiControl_toNode(){
-   }
-   MO.RUiControl.prototype.toXml = function RUiControl_toXml(){
-   }
-   MO.RUiControl.prototype.store = function RUiControl_store(o, type){
-      var x = new TNode();
-      x.name = RClass.name(o).substr(1);
-      if(RClass.isClass(o, FContainer)){
-         o.storeConfig(x);
-      }else{
-         o.saveConfig(x);
-      }
-      return x;
-   }
-   MO.RUiControl.prototype.htmlControl = function RUiControl_htmlControl(e, c){
-      if(c){
-         while(e){
-            var o = RHtml.linkGet(e, 'control');
-            if(o && RClass.isClass(o, c)){
-               return o;
-            }
-            e = e.parentElement;
-         }
-      }else{
-         while(e){
-            var o = RHtml.linkGet(e, 'control');
-            if(o){
-               return o;
-            }
-            e = e.parentElement;
-         }
-      }
-      return null;
-   }
-   MO.RUiControl.prototype.psDesign = function RUiControl_psDesign(action, mode, flag, params){
-      var cs = this.instances;
-      if(cs && cs.count){
-         var l = cs.count;
-         for(var n=0; n<l; n++){
-            cs.get(n).psDesign(action, mode, flag, params);
-         }
-      }
-   }
-   MO.RUiControl.prototype.psMode = function RUiControl_psMode(action, mode, flag, params){
-      var cs = this.instances;
-      if(cs && cs.count){
-         var l = cs.count;
-         for(var n=0; n<l; n++){
-            cs.get(n).psMode(action, mode, flag, params);
-         }
-      }
-   }
-   MO.RUiControl.prototype.isInfo = function RUiControl_isInfo(v){
-      return v ? (0 == v.indexOf('C#')) : false;
-   }
-   MO.RUiControl.prototype.isGroup = function RUiControl_isGroup(v){
-      return v ? (0 == v.indexOf('G#')) : false;
-   }
-   MO.RUiControl = new RUiControl();
 }
-with(MO){
-   MO.RUiEvent = function RUiEvent(){
-      var o = this;
-      o._objects  = new Array();
-      o.current   = 0;
-      o.events    = new Array();
-      return o;
+MO.RUiControl.prototype.create = function RUiControl_create(pc, px, pa){
+   var o = this;
+   var c = null;
+   if(pc){
+      c = pc;
+   }else{
+      c = MO.RUiControl.newInstance(px.name());
    }
-   MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
-      RUiEvent.process(this, e ? e : window.event);
+   o.innerCreate(c, px, pa);
+   return c;
+}
+MO.RUiControl.prototype.innerbuild = function RUiControl_innerbuild(pr, pc, px, pa, ph){
+   var o = this;
+   if((pc == null) || (px == null)){
+      return;
    }
-   MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
-      var e = this;
-      var ea = e.annotation;
-      if(ea._logger){
-         MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
-      }
-      if(e.sender){
-         e.onProcess.call(e.source, e.sender, e);
+   if(MO.Class.isClass(pc, MO.MProperty)){
+      pc.propertyLoad(px);
+   }
+   var l = px.get('linker');
+   if(l && pr){
+      pr[l] = pc;
+   }
+   if(MO.Class.isClass(pc, MO.FDuiControl)){
+      if(!pc.isBuild()){
+         pc.build(ph);
       }else{
-         e.onProcess.call(e.source, e);
+         pc.refresh();
       }
    }
-   MO.RUiEvent.prototype.find = function RUiEvent_find(p){
-      var u = RHtml.uid(p);
-      var es = this._objects;
-      var e = es[u];
-      if(e == null){
-         e = es[u] = new THtmlEvent();
-         e.linker = p;
+   if(pc.__typed){
+      pr = pc;
+   }
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         var n = ns.get(i);
+         var c = pc.createChild(n);
+         if(!c){
+            throw new MO.TError('Invalid create child.');
+         }
+         o.innerbuild(pr, c, n, pa, ph);
+         pc.push(c);
       }
+   }
+   if(MO.Class.isClass(pc, MO.FDuiControl)){
+      pc.builded(ph);
+   }
+}
+MO.RUiControl.prototype.build = function RUiControl_build(c, x, a, h){
+   var o = this;
+   if(!c){
+      c = MO.RUiControl.newInstance(x);
+   }
+   o.innerbuild(c, c, x, a, h);
+   return c;
+}
+MO.RUiControl.prototype.setStyleScroll = function RUiControl_setStyleScroll(h, c){
+   var s = h.style;
+   switch(c){
+      case MO.EUiScroll.None:
+         s.overflowX = '';
+         s.overflowY = '';
+         break;
+      case MO.EUiScroll.Horizontal:
+         s.overflowX = 'scroll';
+         break;
+      case MO.EUiScroll.HorizontalAuto:
+         s.overflowX = 'auto';
+         break;
+      case MO.EUiScroll.Vertical:
+         s.overflowY = 'scroll';
+         break;
+      case MO.EUiScroll.VerticalAuto:
+         s.overflowY = 'auto';
+         break;
+      case MO.EUiScroll.Both:
+         s.overflow = 'scroll';
+         break;
+      case MO.EUiScroll.BothAuto:
+         s.overflow = 'auto';
+         break;
+      default:
+         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+   }
+}
+MO.RUiControl.prototype.linkEvent = function RUiControl_linkEvent(tc, sc, n, h, m){
+   var o = this;
+   var p = tc[n];
+   if(!RMethod.isEmpty(p) || m){
+      var cz = RClass.find(c.constructor);
+      var a = cz.annotation(MO.EAnnotation.Event, n);
+      var e = new a.constructor();
+      e.name = a.name;
+      e.source = tc;
+      e.sender = sc;
+      e.hSource = h;
+      e.ohProcess = m;
+      e.onProcess = p;
+      e.process = RUiEvent.onProcess;
+      RUiEvent.find(h).push(e.type, e);
+      h[e.handle] = RUiEvent.ohEvent;
+      RHtml.linkSet(h, '_plink', tc);
       return e;
    }
-   MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
-      var o = this;
-      if(!hs || !he){
-         return;
+}
+MO.RUiControl.prototype.find = function RUiControl_find(c){
+   var o = this;
+   var r = null;
+   if(c){
+      if(c.constructor == Function){
+         c = RMethod.name(c);
+      }else if(c.constructor != String){
+         RMsg.fatal(o, null, 'Param invlid (class={0})', c);
       }
-      var eo = o.find(hs);
-      if(eo){
-         var es = eo.events[he.type];
-         if(es){
-            var ec = es.length;
-            for(var i = 0; i < ec; i++){
-               var e = es[i];
-               var ea = e.annotation;
-               e.source = RHtml.linkGet(hs, '_plink');
-               e.hSender = RHtml.eventSource(he);
-               e.sender = e.hSender._plinker;
-               e.hSource = hs;
-               ea.attach(e, he);
-               if(e.ohProcess){
-                  if(ea._logger){
-                     MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-                  }
-                  e.ohProcess.call(e.source, e);
-               }else if(e.onProcess){
-                  RConsole.find(FUiFrameEventConsole).push(e);
+      var cs = o.controls;
+      var r = cs.get(c);
+      if(!r){
+         r = new TControl(c);
+         cs.set(c, r);
+      }
+   }
+   return r;
+}
+MO.RUiControl.prototype.fromNode = function RUiControl_fromNode(x, h){
+   if(x){
+      return this.create(x, h);
+   }
+}
+MO.RUiControl.prototype.fromXml = function RUiControl_fromXml(xml, hPanel, mode){
+   var c = null;
+   var x = RXml.makeNode(xml);
+   if(x){
+      c = this.create(x, hPanel, mode);
+   }
+   return c;
+}
+MO.RUiControl.prototype.toNode = function RUiControl_toNode(){
+}
+MO.RUiControl.prototype.toXml = function RUiControl_toXml(){
+}
+MO.RUiControl.prototype.store = function RUiControl_store(o, type){
+   var x = new TNode();
+   x.name = RClass.name(o).substr(1);
+   if(RClass.isClass(o, FContainer)){
+      o.storeConfig(x);
+   }else{
+      o.saveConfig(x);
+   }
+   return x;
+}
+MO.RUiControl.prototype.htmlControl = function RUiControl_htmlControl(e, c){
+   if(c){
+      while(e){
+         var o = RHtml.linkGet(e, 'control');
+         if(o && RClass.isClass(o, c)){
+            return o;
+         }
+         e = e.parentElement;
+      }
+   }else{
+      while(e){
+         var o = RHtml.linkGet(e, 'control');
+         if(o){
+            return o;
+         }
+         e = e.parentElement;
+      }
+   }
+   return null;
+}
+MO.RUiControl.prototype.psDesign = function RUiControl_psDesign(action, mode, flag, params){
+   var cs = this.instances;
+   if(cs && cs.count){
+      var l = cs.count;
+      for(var n=0; n<l; n++){
+         cs.get(n).psDesign(action, mode, flag, params);
+      }
+   }
+}
+MO.RUiControl.prototype.psMode = function RUiControl_psMode(action, mode, flag, params){
+   var cs = this.instances;
+   if(cs && cs.count){
+      var l = cs.count;
+      for(var n=0; n<l; n++){
+         cs.get(n).psMode(action, mode, flag, params);
+      }
+   }
+}
+MO.RUiControl.prototype.isInfo = function RUiControl_isInfo(v){
+   return v ? (0 == v.indexOf('C#')) : false;
+}
+MO.RUiControl.prototype.isGroup = function RUiControl_isGroup(v){
+   return v ? (0 == v.indexOf('G#')) : false;
+}
+MO.RUiControl = new MO.RUiControl();
+MO.Dui.Control = MO.RUiControl;
+MO.RUiEvent = function RUiEvent(){
+   var o = this;
+   o._objects  = new Array();
+   o.current   = 0;
+   o.events    = new Array();
+   return o;
+}
+MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
+   MO.RUiEvent.process(this, e ? e : window.event);
+}
+MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
+   var e = this;
+   var ea = e.annotation;
+   if(ea._logger){
+      MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.onProcess));
+   }
+   if(e.sender){
+      e.onProcess.call(e.source, e.sender, e);
+   }else{
+      e.onProcess.call(e.source, e);
+   }
+}
+MO.RUiEvent.prototype.find = function RUiEvent_find(p){
+   var u = MO.RHtml.uid(p);
+   var es = this._objects;
+   var e = es[u];
+   if(e == null){
+      e = es[u] = new MO.THtmlEvent();
+      e.linker = p;
+   }
+   return e;
+}
+MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
+   var o = this;
+   if(!hs || !he){
+      return;
+   }
+   var eo = o.find(hs);
+   if(eo){
+      var es = eo.events[he.type];
+      if(es){
+         var ec = es.length;
+         for(var i = 0; i < ec; i++){
+            var e = es[i];
+            var ea = e.annotation;
+            e.source = MO.RHtml.linkGet(hs, '_plink');
+            e.hSender = MO.RHtml.eventSource(he);
+            e.sender = e.hSender._plinker;
+            e.hSource = hs;
+            ea.attach(e, he);
+            if(e.ohProcess){
+               if(ea._logger){
+                  MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.ohProcess));
                }
+               e.ohProcess.call(e.source, e);
+            }else if(e.onProcess){
+               MO.Console.find(MO.FUiFrameEventConsole).push(e);
             }
-            return true;
          }
-      }
-      return false;
-   }
-   MO.RUiEvent.prototype.release = function RUiEvent_release(){
-      var o = this;
-      var v = o._objects;
-      if(v){
-         RMemory.free(v);
-         o._objects = null;
+         return true;
       }
    }
-   MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
-      if(!event){
-         event = new TEvent();
-      }
-      event.sender = sender;
-      event.code = code;
-      return event;
-   }
-   MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
-      var e = null;
-      var es = this.events;
-      for(var n=0; n<es.length; n++){
-         if(!es[n].inUsing){
-            e = es[n];
-            break;
-         }
-      }
-      if(!e){
-         e = es[es.length] = new TEvent();
-      }
-      e.inUsing = true;
-      e.sender = s;
-      e.code = c;
-      return e;
-   }
-   MO.RUiEvent.prototype.free = function RUiEvent_free(e){
-      e.inUsing = false;
-   }
-   MO.RUiEvent = new RUiEvent();
+   return false;
 }
-with(MO){
-   MO.RUiLayer = function RUiLayer(){
-      var o = this;
-      o._layers = new Array();
-      return o;
+MO.RUiEvent.prototype.release = function RUiEvent_release(){
+   var o = this;
+   var v = o._objects;
+   if(v){
+      MO.RMemory.free(v);
+      o._objects = null;
    }
-   MO.RUiLayer.prototype.next = function RUiLayer_next(p){
-      var o = this;
-      var n = RInteger.nvl(p, EUiLayer.Default);
-      var c = RInteger.nvl(o._layers[n], n);
-      o._layers[n] = ++c;
-      return c;
-   }
-   MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
-      var o = this;
-      var n = RInteger.nvl(p, EUiLayer.Default);
-      var c = RInteger.nvl(o._layers[n], n);
-      --c;
-      if(c > n){
-         o._layers[n] = c;
-      }
-      return c;
-   }
-   MO.RUiLayer = new RUiLayer();
 }
-with(MO){
-   MO.RUiService = function RUiService(){
-      var o = this;
-      o._services = new TDictionary();
-      return o;
+MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
+   if(!event){
+      event = new MO.TEvent();
    }
-   MO.RUiService.prototype.url = function RUiService_url(p){
-      if(RString.startsWith(p, 'http://')){
-         return p;
+   event.sender = sender;
+   event.code = code;
+   return event;
+}
+MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
+   var e = null;
+   var es = this.events;
+   for(var n=0; n<es.length; n++){
+      if(!es[n].inUsing){
+         e = es[n];
+         break;
       }
-      if(RString.startsWith(p, '#')){
-         return p.substr(1);
-      }
-      if(!RString.startsWith(p, '/')){
-         p = '/' + p;
-      }
-      return p + '.ws';
    }
-   MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
-      return this.url(s) + '?action=' + a;
+   if(!e){
+      e = es[es.length] = new MO.TEvent();
    }
-   MO.RUiService.prototype.parse = function RUiService_parse(p){
-      var o = this;
-      var s = null;
-      var ss = o._services;
-      if(p){
-         s = ss.get(p);
-         if(s == null){
-            var ps = p.split('@');
-            if(ps.length == 1){
-               if(ps[0]){
-                  s = new SServiceInfo();
-                  s.service = ps[0];
-                  s.action = null;
-                  s.url = o.url(ps[0]);
-               }
-            }else if(ps.length == 2){
-               if(ps[0] && ps[1]){
-                  s = new SServiceInfo();
-                  s.service = ps[1];
-                  s.action = ps[0];
-                  s.url = o.url(ps[1]) + '?action=' + ps[0];
-               }
+   e.inUsing = true;
+   e.sender = s;
+   e.code = c;
+   return e;
+}
+MO.RUiEvent.prototype.free = function RUiEvent_free(e){
+   e.inUsing = false;
+}
+MO.RUiEvent = new MO.RUiEvent();
+MO.RUiLayer = function RUiLayer(){
+   var o = this;
+   o._layers = new Array();
+   return o;
+}
+MO.RUiLayer.prototype.next = function RUiLayer_next(p){
+   var o = this;
+   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var c = MO.Lang.Integer.nvl(o._layers[n], n);
+   o._layers[n] = ++c;
+   return c;
+}
+MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
+   var o = this;
+   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var c = MO.Lang.Integer.nvl(o._layers[n], n);
+   --c;
+   if(c > n){
+      o._layers[n] = c;
+   }
+   return c;
+}
+MO.RUiLayer = new MO.RUiLayer();
+MO.RUiService = function RUiService(){
+   var o = this;
+   o._services = new MO.TDictionary();
+   return o;
+}
+MO.RUiService.prototype.url = function RUiService_url(p){
+   if(MO.Lang.String.startsWith(p, 'http://')){
+      return p;
+   }
+   if(MO.Lang.String.startsWith(p, '#')){
+      return p.substr(1);
+   }
+   if(!MO.Lang.String.startsWith(p, '/')){
+      p = '/' + p;
+   }
+   return p + '.ws';
+}
+MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
+   return this.url(s) + '?action=' + a;
+}
+MO.RUiService.prototype.parse = function RUiService_parse(p){
+   var o = this;
+   var s = null;
+   var ss = o._services;
+   if(p){
+      s = ss.get(p);
+      if(s == null){
+         var ps = p.split('@');
+         if(ps.length == 1){
+            if(ps[0]){
+               s = new MO.SServiceInfo();
+               s.service = ps[0];
+               s.action = null;
+               s.url = o.url(ps[0]);
+            }
+         }else if(ps.length == 2){
+            if(ps[0] && ps[1]){
+               s = new MO.SServiceInfo();
+               s.service = ps[1];
+               s.action = ps[0];
+               s.url = o.url(ps[1]) + '?action=' + ps[0];
             }
          }
-         if(s == null){
-            throw new TError(o, 'Unknown service format. (source={1})', p);
-         }
-         ss.set(p, s);
       }
-      return s;
+      if(s == null){
+         throw new MO.TError(o, 'Unknown service format. (source={1})', p);
+      }
+      ss.set(p, s);
    }
-   MO.RUiService = new RUiService();
+   return s;
 }
+MO.RUiService = new MO.RUiService();

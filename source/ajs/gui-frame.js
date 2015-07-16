@@ -1,8 +1,6 @@
-with(MO){
-   MO.FGuiBar = function FGuiBar(o){
-      o = RClass.inherits(this, o, FGuiFrame);
-      return o;
-   }
+MO.FGuiBar = function FGuiBar(o){
+   o = MO.Class.inherits(this, o, MO.FGuiFrame);
+   return o;
 }
 MO.FGuiChartTotal = function FGuiChartTotal(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -155,9 +153,7 @@ MO.FGuiChartTotal_dispose = function FGuiChartTotal_dispose() {
    var o = this;
    o.__base.FGuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FGuiWindow = function FGuiWindow(o){
-      o = RClass.inherits(this, o, FGuiFrame);
-      return o;
-   }
+MO.FGuiWindow = function FGuiWindow(o){
+   o = MO.Class.inherits(this, o, MO.FGuiFrame);
+   return o;
 }

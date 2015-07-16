@@ -1,158 +1,156 @@
-with(MO){
-   // ============================================================
-   // MUiSizeable
-   // ============================================================
-   MO.MUiSizeable = function MUiSizeable(o){
-      o = RClass.inherits(this, o);
-      //..........................................................
-      // @attribute
-      o.isSizeable  = true;
-      //..........................................................
-      // @event
-      o.onSize      = null;
-      //..........................................................
-      // @method
-      o.inSizeRange = RMethod.virtual(o, 'inSizeRange');
-      o.cursor      = MUiSizeable_cursor;
-      o.setCursor   = MUiSizeable_setCursor;
-      o.resize      = MUiSizeable_resize;
-      o.setBounds   = MUiSizeable_setBounds;
-      o.startDrag   = MUiSizeable_startDrag;
-      o.stopDrag    = MUiSizeable_stopDrag;
-      return o;
+// ============================================================
+// MUiSizeable
+// ============================================================
+MO.MUiSizeable = function MUiSizeable(o){
+   o = MO.Class.inherits(this, o);
+   //..........................................................
+   // @attribute
+   o.isSizeable  = true;
+   //..........................................................
+   // @event
+   o.onSize      = null;
+   //..........................................................
+   // @method
+   o.inSizeRange = MO.Method.virtual(o, 'inSizeRange');
+   o.cursor      = MO.MUiSizeable_cursor;
+   o.setCursor   = MO.MUiSizeable_setCursor;
+   o.resize      = MO.MUiSizeable_resize;
+   o.setBounds   = MO.MUiSizeable_setBounds;
+   o.startDrag   = MO.MUiSizeable_startDrag;
+   o.stopDrag    = MO.MUiSizeable_stopDrag;
+   return o;
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
+   var o = this;
+   var src = MO.Window.source();
+   if(!o.inSizeRange(src)){
+      return MO.ECursor.Default;
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
-      var o = this;
-      var src = RWindow.source();
-      if(!o.inSizeRange(src)){
-         return ECursor.Default;
+   var hObj = o.panel(MO.EPanel.Border);
+   var r = MO.Window.Html.rect(hObj);
+   var pos = MO.Window.offsetPos();
+   var p = new MO.TPoint(pos.x-r.left, pos.y-r.top);
+   while(src){
+      p.x += src.offsetLeft + src.clientLeft;
+      p.y += src.offsetTop + src.clientTop;
+      if(src == hObj){
+         break;
       }
-      var hObj = this.panel(EPanel.Border);
-      var r = RHtml.rect(hObj);
-      var pos = RWindow.offsetPos();
-      var p = new TPoint(pos.x-r.left, pos.y-r.top);
-      while(src){
-         p.x += src.offsetLeft + src.clientLeft;
-         p.y += src.offsetTop + src.clientTop;
-         if(src == hObj){
-            break;
-         }
-         src = src.offsetParent;
-      }
-      var border = EMoveSize.Border;
-      var range = EMoveSize.Range;
-      x = p.x;
-      y = p.y;
-      var right = r.width();
-      var bottom = r.height();
-      //RLog.debug(o, p.dump() + '- (' + right + ',' + bottom + ') - ' + r.dump() + ' - ' + range);
-      // Calculate
-      if(x>=0 && x<=range && y>=0 && y<=range){
-         return ECursor.NorthWest;
-      }else if(x>=0 && x<=range && y>=bottom-range && y<=bottom){
-         return ECursor.SouthWest;
-      }else if(x>=right-range && x<=right && y>=bottom-range && y<=bottom){
-         return ECursor.SouthEast;
-      }else if(x>=right-range && x<=right && y>=0 && y<=range){
-         return ECursor.NorthEast;
-      }else if(x>=0 && x<border && y>range && y<bottom-range){
-         return ECursor.West;
-      }else if(x>range && x<right-range && y>=bottom-border && y<=bottom){
-         return ECursor.South;
-      }else if(x>=right-border && x<=right && y>range && y<bottom-range){
-         return ECursor.East;
-      }else if(x>range && x<right-range && y>=0 && y<border){
-         return ECursor.North;
-      }
-      return ECursor.Default;
+      src = src.offsetParent;
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
-      if(!cursor){
-         cursor = this.cursor();
-      }
-      var h = this.panel(EPanel.Size);
-      if(h){
-         h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
-      }
+   var border = MO.EMoveSize.Border;
+   var range = MO.EMoveSize.Range;
+   x = p.x;
+   y = p.y;
+   var right = r.width();
+   var bottom = r.height();
+   //RLog.debug(o, p.dump() + '- (' + right + ',' + bottom + ') - ' + r.dump() + ' - ' + range);
+   // Calculate
+   if(x>=0 && x<=range && y>=0 && y<=range){
+      return MO.ECursor.NorthWest;
+   }else if(x>=0 && x<=range && y>=bottom-range && y<=bottom){
+      return MO.ECursor.SouthWest;
+   }else if(x>=right-range && x<=right && y>=bottom-range && y<=bottom){
+      return MO.ECursor.SouthEast;
+   }else if(x>=right-range && x<=right && y>=0 && y<=range){
+      return MO.ECursor.NorthEast;
+   }else if(x>=0 && x<border && y>range && y<bottom-range){
+      return MO.ECursor.West;
+   }else if(x>range && x<right-range && y>=bottom-border && y<=bottom){
+      return MO.ECursor.South;
+   }else if(x>=right-border && x<=right && y>range && y<bottom-range){
+      return MO.ECursor.East;
+   }else if(x>range && x<right-range && y>=0 && y<border){
+      return MO.ECursor.North;
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
-      var sizeable = false;
-      var hStyle = this.htmlPanel(EPanel.Border).style;
-      if(width != null){
-         width = Math.max(parseInt(width), EMoveSize.MinWidth);
-         if(this.width != width){
-            this.width = width;
-            hStyle.pixelWidth = width;
-            sizeable = true;
-         }
-      }
-      if(height != null){
-         height = Math.max(parseInt(height), EMoveSize.MinHeight);
-         if(this.height != height){
-            this.height = height;
-            hStyle.pixelHeight = height;
-            sizeable = true;
-         }
-      }
-      if(sizeable && this.onSize){
-         this.onSize();
+   return ECursor.Default;
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
+   if(!cursor){
+      cursor = this.cursor();
+   }
+   var h = this.panel(MO.EPanel.Size);
+   if(h){
+      h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
+   }
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
+   var sizeable = false;
+   var hStyle = this.htmlPanel(EPanel.Border).style;
+   if(width != null){
+      width = Math.max(parseInt(width), EMoveSize.MinWidth);
+      if(this.width != width){
+         this.width = width;
+         hStyle.pixelWidth = width;
+         sizeable = true;
       }
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
-      var sizeable = false;
-      var st = this.htmlPanel(EPanel.Border).style;
-      if(left != null){
-         if(right == null || (right != null && right-left > EMoveSize.MinWidth)){
-            left = Math.max(left, 0);
-         }else{
-            left = this.left;
-         }
-         if(force || this.left != left){
-            this.left = left;
-            st.pixelLeft = left;
-            sizeable = true;
-         }
-      }
-      if(top != null){
-         if(bottom == null || (bottom != null && bottom-top > EMoveSize.MinHeight)){
-            top = Math.max(top, 0);
-         }else{
-            top = this.top;
-         }
-         if(force || this.top != top){
-            this.top = top;
-            st.pixelTop = top;
-            sizeable = true;
-         }
-      }
-      if(right != null){
-         var width = Math.max(right-this.left+1, EMoveSize.MinWidth);
-         if(force || this.width != width){
-            this.width = width;
-            st.pixelWidth = this.width;
-            sizeable = true;
-         }
-      }
-      if(bottom != null){
-         var height = Math.max(bottom-this.top+1, EMoveSize.MinHeight);
-         if(force || this.height != height){
-            this.height = height;
-            st.pixelHeight = this.height;
-            sizeable = true;
-         }
-      }
-      if(sizeable && this.onSize){
-         this.onSize();
+   if(height != null){
+      height = Math.max(parseInt(height), EMoveSize.MinHeight);
+      if(this.height != height){
+         this.height = height;
+         hStyle.pixelHeight = height;
+         sizeable = true;
       }
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
+   if(sizeable && this.onSize){
+      this.onSize();
    }
-   // ------------------------------------------------------------
-   MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
+   var sizeable = false;
+   var st = this.htmlPanel(EPanel.Border).style;
+   if(left != null){
+      if(right == null || (right != null && right-left > EMoveSize.MinWidth)){
+         left = Math.max(left, 0);
+      }else{
+         left = this.left;
+      }
+      if(force || this.left != left){
+         this.left = left;
+         st.pixelLeft = left;
+         sizeable = true;
+      }
    }
+   if(top != null){
+      if(bottom == null || (bottom != null && bottom-top > EMoveSize.MinHeight)){
+         top = Math.max(top, 0);
+      }else{
+         top = this.top;
+      }
+      if(force || this.top != top){
+         this.top = top;
+         st.pixelTop = top;
+         sizeable = true;
+      }
+   }
+   if(right != null){
+      var width = Math.max(right-this.left+1, EMoveSize.MinWidth);
+      if(force || this.width != width){
+         this.width = width;
+         st.pixelWidth = this.width;
+         sizeable = true;
+      }
+   }
+   if(bottom != null){
+      var height = Math.max(bottom-this.top+1, EMoveSize.MinHeight);
+      if(force || this.height != height){
+         this.height = height;
+         st.pixelHeight = this.height;
+         sizeable = true;
+      }
+   }
+   if(sizeable && this.onSize){
+      this.onSize();
+   }
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
+}
+// ------------------------------------------------------------
+MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
 }

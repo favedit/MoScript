@@ -197,65 +197,63 @@ MO.FGuiChangeTransform_dispose = function FGuiChangeTransform_dispose(){
    var o = this;
    o.__base.FGuiTransform.dispose.call(o);
 }
-with(MO){
-   MO.FGuiFrameConsole = function FGuiFrameConsole(o){
-      o = RClass.inherits(this, o, FConsole);
-      o._scopeCd         = EScope.Local;
-      o._frames          = null;
-      o.construct        = FGuiFrameConsole_construct;
-      o.createFrame      = FGuiFrameConsole_createFrame;
-      o.create           = FGuiFrameConsole_create;
-      o.find             = FGuiFrameConsole_find;
-      o.get              = FGuiFrameConsole_get;
-      o.alloc            = FGuiFrameConsole_alloc;
-      o.free             = FGuiFrameConsole_free;
-      o.dispose          = FGuiFrameConsole_dispose;
-      return o;
+MO.FGuiFrameConsole = function FGuiFrameConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd    = MO.EScope.Local;
+   o._frames     = null;
+   o.construct   = MO.FGuiFrameConsole_construct;
+   o.createFrame = MO.FGuiFrameConsole_createFrame;
+   o.create      = MO.FGuiFrameConsole_create;
+   o.find        = MO.FGuiFrameConsole_find;
+   o.get         = MO.FGuiFrameConsole_get;
+   o.alloc       = MO.FGuiFrameConsole_alloc;
+   o.free        = MO.FGuiFrameConsole_free;
+   o.dispose     = MO.FGuiFrameConsole_dispose;
+   return o;
+}
+MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._frames = new MO.TDictionary();
+}
+MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
+   var o = this;
+   var describeConsole = MO.Console.find(MO.FGuiFrameDescribeConsole);
+   var xframe = describeConsole.load(name);
+   var frame = MO.RGuiControl.build(null, xframe, null, null);
+   frame.linkGraphicContext(context);
+   frame.psInitialize();
+   frame.build();
+   return frame;
+}
+MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
+   var o = this;
+   var frame = o.createFrame(context, null, name);
+   return frame;
+}
+MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
+   return this._frames.get(name);
+}
+MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
+   var o = this;
+   var frames = o._frames;
+   var frame = frames.get(name);
+   if(!frame){
+      frame = o.createFrame(context, null, name);
+      frames.set(name, frame);
    }
-   MO.FGuiFrameConsole_construct = function FGuiFrameConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      o._frames = new TDictionary();
-   }
-   MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context, control, name){
-      var o = this;
-      var describeConsole = RConsole.find(FGuiFrameDescribeConsole);
-      var xframe = describeConsole.load(name);
-      var frame = RGuiControl.build(null, xframe, null, null);
-      frame.linkGraphicContext(context);
-      frame.psInitialize();
-      frame.build();
-      return frame;
-   }
-   MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
-      var o = this;
-      var frame = o.createFrame(context, null, name);
-      return frame;
-   }
-   MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
-      return this._frames.get(name);
-   }
-   MO.FGuiFrameConsole_get = function FGuiFrameConsole_get(context, name){
-      var o = this;
-      var frames = o._frames;
-      var frame = frames.get(name);
-      if(!frame){
-         frame = o.createFrame(context, null, name);
-         frames.set(name, frame);
-      }
-      return frame;
-   }
-   MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
-   }
-   MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
-      f.setVisible(false);
-      this._freeFrames.push(f);
-   }
-   MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
-      var o = this;
-      o._frames = RObject.dispose(o._frames, true);
-      o.__base.FConsole.construct.call(o);
-   }
+   return frame;
+}
+MO.FGuiFrameConsole_alloc = function FGuiFrameConsole_alloc(f){
+}
+MO.FGuiFrameConsole_free = function FGuiFrameConsole_free(f){
+   f.setVisible(false);
+   this._freeFrames.push(f);
+}
+MO.FGuiFrameConsole_dispose = function FGuiFrameConsole_dispose(){
+   var o = this;
+   o._frames = MO.Lang.Object.dispose(o._frames, true);
+   o.__base.FConsole.construct.call(o);
 }
 MO.FGuiFrameDescribeConsole = function FGuiFrameDescribeConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

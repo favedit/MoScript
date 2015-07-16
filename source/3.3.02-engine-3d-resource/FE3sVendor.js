@@ -74,7 +74,7 @@ MO.FE3sVendor_makeUrl = function FE3sVendor_makeUrl(){
       }else{
          r += '&';
       }
-      r += 'date=' + RDate.format();
+      r += 'date=' + MO.Lang.Date.format();
    }
    return r;
 }

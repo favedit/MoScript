@@ -368,244 +368,242 @@ with(MO){
       o.__base.FDsCanvas.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDsCanvas = function FDsCanvas(o){
-      o = RClass.inherits(this, o, FDuiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
-      o._servicePreview      = 'cloud.resource.preview';
-      o._resourceTypeCd      = null;
-      o._optionRotation      = false;
-      o._activeSpace         = null;
-      o._canvasModeCd        = EDsCanvasMode.Drop;
-      o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-      o._switchWidth         = '*';
-      o._switchHeight        = '*';
-      o._capturePosition     = null;
-      o._captureMatrix       = null;
-      o._captureRotation     = null;
-      o._cameraMoveRate      = 8;
-      o._cameraKeyRotation   = 3;
-      o._cameraMouseRotation = 0.005;
-      o._dimensional         = null;
-      o._rotation            = null;
-      o.onBuild              = FDsCanvas_onBuild;
-      o.onMouseCaptureStart  = FDsCanvas_onMouseCaptureStart;
-      o.onMouseCapture       = FDsCanvas_onMouseCapture;
-      o.onMouseCaptureStop   = FDsCanvas_onMouseCaptureStop;
-      o.onEnterFrame         = FDsCanvas_onEnterFrame;
-      o.oeResize             = FDsCanvas_oeResize;
-      o.oeRefresh            = FDsCanvas_oeRefresh;
-      o.construct            = FDsCanvas_construct;
-      o.activeSpace          = FDsCanvas_activeSpace;
-      o.switchSize           = FDsCanvas_switchSize;
-      o.switchRotation       = FDsCanvas_switchRotation;
-      o.reloadRegion         = FDsCanvas_reloadRegion;
-      o.capture              = FDsCanvas_capture;
-      o.dispose              = FDsCanvas_dispose;
-      return o;
+MO.FDsCanvas = function FDsCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FDuiCanvas, MO.MGraphicObject, MO.MListenerLoad, MO.MMouseCapture);
+   o._servicePreview      = 'cloud.resource.preview';
+   o._resourceTypeCd      = null;
+   o._optionRotation      = false;
+   o._activeSpace         = null;
+   o._canvasModeCd        = MO.EDsCanvasMode.Drop;
+   o._canvasMoveCd        = MO.EDsCanvasDrag.Unknown;
+   o._switchWidth         = '*';
+   o._switchHeight        = '*';
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._captureRotation     = null;
+   o._cameraMoveRate      = 8;
+   o._cameraKeyRotation   = 3;
+   o._cameraMouseRotation = 0.005;
+   o._dimensional         = null;
+   o._rotation            = null;
+   o.onBuild              = MO.FDsCanvas_onBuild;
+   o.onMouseCaptureStart  = MO.FDsCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = MO.FDsCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = MO.FDsCanvas_onMouseCaptureStop;
+   o.onEnterFrame         = MO.FDsCanvas_onEnterFrame;
+   o.oeResize             = MO.FDsCanvas_oeResize;
+   o.oeRefresh            = MO.FDsCanvas_oeRefresh;
+   o.construct            = MO.FDsCanvas_construct;
+   o.activeSpace          = MO.FDsCanvas_activeSpace;
+   o.switchSize           = MO.FDsCanvas_switchSize;
+   o.switchRotation       = MO.FDsCanvas_switchRotation;
+   o.reloadRegion         = MO.FDsCanvas_reloadRegion;
+   o.capture              = MO.FDsCanvas_capture;
+   o.dispose              = MO.FDsCanvas_dispose;
+   return o;
+}
+MO.FDsCanvas_onBuild = function FDsCanvas_onBuild(event){
+   var o = this;
+   o.__base.FDuiCanvas.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   hPanel.__linker = o;
+   hPanel.style.width = '100%';
+   hPanel.style.height = '100%';
+   var parameters = new Object();
+   parameters.alpha = false;
+   parameters.antialias = true;
+   var context = o._graphicContext = MO.REngine3d.createContext(MO.FWglContext, hPanel, parameters);
+   var dimensional = o._dimensional = MO.Class.create(MO.FE3dDimensional);
+   dimensional.linkGraphicContext(context);
+   dimensional.setup();
+   MO.RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   MO.RStage.start(1000 / 60);
+   MO.Console.find(MO.FMouseConsole).register(o);
+}
+MO.FDsCanvas_onMouseCaptureStart = function FDsCanvas_onMouseCaptureStart(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
    }
-   MO.FDsCanvas_onBuild = function FDsCanvas_onBuild(event){
-      var o = this;
-      o.__base.FDuiCanvas.onBuild.call(o, event);
-      var hPanel = o._hPanel;
-      hPanel.__linker = o;
-      hPanel.style.width = '100%';
-      hPanel.style.height = '100%';
-      var parameters = new Object();
-      parameters.alpha = false;
-      parameters.antialias = true;
-      var context = o._graphicContext = REngine3d.createContext(FWglContext, hPanel, parameters);
-      var dimensional = o._dimensional = RClass.create(FE3dDimensional);
-      dimensional.linkGraphicContext(context);
-      dimensional.setup();
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(1000 / 60);
-      RConsole.find(FMouseConsole).register(o);
+   var camera = space.camera();
+   o._capturePosition.set(event.clientX, event.clientY);
+   o._captureRotation.assign(camera._rotation);
+   MO.RHtml.cursorSet(o._hPanel, MO.EUiCursor.Pointer);
+}
+MO.FDsCanvas_onMouseCapture = function FDsCanvas_onMouseCapture(event){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
    }
-   MO.FDsCanvas_onMouseCaptureStart = function FDsCanvas_onMouseCaptureStart(event){
-      var o = this;
-      var space = o._activeSpace;
-      if(!space){
-         return;
-      }
-      var camera = space.camera();
-      o._capturePosition.set(event.clientX, event.clientY);
-      o._captureRotation.assign(camera._rotation);
-      RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
+   var camera = space.camera();
+   var cx = event.clientX - o._capturePosition.x;
+   var cy = event.clientY - o._capturePosition.y;
+   var mc = o._canvasModeCd;
+   var toolbar = o._frameSet._canvasToolBar;
+   switch(toolbar._canvasModeCd){
+      case EDsCanvasMode.Drop:
+         var rotation = camera.rotation();
+         var captureRotation = o._captureRotation;
+         rotation.x = captureRotation.x - cy * o._cameraMouseRotation;
+         rotation.y = captureRotation.y - cx * o._cameraMouseRotation;
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         break;
+      case EDsCanvasMode.Rotation:
+         break;
+      case EDsCanvasMode.Scale:
+         break;
    }
-   MO.FDsCanvas_onMouseCapture = function FDsCanvas_onMouseCapture(event){
-      var o = this;
-      var space = o._activeSpace;
-      if(!space){
-         return;
-      }
-      var camera = space.camera();
-      var cx = event.clientX - o._capturePosition.x;
-      var cy = event.clientY - o._capturePosition.y;
-      var mc = o._canvasModeCd;
-      var toolbar = o._frameSet._canvasToolBar;
-      switch(toolbar._canvasModeCd){
-         case EDsCanvasMode.Drop:
-            var rotation = camera.rotation();
-            var captureRotation = o._captureRotation;
-            rotation.x = captureRotation.x - cy * o._cameraMouseRotation;
-            rotation.y = captureRotation.y - cx * o._cameraMouseRotation;
-            break;
-         case EDsCanvasMode.Select:
-            break;
-         case EDsCanvasMode.Translate:
-            break;
-         case EDsCanvasMode.Rotation:
-            break;
-         case EDsCanvasMode.Scale:
-            break;
-      }
+}
+MO.FDsCanvas_onMouseCaptureStop = function FDsCanvas_onMouseCaptureStop(event){
+   var o = this;
+   MO.RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+}
+MO.FDsCanvas_onEnterFrame = function FDsCanvas_onEnterFrame(){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
    }
-   MO.FDsCanvas_onMouseCaptureStop = function FDsCanvas_onMouseCaptureStop(event){
-      var o = this;
-      RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+   var camera = space.camera();
+   var timer = space.timer();
+   var span = timer.spanSecond();
+   var moveRate = o._cameraMoveRate * span;
+   var rotationRate = o._cameraKeyRotation * span;
+   var keyForward = MO.Window.Keyboard.isPress(MO.EStageKey.Forward);
+   var keyBack = MO.Window.Keyboard.isPress(MO.EStageKey.Back);
+   if(keyForward && !keyBack){
+      camera.doWalk(moveRate);
    }
-   MO.FDsCanvas_onEnterFrame = function FDsCanvas_onEnterFrame(){
-      var o = this;
-      var space = o._activeSpace;
-      if(!space){
-         return;
-      }
-      var camera = space.camera();
-      var timer = space.timer();
-      var span = timer.spanSecond();
-      var moveRate = o._cameraMoveRate * span;
-      var rotationRate = o._cameraKeyRotation * span;
-      var keyForward = RKeyboard.isPress(EStageKey.Forward);
-      var keyBack = RKeyboard.isPress(EStageKey.Back);
-      if(keyForward && !keyBack){
-         camera.doWalk(moveRate);
-      }
-      if(!keyForward && keyBack){
-         camera.doWalk(-moveRate);
-      }
-      var keyUp = RKeyboard.isPress(EStageKey.Up);
-      var keyDown = RKeyboard.isPress(EStageKey.Down);
-      if(keyUp && !keyDown){
-         camera.doFly(moveRate);
-      }
-      if(!keyUp && keyDown){
-         camera.doFly(-moveRate);
-      }
-      var keyRleft = RKeyboard.isPress(EStageKey.RotationLeft);
-      var keyRright = RKeyboard.isPress(EStageKey.RotationRight);
-      if(keyRleft && !keyRright){
-         camera.doYaw(rotationRate);
-      }
-      if(!keyRleft && keyRright){
-         camera.doYaw(-rotationRate);
-      }
-      var keyRup = RKeyboard.isPress(EStageKey.RotationUp);
-      var keyDown = RKeyboard.isPress(EStageKey.RotationDown);
-      if(keyRup && !keyDown){
-         camera.doPitch(rotationRate);
-      }
-      if(!keyRup && keyDown){
-         camera.doPitch(-rotationRate);
-      }
-      camera.update();
-      if(o._optionRotation){
-         var rotation = o._rotation;
-         var layers = space.layers();
-         var count = layers.count();
-         for(var i = 0; i < count; i++){
-            var layer = layers.at(i);
-            var matrix = layer.matrix();
-            matrix.setRotation(0, rotation.y, 0);
-            matrix.update();
-         }
-         rotation.y += 0.01;
-      }
+   if(!keyForward && keyBack){
+      camera.doWalk(-moveRate);
    }
-   MO.FDsCanvas_oeResize = function FDsCanvas_oeResize(p){
-      var o = this;
-      o.__base.FDuiCanvas.oeResize.call(o, p);
-      var hp = o._hPanel;
-      var w = hp.offsetWidth;
-      var h = hp.offsetHeight - 6;
-      hp.width = w;
-      hp.height = h;
-      o._graphicContext.setViewport(0, 0, w, h);
-      return EEventStatus.Stop;
+   var keyUp = MO.Window.Keyboard.isPress(MO.EStageKey.Up);
+   var keyDown = MO.Window.Keyboard.isPress(MO.EStageKey.Down);
+   if(keyUp && !keyDown){
+      camera.doFly(moveRate);
    }
-   MO.FDsCanvas_oeRefresh = function FDsCanvas_oeRefresh(p){
-      return EEventStatus.Stop;
+   if(!keyUp && keyDown){
+      camera.doFly(-moveRate);
    }
-   MO.FDsCanvas_construct = function FDsCanvas_construct(){
-      var o = this;
-      o.__base.FDuiCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+   var keyRleft = MO.Window.Keyboard.isPress(MO.EStageKey.RotationLeft);
+   var keyRright = MO.Window.Keyboard.isPress(MO.EStageKey.RotationRight);
+   if(keyRleft && !keyRright){
+      camera.doYaw(rotationRate);
    }
-   MO.FDsCanvas_activeSpace = function FDsCanvas_activeSpace(){
-      return this._activeSpace;
+   if(!keyRleft && keyRright){
+      camera.doYaw(-rotationRate);
    }
-   MO.FDsCanvas_switchSize = function FDsCanvas_switchSize(width, height){
-      var o = this;
-      o._switchWidth = width;
-      o._switchHeight = height;
-      var hCanvas = o._hPanel;
-      var hParent = o._hParent;
-      if(width == '*'){
-         width = hParent.offsetWidth;
+   var keyRup = MO.Window.Keyboard.isPress(MO.EStageKey.RotationUp);
+   var keyDown = MO.Window.Keyboard.isPress(MO.EStageKey.RotationDown);
+   if(keyRup && !keyDown){
+      camera.doPitch(rotationRate);
+   }
+   if(!keyRup && keyDown){
+      camera.doPitch(-rotationRate);
+   }
+   camera.update();
+   if(o._optionRotation){
+      var rotation = o._rotation;
+      var layers = space.layers();
+      var count = layers.count();
+      for(var i = 0; i < count; i++){
+         var layer = layers.at(i);
+         var matrix = layer.matrix();
+         matrix.setRotation(0, rotation.y, 0);
+         matrix.update();
       }
-      if(height == '*'){
-         height = hParent.offsetHeight;
-      }
-      hCanvas.width = width;
-      hCanvas.style.width = width + 'px';
-      hCanvas.height = height;
-      hCanvas.style.height = height + 'px';
-      o._graphicContext.setViewport(0, 0, width, height);
-      var space = o._activeSpace;
-      if(space){
-         var projection = space.camera().projection();
-         projection.size().set(width, height);
-         projection.update();
-      }
+      rotation.y += 0.01;
    }
-   MO.FDsCanvas_switchRotation = function FDsCanvas_switchRotation(flag){
-      this._optionRotation = flag;
+}
+MO.FDsCanvas_oeResize = function FDsCanvas_oeResize(p){
+   var o = this;
+   o.__base.FDuiCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight - 6;
+   hp.width = w;
+   hp.height = h;
+   o._graphicContext.setViewport(0, 0, w, h);
+   return MO.EEventStatus.Stop;
+}
+MO.FDsCanvas_oeRefresh = function FDsCanvas_oeRefresh(p){
+   return MO.EEventStatus.Stop;
+}
+MO.FDsCanvas_construct = function FDsCanvas_construct(){
+   var o = this;
+   o.__base.FDuiCanvas.construct.call(o);
+   o._capturePosition = new MO.SPoint2();
+   o._captureMatrix = new MO.SMatrix3d();
+   o._rotation = new MO.SVector3();
+   o._captureRotation = new MO.SVector3();
+}
+MO.FDsCanvas_activeSpace = function FDsCanvas_activeSpace(){
+   return this._activeSpace;
+}
+MO.FDsCanvas_switchSize = function FDsCanvas_switchSize(width, height){
+   var o = this;
+   o._switchWidth = width;
+   o._switchHeight = height;
+   var hCanvas = o._hPanel;
+   var hParent = o._hParent;
+   if(width == '*'){
+      width = hParent.offsetWidth;
    }
-   MO.FDsCanvas_reloadRegion = function FDsCanvas_reloadRegion(){
-      var o = this;
-      var space = o._activeSpace;
-      var region = space.region();
-      var resource = region.resource();
-      o._cameraMoveRate = resource.moveSpeed();
-      o._cameraKeyRotation = resource.rotationKeySpeed();
-      o._cameraMouseRotation = resource.rotationMouseSpeed();
+   if(height == '*'){
+      height = hParent.offsetHeight;
    }
-   MO.FDsCanvas_capture = function FDsCanvas_capture(){
-      var o = this;
-      var space = o._activeSpace;
-      var resource = space.resource();
-      var guid = resource.guid();
-      var switchWidth = o._switchWidth;
-      var switchHeight = o._switchHeight;
-      o.switchSize(200, 150);
-      RStage.process();
-      var context = o._graphicContext;
-      var size = context.size();
-      var width = size.width;
-      var height = size.height;
-      var data = context.readPixels(0, 0, width, height);
-      o.switchSize(switchWidth, switchHeight);
-      RStage.process();
-      var url = '/' + o._servicePreview + '.wv?do=upload&type_cd=' + o._resourceTypeCd + '&guid=' + guid + '&width=' + width + '&height=' + height;
-      return RConsole.find(FHttpConsole).send(url, data.buffer);
+   hCanvas.width = width;
+   hCanvas.style.width = width + 'px';
+   hCanvas.height = height;
+   hCanvas.style.height = height + 'px';
+   o._graphicContext.setViewport(0, 0, width, height);
+   var space = o._activeSpace;
+   if(space){
+      var projection = space.camera().projection();
+      projection.size().set(width, height);
+      projection.update();
    }
-   MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
-      var o = this;
-      o._rotation = RObject.dispose(o._rotation);
-      o.__base.FDuiCanvas.dispose.call(o);
-   }
+}
+MO.FDsCanvas_switchRotation = function FDsCanvas_switchRotation(flag){
+   this._optionRotation = flag;
+}
+MO.FDsCanvas_reloadRegion = function FDsCanvas_reloadRegion(){
+   var o = this;
+   var space = o._activeSpace;
+   var region = space.region();
+   var resource = region.resource();
+   o._cameraMoveRate = resource.moveSpeed();
+   o._cameraKeyRotation = resource.rotationKeySpeed();
+   o._cameraMouseRotation = resource.rotationMouseSpeed();
+}
+MO.FDsCanvas_capture = function FDsCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var resource = space.resource();
+   var guid = resource.guid();
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   MO.RStage.process();
+   var context = o._graphicContext;
+   var size = context.size();
+   var width = size.width;
+   var height = size.height;
+   var data = context.readPixels(0, 0, width, height);
+   o.switchSize(switchWidth, switchHeight);
+   MO.RStage.process();
+   var url = '/' + o._servicePreview + '.wv?do=upload&type_cd=' + o._resourceTypeCd + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return MO.Console.find(MO.FHttpConsole).send(url, data.buffer);
+}
+MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
+   var o = this;
+   o._rotation = MO.Lang.Object.dispose(o._rotation);
+   o.__base.FDuiCanvas.dispose.call(o);
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
