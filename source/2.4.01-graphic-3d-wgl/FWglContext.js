@@ -357,9 +357,7 @@ MO.FWglContext_recordEnd = function FWglContext_recordEnd(){
 //==========================================================
 MO.FWglContext_createProgram = function FWglContext_createProgram(){
    var o = this;
-   var program = MO.Class.create(MO.FWglProgram);
-   program.linkGraphicContext(o);
-   program.setup();
+   var program = o.createObject(MO.FWglProgram);
    o._storePrograms.push(program);
    o._statistics._programTotal++;
    return program;
@@ -392,7 +390,7 @@ MO.FWglContext_createLayout = function FWglContext_createLayout(){
 //==========================================================
 MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglVertexBuffer);
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglVertexBuffer));
    buffer.linkGraphicContext(o);
    buffer.setup();
    o._storeBuffers.push(buffer);
@@ -409,9 +407,7 @@ MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(claz
 //==========================================================
 MO.FWglContext_createIndexBuffer = function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglIndexBuffer);
-   buffer.linkGraphicContext(o);
-   buffer.setup();
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglIndexBuffer));
    o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
@@ -421,13 +417,12 @@ MO.FWglContext_createIndexBuffer = function FWglContext_createIndexBuffer(clazz)
 // <T>创建平面渲染纹理。</T>
 //
 // @method
+// @param clazz:Function 类对象
 // @return FG3dFlatTexture 平面渲染纹理
 //==========================================================
-MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(){
+MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglFlatTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglFlatTexture));
    o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
    return texture;
@@ -437,13 +432,12 @@ MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(){
 // <T>创建立方渲染纹理。</T>
 //
 // @method
+// @param clazz:Function 类对象
 // @return FG3dCubeTexture 立方渲染纹理
 //==========================================================
-MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(){
+MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglCubeTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglCubeTexture));
    o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
    return texture;
@@ -453,13 +447,12 @@ MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(){
 // <T>创建渲染目标。</T>
 //
 // @method
+// @param clazz:Function 类对象
 // @return FG3dRenderTarget 渲染目标
 //==========================================================
-MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
+MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
-   var target = MO.Class.create(MO.FWglRenderTarget);
-   target.linkGraphicContext(o);
-   target.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
    o._storeTargets.push(target);
    o._statistics._targetTotal++;
    return target;
@@ -475,14 +468,9 @@ MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
 //==========================================================
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
-   //var pixelRatio = MO.Browser.capability().pixelRatio;
-   //left *= pixelRatio;
-   //top *= -pixelRatio;
-   //width /= pixelRatio;
-   //height /= pixelRatio;
    o._size.set(width, height);
+   o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   //alert(left + 'x' + top + ' - ' + width + 'x' + height);
 }
 
 //==========================================================

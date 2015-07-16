@@ -351,12 +351,12 @@ MO.FDesktop_process = function FDesktop_process(){
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._calculateSize = RObject.dispose(o._calculateSize);
-   o._logicSize = RObject.dispose(o._logicSize);
-   o._logicRate = RObject.dispose(o._logicRate);
-   o._screenSize = RObject.dispose(o._screenSize);
-   o._canvases = RObject.dispose(o._canvases);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._calculateSize = MO.Lang.Object.dispose(o._calculateSize);
+   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
+   o._logicRate = MO.Lang.Object.dispose(o._logicRate);
+   o._screenSize = MO.Lang.Object.dispose(o._screenSize);
+   o._canvases = MO.Lang.Object.dispose(o._canvases);
    o.__base.FObject.dispose.call(o);
 }
 MO.FDisplay = function FDisplay(o){

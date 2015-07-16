@@ -1,26 +1,26 @@
 MO.EBrowser = new function EBrowser(){
    var o = this;
-   o.Unknown = 0;
-   o.Explorer = 1;
-   o.FireFox = 2;
-   o.Chrome = 3;
-   o.Safari = 4;
+   o.Unknown = 'unknown';
+   o.Explorer = 'explorer';
+   o.FireFox = 'firefox';
+   o.Chrome = 'chrome';
+   o.Safari = 'safari';
    return o;
 }
 MO.EDevice = new function EDevice(){
    var o = this;
-   o.Unknown = 0;
-   o.Pc = 1;
-   o.Mobile = 2;
+   o.Unknown = 'unknown';
+   o.Pc = 'pc';
+   o.Mobile = 'mobile';
    return o;
 }
 MO.ESoftware = new function ESoftware(){
    var o = this;
-   o.Unknown = 0;
-   o.Window = 1;
-   o.Linux = 2;
-   o.Android = 3;
-   o.Apple = 4;
+   o.Unknown = 'unknown';
+   o.Window = 'window';
+   o.Linux = 'linux';
+   o.Android = 'android';
+   o.Apple = 'apple';
    return o;
 }
 MO.RWindow = function RWindow(){
@@ -135,21 +135,21 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    o.lsnsResize.process(event);
 }
 MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.RWindow._optionSelect;
+   return MO.Window._optionSelect;
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.RWindow;
-   MO.Window.Browser.refreshOrientation();
+   var o = MO.Window;
+   var orientationCd = MO.Window.Browser.refreshOrientation();
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Window.Browser.orientationCd();
+   event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.RWindow;
+   var o = MO.Window;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   MO.RWindow.dispose();
+   MO.Window.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
@@ -164,7 +164,6 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
-      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
@@ -173,8 +172,8 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;
-      hWindow.onorientationchange = o.ohOrientation;
    }
+   hWindow.onorientationchange = o.ohOrientation;
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
@@ -331,10 +330,11 @@ MO.RWindow = new MO.RWindow();
 MO.Window = MO.RWindow;
 MO.SBrowserCapability = function SBrowserCapability(){
    var o = this;
-   o.optionProcess = false;
-   o.optionStorage = false;
-   o.blobCreate    = false;
-   o.pixelRatio    = 1;
+   o.optionProcess    = false;
+   o.optionStorage    = false;
+   o.canvasAutoScale  = false;
+   o.blobCreate       = false;
+   o.pixelRatio       = 1;
    return o;
 }
 MO.STouchEvent = function STouchEvent(){
@@ -665,6 +665,7 @@ MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
 }
 MO.RBrowser = function RBrowser(){
    var o = this;
+   o._agent         = null;
    o._capability    = null;
    o._deviceCd      = MO.EDevice.Unknown;
    o._softwareCd    = MO.ESoftware.Unknown;
@@ -680,7 +681,9 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var agent = window.navigator.userAgent.toLowerCase();
+   o.code = window.navigator.userAgent.toString();
+   var agent = o.code.toLowerCase();
+   var capability = o._capability = new MO.SBrowserCapability();
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
       o._softwareCd = MO.ESoftware.Android;
@@ -693,6 +696,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       o._typeCd = MO.EBrowser.Explorer;
    }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
       o._typeCd = MO.EBrowser.Safari;
+      capability.canvasAutoScale = true;
    }else{
       alert('Unknown browser.\n' + agent);
       return;
@@ -715,7 +719,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    }
-   var capability = o._capability = new MO.SBrowserCapability();
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
@@ -762,6 +765,9 @@ MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
 MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
    this._contentPath = path;
 }
+MO.RBrowser.prototype.typeCd = function RBrowser_typeCd(){
+   return this._typeCd;
+}
 MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
    return this._typeCd == browserCd;
 }
@@ -786,6 +792,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
          throw new TError(o, 'Unknown orientation mode.');
       }
    }
+   return o._orientationCd;
 }
 MO.RBrowser.prototype.encode = function RBrowser_encode(value){
    return escape(value);
@@ -1188,7 +1195,7 @@ MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       case 'Number':
          return v.toString();
       case 'String':
-         return v.length + ':\'' + MO.String.toLine(v) + '\'';
+         return v.length + ':\'' + MO.Lang.String.toLine(v) + '\'';
       case 'Function':
          if(v.__virtual){
             return 'virtual';

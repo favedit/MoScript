@@ -68,14 +68,6 @@ MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, MO.FE3dGeneralTechnique);
-      var camera = stage.region().camera();
-      var projection = camera.projection();
-      projection.setAngle(80);
-      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
-      projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
    }
    o._activeStage = stage;
 }
@@ -184,6 +176,7 @@ MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
 }
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
+   o._orientationCd         = null;
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    o.onOperationResize      = MO.FEaiChartDesktop_onOperationResize;
@@ -191,6 +184,7 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o.construct              = MO.FEaiChartDesktop_construct;
    o.build                  = MO.FEaiChartDesktop_build;
    o.resize                 = MO.FEaiChartDesktop_resize;
+   o.selectStage            = MO.FEaiChartDesktop_selectStage;
    o.dispose                = MO.FEaiChartDesktop_dispose;
    return o;
 }
@@ -215,6 +209,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
+   canvas3d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas3d);
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
@@ -226,27 +221,32 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
 }
 MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targetHeight){
    var o = this;
-   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
-   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
-   if(o._screenSize.equalsData(width, height)){
+   var browser = MO.Window.Browser;
+   var sourceWidth = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var sourceHeight = (targetHeight != null) ? targetHeight : window.innerHeight;
+   var orientationCd = browser.orientationCd();
+   if(o._screenSize.equalsData(sourceWidth, sourceHeight) && (o._orientationCd == orientationCd)){
       return;
    }
-   o._screenSize.set(width, height);
-   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
+   o._screenSize.set(sourceWidth, sourceHeight);
+   o._orientationCd = orientationCd;
+   var pixelRatio = browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
-   width *= pixelRatio;
-   height *= pixelRatio;
+   var width = parseInt(sourceWidth * pixelRatio);
+   var height = parseInt(sourceHeight * pixelRatio);
+   o._size.set(width, height);
    var widthRate = 1;
    var heightRate = 1;
    var logicSize = o._logicSize;
-   if(MO.Window.Browser.isOrientationHorizontal()){
-      widthRate = width / logicSize.width;
-      heightRate = height / logicSize.height;
-      o._calculateSize.set(logicSize.width, logicSize.height);
-   }else{
+   var isVertical = browser.isOrientationVertical()
+   if(isVertical){
       widthRate = width / logicSize.height;
       heightRate = height / logicSize.width;
       o._calculateSize.set(logicSize.height, logicSize.width);
+   }else{
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
    }
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
    o._logicRate.set(widthRate, heightRate);
@@ -258,14 +258,39 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
       o._calculateRate.set(1, 1);
    }
    o._canvas3d.resize(width, height);
+   var context3d = o._canvas3d.graphicContext();
+   var hCanvas3d = o._canvas3d._hCanvas;
+   hCanvas3d.style.width = sourceWidth + 'px';
+   hCanvas3d.style.height = sourceHeight + 'px';
+   context3d.setViewport(0, 0, o._size.width, o._size.height)
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setScale(sizeRate, sizeRate);
+   var hCanvas2d = canvas2d._hCanvas;
+   hCanvas2d.style.width = sourceWidth + 'px';
+   hCanvas2d.style.height = sourceHeight + 'px';
+   var stage = o._canvas3d.activeStage();
+   o.selectStage(stage);
+}
+MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
+   var o = this;
+   o._canvas3d.selectStage(stage);
+   if(stage){
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().assign(o._size);
+      projection.setAngle(80);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
+   o._activeStage = stage;
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
-   o._canvas3d = MO.RObject.dispose(o._canvas3d);
-   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o._canvas3d = MO.Lang.Object.dispose(o._canvas3d);
+   o._canvas2d = MO.Lang.Object.dispose(o._canvas2d);
    o.__base.FEaiDesktop.dispose.call(o);
 }
 MO.FEaiDesktop = function FEaiDesktop(o){
@@ -279,7 +304,6 @@ MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
    o.__base.FDesktop.construct.call(o);
    o._size.set(1920, 1080);
    o._logicSize.set(1920, 1080);
-   o._screenSize.set(0, 0);
 }
 MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
    var o = this;

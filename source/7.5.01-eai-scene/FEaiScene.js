@@ -9,8 +9,7 @@ MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
    //..........................................................
    // @attribute
-   o._optionDebug           = false;
-   //o._optionDebug           = true;
+   o._optionDebug           = true;
    // @attribute
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    //..........................................................
@@ -113,12 +112,18 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
 MO.FEaiScene_active = function FEaiScene_active(){
    var o = this;
    o.__base.FScene.active.call(o);
+   // 创新信息
    var stage = o._activeStage;
    if(o._optionDebug){
       var control = o._application.dynamicInfo();
+      control.setDisplayOrder(10000);
       control.setStage(stage);
+      control.setGuiManager(o._guiManager);
    }
-   MO.Eai.Canvas.selectStage(stage);
+   // 设置舞台
+   var application = o._application;
+   var desktop = application.desktop();
+   desktop.selectStage(stage);
 }
 
 //==========================================================
@@ -129,7 +134,10 @@ MO.FEaiScene_active = function FEaiScene_active(){
 MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var o = this;
    o.__base.FScene.deactive.call(o);
-   MO.Eai.Canvas.selectStage(null);
+   // 清空舞台
+   var application = o._application;
+   var desktop = application.desktop();
+   desktop.selectStage(null);
 }
 
 //==========================================================

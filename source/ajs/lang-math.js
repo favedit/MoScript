@@ -2432,6 +2432,7 @@ MO.SSize2 = function SSize2(width, height){
    o.serialize   = MO.SSize2_serialize;
    o.unserialize = MO.SSize2_unserialize;
    o.parse       = MO.SSize2_parse;
+   o.toDisplay   = MO.SSize2_toDisplay;
    o.toString    = MO.SSize2_toString;
    o.dispose     = MO.SSize2_dispose;
    o.dump        = MO.SSize2_dump;
@@ -2496,6 +2497,10 @@ MO.SSize2_parse = function SSize2_parse(v){
    }else{
       throw new TError(o, "Parse value failure. (value={1})", v);
    }
+}
+MO.SSize2_toDisplay = function SSize2_toDisplay(){
+   var o = this;
+   return o.width + 'x' + o.height;
 }
 MO.SSize2_toString = function SSize2_toString(){
    var o = this;

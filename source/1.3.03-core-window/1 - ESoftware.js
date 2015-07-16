@@ -8,14 +8,14 @@
 MO.ESoftware = new function ESoftware(){
    var o = this;
    // @member
-   o.Unknown = 0;
+   o.Unknown = 'unknown';
    // @member
-   o.Window = 1;
+   o.Window = 'window';
    // @member
-   o.Linux = 2;
+   o.Linux = 'linux';
    // @member
-   o.Android = 3;
+   o.Android = 'android';
    // @member
-   o.Apple = 4;
+   o.Apple = 'apple';
    return o;
 }

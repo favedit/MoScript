@@ -26,6 +26,7 @@ MO.SSize2 = function SSize2(width, height){
    o.unserialize = MO.SSize2_unserialize;
    // @method
    o.parse       = MO.SSize2_parse;
+   o.toDisplay   = MO.SSize2_toDisplay;
    o.toString    = MO.SSize2_toString;
    // @method
    o.dispose     = MO.SSize2_dispose;
@@ -156,6 +157,16 @@ MO.SSize2_parse = function SSize2_parse(v){
    }else{
       throw new TError(o, "Parse value failure. (value={1})", v);
    }
+}
+
+//============================================================
+// <T>获得显示内容。</T>
+//
+// @return String 字符串
+//============================================================
+MO.SSize2_toDisplay = function SSize2_toDisplay(){
+   var o = this;
+   return o.width + 'x' + o.height;
 }
 
 //============================================================

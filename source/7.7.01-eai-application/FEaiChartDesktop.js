@@ -9,6 +9,7 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    //..........................................................
    // @attribute
+   o._orientationCd         = null;
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    //..........................................................
@@ -21,6 +22,7 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    // @method
    o.build                  = MO.FEaiChartDesktop_build;
    o.resize                 = MO.FEaiChartDesktop_resize;
+   o.selectStage            = MO.FEaiChartDesktop_selectStage;
    // @method
    o.dispose                = MO.FEaiChartDesktop_dispose;
    return o;
@@ -76,6 +78,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
+   canvas3d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas3d);
    // 创建2D画板
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
@@ -97,32 +100,37 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
 //==========================================================
 MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targetHeight){
    var o = this;
-   // 检查大小
-   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
-   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
-   if(o._screenSize.equalsData(width, height)){
+   var browser = MO.Window.Browser;
+   // 检查大小和方向
+   var sourceWidth = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var sourceHeight = (targetHeight != null) ? targetHeight : window.innerHeight;
+   var orientationCd = browser.orientationCd();
+   if(o._screenSize.equalsData(sourceWidth, sourceHeight) && (o._orientationCd == orientationCd)){
       return;
    }
-   o._screenSize.set(width, height);
+   //alert('Test screen size changed. (source=' + o._screenSize.width + 'x' + o._screenSize.height + ',target=' + sourceWidth + 'x' + sourceHeight + ')');
+   o._screenSize.set(sourceWidth, sourceHeight);
+   o._orientationCd = orientationCd;
    //..........................................................
    // 计算比率
-   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
+   var pixelRatio = browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
-   //alert('Change screen size. (size=' + width + 'x' + height + ', pixel_ratio=' + pixelRatio + ')');
-   width *= pixelRatio;
-   height *= pixelRatio;
+   var width = parseInt(sourceWidth * pixelRatio);
+   var height = parseInt(sourceHeight * pixelRatio);
+   o._size.set(width, height);
    // 计算比率
    var widthRate = 1;
    var heightRate = 1;
    var logicSize = o._logicSize;
-   if(MO.Window.Browser.isOrientationHorizontal()){
-      widthRate = width / logicSize.width;
-      heightRate = height / logicSize.height;
-      o._calculateSize.set(logicSize.width, logicSize.height);
-   }else{
+   var isVertical = browser.isOrientationVertical()
+   if(isVertical){
       widthRate = width / logicSize.height;
       heightRate = height / logicSize.width;
       o._calculateSize.set(logicSize.height, logicSize.width);
+   }else{
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
    }
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
    o._logicRate.set(widthRate, heightRate);
@@ -133,29 +141,53 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
+   //alert(MO.Lang.String.format('Change screen size. (orientation={1}, source={2}x{3}, size={4}x{5}, pixel_ratio={6}, rate={7})', window.orientation + '-' + browser.orientationCd(), sourceWidth, sourceHeight, width, height, pixelRatio, o._calculateRate.toDisplay()));
    //..........................................................
    // 设置3D画板
    o._canvas3d.resize(width, height);
+   var context3d = o._canvas3d.graphicContext();
+   var hCanvas3d = o._canvas3d._hCanvas;
+   hCanvas3d.style.width = sourceWidth + 'px';
+   hCanvas3d.style.height = sourceHeight + 'px';
+   context3d.setViewport(0, 0, o._size.width, o._size.height)
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setScale(sizeRate, sizeRate);
+   var hCanvas2d = canvas2d._hCanvas;
+   hCanvas2d.style.width = sourceWidth + 'px';
+   hCanvas2d.style.height = sourceHeight + 'px';
    //..........................................................
-   // PC方式总是设置样式
-   //if(MO.Runtime.isPlatformPc()){
-   //   // 设置3D画板大小
-   //   var hCanvas3d = o._canvas3d._hCanvas;
-   //   hCanvas3d.width = width;
-   //   hCanvas3d.height = height;
-   //   hCanvas3d.style.width = width + 'px';
-   //   hCanvas3d.style.height = height + 'px';
-   //   // 设置2D画板大小
-   //   var hCanvas2d = o._canvas2d._hCanvas;
-   //   hCanvas2d.width = width;
-   //   hCanvas2d.height = height;
-   //   hCanvas2d.style.width = width + 'px';
-   //   hCanvas2d.style.height = height + 'px';
-   //}
+   // 计算舞台
+   var stage = o._canvas3d.activeStage();
+   o.selectStage(stage);
+}
+
+//==========================================================
+// <T>选择舞台。</T>
+//
+// @method
+// @param code:String 代码
+// @return FStage 舞台
+//==========================================================
+MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
+   var o = this;
+   // 设置舞台
+   o._canvas3d.selectStage(stage);
+   // 设置参数
+   if(stage){
+      // 设置投影
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().assign(o._size);
+      projection.setAngle(80);
+      projection.update();
+      // 设置相机
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
+   o._activeStage = stage;
 }
 
 //==========================================================
@@ -165,8 +197,8 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
 //==========================================================
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
-   o._canvas3d = MO.RObject.dispose(o._canvas3d);
-   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o._canvas3d = MO.Lang.Object.dispose(o._canvas3d);
+   o._canvas2d = MO.Lang.Object.dispose(o._canvas2d);
    // 父处理
    o.__base.FEaiDesktop.dispose.call(o);
 }

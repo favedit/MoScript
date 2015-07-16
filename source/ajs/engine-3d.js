@@ -94,30 +94,20 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       MO.Console.find(MO.FMouseConsole).register(o);
    }
 }
-MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    var o = this;
-   if(width == null){
-      width = o._hPanel.offsetWidth;
+   if(!sourceWidth || !sourceHeight){
+      throw new MO.TError(o, 'Invalid canvas size.');
    }
-   if(height == null){
-      height = o._hPanel.offsetHeight;
-   }
-   if(o._screenSize.equalsData(width, height)){
-      return;
-   }
-   o._screenSize.set(width, height);
+   o._screenSize.set(sourceWidth, sourceHeight);
+   var width = parseInt(sourceWidth * o._scaleRate);
+   var height = parseInt(sourceHeight * o._scaleRate);
    var hCanvas = o._hCanvas;
-   var scaleWidth = hCanvas.width = width * o._scaleRate;
-   var scaleHeight = hCanvas.height = height * o._scaleRate;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   o._size.set(width, height);
    var context = o._graphicContext;
-   var ratioX = o._logicSize.width / scaleWidth;
-   var ratioY = o._logicSize.height / scaleHeight;
-   var ratio = Math.max(ratioX, ratioY);
-   context.logicSize().assign(o._logicSize);
-   context.setRatio(ratio);
-   context.sizeRatio().set(ratioX, ratioY);
-   context.setViewport(0, 0, scaleWidth, scaleHeight);
-   o._size.assign(o._screenSize);
+   context.setViewport(0, 0, width, height);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;

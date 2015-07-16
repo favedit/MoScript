@@ -1447,6 +1447,7 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
+   return;
    if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
       var context = o._graphicContext;
       var ratio = context.ratio();

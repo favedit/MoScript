@@ -10,10 +10,10 @@ MO.FG3dContext = function FG3dContext(o){
    // @attribute
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._size               = MO.Class.register(o, new MO.AGetter('_size'));
-   o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
-   o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
-   o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
+   o._viewportRectangle  = MO.Class.register(o, new MO.AGetter('_viewportRectangle'));
+   //o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
+   //o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
+   //o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
    o._capability         = MO.Class.register(o, new MO.AGetter('_capability'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    // @attribute
@@ -79,9 +79,9 @@ MO.FG3dContext_construct = function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
    // 设置属性
-   o._size = new MO.SSize2(1280, 720);
-   o._logicSize = new MO.SSize2(1280, 720);
-   o._sizeRatio = new MO.SSize2(1, 1);
+   o._viewportRectangle = new MO.SRectangle();
+   //o._logicSize = new MO.SSize2(1280, 720);
+   //o._sizeRatio = new MO.SSize2(1, 1);
    o._statistics = MO.Class.create(MO.FG3dStatistics);
    MO.Console.find(MO.FStatisticsConsole).register('graphic3d.context', o._statistics);
    // 设置属性
@@ -186,9 +186,9 @@ MO.FG3dContext_dispose = function FG3dContext_dispose(){
    }
    // 释放属性
    o._program = null;
-   o._size = MO.Lang.Object.dispose(o._size);
-   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
+   o._viewportRectangle = MO.Lang.Object.dispose(o._viewportRectangle);
+   //o._logicSize = MO.Lang.Object.dispose(o._logicSize);
+   //o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
    o._capability = MO.Lang.Object.dispose(o._capability);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    // 释放属性

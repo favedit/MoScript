@@ -78,7 +78,7 @@ MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       case 'Number':
          return v.toString();
       case 'String':
-         return v.length + ':\'' + MO.String.toLine(v) + '\'';
+         return v.length + ':\'' + MO.Lang.String.toLine(v) + '\'';
       case 'Function':
          if(v.__virtual){
             return 'virtual';

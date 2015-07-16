@@ -5224,25 +5224,27 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 }
 MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'return this.' + name + ';';
       method = new Function(source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
@@ -5603,19 +5605,18 @@ MO.RString.prototype.firstLine = function RString_firstLine(v){
    }
    return '';
 }
-MO.RString.prototype.format = function RString_format(s, p){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 1; n < c; n++){
-      var p = a[n];
-      if(typeof(p) == 'function'){
-         p = RMethod.name(p);
-      }else if(p == null){
-         p = '';
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
       }
-      s = s.replace('{' + (n-1) + '}', p);
+      value = value.replace('{' + i + '}', parameter);
    }
-   return s;
+   return value;
 }
 MO.RString.prototype.formatLines = function RString_formatLines(p){
    var o = this;
@@ -8353,6 +8354,7 @@ MO.SSize2 = function SSize2(width, height){
    o.serialize   = MO.SSize2_serialize;
    o.unserialize = MO.SSize2_unserialize;
    o.parse       = MO.SSize2_parse;
+   o.toDisplay   = MO.SSize2_toDisplay;
    o.toString    = MO.SSize2_toString;
    o.dispose     = MO.SSize2_dispose;
    o.dump        = MO.SSize2_dump;
@@ -8417,6 +8419,10 @@ MO.SSize2_parse = function SSize2_parse(v){
    }else{
       throw new TError(o, "Parse value failure. (value={1})", v);
    }
+}
+MO.SSize2_toDisplay = function SSize2_toDisplay(){
+   var o = this;
+   return o.width + 'x' + o.height;
 }
 MO.SSize2_toString = function SSize2_toString(){
    var o = this;
@@ -12646,27 +12652,27 @@ MO.FXmlConsole_process = function FXmlConsole_process(p){
 }
 MO.EBrowser = new function EBrowser(){
    var o = this;
-   o.Unknown = 0;
-   o.Explorer = 1;
-   o.FireFox = 2;
-   o.Chrome = 3;
-   o.Safari = 4;
+   o.Unknown = 'unknown';
+   o.Explorer = 'explorer';
+   o.FireFox = 'firefox';
+   o.Chrome = 'chrome';
+   o.Safari = 'safari';
    return o;
 }
 MO.EDevice = new function EDevice(){
    var o = this;
-   o.Unknown = 0;
-   o.Pc = 1;
-   o.Mobile = 2;
+   o.Unknown = 'unknown';
+   o.Pc = 'pc';
+   o.Mobile = 'mobile';
    return o;
 }
 MO.ESoftware = new function ESoftware(){
    var o = this;
-   o.Unknown = 0;
-   o.Window = 1;
-   o.Linux = 2;
-   o.Android = 3;
-   o.Apple = 4;
+   o.Unknown = 'unknown';
+   o.Window = 'window';
+   o.Linux = 'linux';
+   o.Android = 'android';
+   o.Apple = 'apple';
    return o;
 }
 MO.RWindow = function RWindow(){
@@ -12781,21 +12787,21 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    o.lsnsResize.process(event);
 }
 MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.RWindow._optionSelect;
+   return MO.Window._optionSelect;
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.RWindow;
-   MO.Window.Browser.refreshOrientation();
+   var o = MO.Window;
+   var orientationCd = MO.Window.Browser.refreshOrientation();
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Window.Browser.orientationCd();
+   event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.RWindow;
+   var o = MO.Window;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   MO.RWindow.dispose();
+   MO.Window.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
@@ -12810,7 +12816,6 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
-      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
@@ -12819,8 +12824,8 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;
-      hWindow.onorientationchange = o.ohOrientation;
    }
+   hWindow.onorientationchange = o.ohOrientation;
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
@@ -12977,10 +12982,11 @@ MO.RWindow = new MO.RWindow();
 MO.Window = MO.RWindow;
 MO.SBrowserCapability = function SBrowserCapability(){
    var o = this;
-   o.optionProcess = false;
-   o.optionStorage = false;
-   o.blobCreate    = false;
-   o.pixelRatio    = 1;
+   o.optionProcess    = false;
+   o.optionStorage    = false;
+   o.canvasAutoScale  = false;
+   o.blobCreate       = false;
+   o.pixelRatio       = 1;
    return o;
 }
 MO.STouchEvent = function STouchEvent(){
@@ -13311,6 +13317,7 @@ MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
 }
 MO.RBrowser = function RBrowser(){
    var o = this;
+   o._agent         = null;
    o._capability    = null;
    o._deviceCd      = MO.EDevice.Unknown;
    o._softwareCd    = MO.ESoftware.Unknown;
@@ -13326,7 +13333,9 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var agent = window.navigator.userAgent.toLowerCase();
+   o.code = window.navigator.userAgent.toString();
+   var agent = o.code.toLowerCase();
+   var capability = o._capability = new MO.SBrowserCapability();
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
       o._softwareCd = MO.ESoftware.Android;
@@ -13339,6 +13348,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       o._typeCd = MO.EBrowser.Explorer;
    }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
       o._typeCd = MO.EBrowser.Safari;
+      capability.canvasAutoScale = true;
    }else{
       alert('Unknown browser.\n' + agent);
       return;
@@ -13361,7 +13371,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    }
-   var capability = o._capability = new MO.SBrowserCapability();
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
@@ -13408,6 +13417,9 @@ MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
 MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
    this._contentPath = path;
 }
+MO.RBrowser.prototype.typeCd = function RBrowser_typeCd(){
+   return this._typeCd;
+}
 MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
    return this._typeCd == browserCd;
 }
@@ -13432,6 +13444,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
          throw new TError(o, 'Unknown orientation mode.');
       }
    }
+   return o._orientationCd;
 }
 MO.RBrowser.prototype.encode = function RBrowser_encode(value){
    return escape(value);
@@ -13834,7 +13847,7 @@ MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       case 'Number':
          return v.toString();
       case 'String':
-         return v.length + ':\'' + MO.String.toLine(v) + '\'';
+         return v.length + ':\'' + MO.Lang.String.toLine(v) + '\'';
       case 'Function':
          if(v.__virtual){
             return 'virtual';
@@ -14710,13 +14723,21 @@ MO.FFloatStream_dispose = function FFloatStream_dispose(){
 }
 MO.FGraphicContext = function FGraphicContext(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._hCanvas   = null;
-   o.linkCanvas = MO.RMethod.virtual(o, 'linkCanvas');
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._hCanvas   = MO.Class.register(o, new MO.AGetter('_hCanvas', 'htmlCanvas'));
+   o.construct  = MO.FGraphicContext_construct;
+   o.linkCanvas = MO.Method.virtual(o, 'linkCanvas');
    o.dispose    = MO.FGraphicContext_dispose;
    return o;
 }
+MO.FGraphicContext_construct = function FGraphicContext_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+}
 MO.FGraphicContext_dispose = function FGraphicContext_dispose(){
    var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
@@ -14801,7 +14822,6 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
 }
 MO.FG2dContext = function FG2dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
-   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
    o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
    o.construct  = MO.FG2dContext_construct;
    o.linkCanvas = MO.FG2dContext_linkCanvas;
@@ -14811,7 +14831,6 @@ MO.FG2dContext = function FG2dContext(o){
 MO.FG2dContext_construct = function FG2dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2();
    o._scale = new MO.SSize2(1, 1);
 }
 MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
@@ -14820,8 +14839,7 @@ MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
 }
 MO.FG2dContext_dispose = function FG2dContext_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._scale = RObject.dispose(o._scale);
+   o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FGraphicContext.dispose.call(o);
 }
 MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
@@ -17326,10 +17344,7 @@ MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._size               = MO.Class.register(o, new MO.AGetter('_size'));
-   o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
-   o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
-   o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
+   o._viewportRectangle  = MO.Class.register(o, new MO.AGetter('_viewportRectangle'));
    o._capability         = MO.Class.register(o, new MO.AGetter('_capability'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    o._fillModeCd         = MO.EG3dFillMode.Face;
@@ -17378,9 +17393,7 @@ MO.FG3dContext = function FG3dContext(o){
 MO.FG3dContext_construct = function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2(1280, 720);
-   o._logicSize = new MO.SSize2(1280, 720);
-   o._sizeRatio = new MO.SSize2(1, 1);
+   o._viewportRectangle = new MO.SRectangle();
    o._statistics = MO.Class.create(MO.FG3dStatistics);
    MO.Console.find(MO.FStatisticsConsole).register('graphic3d.context', o._statistics);
    o._storePrograms = new MO.TObjects();
@@ -17451,9 +17464,7 @@ MO.FG3dContext_dispose = function FG3dContext_dispose(){
       o._storeTargets = MO.Lang.Object.dispose(targets);
    }
    o._program = null;
-   o._size = MO.Lang.Object.dispose(o._size);
-   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
+   o._viewportRectangle = MO.Lang.Object.dispose(o._viewportRectangle);
    o._capability = MO.Lang.Object.dispose(o._capability);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    o._handleInstance = null;
@@ -18844,9 +18855,7 @@ MO.FWglContext_recordEnd = function FWglContext_recordEnd(){
 }
 MO.FWglContext_createProgram = function FWglContext_createProgram(){
    var o = this;
-   var program = MO.Class.create(MO.FWglProgram);
-   program.linkGraphicContext(o);
-   program.setup();
+   var program = o.createObject(MO.FWglProgram);
    o._storePrograms.push(program);
    o._statistics._programTotal++;
    return program;
@@ -18864,7 +18873,7 @@ MO.FWglContext_createLayout = function FWglContext_createLayout(){
 }
 MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglVertexBuffer);
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglVertexBuffer));
    buffer.linkGraphicContext(o);
    buffer.setup();
    o._storeBuffers.push(buffer);
@@ -18873,36 +18882,28 @@ MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(claz
 }
 MO.FWglContext_createIndexBuffer = function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglIndexBuffer);
-   buffer.linkGraphicContext(o);
-   buffer.setup();
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglIndexBuffer));
    o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
 }
-MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(){
+MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglFlatTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglFlatTexture));
    o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
    return texture;
 }
-MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(){
+MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglCubeTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglCubeTexture));
    o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
    return texture;
 }
-MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
+MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
-   var target = MO.Class.create(MO.FWglRenderTarget);
-   target.linkGraphicContext(o);
-   target.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
    o._storeTargets.push(target);
    o._statistics._targetTotal++;
    return target;
@@ -18910,6 +18911,7 @@ MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
    o._size.set(width, height);
+   o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
@@ -20560,12 +20562,12 @@ MO.FDesktop_process = function FDesktop_process(){
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._calculateSize = RObject.dispose(o._calculateSize);
-   o._logicSize = RObject.dispose(o._logicSize);
-   o._logicRate = RObject.dispose(o._logicRate);
-   o._screenSize = RObject.dispose(o._screenSize);
-   o._canvases = RObject.dispose(o._canvases);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._calculateSize = MO.Lang.Object.dispose(o._calculateSize);
+   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
+   o._logicRate = MO.Lang.Object.dispose(o._logicRate);
+   o._screenSize = MO.Lang.Object.dispose(o._screenSize);
+   o._canvases = MO.Lang.Object.dispose(o._canvases);
    o.__base.FObject.dispose.call(o);
 }
 MO.FDisplay = function FDisplay(o){
@@ -22129,30 +22131,20 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       MO.Console.find(MO.FMouseConsole).register(o);
    }
 }
-MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    var o = this;
-   if(width == null){
-      width = o._hPanel.offsetWidth;
+   if(!sourceWidth || !sourceHeight){
+      throw new MO.TError(o, 'Invalid canvas size.');
    }
-   if(height == null){
-      height = o._hPanel.offsetHeight;
-   }
-   if(o._screenSize.equalsData(width, height)){
-      return;
-   }
-   o._screenSize.set(width, height);
+   o._screenSize.set(sourceWidth, sourceHeight);
+   var width = parseInt(sourceWidth * o._scaleRate);
+   var height = parseInt(sourceHeight * o._scaleRate);
    var hCanvas = o._hCanvas;
-   var scaleWidth = hCanvas.width = width * o._scaleRate;
-   var scaleHeight = hCanvas.height = height * o._scaleRate;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   o._size.set(width, height);
    var context = o._graphicContext;
-   var ratioX = o._logicSize.width / scaleWidth;
-   var ratioY = o._logicSize.height / scaleHeight;
-   var ratio = Math.max(ratioX, ratioY);
-   context.logicSize().assign(o._logicSize);
-   context.setRatio(ratio);
-   context.sizeRatio().set(ratioX, ratioY);
-   context.setViewport(0, 0, scaleWidth, scaleHeight);
-   o._size.assign(o._screenSize);
+   context.setViewport(0, 0, width, height);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
@@ -36180,6 +36172,7 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
+   return;
    if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
       var context = o._graphicContext;
       var ratio = context.ratio();
@@ -81509,7 +81502,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -81568,7 +81560,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
-   var faceLayer = o._activeStage.faceLayer();
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
@@ -81823,7 +81814,6 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o._cityLayer      = MO.RClass.register(o, new MO.AGetter('_cityLayer'));
    o._dataLayer      = MO.RClass.register(o, new MO.AGetter('_dataLayer'));
    o._spriteLayer    = MO.RClass.register(o, new MO.AGetter('_spriteLayer'));
-   o._faceLayer      = MO.RClass.register(o, new MO.AGetter('_faceLayer'));
    o.construct       = MO.FEaiChartStage_construct;
    return o;
 }
@@ -81849,9 +81839,6 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);
    o.registerLayer('SpriteLayer', layer);
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
-   layer.setOptionClearDepth(true);
-   o.registerLayer('FaceLayer', layer);
 }
 MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
@@ -81985,6 +81972,7 @@ MO.FEaiDynamicInfo = function FEaiDynamicInfo(o){
    o._lastTick    = 0;
    o._name        = 'EngineInfo';
    o._stage       = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._guiManager  = MO.Class.register(o, new MO.AGetSet('_guiManager'));
    o._context     = MO.Class.register(o, new MO.AGetSet('_context'));
    o._ticker      = null;
    o.onPaintBegin = MO.FEaiDynamicInfo_onPaintBegin;
@@ -82010,27 +81998,59 @@ MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
    var locationX = 10;
    var locationY = rectangle.top + line;
    graphic.setFont('16px sans-serif');
-   graphic.drawText('Frame         : ' + MO.Timer.rate() + ' Span [' + stageStatistics._frame.toString() + ']', locationX, locationY, '#FFFFFF');
+   var browser = MO.Window.Browser;
+   var browserCapability = browser.capability();
+   graphic.drawText(MO.Lang.String.format('Agent         : {1}', browser.code), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Frame Process : ' + stageStatistics._frameProcess.toString(), locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format(' - Browser    : type={1}, orientation={2}, canvas_scale={3}', browser.typeCd(), browser.orientationCd(), browserCapability.canvasAutoScale), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Frame Draw    : ' + stageStatistics._frameDraw.toString() + ' | ' + stageStatistics._frameDrawSort.toString(), locationX, locationY, '#FFFFFF');
+   var desktop = o._guiManager.desktop();
+   var canvas2d = desktop.canvas2d();
+   var canvas3d = desktop.canvas3d();
+   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
+   graphic.drawText(MO.Lang.String.format('Screen        : ratio={1}, screen_size={2}, size={3}', pixelRatio, desktop.screenSize().toDisplay(), desktop.size().toDisplay()), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Draw          : Count=' + statistics.frameDrawCount() + ' Triangle=' + statistics.frameTriangleCount(), locationX, locationY, '#FFFFFF');
+   var hCanvas2d = canvas2d._hCanvas;
+   graphic.drawText(MO.Lang.String.format(' - Canvas2d   : size={1}x{2}, inner_size={3}x{4}', hCanvas2d.offsetWidth, hCanvas2d.offsetHeight, hCanvas2d.width, hCanvas2d.height), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Draw Const    : Count=' + statistics.frameConstCount() + ' Length=' + statistics.frameConstLength(), locationX, locationY, '#FFFFFF');
+   var hCanvas3d = canvas3d._hCanvas;
+   graphic.drawText(MO.Lang.String.format(' - Canvas3d   : size={1}x{2}, inner_size={3}x{4}', hCanvas3d.offsetWidth, hCanvas3d.offsetHeight, hCanvas3d.width, hCanvas3d.height), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Draw Alloc    : Buffer=' + statistics.frameBufferCount() + ' Texture=' + statistics.frameTextureCount(), locationX, locationY, '#FFFFFF');
+   var context3d = canvas3d.graphicContext();
+   graphic.drawText(MO.Lang.String.format('   - Context  : {1}', context3d.size().toDisplay()), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Draw Total    : Program=' + statistics.programTotal() + ' Layout=' + statistics.layoutTotal() + ' Vertex=' + statistics.vertexBufferTotal() + ' Index=' + statistics.indexBufferTotal(), locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format('   - Viewport : {1}', context3d.viewportRectangle()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   var camera = o._stage.camera();
+   var projection = camera.projection();
+   graphic.drawText(MO.Lang.String.format('Stage         : ={1}, size={2}x{3}', camera.position()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Camera     : position={1}', camera.position()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Projection : size={1}, znear={2}, zfar={3}', projection.size(), projection.znear(), projection.zfar()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format('Frame         : rate={1}, span=[{2}]', MO.Timer.rate(), stageStatistics._frame), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Process    : {1}', stageStatistics._frameProcess), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Draw       : draw={1}, sort={2}', stageStatistics._frameDraw, stageStatistics._frameDrawSort), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format('Draw          : count={1}, triangle={2}', statistics.frameDrawCount(), statistics.frameTriangleCount()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Const      : count={1}, length={2}', statistics.frameConstCount(), statistics.frameConstLength()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Alloc      : buffer={1}, texture={2}', statistics.frameBufferCount(), statistics.frameTextureCount()), locationX, locationY, '#FFFFFF');
+   locationY += line;
+   graphic.drawText(MO.Lang.String.format(' - Total      : program={1}, layout={2}, vertex={3}, index={4}', statistics.programTotal(), statistics.layoutTotal(), statistics.vertexBufferTotal(), statistics.indexBufferTotal()), locationX, locationY, '#FFFFFF');
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    var mapEntity = entityConsole.mapEntity();
    var provinceEntities = mapEntity.provinceEntities();
    var cityEntities = mapEntity.cityEntities();
    locationY += line;
-   graphic.drawText('Entity        : Province=' + provinceEntities.count() + ' City=' + cityEntities.count(), locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format('Entity        : province={1} city={2}', provinceEntities.count(), cityEntities.count()), locationX, locationY, '#FFFFFF');
    locationY += line;
-   graphic.drawText('Investment    : Entity=' + o._investmentEntityCount + ' Table=' + o._investmentTableEntityCount + ' PoolItem=' + o._investmentPoolItemCount + ' PoolFree=' + o._investmentPoolFreeCount, locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format('Investment    : entity={1}, table={2}, pool_item={3}, pool_free={4}', o._investmentEntityCount, o._investmentTableEntityCount, o._investmentPoolItemCount, o._investmentPoolFreeCount), locationX, locationY, '#FFFFFF');
+   desktop.resize();
 }
 MO.FEaiDynamicInfo_oeUpdate = function FEaiDynamicInfo_oeUpdate(event){
    var o = this;
@@ -82042,7 +82062,7 @@ MO.FEaiDynamicInfo_oeUpdate = function FEaiDynamicInfo_oeUpdate(event){
 MO.FEaiDynamicInfo_construct = function FEaiDynamicInfo_construct(){
    var o = this;
    o.__base.FGuiControl.construct.call(o);
-   o._size.set(512, 256);
+   o._size.set(1024, 512);
    o._ticker = new MO.TTicker(1000);
 }
 MO.FEaiGroupReportScene = function FEaiGroupReportScene(o){
@@ -82057,7 +82077,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = false;
+   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
@@ -82111,14 +82131,20 @@ MO.FEaiScene_active = function FEaiScene_active(){
    var stage = o._activeStage;
    if(o._optionDebug){
       var control = o._application.dynamicInfo();
+      control.setDisplayOrder(10000);
       control.setStage(stage);
+      control.setGuiManager(o._guiManager);
    }
-   MO.Eai.Canvas.selectStage(stage);
+   var application = o._application;
+   var desktop = application.desktop();
+   desktop.selectStage(stage);
 }
 MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var o = this;
    o.__base.FScene.deactive.call(o);
-   MO.Eai.Canvas.selectStage(null);
+   var application = o._application;
+   var desktop = application.desktop();
+   desktop.selectStage(null);
 }
 MO.FEaiScene_processResize = function FEaiScene_processResize(event){
    var o = this;
@@ -82296,14 +82322,6 @@ MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, MO.FE3dGeneralTechnique);
-      var camera = stage.region().camera();
-      var projection = camera.projection();
-      projection.setAngle(80);
-      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
-      projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
    }
    o._activeStage = stage;
 }
@@ -82412,6 +82430,7 @@ MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
 }
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
+   o._orientationCd         = null;
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    o.onOperationResize      = MO.FEaiChartDesktop_onOperationResize;
@@ -82419,6 +82438,7 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o.construct              = MO.FEaiChartDesktop_construct;
    o.build                  = MO.FEaiChartDesktop_build;
    o.resize                 = MO.FEaiChartDesktop_resize;
+   o.selectStage            = MO.FEaiChartDesktop_selectStage;
    o.dispose                = MO.FEaiChartDesktop_dispose;
    return o;
 }
@@ -82443,6 +82463,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
+   canvas3d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas3d);
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
@@ -82454,27 +82475,32 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
 }
 MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targetHeight){
    var o = this;
-   var width = (targetWidth != null) ? targetWidth : window.innerWidth;
-   var height = (targetHeight != null) ? targetHeight : window.innerHeight;
-   if(o._screenSize.equalsData(width, height)){
+   var browser = MO.Window.Browser;
+   var sourceWidth = (targetWidth != null) ? targetWidth : window.innerWidth;
+   var sourceHeight = (targetHeight != null) ? targetHeight : window.innerHeight;
+   var orientationCd = browser.orientationCd();
+   if(o._screenSize.equalsData(sourceWidth, sourceHeight) && (o._orientationCd == orientationCd)){
       return;
    }
-   o._screenSize.set(width, height);
-   var pixelRatio = MO.Window.Browser.capability().pixelRatio;
+   o._screenSize.set(sourceWidth, sourceHeight);
+   o._orientationCd = orientationCd;
+   var pixelRatio = browser.capability().pixelRatio;
    MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
-   width *= pixelRatio;
-   height *= pixelRatio;
+   var width = parseInt(sourceWidth * pixelRatio);
+   var height = parseInt(sourceHeight * pixelRatio);
+   o._size.set(width, height);
    var widthRate = 1;
    var heightRate = 1;
    var logicSize = o._logicSize;
-   if(MO.Window.Browser.isOrientationHorizontal()){
-      widthRate = width / logicSize.width;
-      heightRate = height / logicSize.height;
-      o._calculateSize.set(logicSize.width, logicSize.height);
-   }else{
+   var isVertical = browser.isOrientationVertical()
+   if(isVertical){
       widthRate = width / logicSize.height;
       heightRate = height / logicSize.width;
       o._calculateSize.set(logicSize.height, logicSize.width);
+   }else{
+      widthRate = width / logicSize.width;
+      heightRate = height / logicSize.height;
+      o._calculateSize.set(logicSize.width, logicSize.height);
    }
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
    o._logicRate.set(widthRate, heightRate);
@@ -82486,14 +82512,39 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
       o._calculateRate.set(1, 1);
    }
    o._canvas3d.resize(width, height);
+   var context3d = o._canvas3d.graphicContext();
+   var hCanvas3d = o._canvas3d._hCanvas;
+   hCanvas3d.style.width = sourceWidth + 'px';
+   hCanvas3d.style.height = sourceHeight + 'px';
+   context3d.setViewport(0, 0, o._size.width, o._size.height)
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setScale(sizeRate, sizeRate);
+   var hCanvas2d = canvas2d._hCanvas;
+   hCanvas2d.style.width = sourceWidth + 'px';
+   hCanvas2d.style.height = sourceHeight + 'px';
+   var stage = o._canvas3d.activeStage();
+   o.selectStage(stage);
+}
+MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
+   var o = this;
+   o._canvas3d.selectStage(stage);
+   if(stage){
+      var camera = stage.region().camera();
+      var projection = camera.projection();
+      projection.size().assign(o._size);
+      projection.setAngle(80);
+      projection.update();
+      camera.position().set(0, 0, -10);
+      camera.lookAt(0, 0, 0);
+      camera.update();
+   }
+   o._activeStage = stage;
 }
 MO.FEaiChartDesktop_dispose = function FEaiChartDesktop_dispose(){
    var o = this;
-   o._canvas3d = MO.RObject.dispose(o._canvas3d);
-   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o._canvas3d = MO.Lang.Object.dispose(o._canvas3d);
+   o._canvas2d = MO.Lang.Object.dispose(o._canvas2d);
    o.__base.FEaiDesktop.dispose.call(o);
 }
 MO.FEaiDesktop = function FEaiDesktop(o){
@@ -82507,7 +82558,6 @@ MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
    o.__base.FDesktop.construct.call(o);
    o._size.set(1920, 1080);
    o._logicSize.set(1920, 1080);
-   o._screenSize.set(0, 0);
 }
 MO.FEaiDesktop_dispose = function FEaiDesktop_dispose(){
    var o = this;

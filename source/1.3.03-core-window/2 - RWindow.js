@@ -240,7 +240,7 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
 // @param event:htmlEvent 事件
 //==========================================================
 MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.RWindow._optionSelect;
+   return MO.Window._optionSelect;
 }
 
 //==========================================================
@@ -250,13 +250,13 @@ MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
 // @param hEvent:htmlEvent 事件
 //==========================================================
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.RWindow;
+   var o = MO.Window;
    // 刷新方向
-   MO.Window.Browser.refreshOrientation();
+   var orientationCd = MO.Window.Browser.refreshOrientation();
    // 分发消息
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Window.Browser.orientationCd();
+   event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
 }
 
@@ -267,12 +267,12 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
 // @param event:htmlEvent 事件
 //==========================================================
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.RWindow;
+   var o = MO.Window;
    // 释放处理
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
    // 释放窗口
-   MO.RWindow.dispose();
+   MO.Window.dispose();
 }
 
 //==========================================================
@@ -297,7 +297,7 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
-      hWindow.addEventListener('orientationchange', o.ohOrientation);
+      //hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
@@ -306,8 +306,8 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;
-      hWindow.onorientationchange = o.ohOrientation;
    }
+   hWindow.onorientationchange = o.ohOrientation;
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;

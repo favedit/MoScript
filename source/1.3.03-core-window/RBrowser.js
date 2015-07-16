@@ -9,6 +9,7 @@ MO.RBrowser = function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
+   o._agent         = null;
    o._capability    = null;
    // @attribute
    o._deviceCd      = MO.EDevice.Unknown;
@@ -23,6 +24,8 @@ MO.RBrowser = function RBrowser(){
 
 //===========================================================
 // <T>日志输出处理。</T>
+//
+// @method
 //===========================================================
 MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
    console.log(p);
@@ -35,7 +38,9 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 //===========================================================
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var agent = window.navigator.userAgent.toLowerCase();
+   o.code = window.navigator.userAgent.toString();
+   var agent = o.code.toLowerCase();
+   var capability = o._capability = new MO.SBrowserCapability();
    // 判断设备类型
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
@@ -50,6 +55,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       o._typeCd = MO.EBrowser.Explorer;
    }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
       o._typeCd = MO.EBrowser.Safari;
+      capability.canvasAutoScale = true;
    }else{
       alert('Unknown browser.\n' + agent);
       return;
@@ -77,7 +83,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    }
    // 设置浏览器能力
-   var capability = o._capability = new MO.SBrowserCapability();
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
@@ -125,6 +130,7 @@ MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
 //===========================================================
 // <T>获得主机路径。</T>
 //
+// @method
 // @param uri:String 路径
 // @return String 主机路径
 //===========================================================
@@ -139,6 +145,7 @@ MO.RBrowser.prototype.hostPath = function RBrowser_hostPath(uri){
 //===========================================================
 // <T>设置主机路径。</T>
 //
+// @method
 // @param host:String 主机路径
 //===========================================================
 MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
@@ -148,6 +155,7 @@ MO.RBrowser.prototype.setHostPath = function RBrowser_setHostPath(host){
 //===========================================================
 // <T>获得内容路径。</T>
 //
+// @method
 // @param uri:String 路径
 // @return String 内容路径
 //===========================================================
@@ -162,10 +170,21 @@ MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
 //===========================================================
 // <T>设置内容路径。</T>
 //
+// @method
 // @param path:String 路径
 //===========================================================
 MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
    this._contentPath = path;
+}
+
+//===========================================================
+// <T>获得浏览器类型。</T>
+//
+// @method
+// @return 浏览器类型
+//===========================================================
+MO.RBrowser.prototype.typeCd = function RBrowser_typeCd(){
+   return this._typeCd;
 }
 
 //===========================================================
@@ -181,6 +200,7 @@ MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
 //===========================================================
 // <T>返回屏幕方向。</T>
 //
+// @method
 // @return 屏幕方向
 //===========================================================
 MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
@@ -190,6 +210,7 @@ MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
 //===========================================================
 // <T>判断是否横屏。</T>
 //
+// @method
 // @return 是否横屏
 //===========================================================
 MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationHorizontal(){
@@ -199,6 +220,7 @@ MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationH
 //===========================================================
 // <T>判断是否垂直。</T>
 //
+// @method
 // @return 是否垂直
 //===========================================================
 MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVertical(){
@@ -208,6 +230,7 @@ MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVer
 //===========================================================
 // <T>判断是否垂直。</T>
 //
+// @method
 // @return 是否垂直
 //===========================================================
 MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(){
@@ -222,12 +245,13 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
          throw new TError(o, 'Unknown orientation mode.');
       }
    }
-   //o._orientationCd = MO.EOrientation.Vertical;
+   return o._orientationCd;
 }
 
 //===========================================================
 // <T>参数编码。</T>
 //
+// @method
 // @param value:String 参数
 // @return 编码字符串
 //===========================================================
@@ -238,6 +262,7 @@ MO.RBrowser.prototype.encode = function RBrowser_encode(value){
 //===========================================================
 // <T>参数解码。</T>
 //
+// @method
 // @param value:String 参数
 // @return 解码字符串
 //===========================================================
@@ -248,6 +273,7 @@ MO.RBrowser.prototype.decode = function RBrowser_decode(value){
 //===========================================================
 // <T>URL参数编码。</T>
 //
+// @method
 // @param url:String 网络地址
 // @param flag:Boolean 是否全部
 // @return 编码字符串
@@ -262,6 +288,7 @@ MO.RBrowser.prototype.urlEncode = function RBrowser_urlEncode(url, flag){
 //===========================================================
 // <T>URL参数解码。</T>
 //
+// @method
 // @param url:String 网络地址
 // @param flag:Boolean 是否全部
 // @return 解码字符串
@@ -309,6 +336,7 @@ MO.RBrowser.prototype.fullscreen = function RBrowser_fullscreen(hWindow, flag){
 //===========================================================
 // <T>下载数据块。</T>
 //
+// @method
 // @param fileName:String 文件名称
 // @param blob:Blob 数据块
 //===========================================================
@@ -324,6 +352,7 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
 //===========================================================
 // <T>下载数据块。</T>
 //
+// @method
 // @param fileName:String 文件名称
 // @param text:String 文本内容
 //===========================================================

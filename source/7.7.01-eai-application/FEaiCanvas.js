@@ -77,14 +77,14 @@ MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
       stage.region().linkGraphicContext(o);
       stage.selectTechnique(o, MO.FE3dGeneralTechnique);
       // 设置相机
-      var camera = stage.region().camera();
-      var projection = camera.projection();
-      projection.setAngle(80);
-      projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
-      projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
+      //var camera = stage.region().camera();
+      //var projection = camera.projection();
+      //projection.setAngle(80);
+      //projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
+      //projection.update();
+      //camera.position().set(0, 0, -10);
+      //camera.lookAt(0, 0, 0);
+      //camera.update();
    }
    o._activeStage = stage;
 }

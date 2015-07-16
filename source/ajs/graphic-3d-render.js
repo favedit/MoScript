@@ -245,10 +245,7 @@ MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._size               = MO.Class.register(o, new MO.AGetter('_size'));
-   o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
-   o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
-   o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
+   o._viewportRectangle  = MO.Class.register(o, new MO.AGetter('_viewportRectangle'));
    o._capability         = MO.Class.register(o, new MO.AGetter('_capability'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    o._fillModeCd         = MO.EG3dFillMode.Face;
@@ -297,9 +294,7 @@ MO.FG3dContext = function FG3dContext(o){
 MO.FG3dContext_construct = function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2(1280, 720);
-   o._logicSize = new MO.SSize2(1280, 720);
-   o._sizeRatio = new MO.SSize2(1, 1);
+   o._viewportRectangle = new MO.SRectangle();
    o._statistics = MO.Class.create(MO.FG3dStatistics);
    MO.Console.find(MO.FStatisticsConsole).register('graphic3d.context', o._statistics);
    o._storePrograms = new MO.TObjects();
@@ -370,9 +365,7 @@ MO.FG3dContext_dispose = function FG3dContext_dispose(){
       o._storeTargets = MO.Lang.Object.dispose(targets);
    }
    o._program = null;
-   o._size = MO.Lang.Object.dispose(o._size);
-   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
+   o._viewportRectangle = MO.Lang.Object.dispose(o._viewportRectangle);
    o._capability = MO.Lang.Object.dispose(o._capability);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    o._handleInstance = null;

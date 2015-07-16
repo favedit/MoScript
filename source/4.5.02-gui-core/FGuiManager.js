@@ -173,6 +173,7 @@ MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    // 处理事件
    o.dispatcherEvent(event);
+   return;
    // 处理鼠标
    if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
       // 计算屏幕点击

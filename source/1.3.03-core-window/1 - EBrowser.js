@@ -8,14 +8,14 @@
 MO.EBrowser = new function EBrowser(){
    var o = this;
    // @member
-   o.Unknown = 0;
+   o.Unknown = 'unknown';
    // @member Microsoft InternetExploer
-   o.Explorer = 1;
+   o.Explorer = 'explorer';
    // @member FireFox
-   o.FireFox = 2;
+   o.FireFox = 'firefox';
    // @member Google Chrome
-   o.Chrome = 3;
+   o.Chrome = 'chrome';
    // @member Apple Safari
-   o.Safari = 4;
+   o.Safari = 'safari';
    return o;
 }

@@ -5055,25 +5055,27 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 }
 MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'return this.' + name + ';';
       method = new Function(source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
@@ -5434,19 +5436,18 @@ MO.RString.prototype.firstLine = function RString_firstLine(v){
    }
    return '';
 }
-MO.RString.prototype.format = function RString_format(s, p){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 1; n < c; n++){
-      var p = a[n];
-      if(typeof(p) == 'function'){
-         p = RMethod.name(p);
-      }else if(p == null){
-         p = '';
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
       }
-      s = s.replace('{' + (n-1) + '}', p);
+      value = value.replace('{' + i + '}', parameter);
    }
-   return s;
+   return value;
 }
 MO.RString.prototype.formatLines = function RString_formatLines(p){
    var o = this;
@@ -8184,6 +8185,7 @@ MO.SSize2 = function SSize2(width, height){
    o.serialize   = MO.SSize2_serialize;
    o.unserialize = MO.SSize2_unserialize;
    o.parse       = MO.SSize2_parse;
+   o.toDisplay   = MO.SSize2_toDisplay;
    o.toString    = MO.SSize2_toString;
    o.dispose     = MO.SSize2_dispose;
    o.dump        = MO.SSize2_dump;
@@ -8248,6 +8250,10 @@ MO.SSize2_parse = function SSize2_parse(v){
    }else{
       throw new TError(o, "Parse value failure. (value={1})", v);
    }
+}
+MO.SSize2_toDisplay = function SSize2_toDisplay(){
+   var o = this;
+   return o.width + 'x' + o.height;
 }
 MO.SSize2_toString = function SSize2_toString(){
    var o = this;

@@ -408,23 +408,22 @@ MO.RString.prototype.firstLine = function RString_firstLine(v){
 // <T>格式化一个字符串内容，将参数中{x}内容替换为参数内容。</T>
 //
 // @method
-// @param s:value:String 字符串
-// @param p:parameters:Object... 参数字符
+// @param value:String 字符串
+// @param parameters:Object... 参数字符
 // @return String 格式化后的字符串
 //==========================================================
-MO.RString.prototype.format = function RString_format(s, p){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 1; n < c; n++){
-      var p = a[n];
-      if(typeof(p) == 'function'){
-         p = RMethod.name(p);
-      }else if(p == null){
-         p = '';
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
       }
-      s = s.replace('{' + (n-1) + '}', p);
+      value = value.replace('{' + i + '}', parameter);
    }
-   return s;
+   return value;
 }
 
 //==========================================================

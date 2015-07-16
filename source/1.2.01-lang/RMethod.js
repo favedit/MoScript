@@ -171,14 +171,15 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 //==========================================================
 MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       // 创建虚函数对象
       var source = 'return this.' + name + ';';
       method = new Function(source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
@@ -193,14 +194,15 @@ MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, me
 //==========================================================
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       // 创建虚函数对象
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }

@@ -25,7 +25,6 @@ MO.FEaiDesktop_construct = function FEaiDesktop_construct(){
    o.__base.FDesktop.construct.call(o);
    o._size.set(1920, 1080);
    o._logicSize.set(1920, 1080);
-   o._screenSize.set(0, 0);
 }
 
 //==========================================================

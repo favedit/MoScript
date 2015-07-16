@@ -76,13 +76,21 @@ MO.FFloatStream_dispose = function FFloatStream_dispose(){
 }
 MO.FGraphicContext = function FGraphicContext(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._hCanvas   = null;
-   o.linkCanvas = MO.RMethod.virtual(o, 'linkCanvas');
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._hCanvas   = MO.Class.register(o, new MO.AGetter('_hCanvas', 'htmlCanvas'));
+   o.construct  = MO.FGraphicContext_construct;
+   o.linkCanvas = MO.Method.virtual(o, 'linkCanvas');
    o.dispose    = MO.FGraphicContext_dispose;
    return o;
 }
+MO.FGraphicContext_construct = function FGraphicContext_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+}
 MO.FGraphicContext_dispose = function FGraphicContext_dispose(){
    var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }

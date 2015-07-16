@@ -3749,25 +3749,27 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 }
 MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'return this.' + name + ';';
       method = new Function(source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
@@ -4128,19 +4130,18 @@ MO.RString.prototype.firstLine = function RString_firstLine(v){
    }
    return '';
 }
-MO.RString.prototype.format = function RString_format(s, p){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 1; n < c; n++){
-      var p = a[n];
-      if(typeof(p) == 'function'){
-         p = RMethod.name(p);
-      }else if(p == null){
-         p = '';
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
       }
-      s = s.replace('{' + (n-1) + '}', p);
+      value = value.replace('{' + i + '}', parameter);
    }
-   return s;
+   return value;
 }
 MO.RString.prototype.formatLines = function RString_formatLines(p){
    var o = this;

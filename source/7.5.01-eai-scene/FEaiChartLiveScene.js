@@ -114,7 +114,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -211,9 +211,8 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
-   var faceLayer = o._activeStage.faceLayer();
    //..........................................................
-   // 显示LOGO页面
+   // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);

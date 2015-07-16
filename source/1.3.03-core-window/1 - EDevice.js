@@ -8,10 +8,10 @@
 MO.EDevice = new function EDevice(){
    var o = this;
    // @member
-   o.Unknown = 0;
+   o.Unknown = 'unknown';
    // @member
-   o.Pc = 1;
+   o.Pc = 'pc';
    // @member
-   o.Mobile = 2;
+   o.Mobile = 'mobile';
    return o;
 }

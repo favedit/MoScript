@@ -76,13 +76,21 @@ MO.FFloatStream_dispose = function FFloatStream_dispose(){
 }
 MO.FGraphicContext = function FGraphicContext(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._hCanvas   = null;
-   o.linkCanvas = MO.RMethod.virtual(o, 'linkCanvas');
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._hCanvas   = MO.Class.register(o, new MO.AGetter('_hCanvas', 'htmlCanvas'));
+   o.construct  = MO.FGraphicContext_construct;
+   o.linkCanvas = MO.Method.virtual(o, 'linkCanvas');
    o.dispose    = MO.FGraphicContext_dispose;
    return o;
 }
+MO.FGraphicContext_construct = function FGraphicContext_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+}
 MO.FGraphicContext_dispose = function FGraphicContext_dispose(){
    var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
@@ -167,7 +175,6 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
 }
 MO.FG2dContext = function FG2dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
-   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
    o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
    o.construct  = MO.FG2dContext_construct;
    o.linkCanvas = MO.FG2dContext_linkCanvas;
@@ -177,7 +184,6 @@ MO.FG2dContext = function FG2dContext(o){
 MO.FG2dContext_construct = function FG2dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2();
    o._scale = new MO.SSize2(1, 1);
 }
 MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
@@ -186,8 +192,7 @@ MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
 }
 MO.FG2dContext_dispose = function FG2dContext_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._scale = RObject.dispose(o._scale);
+   o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FGraphicContext.dispose.call(o);
 }
 MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
@@ -2692,10 +2697,7 @@ MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._size               = MO.Class.register(o, new MO.AGetter('_size'));
-   o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
-   o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
-   o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
+   o._viewportRectangle  = MO.Class.register(o, new MO.AGetter('_viewportRectangle'));
    o._capability         = MO.Class.register(o, new MO.AGetter('_capability'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    o._fillModeCd         = MO.EG3dFillMode.Face;
@@ -2744,9 +2746,7 @@ MO.FG3dContext = function FG3dContext(o){
 MO.FG3dContext_construct = function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2(1280, 720);
-   o._logicSize = new MO.SSize2(1280, 720);
-   o._sizeRatio = new MO.SSize2(1, 1);
+   o._viewportRectangle = new MO.SRectangle();
    o._statistics = MO.Class.create(MO.FG3dStatistics);
    MO.Console.find(MO.FStatisticsConsole).register('graphic3d.context', o._statistics);
    o._storePrograms = new MO.TObjects();
@@ -2817,9 +2817,7 @@ MO.FG3dContext_dispose = function FG3dContext_dispose(){
       o._storeTargets = MO.Lang.Object.dispose(targets);
    }
    o._program = null;
-   o._size = MO.Lang.Object.dispose(o._size);
-   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
+   o._viewportRectangle = MO.Lang.Object.dispose(o._viewportRectangle);
    o._capability = MO.Lang.Object.dispose(o._capability);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    o._handleInstance = null;
@@ -4210,9 +4208,7 @@ MO.FWglContext_recordEnd = function FWglContext_recordEnd(){
 }
 MO.FWglContext_createProgram = function FWglContext_createProgram(){
    var o = this;
-   var program = MO.Class.create(MO.FWglProgram);
-   program.linkGraphicContext(o);
-   program.setup();
+   var program = o.createObject(MO.FWglProgram);
    o._storePrograms.push(program);
    o._statistics._programTotal++;
    return program;
@@ -4230,7 +4226,7 @@ MO.FWglContext_createLayout = function FWglContext_createLayout(){
 }
 MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglVertexBuffer);
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglVertexBuffer));
    buffer.linkGraphicContext(o);
    buffer.setup();
    o._storeBuffers.push(buffer);
@@ -4239,36 +4235,28 @@ MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(claz
 }
 MO.FWglContext_createIndexBuffer = function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglIndexBuffer);
-   buffer.linkGraphicContext(o);
-   buffer.setup();
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglIndexBuffer));
    o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
 }
-MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(){
+MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglFlatTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglFlatTexture));
    o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
    return texture;
 }
-MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(){
+MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglCubeTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglCubeTexture));
    o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
    return texture;
 }
-MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
+MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
-   var target = MO.Class.create(MO.FWglRenderTarget);
-   target.linkGraphicContext(o);
-   target.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
    o._storeTargets.push(target);
    o._statistics._targetTotal++;
    return target;
@@ -4276,6 +4264,7 @@ MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
    o._size.set(width, height);
+   o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){

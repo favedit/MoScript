@@ -165,34 +165,27 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
 //
 // @method
 //==========================================================
-MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    var o = this;
-   // 获得大小
-   if(width == null){
-      width = o._hPanel.offsetWidth;
+   // 检查参数
+   if(!sourceWidth || !sourceHeight){
+      throw new MO.TError(o, 'Invalid canvas size.');
    }
-   if(height == null){
-      height = o._hPanel.offsetHeight;
-   }
-   if(o._screenSize.equalsData(width, height)){
-      return;
-   }
-   o._screenSize.set(width, height);
+   //if(o._screenSize.equalsData(sourceWidth, sourceHeight)){
+      //return;
+   //}
+   o._screenSize.set(sourceWidth, sourceHeight);
+   // 设置尺寸
+   var width = parseInt(sourceWidth * o._scaleRate);
+   var height = parseInt(sourceHeight * o._scaleRate);
    // 设置画板
    var hCanvas = o._hCanvas;
-   var scaleWidth = hCanvas.width = width * o._scaleRate;
-   var scaleHeight = hCanvas.height = height * o._scaleRate;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   o._size.set(width, height);
    // 设置范围
    var context = o._graphicContext;
-   var ratioX = o._logicSize.width / scaleWidth;
-   var ratioY = o._logicSize.height / scaleHeight;
-   var ratio = Math.max(ratioX, ratioY);
-   context.logicSize().assign(o._logicSize);
-   context.setRatio(ratio);
-   context.sizeRatio().set(ratioX, ratioY);
-   context.setViewport(0, 0, scaleWidth, scaleHeight);
-   // 设置大小
-   o._size.assign(o._screenSize);
+   context.setViewport(0, 0, width, height);
 }
 
 //==========================================================

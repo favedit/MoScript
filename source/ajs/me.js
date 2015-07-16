@@ -5055,25 +5055,27 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 }
 MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'return this.' + name + ';';
       method = new Function(source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
    var o = this;
+   var code = name + '|' + methodName;
    var method = null;
-   if(o._properties[methodName]){
-      method = o._properties[methodName];
+   if(o._properties[code]){
+      method = o._properties[code];
    }else{
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
-      o._properties[methodName] = method;
+      o._properties[code] = method;
    }
    return method;
 }
@@ -5434,19 +5436,18 @@ MO.RString.prototype.firstLine = function RString_firstLine(v){
    }
    return '';
 }
-MO.RString.prototype.format = function RString_format(s, p){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 1; n < c; n++){
-      var p = a[n];
-      if(typeof(p) == 'function'){
-         p = RMethod.name(p);
-      }else if(p == null){
-         p = '';
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
       }
-      s = s.replace('{' + (n-1) + '}', p);
+      value = value.replace('{' + i + '}', parameter);
    }
-   return s;
+   return value;
 }
 MO.RString.prototype.formatLines = function RString_formatLines(p){
    var o = this;
@@ -8184,6 +8185,7 @@ MO.SSize2 = function SSize2(width, height){
    o.serialize   = MO.SSize2_serialize;
    o.unserialize = MO.SSize2_unserialize;
    o.parse       = MO.SSize2_parse;
+   o.toDisplay   = MO.SSize2_toDisplay;
    o.toString    = MO.SSize2_toString;
    o.dispose     = MO.SSize2_dispose;
    o.dump        = MO.SSize2_dump;
@@ -8248,6 +8250,10 @@ MO.SSize2_parse = function SSize2_parse(v){
    }else{
       throw new TError(o, "Parse value failure. (value={1})", v);
    }
+}
+MO.SSize2_toDisplay = function SSize2_toDisplay(){
+   var o = this;
+   return o.width + 'x' + o.height;
 }
 MO.SSize2_toString = function SSize2_toString(){
    var o = this;
@@ -12477,27 +12483,27 @@ MO.FXmlConsole_process = function FXmlConsole_process(p){
 }
 MO.EBrowser = new function EBrowser(){
    var o = this;
-   o.Unknown = 0;
-   o.Explorer = 1;
-   o.FireFox = 2;
-   o.Chrome = 3;
-   o.Safari = 4;
+   o.Unknown = 'unknown';
+   o.Explorer = 'explorer';
+   o.FireFox = 'firefox';
+   o.Chrome = 'chrome';
+   o.Safari = 'safari';
    return o;
 }
 MO.EDevice = new function EDevice(){
    var o = this;
-   o.Unknown = 0;
-   o.Pc = 1;
-   o.Mobile = 2;
+   o.Unknown = 'unknown';
+   o.Pc = 'pc';
+   o.Mobile = 'mobile';
    return o;
 }
 MO.ESoftware = new function ESoftware(){
    var o = this;
-   o.Unknown = 0;
-   o.Window = 1;
-   o.Linux = 2;
-   o.Android = 3;
-   o.Apple = 4;
+   o.Unknown = 'unknown';
+   o.Window = 'window';
+   o.Linux = 'linux';
+   o.Android = 'android';
+   o.Apple = 'apple';
    return o;
 }
 MO.RWindow = function RWindow(){
@@ -12612,21 +12618,21 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    o.lsnsResize.process(event);
 }
 MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.RWindow._optionSelect;
+   return MO.Window._optionSelect;
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.RWindow;
-   MO.Window.Browser.refreshOrientation();
+   var o = MO.Window;
+   var orientationCd = MO.Window.Browser.refreshOrientation();
    var event = o._eventOrientation;
    event.code = MO.EEvent.Orientation;
-   event.orientationCd = MO.Window.Browser.orientationCd();
+   event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.RWindow;
+   var o = MO.Window;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   MO.RWindow.dispose();
+   MO.Window.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
@@ -12641,7 +12647,6 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.addEventListener('keydown', o.ohKeyDown, true);
       hContainer.addEventListener('keyup', o.ohKeyUp, true);
       hContainer.addEventListener('keypress', o.ohKeyPress, true);
-      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hContainer.onmousedown = o.ohMouseDown;
       hContainer.onmousemove = o.ohMouseMove;
@@ -12650,8 +12655,8 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
       hContainer.onkeydown = o.ohKeyDown;
       hContainer.onkeyup = o.ohKeyUp;
       hContainer.onkeypress = o.ohKeyPress;
-      hWindow.onorientationchange = o.ohOrientation;
    }
+   hWindow.onorientationchange = o.ohOrientation;
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
@@ -12808,10 +12813,11 @@ MO.RWindow = new MO.RWindow();
 MO.Window = MO.RWindow;
 MO.SBrowserCapability = function SBrowserCapability(){
    var o = this;
-   o.optionProcess = false;
-   o.optionStorage = false;
-   o.blobCreate    = false;
-   o.pixelRatio    = 1;
+   o.optionProcess    = false;
+   o.optionStorage    = false;
+   o.canvasAutoScale  = false;
+   o.blobCreate       = false;
+   o.pixelRatio       = 1;
    return o;
 }
 MO.STouchEvent = function STouchEvent(){
@@ -13142,6 +13148,7 @@ MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
 }
 MO.RBrowser = function RBrowser(){
    var o = this;
+   o._agent         = null;
    o._capability    = null;
    o._deviceCd      = MO.EDevice.Unknown;
    o._softwareCd    = MO.ESoftware.Unknown;
@@ -13157,7 +13164,9 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var agent = window.navigator.userAgent.toLowerCase();
+   o.code = window.navigator.userAgent.toString();
+   var agent = o.code.toLowerCase();
+   var capability = o._capability = new MO.SBrowserCapability();
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
       o._softwareCd = MO.ESoftware.Android;
@@ -13170,6 +13179,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       o._typeCd = MO.EBrowser.Explorer;
    }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
       o._typeCd = MO.EBrowser.Safari;
+      capability.canvasAutoScale = true;
    }else{
       alert('Unknown browser.\n' + agent);
       return;
@@ -13192,7 +13202,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    }
-   var capability = o._capability = new MO.SBrowserCapability();
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
@@ -13239,6 +13248,9 @@ MO.RBrowser.prototype.contentPath = function RBrowser_contentPath(uri){
 MO.RBrowser.prototype.setContentPath = function RBrowser_setContentPath(path){
    this._contentPath = path;
 }
+MO.RBrowser.prototype.typeCd = function RBrowser_typeCd(){
+   return this._typeCd;
+}
 MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
    return this._typeCd == browserCd;
 }
@@ -13263,6 +13275,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
          throw new TError(o, 'Unknown orientation mode.');
       }
    }
+   return o._orientationCd;
 }
 MO.RBrowser.prototype.encode = function RBrowser_encode(value){
    return escape(value);
@@ -13665,7 +13678,7 @@ MO.RDump.prototype.typeInfo = function RDump_typeInfo(v, t){
       case 'Number':
          return v.toString();
       case 'String':
-         return v.length + ':\'' + MO.String.toLine(v) + '\'';
+         return v.length + ':\'' + MO.Lang.String.toLine(v) + '\'';
       case 'Function':
          if(v.__virtual){
             return 'virtual';
@@ -14541,13 +14554,21 @@ MO.FFloatStream_dispose = function FFloatStream_dispose(){
 }
 MO.FGraphicContext = function FGraphicContext(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._hCanvas   = null;
-   o.linkCanvas = MO.RMethod.virtual(o, 'linkCanvas');
+   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._hCanvas   = MO.Class.register(o, new MO.AGetter('_hCanvas', 'htmlCanvas'));
+   o.construct  = MO.FGraphicContext_construct;
+   o.linkCanvas = MO.Method.virtual(o, 'linkCanvas');
    o.dispose    = MO.FGraphicContext_dispose;
    return o;
 }
+MO.FGraphicContext_construct = function FGraphicContext_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new MO.SSize2(1280, 720);
+}
 MO.FGraphicContext_dispose = function FGraphicContext_dispose(){
    var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
@@ -14632,7 +14653,6 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
 }
 MO.FG2dContext = function FG2dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
-   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
    o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
    o.construct  = MO.FG2dContext_construct;
    o.linkCanvas = MO.FG2dContext_linkCanvas;
@@ -14642,7 +14662,6 @@ MO.FG2dContext = function FG2dContext(o){
 MO.FG2dContext_construct = function FG2dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2();
    o._scale = new MO.SSize2(1, 1);
 }
 MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
@@ -14651,8 +14670,7 @@ MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
 }
 MO.FG2dContext_dispose = function FG2dContext_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._scale = RObject.dispose(o._scale);
+   o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FGraphicContext.dispose.call(o);
 }
 MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
@@ -17157,10 +17175,7 @@ MO.FG3dContext = function FG3dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._size               = MO.Class.register(o, new MO.AGetter('_size'));
-   o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
-   o._ratio              = MO.Class.register(o, new MO.AGetSet('_ratio'));
-   o._sizeRatio          = MO.Class.register(o, new MO.AGetter('_sizeRatio'));
+   o._viewportRectangle  = MO.Class.register(o, new MO.AGetter('_viewportRectangle'));
    o._capability         = MO.Class.register(o, new MO.AGetter('_capability'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    o._fillModeCd         = MO.EG3dFillMode.Face;
@@ -17209,9 +17224,7 @@ MO.FG3dContext = function FG3dContext(o){
 MO.FG3dContext_construct = function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
-   o._size = new MO.SSize2(1280, 720);
-   o._logicSize = new MO.SSize2(1280, 720);
-   o._sizeRatio = new MO.SSize2(1, 1);
+   o._viewportRectangle = new MO.SRectangle();
    o._statistics = MO.Class.create(MO.FG3dStatistics);
    MO.Console.find(MO.FStatisticsConsole).register('graphic3d.context', o._statistics);
    o._storePrograms = new MO.TObjects();
@@ -17282,9 +17295,7 @@ MO.FG3dContext_dispose = function FG3dContext_dispose(){
       o._storeTargets = MO.Lang.Object.dispose(targets);
    }
    o._program = null;
-   o._size = MO.Lang.Object.dispose(o._size);
-   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._sizeRatio = MO.Lang.Object.dispose(o._sizeRatio);
+   o._viewportRectangle = MO.Lang.Object.dispose(o._viewportRectangle);
    o._capability = MO.Lang.Object.dispose(o._capability);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    o._handleInstance = null;
@@ -18675,9 +18686,7 @@ MO.FWglContext_recordEnd = function FWglContext_recordEnd(){
 }
 MO.FWglContext_createProgram = function FWglContext_createProgram(){
    var o = this;
-   var program = MO.Class.create(MO.FWglProgram);
-   program.linkGraphicContext(o);
-   program.setup();
+   var program = o.createObject(MO.FWglProgram);
    o._storePrograms.push(program);
    o._statistics._programTotal++;
    return program;
@@ -18695,7 +18704,7 @@ MO.FWglContext_createLayout = function FWglContext_createLayout(){
 }
 MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglVertexBuffer);
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglVertexBuffer));
    buffer.linkGraphicContext(o);
    buffer.setup();
    o._storeBuffers.push(buffer);
@@ -18704,36 +18713,28 @@ MO.FWglContext_createVertexBuffer = function FWglContext_createVertexBuffer(claz
 }
 MO.FWglContext_createIndexBuffer = function FWglContext_createIndexBuffer(clazz){
    var o = this;
-   var buffer = MO.Class.create(clazz ? clazz : MO.FWglIndexBuffer);
-   buffer.linkGraphicContext(o);
-   buffer.setup();
+   var buffer = o.createObject(MO.Runtime.nvl(clazz, MO.FWglIndexBuffer));
    o._storeBuffers.push(buffer);
    o._statistics._indexBufferTotal++;
    return buffer;
 }
-MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(){
+MO.FWglContext_createFlatTexture = function FWglContext_createFlatTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglFlatTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglFlatTexture));
    o._storeTextures.push(texture);
    o._statistics._flatTextureTotal++;
    return texture;
 }
-MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(){
+MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz){
    var o = this;
-   var texture = MO.Class.create(MO.FWglCubeTexture);
-   texture.linkGraphicContext(o);
-   texture.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglCubeTexture));
    o._storeTextures.push(texture);
    o._statistics._cubeTextureTotal++;
    return texture;
 }
-MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
+MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
-   var target = MO.Class.create(MO.FWglRenderTarget);
-   target.linkGraphicContext(o);
-   target.setup();
+   var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
    o._storeTargets.push(target);
    o._statistics._targetTotal++;
    return target;
@@ -18741,6 +18742,7 @@ MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(){
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
    o._size.set(width, height);
+   o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
@@ -20391,12 +20393,12 @@ MO.FDesktop_process = function FDesktop_process(){
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._calculateSize = RObject.dispose(o._calculateSize);
-   o._logicSize = RObject.dispose(o._logicSize);
-   o._logicRate = RObject.dispose(o._logicRate);
-   o._screenSize = RObject.dispose(o._screenSize);
-   o._canvases = RObject.dispose(o._canvases);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._calculateSize = MO.Lang.Object.dispose(o._calculateSize);
+   o._logicSize = MO.Lang.Object.dispose(o._logicSize);
+   o._logicRate = MO.Lang.Object.dispose(o._logicRate);
+   o._screenSize = MO.Lang.Object.dispose(o._screenSize);
+   o._canvases = MO.Lang.Object.dispose(o._canvases);
    o.__base.FObject.dispose.call(o);
 }
 MO.FDisplay = function FDisplay(o){
@@ -21960,30 +21962,20 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
       MO.Console.find(MO.FMouseConsole).register(o);
    }
 }
-MO.FE3dCanvas_resize = function FE3dCanvas_resize(width, height){
+MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    var o = this;
-   if(width == null){
-      width = o._hPanel.offsetWidth;
+   if(!sourceWidth || !sourceHeight){
+      throw new MO.TError(o, 'Invalid canvas size.');
    }
-   if(height == null){
-      height = o._hPanel.offsetHeight;
-   }
-   if(o._screenSize.equalsData(width, height)){
-      return;
-   }
-   o._screenSize.set(width, height);
+   o._screenSize.set(sourceWidth, sourceHeight);
+   var width = parseInt(sourceWidth * o._scaleRate);
+   var height = parseInt(sourceHeight * o._scaleRate);
    var hCanvas = o._hCanvas;
-   var scaleWidth = hCanvas.width = width * o._scaleRate;
-   var scaleHeight = hCanvas.height = height * o._scaleRate;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   o._size.set(width, height);
    var context = o._graphicContext;
-   var ratioX = o._logicSize.width / scaleWidth;
-   var ratioY = o._logicSize.height / scaleHeight;
-   var ratio = Math.max(ratioX, ratioY);
-   context.logicSize().assign(o._logicSize);
-   context.setRatio(ratio);
-   context.sizeRatio().set(ratioX, ratioY);
-   context.setViewport(0, 0, scaleWidth, scaleHeight);
-   o._size.assign(o._screenSize);
+   context.setViewport(0, 0, width, height);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
@@ -36011,6 +36003,7 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
+   return;
    if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
       var context = o._graphicContext;
       var ratio = context.ratio();
