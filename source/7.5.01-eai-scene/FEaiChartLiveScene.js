@@ -100,7 +100,6 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
          o._statusLayerLevel--;
          if(o._statusLayerLevel <= 0){
             if(hLoading){
-               removeLoading();
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();

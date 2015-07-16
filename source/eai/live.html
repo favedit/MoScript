@@ -15,6 +15,7 @@
             document.getElementById("id_error").style.display = "";
         }
         function onLoaded(event) {
+          clearInterval(clearIntervalFun);
         }
         function onLoad() {
             // 设置变量
@@ -53,12 +54,6 @@
                     }
                 }
             }, 80);
-        }
-
-        function removeLoading() {
-            clearInterval(clearIntervalFun);
-            var loadingImg = document.getElementById("loading_img");
-            loadingImg.parentNode.removeChild(loadingImg);
         }
     </script>
 </head>
