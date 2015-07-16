@@ -178,12 +178,13 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
       if (o.testReady()) {
          var hLoading = document.getElementById('id_loading');
          if (hLoading) {
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            // hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
          if (o._statusLayerLevel == 0) {
             if (hLoading) {
+               removeLoading();
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
