@@ -94,7 +94,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       if(o.testReady()){
          var hLoading = document.getElementById('id_loading');
          if(hLoading){
-            //hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
@@ -103,9 +103,9 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();
+            o.processLoaded();
             o._playing = true;
             o._statusStart = true;
-            o.processLoaded();
          }
       }
    }
