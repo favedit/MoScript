@@ -196,6 +196,7 @@ MO.FG2dCanvasContext_clip = function FG2dCanvasContext_clip(left, top, width, he
    //handle.strokeStyle = '#FFFFFF';
    //handle.lineWidth = 1;
    //handle.strokeRect(left, top, width, height);
+   handle.beginPath();
    handle.rect(left, top, width, height);
    handle.clip();
 }

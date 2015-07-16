@@ -18,6 +18,8 @@ MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
    o._statusStart      = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
+   // @attribute
+   o._chartTotal       = null;
    //..........................................................
    // @event
    o.onInvestment      = MO.FEaiChartTotalScene_onInvestment;
@@ -39,7 +41,7 @@ MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
 MO.FEaiChartTotalScene_onInvestment = function FEaiChartTotalScene_onInvestment(event){
    var o = this;
    var content = event.content;
-   debugger
+   o._chartTotal.setValue(parseInt(content.investment_total).toString());
 }
 
 //==========================================================
@@ -92,6 +94,10 @@ MO.FEaiChartTotalScene_onProcess = function FEaiChartTotalScene_onProcess() {
             statistics.doInvestmentDynamic(o, o.onInvestment, systemDate.format(), systemDate.format());
          }
       }
+
+      if (o._chartTotal.rolling()) {
+         o._chartTotal.dirty();
+      }
    }
 }
 
@@ -118,6 +124,11 @@ MO.FEaiChartTotalScene_setup = function FEaiChartTotalScene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    // 隐藏全部界面
    o._guiManager.hide();
+
+   var chartTotal = o._chartTotal = MO.Class.create(MO.FGuiChartTotal);
+   chartTotal.setup();
+   chartTotal.build();
+   o._guiManager.register(chartTotal);
 }
 
 //==========================================================
@@ -129,7 +140,7 @@ MO.FEaiChartTotalScene_setup = function FEaiChartTotalScene_setup() {
 MO.FEaiChartTotalScene_testReady = function FEaiChartTotalScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._countryReady){
+      if (!o._countryReady || !o._chartTotal.ready()) {
          return false;
       }
       o._ready = true;
