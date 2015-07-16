@@ -150,13 +150,13 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 //==========================================================
 MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
    var o = this;
+   // 加载完成
+   var event = new MO.SEvent(o);
+   MO.Window.lsnsLoaded.process(event);
+   event.dispose();
    // 显示画板
    var desktop = o._application.desktop();
    desktop.show();
-   //var canvas3d = desktop.canvas3d();
-   //canvas3d._hCanvas.style.display = 'block';
-   //var canvas2d = desktop.canvas2d();
-   //canvas2d._hCanvas.style.display = 'block';
 }
 
 //==========================================================

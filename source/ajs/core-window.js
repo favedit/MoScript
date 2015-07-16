@@ -44,6 +44,7 @@ MO.RWindow = function RWindow(){
    o._hDisablePanel    = null;
    o._hDisableImage    = null;
    o.lsnsLoad          = new MO.TListeners();
+   o.lsnsLoaded        = new MO.TListeners();
    o.lsnsUnload        = new MO.TListeners();
    o.lsnsMouseDown     = new MO.TListeners();
    o.lsnsMouseUp       = new MO.TListeners();

@@ -217,12 +217,12 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
       if (o.testReady()) {
          var hLoading = document.getElementById('id_loading');
          if (hLoading) {
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
          if (o._statusLayerLevel == 0) {
             if (hLoading) {
+               removeLoading();
                document.body.removeChild(hLoading);
             }
             o.switchPlay(true);
@@ -799,12 +799,12 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       if(o.testReady()){
          var hLoading = document.getElementById('id_loading');
          if(hLoading){
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
          if(o._statusLayerLevel <= 0){
             if(hLoading){
+               removeLoading();
                document.body.removeChild(hLoading);
             }
             o._mapEntity.countryEntity().start();
@@ -1476,6 +1476,9 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 }
 MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
    var o = this;
+   var event = new MO.SEvent(o);
+   MO.Window.lsnsLoaded.process(event);
+   event.dispose();
    var desktop = o._application.desktop();
    desktop.show();
 }

@@ -106,18 +106,18 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       parameters.antialias = o._optionAntialias;
       //parameters.premultipliedAlpha = false;
       // 初始化对象
-      var handle = hCanvas.getContext('experimental-webgl2');
+      var handle = hCanvas.getContext('experimental-webgl2', parameters);
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl');
+         handle = hCanvas.getContext('experimental-webgl', parameters);
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl');
+         handle = hCanvas.getContext('webgl', parameters);
       }
       if(!handle){
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
-         o.lsnsDeviceError.process();
+         MO.Window.lsnsDeviceError.process(event);
          event.dispose();
          return;
       }
@@ -127,7 +127,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var event = new MO.SEvent(o);
       event.code = MO.EGraphicError.UnsupportWebGL;
       event.message = "Canvas can't support WebGL technique.";
-      o.lsnsDeviceError.process();
+      MO.Window.lsnsDeviceError.process(event);
       event.dispose();
       return;
    }

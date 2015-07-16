@@ -12527,6 +12527,7 @@ MO.RWindow = function RWindow(){
    o._hDisablePanel    = null;
    o._hDisableImage    = null;
    o.lsnsLoad          = new MO.TListeners();
+   o.lsnsLoaded        = new MO.TListeners();
    o.lsnsUnload        = new MO.TListeners();
    o.lsnsMouseDown     = new MO.TListeners();
    o.lsnsMouseUp       = new MO.TListeners();
@@ -18506,18 +18507,18 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      var handle = hCanvas.getContext('experimental-webgl2');
+      var handle = hCanvas.getContext('experimental-webgl2', parameters);
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl');
+         handle = hCanvas.getContext('experimental-webgl', parameters);
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl');
+         handle = hCanvas.getContext('webgl', parameters);
       }
       if(!handle){
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
-         o.lsnsDeviceError.process();
+         MO.Window.lsnsDeviceError.process(event);
          event.dispose();
          return;
       }
@@ -18527,7 +18528,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var event = new MO.SEvent(o);
       event.code = MO.EGraphicError.UnsupportWebGL;
       event.message = "Canvas can't support WebGL technique.";
-      o.lsnsDeviceError.process();
+      MO.Window.lsnsDeviceError.process(event);
       event.dispose();
       return;
    }
@@ -21155,7 +21156,6 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    }else if(window.webkitAudioContext){
       context = new webkitAudioContext();
    }
-   alert(context);
    if(!context){
       MO.Logger.error(o, 'Invalid audio context.');
    }

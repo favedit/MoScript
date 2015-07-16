@@ -36,6 +36,7 @@ MO.RWindow = function RWindow(){
    //..........................................................
    // @listeners
    o.lsnsLoad          = new MO.TListeners();
+   o.lsnsLoaded        = new MO.TListeners();
    o.lsnsUnload        = new MO.TListeners();
    o.lsnsMouseDown     = new MO.TListeners();
    o.lsnsMouseUp       = new MO.TListeners();
@@ -47,7 +48,6 @@ MO.RWindow = function RWindow(){
    o.lsnsKeyPress      = new MO.TListeners();
    o.lsnsResize        = new MO.TListeners();
    o.lsnsOrientation   = new MO.TListeners();
-   // @listeners
    o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }

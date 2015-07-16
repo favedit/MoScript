@@ -1079,7 +1079,6 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    }else if(window.webkitAudioContext){
       context = new webkitAudioContext();
    }
-   alert(context);
    if(!context){
       MO.Logger.error(o, 'Invalid audio context.');
    }
