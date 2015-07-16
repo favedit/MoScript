@@ -10,13 +10,17 @@
 <SCRIPT language='javascript' src='../ajs/eai.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 <SCRIPT>
+function onDeviceError(event){
+}
 function onLoad(){
    // 设置变量
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
    MO.Window.Browser.setContentPath('..');
    MO.Window.Browser.fullscreen(window, true);
-
+   // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   // MO.Window.Browser._orientationCd = MO.EOrientation.Vertical;
+   MO.Window.lsnsDeviceError.register(null, onDeviceError);
    //MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    //MO.Window.Browser._orientationCd = MO.EOrientation.Vertical;
    drawLoading();
