@@ -1,3 +1,9 @@
+MO.EGraphicError = new function EGraphicError(){
+   var o = this;
+   o.Unsupport2d    = 'unsupport.2d';
+   o.UnsupportWebGL = 'unsupport.webgL';
+   return o;
+}
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');

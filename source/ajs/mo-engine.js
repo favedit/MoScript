@@ -1079,8 +1079,9 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    }else if(window.webkitAudioContext){
       context = new webkitAudioContext();
    }
+   alert(context);
    if(!context){
-      throw new MO.TError(o, 'Invalid audio context.');
+      MO.Logger.error(o, 'Invalid audio context.');
    }
    o._context = context;
 }
@@ -1114,6 +1115,9 @@ MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, su
 }
 MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
    var o = this;
+   if(!o._context){
+      return;
+   }
    o._context.decodeAudioData(conn.outputData(), function (buffer) {
       o._audioBuffers.set(conn._url, buffer);
       if (conn.successCallback) {
@@ -1728,6 +1732,9 @@ MO.FE2dCanvas = function FE2dCanvas(o){
    o.build      = MO.FE2dCanvas_build;
    o.setPanel   = MO.FE2dCanvas_setPanel;
    o.resize     = MO.FE2dCanvas_resize;
+   o.show       = MO.FE2dCanvas_show;
+   o.hide       = MO.FE2dCanvas_hide;
+   o.setVisible = MO.FE2dCanvas_setVisible;
    o.reset      = MO.FE2dCanvas_reset;
    o.dispose    = MO.FE2dCanvas_dispose;
    return o;
@@ -1771,9 +1778,19 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
    o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+}
+MO.FE2dCanvas_show = function FE2dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE2dCanvas_hide = function FE2dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE2dCanvas_setVisible = function FE2dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
    this._graphicContext.clear();
@@ -1858,6 +1875,9 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.construct           = MO.FE3dCanvas_construct;
    o.build               = MO.FE3dCanvas_build;
    o.resize              = MO.FE3dCanvas_resize;
+   o.show                = MO.FE3dCanvas_show;
+   o.hide                = MO.FE3dCanvas_hide;
+   o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
@@ -1934,6 +1954,15 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+}
+MO.FE3dCanvas_show = function FE3dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE3dCanvas_hide = function FE3dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE3dCanvas_setVisible = function FE3dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;

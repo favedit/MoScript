@@ -136,7 +136,7 @@ MO.FGuiDesktop_resize = function FGuiDesktop_resize(targetWidth, targetHeight){
    // 设置2D画板
    var canvas = o._canvas;
    canvas.resize(width, height);
-   canvas.context().setScale(sizeRate, sizeRate);
+   canvas.context().setGlobalScale(sizeRate, sizeRate);
    //..........................................................
    // PC方式总是设置样式
    //if(MO.Runtime.isPlatformPc()){

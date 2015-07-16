@@ -1,3 +1,9 @@
+MO.EGraphicError = new function EGraphicError(){
+   var o = this;
+   o.Unsupport2d    = 'unsupport.2d';
+   o.UnsupportWebGL = 'unsupport.webgL';
+   return o;
+}
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');
@@ -175,15 +181,17 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
 }
 MO.FG2dContext = function FG2dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
-   o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
-   o.construct  = MO.FG2dContext_construct;
-   o.linkCanvas = MO.FG2dContext_linkCanvas;
-   o.dispose    = MO.FG2dContext_dispose;
+   o._globalScale = MO.Class.register(o, new MO.AGetter('_globalScale'));
+   o._scale       = MO.Class.register(o, new MO.AGetter('_scale'));
+   o.construct    = MO.FG2dContext_construct;
+   o.linkCanvas   = MO.FG2dContext_linkCanvas;
+   o.dispose      = MO.FG2dContext_dispose;
    return o;
 }
 MO.FG2dContext_construct = function FG2dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+   o._globalScale = new MO.SSize2(1, 1);
    o._scale = new MO.SSize2(1, 1);
 }
 MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
@@ -192,6 +200,7 @@ MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
 }
 MO.FG2dContext_dispose = function FG2dContext_dispose(){
    var o = this;
+   o._globalScale = MO.Lang.Object.dispose(o._globalScale);
    o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FGraphicContext.dispose.call(o);
 }
@@ -208,11 +217,13 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o._gridDrawHeight      = null;
    o.construct            = MO.FG2dCanvasContext_construct;
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
+   o.setGlobalScale       = MO.FG2dCanvasContext_setGlobalScale;
    o.setScale             = MO.FG2dCanvasContext_setScale;
    o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
+   o.prepare              = MO.FG2dCanvasContext_prepare;
    o.clear                = MO.FG2dCanvasContext_clear;
    o.clearRectangle       = MO.FG2dCanvasContext_clearRectangle;
    o.clip                 = MO.FG2dCanvasContext_clip;
@@ -256,6 +267,11 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
    }
    o._hCanvas = hCanvas;
 }
+MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
+   var o = this;
+   o._globalScale.set(width, height);
+   o._handle.scale(width, height);
+}
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
    if(!o._scale.equalsData(width, height)){
@@ -276,15 +292,20 @@ MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();
 }
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+   var o = this;
+   var scale = o._globalScale;
+   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+}
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
-   var hCanvas = o._handle.canvas;
-   var offsetWidth = hCanvas.offsetWidth;
-   var offsetHeight = hCanvas.offsetHeight;
-   o._size.set(offsetWidth, offsetHeight);
-   var width = offsetWidth / o._scale.width;
-   var height = offsetHeight / o._scale.height;
-   o._handle.clearRect(0, 0, width, height);
+   var size = o._size;
+   var handle = o._handle;
+   var hCanvas = handle.canvas;
+   handle.save();
+   handle.setTransform(1, 0, 0, 1, 0, 0);
+   o._handle.clearRect(0, 0, size.width, size.height);
+   handle.restore();
 }
 MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(rectangle){
    this._handle.clearRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
@@ -4005,20 +4026,30 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      var handle = hCanvas.getContext('experimental-webgl2', parameters);
+      var handle = hCanvas.getContext('experimental-webgl2');
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl', parameters);
+         handle = hCanvas.getContext('experimental-webgl');
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl', parameters);
+         handle = hCanvas.getContext('webgl');
       }
       if(!handle){
-         throw new TError("Current browser can't support WebGL technique.");
+         var event = new MO.SEvent(o);
+         event.code = MO.EGraphicError.UnsupportWebGL;
+         event.message = "Current browser can't support WebGL technique.";
+         o.lsnsDeviceError.process();
+         event.dispose();
+         return;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
    }else{
-      throw new TError("Canvas can't support WebGL technique.");
+      var event = new MO.SEvent(o);
+      event.code = MO.EGraphicError.UnsupportWebGL;
+      event.message = "Canvas can't support WebGL technique.";
+      o.lsnsDeviceError.process();
+      event.dispose();
+      return;
    }
    var handle = o._handle;
    o.setDepthMode(true, MO.EG3dDepthMode.LessEqual);

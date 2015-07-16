@@ -11,6 +11,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._optionMapCountry     = true;
    o._readyProvince        = false;
+   o._countryReady         = false;
    // @attribute
    o._nowDate              = null;
    o._nowTicker            = null;

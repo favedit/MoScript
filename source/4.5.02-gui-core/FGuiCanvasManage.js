@@ -160,6 +160,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       // 清空画板
+      graphic.prepare();
       graphic.clear();
       // 排序控件
       readyControls.sort(o.onSortControl);
@@ -189,18 +190,21 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       dirtyControls.sort(o.onSortControl);
       // 绘制处理
       var dirtyCount = dirtyControls.count();
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         // 清空控件
-         var clientRectangle = control.clientRectangle();
-         if(!clientRectangle.isEmpty()){
-            graphic.clearRectangle(clientRectangle);
+      if(dirtyCount){
+         graphic.prepare();
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            // 清空控件
+            var clientRectangle = control.clientRectangle();
+            if(!clientRectangle.isEmpty()){
+               graphic.clearRectangle(clientRectangle);
+            }
          }
-      }
-      // 重绘所有脏的控件
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         o.processControl(control);
+         // 重绘所有脏的控件
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            o.processControl(control);
+         }
       }
       //console.log('Dirty control: ' + dirtyCount);
    }

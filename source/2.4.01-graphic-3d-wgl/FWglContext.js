@@ -106,20 +106,30 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       parameters.antialias = o._optionAntialias;
       //parameters.premultipliedAlpha = false;
       // 初始化对象
-      var handle = hCanvas.getContext('experimental-webgl2', parameters);
+      var handle = hCanvas.getContext('experimental-webgl2');
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl', parameters);
+         handle = hCanvas.getContext('experimental-webgl');
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl', parameters);
+         handle = hCanvas.getContext('webgl');
       }
       if(!handle){
-         throw new TError("Current browser can't support WebGL technique.");
+         var event = new MO.SEvent(o);
+         event.code = MO.EGraphicError.UnsupportWebGL;
+         event.message = "Current browser can't support WebGL technique.";
+         o.lsnsDeviceError.process();
+         event.dispose();
+         return;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
    }else{
-      throw new TError("Canvas can't support WebGL technique.");
+      var event = new MO.SEvent(o);
+      event.code = MO.EGraphicError.UnsupportWebGL;
+      event.message = "Canvas can't support WebGL technique.";
+      o.lsnsDeviceError.process();
+      event.dispose();
+      return;
    }
    var handle = o._handle;
    // 设置状态

@@ -47,6 +47,8 @@ MO.RWindow = function RWindow(){
    o.lsnsKeyPress      = new MO.TListeners();
    o.lsnsResize        = new MO.TListeners();
    o.lsnsOrientation   = new MO.TListeners();
+   // @listeners
+   o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }
 

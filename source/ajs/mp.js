@@ -12707,6 +12707,7 @@ MO.RWindow = function RWindow(){
    o.lsnsKeyPress      = new MO.TListeners();
    o.lsnsResize        = new MO.TListeners();
    o.lsnsOrientation   = new MO.TListeners();
+   o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }
 MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
@@ -14279,6 +14280,7 @@ MO.RHtml.prototype.free = function RHtml_free(p){
    return null;
 }
 MO.RHtml = new MO.RHtml();
+MO.Window.Html = MO.RHtml;
 MO.RKeyboard = function RKeyboard(){
    var o = this;
    o._status = new Array();
@@ -14645,6 +14647,12 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
    return n;
 }
 MO.RXml = new MO.RXml();
+MO.EGraphicError = new function EGraphicError(){
+   var o = this;
+   o.Unsupport2d    = 'unsupport.2d';
+   o.UnsupportWebGL = 'unsupport.webgL';
+   return o;
+}
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');
@@ -14822,15 +14830,17 @@ MO.FG2dObject_dispose = function FG2dObject_dispose(){
 }
 MO.FG2dContext = function FG2dContext(o){
    o = MO.Class.inherits(this, o, MO.FGraphicContext);
-   o._scale     = MO.Class.register(o, new MO.AGetter('_scale'));
-   o.construct  = MO.FG2dContext_construct;
-   o.linkCanvas = MO.FG2dContext_linkCanvas;
-   o.dispose    = MO.FG2dContext_dispose;
+   o._globalScale = MO.Class.register(o, new MO.AGetter('_globalScale'));
+   o._scale       = MO.Class.register(o, new MO.AGetter('_scale'));
+   o.construct    = MO.FG2dContext_construct;
+   o.linkCanvas   = MO.FG2dContext_linkCanvas;
+   o.dispose      = MO.FG2dContext_dispose;
    return o;
 }
 MO.FG2dContext_construct = function FG2dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+   o._globalScale = new MO.SSize2(1, 1);
    o._scale = new MO.SSize2(1, 1);
 }
 MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
@@ -14839,6 +14849,7 @@ MO.FG2dContext_linkCanvas = function FG2dContext_linkCanvas(hCanvas){
 }
 MO.FG2dContext_dispose = function FG2dContext_dispose(){
    var o = this;
+   o._globalScale = MO.Lang.Object.dispose(o._globalScale);
    o._scale = MO.Lang.Object.dispose(o._scale);
    o.__base.FGraphicContext.dispose.call(o);
 }
@@ -14855,11 +14866,13 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o._gridDrawHeight      = null;
    o.construct            = MO.FG2dCanvasContext_construct;
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
+   o.setGlobalScale       = MO.FG2dCanvasContext_setGlobalScale;
    o.setScale             = MO.FG2dCanvasContext_setScale;
    o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
+   o.prepare              = MO.FG2dCanvasContext_prepare;
    o.clear                = MO.FG2dCanvasContext_clear;
    o.clearRectangle       = MO.FG2dCanvasContext_clearRectangle;
    o.clip                 = MO.FG2dCanvasContext_clip;
@@ -14903,6 +14916,11 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
    }
    o._hCanvas = hCanvas;
 }
+MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
+   var o = this;
+   o._globalScale.set(width, height);
+   o._handle.scale(width, height);
+}
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
    if(!o._scale.equalsData(width, height)){
@@ -14923,15 +14941,20 @@ MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();
 }
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+   var o = this;
+   var scale = o._globalScale;
+   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+}
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
-   var hCanvas = o._handle.canvas;
-   var offsetWidth = hCanvas.offsetWidth;
-   var offsetHeight = hCanvas.offsetHeight;
-   o._size.set(offsetWidth, offsetHeight);
-   var width = offsetWidth / o._scale.width;
-   var height = offsetHeight / o._scale.height;
-   o._handle.clearRect(0, 0, width, height);
+   var size = o._size;
+   var handle = o._handle;
+   var hCanvas = handle.canvas;
+   handle.save();
+   handle.setTransform(1, 0, 0, 1, 0, 0);
+   o._handle.clearRect(0, 0, size.width, size.height);
+   handle.restore();
 }
 MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(rectangle){
    this._handle.clearRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
@@ -18652,20 +18675,30 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      var handle = hCanvas.getContext('experimental-webgl2', parameters);
+      var handle = hCanvas.getContext('experimental-webgl2');
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl', parameters);
+         handle = hCanvas.getContext('experimental-webgl');
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl', parameters);
+         handle = hCanvas.getContext('webgl');
       }
       if(!handle){
-         throw new TError("Current browser can't support WebGL technique.");
+         var event = new MO.SEvent(o);
+         event.code = MO.EGraphicError.UnsupportWebGL;
+         event.message = "Current browser can't support WebGL technique.";
+         o.lsnsDeviceError.process();
+         event.dispose();
+         return;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
    }else{
-      throw new TError("Canvas can't support WebGL technique.");
+      var event = new MO.SEvent(o);
+      event.code = MO.EGraphicError.UnsupportWebGL;
+      event.message = "Canvas can't support WebGL technique.";
+      o.lsnsDeviceError.process();
+      event.dispose();
+      return;
    }
    var handle = o._handle;
    o.setDepthMode(true, MO.EG3dDepthMode.LessEqual);
@@ -21291,8 +21324,9 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    }else if(window.webkitAudioContext){
       context = new webkitAudioContext();
    }
+   alert(context);
    if(!context){
-      throw new MO.TError(o, 'Invalid audio context.');
+      MO.Logger.error(o, 'Invalid audio context.');
    }
    o._context = context;
 }
@@ -21326,6 +21360,9 @@ MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, su
 }
 MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
    var o = this;
+   if(!o._context){
+      return;
+   }
    o._context.decodeAudioData(conn.outputData(), function (buffer) {
       o._audioBuffers.set(conn._url, buffer);
       if (conn.successCallback) {
@@ -21940,6 +21977,9 @@ MO.FE2dCanvas = function FE2dCanvas(o){
    o.build      = MO.FE2dCanvas_build;
    o.setPanel   = MO.FE2dCanvas_setPanel;
    o.resize     = MO.FE2dCanvas_resize;
+   o.show       = MO.FE2dCanvas_show;
+   o.hide       = MO.FE2dCanvas_hide;
+   o.setVisible = MO.FE2dCanvas_setVisible;
    o.reset      = MO.FE2dCanvas_reset;
    o.dispose    = MO.FE2dCanvas_dispose;
    return o;
@@ -21983,9 +22023,19 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
    o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+}
+MO.FE2dCanvas_show = function FE2dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE2dCanvas_hide = function FE2dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE2dCanvas_setVisible = function FE2dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
    this._graphicContext.clear();
@@ -22070,6 +22120,9 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.construct           = MO.FE3dCanvas_construct;
    o.build               = MO.FE3dCanvas_build;
    o.resize              = MO.FE3dCanvas_resize;
+   o.show                = MO.FE3dCanvas_show;
+   o.hide                = MO.FE3dCanvas_hide;
+   o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
@@ -22146,6 +22199,15 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+}
+MO.FE3dCanvas_show = function FE3dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE3dCanvas_hide = function FE3dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE3dCanvas_setVisible = function FE3dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
@@ -34542,7 +34604,7 @@ MO.FGuiDesktop_resize = function FGuiDesktop_resize(targetWidth, targetHeight){
    o._canvas3d.resize(width, height);
    var canvas = o._canvas;
    canvas.resize(width, height);
-   canvas.context().setScale(sizeRate, sizeRate);
+   canvas.context().setGlobalScale(sizeRate, sizeRate);
 }
 MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
    var o = this;
@@ -35815,6 +35877,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    }
    var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
+      graphic.prepare();
       graphic.clear();
       readyControls.sort(o.onSortControl);
       var readyCount = readyControls.count();
@@ -35838,16 +35901,19 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
       dirtyControls.sort(o.onSortControl);
       var dirtyCount = dirtyControls.count();
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         var clientRectangle = control.clientRectangle();
-         if(!clientRectangle.isEmpty()){
-            graphic.clearRectangle(clientRectangle);
+      if(dirtyCount){
+         graphic.prepare();
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            var clientRectangle = control.clientRectangle();
+            if(!clientRectangle.isEmpty()){
+               graphic.clearRectangle(clientRectangle);
+            }
          }
-      }
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         o.processControl(control);
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            o.processControl(control);
+         }
       }
    }
 }
@@ -81104,7 +81170,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._endDate = new MO.TDate();
    o._groundAutio.pause();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.wav');
+   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);
@@ -81590,7 +81656,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if(o._statusLayerLevel == 0){
+         if(o._statusLayerLevel <= 0){
             if(hLoading){
                document.body.removeChild(hLoading);
             }
@@ -81605,6 +81671,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -81793,6 +81860,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
    o._readyProvince        = false;
+   o._countryReady         = false;
    o._nowDate              = null;
    o._nowTicker            = null;
    o._mapEntity            = null;
@@ -82226,10 +82294,8 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'none';
    var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'none';
+   desktop.hide();
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
    guiManager.setDesktop(desktop);
@@ -82264,10 +82330,7 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
    var o = this;
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'block';
-   var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'block';
+   desktop.show();
 }
 MO.FEaiScene_processResize = function FEaiScene_processResize(event){
    var o = this;
@@ -82554,6 +82617,7 @@ MO.FEaiChartCanvas_dispose = function FEaiChartCanvas_dispose(){
 MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o = MO.Class.inherits(this, o, MO.FEaiDesktop);
    o._orientationCd         = null;
+   o._visible               = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    o.onOperationResize      = MO.FEaiChartDesktop_onOperationResize;
@@ -82561,6 +82625,9 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    o.construct              = MO.FEaiChartDesktop_construct;
    o.build                  = MO.FEaiChartDesktop_build;
    o.resize                 = MO.FEaiChartDesktop_resize;
+   o.show                   = MO.FEaiChartDesktop_show;
+   o.hide                   = MO.FEaiChartDesktop_hide;
+   o.setVisible             = MO.FEaiChartDesktop_setVisible;
    o.selectStage            = MO.FEaiChartDesktop_selectStage;
    o.dispose                = MO.FEaiChartDesktop_dispose;
    return o;
@@ -82586,7 +82653,6 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
-   canvas3d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas3d);
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
@@ -82608,7 +82674,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    o._screenSize.set(sourceWidth, sourceHeight);
    o._orientationCd = orientationCd;
    var pixelRatio = browser.capability().pixelRatio;
-   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
    var width = parseInt(sourceWidth * pixelRatio);
    var height = parseInt(sourceHeight * pixelRatio);
    o._size.set(width, height);
@@ -82634,20 +82699,38 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
+   MO.Logger.info(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
+   var isMobile = MO.Runtime.isPlatformMobile();
    o._canvas3d.resize(width, height);
    var context3d = o._canvas3d.graphicContext();
-   var hCanvas3d = o._canvas3d._hCanvas;
-   hCanvas3d.style.width = sourceWidth + 'px';
-   hCanvas3d.style.height = sourceHeight + 'px';
+   if(isMobile){
+      var hCanvas3d = o._canvas3d._hCanvas;
+      hCanvas3d.style.width = sourceWidth + 'px';
+      hCanvas3d.style.height = sourceHeight + 'px';
+   }
    context3d.setViewport(0, 0, o._size.width, o._size.height)
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
-   canvas2d.graphicContext().setScale(sizeRate, sizeRate);
-   var hCanvas2d = canvas2d._hCanvas;
-   hCanvas2d.style.width = sourceWidth + 'px';
-   hCanvas2d.style.height = sourceHeight + 'px';
+   canvas2d.graphicContext().setGlobalScale(sizeRate, sizeRate);
+   if(isMobile){
+      var hCanvas2d = canvas2d._hCanvas;
+      hCanvas2d.style.width = sourceWidth + 'px';
+      hCanvas2d.style.height = sourceHeight + 'px';
+   }
    var stage = o._canvas3d.activeStage();
    o.selectStage(stage);
+}
+MO.FEaiChartDesktop_show = function FEaiChartDesktop_show(){
+   this.setVisible(true);
+}
+MO.FEaiChartDesktop_hide = function FEaiChartDesktop_hide(){
+   this.setVisible(false);
+}
+MO.FEaiChartDesktop_setVisible = function FEaiChartDesktop_setVisible(visible){
+   var o = this;
+   o._visible = visible;
+   o._canvas2d.setVisible(visible);
+   o._canvas3d.setVisible(visible);
 }
 MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
    var o = this;

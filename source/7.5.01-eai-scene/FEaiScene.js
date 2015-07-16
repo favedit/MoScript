@@ -91,10 +91,8 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    o.__base.FScene.setup.call(o);
    // 隐藏画板
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'none';
    var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'none';
+   desktop.hide();
    // 创建界面桌面
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
@@ -154,10 +152,11 @@ MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
    var o = this;
    // 显示画板
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'block';
-   var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'block';
+   desktop.show();
+   //var canvas3d = desktop.canvas3d();
+   //canvas3d._hCanvas.style.display = 'block';
+   //var canvas2d = desktop.canvas2d();
+   //canvas2d._hCanvas.style.display = 'block';
 }
 
 //==========================================================

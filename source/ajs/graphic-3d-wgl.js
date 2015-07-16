@@ -66,20 +66,30 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      var handle = hCanvas.getContext('experimental-webgl2', parameters);
+      var handle = hCanvas.getContext('experimental-webgl2');
       if(!handle){
-         handle = hCanvas.getContext('experimental-webgl', parameters);
+         handle = hCanvas.getContext('experimental-webgl');
       }
       if(!handle){
-         handle = hCanvas.getContext('webgl', parameters);
+         handle = hCanvas.getContext('webgl');
       }
       if(!handle){
-         throw new TError("Current browser can't support WebGL technique.");
+         var event = new MO.SEvent(o);
+         event.code = MO.EGraphicError.UnsupportWebGL;
+         event.message = "Current browser can't support WebGL technique.";
+         o.lsnsDeviceError.process();
+         event.dispose();
+         return;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
    }else{
-      throw new TError("Canvas can't support WebGL technique.");
+      var event = new MO.SEvent(o);
+      event.code = MO.EGraphicError.UnsupportWebGL;
+      event.message = "Canvas can't support WebGL technique.";
+      o.lsnsDeviceError.process();
+      event.dispose();
+      return;
    }
    var handle = o._handle;
    o.setDepthMode(true, MO.EG3dDepthMode.LessEqual);

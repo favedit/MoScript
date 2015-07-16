@@ -55,6 +55,7 @@ MO.RWindow = function RWindow(){
    o.lsnsKeyPress      = new MO.TListeners();
    o.lsnsResize        = new MO.TListeners();
    o.lsnsOrientation   = new MO.TListeners();
+   o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }
 MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
@@ -1627,6 +1628,7 @@ MO.RHtml.prototype.free = function RHtml_free(p){
    return null;
 }
 MO.RHtml = new MO.RHtml();
+MO.Window.Html = MO.RHtml;
 MO.RKeyboard = function RKeyboard(){
    var o = this;
    o._status = new Array();

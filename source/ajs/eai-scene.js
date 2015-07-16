@@ -317,7 +317,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._endDate = new MO.TDate();
    o._groundAutio.pause();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.wav');
+   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);
@@ -803,7 +803,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if(o._statusLayerLevel == 0){
+         if(o._statusLayerLevel <= 0){
             if(hLoading){
                document.body.removeChild(hLoading);
             }
@@ -818,6 +818,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -1006,6 +1007,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
    o._readyProvince        = false;
+   o._countryReady         = false;
    o._nowDate              = null;
    o._nowTicker            = null;
    o._mapEntity            = null;
@@ -1439,10 +1441,8 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'none';
    var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'none';
+   desktop.hide();
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
    guiManager.setDesktop(desktop);
@@ -1477,10 +1477,7 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
    var o = this;
    var desktop = o._application.desktop();
-   var canvas3d = desktop.canvas3d();
-   canvas3d._hCanvas.style.display = 'block';
-   var canvas2d = desktop.canvas2d();
-   canvas2d._hCanvas.style.display = 'block';
+   desktop.show();
 }
 MO.FEaiScene_processResize = function FEaiScene_processResize(event){
    var o = this;

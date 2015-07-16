@@ -991,3 +991,4 @@ MO.RHtml.prototype.free = function RHtml_free(p){
 //..........................................................
 // 实例化内容
 MO.RHtml = new MO.RHtml();
+MO.Window.Html = MO.RHtml;

@@ -25,6 +25,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    // @method
    o.linkCanvas           = MO.FG2dCanvasContext_linkCanvas;
    // @method
+   o.setGlobalScale       = MO.FG2dCanvasContext_setGlobalScale;
    o.setScale             = MO.FG2dCanvasContext_setScale;
    o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
@@ -32,6 +33,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
    // @method
+   o.prepare              = MO.FG2dCanvasContext_prepare;
    o.clear                = MO.FG2dCanvasContext_clear;
    o.clearRectangle       = MO.FG2dCanvasContext_clearRectangle;
    o.clip                 = MO.FG2dCanvasContext_clip;
@@ -99,6 +101,19 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
 }
 
 //==========================================================
+// <T>设置全局缩放。</T>
+//
+// @method
+// @param width:Number 横向缩放
+// @param height:Number 纵向缩放
+//==========================================================
+MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
+   var o = this;
+   o._globalScale.set(width, height);
+   o._handle.scale(width, height);
+}
+
+//==========================================================
 // <T>设置缩放。</T>
 //
 // @method
@@ -153,23 +168,30 @@ MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
 }
 
 //==========================================================
+// <T>准备内容。</T>
+//
+// @method
+//==========================================================
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+   var o = this;
+   var scale = o._globalScale;
+   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+}
+
+//==========================================================
 // <T>清空内容。</T>
 //
 // @method
 //==========================================================
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
-   var hCanvas = o._handle.canvas;
-   var offsetWidth = hCanvas.offsetWidth;
-   var offsetHeight = hCanvas.offsetHeight;
-   o._size.set(offsetWidth, offsetHeight);
-   var width = offsetWidth / o._scale.width;
-   var height = offsetHeight / o._scale.height;
-   o._handle.clearRect(0, 0, width, height);
-   //var size = o._size;
-   //var width = size.width / o._scale.width;
-   //var height = size.height / o._scale.height;
-   //o._handle.clearRect(0, 0, width, height);
+   var size = o._size;
+   var handle = o._handle;
+   var hCanvas = handle.canvas;
+   handle.save();
+   handle.setTransform(1, 0, 0, 1, 0, 0);
+   o._handle.clearRect(0, 0, size.width, size.height);
+   handle.restore();
 }
 
 //==========================================================

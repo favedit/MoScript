@@ -8,6 +8,9 @@ MO.FE2dCanvas = function FE2dCanvas(o){
    o.build      = MO.FE2dCanvas_build;
    o.setPanel   = MO.FE2dCanvas_setPanel;
    o.resize     = MO.FE2dCanvas_resize;
+   o.show       = MO.FE2dCanvas_show;
+   o.hide       = MO.FE2dCanvas_hide;
+   o.setVisible = MO.FE2dCanvas_setVisible;
    o.reset      = MO.FE2dCanvas_reset;
    o.dispose    = MO.FE2dCanvas_dispose;
    return o;
@@ -51,9 +54,19 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
    o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+}
+MO.FE2dCanvas_show = function FE2dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE2dCanvas_hide = function FE2dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE2dCanvas_setVisible = function FE2dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
    this._graphicContext.clear();

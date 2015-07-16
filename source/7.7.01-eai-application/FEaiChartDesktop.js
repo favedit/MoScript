@@ -10,6 +10,7 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    //..........................................................
    // @attribute
    o._orientationCd         = null;
+   o._visible               = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    //..........................................................
@@ -22,6 +23,9 @@ MO.FEaiChartDesktop = function FEaiChartDesktop(o){
    // @method
    o.build                  = MO.FEaiChartDesktop_build;
    o.resize                 = MO.FEaiChartDesktop_resize;
+   o.show                   = MO.FEaiChartDesktop_show;
+   o.hide                   = MO.FEaiChartDesktop_hide;
+   o.setVisible             = MO.FEaiChartDesktop_setVisible;
    o.selectStage            = MO.FEaiChartDesktop_selectStage;
    // @method
    o.dispose                = MO.FEaiChartDesktop_dispose;
@@ -78,7 +82,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
-   canvas3d._hCanvas.style.position = 'absolute';
+   //canvas3d._hCanvas.style.position = 'absolute';
    o.canvasRegister(canvas3d);
    // 创建2D画板
    var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
@@ -114,7 +118,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    //..........................................................
    // 计算比率
    var pixelRatio = browser.capability().pixelRatio;
-   MO.Logger.info(o, 'Change screen size. (size={1}x{2}, pixel_ratio={3})', width, height, pixelRatio);
    var width = parseInt(sourceWidth * pixelRatio);
    var height = parseInt(sourceHeight * pixelRatio);
    o._size.set(width, height);
@@ -141,26 +144,63 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
+   MO.Logger.info(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    //alert(MO.Lang.String.format('Change screen size. (orientation={1}, source={2}x{3}, size={4}x{5}, pixel_ratio={6}, rate={7})', window.orientation + '-' + browser.orientationCd(), sourceWidth, sourceHeight, width, height, pixelRatio, o._calculateRate.toDisplay()));
    //..........................................................
    // 设置3D画板
+   var isMobile = MO.Runtime.isPlatformMobile();
    o._canvas3d.resize(width, height);
    var context3d = o._canvas3d.graphicContext();
-   var hCanvas3d = o._canvas3d._hCanvas;
-   hCanvas3d.style.width = sourceWidth + 'px';
-   hCanvas3d.style.height = sourceHeight + 'px';
+   if(isMobile){
+      var hCanvas3d = o._canvas3d._hCanvas;
+      hCanvas3d.style.width = sourceWidth + 'px';
+      hCanvas3d.style.height = sourceHeight + 'px';
+   }
    context3d.setViewport(0, 0, o._size.width, o._size.height)
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
-   canvas2d.graphicContext().setScale(sizeRate, sizeRate);
-   var hCanvas2d = canvas2d._hCanvas;
-   hCanvas2d.style.width = sourceWidth + 'px';
-   hCanvas2d.style.height = sourceHeight + 'px';
+   canvas2d.graphicContext().setGlobalScale(sizeRate, sizeRate);
+   if(isMobile){
+      var hCanvas2d = canvas2d._hCanvas;
+      hCanvas2d.style.width = sourceWidth + 'px';
+      hCanvas2d.style.height = sourceHeight + 'px';
+   }
    //..........................................................
    // 计算舞台
    var stage = o._canvas3d.activeStage();
    o.selectStage(stage);
+}
+
+//==========================================================
+// <T>可见处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartDesktop_show = function FEaiChartDesktop_show(){
+   this.setVisible(true);
+}
+
+//==========================================================
+// <T>隐藏处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartDesktop_hide = function FEaiChartDesktop_hide(){
+   this.setVisible(false);
+}
+
+//==========================================================
+// <T>设置可见处理。</T>
+//
+// @method
+// @param visible:Boolean 可见性
+//==========================================================
+MO.FEaiChartDesktop_setVisible = function FEaiChartDesktop_setVisible(visible){
+   var o = this;
+   o._visible = visible;
+   o._canvas2d.setVisible(visible);
+   o._canvas3d.setVisible(visible);
 }
 
 //==========================================================

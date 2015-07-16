@@ -32,6 +32,9 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.construct           = MO.FE3dCanvas_construct;
    o.build               = MO.FE3dCanvas_build;
    o.resize              = MO.FE3dCanvas_resize;
+   o.show                = MO.FE3dCanvas_show;
+   o.hide                = MO.FE3dCanvas_hide;
+   o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
@@ -108,6 +111,15 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+}
+MO.FE3dCanvas_show = function FE3dCanvas_show(){
+   this.setVisible(true);
+}
+MO.FE3dCanvas_hide = function FE3dCanvas_hide(){
+   this.setVisible(false);
+}
+MO.FE3dCanvas_setVisible = function FE3dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;

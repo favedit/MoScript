@@ -23,6 +23,9 @@ MO.FE2dCanvas = function FE2dCanvas(o){
    o.build      = MO.FE2dCanvas_build;
    o.setPanel   = MO.FE2dCanvas_setPanel;
    o.resize     = MO.FE2dCanvas_resize;
+   o.show       = MO.FE2dCanvas_show;
+   o.hide       = MO.FE2dCanvas_hide;
+   o.setVisible = MO.FE2dCanvas_setVisible;
    o.reset      = MO.FE2dCanvas_reset;
    // @method
    o.dispose    = MO.FE2dCanvas_dispose;
@@ -113,10 +116,39 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
    o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
    // 设置窗口大小
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+}
+
+//==========================================================
+// <T>可见处理。</T>
+//
+// @method
+//==========================================================
+MO.FE2dCanvas_show = function FE2dCanvas_show(){
+   this.setVisible(true);
+}
+
+//==========================================================
+// <T>隐藏处理。</T>
+//
+// @method
+//==========================================================
+MO.FE2dCanvas_hide = function FE2dCanvas_hide(){
+   this.setVisible(false);
+}
+
+//==========================================================
+// <T>设置可见处理。</T>
+//
+// @method
+// @param visible:Boolean 可见性
+//==========================================================
+MO.FE2dCanvas_setVisible = function FE2dCanvas_setVisible(visible){
+   MO.Window.Html.visibleSet(this._hCanvas, visible);
 }
 
 //==========================================================

@@ -77,8 +77,9 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    }else if(window.webkitAudioContext){
       context = new webkitAudioContext();
    }
+   alert(context);
    if(!context){
-      throw new MO.TError(o, 'Invalid audio context.');
+      MO.Logger.error(o, 'Invalid audio context.');
    }
    o._context = context;
 }
@@ -112,6 +113,9 @@ MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, su
 }
 MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
    var o = this;
+   if(!o._context){
+      return;
+   }
    o._context.decodeAudioData(conn.outputData(), function (buffer) {
       o._audioBuffers.set(conn._url, buffer);
       if (conn.successCallback) {

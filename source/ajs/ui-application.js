@@ -303,7 +303,7 @@ MO.FGuiDesktop_resize = function FGuiDesktop_resize(targetWidth, targetHeight){
    o._canvas3d.resize(width, height);
    var canvas = o._canvas;
    canvas.resize(width, height);
-   canvas.context().setScale(sizeRate, sizeRate);
+   canvas.context().setGlobalScale(sizeRate, sizeRate);
 }
 MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
    var o = this;

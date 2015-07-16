@@ -1089,6 +1089,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    }
    var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
+      graphic.prepare();
       graphic.clear();
       readyControls.sort(o.onSortControl);
       var readyCount = readyControls.count();
@@ -1112,16 +1113,19 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
       dirtyControls.sort(o.onSortControl);
       var dirtyCount = dirtyControls.count();
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         var clientRectangle = control.clientRectangle();
-         if(!clientRectangle.isEmpty()){
-            graphic.clearRectangle(clientRectangle);
+      if(dirtyCount){
+         graphic.prepare();
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            var clientRectangle = control.clientRectangle();
+            if(!clientRectangle.isEmpty()){
+               graphic.clearRectangle(clientRectangle);
+            }
          }
-      }
-      for(var i = 0; i < dirtyCount; i++){
-         var control = dirtyControls.at(i);
-         o.processControl(control);
+         for(var i = 0; i < dirtyCount; i++){
+            var control = dirtyControls.at(i);
+            o.processControl(control);
+         }
       }
    }
 }

@@ -98,7 +98,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._statusLayerLevel--;
          }
          o._statusLayerLevel--;
-         if(o._statusLayerLevel == 0){
+         if(o._statusLayerLevel <= 0){
             if(hLoading){
                removeLoading();
                document.body.removeChild(hLoading);
@@ -116,7 +116,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {
