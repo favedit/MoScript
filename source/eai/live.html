@@ -14,7 +14,8 @@
             document.getElementById("id_loading").style.display = "none";
             document.getElementById("id_error").style.display = "";
         }
-
+        function onLoaded(event) {
+        }
         function onLoad() {
             // 设置变量
             MO.initialize();
@@ -23,6 +24,7 @@
             MO.Window.Browser.fullscreen(window, true);
             // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
             // MO.Window.Browser._orientationCd = MO.EOrientation.Vertical;
+            MO.Window.lsnsLoaded.register(null, onLoaded);
             MO.Window.lsnsDeviceError.register(null, onDeviceError);
             //MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
             //MO.Window.Browser._orientationCd = MO.EOrientation.Vertical;
