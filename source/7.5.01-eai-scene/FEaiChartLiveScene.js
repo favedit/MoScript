@@ -105,6 +105,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._mapEntity.countryEntity().start();
             o._playing = true;
             o._statusStart = true;
+            o.processLoaded();
          }
       }
    }

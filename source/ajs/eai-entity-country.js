@@ -1240,15 +1240,16 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    var positionTotal = vertexTotal * 2;
    for(var i = 0; i < positionTotal; i++){
-      colors[colorIndex++] = 0x08;
-      colors[colorIndex++] = 0x0D;
-      colors[colorIndex++] = 0x19;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
    renderable.setVertexCount(vertexTotal * 2);
    renderable.linkGraphicContext(context);
    renderable.setup();
+   renderable.color().setHex('#080D19');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.indexBuffer().upload(faceData, faceIndex, true);

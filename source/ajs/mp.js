@@ -79008,15 +79008,16 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    var positionTotal = vertexTotal * 2;
    for(var i = 0; i < positionTotal; i++){
-      colors[colorIndex++] = 0x08;
-      colors[colorIndex++] = 0x0D;
-      colors[colorIndex++] = 0x19;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
    renderable.setVertexCount(vertexTotal * 2);
    renderable.linkGraphicContext(context);
    renderable.setup();
+   renderable.color().setHex('#080D19');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.indexBuffer().upload(faceData, faceIndex, true);
@@ -81013,6 +81014,7 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             }
             o.switchPlay(true);
             o._statusStart = true;
+            o.processLoaded();
          }
       }
    }
@@ -81595,6 +81597,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._mapEntity.countryEntity().start();
             o._playing = true;
             o._statusStart = true;
+            o.processLoaded();
          }
       }
    }
@@ -82194,6 +82197,7 @@ MO.FEaiScene = function FEaiScene(o){
    o.setup                  = MO.FEaiScene_setup;
    o.active                 = MO.FEaiScene_active;
    o.deactive               = MO.FEaiScene_deactive;
+   o.processLoaded          = MO.FEaiScene_processLoaded;
    o.processResize          = MO.FEaiScene_processResize;
    o.processEvent           = MO.FEaiScene_processEvent;
    o.dispose                = MO.FEaiScene_dispose;
@@ -82222,7 +82226,10 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
    var desktop = o._application.desktop();
+   var canvas3d = desktop.canvas3d();
+   canvas3d._hCanvas.style.display = 'none';
    var canvas2d = desktop.canvas2d();
+   canvas2d._hCanvas.style.display = 'none';
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
    guiManager.setDesktop(desktop);
@@ -82253,6 +82260,14 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var application = o._application;
    var desktop = application.desktop();
    desktop.selectStage(null);
+}
+MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
+   var o = this;
+   var desktop = o._application.desktop();
+   var canvas3d = desktop.canvas3d();
+   canvas3d._hCanvas.style.display = 'block';
+   var canvas2d = desktop.canvas2d();
+   canvas2d._hCanvas.style.display = 'block';
 }
 MO.FEaiScene_processResize = function FEaiScene_processResize(event){
    var o = this;

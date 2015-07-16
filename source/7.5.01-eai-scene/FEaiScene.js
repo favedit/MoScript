@@ -25,6 +25,7 @@ MO.FEaiScene = function FEaiScene(o){
    o.active                 = MO.FEaiScene_active;
    o.deactive               = MO.FEaiScene_deactive;
    // @method
+   o.processLoaded          = MO.FEaiScene_processLoaded;
    o.processResize          = MO.FEaiScene_processResize;
    o.processEvent           = MO.FEaiScene_processEvent;
    // @method
@@ -88,9 +89,12 @@ MO.FEaiScene_construct = function FEaiScene_construct(){
 MO.FEaiScene_setup = function FEaiScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
-   // 获得2D画板
+   // 隐藏画板
    var desktop = o._application.desktop();
+   var canvas3d = desktop.canvas3d();
+   canvas3d._hCanvas.style.display = 'none';
    var canvas2d = desktop.canvas2d();
+   canvas2d._hCanvas.style.display = 'none';
    // 创建界面桌面
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
@@ -138,6 +142,22 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
    var application = o._application;
    var desktop = application.desktop();
    desktop.selectStage(null);
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
+   var o = this;
+   // 显示画板
+   var desktop = o._application.desktop();
+   var canvas3d = desktop.canvas3d();
+   canvas3d._hCanvas.style.display = 'block';
+   var canvas2d = desktop.canvas2d();
+   canvas2d._hCanvas.style.display = 'block';
 }
 
 //==========================================================

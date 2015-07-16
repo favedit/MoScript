@@ -188,6 +188,7 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             }
             o.switchPlay(true);
             o._statusStart = true;
+            o.processLoaded();
          }
       }
    }
