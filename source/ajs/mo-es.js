@@ -4003,6 +4003,7 @@ MO.FG2dCanvasContext_clearRectangle = function FG2dCanvasContext_clearRectangle(
 MO.FG2dCanvasContext_clip = function FG2dCanvasContext_clip(left, top, width, height){
    var o = this;
    var handle = o._handle;
+   handle.beginPath();
    handle.rect(left, top, width, height);
    handle.clip();
 }

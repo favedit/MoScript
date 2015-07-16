@@ -1162,6 +1162,7 @@ MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
    o._statusStart      = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
+   o._chartTotal       = null;
    o.onInvestment      = MO.FEaiChartTotalScene_onInvestment;
    o.onProcess         = MO.FEaiChartTotalScene_onProcess;
    o.construct         = MO.FEaiChartTotalScene_construct;
@@ -1172,7 +1173,7 @@ MO.FEaiChartTotalScene = function FEaiChartTotalScene(o){
 MO.FEaiChartTotalScene_onInvestment = function FEaiChartTotalScene_onInvestment(event){
    var o = this;
    var content = event.content;
-   debugger
+   o._chartTotal.setValue(parseInt(content.investment_total).toString());
 }
 MO.FEaiChartTotalScene_onProcess = function FEaiChartTotalScene_onProcess() {
    var o = this;
@@ -1213,6 +1214,9 @@ MO.FEaiChartTotalScene_onProcess = function FEaiChartTotalScene_onProcess() {
             statistics.doInvestmentDynamic(o, o.onInvestment, systemDate.format(), systemDate.format());
          }
       }
+      if (o._chartTotal.rolling()) {
+         o._chartTotal.dirty();
+      }
    }
 }
 MO.FEaiChartTotalScene_construct = function FEaiChartTotalScene_construct(){
@@ -1225,11 +1229,15 @@ MO.FEaiChartTotalScene_setup = function FEaiChartTotalScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    o._guiManager.hide();
+   var chartTotal = o._chartTotal = MO.Class.create(MO.FGuiChartTotal);
+   chartTotal.setup();
+   chartTotal.build();
+   o._guiManager.register(chartTotal);
 }
 MO.FEaiChartTotalScene_testReady = function FEaiChartTotalScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._countryReady){
+      if (!o._countryReady || !o._chartTotal.ready()) {
          return false;
       }
       o._ready = true;
@@ -1391,7 +1399,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
+   o._optionDebug           = false;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
