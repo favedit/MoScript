@@ -35,6 +35,8 @@
       }
 
       function onLoaded(event) {
+         var htmlBody = document.body;
+         htmlBody.style.backgroundImage = 'url(/script/ars/eai/background.jpg)';
          clearInterval(g_loadingHandle);
       }
 
@@ -60,7 +62,7 @@
    </script>
 </head>
 
-<body scroll='no' style='position:relative;overflow:hidden;background-color:#000000;background:url("/script/ars/eai/background.jpg");background-size:100% 100%;' onload='onLoad()'>
+<body scroll='no' style='position:relative;overflow:hidden;background-color:#000000;background-size:100% 100%;' onload='onLoad()'>
    <table id='id_loading' style='position:absolute;left:0px;top:0px;width:100%;height:100%;background:url("/script/ars/eai/loading/background.jpg");background-size:100% 100%;'>
       <tr>
          <td align='center'>
