@@ -878,7 +878,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
    invement.linkGraphicContext(o);
@@ -959,6 +958,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
    o.fixMatrix(o._investment.display().matrix());
+   var logoBar = o._logoBar;
+   if(isVertical){
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
+   }else{
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(1, 1);
+   }
    var control = o._southSea;
    if(isVertical){
       control.setDockCd(MO.EUiDock.RightTop);

@@ -13218,6 +13218,9 @@ MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
 MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
    return this._orientationCd;
 }
+MO.RBrowser.prototype.setOrientationCd = function RBrowser_setOrientationCd(orientationCd){
+   this._orientationCd = orientationCd;
+}
 MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationHorizontal(){
    return this._orientationCd == MO.EOrientation.Horizontal;
 }
@@ -35217,7 +35220,6 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
-   o._clientScale            = null;
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -35370,7 +35372,6 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    o._clientRectangle = new MO.SRectangle();
-   o._clientScale = new MO.SSize2();
    o._eventRectangle = new MO.SRectangle();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
@@ -35486,7 +35487,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
-   o._clientScale.assign(sacle);
+   graphic.setScale(o._scale.width, o._scale.height);
    o.onPaintBegin(event);
    var components = o._components;
    if(components){
@@ -35568,7 +35569,6 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
-   o._clientScale = MO.RObject.dispose(o._clientScale);
    o.__base.MGuiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);

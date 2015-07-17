@@ -717,6 +717,9 @@ MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
 MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
    return this._orientationCd;
 }
+MO.RBrowser.prototype.setOrientationCd = function RBrowser_setOrientationCd(orientationCd){
+   this._orientationCd = orientationCd;
+}
 MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationHorizontal(){
    return this._orientationCd == MO.EOrientation.Horizontal;
 }

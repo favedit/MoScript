@@ -215,7 +215,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
@@ -354,14 +353,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    o.fixMatrix(o._investment.display().matrix());
    //..........................................................
    // 设置大小
-   //var frame = o._logoBar;
-   //if(MO.Window.Browser.isOrientationVertical()){
-      //frame.setLocation(0, 10);
-      //frame.setScale(0.8, 0.8);
-   //}else{
-      //frame.setLocation(0, 10);
-      //frame.setSize(1, 1);
-   //}
+   var logoBar = o._logoBar;
+   if(isVertical){
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
+   }else{
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(1, 1);
+   }
    //..........................................................
    // 设置南海
    var control = o._southSea;

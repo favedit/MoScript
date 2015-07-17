@@ -208,6 +208,16 @@ MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
 }
 
 //===========================================================
+// <T>设置屏幕方向。</T>
+//
+// @method
+// @param orientationCd:EOrientation 屏幕方向
+//===========================================================
+MO.RBrowser.prototype.setOrientationCd = function RBrowser_setOrientationCd(orientationCd){
+   this._orientationCd = orientationCd;
+}
+
+//===========================================================
 // <T>判断是否横屏。</T>
 //
 // @method

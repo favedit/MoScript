@@ -13387,6 +13387,9 @@ MO.RBrowser.prototype.isBrowser = function RBrowser_isBrowser(browserCd){
 MO.RBrowser.prototype.orientationCd = function RBrowser_orientationCd(){
    return this._orientationCd;
 }
+MO.RBrowser.prototype.setOrientationCd = function RBrowser_setOrientationCd(orientationCd){
+   this._orientationCd = orientationCd;
+}
 MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationHorizontal(){
    return this._orientationCd == MO.EOrientation.Horizontal;
 }
@@ -35386,7 +35389,6 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
-   o._clientScale            = null;
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -35539,7 +35541,6 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    o._clientRectangle = new MO.SRectangle();
-   o._clientScale = new MO.SSize2();
    o._eventRectangle = new MO.SRectangle();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
@@ -35655,7 +35656,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
-   o._clientScale.assign(sacle);
+   graphic.setScale(o._scale.width, o._scale.height);
    o.onPaintBegin(event);
    var components = o._components;
    if(components){
@@ -35737,7 +35738,6 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
-   o._clientScale = MO.RObject.dispose(o._clientScale);
    o.__base.MGuiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
@@ -81695,7 +81695,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   frame.setLocation(5, 5);
    o._guiManager.register(frame);
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
    invement.linkGraphicContext(o);
@@ -81776,6 +81775,14 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
    o.fixMatrix(o._investment.display().matrix());
+   var logoBar = o._logoBar;
+   if(isVertical){
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
+   }else{
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(1, 1);
+   }
    var control = o._southSea;
    if(isVertical){
       control.setDockCd(MO.EUiDock.RightTop);
