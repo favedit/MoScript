@@ -15,7 +15,7 @@
 
       function doLoading() {
          var htmlBody = document.body;
-         htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
+         htmlBody.style.backgroundImage = 'url(ars/eai/background.jpg)';
          var hImages = document.getElementById("loading_img_div").getElementsByTagName("img");
          var index = [7, 6, 5, 4, 3, 2, 1, 0];
          g_loadingHandle = setInterval(function() {
@@ -33,8 +33,8 @@
          var hLoading = document.getElementById("id_loading")
          document.body.removeChild(hLoading);
          var hError = document.getElementById("id_error");
-         hError.style.backgroundImage = 'url(../ars/eai/loading/background.jpg)';
-         document.getElementById("error_img").src = "../ars/eai/loading/error.png";
+         hError.style.backgroundImage = 'url(ars/eai/loading/background.jpg)';
+         document.getElementById("error_img").src = "ars/eai/loading/error.png";
          MO.Window.Html.visibleSet(hError, true);
       }
 
@@ -67,16 +67,16 @@
          <td align='center'>
             <div id="loading_img">
                <div id="loading_img_div" style="position:relative;width:128px;">
-                  <img style="position:absolute;opacity:0.8;width:127;height:127;" src="../ars/eai/loading/loading7.png">
-                  <img style="position:absolute;opacity:0.7;width:127;height:127;" src="../ars/eai/loading/loading6.png">
-                  <img style="position:absolute;opacity:0.6;width:127;height:127;" src="../ars/eai/loading/loading5.png">
-                  <img style="position:absolute;opacity:0.5;width:127;height:127;" src="../ars/eai/loading/loading4.png">
-                  <img style="position:absolute;opacity:0.4;width:127;height:127;" src="../ars/eai/loading/loading3.png">
-                  <img style="position:absolute;opacity:0.3;width:127;height:127;" src="../ars/eai/loading/loading2.png">
-                  <img style="position:absolute;opacity:0.2;width:127;height:127;" src="../ars/eai/loading/loading1.png">
-                  <img style="opacity:0.1;width:127;height:127;" src="../ars/eai/loading/loading8.png">
+                  <img style="position:absolute;opacity:0.8;width:127;height:127;" src="ars/eai/loading/loading7.png">
+                  <img style="position:absolute;opacity:0.7;width:127;height:127;" src="ars/eai/loading/loading6.png">
+                  <img style="position:absolute;opacity:0.6;width:127;height:127;" src="ars/eai/loading/loading5.png">
+                  <img style="position:absolute;opacity:0.5;width:127;height:127;" src="ars/eai/loading/loading4.png">
+                  <img style="position:absolute;opacity:0.4;width:127;height:127;" src="ars/eai/loading/loading3.png">
+                  <img style="position:absolute;opacity:0.3;width:127;height:127;" src="ars/eai/loading/loading2.png">
+                  <img style="position:absolute;opacity:0.2;width:127;height:127;" src="ars/eai/loading/loading1.png">
+                  <img style="opacity:0.1;width:127;height:127;" src="ars/eai/loading/loading8.png">
                </div>
-               <img src='../ars/eai/loading/loading.png' style='padding-top:30px;padding-left:20px;width:196;height:36'>
+               <img src='ars/eai/loading/loading.png' style='padding-top:30px;padding-left:20px;width:196;height:36'>
             </div>
          </td>
       </tr>
