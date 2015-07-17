@@ -1,0 +1,55 @@
+<!DOCTYPE html><html><head><title>世界地图 by Qunee</title><meta charset=utf-8></head><body class=layout style="margin: 0px;"><div data-options="region:'center'" id=canvas><script src="http://demo.qunee.com/lib/qunee-min.js?v=1.8.1"></script><script src=js.js></script><script>
+    var colors = ["#D5E7C4", "#CDE6FF", "#EFDEE6", "#FFF8CC"];
+    var stateColors = ['#2898E0', '#4BB9FF', '#2EADFF'];
+    var index = 0;
+
+    var map = new Q.MapChart('canvas');
+
+    map.onclick = function(evt){
+        var currentElement = evt.getData();
+        if(currentElement && map.selectionModel.isSelected(currentElement)){
+            this.centerElement(currentElement);
+        }
+    }
+
+    map.loadTopoJSON('data/world.json', {
+        zIndex: -10, callback: function(area){
+            area.setStyle(Q.Styles.SHAPE_FILL_COLOR, colors[index++ % colors.length]);
+            if(area.name == 'China' || area.name == 'Taiwan'){
+                area.name = null;
+                area.setStyle(Q.Styles.SHAPE_STROKE, 12);
+                area.setStyle(Q.Styles.SHAPE_STROKE_STYLE, Q.toColor(0x77555555));
+                area.zIndex = -9.5;
+            }
+        }, onfinish: function (map) {
+            map.zoomToOverview();
+            var shanghai = map.createMapNode(null, 121.48, 31.23);
+            shanghai.image = Q.Shapes.getShape(Q.Consts.SHAPE_CIRCLE, -10, -10, 20, 20);
+            shanghai.setStyle(Q.Styles.SHAPE_FILL_COLOR, Q.toColor(0xEEFF0000));
+            shanghai.setStyle(Q.Styles.SHAPE_STROKE_STYLE, Q.toColor(0xEE00FFFF));
+            shanghai.setStyle(Q.Styles.SHAPE_STROKE, 3);
+
+            map.loadTopoJSON('data/shengjie.json', {
+                zIndex: -9,
+                callback: function(element){
+                    if(element.name == '甘肃'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_X, 50);
+                    }else if(element.name == '河北'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_X, -30);
+                    }else if(element.name == '内蒙古'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_Y, 50);
+                    }else if(element.name == '广东'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_Y, -30);
+                    }else if(element.name == '香港'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_X, 15);
+                    }else if(element.name == '澳门'){
+                        element.setStyle(Q.Styles.LABEL_OFFSET_X, -15);
+                    }
+                    element.setStyle(Q.Styles.SHAPE_FILL_COLOR, stateColors[index++ % stateColors.length]);
+                    element.setStyle(Q.Styles.SHAPE_STROKE_STYLE, '#EEE');
+                    element.setStyle(Q.Styles.SHAPE_STROKE, 1);
+                }
+            })
+        }
+    });
+</script></div></body></html>

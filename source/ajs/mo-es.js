@@ -3010,7 +3010,7 @@ MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
    connection.processProcessListener(event);
    MO.Memory.free(event);
 }
-MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+MO.FJsonConsole_send = function FJsonConsole_send(url, d){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;
@@ -10398,10 +10398,10 @@ MO.FAudio_onLoaded = function FAudio_onLoaded(event){
    o._finish = true;
    MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
 }
-MO.FAudio_onError = function FAudio_onError(p){
+MO.FAudio_onError = function FAudio_onError(event){
    var o = this;
    o._finish = true;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+   MO.Logger.error(o, 'Load image failure. (url={1})', o._url);
 }
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
@@ -10443,12 +10443,17 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
       hAudio.oncanplaythrough = o.onLoaded.bind(o);
       hAudio.onerror = o.onError.bind(o);
    }
+   if(!MO.Window.Browser.capability.soundFinish){
+      o._ready = true;
+      o._loaded = true;
+      o._finish = true;
+   }
    o._url = url;
    hAudio.src = url;
 }
 MO.FAudio_dispose = function FAudio_dispose(){
    var o = this;
-   o._hAudio = MO.RHtml.free(o._hAudio);
+   o._hAudio = MO.Window.Html.free(o._hAudio);
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.MAudio.dispose.call(o);
    o.__base.FObject.dispose.call(o);

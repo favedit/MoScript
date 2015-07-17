@@ -9,8 +9,12 @@ MO.FEaiCountryData = function FEaiCountryData(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._code          = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetSet('_label'));
+   o._boundaries    = MO.Class.register(o, new MO.AGetter('_boundaries'));
    o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));
+   // @attribute
+   o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
    // @event
    o.onLoaded       = MO.FEaiCountryData_onLoaded;
@@ -34,6 +38,7 @@ MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 创建属性
+   o._boundaries = new MO.TObjects();
    o._provinces = new MO.TDictionary();
 }
 
@@ -63,11 +68,24 @@ MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
 //==========================================================
 MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
    var o = this;
+   // 读取属性
+   o._code = input.readString();
+   o._label = input.readString();
+   // 读取边界集合
+   var boundaries = o._boundaries;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var boundary = MO.Class.create(MO.FEaiBoundaryData);
+      boundary.unserialize(input);
+      boundaries.push(boundary);
+   }
+   // 读取省份集合
+   var provinces = o._provinces;
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
       var province = MO.Class.create(MO.FEaiProvinceData);
       province.unserialize(input);
-      o._provinces.set(province.code(), province);
+      provinces.set(province.code(), province);
    }
    // 分发事件
    var event = new MO.SEvent(o);
@@ -94,6 +112,7 @@ MO.FEaiCountryData_load = function FEaiCountryData_load(){
 //==========================================================
 MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
    var o = this;
+   o._boundaries = MO.Lang.Object.dispose(o._boundaries);
    o._provinces = MO.Lang.Object.dispose(o._provinces);
    // 父处理
    o.__base.FObject.dispose.call(o);

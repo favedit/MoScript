@@ -347,6 +347,7 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.optionProcess    = false;
    o.optionStorage    = false;
    o.canvasAutoScale  = false;
+   o.soundFinish      = true;
    o.blobCreate       = false;
    o.pixelRatio       = 1;
    return o;
@@ -661,6 +662,19 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   var external = window.external;
+   if(external){
+      if(external.twGetRunPath){
+         if((agent.indexOf('360chrome') != -1) || (agent.indexOf('360se') != -1)){
+            capability.soundFinish = false;
+         }else{
+            var runPath = external.twGetRunPath().toLowerCase();
+            if(runPath.indexOf('360se') != -1){
+               capability.soundFinish = false;
+            }
+         }
+      }
    }
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){

@@ -73,10 +73,10 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    // 创建动态形状
    var faceShape = o._provinceFaceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape.linkGraphicContext(o);
-   o._countryDisplay.push(faceShape);
+   //o._countryDisplay.push(faceShape);
    var borderShape = o._provinceBorderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape.linkGraphicContext(o);
-   o._countryBorderDisplay.push(borderShape);
+   //o._countryBorderDisplay.push(borderShape);
 }
 
 //==========================================================

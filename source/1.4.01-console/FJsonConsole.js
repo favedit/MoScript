@@ -43,11 +43,11 @@ MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
 // <T>异步获发送一个XML信息，返回XML信息。</T>
 //
 // @method
-// @param u:url:String 发送地址
-// @param d:document:TXmlDocument 发送文档
+// @param url:String 发送地址
+// @param document:TXmlDocument 发送文档
 // @return TXmlDocument 接收文档
 //==========================================================
-MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+MO.FJsonConsole_send = function FJsonConsole_send(url, d){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;

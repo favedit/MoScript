@@ -11800,7 +11800,7 @@ MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
    connection.processProcessListener(event);
    MO.Memory.free(event);
 }
-MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+MO.FJsonConsole_send = function FJsonConsole_send(url, d){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;
@@ -12848,6 +12848,7 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.optionProcess    = false;
    o.optionStorage    = false;
    o.canvasAutoScale  = false;
+   o.soundFinish      = true;
    o.blobCreate       = false;
    o.pixelRatio       = 1;
    return o;
@@ -13162,6 +13163,19 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   var external = window.external;
+   if(external){
+      if(external.twGetRunPath){
+         if((agent.indexOf('360chrome') != -1) || (agent.indexOf('360se') != -1)){
+            capability.soundFinish = false;
+         }else{
+            var runPath = external.twGetRunPath().toLowerCase();
+            if(runPath.indexOf('360se') != -1){
+               capability.soundFinish = false;
+            }
+         }
+      }
    }
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){
@@ -21130,10 +21144,10 @@ MO.FAudio_onLoaded = function FAudio_onLoaded(event){
    o._finish = true;
    MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
 }
-MO.FAudio_onError = function FAudio_onError(p){
+MO.FAudio_onError = function FAudio_onError(event){
    var o = this;
    o._finish = true;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+   MO.Logger.error(o, 'Load image failure. (url={1})', o._url);
 }
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
@@ -21175,12 +21189,17 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
       hAudio.oncanplaythrough = o.onLoaded.bind(o);
       hAudio.onerror = o.onError.bind(o);
    }
+   if(!MO.Window.Browser.capability.soundFinish){
+      o._ready = true;
+      o._loaded = true;
+      o._finish = true;
+   }
    o._url = url;
    hAudio.src = url;
 }
 MO.FAudio_dispose = function FAudio_dispose(){
    var o = this;
-   o._hAudio = MO.RHtml.free(o._hAudio);
+   o._hAudio = MO.Window.Html.free(o._hAudio);
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.MAudio.dispose.call(o);
    o.__base.FObject.dispose.call(o);

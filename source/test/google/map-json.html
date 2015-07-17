@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT type="text/javascript" src='../../ajs/me.js'></SCRIPT>
+<SCRIPT type="text/javascript" src='../../ajs/context_cn.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var map = null;
+var canvas = null;
+var stage = null;
+var layer = null;
+var bitmaps = null;
+var tick = 0;
+var pointSX = 4;
+var pointSY = 4;
+var pointX = 800;
+var pointY = 500;
+//----------------------------------------------------------
+function drawCoordinates(ctx, coordinate){
+   var point = coordinate[0];
+   ctx.beginPath();
+   ctx.moveTo(point[0] * pointSX + pointX, pointY - point[1] * pointSY);
+   var count = coordinate.length;
+   for(var i = 1; i < count; i++){
+      var point = coordinate[i];
+      ctx.lineTo(point[0] * pointSX + pointX, pointY - point[1] * pointSY);
+   }
+   ctx.strokeStyle = '#333333';
+   ctx.stroke();
+}
+//----------------------------------------------------------
+function drawGeometry(ctx, geometry){
+   var type = geometry.type;
+   var coordinates = geometry.coordinates;
+   var count = coordinates.length;
+   for(var i = 0; i < count; i++){
+      var coordinate = coordinates[i];
+      if(type == 'MultiPolygon'){
+         var bcount = coordinate.length;
+         for(var bi = 0; bi < bcount; bi++){
+            drawCoordinates(ctx, coordinate[bi]);
+         }
+      }else{
+         drawCoordinates(ctx, coordinate);
+      }
+   }
+}
+//----------------------------------------------------------
+function onLoadData(data){
+   var source = data.content();
+   var content = MO.Json.parse(source);
+   var ctx = id_canvas.getContext('2d');
+   id_canvas.width = window.innerWidth;
+   id_canvas.height = window.innerHeight;
+   var features = content.features;
+   var count = features.length;
+   for(var i = 0; i < count; i++){
+      var feature = features[i];
+      var properties = feature.properties;
+      console.log(i + ' - ' + properties.BRK_NAME);
+      if(properties.BRK_NAME == 'China'){
+         //debugger
+      }
+      drawGeometry(ctx, feature.geometry);
+   }
+}
+//----------------------------------------------------------
+function _load(){
+   // 环境设置
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
+   // 设置环境
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   // 创建画布
+   var connection = MO.Console.find(MO.FJsonConsole).sendAsync('world.json');
+   connection.addLoadListener(null, onLoadData);
+}
+</SCRIPT>
+
+<BODY onload='_load()'></BODY>
+<CANVAS id='id_canvas' style='width:100%;height:100%'></CANVAS>
+</HTML>

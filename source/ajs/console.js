@@ -429,7 +429,7 @@ MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
    connection.processProcessListener(event);
    MO.Memory.free(event);
 }
-MO.FJsonConsole_send = function FJsonConsole_send(u, d){
+MO.FJsonConsole_send = function FJsonConsole_send(url, d){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;

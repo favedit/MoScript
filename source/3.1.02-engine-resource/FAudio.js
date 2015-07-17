@@ -63,10 +63,10 @@ MO.FAudio_onLoaded = function FAudio_onLoaded(event){
 //
 // @method
 //==========================================================
-MO.FAudio_onError = function FAudio_onError(p){
+MO.FAudio_onError = function FAudio_onError(event){
    var o = this;
    o._finish = true;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+   MO.Logger.error(o, 'Load image failure. (url={1})', o._url);
 }
 
 //==========================================================
@@ -163,6 +163,12 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
       hAudio.oncanplaythrough = o.onLoaded.bind(o);
       hAudio.onerror = o.onError.bind(o);
    }
+   // 不支持声音完成检测
+   if(!MO.Window.Browser.capability.soundFinish){
+      o._ready = true;
+      o._loaded = true;
+      o._finish = true;
+   }
    // 加载图片
    o._url = url;
    hAudio.src = url;
@@ -176,7 +182,7 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
 MO.FAudio_dispose = function FAudio_dispose(){
    var o = this;
    // 清空属性
-   o._hAudio = MO.RHtml.free(o._hAudio);
+   o._hAudio = MO.Window.Html.free(o._hAudio);
    // 父处理
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.MAudio.dispose.call(o);

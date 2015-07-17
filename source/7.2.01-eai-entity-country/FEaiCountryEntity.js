@@ -52,9 +52,12 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    // @attribute
    o._audioContext            = null;
    o._audioMapEnter           = null;
+   // @attribute
+   o._boundaries              = MO.Class.register(o, new MO.AGetter('_boundaries'));
    //..........................................................
    // @method
    o.setup                    = MO.FEaiCountryEntity_setup;
+   o.loadData                 = MO.FEaiCountryEntity_loadData;
    o.start                    = MO.FEaiCountryEntity_start;
    o.process                  = MO.FEaiCountryEntity_process;
    o.introAnime               = MO.FEaiCountryEntity_introAnime;
@@ -95,6 +98,26 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
    var audioContext = o._audioContext = audioContextConsole.create();
    o._audioMapEnter = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
+   // 创建边框
+   o._boundaries = MO.Class.create(MO.FEaiBoundaries);
+}
+
+//==========================================================
+// <T>初始化处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
+   var o = this;
+   var boundaries = o._boundaries = MO.Class.create(MO.FEaiBoundaries);
+   boundaries.linkGraphicContext(o);
+   var boundariesData = data.boundaries();
+   var count = boundariesData.count()
+   for(var i = 0; i < count; i++){
+      var boundaryData = boundariesData.at(i);
+      boundaries.pushBoundary(boundaryData);
+   }
+   boundaries.build();
 }
 
 //==========================================================

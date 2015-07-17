@@ -22,6 +22,7 @@ function onEnterFrame(){
 //----------------------------------------------------------
 function doBoundary(){
    debugger
+   var bs = map.getBounds();
 	var boundary = new google.maps.Boundary();
 	var name = document.getElementById("districtName").value;
 	var result = "边界数组: ";
@@ -87,16 +88,16 @@ function _load(){
    // 设置环境
    MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    // 创建画布
-   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
-   canvas.build(document);
-   canvas.setPanel(id_canvas);
-   var context = canvas.graphicContext();
-   stage = canvas._stage;
-   stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
-   stage.addEnterFrameListener(null, onEnterFrame);
-   layer = stage.spriteLayer();
+   //canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   //canvas.build(document);
+   //canvas.setPanel(id_canvas);
+   //var context = canvas.graphicContext();
+   //stage = canvas._stage;
+   //stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   //stage.addEnterFrameListener(null, onEnterFrame);
+   //layer = stage.spriteLayer();
    // 点击处理
-   id_button.click();
+   //id_button.click();
 }
 </SCRIPT>
 

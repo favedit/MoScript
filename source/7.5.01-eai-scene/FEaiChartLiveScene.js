@@ -311,8 +311,12 @@ MO.FEaiChartLiveScene_showFace = function FEaiChartLiveScene_showFace(){
    // 设置状态
    o._statusStart = true;
    o._playing = true;
+   o._mapReady = false;
    // 重置数据
    o._mapEntity.reset();
+   // 显示画板
+   var desktop = o._application.desktop();
+   desktop.show();
    // 改变大小
    o.processResize();
 }

@@ -13,6 +13,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    // @attribute
    o._ready                    = false;
    o._mapReady                 = false;
+   o._dataReady                = false;
    o._playing                  = false;
    o._lastTick                 = 0;
    o._interval                 = 10;
@@ -103,6 +104,8 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
       o._guiManager.register(bar);
       milestoneBars.push(bar);
    }
+   // 设置标志
+   o._dataReady = true;
 }
 
 //==========================================================
@@ -293,6 +296,9 @@ MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
    var o = this;
    if(!o._ready){
       if(!o._countryReady){
+         return false;
+      }
+      if(!o._dataReady){
          return false;
       }
       o._ready = true;

@@ -14,21 +14,27 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    // @attribute
    o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    // @attribute
+   o._worldData            = null;
+   o._worldReady           = false;
    o._countryData          = null;
    o._countryReady         = false;
    // @attribute
    o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    // @attribute
+   o._listenersLoadWorld   = MO.Class.register(o, new MO.AListener('_listenersLoadWorld', 'LoadWorld'));
    o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
    //..........................................................
    // @event
    o.onSetup               = MO.FEaiEntityConsole_onSetup;
+   o.onLoadWorld           = MO.FEaiEntityConsole_onLoadWorld;
    o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
    //..........................................................
    // @method
    o.construct             = MO.FEaiEntityConsole_construct;
    // @method
+   o.testWorldReady        = MO.FEaiEntityConsole_testWorldReady;
+   o.loadWorldData         = MO.FEaiEntityConsole_loadWorldData;
    o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
    o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
    // @method
@@ -45,9 +51,33 @@ MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    var o = this;
    o.__base.FConsole.onSetup.call(o);
    // 创建地图实体
+   var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
+   worldEntity.linkGraphicContext(o);
+   //worldEntity.setup();
+   // 创建地图实体
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
    mapEntity.setup();
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiEntityConsole_onLoadWorld = function FEaiEntityConsole_onLoadWorld(event){
+   var o = this;
+   // 加载数据
+   var worldData = event.sender;
+   var worldEntity = o._worldEntity;
+   worldEntity.load(worldData);
+   // 数据准备好
+   o._worldReady = true;
+   // 分发事件
+   var event = new MO.SEvent();
+   o.processLoadWorldListener(event);
+   event.dispose();
 }
 
 //==========================================================
@@ -134,6 +164,32 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    // 设置变量
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
+}
+
+//==========================================================
+// <T>测试国家数据是否准备好。</T>
+//
+// @method
+// @return 是否准备好
+//==========================================================
+MO.FEaiEntityConsole_testWorldReady = function FEaiEntityConsole_testWorldReady(){
+   return this._countryReady && this._mapEntity.countryEntity().isReady();
+}
+
+//==========================================================
+// <T>加载国家数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEntityConsole_loadWorldData = function FEaiEntityConsole_loadWorldData(){
+   var o = this;
+   // 加载数据
+   var world = o._worldData;
+   if(!world){
+      world = o._worldData = MO.Class.create(MO.FEaiWorldData);
+      world.addLoadListener(o, o.onLoadWorld);
+      world.load();
+   }
 }
 
 //==========================================================

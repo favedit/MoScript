@@ -82,6 +82,20 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
    }
+   // 检测是否支持声音完成(360浏览器不支持声音完成相应)
+   var external = window.external;
+   if(external){
+      if(external.twGetRunPath){
+         if((agent.indexOf('360chrome') != -1) || (agent.indexOf('360se') != -1)){
+            capability.soundFinish = false;
+         }else{
+            var runPath = external.twGetRunPath().toLowerCase();
+            if(runPath.indexOf('360se') != -1){
+               capability.soundFinish = false;
+            }
+         }
+      }
+   }
    // 设置浏览器能力
    var pixelRatio = window.devicePixelRatio;
    if(pixelRatio){

@@ -55,6 +55,9 @@ with(MO){
       for(var i = 0; i < indexCount; i++){
          o._indexes[i] = input.readUint16();
       }
+      if(vertexCount > 10000){
+         console.log('boundary: vertex=' + vertexCount + ' index:' + indexCount);
+      }
    }
    
    //==========================================================
