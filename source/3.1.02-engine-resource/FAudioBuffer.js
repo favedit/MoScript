@@ -13,8 +13,6 @@ MO.FAudioBuffer = function FAudioBuffer(o){
    // @attribute
    o._handle         = MO.Class.register(o, new MO.AGetter('_handle'));
    o._buffer         = MO.Class.register(o, new MO.AGetter('_buffer'));
-   // @attribute
-   o._ready          = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
    //..........................................................
    // @event
    o.onDecodeSuccess = MO.FAudioBuffer_onDecodeSuccess;
@@ -48,6 +46,8 @@ MO.FAudioBuffer_onDecodeSuccess = function FAudioBuffer_onDecodeSuccess(buffer){
    bufferSource.connect(contextHandle.destination)
    // 设置标志
    o._ready = true;
+   o._loaded = true;
+   o._finish = true;
    // 完成事件
    var event = new MO.SEvent(o);
    o.processLoadListener(event);
@@ -63,6 +63,7 @@ MO.FAudioBuffer_onDecodeSuccess = function FAudioBuffer_onDecodeSuccess(buffer){
 //==========================================================
 MO.FAudioBuffer_onDecodeFailure = function FAudioBuffer_onDecodeFailure(buffer){
    var o = this;
+   o._finish = true;
    MO.Logger.error(o, 'Decode audio buffer failure. (url={1})', o._url);
 }
 

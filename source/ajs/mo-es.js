@@ -10313,6 +10313,9 @@ MO.RStage.prototype.start = function RStage_start(interval){
 MO.RStage = new MO.RStage();
 MO.MAudio = function MAudio(o){
    o = MO.Class.inherits(this, o, MO.MListener);
+   o._ready         = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
+   o._loaded        = MO.Class.register(o, new MO.AGetterSource('_loaded', 'testLoaded'), false);
+   o._finish        = MO.Class.register(o, new MO.AGetterSource('_finish', 'testFinish'), false);
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    o.construct      = MO.MAudio_construct;
    o.volume         = MO.MAudio_volume;
@@ -10344,6 +10347,7 @@ MO.MAudio_pause = function MAudio_pause(){
 }
 MO.MAudio_dispose = function MAudio_dispose(){
    var o = this;
+   o.__base.MListener.dispose.call(o);
 }
 MO.MLinkerResource = function MLinkerResource(o){
    o = MO.Class.inherits(this, o);
@@ -10367,11 +10371,10 @@ MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
 MO.FAudio = function FAudio(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
    o._url      = MO.Class.register(o, new MO.AGetter('_url'));
-   o._ready    = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
    o._hAudio   = null;
-   o.ohLoad    = MO.FAudio_ohLoad;
-   o.ohError   = MO.FAudio_ohError;
+   o.onLoad    = MO.FAudio_onLoad;
    o.onLoaded  = MO.FAudio_onLoaded;
+   o.onError   = MO.FAudio_onError;
    o.construct = MO.FAudio_construct;
    o.volume    = MO.FAudio_volume;
    o.setVolume = MO.FAudio_setVolume;
@@ -10383,17 +10386,22 @@ MO.FAudio = function FAudio(o){
    o.dispose   = MO.FAudio_dispose;
    return o;
 }
-MO.FAudio_ohLoad = function FAudio_ohLoad(){
-   var o = this.__linker;
-}
-MO.FAudio_ohError = function FAudio_ohError(p){
-   var o = this.__linker;
-   var url = o._url;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+MO.FAudio_onLoad = function FAudio_onLoad(){
+   var o = this;
+   o._ready = true;
+   MO.Logger.info(o, 'Audio load success. (url={1})', o._url);
 }
 MO.FAudio_onLoaded = function FAudio_onLoaded(event){
-   this._ready = true;
-   console.log(this._url);
+   var o = this;
+   o._ready = true;
+   o._loaded = true;
+   o._finish = true;
+   MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
+}
+MO.FAudio_onError = function FAudio_onError(p){
+   var o = this;
+   o._finish = true;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
 }
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
@@ -10431,8 +10439,9 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
-      hAudio.__linker = o;
+      hAudio.oncanplay = o.onLoad.bind(o);
       hAudio.oncanplaythrough = o.onLoaded.bind(o);
+      hAudio.onerror = o.onError.bind(o);
    }
    o._url = url;
    hAudio.src = url;
@@ -10450,7 +10459,6 @@ MO.FAudioBuffer = function FAudioBuffer(o){
    o._url            = MO.Class.register(o, new MO.AGetSet('_url'));
    o._handle         = MO.Class.register(o, new MO.AGetter('_handle'));
    o._buffer         = MO.Class.register(o, new MO.AGetter('_buffer'));
-   o._ready          = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
    o.onDecodeSuccess = MO.FAudioBuffer_onDecodeSuccess;
    o.onDecodeFailure = MO.FAudioBuffer_onDecodeFailure;
    o.onLoad          = MO.FAudioBuffer_onLoad;
@@ -10468,12 +10476,15 @@ MO.FAudioBuffer_onDecodeSuccess = function FAudioBuffer_onDecodeSuccess(buffer){
    bufferSource.buffer = buffer;
    bufferSource.connect(contextHandle.destination)
    o._ready = true;
+   o._loaded = true;
+   o._finish = true;
    var event = new MO.SEvent(o);
    o.processLoadListener(event);
    event.dispose();
 }
 MO.FAudioBuffer_onDecodeFailure = function FAudioBuffer_onDecodeFailure(buffer){
    var o = this;
+   o._finish = true;
    MO.Logger.error(o, 'Decode audio buffer failure. (url={1})', o._url);
 }
 MO.FAudioBuffer_onLoad = function FAudioBuffer_onLoad(connection){

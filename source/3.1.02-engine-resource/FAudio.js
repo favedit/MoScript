@@ -10,16 +10,14 @@ MO.FAudio = function FAudio(o){
    //..........................................................
    // @attribute
    o._url      = MO.Class.register(o, new MO.AGetter('_url'));
-   // @attribute
-   o._ready    = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
    //..........................................................
    // @html
    o._hAudio   = null;
    //..........................................................
    // @event
-   o.ohLoad    = MO.FAudio_ohLoad;
-   o.ohError   = MO.FAudio_ohError;
+   o.onLoad    = MO.FAudio_onLoad;
    o.onLoaded  = MO.FAudio_onLoaded;
+   o.onError   = MO.FAudio_onError;
    //..........................................................
    // @method
    o.construct = MO.FAudio_construct;
@@ -41,20 +39,10 @@ MO.FAudio = function FAudio(o){
 //
 // @method
 //==========================================================
-MO.FAudio_ohLoad = function FAudio_ohLoad(){
-   var o = this.__linker;
-}
-
-//==========================================================
-// <T>加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FAudio_ohError = function FAudio_ohError(p){
-   var o = this.__linker;
-   var url = o._url;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
-   //debugger;
+MO.FAudio_onLoad = function FAudio_onLoad(){
+   var o = this;
+   o._ready = true;
+   MO.Logger.info(o, 'Audio load success. (url={1})', o._url);
 }
 
 //==========================================================
@@ -63,8 +51,22 @@ MO.FAudio_ohError = function FAudio_ohError(p){
 // @method
 //==========================================================
 MO.FAudio_onLoaded = function FAudio_onLoaded(event){
-   this._ready = true;
-   console.log(this._url);
+   var o = this;
+   o._ready = true;
+   o._loaded = true;
+   o._finish = true;
+   MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
+}
+
+//==========================================================
+// <T>加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FAudio_onError = function FAudio_onError(p){
+   var o = this;
+   o._finish = true;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
 }
 
 //==========================================================
@@ -157,14 +159,9 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
-      hAudio.__linker = o;
-      //hAudio.oncanplay = o.onLoaded;
+      hAudio.oncanplay = o.onLoad.bind(o);
       hAudio.oncanplaythrough = o.onLoaded.bind(o);
-      //hAudio.oncanplaythrough = o.onLoaded.bind(o);
-      //hAudio.addEventListener('canplaythrough', o.onLoaded.bind(o))
-      //hAudio.addEventListener('canplay', o.onLoaded.bind(o))
-      //hAudio.onload = o.ohLoad;
-      //hAudio.onerror = o.ohError;
+      hAudio.onerror = o.onError.bind(o);
    }
    // 加载图片
    o._url = url;

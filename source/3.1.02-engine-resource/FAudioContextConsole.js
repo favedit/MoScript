@@ -48,53 +48,6 @@ MO.FAudioContextConsole_create = function FAudioContextConsole_create(uri) {
    return context;
 }
 
-/*
-
-//==========================================================
-// <T>检查音频是否加载完成。</T>
-//
-// @method
-// @param uri:String 网络地址
-// @return bool 是否已加载
-//==========================================================
-MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
-   var o = this;
-   var context = o._context;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var buffer = o._contexts.get(url);
-   if (buffer) {
-      return true;
-   }
-   return false;
-}
-
-//==========================================================
-// <T>加载声音资源。</T>
-//
-// @method
-// @param uri:String 网络地址
-//==========================================================
-MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, successCallback) {
-   var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var conn = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   conn.addLoadListener(o, o.onLoad);
-   conn.uri = uri;
-   conn.owner = owner;
-   conn.successCallback = successCallback;
-}
-
-//==========================================================
-// <T>检查音频是否加载完成。</T>
-//
-// @method
-// @param uri:String 网络地址
-// @return bool 是否已加载
-//==========================================================
-MO.FAudioContextConsole_onError = function FAudioContextConsole_onError() {
-   alert('decodeAudioData Failed');
-}*/
-
 //==========================================================
 // <T>释放处理。</T>
 //

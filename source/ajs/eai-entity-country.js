@@ -687,8 +687,8 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._cameraMoving            = MO.Class.register(o, new MO.AGetSet('_cameraMoving'), false);
    o._cameraFrom              = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
    o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
-   o._mapEnterSE              = null;
    o._audioContext            = null;
+   o._audioMapEnter           = null;
    o.setup                    = MO.FEaiCountryEntity_setup;
    o.start                    = MO.FEaiCountryEntity_start;
    o.process                  = MO.FEaiCountryEntity_process;
@@ -722,11 +722,11 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
    provinceArray.sort(o.provinceShowOrderSort);
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
    var audioContext = o._audioContext = audioContextConsole.create();
-   o._mapEnterSE = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
+   o._audioMapEnter = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
 }
 MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
    var o = this;
-   if(o._mapEnterSE.testReady()){
+   if(o._audioMapEnter.testFinish()){
       o._startTime = MO.Timer.current();
       return true;
    }
@@ -773,7 +773,7 @@ MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
       }
    }
    if (!o._enterSEPlaying) {
-      o._mapEnterSE.play(0);
+      o._audioMapEnter.play(0);
       o._enterSEPlaying = true;
    }
    var idxCap = timePassed / o.blockInterval();

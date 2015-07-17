@@ -9,6 +9,10 @@ MO.MAudio = function MAudio(o){
    o = MO.Class.inherits(this, o, MO.MListener);
    //..........................................................
    // @attribute
+   o._ready         = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
+   o._loaded        = MO.Class.register(o, new MO.AGetterSource('_loaded', 'testLoaded'), false);
+   o._finish        = MO.Class.register(o, new MO.AGetterSource('_finish', 'testFinish'), false);
+   // @attribute
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
    // @method
@@ -97,4 +101,5 @@ MO.MAudio_pause = function MAudio_pause(){
 //==========================================================
 MO.MAudio_dispose = function MAudio_dispose(){
    var o = this;
+   o.__base.MListener.dispose.call(o);
 }

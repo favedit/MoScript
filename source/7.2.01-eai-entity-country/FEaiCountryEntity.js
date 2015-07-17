@@ -19,7 +19,6 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._enterSELoaded           = false;
    //o._downSELoaded            = false;
    o._enterSEPlaying          = false;
-
    o._cameraDirection         = MO.Class.register(o, new MO.AGetSet('_cameraDirection'));
    o._startDelay              = MO.Class.register(o, new MO.AGetSet('_startDelay'), 0);
    o._riseDuration            = MO.Class.register(o, new MO.AGetSet('_riseDuration'), 5000);
@@ -37,7 +36,6 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._playing                 = false;
    o._lastTick                = 0;
    o._interval                = 10;
-
    o._template                = MO.Class.register(o, new MO.AGetSet('_template'));
    o._introAnimeDone          = MO.Class.register(o, new MO.AGetSet('_introAnimeDone'), false);
    o._startTime               = MO.Class.register(o, new MO.AGetSet('_startTime'));
@@ -47,14 +45,13 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._cameraMoving            = MO.Class.register(o, new MO.AGetSet('_cameraMoving'), false);
    o._cameraFrom              = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
    o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
-
-   o._mapEnterSE              = null;
-   //o._mapEnterSEArray         = null;
+   //o._audioMapEnterArray         = null;
    //o._mapDownSEArray          = null;
    //o._lastEnterSEIndex        = -1;
    //o._lastDownSEIndex         = -1;
    // @attribute
    o._audioContext            = null;
+   o._audioMapEnter           = null;
    //..........................................................
    // @method
    o.setup                    = MO.FEaiCountryEntity_setup;
@@ -67,7 +64,6 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o.onOrganizationFetch      = MO.FEaiCountryEntity_onOrganizationFetch;
    o.cameraMoveAnime          = MO.FEaiCountryEntity_cameraMoveAnime;
    o.provinceShowOrderSort    = MO.FEaiCountryEntity_provinceShowOrderSort;
-   //o.onDownSELoaded           = FEaiCountryEntity_onDownSELoaded;
    o.isReady                  = MO.FEaiCountryEntity_isReady;
    return o;
 }
@@ -98,24 +94,8 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
    // 创建声音环境
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
    var audioContext = o._audioContext = audioContextConsole.create();
-   o._mapEnterSE = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
+   o._audioMapEnter = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
 }
-
-//==========================================================
-// <T>音频加载完成。</T>
-//
-// @method
-//==========================================================
-//MO.FEaiCountryEntity_onDownSELoaded = function FEaiCountryEntity_onDownSELoaded(uri) {
-//   var o = this;
-//   var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
-//   var peCount = o._provinceEntities.count();
-//   var downSEArray = o._mapDownSEArray = new Array(peCount);
-//   for (var i = 0; i < peCount; i++) {
-//      downSEArray[i] = audioContextConsole.create(uri);
-//   }
-//   o._downSELoaded = true;
-//}
 
 //==========================================================
 // <T>音频加载完成。</T>
@@ -124,7 +104,7 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
 //==========================================================
 MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
    var o = this;
-   if(o._mapEnterSE.testReady()){
+   if(o._audioMapEnter.testFinish()){
       // 记录开始时间
       o._startTime = MO.Timer.current();
       return true;
@@ -214,7 +194,7 @@ MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
    }
 
    if (!o._enterSEPlaying) {
-      o._mapEnterSE.play(0);
+      o._audioMapEnter.play(0);
       o._enterSEPlaying = true;
    }
    
@@ -248,7 +228,7 @@ MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
 
    idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
    //if (o._lastEnterSEIndex != idxCap) {
-   //   o._mapEnterSEArray[idxCap].start();
+   //   o._audioMapEnterArray[idxCap].start();
    //   o._lastEnterSEIndex = idxCap;
    //}
    
