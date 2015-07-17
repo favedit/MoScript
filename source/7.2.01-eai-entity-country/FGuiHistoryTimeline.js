@@ -60,15 +60,21 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          
    var pixPer10k = dataHeight * 10000 / maxInves;
 
+   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
+   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+
+   // 画线及多边形
+   var ctx = graphic._handle;
+   ctx.lineCap = 'round';
+   ctx.beginPath();
+   ctx.moveTo(lastX, lastY);
    // 取第一天确定起始Y
    var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
    var inves = dateData.investmentTotal();
    var lastX = dataLeft;
    var lastY = dataBottom - inves / 10000 * pixPer10k;
    lastY -= o._startHeight;
-   // 画线及多边形
-   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   // 计算已经过各天点位置
    while (startDate.isBefore(degreeDate)) {
       var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
@@ -77,53 +83,11 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          var dayInvestmentTotal = dateData.investmentTotal();
          var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
          y -= o._startHeight;
-         var hexColor = MO.Lang.Hex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
-         var color = '#' + hexColor.substring(2);
-         var opColor = MO.GuiColor.makeRgbString(hexColor, 0.3);
-         graphic.drawLine(lastX, lastY, x, y, color, o._lineWidth);
-         var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
-         var bottomHexColor = MO.Lang.Hex.format(rateResource.find(0));
-         var bottomOpColor = MO.GuiColor.makeRgbString(bottomHexColor, 0.3);
-         opGradient.addColorStop('0', bottomOpColor);
-         opGradient.addColorStop('1', opColor);
-         graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
-         if (startDate.date.getDate() == 1) {
-            var text = MO.Lang.Float.unitFormat(inves, 0, 0, 0, 0, 10000, '万');
-            graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
-         }
+         ctx.lineTo(x, y);
          lastX = x;
          lastY = y;
          startDate.addDay(1);
       }else{
-         break;
-      }
-   }
-   // 后写字
-   startDate.date.setTime(bakTime);
-   startDate.refresh();
-   while (startDate.isBefore(degreeDate)) {
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
-      if (dateData) {
-         var degreeSpan = startDate.date.getTime() - bakTime;
-         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
-         var inves = dateData.investmentTotal();
-         var y = dataBottom - inves / 10000 * pixPer10k;
-         y -= o._startHeight;
-         if (startDate.date.getDate() == 1) {
-            graphic.setFont('bold 22px Microsoft YaHei');
-            if(inves > 100000000){
-               var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
-               var textWidth = graphic.textWidth(text);
-               graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
-            }else{
-               var text = parseInt(inves / 10000) + '万';
-               var textWidth = graphic.textWidth(text);
-               graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
-            }
-         }
-         startDate.addDay(1);
-      }
-      else {
          break;
       }
    }
@@ -137,22 +101,82 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
       y -= o._startHeight;
       var hexColor = MO.Lang.Hex.format(rateResource.findRate(inves / investmentTotal));
       var color = '#' + hexColor.substring(2);
-      var opColor = MO.GuiColor.makeRgbString(hexColor, 0.3); 
-      graphic.drawLine(lastX, lastY, x, lastY + (y - lastY) * o.progress(), color, o._lineWidth);
-      var opGradient = graphic.createLinearGradient(0, dataBottom, 0, y);
-      var bottomHexColor = MO.Lang.Hex.format(rateResource.find(0));
-      var bottomOpColor = MO.GuiColor.makeRgbString(bottomHexColor, 0.3);
-      opGradient.addColorStop('0', bottomOpColor);
-      opGradient.addColorStop('1', opColor);
-      graphic.drawQuadrilateral(lastX, lastY, x, y, x, dataBottom, lastX, dataBottom, null, null, opGradient);
+      var opColor = MO.GuiColor.makeRgbString(hexColor, 0.3);
+      ctx.lineTo(x, lastY + (y - lastY) * o.progress());
+   }
+   var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
+   var bottomColor = '#' + hexColor.substring(2);
+   var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
+   var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
+   var topColor = '#' + hexColor.substring(2);
+   var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
+   var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+   gradient.addColorStop('0', bottomColor);
+   gradient.addColorStop('1', topColor);
+   var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+   opGradient.addColorStop('0', opBottomColor);
+   opGradient.addColorStop('1', opTopColor);
+   ctx.strokeStyle = gradient;
+   ctx.fillStyle = opGradient;
+   ctx.lineWidth = o._lineWidth;
+   ctx.stroke();
+   ctx.lineTo(x, dataBottom);
+   ctx.lineTo(dataLeft, dataBottom);
+   ctx.lineTo(dataLeft, lastY);
+   ctx.fill();
+
+   // 画圈写字
+   startDate.date.setTime(bakTime);
+   startDate.refresh();
+   while (startDate.isBefore(degreeDate)) {
+      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      if (dateData) {
+         var degreeSpan = startDate.date.getTime() - bakTime;
+         var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+         var dayInvestmentTotal = dateData.investmentTotal();
+         var y = dataBottom - dayInvestmentTotal / 10000 * pixPer10k;
+         y -= o._startHeight;
+         var hexColor = MO.Lang.Hex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
+         var color = '#' + hexColor.substring(2);
+         if (startDate.date.getDate() == 1) {
+            var text = MO.Lang.Float.unitFormat(inves, 0, 0, 0, 0, 10000, '万');
+            graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
+            graphic.setFont('bold 22px Microsoft YaHei');
+            if (inves > 100000000) {
+               var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+               var textWidth = graphic.textWidth(text);
+               graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
+            } else {
+               var text = parseInt(inves / 10000) + '万';
+               var textWidth = graphic.textWidth(text);
+               graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
+            }
+         }
+         lastX = x;
+         lastY = y;
+         startDate.addDay(1);
+      } else {
+         break;
+      }
+   }
+   // 下一天的圈和字
+   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   if (dateData) {
+      var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
+      var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
+      var inves = dateData.investmentTotal();
+      var y = dataBottom - inves / 10000 * pixPer10k;
+      y -= o._startHeight;
+      var hexColor = MO.Lang.Hex.format(rateResource.findRate(inves / investmentTotal));
+      var color = '#' + hexColor.substring(2);
       graphic.drawCircle(x, lastY + (y - lastY) * o.progress(), o._circleRadius, 0, color, color);
       graphic.setFont('bold 22px Microsoft YaHei');
-      if(inves > 100000000){
+      if (inves > 100000000) {
          var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
          var textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
-      }else{
-         var text = parseInt(inves / 10000) +  '万';
+      } else {
+         var text = parseInt(inves / 10000) + '万';
          var textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
       }
