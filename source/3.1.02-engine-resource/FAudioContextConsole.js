@@ -8,20 +8,16 @@ MO.FAudioContextConsole = function FAudioContextConsole(o) {
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd        = MO.EScope.Global;
+   o._scopeCd  = MO.EScope.Global;
    // @attribute
-   o._context        = null;
-   // @attribute
-   o._audioBuffers   = null;
+   o._contexts = null;
    //..........................................................
    // @method
-   o.construct       = MO.FAudioContextConsole_construct;
-   o.load            = MO.FAudioContextConsole_load;
-   o.create          = MO.FAudioContextConsole_create;
-   o.isLoaded        = MO.FAudioContextConsole_isLoaded;
-   o.onLoad          = MO.FAudioContextConsole_onLoad;
-   o.onError         = MO.FAudioContextConsole_onError;
+   o.construct = MO.FAudioContextConsole_construct;
    // @method
+   o.create    = MO.FAudioContextConsole_create;
+   // @method
+   o.dispose   = MO.FAudioContextConsole_dispose;
    return o;
 }
 
@@ -34,18 +30,7 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
-   o._audioBuffers = new MO.TDictionary();
-   // 创建环境
-   var context = null;
-   if(window.AudioContext){
-      context = new AudioContext();
-   }else if(window.webkitAudioContext){
-      context = new webkitAudioContext();
-   }
-   if(!context){
-      MO.Logger.error(o, 'Invalid audio context.');
-   }
-   o._context = context;
+   o._contexts = new MO.TObjects();
 }
 
 //==========================================================
@@ -57,13 +42,13 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
 //==========================================================
 MO.FAudioContextConsole_create = function FAudioContextConsole_create(uri) {
    var o = this;
-   var context = o._context;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var audioBufferSourceNode = context.createBufferSource();
-   audioBufferSourceNode.buffer = o._audioBuffers.get(url);
-   audioBufferSourceNode.connect(context.destination)
-   return audioBufferSourceNode;
+   var context = MO.Class.create(MO.FAudioContext);
+   context.setup();
+   o._contexts.push(context);
+   return context;
 }
+
+/*
 
 //==========================================================
 // <T>检查音频是否加载完成。</T>
@@ -76,7 +61,7 @@ MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
    var o = this;
    var context = o._context;
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var buffer = o._audioBuffers.get(url);
+   var buffer = o._contexts.get(url);
    if (buffer) {
       return true;
    }
@@ -92,7 +77,7 @@ MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
 MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, successCallback) {
    var o = this;
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var conn = MO.RConsole.find(MO.FHttpConsole).sendAsync(url);
+   var conn = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    conn.addLoadListener(o, o.onLoad);
    conn.uri = uri;
    conn.owner = owner;
@@ -106,26 +91,19 @@ MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, su
 // @param uri:String 网络地址
 // @return bool 是否已加载
 //==========================================================
-MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
-   var o = this;
-   if(!o._context){
-      return;
-   }
-   o._context.decodeAudioData(conn.outputData(), function (buffer) {
-      o._audioBuffers.set(conn._url, buffer);
-      if (conn.successCallback) {
-         conn.successCallback.call(conn.owner, conn.uri);
-      }
-   }, o.onError);
-}
-
-//==========================================================
-// <T>检查音频是否加载完成。</T>
-//
-// @method
-// @param uri:String 网络地址
-// @return bool 是否已加载
-//==========================================================
 MO.FAudioContextConsole_onError = function FAudioContextConsole_onError() {
    alert('decodeAudioData Failed');
+}*/
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FAudioContextConsole_dispose = function FAudioContextConsole_dispose(){
+   var o = this;
+   // 释放属性
+   o._contexts = MO.Lang.Object.dispose(o._contexts);
+   // 父处理
+   o.__base.FConsole.dispose.call(o);
 }

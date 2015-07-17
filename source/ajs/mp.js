@@ -1530,6 +1530,18 @@ MO.AGetter_build = function AGetter_build(clazz, instance){
    var getName = o._linker ? o._linker : o._code;
    instance[getName] = MO.Method.makePropertyGet(o._name, getName);
 }
+MO.AGetterSource = function AGetterSource(name, linker){
+   var o = this;
+   MO.ASource.call(o, name, MO.ESource.Get, linker);
+   o._linker = linker;
+   o.build   = MO.AGetterSource_build;
+   return o;
+}
+MO.AGetterSource_build = function AGetterSource_build(clazz, instance){
+   var o = this;
+   var getName = o._linker ? o._linker : o._code;
+   instance[getName] = MO.Method.makePropertyGetSource(o._name, getName);
+}
 MO.ALinker = function ALinker(name, linker){
    var o = this;
    o.inherit    = true;
@@ -5233,6 +5245,12 @@ MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, me
       method = new Function(source);
       o._properties[code] = method;
    }
+   return method;
+}
+MO.RMethod.prototype.makePropertyGetSource = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   var source = 'return this.' + name + ';';
+   var method = new Function(source);
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
@@ -13067,77 +13085,6 @@ MO.TDumpItem_show = function TDumpItem_show(v){
    var label = MO.Lang.String.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
    o.hText.innerHTML = MO.RHtml.toHtml(label);
    o.innerShow(v);
-}
-MO.FAudio = function FAudio(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
-   o._url      = MO.Class.register(o, new MO.AGetter('_url'));
-   o._hAudio   = null;
-   o.ohLoad    = MO.FAudio_ohLoad;
-   o.ohError   = MO.FAudio_ohError;
-   o.construct = MO.FAudio_construct;
-   o.volume    = MO.FAudio_volume;
-   o.setVolume = MO.FAudio_setVolume;
-   o.loop      = MO.FAudio_loop;
-   o.setLoop   = MO.FAudio_setLoop;
-   o.play      = MO.FAudio_play;
-   o.pause     = MO.FAudio_pause;
-   o.loadUrl   = MO.FAudio_loadUrl;
-   o.dispose   = MO.FAudio_dispose;
-   return o;
-}
-MO.FAudio_ohLoad = function FAudio_ohLoad(){
-   var o = this.__linker;
-}
-MO.FAudio_ohError = function FAudio_ohError(p){
-   var o = this.__linker;
-   var url = o._url;
-   MO.Logger.error(o, 'Load image failure. (url={1})', url);
-}
-MO.FAudio_construct = function FAudio_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.FAudio_volume = function FAudio_volume(){
-   return this._hAudio.volume;
-}
-MO.FAudio_setVolume = function FAudio_setVolume(value){
-   this._hAudio.volume = value;
-}
-MO.FAudio_loop = function FAudio_loop(){
-   return this._hAudio.loop;
-}
-MO.FAudio_setLoop = function FAudio_setLoop(value){
-   this._hAudio.loop = value;
-}
-MO.FAudio_play = function FAudio_play(position){
-   var hAudio = this._hAudio;
-   if(position != null){
-      if(hAudio.currentTime != position){
-         hAudio.currentTime = position;
-      }
-   }
-   hAudio.play();
-}
-MO.FAudio_pause = function FAudio_pause(){
-   this._hAudio.pause();
-}
-MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
-   var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var hAudio = o._hAudio;
-   if(!hAudio){
-      hAudio = o._hAudio = new Audio();
-      hAudio.loop = false;
-      hAudio.__linker = o;
-   }
-   o._url = url;
-   hAudio.src = url;
-}
-MO.FAudio_dispose = function FAudio_dispose(){
-   var o = this;
-   o._hAudio = MO.RHtml.free(o._hAudio);
-   o.__base.MListenerLoad.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
 }
 MO.FImage = function FImage(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
@@ -21262,6 +21209,40 @@ MO.RStage.prototype.start = function RStage_start(interval){
    o._started = true;
 }
 MO.RStage = new MO.RStage();
+MO.MAudio = function MAudio(o){
+   o = MO.Class.inherits(this, o, MO.MListener);
+   o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o.construct      = MO.MAudio_construct;
+   o.volume         = MO.MAudio_volume;
+   o.setVolume      = MO.MAudio_setVolume;
+   o.loop           = MO.MAudio_loop;
+   o.setLoop        = MO.MAudio_setLoop;
+   o.play           = MO.MAudio_play;
+   o.pause          = MO.MAudio_pause;
+   o.dispose        = MO.MAudio_dispose;
+   return o;
+}
+MO.MAudio_construct = function MAudio_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.MAudio_volume = function MAudio_volume(){
+   return 0;
+}
+MO.MAudio_setVolume = function MAudio_setVolume(value){
+}
+MO.MAudio_loop = function MAudio_loop(){
+   return false;
+}
+MO.MAudio_setLoop = function MAudio_setLoop(value){
+}
+MO.MAudio_play = function MAudio_play(position){
+}
+MO.MAudio_pause = function MAudio_pause(){
+}
+MO.MAudio_dispose = function MAudio_dispose(){
+   var o = this;
+}
 MO.MLinkerResource = function MLinkerResource(o){
    o = MO.Class.inherits(this, o);
    o._resource      = MO.Class.register(o, new MO.AGetSet('_resource'));
@@ -21280,6 +21261,146 @@ MO.MLinkerResource_reloadResource = function MLinkerResource_reloadResource(){
 MO.MLinkerResource_dispose = function MLinkerResource_dispose(){
    var o = this;
    o._resource = null;
+}
+MO.FAudio = function FAudio(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
+   o._url      = MO.Class.register(o, new MO.AGetter('_url'));
+   o._ready    = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
+   o._hAudio   = null;
+   o.ohLoad    = MO.FAudio_ohLoad;
+   o.ohError   = MO.FAudio_ohError;
+   o.onLoaded  = MO.FAudio_onLoaded;
+   o.construct = MO.FAudio_construct;
+   o.volume    = MO.FAudio_volume;
+   o.setVolume = MO.FAudio_setVolume;
+   o.loop      = MO.FAudio_loop;
+   o.setLoop   = MO.FAudio_setLoop;
+   o.play      = MO.FAudio_play;
+   o.pause     = MO.FAudio_pause;
+   o.loadUrl   = MO.FAudio_loadUrl;
+   o.dispose   = MO.FAudio_dispose;
+   return o;
+}
+MO.FAudio_ohLoad = function FAudio_ohLoad(){
+   var o = this.__linker;
+}
+MO.FAudio_ohError = function FAudio_ohError(p){
+   var o = this.__linker;
+   var url = o._url;
+   MO.Logger.error(o, 'Load image failure. (url={1})', url);
+}
+MO.FAudio_onLoaded = function FAudio_onLoaded(event){
+   this._ready = true;
+   console.log(this._url);
+}
+MO.FAudio_construct = function FAudio_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MAudio.construct.call(o);
+}
+MO.FAudio_volume = function FAudio_volume(){
+   return this._hAudio.volume;
+}
+MO.FAudio_setVolume = function FAudio_setVolume(value){
+   this._hAudio.volume = value;
+}
+MO.FAudio_loop = function FAudio_loop(){
+   return this._hAudio.loop;
+}
+MO.FAudio_setLoop = function FAudio_setLoop(value){
+   this._hAudio.loop = value;
+}
+MO.FAudio_play = function FAudio_play(position){
+   var hAudio = this._hAudio;
+   if(position != null){
+      if(hAudio.currentTime != position){
+         hAudio.currentTime = position;
+      }
+   }
+   hAudio.play();
+}
+MO.FAudio_pause = function FAudio_pause(){
+   this._hAudio.pause();
+}
+MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var hAudio = o._hAudio;
+   if(!hAudio){
+      hAudio = o._hAudio = new Audio();
+      hAudio.loop = false;
+      hAudio.__linker = o;
+      hAudio.oncanplaythrough = o.onLoaded.bind(o);
+   }
+   o._url = url;
+   hAudio.src = url;
+}
+MO.FAudio_dispose = function FAudio_dispose(){
+   var o = this;
+   o._hAudio = MO.RHtml.free(o._hAudio);
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.MAudio.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FAudioBuffer = function FAudioBuffer(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
+   o._context        = MO.Class.register(o, new MO.AGetSet('_context'));
+   o._url            = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._handle         = MO.Class.register(o, new MO.AGetter('_handle'));
+   o._buffer         = MO.Class.register(o, new MO.AGetter('_buffer'));
+   o._ready          = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
+   o.onDecodeSuccess = MO.FAudioBuffer_onDecodeSuccess;
+   o.onDecodeFailure = MO.FAudioBuffer_onDecodeFailure;
+   o.onLoad          = MO.FAudioBuffer_onLoad;
+   o.construct       = MO.FAudioBuffer_construct;
+   o.testReady       = MO.FAudioBuffer_testReady;
+   o.loadUrl         = MO.FAudioBuffer_loadUrl;
+   o.play            = MO.FAudioBuffer_play;
+   o.dispose         = MO.FAudioBuffer_dispose;
+   return o;
+}
+MO.FAudioBuffer_onDecodeSuccess = function FAudioBuffer_onDecodeSuccess(buffer){
+   var o = this;
+   var contextHandle = o._context.handle();
+   var bufferSource = o._buffer = contextHandle.createBufferSource();
+   bufferSource.buffer = buffer;
+   bufferSource.connect(contextHandle.destination)
+   o._ready = true;
+   var event = new MO.SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
+}
+MO.FAudioBuffer_onDecodeFailure = function FAudioBuffer_onDecodeFailure(buffer){
+   var o = this;
+   MO.Logger.error(o, 'Decode audio buffer failure. (url={1})', o._url);
+}
+MO.FAudioBuffer_onLoad = function FAudioBuffer_onLoad(connection){
+   var o = this;
+   var data = connection.outputData();
+   var contextHandle = o._context.handle();
+   contextHandle.decodeAudioData(data, o.onDecodeSuccess.bind(o), o.onDecodeFailure.bind(o));
+}
+MO.FAudioBuffer_construct = function FAudioBuffer_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MAudio.construct.call(o);
+}
+MO.FAudioBuffer_testReady = function FAudioBuffer_testReady(){
+   return this._ready;
+}
+MO.FAudioBuffer_loadUrl = function FAudioBuffer_loadUrl(uri){
+   var o = this;
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(o._url);
+   connection.addLoadListener(o, o.onLoad);
+}
+MO.FAudioBuffer_play = function FAudioBuffer_play(position){
+   this._buffer.start(MO.Lang.Integer.nvl(position));
+}
+MO.FAudioBuffer_dispose = function FAudioBuffer_dispose(){
+   var o = this;
+   o.__base.MAudio.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FAudioConsole = function FAudioConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -21318,22 +21439,23 @@ MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
    o._audios = MO.Lang.Object.dispose(o._audios);
    o.__base.FConsole.dispose.call(o);
 }
-MO.FAudioContextConsole = function FAudioContextConsole(o) {
-   o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd        = MO.EScope.Global;
-   o._context        = null;
-   o._audioBuffers   = null;
-   o.construct       = MO.FAudioContextConsole_construct;
-   o.load            = MO.FAudioContextConsole_load;
-   o.create          = MO.FAudioContextConsole_create;
-   o.isLoaded        = MO.FAudioContextConsole_isLoaded;
-   o.onLoad          = MO.FAudioContextConsole_onLoad;
-   o.onError         = MO.FAudioContextConsole_onError;
+MO.FAudioContext = function FAudioContext(o) {
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._handle      = MO.Class.register(o, new MO.AGetter('_handle'));
+   o._buffers     = MO.Class.register(o, new MO.AGetter('_buffers'));
+   o.construct    = MO.FAudioContext_construct;
+   o.setup        = MO.FAudioContext_setup;
+   o.createBuffer = MO.FAudioContext_createBuffer;
+   o.dispose      = MO.FAudioContext_dispose;
    return o;
 }
-MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
+MO.FAudioContext_construct = function FAudioContext_construct() {
    var o = this;
-   o.__base.FConsole.construct.call(o);
+   o.__base.FObject.construct.call(o);
+   o._buffers = new MO.TDictionary();
+}
+MO.FAudioContext_setup = function FAudioContext_setup(uri) {
+   var o = this;
    o._audioBuffers = new MO.TDictionary();
    var context = null;
    if(window.AudioContext){
@@ -21342,52 +21464,54 @@ MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
       context = new webkitAudioContext();
    }
    if(!context){
-      MO.Logger.error(o, 'Invalid audio context.');
+      return MO.Logger.error(o, 'Invalid audio context.');
    }
-   o._context = context;
+   o._handle = context;
+}
+MO.FAudioContext_createBuffer = function FAudioContext_createBuffer(uri) {
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var buffer = null;
+   o._handle = null;
+   if(o._handle){
+      buffer = MO.Class.create(MO.FAudioBuffer);
+      buffer.setContext(o);
+   }else{
+      buffer = MO.Class.create(MO.FAudio);
+   }
+   buffer.loadUrl(url);
+   return buffer;
+}
+MO.FAudioContext_dispose = function FAudioContext_dispose() {
+   var o = this;
+   o._buffers = MO.Lang.Object.dispose(o._buffers);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FAudioContextConsole = function FAudioContextConsole(o) {
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o._contexts = null;
+   o.construct = MO.FAudioContextConsole_construct;
+   o.create    = MO.FAudioContextConsole_create;
+   o.dispose   = MO.FAudioContextConsole_dispose;
+   return o;
+}
+MO.FAudioContextConsole_construct = function FAudioContextConsole_construct() {
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._contexts = new MO.TObjects();
 }
 MO.FAudioContextConsole_create = function FAudioContextConsole_create(uri) {
    var o = this;
-   var context = o._context;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var audioBufferSourceNode = context.createBufferSource();
-   audioBufferSourceNode.buffer = o._audioBuffers.get(url);
-   audioBufferSourceNode.connect(context.destination)
-   return audioBufferSourceNode;
+   var context = MO.Class.create(MO.FAudioContext);
+   context.setup();
+   o._contexts.push(context);
+   return context;
 }
-MO.FAudioContextConsole_isLoaded = function FAudioContextConsole_isLoaded(uri) {
+MO.FAudioContextConsole_dispose = function FAudioContextConsole_dispose(){
    var o = this;
-   var context = o._context;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var buffer = o._audioBuffers.get(url);
-   if (buffer) {
-      return true;
-   }
-   return false;
-}
-MO.FAudioContextConsole_load = function FAudioContextConsole_load(uri, owner, successCallback) {
-   var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var conn = MO.RConsole.find(MO.FHttpConsole).sendAsync(url);
-   conn.addLoadListener(o, o.onLoad);
-   conn.uri = uri;
-   conn.owner = owner;
-   conn.successCallback = successCallback;
-}
-MO.FAudioContextConsole_onLoad = function FAudioContextConsole_onLoad(conn) {
-   var o = this;
-   if(!o._context){
-      return;
-   }
-   o._context.decodeAudioData(conn.outputData(), function (buffer) {
-      o._audioBuffers.set(conn._url, buffer);
-      if (conn.successCallback) {
-         conn.successCallback.call(conn.owner, conn.uri);
-      }
-   }, o.onError);
-}
-MO.FAudioContextConsole_onError = function FAudioContextConsole_onError() {
-   alert('decodeAudioData Failed');
+   o._contexts = MO.Lang.Object.dispose(o._contexts);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FAudioResource = function FAudioResource(o){
    o = MO.Class.inherits(this, o, MO.FAudio);
@@ -78330,167 +78454,159 @@ MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
    o._provinces = MO.Lang.Object.dispose(o._provinces);
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FEaiCountryEntity = function FEaiCountryEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity);
-      o._enterSELoaded           = false;
-      o._enterSEPlaying          = false;
-      o._cameraDirection         = RClass.register(o, new AGetSet('_cameraDirection'));
-      o._startDelay              = RClass.register(o, new AGetSet('_startDelay'), 0);
-      o._riseDuration            = RClass.register(o, new AGetSet('_riseDuration'), 5000);
-      o._riseDistance            = RClass.register(o, new AGetSet('_riseDistance'), 600);
-      o._fallDuration            = RClass.register(o, new AGetSet('_fallDuration'), 200);
-      o._fallDistance            = RClass.register(o, new AGetSet('_fallDistance'), 3);
-      o._blockInterval           = RClass.register(o, new AGetSet('_blockInterval'), 200);
-      o._mouseOverRiseHeight     = RClass.register(o, new AGetSet('_mouseOverRiseHeight'), 3);
-      o._mouseMoveCheckInterval  = RClass.register(o, new AGetSet('_mouseMoveCheckInterval'), 100);
-      o._cameraMoveDuration      = RClass.register(o, new AGetSet('_cameraMoveDuration'), 500);
-      o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
-      o._provinceArray           = null;
-      o._playing                 = false;
-      o._lastTick                = 0;
-      o._interval                = 10;
-      o._template                = RClass.register(o, new AGetSet('_template'));
-      o._introAnimeDone          = RClass.register(o, new AGetSet('_introAnimeDone'), false);
-      o._startTime               = RClass.register(o, new AGetSet('_startTime'));
-      o._mouseOverRiseRenderable = RClass.register(o, new AGetSet('_mouseOverRiseRenderable'));
-      o._mouseOverFallArray      = RClass.register(o, new AGetSet('_mouseOverFallArray'));
-      o._mouseMoveLastCheck      = RClass.register(o, new AGetSet('_mouseMoveLastCheck'));
-      o._cameraMoving            = RClass.register(o, new AGetSet('_cameraMoving'), false);
-      o._cameraFrom              = RClass.register(o, new AGetSet('_cameraFrom'));
-      o._cameraTo                = RClass.register(o, new AGetSet('_cameraTo'));
-      o._mapEnterSE              = null;
-      o.setup                    = FEaiCountryEntity_setup;
-      o.start                    = FEaiCountryEntity_start;
-      o.process                  = FEaiCountryEntity_process;
-      o.introAnime               = FEaiCountryEntity_introAnime;
-      o.onMouseMove              = FEaiCountryEntity_onMouseMove;
-      o.onMouseDown              = FEaiCountryEntity_onMouseDown;
-      o.mouseOverFallAnime       = FEaiCountryEntity_mouseOverFallAnime;
-      o.onOrganizationFetch      = FEaiCountryEntity_onOrganizationFetch;
-      o.cameraMoveAnime          = FEaiCountryEntity_cameraMoveAnime;
-      o.provinceShowOrderSort    = FEaiCountryEntity_provinceShowOrderSort;
-      o.onEnterSELoaded          = FEaiCountryEntity_onEnterSELoaded;
-      o.isReady                  = FEaiCountryEntity_isReady;
-      return o;
+MO.FEaiCountryEntity = function FEaiCountryEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._enterSELoaded           = false;
+   o._enterSEPlaying          = false;
+   o._cameraDirection         = MO.Class.register(o, new MO.AGetSet('_cameraDirection'));
+   o._startDelay              = MO.Class.register(o, new MO.AGetSet('_startDelay'), 0);
+   o._riseDuration            = MO.Class.register(o, new MO.AGetSet('_riseDuration'), 5000);
+   o._riseDistance            = MO.Class.register(o, new MO.AGetSet('_riseDistance'), 600);
+   o._fallDuration            = MO.Class.register(o, new MO.AGetSet('_fallDuration'), 200);
+   o._fallDistance            = MO.Class.register(o, new MO.AGetSet('_fallDistance'), 3);
+   o._blockInterval           = MO.Class.register(o, new MO.AGetSet('_blockInterval'), 200);
+   o._mouseOverRiseHeight     = MO.Class.register(o, new MO.AGetSet('_mouseOverRiseHeight'), 3);
+   o._mouseMoveCheckInterval  = MO.Class.register(o, new MO.AGetSet('_mouseMoveCheckInterval'), 100);
+   o._cameraMoveDuration      = MO.Class.register(o, new MO.AGetSet('_cameraMoveDuration'), 500);
+   o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._provinceArray           = null;
+   o._playing                 = false;
+   o._lastTick                = 0;
+   o._interval                = 10;
+   o._template                = MO.Class.register(o, new MO.AGetSet('_template'));
+   o._introAnimeDone          = MO.Class.register(o, new MO.AGetSet('_introAnimeDone'), false);
+   o._startTime               = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._mouseOverRiseRenderable = MO.Class.register(o, new MO.AGetSet('_mouseOverRiseRenderable'));
+   o._mouseOverFallArray      = MO.Class.register(o, new MO.AGetSet('_mouseOverFallArray'));
+   o._mouseMoveLastCheck      = MO.Class.register(o, new MO.AGetSet('_mouseMoveLastCheck'));
+   o._cameraMoving            = MO.Class.register(o, new MO.AGetSet('_cameraMoving'), false);
+   o._cameraFrom              = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
+   o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
+   o._mapEnterSE              = null;
+   o._audioContext            = null;
+   o.setup                    = MO.FEaiCountryEntity_setup;
+   o.start                    = MO.FEaiCountryEntity_start;
+   o.process                  = MO.FEaiCountryEntity_process;
+   o.introAnime               = MO.FEaiCountryEntity_introAnime;
+   o.onMouseMove              = MO.FEaiCountryEntity_onMouseMove;
+   o.onMouseDown              = MO.FEaiCountryEntity_onMouseDown;
+   o.mouseOverFallAnime       = MO.FEaiCountryEntity_mouseOverFallAnime;
+   o.onOrganizationFetch      = MO.FEaiCountryEntity_onOrganizationFetch;
+   o.cameraMoveAnime          = MO.FEaiCountryEntity_cameraMoveAnime;
+   o.provinceShowOrderSort    = MO.FEaiCountryEntity_provinceShowOrderSort;
+   o.isReady                  = MO.FEaiCountryEntity_isReady;
+   return o;
+}
+MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
+   var o = this;
+   o._provinceEntities = provinceEntities;
+   for (var i = 0; i < o._provinceEntities.count(); i++) {
+      var fr = o._provinceEntities.at(i).faceRenderable();
+      var br = o._provinceEntities.at(i).borderRenderable();
+      var frm = fr.matrix();
+      var brm = br.matrix();
+      frm.tz = o.riseDistance();
+      frm.updateForce();
+      brm.tz = o.riseDistance();
+      brm.updateForce();
    }
-   MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
-      var o = this;
-      o._provinceEntities = provinceEntities;
-      for (var i = 0; i < o._provinceEntities.count(); i++) {
-         var fr = o._provinceEntities.at(i).faceRenderable();
-         var br = o._provinceEntities.at(i).borderRenderable();
-         var frm = fr.matrix();
-         var brm = br.matrix();
-         frm.tz = o.riseDistance();
-         frm.updateForce();
-         brm.tz = o.riseDistance();
-         brm.updateForce();
+   var provinceArray = o._provinceArray = new Array(provinceEntities.count());
+   for (var i = 0; i < provinceEntities.count() ; i++) {
+      provinceArray[i] = provinceEntities.at(i);
+   }
+   provinceArray.sort(o.provinceShowOrderSort);
+   var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+   var audioContext = o._audioContext = audioContextConsole.create();
+   o._mapEnterSE = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
+}
+MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
+   var o = this;
+   if(o._mapEnterSE.testReady()){
+      o._startTime = MO.Timer.current();
+      return true;
+   }
+   return false;
+}
+MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
+   var pResConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var p1Res = pResConsole.findByCode(p1.data().code());
+   var p2Res = pResConsole.findByCode(p2.data().code())
+   if (p1Res.displayOrder() > p2Res.displayOrder()) {
+      return 1;
+   }
+   return -1;
+}
+MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
+   this._startTime = MO.Timer.current();
+}
+MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
+   var o = this;
+   if (!o._provinceEntities) {
+      return;
+   }
+   o.introAnime();
+}
+MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
+   var o = this;
+   var now = MO.Timer.current();
+   var timePassed = now - o._startTime;
+   if (timePassed < o.startDelay()) {
+      return;
+   }
+   else {
+      timePassed -= o.startDelay();
+      if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
+         o.setIntroAnimeDone(true);
+         var listener = new MO.TListener();
+         listener._owner = this;
+         listener._callback = o.onMouseMove;
+         MO.Window.lsnsMouseMove.push(listener);
+         var listener = new MO.TListener();
+         listener._owner = this;
+         listener._callback = o.onMouseDown;
+         MO.Window.lsnsMouseDown.push(listener);
       }
-      var provinceArray = o._provinceArray = new Array(provinceEntities.count());
-      for (var i = 0; i < provinceEntities.count() ; i++) {
-         provinceArray[i] = provinceEntities.at(i);
-      }
-      provinceArray.sort(o.provinceShowOrderSort);
-      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
-      audioContextConsole.load('{eai.resource}/map_entry/enter.mp3', o, o.onEnterSELoaded);
    }
-   MO.FEaiCountryEntity_onEnterSELoaded = function FEaiCountryEntity_onEnterSELoaded(uri) {
-      var o = this;
-      var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
-      var peCount = o._provinceEntities.count();
-      o._mapEnterSE = audioContextConsole.create(uri);
-      o._enterSELoaded = true;
+   if (!o._enterSEPlaying) {
+      o._mapEnterSE.play(0);
+      o._enterSEPlaying = true;
    }
-   MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
-      var o = this;
-      if (o._enterSELoaded) {
-            o._startTime = MO.Timer.current();
-            return true;
-      }
-      return false;
-   }
-   MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
-      var pResConsole = MO.RConsole.find(FEaiResourceConsole).provinceConsole();
-      var p1Res = pResConsole.findByCode(p1.data().code());
-      var p2Res = pResConsole.findByCode(p2.data().code())
-      if (p1Res.displayOrder() > p2Res.displayOrder()) {
-         return 1;
-      }
-      return -1;
-   }
-   MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
-      this._startTime = MO.Timer.current();
-   }
-   MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
-      var o = this;
-      if (!o._provinceEntities) {
-         return;
-      }
-      o.introAnime();
-   }
-   MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
-      var o = this;
-      var now = MO.Timer.current();
-      var timePassed = now - o._startTime;
-      if (timePassed < o.startDelay()) {
-         return;
-      }
-      else {
-         timePassed -= o.startDelay();
-         if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
-            o.setIntroAnimeDone(true);
-            var listener = new TListener();
-            listener._owner = this;
-            listener._callback = o.onMouseMove;
-            RWindow.lsnsMouseMove.push(listener);
-            var listener = new TListener();
-            listener._owner = this;
-            listener._callback = o.onMouseDown;
-            RWindow.lsnsMouseDown.push(listener);
+   var idxCap = timePassed / o.blockInterval();
+   for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
+      var fr = o._provinceArray[i].faceRenderable();
+      var br = o._provinceArray[i].borderRenderable();
+      var frm = fr.matrix();
+      var brm = br.matrix();
+      var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
+      var fallPercentage = 0;
+      if (risePercentage > 1) {
+         risePercentage = 1;
+         fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
+         if (fallPercentage > 1) {
+            fallPercentage = 1;
          }
       }
-      if (!o._enterSEPlaying) {
-         o._mapEnterSE.start(0);
-         o._enterSEPlaying = true;
-      }
-      var idxCap = timePassed / o.blockInterval();
-      for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
-         var fr = o._provinceArray[i].faceRenderable();
-         var br = o._provinceArray[i].borderRenderable();
-         var frm = fr.matrix();
-         var brm = br.matrix();
-         var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
-         var fallPercentage = 0;
-         if (risePercentage > 1) {
-            risePercentage = 1;
-            fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
-            if (fallPercentage > 1) {
-               fallPercentage = 1;
-            }
-         }
-         frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-         frm.updateForce();
-         brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-         brm.updateForce();
-      }
-      idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
+      frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+      frm.updateForce();
+      brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+      brm.updateForce();
    }
-   MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event){
-      var o = this;
-   }
-   MO.FEaiCountryEntity_mouseOverFallAnime = function FEaiCountryEntity_mouseOverFallAnime() {
-      var o = this;
-   }
-   MO.FEaiCountryEntity_onOrganizationFetch = function FEaiCountryEntity_onOrganizationFetch(event) {
-      var o = this;
-   }
-   MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event){
-      var o = this;
-   }
-   MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
-      var o = this;
-   }
+   idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
+}
+MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event){
+   var o = this;
+}
+MO.FEaiCountryEntity_mouseOverFallAnime = function FEaiCountryEntity_mouseOverFallAnime() {
+   var o = this;
+}
+MO.FEaiCountryEntity_onOrganizationFetch = function FEaiCountryEntity_onOrganizationFetch(event) {
+   var o = this;
+}
+MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event){
+   var o = this;
+}
+MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
+   var o = this;
 }
 MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);

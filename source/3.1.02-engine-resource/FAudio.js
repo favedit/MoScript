@@ -6,10 +6,12 @@
 // @history 150526
 //==========================================================
 MO.FAudio = function FAudio(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
    //..........................................................
    // @attribute
    o._url      = MO.Class.register(o, new MO.AGetter('_url'));
+   // @attribute
+   o._ready    = MO.Class.register(o, new MO.AGetterSource('_ready', 'testReady'), false);
    //..........................................................
    // @html
    o._hAudio   = null;
@@ -17,6 +19,7 @@ MO.FAudio = function FAudio(o){
    // @event
    o.ohLoad    = MO.FAudio_ohLoad;
    o.ohError   = MO.FAudio_ohError;
+   o.onLoaded  = MO.FAudio_onLoaded;
    //..........................................................
    // @method
    o.construct = MO.FAudio_construct;
@@ -55,6 +58,16 @@ MO.FAudio_ohError = function FAudio_ohError(p){
 }
 
 //==========================================================
+// <T>加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FAudio_onLoaded = function FAudio_onLoaded(event){
+   this._ready = true;
+   console.log(this._url);
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -62,6 +75,7 @@ MO.FAudio_ohError = function FAudio_ohError(p){
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o.__base.MAudio.construct.call(o);
 }
 
 //==========================================================
@@ -144,6 +158,11 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
       hAudio = o._hAudio = new Audio();
       hAudio.loop = false;
       hAudio.__linker = o;
+      //hAudio.oncanplay = o.onLoaded;
+      hAudio.oncanplaythrough = o.onLoaded.bind(o);
+      //hAudio.oncanplaythrough = o.onLoaded.bind(o);
+      //hAudio.addEventListener('canplaythrough', o.onLoaded.bind(o))
+      //hAudio.addEventListener('canplay', o.onLoaded.bind(o))
       //hAudio.onload = o.ohLoad;
       //hAudio.onerror = o.ohError;
    }
@@ -163,5 +182,6 @@ MO.FAudio_dispose = function FAudio_dispose(){
    o._hAudio = MO.RHtml.free(o._hAudio);
    // 父处理
    o.__base.MListenerLoad.dispose.call(o);
+   o.__base.MAudio.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

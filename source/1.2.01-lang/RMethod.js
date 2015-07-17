@@ -151,7 +151,7 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
    if(o._virtuals[code]){
       method = o._virtuals[code];
    }else{
-      // 创建虚函数对象
+      // 创建函数对象
       var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
       method = new Function(source);
       method.__virtual = true;
@@ -162,7 +162,7 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
 }
 
 //==========================================================
-// <T>创建一个属性获取函数。</T>
+// <T>创建或获得一个属性获取函数。</T>
 //
 // @method
 // @param name:String 变量名称
@@ -176,7 +176,7 @@ MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, me
    if(o._properties[code]){
       method = o._properties[code];
    }else{
-      // 创建虚函数对象
+      // 创建函数对象
       var source = 'return this.' + name + ';';
       method = new Function(source);
       o._properties[code] = method;
@@ -185,7 +185,23 @@ MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, me
 }
 
 //==========================================================
-// <T>创建一个属性设置函数。</T>
+// <T>创建一个属性获取函数。</T>
+//
+// @method
+// @param name:String 变量名称
+// @param methodName:String 函数名称
+// @return Function 函数
+//==========================================================
+MO.RMethod.prototype.makePropertyGetSource = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   // 创建函数对象
+   var source = 'return this.' + name + ';';
+   var method = new Function(source);
+   return method;
+}
+
+//==========================================================
+// <T>创建或获得一个属性设置函数。</T>
 //
 // @method
 // @param name:String 变量名称
@@ -199,7 +215,7 @@ MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, me
    if(o._properties[code]){
       method = o._properties[code];
    }else{
-      // 创建虚函数对象
+      // 创建函数对象
       var source = 'this.' + name + '=value;';
       method = new Function('value', source);
       o._properties[code] = method;

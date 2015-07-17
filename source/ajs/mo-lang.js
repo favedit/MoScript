@@ -1361,6 +1361,18 @@ MO.AGetter_build = function AGetter_build(clazz, instance){
    var getName = o._linker ? o._linker : o._code;
    instance[getName] = MO.Method.makePropertyGet(o._name, getName);
 }
+MO.AGetterSource = function AGetterSource(name, linker){
+   var o = this;
+   MO.ASource.call(o, name, MO.ESource.Get, linker);
+   o._linker = linker;
+   o.build   = MO.AGetterSource_build;
+   return o;
+}
+MO.AGetterSource_build = function AGetterSource_build(clazz, instance){
+   var o = this;
+   var getName = o._linker ? o._linker : o._code;
+   instance[getName] = MO.Method.makePropertyGetSource(o._name, getName);
+}
 MO.ALinker = function ALinker(name, linker){
    var o = this;
    o.inherit    = true;
@@ -5064,6 +5076,12 @@ MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, me
       method = new Function(source);
       o._properties[code] = method;
    }
+   return method;
+}
+MO.RMethod.prototype.makePropertyGetSource = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   var source = 'return this.' + name + ';';
+   var method = new Function(source);
    return method;
 }
 MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
