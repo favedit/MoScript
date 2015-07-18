@@ -10,6 +10,7 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    //..........................................................
    // @attribute
    o._data          = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._material      = MO.Class.register(o, new MO.AGetter('_material'));
    o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
    // @attribute
    o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
@@ -19,7 +20,7 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
    // @event
-   o.onLoaded       = MO.FEaiWorldEntity_onLoaded;
+   o.onImageLoad    = MO.FEaiWorldEntity_onImageLoad;
    //..........................................................
    // @method
    o.construct      = MO.FEaiWorldEntity_construct;
@@ -38,11 +39,29 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
 //
 // @method
 //==========================================================
+MO.FEaiWorldEntity_onImageLoad = function FEaiWorldEntity_onImageLoad(event){
+   var o = this;
+   var context = o._graphicContext;
+   var image = event.sender;
+   // 创建纹理
+   o._texture.upload(image);
+   // 释放位图
+   image.dispose();
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
 MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 设置属性
    o._countries = new MO.TObjects();
+   var material = o._material = MO.Class.create(MO.FE3dMaterial);
+   material.info().effectCode = 'eai.world.face';
+   //renderable.material().info().optionDouble = true;
 }
 
 //==========================================================
@@ -52,9 +71,10 @@ MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
 //==========================================================
 MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
+   var context = o._graphicContext;
    // 创建球型外壳
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
    sphere.matrix().setScaleAll(0.98);
@@ -70,10 +90,10 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularLevel = 64;
    // 创建球型内部
    var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(16);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.96);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = false;
@@ -84,7 +104,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularLevel = 64;
    // 创建球型外壳大气
    var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
    sphere.matrix().setScaleAll(1.2);
@@ -98,6 +118,16 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
+   //..........................................................
+   // 创建纹理
+   var texture = o._texture = context.createFlatTexture();
+   //texture.setOptionFlipY(true);
+   //texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   o._material.setTexture('diffuse', texture);
+   // 加载图片
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('{eai.resource}/world/color.jpg');
 }
 
 //==========================================================
@@ -115,6 +145,7 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
       var countryData = countriesData.at(i);
       var country = MO.Class.create(MO.FEaiCountryEntity);
       country.linkGraphicContext(o);
+      country.setWorldEntity(o);
       country.loadData(countryData);
       countries.push(country);
    }

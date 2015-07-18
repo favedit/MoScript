@@ -1251,10 +1251,19 @@ MO.FG3dLightMaterial = function FG3dLightMaterial(o){
 }
 MO.FG3dMaterial = function FG3dMaterial(o){
    o = MO.Class.inherits(this, o, MO.FG3dBaseMaterial);
-   o._dirty    = true;
-   o._textures = MO.Class.register(o, new MO.AGetter('_textures'))
-   o.update    = MO.FG3dMaterial_update;
+   o._dirty     = true;
+   o._textures  = MO.Class.register(o, new MO.AGetter('_textures'))
+   o.setTexture = MO.FG3dMaterial_setTexture;
+   o.update     = MO.FG3dMaterial_update;
    return o;
+}
+MO.FG3dMaterial_setTexture = function FG3dMaterial_setTexture(code, texture){
+   var o = this;
+   var textures = o._textures;
+   if(!textures){
+      textures = o._textures = new MO.TDictionary();
+   }
+   textures.set(code, texture);
 }
 MO.FG3dMaterial_update = function FG3dMaterial_update(){
    this._dirty = true;

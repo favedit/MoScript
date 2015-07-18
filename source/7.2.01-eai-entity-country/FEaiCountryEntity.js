@@ -31,6 +31,7 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._cameraMoveDuration      = MO.Class.register(o, new MO.AGetSet('_cameraMoveDuration'), 500);
    //..........................................................
    // @attribute
+   o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
    o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._provinceArray           = null;
    o._playing                 = false;
@@ -109,14 +110,18 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
 //==========================================================
 MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
    var o = this;
+   // 简历边界数据
    var boundaries = o._boundaries = MO.Class.create(MO.FEaiBoundaries);
    boundaries.linkGraphicContext(o);
+   boundaries.setWorldEntity(o._worldEntity);
+   boundaries.setCountryEntity(o._countryEntity);
    var boundariesData = data.boundaries();
    var count = boundariesData.count()
    for(var i = 0; i < count; i++){
       var boundaryData = boundariesData.at(i);
       boundaries.pushBoundary(boundaryData);
    }
+   // 简历对象
    boundaries.build();
 }
 

@@ -15,6 +15,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
       return false;
    }
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('general.color.eai.world.face', MO.FEaiWorldFaceEffect);
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);

@@ -140,6 +140,7 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    // 建立边缘数据
    var vertexStart = 0;
    for(var n = 0; n < count; n++){
+      continue;
       var boundary = boundaries.at(n);
       // 填充顶点
       var positionCount = boundary.positionCount();
@@ -266,8 +267,8 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var positionCount = boundary.positionCount();
       // 填充三角索引
       for(var i = 0; i < positionCount; i++){
-         borderData[borderIndex++] = vertexStart + i;
-         borderData[borderIndex++] = vertexStart + i + layerStart;
+         //borderData[borderIndex++] = vertexStart + i;
+         //borderData[borderIndex++] = vertexStart + i + layerStart;
       }
       // 修正位置
       vertexStart += positionCount;

@@ -5474,10 +5474,19 @@ MO.FG3dLightMaterial = function FG3dLightMaterial(o){
 }
 MO.FG3dMaterial = function FG3dMaterial(o){
    o = MO.Class.inherits(this, o, MO.FG3dBaseMaterial);
-   o._dirty    = true;
-   o._textures = MO.Class.register(o, new MO.AGetter('_textures'))
-   o.update    = MO.FG3dMaterial_update;
+   o._dirty     = true;
+   o._textures  = MO.Class.register(o, new MO.AGetter('_textures'))
+   o.setTexture = MO.FG3dMaterial_setTexture;
+   o.update     = MO.FG3dMaterial_update;
    return o;
+}
+MO.FG3dMaterial_setTexture = function FG3dMaterial_setTexture(code, texture){
+   var o = this;
+   var textures = o._textures;
+   if(!textures){
+      textures = o._textures = new MO.TDictionary();
+   }
+   textures.set(code, texture);
 }
 MO.FG3dMaterial_update = function FG3dMaterial_update(){
    this._dirty = true;
@@ -20533,8 +20542,13 @@ MO.FE3dCube_setup = function FE3dCube_setup(p){
 }
 MO.FE3dDataBox = function FE3dDataBox(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable, MO.ME3dDynamicRenderable);
+   o._optionColor          = MO.Class.register(o, new MO.AGetSet('_optionColor'), true);
+   o._optionCoord          = MO.Class.register(o, new MO.AGetSet('_optionCoord'), false);
+   o._optionNormal         = MO.Class.register(o, new MO.AGetSet('_optionNormal'), false);
    o._vertexPositionBuffer = MO.Class.register(o, new MO.AGetter('_vertexPositionBuffer'));
    o._vertexColorBuffer    = MO.Class.register(o, new MO.AGetter('_vertexColorBuffer'));
+   o._vertexCoordBuffer    = MO.Class.register(o, new MO.AGetter('_vertexCoordBuffer'));
+   o._vertexNormalBuffer   = MO.Class.register(o, new MO.AGetter('_vertexNormalBuffer'));
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dDataBox_construct;
    o.setup                 = MO.FE3dDataBox_setup;
@@ -20554,10 +20568,24 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = c.createVertexBuffer();
-   buffer.setCode('color');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
-   o.pushVertexBuffer(buffer);
+   if(o._optionColor){
+      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+   }
+   if(o._optionCoord){
+      var buffer = o._vertexCoordBuffer = c.createVertexBuffer();
+      buffer.setCode('coord');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+      o.pushVertexBuffer(buffer);
+   }
+   if(o._optionNormal){
+      var buffer = o._vertexNormalBuffer = c.createVertexBuffer();
+      buffer.setCode('normal');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+   }
    var buffer = o._indexBuffer = c.createIndexBuffer();
    o.pushIndexBuffer(buffer);
    var info = o.material().info();

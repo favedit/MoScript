@@ -4097,6 +4097,7 @@ MO.RConst = function RConst(){
 }
 MO.RConst = new MO.RConst();
 MO.Const = MO.RConst;
+MO.Lang.Const = MO.RConst;
 MO.RDate = function RDate(){
    var o = this;
    o.MinYear       = 1800;

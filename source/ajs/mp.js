@@ -4266,6 +4266,7 @@ MO.RConst = function RConst(){
 }
 MO.RConst = new MO.RConst();
 MO.Const = MO.RConst;
+MO.Lang.Const = MO.RConst;
 MO.RDate = function RDate(){
    var o = this;
    o.MinYear       = 1800;
@@ -16458,10 +16459,19 @@ MO.FG3dLightMaterial = function FG3dLightMaterial(o){
 }
 MO.FG3dMaterial = function FG3dMaterial(o){
    o = MO.Class.inherits(this, o, MO.FG3dBaseMaterial);
-   o._dirty    = true;
-   o._textures = MO.Class.register(o, new MO.AGetter('_textures'))
-   o.update    = MO.FG3dMaterial_update;
+   o._dirty     = true;
+   o._textures  = MO.Class.register(o, new MO.AGetter('_textures'))
+   o.setTexture = MO.FG3dMaterial_setTexture;
+   o.update     = MO.FG3dMaterial_update;
    return o;
+}
+MO.FG3dMaterial_setTexture = function FG3dMaterial_setTexture(code, texture){
+   var o = this;
+   var textures = o._textures;
+   if(!textures){
+      textures = o._textures = new MO.TDictionary();
+   }
+   textures.set(code, texture);
 }
 MO.FG3dMaterial_update = function FG3dMaterial_update(){
    this._dirty = true;
@@ -31517,8 +31527,13 @@ MO.FE3dCube_setup = function FE3dCube_setup(p){
 }
 MO.FE3dDataBox = function FE3dDataBox(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable, MO.ME3dDynamicRenderable);
+   o._optionColor          = MO.Class.register(o, new MO.AGetSet('_optionColor'), true);
+   o._optionCoord          = MO.Class.register(o, new MO.AGetSet('_optionCoord'), false);
+   o._optionNormal         = MO.Class.register(o, new MO.AGetSet('_optionNormal'), false);
    o._vertexPositionBuffer = MO.Class.register(o, new MO.AGetter('_vertexPositionBuffer'));
    o._vertexColorBuffer    = MO.Class.register(o, new MO.AGetter('_vertexColorBuffer'));
+   o._vertexCoordBuffer    = MO.Class.register(o, new MO.AGetter('_vertexCoordBuffer'));
+   o._vertexNormalBuffer   = MO.Class.register(o, new MO.AGetter('_vertexNormalBuffer'));
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dDataBox_construct;
    o.setup                 = MO.FE3dDataBox_setup;
@@ -31538,10 +31553,24 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = c.createVertexBuffer();
-   buffer.setCode('color');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
-   o.pushVertexBuffer(buffer);
+   if(o._optionColor){
+      var buffer = o._vertexColorBuffer = c.createVertexBuffer();
+      buffer.setCode('color');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+   }
+   if(o._optionCoord){
+      var buffer = o._vertexCoordBuffer = c.createVertexBuffer();
+      buffer.setCode('coord');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+      o.pushVertexBuffer(buffer);
+   }
+   if(o._optionNormal){
+      var buffer = o._vertexNormalBuffer = c.createVertexBuffer();
+      buffer.setCode('normal');
+      buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+      o.pushVertexBuffer(buffer);
+   }
    var buffer = o._indexBuffer = c.createIndexBuffer();
    o.pushIndexBuffer(buffer);
    var info = o.material().info();
@@ -77910,6 +77939,8 @@ MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose(){
 MO.FEaiBoundaries = function FEaiBoundaries(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    o._option3d         = true;
+   o._worldEntity      = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
+   o._countryEntity    = MO.Class.register(o, new MO.AGetSet('_countryEntity'));
    o._color            = MO.Class.register(o, new MO.AGetter('_color'));
    o._boundaries       = MO.Class.register(o, new MO.AGetter('_boundaries'));
    o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
@@ -77942,6 +77973,8 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
    var vertexStart = 0;
    var vertexIndex = 0;
    var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var coordIndex = 0;
+   var coordData = new Float32Array(2 * vertexTotal * 2);
    var faceIndex = 0;
    var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
    for(var n = 0; n < count; n++){
@@ -77950,11 +77983,15 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
-         var x = positions[positionIndex++] / 180 * Math.PI;
-         var y = positions[positionIndex++] / 180 * Math.PI;
+         var cx = positions[positionIndex++];
+         var cy = positions[positionIndex++];
+         var x = cx * MO.Lang.Const.DEGREE_RATE;
+         var y = cy * MO.Lang.Const.DEGREE_RATE;
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y);
          vertexData[vertexIndex++] = Math.sin(y);
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y);
+         coordData[coordIndex++] = cx / 360 + 0.5;
+         coordData[coordIndex++] = 0.5 - cy / 180;
       }
       var indexes = boundary.indexes();
       var indexCount = indexes.length;
@@ -77974,9 +78011,13 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
-         vertexData[vertexIndex++] = positions[positionIndex++];
-         vertexData[vertexIndex++] = positions[positionIndex++];
-         vertexData[vertexIndex++] = o._layerDepth;
+         var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
+         coordData[coordIndex++] = x;
+         coordData[coordIndex++] = y;
       }
    }
    var vertexStart = 0;
@@ -78012,16 +78053,19 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
-   renderable.setVertexCount(vertexTotal * 2);
    renderable.linkGraphicContext(context);
+   renderable.setOptionColor(true);
+   renderable.setOptionCoord(true);
+   renderable.setVertexCount(vertexTotal * 2);
    renderable.setup();
    renderable.color().setHex('#0a5294');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);
    renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
    renderable.indexBuffer().upload(faceData, faceIndex, true);
-   renderable.material().info().effectCode = 'eai.map.face';
-   renderable.material().info().optionDouble = true;
+   renderable._material = o._worldEntity.material();
+   renderable._texture = o._worldEntity.material()._textures;
 }
 MO.FEaiBoundaries_buildBorder = function FEaiBoundaries_buildBorder(){
    var o = this;
@@ -78068,9 +78112,9 @@ MO.FEaiBoundaries_buildBorder = function FEaiBoundaries_buildBorder(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] / 180 * Math.PI;
          var y = positions[positionIndex++] / 180 * Math.PI;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
-         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.98;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.98;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.98;
       }
       vertexStart += positionCount;
    }
@@ -78087,15 +78131,15 @@ MO.FEaiBoundaries_buildBorder = function FEaiBoundaries_buildBorder(){
    var colorIndex = 0;
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x00;
-      colors[colorIndex++] = 0xB5;
-      colors[colorIndex++] = 0xF6;
+      colors[colorIndex++] = 0x22;
+      colors[colorIndex++] = 0xA9;
+      colors[colorIndex++] = 0xFF;
       colors[colorIndex++] = 0xFF;
    }
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x0B;
-      colors[colorIndex++] = 0x11;
-      colors[colorIndex++] = 0x23;
+      colors[colorIndex++] = 0x96;
+      colors[colorIndex++] = 0xB0;
+      colors[colorIndex++] = 0xD6;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
@@ -78824,6 +78868,7 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._mouseOverRiseHeight     = MO.Class.register(o, new MO.AGetSet('_mouseOverRiseHeight'), 3);
    o._mouseMoveCheckInterval  = MO.Class.register(o, new MO.AGetSet('_mouseMoveCheckInterval'), 100);
    o._cameraMoveDuration      = MO.Class.register(o, new MO.AGetSet('_cameraMoveDuration'), 500);
+   o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
    o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._provinceArray           = null;
    o._playing                 = false;
@@ -78882,6 +78927,8 @@ MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
    var o = this;
    var boundaries = o._boundaries = MO.Class.create(MO.FEaiBoundaries);
    boundaries.linkGraphicContext(o);
+   boundaries.setWorldEntity(o._worldEntity);
+   boundaries.setCountryEntity(o._countryEntity);
    var boundariesData = data.boundaries();
    var count = boundariesData.count()
    for(var i = 0; i < count; i++){
@@ -79420,6 +79467,7 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    }
    var vertexStart = 0;
    for(var n = 0; n < count; n++){
+      continue;
       var boundary = boundaries.at(n);
       var positionCount = boundary.positionCount();
       for(var i = 0; i < positionCount; i++){
@@ -79512,8 +79560,6 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var boundary = boundaries.at(n);
       var positionCount = boundary.positionCount();
       for(var i = 0; i < positionCount; i++){
-         borderData[borderIndex++] = vertexStart + i;
-         borderData[borderIndex++] = vertexStart + i + layerStart;
       }
       vertexStart += positionCount;
    }
@@ -79689,12 +79735,13 @@ MO.FEaiWorldData_dispose = function FEaiWorldData_dispose(){
 MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity, MO.MListener);
    o._data          = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._material      = MO.Class.register(o, new MO.AGetter('_material'));
    o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
    o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
    o._faceShape     = MO.Class.register(o, new MO.AGetter('_faceShape'));
    o._borderShape   = MO.Class.register(o, new MO.AGetter('_borderShape'));
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
-   o.onLoaded       = MO.FEaiWorldEntity_onLoaded;
+   o.onImageLoad    = MO.FEaiWorldEntity_onImageLoad;
    o.construct      = MO.FEaiWorldEntity_construct;
    o.setup          = MO.FEaiWorldEntity_setup;
    o.unserialize    = MO.FEaiWorldEntity_unserialize;
@@ -79702,15 +79749,25 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o.dispose        = MO.FEaiWorldEntity_dispose;
    return o;
 }
+MO.FEaiWorldEntity_onImageLoad = function FEaiWorldEntity_onImageLoad(event){
+   var o = this;
+   var context = o._graphicContext;
+   var image = event.sender;
+   o._texture.upload(image);
+   image.dispose();
+}
 MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    o._countries = new MO.TObjects();
+   var material = o._material = MO.Class.create(MO.FE3dMaterial);
+   material.info().effectCode = 'eai.world.face';
 }
 MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
+   var context = o._graphicContext;
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
    sphere.matrix().setScaleAll(0.98);
@@ -79725,10 +79782,10 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(16);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.96);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = false;
@@ -79738,7 +79795,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
-   sphere.linkGraphicContext(o);
+   sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
    sphere.matrix().setScaleAll(1.2);
@@ -79752,6 +79809,11 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
+   var texture = o._texture = context.createFlatTexture();
+   o._material.setTexture('diffuse', texture);
+   var image = MO.Class.create(MO.FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl('{eai.resource}/world/color.jpg');
 }
 MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    var o = this;
@@ -79763,6 +79825,7 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
       var countryData = countriesData.at(i);
       var country = MO.Class.create(MO.FEaiCountryEntity);
       country.linkGraphicContext(o);
+      country.setWorldEntity(o);
       country.loadData(countryData);
       countries.push(country);
    }
@@ -79785,6 +79848,43 @@ MO.FEaiWorldEntity_dispose = function FEaiWorldEntity_dispose(){
    var o = this;
    o._countries = MO.Lang.Object.dispose(o._countries);
    o.__base.FEaiEntity.dispose.call(o);
+}
+MO.FEaiWorldFaceEffect = function FEaiWorldFaceEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.world.face';
+   o.drawRenderable = MO.FEaiWorldFaceEffect_drawRenderable;
+   return o;
+}
+MO.FEaiWorldFaceEffect_drawRenderable = function FEaiWorldFaceEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var cameraVpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   var mergeRenderables = renderable.mergeRenderables();
+   var mergeCount = mergeRenderables.count();
+   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);
+   for(var i = 0; i < mergeCount; i++){
+      var index = 16 * i;
+      var mergeRenderable = mergeRenderables.at(i);
+      var matrix = mergeRenderable.matrix();
+      var color = mergeRenderable.color();
+      matrix.writeData(data, index);
+      data[index + 12] = color.red;
+      data[index + 13] = color.green;
+      data[index + 14] = color.blue;
+      data[index + 15] = color.alpha;
+   }
+   program.setParameter('vc_data', data);
+   var displayMatrix = renderable.display().currentMatrix();
+   program.setParameter('vc_model_matrix', displayMatrix);
+   program.setParameter('vc_vp_matrix', cameraVpMatrix);
+   o.bindAttributes(renderable);
+   program.setSampler('fs_diffuse', renderable.material().textures().get('diffuse'));
+   var indexBuffer = renderable.indexBuffers().first();
+   context.drawTriangles(indexBuffer);
 }
 with (MO) {
    MO.FGui24HTimeline = function FGui24HTimeline(o) {
@@ -83141,7 +83241,7 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = false;
+   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
@@ -83347,6 +83447,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
       return false;
    }
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('general.color.eai.world.face', MO.FEaiWorldFaceEffect);
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);

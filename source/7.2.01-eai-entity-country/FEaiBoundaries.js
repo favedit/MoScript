@@ -10,6 +10,8 @@ MO.FEaiBoundaries = function FEaiBoundaries(o){
    //..........................................................
    // @attribute
    o._option3d         = true;
+   o._worldEntity      = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
+   o._countryEntity    = MO.Class.register(o, new MO.AGetSet('_countryEntity'));
    o._color            = MO.Class.register(o, new MO.AGetter('_color'));
    o._boundaries       = MO.Class.register(o, new MO.AGetter('_boundaries'));
    // @attribute
@@ -66,6 +68,8 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
    var vertexStart = 0;
    var vertexIndex = 0;
    var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var coordIndex = 0;
+   var coordData = new Float32Array(2 * vertexTotal * 2);
    var faceIndex = 0;
    var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
    // 建立上层数据
@@ -76,14 +80,18 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
-         var x = positions[positionIndex++] / 180 * Math.PI;
-         var y = positions[positionIndex++] / 180 * Math.PI;
+         var cx = positions[positionIndex++];
+         var cy = positions[positionIndex++];
+         var x = cx * MO.Lang.Const.DEGREE_RATE;
+         var y = cy * MO.Lang.Const.DEGREE_RATE;
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y);
          vertexData[vertexIndex++] = Math.sin(y);
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y);
          //vertexData[vertexIndex++] = positions[positionIndex++];
          //vertexData[vertexIndex++] = positions[positionIndex++];
          //vertexData[vertexIndex++] = 0;
+         coordData[coordIndex++] = cx / 360 + 0.5;
+         coordData[coordIndex++] = 0.5 - cy / 180;
       }
       // 填充三角索引
       var indexes = boundary.indexes();
@@ -107,9 +115,16 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
-         vertexData[vertexIndex++] = positions[positionIndex++];
-         vertexData[vertexIndex++] = positions[positionIndex++];
-         vertexData[vertexIndex++] = o._layerDepth;
+         var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
+         //vertexData[vertexIndex++] = positions[positionIndex++];
+         //vertexData[vertexIndex++] = positions[positionIndex++];
+         //vertexData[vertexIndex++] = o._layerDepth;
+         coordData[coordIndex++] = x;
+         coordData[coordIndex++] = y;
       }
    }
    // 建立边缘数据
@@ -150,16 +165,21 @@ MO.FEaiBoundaries_buildFace = function FEaiBoundaries_buildFace(){
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
-   renderable.setVertexCount(vertexTotal * 2);
    renderable.linkGraphicContext(context);
+   renderable.setOptionColor(true);
+   renderable.setOptionCoord(true);
+   //renderable.setOptionNormal(true);
+   renderable.setVertexCount(vertexTotal * 2);
    renderable.setup();
    renderable.color().setHex('#0a5294');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);
+   //renderable.vertexNormalBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
    renderable.indexBuffer().upload(faceData, faceIndex, true);
-   renderable.material().info().effectCode = 'eai.map.face';
-   renderable.material().info().optionDouble = true;
+   renderable._material = o._worldEntity.material();
+   renderable._texture = o._worldEntity.material()._textures;
 }
 
 //==========================================================
@@ -221,9 +241,9 @@ MO.FEaiBoundaries_buildBorder = function FEaiBoundaries_buildBorder(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] / 180 * Math.PI;
          var y = positions[positionIndex++] / 180 * Math.PI;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
-         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.98;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.98;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.98;
          //vertexData[vertexIndex++] = positions[positionIndex++];
          //vertexData[vertexIndex++] = positions[positionIndex++];
          //vertexData[vertexIndex++] = o._layerDepth;
@@ -249,15 +269,15 @@ MO.FEaiBoundaries_buildBorder = function FEaiBoundaries_buildBorder(){
    var colorIndex = 0;
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x00;
-      colors[colorIndex++] = 0xB5;
-      colors[colorIndex++] = 0xF6;
+      colors[colorIndex++] = 0x22;
+      colors[colorIndex++] = 0xA9;
+      colors[colorIndex++] = 0xFF;
       colors[colorIndex++] = 0xFF;
    }
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x0B;
-      colors[colorIndex++] = 0x11;
-      colors[colorIndex++] = 0x23;
+      colors[colorIndex++] = 0x96;
+      colors[colorIndex++] = 0xB0;
+      colors[colorIndex++] = 0xD6;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);

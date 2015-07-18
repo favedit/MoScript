@@ -28,3 +28,4 @@ MO.RConst = function RConst(){
 // 实例化内容
 MO.RConst = new MO.RConst();
 MO.Const = MO.RConst;
+MO.Lang.Const = MO.RConst;
