@@ -28,6 +28,7 @@ MO.TAttributes = function TAttributes(){
 // @return String 字符串
 //==========================================================
 MO.TAttributes_join = function TAttributes_join(name, value){
+   var o = this;
    var source = new MO.TString();
    if(!name){
       name = '=';
@@ -35,14 +36,14 @@ MO.TAttributes_join = function TAttributes_join(name, value){
    if(!value){
       value = ',';
    }
-   var count = this._count;
+   var count = o._count;
    for(var i = 0; i < count; i++){
       if(i > 0){
          source.append(value);
       }
-      source.append(this.names[i]);
+      source.append(o.names[i]);
       source.append(name);
-      source.append(this.values[i]);
+      source.append(o.values[i]);
    }
    return source.flush();
 }
@@ -56,6 +57,7 @@ MO.TAttributes_join = function TAttributes_join(name, value){
 // @param value:String 分隔内容的字符
 //==========================================================
 MO.TAttributes_split = function TAttributes_split(source, name, value){
+   var o = this;
    var items = source.split(value);
    var count = items.length;
    for(var i = 0; i < count; i++){
@@ -63,9 +65,9 @@ MO.TAttributes_split = function TAttributes_split(source, name, value){
       if(item.length){
          var codes = item.split(name);
          if(codes.length == 2){
-            this.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
+            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
          }else{
-            this.set(MO.Lang.String.trim(item), '');
+            o.set(MO.Lang.String.trim(item), '');
          }
       }
    }
@@ -79,11 +81,14 @@ MO.TAttributes_split = function TAttributes_split(source, name, value){
 // @return String 打包字符串
 //==========================================================
 MO.TAttributes_pack = function TAttributes_pack(){
+   var o = this;
    var source = new MO.TString();
-   var count = this._count;
+   var count = o._count;
+   var names = o._names;
+   var values = o._values;
    for(var i = 0; i < count; i++){
-      var name = this.names[i];
-      var value = this.values[i];
+      var name = names[i];
+      var value = values[i];
       var nameLength = name.length;
       source.append(nameLength.toString().length, nameLength, name);
       if(value != null){
@@ -133,18 +138,21 @@ MO.TAttributes_unpack = function TAttributes_unpack(source){
 // @return String 字符串
 //==========================================================
 MO.TAttributes_dump = function TAttributes_dump(){
-   var info = new MO.TString();
-   var count = this._count;
-   info.append(MO.Runtime.className(o), ' : ', count);
+   var o = this;
+   var result = new MO.TString();
+   var count = o._count;
+   result.append(MO.Runtime.className(o), ' : ', count);
    if(count > 0){
-      info.append(' (');
+      var names = o._names;
+      var values = o._values;
+      result.append(' (');
       for(var i = 0; i < count; i++){
          if(i > 0){
-            info.append(', ');
+            result.append(', ');
          }
-         info.append(this._names[i], '=', this._values[i]);
+         result.append(names[i], '=', values[i]);
       }
-      info.append(')');
+      result.append(')');
    }
-   return info.flush();
+   return result.flush();
 }

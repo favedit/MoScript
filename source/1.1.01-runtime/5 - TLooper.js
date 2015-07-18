@@ -43,7 +43,8 @@ MO.TLooper = function TLooper(){
 // @param entry:SLooperEntry 节点
 //==========================================================
 MO.TLooper_innerPush = function TLooper_innerPush(entry){
-   var current = this._current;
+   var o = this;
+   var current = o._current;
    if(current){
       var prior = current.prior;
       entry.prior = prior;
@@ -53,9 +54,9 @@ MO.TLooper_innerPush = function TLooper_innerPush(entry){
    }else{
       entry.prior = entry;
       entry.next = entry;
-      this._current = entry;
+      o._current = entry;
    }
-   this._count++;
+   o._count++;
 }
 
 //==========================================================
@@ -65,17 +66,18 @@ MO.TLooper_innerPush = function TLooper_innerPush(entry){
 // @param entry:SLooperEntry 节点
 //==========================================================
 MO.TLooper_innerRemove = function TLooper_innerRemove(entry){
+   var o = this;
    // 删除入口
    var prior = entry.prior;
    var next = entry.next;
    prior.next = next;
    next.prior = prior;
    // 设置数据
-   this._count--;
-   if(this._count > 0){
-      this._current = next;
+   o._count--;
+   if(o._count > 0){
+      o._current = next;
    }else{
-      this._current = null;
+      o._current = null;
    }
    // 释放入口
    MO.Memory.free(entry);
@@ -88,13 +90,14 @@ MO.TLooper_innerRemove = function TLooper_innerRemove(entry){
 // @return Object 对象
 //==========================================================
 MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
+   var o = this;
    var value = null;
-   if(this._count > 0){
+   if(o._count > 0){
       // 获得内容
-      var current = this._current;
+      var current = o._current;
       value = current.value;
       // 移除节点
-      this.innerRemove(current);
+      o.innerRemove(current);
    }
    return value;
 }
@@ -106,20 +109,21 @@ MO.TLooper_innerRemoveCurrent = function TLooper_innerRemoveCurrent(){
 // @param value:Object 对象
 //==========================================================
 MO.TLooper_innerRemoveValue = function TLooper_innerRemoveValue(value){
-   if(this._count > 0){
+   var o = this;
+   if(o._count > 0){
       // 删除首个对象
-      if(this._current.value == value){
-         this.innerRemoveCurrent();
+      if(o._current.value == value){
+         o.innerRemoveCurrent();
          return;
       }
       // 删除其他对象
-      var current = this._current;
+      var current = o._current;
       var entry = current.next;
       while(entry != current){
          if(entry.value == value){
-            this.innerRemove(entry);
+            o.innerRemove(entry);
             // 重置到原始位置
-            this._current = current;
+            o._current = current;
             return;
          }
          entry = entry.next;
@@ -153,7 +157,8 @@ MO.TLooper_count = function TLooper_count(){
 // @method
 //==========================================================
 MO.TLooper_record = function TLooper_record(){
-   this._recordCount = this._count;
+   var o = this;
+   o._recordCount = o._count;
 }
 
 //==========================================================
@@ -173,9 +178,10 @@ MO.TLooper_unrecord = function TLooper_unrecord(v){
 // @return Boolean 是否含有
 //==========================================================
 MO.TLooper_contains = function TLooper_contains(value){
-   if(this._current){
-      var entry = this._current;
-      var count = this._count;
+   var o = this;
+   if(o._current){
+      var entry = o._current;
+      var count = o._count;
       for(var i = 0; i < count; i++){
          if(entry.value == value){
             return true;
@@ -204,19 +210,20 @@ MO.TLooper_current = function TLooper_current(){
 // @return Object 对象
 //==========================================================
 MO.TLooper_next = function TLooper_next(){
+   var o = this;
    // 移动当前点
-   if(this._current){
-      this._current = this._current.next;
+   if(o._current){
+      o._current = o._current.next;
    }
    // 检查刻录点（当只有一个元素时，刻录点无效）
-   var c = this._recordCount;
-   if(c > 0){
-      this._recordCount--;
-   }else if(c == 0){
+   var count = o._recordCount;
+   if(count > 0){
+      o._recordCount--;
+   }else if(count == 0){
       return null;
    }
    // 返回内容
-   return this._current ? this._current.value : null;
+   return o._current ? o._current.value : null;
 }
 
 //==========================================================
@@ -238,8 +245,9 @@ MO.TLooper_push = function TLooper_push(value){
 // @param value:Object 对象
 //==========================================================
 MO.TLooper_pushUnique = function TLooper_pushUnique(value){
-   if(!this.contains(value)){
-      this.push(value);
+   var o = this;
+   if(!o.contains(value)){
+      o.push(value);
    }
 }
 
@@ -269,8 +277,9 @@ MO.TLooper_remove = function TLooper_remove(p){
 // @method
 //==========================================================
 MO.TLooper_clear = function TLooper_clear(){
+   var o = this;
    // 释放所有节点
-   var entry = this._current;
+   var entry = o._current;
    if(entry){
       entry.prior.next = null;
       while(entry){
@@ -280,8 +289,8 @@ MO.TLooper_clear = function TLooper_clear(){
       }
    }
    // 释放属性
-   this._count = 0;
-   this._current = null;
+   o._count = 0;
+   o._current = null;
 }
 
 //==========================================================
@@ -300,15 +309,16 @@ MO.TLooper_dispose = function TLooper_dispose(){
 // @return String 运行字符串
 //==========================================================
 MO.TLooper_dump = function TLooper_dump(){
-   var count = this._count;
-   var info = new MO.TString();
-   info.append(MO.Class.name(this), ': ', count);
+   var o = this;
+   var count = o._count;
+   var result = new MO.TString();
+   result.append(MO.Class.name(this), ': ', count);
    if(count > 0){
-      var entry = this._current;
+      var entry = o._current;
       for(var i = 0; i < count; i++){
-         info.append(' [', entry.value, ']');
+         result.append(' [', entry.value, ']');
          entry = entry.next;
       }
    }
-   return info.flush();
+   return result.flush();
 }

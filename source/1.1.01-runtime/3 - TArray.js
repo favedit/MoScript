@@ -77,26 +77,26 @@ MO.TArray_memory = function TArray_memory(){
 // <T>判断数组是否含有指定的对象。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param value:Object 对象
 // @return Boolean 是否含有
 //==========================================================
-MO.TArray_contains = function TArray_contains(v){
-   return this.indexOf(v) != -1;
+MO.TArray_contains = function TArray_contains(value){
+   return this.indexOf(value) != -1;
 }
 
 //==========================================================
 // <T>查找指定对象在数组中的索引位置，不存在则返回-1。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param value:Object 对象
 // @return Integer 索引位置
 //==========================================================
-MO.TArray_indexOf = function TArray_indexOf(v){
+MO.TArray_indexOf = function TArray_indexOf(value){
    var o = this;
-   var c = o._length;
-   for(var n = 0; n < c; n++){
-      if(o._memory[n] == v){
-         return n;
+   var count = o._length;
+   for(var i = 0; i < count; i++){
+      if(o._memory[i] == value){
+         return i;
       }
    }
    return -1;
@@ -106,11 +106,11 @@ MO.TArray_indexOf = function TArray_indexOf(v){
 // <T>取得指定索引对应的对象。</T>
 //
 // @method
-// @param n:index:Integer 索引位置
+// @param index:Integer 索引位置
 // @return 当前位置上的对象
 //==========================================================
-MO.TArray_get = function TArray_get(n){
-   return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
+MO.TArray_get = function TArray_get(index){
+   return ((index >= 0) && (index < this._length)) ? this._memory[index] : null;
 }
 
 //==========================================================
@@ -121,8 +121,9 @@ MO.TArray_get = function TArray_get(n){
 // @param value:Object 对象
 //==========================================================
 MO.TArray_set = function TArray_set(index, value){
-   if ((index >= 0) && (index < this._length)) {
-      this._memory[index] = value;
+   var o = this;
+   if ((index >= 0) && (index < o._length)) {
+      o._memory[index] = value;
    }
 }
 
@@ -133,9 +134,10 @@ MO.TArray_set = function TArray_set(index, value){
 // @param values:Object 对象
 //==========================================================
 MO.TArray_push = function TArray_push(){
+   var o = this;
    var count = arguments.length;
    for(var i = 0; i < count; i++){
-      this._memory[this._length++] = arguments[i];
+      o._memory[o._length++] = arguments[i];
    }
 }
 
@@ -143,14 +145,15 @@ MO.TArray_push = function TArray_push(){
 // <T>在数组中交换两个索引对应的对象。</T>
 //
 // @method
-// @param l:left:Integer 第一个对象的索引值
-// @param r:right:Integer 第二个对象的索引值
+// @param left:Integer 第一个对象的索引值
+// @param right:Integer 第二个对象的索引值
 //==========================================================
-MO.TArray_swap = function TArray_swap(l, r){
-   if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
-      var v = this._memory[l];
-      this._memory[l] = this._memory[r];
-      this._memory[r] = v;
+MO.TArray_swap = function TArray_swap(left, right){
+   var o = this;
+   if((left >= 0) && (left < o._length) && (right >= 0) && (right < o._length) && (left != right)){
+      var value = o._memory[left];
+      o._memory[left] = this._memory[right];
+      o._memory[right] = value;
    }
 }
 
@@ -167,41 +170,40 @@ MO.TArray_sort = function TArray_sort(){
 // <T>移除指定索引的存储对象。</T>
 //
 // @method
-// @param i:index:Integer 索引位置
+// @param index:Integer 索引位置
 // @return Object 被删除的对象
 //==========================================================
-MO.TArray_erase = function TArray_erase(i){
-   var v = null;
-   if((i >= 0) && (i < c)){
-      var o = this;
-      o._length--;
-      v = o._memory[i];
-      for(var n = i; n < c; n++){
-         o._memory[n] = o._memory[n + 1];
+MO.TArray_erase = function TArray_erase(index){
+   var o = this;
+   var value = null;
+   var count = o._count;
+   if((index >= 0) && (index < count)){
+      value = o._memory[index];
+      for(var i = index; i < count; i++){
+         o._memory[i] = o._memory[i + 1];
       }
+      o._length--;
    }
-   return v;
+   return value;
 }
 
 //==========================================================
 // <T>移除指定对象的存储对象。</T>
 //
 // @method
-// @param v:value:Object 指定对象
+// @param value:Object 指定对象
 //==========================================================
-MO.TArray_remove = function TArray_remove(v){
-   if(v != null){
-      var o = this;
-      var n = 0;
-      var c = o._length;
-      for(var i = n; i < c; i++){
-         if(o._memory[i] != v){
-            o._memory[n++] = o._memory[i];
-         }
+MO.TArray_remove = function TArray_remove(value){
+   var o = this;
+   var index = 0;
+   var memory = o._memory;
+   var count = o._length;
+   for(var i = 0; i < count; i++){
+      if(memory[i] != value){
+         memory[index++] = memory[i];
       }
-      o._length = n;
    }
-   return v;
+   o._length = index;
 }
 
 //==========================================================
@@ -211,15 +213,16 @@ MO.TArray_remove = function TArray_remove(v){
 //==========================================================
 MO.TArray_compress = function TArray_compress(){
    var o = this;
-   var c = o._length;
-   var l = 0;
-   for(var n = 0; n < c; n++){
-      var v = o._memory[n];
-      if(v != null){
-         o._memory[l++] = v;
+   var index = 0;
+   var count = o._length;
+   var memory = o._memory;
+   for(var i = 0; i < count; i++){
+      var value = memory[i];
+      if(value != null){
+         memory[index++] = value;
       }
    }
-   o._length = l;
+   o._length = index;
 }
 
 //==========================================================
@@ -246,18 +249,18 @@ MO.TArray_dispose = function TArray_dispose(){
 // <T>获得数组的内部信息。</T>
 //
 // @method
-// @param d:dump:TString 输出字符串
-// @return TString 含有数组内部信息的字符串
+// @return String 信息字符串
 //==========================================================
 MO.TArray_dump = function TArray_dump(){
    var o = this;
-   var r = new TString();
-   var c = o._length;
-   r.append(MO.Runtime.className(o), ':', c);
-   if(c > 0){
-      for(var i = 0; i < c; i++){
-         r.append(' [', o._memory[i], ']');
+   var result = new MO.TString();
+   var count = o._length;
+   result.append(MO.Runtime.className(o), ':', count);
+   if(count > 0){
+      var memory = o._memory;
+      for(var i = 0; i < count; i++){
+         result.append(' [', memory[i], ']');
       }
    }
-   return r.flush();
+   return result.flush();
 }

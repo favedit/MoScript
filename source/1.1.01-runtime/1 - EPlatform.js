@@ -7,9 +7,11 @@
 //==========================================================
 MO.EPlatform = new function EPlatform(){
    var o = this;
+   // @member 未知
+   o.Unknown = 0;
    // @member PC平台
-   o.Pc     = 'pc';
+   o.Pc      = 1;
    // @member 移动平台
-   o.Mobile = 'mobile';
+   o.Mobile  = 2;
    return o;
 }

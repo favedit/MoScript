@@ -94,8 +94,9 @@ MO.TObjects_contains = function TObjects_contains(value){
 // @return Integer 索引位置
 //===========================================================
 MO.TObjects_indexOf = function TObjects_indexOf(value){
-   var count = this._count;
-   var items = this._items;
+   var o = this;
+   var count = o._count;
+   var items = o._items;
    for(var i = 0; i < count; i++){
       if(items[i] == value){
          return i;
@@ -165,8 +166,10 @@ MO.TObjects_setAt = function TObjects_setAt(index, value){
 // @param value:Object 对象
 //===========================================================
 MO.TObjects_set = function TObjects_set(index, value){
-   if((index >= 0) && (index < this._count)){
-      this._items[index] = value;
+   var o = this;
+   var items = o._items;
+   if((index >= 0) && (index < o._count)){
+      items[index] = value;
    }
 }
 
@@ -178,9 +181,11 @@ MO.TObjects_set = function TObjects_set(index, value){
 //===========================================================
 MO.TObjects_assign = function TObjects_assign(values){
    var o = this;
-   var count = o._count = values._count;
+   var items = o._items;
+   var count = o._count = values.count();
+   var valueItems = values.items();
    for(var i = 0; i < count; i++){
-      o._items[i] = values._items[i];
+      items[i] = valueItems[i];
    }
 }
 
@@ -192,7 +197,7 @@ MO.TObjects_assign = function TObjects_assign(values){
 //===========================================================
 MO.TObjects_append = function TObjects_append(values){
    var o = this;
-   var count = values._count;
+   var count = values.count();
    for(var i = 0; i < count; i++){
       o.push(values.at(i));
    }
@@ -208,11 +213,12 @@ MO.TObjects_append = function TObjects_append(values){
 MO.TObjects_insert = function TObjects_insert(index, value){
    var o = this;
    var count = o._count;
+   var items = o._items;
    if((index >= 0) && (index <= count)){
       for(var i = count; i > index; i--){
-         o._items[i] = o._items[i - 1];
+         items[i] = items[i - 1];
       }
-      o._items[index] = value;
+      items[index] = value;
       o._count++;
    }
 }
@@ -244,8 +250,9 @@ MO.TObjects_unshift = function TObjects_unshift(value){
 // @return Object 对象
 //===========================================================
 MO.TObjects_pop = function TObjects_pop(){
-   if(this._count){
-      return this._items[--this._count];
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
    }
 }
 
@@ -257,8 +264,9 @@ MO.TObjects_pop = function TObjects_pop(){
 // @return Integer 索引值
 //===========================================================
 MO.TObjects_push = function TObjects_push(value){
-   var index = this._count++;
-   this._items[index] = value;
+   var o = this;
+   var index = o._count++;
+   o._items[index] = value;
    return index;
 }
 
@@ -270,15 +278,17 @@ MO.TObjects_push = function TObjects_push(value){
 // @return Integer 索引值
 //===========================================================
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
+   var o = this;
+   var items = o._items;
    // 查询存在性
-   for(var i = this._count - 1; i >= 0; i--){
-      if(this._items[i] == value){
+   for(var i = o._count - 1; i >= 0; i--){
+      if(items[i] == value){
          return i;
       }
    }
    // 追加到尾部
-   var index = this._count++;
-   this._items[index] = value;
+   var index = o._count++;
+   items[index] = value;
    return index;
 }
 
@@ -290,8 +300,9 @@ MO.TObjects_pushUnique = function TObjects_pushUnique(value){
 // @param right:Integer 第二个对象的索引值
 //===========================================================
 MO.TObjects_swap = function TObjects_swap(left, right){
-   if((left >= 0) && (left < this._count) && (right >= 0) && (right < this._count) && (left != right)){
-      var items = this._items;
+   var o = this;
+   if((left >= 0) && (left < o._count) && (right >= 0) && (right < o._count) && (left != right)){
+      var items = o._items;
       var value = items[left];
       items[left] = items[right];
       items[right] = value;
@@ -305,9 +316,10 @@ MO.TObjects_swap = function TObjects_swap(left, right){
 // @param callback:Function 排序函数
 //===========================================================
 MO.TObjects_sort = function TObjects_sort(callback){
-   var items = this._items;
-   if(items.length != this._count){
-      items.length = this._count;
+   var o = this;
+   var items = o._items;
+   if(items.length != o._count){
+      items.length = o._count;
    }
    // 排序处理
    items.sort(callback);
@@ -324,9 +336,9 @@ MO.TObjects_erase = function TObjects_erase(index){
    var o = this;
    var value = null;
    if((index >= 0) && (index < o._count)){
-      value = o._items[index];
-      var count = --o._count;
       var items = o._items;
+      value = items[index];
+      var count = --o._count;
       for(var i = index; i < count; i++){
          items[i] = items[i+1];
       }
@@ -379,8 +391,9 @@ MO.TObjects_clear = function TObjects_clear(){
 //===========================================================
 MO.TObjects_dispose = function TObjects_dispose(){
    var o = this;
-   for(var name in o._items){
-      o._items[name] = null;
+   var items = o._items;
+   for(var name in items){
+      items[name] = null;
    }
    o._count = 0;
    o._items = null;
@@ -393,13 +406,14 @@ MO.TObjects_dispose = function TObjects_dispose(){
 // @return String 运行字符串
 //===========================================================
 MO.TObjects_dump = function TObjects_dump(){
-   var count = this._count;
-   var info = new MO.TString();
-   info.append(MO.Runtime.className(o), ':', count);
+   var o = this;
+   var count = othis._count;
+   var result = new MO.TString();
+   result.append(MO.Runtime.className(o), ':', count);
    if(count){
       for(var i = 0; i < count; i++){
-         info.append(' [', this._items[i], ']');
+         result.append(' [', o._items[i], ']');
       }
    }
-   return info.flush();
+   return result.flush();
 }

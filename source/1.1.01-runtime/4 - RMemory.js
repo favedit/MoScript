@@ -20,11 +20,12 @@ MO.RMemory = function RMemory(){
 // @return 节点
 //============================================================
 MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
+   var o = this;
    var entry = null;
-   var unused = this._entryUnused;
+   var unused = o._entryUnused;
    if(unused){
       entry = unused;
-      this._entryUnused = unused.next;
+      o._entryUnused = unused.next;
    }else{
       entry = new MO.SMemoryPoolEntry();
    }
@@ -37,9 +38,10 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 // @param entry 节点
 //============================================================
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
+   var o = this;
    MO.Assert.debugNotNull(entry);
-   entry.next = this._entryUnused;
-   this._entryUnused = entry;
+   entry.next = o._entryUnused;
+   o._entryUnused = entry;
 }
 
 //==========================================================
@@ -50,11 +52,12 @@ MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
 // @return Object 实例
 //==========================================================
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
+   var o = this;
    // 获得类名
    MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    // 获得缓冲池
-   var pools = this._pools;
+   var pools = o._pools;
    var pool = pools[className];
    if(!pool){
       pool = new MO.TMemoryPool();
@@ -91,6 +94,7 @@ MO.RMemory.prototype.free = function RMemory_free(value){
 MO.RMemory.prototype.refresh = function RMemory_refresh(){
    CollectGarbage();
 }
+
 //..........................................................
 // 实例化内容
 MO.Memory = new MO.RMemory();

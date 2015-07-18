@@ -7,15 +7,17 @@
 //==========================================================
 MO.ELogger = new function ELogger(){
    var o = this;
+   // @member 未知
+   o.Unknown = 0;
    // @member 调试模式
-   o.Debug = 0;
+   o.Debug   = 1;
    // @member 调试模式
-   o.Info  = 1;
+   o.Info    = 2;
    // @member 调试模式
-   o.Warn  = 2;
+   o.Warn    = 3;
    // @member 调试模式
-   o.Error = 3;
+   o.Error   = 4;
    // @member 调试模式
-   o.Fatal = 4;
+   o.Fatal   = 5;
    return o;
 }

@@ -46,8 +46,9 @@ MO.TString_isEmpty = function TString_isEmpty(){
 // @param values:String... 字符串集合
 //==========================================================
 MO.TString_assign = function TString_assign(){
-   this.clear();
-   this.appendArray(arguments, 0, arguments.length);
+   var o = this;
+   o.clear();
+   o.appendArray(arguments, 0, arguments.length);
 }
 
 //==========================================================
@@ -82,10 +83,12 @@ MO.TString_appendIf = function TString_appendIf(flag){
 // @param count:Integer 总数
 //==========================================================
 MO.TString_appendArray = function TString_appendArray(values, offset, count){
+   var o = this;
+   var memory = o._memory;
    for(var i = 0; i < count; i++){
       var value = values[offset++];
       if(value != null){
-         this._memory[this._count++] = value;
+         memory[o._count++] = value;
       }
    }
 }
@@ -98,8 +101,10 @@ MO.TString_appendArray = function TString_appendArray(values, offset, count){
 // @param count:Integer 次数
 //==========================================================
 MO.TString_appendRepeat = function TString_appendRepeat(value, count){
+   var o = this;
+   var memory = o._memory;
    for(var i = 0; i < count; i++){
-      this._memory[this._count++] = value;
+      memory[o._count++] = value;
    }
 }
 
@@ -110,8 +115,9 @@ MO.TString_appendRepeat = function TString_appendRepeat(value, count){
 // @param values:String... 字符串
 //==========================================================
 MO.TString_appendLine = function TString_appendLine(){
-   this.appendArray(arguments, 0, arguments.length);
-   this._memory[this._count++] = '\r\n';
+   var o = this;
+   o.appendArray(arguments, 0, arguments.length);
+   o._memory[o._count++] = '\r\n';
 }
 
 //==========================================================
@@ -141,8 +147,9 @@ MO.TString_clear = function TString_clear(){
 // @return String 字符串
 //==========================================================
 MO.TString_toString = function TString_toString(){
-   var memory = this._memory;
-   if(memory.length != this._count){
+   var o = this;
+   var memory = o._memory;
+   if(memory.length != o._count){
       memory = memory.slice(0, this._count);
    }
    return memory.join('');
@@ -155,8 +162,9 @@ MO.TString_toString = function TString_toString(){
 // @return String 字符串
 //==========================================================
 MO.TString_flush = function TString_flush(){
-   var result = this.toString();
-   this.dispose();
+   var o = this;
+   var result = o.toString();
+   o.dispose();
    return result;
 }
 
@@ -166,15 +174,16 @@ MO.TString_flush = function TString_flush(){
 // @method
 //==========================================================
 MO.TString_dispose = function TString_dispose(){
+   var o = this;
    // 清空属性
-   this._count = 0;
+   o._count = 0;
    // 清空内存
-   var memory = this._memory;
+   var memory = o._memory;
    if(memory){
       for(var i = memory.length - 1; i >= 0; i--){
          memory[i] = null;
       }
-      this._memory = null;
+      o._memory = null;
    }
 }
 

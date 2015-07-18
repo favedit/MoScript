@@ -53,7 +53,7 @@ MO.TMap = function TMap(){
 // @return Boolean 是否为空
 //==========================================================
 MO.TMap_isEmpty = function TMap_isEmpty(){
-   return (this._count == 0);
+   return this._count == 0;
 }
 
 //==========================================================
@@ -315,12 +315,14 @@ MO.TMap_insert = function TMap_insert(index, name, value){
    var o = this;
    var count = o._count;
    if((index >= 0) && (index <= count)){
+      var names = o._names;
+      var values = o._values;
       for(var i = count; i > index; i--){
-         o._names[i] = o._names[i - 1];
-         o._values[i] = o._values[i - 1];
+         names[i] = names[i - 1];
+         values[i] = values[i - 1];
       }
-      o._names[index] = name;
-      o._values[index] = value;
+      names[index] = name;
+      values[index] = value;
       o._count++;
       o.rebuild();
    }
@@ -338,10 +340,12 @@ MO.TMap_remove = function TMap_remove(index){
    var value = null;
    var count = o._count;
    if((index >= 0) && (index < count)){
-      value = o._values[index];
+      var names = o._names;
+      var values = o._values;
+      value = values[index];
       for(var i = index; i < count; i++){
-         o._names[i] = o._names[i + 1];
-         o._values[i] = o._values[i + 1];
+         names[i] = names[i + 1];
+         values[i] = values[i + 1];
       }
       o._count--;
       o.rebuild();
@@ -375,12 +379,14 @@ MO.TMap_removeValue = function TMap_removeValue(value){
    var o = this;
    var index = 0;
    var count = o._count;
+   var names = o._names;
+   var values = o._values;
    for(var i = 0; i < count; i++){
-      var find = o._values[i];
+      var find = values[i];
       if(find != value){
          if(index != i){
-            o._names[index] = o._names[i];
-            o._values[index] = find;
+            names[index] = names[i];
+            values[index] = find;
          }
          index++;
       }
@@ -403,8 +409,9 @@ MO.TMap_rebuild = function TMap_rebuild(){
    }
    // 重建对照表数据
    var count = o._count;
+   var names = o._names;
    for(var i = 0; i < count; i++){
-      var code = o._names[i].toLowerCase();
+      var code = names[i].toLowerCase();
       table[code] = i;
    }
 }
@@ -418,8 +425,9 @@ MO.TMap_clear = function TMap_clear(){
    var o = this;
    o._count = 0;
    // 清除对照表数据
-   for(var name in o._table){
-      delete o._table[name];
+   var table = o._table;
+   for(var name in table){
+      delete table[name];
    }
 }
 
@@ -431,14 +439,6 @@ MO.TMap_clear = function TMap_clear(){
 //==========================================================
 MO.TMap_toString = function TMap_toString(){
    return this.dump().toString();
-}
-
-//==========================================================
-// <T>释放所有内容。</T>
-//
-// @method
-//==========================================================
-MO.TMap_disposeAll = function TMap_disposeAll(){
 }
 
 //==========================================================
@@ -495,15 +495,17 @@ MO.TMap_dispose = function TMap_dispose(flag){
 //==========================================================
 MO.TMap_dump = function TMap_dump(){
    var o = this;
-   var info = new MO.TString();
+   var result = new MO.TString();
    var count = o._count;
-   info.appendLine(MO.Runtime.className(o), ': ', count);
+   var names = o._names;
+   var values = o._values;
+   result.appendLine(MO.Runtime.className(o), ': ', count);
    if(count > 0){
-      info.append(' {');
+      result.append(' {');
       for(var i = 0; i < count; i++){
-         info.appendLine(o._names[i], '=[', o._values[i], ']');
+         result.appendLine(names[i], '=[', values[i], ']');
       }
-      info.append('}');
+      result.append('}');
    }
-   return info.flush();
+   return result.flush();
 }

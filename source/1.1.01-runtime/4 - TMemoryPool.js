@@ -32,19 +32,20 @@ MO.TMemoryPool = function TMemoryPool(){
 // @return FObject 对象
 //==========================================================
 MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
+   var o = this;
    var value = null;
-   var unused = this._unused;
+   var unused = o._unused;
    if(unused){
       value = unused.value;
-      this._unused = unused.next;
+      o._unused = unused.next;
       // 释放节点
       MO.Memory.entryFree(unused);
    }else{
-      value = new this._constructor();
-      value.__pool = this;
-      this._createCount++;
+      value = new o._constructor();
+      value.__pool = o;
+      o._createCount++;
    }
-   this._allocCount++;
+   o._allocCount++;
    return value;
 }
 
@@ -55,12 +56,13 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 // @param FObject 对象
 //==========================================================
 MO.TMemoryPool_free = function TMemoryPool_free(value){
+   var o = this;
    MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
-   entry.next = this._unused;
-   this._unused = entry;
-   this._freeCount++;
+   entry.next = o._unused;
+   o._unused = entry;
+   o._freeCount++;
 }
 
 //==========================================================
@@ -86,10 +88,11 @@ MO.TMemoryPool_dispose = function TMemoryPool_dispose(){
 // @return String 运行信息
 //==========================================================
 MO.TMemoryPool_dump = function TMemoryPool_dump(){
-   var info = new MO.TString();
-   info.append('Pool:');
-   info.append('create=', this._createCount);
-   info.append(', alloc=', this._allocCount);
-   info.append(', free=', this._freeCount);
-   return info.flush();
+   var o = this;
+   var result = new MO.TString();
+   result.append('Pool:');
+   result.append('create=', o._createCount);
+   result.append(', alloc=', o._allocCount);
+   result.append(', free=', o._freeCount);
+   return result.flush();
 }

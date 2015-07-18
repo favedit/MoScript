@@ -45,6 +45,16 @@ MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
 }
 
 //==========================================================
+// <T>获得运行模式。</T>
+//
+// @method
+// @return EProcess 运行模式
+//==========================================================
+MO.RRuntime.prototype.processCd = function RRuntime_processCd(){
+   return this._processCd;
+}
+
+//==========================================================
 // <T>设置运行模式。</T>
 //
 // @method
@@ -72,6 +82,16 @@ MO.RRuntime.prototype.isPlatformPc = function RRuntime_isPlatformPc(){
 //==========================================================
 MO.RRuntime.prototype.isPlatformMobile = function RRuntime_isPlatformMobile(){
    return this._platformCd == MO.EPlatform.Mobile;
+}
+
+//==========================================================
+// <T>获得平台模式。</T>
+//
+// @method
+// @return EPlatform 平台模式
+//==========================================================
+MO.RRuntime.prototype.platformCd = function RRuntime_platformCd(){
+   return this._platformCd;
 }
 
 //==========================================================

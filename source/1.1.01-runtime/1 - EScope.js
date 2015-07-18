@@ -7,11 +7,13 @@
 //==========================================================
 MO.EScope = new function EScope(){
    var o = this;
-   // @member 本地空间
+   // @member 未知
+   o.Unknown = 0;
+   // @member 本地范围
    o.Local   = 1;
-   // @member 页面内共享空间
+   // @member 会话范围
    o.Session = 2;
-   // @member 全局空间
+   // @member 全局范围
    o.Global  = 3;
    return o;
 }
