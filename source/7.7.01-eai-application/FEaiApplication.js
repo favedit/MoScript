@@ -25,11 +25,19 @@ MO.FEaiApplication = function FEaiApplication(o){
 //==========================================================
 MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    var o = this;
+   // 检测是否支持HTML5
+   if(!MO.Window.Browser.supportHtml5()){
+      var event = new MO.SEvent();
+      MO.Window.processDeviceError(event);
+      event.dispose();
+      return false;
+   }
+   // 设置效果器
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
-   // 选取效果器
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+   return true;
 }
 
 //==========================================================

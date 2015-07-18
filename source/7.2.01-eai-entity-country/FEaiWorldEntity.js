@@ -12,8 +12,9 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o._data          = MO.Class.register(o, new MO.AGetSet('_data'));
    o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
    // @attribute
-   o._worldFaceShape    = MO.Class.register(o, new MO.AGetter('_worldFaceShape'));
-   o._worldBorderShape  = MO.Class.register(o, new MO.AGetter('_worldBorderShape'));
+   o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
+   o._faceShape     = MO.Class.register(o, new MO.AGetter('_faceShape'));
+   o._borderShape   = MO.Class.register(o, new MO.AGetter('_borderShape'));
    // @attribute
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
@@ -22,6 +23,8 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    //..........................................................
    // @method
    o.construct      = MO.FEaiWorldEntity_construct;
+   // @method
+   o.setup          = MO.FEaiWorldEntity_setup;
    // @method
    o.unserialize    = MO.FEaiWorldEntity_unserialize;
    o.load           = MO.FEaiWorldEntity_load;
@@ -38,8 +41,63 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
 MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
-   // 创建属性
+   // 设置属性
    o._countries = new MO.TObjects();
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
+   var o = this;
+   // 创建球型外壳
+   var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
+   sphere.linkGraphicContext(o);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(0.98);
+   sphere.matrix().update();
+   var info = sphere.material().info();
+   info.optionAlpha = true;
+   info.optionDepth = true;
+   info.alphaRate = 0.6;
+   info.ambientColor.setHex('#128AF9');
+   info.ambientColor.alpha = 0.4
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   // 创建球型内部
+   var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
+   sphere.linkGraphicContext(o);
+   sphere.setSplitCount(16);
+   sphere.setup();
+   sphere.matrix().setScaleAll(0.96);
+   sphere.matrix().update();
+   var info = sphere.material().info();
+   info.optionAlpha = false;
+   info.ambientColor.setHex('#128AF9');
+   info.ambientColor.alpha = 0.4
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   // 创建球型外壳大气
+   var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
+   sphere.linkGraphicContext(o);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(1.2);
+   sphere.matrix().update();
+   var info = sphere.material().info();
+   info.optionAlpha = true;
+   info.optionDepth = false;
+   info.alphaRate = 0.05;
+   info.ambientColor.setHex('#128AF9');
+   info.ambientColor.alpha = 0.4
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
 }
 
 //==========================================================
@@ -62,9 +120,9 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    }
    //..........................................................
    // 创建动态形状
-   var faceShape = o._worldFaceShape = MO.Class.create(MO.FE3dDynamicShape);
+   var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape.linkGraphicContext(o);
-   var borderShape = o._worldBorderShape = MO.Class.create(MO.FE3dDynamicShape);
+   var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape.linkGraphicContext(o);
    //..........................................................
    // 合并省份处理

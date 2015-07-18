@@ -57,9 +57,13 @@
          MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.201.170');
          MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
          // 设置应用
+   try{
          var application = MO.Desktop.initialize(MO.FEaiChartApplication);
          application.setSceneCode(MO.EEaiScene.ChartLive);
          application.setup(document.body);
+   }catch(e){
+         alert(e.message);
+   }
       }
    </script>
 </head>

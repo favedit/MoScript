@@ -219,8 +219,8 @@ MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
       // 设置投影
       var camera = stage.region().camera();
       var projection = camera.projection();
-      projection.size().assign(o._size);
       projection.setAngle(80);
+      projection.size().assign(o._size);
       projection.update();
       // 设置相机
       camera.position().set(0, 0, -10);

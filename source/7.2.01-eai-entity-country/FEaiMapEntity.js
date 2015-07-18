@@ -9,6 +9,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @attribute
+   o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
    o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
@@ -30,6 +31,8 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o.findCityByCard        = MO.FEaiMapEntity_findCityByCard;
    o.pushProvince          = MO.FEaiMapEntity_pushProvince;
    o.upload                = MO.FEaiMapEntity_upload;
+   o.showCountry           = MO.FEaiMapEntity_showCountry;
+   o.showWorld             = MO.FEaiMapEntity_showWorld;
    o.process               = MO.FEaiMapEntity_process;
    o.reset                 = MO.FEaiMapEntity_reset;
    // @method
@@ -73,10 +76,8 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    // 创建动态形状
    var faceShape = o._provinceFaceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape.linkGraphicContext(o);
-   //o._countryDisplay.push(faceShape);
    var borderShape = o._provinceBorderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape.linkGraphicContext(o);
-   //o._countryBorderDisplay.push(borderShape);
 }
 
 //==========================================================
@@ -197,6 +198,32 @@ MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
    if(changed){
       o.upload();
    }
+}
+
+//==========================================================
+// <T>显示国家地图。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(){
+   var o = this;
+   o._countryDisplay.push(o._provinceFaceShape);
+   o._countryBorderDisplay.push(o._provinceBorderShape);
+}
+
+//==========================================================
+// <T>显示世界地图。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_showWorld = function FEaiMapEntity_showWorld(){
+   var o = this;
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).worldEntity();
+   o._countryDisplay.push(worldEntity.sphere());
+   o._countryDisplay.push(worldEntity._sphere2);
+   o._countryDisplay.push(worldEntity._sphere3);
+   o._countryDisplay.push(worldEntity.faceShape());
+   o._countryBorderDisplay.push(worldEntity.borderShape());
 }
 
 //==========================================================

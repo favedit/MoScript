@@ -189,6 +189,7 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             if (hLoading) {
                document.body.removeChild(hLoading);
             }
+            o._mapEntity.showCountry();
             o.switchPlay(true);
             o.processLoaded();
             o._statusStart = true;

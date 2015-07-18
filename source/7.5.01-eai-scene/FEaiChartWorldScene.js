@@ -31,6 +31,12 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   // @attribute
+   o._operationFlag          = false;
+   o._operationPoint         = null;
+   o._operationRotationX     = 0;
+   o._operationRotationY     = 0;
+   o._rotationX              = 0;
    o._rotationY              = 0;
    // @attribute
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
@@ -39,13 +45,16 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
    o.onProcess               = MO.FEaiChartWorldScene_onProcess;
+   o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
+   o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
+   o.onOperationUp           = MO.FEaiChartWorldScene_onOperationUp;
    o.onSwitchProcess         = MO.FEaiChartWorldScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartWorldScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.testReady               = MO.FEaiChartWorldScene_testReady;
-   // @method
+   o.construct               = MO.FEaiChartWorldScene_construct;
    o.setup                   = MO.FEaiChartWorldScene_setup;
+   o.testReady               = MO.FEaiChartWorldScene_testReady;
    o.showParticle            = MO.FEaiChartWorldScene_showParticle;
    o.showFace                = MO.FEaiChartWorldScene_showFace;
    o.fixMatrix               = MO.FEaiChartWorldScene_fixMatrix;
@@ -62,16 +71,8 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
 //==========================================================
 MO.FEaiChartWorldScene_onLoadWorld = function FEaiChartWorldScene_onLoadWorld(event) {
    var o = this;
-   var worldEntity = MO.Console.find(MO.FEaiEntityConsole)._worldEntity;
-   var mapEntity = o._mapEntity;
-   mapEntity._countryDisplay.push(worldEntity._worldFaceShape);
-   mapEntity._countryBorderDisplay.push(worldEntity._worldBorderShape);
-   //var matrix = mapEntity._countryDisplay.matrix();
-   //matrix.setScaleAll(0.1);
-   //matrix.update();
-   //var matrix = mapEntity._countryBorderDisplay.matrix();
-   //matrix.setScaleAll(0.1);
-   //matrix.update();
+   //o._mapEntity.showCountry();
+   o._mapEntity.showWorld();
 }
 
 //==========================================================
@@ -195,6 +196,47 @@ MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
 }
 
 //==========================================================
+// <T>操作落下处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartWorldScene_onOperationDown = function FEaiChartWorldScene_onOperationDown(event){
+   var o = this;
+   o._operationFlag = true;
+   o._operationRotationX = o._rotationX;
+   o._operationRotationY = o._rotationY;
+   o._operationPoint.set(event.x, event.y);
+}
+
+//==========================================================
+// <T>操作移动处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartWorldScene_onOperationMove = function FEaiChartWorldScene_onOperationMove(event){
+   var o = this;
+   if(o._operationFlag){
+      var cx = event.x - o._operationPoint.x;
+      var cy = event.y - o._operationPoint.y;
+      o._rotationX = o._operationRotationX - cy * 0.001;
+      o._rotationY = o._operationRotationY - cx * 0.002;
+   }
+}
+
+//==========================================================
+// <T>操作抬起处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartWorldScene_onOperationUp = function FEaiChartWorldScene_onOperationUp(event){
+   var o = this;
+   o._operationFlag = false;
+}
+
+//==========================================================
 // <T>切换过程处理。</T>
 //
 // @method
@@ -215,20 +257,15 @@ MO.FEaiChartWorldScene_onSwitchComplete = function FEaiChartWorldScene_onSwitchC
 }
 
 //==========================================================
-// <T>点击暂停处理。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
+MO.FEaiChartWorldScene_construct = function FEaiChartWorldScene_construct(){
    var o = this;
-   if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
-      o._ready = true;
-   }
-   return o._ready;
+   o.__base.FEaiChartScene.construct.call(o);
+   // 设置属性
+   o._operationPoint = new MO.SPoint2();
 }
 
 //==========================================================
@@ -285,6 +322,19 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
+   // 创建相机
+   var camera = MO.Class.create(MO.FE3dOrthoCamera);
+   camera.position().set(0, 0, -100);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.setZnear(1);
+   projection.setZfar(1000);
+   projection.update();
+   // 设置桌面
+   var region = o._activeStage.region();
+   region.selectCamera(camera);
+   //..........................................................
    // 创建粒子
    //var context = o._graphicContext;
    //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
@@ -297,6 +347,23 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    // 加载世界数据
    MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
    MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
+}
+
+//==========================================================
+// <T>点击暂停处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._countryReady){
+         return false;
+      }
+      o._ready = true;
+   }
+   return o._ready;
 }
 
 //==========================================================
@@ -364,18 +431,20 @@ MO.FEaiChartWorldScene_fixMatrix = function FEaiChartWorldScene_fixMatrix(matrix
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    }else{
-      o._rotationY += 0.001;
-      matrix.tx = 0;
+      matrix.tx = -240;
       matrix.ty = 0;
       matrix.tz = 0;
+      matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
-      matrix.setScale(5, 5, 5);
+      matrix.setScale(400, 400, 400);
       //matrix.tx = -38.6;
       //matrix.ty = -12.8;
       //matrix.tz = 0;
       //matrix.setScale(0.32, 0.36, 0.32);
    }
    matrix.update();
+   //..........................................................
+   o._rotationY += 0.001;
 }
 
 //==========================================================

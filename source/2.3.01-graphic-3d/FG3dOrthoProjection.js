@@ -36,18 +36,18 @@ MO.FG3dOrthoProjection_construct = function FG3dOrthoProjection_construct(){
 //============================================================
 MO.FG3dOrthoProjection_update = function FG3dOrthoProjection_update(){
    var o = this;
-   var s = o._size;
+   var size = o._size;
    o._matrix.identity();
    var d = o._matrix.data();
-   d[ 0] = 2.0 / s.width * 8.0;
-   d[ 4] = d[ 8] = d[12] = 0.0;
-   d[ 5] = 2.0 / s.height * 8.0;
-   d[ 1] = d[ 9] = d[13] = 0.0;
-   d[10] = 1.0 / (o._znear - o._zfar);
-   d[ 2] = d[ 6] = d[14] = 0.0;
-   d[ 3] = d[ 7] = 0.0;
-   d[11] = o._znear / (o._znear - o._zfar);
-   d[15] = 1.0;
+   d[ 0] = 2 / size.width;
+   d[ 4] = d[ 8] = d[12] = 0;
+   d[ 5] = 2 / size.height;
+   d[ 1] = d[ 9] = d[13] = 0;
+   d[10] = 1 / (o._zfar - o._znear);
+   d[ 2] = d[ 6] = d[14] = 0;
+   d[ 3] = d[ 7] = 0;
+   d[11] = -o._znear / (o._zfar - o._znear);
+   d[15] = 1;
 }
 
 //============================================================

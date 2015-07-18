@@ -665,10 +665,21 @@ MO.FE3dMovie_process = function FE3dMovie_process(matrix){
       o._lastTick = tick;
    }
 }
+MO.FE3dOrthoCamera = function FE3dOrthoCamera(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCamera);
+   o.construct = MO.FE3dOrthoCamera_construct;
+   return o;
+}
+MO.FE3dOrthoCamera_construct = function FE3dOrthoCamera_construct(){
+   var o = this;
+   o.__base.FE3dCamera.construct.call(o);
+   o._projection = MO.Class.create(MO.FG3dOrthoProjection);
+}
 MO.FE3dRegion = function FE3dRegion(o){
    o = MO.Class.inherits(this, o, MO.FRegion, MO.MGraphicObject, MO.MG3dRegion, MO.MLinkerResource);
    o._backgroundColor = MO.Class.register(o, new MO.AGetter('_backgroundColor'));
    o.construct        = MO.FE3dRegion_construct;
+   o.selectCamera     = MO.FE3dRegion_selectCamera;
    o.loadResource     = MO.FE3dRegion_loadResource;
    o.reloadResource   = MO.FE3dRegion_reloadResource;
    o.prepare          = MO.FE3dRegion_prepare;
@@ -692,6 +703,9 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    var backgroundColor = o._backgroundColor = new MO.SColor4();
    backgroundColor.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new MO.SMatrix3d();
+}
+MO.FE3dRegion_selectCamera = function FE3dRegion_selectCamera(camera){
+   this._camera = camera;
 }
 MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(resource){
    var o = this;

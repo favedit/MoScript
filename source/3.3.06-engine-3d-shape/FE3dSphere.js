@@ -10,7 +10,7 @@ MO.FE3dSphere = function FE3dSphere(o){
    //..........................................................
    // @attribute
    o._outline              = null;
-   o._splitCount           = MO.Class.register(o, new MO.AGetter('_splitCount'), 8);
+   o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -44,8 +44,8 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var o = this;
    var context = o._graphicContext;
    // 计算坐标
-   var positions = new TArray();
-   var normals = new TArray();
+   var positions = new MO.TArray();
+   var normals = new MO.TArray();
    var cr = o._splitCount * 2;
    var cz = o._splitCount;
    var stepr = Math.PI * 2 / cr;
@@ -54,7 +54,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    for(var rz = 0; rz <= cz; rz++){
       for(var r = 0; r < cr; r++){
          var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - RConst.PI_2;
+         var radiusZ = stepz * rz - MO.RConst.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);

@@ -94,7 +94,10 @@ MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanva
 //==========================================================
 MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var o = this;
-   o.__base.FEaiApplication.setup.call(o, hPanel);
+   var result = o.__base.FEaiApplication.setup.call(o, hPanel);
+   if(!result){
+      return result;
+   }
    o._hPanel = hPanel;
    //..........................................................
    // 创建桌面
@@ -123,6 +126,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
    resourceConsole.addLoadListener(o, o.onLoadResource);
    resourceConsole.load('{eai.resource}/resource.dat');
+   return true;
 }
 
 //==========================================================

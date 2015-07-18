@@ -19,6 +19,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o._countryData          = null;
    o._countryReady         = false;
    // @attribute
+   o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
    o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
    o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
    // @attribute
@@ -53,7 +54,7 @@ MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    // 创建地图实体
    var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
    worldEntity.linkGraphicContext(o);
-   //worldEntity.setup();
+   worldEntity.setup();
    // 创建地图实体
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);

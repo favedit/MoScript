@@ -76,7 +76,7 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    var vertexIndex = 0;
    var vertexData = new Float32Array(3 * vertexTotal * 2);
    var faceIndex = 0;
-   var faceData = new Uint16Array(indexTotal + 3 * 2 * vertexTotal);
+   var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
    // 建立上层数据
    for(var n = 0; n < count; n++){
       var boundary = boundaries.at(n);
@@ -85,6 +85,11 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
+         //var x = positions[positionIndex++] / 180 * Math.PI;
+         //var y = positions[positionIndex++] / 180 * Math.PI;
+         //vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 1.01;
+         //vertexData[vertexIndex++] = (Math.sin(y)) * 1.01;
+         //vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 1.01;
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = 0;
@@ -114,6 +119,11 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
+         //var x = positions[positionIndex++] / 180 * Math.PI;
+         //var y = positions[positionIndex++] / 180 * Math.PI;
+         //vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y);
+         //vertexData[vertexIndex++] = Math.sin(y);
+         //vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y);
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = o._layerDepth;
@@ -169,8 +179,10 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    renderable.linkGraphicContext(context);
    renderable.setup();
    renderable.color().setHex('#080D19');
+   //renderable.color().setHex('#FFFFFF');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
    renderable.indexBuffer().upload(faceData, faceIndex, true);
    renderable.material().info().effectCode = 'eai.map.face';
    //renderable.material().info().optionDouble = true;
@@ -204,6 +216,11 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
+         //var x = positions[positionIndex++] / 180 * Math.PI;
+         //var y = positions[positionIndex++] / 180 * Math.PI;
+         //vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 1.001;
+         //vertexData[vertexIndex++] = (Math.sin(y)) * 1.001;
+         //vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 1.001;
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = 0;
@@ -229,6 +246,11 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var positions = boundary.positions();
       var positionIndex = 0;
       for(var i = 0; i < positionCount; i++){
+         //var x = positions[positionIndex++] / 180 * Math.PI;
+         //var y = positions[positionIndex++] / 180 * Math.PI;
+         //vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
+         //vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
+         //vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = positions[positionIndex++];
          vertexData[vertexIndex++] = o._layerDepth;

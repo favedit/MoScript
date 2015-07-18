@@ -8405,10 +8405,21 @@ MO.FE3dMovie_process = function FE3dMovie_process(matrix){
       o._lastTick = tick;
    }
 }
+MO.FE3dOrthoCamera = function FE3dOrthoCamera(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCamera);
+   o.construct = MO.FE3dOrthoCamera_construct;
+   return o;
+}
+MO.FE3dOrthoCamera_construct = function FE3dOrthoCamera_construct(){
+   var o = this;
+   o.__base.FE3dCamera.construct.call(o);
+   o._projection = MO.Class.create(MO.FG3dOrthoProjection);
+}
 MO.FE3dRegion = function FE3dRegion(o){
    o = MO.Class.inherits(this, o, MO.FRegion, MO.MGraphicObject, MO.MG3dRegion, MO.MLinkerResource);
    o._backgroundColor = MO.Class.register(o, new MO.AGetter('_backgroundColor'));
    o.construct        = MO.FE3dRegion_construct;
+   o.selectCamera     = MO.FE3dRegion_selectCamera;
    o.loadResource     = MO.FE3dRegion_loadResource;
    o.reloadResource   = MO.FE3dRegion_reloadResource;
    o.prepare          = MO.FE3dRegion_prepare;
@@ -8432,6 +8443,9 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    var backgroundColor = o._backgroundColor = new MO.SColor4();
    backgroundColor.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new MO.SMatrix3d();
+}
+MO.FE3dRegion_selectCamera = function FE3dRegion_selectCamera(camera){
+   this._camera = camera;
 }
 MO.FE3dRegion_loadResource = function FE3dRegion_loadResource(resource){
    var o = this;
@@ -12099,7 +12113,7 @@ MO.FE3dShapeData_dispose = function FE3dShapeData_dispose(){
 MO.FE3dSphere = function FE3dSphere(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._outline              = null;
-   o._splitCount           = MO.Class.register(o, new MO.AGetter('_splitCount'), 8);
+   o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = MO.FE3dSphere_construct;
@@ -12115,8 +12129,8 @@ MO.FE3dSphere_construct = function FE3dSphere_construct(){
 MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var o = this;
    var context = o._graphicContext;
-   var positions = new TArray();
-   var normals = new TArray();
+   var positions = new MO.TArray();
+   var normals = new MO.TArray();
    var cr = o._splitCount * 2;
    var cz = o._splitCount;
    var stepr = Math.PI * 2 / cr;
@@ -12125,7 +12139,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    for(var rz = 0; rz <= cz; rz++){
       for(var r = 0; r < cr; r++){
          var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - RConst.PI_2;
+         var radiusZ = stepz * rz - MO.RConst.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);

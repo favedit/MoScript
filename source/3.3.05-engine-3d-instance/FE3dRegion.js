@@ -14,6 +14,7 @@ MO.FE3dRegion = function FE3dRegion(o){
    // @method
    o.construct        = MO.FE3dRegion_construct;
    // @method
+   o.selectCamera     = MO.FE3dRegion_selectCamera;
    o.loadResource     = MO.FE3dRegion_loadResource;
    o.reloadResource   = MO.FE3dRegion_reloadResource;
    // @method
@@ -49,6 +50,16 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    backgroundColor.set(0, 0, 0, 1);
    // 设置属性
    o._calculateCameraMatrix = new MO.SMatrix3d();
+}
+
+//==========================================================
+// <T>选择相机。</T>
+//
+// @method
+// @param camera:FE3dCamera 相机
+//==========================================================
+MO.FE3dRegion_selectCamera = function FE3dRegion_selectCamera(camera){
+   this._camera = camera;
 }
 
 //==========================================================

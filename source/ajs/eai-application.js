@@ -8,10 +8,17 @@ MO.FEaiApplication = function FEaiApplication(o){
 }
 MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    var o = this;
+   if(!MO.Window.Browser.supportHtml5()){
+      var event = new MO.SEvent();
+      MO.Window.processDeviceError(event);
+      event.dispose();
+      return false;
+   }
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+   return true;
 }
 MO.FEaiApplication_processResize = function FEaiApplication_processResize(){
    var o = this;
@@ -119,7 +126,10 @@ MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanva
 }
 MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var o = this;
-   o.__base.FEaiApplication.setup.call(o, hPanel);
+   var result = o.__base.FEaiApplication.setup.call(o, hPanel);
+   if(!result){
+      return result;
+   }
    o._hPanel = hPanel;
    var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
    desktop.build(hPanel);
@@ -140,6 +150,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
    resourceConsole.addLoadListener(o, o.onLoadResource);
    resourceConsole.load('{eai.resource}/resource.dat');
+   return true;
 }
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
    var o = this;
@@ -302,8 +313,8 @@ MO.FEaiChartDesktop_selectStage = function FEaiChartDesktop_selectStage(stage){
    if(stage){
       var camera = stage.region().camera();
       var projection = camera.projection();
-      projection.size().assign(o._size);
       projection.setAngle(80);
+      projection.size().assign(o._size);
       projection.update();
       camera.position().set(0, 0, -10);
       camera.lookAt(0, 0, 0);
