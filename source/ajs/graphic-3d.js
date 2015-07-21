@@ -129,14 +129,9 @@ MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
    var light = o._directionalLight;
    var lc = light.camera();
    var lcp = lc.position();
-   var lp = lc.projection();
    o._lightPosition.assign(lc.position());
    o._lightDirection.assign(lc.direction());
    o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lp.matrix());
-   o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lp.matrix());
-   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
    o._allRenderables.clear();
 }
 MO.MG3dRegion_reset = function MG3dRegion_reset(){
@@ -745,6 +740,7 @@ MO.FG3dCamera = function FG3dCamera(o){
    o.lookAt           = MO.FG3dCamera_lookAt;
    o.update           = MO.FG3dCamera_update;
    o.updateFrustum    = MO.FG3dCamera_updateFrustum;
+   o.dispose          = MO.FG3dCamera_dispose;
    return o;
 }
 MO.FG3dCamera_construct = function FG3dCamera_construct(){
@@ -839,6 +835,11 @@ MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
    m.append(o._projection.matrix());
    o._planes.updateVision(m.data());
 }
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dLight);
    o._camera    = MO.Class.register(o, new MO.AGetter('_camera'));
@@ -851,7 +852,7 @@ MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
 MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
-   o._camera = MO.Class.create(MO.FG3dPerspectiveCamera);
+   o._camera = MO.Class.create(MO.FG3dCamera);
    o._direction = new MO.SVector3();
 }
 MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
@@ -1429,187 +1430,52 @@ MO.FG3dObject_dispose = function FG3dObject_dispose(){
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
-MO.FG3dOrthoCamera = function FG3dOrthoCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dCamera);
-   o._projection      = MO.Class.register(o, new MO.AGetter('_projection'));
-   o.construct        = MO.FG3dOrthoCamera_construct;
-   o.updateFrustum    = MO.FG3dOrthoCamera_updateFrustum;
-   o.updateFromCamera = MO.FG3dOrthoCamera_updateFromCamera;
-   o.updateFlatCamera = MO.FG3dOrthoCamera_updateFlatCamera;
-   return o;
-}
-MO.FG3dOrthoCamera_construct = function FG3dOrthoCamera_construct(){
-   var o = this;
-   o.__base.FG3dCamera.construct.call(o);
-   o._projection = MO.Class.create(MO.FG3dOrthoProjection);
-}
-MO.FG3dOrthoCamera_updateFrustum = function FG3dOrthoCamera_updateFrustum(){
-   var o = this;
-   o.__base.FG3dCamera.updateFrustum.call(o);
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dOrthoCamera_updateFromCamera = function FG3dOrthoCamera_updateFromCamera(p){
-   var o = this;
-   var pf = p.updateFrustum();
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * pf.radius;
-   var vy = pf.center.y - d.y * pf.radius;
-   var vz = pf.center.z - d.z * pf.radius;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   var f = o._frustum;
-   o._matrix.transform(f.coners, pf.coners, 8);
-   f.updateCenter();
-   o._projection.updateFrustum(f);
-}
-MO.FG3dOrthoCamera_updateFlatCamera = function FG3dOrthoCamera_updateFlatCamera(p){
-   var o = this;
-   var f = o._frustum
-   var pf = p.updateFlatFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance;
-   var vy = pf.center.y - d.y * distance;
-   var vz = pf.center.z - d.z * distance;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._projection._znear = 0.3;
-   o._projection._zfar = distance * 1.5;
-   o._projection.update();
-}
 MO.FG3dOrthoProjection = function FG3dOrthoProjection(o){
    o = MO.Class.inherits(this, o, MO.FG3dProjection);
-   o._matrix       = MO.Class.register(o, new MO.AGetter('_matrix'));
    o.construct     = MO.FG3dOrthoProjection_construct;
    o.update        = MO.FG3dOrthoProjection_update;
    o.updateFrustum = MO.FG3dOrthoProjection_updateFrustum;
+   o.dispose       = MO.FG3dOrthoProjection_dispose;
    return o;
 }
 MO.FG3dOrthoProjection_construct = function FG3dOrthoProjection_construct(){
    var o = this;
    o.__base.FG3dProjection.construct.call(o);
-   o._matrix = new MO.SOrthoMatrix3d();
 }
 MO.FG3dOrthoProjection_update = function FG3dOrthoProjection_update(){
    var o = this;
    var size = o._size;
-   o._matrix.identity();
-   var d = o._matrix.data();
-   d[ 0] = 2 / size.width;
-   d[ 4] = d[ 8] = d[12] = 0;
-   d[ 5] = 2 / size.height;
-   d[ 1] = d[ 9] = d[13] = 0;
-   d[10] = 1 / (o._zfar - o._znear);
-   d[ 2] = d[ 6] = d[14] = 0;
-   d[ 3] = d[ 7] = 0;
-   d[11] = -o._znear / (o._zfar - o._znear);
-   d[15] = 1;
+   var left = -size.width * 0.5;
+   var top = -size.height * 0.5;
+   MO.Lang.Matrix.orthoLH(o._matrix, left, top, size.width, size.height, o._znear, o._zfar);
 }
-MO.FG3dOrthoProjection_updateFrustum = function FG3dOrthoProjection_updateFrustum(p){
+MO.FG3dOrthoProjection_updateFrustum = function FG3dOrthoProjection_updateFrustum(frustum){
    var o = this;
-   o._znear = p.minZ;
-   o._zfar = p.maxZ;
+   o._znear = frustum.minZ;
+   o._zfar = frustum.maxZ;
    o.update();
 }
-MO.FG3dPerspectiveCamera = function FG3dPerspectiveCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dCamera);
-   o._projection       = MO.Class.register(o, new MO.AGetter('_projection'));
-   o._centerFront      = 0.4;
-   o.construct         = MO.FG3dPerspectiveCamera_construct;
-   o.updateFrustum     = MO.FG3dPerspectiveCamera_updateFrustum;
-   o.updateFlatFrustum = MO.FG3dPerspectiveCamera_updateFlatFrustum;
-   o.updateFromCamera  = MO.FG3dPerspectiveCamera_updateFromCamera;
-   o.updateFlatCamera  = MO.FG3dPerspectiveCamera_updateFlatCamera;
-   return o;
-}
-MO.FG3dPerspectiveCamera_construct = function FG3dPerspectiveCamera_construct(){
+MO.FG3dOrthoProjection_dispose = function FG3dOrthoProjection_dispose(){
    var o = this;
-   o.__base.FG3dCamera.construct.call(o);
-   o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
-}
-MO.FG3dPerspectiveCamera_updateFrustum = function FG3dPerspectiveCamera_updateFrustum(){
-   var o = this;
-   o.__base.FG3dCamera.updateFrustum.call(o);
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dPerspectiveCamera_updateFlatFrustum = function FG3dPerspectiveCamera_updateFlatFrustum(){
-   var o = this;
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dPerspectiveCamera_updateFromCamera = function FG3dPerspectiveCamera_updateFromCamera(p){
-   var o = this;
-   var f = o._frustum;
-   var pf = p.updateFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance;
-   var vy = pf.center.y - d.y * distance;
-   var vz = pf.center.z - d.z * distance;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
-   f.updateCenter();
-   o._projection.updateFrustum(f);
-}
-MO.FG3dPerspectiveCamera_updateFlatCamera = function FG3dPerspectiveCamera_updateFlatCamera(p){
-   var o = this;
-   var f = o._frustum;
-   var pf = p.updateFlatFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance * o._centerFront;
-   var vy = pf.center.y - d.y * distance * o._centerFront;
-   var vz = pf.center.z - d.z * distance * o._centerFront;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._projection._znear = 0.1;
-   o._projection._zfar = distance;
-   o._projection.update();
+   o.__base.FG3dProjection.dispose.call(o);
 }
 MO.FG3dPerspectiveProjection = function FG3dPerspectiveProjection(o){
    o = MO.Class.inherits(this, o, MO.FG3dProjection);
-   o._matrix       = MO.Class.register(o, new MO.AGetter('_matrix'));
    o.construct     = MO.FG3dPerspectiveProjection_construct;
    o.update        = MO.FG3dPerspectiveProjection_update;
    o.updateFrustum = MO.FG3dPerspectiveProjection_updateFrustum;
+   o.dispose       = MO.FG3dPerspectiveProjection_dispose;
    return o;
 }
 MO.FG3dPerspectiveProjection_construct = function FG3dPerspectiveProjection_construct(){
    var o = this;
    o.__base.FG3dProjection.construct.call(o);
-   o._matrix = new MO.SPerspectiveMatrix3d();
 }
 MO.FG3dPerspectiveProjection_update = function FG3dPerspectiveProjection_update(){
    var o = this;
-   var s = o._size;
+   var size = o._size;
    o._fieldOfView = MO.RConst.DEGREE_RATE * o._angle;
-   o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
+   MO.Lang.Matrix.perspectiveFieldOfViewLH(o._matrix, o._fieldOfView, size.width / size.height, o._znear, o._zfar);
 }
 MO.FG3dPerspectiveProjection_updateFrustum = function FG3dPerspectiveProjection_updateFrustum(p){
    var o = this;
@@ -1617,29 +1483,42 @@ MO.FG3dPerspectiveProjection_updateFrustum = function FG3dPerspectiveProjection_
    o._zfar = p.maxZ;
    o.update();
 }
+MO.FG3dPerspectiveProjection_dispose = function FG3dPerspectiveProjection_dispose(){
+   var o = this;
+   o.__base.FG3dProjection.dispose.call(o);
+}
 MO.FG3dPointLight = function FG3dPointLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dLight);
    return o;
 }
 MO.FG3dProjection = function FG3dProjection(o){
    o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix      = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._size        = MO.Class.register(o, new MO.AGetter('_size'));
    o._angle       = MO.Class.register(o, new MO.AGetSet('_angle'), 60.0);
    o._fieldOfView = MO.Class.register(o, new MO.AGetSet('_fieldOfView'), 0);
    o._znear       = MO.Class.register(o, new MO.AGetSet('_znear'), 0.1);
-   o._zfar        = MO.Class.register(o, new MO.AGetSet('_zfar'), 200.0);
-   o._scale       = MO.Class.register(o, new MO.AGetSet('_scale'), 0);
-   o.construct   = MO.FG3dProjection_construct;
-   o.distance    = MO.FG3dProjection_distance;
+   o._zfar        = MO.Class.register(o, new MO.AGetSet('_zfar'), 200);
+   o._zoom        = MO.Class.register(o, new MO.AGetSet('_zoom'), 1);
+   o.construct    = MO.FG3dProjection_construct;
+   o.distance     = MO.FG3dProjection_distance;
+   o.dispose      = MO.FG3dProjection_dispose;
    return o;
 }
 MO.FG3dProjection_construct = function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
    o._size = new MO.SSize2();
 }
 MO.FG3dProjection_distance = function FG3dProjection_distance(){
    return this._zfar - this._znear;
+}
+MO.FG3dProjection_dispose = function FG3dProjection_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FG3dShaderTemplate = function FG3dShaderTemplate(o){
    o = MO.Class.inherits(this, o, MO.FTagDocument);

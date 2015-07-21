@@ -5,8 +5,10 @@
 // @history 141231
 //==========================================================
 MO.FE3dCamera = function FE3dCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
+   o = MO.Class.inherits(this, o, MO.FG3dCamera, MO.MLinkerResource);
    //..........................................................
+   // 投影
+   o._projection     = MO.Class.register(o, new MO.AGetter('_projection'));
    // 四元数
    o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
@@ -39,7 +41,7 @@ MO.FE3dCamera = function FE3dCamera(o){
 //==========================================================
 MO.FE3dCamera_construct = function FE3dCamera_construct(){
    var o = this;
-   o.__base.FG3dPerspectiveCamera.construct.call(o);
+   o.__base.FG3dCamera.construct.call(o);
    // 初始化变量
    o._rotation = new MO.SVector3();
    o._rotationMatrix = new MO.SMatrix3x3();
@@ -185,5 +187,18 @@ MO.FE3dCamera_update = function FE3dCamera_update(){
    //m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
    // 设置方向
    // 父更新矩阵
-   o.__base.FG3dPerspectiveCamera.update.call(o);
+   o.__base.FG3dCamera.update.call(o);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   // 释放属性
+   o._projection = MO.Lang.Obejct.dispose(o._projection);
+   // 父处理
+   o.__base.FObject.dispose.call(o);
 }

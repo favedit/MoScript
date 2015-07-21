@@ -2006,17 +2006,17 @@ MO.RArray.prototype.equals = function RArray_equals(s, t){
    }
    return false;
 }
-MO.RArray.prototype.count = function RArray_count(a){
-   var c = 0;
-   for(var n in a){
-      n++;
+MO.RArray.prototype.count = function RArray_count(value){
+   var count = 0;
+   for(var name in value){
+      count++;
    }
-   return c;
+   return count;
 }
-MO.RArray.prototype.contains = function RArray_contains(a, v){
-   var c = a.length;
+MO.RArray.prototype.contains = function RArray_contains(array, v){
+   var c = array.length;
    for(var n = 0; n < c; n++){
-      if(a[n] == v){
+      if(array[n] == v){
          return true;
       }
    }
@@ -2047,10 +2047,16 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
       a[e - n] = t;
    }
 }
-MO.RArray.prototype.copy = function RArray_copy(s, t){
-   for(var n in s){
-      t[n] = s[n];
+MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
+   for(var i = 0; i < sourceCount; i++){
+      target[i + targetOffset] = source[i + sourceOffset];
    }
+   return target;
 }
 MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
    if(offset > target){

@@ -26,7 +26,7 @@ MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
 MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
-   o._camera = MO.Class.create(MO.FG3dPerspectiveCamera);
+   o._camera = MO.Class.create(MO.FG3dCamera);
    o._direction = new MO.SVector3();
 }
 

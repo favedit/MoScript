@@ -12,6 +12,10 @@ MO.MEventDispatcher = function MEventDispatcher(o){
    o.onOperationDown        = MO.Method.empty;
    o.onOperationMove        = MO.Method.empty;
    o.onOperationUp          = MO.Method.empty;
+   o.onOperationWheel       = MO.Method.empty;
+   o.onOperationKeyDown     = MO.Method.empty;
+   o.onOperationKeyPress    = MO.Method.empty;
+   o.onOperationKeyUp       = MO.Method.empty;
    o.onOperationResize      = MO.Method.empty;
    o.onOperationOrientation = MO.Method.empty;
    //..........................................................
@@ -38,6 +42,18 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          break;
       case MO.EEvent.MouseUp:
          o.onOperationUp(event);
+         break;
+      case MO.EEvent.MouseWheel:
+         o.onOperationWheel(event);
+         break;
+      case MO.EEvent.KeyDown:
+         o.onOperationKeyDown(event);
+         break;
+      case MO.EEvent.KeyPress:
+         o.onOperationKeyPress(event);
+         break;
+      case MO.EEvent.KeyUp:
+         o.onOperationKeyUp(event);
          break;
       case MO.EEvent.Resize:
          o.onOperationResize(event);

@@ -9,6 +9,7 @@ MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
    //..........................................................
    // @attribute
+   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'));
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
    o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
@@ -63,6 +64,7 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
 //==========================================================
 MO.FGuiManager_register = function FGuiManager_register(control){
    var o = this;
+   control.setManager(o);
    o._controls.push(control);
    o._statusDirty = true;
 }
@@ -75,6 +77,7 @@ MO.FGuiManager_register = function FGuiManager_register(control){
 //==========================================================
 MO.FGuiManager_unregister = function FGuiManager_unregister(control){
    var o = this;
+   control.setManager(null);
    o._controls.remove(control);
    o._statusDirty = true;
 }
@@ -121,12 +124,15 @@ MO.FGuiManager_isDirty = function FGuiManager_isDirty(){
 //==========================================================
 MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
    var o = this;
-   var controls = o._controls;
-   var count = controls.count();
-   for(var i = 0; i < count; i++){
-      var control = controls.at(i);
-      control.setVisible(value);
-   }
+   o._visible = value;
+   o._statusDirty = true;
+   //var controls = o._controls;
+   //var count = controls.count();
+   //for(var i = 0; i < count; i++){
+   //   var control = controls.at(i);
+   //   control.setVisible(value);
+   //}
+
 }
 
 //==========================================================

@@ -39,4 +39,4 @@ MO.RRandom.prototype.rand = function RRandom_rand(seed){
 //..........................................................
 // 实例化内容
 MO.RRandom = new MO.RRandom();
-MO.Random = MO.RRandom;
+MO.Lang.Random = MO.RRandom;

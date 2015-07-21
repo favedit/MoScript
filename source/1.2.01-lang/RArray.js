@@ -48,31 +48,31 @@ MO.RArray.prototype.equals = function RArray_equals(s, t){
 // <T>取得对象内的所有数据的总数。</T>
 //
 // @method
-// @param a:object:Object 对象
+// @param value:Object 对象
 // @return Integer 数据总数
 //==========================================================
-MO.RArray.prototype.count = function RArray_count(a){
-   var c = 0;
-   for(var n in a){
-      n++;
+MO.RArray.prototype.count = function RArray_count(value){
+   var count = 0;
+   for(var name in value){
+      count++;
    }
-   return c;
+   return count;
 }
 
 //==========================================================
 // <T>判断数组中是否含有指定的对象。</T>
 //
 // @method
-// @param a:array:Array 数组对象
-// @param v:value:Object 对象名
+// @param array:Array 数组对象
+// @param value:Object 对象名
 // @return Boolean
 //    <L value='true'>含有</L>
 //    <L value='false'>不含有</L>
 //==========================================================
-MO.RArray.prototype.contains = function RArray_contains(a, v){
-   var c = a.length;
+MO.RArray.prototype.contains = function RArray_contains(array, v){
+   var c = array.length;
    for(var n = 0; n < c; n++){
-      if(a[n] == v){
+      if(array[n] == v){
          return true;
       }
    }
@@ -135,13 +135,22 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
 // <T>复制数组的内容。</T>
 //
 // @method
-// @param s:source:Object 源数组 
-// @param t:target:Object 目标数组
+// @param source:Array 来源数组
+// @param sourceOffset:Integer 来源位置
+// @param sourceCount:Integer 来源长度
+// @param target:Array 目标数组
+// @param targetOffset:Integer 目标位置
 //==========================================================
-MO.RArray.prototype.copy = function RArray_copy(s, t){
-   for(var n in s){
-      t[n] = s[n];
+MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
+   for(var i = 0; i < sourceCount; i++){
+      target[i + targetOffset] = source[i + sourceOffset];
    }
+   return target;
 }
 
 //==========================================================

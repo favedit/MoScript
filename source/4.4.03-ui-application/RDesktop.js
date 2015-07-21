@@ -74,6 +74,10 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    MO.Window.lsnsMouseDown.register(o, o.onProcessEvent);
    MO.Window.lsnsMouseMove.register(o, o.onProcessEvent);
    MO.Window.lsnsMouseUp.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseWheel.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyDown.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyPress.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyUp.register(o, o.onProcessEvent);
    MO.Window.lsnsResize.register(o, o.onProcessEvent);
    MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    // 创建线程

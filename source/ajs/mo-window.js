@@ -106,6 +106,7 @@ MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyDown;
    event.attachEvent(hEvent);
    o.lsnsKeyDown.process(event);
 }
@@ -115,6 +116,7 @@ MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyUp;
    event.attachEvent(hEvent);
    o.lsnsKeyUp.process(event);
 }
@@ -124,6 +126,7 @@ MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyPress;
    event.attachEvent(hEvent);
    o.lsnsKeyPress.process(event);
 }

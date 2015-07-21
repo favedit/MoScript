@@ -168,14 +168,14 @@ MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
    var light = o._directionalLight;
    var lc = light.camera();
    var lcp = lc.position();
-   var lp = lc.projection();
+   //var lp = lc.projection();
    o._lightPosition.assign(lc.position());
    o._lightDirection.assign(lc.direction());
    o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lp.matrix());
-   o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lp.matrix());
-   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
+   //o._lightProjectionMatrix.assign(lp.matrix());
+   //o._lightViewProjectionMatrix.assign(lc.matrix());
+   //o._lightViewProjectionMatrix.append(lp.matrix());
+   //o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
    // 清空全部渲染对象
    o._allRenderables.clear();
 }

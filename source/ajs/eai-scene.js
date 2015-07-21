@@ -1290,6 +1290,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._operationRotationY     = 0;
    o._rotationX              = 0;
    o._rotationY              = 0;
+   o._worldScale             = 500;
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
@@ -1297,6 +1298,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
    o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
    o.onOperationUp           = MO.FEaiChartWorldScene_onOperationUp;
+   o.onOperationWheel        = MO.FEaiChartWorldScene_onOperationWheel;
    o.onSwitchProcess         = MO.FEaiChartWorldScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartWorldScene_onSwitchComplete;
    o.construct               = MO.FEaiChartWorldScene_construct;
@@ -1419,6 +1421,15 @@ MO.FEaiChartWorldScene_onOperationUp = function FEaiChartWorldScene_onOperationU
    var o = this;
    o._operationFlag = false;
 }
+MO.FEaiChartWorldScene_onOperationWheel = function FEaiChartWorldScene_onOperationWheel(event){
+   var o = this;
+   var delta = event.deltaY
+   if(delta > 0){
+      o._worldScale /= 1.05;
+   }else if(delta < 0){
+      o._worldScale *= 1.05;
+   }
+}
 MO.FEaiChartWorldScene_onSwitchProcess = function FEaiChartWorldScene_onSwitchProcess(event){
    var o = this;
 }
@@ -1467,7 +1478,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    o._guiManager.register(livePop);
    o._guiManager.hide();
    var camera = MO.Class.create(MO.FE3dOrthoCamera);
-   camera.position().set(0, 0, -100);
+   camera.position().set(0, 0, -500);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
@@ -1526,12 +1537,12 @@ MO.FEaiChartWorldScene_fixMatrix = function FEaiChartWorldScene_fixMatrix(matrix
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    }else{
-      matrix.tx = -240;
+      matrix.tx = -320;
       matrix.ty = 0;
       matrix.tz = 0;
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
-      matrix.setScale(400, 400, 400);
+      matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
    }
    matrix.update();
    o._rotationY += 0.001;
@@ -1748,8 +1759,8 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
+   o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
@@ -1762,6 +1773,14 @@ MO.FEaiScene = function FEaiScene(o){
    o.processEvent           = MO.FEaiScene_processEvent;
    o.dispose                = MO.FEaiScene_dispose;
    return o;
+}
+MO.FEaiScene_onOperationKeyDown = function FEaiScene_onOperationKeyDown(event){
+   var o = this;
+   o.__base.FScene.onOperationKeyDown.call(o, event);
+   if(event.altKey && (event.keyCode == MO.EKeyCode.P)){
+      var control = o._application.dynamicInfo();
+      control.setVisible(!control.visible());
+   }
 }
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
@@ -1793,21 +1812,18 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    guiManager.setDesktop(desktop);
    guiManager.setCanvas(canvas2d);
    guiManager.setup();
-   if(o._optionDebug){
-      var control = o._application.dynamicInfo();
-      guiManager.register(control);
-   }
+   var control = o._application.dynamicInfo();
+   guiManager.register(control);
 }
 MO.FEaiScene_active = function FEaiScene_active(){
    var o = this;
    o.__base.FScene.active.call(o);
    var stage = o._activeStage;
-   if(o._optionDebug){
-      var control = o._application.dynamicInfo();
-      control.setDisplayOrder(10000);
-      control.setStage(stage);
-      control.setGuiManager(o._guiManager);
-   }
+   var control = o._application.dynamicInfo();
+   control.setVisible(false);
+   control.setDisplayOrder(10000);
+   control.setStage(stage);
+   control.setGuiManager(o._guiManager);
    var application = o._application;
    var desktop = application.desktop();
    desktop.selectStage(stage);

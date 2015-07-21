@@ -34,7 +34,7 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
    // 创建相机
-   var camera = o._camera = MO.Class.create(MO.FE3dCamera);
+   var camera = o._camera = MO.Class.create(MO.FE3dPerspectiveCamera);
    camera.position().set(0, 0, -100);
    camera.lookAt(0, 0, 0);
    camera.update();

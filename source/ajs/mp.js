@@ -3550,17 +3550,17 @@ MO.RArray.prototype.equals = function RArray_equals(s, t){
    }
    return false;
 }
-MO.RArray.prototype.count = function RArray_count(a){
-   var c = 0;
-   for(var n in a){
-      n++;
+MO.RArray.prototype.count = function RArray_count(value){
+   var count = 0;
+   for(var name in value){
+      count++;
    }
-   return c;
+   return count;
 }
-MO.RArray.prototype.contains = function RArray_contains(a, v){
-   var c = a.length;
+MO.RArray.prototype.contains = function RArray_contains(array, v){
+   var c = array.length;
    for(var n = 0; n < c; n++){
-      if(a[n] == v){
+      if(array[n] == v){
          return true;
       }
    }
@@ -3591,10 +3591,16 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
       a[e - n] = t;
    }
 }
-MO.RArray.prototype.copy = function RArray_copy(s, t){
-   for(var n in s){
-      t[n] = s[n];
+MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
+   for(var i = 0; i < sourceCount; i++){
+      target[i + targetOffset] = source[i + sourceOffset];
    }
+   return target;
 }
 MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
    if(offset > target){
@@ -7391,95 +7397,6 @@ MO.SMatrix4x4_toString = function SMatrix4x4_toString(){
    }
    return r.flush();
 }
-MO.SOrthoMatrix3d = function SOrthoMatrix3d(){
-   var o = this;
-   MO.SMatrix3d.call(o);
-   o.perspectiveLH            = MO.SOrthoMatrix3d_perspectiveLH;
-   o.perspectiveRH            = MO.SOrthoMatrix3d_perspectiveRH;
-   o.perspectiveFieldOfViewLH = MO.SOrthoMatrix3d_perspectiveFieldOfViewLH;
-   o.perspectiveFieldOfViewRH = MO.SOrthoMatrix3d_perspectiveFieldOfViewRH;
-   return o;
-}
-MO.SOrthoMatrix3d_perspectiveLH = function SOrthoMatrix3d_perspectiveLH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveRH = function SOrthoMatrix3d_perspectiveRH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveFieldOfViewLH = function SOrthoMatrix3d_perspectiveFieldOfViewLH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveFieldOfViewRH = function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pf - pn);
-   d[15] = 0.0;
-}
 MO.SOutline3 = function SOutline3(){
    var o = this;
    o.min         = new MO.SPoint3();
@@ -7760,95 +7677,6 @@ MO.SPadding_dispose = function SPadding_dispose(){
 MO.SPadding_dump = function SPadding_dump(d){
    var o = this;
    return MO.Class.dump(o) + ' [' + o.left + ',' + o.top + ',' + o.right + ',' + o.bottom + ']';
-}
-MO.SPerspectiveMatrix3d = function SPerspectiveMatrix3d(){
-   var o = this;
-   MO.SMatrix3d.call(o);
-   o.perspectiveLH            = MO.SPerspectiveMatrix3d_perspectiveLH;
-   o.perspectiveRH            = MO.SPerspectiveMatrix3d_perspectiveRH;
-   o.perspectiveFieldOfViewLH = MO.SPerspectiveMatrix3d_perspectiveFieldOfViewLH;
-   o.perspectiveFieldOfViewRH = MO.SPerspectiveMatrix3d_perspectiveFieldOfViewRH;
-   return o;
-}
-MO.SPerspectiveMatrix3d_perspectiveLH = function SPerspectiveMatrix3d_perspectiveLH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveRH = function SPerspectiveMatrix3d_perspectiveRH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveFieldOfViewLH = function SPerspectiveMatrix3d_perspectiveFieldOfViewLH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveFieldOfViewRH = function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pf - pn);
-   d[15] = 0.0;
 }
 MO.SPlane = function SPlane(){
    var o = this;
@@ -9010,6 +8838,125 @@ MO.RMath.prototype.sign = function RMath_sign(value){
 MO.RMath = new MO.RMath();
 MO.RMath.construct();
 MO.Lang.Math = MO.RMath;
+MO.RMatrix = function RMatrix(){
+   var o = this;
+   o.identity3x3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+   return o;
+}
+MO.RMatrix.prototype.perspectiveLH = function RMatrix_perspectiveLH(matrix, width, height, znear, zfar){
+   var data = matrix.data();
+   data[ 0] = 2 * znear / width;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = 2 * znear / height;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (zfar - znear);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveRH = function RMatrix_perspectiveRH(matrix, width, height, znear, zfar){
+   var data = matrix.data();
+   data[ 0] = 2 * znear / width;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = 2 * znear / height;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (znear - zfar);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveFieldOfViewLH = function RMatrix_perspectiveFieldOfViewLH(matrix, fieldOfView, aspectRatio, znear, zfar){
+   var data = matrix.data();
+   var sy = 1 / Math.tan(fieldOfView * 0.5);
+   var sx = sy / aspectRatio;
+   data[ 0] = sx;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = sy;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (zfar - znear);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveFieldOfViewRH = function RMatrix_perspectiveFieldOfViewRH(matrix, fieldOfView, aspectRatio, znear, zfar){
+   var data = matrix.data();
+   var sy = 1 / Math.tan(fieldOfView * 0.5);
+   var sx = sy / aspectRatio;
+   data[ 0] = sx;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = sy;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (znear - zfar);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (zfar - znear);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.orthoLH = function RMatrix_orthoLH(matrix, left, top, width, height, znear, zfar){
+   var o = this;
+   var right = left + width;
+   var bottom = top + height;
+   var distance = zfar - znear;
+   var x = (left + right) / width;
+   var y = (top + bottom) / height;
+   var z = znear / distance;
+   var data = MO.Lang.Array.copy(o.identity4x4, 0, 16, matrix.data(), 0);
+   data[ 0] = 2 / width;
+   data[ 5] = 2 / height;
+   data[10] = 1 / distance;
+   data[12] = -x;
+   data[13] = -y;
+   data[14] = -z;
+}
+MO.RMatrix.prototype.orthoRH = function RMatrix_orthoRH(matrix, left, top, width, height, znear, zfar){
+   var o = this;
+   var right = left + width;
+   var bottom = top + height;
+   var distance = zfar - znear;
+   var x = (left + right) / width;
+   var y = (top + bottom) / height;
+   var z = (znear + zfar) / distance;
+   var data = MO.Lang.Array.copy(o.identity4x4, 0, 16, matrix.data(), 0);
+   data[ 0] = 2 / width;
+   data[ 5] = 2 / height;
+   data[10] = -2 / distance;
+   data[12] = -x;
+   data[13] = -y;
+   data[14] = -z;
+}
+MO.Lang.Matrix = new MO.RMatrix();
 MO.RRandom = function RRandom(){
    var o = this;
    o._seed = (new Date()).getTime();
@@ -9026,7 +8973,7 @@ MO.RRandom.prototype.rand = function RRandom_rand(seed){
    return Math.ceil(value);
 }
 MO.RRandom = new MO.RRandom();
-MO.Random = MO.RRandom;
+MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
@@ -9123,34 +9070,41 @@ MO.AStyleIcon_toString = function AStyleIcon_toString(){
 }
 MO.EEvent = new function EEvent(){
    var o = this;
-   o.Unknown       = 'Unknown';
-   o.Load          = 'Load';
-   o.Process       = 'Process';
-   o.Complete      = 'Complete';
-   o.EnterFrame    = 'EnterFrame';
-   o.LeaveFrame    = 'LeaveFrame';
-   o.Enter         = 'Enter';
-   o.Leave         = 'Leave';
-   o.Resize        = 'Reisze';
-   o.Focus         = 'Focus';
-   o.Blur          = 'Blur';
-   o.OperationDown = 'OperationDown';
-   o.OperationMove = 'OperationMove';
-   o.OperationUp   = 'OperationUp';
-   o.OperationResize = 'OperationResize';
-   o.MouseDown     = 'MouseDown';
-   o.MouseMove     = 'MouseMove';
-   o.MouseUp       = 'MouseUp';
-   o.MouseWheel    = 'MouseWheel';
-   o.Click         = 'Click';
-   o.DoubleClick   = 'DoubleClick';
-   o.NodeClick     = 'NodeClick';
-   o.ItemClick     = 'ItemClick';
-   o.Selected      = 'Selected';
-   o.DataChanged   = 'DataChanged';
-   o.Result        = 'Result';
-   o.TouchZoom     = 'TouchZoom';
-   o.Orientation   = 'Orientation';
+   o.Unknown          = 'Unknown';
+   o.Load             = 'Load';
+   o.Process          = 'Process';
+   o.Complete         = 'Complete';
+   o.EnterFrame       = 'EnterFrame';
+   o.LeaveFrame       = 'LeaveFrame';
+   o.Enter            = 'Enter';
+   o.Leave            = 'Leave';
+   o.Resize           = 'Reisze';
+   o.Focus            = 'Focus';
+   o.Blur             = 'Blur';
+   o.OperationDown    = 'OperationDown';
+   o.OperationMove    = 'OperationMove';
+   o.OperationUp      = 'OperationUp';
+   o.OperationResize  = 'OperationResize';
+   o.OperationWheel   = 'OperationWheel';
+   o.OperationKeyDown = 'OperationKeyDown';
+   o.OperationKeyPress = 'OperationKeyPress';
+   o.OperationKeyUp   = 'OperationKeyUp';
+   o.MouseDown        = 'MouseDown';
+   o.MouseMove        = 'MouseMove';
+   o.MouseUp          = 'MouseUp';
+   o.MouseWheel       = 'MouseWheel';
+   o.KeyDown          = 'KeyDown';
+   o.KeyPress         = 'KeyPress';
+   o.KeyUp            = 'KeyUp';
+   o.Click            = 'Click';
+   o.DoubleClick      = 'DoubleClick';
+   o.NodeClick        = 'NodeClick';
+   o.ItemClick        = 'ItemClick';
+   o.Selected         = 'Selected';
+   o.DataChanged      = 'DataChanged';
+   o.Result           = 'Result';
+   o.TouchZoom        = 'TouchZoom';
+   o.Orientation      = 'Orientation';
    return o;
 }
 MO.EEventInvoke = new function EEventInvoke(){
@@ -12846,6 +12800,7 @@ MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyDown;
    event.attachEvent(hEvent);
    o.lsnsKeyDown.process(event);
 }
@@ -12855,6 +12810,7 @@ MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyUp;
    event.attachEvent(hEvent);
    o.lsnsKeyUp.process(event);
 }
@@ -12864,6 +12820,7 @@ MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
       hEvent = o._hWindow.event;
    }
    var event = o._eventKey;
+   event.code = MO.EEvent.KeyPress;
    event.attachEvent(hEvent);
    o.lsnsKeyPress.process(event);
 }
@@ -15337,14 +15294,9 @@ MO.MG3dRegion_prepare = function MG3dRegion_prepare(){
    var light = o._directionalLight;
    var lc = light.camera();
    var lcp = lc.position();
-   var lp = lc.projection();
    o._lightPosition.assign(lc.position());
    o._lightDirection.assign(lc.direction());
    o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lp.matrix());
-   o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lp.matrix());
-   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
    o._allRenderables.clear();
 }
 MO.MG3dRegion_reset = function MG3dRegion_reset(){
@@ -15953,6 +15905,7 @@ MO.FG3dCamera = function FG3dCamera(o){
    o.lookAt           = MO.FG3dCamera_lookAt;
    o.update           = MO.FG3dCamera_update;
    o.updateFrustum    = MO.FG3dCamera_updateFrustum;
+   o.dispose          = MO.FG3dCamera_dispose;
    return o;
 }
 MO.FG3dCamera_construct = function FG3dCamera_construct(){
@@ -16047,6 +16000,11 @@ MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
    m.append(o._projection.matrix());
    o._planes.updateVision(m.data());
 }
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dLight);
    o._camera    = MO.Class.register(o, new MO.AGetter('_camera'));
@@ -16059,7 +16017,7 @@ MO.FG3dDirectionalLight = function FG3dDirectionalLight(o){
 MO.FG3dDirectionalLight_construct = function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
-   o._camera = MO.Class.create(MO.FG3dPerspectiveCamera);
+   o._camera = MO.Class.create(MO.FG3dCamera);
    o._direction = new MO.SVector3();
 }
 MO.FG3dDirectionalLight_dispose = function FG3dDirectionalLight_dispose(){
@@ -16637,187 +16595,52 @@ MO.FG3dObject_dispose = function FG3dObject_dispose(){
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
-MO.FG3dOrthoCamera = function FG3dOrthoCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dCamera);
-   o._projection      = MO.Class.register(o, new MO.AGetter('_projection'));
-   o.construct        = MO.FG3dOrthoCamera_construct;
-   o.updateFrustum    = MO.FG3dOrthoCamera_updateFrustum;
-   o.updateFromCamera = MO.FG3dOrthoCamera_updateFromCamera;
-   o.updateFlatCamera = MO.FG3dOrthoCamera_updateFlatCamera;
-   return o;
-}
-MO.FG3dOrthoCamera_construct = function FG3dOrthoCamera_construct(){
-   var o = this;
-   o.__base.FG3dCamera.construct.call(o);
-   o._projection = MO.Class.create(MO.FG3dOrthoProjection);
-}
-MO.FG3dOrthoCamera_updateFrustum = function FG3dOrthoCamera_updateFrustum(){
-   var o = this;
-   o.__base.FG3dCamera.updateFrustum.call(o);
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dOrthoCamera_updateFromCamera = function FG3dOrthoCamera_updateFromCamera(p){
-   var o = this;
-   var pf = p.updateFrustum();
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * pf.radius;
-   var vy = pf.center.y - d.y * pf.radius;
-   var vz = pf.center.z - d.z * pf.radius;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   var f = o._frustum;
-   o._matrix.transform(f.coners, pf.coners, 8);
-   f.updateCenter();
-   o._projection.updateFrustum(f);
-}
-MO.FG3dOrthoCamera_updateFlatCamera = function FG3dOrthoCamera_updateFlatCamera(p){
-   var o = this;
-   var f = o._frustum
-   var pf = p.updateFlatFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance;
-   var vy = pf.center.y - d.y * distance;
-   var vz = pf.center.z - d.z * distance;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._projection._znear = 0.3;
-   o._projection._zfar = distance * 1.5;
-   o._projection.update();
-}
 MO.FG3dOrthoProjection = function FG3dOrthoProjection(o){
    o = MO.Class.inherits(this, o, MO.FG3dProjection);
-   o._matrix       = MO.Class.register(o, new MO.AGetter('_matrix'));
    o.construct     = MO.FG3dOrthoProjection_construct;
    o.update        = MO.FG3dOrthoProjection_update;
    o.updateFrustum = MO.FG3dOrthoProjection_updateFrustum;
+   o.dispose       = MO.FG3dOrthoProjection_dispose;
    return o;
 }
 MO.FG3dOrthoProjection_construct = function FG3dOrthoProjection_construct(){
    var o = this;
    o.__base.FG3dProjection.construct.call(o);
-   o._matrix = new MO.SOrthoMatrix3d();
 }
 MO.FG3dOrthoProjection_update = function FG3dOrthoProjection_update(){
    var o = this;
    var size = o._size;
-   o._matrix.identity();
-   var d = o._matrix.data();
-   d[ 0] = 2 / size.width;
-   d[ 4] = d[ 8] = d[12] = 0;
-   d[ 5] = 2 / size.height;
-   d[ 1] = d[ 9] = d[13] = 0;
-   d[10] = 1 / (o._zfar - o._znear);
-   d[ 2] = d[ 6] = d[14] = 0;
-   d[ 3] = d[ 7] = 0;
-   d[11] = -o._znear / (o._zfar - o._znear);
-   d[15] = 1;
+   var left = -size.width * 0.5;
+   var top = -size.height * 0.5;
+   MO.Lang.Matrix.orthoLH(o._matrix, left, top, size.width, size.height, o._znear, o._zfar);
 }
-MO.FG3dOrthoProjection_updateFrustum = function FG3dOrthoProjection_updateFrustum(p){
+MO.FG3dOrthoProjection_updateFrustum = function FG3dOrthoProjection_updateFrustum(frustum){
    var o = this;
-   o._znear = p.minZ;
-   o._zfar = p.maxZ;
+   o._znear = frustum.minZ;
+   o._zfar = frustum.maxZ;
    o.update();
 }
-MO.FG3dPerspectiveCamera = function FG3dPerspectiveCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dCamera);
-   o._projection       = MO.Class.register(o, new MO.AGetter('_projection'));
-   o._centerFront      = 0.4;
-   o.construct         = MO.FG3dPerspectiveCamera_construct;
-   o.updateFrustum     = MO.FG3dPerspectiveCamera_updateFrustum;
-   o.updateFlatFrustum = MO.FG3dPerspectiveCamera_updateFlatFrustum;
-   o.updateFromCamera  = MO.FG3dPerspectiveCamera_updateFromCamera;
-   o.updateFlatCamera  = MO.FG3dPerspectiveCamera_updateFlatCamera;
-   return o;
-}
-MO.FG3dPerspectiveCamera_construct = function FG3dPerspectiveCamera_construct(){
+MO.FG3dOrthoProjection_dispose = function FG3dOrthoProjection_dispose(){
    var o = this;
-   o.__base.FG3dCamera.construct.call(o);
-   o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
-}
-MO.FG3dPerspectiveCamera_updateFrustum = function FG3dPerspectiveCamera_updateFrustum(){
-   var o = this;
-   o.__base.FG3dCamera.updateFrustum.call(o);
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dPerspectiveCamera_updateFlatFrustum = function FG3dPerspectiveCamera_updateFlatFrustum(){
-   var o = this;
-   var p = o._projection;
-   var s = p._size;
-   var f = o._frustum;
-   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
-   return f;
-}
-MO.FG3dPerspectiveCamera_updateFromCamera = function FG3dPerspectiveCamera_updateFromCamera(p){
-   var o = this;
-   var f = o._frustum;
-   var pf = p.updateFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance;
-   var vy = pf.center.y - d.y * distance;
-   var vz = pf.center.z - d.z * distance;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
-   f.updateCenter();
-   o._projection.updateFrustum(f);
-}
-MO.FG3dPerspectiveCamera_updateFlatCamera = function FG3dPerspectiveCamera_updateFlatCamera(p){
-   var o = this;
-   var f = o._frustum;
-   var pf = p.updateFlatFrustum();
-   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
-   var distance = pf.radius / Math.sin(angle * 0.5);
-   distance = Math.max(distance, p._projection._zfar);
-   var d = o._direction;
-   d.normalize();
-   var vx = pf.center.x - d.x * distance * o._centerFront;
-   var vy = pf.center.y - d.y * distance * o._centerFront;
-   var vz = pf.center.z - d.z * distance * o._centerFront;
-   o._position.set(vx, vy, vz);
-   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
-   o.update();
-   o._projection._znear = 0.1;
-   o._projection._zfar = distance;
-   o._projection.update();
+   o.__base.FG3dProjection.dispose.call(o);
 }
 MO.FG3dPerspectiveProjection = function FG3dPerspectiveProjection(o){
    o = MO.Class.inherits(this, o, MO.FG3dProjection);
-   o._matrix       = MO.Class.register(o, new MO.AGetter('_matrix'));
    o.construct     = MO.FG3dPerspectiveProjection_construct;
    o.update        = MO.FG3dPerspectiveProjection_update;
    o.updateFrustum = MO.FG3dPerspectiveProjection_updateFrustum;
+   o.dispose       = MO.FG3dPerspectiveProjection_dispose;
    return o;
 }
 MO.FG3dPerspectiveProjection_construct = function FG3dPerspectiveProjection_construct(){
    var o = this;
    o.__base.FG3dProjection.construct.call(o);
-   o._matrix = new MO.SPerspectiveMatrix3d();
 }
 MO.FG3dPerspectiveProjection_update = function FG3dPerspectiveProjection_update(){
    var o = this;
-   var s = o._size;
+   var size = o._size;
    o._fieldOfView = MO.RConst.DEGREE_RATE * o._angle;
-   o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
+   MO.Lang.Matrix.perspectiveFieldOfViewLH(o._matrix, o._fieldOfView, size.width / size.height, o._znear, o._zfar);
 }
 MO.FG3dPerspectiveProjection_updateFrustum = function FG3dPerspectiveProjection_updateFrustum(p){
    var o = this;
@@ -16825,29 +16648,42 @@ MO.FG3dPerspectiveProjection_updateFrustum = function FG3dPerspectiveProjection_
    o._zfar = p.maxZ;
    o.update();
 }
+MO.FG3dPerspectiveProjection_dispose = function FG3dPerspectiveProjection_dispose(){
+   var o = this;
+   o.__base.FG3dProjection.dispose.call(o);
+}
 MO.FG3dPointLight = function FG3dPointLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dLight);
    return o;
 }
 MO.FG3dProjection = function FG3dProjection(o){
    o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix      = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._size        = MO.Class.register(o, new MO.AGetter('_size'));
    o._angle       = MO.Class.register(o, new MO.AGetSet('_angle'), 60.0);
    o._fieldOfView = MO.Class.register(o, new MO.AGetSet('_fieldOfView'), 0);
    o._znear       = MO.Class.register(o, new MO.AGetSet('_znear'), 0.1);
-   o._zfar        = MO.Class.register(o, new MO.AGetSet('_zfar'), 200.0);
-   o._scale       = MO.Class.register(o, new MO.AGetSet('_scale'), 0);
-   o.construct   = MO.FG3dProjection_construct;
-   o.distance    = MO.FG3dProjection_distance;
+   o._zfar        = MO.Class.register(o, new MO.AGetSet('_zfar'), 200);
+   o._zoom        = MO.Class.register(o, new MO.AGetSet('_zoom'), 1);
+   o.construct    = MO.FG3dProjection_construct;
+   o.distance     = MO.FG3dProjection_distance;
+   o.dispose      = MO.FG3dProjection_dispose;
    return o;
 }
 MO.FG3dProjection_construct = function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
    o._size = new MO.SSize2();
 }
 MO.FG3dProjection_distance = function FG3dProjection_distance(){
    return this._zfar - this._znear;
+}
+MO.FG3dProjection_dispose = function FG3dProjection_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FG3dShaderTemplate = function FG3dShaderTemplate(o){
    o = MO.Class.inherits(this, o, MO.FTagDocument);
@@ -20339,6 +20175,10 @@ MO.MEventDispatcher = function MEventDispatcher(o){
    o.onOperationDown        = MO.Method.empty;
    o.onOperationMove        = MO.Method.empty;
    o.onOperationUp          = MO.Method.empty;
+   o.onOperationWheel       = MO.Method.empty;
+   o.onOperationKeyDown     = MO.Method.empty;
+   o.onOperationKeyPress    = MO.Method.empty;
+   o.onOperationKeyUp       = MO.Method.empty;
    o.onOperationResize      = MO.Method.empty;
    o.onOperationOrientation = MO.Method.empty;
    o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
@@ -20355,6 +20195,18 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          break;
       case MO.EEvent.MouseUp:
          o.onOperationUp(event);
+         break;
+      case MO.EEvent.MouseWheel:
+         o.onOperationWheel(event);
+         break;
+      case MO.EEvent.KeyDown:
+         o.onOperationKeyDown(event);
+         break;
+      case MO.EEvent.KeyPress:
+         o.onOperationKeyPress(event);
+         break;
+      case MO.EEvent.KeyUp:
+         o.onOperationKeyUp(event);
          break;
       case MO.EEvent.Resize:
          o.onOperationResize(event);
@@ -28060,7 +27912,8 @@ MO.FE3dAnimation = function FE3dAnimation(o){
    return o;
 }
 MO.FE3dCamera = function FE3dCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
+   o = MO.Class.inherits(this, o, MO.FG3dCamera, MO.MLinkerResource);
+   o._projection     = MO.Class.register(o, new MO.AGetter('_projection'));
    o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
    o._quaternion     = null;
@@ -28082,7 +27935,7 @@ MO.FE3dCamera = function FE3dCamera(o){
 }
 MO.FE3dCamera_construct = function FE3dCamera_construct(){
    var o = this;
-   o.__base.FG3dPerspectiveCamera.construct.call(o);
+   o.__base.FG3dCamera.construct.call(o);
    o._rotation = new MO.SVector3();
    o._rotationMatrix = new MO.SMatrix3x3();
    o._quaternion = new MO.SQuaternion();
@@ -28148,7 +28001,12 @@ MO.FE3dCamera_update = function FE3dCamera_update(){
    var d = o._direction;
    m.transformPoint3(o._directionTarget, d);
    d.normalize();
-   o.__base.FG3dPerspectiveCamera.update.call(o);
+   o.__base.FG3dCamera.update.call(o);
+}
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   o._projection = MO.Lang.Obejct.dispose(o._projection);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FE3dDirectionalLight = function FE3dDirectionalLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dDirectionalLight, MO.MLinkerResource);
@@ -28712,13 +28570,136 @@ MO.FE3dMovie_process = function FE3dMovie_process(matrix){
 }
 MO.FE3dOrthoCamera = function FE3dOrthoCamera(o){
    o = MO.Class.inherits(this, o, MO.FE3dCamera);
-   o.construct = MO.FE3dOrthoCamera_construct;
+   o.construct        = MO.FE3dOrthoCamera_construct;
+   o.updateFrustum    = MO.FE3dOrthoCamera_updateFrustum;
+   o.updateFromCamera = MO.FE3dOrthoCamera_updateFromCamera;
+   o.updateFlatCamera = MO.FE3dOrthoCamera_updateFlatCamera;
    return o;
 }
 MO.FE3dOrthoCamera_construct = function FE3dOrthoCamera_construct(){
    var o = this;
    o.__base.FE3dCamera.construct.call(o);
    o._projection = MO.Class.create(MO.FG3dOrthoProjection);
+}
+MO.FE3dOrthoCamera_updateFrustum = function FE3dOrthoCamera_updateFrustum(){
+   var o = this;
+   o.__base.FE3dCamera.updateFrustum.call(o);
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dOrthoCamera_updateFromCamera = function FE3dOrthoCamera_updateFromCamera(p){
+   var o = this;
+   var pf = p.updateFrustum();
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * pf.radius;
+   var vy = pf.center.y - d.y * pf.radius;
+   var vz = pf.center.z - d.z * pf.radius;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   var f = o._frustum;
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+MO.FE3dOrthoCamera_updateFlatCamera = function FE3dOrthoCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._projection._znear = 0.3;
+   o._projection._zfar = distance * 1.5;
+   o._projection.update();
+}
+MO.FE3dPerspectiveCamera = function FE3dPerspectiveCamera(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCamera, MO.MLinkerResource);
+   o._centerFront      = 0.4;
+   o.construct         = MO.FE3dPerspectiveCamera_construct;
+   o.updateFrustum     = MO.FE3dPerspectiveCamera_updateFrustum;
+   o.updateFlatFrustum = MO.FE3dPerspectiveCamera_updateFlatFrustum;
+   o.updateFromCamera  = MO.FE3dPerspectiveCamera_updateFromCamera;
+   o.updateFlatCamera  = MO.FE3dPerspectiveCamera_updateFlatCamera;
+   return o;
+}
+MO.FE3dPerspectiveCamera_construct = function FE3dPerspectiveCamera_construct(){
+   var o = this;
+   o.__base.FE3dCamera.construct.call(o);
+   o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
+   o._rotation = new MO.SVector3();
+   o._rotationMatrix = new MO.SMatrix3x3();
+   o._quaternion = new MO.SQuaternion();
+   o._quaternionX = new MO.SQuaternion();
+   o._quaternionY = new MO.SQuaternion();
+   o._quaternionZ = new MO.SQuaternion();
+}
+MO.FE3dPerspectiveCamera_updateFrustum = function FE3dPerspectiveCamera_updateFrustum(){
+   var o = this;
+   o.__base.FE3dCamera.updateFrustum.call(o);
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dPerspectiveCamera_updateFlatFrustum = function FE3dPerspectiveCamera_updateFlatFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dPerspectiveCamera_updateFromCamera = function FE3dPerspectiveCamera_updateFromCamera(p){
+   var o = this;
+   var f = o._frustum;
+   var pf = p.updateFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+MO.FE3dPerspectiveCamera_updateFlatCamera = function FE3dPerspectiveCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum;
+   var pf = p.updateFlatFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance * o._centerFront;
+   var vy = pf.center.y - d.y * distance * o._centerFront;
+   var vz = pf.center.z - d.z * distance * o._centerFront;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._projection._znear = 0.1;
+   o._projection._zfar = distance;
+   o._projection.update();
 }
 MO.FE3dRegion = function FE3dRegion(o){
    o = MO.Class.inherits(this, o, MO.FRegion, MO.MGraphicObject, MO.MG3dRegion, MO.MLinkerResource);
@@ -28735,7 +28716,7 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
-   var camera = o._camera = MO.Class.create(MO.FE3dCamera);
+   var camera = o._camera = MO.Class.create(MO.FE3dPerspectiveCamera);
    camera.position().set(0, 0, -100);
    camera.lookAt(0, 0, 0);
    camera.update();
@@ -35107,6 +35088,10 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    MO.Window.lsnsMouseDown.register(o, o.onProcessEvent);
    MO.Window.lsnsMouseMove.register(o, o.onProcessEvent);
    MO.Window.lsnsMouseUp.register(o, o.onProcessEvent);
+   MO.Window.lsnsMouseWheel.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyDown.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyPress.register(o, o.onProcessEvent);
+   MO.Window.lsnsKeyUp.register(o, o.onProcessEvent);
    MO.Window.lsnsResize.register(o, o.onProcessEvent);
    MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    var thread = o._thread = MO.Class.create(MO.FThread);
@@ -35513,9 +35498,9 @@ MO.FGuiControl = function FGuiControl(o){
    o._backHoverColor         = MO.Class.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
    o._backHoverResource      = MO.Class.register(o, [new MO.APtyString('_backHoverResource'), new MO.AGetSet('_backHoverResource')]);
    o._backHoverGrid          = MO.Class.register(o, [new MO.APtyPadding('_backHoverGrid'), new MO.AGetter('_backHoverGrid')]);
+   o._manager                = MO.Class.register(o, new MO.AGetSet('_manager'));
    o._statusReady            = false;
    o._statusDirty            = true;
-   o._statusDirtyAll         = false;
    o._statusHover            = false;
    o._backImage              = null;
    o._backHoverResource      = null;
@@ -35537,7 +35522,6 @@ MO.FGuiControl = function FGuiControl(o){
    o.construct               = MO.FGuiControl_construct;
    o.isReady                 = MO.FGuiControl_isReady;
    o.isDirty                 = MO.FGuiControl_isDirty;
-   o.isDirtyAll              = MO.FGuiControl_isDirtyAll;
    o.setVisible              = MO.FGuiControl_setVisible;
    o.setSize                 = MO.FGuiControl_setSize;
    o.testReady               = MO.FGuiControl_testReady;
@@ -35549,7 +35533,6 @@ MO.FGuiControl = function FGuiControl(o){
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
-   o.dirtyAll                = MO.FGuiControl_dirtyAll;
    o.psPaint                 = MO.FGuiControl_psPaint;
    o.psUpdate                = MO.FGuiControl_psUpdate;
    o.dispose                 = MO.FGuiControl_dispose;
@@ -35680,17 +35663,13 @@ MO.FGuiControl_isReady = function FGuiControl_isReady(){
 MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
    return this._statusDirty;
 }
-MO.FGuiControl_isDirtyAll = function FGuiControl_isDirtyAll(){
-   return this._statusDirtyAll;
-}
 MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    var o = this;
    o._visible = flag;
-   var renderable = o._renderable;
-   if(renderable){
-      renderable.setVisible(flag);
+   var manager = o._manager;
+   if(manager){
+      manager.dirty();
    }
-   o.dirtyAll();
 }
 MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;
@@ -35803,7 +35782,6 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    graphic.restore();
    rectangle.assign(o._eventRectangle);
    o._statusDirty = false;
-   o._statusDirtyAll = false;
 }
 MO.FGuiControl_update = function FGuiControl_update(){
    var o = this;
@@ -35815,11 +35793,6 @@ MO.FGuiControl_update = function FGuiControl_update(){
 }
 MO.FGuiControl_dirty = function FGuiControl_dirty(){
    this._statusDirty = true;
-}
-MO.FGuiControl_dirtyAll = function FGuiControl_dirtyAll(){
-   var o = this;
-   o._statusDirty = true;
-   o._statusDirtyAll = true;
 }
 MO.FGuiControl_build = function FGuiControl_build(){
    var o = this;
@@ -36204,10 +36177,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
       if(control.processReady()){
-         if(control.visible()){
-            if(control.isDirtyAll()){
-               o._statusDirty = true;
-            }
+         if(o._visible && control.visible()){
             control._flagDirty = false;
             readyControls.push(control)
          }
@@ -36495,6 +36465,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
 }
 MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
+   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'));
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
    o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
@@ -36527,11 +36498,13 @@ MO.FGuiManager_construct = function FGuiManager_construct(){
 }
 MO.FGuiManager_register = function FGuiManager_register(control){
    var o = this;
+   control.setManager(o);
    o._controls.push(control);
    o._statusDirty = true;
 }
 MO.FGuiManager_unregister = function FGuiManager_unregister(control){
    var o = this;
+   control.setManager(null);
    o._controls.remove(control);
    o._statusDirty = true;
 }
@@ -36550,12 +36523,8 @@ MO.FGuiManager_isDirty = function FGuiManager_isDirty(){
 }
 MO.FGuiManager_setVisible = function FGuiManager_setVisible(value){
    var o = this;
-   var controls = o._controls;
-   var count = controls.count();
-   for(var i = 0; i < count; i++){
-      var control = controls.at(i);
-      control.setVisible(value);
-   }
+   o._visible = value;
+   o._statusDirty = true;
 }
 MO.FGuiManager_show = function FGuiManager_show(){
    this.setVisible(true);
@@ -82783,6 +82752,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._operationRotationY     = 0;
    o._rotationX              = 0;
    o._rotationY              = 0;
+   o._worldScale             = 500;
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
@@ -82790,6 +82760,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
    o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
    o.onOperationUp           = MO.FEaiChartWorldScene_onOperationUp;
+   o.onOperationWheel        = MO.FEaiChartWorldScene_onOperationWheel;
    o.onSwitchProcess         = MO.FEaiChartWorldScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartWorldScene_onSwitchComplete;
    o.construct               = MO.FEaiChartWorldScene_construct;
@@ -82912,6 +82883,15 @@ MO.FEaiChartWorldScene_onOperationUp = function FEaiChartWorldScene_onOperationU
    var o = this;
    o._operationFlag = false;
 }
+MO.FEaiChartWorldScene_onOperationWheel = function FEaiChartWorldScene_onOperationWheel(event){
+   var o = this;
+   var delta = event.deltaY
+   if(delta > 0){
+      o._worldScale /= 1.05;
+   }else if(delta < 0){
+      o._worldScale *= 1.05;
+   }
+}
 MO.FEaiChartWorldScene_onSwitchProcess = function FEaiChartWorldScene_onSwitchProcess(event){
    var o = this;
 }
@@ -82960,7 +82940,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    o._guiManager.register(livePop);
    o._guiManager.hide();
    var camera = MO.Class.create(MO.FE3dOrthoCamera);
-   camera.position().set(0, 0, -100);
+   camera.position().set(0, 0, -500);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
@@ -83019,12 +82999,12 @@ MO.FEaiChartWorldScene_fixMatrix = function FEaiChartWorldScene_fixMatrix(matrix
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    }else{
-      matrix.tx = -240;
+      matrix.tx = -320;
       matrix.ty = 0;
       matrix.tz = 0;
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
-      matrix.setScale(400, 400, 400);
+      matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
    }
    matrix.update();
    o._rotationY += 0.001;
@@ -83241,8 +83221,8 @@ MO.FEaiGroupScene = function FEaiGroupScene(o){
 }
 MO.FEaiScene = function FEaiScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
-   o._optionDebug           = true;
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
+   o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
@@ -83255,6 +83235,14 @@ MO.FEaiScene = function FEaiScene(o){
    o.processEvent           = MO.FEaiScene_processEvent;
    o.dispose                = MO.FEaiScene_dispose;
    return o;
+}
+MO.FEaiScene_onOperationKeyDown = function FEaiScene_onOperationKeyDown(event){
+   var o = this;
+   o.__base.FScene.onOperationKeyDown.call(o, event);
+   if(event.altKey && (event.keyCode == MO.EKeyCode.P)){
+      var control = o._application.dynamicInfo();
+      control.setVisible(!control.visible());
+   }
 }
 MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
@@ -83286,21 +83274,18 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
    guiManager.setDesktop(desktop);
    guiManager.setCanvas(canvas2d);
    guiManager.setup();
-   if(o._optionDebug){
-      var control = o._application.dynamicInfo();
-      guiManager.register(control);
-   }
+   var control = o._application.dynamicInfo();
+   guiManager.register(control);
 }
 MO.FEaiScene_active = function FEaiScene_active(){
    var o = this;
    o.__base.FScene.active.call(o);
    var stage = o._activeStage;
-   if(o._optionDebug){
-      var control = o._application.dynamicInfo();
-      control.setDisplayOrder(10000);
-      control.setStage(stage);
-      control.setGuiManager(o._guiManager);
-   }
+   var control = o._application.dynamicInfo();
+   control.setVisible(false);
+   control.setDisplayOrder(10000);
+   control.setStage(stage);
+   control.setGuiManager(o._guiManager);
    var application = o._application;
    var desktop = application.desktop();
    desktop.selectStage(stage);

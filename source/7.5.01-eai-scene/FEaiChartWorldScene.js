@@ -38,6 +38,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._operationRotationY     = 0;
    o._rotationX              = 0;
    o._rotationY              = 0;
+   o._worldScale             = 500;
    // @attribute
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    //..........................................................
@@ -48,6 +49,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
    o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
    o.onOperationUp           = MO.FEaiChartWorldScene_onOperationUp;
+   o.onOperationWheel        = MO.FEaiChartWorldScene_onOperationWheel;
    o.onSwitchProcess         = MO.FEaiChartWorldScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartWorldScene_onSwitchComplete;
    //..........................................................
@@ -237,6 +239,22 @@ MO.FEaiChartWorldScene_onOperationUp = function FEaiChartWorldScene_onOperationU
 }
 
 //==========================================================
+// <T>操作卷动处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartWorldScene_onOperationWheel = function FEaiChartWorldScene_onOperationWheel(event){
+   var o = this;
+   var delta = event.deltaY
+   if(delta > 0){
+      o._worldScale /= 1.05;
+   }else if(delta < 0){
+      o._worldScale *= 1.05;
+   }
+}
+
+//==========================================================
 // <T>切换过程处理。</T>
 //
 // @method
@@ -324,7 +342,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    //..........................................................
    // 创建相机
    var camera = MO.Class.create(MO.FE3dOrthoCamera);
-   camera.position().set(0, 0, -100);
+   camera.position().set(0, 0, -500);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
@@ -431,16 +449,12 @@ MO.FEaiChartWorldScene_fixMatrix = function FEaiChartWorldScene_fixMatrix(matrix
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    }else{
-      matrix.tx = -240;
+      matrix.tx = -320;
       matrix.ty = 0;
       matrix.tz = 0;
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
-      matrix.setScale(400, 400, 400);
-      //matrix.tx = -38.6;
-      //matrix.ty = -12.8;
-      //matrix.tz = 0;
-      //matrix.setScale(0.32, 0.36, 0.32);
+      matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
    }
    matrix.update();
    //..........................................................

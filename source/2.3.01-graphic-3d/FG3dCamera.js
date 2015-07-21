@@ -47,6 +47,8 @@ MO.FG3dCamera = function FG3dCamera(o){
    o.lookAt           = MO.FG3dCamera_lookAt;
    o.update           = MO.FG3dCamera_update;
    o.updateFrustum    = MO.FG3dCamera_updateFrustum;
+   // @method
+   o.dispose          = MO.FG3dCamera_dispose;
    return o;
 }
 
@@ -231,4 +233,17 @@ MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
    m.assign(o._matrix);
    m.append(o._projection.matrix());
    o._planes.updateVision(m.data());
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   // 释放属性
+   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   // 父处理
+   o.__base.FObject.dispose.call(o);
 }

@@ -15,7 +15,8 @@ MO.FE3dAnimation = function FE3dAnimation(o){
    return o;
 }
 MO.FE3dCamera = function FE3dCamera(o){
-   o = MO.Class.inherits(this, o, MO.FG3dPerspectiveCamera, MO.MLinkerResource);
+   o = MO.Class.inherits(this, o, MO.FG3dCamera, MO.MLinkerResource);
+   o._projection     = MO.Class.register(o, new MO.AGetter('_projection'));
    o._rotation       = MO.Class.register(o, new MO.AGetter('_rotation'));
    o._rotationMatrix = null;
    o._quaternion     = null;
@@ -37,7 +38,7 @@ MO.FE3dCamera = function FE3dCamera(o){
 }
 MO.FE3dCamera_construct = function FE3dCamera_construct(){
    var o = this;
-   o.__base.FG3dPerspectiveCamera.construct.call(o);
+   o.__base.FG3dCamera.construct.call(o);
    o._rotation = new MO.SVector3();
    o._rotationMatrix = new MO.SMatrix3x3();
    o._quaternion = new MO.SQuaternion();
@@ -103,7 +104,12 @@ MO.FE3dCamera_update = function FE3dCamera_update(){
    var d = o._direction;
    m.transformPoint3(o._directionTarget, d);
    d.normalize();
-   o.__base.FG3dPerspectiveCamera.update.call(o);
+   o.__base.FG3dCamera.update.call(o);
+}
+MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
+   var o = this;
+   o._projection = MO.Lang.Obejct.dispose(o._projection);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FE3dDirectionalLight = function FE3dDirectionalLight(o){
    o = MO.Class.inherits(this, o, MO.FG3dDirectionalLight, MO.MLinkerResource);
@@ -667,13 +673,136 @@ MO.FE3dMovie_process = function FE3dMovie_process(matrix){
 }
 MO.FE3dOrthoCamera = function FE3dOrthoCamera(o){
    o = MO.Class.inherits(this, o, MO.FE3dCamera);
-   o.construct = MO.FE3dOrthoCamera_construct;
+   o.construct        = MO.FE3dOrthoCamera_construct;
+   o.updateFrustum    = MO.FE3dOrthoCamera_updateFrustum;
+   o.updateFromCamera = MO.FE3dOrthoCamera_updateFromCamera;
+   o.updateFlatCamera = MO.FE3dOrthoCamera_updateFlatCamera;
    return o;
 }
 MO.FE3dOrthoCamera_construct = function FE3dOrthoCamera_construct(){
    var o = this;
    o.__base.FE3dCamera.construct.call(o);
    o._projection = MO.Class.create(MO.FG3dOrthoProjection);
+}
+MO.FE3dOrthoCamera_updateFrustum = function FE3dOrthoCamera_updateFrustum(){
+   var o = this;
+   o.__base.FE3dCamera.updateFrustum.call(o);
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dOrthoCamera_updateFromCamera = function FE3dOrthoCamera_updateFromCamera(p){
+   var o = this;
+   var pf = p.updateFrustum();
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * pf.radius;
+   var vy = pf.center.y - d.y * pf.radius;
+   var vz = pf.center.z - d.z * pf.radius;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   var f = o._frustum;
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+MO.FE3dOrthoCamera_updateFlatCamera = function FE3dOrthoCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._projection._znear = 0.3;
+   o._projection._zfar = distance * 1.5;
+   o._projection.update();
+}
+MO.FE3dPerspectiveCamera = function FE3dPerspectiveCamera(o){
+   o = MO.Class.inherits(this, o, MO.FE3dCamera, MO.MLinkerResource);
+   o._centerFront      = 0.4;
+   o.construct         = MO.FE3dPerspectiveCamera_construct;
+   o.updateFrustum     = MO.FE3dPerspectiveCamera_updateFrustum;
+   o.updateFlatFrustum = MO.FE3dPerspectiveCamera_updateFlatFrustum;
+   o.updateFromCamera  = MO.FE3dPerspectiveCamera_updateFromCamera;
+   o.updateFlatCamera  = MO.FE3dPerspectiveCamera_updateFlatCamera;
+   return o;
+}
+MO.FE3dPerspectiveCamera_construct = function FE3dPerspectiveCamera_construct(){
+   var o = this;
+   o.__base.FE3dCamera.construct.call(o);
+   o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
+   o._rotation = new MO.SVector3();
+   o._rotationMatrix = new MO.SMatrix3x3();
+   o._quaternion = new MO.SQuaternion();
+   o._quaternionX = new MO.SQuaternion();
+   o._quaternionY = new MO.SQuaternion();
+   o._quaternionZ = new MO.SQuaternion();
+}
+MO.FE3dPerspectiveCamera_updateFrustum = function FE3dPerspectiveCamera_updateFrustum(){
+   var o = this;
+   o.__base.FE3dCamera.updateFrustum.call(o);
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dPerspectiveCamera_updateFlatFrustum = function FE3dPerspectiveCamera_updateFlatFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+MO.FE3dPerspectiveCamera_updateFromCamera = function FE3dPerspectiveCamera_updateFromCamera(p){
+   var o = this;
+   var f = o._frustum;
+   var pf = p.updateFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+MO.FE3dPerspectiveCamera_updateFlatCamera = function FE3dPerspectiveCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum;
+   var pf = p.updateFlatFrustum();
+   var angle = MO.RConst.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance * o._centerFront;
+   var vy = pf.center.y - d.y * distance * o._centerFront;
+   var vz = pf.center.z - d.z * distance * o._centerFront;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._projection._znear = 0.1;
+   o._projection._zfar = distance;
+   o._projection.update();
 }
 MO.FE3dRegion = function FE3dRegion(o){
    o = MO.Class.inherits(this, o, MO.FRegion, MO.MGraphicObject, MO.MG3dRegion, MO.MLinkerResource);
@@ -690,7 +819,7 @@ MO.FE3dRegion_construct = function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
-   var camera = o._camera = MO.Class.create(MO.FE3dCamera);
+   var camera = o._camera = MO.Class.create(MO.FE3dPerspectiveCamera);
    camera.position().set(0, 0, -100);
    camera.lookAt(0, 0, 0);
    camera.update();

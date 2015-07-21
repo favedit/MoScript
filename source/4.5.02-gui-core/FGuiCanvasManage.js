@@ -144,11 +144,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    for(var i = 0; i < count; i++){
       var control = controls.at(i);
       if(control.processReady()){
-         if(control.visible()){
-            // 全部脏处理
-            if(control.isDirtyAll()){
-               o._statusDirty = true;
-            }
+         if(o._visible && control.visible()){
             // 放入准备好控件
             control._flagDirty = false;
             readyControls.push(control)

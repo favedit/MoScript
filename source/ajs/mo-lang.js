@@ -3381,17 +3381,17 @@ MO.RArray.prototype.equals = function RArray_equals(s, t){
    }
    return false;
 }
-MO.RArray.prototype.count = function RArray_count(a){
-   var c = 0;
-   for(var n in a){
-      n++;
+MO.RArray.prototype.count = function RArray_count(value){
+   var count = 0;
+   for(var name in value){
+      count++;
    }
-   return c;
+   return count;
 }
-MO.RArray.prototype.contains = function RArray_contains(a, v){
-   var c = a.length;
+MO.RArray.prototype.contains = function RArray_contains(array, v){
+   var c = array.length;
    for(var n = 0; n < c; n++){
-      if(a[n] == v){
+      if(array[n] == v){
          return true;
       }
    }
@@ -3422,10 +3422,16 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
       a[e - n] = t;
    }
 }
-MO.RArray.prototype.copy = function RArray_copy(s, t){
-   for(var n in s){
-      t[n] = s[n];
+MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
+   for(var i = 0; i < sourceCount; i++){
+      target[i + targetOffset] = source[i + sourceOffset];
    }
+   return target;
 }
 MO.RArray.prototype.move = function RArray_move(array, offset, count, target){
    if(offset > target){
@@ -7222,95 +7228,6 @@ MO.SMatrix4x4_toString = function SMatrix4x4_toString(){
    }
    return r.flush();
 }
-MO.SOrthoMatrix3d = function SOrthoMatrix3d(){
-   var o = this;
-   MO.SMatrix3d.call(o);
-   o.perspectiveLH            = MO.SOrthoMatrix3d_perspectiveLH;
-   o.perspectiveRH            = MO.SOrthoMatrix3d_perspectiveRH;
-   o.perspectiveFieldOfViewLH = MO.SOrthoMatrix3d_perspectiveFieldOfViewLH;
-   o.perspectiveFieldOfViewRH = MO.SOrthoMatrix3d_perspectiveFieldOfViewRH;
-   return o;
-}
-MO.SOrthoMatrix3d_perspectiveLH = function SOrthoMatrix3d_perspectiveLH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveRH = function SOrthoMatrix3d_perspectiveRH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveFieldOfViewLH = function SOrthoMatrix3d_perspectiveFieldOfViewLH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SOrthoMatrix3d_perspectiveFieldOfViewRH = function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pf - pn);
-   d[15] = 0.0;
-}
 MO.SOutline3 = function SOutline3(){
    var o = this;
    o.min         = new MO.SPoint3();
@@ -7591,95 +7508,6 @@ MO.SPadding_dispose = function SPadding_dispose(){
 MO.SPadding_dump = function SPadding_dump(d){
    var o = this;
    return MO.Class.dump(o) + ' [' + o.left + ',' + o.top + ',' + o.right + ',' + o.bottom + ']';
-}
-MO.SPerspectiveMatrix3d = function SPerspectiveMatrix3d(){
-   var o = this;
-   MO.SMatrix3d.call(o);
-   o.perspectiveLH            = MO.SPerspectiveMatrix3d_perspectiveLH;
-   o.perspectiveRH            = MO.SPerspectiveMatrix3d_perspectiveRH;
-   o.perspectiveFieldOfViewLH = MO.SPerspectiveMatrix3d_perspectiveFieldOfViewLH;
-   o.perspectiveFieldOfViewRH = MO.SPerspectiveMatrix3d_perspectiveFieldOfViewRH;
-   return o;
-}
-MO.SPerspectiveMatrix3d_perspectiveLH = function SPerspectiveMatrix3d_perspectiveLH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveRH = function SPerspectiveMatrix3d_perspectiveRH(pw, ph, pn, pf){
-   var d = this._data;
-   d[ 0] = 2.0 * pn / pw;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = 2.0 * pn / ph;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveFieldOfViewLH = function SPerspectiveMatrix3d_perspectiveFieldOfViewLH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pf - pn);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pn - pf);
-   d[15] = 0.0;
-}
-MO.SPerspectiveMatrix3d_perspectiveFieldOfViewRH = function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
-   var d = this._data;
-   var sy = 1.0 / Math.tan(pv * 0.5);
-   var sx = sy / pr;
-   d[ 0] = sx;
-   d[ 1] = 0.0;
-   d[ 2] = 0.0;
-   d[ 3] = 0.0;
-   d[ 4] = 0.0;
-   d[ 5] = sy;
-   d[ 6] = 0.0;
-   d[ 7] = 0.0;
-   d[ 8] = 0.0;
-   d[ 9] = 0.0;
-   d[10] = pf / (pn - pf);
-   d[11] = 1.0;
-   d[12] = 0.0;
-   d[13] = 0.0;
-   d[14] = (pn * pf) / (pf - pn);
-   d[15] = 0.0;
 }
 MO.SPlane = function SPlane(){
    var o = this;
@@ -8841,6 +8669,125 @@ MO.RMath.prototype.sign = function RMath_sign(value){
 MO.RMath = new MO.RMath();
 MO.RMath.construct();
 MO.Lang.Math = MO.RMath;
+MO.RMatrix = function RMatrix(){
+   var o = this;
+   o.identity3x3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+   return o;
+}
+MO.RMatrix.prototype.perspectiveLH = function RMatrix_perspectiveLH(matrix, width, height, znear, zfar){
+   var data = matrix.data();
+   data[ 0] = 2 * znear / width;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = 2 * znear / height;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (zfar - znear);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveRH = function RMatrix_perspectiveRH(matrix, width, height, znear, zfar){
+   var data = matrix.data();
+   data[ 0] = 2 * znear / width;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = 2 * znear / height;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (znear - zfar);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveFieldOfViewLH = function RMatrix_perspectiveFieldOfViewLH(matrix, fieldOfView, aspectRatio, znear, zfar){
+   var data = matrix.data();
+   var sy = 1 / Math.tan(fieldOfView * 0.5);
+   var sx = sy / aspectRatio;
+   data[ 0] = sx;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = sy;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (zfar - znear);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (znear - zfar);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.perspectiveFieldOfViewRH = function RMatrix_perspectiveFieldOfViewRH(matrix, fieldOfView, aspectRatio, znear, zfar){
+   var data = matrix.data();
+   var sy = 1 / Math.tan(fieldOfView * 0.5);
+   var sx = sy / aspectRatio;
+   data[ 0] = sx;
+   data[ 1] = 0;
+   data[ 2] = 0;
+   data[ 3] = 0;
+   data[ 4] = 0;
+   data[ 5] = sy;
+   data[ 6] = 0;
+   data[ 7] = 0;
+   data[ 8] = 0;
+   data[ 9] = 0;
+   data[10] = zfar / (znear - zfar);
+   data[11] = 1;
+   data[12] = 0;
+   data[13] = 0;
+   data[14] = (znear * zfar) / (zfar - znear);
+   data[15] = 0;
+}
+MO.RMatrix.prototype.orthoLH = function RMatrix_orthoLH(matrix, left, top, width, height, znear, zfar){
+   var o = this;
+   var right = left + width;
+   var bottom = top + height;
+   var distance = zfar - znear;
+   var x = (left + right) / width;
+   var y = (top + bottom) / height;
+   var z = znear / distance;
+   var data = MO.Lang.Array.copy(o.identity4x4, 0, 16, matrix.data(), 0);
+   data[ 0] = 2 / width;
+   data[ 5] = 2 / height;
+   data[10] = 1 / distance;
+   data[12] = -x;
+   data[13] = -y;
+   data[14] = -z;
+}
+MO.RMatrix.prototype.orthoRH = function RMatrix_orthoRH(matrix, left, top, width, height, znear, zfar){
+   var o = this;
+   var right = left + width;
+   var bottom = top + height;
+   var distance = zfar - znear;
+   var x = (left + right) / width;
+   var y = (top + bottom) / height;
+   var z = (znear + zfar) / distance;
+   var data = MO.Lang.Array.copy(o.identity4x4, 0, 16, matrix.data(), 0);
+   data[ 0] = 2 / width;
+   data[ 5] = 2 / height;
+   data[10] = -2 / distance;
+   data[12] = -x;
+   data[13] = -y;
+   data[14] = -z;
+}
+MO.Lang.Matrix = new MO.RMatrix();
 MO.RRandom = function RRandom(){
    var o = this;
    o._seed = (new Date()).getTime();
@@ -8857,4 +8804,4 @@ MO.RRandom.prototype.rand = function RRandom_rand(seed){
    return Math.ceil(value);
 }
 MO.RRandom = new MO.RRandom();
-MO.Random = MO.RRandom;
+MO.Lang.Random = MO.RRandom;
