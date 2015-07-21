@@ -143,10 +143,15 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    var count = countriesData.count();
    for(var i = 0; i < count; i++){
       var countryData = countriesData.at(i);
+      // 创建国家实体
       var country = MO.Class.create(MO.FEaiCountryEntity);
       country.linkGraphicContext(o);
       country.setWorldEntity(o);
+      country.setup();
       country.loadData(countryData);
+      var faceRenderable = country.boundaryShape().faceRenderable();
+      faceRenderable._material = o._material;
+      faceRenderable._texture = o._material.textures();
       countries.push(country);
    }
    //..........................................................
@@ -159,11 +164,9 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    // 合并省份处理
    for(var i = 0; i < count; i++){
       var countryEntity = countries.at(i);
-      var boundaries = countryEntity.boundaries();
-      var faceRenderable = boundaries.faceRenderable();
-      faceShape.pushMergeRenderable(faceRenderable);
-      var borderRenderable = boundaries.borderRenderable();
-      borderShape.pushMergeRenderable(borderRenderable);
+      var boundaryShape = countryEntity.boundaryShape();
+      faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
+      borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
    }
    faceShape.build();
    borderShape.build();

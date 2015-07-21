@@ -9,8 +9,9 @@ MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @attribute
-   o._mapEntity        = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
    o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
    o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
    // @attribute
@@ -26,6 +27,8 @@ MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
    //..........................................................
    // @method
    o.construct         = MO.FEaiProvinceEntity_construct;
+   // @method
+   o.setup             = MO.FEaiProvinceEntity_setup;
    // @method
    o.buildFace         = MO.FEaiProvinceEntity_buildFace;
    o.buildBorder       = MO.FEaiProvinceEntity_buildBorder;
@@ -49,6 +52,7 @@ MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
 MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
+   // 设置属性
    var colors = o._focusColors = new Array();
    colors[0] = [0x28, 0x42, 0xB4];
    colors[1] = [0x28, 0x42, 0xB4];
@@ -56,6 +60,18 @@ MO.FEaiProvinceEntity_construct = function FEaiProvinceEntity_construct(){
    colors[3] = [0xFF, 0xDF, 0x6F];
    colors[4] = [0xFF, 0x6B, 0x49];
    colors[5] = [0xFF, 0x6B, 0x49];
+}
+
+//==========================================================
+// <T>初始化处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiProvinceEntity_setup = function FEaiProvinceEntity_setup() {
+   var o = this;
+   // 创建边框
+   var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundary);
+   shape.linkGraphicContext(o);
 }
 
 //==========================================================
@@ -187,7 +203,6 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    renderable.indexBuffer().upload(faceData, faceIndex, true);
    renderable.material().info().effectCode = 'eai.map.face';
    //renderable.material().info().optionDouble = true;
-   //renderable.setMaterialReference(o._mapEntity);
 }
 
 //==========================================================
@@ -316,7 +331,7 @@ MO.FEaiProvinceEntity_build = function FEaiProvinceEntity_build(context){
    for(var i = 0; i < count; i++){
       var boundary = boundaries.at(i);
       vertexTotal += boundary.positionCount();
-      indexTotal += boundary.indexes().length;
+      indexTotal += boundary.indexCount();
    }
    o._vertexTotal = vertexTotal;
    o._indexTotal = indexTotal;

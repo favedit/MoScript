@@ -1,3 +1,21 @@
+MO.ME3dBoundaryPolygon = function ME3dBoundaryPolygon(o){
+   o = MO.Class.inherits(this, o);
+   o._positionCount = MO.Class.register(o, new MO.AGetter('_positionCount'));
+   o._positions     = MO.Class.register(o, new MO.AGetter('_positions'));
+   o._indexCount    = MO.Class.register(o, new MO.AGetter('_indexCount'));
+   o._indexes       = MO.Class.register(o, new MO.AGetter('_indexes'));
+   o.construct      = MO.ME3dBoundaryPolygon_construct;
+   o.dispose        = MO.ME3dBoundaryPolygon_dispose;
+   return o;
+}
+MO.ME3dBoundaryPolygon_construct = function ME3dBoundaryPolygon_construct(){
+   var o = this;
+}
+MO.ME3dBoundaryPolygon_dispose = function ME3dBoundaryPolygon_dispose(){
+   var o = this;
+   o._positions = null;
+   o._indexes = null;
+}
 MO.ME3dDynamicRenderable = function ME3dDynamicRenderable(o){
    o = MO.Class.inherits(this, o);
    o._color    = MO.Class.register(o, new MO.AGetter('_color'));
@@ -203,6 +221,255 @@ MO.FE3dBitmapData_loadUrl = function FE3dBitmapData_loadUrl(url){
 MO.FE3dBitmapData_dispose = function FE3dBitmapData_dispose(){
    var o = this;
    o.__base.FE3dFaceData.dispose.call(o);
+}
+MO.EE3dBoundaryShape = function EE3dBoundaryShape(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o._optionSphere     = false;
+   o._color            = MO.Class.register(o, new MO.AGetter('_color'));
+   o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
+   o._faceEffectCode   = MO.Class.register(o, new MO.AGetSet('_faceEffectCode'));
+   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
+   o._borderEffectCode = MO.Class.register(o, new MO.AGetSet('_borderEffectCode'));
+   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
+   o.construct         = MO.EE3dBoundaryShape_construct;
+   o.pushPolygon       = MO.EE3dBoundaryShape_pushPolygon;
+   o.buildFace         = MO.EE3dBoundaryShape_buildFace;
+   o.buildBorder       = MO.EE3dBoundaryShape_buildBorder;
+   o.build             = MO.EE3dBoundaryShape_build;
+   o.buildFlat         = MO.EE3dBoundaryShape_buildFlat;
+   o.buildSphere       = MO.EE3dBoundaryShape_buildSphere;
+   o.dispose           = MO.EE3dBoundaryShape_dispose;
+   return o;
+}
+MO.EE3dBoundaryShape_construct = function EE3dBoundaryShape_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._color = new MO.SColor4(0.3, 0.3, 0.3);
+   o._polygons = new MO.TObjects();
+}
+MO.EE3dBoundaryShape_pushPolygon = function EE3dBoundaryShape_pushPolygon(polygon){
+   this._polygons.push(polygon);
+}
+MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
+   var o = this;
+   var context = o._graphicContext;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var color = o._color;
+   var vertexStart = 0;
+   var vertexIndex = 0;
+   var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var coordIndex = 0;
+   var coordData = new Float32Array(2 * vertexTotal * 2);
+   var faceIndex = 0;
+   var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var cx = positions[positionIndex++];
+         var cy = positions[positionIndex++];
+         var x = cx * MO.Lang.Const.DEGREE_RATE;
+         var y = cy * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y);
+         vertexData[vertexIndex++] = Math.sin(y);
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y);
+         coordData[coordIndex++] = cx / 360 + 0.5;
+         coordData[coordIndex++] = 0.5 - cy / 180;
+      }
+      var indexes = boundary.indexes();
+      var indexCount = indexes.length;
+      var faceCount = indexCount / 3;
+      for(var i = 0; i < faceCount; i++){
+         var facePosition = 3 * i;
+         faceData[faceIndex++] = vertexStart + indexes[facePosition + 2];
+         faceData[faceIndex++] = vertexStart + indexes[facePosition + 1];
+         faceData[faceIndex++] = vertexStart + indexes[facePosition    ];
+      }
+      vertexStart += positionCount;
+   }
+   var layerStart = vertexStart;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
+         coordData[coordIndex++] = x;
+         coordData[coordIndex++] = y;
+      }
+   }
+   var vertexStart = 0;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      for(var i = 0; i < positionCount; i++){
+         if(i == positionCount - 1){
+            faceData[faceIndex++] = vertexStart + i;
+            faceData[faceIndex++] = vertexStart + 0;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = vertexStart + 0;
+            faceData[faceIndex++] = vertexStart + layerStart;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+         }else{
+            faceData[faceIndex++] = vertexStart + i;
+            faceData[faceIndex++] = vertexStart + i + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = vertexStart + i + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+         }
+      }
+      vertexStart += positionCount;
+   }
+   var colorIndex = 0;
+   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
+   var positionTotal = vertexTotal * 2;
+   for(var i = 0; i < positionTotal; i++){
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+   }
+   var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable.linkGraphicContext(context);
+   renderable.setOptionColor(true);
+   renderable.setOptionCoord(true);
+   renderable.setVertexCount(vertexTotal * 2);
+   renderable.setup();
+   renderable.color().setHex('#0a5294');
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);
+   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
+   renderable.indexBuffer().upload(faceData, faceIndex, true);
+}
+MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
+   var o = this;
+   var context = o._graphicContext;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var color = o._color;
+   var vertexStart = 0;
+   var vertexIndex = 0;
+   var faceIndex = 0;
+   var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var borderIndex = 0;
+   var borderData = new Uint32Array(2 * vertexTotal + 2 * vertexTotal);
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] / 180 * Math.PI;
+         var y = positions[positionIndex++] / 180 * Math.PI;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 1.001;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 1.001;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 1.001;
+      }
+      for(var i = 0; i < positionCount; i++){
+         borderData[borderIndex++] = vertexStart + i;
+         if(i == positionCount - 1){
+            borderData[borderIndex++] = vertexStart;
+         }else{
+            borderData[borderIndex++] = vertexStart + i + 1;
+         }
+      }
+      vertexStart += positionCount;
+   }
+   var layerStart = vertexStart;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] / 180 * Math.PI;
+         var y = positions[positionIndex++] / 180 * Math.PI;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.98;
+         vertexData[vertexIndex++] = (Math.sin(y)) * 0.98;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.98;
+      }
+      vertexStart += positionCount;
+   }
+   var vertexStart = 0;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      for(var i = 0; i < positionCount; i++){
+         borderData[borderIndex++] = vertexStart + i;
+         borderData[borderIndex++] = vertexStart + i + layerStart;
+      }
+      vertexStart += positionCount;
+   }
+   var colorIndex = 0;
+   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
+   for(var i = 0; i < vertexTotal; i++){
+      colors[colorIndex++] = 0x22;
+      colors[colorIndex++] = 0xA9;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+   }
+   for(var i = 0; i < vertexTotal; i++){
+      colors[colorIndex++] = 0x96;
+      colors[colorIndex++] = 0xB0;
+      colors[colorIndex++] = 0xD6;
+      colors[colorIndex++] = 0xFF;
+   }
+   var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable.linkGraphicContext(context);
+   renderable.setup();
+   renderable.setVertexCount(vertexTotal * 2);
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
+   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
+   renderable.indexBuffer().setLineWidth(1);
+   renderable.indexBuffer().upload(borderData, borderIndex, true);
+   renderable.material().info().effectCode = 'eai.map.face';
+}
+MO.EE3dBoundaryShape_build = function EE3dBoundaryShape_build(context){
+   var o = this;
+   var vertexTotal = 0;
+   var indexTotal = 0;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   for(var i = 0; i < count; i++){
+      var boundary = boundaries.at(i);
+      vertexTotal += boundary.positionCount();
+      indexTotal += boundary.indexes().length;
+   }
+   o._vertexTotal = vertexTotal;
+   o._indexTotal = indexTotal;
+   o.buildFace(context);
+   o.buildBorder(context);
+}
+MO.EE3dBoundaryShape_buildFlat = function EE3dBoundaryShape_buildFlat(context){
+   var o = this;
+   o._optionSphere = false;
+   o.build(context)
+}
+MO.EE3dBoundaryShape_buildSphere = function EE3dBoundaryShape_buildSphere(context){
+   var o = this;
+   o._optionSphere = true;
+   o.build(context)
+}
+MO.EE3dBoundaryShape_dispose = function EE3dBoundaryShape_dispose(){
+   var o = this;
+   o._polygons = MO.Lang.Obejct.dispose(o._polygons);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FE3dBoundBox = function FE3dBoundBox(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);

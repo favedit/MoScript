@@ -33,6 +33,12 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    // @attribute
    o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
    o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities            = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   // @attribute
+   o._boundaryShape           = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._faceShape               = MO.Class.register(o, new MO.AGetter('_faceShape'));
+   o._borderShape             = MO.Class.register(o, new MO.AGetter('_borderShape'));
+   // @attribute
    o._provinceArray           = null;
    o._playing                 = false;
    o._lastTick                = 0;
@@ -53,12 +59,14 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    // @attribute
    o._audioContext            = null;
    o._audioMapEnter           = null;
-   // @attribute
-   o._boundaries              = MO.Class.register(o, new MO.AGetter('_boundaries'));
    //..........................................................
    // @method
+   o.construct                = MO.FEaiCountryEntity_construct;
+   // @method
    o.setup                    = MO.FEaiCountryEntity_setup;
+   o.setupProvinces           = MO.FEaiCountryEntity_setupProvinces;
    o.loadData                 = MO.FEaiCountryEntity_loadData;
+   o.loadProvinceData         = MO.FEaiCountryEntity_loadProvinceData;
    o.start                    = MO.FEaiCountryEntity_start;
    o.process                  = MO.FEaiCountryEntity_process;
    o.introAnime               = MO.FEaiCountryEntity_introAnime;
@@ -77,7 +85,38 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) {
+MO.FEaiCountryEntity_construct = function FEaiCountryEntity_construct(){
+   var o = this;
+   o.__base.FEaiEntity.construct.call(o);
+   // 创建边框
+   o._provinceEntities = new MO.TDictionary();
+   o._cityEntities = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>初始化处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup() {
+   var o = this;
+   // 创建边界形状
+   var shape = o._boundaryShape = MO.Class.create(MO.EE3dBoundaryShape);
+   shape.linkGraphicContext(o);
+   // 创建平面形状
+   var shape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape.linkGraphicContext(o);
+   // 创建边框形状
+   var shape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape.linkGraphicContext(o);
+}
+
+//==========================================================
+// <T>初始化处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryEntity_setupProvinces = function FEaiCountryEntity_setupProvinces(provinceEntities) {
    var o = this;
    o._provinceEntities = provinceEntities;
    for (var i = 0; i < o._provinceEntities.count(); i++) {
@@ -99,30 +138,91 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup(provinceEntities) 
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
    var audioContext = o._audioContext = audioContextConsole.create();
    o._audioMapEnter = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
-   // 创建边框
-   o._boundaries = MO.Class.create(MO.FEaiBoundaries);
 }
 
 //==========================================================
-// <T>初始化处理。</T>
+// <T>加载数据。</T>
 //
 // @method
 //==========================================================
 MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
    var o = this;
    // 简历边界数据
-   var boundaries = o._boundaries = MO.Class.create(MO.FEaiBoundaries);
-   boundaries.linkGraphicContext(o);
-   boundaries.setWorldEntity(o._worldEntity);
-   boundaries.setCountryEntity(o._countryEntity);
-   var boundariesData = data.boundaries();
-   var count = boundariesData.count()
+   var shape = o._boundaryShape;
+   var boundaries = data.boundaries();
+   var count = boundaries.count()
    for(var i = 0; i < count; i++){
-      var boundaryData = boundariesData.at(i);
-      boundaries.pushBoundary(boundaryData);
+      var boundary = boundaries.at(i);
+      shape.pushPolygon(boundary);
    }
    // 简历对象
-   boundaries.build();
+   shape.build();
+}
+
+//==========================================================
+// <T>加载省份数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountryEntity_loadProvinceData = function FEaiCountryEntity_loadProvinceData(data){
+   var o = this;
+   var provinceEntities = o._provinceEntities;
+   var faceShape = o._faceShape;
+   var borderShape = o._borderShape;
+   //..........................................................
+   // 创建省份实体
+   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var provinceEntityConsole = MO.Console.find(MO.FEaiEntityConsole).provinceConsole();
+   var provincesData = data.provinces();
+   var count = provincesData.count();
+   for(var i = 0; i < count; i++){
+      provinceData = provincesData.at(i);
+      var provinceCode = provinceData.code();
+      var provinceResource = provinceConsole.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
+      // 创建省份实体
+      var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
+      provinceEntity.setResource(provinceResource);
+      provinceEntity.setData(provinceData);
+      provinceEntity.build(o);
+      provinceEntities.set(provinceCode, provinceEntity);
+      provinceEntityConsole.push(provinceEntity);
+      // 增加到融合渲染对象
+      var faceRenderable = provinceEntity.faceRenderable();
+      faceShape.pushMergeRenderable(faceRenderable);
+      var borderRenderable = provinceEntity.borderRenderable();
+      borderShape.pushMergeRenderable(borderRenderable);
+   }
+   faceShape.build();
+   borderShape.build();
+   return;
+   //..........................................................
+   // 创建城市实体
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
+   var cityEntities = mapEntity.cityEntities();
+   var citys = cityConsole.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var level = city.level();
+      var cityLocation = city.location();
+      // 创建实体
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setRenderable(citysRenderable);
+      cityEntity.setData(city);
+      cityEntity.build(o);
+      cityEntities.set(city.code(), cityEntity);
+      // 放入渲染对象
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
+      cityEntityConsole.push(cityEntity);
+   }
+   // 上传数据
+   citysRenderable.setup();
+   citysRenderable.upload();
+   citysRangeRenderable.setup();
+   citysRangeRenderable.upload();
 }
 
 //==========================================================

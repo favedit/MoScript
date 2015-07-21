@@ -18,9 +18,6 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o._citysRangeRenderable = MO.Class.register(o, new MO.AGetSet('_citysRangeRenderable'));
    o._countryDisplay       = MO.Class.register(o, new MO.AGetter('_countryDisplay'));
    o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
-   // @attribute
-   o._provinceFaceShape    = MO.Class.register(o, new MO.AGetter('_provinceFaceShape'));
-   o._provinceBorderShape  = MO.Class.register(o, new MO.AGetter('_provinceBorderShape'));
    //..........................................................
    // @method
    o.construct             = MO.FEaiMapEntity_construct;
@@ -49,7 +46,6 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 设置属性
-   o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
@@ -61,6 +57,10 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
 //==========================================================
 MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var o = this;
+   // 创建国家实体
+   var countryEntity = o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
+   countryEntity.linkGraphicContext(o);
+   countryEntity.setup();
    // 创建城市渲染对象
    var citysRenderable = o._citysRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
@@ -73,11 +73,6 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    // 创建城市范围显示对象
    var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
-   // 创建动态形状
-   var faceShape = o._provinceFaceShape = MO.Class.create(MO.FE3dDynamicShape);
-   faceShape.linkGraphicContext(o);
-   var borderShape = o._provinceBorderShape = MO.Class.create(MO.FE3dDynamicShape);
-   borderShape.linkGraphicContext(o);
 }
 
 //==========================================================
@@ -99,21 +94,7 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
       cityEntity.setProvinceEntity(provinceEntity);
    }
    // 国家配置处理
-   o._countryEntity.setup(provinceEntities);
-   //..........................................................
-   // 合并省份处理
-   var faceShape = o._provinceFaceShape;
-   var borderShape = o._provinceBorderShape;
-   var count = provinceEntities.count();
-   for(var i = 0; i < count; i++){
-      var provinceEntity = provinceEntities.at(i);
-      var faceRenderable = provinceEntity.faceRenderable();
-      faceShape.pushMergeRenderable(faceRenderable);
-      var borderRenderable = provinceEntity.borderRenderable();
-      borderShape.pushMergeRenderable(borderRenderable);
-   }
-   faceShape.build();
-   borderShape.build();
+   o._countryEntity.setupProvinces(provinceEntities);
 }
 
 //==========================================================
@@ -207,8 +188,9 @@ MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
 //==========================================================
 MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(){
    var o = this;
-   o._countryDisplay.push(o._provinceFaceShape);
-   o._countryBorderDisplay.push(o._provinceBorderShape);
+   var countryEntity = o._countryEntity;
+   o._countryDisplay.push(countryEntity.faceShape());
+   o._countryBorderDisplay.push(countryEntity.borderShape());
 }
 
 //==========================================================

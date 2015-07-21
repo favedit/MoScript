@@ -89,32 +89,21 @@ MO.FEaiEntityConsole_onLoadWorld = function FEaiEntityConsole_onLoadWorld(event)
 //==========================================================
 MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(event){
    var o = this;
-   var countryData = event.sender;
+   var data = event.sender;
    var mapEntity = o._mapEntity;
+   var countryEntity = mapEntity.countryEntity();
    var countryDisplay = mapEntity.countryDisplay();
    var countryBorderDisplay = mapEntity.countryBorderDisplay();
    var citysRangeRenderable = mapEntity.citysRangeRenderable();
    var citysRenderable = mapEntity.citysRenderable();
    //..........................................................
    // 创建省份实体
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var provinceEntityConsole = MO.Console.find(MO.FEaiEntityConsole).provinceConsole();
-   var provincesData = countryData.provinces();
-   var count = provincesData.count();
+   countryEntity.loadProvinceData(data);
+   var provinceEntities = countryEntity.provinceEntities();
+   var count = provinceEntities.count();
    for(var i = 0; i < count; i++){
-      provinceData = provincesData.at(i);
-      var provinceCode = provinceData.code();
-      var province = provinceConsole.findByCode(provinceCode);
-      // 创建省份实体
-      var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
-      provinceEntity.setMapEntity(mapEntity);
-      provinceEntity.setData(provinceData);
-      provinceEntity.build(o);
+      var provinceEntity = provinceEntities.at(i);
       mapEntity.pushProvince(provinceEntity);
-      provinceEntityConsole.push(provinceEntity);
-      // 放入显示层
-      //countryDisplay.pushRenderable(provinceEntity.faceRenderable());
-      //countryBorderDisplay.pushRenderable(provinceEntity.borderRenderable());
    }
    //..........................................................
    // 创建城市实体
@@ -129,7 +118,6 @@ MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(ev
       var cityLocation = city.location();
       // 创建实体
       var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      //cityEntity.setStage(stage);
       cityEntity.setRenderable(citysRenderable);
       cityEntity.setData(city);
       cityEntity.build(o);
