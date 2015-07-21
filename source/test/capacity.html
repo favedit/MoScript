@@ -15,18 +15,17 @@ function _load(){
       RBrowser.setContentPath('../..');
       RWindow.connect(window);
 
+      //var hCanvas = document.createElement('CANVAS');
+      //hCanvas.style.width = '200px';
+      //hCanvas.style.height = '200px';
+      //hCanvas.width = 400;
+      //hCanvas.height = 400;
+      //var c2d = hCanvas.getContext('2d');
+      //c2d.webkitBackingStorePixelRatio = 4;
+      //RDump.dump(c2d, _dump);
+
       var hCanvas = document.createElement('CANVAS');
-      hCanvas.style.width = '200px';
-      hCanvas.style.height = '200px';
-      hCanvas.width = 400;
-      hCanvas.height = 400;
-      var c2d = hCanvas.getContext('2d');
-      c2d.webkitBackingStorePixelRatio = 4;
-
-      RDump.dump(c2d, _dump);
-      return;
-
-      context = REngine3d.createContext(FWglContext, hCanvas);
+      var context = REngine3d.createContext(FWglContext, hCanvas);
       RDump.dump(RBrowser, _dump);
       RDump.dump(context.capability(), _dump);
       RDump.dump(context.parameters(), _dump);
