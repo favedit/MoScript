@@ -251,8 +251,8 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    for(var n = 0; n < renderableCount; n++){
       var renderable = renderables.at(n);
       // 生成顶点实例数据
-      var vertexCount = renderable.vertexCount();
-      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, vertexCount, n);
+      var renderableVertexCount = renderable.vertexCount();
+      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, renderableVertexCount, n);
       var vertexBuffers = renderable.vertexBuffers();
       var vertexBufferCount = vertexBuffers.count();
       for(var i = 0; i < vertexBufferCount; i++){
@@ -260,12 +260,12 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
          o.mergeVertexBuffer(vertexBuffer);
       }
       // 生成索引数据
-      var indexBuffer = renderable.indexBuffers().first();
-      var indexCount = indexBuffer.count();
-      o.mergeIndexBuffer(indexBuffer);
+      var renderableIndexBuffer = renderable.indexBuffers().first();
+      var renderableIndexCount = renderableIndexBuffer.count();
+      o.mergeIndexBuffer(renderableIndexBuffer);
       // 移动顶点位置
-      o._vertexPosition += vertexCount;
-      o._indexPosition += indexCount;
+      o._vertexPosition += renderableVertexCount;
+      o._indexPosition += renderableIndexCount;
    }
    // 上传顶点数据
    var vertexBuffers = o._vertexBuffers;
@@ -278,9 +278,10 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
       vertexBuffer.setData(null);
    }
    // 上传索引数据
-   var indexData = o._indexBuffer.data();
-   o._indexBuffer.upload(indexData, indexTotal);
-   o._indexBuffer.setData(null);
+   var indexData = indexBuffer.data();
+   indexBuffer.upload(indexData, indexTotal);
+   indexBuffer.setData(null);
+   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
 }
 
 //==========================================================

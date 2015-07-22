@@ -965,19 +965,19 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    o.pushIndexBuffer(indexBuffer);
    for(var n = 0; n < renderableCount; n++){
       var renderable = renderables.at(n);
-      var vertexCount = renderable.vertexCount();
-      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, vertexCount, n);
+      var renderableVertexCount = renderable.vertexCount();
+      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, renderableVertexCount, n);
       var vertexBuffers = renderable.vertexBuffers();
       var vertexBufferCount = vertexBuffers.count();
       for(var i = 0; i < vertexBufferCount; i++){
          var vertexBuffer = vertexBuffers.at(i);
          o.mergeVertexBuffer(vertexBuffer);
       }
-      var indexBuffer = renderable.indexBuffers().first();
-      var indexCount = indexBuffer.count();
-      o.mergeIndexBuffer(indexBuffer);
-      o._vertexPosition += vertexCount;
-      o._indexPosition += indexCount;
+      var renderableIndexBuffer = renderable.indexBuffers().first();
+      var renderableIndexCount = renderableIndexBuffer.count();
+      o.mergeIndexBuffer(renderableIndexBuffer);
+      o._vertexPosition += renderableVertexCount;
+      o._indexPosition += renderableIndexCount;
    }
    var vertexBuffers = o._vertexBuffers;
    var vertexBufferCount = vertexBuffers.count();
@@ -988,9 +988,10 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
       vertexBuffer.upload(vertexData, vertexStride, vertexTotal);
       vertexBuffer.setData(null);
    }
-   var indexData = o._indexBuffer.data();
-   o._indexBuffer.upload(indexData, indexTotal);
-   o._indexBuffer.setData(null);
+   var indexData = indexBuffer.data();
+   indexBuffer.upload(indexData, indexTotal);
+   indexBuffer.setData(null);
+   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;

@@ -2188,9 +2188,9 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
    }
    return true;
 }
-MO.SRectangle_testRectangle = function SRectangle_testRectangle(r) {
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(value) {
    var o = this;
-   return (o.left < r.left + r.width && o.left + o.width > r.left && o.top < r.top + r.height && o.top + o.height > r.top);
+   return (o.left < value.left + value.width && o.left + o.width > value.left && o.top < value.top + value.height && o.top + o.height > value.top);
 }
 MO.SRectangle_reset = function SRectangle_reset(){
    var o = this;

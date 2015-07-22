@@ -286,7 +286,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
 // @param message:String 消息内容
 // @param params:Object... 消息参数列表
 //==========================================================
-MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
+MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
    var o = this;
    // 获得函数名称
    var name = null;
@@ -302,27 +302,26 @@ MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
       name = name.replace('_', '.');
    }
    //..........................................................
-   var r = new TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + MO.String.rpad(name, o._labelLength) + '] ');
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    // 格式化参数
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
-   r.append(ms);
+   result.append(message);
    //..........................................................
-   alert(r.flush());
+   alert(result.flush());
 }
 //..........................................................
 // 实例化内容

@@ -3661,7 +3661,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
       throw new Error(text);
    }
 }
-MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
+MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
    var o = this;
    var name = null;
    var caller = MO.Logger.show.caller;
@@ -3675,25 +3675,24 @@ MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
    }else{
       name = name.replace('_', '.');
    }
-   var r = new TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + MO.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
-   r.append(ms);
-   alert(r.flush());
+   result.append(message);
+   alert(result.flush());
 }
 MO.Logger = new MO.RLogger();
 MO.RMethod = function RMethod(){

@@ -5205,7 +5205,7 @@ MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
       throw new Error(text);
    }
 }
-MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
+MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
    var o = this;
    var name = null;
    var caller = MO.Logger.show.caller;
@@ -5219,25 +5219,24 @@ MO.RLogger.prototype.show = function RLogger_show(sf, ms, params){
    }else{
       name = name.replace('_', '.');
    }
-   var r = new TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + MO.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
-   r.append(ms);
-   alert(r.flush());
+   result.append(message);
+   alert(result.flush());
 }
 MO.Logger = new MO.RLogger();
 MO.RMethod = function RMethod(){
@@ -8204,9 +8203,9 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
    }
    return true;
 }
-MO.SRectangle_testRectangle = function SRectangle_testRectangle(r) {
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(value) {
    var o = this;
-   return (o.left < r.left + r.width && o.left + o.width > r.left && o.top < r.top + r.height && o.top + o.height > r.top);
+   return (o.left < value.left + value.width && o.left + o.width > value.left && o.top < value.top + value.height && o.top + o.height > value.top);
 }
 MO.SRectangle_reset = function SRectangle_reset(){
    var o = this;
@@ -32124,19 +32123,19 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    o.pushIndexBuffer(indexBuffer);
    for(var n = 0; n < renderableCount; n++){
       var renderable = renderables.at(n);
-      var vertexCount = renderable.vertexCount();
-      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, vertexCount, n);
+      var renderableVertexCount = renderable.vertexCount();
+      MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, renderableVertexCount, n);
       var vertexBuffers = renderable.vertexBuffers();
       var vertexBufferCount = vertexBuffers.count();
       for(var i = 0; i < vertexBufferCount; i++){
          var vertexBuffer = vertexBuffers.at(i);
          o.mergeVertexBuffer(vertexBuffer);
       }
-      var indexBuffer = renderable.indexBuffers().first();
-      var indexCount = indexBuffer.count();
-      o.mergeIndexBuffer(indexBuffer);
-      o._vertexPosition += vertexCount;
-      o._indexPosition += indexCount;
+      var renderableIndexBuffer = renderable.indexBuffers().first();
+      var renderableIndexCount = renderableIndexBuffer.count();
+      o.mergeIndexBuffer(renderableIndexBuffer);
+      o._vertexPosition += renderableVertexCount;
+      o._indexPosition += renderableIndexCount;
    }
    var vertexBuffers = o._vertexBuffers;
    var vertexBufferCount = vertexBuffers.count();
@@ -32147,9 +32146,10 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
       vertexBuffer.upload(vertexData, vertexStride, vertexTotal);
       vertexBuffer.setData(null);
    }
-   var indexData = o._indexBuffer.data();
-   o._indexBuffer.upload(indexData, indexTotal);
-   o._indexBuffer.setData(null);
+   var indexData = indexBuffer.data();
+   indexBuffer.upload(indexData, indexTotal);
+   indexBuffer.setData(null);
+   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;
@@ -79613,6 +79613,8 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var boundary = boundaries.at(n);
       var positionCount = boundary.positionCount();
       for(var i = 0; i < positionCount; i++){
+         borderData[borderIndex++] = vertexStart + i;
+         borderData[borderIndex++] = vertexStart + i + layerStart;
       }
       vertexStart += positionCount;
    }
@@ -79794,13 +79796,44 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o._faceShape     = MO.Class.register(o, new MO.AGetter('_faceShape'));
    o._borderShape   = MO.Class.register(o, new MO.AGetter('_borderShape'));
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o.onDataLoad     = MO.FEaiWorldEntity_onDataLoad;
    o.onImageLoad    = MO.FEaiWorldEntity_onImageLoad;
    o.construct      = MO.FEaiWorldEntity_construct;
    o.setup          = MO.FEaiWorldEntity_setup;
    o.unserialize    = MO.FEaiWorldEntity_unserialize;
    o.load           = MO.FEaiWorldEntity_load;
+   o.loadData       = MO.FEaiWorldEntity_loadData;
    o.dispose        = MO.FEaiWorldEntity_dispose;
    return o;
+}
+MO.FEaiWorldEntity_onDataLoad = function FEaiWorldEntity_onDataLoad(event){
+   var o = this;
+   var data = event.sender;
+   var countries = o._countries
+   var countriesData = data.countries();
+   var count = countriesData.count();
+   for(var i = 0; i < count; i++){
+      var countryData = countriesData.at(i);
+      var country = MO.Class.create(MO.FEaiCountryEntity);
+      country.linkGraphicContext(o);
+      country.setWorldEntity(o);
+      country.setup();
+      country.loadData(countryData);
+      var faceRenderable = country.boundaryShape().faceRenderable();
+      faceRenderable._material = o._material;
+      faceRenderable._textures = o._material.textures();
+      countries.push(country);
+   }
+   var faceShape = o._faceShape;
+   var borderShape = o._borderShape;
+   for(var i = 0; i < count; i++){
+      var countryEntity = countries.at(i);
+      var boundaryShape = countryEntity.boundaryShape();
+      faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
+      borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
+   }
+   faceShape.build();
+   borderShape.build();
 }
 MO.FEaiWorldEntity_onImageLoad = function FEaiWorldEntity_onImageLoad(event){
    var o = this;
@@ -79819,6 +79852,10 @@ MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
 MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
    var context = o._graphicContext;
+   var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   faceShape.linkGraphicContext(context);
+   var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   borderShape.linkGraphicContext(context);
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
@@ -79898,6 +79935,12 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    }
    faceShape.build();
    borderShape.build();
+}
+MO.FEaiWorldEntity_loadData = function FEaiWorldEntity_loadData(){
+   var o = this;
+   var data = o._data = MO.Class.create(MO.FEaiWorldData);
+   data.addLoadListener(o, o.onLoadData);
+   data.load();
 }
 MO.FEaiWorldEntity_dispose = function FEaiWorldEntity_dispose(){
    var o = this;

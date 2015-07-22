@@ -97,12 +97,12 @@ MO.SRectangle_testRange = function SRectangle_testRange(x, y){
 // <T>测试是否在范围内。</T>
 //
 // @method
-// @param r:SRectangle 矩形
+// @param value:SRectangle 矩形
 // @return Boolean 是否在范围内
 //============================================================
-MO.SRectangle_testRectangle = function SRectangle_testRectangle(r) {
+MO.SRectangle_testRectangle = function SRectangle_testRectangle(value) {
    var o = this;
-   return (o.left < r.left + r.width && o.left + o.width > r.left && o.top < r.top + r.height && o.top + o.height > r.top);
+   return (o.left < value.left + value.width && o.left + o.width > value.left && o.top < value.top + value.height && o.top + o.height > value.top);
 }
 
 //============================================================

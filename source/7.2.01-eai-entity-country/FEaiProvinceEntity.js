@@ -197,6 +197,7 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
    renderable.setup();
    renderable.color().setHex('#080D19');
    //renderable.color().setHex('#FFFFFF');
+   //renderable.color().setHex('#8F8080');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
@@ -282,8 +283,8 @@ MO.FEaiProvinceEntity_buildBorder = function FEaiProvinceEntity_buildBorder(cont
       var positionCount = boundary.positionCount();
       // 填充三角索引
       for(var i = 0; i < positionCount; i++){
-         //borderData[borderIndex++] = vertexStart + i;
-         //borderData[borderIndex++] = vertexStart + i + layerStart;
+         borderData[borderIndex++] = vertexStart + i;
+         borderData[borderIndex++] = vertexStart + i + layerStart;
       }
       // 修正位置
       vertexStart += positionCount;
