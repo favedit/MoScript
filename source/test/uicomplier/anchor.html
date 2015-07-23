@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+   <TITLE>e租宝-全球实时投资数据展示中心(中国)</TITLE>
+   <META http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+   <META name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+   <LINK rel="stylesheet" href='/script/acs/eai_mobile.css' type="text/css" media="all" />
+   <SCRIPT language='javascript' src='/script/ajs/lzma.js'></SCRIPT>
+   <SCRIPT language='javascript' src='/script/ajs/me.js'></SCRIPT>
+   <SCRIPT language='javascript' src='/script/ajs/eai.js'></SCRIPT>
+   <SCRIPT language='javascript' src='/script/ajs/context_cn.js'></SCRIPT>
+   <SCRIPT>
+      function onLoad() {
+
+         // 设置变量
+         //         MO.initialize();
+         //         MO.Runtime.setProcessCd(MO.EProcess.Debug);
+         //         MO.Window.Browser.setContentPath('../..');
+         //         MO.Window.Browser.fullscreen(window, true);
+         //         MO.Window.lsnsLoaded.register(null, onLoaded);
+         //         MO.Window.lsnsDeviceError.register(null, onDeviceError);
+         //         // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+         //         // MO.Window.Browser._orientationCd = MO.EOrientation.Vertical;
+         //         // 设置环境
+         //         MO.Console.find(MO.FE3sVendorConsole).setup('net');
+         //         MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.201.170');
+         //         MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
+         //         // 设置应用
+         //         var application = MO.Desktop.initialize(MO.FEaiChartApplication);
+         //         application.setSceneCode(MO.EEaiScene.ChartLive);
+         //         application.setup(document.body);
+         var hCanvas = document.createElement('canvas');
+         hCanvas.style.width = '400px';
+         hCanvas.style.height = '400px';
+         hCanvas.style.border = "1px red solid";
+         hCanvas.width = 400;
+         hCanvas.height = 400;
+         var context = MO.REngine3d.createContext(MO.FWglContext, hCanvas);
+         context.linkCanvas(hCanvas);
+         var names = ['ACTIVE_TEXTURE',
+            'ALIASED_LINE_WIDTH_RANGE',
+            'ALIASED_POINT_SIZE_RANGE',
+            'ALPHA_BITS',
+            'ARRAY_BUFFER_BINDING',
+            'BLEND',
+            'BLEND_COLOR',
+            'BLEND_DST_ALPHA',
+            'BLEND_DST_RGB',
+            'BLEND_EQUATION_ALPHA',
+            'BLEND_EQUATION_RGB',
+            'BLEND_SRC_ALPHA',
+            'BLEND_SRC_RGB',
+            'BLUE_BITS',
+            'COLOR_CLEAR_VALUE',
+            'COLOR_WRITEMASK',
+            'COMPRESSED_TEXTURE_FORMATS',
+            'CULL_FACE',
+            'CULL_FACE_MODE',
+            'CURRENT_PROGRAM',
+            'DEPTH_BITS',
+            'DEPTH_CLEAR_VALUE',
+            'DEPTH_FUNC',
+            'DEPTH_RANGE',
+            'DEPTH_TEST',
+            'DEPTH_WRITEMASK',
+            'DITHER',
+            'ELEMENT_ARRAY_BUFFER_BINDING',
+            'FRAMEBUFFER_BINDING',
+            'FRONT_FACE',
+            'GENERATE_MIPMAP_HINT',
+            'GREEN_BITS',
+            'IMPLEMENTATION_COLOR_READ_FORMAT',
+            'IMPLEMENTATION_COLOR_READ_TYPE',
+            'LINE_WIDTH',
+            'MAX_COMBINED_TEXTURE_IMAGE_UNITS',
+            'MAX_CUBE_MAP_TEXTURE_SIZE',
+            'MAX_FRAGMENT_UNIFORM_VECTORS',
+            'MAX_RENDERBUFFER_SIZE',
+            'MAX_TEXTURE_IMAGE_UNITS',
+            'MAX_TEXTURE_SIZE',
+            'MAX_VARYING_VECTORS',
+            'MAX_VERTEX_ATTRIBS',
+            'MAX_VERTEX_TEXTURE_IMAGE_UNITS',
+            'MAX_VERTEX_UNIFORM_VECTORS',
+            'MAX_VIEWPORT_DIMS',
+            'PACK_ALIGNMENT',
+            'POLYGON_OFFSET_FACTOR',
+            'POLYGON_OFFSET_FILL',
+            'POLYGON_OFFSET_UNITS',
+            'RED_BITS',
+            'RENDERBUFFER_BINDING',
+            'RENDERER',
+            'SAMPLE_BUFFERS',
+            'SAMPLE_COVERAGE_INVERT',
+            'SAMPLE_COVERAGE_VALUE',
+            'SAMPLES',
+            'SCISSOR_BOX',
+            'SCISSOR_TEST',
+            'SHADING_LANGUAGE_VERSION',
+            'STENCIL_BACK_FAIL',
+            'STENCIL_BACK_FUNC',
+            'STENCIL_BACK_PASS_DEPTH_FAIL',
+            'STENCIL_BACK_PASS_DEPTH_PASS',
+            'STENCIL_BACK_REF',
+            'STENCIL_BACK_VALUE_MASK',
+            'STENCIL_BACK_WRITEMASK',
+            'STENCIL_BITS',
+            'STENCIL_CLEAR_VALUE',
+            'STENCIL_FAIL',
+            'STENCIL_FUNC',
+            'STENCIL_PASS_DEPTH_FAIL',
+            'STENCIL_PASS_DEPTH_PASS',
+            'STENCIL_REF',
+            'STENCIL_TEST',
+            'STENCIL_VALUE_MASK',
+            'STENCIL_WRITEMASK',
+            'SUBPIXEL_BITS',
+            'TEXTURE_BINDING_2D',
+            'TEXTURE_BINDING_CUBE_MAP',
+            'UNPACK_ALIGNMENT',
+            'UNPACK_COLORSPACE_CONVERSION_WEBGL',
+            'UNPACK_FLIP_Y_WEBGL',
+            'UNPACK_PREMULTIPLY_ALPHA_WEBGL',
+            'VENDOR',
+            'VERSION',
+            'VIEWPORT'
+         ];
+         var result = context.parameters();
+         for (var i = 0; i < names.length; i++) {
+            var name = names[i];
+            document.writeln(name + " : <font color='red'>" + result[name] + "</font><br>");
+         }
+         document.writeln(navigator.userAgent);
+      }
+   </SCRIPT>
+</HEAD>
+
+<BODY scroll='no' style='overflow:hidden;background-color:#000000;background:url("/script/ars/eai/background.jpg");background-size:100% 100%;' onload='onLoad()'>
+   <TABLE id='id_loading' width='100%' height='100%' style='background:url("/script/ars/eai/loading/background.jpg");background-size:100% 100%;'>
+      <TR>
+         <TD align='center'>
+
+         </TD>
+      </TR>
+   </TABLE>
+</BODY>
+
+</HTML>
+   

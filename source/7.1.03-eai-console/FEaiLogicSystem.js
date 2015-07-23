@@ -5,30 +5,32 @@
 // @author maocy
 // @history 150629
 //==========================================================
-MO.FEaiLogicSystem = function FEaiLogicSystem(o){
+MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    //..........................................................
    // @attribute
-   o._code        = 'system';
+   o._code = 'system';
    // @attribute
-   o._ready       = false;
+   o._ready = false;
    o._currentDate = null;
-   o._localDate   = null;
-   o._systemDate  = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o._localDate = null;
+   o._systemDate = MO.Class.register(o, new MO.AGetter('_systemDate'))
+      //..........................................................
+      // @event
+   o.onInfo = MO.FEaiLogicSystem_onInfo;
    //..........................................................
-   // @event
-   o.onInfo       = MO.FEaiLogicSystem_onInfo;
-   //..........................................................
    // @method
-   o.construct    = MO.FEaiLogicSystem_construct;
+   o.construct = MO.FEaiLogicSystem_construct;
    // @method
-   o.doInfo       = MO.FEaiLogicSystem_doInfo;
+   o.doInfo = MO.FEaiLogicSystem_doInfo;
    // @method
-   o.testReady    = MO.FEaiLogicSystem_testReady;
-   o.currentDate  = MO.FEaiLogicSystem_currentDate;
-   o.refresh      = MO.FEaiLogicSystem_refresh;
+   o.testReady = MO.FEaiLogicSystem_testReady;
+   o.currentDate = MO.FEaiLogicSystem_currentDate;
+   o.refresh = MO.FEaiLogicSystem_refresh;
+   o.postDeviceInfo = MO.FEailogicSystem_postDeviceInfo;
+
    // @method
-   o.dispose      = MO.FEaiLogicSystem_dispose;
+   o.dispose = MO.FEaiLogicSystem_dispose;
    return o;
 }
 
@@ -40,7 +42,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o){
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
+MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event) {
    var o = this;
    var content = event.content;
    o._localDate.setNow();
@@ -56,7 +58,7 @@ MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
+MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct() {
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
    // 设置属性
@@ -73,7 +75,7 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
    return this.send('info', null, owner, callback);
 }
 
@@ -83,7 +85,7 @@ MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
 // @method
 // @return Boolean 是否准备好
 //==========================================================
-MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
+MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady() {
    return this._ready;
 }
 
@@ -93,7 +95,7 @@ MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
 // @method
 // @return 当前时间
 //==========================================================
-MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
+MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate() {
    var o = this;
    var span = o._systemDate.get() - o._localDate.get();
    o._currentDate.set(MO.Timer.current() + span);
@@ -105,9 +107,56 @@ MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
 //
 // @method
 //==========================================================
-MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
+MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh() {
    var o = this;
    return o.doInfo(o, o.onInfo);
+}
+
+//==========================================================
+// <T>提交设备信息。</T>
+//
+// @method
+//==========================================================
+MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
+   var o = this;
+   var hCanvas = document.createElement("CANVAS");
+   context = REngine3d.createContext(FWglContext, hCanvas);
+   //定义json
+   var postJson = {};
+   postJson.code = navigator.userAgent;
+   postJson.content2d = {};
+   postJson.content3d = {};
+   postJson.content3d.capability = {};
+   postJson.content3d.parameters = {};
+   postJson.content3d.extensions = {};
+   
+   //获取数据，存入json;
+   var capability = context.capability();
+   postJson.content3d.capability = o.FEailogicSystem_parseDeviceInfo(capability);
+   var tempForm = document.createElement("form");
+   tempForm.action = "http://localhost:88/device/Device.wa?do=putMobileInfo";
+   tempForm.method = "post";
+   var option = document.createElement("textarea");
+   option.value=postJson;
+   tempForm.appendChild(option);
+   tempForm.submit();
+   
+   
+}
+MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
+    var json ={};
+      for (var key in data) {
+            var type = typeof data[key];
+            document.writeln("<font color='blue'>" + type + "</font>");
+            if (type == "function") continue;
+            json[key] = data[key];
+            document.writeln(key + " : <font color='red'>" + data[key] + "</font><br>");
+            if (type == "object") {
+               var nextVal = data[key];
+               parseInfo(nextVal);
+            }
+      }
+      return json;
 }
 
 //==========================================================
@@ -115,7 +164,7 @@ MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
 //
 // @method
 //==========================================================
-MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose(){
+MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;
    // 设置属性
    o._localDate = RObject.dispose(o._localDate);
