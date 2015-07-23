@@ -9,16 +9,19 @@ MO.RBrowser = function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
-   o._agent         = null;
-   o._capability    = null;
+   o._agent            = null;
+   o._capability       = null;
+   o._defineProperties = null;
+   o._defineEvents     = null;
+   o._defineMethods    = null;
    // @attribute
-   o._deviceCd      = MO.EDevice.Unknown;
-   o._softwareCd    = MO.ESoftware.Unknown;
-   o._typeCd        = MO.EBrowser.Unknown;
-   o._orientationCd = MO.EOrientation.Horizontal;
-   o._supportHtml5  = false;
-   o._hostPath      = '';
-   o._contentPath   = '';
+   o._deviceCd         = MO.EDevice.Unknown;
+   o._softwareCd       = MO.ESoftware.Unknown;
+   o._typeCd           = MO.EBrowser.Unknown;
+   o._orientationCd    = MO.EOrientation.Horizontal;
+   o._supportHtml5     = false;
+   o._hostPath         = '';
+   o._contentPath      = '';
    return o;
 }
 
@@ -38,9 +41,12 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 //===========================================================
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   o.code = window.navigator.userAgent.toString();
-   var agent = o.code.toLowerCase();
+   var code = o.code = window.navigator.userAgent.toString();
+   var agent = code.toLowerCase();
    var capability = o._capability = new MO.SBrowserCapability();
+   var properties = o._defineProperties = new Object();
+   var events = o._defineEvents = new Object();
+   var methods = o._defineMethods = new Object();
    // 判断设备类型
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
@@ -117,6 +123,22 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }catch(e){
       MO.Logger.warn(o, 'Browser blob not support.');
    }
+   // 设置函数
+   var hDocument = window.document;
+   var visibilityChange = null;
+   if(typeof hDocument.hidden !== "undefined"){
+      properties['hidden'] = 'hidden';
+      events['visibilitychange'] = 'visibilitychange';
+   } else if (typeof hDocument.mozHidden !== "undefined"){
+      properties['hidden'] = 'mozHidden';
+      events['visibilitychange'] = 'mozvisibilitychange';
+   }else if (typeof hDocument.msHidden !== "undefined"){
+      properties['hidden'] = 'msHidden';
+      events['visibilitychange'] = 'msvisibilitychange';
+   }else if (typeof hDocument.webkitHidden !== "undefined"){
+      properties['hidden'] = 'webkitHidden';
+      events['visibilitychange'] = 'webkitvisibilitychange';
+   }
    // 计算方向
    o.refreshOrientation();
 }
@@ -129,6 +151,66 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
 //==========================================================
 MO.RBrowser.prototype.capability = function RBrowser_capability(){
    return this._capability;
+}
+
+//==========================================================
+// <T>获得定义属性集合。</T>
+//
+// @method
+// @return Object 定义属性集合
+//==========================================================
+MO.RBrowser.prototype.defineProperties = function RBrowser_defineProperties(){
+   return this._defineProperties;
+}
+
+//==========================================================
+// <T>获得定义属性。</T>
+//
+// @method
+// @return String 定义属性
+//==========================================================
+MO.RBrowser.prototype.definePropertyGet = function RBrowser_definePropertyGet(name){
+   return this._defineProperties[name];
+}
+
+//==========================================================
+// <T>获得定义事件集合。</T>
+//
+// @method
+// @return Object 定义事件集合
+//==========================================================
+MO.RBrowser.prototype.defineEvents = function RBrowser_defineEvents(){
+   return this._defineEvents;
+}
+
+//==========================================================
+// <T>获得定义事件。</T>
+//
+// @method
+// @return String 定义事件
+//==========================================================
+MO.RBrowser.prototype.defineEventGet = function RBrowser_defineEventGet(name){
+   return this._defineEvents[name];
+}
+
+//==========================================================
+// <T>获得定义函数集合。</T>
+//
+// @method
+// @return Object 定义函数集合
+//==========================================================
+MO.RBrowser.prototype.defineMethods = function RBrowser_defineMethods(){
+   return this._defineMethods;
+}
+
+//==========================================================
+// <T>获得定义函数。</T>
+//
+// @method
+// @return String 定义函数名称
+//==========================================================
+MO.RBrowser.prototype.defineMethodGet = function RBrowser_defineMethodGet(name){
+   return this._defineMethods[name];
 }
 
 //==========================================================
@@ -270,6 +352,17 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
       }
    }
    return o._orientationCd;
+}
+
+//===========================================================
+// <T>判断是否可见。</T>
+//
+// @method
+// @return 是否可见
+//===========================================================
+MO.RBrowser.prototype.isVisibility = function RBrowser_isVisibility(){
+   var name = this.definePropertyGet('hidden');
+   return !window.document[name];
 }
 
 //===========================================================

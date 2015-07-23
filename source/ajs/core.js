@@ -105,14 +105,6 @@ MO.EEvent = new function EEvent(){
    o.Resize           = 'Reisze';
    o.Focus            = 'Focus';
    o.Blur             = 'Blur';
-   o.OperationDown    = 'OperationDown';
-   o.OperationMove    = 'OperationMove';
-   o.OperationUp      = 'OperationUp';
-   o.OperationResize  = 'OperationResize';
-   o.OperationWheel   = 'OperationWheel';
-   o.OperationKeyDown = 'OperationKeyDown';
-   o.OperationKeyPress = 'OperationKeyPress';
-   o.OperationKeyUp   = 'OperationKeyUp';
    o.MouseDown        = 'MouseDown';
    o.MouseMove        = 'MouseMove';
    o.MouseUp          = 'MouseUp';
@@ -128,6 +120,7 @@ MO.EEvent = new function EEvent(){
    o.DataChanged      = 'DataChanged';
    o.Result           = 'Result';
    o.TouchZoom        = 'TouchZoom';
+   o.Visibility       = 'Visibility';
    o.Orientation      = 'Orientation';
    return o;
 }

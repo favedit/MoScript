@@ -105,14 +105,6 @@ MO.EEvent = new function EEvent(){
    o.Resize           = 'Reisze';
    o.Focus            = 'Focus';
    o.Blur             = 'Blur';
-   o.OperationDown    = 'OperationDown';
-   o.OperationMove    = 'OperationMove';
-   o.OperationUp      = 'OperationUp';
-   o.OperationResize  = 'OperationResize';
-   o.OperationWheel   = 'OperationWheel';
-   o.OperationKeyDown = 'OperationKeyDown';
-   o.OperationKeyPress = 'OperationKeyPress';
-   o.OperationKeyUp   = 'OperationKeyUp';
    o.MouseDown        = 'MouseDown';
    o.MouseMove        = 'MouseMove';
    o.MouseUp          = 'MouseUp';
@@ -128,6 +120,7 @@ MO.EEvent = new function EEvent(){
    o.DataChanged      = 'DataChanged';
    o.Result           = 'Result';
    o.TouchZoom        = 'TouchZoom';
+   o.Visibility       = 'Visibility';
    o.Orientation      = 'Orientation';
    return o;
 }
@@ -7692,8 +7685,8 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       capability.samplerCompressRgb = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
       capability.samplerCompressRgba = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
-   var s = capability.shader = new Object();
-   var vertexPrecision = s.vertexPrecision = new Object();
+   var shader = capability.shader = new Object();
+   var vertexPrecision = shader.vertexPrecision = new Object();
    if(handle.getShaderPrecisionFormat){
       vertexPrecision.floatLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_FLOAT);
       vertexPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_FLOAT);
@@ -7702,7 +7695,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       vertexPrecision.intMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_INT);
       vertexPrecision.intHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_INT);
    }
-   var fragmentPrecision = s.fragmentPrecision = new Object();
+   var fragmentPrecision = shader.fragmentPrecision = new Object();
    if(handle.getShaderPrecisionFormat){
       fragmentPrecision.floatLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_FLOAT);
       fragmentPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_FLOAT);
@@ -7927,7 +7920,7 @@ MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
          graphic.polygonMode(graphic.FRONT, graphic.FILL);
          break;
       default:
-         throw new TError('Invalid parameter. (fill_mode={1})', fillModeCd);
+         throw new MO.TError('Invalid parameter. (fill_mode={1})', fillModeCd);
    }
    o._fillModeCd = fillModeCd;
    return true;
@@ -8181,8 +8174,7 @@ MO.FWglContext_bindVertexBuffer = function FWglContext_bindVertexBuffer(slot, ve
          graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, true, stride, offset);
          break;
       default:
-         throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
-         break;
+         throw new MO.TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
    }
    result = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", slot, formatCd);
    return result;
@@ -8214,7 +8206,8 @@ MO.FWglContext_bindTexture = function FWglContext_bindTexture(slot, index, textu
       return result;
    }
    var handle = texture._handle;
-   switch(texture.textureCd()){
+   var textureCd = texture.textureCd();
+   switch(textureCd){
       case MO.EG3dTexture.Flat2d:{
          graphic.bindTexture(graphic.TEXTURE_2D, handle);
          result = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", handle);
@@ -8233,7 +8226,6 @@ MO.FWglContext_bindTexture = function FWglContext_bindTexture(slot, index, textu
       }
       default:{
          throw new MO.TError(o, 'Unknown texture type.');
-         break;
       }
    }
    return result;
@@ -9245,6 +9237,7 @@ MO.MEventDispatcher = function MEventDispatcher(o){
    o.onOperationKeyPress    = MO.Method.empty;
    o.onOperationKeyUp       = MO.Method.empty;
    o.onOperationResize      = MO.Method.empty;
+   o.onOperationVisibility  = MO.Method.empty;
    o.onOperationOrientation = MO.Method.empty;
    o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
    return o;
@@ -9275,6 +9268,9 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          break;
       case MO.EEvent.Resize:
          o.onOperationResize(event);
+         break;
+      case MO.EEvent.Visibility:
+         o.onOperationVisibility(event);
          break;
       case MO.EEvent.Orientation:
          o.onOperationOrientation(event);

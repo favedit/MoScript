@@ -288,7 +288,7 @@
          <File source='/ajs/mo-engine.js'/>
          <File source='/ajs/mo-ui.js'/>
          <File source='/ajs/mo-gui.js'/>
-         <File source='/ajs/mo-game.js'/>
+         <!-- <File source='/ajs/mo-game.js'/> -->
       </FileMerger>
       <FileMerger target='/ajs/mo.js'>
          <File source='/ajs/mo-lang.js'/>

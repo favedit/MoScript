@@ -1762,6 +1762,7 @@ MO.FEaiScene = function FEaiScene(o){
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
+   o.onOperationVisibility  = MO.FEaiScene_onOperationVisibility;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
    o.construct              = MO.FEaiScene_construct;
@@ -1786,6 +1787,11 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
    o.processResize();
+}
+MO.FEaiScene_onOperationVisibility = function FEaiScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FScene.onOperationVisibility.call(o, event);
+   o._visible = event.visibility;
 }
 MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
    var o = this;

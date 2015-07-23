@@ -9,6 +9,7 @@ MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
    //..........................................................
    // @attribute
+   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));

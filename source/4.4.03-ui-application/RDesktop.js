@@ -79,6 +79,7 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    MO.Window.lsnsKeyPress.register(o, o.onProcessEvent);
    MO.Window.lsnsKeyUp.register(o, o.onProcessEvent);
    MO.Window.lsnsResize.register(o, o.onProcessEvent);
+   MO.Window.lsnsVisibility.register(o, o.onProcessEvent);
    MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    // 创建线程
    var thread = o._thread = MO.Class.create(MO.FThread);

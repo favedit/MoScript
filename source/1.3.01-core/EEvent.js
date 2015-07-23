@@ -29,22 +29,6 @@ MO.EEvent = new function EEvent(){
    o.Focus            = 'Focus';
    // @attribute 失去焦点
    o.Blur             = 'Blur';
-   // @attribute 操作落下
-   o.OperationDown    = 'OperationDown';
-   // @attribute 操作移动
-   o.OperationMove    = 'OperationMove';
-   // @attribute 操作抬起
-   o.OperationUp      = 'OperationUp';
-   // @attribute 操作大小
-   o.OperationResize  = 'OperationResize';
-   // @attribute 操作卷动
-   o.OperationWheel   = 'OperationWheel';
-   // @attribute 按键落下
-   o.OperationKeyDown = 'OperationKeyDown';
-   // @attribute 按键点击
-   o.OperationKeyPress = 'OperationKeyPress';
-   // @attribute 按键抬起
-   o.OperationKeyUp   = 'OperationKeyUp';
    // @attribute 鼠标落下
    o.MouseDown        = 'MouseDown';
    // @attribute 鼠标移动
@@ -75,6 +59,8 @@ MO.EEvent = new function EEvent(){
    o.Result           = 'Result';
    // @attribute 触摸缩放
    o.TouchZoom        = 'TouchZoom';
+   // @attribute 可见性
+   o.Visibility       = 'Visibility';
    // @attribute 屏幕缩放
    o.Orientation      = 'Orientation';
    return o;

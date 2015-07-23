@@ -30,7 +30,7 @@ MO.FChapter = function FChapter(o){
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
    // @method
-   o.setup                = MO.FChapter_setup;
+   o.setup                = MO.Method.empty;
    o.active               = MO.FChapter_active;
    o.deactive             = MO.FChapter_deactive;
    // @method
@@ -113,17 +113,9 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
+   MO.Assert.debugNotNull(scene);
    o.selectScene(scene);
    return scene;
-}
-
-//==========================================================
-// <T>配置处理。</T>
-//
-// @method
-//==========================================================
-MO.FChapter_setup = function FChapter_setup(){
-   var o = this;
 }
 
 //==========================================================
@@ -180,8 +172,11 @@ MO.FChapter_process = function FChapter_process(){
    // 前处理
    o.processEnterFrameListener(o._eventEnterFrame);
    // 场景处理
-   if(o._activeScene){
-      o._activeScene.process();
+   var scene = o._activeScene;
+   if(scene){
+      if(scene.visible()){
+         scene.process();
+      }
    }
    // 后处理
    o.processLeaveFrameListener(o._eventLeaveFrame);

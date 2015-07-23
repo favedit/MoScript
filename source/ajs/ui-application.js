@@ -106,7 +106,7 @@ MO.FChapter = function FChapter(o){
    o.unregisterScene      = MO.FChapter_unregisterScene;
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
-   o.setup                = MO.FChapter_setup;
+   o.setup                = MO.Method.empty;
    o.active               = MO.FChapter_active;
    o.deactive             = MO.FChapter_deactive;
    o.processEvent         = MO.FChapter_processEvent;
@@ -150,11 +150,9 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
+   MO.Assert.debugNotNull(scene);
    o.selectScene(scene);
    return scene;
-}
-MO.FChapter_setup = function FChapter_setup(){
-   var o = this;
 }
 MO.FChapter_active = function FChapter_active(){
    var o = this;
@@ -179,8 +177,11 @@ MO.FChapter_processEvent = function FChapter_processEvent(event){
 MO.FChapter_process = function FChapter_process(){
    var o = this;
    o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeScene){
-      o._activeScene.process();
+   var scene = o._activeScene;
+   if(scene){
+      if(scene.visible()){
+         scene.process();
+      }
    }
    o.processLeaveFrameListener(o._eventLeaveFrame);
 }
@@ -313,6 +314,7 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
 }
 MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
@@ -456,6 +458,7 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    MO.Window.lsnsKeyPress.register(o, o.onProcessEvent);
    MO.Window.lsnsKeyUp.register(o, o.onProcessEvent);
    MO.Window.lsnsResize.register(o, o.onProcessEvent);
+   MO.Window.lsnsVisibility.register(o, o.onProcessEvent);
    MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);

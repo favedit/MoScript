@@ -9080,14 +9080,6 @@ MO.EEvent = new function EEvent(){
    o.Resize           = 'Reisze';
    o.Focus            = 'Focus';
    o.Blur             = 'Blur';
-   o.OperationDown    = 'OperationDown';
-   o.OperationMove    = 'OperationMove';
-   o.OperationUp      = 'OperationUp';
-   o.OperationResize  = 'OperationResize';
-   o.OperationWheel   = 'OperationWheel';
-   o.OperationKeyDown = 'OperationKeyDown';
-   o.OperationKeyPress = 'OperationKeyPress';
-   o.OperationKeyUp   = 'OperationKeyUp';
    o.MouseDown        = 'MouseDown';
    o.MouseMove        = 'MouseMove';
    o.MouseUp          = 'MouseUp';
@@ -9103,6 +9095,7 @@ MO.EEvent = new function EEvent(){
    o.DataChanged      = 'DataChanged';
    o.Result           = 'Result';
    o.TouchZoom        = 'TouchZoom';
+   o.Visibility       = 'Visibility';
    o.Orientation      = 'Orientation';
    return o;
 }
@@ -12730,6 +12723,7 @@ MO.RWindow = function RWindow(){
    o._eventMouse       = new MO.SMouseEvent();
    o._eventKey         = new MO.SKeyboardEvent();
    o._eventResize      = new MO.SResizeEvent();
+   o._eventVisibility  = new MO.SEvent();
    o._eventOrientation = new MO.SEvent();
    o._eventUnload      = new MO.SEvent();
    o._hWindow          = null;
@@ -12749,12 +12743,13 @@ MO.RWindow = function RWindow(){
    o.lsnsKeyUp         = new MO.TListeners();
    o.lsnsKeyPress      = new MO.TListeners();
    o.lsnsResize        = new MO.TListeners();
+   o.lsnsVisibility    = new MO.TListeners();
    o.lsnsOrientation   = new MO.TListeners();
    o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }
-MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onMouseDown = function RWindow_onMouseDown(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12763,8 +12758,8 @@ MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseDown.process(event);
 }
-MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onMouseMove = function RWindow_onMouseMove(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12773,8 +12768,8 @@ MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseMove.process(event);
 }
-MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onMouseUp = function RWindow_onMouseUp(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12783,8 +12778,8 @@ MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseUp.process(event);
 }
-MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onMouseWheel = function RWindow_onMouseWheel(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12793,8 +12788,8 @@ MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseWheel.process(event);
 }
-MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onKeyDown = function RWindow_onKeyDown(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12803,8 +12798,8 @@ MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyDown.process(event);
 }
-MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onKeyUp = function RWindow_onKeyUp(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12813,8 +12808,8 @@ MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyUp.process(event);
 }
-MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onKeyPress = function RWindow_onKeyPress(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12823,8 +12818,8 @@ MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyPress.process(event);
 }
-MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
-   var o = MO.RWindow;
+MO.RWindow.prototype.onResize = function RWindow_onResize(hEvent){
+   var o = this;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -12833,49 +12828,62 @@ MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
    event.attachEvent(hEvent);
    o.lsnsResize.process(event);
 }
-MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
-   return MO.Window._optionSelect;
+MO.RWindow.prototype.onSelect = function RWindow_onSelect(event){
+   return this._optionSelect;
 }
-MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
-   var o = MO.Window;
+MO.RWindow.prototype.onVisibility = function RWindow_onVisibility(hEvent){
+   var o = this;
+   var visibility = MO.Window.Browser.isVisibility();
+   var event = o._eventVisibility;
+   event.visibility = visibility;
+   o.lsnsVisibility.process(event);
+   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
+}
+MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
+   var o = this;
    var orientationCd = MO.Window.Browser.refreshOrientation();
    var event = o._eventOrientation;
-   event.code = MO.EEvent.Orientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
+   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
-MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
-   var o = MO.Window;
+MO.RWindow.prototype.onUnload = function RWindow_onUnload(event){
+   var o = this;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   MO.Window.dispose();
+   this.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
+   o._eventVisibility.code = MO.EEvent.Visibility;
+   o._eventOrientation.code = MO.EEvent.Orientation;
    var hWindow = o._hWindow = hHtml;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
+   var visibilitychange = MO.Window.Browser.defineEventGet('visibilitychange');
    if(MO.Window.Browser.supportHtml5()){
-      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
-      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
-      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
-      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
-      hContainer.addEventListener('keydown', o.ohKeyDown, true);
-      hContainer.addEventListener('keyup', o.ohKeyUp, true);
-      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hContainer.addEventListener('mousedown', o.onMouseDown.bind(o), true);
+      hContainer.addEventListener('mousemove', o.onMouseMove.bind(o), true);
+      hContainer.addEventListener('mouseup', o.onMouseUp.bind(o), true);
+      hContainer.addEventListener('mousewheel', o.onMouseWheel.bind(o), true);
+      hContainer.addEventListener('keydown', o.onKeyDown.bind(o), true);
+      hContainer.addEventListener('keyup', o.onKeyUp.bind(o), true);
+      hContainer.addEventListener('keypress', o.onKeyPress.bind(o), true);
+      hDocument.addEventListener(visibilitychange, o.onVisibility.bind(o), true);
    }else{
-      hContainer.onmousedown = o.ohMouseDown;
-      hContainer.onmousemove = o.ohMouseMove;
-      hContainer.onmouseup = o.ohMouseUp;
-      hContainer.onmousewheel = o.ohMouseWheel;
-      hContainer.onkeydown = o.ohKeyDown;
-      hContainer.onkeyup = o.ohKeyUp;
-      hContainer.onkeypress = o.ohKeyPress;
+      hContainer.onmousedown = o.onMouseDown.bind(o);
+      hContainer.onmousemove = o.onMouseMove.bind(o);
+      hContainer.onmouseup = o.onMouseUp.bind(o);
+      hContainer.onmousewheel = o.onMouseWheel.bind(o);
+      hContainer.onkeydown = o.onKeyDown.bind(o);
+      hContainer.onkeyup = o.onKeyUp.bind(o);
+      hContainer.onkeypress = o.onKeyPress.bind(o);
+      hDocument['on' + visibilitychange] = o.onVisibility.bind(o);
    }
-   hWindow.onorientationchange = o.ohOrientation;
-   hContainer.onresize = o.ohResize;
-   hContainer.onselectstart = o.ohSelect;
-   hContainer.onunload = o.ohUnload;
+   hWindow.onorientationchange = o.onOrientation.bind(o);
+   hContainer.onresize = o.onResize.bind(o);
+   hContainer.onselectstart = o.onSelect.bind(o);
+   hContainer.onunload = o.onUnload.bind(o);
 }
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
@@ -13004,14 +13012,14 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    var hDocument = o._hDocument;
    var hContainer = o._hContainer;
    if(MO.Window.Browser.supportHtml5()){
-      hContainer.removeEventListener('mousedown', o.ohMouseDown, true);
-      hContainer.removeEventListener('mousemove', o.ohMouseMove, true);
-      hContainer.removeEventListener('mouseup', o.ohMouseUp, true);
-      hContainer.removeEventListener('mousewheel', o.ohMouseWheel, true);
-      hContainer.removeEventListener('keydown', o.ohKeyDown, true);
-      hContainer.removeEventListener('keyup', o.ohKeyUp, true);
-      hContainer.removeEventListener('keypress', o.ohKeyPress, true);
-      hWindow.removeEventListener('orientationchange', o.ohOrientation);
+      hContainer.removeEventListener('mousedown', o.onMouseDown, true);
+      hContainer.removeEventListener('mousemove', o.onMouseMove, true);
+      hContainer.removeEventListener('mouseup', o.onMouseUp, true);
+      hContainer.removeEventListener('mousewheel', o.onMouseWheel, true);
+      hContainer.removeEventListener('keydown', o.onKeyDown, true);
+      hContainer.removeEventListener('keyup', o.onKeyUp, true);
+      hContainer.removeEventListener('keypress', o.onKeyPress, true);
+      hWindow.removeEventListener('orientationchange', o.onOrientation);
    }else{
       hContainer.onmousedown = null;
       hContainer.onmousemove = null;
@@ -13025,8 +13033,8 @@ MO.RWindow.prototype.dispose = function RWindow_dispose(){
    hContainer.onresize = null;
    hContainer.onselectstart = null;
    hContainer.onunload = null;
-   o._localStorage = MO.RObject.dispose(o._localStorage);
-   o._sessionStorage = MO.RObject.dispose(o._sessionStorage);
+   o._localStorage = MO.Lang.Object.dispose(o._localStorage);
+   o._sessionStorage = MO.Lang.Object.dispose(o._sessionStorage);
    o._hWindow = null;
    o._hDocument = null;
    o._hContainer = null;
@@ -13305,15 +13313,18 @@ MO.FWindowStorage_innerDump = function FWindowStorage_innerDump(dump, level){
 }
 MO.RBrowser = function RBrowser(){
    var o = this;
-   o._agent         = null;
-   o._capability    = null;
-   o._deviceCd      = MO.EDevice.Unknown;
-   o._softwareCd    = MO.ESoftware.Unknown;
-   o._typeCd        = MO.EBrowser.Unknown;
-   o._orientationCd = MO.EOrientation.Horizontal;
-   o._supportHtml5  = false;
-   o._hostPath      = '';
-   o._contentPath   = '';
+   o._agent            = null;
+   o._capability       = null;
+   o._defineProperties = null;
+   o._defineEvents     = null;
+   o._defineMethods    = null;
+   o._deviceCd         = MO.EDevice.Unknown;
+   o._softwareCd       = MO.ESoftware.Unknown;
+   o._typeCd           = MO.EBrowser.Unknown;
+   o._orientationCd    = MO.EOrientation.Horizontal;
+   o._supportHtml5     = false;
+   o._hostPath         = '';
+   o._contentPath      = '';
    return o;
 }
 MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
@@ -13321,9 +13332,12 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   o.code = window.navigator.userAgent.toString();
-   var agent = o.code.toLowerCase();
+   var code = o.code = window.navigator.userAgent.toString();
+   var agent = code.toLowerCase();
    var capability = o._capability = new MO.SBrowserCapability();
+   var properties = o._defineProperties = new Object();
+   var events = o._defineEvents = new Object();
+   var methods = o._defineMethods = new Object();
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
       o._softwareCd = MO.ESoftware.Android;
@@ -13390,10 +13404,43 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }catch(e){
       MO.Logger.warn(o, 'Browser blob not support.');
    }
+   var hDocument = window.document;
+   var visibilityChange = null;
+   if(typeof hDocument.hidden !== "undefined"){
+      properties['hidden'] = 'hidden';
+      events['visibilitychange'] = 'visibilitychange';
+   } else if (typeof hDocument.mozHidden !== "undefined"){
+      properties['hidden'] = 'mozHidden';
+      events['visibilitychange'] = 'mozvisibilitychange';
+   }else if (typeof hDocument.msHidden !== "undefined"){
+      properties['hidden'] = 'msHidden';
+      events['visibilitychange'] = 'msvisibilitychange';
+   }else if (typeof hDocument.webkitHidden !== "undefined"){
+      properties['hidden'] = 'webkitHidden';
+      events['visibilitychange'] = 'webkitvisibilitychange';
+   }
    o.refreshOrientation();
 }
 MO.RBrowser.prototype.capability = function RBrowser_capability(){
    return this._capability;
+}
+MO.RBrowser.prototype.defineProperties = function RBrowser_defineProperties(){
+   return this._defineProperties;
+}
+MO.RBrowser.prototype.definePropertyGet = function RBrowser_definePropertyGet(name){
+   return this._defineProperties[name];
+}
+MO.RBrowser.prototype.defineEvents = function RBrowser_defineEvents(){
+   return this._defineEvents;
+}
+MO.RBrowser.prototype.defineEventGet = function RBrowser_defineEventGet(name){
+   return this._defineEvents[name];
+}
+MO.RBrowser.prototype.defineMethods = function RBrowser_defineMethods(){
+   return this._defineMethods;
+}
+MO.RBrowser.prototype.defineMethodGet = function RBrowser_defineMethodGet(name){
+   return this._defineMethods[name];
 }
 MO.RBrowser.prototype.supportHtml5 = function RBrowser_supportHtml5(){
    return this._supportHtml5;
@@ -13449,6 +13496,10 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
       }
    }
    return o._orientationCd;
+}
+MO.RBrowser.prototype.isVisibility = function RBrowser_isVisibility(){
+   var name = this.definePropertyGet('hidden');
+   return !window.document[name];
 }
 MO.RBrowser.prototype.encode = function RBrowser_encode(value){
    return escape(value);
@@ -18626,8 +18677,8 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       capability.samplerCompressRgb = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
       capability.samplerCompressRgba = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
-   var s = capability.shader = new Object();
-   var vertexPrecision = s.vertexPrecision = new Object();
+   var shader = capability.shader = new Object();
+   var vertexPrecision = shader.vertexPrecision = new Object();
    if(handle.getShaderPrecisionFormat){
       vertexPrecision.floatLow = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.LOW_FLOAT);
       vertexPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_FLOAT);
@@ -18636,7 +18687,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       vertexPrecision.intMedium = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.MEDIUM_INT);
       vertexPrecision.intHigh = handle.getShaderPrecisionFormat(handle.VERTEX_SHADER, handle.HIGH_INT);
    }
-   var fragmentPrecision = s.fragmentPrecision = new Object();
+   var fragmentPrecision = shader.fragmentPrecision = new Object();
    if(handle.getShaderPrecisionFormat){
       fragmentPrecision.floatLow = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.LOW_FLOAT);
       fragmentPrecision.floatMedium = handle.getShaderPrecisionFormat(handle.FRAGMENT_SHADER, handle.MEDIUM_FLOAT);
@@ -18861,7 +18912,7 @@ MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
          graphic.polygonMode(graphic.FRONT, graphic.FILL);
          break;
       default:
-         throw new TError('Invalid parameter. (fill_mode={1})', fillModeCd);
+         throw new MO.TError('Invalid parameter. (fill_mode={1})', fillModeCd);
    }
    o._fillModeCd = fillModeCd;
    return true;
@@ -19115,8 +19166,7 @@ MO.FWglContext_bindVertexBuffer = function FWglContext_bindVertexBuffer(slot, ve
          graphic.vertexAttribPointer(slot, 4, graphic.UNSIGNED_BYTE, true, stride, offset);
          break;
       default:
-         throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
-         break;
+         throw new MO.TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
    }
    result = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", slot, formatCd);
    return result;
@@ -19148,7 +19198,8 @@ MO.FWglContext_bindTexture = function FWglContext_bindTexture(slot, index, textu
       return result;
    }
    var handle = texture._handle;
-   switch(texture.textureCd()){
+   var textureCd = texture.textureCd();
+   switch(textureCd){
       case MO.EG3dTexture.Flat2d:{
          graphic.bindTexture(graphic.TEXTURE_2D, handle);
          result = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", handle);
@@ -19167,7 +19218,6 @@ MO.FWglContext_bindTexture = function FWglContext_bindTexture(slot, index, textu
       }
       default:{
          throw new MO.TError(o, 'Unknown texture type.');
-         break;
       }
    }
    return result;
@@ -20179,6 +20229,7 @@ MO.MEventDispatcher = function MEventDispatcher(o){
    o.onOperationKeyPress    = MO.Method.empty;
    o.onOperationKeyUp       = MO.Method.empty;
    o.onOperationResize      = MO.Method.empty;
+   o.onOperationVisibility  = MO.Method.empty;
    o.onOperationOrientation = MO.Method.empty;
    o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
    return o;
@@ -20209,6 +20260,9 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          break;
       case MO.EEvent.Resize:
          o.onOperationResize(event);
+         break;
+      case MO.EEvent.Visibility:
+         o.onOperationVisibility(event);
          break;
       case MO.EEvent.Orientation:
          o.onOperationOrientation(event);
@@ -35018,7 +35072,7 @@ MO.FChapter = function FChapter(o){
    o.unregisterScene      = MO.FChapter_unregisterScene;
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
-   o.setup                = MO.FChapter_setup;
+   o.setup                = MO.Method.empty;
    o.active               = MO.FChapter_active;
    o.deactive             = MO.FChapter_deactive;
    o.processEvent         = MO.FChapter_processEvent;
@@ -35062,11 +35116,9 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
+   MO.Assert.debugNotNull(scene);
    o.selectScene(scene);
    return scene;
-}
-MO.FChapter_setup = function FChapter_setup(){
-   var o = this;
 }
 MO.FChapter_active = function FChapter_active(){
    var o = this;
@@ -35091,8 +35143,11 @@ MO.FChapter_processEvent = function FChapter_processEvent(event){
 MO.FChapter_process = function FChapter_process(){
    var o = this;
    o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeScene){
-      o._activeScene.process();
+   var scene = o._activeScene;
+   if(scene){
+      if(scene.visible()){
+         scene.process();
+      }
    }
    o.processLeaveFrameListener(o._eventLeaveFrame);
 }
@@ -35225,6 +35280,7 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
 }
 MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
@@ -35368,6 +35424,7 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
    MO.Window.lsnsKeyPress.register(o, o.onProcessEvent);
    MO.Window.lsnsKeyUp.register(o, o.onProcessEvent);
    MO.Window.lsnsResize.register(o, o.onProcessEvent);
+   MO.Window.lsnsVisibility.register(o, o.onProcessEvent);
    MO.Window.lsnsOrientation.register(o, o.onProcessEvent);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
@@ -83353,6 +83410,7 @@ MO.FEaiScene = function FEaiScene(o){
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
+   o.onOperationVisibility  = MO.FEaiScene_onOperationVisibility;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
    o.construct              = MO.FEaiScene_construct;
@@ -83377,6 +83435,11 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
    o.processResize();
+}
+MO.FEaiScene_onOperationVisibility = function FEaiScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FScene.onOperationVisibility.call(o, event);
+   o._visible = event.visibility;
 }
 MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
    var o = this;

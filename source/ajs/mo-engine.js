@@ -39,6 +39,7 @@ MO.MEventDispatcher = function MEventDispatcher(o){
    o.onOperationKeyPress    = MO.Method.empty;
    o.onOperationKeyUp       = MO.Method.empty;
    o.onOperationResize      = MO.Method.empty;
+   o.onOperationVisibility  = MO.Method.empty;
    o.onOperationOrientation = MO.Method.empty;
    o.dispatcherEvent        = MO.MEventDispatcher_dispatcherEvent;
    return o;
@@ -69,6 +70,9 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          break;
       case MO.EEvent.Resize:
          o.onOperationResize(event);
+         break;
+      case MO.EEvent.Visibility:
+         o.onOperationVisibility(event);
          break;
       case MO.EEvent.Orientation:
          o.onOperationOrientation(event);
