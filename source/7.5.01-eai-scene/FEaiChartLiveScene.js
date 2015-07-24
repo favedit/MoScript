@@ -91,15 +91,24 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    o.__base.FEaiChartScene.onProcess.call(o);
    // 检测首次播放
    if(!o._statusStart){
-      if(o.testReady()){
-         var hLoading = document.getElementById('id_loading');
-         if(hLoading){
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-            o._statusLayerLevel--;
+      if (o.testReady()) {
+         if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               document.body.removeChild(hLoading);
+            }
          }
-         o._statusLayerLevel--;
-         if(o._statusLayerLevel <= 0){
-            if(hLoading){
+         else {
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+               o._statusLayerLevel--;
+            }
+            o._statusLayerLevel--;  
+         }
+
+         if (o._statusLayerLevel <= 0) {
+            if (hLoading) {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.showCountry();
@@ -108,6 +117,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             o._playing = true;
             o._statusStart = true;
          }
+         
       }
    }
    // 重复播放
