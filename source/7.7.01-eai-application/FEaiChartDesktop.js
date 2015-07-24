@@ -145,18 +145,19 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
       o._calculateRate.set(1, 1);
    }
    MO.Logger.info(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
-   //alert(MO.Lang.String.format('Change screen size. (orientation={1}, source={2}x{3}, size={4}x{5}, pixel_ratio={6}, rate={7})', window.orientation + '-' + browser.orientationCd(), sourceWidth, sourceHeight, width, height, pixelRatio, o._calculateRate.toDisplay()));
+   //alert(MO.Lang.String.format('Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay()));
    //..........................................................
    // 设置3D画板
    var isMobile = MO.Runtime.isPlatformMobile();
-   o._canvas3d.resize(width, height);
-   var context3d = o._canvas3d.graphicContext();
+   var canvas3d = o._canvas3d;
+   canvas3d.resize(width, height);
+   var context3d = canvas3d.graphicContext();
    if(isMobile){
-      var hCanvas3d = o._canvas3d._hCanvas;
+      var hCanvas3d = canvas3d._hCanvas;
       hCanvas3d.style.width = sourceWidth + 'px';
       hCanvas3d.style.height = sourceHeight + 'px';
    }
-   context3d.setViewport(0, 0, o._size.width, o._size.height)
+   context3d.setViewport(0, 0, width, height)
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);

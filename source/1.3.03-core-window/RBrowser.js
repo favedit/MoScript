@@ -71,7 +71,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
    // 输出日志
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.REnum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    // 是否支持HTML5
    if(window.applicationCache){
       o._supportHtml5 = true;

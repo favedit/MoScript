@@ -70,12 +70,15 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      var handle = hCanvas.getContext('experimental-webgl2', parameters);
-      if(!handle){
-         handle = hCanvas.getContext('experimental-webgl', parameters);
-      }
-      if(!handle){
-         handle = hCanvas.getContext('webgl', parameters);
+      var handle = null;
+      var codes = ['experimental-webgl2', 'experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl']
+      var count = codes.length;
+      for(var i = 0; i < count; i++){
+         var code = codes[i];
+         handle = hCanvas.getContext(code, parameters);
+         if(handle){
+            break;
+         }
       }
       if(!handle){
          var event = new MO.SEvent(o);

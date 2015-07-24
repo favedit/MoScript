@@ -2893,7 +2893,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -3540,7 +3539,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hWindow     = null;
    o._hIntervalId = null;
-   o.ohInterval   = MO.FThreadConsole_ohInterval;
+   o.onInterval   = MO.FThreadConsole_onInterval;
    o.construct    = MO.FThreadConsole_construct;
    o.push         = MO.FThreadConsole_push;
    o.start        = MO.FThreadConsole_start;
@@ -3549,9 +3548,8 @@ MO.FThreadConsole = function FThreadConsole(o){
    o.dispose      = MO.FThreadConsole_dispose;
    return o;
 }
-MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
-   var threadConsole = MO.Console.get(MO.FThreadConsole);
-   threadConsole.processAll();
+MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
+   this.processAll();
 }
 MO.FThreadConsole_push = function FThreadConsole_push(thread){
    this._threads.push(thread);
@@ -3565,7 +3563,10 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._threads = new MO.TObjects();
    o._hWindow = window;
-   o._hIntervalId = o._hWindow.setInterval(o.ohInterval, o._interval);
+   var method = o.onInterval.bind(o);
+   if(!MO.Window.requestAnimationFrame(method)){
+      o._hIntervalId = o._hWindow.setInterval(method, o._interval);
+   }
 }
 MO.FThreadConsole_process = function FThreadConsole_process(thread){
    var o = this;
@@ -3603,6 +3604,8 @@ MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
       if(hIntervalId){
          hWindow.clearInterval(hIntervalId);
          o._hIntervalId = null;
+      }else{
+         MO.Window.cancelRequestAnimationFrame(o.onInterval);
       }
       o._hWindow = null;
    }

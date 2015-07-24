@@ -177,7 +177,7 @@ MO.FEaiChartCanvas = function FEaiChartCanvas(o){
 MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
    var o = this;
    o.__base.FEaiCanvas.construct.call(o);
-   o._logicSize = new MO.SSize2(1920, 1080);
+   o._logicSize.set(1920, 1080);
    o._cameraPosition = new MO.SPoint3();
 }
 MO.FEaiChartCanvas_setPanel = function FEaiChartCanvas_setPanel(hPanel){
@@ -277,14 +277,15 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }
    MO.Logger.info(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var isMobile = MO.Runtime.isPlatformMobile();
-   o._canvas3d.resize(width, height);
-   var context3d = o._canvas3d.graphicContext();
+   var canvas3d = o._canvas3d;
+   canvas3d.resize(width, height);
+   var context3d = canvas3d.graphicContext();
    if(isMobile){
-      var hCanvas3d = o._canvas3d._hCanvas;
+      var hCanvas3d = canvas3d._hCanvas;
       hCanvas3d.style.width = sourceWidth + 'px';
       hCanvas3d.style.height = sourceHeight + 'px';
    }
-   context3d.setViewport(0, 0, o._size.width, o._size.height)
+   context3d.setViewport(0, 0, width, height)
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setGlobalScale(sizeRate, sizeRate);

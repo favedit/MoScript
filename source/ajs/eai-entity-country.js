@@ -785,7 +785,6 @@ MO.FEaiCountryEntity_loadProvinceData = function FEaiCountryEntity_loadProvinceD
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceConsole.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);

@@ -19,7 +19,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._hIntervalId = null;
    //..........................................................
    // @event
-   o.ohInterval   = MO.FThreadConsole_ohInterval;
+   o.onInterval   = MO.FThreadConsole_onInterval;
    //..........................................................
    // @method
    o.construct    = MO.FThreadConsole_construct;
@@ -38,9 +38,8 @@ MO.FThreadConsole = function FThreadConsole(o){
 //
 // @method
 //==========================================================
-MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
-   var threadConsole = MO.Console.get(MO.FThreadConsole);
-   threadConsole.processAll();
+MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
+   this.processAll();
 }
 
 //==========================================================
@@ -75,8 +74,11 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    // 设置属性
    o._threads = new MO.TObjects();
    o._hWindow = window;
-   // 设置时钟
-   o._hIntervalId = o._hWindow.setInterval(o.ohInterval, o._interval);
+   // 设置回调
+   var method = o.onInterval.bind(o);
+   if(!MO.Window.requestAnimationFrame(method)){
+      o._hIntervalId = o._hWindow.setInterval(method, o._interval);
+   }
 }
 
 //==========================================================
@@ -134,6 +136,8 @@ MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
       if(hIntervalId){
          hWindow.clearInterval(hIntervalId);
          o._hIntervalId = null;
+      }else{
+         MO.Window.cancelRequestAnimationFrame(o.onInterval);
       }
       o._hWindow = null;
    }

@@ -570,6 +570,37 @@ MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
 }
 
 //==========================================================
+// <T>请求动画回调。</T>
+//
+// @method
+// @param callback 回调函数
+// @param interval 调用间隔
+//==========================================================
+MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
+   var method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   if(method){
+      method(callback);
+      return true;
+   }
+   return false;
+}
+
+//==========================================================
+// <T>取消动画回调。</T>
+//
+// @method
+// @param callback 回调函数
+//==========================================================
+MO.RWindow.prototype.cancelRequestAnimationFrame = function RWindow_cancelRequestAnimationFrame(callback){
+   var method = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+   if(method){
+      method(callback);
+      return true;
+   }
+   return false;
+}
+
+//==========================================================
 // <T>跳转到指定地址。</T>
 //
 // @method

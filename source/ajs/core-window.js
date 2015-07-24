@@ -151,7 +151,6 @@ MO.RWindow.prototype.onVisibility = function RWindow_onVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
-   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
    var o = this;
@@ -159,7 +158,6 @@ MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
-   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.onUnload = function RWindow_onUnload(event){
    var o = this;
@@ -311,8 +309,23 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
+}
+MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
+   var method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   if(method){
+      method(callback);
+      return true;
+   }
+   return false;
+}
+MO.RWindow.prototype.cancelRequestAnimationFrame = function RWindow_cancelRequestAnimationFrame(callback){
+   var method = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+   if(method){
+      method(callback);
+      return true;
+   }
+   return false;
 }
 MO.RWindow.prototype.redirect = function RWindow_redirect(){
 }
@@ -672,7 +685,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.REnum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -1386,7 +1399,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){

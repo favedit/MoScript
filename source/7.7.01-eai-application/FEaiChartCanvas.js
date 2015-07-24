@@ -32,7 +32,7 @@ MO.FEaiChartCanvas = function FEaiChartCanvas(o){
 MO.FEaiChartCanvas_construct = function FEaiChartCanvas_construct(){
    var o = this;
    o.__base.FEaiCanvas.construct.call(o);
-   o._logicSize = new MO.SSize2(1920, 1080);
+   o._logicSize.set(1920, 1080);
    o._cameraPosition = new MO.SPoint3();
 }
 
