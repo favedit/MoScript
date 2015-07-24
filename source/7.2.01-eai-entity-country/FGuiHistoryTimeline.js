@@ -139,15 +139,14 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          var hexColor = MO.Lang.Hex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
          var color = '#' + hexColor.substring(2);
          if (startDate.date.getDate() == 1) {
-            var text = MO.Lang.Float.unitFormat(inves, 0, 0, 0, 0, 10000, '万');
             graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
             graphic.setFont('bold 22px Microsoft YaHei');
-            if (inves > 100000000) {
-               var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+            if (dayInvestmentTotal > 100000000) {
+               var text = MO.Lang.Float.unitFormat(dayInvestmentTotal, 0, 0, 2, 0, 100000000, '亿');
                var textWidth = graphic.textWidth(text);
                graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
             } else {
-               var text = parseInt(inves / 10000) + '万';
+               var text = parseInt(dayInvestmentTotal / 10000) + '万';
                var textWidth = graphic.textWidth(text);
                graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
             }
