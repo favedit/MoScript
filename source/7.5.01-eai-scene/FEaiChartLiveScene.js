@@ -93,6 +93,10 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    if(!o._statusStart){
       if (o.testReady()) {
          if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+            var iosPlay = document.getElementById('id_ios_play');
+            if (iosPlay) {
+               MO.Window.Html.visibleSet(iosPlay, true);
+            }
             var hLoading = document.getElementById('id_loading');
             if (hLoading) {
                document.body.removeChild(hLoading);
