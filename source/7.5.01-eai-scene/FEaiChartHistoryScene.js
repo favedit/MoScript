@@ -39,8 +39,8 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._milestoneBarShowTick     = 0;
    o._milestoneBarShowing      = false;
    // @attribute
-   o._bgm                      = null;
-   o._bgmPlaying               = false;
+   //o._bgm                      = null;
+   //o._bgmPlaying               = false;
    //..........................................................
    // @event
    o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
@@ -206,10 +206,10 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
          return;
       }
       //播放背景音乐
-      if (!o._bgmPlaying) {
-         o._bgm.play(0);
-         o._bgmPlaying = true;
-      }
+      //if (!o._bgmPlaying) {
+      //   o._bgm.play(0);
+      //   o._bgmPlaying = true;
+      //}
       // 显示界面
       if (!o._mapReady) {
          // 设置显示
@@ -320,9 +320,14 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._endDate = new MO.TDate();
    //..........................................................
    // 加载背景音乐
-   o._groundAutio.pause();
+   var audio = o._groundAutio;
+   audio.pause();
+   audio = null;
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   audio.setLoop(true);
+   audio.setVolume(0.2);
+   audio.play();
    //..........................................................
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);

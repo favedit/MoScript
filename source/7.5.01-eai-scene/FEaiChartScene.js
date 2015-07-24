@@ -25,6 +25,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._groundAutio          = null;
    //..........................................................
    // @event
+   o.onOperationVisibility = MO.FEaiChartScene_onOperationVisibility;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    //..........................................................
@@ -41,6 +42,25 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @method
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
+}
+
+//==========================================================
+// <T>操作可见处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartScene_onOperationVisibility = function FEaiChartScene_onOperationVisibility(event) {
+   var o = this;
+   o.__base.FEaiScene.onOperationVisibility.call(o, event);
+   if (event.visibility) {
+      o._groundAutio.play();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = false;
+   }
+   else {
+      o._groundAutio.pause();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
 }
 
 //==========================================================
