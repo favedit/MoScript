@@ -13,10 +13,10 @@
       // 环境设置
       MO.initialize();
       MO.Runtime.setProcessCd(MO.EProcess.Debug);
-      MO.Browser.setContentPath('../..');
-      
-      var sprite = MO.RClass.create(MO.FGuiSpriteMultimage);
-      sprite.postDeviceInfo();
+      MO.Window.Browser.setContentPath('..');
+
+//      var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
+//      systemConsole.postDeviceInfo();
 
       //      var hCanvas = document.createElement('CANVAS');
       //      hCanvas.style.width = '200px';
@@ -29,23 +29,40 @@
       //      RDump.dump(c2d, _dump);
       //      return;
 
-      //         var hCanvas = document.createElement("CANVAS");
-      //         context = REngine3d.createContext(FWglContext, hCanvas);
-      //      RDump.dump(RBrowser, _dump);
-      //               RDump.dump(context.capability(), _dump);
-      //               RDump.dump(context.parameters(), _dump);
-      //               RDump.dump(context.extensions(), _dump);
-      //      RDump.dump(context, _dump);
-      //         var json = {};
-      //         json.code = navigator.userAgent;
-      //         json.content2d = {};
-      //         json.content3d = {};
-      //         json.content3d.capability = {};
-      //         json.content3d.parameters = {};
-      //         json.content3d.extensions = {};
-      //         var capability = context.capability();
-      //         var result = parseInfo(capability);
-      //         document.writeln(result.toString());
+            var hCanvas = document.createElement("CANVAS");
+            var context = MO.REngine3d.createContext(MO.FWglContext, hCanvas);
+//            RDump.dump(RBrowser, _dump);
+//            RDump.dump(context.capability(), _dump);
+//            RDump.dump(context.parameters(), _dump);
+//            RDump.dump(context.extensions(), _dump);
+//            RDump.dump(context, _dump);
+            var postJson = {};
+            var agentCode = navigator.userAgent;
+            postJson.code = agentCode;
+            postJson.content2d = {};
+            postJson.content3d = {};
+            postJson.content3d.capability = {};
+            postJson.content3d.parameters = {};
+            postJson.content3d.extensions = {};
+      
+            var capability = context.capability();
+            postJson.content3d.capability = parseInfo(capability);      
+            var jsonString =  JSON.stringify(postJson);
+      
+            var tempForm = document.createElement("form");
+            tempForm.action = "http://localhost:88/device/Device.wa?do=putMobileInfo";
+            tempForm.method = "post";
+            
+            var codeInput = document.createElement("input");
+            codeInput.name = "agentCode";
+            codeInput.value = agentCode;
+            tempForm.appendChild(codeInput);
+            
+            var option = document.createElement("textarea");
+            option.name = "capability";
+            option.value = jsonString;
+            tempForm.appendChild(option);
+            tempForm.submit();
 
 
 
@@ -55,10 +72,10 @@
       var json = {};
       for (var key in data) {
          var type = typeof data[key];
-         document.writeln("<font color='blue'>" + type + "</font>");
+         //         document.writeln("<font color='blue'>" + type + "</font>");
          if (type == "function") continue;
          json[key] = data[key];
-         document.writeln(key + " : <font color='red'>" + data[key] + "</font><br>");
+         //         document.writeln(key + " : <font color='red'>" + data[key] + "</font><br>");
          if (type == "object") {
             var nextVal = data[key];
             parseInfo(nextVal);

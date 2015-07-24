@@ -140,17 +140,14 @@ MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
    option.value=postJson;
    tempForm.appendChild(option);
    tempForm.submit();
-   
-   
 }
+
 MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
     var json ={};
       for (var key in data) {
             var type = typeof data[key];
-            document.writeln("<font color='blue'>" + type + "</font>");
             if (type == "function") continue;
             json[key] = data[key];
-            document.writeln(key + " : <font color='red'>" + data[key] + "</font><br>");
             if (type == "object") {
                var nextVal = data[key];
                parseInfo(nextVal);
