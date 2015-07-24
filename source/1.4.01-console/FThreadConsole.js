@@ -16,7 +16,9 @@ MO.FThreadConsole = function FThreadConsole(o){
    //..........................................................
    // @html
    o._hWindow     = null;
+   o._requestFlag = false;
    o._hIntervalId = null;
+   o._intervalHandle = MO.FThreadConsole_onInterval;
    //..........................................................
    // @event
    o.onInterval   = MO.FThreadConsole_onInterval;
@@ -39,7 +41,11 @@ MO.FThreadConsole = function FThreadConsole(o){
 // @method
 //==========================================================
 MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
-   this.processAll();
+   var o = this;
+   o.processAll();
+   if(o._requestFlag){
+      MO.Window.requestAnimationFrame(o._intervalHandle);
+   }
 }
 
 //==========================================================
@@ -75,10 +81,11 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    o._threads = new MO.TObjects();
    o._hWindow = window;
    // 设置回调
-   var method = o.onInterval.bind(o);
-   if(!MO.Window.requestAnimationFrame(method)){
-      o._hIntervalId = o._hWindow.setInterval(method, o._interval);
-   }
+   var handle = o._intervalHandle = o.onInterval.bind(o);
+   //var flag = o._requestFlag = MO.Window.requestAnimationFrame(handle);
+   //if(!flag){
+      o._hIntervalId = o._hWindow.setInterval(handle, o._interval);
+   //}
 }
 
 //==========================================================
@@ -130,16 +137,18 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
 MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
    var o = this;
    // 释放属性
-   var hWindow = o._hWindow;
-   if(hWindow){
-      var hIntervalId = o._hIntervalId;
-      if(hIntervalId){
-         hWindow.clearInterval(hIntervalId);
-         o._hIntervalId = null;
-      }else{
-         MO.Window.cancelRequestAnimationFrame(o.onInterval);
+   if(o._requestFlag){
+      MO.Window.cancelRequestAnimationFrame(o._intervalHandle);
+   }else{
+      var hWindow = o._hWindow;
+      if(hWindow){
+         var hIntervalId = o._hIntervalId;
+         if(hIntervalId){
+            hWindow.clearInterval(hIntervalId);
+            o._hIntervalId = null;
+         }
+         o._hWindow = null;
       }
-      o._hWindow = null;
    }
    o._threads = MO.Lang.Object.dispose(o._threads);
    // 父处理

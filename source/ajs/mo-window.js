@@ -62,8 +62,8 @@ MO.RWindow = function RWindow(){
    o.lsnsDeviceError   = new MO.TListeners();
    return o;
 }
-MO.RWindow.prototype.onMouseDown = function RWindow_onMouseDown(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -72,8 +72,8 @@ MO.RWindow.prototype.onMouseDown = function RWindow_onMouseDown(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseDown.process(event);
 }
-MO.RWindow.prototype.onMouseMove = function RWindow_onMouseMove(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -82,8 +82,8 @@ MO.RWindow.prototype.onMouseMove = function RWindow_onMouseMove(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseMove.process(event);
 }
-MO.RWindow.prototype.onMouseUp = function RWindow_onMouseUp(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -92,8 +92,8 @@ MO.RWindow.prototype.onMouseUp = function RWindow_onMouseUp(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseUp.process(event);
 }
-MO.RWindow.prototype.onMouseWheel = function RWindow_onMouseWheel(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -102,8 +102,8 @@ MO.RWindow.prototype.onMouseWheel = function RWindow_onMouseWheel(hEvent){
    event.attachEvent(hEvent);
    o.lsnsMouseWheel.process(event);
 }
-MO.RWindow.prototype.onKeyDown = function RWindow_onKeyDown(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -112,8 +112,8 @@ MO.RWindow.prototype.onKeyDown = function RWindow_onKeyDown(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyDown.process(event);
 }
-MO.RWindow.prototype.onKeyUp = function RWindow_onKeyUp(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -122,8 +122,8 @@ MO.RWindow.prototype.onKeyUp = function RWindow_onKeyUp(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyUp.process(event);
 }
-MO.RWindow.prototype.onKeyPress = function RWindow_onKeyPress(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -132,8 +132,8 @@ MO.RWindow.prototype.onKeyPress = function RWindow_onKeyPress(hEvent){
    event.attachEvent(hEvent);
    o.lsnsKeyPress.process(event);
 }
-MO.RWindow.prototype.onResize = function RWindow_onResize(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -142,28 +142,28 @@ MO.RWindow.prototype.onResize = function RWindow_onResize(hEvent){
    event.attachEvent(hEvent);
    o.lsnsResize.process(event);
 }
-MO.RWindow.prototype.onSelect = function RWindow_onSelect(event){
-   return this._optionSelect;
+MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
+   return MO.Window._optionSelect;
 }
-MO.RWindow.prototype.onVisibility = function RWindow_onVisibility(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
+   var o = MO.Window;
    var visibility = MO.Window.Browser.isVisibility();
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
 }
-MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
-   var o = this;
-   var orientationCd = MO.Window.Browser.refreshOrientation();
+MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
+   var o = MO.Window;
+   var orientationCd = o.Browser.refreshOrientation();
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
 }
-MO.RWindow.prototype.onUnload = function RWindow_onUnload(event){
-   var o = this;
+MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
+   var o = MO.Window;
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
-   this.dispose();
+   o.dispose();
 }
 MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var o = this;
@@ -174,28 +174,30 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    var hContainer = o._hContainer = hDocument.body;
    var visibilitychange = MO.Window.Browser.defineEventGet('visibilitychange');
    if(MO.Window.Browser.supportHtml5()){
-      hContainer.addEventListener('mousedown', o.onMouseDown.bind(o), true);
-      hContainer.addEventListener('mousemove', o.onMouseMove.bind(o), true);
-      hContainer.addEventListener('mouseup', o.onMouseUp.bind(o), true);
-      hContainer.addEventListener('mousewheel', o.onMouseWheel.bind(o), true);
-      hContainer.addEventListener('keydown', o.onKeyDown.bind(o), true);
-      hContainer.addEventListener('keyup', o.onKeyUp.bind(o), true);
-      hContainer.addEventListener('keypress', o.onKeyPress.bind(o), true);
-      hDocument.addEventListener(visibilitychange, o.onVisibility.bind(o), true);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hDocument.addEventListener(visibilitychange, o.ohVisibility, true);
    }else{
-      hContainer.onmousedown = o.onMouseDown.bind(o);
-      hContainer.onmousemove = o.onMouseMove.bind(o);
-      hContainer.onmouseup = o.onMouseUp.bind(o);
-      hContainer.onmousewheel = o.onMouseWheel.bind(o);
-      hContainer.onkeydown = o.onKeyDown.bind(o);
-      hContainer.onkeyup = o.onKeyUp.bind(o);
-      hContainer.onkeypress = o.onKeyPress.bind(o);
-      hDocument['on' + visibilitychange] = o.onVisibility.bind(o);
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onmousewheel = o.ohMouseWheel;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
+      hDocument['on' + visibilitychange] = o.ohVisibility;
    }
-   hWindow.onorientationchange = o.onOrientation.bind(o);
-   hContainer.onresize = o.onResize.bind(o);
-   hContainer.onselectstart = o.onSelect.bind(o);
-   hContainer.onunload = o.onUnload.bind(o);
+   hWindow.onorientationchange = o.ohOrientation;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
+   o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
 }
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
@@ -312,7 +314,7 @@ MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
-   var method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   var method = this._requestAnimationFrame;
    if(method){
       method(callback);
       return true;
@@ -320,7 +322,7 @@ MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFr
    return false;
 }
 MO.RWindow.prototype.cancelRequestAnimationFrame = function RWindow_cancelRequestAnimationFrame(callback){
-   var method = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+   var method = this._cancelAnimationFrame;
    if(method){
       method(callback);
       return true;

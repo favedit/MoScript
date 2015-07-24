@@ -61,8 +61,8 @@ MO.RWindow = function RWindow(){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onMouseDown = function RWindow_onMouseDown(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseDown = function RWindow_ohMouseDown(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -78,8 +78,8 @@ MO.RWindow.prototype.onMouseDown = function RWindow_onMouseDown(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onMouseMove = function RWindow_onMouseMove(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseMove = function RWindow_ohMouseMove(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -95,8 +95,8 @@ MO.RWindow.prototype.onMouseMove = function RWindow_onMouseMove(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onMouseUp = function RWindow_onMouseUp(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseUp = function RWindow_ohMouseUp(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -112,8 +112,8 @@ MO.RWindow.prototype.onMouseUp = function RWindow_onMouseUp(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onMouseWheel = function RWindow_onMouseWheel(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohMouseWheel = function RWindow_ohMouseWheel(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -129,8 +129,8 @@ MO.RWindow.prototype.onMouseWheel = function RWindow_onMouseWheel(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onKeyDown = function RWindow_onKeyDown(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyDown = function RWindow_ohKeyDown(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -174,8 +174,8 @@ MO.RWindow.prototype.onKeyDown = function RWindow_onKeyDown(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onKeyUp = function RWindow_onKeyUp(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyUp = function RWindow_ohKeyUp(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -191,8 +191,8 @@ MO.RWindow.prototype.onKeyUp = function RWindow_onKeyUp(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onKeyPress = function RWindow_onKeyPress(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohKeyPress = function RWindow_ohKeyPress(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -208,8 +208,8 @@ MO.RWindow.prototype.onKeyPress = function RWindow_onKeyPress(hEvent){
 // @method
 // @param event:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onResize = function RWindow_onResize(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohResize = function RWindow_ohResize(hEvent){
+   var o = MO.Window;
    if(!hEvent){
       hEvent = o._hWindow.event;
    }
@@ -247,8 +247,8 @@ MO.RWindow.prototype.onResize = function RWindow_onResize(hEvent){
 // @method
 // @param event:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onSelect = function RWindow_onSelect(event){
-   return this._optionSelect;
+MO.RWindow.prototype.ohSelect = function RWindow_ohSelect(event){
+   return MO.Window._optionSelect;
 }
 
 //==========================================================
@@ -257,8 +257,8 @@ MO.RWindow.prototype.onSelect = function RWindow_onSelect(event){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onVisibility = function RWindow_onVisibility(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
+   var o = MO.Window;
    // 刷新方向
    var visibility = MO.Window.Browser.isVisibility();
    // 分发消息
@@ -274,10 +274,10 @@ MO.RWindow.prototype.onVisibility = function RWindow_onVisibility(hEvent){
 // @method
 // @param hEvent:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
-   var o = this;
+MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
+   var o = MO.Window;
    // 刷新方向
-   var orientationCd = MO.Window.Browser.refreshOrientation();
+   var orientationCd = o.Browser.refreshOrientation();
    // 分发消息
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
@@ -291,13 +291,13 @@ MO.RWindow.prototype.onOrientation = function RWindow_onOrientation(hEvent){
 // @method
 // @param event:htmlEvent 事件
 //==========================================================
-MO.RWindow.prototype.onUnload = function RWindow_onUnload(event){
-   var o = this;
+MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
+   var o = MO.Window;
    // 释放处理
    var event = o._eventUnload;
    o.lsnsUnload.process(event);
    // 释放窗口
-   this.dispose();
+   o.dispose();
 }
 
 //==========================================================
@@ -319,28 +319,31 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    // 关联鼠标事件
    var visibilitychange = MO.Window.Browser.defineEventGet('visibilitychange');
    if(MO.Window.Browser.supportHtml5()){
-      hContainer.addEventListener('mousedown', o.onMouseDown.bind(o), true);
-      hContainer.addEventListener('mousemove', o.onMouseMove.bind(o), true);
-      hContainer.addEventListener('mouseup', o.onMouseUp.bind(o), true);
-      hContainer.addEventListener('mousewheel', o.onMouseWheel.bind(o), true);
-      hContainer.addEventListener('keydown', o.onKeyDown.bind(o), true);
-      hContainer.addEventListener('keyup', o.onKeyUp.bind(o), true);
-      hContainer.addEventListener('keypress', o.onKeyPress.bind(o), true);
-      hDocument.addEventListener(visibilitychange, o.onVisibility.bind(o), true);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('mousewheel', o.ohMouseWheel, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hDocument.addEventListener(visibilitychange, o.ohVisibility, true);
    }else{
-      hContainer.onmousedown = o.onMouseDown.bind(o);
-      hContainer.onmousemove = o.onMouseMove.bind(o);
-      hContainer.onmouseup = o.onMouseUp.bind(o);
-      hContainer.onmousewheel = o.onMouseWheel.bind(o);
-      hContainer.onkeydown = o.onKeyDown.bind(o);
-      hContainer.onkeyup = o.onKeyUp.bind(o);
-      hContainer.onkeypress = o.onKeyPress.bind(o);
-      hDocument['on' + visibilitychange] = o.onVisibility.bind(o);
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onmousewheel = o.ohMouseWheel;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
+      hDocument['on' + visibilitychange] = o.ohVisibility;
    }
-   hWindow.onorientationchange = o.onOrientation.bind(o);
-   hContainer.onresize = o.onResize.bind(o);
-   hContainer.onselectstart = o.onSelect.bind(o);
-   hContainer.onunload = o.onUnload.bind(o);
+   hWindow.onorientationchange = o.ohOrientation;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
+   // 检测事件
+   o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
 }
 
 //==========================================================
@@ -577,7 +580,7 @@ MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
 // @param interval 调用间隔
 //==========================================================
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
-   var method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+   var method = this._requestAnimationFrame;
    if(method){
       method(callback);
       return true;
@@ -592,7 +595,7 @@ MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFr
 // @param callback 回调函数
 //==========================================================
 MO.RWindow.prototype.cancelRequestAnimationFrame = function RWindow_cancelRequestAnimationFrame(callback){
-   var method = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+   var method = this._cancelAnimationFrame;
    if(method){
       method(callback);
       return true;

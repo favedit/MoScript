@@ -3538,7 +3538,9 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._interval    = 5;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hWindow     = null;
+   o._requestFlag = false;
    o._hIntervalId = null;
+   o._intervalHandle = MO.FThreadConsole_onInterval;
    o.onInterval   = MO.FThreadConsole_onInterval;
    o.construct    = MO.FThreadConsole_construct;
    o.push         = MO.FThreadConsole_push;
@@ -3549,7 +3551,11 @@ MO.FThreadConsole = function FThreadConsole(o){
    return o;
 }
 MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
-   this.processAll();
+   var o = this;
+   o.processAll();
+   if(o._requestFlag){
+      MO.Window.requestAnimationFrame(o._intervalHandle);
+   }
 }
 MO.FThreadConsole_push = function FThreadConsole_push(thread){
    this._threads.push(thread);
@@ -3563,10 +3569,8 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._threads = new MO.TObjects();
    o._hWindow = window;
-   var method = o.onInterval.bind(o);
-   if(!MO.Window.requestAnimationFrame(method)){
-      o._hIntervalId = o._hWindow.setInterval(method, o._interval);
-   }
+   var handle = o._intervalHandle = o.onInterval.bind(o);
+      o._hIntervalId = o._hWindow.setInterval(handle, o._interval);
 }
 MO.FThreadConsole_process = function FThreadConsole_process(thread){
    var o = this;
@@ -3598,16 +3602,18 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
 }
 MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
    var o = this;
-   var hWindow = o._hWindow;
-   if(hWindow){
-      var hIntervalId = o._hIntervalId;
-      if(hIntervalId){
-         hWindow.clearInterval(hIntervalId);
-         o._hIntervalId = null;
-      }else{
-         MO.Window.cancelRequestAnimationFrame(o.onInterval);
+   if(o._requestFlag){
+      MO.Window.cancelRequestAnimationFrame(o._intervalHandle);
+   }else{
+      var hWindow = o._hWindow;
+      if(hWindow){
+         var hIntervalId = o._hIntervalId;
+         if(hIntervalId){
+            hWindow.clearInterval(hIntervalId);
+            o._hIntervalId = null;
+         }
+         o._hWindow = null;
       }
-      o._hWindow = null;
    }
    o._threads = MO.Lang.Object.dispose(o._threads);
    o.__base.FConsole.dispose.call(o);
