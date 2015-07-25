@@ -1203,11 +1203,11 @@ MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
    // 存储参数集合
    var parameters = o.parameters();
    var xparameters = xconfig.create('Parameters');
-   MO.RXml.saveObject(xparameters, 'Parameter', parameters);
+   MO.Lang.Xml.saveObject(xparameters, 'Parameter', parameters);
    // 存储扩展集合
    var extensions = o.extensions();
    var xextensions = xconfig.create('Extensions');
-   MO.RXml.saveObject(xextensions, 'Extension', extensions);
+   MO.Lang.Xml.saveObject(xextensions, 'Extension', extensions);
 }
 
 //==========================================================

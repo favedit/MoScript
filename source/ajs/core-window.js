@@ -1804,7 +1804,7 @@ MO.RValue.prototype.construct = function RValue_construct(){
    }
 }
 MO.RValue = new MO.RValue();
-MO.RXml = function RXml(){
+MO.RXmlUtil = function RXmlUtil(){
    var o = this;
    o.httpActiveX = false;
    o.httpVendor  = null;
@@ -1813,7 +1813,7 @@ MO.RXml = function RXml(){
    o.construct();
    return o;
 }
-MO.RXml.prototype.construct = function RXml_construct(){
+MO.RXmlUtil.prototype.construct = function RXmlUtil_construct(){
    var o = this;
    var d = window.document;
    if(window.ActiveXObject && !window.XMLHttpRequest){
@@ -1865,10 +1865,10 @@ MO.RXml.prototype.construct = function RXml_construct(){
       alert('Unknown dom vendor.');
    }
 }
-MO.RXml.prototype.isNode = function RXml_isNode(n){
+MO.RXmlUtil.prototype.isNode = function RXmlUtil_isNode(n){
    return RClass.isName(n, 'TNode');
 }
-MO.RXml.prototype.createConnection = function RXml_createConnection(){
+MO.RXmlUtil.prototype.createConnection = function RXmlUtil_createConnection(){
    var o = this;
    var r = null;
    if(o.httpActiveX){
@@ -1881,7 +1881,7 @@ MO.RXml.prototype.createConnection = function RXml_createConnection(){
    }
    return r;
 }
-MO.RXml.prototype.createDocument = function RXml_createDocument(){
+MO.RXmlUtil.prototype.createDocument = function RXmlUtil_createDocument(){
    var o = this;
    var r = null;
    if(o.domActiveX){
@@ -1894,13 +1894,13 @@ MO.RXml.prototype.createDocument = function RXml_createDocument(){
    }
    return r;
 }
-MO.RXml.prototype.formatText = function RXml_formatText(s){
+MO.RXmlUtil.prototype.formatText = function RXmlUtil_formatText(s){
    if(s != null){
       s = s.replace(/\\n/g, '\n');
    }
    return s;
 }
-MO.RXml.prototype.buildText = function RXml_buildText(s, v){
+MO.RXmlUtil.prototype.buildText = function RXmlUtil_buildText(s, v){
    if(v != null){
       v = v.toString();
       var c = v.length;
@@ -1934,7 +1934,7 @@ MO.RXml.prototype.buildText = function RXml_buildText(s, v){
    }
    return s;
 }
-MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
+MO.RXmlUtil.prototype.buildNode = function RXmlUtil_buildNode(pd, pn, pe){
    var xas = null;
    var eas = pe.attributes;
    if(eas){
@@ -1979,7 +1979,7 @@ MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
       }
    }
 }
-MO.RXml.prototype.makeString = function RXml_makeString(s){
+MO.RXmlUtil.prototype.makeString = function RXmlUtil_makeString(s){
    var o = this;
    var x = null;
    if(o.domActiveX){
@@ -1992,7 +1992,7 @@ MO.RXml.prototype.makeString = function RXml_makeString(s){
    }
    return x;
 }
-MO.RXml.prototype.makeNode = function RXml_makeNode(p){
+MO.RXmlUtil.prototype.makeNode = function RXmlUtil_makeNode(p){
    var o = this;
    if(p.documentElement){
       var d = new MO.TXmlDocument();
@@ -2012,14 +2012,14 @@ MO.RXml.prototype.makeNode = function RXml_makeNode(p){
    }
    return null;
 }
-MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
+MO.RXmlUtil.prototype.makeDocument = function RXmlUtil_makeDocument(p){
    var d = new MO.TXmlDocument();
    if(p.documentElement){
       this.buildNode(d, null, p.documentElement);
    }
    return d;
 }
-MO.RXml.prototype.unpack = function RXml_unpack(s, n){
+MO.RXmlUtil.prototype.unpack = function RXmlUtil_unpack(s, n){
    var o = this;
    if(MO.Lang.String.isEmpty(s)){
       return null;
@@ -2043,31 +2043,5 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
    }
    return n;
 }
-MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
-   var o = this;
-   for(var name in item){
-      var value = item[name];
-      if(value != null){
-         var xtag = xconfig.create(tag);
-         xtag.set('name', name);
-         var typeName = typeof(value);
-         switch(typeName){
-            case 'boolean':
-            case 'number':
-            case 'date':
-            case 'string':
-               xtag.setValue(value);
-               break;
-            case 'function':
-               xtag.setValue(MO.Method.name(value));
-               break;
-            case 'object':
-               o.saveObject(xtag, 'Property', value);
-               break;
-            default:
-               throw new MO.TError('Invalid object.');
-         }
-      }
-   }
-}
-MO.RXml = new MO.RXml();
+MO.RXml = new MO.RXmlUtil();
+MO.Window.Xml = MO.RXml;

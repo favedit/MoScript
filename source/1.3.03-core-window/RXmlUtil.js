@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150104
 //==========================================================
-MO.RXml = function RXml(){
+MO.RXmlUtil = function RXmlUtil(){
    var o = this;
    //..........................................................
    // @attribute
@@ -24,7 +24,7 @@ MO.RXml = function RXml(){
 //
 // @method
 //==========================================================
-MO.RXml.prototype.construct = function RXml_construct(){
+MO.RXmlUtil.prototype.construct = function RXmlUtil_construct(){
    var o = this;
    var d = window.document;
    //...........................................................
@@ -88,7 +88,7 @@ MO.RXml.prototype.construct = function RXml_construct(){
 // @param n:Node:TNode 节点对象
 // @return Boolean 返回Boolean类型
 //==========================================================
-MO.RXml.prototype.isNode = function RXml_isNode(n){
+MO.RXmlUtil.prototype.isNode = function RXmlUtil_isNode(n){
    return RClass.isName(n, 'TNode');
 }
 
@@ -98,7 +98,7 @@ MO.RXml.prototype.isNode = function RXml_isNode(n){
 // @method
 // @return 配置链接
 //==========================================================
-MO.RXml.prototype.createConnection = function RXml_createConnection(){
+MO.RXmlUtil.prototype.createConnection = function RXmlUtil_createConnection(){
    var o = this;
    var r = null;
    if(o.httpActiveX){
@@ -119,7 +119,7 @@ MO.RXml.prototype.createConnection = function RXml_createConnection(){
 // @method
 // @return 配置链接
 //==========================================================
-MO.RXml.prototype.createDocument = function RXml_createDocument(){
+MO.RXmlUtil.prototype.createDocument = function RXmlUtil_createDocument(){
    var o = this;
    var r = null;
    if(o.domActiveX){
@@ -141,7 +141,7 @@ MO.RXml.prototype.createDocument = function RXml_createDocument(){
 // @param s:string:String 字符串
 // @return String  替换后的字符串
 //==========================================================
-MO.RXml.prototype.formatText = function RXml_formatText(s){
+MO.RXmlUtil.prototype.formatText = function RXmlUtil_formatText(s){
    if(s != null){
       s = s.replace(/\\n/g, '\n');
    }
@@ -156,7 +156,7 @@ MO.RXml.prototype.formatText = function RXml_formatText(s){
 // @param v:value:String 内容
 // @return FString 字符串
 //==========================================================
-MO.RXml.prototype.buildText = function RXml_buildText(s, v){
+MO.RXmlUtil.prototype.buildText = function RXmlUtil_buildText(s, v){
    if(v != null){
       v = v.toString();
       var c = v.length;
@@ -198,10 +198,10 @@ MO.RXml.prototype.buildText = function RXml_buildText(s, v){
 // @param pd:document:TXmlDocument JS系统中的XML文件
 // @param pn:node:TXmlNode 父节点
 // @param pe:element:XmlElement 页面元素
-// @see RXml.fromText
+// @see RXmlUtil.fromText
 // @see TXmlDoc.create
 //==========================================================
-MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
+MO.RXmlUtil.prototype.buildNode = function RXmlUtil_buildNode(pd, pn, pe){
    // 建立属性集合
    var xas = null;
    var eas = pe.attributes;
@@ -258,7 +258,7 @@ MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
 // @param n:Node:TNode 节点对象
 // @return Boolean 返回Boolean类型
 //==========================================================
-MO.RXml.prototype.makeString = function RXml_makeString(s){
+MO.RXmlUtil.prototype.makeString = function RXmlUtil_makeString(s){
    var o = this;
    var x = null;
    // 判断浏览器的类型
@@ -280,7 +280,7 @@ MO.RXml.prototype.makeString = function RXml_makeString(s){
 // @param p:document:document 嵌在页面中的配置节点
 // @return TXmlNode 配置节点
 //==========================================================
-MO.RXml.prototype.makeNode = function RXml_makeNode(p){
+MO.RXmlUtil.prototype.makeNode = function RXmlUtil_makeNode(p){
    var o = this;
    if(p.documentElement){
       var d = new MO.TXmlDocument();
@@ -308,7 +308,7 @@ MO.RXml.prototype.makeNode = function RXml_makeNode(p){
 // @param p:document:document 嵌在页面中的配置节点
 // @return TXmlDocument 配置文档
 //==========================================================
-MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
+MO.RXmlUtil.prototype.makeDocument = function RXmlUtil_makeDocument(p){
    var d = new MO.TXmlDocument();
    if(p.documentElement){
       this.buildNode(d, null, p.documentElement);
@@ -324,7 +324,7 @@ MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
 // @param n:node:TNode 节点对象
 // @return TNode 节点对象
 //==========================================================
-MO.RXml.prototype.unpack = function RXml_unpack(s, n){
+MO.RXmlUtil.prototype.unpack = function RXmlUtil_unpack(s, n){
    var o = this;
    if(MO.Lang.String.isEmpty(s)){
       return null;
@@ -348,41 +348,7 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
    }
    return n;
 }
-
-//==========================================================
-// <T>存储对象。</T>
-//
-// @method
-// @param xconfig:TXmlNode 配置节点
-// @param item:Object 对象
-//==========================================================
-MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
-   var o = this;
-   for(var name in item){
-      var value = item[name];
-      if(value != null){
-         var xtag = xconfig.create(tag);
-         xtag.set('name', name);
-         var typeName = typeof(value);
-         switch(typeName){
-            case 'boolean':
-            case 'number':
-            case 'date':
-            case 'string':
-               xtag.setValue(value);
-               break;
-            case 'function':
-               xtag.setValue(MO.Method.name(value));
-               break;
-            case 'object':
-               o.saveObject(xtag, 'Property', value);
-               break;
-            default:
-               throw new MO.TError('Invalid object.');
-         }
-      }
-   }
-}
 //..........................................................
 // 实例化内容
-MO.RXml = new MO.RXml();
+MO.RXml = new MO.RXmlUtil();
+MO.Window.Xml = MO.RXml;

@@ -214,7 +214,6 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o.testReady      = MO.FEaiLogicSystem_testReady;
    o.currentDate    = MO.FEaiLogicSystem_currentDate;
    o.refresh        = MO.FEaiLogicSystem_refresh;
-   o.postDeviceInfo = MO.FEailogicSystem_postDeviceInfo;
    o.dispose        = MO.FEaiLogicSystem_dispose;
    return o;
 }
@@ -282,42 +281,6 @@ MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
 MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
    var o = this;
    return o.doInfo(o, o.onInfo);
-}
-MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
-   var json ={};
-   for (var key in data) {
-      var type = typeof data[key];
-      if(type == "function"){
-         continue;
-      }
-      json[key] = data[key];
-      if (type == "object") {
-         var nextVal = data[key];
-         parseInfo(nextVal);
-      }
-   }
-   return json;
-}
-MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
-   var o = this;
-   var hCanvas = document.createElement("CANVAS");
-   context = REngine3d.createContext(FWglContext, hCanvas);
-   var postJson = {};
-   postJson.code = navigator.userAgent;
-   postJson.content2d = {};
-   postJson.content3d = {};
-   postJson.content3d.capability = {};
-   postJson.content3d.parameters = {};
-   postJson.content3d.extensions = {};
-   var capability = context.capability();
-   postJson.content3d.capability = o.FEailogicSystem_parseDeviceInfo(capability);
-   var tempForm = document.createElement("form");
-   tempForm.action = "http://localhost:88/device/Device.wa?do=putMobileInfo";
-   tempForm.method = "post";
-   var option = document.createElement("textarea");
-   option.value=postJson;
-   tempForm.appendChild(option);
-   tempForm.submit();
 }
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;

@@ -11100,6 +11100,176 @@ MO.RTypeArray.prototype.findTemp = function RTypeArray_findTemp(typeCd, length){
    return result;
 }
 MO.Lang.TypeArray = new MO.RTypeArray();
+MO.RXml = function RXml(){
+   return this;
+}
+MO.RXml.prototype.isNode = function RXml_isNode(n){
+   return MO.Class.isName(n, 'TNode');
+}
+MO.RXml.prototype.formatText = function RXml_formatText(s){
+   if(s != null){
+      s = s.replace(/\\n/g, '\n');
+   }
+   return s;
+}
+MO.RXml.prototype.buildText = function RXml_buildText(s, v){
+   if(v != null){
+      v = v.toString();
+      var c = v.length;
+      for(var i = 0; i < c; i++){
+         var ch = v.charAt(i);
+         switch(ch){
+            case '<':
+               s.append('&lt;');
+               break;
+            case '>':
+               s.append('&gt;');
+               break;
+            case '&':
+               s.append('&amp;');
+               break;
+            case '\'':
+               s.append('&apos;');
+               break;
+            case '"':
+               s.append('&quot;');
+               break;
+            case '\r':
+               continue;
+            case '\n':
+               s.append('\\n');
+               break;
+            default:
+               s.append(ch);
+         }
+      }
+   }
+   return s;
+}
+MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
+   var xas = null;
+   var eas = pe.attributes;
+   if(eas){
+      var eac = eas.length;
+      if(eac > 0){
+         xas = new MO.TAttributes();
+         for(var n = 0; n < eac; n++){
+            var ea = eas[n];
+            if(ea.nodeName){
+               xas.set(ea.nodeName, this.formatText(ea.value));
+            }
+         }
+      }
+   }
+   var xt = new MO.TString();
+   xt.append(pe.value);
+   var ecs = pe.childNodes
+   if(ecs){
+      var ecc = ecs.length;
+      for(var n = 0; n < ecc; n++){
+         var en = ecs[n];
+         var ect = en.nodeType;
+         if(ect == MO.ENodeType.Text){
+            xt.append(en.nodeValue);
+         }else if(ect == MO.ENodeType.Data){
+            xt.append(en.data);
+         }
+      }
+   }
+   var xc = pd.create(pe.nodeName, xas, MO.Lang.String.trim(xt.toString()));
+   if(pn){
+      pn.push(xc);
+   }else{
+      pd._root = xc;
+   }
+   if(ecs){
+      var cc = ecs.length;
+      for(var n = 0; n < cc; n++){
+         if(ecs[n].nodeType == MO.ENodeType.Node){
+            this.buildNode(pd, xc, ecs[n]);
+         }
+      }
+   }
+}
+MO.RXml.prototype.makeNode = function RXml_makeNode(p){
+   var o = this;
+   if(p.documentElement){
+      var d = new MO.TXmlDocument();
+      o.buildNode(d, null, p.documentElement);
+      return d.root();
+   }else if(p.tagName == 'SCRIPT'){
+      var s = p.textContent;
+      if(!s){
+         s = p.text;
+      }
+      if(s){
+         var d = new MO.TXmlDocument();
+         var xd = o.makeString(s)
+         o.buildNode(d, null, xd.documentElement);
+         return d.root();
+      }
+   }
+   return null;
+}
+MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
+   var d = new MO.TXmlDocument();
+   if(p.documentElement){
+      this.buildNode(d, null, p.documentElement);
+   }
+   return d;
+}
+MO.RXml.prototype.unpack = function RXml_unpack(s, n){
+   var o = this;
+   if(MO.Lang.String.isEmpty(s)){
+      return null;
+   }
+   if(!n){
+      n = new MO.TNode();
+   }
+   var np = new MO.TAttributes();
+   np.unpack(s);
+   n.name = np.get('name');
+   n.value = np.get('value');
+   if(np.contains('attributes')){
+      n.attributes().unpack(np.get('attributes'));
+   }
+   if(np.contains('nodes')){
+      var ns = new MO.TStrings();
+      ns.unpack(np.get('nodes'));
+      for(var i = 0; i < ns.count; i++){
+         o.unpack(ns.get(i), n.create());
+      }
+   }
+   return n;
+}
+MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
+   var o = this;
+   for(var name in item){
+      var value = item[name];
+      if(value != null){
+         var xtag = xconfig.create(tag);
+         xtag.set('name', name);
+         var typeName = typeof(value);
+         switch(typeName){
+            case 'boolean':
+            case 'number':
+            case 'date':
+            case 'string':
+               xtag.setValue(value);
+               break;
+            case 'function':
+               xtag.setValue(MO.Method.name(value));
+               break;
+            case 'object':
+               o.saveObject(xtag, 'Property', value);
+               break;
+            default:
+               throw new MO.TError('Invalid object.');
+         }
+      }
+   }
+}
+MO.Lang.Xml = new MO.RXml();
 MO.FTag = function FTag(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._name      = 'Tag';
@@ -14527,7 +14697,7 @@ MO.RValue.prototype.construct = function RValue_construct(){
    }
 }
 MO.RValue = new MO.RValue();
-MO.RXml = function RXml(){
+MO.RXmlUtil = function RXmlUtil(){
    var o = this;
    o.httpActiveX = false;
    o.httpVendor  = null;
@@ -14536,7 +14706,7 @@ MO.RXml = function RXml(){
    o.construct();
    return o;
 }
-MO.RXml.prototype.construct = function RXml_construct(){
+MO.RXmlUtil.prototype.construct = function RXmlUtil_construct(){
    var o = this;
    var d = window.document;
    if(window.ActiveXObject && !window.XMLHttpRequest){
@@ -14588,10 +14758,10 @@ MO.RXml.prototype.construct = function RXml_construct(){
       alert('Unknown dom vendor.');
    }
 }
-MO.RXml.prototype.isNode = function RXml_isNode(n){
+MO.RXmlUtil.prototype.isNode = function RXmlUtil_isNode(n){
    return RClass.isName(n, 'TNode');
 }
-MO.RXml.prototype.createConnection = function RXml_createConnection(){
+MO.RXmlUtil.prototype.createConnection = function RXmlUtil_createConnection(){
    var o = this;
    var r = null;
    if(o.httpActiveX){
@@ -14604,7 +14774,7 @@ MO.RXml.prototype.createConnection = function RXml_createConnection(){
    }
    return r;
 }
-MO.RXml.prototype.createDocument = function RXml_createDocument(){
+MO.RXmlUtil.prototype.createDocument = function RXmlUtil_createDocument(){
    var o = this;
    var r = null;
    if(o.domActiveX){
@@ -14617,13 +14787,13 @@ MO.RXml.prototype.createDocument = function RXml_createDocument(){
    }
    return r;
 }
-MO.RXml.prototype.formatText = function RXml_formatText(s){
+MO.RXmlUtil.prototype.formatText = function RXmlUtil_formatText(s){
    if(s != null){
       s = s.replace(/\\n/g, '\n');
    }
    return s;
 }
-MO.RXml.prototype.buildText = function RXml_buildText(s, v){
+MO.RXmlUtil.prototype.buildText = function RXmlUtil_buildText(s, v){
    if(v != null){
       v = v.toString();
       var c = v.length;
@@ -14657,7 +14827,7 @@ MO.RXml.prototype.buildText = function RXml_buildText(s, v){
    }
    return s;
 }
-MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
+MO.RXmlUtil.prototype.buildNode = function RXmlUtil_buildNode(pd, pn, pe){
    var xas = null;
    var eas = pe.attributes;
    if(eas){
@@ -14702,7 +14872,7 @@ MO.RXml.prototype.buildNode = function RXml_buildNode(pd, pn, pe){
       }
    }
 }
-MO.RXml.prototype.makeString = function RXml_makeString(s){
+MO.RXmlUtil.prototype.makeString = function RXmlUtil_makeString(s){
    var o = this;
    var x = null;
    if(o.domActiveX){
@@ -14715,7 +14885,7 @@ MO.RXml.prototype.makeString = function RXml_makeString(s){
    }
    return x;
 }
-MO.RXml.prototype.makeNode = function RXml_makeNode(p){
+MO.RXmlUtil.prototype.makeNode = function RXmlUtil_makeNode(p){
    var o = this;
    if(p.documentElement){
       var d = new MO.TXmlDocument();
@@ -14735,14 +14905,14 @@ MO.RXml.prototype.makeNode = function RXml_makeNode(p){
    }
    return null;
 }
-MO.RXml.prototype.makeDocument = function RXml_makeDocument(p){
+MO.RXmlUtil.prototype.makeDocument = function RXmlUtil_makeDocument(p){
    var d = new MO.TXmlDocument();
    if(p.documentElement){
       this.buildNode(d, null, p.documentElement);
    }
    return d;
 }
-MO.RXml.prototype.unpack = function RXml_unpack(s, n){
+MO.RXmlUtil.prototype.unpack = function RXmlUtil_unpack(s, n){
    var o = this;
    if(MO.Lang.String.isEmpty(s)){
       return null;
@@ -14766,34 +14936,8 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
    }
    return n;
 }
-MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
-   var o = this;
-   for(var name in item){
-      var value = item[name];
-      if(value != null){
-         var xtag = xconfig.create(tag);
-         xtag.set('name', name);
-         var typeName = typeof(value);
-         switch(typeName){
-            case 'boolean':
-            case 'number':
-            case 'date':
-            case 'string':
-               xtag.setValue(value);
-               break;
-            case 'function':
-               xtag.setValue(MO.Method.name(value));
-               break;
-            case 'object':
-               o.saveObject(xtag, 'Property', value);
-               break;
-            default:
-               throw new MO.TError('Invalid object.');
-         }
-      }
-   }
-}
-MO.RXml = new MO.RXml();
+MO.RXml = new MO.RXmlUtil();
+MO.Window.Xml = MO.RXml;
 MO.EGraphicError = new function EGraphicError(){
    var o = this;
    o.Unsupport2d    = 'unsupport.2d';
@@ -19455,10 +19599,10 @@ MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
    var o = this;
    var parameters = o.parameters();
    var xparameters = xconfig.create('Parameters');
-   MO.RXml.saveObject(xparameters, 'Parameter', parameters);
+   MO.Lang.Xml.saveObject(xparameters, 'Parameter', parameters);
    var extensions = o.extensions();
    var xextensions = xconfig.create('Extensions');
-   MO.RXml.saveObject(xextensions, 'Extension', extensions);
+   MO.Lang.Xml.saveObject(xextensions, 'Extension', extensions);
 }
 MO.FWglContext_dispose = function FWglContext_dispose(){
    var o = this;
@@ -78336,7 +78480,6 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o.testReady      = MO.FEaiLogicSystem_testReady;
    o.currentDate    = MO.FEaiLogicSystem_currentDate;
    o.refresh        = MO.FEaiLogicSystem_refresh;
-   o.postDeviceInfo = MO.FEailogicSystem_postDeviceInfo;
    o.dispose        = MO.FEaiLogicSystem_dispose;
    return o;
 }
@@ -78404,42 +78547,6 @@ MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
 MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
    var o = this;
    return o.doInfo(o, o.onInfo);
-}
-MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
-   var json ={};
-   for (var key in data) {
-      var type = typeof data[key];
-      if(type == "function"){
-         continue;
-      }
-      json[key] = data[key];
-      if (type == "object") {
-         var nextVal = data[key];
-         parseInfo(nextVal);
-      }
-   }
-   return json;
-}
-MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
-   var o = this;
-   var hCanvas = document.createElement("CANVAS");
-   context = REngine3d.createContext(FWglContext, hCanvas);
-   var postJson = {};
-   postJson.code = navigator.userAgent;
-   postJson.content2d = {};
-   postJson.content3d = {};
-   postJson.content3d.capability = {};
-   postJson.content3d.parameters = {};
-   postJson.content3d.extensions = {};
-   var capability = context.capability();
-   postJson.content3d.capability = o.FEailogicSystem_parseDeviceInfo(capability);
-   var tempForm = document.createElement("form");
-   tempForm.action = "http://localhost:88/device/Device.wa?do=putMobileInfo";
-   tempForm.method = "post";
-   var option = document.createElement("textarea");
-   option.value=postJson;
-   tempForm.appendChild(option);
-   tempForm.submit();
 }
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;

@@ -811,10 +811,10 @@ MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
    var o = this;
    var parameters = o.parameters();
    var xparameters = xconfig.create('Parameters');
-   MO.RXml.saveObject(xparameters, 'Parameter', parameters);
+   MO.Lang.Xml.saveObject(xparameters, 'Parameter', parameters);
    var extensions = o.extensions();
    var xextensions = xconfig.create('Extensions');
-   MO.RXml.saveObject(xextensions, 'Extension', extensions);
+   MO.Lang.Xml.saveObject(xextensions, 'Extension', extensions);
 }
 MO.FWglContext_dispose = function FWglContext_dispose(){
    var o = this;
