@@ -28,10 +28,34 @@ with(MO){
    MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
-      if(parameters){
-         url += '?' + parameters;
-      }
+      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
+          time = new Date().getTime();
+
+         function addKey ( start, times ){
+            var arr = [start];
+               for( var i = 0; i < times; i++ ){ 
+                  if( i == 0 ){
+                     arr.push( arr[0] );
+                  }else{
+                     arr.push( arr[i] + arr[i-1] );
+                  }
+               }
+               return arr;
+         }
+
+         if(parameters){
+            var arr=parameters.split("&"),
+                ginsengs='',
+                key="";
+            for(var i=0;i<arr.length;i++){
+               ginsengs += arr[i].split("=")[1];
+            }
+            for(var i=0; i < addKey(5,3).length; i++){
+               key+=addKey(5,3)[i];
+            }
+            url += '?' + parameters+"&requesttime="+time+"&sign=md5("+ginsengs+key+")";
+         }
+
       return url;
    }
 
