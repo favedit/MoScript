@@ -366,7 +366,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
 }
 MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
-   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'));
+   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
    o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));

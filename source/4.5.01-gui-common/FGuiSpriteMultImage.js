@@ -23,9 +23,9 @@ MO.FGuiSpriteMultimage = function FGuiSpriteMultimage(o) {
    //o.pause = FGuiSpriteMultimage_pause;
    //o.stop = FGuiSpriteMultimage_stop;
    // @method
-   o.setup           = FGuiSpriteMultimage_setup;
-   o.onPaintBegin    = FGuiSpriteMultimage_onPaintBegin;
-   o.onImageLoad     = FGuiSpriteMultimage_onImageLoad;
+   o.setup           = MO.FGuiSpriteMultimage_setup;
+   o.onPaintBegin    = MO.FGuiSpriteMultimage_onPaintBegin;
+   o.onImageLoad     = MO.FGuiSpriteMultimage_onImageLoad;
    return o;
 }
 

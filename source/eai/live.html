@@ -78,6 +78,8 @@
          var application = MO.Desktop.initialize(MO.FEaiChartApplication);
          application.setSceneCode(MO.EEaiScene.ChartLive);
          application.setup(document.body);
+         var system = MO.Console.find(MO.FEaiLogicConsole).system();
+         system.doDeviceAccess();
    }catch(e){
          alert(e.message);
    }

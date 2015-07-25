@@ -25,6 +25,7 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
+   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -3894,6 +3895,7 @@ MO.FWglContext = function FWglContext(o){
    o.drawTriangles       = MO.FWglContext_drawTriangles;
    o.present             = MO.FWglContext_present;
    o.checkError          = MO.FWglContext_checkError;
+   o.saveConfig          = MO.FWglContext_saveConfig;
    o.dispose             = MO.FWglContext_dispose;
    return o;
 }
@@ -4642,6 +4644,23 @@ MO.FWglContext_checkError = function FWglContext_checkError(code, message, param
       MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
    }
    return result;
+}
+MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
+   var o = this;
+   var parameters = o.parameters();
+   var xparameters = xconfig.create('Parameters');
+   for(var name in parameters){
+      var xparameter = xparameters.create('Parameter');
+      xparameter.set('name', name);
+      xparameter.setValue(parameters[name]);
+   }
+   var extensions = o.extensions();
+   for(var name in extensions){
+      var xparameter = xparameters.create('Extensions');
+      xparameter.set('name', name);
+      xparameter.setValue(parameters[name]);
+   }
+   xagent.setValue(o._agent);
 }
 MO.FWglContext_dispose = function FWglContext_dispose(){
    var o = this;

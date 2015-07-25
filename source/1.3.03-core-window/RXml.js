@@ -169,11 +169,14 @@ MO.RXml.prototype.buildText = function RXml_buildText(s, v){
             case '>':
                s.append('&gt;');
                break;
-            case '"':
-               s.append('&quot;');
-               break;
             case '&':
                s.append('&amp;');
+               break;
+            case '\'':
+               s.append('&apos;');
+               break;
+            case '"':
+               s.append('&quot;');
                break;
             case '\r':
                continue;

@@ -6,7 +6,7 @@
 // @version 150613
 //==========================================================
 MO.FGuiButton = function FGuiButton(o){
-   o = RClass.inherits(this, o, MO.FGuiControl);
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @method
    o.onPaintBegin = MO.FGuiButton_onPaintBegin;

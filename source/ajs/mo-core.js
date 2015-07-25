@@ -1162,24 +1162,24 @@ MO.TXmlNode = function TXmlNode(name){
    o.toString = MO.TXmlNode_toString;
    return o;
 }
-MO.TXmlNode_create = function TXmlNode_create(n, a){
+MO.TXmlNode_create = function TXmlNode_create(name, attribtues){
    var o = this;
-   var r = new MO.TXmlNode();
-   r._name = n;
-   r._attributes = a;
-   if(!MO.Class.isClass(a, MO.TAttributes)){
+   var xnode = new MO.TXmlNode();
+   xnode._name = name;
+   xnode._attributes = attribtues;
+   if(!MO.Class.isClass(attribtues, MO.TAttributes)){
       var a = arguments;
       var len = a.length;
       for(var n = 1; n < len; n += 2){
          if(n + 1 < len){
-            r.set(a[n], a[n+1]);
+            xnode.set(a[n], a[n+1]);
          }else{
-            r._value = a[n];
+            xnode.setValue(a[n]);
          }
       }
    }
-   o.push(r);
-   return r;
+   o.push(xnode);
+   return xnode;
 }
 MO.TXmlNode_innerXml = function TXmlNode_innerXml(s, l){
    var o = this;
@@ -2893,6 +2893,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -3452,6 +3453,33 @@ MO.FProcessServer_process = function FProcessServer_process(){
    onmessage = o.ohMessage;
    FProcessServer.__linker = o;
 }
+MO.FServiceConsole = function FServiceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o.construct = MO.FServiceConsole_construct;
+   o.send      = MO.FServiceConsole_send;
+   o.dispose   = MO.FServiceConsole_dispose;
+   return o;
+}
+MO.FServiceConsole_onLoad = function FServiceConsole_onLoad(connection){
+   var o = this;
+   o._pool.free(connection);
+}
+MO.FServiceConsole_construct = function FServiceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+MO.FServiceConsole_send = function FServiceConsole_send(code, action, content){
+   var o = this;
+   var uri = '/' + code + '.ws?action=' + action;
+   var url = MO.Window.Browser.hostPath(uri);
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, content);
+   return connection;
+}
+MO.FServiceConsole_dispose = function FServiceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+}
 MO.FStatistics = function FStatistics(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code      = null;
@@ -3677,20 +3705,20 @@ MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
    alloc.clearLoadListeners();
    return alloc;
 }
-MO.FXmlConsole_send = function FXmlConsole_send(u, d){
+MO.FXmlConsole_send = function FXmlConsole_send(url, document){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;
-   var r = connection.send(u, d);
+   var result = connection.send(url, document);
    connection._statusFree = true;
-   return r;
+   return result;
 }
-MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
+MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(url, document, parameters){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = true;
-   connection._parameters = p;
-   connection.send(u, d);
+   connection._parameters = parameters;
+   connection.send(url, document);
    return connection;
 }
 MO.FXmlConsole_load = function FXmlConsole_load(u, d, p){

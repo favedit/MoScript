@@ -88,34 +88,34 @@ MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
 // <T>异步获发送一个XML信息，返回XML信息。</T>
 //
 // @method
-// @param u:url:String 发送地址
-// @param d:document:TXmlDocument 发送文档
+// @param url:String 发送地址
+// @param document:TXmlDocument 发送文档
 // @return TXmlDocument 接收文档
 //==========================================================
-MO.FXmlConsole_send = function FXmlConsole_send(u, d){
+MO.FXmlConsole_send = function FXmlConsole_send(url, document){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;
-   var r = connection.send(u, d);
+   var result = connection.send(url, document);
    connection._statusFree = true;
-   return r;
+   return result;
 }
 
 //==========================================================
 // <T>异步获发送一个XML信息，返回XML信息。</T>
 //
 // @method
-// @param u:url:String 发送地址
-// @param d:document:TXmlDocument 发送文档
-// @param p:parameters:Object 参数
+// @param url:String 发送地址
+// @param document:TXmlDocument 发送文档
+// @param parameters:Object 参数
 // @return TXmlDocument 接收文档
 //==========================================================
-MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
+MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(url, document, parameters){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = true;
-   connection._parameters = p;
-   connection.send(u, d);
+   connection._parameters = parameters;
+   connection.send(url, document);
    return connection;
 }
 

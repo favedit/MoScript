@@ -1162,24 +1162,24 @@ MO.TXmlNode = function TXmlNode(name){
    o.toString = MO.TXmlNode_toString;
    return o;
 }
-MO.TXmlNode_create = function TXmlNode_create(n, a){
+MO.TXmlNode_create = function TXmlNode_create(name, attribtues){
    var o = this;
-   var r = new MO.TXmlNode();
-   r._name = n;
-   r._attributes = a;
-   if(!MO.Class.isClass(a, MO.TAttributes)){
+   var xnode = new MO.TXmlNode();
+   xnode._name = name;
+   xnode._attributes = attribtues;
+   if(!MO.Class.isClass(attribtues, MO.TAttributes)){
       var a = arguments;
       var len = a.length;
       for(var n = 1; n < len; n += 2){
          if(n + 1 < len){
-            r.set(a[n], a[n+1]);
+            xnode.set(a[n], a[n+1]);
          }else{
-            r._value = a[n];
+            xnode.setValue(a[n]);
          }
       }
    }
-   o.push(r);
-   return r;
+   o.push(xnode);
+   return xnode;
 }
 MO.TXmlNode_innerXml = function TXmlNode_innerXml(s, l){
    var o = this;
@@ -2893,6 +2893,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -3452,6 +3453,33 @@ MO.FProcessServer_process = function FProcessServer_process(){
    onmessage = o.ohMessage;
    FProcessServer.__linker = o;
 }
+MO.FServiceConsole = function FServiceConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd  = MO.EScope.Global;
+   o.construct = MO.FServiceConsole_construct;
+   o.send      = MO.FServiceConsole_send;
+   o.dispose   = MO.FServiceConsole_dispose;
+   return o;
+}
+MO.FServiceConsole_onLoad = function FServiceConsole_onLoad(connection){
+   var o = this;
+   o._pool.free(connection);
+}
+MO.FServiceConsole_construct = function FServiceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+MO.FServiceConsole_send = function FServiceConsole_send(code, action, content){
+   var o = this;
+   var uri = '/' + code + '.ws?action=' + action;
+   var url = MO.Window.Browser.hostPath(uri);
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, content);
+   return connection;
+}
+MO.FServiceConsole_dispose = function FServiceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+}
 MO.FStatistics = function FStatistics(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code      = null;
@@ -3677,20 +3705,20 @@ MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
    alloc.clearLoadListeners();
    return alloc;
 }
-MO.FXmlConsole_send = function FXmlConsole_send(u, d){
+MO.FXmlConsole_send = function FXmlConsole_send(url, document){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = false;
-   var r = connection.send(u, d);
+   var result = connection.send(url, document);
    connection._statusFree = true;
-   return r;
+   return result;
 }
-MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(u, d, p){
+MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(url, document, parameters){
    var o = this;
    var connection = o.alloc();
    connection._asynchronous = true;
-   connection._parameters = p;
-   connection.send(u, d);
+   connection._parameters = parameters;
+   connection.send(url, document);
    return connection;
 }
 MO.FXmlConsole_load = function FXmlConsole_load(u, d, p){
@@ -3745,6 +3773,7 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
+   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -7614,6 +7643,7 @@ MO.FWglContext = function FWglContext(o){
    o.drawTriangles       = MO.FWglContext_drawTriangles;
    o.present             = MO.FWglContext_present;
    o.checkError          = MO.FWglContext_checkError;
+   o.saveConfig          = MO.FWglContext_saveConfig;
    o.dispose             = MO.FWglContext_dispose;
    return o;
 }
@@ -8362,6 +8392,23 @@ MO.FWglContext_checkError = function FWglContext_checkError(code, message, param
       MO.Logger.fatal(o, null, 'OpenGL check failure. (code={1}, description={2})', error, errorInfo);
    }
    return result;
+}
+MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
+   var o = this;
+   var parameters = o.parameters();
+   var xparameters = xconfig.create('Parameters');
+   for(var name in parameters){
+      var xparameter = xparameters.create('Parameter');
+      xparameter.set('name', name);
+      xparameter.setValue(parameters[name]);
+   }
+   var extensions = o.extensions();
+   for(var name in extensions){
+      var xparameter = xparameters.create('Extensions');
+      xparameter.set('name', name);
+      xparameter.setValue(parameters[name]);
+   }
+   xagent.setValue(o._agent);
 }
 MO.FWglContext_dispose = function FWglContext_dispose(){
    var o = this;
@@ -9554,10 +9601,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_setup = function FDesktop_setup(hPanel){
@@ -20373,11 +20422,15 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -20392,6 +20445,8 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -21214,6 +21269,7 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
+   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;
@@ -21742,6 +21798,7 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);

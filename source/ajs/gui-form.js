@@ -1,5 +1,5 @@
 MO.FGuiButton = function FGuiButton(o){
-   o = RClass.inherits(this, o, MO.FGuiControl);
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    o.onPaintBegin = MO.FGuiButton_onPaintBegin;
    return o;
 }

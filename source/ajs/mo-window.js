@@ -151,6 +151,7 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
+   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -158,6 +159,7 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
+   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -311,6 +313,7 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
+   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -661,7 +664,7 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var code = o.code = window.navigator.userAgent.toString();
+   var code = o._agent = window.navigator.userAgent.toString();
    var agent = code.toLowerCase();
    var capability = o._capability = new MO.SBrowserCapability();
    var properties = o._defineProperties = new Object();
@@ -882,6 +885,11 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
 MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
    var blob = MO.RBlob.fromText(text);
    this.downloadBlob(fileName, blob);
+}
+MO.RBrowser.prototype.saveConfig = function RBrowser_saveConfig(xconfig){
+   var o = this;
+   var xagent = xconfig.create('Agent');
+   xagent.setValue(o._agent);
 }
 MO.RBrowser = new MO.RBrowser();
 MO.Window.Browser = MO.RBrowser;
@@ -1401,6 +1409,7 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
+   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -1901,11 +1910,14 @@ MO.RXml.prototype.buildText = function RXml_buildText(s, v){
             case '>':
                s.append('&gt;');
                break;
-            case '"':
-               s.append('&quot;');
-               break;
             case '&':
                s.append('&amp;');
+               break;
+            case '\'':
+               s.append('&apos;');
+               break;
+            case '"':
+               s.append('&quot;');
                break;
             case '\r':
                continue;

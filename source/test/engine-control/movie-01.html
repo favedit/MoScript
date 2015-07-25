@@ -18,7 +18,7 @@ function _load(){
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.Browser.setContentPath('../..');
+   MO.Window.Browser.setContentPath('../..');
    // 创建应用
    var application = MO.Desktop.initialize(MO.FGuiApplication);
    application.setup(document.body);

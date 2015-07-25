@@ -131,8 +131,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._milestoneBarShowDuration = 1000;
    o._milestoneBarShowTick     = 0;
    o._milestoneBarShowing      = false;
-   o._bgm                      = null;
-   o._bgmPlaying               = false;
    o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect              = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -241,10 +239,6 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
          countryEntity.process();
          return;
       }
-      if (!o._bgmPlaying) {
-         o._bgm.play(0);
-         o._bgmPlaying = true;
-      }
       if (!o._mapReady) {
          mapEntity.citysRangeRenderable().setVisible(true);
          mapEntity.citysRenderable().setVisible(true);
@@ -321,9 +315,14 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   o._groundAutio.pause();
+   var audio = o._groundAutio;
+   audio.pause();
+   audio = null;
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   audio.setLoop(true);
+   audio.setVolume(0.2);
+   audio.play();
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);
@@ -802,15 +801,27 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if(!o._statusStart){
-      if(o.testReady()){
-         var hLoading = document.getElementById('id_loading');
-         if(hLoading){
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+      if (o.testReady()) {
+         if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+            var iosPlay = document.getElementById('id_ios_play');
+            if (iosPlay) {
+               MO.Window.Html.visibleSet(iosPlay, true);
+            }
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               document.body.removeChild(hLoading);
+            }
+         }
+         else {
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+               o._statusLayerLevel--;
+            }
             o._statusLayerLevel--;
          }
-         o._statusLayerLevel--;
-         if(o._statusLayerLevel <= 0){
-            if(hLoading){
+         if (o._statusLayerLevel <= 0) {
+            if (hLoading) {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.showCountry();
@@ -1033,6 +1044,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._flagSprite           = null;
    o._southSea             = null;
    o._groundAutio          = null;
+   o.onOperationVisibility = MO.FEaiChartScene_onOperationVisibility;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    o.construct             = MO.FEaiChartScene_construct;
@@ -1044,6 +1056,18 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.deactive              = MO.FEaiChartScene_deactive;
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
+}
+MO.FEaiChartScene_onOperationVisibility = function FEaiChartScene_onOperationVisibility(event) {
+   var o = this;
+   o.__base.FEaiScene.onOperationVisibility.call(o, event);
+   if (event.visibility) {
+      o._groundAutio.play();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = false;
+   }
+   else {
+      o._groundAutio.pause();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;

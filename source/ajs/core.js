@@ -1162,24 +1162,24 @@ MO.TXmlNode = function TXmlNode(name){
    o.toString = MO.TXmlNode_toString;
    return o;
 }
-MO.TXmlNode_create = function TXmlNode_create(n, a){
+MO.TXmlNode_create = function TXmlNode_create(name, attribtues){
    var o = this;
-   var r = new MO.TXmlNode();
-   r._name = n;
-   r._attributes = a;
-   if(!MO.Class.isClass(a, MO.TAttributes)){
+   var xnode = new MO.TXmlNode();
+   xnode._name = name;
+   xnode._attributes = attribtues;
+   if(!MO.Class.isClass(attribtues, MO.TAttributes)){
       var a = arguments;
       var len = a.length;
       for(var n = 1; n < len; n += 2){
          if(n + 1 < len){
-            r.set(a[n], a[n+1]);
+            xnode.set(a[n], a[n+1]);
          }else{
-            r._value = a[n];
+            xnode.setValue(a[n]);
          }
       }
    }
-   o.push(r);
-   return r;
+   o.push(xnode);
+   return xnode;
 }
 MO.TXmlNode_innerXml = function TXmlNode_innerXml(s, l){
    var o = this;

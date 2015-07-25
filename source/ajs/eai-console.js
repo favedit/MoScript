@@ -181,50 +181,80 @@ MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvest
 }
 MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
-   o._code = 'system';
-   o._ready = false;
-   o._currentDate = null;
-   o._localDate = null;
-   o._systemDate = MO.Class.register(o, new MO.AGetter('_systemDate'))
-   o.onInfo = MO.FEaiLogicSystem_onInfo;
-   o.construct = MO.FEaiLogicSystem_construct;
-   o.doInfo = MO.FEaiLogicSystem_doInfo;
-   o.testReady = MO.FEaiLogicSystem_testReady;
-   o.currentDate = MO.FEaiLogicSystem_currentDate;
-   o.refresh = MO.FEaiLogicSystem_refresh;
+   o._code          = 'system';
+   o._ready         = false;
+   o._currentDate   = null;
+   o._localDate     = null;
+   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o.onInfo         = MO.FEaiLogicSystem_onInfo;
+   o.construct      = MO.FEaiLogicSystem_construct;
+   o.doInfo         = MO.FEaiLogicSystem_doInfo;
+   o.doDeviceAccess = MO.FEailogicSystem_doDeviceAccess;
+   o.testReady      = MO.FEaiLogicSystem_testReady;
+   o.currentDate    = MO.FEaiLogicSystem_currentDate;
+   o.refresh        = MO.FEaiLogicSystem_refresh;
    o.postDeviceInfo = MO.FEailogicSystem_postDeviceInfo;
-   o.dispose = MO.FEaiLogicSystem_dispose;
+   o.dispose        = MO.FEaiLogicSystem_dispose;
    return o;
 }
-MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event) {
+MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    var content = event.content;
    o._localDate.setNow();
    o._systemDate.parse(content.date);
    o._ready = true;
 }
-MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct() {
+MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
    o._currentDate = new MO.TDate();
    o._localDate = new MO.TDate();
    o._systemDate = new MO.TDate();
 }
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
    return this.send('info', null, owner, callback);
 }
-MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady() {
+MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
+   var xroot = new MO.TXmlNode('Configuration');
+   var xbrowser = xroot.create('Browser')
+   MO.Window.Browser.saveConfig(xbrowser);
+   var xdesktop = xbrowser.create('Desktop')
+   var application = MO.Desktop.application();
+   var desktop = application.desktop();
+   var canvas2d = desktop.canvas2d();
+   var canvas3d = desktop.canvas3d();
+   var context3d = canvas3d.graphicContext();
+   context3d.saveConfig(xdesktop);
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+   debugger
+}
+MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
    return this._ready;
 }
-MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate() {
+MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
    var o = this;
    var span = o._systemDate.get() - o._localDate.get();
    o._currentDate.set(MO.Timer.current() + span);
    return o._currentDate;
 }
-MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh() {
+MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
    var o = this;
    return o.doInfo(o, o.onInfo);
+}
+MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
+   var json ={};
+   for (var key in data) {
+      var type = typeof data[key];
+      if(type == "function"){
+         continue;
+      }
+      json[key] = data[key];
+      if (type == "object") {
+         var nextVal = data[key];
+         parseInfo(nextVal);
+      }
+   }
+   return json;
 }
 MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
    var o = this;
@@ -247,22 +277,9 @@ MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
    tempForm.appendChild(option);
    tempForm.submit();
 }
-MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
-    var json ={};
-      for (var key in data) {
-            var type = typeof data[key];
-            if (type == "function") continue;
-            json[key] = data[key];
-            if (type == "object") {
-               var nextVal = data[key];
-               parseInfo(nextVal);
-            }
-      }
-      return json;
-}
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;
-   o._localDate = RObject.dispose(o._localDate);
-   o._systemDate = RObject.dispose(o._systemDate);
+   o._localDate = MO.Lang.Object.dispose(o._localDate);
+   o._systemDate = MO.Lang.Object.dispose(o._systemDate);
    o.__base.FEaiLogic.consturct.call(o);
 }

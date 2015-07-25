@@ -41,7 +41,7 @@ MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
 //===========================================================
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
-   var code = o.code = window.navigator.userAgent.toString();
+   var code = o._agent = window.navigator.userAgent.toString();
    var agent = code.toLowerCase();
    var capability = o._capability = new MO.SBrowserCapability();
    var properties = o._defineProperties = new Object();
@@ -476,6 +476,18 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
 MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
    var blob = MO.RBlob.fromText(text);
    this.downloadBlob(fileName, blob);
+}
+
+//===========================================================
+// <T>存储设置。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+//===========================================================
+MO.RBrowser.prototype.saveConfig = function RBrowser_saveConfig(xconfig){
+   var o = this;
+   var xagent = xconfig.create('Agent');
+   xagent.setValue(o._agent);
 }
 //..........................................................
 // 实例化内容

@@ -773,6 +773,7 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -797,9 +798,9 @@ MO.FGuiSpriteMultimage = function FGuiSpriteMultimage(o) {
    o._imageToLoad    = 0;
    o._lastTick       = 0;
    o._currentFrame   = 0;
-   o.setup           = FGuiSpriteMultimage_setup;
-   o.onPaintBegin    = FGuiSpriteMultimage_onPaintBegin;
-   o.onImageLoad     = FGuiSpriteMultimage_onImageLoad;
+   o.setup           = MO.FGuiSpriteMultimage_setup;
+   o.onPaintBegin    = MO.FGuiSpriteMultimage_onPaintBegin;
+   o.onImageLoad     = MO.FGuiSpriteMultimage_onImageLoad;
    return o;
 }
 MO.FGuiSpriteMultimage_setup = function FGuiSpriteMultimage_setup(sequenceImageUrl, imageCount, ext) {

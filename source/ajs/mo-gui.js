@@ -773,6 +773,7 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -797,9 +798,9 @@ MO.FGuiSpriteMultimage = function FGuiSpriteMultimage(o) {
    o._imageToLoad    = 0;
    o._lastTick       = 0;
    o._currentFrame   = 0;
-   o.setup           = FGuiSpriteMultimage_setup;
-   o.onPaintBegin    = FGuiSpriteMultimage_onPaintBegin;
-   o.onImageLoad     = FGuiSpriteMultimage_onImageLoad;
+   o.setup           = MO.FGuiSpriteMultimage_setup;
+   o.onPaintBegin    = MO.FGuiSpriteMultimage_onPaintBegin;
+   o.onImageLoad     = MO.FGuiSpriteMultimage_onImageLoad;
    return o;
 }
 MO.FGuiSpriteMultimage_setup = function FGuiSpriteMultimage_setup(sequenceImageUrl, imageCount, ext) {
@@ -1336,7 +1337,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
 }
 MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
-   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'));
+   o._visible          = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
    o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    o._transforms       = MO.Class.register(o, new MO.AGetter('_transforms'));
@@ -1504,7 +1505,7 @@ MO.FGuiTransform_dispose = function FGuiTransform_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FGuiButton = function FGuiButton(o){
-   o = RClass.inherits(this, o, MO.FGuiControl);
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    o.onPaintBegin = MO.FGuiButton_onPaintBegin;
    return o;
 }

@@ -784,50 +784,80 @@ MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvest
 }
 MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
-   o._code = 'system';
-   o._ready = false;
-   o._currentDate = null;
-   o._localDate = null;
-   o._systemDate = MO.Class.register(o, new MO.AGetter('_systemDate'))
-   o.onInfo = MO.FEaiLogicSystem_onInfo;
-   o.construct = MO.FEaiLogicSystem_construct;
-   o.doInfo = MO.FEaiLogicSystem_doInfo;
-   o.testReady = MO.FEaiLogicSystem_testReady;
-   o.currentDate = MO.FEaiLogicSystem_currentDate;
-   o.refresh = MO.FEaiLogicSystem_refresh;
+   o._code          = 'system';
+   o._ready         = false;
+   o._currentDate   = null;
+   o._localDate     = null;
+   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o.onInfo         = MO.FEaiLogicSystem_onInfo;
+   o.construct      = MO.FEaiLogicSystem_construct;
+   o.doInfo         = MO.FEaiLogicSystem_doInfo;
+   o.doDeviceAccess = MO.FEailogicSystem_doDeviceAccess;
+   o.testReady      = MO.FEaiLogicSystem_testReady;
+   o.currentDate    = MO.FEaiLogicSystem_currentDate;
+   o.refresh        = MO.FEaiLogicSystem_refresh;
    o.postDeviceInfo = MO.FEailogicSystem_postDeviceInfo;
-   o.dispose = MO.FEaiLogicSystem_dispose;
+   o.dispose        = MO.FEaiLogicSystem_dispose;
    return o;
 }
-MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event) {
+MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    var content = event.content;
    o._localDate.setNow();
    o._systemDate.parse(content.date);
    o._ready = true;
 }
-MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct() {
+MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
    o._currentDate = new MO.TDate();
    o._localDate = new MO.TDate();
    o._systemDate = new MO.TDate();
 }
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
    return this.send('info', null, owner, callback);
 }
-MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady() {
+MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
+   var xroot = new MO.TXmlNode('Configuration');
+   var xbrowser = xroot.create('Browser')
+   MO.Window.Browser.saveConfig(xbrowser);
+   var xdesktop = xbrowser.create('Desktop')
+   var application = MO.Desktop.application();
+   var desktop = application.desktop();
+   var canvas2d = desktop.canvas2d();
+   var canvas3d = desktop.canvas3d();
+   var context3d = canvas3d.graphicContext();
+   context3d.saveConfig(xdesktop);
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+   debugger
+}
+MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
    return this._ready;
 }
-MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate() {
+MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
    var o = this;
    var span = o._systemDate.get() - o._localDate.get();
    o._currentDate.set(MO.Timer.current() + span);
    return o._currentDate;
 }
-MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh() {
+MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
    var o = this;
    return o.doInfo(o, o.onInfo);
+}
+MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
+   var json ={};
+   for (var key in data) {
+      var type = typeof data[key];
+      if(type == "function"){
+         continue;
+      }
+      json[key] = data[key];
+      if (type == "object") {
+         var nextVal = data[key];
+         parseInfo(nextVal);
+      }
+   }
+   return json;
 }
 MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
    var o = this;
@@ -850,23 +880,10 @@ MO.FEailogicSystem_postDeviceInfo = function FEailogicSystem_postDeviceInfo() {
    tempForm.appendChild(option);
    tempForm.submit();
 }
-MO.FEailogicSystem_parseDeviceInfo = function FEailogicSystem_parseDeviceInfo(data){
-    var json ={};
-      for (var key in data) {
-            var type = typeof data[key];
-            if (type == "function") continue;
-            json[key] = data[key];
-            if (type == "object") {
-               var nextVal = data[key];
-               parseInfo(nextVal);
-            }
-      }
-      return json;
-}
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;
-   o._localDate = RObject.dispose(o._localDate);
-   o._systemDate = RObject.dispose(o._systemDate);
+   o._localDate = MO.Lang.Object.dispose(o._localDate);
+   o._systemDate = MO.Lang.Object.dispose(o._systemDate);
    o.__base.FEaiLogic.consturct.call(o);
 }
 MO.FEaiBoundaryData = function FEaiBoundaryData(o){
@@ -1656,6 +1673,7 @@ MO.FEaiCountryEntity_loadProvinceData = function FEaiCountryEntity_loadProvinceD
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceConsole.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -3257,15 +3275,14 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          var hexColor = MO.Lang.Hex.format(rateResource.findRate(dayInvestmentTotal / investmentTotal));
          var color = '#' + hexColor.substring(2);
          if (startDate.date.getDate() == 1) {
-            var text = MO.Lang.Float.unitFormat(inves, 0, 0, 0, 0, 10000, '万');
             graphic.drawCircle(x, y, o._circleRadius, 0, color, color);
             graphic.setFont('bold 22px Microsoft YaHei');
-            if (inves > 100000000) {
-               var text = MO.Lang.Float.unitFormat(inves, 0, 0, 2, 0, 100000000, '亿');
+            if (dayInvestmentTotal > 100000000) {
+               var text = MO.Lang.Float.unitFormat(dayInvestmentTotal, 0, 0, 2, 0, 100000000, '亿');
                var textWidth = graphic.textWidth(text);
                graphic.drawText(text, x - textWidth / 2, y - 16, '#FFE849');
             } else {
-               var text = parseInt(inves / 10000) + '万';
+               var text = parseInt(dayInvestmentTotal / 10000) + '万';
                var textWidth = graphic.textWidth(text);
                graphic.drawText(text, x - textWidth / 2, y - 16, '#FF7200');
             }
@@ -4410,8 +4427,6 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o._milestoneBarShowDuration = 1000;
    o._milestoneBarShowTick     = 0;
    o._milestoneBarShowing      = false;
-   o._bgm                      = null;
-   o._bgmPlaying               = false;
    o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
    o.onDateSelect              = MO.FEaiChartHistoryScene_onDateSelect;
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
@@ -4520,10 +4535,6 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
          countryEntity.process();
          return;
       }
-      if (!o._bgmPlaying) {
-         o._bgm.play(0);
-         o._bgmPlaying = true;
-      }
       if (!o._mapReady) {
          mapEntity.citysRangeRenderable().setVisible(true);
          mapEntity.citysRenderable().setVisible(true);
@@ -4600,9 +4611,14 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    o._currentDate = new MO.TDate();
    o._startDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   o._groundAutio.pause();
+   var audio = o._groundAutio;
+   audio.pause();
+   audio = null;
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   o._bgm = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}/historyBGM.mp3');
+   audio.setLoop(true);
+   audio.setVolume(0.2);
+   audio.play();
    var mapEntity = o._mapEntity;
    mapEntity.citysRangeRenderable().setVisible(false);
    mapEntity.citysRenderable().setVisible(false);
@@ -5081,15 +5097,27 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if(!o._statusStart){
-      if(o.testReady()){
-         var hLoading = document.getElementById('id_loading');
-         if(hLoading){
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+      if (o.testReady()) {
+         if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+            var iosPlay = document.getElementById('id_ios_play');
+            if (iosPlay) {
+               MO.Window.Html.visibleSet(iosPlay, true);
+            }
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               document.body.removeChild(hLoading);
+            }
+         }
+         else {
+            var hLoading = document.getElementById('id_loading');
+            if (hLoading) {
+               hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+               o._statusLayerLevel--;
+            }
             o._statusLayerLevel--;
          }
-         o._statusLayerLevel--;
-         if(o._statusLayerLevel <= 0){
-            if(hLoading){
+         if (o._statusLayerLevel <= 0) {
+            if (hLoading) {
                document.body.removeChild(hLoading);
             }
             o._mapEntity.showCountry();
@@ -5312,6 +5340,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._flagSprite           = null;
    o._southSea             = null;
    o._groundAutio          = null;
+   o.onOperationVisibility = MO.FEaiChartScene_onOperationVisibility;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    o.construct             = MO.FEaiChartScene_construct;
@@ -5323,6 +5352,18 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.deactive              = MO.FEaiChartScene_deactive;
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
+}
+MO.FEaiChartScene_onOperationVisibility = function FEaiChartScene_onOperationVisibility(event) {
+   var o = this;
+   o.__base.FEaiScene.onOperationVisibility.call(o, event);
+   if (event.visibility) {
+      o._groundAutio.play();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = false;
+   }
+   else {
+      o._groundAutio.pause();
+      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
