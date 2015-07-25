@@ -1032,7 +1032,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
    }
 }
 MO.FEaiChartScene = function FEaiChartScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o = MO.Class.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
    o._readyProvince        = false;
    o._countryReady         = false;

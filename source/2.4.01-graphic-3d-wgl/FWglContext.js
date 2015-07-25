@@ -35,7 +35,9 @@ MO.FWglContext = function FWglContext(o){
    o.isValid             = MO.FWglContext_isValid;
    o.linkCanvas          = MO.FWglContext_linkCanvas;
    // @method
+   o.parameter           = MO.FWglContext_parameter;
    o.parameters          = MO.FWglContext_parameters;
+   o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
    // @method
    o.recordBegin         = MO.FWglContext_recordBegin;
@@ -211,6 +213,18 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
 }
 
 //==========================================================
+// <T>获得参数。</T>
+//
+// @method
+// @param name:String 名称
+// @return Object 参数
+//==========================================================
+MO.FWglContext_parameter = function FWglContext_parameter(name){
+   var parameters = this.parameters();
+   return parameters[name];
+}
+
+//==========================================================
 // <T>获得参数集合。</T>
 //
 // @method
@@ -330,6 +344,18 @@ MO.FWglContext_parameters = function FWglContext_parameters(){
 }
 
 //==========================================================
+// <T>获得扩展。</T>
+//
+// @method
+// @param name:String 名称
+// @return Object 扩展
+//==========================================================
+MO.FWglContext_extension = function FWglContext_extension(name){
+   var extensions = this.extensions();
+   return extensions[name];
+}
+
+//==========================================================
 // <T>获得扩展集合。</T>
 //
 // @method
@@ -343,11 +369,11 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
       extensions = o._extensions = new Object();
       // 获得参数
       var handle = o._handle;
-      var extensionNames = handle.getSupportedExtensions();
-      var count = extensionNames.length;
+      var names = handle.getSupportedExtensions();
+      var count = names.length;
       for(var i = 0; i < count; i++){
-         var extensionName = extensionNames[i];
-         extensions[name] = handle.getExtension(extensionName);
+         var name = names[i];
+         extensions[name] = handle.getExtension(name);
       }
    }
    return extensions;
@@ -1174,20 +1200,14 @@ MO.FWglContext_checkError = function FWglContext_checkError(code, message, param
 //===========================================================
 MO.FWglContext_saveConfig = function FWglContext_saveConfig(xconfig){
    var o = this;
+   // 存储参数集合
    var parameters = o.parameters();
    var xparameters = xconfig.create('Parameters');
-   for(var name in parameters){
-      var xparameter = xparameters.create('Parameter');
-      xparameter.set('name', name);
-      xparameter.setValue(parameters[name]);
-   }
+   MO.RXml.saveObject(xparameters, 'Parameter', parameters);
+   // 存储扩展集合
    var extensions = o.extensions();
-   for(var name in extensions){
-      var xparameter = xparameters.create('Extensions');
-      xparameter.set('name', name);
-      xparameter.setValue(parameters[name]);
-   }
-   xagent.setValue(o._agent);
+   var xextensions = xconfig.create('Extensions');
+   MO.RXml.saveObject(xextensions, 'Extension', extensions);
 }
 
 //==========================================================

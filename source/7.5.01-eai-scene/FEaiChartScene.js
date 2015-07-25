@@ -6,7 +6,7 @@
 // @history 150618
 //==========================================================
 MO.FEaiChartScene = function FEaiChartScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o = MO.Class.inherits(this, o, MO.FEaiScene);
    //..........................................................
    // @attribute
    o._optionMapCountry     = true;

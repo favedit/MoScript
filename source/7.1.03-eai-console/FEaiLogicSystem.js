@@ -89,17 +89,42 @@ MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
 //==========================================================
 MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
    var xroot = new MO.TXmlNode('Configuration');
+   var identityCode = MO.Window.Browser.agent();
+   // 创建浏览器信息
    var xbrowser = xroot.create('Browser')
    MO.Window.Browser.saveConfig(xbrowser);
-   var xdesktop = xbrowser.create('Desktop')
+   // 创建桌面信息
    var application = MO.Desktop.application();
    var desktop = application.desktop();
-   var canvas2d = desktop.canvas2d();
-   var canvas3d = desktop.canvas3d();
-   var context3d = canvas3d.graphicContext();
-   context3d.saveConfig(xdesktop);
+   if(desktop){
+      var xdesktop = xbrowser.create('Desktop')
+      // 创建2D信息
+      var canvas2d = desktop.canvas2d();
+      if(canvas2d){
+         var xcontext2d = xdesktop.create('Context2d')
+      }
+      var canvas3d = desktop.canvas3d();
+      if(canvas3d){
+         var context3d = canvas3d.graphicContext();
+         var parameter = context3d.parameter('VERSION');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var parameter = context3d.parameter('SHADING_LANGUAGE_VERSION');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var parameter = context3d.parameter('UNMASKED_RENDERER_WEBGL');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var xcontext3d = xdesktop.create('Context3d')
+         context3d.saveConfig(xcontext3d);
+      }
+   }
+   // 设置鉴定码
+   xroot.set('identity_code', identityCode);
    MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
-   debugger
 }
 
 //==========================================================

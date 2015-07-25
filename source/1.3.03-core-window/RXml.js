@@ -348,6 +348,41 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
    }
    return n;
 }
+
+//==========================================================
+// <T>存储对象。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+// @param item:Object 对象
+//==========================================================
+MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
+   var o = this;
+   for(var name in item){
+      var value = item[name];
+      if(value != null){
+         var xtag = xconfig.create(tag);
+         xtag.set('name', name);
+         var typeName = typeof(value);
+         switch(typeName){
+            case 'boolean':
+            case 'number':
+            case 'date':
+            case 'string':
+               xtag.setValue(value);
+               break;
+            case 'function':
+               xtag.setValue(MO.Method.name(value));
+               break;
+            case 'object':
+               o.saveObject(xtag, 'Property', value);
+               break;
+            default:
+               throw new MO.TError('Invalid object.');
+         }
+      }
+   }
+}
 //..........................................................
 // 实例化内容
 MO.RXml = new MO.RXml();

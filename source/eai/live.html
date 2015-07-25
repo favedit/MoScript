@@ -78,8 +78,6 @@
          var application = MO.Desktop.initialize(MO.FEaiChartApplication);
          application.setSceneCode(MO.EEaiScene.ChartLive);
          application.setup(document.body);
-         var system = MO.Console.find(MO.FEaiLogicConsole).system();
-         system.doDeviceAccess();
    }catch(e){
          alert(e.message);
    }
@@ -116,11 +114,10 @@
          </td>
       </tr>
    </table>
-
    <table id='id_error' style='position:absolute;left:0px;top:0px;width:100%;height:100%;background-size:100% 100%;display:none;'>
       <tr>
          <td align='center'>
-            <img style="width:100%" id="error_img">
+            <img id="error_img">
             <br>
          </td>
       </tr>

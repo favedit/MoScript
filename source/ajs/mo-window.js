@@ -753,6 +753,9 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }
    o.refreshOrientation();
 }
+MO.RBrowser.prototype.agent = function RBrowser_agent(){
+   return this._agent;
+}
 MO.RBrowser.prototype.capability = function RBrowser_capability(){
    return this._capability;
 }
@@ -2039,5 +2042,32 @@ MO.RXml.prototype.unpack = function RXml_unpack(s, n){
       }
    }
    return n;
+}
+MO.RXml.prototype.saveObject = function RXml_saveObject(xconfig, tag, item){
+   var o = this;
+   for(var name in item){
+      var value = item[name];
+      if(value != null){
+         var xtag = xconfig.create(tag);
+         xtag.set('name', name);
+         var typeName = typeof(value);
+         switch(typeName){
+            case 'boolean':
+            case 'number':
+            case 'date':
+            case 'string':
+               xtag.setValue(value);
+               break;
+            case 'function':
+               xtag.setValue(MO.Method.name(value));
+               break;
+            case 'object':
+               o.saveObject(xtag, 'Property', value);
+               break;
+            default:
+               throw new MO.TError('Invalid object.');
+         }
+      }
+   }
 }
 MO.RXml = new MO.RXml();

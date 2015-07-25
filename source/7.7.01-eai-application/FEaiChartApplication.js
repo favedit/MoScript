@@ -83,7 +83,7 @@ MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
 // @return FEaiCanvas 画板
 //==========================================================
 MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
-   return RClass.create(FEaiChartCanvas);
+   return MO.Class.create(FEaiChartCanvas);
 }
 
 //==========================================================
@@ -101,7 +101,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    o._hPanel = hPanel;
    //..........................................................
    // 创建桌面
-   var desktop = o._desktop = MO.RClass.create(MO.FEaiChartDesktop);
+   var desktop = o._desktop = MO.Class.create(MO.FEaiChartDesktop);
    desktop.build(hPanel);
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
    var context = canvas.graphicContext();
@@ -118,9 +118,13 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    control.build();
    //..........................................................
    // 创建图表舞台
-   var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+   var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
+   //..........................................................
+   // 向服务器发送浏览器信息
+   var system = MO.Console.find(MO.FEaiLogicConsole).system();
+   system.doDeviceAccess();
    //..........................................................
    // 加载资源
    var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);

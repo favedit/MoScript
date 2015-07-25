@@ -144,10 +144,20 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
 }
 
 //==========================================================
+// <T>获得信息。</T>
+//
+// @method
+// @return String 信息
+//==========================================================
+MO.RBrowser.prototype.agent = function RBrowser_agent(){
+   return this._agent;
+}
+
+//==========================================================
 // <T>获得浏览器环境信息。</T>
 //
 // @method
-// @return 浏览器环境信息
+// @return Object 浏览器环境信息
 //==========================================================
 MO.RBrowser.prototype.capability = function RBrowser_capability(){
    return this._capability;

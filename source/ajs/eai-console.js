@@ -9,10 +9,31 @@ with(MO){
    MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
-      if(parameters){
-         url += '?' + parameters;
-      }
+      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
+          time = new Date().getTime();
+         function addKey ( start, times ){
+            var arr = [start];
+               for( var i = 0; i < times; i++ ){
+                  if( i == 0 ){
+                     arr.push( arr[0] );
+                  }else{
+                     arr.push( arr[i] + arr[i-1] );
+                  }
+               }
+               return arr;
+         }
+         if(parameters){
+            var arr=parameters.split("&"),
+                ginsengs='',
+                key="";
+            for(var i=0;i<arr.length;i++){
+               ginsengs += arr[i].split("=")[1];
+            }
+            for(var i=0; i < addKey(5,3).length; i++){
+               key+=addKey(5,3)[i];
+            }
+            url += '?' + parameters+"&requesttime="+time+"&sign=md5("+ginsengs+key+")";
+         }
       return url;
    }
    MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
@@ -216,17 +237,38 @@ MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
 }
 MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
    var xroot = new MO.TXmlNode('Configuration');
+   var identityCode = MO.Window.Browser.agent();
    var xbrowser = xroot.create('Browser')
    MO.Window.Browser.saveConfig(xbrowser);
-   var xdesktop = xbrowser.create('Desktop')
    var application = MO.Desktop.application();
    var desktop = application.desktop();
-   var canvas2d = desktop.canvas2d();
-   var canvas3d = desktop.canvas3d();
-   var context3d = canvas3d.graphicContext();
-   context3d.saveConfig(xdesktop);
+   if(desktop){
+      var xdesktop = xbrowser.create('Desktop')
+      var canvas2d = desktop.canvas2d();
+      if(canvas2d){
+         var xcontext2d = xdesktop.create('Context2d')
+      }
+      var canvas3d = desktop.canvas3d();
+      if(canvas3d){
+         var context3d = canvas3d.graphicContext();
+         var parameter = context3d.parameter('VERSION');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var parameter = context3d.parameter('SHADING_LANGUAGE_VERSION');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var parameter = context3d.parameter('UNMASKED_RENDERER_WEBGL');
+         if(parameter){
+            identityCode += '|' + parameter;
+         }
+         var xcontext3d = xdesktop.create('Context3d')
+         context3d.saveConfig(xcontext3d);
+      }
+   }
+   xroot.set('identity_code', identityCode);
    MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
-   debugger
 }
 MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
    return this._ready;
