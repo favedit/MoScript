@@ -659,8 +659,8 @@ MO.RBrowser = function RBrowser(){
    o._contentPath      = '';
    return o;
 }
-MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
-   console.log(p);
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(sender, message){
+   console.log(message);
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
@@ -687,13 +687,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       alert('Unknown browser.\n' + agent);
       return;
    }
-   if(o._typeCd == MO.EBrowser.Chrome){
-      MO.Logger.lsnsOutput.register(o, o.onLog);
-   }
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
-   if(window.applicationCache){
-      o._supportHtml5 = true;
-   }
    var bIsIpad = agent.match(/ipad/i) == "ipad";
    var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
    var bIsMidp = agent.match(/midp/i) == "midp";
@@ -704,6 +697,13 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   if(o._typeCd == MO.EBrowser.Chrome){
+      MO.Logger.lsnsOutput.register(o, o.onLog);
+   }
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   if(window.applicationCache){
+      o._supportHtml5 = true;
    }
    var external = window.external;
    if(external){
@@ -886,7 +886,7 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
    link.dispatchEvent(event);
 }
 MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
-   var blob = MO.RBlob.fromText(text);
+   var blob = MO.Labg.Blob.fromText(text);
    this.downloadBlob(fileName, blob);
 }
 MO.RBrowser.prototype.saveConfig = function RBrowser_saveConfig(xconfig){

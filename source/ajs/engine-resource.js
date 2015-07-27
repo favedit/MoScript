@@ -365,14 +365,9 @@ MO.FImageResource = function FImageResource(o){
 }
 MO.FResource = function FResource(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._typeCode     = MO.Class.register(o, new MO.AGetter('_typeCode'));
-   o._type         = MO.Class.register(o, new MO.AGetter('_type'));
    o._guid         = MO.Class.register(o, new MO.AGetSet('_guid'));
    o._code         = MO.Class.register(o, new MO.AGetSet('_code'));
    o._label        = MO.Class.register(o, new MO.AGetSet('_label'));
-   o._sourceUrl    = MO.Class.register(o, new MO.AGetSet('_sourceUrl'));
-   o._dataCompress = false;
-   o._dataBlock    = false;
    return o;
 }
 MO.FResourceBlockStorage = function FResourceBlockStorage(o){
@@ -482,6 +477,7 @@ MO.FResourceConsole = function FResourceConsole(o){
    o._scopeCd          = MO.EScope.Global;
    o._factory          = null;
    o._types            = null;
+   o._packages         = null;
    o._resources        = null;
    o._loadResources    = null;
    o._loadingResources = null;
@@ -497,6 +493,9 @@ MO.FResourceConsole = function FResourceConsole(o){
    o.registerType      = MO.FResourceConsole_registerType;
    o.factory           = MO.FResourceConsole_factory;
    o.load              = MO.FResourceConsole_load;
+   o.loadPackage       = MO.FResourceConsole_loadPackage;
+   o.loadPackageByUrl  = MO.FResourceConsole_loadPackageByUrl;
+   o.dispose           = MO.FResourceConsole_dispose;
    return o;
 }
 MO.FResourceConsole_onComplete = function FResourceConsole_onComplete(resource, data){
@@ -579,6 +578,7 @@ MO.FResourceConsole_construct = function FResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._factory = MO.Class.create(MO.FClassFactory);
    o._types = new MO.TDictionary();
+   o._packages = new MO.TDictionary();
    o._resources = new MO.TDictionary();
    o._loadResources  = new MO.TObjects();
    o._loadingResources = new MO.TObjects();
@@ -606,6 +606,41 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    resources.set(guid, resource);
    o._loadResources.push(resource);
    resource._dataLoad = true;
+}
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+   var o = this;
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
+   var o = this;
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
+   var o = this;
+   o._factory = MO.Lang.Object.dispose(o._factory);
+   o._types = MO.Lang.Object.dispose(o._types);
+   o._packages = MO.Lang.Object.dispose(o._packages);
+   o._resources = MO.Lang.Object.dispose(o._resources);
+   o._loadResources  = MO.Lang.Object.dispose(o._loadResources);
+   o._loadingResources = MO.Lang.Object.dispose(o._loadingResources);
+   o._processStorages = MO.Lang.Object.dispose(o._processStorages);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FResourceDataConsole = function FResourceDataConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -694,18 +729,47 @@ MO.FResourceDataConsole_load = function FResourceDataConsole_load(data){
    this._loadDatas.push(data);
 }
 MO.FResourceGroup = function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code      = MO.Class.register(o, new MO.AGetter('_code'));
+   o = MO.Class.inherits(this, o, MO.FResource);
    o._resources = null;
    return o;
 }
 MO.FResourceObject = function FResourceObject(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FResource);
    o._typeCode = MO.Class.register(o, new MO.AGetter('_typeCode'));
-   o._guid     = MO.Class.register(o, new MO.AGetSet('_guid'));
-   o._code     = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._label    = MO.Class.register(o, new MO.AGetSet('_label'));
    return o;
+}
+MO.FResourcePackage = function FResourcePackage(o){
+   o = MO.Class.inherits(this, o, MO.FResource);
+   o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
+   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._statusReady = false;
+   o.onLoaded     = MO.FResourcePackage_onLoaded;
+   o.testReady    = MO.FResourcePackage_testReady;
+   o.unserialize  = MO.Method.empty;
+   o.load         = MO.FResourcePackage_load;
+   return o;
+}
+MO.FResourcePackage_onLoaded = function FResourcePackage_onLoaded(event){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(event.content);
+   o.unserialize(view);
+   view.dispose();
+   o._statusReady = true;
+}
+MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
+   return this._statusReady;
+}
+MO.FResourcePackage_load = function FResourcePackage_load(){
+   var o = this;
+   var url = o._url;
+   if(!url){
+      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
+   }
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   connection.addLoadedListener(o, o.onLoaded);
+   return connection;
 }
 MO.FResourcePipeline = function FResourcePipeline(o){
    o = MO.Class.inherits(this, o, MO.FPipeline);

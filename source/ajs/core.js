@@ -96,6 +96,7 @@ MO.EEvent = new function EEvent(){
    var o = this;
    o.Unknown          = 'Unknown';
    o.Load             = 'Load';
+   o.Loaded           = 'Loaded';
    o.Process          = 'Process';
    o.Complete         = 'Complete';
    o.EnterFrame       = 'EnterFrame';
@@ -1405,7 +1406,7 @@ MO.FFileReader_dispose = function FFileReader_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FHttpConnection = function FHttpConnection(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad, MO.MListenerProcess);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    o._asynchronous        = false;
    o._methodCd            = MO.EHttpMethod.Get;
    o._contentCd           = MO.EHttpContent.Binary;
@@ -1417,6 +1418,9 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._connection          = null;
    o._contentLength       = 0;
    o._statusFree          = true;
+   o._listenersLoad       = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._listenersLoaded     = MO.Class.register(o, new MO.AListener('_listenersLoaded', MO.EEvent.Loaded));
+   o._listenersProcess    = MO.Class.register(o, new MO.AListener('_listenersProcess', MO.EEvent.Process));
    o.onConnectionSend     = MO.FHttpConnection_onConnectionSend;
    o.onConnectionReady    = MO.FHttpConnection_onConnectionReady;
    o.onConnectionComplete = MO.FHttpConnection_onConnectionComplete;
@@ -1463,10 +1467,16 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
    var o = this;
    o._statusFree = true;
    o.processLoadListener(o);
+   var event = new MO.SEvent();
+   event.connection = o;
+   event.content = o._outputData;
+   o.processLoadedListener(event);
+   event.dispose();
+   o._outputData = null;
 }
 MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
-   var c = o._connection = MO.RXml.createConnection();
+   var c = o._connection = MO.Window.Xml.createConnection();
    c._linker = o;
    c.onreadystatechange = o.onConnectionReady;
 }

@@ -6,7 +6,7 @@
 // @version 150104
 //==========================================================
 MO.FHttpConnection = function FHttpConnection(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad, MO.MListenerProcess);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
    o._asynchronous        = false;
@@ -22,6 +22,10 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._connection          = null;
    o._contentLength       = 0;
    o._statusFree          = true;
+   // @attribute
+   o._listenersLoad       = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._listenersLoaded     = MO.Class.register(o, new MO.AListener('_listenersLoaded', MO.EEvent.Loaded));
+   o._listenersProcess    = MO.Class.register(o, new MO.AListener('_listenersProcess', MO.EEvent.Process));
    //..........................................................
    // @event
    o.onConnectionSend     = MO.FHttpConnection_onConnectionSend;
@@ -93,6 +97,14 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
    o._statusFree = true;
    // 完成处理
    o.processLoadListener(o);
+   // 完成处理
+   var event = new MO.SEvent();
+   event.connection = o;
+   event.content = o._outputData;
+   o.processLoadedListener(event);
+   event.dispose();
+   // 清空数据
+   o._outputData = null;
 }
 
 //==========================================================
@@ -102,7 +114,7 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
 //==========================================================
 MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
-   var c = o._connection = MO.RXml.createConnection();
+   var c = o._connection = MO.Window.Xml.createConnection();
    c._linker = o;
    c.onreadystatechange = o.onConnectionReady;
 }

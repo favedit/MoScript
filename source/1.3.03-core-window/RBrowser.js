@@ -29,9 +29,11 @@ MO.RBrowser = function RBrowser(){
 // <T>日志输出处理。</T>
 //
 // @method
+// @param sender:Object 来源
+// @param message:String 内容
 //===========================================================
-MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
-   console.log(p);
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(sender, message){
+   console.log(message);
 }
 
 //===========================================================
@@ -66,16 +68,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       alert('Unknown browser.\n' + agent);
       return;
    }
-   // 注册输出接口
-   if(o._typeCd == MO.EBrowser.Chrome){
-      MO.Logger.lsnsOutput.register(o, o.onLog);
-   }
-   // 输出日志
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
-   // 是否支持HTML5
-   if(window.applicationCache){
-      o._supportHtml5 = true;
-   }
    // 是否移动或PC模式
    var bIsIpad = agent.match(/ipad/i) == "ipad";
    var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
@@ -87,6 +79,16 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   // 注册输出接口
+   if(o._typeCd == MO.EBrowser.Chrome){
+      MO.Logger.lsnsOutput.register(o, o.onLog);
+   }
+   // 输出日志
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   // 是否支持HTML5
+   if(window.applicationCache){
+      o._supportHtml5 = true;
    }
    // 检测是否支持声音完成(360浏览器不支持声音完成相应)
    var external = window.external;
@@ -484,7 +486,7 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
 // @param text:String 文本内容
 //===========================================================
 MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
-   var blob = MO.RBlob.fromText(text);
+   var blob = MO.Labg.Blob.fromText(text);
    this.downloadBlob(fileName, blob);
 }
 

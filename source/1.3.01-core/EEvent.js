@@ -11,6 +11,8 @@ MO.EEvent = new function EEvent(){
    o.Unknown          = 'Unknown';
    // @attribute 加载
    o.Load             = 'Load';
+   // @attribute 加载完成
+   o.Loaded           = 'Loaded';
    // @attribute 处理
    o.Process          = 'Process';
    // @attribute 完成

@@ -6,10 +6,9 @@
 // @version 150105
 //==========================================================
 MO.FResourceGroup = function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
+   o = MO.Class.inherits(this, o, MO.FResource);
    //..........................................................
    // @attribute
-   o._code      = MO.Class.register(o, new MO.AGetter('_code'));
    o._resources = null;
    return o;
 }

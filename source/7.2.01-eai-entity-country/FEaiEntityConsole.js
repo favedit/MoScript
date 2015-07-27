@@ -6,11 +6,12 @@
 // @history 150703
 //==========================================================
 MO.FEaiEntityConsole = function FEaiEntityConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
    //..........................................................
    // @attribute
    o._scopeCd              = MO.EScope.Local;
    // @attribute
+   o._mapConsole           = MO.Class.register(o, new MO.AGetter('_mapConsole'));
    // @attribute
    o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
    // @attribute
@@ -25,11 +26,18 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    // @attribute
    o._listenersLoadWorld   = MO.Class.register(o, new MO.AListener('_listenersLoadWorld', 'LoadWorld'));
    o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
+   // @attribute
+   o._looper               = null;
+   // @attribute
+   o._thread               = null;
+   o._interval             = 100;
    //..........................................................
    // @event
    o.onSetup               = MO.FEaiEntityConsole_onSetup;
    o.onLoadWorld           = MO.FEaiEntityConsole_onLoadWorld;
    o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
+   // @event
+   o.onProcess             = MO.FEaiEntityConsole_onProcess;
    //..........................................................
    // @method
    o.construct             = MO.FEaiEntityConsole_construct;
@@ -41,6 +49,23 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    // @method
    o.dispose               = MO.FEaiEntityConsole_dispose;
    return o;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
+   var o = this;
+   var looper = o._looper;
+   looper.record();
+   while(looper.next()){
+      var item = looper.current();
+      if(item.processLoad()){
+         looper.removeCurrent();
+      }
+   }
 }
 
 //==========================================================
@@ -107,7 +132,7 @@ MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(ev
    }
    //..........................................................
    // 创建城市实体
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+   var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
    var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
    var cityEntities = mapEntity.cityEntities();
    var citys = cityConsole.citys();
@@ -150,9 +175,18 @@ MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(ev
 MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   // 设置属性
+   o._mapConsole = MO.Class.create(MO.FEaiMapEntityConsole);
+   // 设置属性
+   o._looper = new MO.TLooper();
    // 设置变量
    o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
    o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
+   // 创建线程
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   MO.Console.find(MO.FThreadConsole).start(thread);
 }
 
 //==========================================================

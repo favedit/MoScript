@@ -363,6 +363,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
    // 加载世界数据
+   //MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
    MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
    MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
 }

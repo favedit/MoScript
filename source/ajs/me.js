@@ -3508,8 +3508,7 @@ MO.RBlob.prototype.fromText = function RBlob_fromText(value){
    var blob = new Blob([data]);
    return blob;
 }
-MO.RBlob = new MO.RBlob();
-MO.Lang.Blob = MO.RBlob;
+MO.Lang.Blob = new MO.RBlob();
 MO.RBoolean = function RBoolean(){
    return this;
 }
@@ -8902,6 +8901,7 @@ MO.EEvent = new function EEvent(){
    var o = this;
    o.Unknown          = 'Unknown';
    o.Load             = 'Load';
+   o.Loaded           = 'Loaded';
    o.Process          = 'Process';
    o.Complete         = 'Complete';
    o.EnterFrame       = 'EnterFrame';
@@ -10211,7 +10211,7 @@ MO.FFileReader_dispose = function FFileReader_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FHttpConnection = function FHttpConnection(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad, MO.MListenerProcess);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    o._asynchronous        = false;
    o._methodCd            = MO.EHttpMethod.Get;
    o._contentCd           = MO.EHttpContent.Binary;
@@ -10223,6 +10223,9 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._connection          = null;
    o._contentLength       = 0;
    o._statusFree          = true;
+   o._listenersLoad       = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._listenersLoaded     = MO.Class.register(o, new MO.AListener('_listenersLoaded', MO.EEvent.Loaded));
+   o._listenersProcess    = MO.Class.register(o, new MO.AListener('_listenersProcess', MO.EEvent.Process));
    o.onConnectionSend     = MO.FHttpConnection_onConnectionSend;
    o.onConnectionReady    = MO.FHttpConnection_onConnectionReady;
    o.onConnectionComplete = MO.FHttpConnection_onConnectionComplete;
@@ -10269,10 +10272,16 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
    var o = this;
    o._statusFree = true;
    o.processLoadListener(o);
+   var event = new MO.SEvent();
+   event.connection = o;
+   event.content = o._outputData;
+   o.processLoadedListener(event);
+   event.dispose();
+   o._outputData = null;
 }
 MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
-   var c = o._connection = MO.RXml.createConnection();
+   var c = o._connection = MO.Window.Xml.createConnection();
    c._linker = o;
    c.onreadystatechange = o.onConnectionReady;
 }
@@ -13383,8 +13392,8 @@ MO.RBrowser = function RBrowser(){
    o._contentPath      = '';
    return o;
 }
-MO.RBrowser.prototype.onLog = function RBrowser_onLog(s, p){
-   console.log(p);
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(sender, message){
+   console.log(message);
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
@@ -13411,13 +13420,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       alert('Unknown browser.\n' + agent);
       return;
    }
-   if(o._typeCd == MO.EBrowser.Chrome){
-      MO.Logger.lsnsOutput.register(o, o.onLog);
-   }
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
-   if(window.applicationCache){
-      o._supportHtml5 = true;
-   }
    var bIsIpad = agent.match(/ipad/i) == "ipad";
    var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
    var bIsMidp = agent.match(/midp/i) == "midp";
@@ -13428,6 +13430,13 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
    if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
       MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   if(o._typeCd == MO.EBrowser.Chrome){
+      MO.Logger.lsnsOutput.register(o, o.onLog);
+   }
+   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   if(window.applicationCache){
+      o._supportHtml5 = true;
    }
    var external = window.external;
    if(external){
@@ -13610,7 +13619,7 @@ MO.RBrowser.prototype.downloadBlob = function RBrowser_downloadBlob(fileName, bl
    link.dispatchEvent(event);
 }
 MO.RBrowser.prototype.downloadText = function RBrowser_downloadText(fileName, text){
-   var blob = MO.RBlob.fromText(text);
+   var blob = MO.Labg.Blob.fromText(text);
    this.downloadBlob(fileName, blob);
 }
 MO.RBrowser.prototype.saveConfig = function RBrowser_saveConfig(xconfig){
@@ -21677,14 +21686,9 @@ MO.FImageResource = function FImageResource(o){
 }
 MO.FResource = function FResource(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._typeCode     = MO.Class.register(o, new MO.AGetter('_typeCode'));
-   o._type         = MO.Class.register(o, new MO.AGetter('_type'));
    o._guid         = MO.Class.register(o, new MO.AGetSet('_guid'));
    o._code         = MO.Class.register(o, new MO.AGetSet('_code'));
    o._label        = MO.Class.register(o, new MO.AGetSet('_label'));
-   o._sourceUrl    = MO.Class.register(o, new MO.AGetSet('_sourceUrl'));
-   o._dataCompress = false;
-   o._dataBlock    = false;
    return o;
 }
 MO.FResourceBlockStorage = function FResourceBlockStorage(o){
@@ -21794,6 +21798,7 @@ MO.FResourceConsole = function FResourceConsole(o){
    o._scopeCd          = MO.EScope.Global;
    o._factory          = null;
    o._types            = null;
+   o._packages         = null;
    o._resources        = null;
    o._loadResources    = null;
    o._loadingResources = null;
@@ -21809,6 +21814,9 @@ MO.FResourceConsole = function FResourceConsole(o){
    o.registerType      = MO.FResourceConsole_registerType;
    o.factory           = MO.FResourceConsole_factory;
    o.load              = MO.FResourceConsole_load;
+   o.loadPackage       = MO.FResourceConsole_loadPackage;
+   o.loadPackageByUrl  = MO.FResourceConsole_loadPackageByUrl;
+   o.dispose           = MO.FResourceConsole_dispose;
    return o;
 }
 MO.FResourceConsole_onComplete = function FResourceConsole_onComplete(resource, data){
@@ -21891,6 +21899,7 @@ MO.FResourceConsole_construct = function FResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._factory = MO.Class.create(MO.FClassFactory);
    o._types = new MO.TDictionary();
+   o._packages = new MO.TDictionary();
    o._resources = new MO.TDictionary();
    o._loadResources  = new MO.TObjects();
    o._loadingResources = new MO.TObjects();
@@ -21918,6 +21927,41 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    resources.set(guid, resource);
    o._loadResources.push(resource);
    resource._dataLoad = true;
+}
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+   var o = this;
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
+   var o = this;
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
+   var o = this;
+   o._factory = MO.Lang.Object.dispose(o._factory);
+   o._types = MO.Lang.Object.dispose(o._types);
+   o._packages = MO.Lang.Object.dispose(o._packages);
+   o._resources = MO.Lang.Object.dispose(o._resources);
+   o._loadResources  = MO.Lang.Object.dispose(o._loadResources);
+   o._loadingResources = MO.Lang.Object.dispose(o._loadingResources);
+   o._processStorages = MO.Lang.Object.dispose(o._processStorages);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FResourceDataConsole = function FResourceDataConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -22006,18 +22050,47 @@ MO.FResourceDataConsole_load = function FResourceDataConsole_load(data){
    this._loadDatas.push(data);
 }
 MO.FResourceGroup = function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code      = MO.Class.register(o, new MO.AGetter('_code'));
+   o = MO.Class.inherits(this, o, MO.FResource);
    o._resources = null;
    return o;
 }
 MO.FResourceObject = function FResourceObject(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FResource);
    o._typeCode = MO.Class.register(o, new MO.AGetter('_typeCode'));
-   o._guid     = MO.Class.register(o, new MO.AGetSet('_guid'));
-   o._code     = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._label    = MO.Class.register(o, new MO.AGetSet('_label'));
    return o;
+}
+MO.FResourcePackage = function FResourcePackage(o){
+   o = MO.Class.inherits(this, o, MO.FResource);
+   o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
+   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._statusReady = false;
+   o.onLoaded     = MO.FResourcePackage_onLoaded;
+   o.testReady    = MO.FResourcePackage_testReady;
+   o.unserialize  = MO.Method.empty;
+   o.load         = MO.FResourcePackage_load;
+   return o;
+}
+MO.FResourcePackage_onLoaded = function FResourcePackage_onLoaded(event){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(true);
+   view.link(event.content);
+   o.unserialize(view);
+   view.dispose();
+   o._statusReady = true;
+}
+MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
+   return this._statusReady;
+}
+MO.FResourcePackage_load = function FResourcePackage_load(){
+   var o = this;
+   var url = o._url;
+   if(!url){
+      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
+   }
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   connection.addLoadedListener(o, o.onLoaded);
+   return connection;
 }
 MO.FResourcePipeline = function FResourcePipeline(o){
    o = MO.Class.inherits(this, o, MO.FPipeline);
@@ -35471,10 +35544,10 @@ MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
    var xroot = new MO.TXmlNode('Configuration');
    var identityCode = MO.Window.Browser.agent();
    var xbrowser = xroot.create('Browser')
+   MO.Window.Browser.saveConfig(xbrowser);
    var xdesktop = xbrowser.create('Desktop')
    var xcontext2d = xdesktop.create('Context2d');
    var xcontext3d = xdesktop.create('Context3d');
-   MO.Window.Browser.saveConfig(xbrowser);
    var hCanvas = MO.Window.Builder.create(hPanel, 'CANVAS');
    var context3d = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas);
    if(context3d){

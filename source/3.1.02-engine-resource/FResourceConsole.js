@@ -13,6 +13,7 @@ MO.FResourceConsole = function FResourceConsole(o){
    // @attribute
    o._factory          = null;
    o._types            = null;
+   o._packages         = null;
    o._resources        = null;
    // @attribute
    o._loadResources    = null;
@@ -31,9 +32,14 @@ MO.FResourceConsole = function FResourceConsole(o){
    //..........................................................
    // @method
    o.construct         = MO.FResourceConsole_construct;
+   // @method
    o.registerType      = MO.FResourceConsole_registerType;
    o.factory           = MO.FResourceConsole_factory;
    o.load              = MO.FResourceConsole_load;
+   o.loadPackage       = MO.FResourceConsole_loadPackage;
+   o.loadPackageByUrl  = MO.FResourceConsole_loadPackageByUrl;
+   // @method
+   o.dispose           = MO.FResourceConsole_dispose;
    return o;
 }
 
@@ -168,6 +174,7 @@ MO.FResourceConsole_construct = function FResourceConsole_construct(){
    // 设置变量
    o._factory = MO.Class.create(MO.FClassFactory);
    o._types = new MO.TDictionary();
+   o._packages = new MO.TDictionary();
    o._resources = new MO.TDictionary();
    o._loadResources  = new MO.TObjects();
    o._loadingResources = new MO.TObjects();
@@ -220,4 +227,67 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    o._loadResources.push(resource);
    // 设置标志
    resource._dataLoad = true;
+}
+
+//==========================================================
+// <T>加载资源包。</T>
+//
+// @method
+// @param uri:String 资源对象
+//==========================================================
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+   var o = this;
+   // 查找资源包
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      // 解析地址
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      // 创建资源包
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+
+//==========================================================
+// <T>根据URL地址加载资源包。</T>
+//
+// @method
+// @param uri:String 资源对象
+//==========================================================
+MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
+   var o = this;
+   // 查找资源包
+   var packages = o._packages;
+   var package = packages.get(uri);
+   if(!package){
+      // 解析地址
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+      // 创建资源包
+      package = MO.Class.create(MO.FResourcePackage);
+      package.loadUrl(url);
+      packages.set(uri, package);
+   }
+   return package;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
+   var o = this;
+   // 设置变量
+   o._factory = MO.Lang.Object.dispose(o._factory);
+   o._types = MO.Lang.Object.dispose(o._types);
+   o._packages = MO.Lang.Object.dispose(o._packages);
+   o._resources = MO.Lang.Object.dispose(o._resources);
+   o._loadResources  = MO.Lang.Object.dispose(o._loadResources);
+   o._loadingResources = MO.Lang.Object.dispose(o._loadingResources);
+   o._processStorages = MO.Lang.Object.dispose(o._processStorages);
+   // 父处理
+   o.__base.FConsole.dispose.call(o);
 }

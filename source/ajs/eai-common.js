@@ -41,10 +41,6 @@ MO.Eai = new function FEai(){
    o.Canvas      = null;
    return o;
 }
-MO.FEaiEntity = function FEaiEntity(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   return o;
-}
 with(MO){
    MO.FEaiTable = function FEaiTable(o){
       o = RClass.inherits(this, o, FObject);

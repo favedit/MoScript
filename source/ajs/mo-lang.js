@@ -3508,8 +3508,7 @@ MO.RBlob.prototype.fromText = function RBlob_fromText(value){
    var blob = new Blob([data]);
    return blob;
 }
-MO.RBlob = new MO.RBlob();
-MO.Lang.Blob = MO.RBlob;
+MO.Lang.Blob = new MO.RBlob();
 MO.RBoolean = function RBoolean(){
    return this;
 }

@@ -20,6 +20,7 @@
 @XCOPY /E /Y %JS_HOME%\ars\eai                %PJ_EAI%\ars\eai
 @XCOPY /E /Y %JS_HOME%\ars\shader             %PJ_EAI%\ars\shader
 
+@COPY /Y %JS_HOME%\ajs\md5.js                 %PJ_EAI%\ajs\md5.js
 @COPY /Y %JS_HOME%\ajs\release\lzma.js        %PJ_EAI%\ajs\lzma.js
 @COPY /Y %JS_HOME%\ajs\release\lzma_worker.js %PJ_EAI%\ajs\lzma_worker.js
 @COPY /Y %JS_HOME%\ajs\release\me.js          %PJ_EAI%\ajs\me.js

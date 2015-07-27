@@ -25,10 +25,11 @@ MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
    var identityCode = MO.Window.Browser.agent();
    // 创建浏览器信息
    var xbrowser = xroot.create('Browser')
+   MO.Window.Browser.saveConfig(xbrowser);
+   // 创建桌面节点
    var xdesktop = xbrowser.create('Desktop')
    var xcontext2d = xdesktop.create('Context2d');
    var xcontext3d = xdesktop.create('Context3d');
-   MO.Window.Browser.saveConfig(xbrowser);
    // 创建桌面信息
    var hCanvas = MO.Window.Builder.create(hPanel, 'CANVAS');
    var context3d = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas);
