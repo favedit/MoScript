@@ -572,7 +572,6 @@ with(MO){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
-         MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
          event.dispose();
@@ -3486,7 +3485,6 @@ with(MO){
    }
    MO.FUiEditor_onEditChanged = function FUiEditor_onEditChanged(){
       var o = this;
-      MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
       if(g.value == o.value()){
          if(o.changed){
@@ -3501,7 +3499,6 @@ with(MO){
    MO.FUiEditor_onEditEnd = function FUiEditor_onEditEnd(){
       var o = this;
       var s = o._source;
-      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditEnd){
          o.lsnEditEnd.process(o);
@@ -3550,7 +3547,6 @@ with(MO){
    MO.FUiEditor_editBegin = function FUiEditor_editBegin(){
       var o = this;
       var s = o._source;
-      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
       }
@@ -3560,7 +3556,6 @@ with(MO){
    MO.FUiEditor_editCancel = function FUiEditor_editCancel(){
       var o = this;
       var s = o._source;
-      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);

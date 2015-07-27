@@ -1225,6 +1225,8 @@ MO.FWglContext_dispose = function FWglContext_dispose(){
    o._recordSamplers = MO.Lang.Object.dispose(o._recordSamplers);
    // 释放属性
    o._contextAttributes = null;
+   o._parameters = null;
+   o._extensions = null;
    o._activeTextureSlot = null;
    o._handleSamplerS3tc = null;
    o._handleDebugShader = null;

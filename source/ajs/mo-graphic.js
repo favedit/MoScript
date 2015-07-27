@@ -25,7 +25,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -4671,6 +4670,8 @@ MO.FWglContext_dispose = function FWglContext_dispose(){
    o._recordBuffers = MO.Lang.Object.dispose(o._recordBuffers);
    o._recordSamplers = MO.Lang.Object.dispose(o._recordSamplers);
    o._contextAttributes = null;
+   o._parameters = null;
+   o._extensions = null;
    o._activeTextureSlot = null;
    o._handleSamplerS3tc = null;
    o._handleDebugShader = null;
