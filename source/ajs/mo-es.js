@@ -3954,6 +3954,9 @@ MO.MGraphicRenderable = function MGraphicRenderable(o){
    o.process = MO.Method.empty;
    return o;
 }
+MO.Graphic = new function MoGraphicSpace(){
+   return this;
+}
 MO.FFloatStream = function FFloatStream(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._length     = MO.Class.register(o, new MO.AGetter('_length'), 0);
@@ -6245,7 +6248,7 @@ MO.REngine3d.prototype.setup = function REngine3d_setup(){
    var o = this;
    if(!o._setuped){
       o._contexts = new MO.TObjects();
-      MO.RWindow.lsnsUnload.register(o, o.onUnload);
+      MO.Window.lsnsUnload.register(o, o.onUnload);
       o._setuped = true;
    }
 }
@@ -6260,7 +6263,9 @@ MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, h
       context._optionAlpha = attributes.alpha;
       context._optionAntialias = attributes.antialias;
    }
-   context.linkCanvas(hCanvas);
+   if(!context.linkCanvas(hCanvas)){
+      return null;
+   }
    o._contexts.push(context);
    return context;
 }
@@ -6277,6 +6282,7 @@ MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
    }
 }
 MO.REngine3d = new MO.REngine3d();
+MO.Graphic.Context3d = MO.REngine3d;
 MO.Engine3d = MO.REngine3d;
 MO.EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -7855,7 +7861,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          event.message = "Current browser can't support WebGL technique.";
          MO.Window.processDeviceError(event);
          event.dispose();
-         return;
+         return false;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
@@ -7865,7 +7871,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       event.message = "Canvas can't support WebGL technique.";
       MO.Window.processDeviceError(event);
       event.dispose();
-      return;
+      return false;
    }
    var handle = o._handle;
    o.setDepthMode(true, MO.EG3dDepthMode.LessEqual);
@@ -7921,6 +7927,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    if(extension){
       capability.optionShaderSource = true;
    }
+   return true;
 }
 MO.FWglContext_parameter = function FWglContext_parameter(name){
    var parameters = this.parameters();

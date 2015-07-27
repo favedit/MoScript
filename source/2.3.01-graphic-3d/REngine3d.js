@@ -35,7 +35,7 @@ MO.REngine3d.prototype.setup = function REngine3d_setup(){
       // 设置属性
       o._contexts = new MO.TObjects();
       // 注册事件
-      MO.RWindow.lsnsUnload.register(o, o.onUnload);
+      MO.Window.lsnsUnload.register(o, o.onUnload);
       o._setuped = true;
    }
 }
@@ -54,9 +54,9 @@ MO.REngine3d.prototype.contexts = function REngine3d_contexts(){
 // <T>创建渲染环境。</T>
 //
 // @method
-// @param clazz:HtmlCanvasTag 页面画板
+// @param clazz:Function 类对象
 // @param hCanvas:HtmlCanvasTag 页面画板
-// @param attributes:HtmlCanvasTag 页面画板
+// @param attributes:Object 参数集合
 // @return FGraphicContext 绘制环境
 //==========================================================
 MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, hCanvas, attributes){
@@ -69,7 +69,10 @@ MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, h
       context._optionAlpha = attributes.alpha;
       context._optionAntialias = attributes.antialias;
    }
-   context.linkCanvas(hCanvas);
+   // 关联元素
+   if(!context.linkCanvas(hCanvas)){
+      return null;
+   }
    // 保存环境
    o._contexts.push(context);
    return context;
@@ -95,4 +98,5 @@ MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
 //..........................................................
 // 实例化内容
 MO.REngine3d = new MO.REngine3d();
+MO.Graphic.Context3d = MO.REngine3d;
 MO.Engine3d = MO.REngine3d;

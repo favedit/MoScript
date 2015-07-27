@@ -1815,7 +1815,7 @@ MO.REngine3d.prototype.setup = function REngine3d_setup(){
    var o = this;
    if(!o._setuped){
       o._contexts = new MO.TObjects();
-      MO.RWindow.lsnsUnload.register(o, o.onUnload);
+      MO.Window.lsnsUnload.register(o, o.onUnload);
       o._setuped = true;
    }
 }
@@ -1830,7 +1830,9 @@ MO.REngine3d.prototype.createContext = function REngine3d_createContext(clazz, h
       context._optionAlpha = attributes.alpha;
       context._optionAntialias = attributes.antialias;
    }
-   context.linkCanvas(hCanvas);
+   if(!context.linkCanvas(hCanvas)){
+      return null;
+   }
    o._contexts.push(context);
    return context;
 }
@@ -1847,4 +1849,5 @@ MO.REngine3d.prototype.dispose = function REngine3d_dispose(){
    }
 }
 MO.REngine3d = new MO.REngine3d();
+MO.Graphic.Context3d = MO.REngine3d;
 MO.Engine3d = MO.REngine3d;

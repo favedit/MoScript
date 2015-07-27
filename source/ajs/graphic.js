@@ -36,6 +36,9 @@ MO.MGraphicRenderable = function MGraphicRenderable(o){
    o.process = MO.Method.empty;
    return o;
 }
+MO.Graphic = new function MoGraphicSpace(){
+   return this;
+}
 MO.FFloatStream = function FFloatStream(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._length     = MO.Class.register(o, new MO.AGetter('_length'), 0);

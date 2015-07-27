@@ -136,7 +136,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          event.message = "Current browser can't support WebGL technique.";
          MO.Window.processDeviceError(event);
          event.dispose();
-         return;
+         return false;
       }
       o._handle = handle;
       o._contextAttributes = handle.getContextAttributes();
@@ -146,7 +146,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       event.message = "Canvas can't support WebGL technique.";
       MO.Window.processDeviceError(event);
       event.dispose();
-      return;
+      return false;
    }
    var handle = o._handle;
    // 设置状态
@@ -210,6 +210,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    if(extension){
       capability.optionShaderSource = true;
    }
+   return true;
 }
 
 //==========================================================
