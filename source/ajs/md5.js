@@ -22,6 +22,7 @@ function core_md5(x, len)
   var d =  271733878;
   for(var i = 0; i < x.length; i += 16)
   {
+    
     var olda = a;
     var oldb = b;
     var oldc = c;
