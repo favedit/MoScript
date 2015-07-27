@@ -1339,6 +1339,11 @@ MO.SUiDispatchEvent_dump = function SUiDispatchEvent_dump(){
    var o = this;
    return MO.Class.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + MO.Method.name(o.invoke);
 }
+MO.EApplicationConstant = new function EApplicationConstant(){
+   var o = this;
+   o.Resource = "resource";
+   return o;
+}
 MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
@@ -1465,6 +1470,7 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
+   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -1490,6 +1496,7 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
+   MO.Assert.debugNotNull(scene);
    o.selectScene(scene);
    return scene;
 }
@@ -1729,6 +1736,40 @@ MO.FScene_dispose = function FScene_dispose(){
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FTestApplication = function FTestApplication(o){
+   o = MO.Class.inherits(this, o, MO.FApplication);
+   o.setup = MO.FTestApplication_setup;
+   return o;
+}
+MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
+   var o = this;
+   var xroot = new MO.TXmlNode('Configuration');
+   var identityCode = MO.Window.Browser.agent();
+   var xbrowser = xroot.create('Browser')
+   var xdesktop = xbrowser.create('Desktop')
+   var xcontext2d = xdesktop.create('Context2d');
+   var xcontext3d = xdesktop.create('Context3d');
+   MO.Window.Browser.saveConfig(xbrowser);
+   var hCanvas = MO.Window.Builder.create(hPanel, 'CANVAS');
+   var context3d = MO.REngine3d.createContext(MO.FWglContext, hCanvas);
+   if(context3d){
+      var parameter = context3d.parameter('VERSION');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      var parameter = context3d.parameter('SHADING_LANGUAGE_VERSION');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      var parameter = context3d.parameter('UNMASKED_RENDERER_WEBGL');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      context3d.saveConfig(xcontext3d);
+   }
+   xroot.set('identity_code', identityCode);
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+}
 MO.RApplication = function RApplication(){
    var o = this;
    o._workspaces = new MO.TDictionary();
@@ -1761,10 +1802,10 @@ MO.RApplication.prototype.release = function RApplication_release(){
 MO.RApplication = new MO.RApplication();
 MO.RDesktop = function RDesktop(){
    var o = this;
-   o._application   = null;
-   o._workspaces    = new MO.TDictionary();
-   o._thread        = null;
-   o._interval      = 20;
+   o._application = null;
+   o._workspaces  = new MO.TDictionary();
+   o._thread      = null;
+   o._interval    = 20;
    return o;
 }
 MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){
@@ -1809,11 +1850,11 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
 }
 MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
    var o = this;
-   var name = RClass.name(clazz);
+   var name = MO.Class.name(clazz);
    var workspaces = o._workspaces;
    var workspace = workspaces.get(name);
    if(workspace == null){
-      workspace = RClass.create(clazz);
+      workspace = MO.Class.create(clazz);
       workspaces.set(name, workspace);
    }
    return workspace;

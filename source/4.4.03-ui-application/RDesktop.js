@@ -9,12 +9,12 @@ MO.RDesktop = function RDesktop(){
    var o = this;
    //..........................................................
    // @attribute
-   o._application   = null;
+   o._application = null;
    // @attribute
-   o._workspaces    = new MO.TDictionary();
+   o._workspaces  = new MO.TDictionary();
    // @attribute
-   o._thread        = null;
-   o._interval      = 20;
+   o._thread      = null;
+   o._interval    = 20;
    return o;
 }
 
@@ -102,11 +102,11 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
 // =========================================================
 MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
    var o = this;
-   var name = RClass.name(clazz);
+   var name = MO.Class.name(clazz);
    var workspaces = o._workspaces;
    var workspace = workspaces.get(name);
    if(workspace == null){
-      workspace = RClass.create(clazz);
+      workspace = MO.Class.create(clazz);
       workspaces.set(name, workspace);
    }
    return workspace;

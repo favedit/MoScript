@@ -1051,11 +1051,13 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
+   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
+   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1068,7 +1070,9 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
+   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
+   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1126,6 +1130,7 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -3082,6 +3087,7 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
+   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -3417,6 +3423,11 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }

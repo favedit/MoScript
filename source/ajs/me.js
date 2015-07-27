@@ -1051,11 +1051,13 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
+   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
+   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1068,7 +1070,9 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
+   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
+   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1126,6 +1130,7 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -3082,6 +3087,7 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
+   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -3417,6 +3423,11 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -11858,6 +11869,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -12863,6 +12875,7 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
+   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -12870,6 +12883,7 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
+   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -13023,6 +13037,7 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
+   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -14121,6 +14136,7 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
+   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -14780,6 +14796,7 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
+   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -20611,10 +20628,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_setup = function FDesktop_setup(hPanel){
@@ -31430,11 +31449,15 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -31449,6 +31472,8 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
+   MO.Assert.debugNotNull(context);
+   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -32271,6 +32296,7 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
+   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;
@@ -32799,6 +32825,7 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -35030,6 +35057,11 @@ MO.SUiDispatchEvent_dump = function SUiDispatchEvent_dump(){
    var o = this;
    return MO.Class.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + MO.Method.name(o.invoke);
 }
+MO.EApplicationConstant = new function EApplicationConstant(){
+   var o = this;
+   o.Resource = "resource";
+   return o;
+}
 MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
@@ -35156,6 +35188,7 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
+   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -35181,6 +35214,7 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
+   MO.Assert.debugNotNull(scene);
    o.selectScene(scene);
    return scene;
 }
@@ -35420,6 +35454,40 @@ MO.FScene_dispose = function FScene_dispose(){
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FTestApplication = function FTestApplication(o){
+   o = MO.Class.inherits(this, o, MO.FApplication);
+   o.setup = MO.FTestApplication_setup;
+   return o;
+}
+MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
+   var o = this;
+   var xroot = new MO.TXmlNode('Configuration');
+   var identityCode = MO.Window.Browser.agent();
+   var xbrowser = xroot.create('Browser')
+   var xdesktop = xbrowser.create('Desktop')
+   var xcontext2d = xdesktop.create('Context2d');
+   var xcontext3d = xdesktop.create('Context3d');
+   MO.Window.Browser.saveConfig(xbrowser);
+   var hCanvas = MO.Window.Builder.create(hPanel, 'CANVAS');
+   var context3d = MO.REngine3d.createContext(MO.FWglContext, hCanvas);
+   if(context3d){
+      var parameter = context3d.parameter('VERSION');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      var parameter = context3d.parameter('SHADING_LANGUAGE_VERSION');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      var parameter = context3d.parameter('UNMASKED_RENDERER_WEBGL');
+      if(parameter){
+         identityCode += '|' + parameter;
+      }
+      context3d.saveConfig(xcontext3d);
+   }
+   xroot.set('identity_code', identityCode);
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+}
 MO.RApplication = function RApplication(){
    var o = this;
    o._workspaces = new MO.TDictionary();
@@ -35452,10 +35520,10 @@ MO.RApplication.prototype.release = function RApplication_release(){
 MO.RApplication = new MO.RApplication();
 MO.RDesktop = function RDesktop(){
    var o = this;
-   o._application   = null;
-   o._workspaces    = new MO.TDictionary();
-   o._thread        = null;
-   o._interval      = 20;
+   o._application = null;
+   o._workspaces  = new MO.TDictionary();
+   o._thread      = null;
+   o._interval    = 20;
    return o;
 }
 MO.RDesktop.prototype.onProcessEvent = function RDesktop_onProcessEvent(event){
@@ -35500,11 +35568,11 @@ MO.RDesktop.prototype.initialize = function RDesktop_initialize(clazz){
 }
 MO.RDesktop.prototype.findWorkspace = function RDesktop_findWorkspace(clazz){
    var o = this;
-   var name = RClass.name(clazz);
+   var name = MO.Class.name(clazz);
    var workspaces = o._workspaces;
    var workspace = workspaces.get(name);
    if(workspace == null){
-      workspace = RClass.create(clazz);
+      workspace = MO.Class.create(clazz);
       workspaces.set(name, workspace);
    }
    return workspace;
@@ -36297,6 +36365,7 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);

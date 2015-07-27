@@ -148,9 +148,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
-   var system = MO.Console.find(MO.FEaiLogicConsole).system();
-   system.doDeviceAccess();
-   var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);
+   var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    resourceConsole.addLoadListener(o, o.onLoadResource);
    resourceConsole.load('{eai.resource}/resource.dat');
    return true;

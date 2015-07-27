@@ -381,6 +381,7 @@ MO.MUiEditDescriptor_onDataEditEnd = function MUiEditDescriptor_onDataEditEnd(s,
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
+      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -2412,6 +2413,7 @@ MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
    var e = this;
    var ea = e.annotation;
    if(ea._logger){
+      MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.onProcess));
    }
    if(e.sender){
       e.onProcess.call(e.source, e.sender, e);
@@ -2449,6 +2451,7 @@ MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
             ea.attach(e, he);
             if(e.ohProcess){
                if(ea._logger){
+                  MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.ohProcess));
                }
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
