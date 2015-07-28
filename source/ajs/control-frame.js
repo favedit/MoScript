@@ -426,29 +426,29 @@ MO.FUiWindow_onMouseCaptureStop = function FUiWindow_onMouseCaptureStop(event){
 MO.FUiWindow_construct = function FUiWindow_construct(){
    var o = this;
    o.__base.FUiLayout.construct.call(o);
-   o._mousePosition = new SPoint2();
-   o._mouseControl = new SPoint2();
-   RConsole.find(FMouseConsole).register(o);
+   o._mousePosition = new MO.SPoint2();
+   o._mouseControl = new MO.SPoint2();
+   MO.Console.find(MO.FMouseConsole).register(o);
 }
 MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
    var o = this;
    o._statusVisible = visible;
-   var hPanel = o.panel(EPanel.Container);
+   var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
-      RWindow._hContainer.appendChild(hPanel);
+      MO.Window._hContainer.appendChild(hPanel);
    }else{
-      RWindow._hContainer.removeChild(hPanel);
+      MO.Window._hContainer.removeChild(hPanel);
    }
 }
 MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
    var o = this;
    o.__base.FUiLayout.setLabel.call(o, label)
-   RHtml.textSet(o._hTitle, o._label);
+   MO.RHtml.textSet(o._hTitle, o._label);
 }
 MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
    var o = this;
    o.show();
-   if(positionCd == EUiPosition.Center){
+   if(positionCd == MO.EUiPosition.Center){
       var width = o._hPanel.offsetWidth;
       var height = o._hPanel.offsetHeight;
       var left = (window.document.body.offsetWidth - width) / 2;

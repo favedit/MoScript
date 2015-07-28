@@ -88,7 +88,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
    var xframe = xroot.create('Frame');
    xframe.set('name', name);
    var url = MO.RUiService.url(o._service);
-   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
    var xframes = xresult.nodes();
    var count = xframes.count();
    for(var i = 0; i < count; i++){

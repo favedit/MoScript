@@ -789,10 +789,10 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o._rateModule = MO.Class.create(MO.FEaiRateResourceModule);
    o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
    var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
-   cityConsole.setResourceConsole(o);
    o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
    o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
    o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
+   cityConsole.setResourceConsole(o);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
    thread.addProcessListener(o, o.onProcess);
@@ -835,22 +835,6 @@ MO.FEaiResourceModule_construct = function FEaiResourceModule_construct(){
 MO.FEaiResourceModule_dispose = function FEaiResourceModule_dispose(){
    var o = this;
    o.__base.FObject.dispose.call(o);
-}
-MO.FEaiResourcePackage = function FEaiResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._code       = MO.Class.register(o, new MO.AGetter('_code'));
-   o.unserialize = MO.FEaiResourcePackage_unserialize;
-   o.processLoad = MO.FEaiResourcePackage_processLoad;
-   return o;
-}
-MO.FEaiResourcePackage_unserialize = function FEaiResourcePackage_unserialize(input){
-   var o = this;
-   o._code = input.readUint16();
-}
-MO.FEaiResourcePackage_processLoad = function FEaiResourcePackage_processLoad(){
-   var o = this;
-   o._code = input.readUint16();
-   o._cityCode = input.readUint16();
 }
 with(MO){
    MO.FEaiLogic = function FEaiLogic(o){

@@ -40637,7 +40637,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
    var xframe = xroot.create('Frame');
    xframe.set('name', name);
    var url = MO.RUiService.url(o._service);
-   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
    var xframes = xresult.nodes();
    var count = xframes.count();
    for(var i = 0; i < count; i++){
@@ -55694,29 +55694,29 @@ MO.FUiWindow_onMouseCaptureStop = function FUiWindow_onMouseCaptureStop(event){
 MO.FUiWindow_construct = function FUiWindow_construct(){
    var o = this;
    o.__base.FUiLayout.construct.call(o);
-   o._mousePosition = new SPoint2();
-   o._mouseControl = new SPoint2();
-   RConsole.find(FMouseConsole).register(o);
+   o._mousePosition = new MO.SPoint2();
+   o._mouseControl = new MO.SPoint2();
+   MO.Console.find(MO.FMouseConsole).register(o);
 }
 MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
    var o = this;
    o._statusVisible = visible;
-   var hPanel = o.panel(EPanel.Container);
+   var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
-      RWindow._hContainer.appendChild(hPanel);
+      MO.Window._hContainer.appendChild(hPanel);
    }else{
-      RWindow._hContainer.removeChild(hPanel);
+      MO.Window._hContainer.removeChild(hPanel);
    }
 }
 MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
    var o = this;
    o.__base.FUiLayout.setLabel.call(o, label)
-   RHtml.textSet(o._hTitle, o._label);
+   MO.RHtml.textSet(o._hTitle, o._label);
 }
 MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
    var o = this;
    o.show();
-   if(positionCd == EUiPosition.Center){
+   if(positionCd == MO.EUiPosition.Center){
       var width = o._hPanel.offsetWidth;
       var height = o._hPanel.offsetHeight;
       var left = (window.document.body.offsetWidth - width) / 2;
@@ -78664,10 +78664,10 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o._rateModule = MO.Class.create(MO.FEaiRateResourceModule);
    o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
    var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
-   cityConsole.setResourceConsole(o);
    o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
    o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
    o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
+   cityConsole.setResourceConsole(o);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
    thread.addProcessListener(o, o.onProcess);
@@ -78710,22 +78710,6 @@ MO.FEaiResourceModule_construct = function FEaiResourceModule_construct(){
 MO.FEaiResourceModule_dispose = function FEaiResourceModule_dispose(){
    var o = this;
    o.__base.FObject.dispose.call(o);
-}
-MO.FEaiResourcePackage = function FEaiResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._code       = MO.Class.register(o, new MO.AGetter('_code'));
-   o.unserialize = MO.FEaiResourcePackage_unserialize;
-   o.processLoad = MO.FEaiResourcePackage_processLoad;
-   return o;
-}
-MO.FEaiResourcePackage_unserialize = function FEaiResourcePackage_unserialize(input){
-   var o = this;
-   o._code = input.readUint16();
-}
-MO.FEaiResourcePackage_processLoad = function FEaiResourcePackage_processLoad(){
-   var o = this;
-   o._code = input.readUint16();
-   o._cityCode = input.readUint16();
 }
 with(MO){
    MO.FEaiLogic = function FEaiLogic(o){

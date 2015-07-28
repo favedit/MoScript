@@ -74,7 +74,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
    xframe.set('name', name);
    // 发送内容
    var url = MO.RUiService.url(o._service);
-   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
    // 检查数据结果
    //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
    //   return null;

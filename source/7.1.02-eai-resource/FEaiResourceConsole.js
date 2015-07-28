@@ -96,10 +96,11 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o._rateModule = MO.Class.create(MO.FEaiRateResourceModule);
    o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
    var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
-   cityConsole.setResourceConsole(o);
    o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
    o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
    o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
+   // 设置属性
+   cityConsole.setResourceConsole(o);
    // 创建线程
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);

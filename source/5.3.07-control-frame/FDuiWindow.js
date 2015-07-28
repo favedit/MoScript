@@ -155,10 +155,10 @@ MO.FUiWindow_construct = function FUiWindow_construct(){
    var o = this;
    o.__base.FUiLayout.construct.call(o);
    // 设置属性
-   o._mousePosition = new SPoint2();
-   o._mouseControl = new SPoint2();
+   o._mousePosition = new MO.SPoint2();
+   o._mouseControl = new MO.SPoint2();
    // 注册鼠标拖拽
-   RConsole.find(FMouseConsole).register(o);
+   MO.Console.find(MO.FMouseConsole).register(o);
 }
 
 //==========================================================
@@ -171,11 +171,11 @@ MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
    var o = this;
    o._statusVisible = visible;
    // 设置控件底板的可见性
-   var hPanel = o.panel(EPanel.Container);
+   var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
-      RWindow._hContainer.appendChild(hPanel);
+      MO.Window._hContainer.appendChild(hPanel);
    }else{
-      RWindow._hContainer.removeChild(hPanel);
+      MO.Window._hContainer.removeChild(hPanel);
    }
 }
 
@@ -189,7 +189,7 @@ MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
    var o = this;
    o.__base.FUiLayout.setLabel.call(o, label)
    // 设置内容
-   RHtml.textSet(o._hTitle, o._label);
+   MO.RHtml.textSet(o._hTitle, o._label);
 }
 
 //==========================================================
@@ -205,7 +205,7 @@ MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
    // 显示处理
    o.show();
    // 设置位置
-   if(positionCd == EUiPosition.Center){
+   if(positionCd == MO.EUiPosition.Center){
       var width = o._hPanel.offsetWidth;
       var height = o._hPanel.offsetHeight;
       var left = (window.document.body.offsetWidth - width) / 2;
