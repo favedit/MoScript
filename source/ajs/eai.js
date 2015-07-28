@@ -42,39 +42,6 @@ MO.Eai = new function FEai(){
    o.Canvas      = null;
    return o;
 }
-with(MO){
-   MO.FEaiTable = function FEaiTable(o){
-      o = RClass.inherits(this, o, FObject);
-      o._headLineCount = 0;
-      o._hTable        = null
-      o.createRow      = FEaiTable_createRow;
-      o.setDataCount   = FEaiTable_setDataCount;
-      o.dataRow        = FEaiTable_dataRow;
-      return o;
-   }
-   MO.FEaiTable_createRow = function FEaiTable_createRow(){
-      var o = this;
-   }
-   MO.FEaiTable_setDataCount = function FEaiTable_setDataCount(count){
-      var o = this;
-      var headLineCount = o._headLineCount;
-      var total = headLineCount + count;
-      var rowCount = o._hTable.rows.length;
-      for(var i = rowCount; i < total; i++){
-         o.createRow();
-      }
-      var rowCount = o._hTable.rows.length;
-      for(var i = headLineCount; i < rowCount; i++){
-         var hRow = o._hTable.rows[i];
-         hRow.style.display = (i - headLineCount < count) ? null : 'none';
-      }
-   }
-   MO.FEaiTable_dataRow = function FEaiTable_dataRow(index){
-      var o = this;
-      var rowIndex = o._headLineCount + index;
-      return o._hTable.rows[rowIndex];
-  }
-}
 MO.FEaiCardResource = function FEaiCardResource(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code       = MO.Class.register(o, new MO.AGetter('_code'));
@@ -203,103 +170,95 @@ MO.FEaiCityResourceModule_dispose = function FEaiCityResourceModule_dispose(){
    o._citys = MO.Lang.Object.dispose(o._citys);
    o.__base.FEaiResourceModule.dispose.call(o);
 }
-with(MO){
-   MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentDay   = RClass.register(o, new AGetSet('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o.unserialize      = FEaiHistoryCityResource_unserialize;
-      return o;
+MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetSet('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o.unserialize      = MO.FEaiHistoryCityResource_unserialize;
+   return o;
+}
+MO.FEaiHistoryCityResource_unserialize = function FEaiHistoryCityResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
+}
+MO.FEaiHistoryDateResource = function FEaiHistoryDateResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetter('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetter('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
+   o._provinces       = MO.Class.register(o, new MO.AGetter('_provinces'));
+   o._citys           = MO.Class.register(o, new MO.AGetter('_citys'));
+   o.construct        = MO.FEaiHistoryDateResource_construct;
+   o.unserialize      = MO.FEaiHistoryDateResource_unserialize;
+   o.dispose          = MO.FEaiHistoryDateResource_dispose;
+   return o;
+}
+MO.FEaiHistoryDateResource_construct = function FEaiHistoryDateResource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._provinces = new MO.TDictionary();
+   o._citys = new MO.TDictionary();
+}
+MO.FEaiHistoryDateResource_unserialize = function FEaiHistoryDateResource_unserialize(input){
+   var o = this;
+   o._code = input.readString();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
+   var provinces = o._provinces;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var province = MO.Class.create(MO.FEaiHistoryProvinceResource);
+      province.unserialize(input);
+      provinces.set(province.code(), province);
    }
-   MO.FEaiHistoryCityResource_unserialize = function FEaiHistoryCityResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
+   var citys = o._citys;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var city = MO.Class.create(MO.FEaiHistoryCityResource);
+      city.unserialize(input);
+      citys.set(city.code(), city);
    }
 }
-with(MO){
-   MO.FEaiHistoryDateResource = function FEaiHistoryDateResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetter('_code'));
-      o._investmentDay   = RClass.register(o, new AGetter('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetter('_investmentTotal'));
-      o._provinces       = RClass.register(o, new AGetter('_provinces'));
-      o._citys           = RClass.register(o, new AGetter('_citys'));
-      o.construct        = FEaiHistoryDateResource_construct;
-      o.unserialize      = FEaiHistoryDateResource_unserialize;
-      o.dispose          = FEaiHistoryDateResource_dispose;
-      return o;
-   }
-   MO.FEaiHistoryDateResource_construct = function FEaiHistoryDateResource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._provinces = new TDictionary();
-      o._citys = new TDictionary();
-   }
-   MO.FEaiHistoryDateResource_unserialize = function FEaiHistoryDateResource_unserialize(input){
-      var o = this;
-      o._code = input.readString();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
-      var provinces = o._provinces;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var province = RClass.create(FEaiHistoryProvinceResource);
-         province.unserialize(input);
-         provinces.set(province.code(), province);
-      }
-      var citys = o._citys;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var city = RClass.create(FEaiHistoryCityResource);
-         city.unserialize(input);
-         citys.set(city.code(), city);
-      }
-   }
-   MO.FEaiHistoryDateResource_dispose = function FEaiHistoryDateResource_dispose(){
-      var o = this;
-      o._provinces = RObject.dispose(o._provinces);
-      o._citys = RObject.dispose(o._citys);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FEaiHistoryDateResource_dispose = function FEaiHistoryDateResource_dispose(){
+   var o = this;
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FEaiHistoryMilestoneResource = function FEaiHistoryMilestoneResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._dayCount        = RClass.register(o, new AGetSet('_dayCount'));
-      o._companyCount    = RClass.register(o, new AGetSet('_companyCount'));
-      o._staffCount      = RClass.register(o, new AGetSet('_staffCount'));
-      o.unserialize      = FEaiHistoryMilestoneResource_unserialize;
-      return o;
-   }
-   MO.FEaiHistoryMilestoneResource_unserialize = function FEaiHistoryMilestoneResource_unserialize(input){
-      var o = this;
-      o._code = input.readString();
-      o._investmentTotal = input.readFloat();
-      o._dayCount = input.readUint16();
-      o._companyCount = input.readUint16();
-      o._staffCount = input.readUint16();
-   }
+MO.FEaiHistoryMilestoneResource = function FEaiHistoryMilestoneResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o._dayCount        = MO.Class.register(o, new MO.AGetSet('_dayCount'));
+   o._companyCount    = MO.Class.register(o, new MO.AGetSet('_companyCount'));
+   o._staffCount      = MO.Class.register(o, new MO.AGetSet('_staffCount'));
+   o.unserialize      = MO.FEaiHistoryMilestoneResource_unserialize;
+   return o;
 }
-with(MO){
-   MO.FEaiHistoryProvinceResource = function FEaiHistoryProvinceResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentDay   = RClass.register(o, new AGetSet('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o.unserialize      = FEaiHistoryProvinceResource_unserialize;
-      return o;
-   }
-   MO.FEaiHistoryProvinceResource_unserialize = function FEaiHistoryProvinceResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
-   }
+MO.FEaiHistoryMilestoneResource_unserialize = function FEaiHistoryMilestoneResource_unserialize(input){
+   var o = this;
+   o._code = input.readString();
+   o._investmentTotal = input.readFloat();
+   o._dayCount = input.readUint16();
+   o._companyCount = input.readUint16();
+   o._staffCount = input.readUint16();
+}
+MO.FEaiHistoryProvinceResource = function FEaiHistoryProvinceResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetSet('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o.unserialize      = MO.FEaiHistoryProvinceResource_unserialize;
+   return o;
+}
+MO.FEaiHistoryProvinceResource_unserialize = function FEaiHistoryProvinceResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
 }
 MO.FEaiHistoryResourceModule = function FEaiHistoryResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule, MO.MListener);
@@ -628,25 +587,23 @@ MO.FEaiMapWorldResource_dispose = function FEaiMapWorldResource_dispose(){
    o._data = MO.Lang.Object.dispose(o._data);
    o.__base.FResourcePackage.dispose.call(o);
 }
-with(MO){
-   MO.FEaiProvinceResource = function FEaiProvinceResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code         = RClass.register(o, new AGetter('_code'));
-      o._name         = RClass.register(o, new AGetter('_name'));
-      o._label        = RClass.register(o, new AGetter('_label'));
-      o._typeCd       = RClass.register(o, new AGetter('_typeCd'));
-      o._displayOrder = RClass.register(o, new AGetter('_displayOrder'));
-      o.unserialize = FEaiProvinceResource_unserialize;
-      return o;
-   }
-   MO.FEaiProvinceResource_unserialize = function FEaiProvinceResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._name = input.readString();
-      o._label = input.readString();
-      o._typeCd = input.readString();
-      o._displayOrder = input.readUint16();
-   }
+MO.FEaiProvinceResource = function FEaiProvinceResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code         = MO.Class.register(o, new MO.AGetter('_code'));
+   o._name         = MO.Class.register(o, new MO.AGetter('_name'));
+   o._label        = MO.Class.register(o, new MO.AGetter('_label'));
+   o._typeCd       = MO.Class.register(o, new MO.AGetter('_typeCd'));
+   o._displayOrder = MO.Class.register(o, new MO.AGetter('_displayOrder'));
+   o.unserialize   = MO.FEaiProvinceResource_unserialize;
+   return o;
+}
+MO.FEaiProvinceResource_unserialize = function FEaiProvinceResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._name = input.readString();
+   o._label = input.readString();
+   o._typeCd = input.readString();
+   o._displayOrder = input.readUint16();
 }
 MO.FEaiProvinceResourceModule = function FEaiProvinceResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
@@ -941,24 +898,22 @@ with(MO){
       return connection;
    }
 }
-with(MO){
-   MO.FEaiLogicAchievement = function FEaiLogicAchievement(o){
-      o = RClass.inherits(this, o, FEaiLogic);
-      o._code   = 'achievement';
-      o.doGroup = FEaiLogicAchievement_doGroup;
-      o.doSort  = FEaiLogicAchievement_doSort;
-      o.doQuery = FEaiLogicAchievement_doQuery;
-      return o;
-   }
-   MO.FEaiLogicAchievement_doGroup = function FEaiLogicAchievement_doGroup(owner, callback){
-      return this.send('group', null, owner, callback);
-   }
-   MO.FEaiLogicAchievement_doSort = function FEaiLogicAchievement_doSort(owner, callback){
-      return this.send('sort', null, owner, callback);
-   }
-   MO.FEaiLogicAchievement_doQuery = function FEaiLogicAchievement_doQuery(owner, callback){
-      return this.send('query', null, owner, callback);
-   }
+MO.FEaiLogicAchievement = function FEaiLogicAchievement(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code   = 'achievement';
+   o.doGroup = MO.FEaiLogicAchievement_doGroup;
+   o.doSort  = MO.FEaiLogicAchievement_doSort;
+   o.doQuery = MO.FEaiLogicAchievement_doQuery;
+   return o;
+}
+MO.FEaiLogicAchievement_doGroup = function FEaiLogicAchievement_doGroup(owner, callback){
+   return this.send('group', null, owner, callback);
+}
+MO.FEaiLogicAchievement_doSort = function FEaiLogicAchievement_doSort(owner, callback){
+   return this.send('sort', null, owner, callback);
+}
+MO.FEaiLogicAchievement_doQuery = function FEaiLogicAchievement_doQuery(owner, callback){
+   return this.send('query', null, owner, callback);
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -1000,84 +955,80 @@ MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    o._statistics = MO.RObject.dispose(o._statistics);
    o.__base.FConsole.dispose.call(o);
 }
-with(MO){
-   MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
-      o = RClass.inherits(this, o, FEaiLogic);
-      o._code   = 'organization';
-      o._pIdMIndexDict = RClass.register(o, new AGetter('_pIdMIndexDict'));
-      o._cityIdNameDict = RClass.register(o, new AGetter('_cityIdNameDict'));
-      o._provinceColors = RClass.register(o, new AGetter('_provinceColors'));
-      o.doFetch = FEaiLogicOrganization_doFetch;
-      o.getMeshIndex = FEaiLogicOrganization_getMeshIndex;
-      o.construct = FEaiLogicOrganization_construct;
-      return o;
-   }
-   MO.FEaiLogicOrganization_construct = function FEaiLogicOrganization_construct(){
-      var o = this;
-      o.__base.FEaiLogic.construct.call(o);
-      var pmDict = o._pIdMIndexDict = new TDictionary();
-      pmDict.set(11, 6);
-      pmDict.set(12, 7);
-      pmDict.set(13, 5);
-      pmDict.set(14, 8);
-      pmDict.set(15, 2);
-      pmDict.set(21, 4);
-      pmDict.set(22, 3);
-      pmDict.set(23, 1);
-      pmDict.set(31, -1);
-      pmDict.set(32, 21);
-      pmDict.set(33, 22);
-      pmDict.set(34, 20);
-      pmDict.set(35, 30);
-      pmDict.set(36, 23);
-      pmDict.set(37, 9);
-      pmDict.set(41, 10);
-      pmDict.set(42, 19);
-      pmDict.set(43, 29);
-      pmDict.set(44, 24);
-      pmDict.set(45, 25);
-      pmDict.set(46, 0);
-      pmDict.set(50, 18);
-      pmDict.set(51, 17);
-      pmDict.set(52, 26);
-      pmDict.set(53, 27);
-      pmDict.set(54, 16);
-      pmDict.set(61, 12);
-      pmDict.set(62, 13);
-      pmDict.set(63, 15);
-      pmDict.set(64, 11);
-      pmDict.set(65, 14);
-      pmDict.set(71, 28);
-      pmDict.set(81, -1);
-      pmDict.set(82, -1);
-      var cinDict = o._cityIdNameDict = new TDictionary();
-      var colors = o._provinceColors = new TObjects();
-      colors.push(new SColor4(0.25, 0.50, 0.60));
-      colors.push(new SColor4(0.30, 0.60, 0.75));
-      colors.push(new SColor4(0.35, 0.70, 0.80));
-      colors.push(new SColor4(0.40, 0.75, 0.85));
-      colors.push(new SColor4(0.45, 0.85, 1.00));
-   }
-   MO.FEaiLogicOrganization_doFetch = function FEaiLogicOrganization_doFetch(owner, callback){
-      return this.send('fetch', null, owner, callback);
-   }
-   MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getMeshIndex(provinceId){
-      return this.pIdMIndexDict().value(provinceId);
-   }
-   MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getCityName(cityId) {
-      return this.cityIdNameDict().value(cityId);
-   }
+MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code           = 'organization';
+   o._pIdMIndexDict  = MO.Class.register(o, new MO.AGetter('_pIdMIndexDict'));
+   o._cityIdNameDict = MO.Class.register(o, new MO.AGetter('_cityIdNameDict'));
+   o._provinceColors = MO.Class.register(o, new MO.AGetter('_provinceColors'));
+   o.doFetch         = MO.FEaiLogicOrganization_doFetch;
+   o.getMeshIndex    = MO.FEaiLogicOrganization_getMeshIndex;
+   o.construct       = MO.FEaiLogicOrganization_construct;
+   return o;
 }
-with(MO){
-   MO.FEaiLogicSchedule = function FEaiLogicSchedule(o){
-      o = RClass.inherits(this, o, FEaiLogic);
-      o._code   = 'schedule';
-      o.doFetch = FEaiLogicSchedule_doFetch;
-      return o;
-   }
-   MO.FEaiLogicSchedule_doFetch = function FEaiLogicSchedule_doFetch(owner, callback){
-      return this.send('fetch', null, owner, callback);
-   }
+MO.FEaiLogicOrganization_construct = function FEaiLogicOrganization_construct(){
+   var o = this;
+   o.__base.FEaiLogic.construct.call(o);
+   var pmDict = o._pIdMIndexDict = new MO.TDictionary();
+   pmDict.set(11, 6);
+   pmDict.set(12, 7);
+   pmDict.set(13, 5);
+   pmDict.set(14, 8);
+   pmDict.set(15, 2);
+   pmDict.set(21, 4);
+   pmDict.set(22, 3);
+   pmDict.set(23, 1);
+   pmDict.set(31, -1);
+   pmDict.set(32, 21);
+   pmDict.set(33, 22);
+   pmDict.set(34, 20);
+   pmDict.set(35, 30);
+   pmDict.set(36, 23);
+   pmDict.set(37, 9);
+   pmDict.set(41, 10);
+   pmDict.set(42, 19);
+   pmDict.set(43, 29);
+   pmDict.set(44, 24);
+   pmDict.set(45, 25);
+   pmDict.set(46, 0);
+   pmDict.set(50, 18);
+   pmDict.set(51, 17);
+   pmDict.set(52, 26);
+   pmDict.set(53, 27);
+   pmDict.set(54, 16);
+   pmDict.set(61, 12);
+   pmDict.set(62, 13);
+   pmDict.set(63, 15);
+   pmDict.set(64, 11);
+   pmDict.set(65, 14);
+   pmDict.set(71, 28);
+   pmDict.set(81, -1);
+   pmDict.set(82, -1);
+   var cinDict = o._cityIdNameDict = new MO.TDictionary();
+   var colors = o._provinceColors = new MO.TObjects();
+   colors.push(new MO.SColor4(0.25, 0.50, 0.60));
+   colors.push(new MO.SColor4(0.30, 0.60, 0.75));
+   colors.push(new MO.SColor4(0.35, 0.70, 0.80));
+   colors.push(new MO.SColor4(0.40, 0.75, 0.85));
+   colors.push(new MO.SColor4(0.45, 0.85, 1.00));
+}
+MO.FEaiLogicOrganization_doFetch = function FEaiLogicOrganization_doFetch(owner, callback){
+   return this.send('fetch', null, owner, callback);
+}
+MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getMeshIndex(provinceId){
+   return this.pIdMIndexDict().value(provinceId);
+}
+MO.FEaiLogicOrganization_getMeshIndex = function FEaiLogicOrganization_getCityName(cityId) {
+   return this.cityIdNameDict().value(cityId);
+}
+MO.FEaiLogicSchedule = function FEaiLogicSchedule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._code   = 'schedule';
+   o.doFetch = MO.FEaiLogicSchedule_doFetch;
+   return o;
+}
+MO.FEaiLogicSchedule_doFetch = function FEaiLogicSchedule_doFetch(owner, callback){
+   return this.send('fetch', null, owner, callback);
 }
 MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
@@ -6333,14 +6284,12 @@ MO.FEaiScene_dispose = function FEaiScene_dispose(){
    o._guiManager = MO.RObject.dispose(o._guiManager);
    o.__base.FScene.dispose.call(o);
 }
-with(MO){
-   MO.FEaiChapter = function FEaiChapter(o){
-      o = RClass.inherits(this, o, FChapter);
-      return o;
-   }
+MO.FEaiChapter = function FEaiChapter(o){
+   o = MO.Class.inherits(this, o, MO.FChapter);
+   return o;
 }
 MO.FEaiChartChapter = function FEaiChartChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code         = MO.EEaiChapter.Chart;
    o._sceneTotal   = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
    o._sceneHistory = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
@@ -6358,16 +6307,16 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 }
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
-   var scene = o._sceneTotal = MO.RClass.create(MO.FEaiChartTotalScene);
+   var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   var scene = o._sceneHistory = MO.Class.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneLive = MO.RClass.create(MO.FEaiChartLiveScene);
+   var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneWorld = MO.RClass.create(MO.FEaiChartWorldScene);
+   var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }
@@ -6380,12 +6329,12 @@ MO.FEaiChartChapter_dispose = function FEaiChartChapter_dispose(){
    o.__base.FEaiChapter.dispose.call(o);
 }
 MO.FEaiLoadingChapter = function FEaiLoadingChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Loading;
    return o;
 }
 MO.FEaiLoginChapter = function FEaiLoginChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Login;
    return o;
 }
@@ -6408,16 +6357,16 @@ MO.FEaiSceneChapter_construct = function FEaiSceneChapter_construct(){
 }
 MO.FEaiSceneChapter_setup = function FEaiSceneChapter_setup(){
    var o = this;
-   var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   var scene = o._sceneCountry = MO.Class.create(MO.FEaiCountryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   var scene = o._sceneGroup = MO.Class.create(MO.FEaiGroupScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   var scene = o._sceneGroupReport = MO.Class.create(MO.FEaiGroupReportScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   var scene = o._sceneCompany = MO.Class.create(MO.FEaiCompanyScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }

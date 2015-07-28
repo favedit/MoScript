@@ -44,19 +44,19 @@ MO.FEaiSceneChapter_construct = function FEaiSceneChapter_construct(){
 MO.FEaiSceneChapter_setup = function FEaiSceneChapter_setup(){
    var o = this;
    // 创建国家场景
-   var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   var scene = o._sceneCountry = MO.Class.create(MO.FEaiCountryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建集团场景
-   var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   var scene = o._sceneGroup = MO.Class.create(MO.FEaiGroupScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建集团报告场景
-   var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   var scene = o._sceneGroupReport = MO.Class.create(MO.FEaiGroupReportScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建公司场景
-   var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   var scene = o._sceneCompany = MO.Class.create(MO.FEaiCompanyScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }

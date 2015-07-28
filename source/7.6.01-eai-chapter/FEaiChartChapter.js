@@ -6,7 +6,7 @@
 // @history 150604
 //==========================================================
 MO.FEaiChartChapter = function FEaiChartChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
    o._code         = MO.EEaiChapter.Chart;
@@ -44,19 +44,19 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
    // 创建图表总计
-   var scene = o._sceneTotal = MO.RClass.create(MO.FEaiChartTotalScene);
+   var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建图表历史
-   var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   var scene = o._sceneHistory = MO.Class.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建图表即时
-   var scene = o._sceneLive = MO.RClass.create(MO.FEaiChartLiveScene);
+   var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建图表世界
-   var scene = o._sceneWorld = MO.RClass.create(MO.FEaiChartWorldScene);
+   var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }

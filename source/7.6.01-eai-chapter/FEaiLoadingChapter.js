@@ -6,7 +6,7 @@
 // @history 150604
 //==========================================================
 MO.FEaiLoadingChapter = function FEaiLoadingChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
    o._code = MO.EEaiChapter.Loading;

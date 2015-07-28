@@ -126,103 +126,95 @@ MO.FEaiCityResourceModule_dispose = function FEaiCityResourceModule_dispose(){
    o._citys = MO.Lang.Object.dispose(o._citys);
    o.__base.FEaiResourceModule.dispose.call(o);
 }
-with(MO){
-   MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentDay   = RClass.register(o, new AGetSet('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o.unserialize      = FEaiHistoryCityResource_unserialize;
-      return o;
+MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetSet('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o.unserialize      = MO.FEaiHistoryCityResource_unserialize;
+   return o;
+}
+MO.FEaiHistoryCityResource_unserialize = function FEaiHistoryCityResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
+}
+MO.FEaiHistoryDateResource = function FEaiHistoryDateResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetter('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetter('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
+   o._provinces       = MO.Class.register(o, new MO.AGetter('_provinces'));
+   o._citys           = MO.Class.register(o, new MO.AGetter('_citys'));
+   o.construct        = MO.FEaiHistoryDateResource_construct;
+   o.unserialize      = MO.FEaiHistoryDateResource_unserialize;
+   o.dispose          = MO.FEaiHistoryDateResource_dispose;
+   return o;
+}
+MO.FEaiHistoryDateResource_construct = function FEaiHistoryDateResource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._provinces = new MO.TDictionary();
+   o._citys = new MO.TDictionary();
+}
+MO.FEaiHistoryDateResource_unserialize = function FEaiHistoryDateResource_unserialize(input){
+   var o = this;
+   o._code = input.readString();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
+   var provinces = o._provinces;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var province = MO.Class.create(MO.FEaiHistoryProvinceResource);
+      province.unserialize(input);
+      provinces.set(province.code(), province);
    }
-   MO.FEaiHistoryCityResource_unserialize = function FEaiHistoryCityResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
+   var citys = o._citys;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var city = MO.Class.create(MO.FEaiHistoryCityResource);
+      city.unserialize(input);
+      citys.set(city.code(), city);
    }
 }
-with(MO){
-   MO.FEaiHistoryDateResource = function FEaiHistoryDateResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetter('_code'));
-      o._investmentDay   = RClass.register(o, new AGetter('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetter('_investmentTotal'));
-      o._provinces       = RClass.register(o, new AGetter('_provinces'));
-      o._citys           = RClass.register(o, new AGetter('_citys'));
-      o.construct        = FEaiHistoryDateResource_construct;
-      o.unserialize      = FEaiHistoryDateResource_unserialize;
-      o.dispose          = FEaiHistoryDateResource_dispose;
-      return o;
-   }
-   MO.FEaiHistoryDateResource_construct = function FEaiHistoryDateResource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._provinces = new TDictionary();
-      o._citys = new TDictionary();
-   }
-   MO.FEaiHistoryDateResource_unserialize = function FEaiHistoryDateResource_unserialize(input){
-      var o = this;
-      o._code = input.readString();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
-      var provinces = o._provinces;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var province = RClass.create(FEaiHistoryProvinceResource);
-         province.unserialize(input);
-         provinces.set(province.code(), province);
-      }
-      var citys = o._citys;
-      var count = input.readInt32();
-      for(var i = 0; i < count; i++){
-         var city = RClass.create(FEaiHistoryCityResource);
-         city.unserialize(input);
-         citys.set(city.code(), city);
-      }
-   }
-   MO.FEaiHistoryDateResource_dispose = function FEaiHistoryDateResource_dispose(){
-      var o = this;
-      o._provinces = RObject.dispose(o._provinces);
-      o._citys = RObject.dispose(o._citys);
-      o.__base.FObject.dispose.call(o);
-   }
+MO.FEaiHistoryDateResource_dispose = function FEaiHistoryDateResource_dispose(){
+   var o = this;
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FEaiHistoryMilestoneResource = function FEaiHistoryMilestoneResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o._dayCount        = RClass.register(o, new AGetSet('_dayCount'));
-      o._companyCount    = RClass.register(o, new AGetSet('_companyCount'));
-      o._staffCount      = RClass.register(o, new AGetSet('_staffCount'));
-      o.unserialize      = FEaiHistoryMilestoneResource_unserialize;
-      return o;
-   }
-   MO.FEaiHistoryMilestoneResource_unserialize = function FEaiHistoryMilestoneResource_unserialize(input){
-      var o = this;
-      o._code = input.readString();
-      o._investmentTotal = input.readFloat();
-      o._dayCount = input.readUint16();
-      o._companyCount = input.readUint16();
-      o._staffCount = input.readUint16();
-   }
+MO.FEaiHistoryMilestoneResource = function FEaiHistoryMilestoneResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o._dayCount        = MO.Class.register(o, new MO.AGetSet('_dayCount'));
+   o._companyCount    = MO.Class.register(o, new MO.AGetSet('_companyCount'));
+   o._staffCount      = MO.Class.register(o, new MO.AGetSet('_staffCount'));
+   o.unserialize      = MO.FEaiHistoryMilestoneResource_unserialize;
+   return o;
 }
-with(MO){
-   MO.FEaiHistoryProvinceResource = function FEaiHistoryProvinceResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code            = RClass.register(o, new AGetSet('_code'));
-      o._investmentDay   = RClass.register(o, new AGetSet('_investmentDay'));
-      o._investmentTotal = RClass.register(o, new AGetSet('_investmentTotal'));
-      o.unserialize      = FEaiHistoryProvinceResource_unserialize;
-      return o;
-   }
-   MO.FEaiHistoryProvinceResource_unserialize = function FEaiHistoryProvinceResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._investmentDay = input.readFloat();
-      o._investmentTotal = input.readFloat();
-   }
+MO.FEaiHistoryMilestoneResource_unserialize = function FEaiHistoryMilestoneResource_unserialize(input){
+   var o = this;
+   o._code = input.readString();
+   o._investmentTotal = input.readFloat();
+   o._dayCount = input.readUint16();
+   o._companyCount = input.readUint16();
+   o._staffCount = input.readUint16();
+}
+MO.FEaiHistoryProvinceResource = function FEaiHistoryProvinceResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code            = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._investmentDay   = MO.Class.register(o, new MO.AGetSet('_investmentDay'));
+   o._investmentTotal = MO.Class.register(o, new MO.AGetSet('_investmentTotal'));
+   o.unserialize      = MO.FEaiHistoryProvinceResource_unserialize;
+   return o;
+}
+MO.FEaiHistoryProvinceResource_unserialize = function FEaiHistoryProvinceResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._investmentDay = input.readFloat();
+   o._investmentTotal = input.readFloat();
 }
 MO.FEaiHistoryResourceModule = function FEaiHistoryResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule, MO.MListener);
@@ -551,25 +543,23 @@ MO.FEaiMapWorldResource_dispose = function FEaiMapWorldResource_dispose(){
    o._data = MO.Lang.Object.dispose(o._data);
    o.__base.FResourcePackage.dispose.call(o);
 }
-with(MO){
-   MO.FEaiProvinceResource = function FEaiProvinceResource(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code         = RClass.register(o, new AGetter('_code'));
-      o._name         = RClass.register(o, new AGetter('_name'));
-      o._label        = RClass.register(o, new AGetter('_label'));
-      o._typeCd       = RClass.register(o, new AGetter('_typeCd'));
-      o._displayOrder = RClass.register(o, new AGetter('_displayOrder'));
-      o.unserialize = FEaiProvinceResource_unserialize;
-      return o;
-   }
-   MO.FEaiProvinceResource_unserialize = function FEaiProvinceResource_unserialize(input){
-      var o = this;
-      o._code = input.readUint16();
-      o._name = input.readString();
-      o._label = input.readString();
-      o._typeCd = input.readString();
-      o._displayOrder = input.readUint16();
-   }
+MO.FEaiProvinceResource = function FEaiProvinceResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code         = MO.Class.register(o, new MO.AGetter('_code'));
+   o._name         = MO.Class.register(o, new MO.AGetter('_name'));
+   o._label        = MO.Class.register(o, new MO.AGetter('_label'));
+   o._typeCd       = MO.Class.register(o, new MO.AGetter('_typeCd'));
+   o._displayOrder = MO.Class.register(o, new MO.AGetter('_displayOrder'));
+   o.unserialize   = MO.FEaiProvinceResource_unserialize;
+   return o;
+}
+MO.FEaiProvinceResource_unserialize = function FEaiProvinceResource_unserialize(input){
+   var o = this;
+   o._code = input.readUint16();
+   o._name = input.readString();
+   o._label = input.readString();
+   o._typeCd = input.readString();
+   o._displayOrder = input.readUint16();
 }
 MO.FEaiProvinceResourceModule = function FEaiProvinceResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);

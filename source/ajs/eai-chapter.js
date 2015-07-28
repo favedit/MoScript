@@ -1,11 +1,9 @@
-with(MO){
-   MO.FEaiChapter = function FEaiChapter(o){
-      o = RClass.inherits(this, o, FChapter);
-      return o;
-   }
+MO.FEaiChapter = function FEaiChapter(o){
+   o = MO.Class.inherits(this, o, MO.FChapter);
+   return o;
 }
 MO.FEaiChartChapter = function FEaiChartChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code         = MO.EEaiChapter.Chart;
    o._sceneTotal   = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
    o._sceneHistory = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
@@ -23,16 +21,16 @@ MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
 }
 MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var o = this;
-   var scene = o._sceneTotal = MO.RClass.create(MO.FEaiChartTotalScene);
+   var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneHistory = MO.RClass.create(MO.FEaiChartHistoryScene);
+   var scene = o._sceneHistory = MO.Class.create(MO.FEaiChartHistoryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneLive = MO.RClass.create(MO.FEaiChartLiveScene);
+   var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneWorld = MO.RClass.create(MO.FEaiChartWorldScene);
+   var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }
@@ -45,12 +43,12 @@ MO.FEaiChartChapter_dispose = function FEaiChartChapter_dispose(){
    o.__base.FEaiChapter.dispose.call(o);
 }
 MO.FEaiLoadingChapter = function FEaiLoadingChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Loading;
    return o;
 }
 MO.FEaiLoginChapter = function FEaiLoginChapter(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChapter);
+   o = MO.Class.inherits(this, o, MO.FEaiChapter);
    o._code = MO.EEaiChapter.Login;
    return o;
 }
@@ -73,16 +71,16 @@ MO.FEaiSceneChapter_construct = function FEaiSceneChapter_construct(){
 }
 MO.FEaiSceneChapter_setup = function FEaiSceneChapter_setup(){
    var o = this;
-   var scene = o._sceneCountry = MO.RClass.create(MO.FEaiCountryScene);
+   var scene = o._sceneCountry = MO.Class.create(MO.FEaiCountryScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneGroup = MO.RClass.create(MO.FEaiGroupScene);
+   var scene = o._sceneGroup = MO.Class.create(MO.FEaiGroupScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneGroupReport = MO.RClass.create(MO.FEaiGroupReportScene);
+   var scene = o._sceneGroupReport = MO.Class.create(MO.FEaiGroupReportScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   var scene = o._sceneCompany = MO.RClass.create(MO.FEaiCompanyScene);
+   var scene = o._sceneCompany = MO.Class.create(MO.FEaiCompanyScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }
