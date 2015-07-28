@@ -35,12 +35,11 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onProcessReady          = MO.FEaiChartLiveScene_onProcessReady;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartLiveScene_onSwitchComplete;
    //..........................................................
-   // @method
-   o.testReady               = MO.FEaiChartLiveScene_testReady;
    // @method
    o.setup                   = MO.FEaiChartLiveScene_setup;
    o.showParticle            = MO.FEaiChartLiveScene_showParticle;
@@ -71,14 +70,26 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
       pop.setData(entity);
       //pop.show();
       // 显示粒子
-      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-      var cityEntity = o._mapEntity.findCityByCard(entity.card());
-      if(cityEntity){
-         var provinceEntity = cityEntity.provinceEntity();
-         var cityResource = cityEntity.data();
-         o.showParticle(provinceEntity, cityResource);
-      }
+      //var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
+      //var cityEntity = o._mapEntity.findCityByCard(entity.card());
+      //if(cityEntity){
+      //   var provinceEntity = cityEntity.provinceEntity();
+      //   var cityResource = cityEntity.data();
+      //   o.showParticle(provinceEntity, cityResource);
+      //}
    }
+}
+
+//==========================================================
+// <T>准备好处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartLiveScene_onProcessReady = function FEaiChartLiveScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   // 显示城市
+   o._mapEntity.showCity();
 }
 
 //==========================================================
@@ -91,38 +102,33 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    o.__base.FEaiChartScene.onProcess.call(o);
    // 检测首次播放
    if(!o._statusStart){
-      if (o.testReady()) {
-         if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
-            var iosPlay = document.getElementById('id_ios_play');
-            if (iosPlay) {
-               MO.Window.Html.visibleSet(iosPlay, true);
-            }
-            var hLoading = document.getElementById('id_loading');
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
+      if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+         var iosPlay = document.getElementById('id_ios_play');
+         if (iosPlay) {
+            MO.Window.Html.visibleSet(iosPlay, true);
          }
-         else {
-            var hLoading = document.getElementById('id_loading');
-            if (hLoading) {
-               hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-               o._statusLayerLevel--;
-            }
-            o._statusLayerLevel--;  
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            document.body.removeChild(hLoading);
          }
-
-         if (o._statusLayerLevel <= 0) {
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
-            var countryEntity = o._countryEntity;
-            countryEntity.start();
-            o._mapEntity.showCountry(countryEntity);
-            o.processLoaded();
-            o._playing = true;
-            o._statusStart = true;
+      }else{
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
          }
-         
+         o._statusLayerLevel--;  
+      }
+      if (o._statusLayerLevel <= 0) {
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+         var countryEntity = o._countryEntity;
+         countryEntity.start();
+         o._mapEntity.showCountry(countryEntity);
+         o.processLoaded();
+         o._playing = true;
+         o._statusStart = true;
       }
    }
    // 重复播放
@@ -131,7 +137,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._countryEntity;
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -203,24 +209,6 @@ MO.FEaiChartLiveScene_onSwitchComplete = function FEaiChartLiveScene_onSwitchCom
 }
 
 //==========================================================
-// <T>点击暂停处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
-   return true;
-   var o = this;
-   if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
-      o._ready = true;
-   }
-   return o._ready;
-}
-
-//==========================================================
 // <T>配置处理。</T>
 //
 // @method
@@ -243,9 +231,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   //..........................................................
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
@@ -274,13 +259,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
-   // 加载世界数据
-   var countryEntity = o._countryEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
-   o._readyLoader.push(countryEntity);
-
-   //var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
-   //o._readyLoader.push(worldEntity);
-   //..........................................................
    // 创建粒子
    //var context = o._graphicContext;
    //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
@@ -289,6 +267,13 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    //particle.setData(particleData);
    //o.fixMatrix(particle.matrix());
    //o._activeStage.spriteLayer().pushRenderable(particle);
+   //..........................................................
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   // 建立城市实体
+   entityConsole.cityModule().build(o);
+   // 加载世界数据
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
 }
 
 //==========================================================

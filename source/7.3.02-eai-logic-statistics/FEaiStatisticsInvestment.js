@@ -229,17 +229,16 @@ MO.FEaiStatisticsInvestment_calculateCurrent = function FEaiStatisticsInvestment
 MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focusEntity(entity){
    var o = this;
    var mapEntity = o._mapEntity;
-   var card = entity.card();
-   var investment = entity.investment();
-   var cityEntity = mapEntity.findCityByCard(card);
    // 显示实体
+   var card = entity.card();
+   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
    if(cityEntity){
       // 计算级别
+      var investment = entity.investment();
       var level = o.calculateInvestmentLevel(investment);
       // 更新省份数据
       var provinceCode = cityEntity.data().provinceCode();
-      var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-      var provinceEntity = mapEntity.findProvinceByCode(provinceCode);
+      var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
       }

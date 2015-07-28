@@ -115,9 +115,8 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
       return;
    }
    // 获得颜色
+   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.InvestmentRange);
    var range = 200000;
-   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.InvestmentRange);
    var color = rateResource.findRate(investment / range);
    // 设置内容
    o._color.set(1, 1, 1, 1);
@@ -165,9 +164,9 @@ MO.FEaiCityEntity_update = function FEaiCityEntity_update(data){
       o._visible = true;
    }
    // 计算数值
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var investmentCityTotal = historyConsole.investmentCityTotal();
-   var rateInfo = MO.Console.find(MO.FEaiResourceConsole).rateConsole().find(MO.EEaiRate.Map);
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var investmentCityTotal = historyModule.investmentCityTotal();
+   var rateInfo = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Map);
    var rate = Math.sqrt(total / investmentCityTotal) * 4;
    var color = rateInfo.findRate(rate);
    range = rate * 6;

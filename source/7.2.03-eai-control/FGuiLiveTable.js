@@ -325,8 +325,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
    }
    // 绘制城市
    x += widths[0];
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityResource = cityConsole.findByCard(entity.card());
+   var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(entity.card());
    text = '';
    if(cityResource){
       text = cityResource.label();

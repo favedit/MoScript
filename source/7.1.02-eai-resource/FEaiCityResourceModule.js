@@ -5,21 +5,21 @@
 // @author maocy
 // @history 150618
 //==========================================================
-MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole);
+MO.FEaiCityResourceModule = function FEaiCityResourceModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
    //..........................................................
    // @attribute
    o._resourceConsole = MO.Class.register(o, new MO.AGetSet('_resourceConsole'));
    o._citys           = MO.Class.register(o, new MO.AGetter('_citys'));
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCityResourceConsole_construct;
+   o.construct        = MO.FEaiCityResourceModule_construct;
    // @method
-   o.find             = MO.FEaiCityResourceConsole_find;
-   o.findByCard       = MO.FEaiCityResourceConsole_findByCard;
-   o.unserialize      = MO.FEaiCityResourceConsole_unserialize;
+   o.find             = MO.FEaiCityResourceModule_find;
+   o.findByCard       = MO.FEaiCityResourceModule_findByCard;
+   o.unserialize      = MO.FEaiCityResourceModule_unserialize;
    // @method
-   o.dispose          = MO.FEaiCityResourceConsole_dispose;
+   o.dispose          = MO.FEaiCityResourceModule_dispose;
    return o;
 }
 
@@ -28,9 +28,9 @@ MO.FEaiCityResourceConsole = function FEaiCityResourceConsole(o){
 //
 // @method
 //==========================================================
-MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construct(){
+MO.FEaiCityResourceModule_construct = function FEaiCityResourceModule_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
+   o.__base.FEaiResourceModule.construct.call(o);
    // 创建属性
    o._citys = new MO.TDictionary();
 }
@@ -42,7 +42,7 @@ MO.FEaiCityResourceConsole_construct = function FEaiCityResourceConsole_construc
 // @param code:String 代码
 // @return 城市信息
 //==========================================================
-MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
+MO.FEaiCityResourceModule_find = function FEaiCityResourceModule_find(code){
    return this._citys.get(code);
 }
 
@@ -53,11 +53,11 @@ MO.FEaiCityResourceConsole_find = function FEaiCityResourceConsole_find(code){
 // @param card:String 代码
 // @return 城市信息
 //==========================================================
-MO.FEaiCityResourceConsole_findByCard = function FEaiCityResourceConsole_findByCard(card) {
+MO.FEaiCityResourceModule_findByCard = function FEaiCityResourceModule_findByCard(card) {
    var o = this;
    var city = null;
-   var cardConsole = o._resourceConsole.cardConsole();
-   var cityCode = cardConsole.findCityCode(card);
+   var cardModule = o._resourceConsole.cardModule();
+   var cityCode = cardModule.findCityCode(card);
    if(cityCode){
       city = o._citys.get(cityCode);
    }
@@ -70,7 +70,7 @@ MO.FEaiCityResourceConsole_findByCard = function FEaiCityResourceConsole_findByC
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unserialize(input){
+MO.FEaiCityResourceModule_unserialize = function FEaiCityResourceModule_unserialize(input){
    var o = this;
    var citys = o._citys;
    var cards = o._cards;
@@ -87,9 +87,9 @@ MO.FEaiCityResourceConsole_unserialize = function FEaiCityResourceConsole_unseri
 //
 // @method
 //==========================================================
-MO.FEaiCityResourceConsole_dispose = function FEaiCityResourceConsole_dispose(){
+MO.FEaiCityResourceModule_dispose = function FEaiCityResourceModule_dispose(){
    var o = this;
    o._citys = MO.Lang.Object.dispose(o._citys);
    // 父处理
-   o.__base.FConsole.dispose.call(o);
+   o.__base.FEaiResourceModule.dispose.call(o);
 }

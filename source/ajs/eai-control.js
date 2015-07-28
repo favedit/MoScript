@@ -136,8 +136,7 @@ with (MO) {
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
-      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-      var rateResource = rateConsole.find(EEaiRate.Investment);
+      var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
          startTime.refresh();
@@ -502,28 +501,28 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
    var degreeDate = o.degreeTime();
    var bakTime = startDate.date.getTime();
    var timeSpan = endDate.date.getTime() - startDate.date.getTime();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var investmentTotal = historyConsole.investmentTotal();
-   var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var investmentTotal = historyModule.investmentTotal();
+   var dateData = historyModule.dates().get(endDate.format('YYYYMMDD'));
    var maxInves = dateData.investmentTotal();
-   var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
+   var degreeData = historyModule.dates().get(degreeDate.format('YYYYMMDD'));
    if (degreeData.investmentTotal() * 3 < investmentTotal) {
       maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
    }
    var pixPer10k = dataHeight * 10000 / maxInves;
-   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   var rateModule = MO.Console.find(MO.FEaiResourceConsole).rateModule();
+   var rateResource = rateModule.find(MO.EEaiRate.Line);
    var ctx = graphic._handle;
    ctx.lineCap = 'round';
    ctx.beginPath();
    ctx.moveTo(lastX, lastY);
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    var inves = dateData.investmentTotal();
    var lastX = dataLeft;
    var lastY = dataBottom - inves / 10000 * pixPer10k;
    lastY -= o._startHeight;
    while (startDate.isBefore(degreeDate)) {
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
          var degreeSpan = startDate.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -538,7 +537,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          break;
       }
    }
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    if (dateData) {
       var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
       var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -573,7 +572,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
    startDate.date.setTime(bakTime);
    startDate.refresh();
    while (startDate.isBefore(degreeDate)) {
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
          var degreeSpan = startDate.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -602,7 +601,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
          break;
       }
    }
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    if (dateData) {
       var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
       var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -964,8 +963,7 @@ MO.FGuiLiveTable_drawRow = function FGuiLiveTable_drawRow(graphic, entity, flag,
       graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
    }
    x += widths[0];
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityResource = cityConsole.findByCard(entity.card());
+   var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(entity.card());
    text = '';
    if(cityResource){
       text = cityResource.label();

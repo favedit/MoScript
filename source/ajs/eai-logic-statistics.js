@@ -207,13 +207,12 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
    var o = this;
    var mapEntity = o._mapEntity;
    var card = entity.card();
-   var investment = entity.investment();
-   var cityEntity = mapEntity.findCityByCard(card);
+   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
    if(cityEntity){
+      var investment = entity.investment();
       var level = o.calculateInvestmentLevel(investment);
       var provinceCode = cityEntity.data().provinceCode();
-      var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-      var provinceEntity = mapEntity.findProvinceByCode(provinceCode);
+      var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
       }

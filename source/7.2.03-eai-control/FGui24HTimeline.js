@@ -194,8 +194,7 @@ with (MO) {
       //ctx.lineJoin = 'round';
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
-      var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-      var rateResource = rateConsole.find(EEaiRate.Investment);
+      var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(EEaiRate.Investment);
       for (var i = 1; i < data.length; i++) {
          startTime.parseAuto(data[i].date);
          startTime.refresh();

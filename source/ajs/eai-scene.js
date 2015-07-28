@@ -136,6 +136,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onProcessReady            = MO.FEaiChartHistoryScene_onProcessReady;
    o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
    o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
    o.testReady                 = MO.FEaiChartHistoryScene_testReady;
@@ -149,13 +150,13 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 }
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var startDate = historyConsole.dates().first();
-   var endDate = historyConsole.dates().last();
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var startDate = historyModule.dates().first();
+   var endDate = historyModule.dates().last();
    o._currentDate.parseAuto(startDate.code());
    o._startDate.parseAuto(startDate.code());
    o._endDate.parseAuto(endDate.code());
-   var milestones = historyConsole.milestones();
+   var milestones = historyModule.milestones();
    var milestoneBars = o._milestoneBars = new MO.TObjects();
    var count = milestones.count();
    for (var i = count - 1; i >= 0; i--) {
@@ -207,12 +208,16 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
    var o = this;
    o.switchPlay(false);
 }
-MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() {
+MO.FEaiChartHistoryScene_onProcessReady = function FEaiChartHistoryScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._mapEntity.showCity();
+}
+MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess(){
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
+   var countryEntity = o._countryEntity;
    var mapEntity = o._mapEntity;
-   var countryDisplay = mapEntity.countryDisplay();
-   var countryBorderDisplay = mapEntity.countryBorderDisplay();
    if (!o._statusStart) {
       if (o.testReady()) {
          var hLoading = document.getElementById('id_loading');
@@ -225,7 +230,8 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             if (hLoading) {
                document.body.removeChild(hLoading);
             }
-            o._mapEntity.showCountry();
+            countryEntity.start();
+            o._mapEntity.showCountry(countryEntity);
             o.switchPlay(true);
             o.processLoaded();
             o._statusStart = true;
@@ -234,14 +240,12 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
    }
    var currentTick = MO.Timer.current();
    if (o._playing) {
-      var countryEntity = mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
-         mapEntity.citysRangeRenderable().setVisible(true);
-         mapEntity.citysRenderable().setVisible(true);
+         mapEntity.cityRangeRenderable().setVisible(true);
+         mapEntity.cityCenterRenderable().setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
@@ -299,9 +303,6 @@ MO.FEaiChartHistoryScene_onSwitchLiveComplete = function FEaiChartHistoryScene_o
 MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
       if(!o._dataReady){
          return false;
       }
@@ -324,8 +325,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    audio.setVolume(0.2);
    audio.play();
    var mapEntity = o._mapEntity;
-   mapEntity.citysRangeRenderable().setVisible(false);
-   mapEntity.citysRenderable().setVisible(false);
+   mapEntity.cityRangeRenderable().setVisible(false);
+   mapEntity.cityCenterRenderable().setVisible(false);
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
    frame.setLocation(5, 5);
    o._guiManager.register(frame);
@@ -382,13 +383,17 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneBG.build();
    o._guiManager.register(milestoneBG);
    o._guiManager.hide();
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   historyConsole.addLoadListener(o, o.onLoadData);
-   historyConsole.load();
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.cityModule().build(o);
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   historyModule.addLoadListener(o, o.onLoadData);
+   historyModule.load();
 }
 MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
    var o = this;
-   var cityEntities = o._mapEntity.cityEntities();
+   var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
    var count = cityEntities.count();
    for(var i = 0; i < count; i++){
       var cityEntity = cityEntities.at(i);
@@ -397,10 +402,9 @@ MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
 }
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
    var o = this;
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var dateData = historyConsole.dates().get(code);
-   var milestone = historyConsole.milestones().get(code);
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var dateData = historyModule.dates().get(code);
+   var milestone = historyModule.milestones().get(code);
    if (milestone) {
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
@@ -411,7 +415,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       o._timeline.setDegreeTime(o._currentDate);
       o._timeline.dirty();
       var cityDatas = dateData.citys();
-      var cityEntities = o._mapEntity.cityEntities();
+      var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);
@@ -767,10 +771,10 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._statusLayerLevel       = 100;
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onProcessReady          = MO.FEaiChartLiveScene_onProcessReady;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartLiveScene_onSwitchComplete;
-   o.testReady               = MO.FEaiChartLiveScene_testReady;
    o.setup                   = MO.FEaiChartLiveScene_setup;
    o.showParticle            = MO.FEaiChartLiveScene_showParticle;
    o.showFace                = MO.FEaiChartLiveScene_showFace;
@@ -788,56 +792,50 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
-      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-      var cityEntity = o._mapEntity.findCityByCard(entity.card());
-      if(cityEntity){
-         var provinceEntity = cityEntity.provinceEntity();
-         var cityResource = cityEntity.data();
-         o.showParticle(provinceEntity, cityResource);
-      }
    }
+}
+MO.FEaiChartLiveScene_onProcessReady = function FEaiChartLiveScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._mapEntity.showCity();
 }
 MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if(!o._statusStart){
-      if (o.testReady()) {
-         if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
-            var iosPlay = document.getElementById('id_ios_play');
-            if (iosPlay) {
-               MO.Window.Html.visibleSet(iosPlay, true);
-            }
-            var hLoading = document.getElementById('id_loading');
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
+      if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+         var iosPlay = document.getElementById('id_ios_play');
+         if (iosPlay) {
+            MO.Window.Html.visibleSet(iosPlay, true);
          }
-         else {
-            var hLoading = document.getElementById('id_loading');
-            if (hLoading) {
-               hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-               o._statusLayerLevel--;
-            }
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+      }else{
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
             o._statusLayerLevel--;
          }
-         if (o._statusLayerLevel <= 0) {
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
-            var countryEntity = o._countryEntity;
-            countryEntity.start();
-            o._mapEntity.showCountry(countryEntity);
-            o.processLoaded();
-            o._playing = true;
-            o._statusStart = true;
+         o._statusLayerLevel--;
+      }
+      if (o._statusLayerLevel <= 0) {
+         if (hLoading) {
+            document.body.removeChild(hLoading);
          }
+         var countryEntity = o._countryEntity;
+         countryEntity.start();
+         o._mapEntity.showCountry(countryEntity);
+         o.processLoaded();
+         o._playing = true;
+         o._statusStart = true;
       }
    }
    if (o._playing) {
       var countryEntity = o._countryEntity;
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -882,17 +880,6 @@ MO.FEaiChartLiveScene_onSwitchProcess = function FEaiChartLiveScene_onSwitchProc
 MO.FEaiChartLiveScene_onSwitchComplete = function FEaiChartLiveScene_onSwitchComplete(event){
    var o = this;
 }
-MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
-   return true;
-   var o = this;
-   if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
-      o._ready = true;
-   }
-   return o._ready;
-}
 MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
@@ -907,8 +894,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');
@@ -929,7 +914,9 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    livePop.build();
    o._guiManager.register(livePop);
    o._guiManager.hide();
-   var countryEntity = o._countryEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.cityModule().build(o);
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
@@ -1113,18 +1100,18 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
    stage.region().backgroundColor().set(0, 0, 0, 0);
-   var display = mapEntity.countryDisplay();
+   var display = mapEntity.countryFaceDisplay();
    o.fixMatrix(display.matrix());
    stage.mapLayer().pushDisplay(display);
    var display = mapEntity.countryBorderDisplay();
    o.fixMatrix(display.matrix());
    stage.borderLayer().pushDisplay(display);
-   var citysRangeRenderable = mapEntity.citysRangeRenderable();
-   o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
-   var citysRenderable = mapEntity.citysRenderable();
-   o.fixMatrix(citysRenderable.matrix());
-   stage.cityLayer().push(citysRenderable);
+   var cityRangeRenderable = mapEntity.cityRangeRenderable();
+   o.fixMatrix(cityRangeRenderable.matrix());
+   stage.cityRangeLayer().push(cityRangeRenderable);
+   var cityCenterRenderable = mapEntity.cityCenterRenderable();
+   o.fixMatrix(cityCenterRenderable.matrix());
+   stage.cityLayer().push(cityCenterRenderable);
    var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
    systemConsole.refresh();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
@@ -1154,10 +1141,10 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    o.__base.FEaiScene.processResize.call(o);
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    var mapEntity = entityConsole.mapEntity();
-   o.fixMatrix(mapEntity.countryDisplay().matrix());
+   o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
    o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
-   o.fixMatrix(mapEntity.citysRangeRenderable().matrix());
-   o.fixMatrix(mapEntity.citysRenderable().matrix());
+   o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
+   o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
 }
 MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
    var o = this;
@@ -1350,13 +1337,6 @@ MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_on
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
-      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-      var cityEntity = o._mapEntity.findCityByCard(entity.card());
-      if(cityEntity){
-         var provinceEntity = cityEntity.provinceEntity();
-         var cityResource = cityEntity.data();
-         o.showParticle(provinceEntity, cityResource);
-      }
    }
 }
 MO.FEaiChartWorldScene_onProcessReady = function FEaiChartWorldScene_onProcessReady() {
@@ -1420,8 +1400,8 @@ MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
          timeControl.setLabel(date.format('HH24:MI'));
       }
       var mapEntity = o._mapEntity;
-      o.fixMatrix(mapEntity._countryDisplay.matrix());
-      o.fixMatrix(mapEntity._countryBorderDisplay.matrix());
+      o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
+      o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
    }
    if (o._livePop.visible()) {
       o._livePop.dirty();
@@ -1481,8 +1461,6 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
    timeline.setName('Timeline');

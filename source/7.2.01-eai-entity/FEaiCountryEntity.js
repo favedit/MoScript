@@ -197,14 +197,14 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
    o.loadData(data);
    //..........................................................
    // 创建省份实体
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
+   var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
    var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
    var provincesData = data.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
-      var provinceResource = provinceConsole.findByCode(provinceCode);
+      var provinceResource = provinceModule.findByCode(provinceCode);
       MO.Assert.debugNotNull(provinceResource);
       // 创建省份实体
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
@@ -221,35 +221,8 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
    }
    faceShape.build();
    borderShape.build();
-   o.setupProvinces(provinceEntities);
-   return;
    //..........................................................
-   // 创建城市实体
-   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-   var cityEntityModule = MO.Console.find(MO.FEaiEntityConsole).cityModule();
-   var cityEntities = o._cityEntities;
-   var citys = cityConsole.citys();
-   var cityCount = citys.count();
-   for(var i = 0; i < cityCount; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      // 创建实体
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setRenderable(citysRenderable);
-      cityEntity.setData(city);
-      cityEntity.build(o);
-      cityEntities.set(city.code(), cityEntity);
-      // 放入渲染对象
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-      cityEntityModule.push(cityEntity);
-   }
-   // 上传数据
-   citysRenderable.setup();
-   citysRenderable.upload();
-   citysRangeRenderable.setup();
-   citysRangeRenderable.upload();
+   o.setupProvinces(provinceEntities);
 }
 
 //==========================================================
@@ -278,9 +251,9 @@ MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
 // @method
 //==========================================================
 MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
-   var pResConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var p1Res = pResConsole.findByCode(p1.data().code());
-   var p2Res = pResConsole.findByCode(p2.data().code())
+   var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
+   var p1Res = provinceModule.findByCode(p1.data().code());
+   var p2Res = provinceModule.findByCode(p2.data().code())
    if (p1Res.displayOrder() > p2Res.displayOrder()) {
       return 1;
    }

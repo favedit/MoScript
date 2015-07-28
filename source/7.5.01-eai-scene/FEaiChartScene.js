@@ -152,7 +152,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.region().linkGraphicContext(o);
    stage.region().backgroundColor().set(0, 0, 0, 0);
    // 创建地图容器
-   var display = mapEntity.countryDisplay();
+   var display = mapEntity.countryFaceDisplay();
    o.fixMatrix(display.matrix());
    stage.mapLayer().pushDisplay(display);
    var display = mapEntity.countryBorderDisplay();
@@ -160,13 +160,13 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    stage.borderLayer().pushDisplay(display);
    //..........................................................
    // 创建城市范围渲染对象
-   var citysRangeRenderable = mapEntity.citysRangeRenderable();
-   o.fixMatrix(citysRangeRenderable.matrix());
-   stage.cityRangeLayer().push(citysRangeRenderable);
-   // 创建城市渲染对象
-   var citysRenderable = mapEntity.citysRenderable();
-   o.fixMatrix(citysRenderable.matrix());
-   stage.cityLayer().push(citysRenderable);
+   var cityRangeRenderable = mapEntity.cityRangeRenderable();
+   o.fixMatrix(cityRangeRenderable.matrix());
+   stage.cityRangeLayer().push(cityRangeRenderable);
+   // 创建城市中心渲染对象
+   var cityCenterRenderable = mapEntity.cityCenterRenderable();
+   o.fixMatrix(cityCenterRenderable.matrix());
+   stage.cityLayer().push(cityCenterRenderable);
    //..........................................................
    // 刷新系统信息
    var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
@@ -239,10 +239,10 @@ MO.FEaiChartScene_processResize = function FEaiChartScene_processResize(){
    // 重新设置矩阵
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    var mapEntity = entityConsole.mapEntity();
-   o.fixMatrix(mapEntity.countryDisplay().matrix());
+   o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
    o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
-   o.fixMatrix(mapEntity.citysRangeRenderable().matrix());
-   o.fixMatrix(mapEntity.citysRenderable().matrix());
+   o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
+   o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
 }
 
 //==========================================================

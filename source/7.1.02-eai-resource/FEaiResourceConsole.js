@@ -6,37 +6,37 @@
 // @history 150618
 //==========================================================
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FConsole, MO.MListener);
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
    //..........................................................
    // @attribute
-   o._scopeCd         = MO.EScope.Local;
+   o._scopeCd        = MO.EScope.Local;
    // @attribute
-   o._rateConsole     = MO.Class.register(o, new MO.AGetter('_rateConsole'));
-   o._provinceConsole = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
-   o._cityConsole     = MO.Class.register(o, new MO.AGetter('_cityConsole'));
-   o._cardConsole     = MO.Class.register(o, new MO.AGetter('_cardConsole'));
-   o._historyConsole  = MO.Class.register(o, new MO.AGetter('_historyConsole'));
-   o._mapConsole      = MO.Class.register(o, new MO.AGetter('_mapConsole'));
+   o._rateModule     = MO.Class.register(o, new MO.AGetter('_rateModule'));
+   o._provinceModule = MO.Class.register(o, new MO.AGetter('_provinceModule'));
+   o._cityModule     = MO.Class.register(o, new MO.AGetter('_cityModule'));
+   o._cardModule     = MO.Class.register(o, new MO.AGetter('_cardModule'));
+   o._historyModule  = MO.Class.register(o, new MO.AGetter('_historyModule'));
+   o._mapModule      = MO.Class.register(o, new MO.AGetter('_mapModule'));
    // @attribute
-   o._loadListeners   = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
+   o._loadListeners  = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    // @attribute
-   o._looper          = null;
+   o._looper         = null;
    // @attribute
-   o._thread          = null;
-   o._interval        = 100;
+   o._thread         = null;
+   o._interval       = 100;
    //..........................................................
    // @event
-   o.onLoad           = MO.FEaiResourceConsole_onLoad;
+   o.onLoad          = MO.FEaiResourceConsole_onLoad;
    // @event
-   o.onProcess        = MO.FEaiResourceConsole_onProcess;
+   o.onProcess       = MO.FEaiResourceConsole_onProcess;
    //..........................................................
    // @method
-   o.construct        = MO.FEaiResourceConsole_construct;
+   o.construct       = MO.FEaiResourceConsole_construct;
    // @method
-   o.unserialize      = MO.FEaiResourceConsole_unserialize;
-   o.load             = MO.FEaiResourceConsole_load;
+   o.unserialize     = MO.FEaiResourceConsole_unserialize;
+   o.load            = MO.FEaiResourceConsole_load;
    // @method
-   o.dispose          = MO.FEaiResourceConsole_dispose;
+   o.dispose         = MO.FEaiResourceConsole_dispose;
    return o;
 }
 
@@ -93,13 +93,13 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    // 设置属性
    o._looper = new MO.TLooper();
    // 创建控制台
-   o._rateConsole = MO.Class.create(MO.FEaiRateResourceConsole);
-   o._provinceConsole = MO.Class.create(MO.FEaiProvinceResourceConsole);
-   var cityConsole = o._cityConsole = MO.Class.create(MO.FEaiCityResourceConsole);
+   o._rateModule = MO.Class.create(MO.FEaiRateResourceModule);
+   o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
+   var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
    cityConsole.setResourceConsole(o);
-   o._cardConsole = MO.Class.create(MO.FEaiCardResourceConsole);
-   o._historyConsole = MO.Class.create(MO.FEaiHistoryResourceConsole);
-   o._mapConsole = MO.Class.create(MO.FEaiMapResourceConsole);
+   o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
+   o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
+   o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
    // 创建线程
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
@@ -115,10 +115,10 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
 //==========================================================
 MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(input){
    var o = this;
-   o._rateConsole.unserialize(input);
-   o._provinceConsole.unserialize(input);
-   o._cityConsole.unserialize(input);
-   o._cardConsole.unserialize(input);
+   o._rateModule.unserialize(input);
+   o._provinceModule.unserialize(input);
+   o._cityModule.unserialize(input);
+   o._cardModule.unserialize(input);
 }
 
 //==========================================================
@@ -144,12 +144,12 @@ MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
 MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    var o = this;
    // 释放属性
-   o._rateConsole = MO.Lang.Object.dispose(o._rateConsole);
-   o._provinceConsole = MO.Lang.Object.dispose(o._provinceConsole);
-   o._cityConsole = MO.Lang.Object.dispose(o._cityConsole);
-   o._cardConsole = MO.Lang.Object.dispose(o._cardConsole);
-   o._historyConsole = MO.Lang.Object.dispose(o._historyConsole);
-   o._mapConsole = MO.Lang.Object.dispose(o._mapConsole);
+   o._rateModule = MO.Lang.Object.dispose(o._rateModule);
+   o._provinceModule = MO.Lang.Object.dispose(o._provinceModule);
+   o._cityModule = MO.Lang.Object.dispose(o._cityModule);
+   o._cardModule = MO.Lang.Object.dispose(o._cardModule);
+   o._historyModule = MO.Lang.Object.dispose(o._historyModule);
+   o._mapModule = MO.Lang.Object.dispose(o._mapModule);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }

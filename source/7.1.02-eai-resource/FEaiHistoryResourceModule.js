@@ -5,8 +5,8 @@
 // @author maocy
 // @history 150618
 //==========================================================
-MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
+MO.FEaiHistoryResourceModule = function FEaiHistoryResourceModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiResourceModule, MO.MListener);
    //..........................................................
    // @attribute
    o._investmentDay           = MO.Class.register(o, new MO.AGetter('_investmentDay'));
@@ -23,15 +23,15 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
    o._listenersLoad           = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    //..........................................................
    // @event
-   o.onLoad                   = MO.FEaiHistoryResourceConsole_onLoad;
+   o.onLoad                   = MO.FEaiHistoryResourceModule_onLoad;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiHistoryResourceConsole_construct;
+   o.construct                = MO.FEaiHistoryResourceModule_construct;
    // @method
-   o.unserialize              = MO.FEaiHistoryResourceConsole_unserialize;
-   o.load                     = MO.FEaiHistoryResourceConsole_load;
+   o.unserialize              = MO.FEaiHistoryResourceModule_unserialize;
+   o.load                     = MO.FEaiHistoryResourceModule_load;
    // @method
-   o.dispose                  = MO.FEaiHistoryResourceConsole_dispose;
+   o.dispose                  = MO.FEaiHistoryResourceModule_dispose;
    return o;
 }
 
@@ -41,9 +41,9 @@ MO.FEaiHistoryResourceConsole = function FEaiHistoryResourceConsole(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiHistoryResourceConsole_onLoad = function FEaiHistoryResourceConsole_onLoad(event){
+MO.FEaiHistoryResourceModule_onLoad = function FEaiHistoryResourceModule_onLoad(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    // 创建读取流
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
@@ -63,9 +63,9 @@ MO.FEaiHistoryResourceConsole_onLoad = function FEaiHistoryResourceConsole_onLoa
 //
 // @method
 //==========================================================
-MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_construct(){
+MO.FEaiHistoryResourceModule_construct = function FEaiHistoryResourceModule_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
+   o.__base.FEaiResourceModule.construct.call(o);
    // 创建属性
    o._provinces = new MO.TDictionary();
    o._citys = new MO.TDictionary();
@@ -79,7 +79,7 @@ MO.FEaiHistoryResourceConsole_construct = function FEaiHistoryResourceConsole_co
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_unserialize(input){
+MO.FEaiHistoryResourceModule_unserialize = function FEaiHistoryResourceModule_unserialize(input){
    var o = this;
    // 读取属性
    o._investmentDay = input.readFloat();
@@ -132,7 +132,7 @@ MO.FEaiHistoryResourceConsole_unserialize = function FEaiHistoryResourceConsole_
 // @method
 // @return uri:String 网络名称
 //==========================================================
-MO.FEaiHistoryResourceConsole_load = function FEaiHistoryResourceConsole_load(){
+MO.FEaiHistoryResourceModule_load = function FEaiHistoryResourceModule_load(){
    var o = this;
    var uri = '{eai.resource}/investment.dat?date=' + MO.Lang.Date.format();
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
@@ -145,12 +145,12 @@ MO.FEaiHistoryResourceConsole_load = function FEaiHistoryResourceConsole_load(){
 //
 // @method
 //==========================================================
-MO.FEaiHistoryResourceConsole_dispose = function FEaiHistoryResourceConsole_dispose(){
+MO.FEaiHistoryResourceModule_dispose = function FEaiHistoryResourceModule_dispose(){
    var o = this;
    o._provinces = RObject.dispose(o._provinces);
    o._citys = RObject.dispose(o._citys);
    o._milestones = RObject.dispose(o._milestones);
    o._dates = RObject.dispose(o._dates);
    // 父处理
-   o.__base.FConsole.dispose.call(o);
+   o.__base.FEaiResourceModule.dispose.call(o);
 }

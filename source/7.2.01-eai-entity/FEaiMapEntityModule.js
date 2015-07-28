@@ -54,7 +54,7 @@ MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(co
       return entity;
    }
    // 查找资源
-   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadCountry(code);
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadCountry(code);
    // 创建实体
    entity = MO.Class.create(MO.FEaiCountryEntity);
    entity.linkGraphicContext(context);
@@ -80,7 +80,7 @@ MO.FEaiMapEntityModule_loadWorld = function FEaiMapEntityModule_loadWorld(contex
       return entity;
    }
    // 查找资源
-   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadWorld();
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadWorld();
    // 创建实体
    entity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
    entity.linkGraphicContext(context);

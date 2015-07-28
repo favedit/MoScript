@@ -17,6 +17,7 @@ MO.FEaiCityEntityModule = function FEaiCityEntityModule(o){
    o.findByCode = MO.FEaiCityEntityModule_findByCode;
    o.findByCard = MO.FEaiCityEntityModule_findByCard;
    o.push       = MO.FEaiCityEntityModule_push;
+   o.build      = MO.FEaiCityEntityModule_build;
    // @method
    o.dispose    = MO.FEaiCityEntityModule_dispose;
    return o;
@@ -56,23 +57,9 @@ MO.FEaiCityEntityModule_findByCode = function FEaiCityEntityModule_findByCode(co
 //==========================================================
 MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(card){
    var o = this;
-   // 检查参数
-   if (card.length != 4) {
-      return null;
-   }
-   // 查找4位
-   var cityEntities = o._citys;
-   var cityEntity = cityEntities.get(card);
-   if (cityEntity) {
-      return cityEntity;
-   }
-   // 查找2位
-   var cityEntities = o._citys;
-   var cityEntity = cityEntities.get(card.substring(0, 2));
-   if (cityEntity) {
-      return cityEntity;
-   }
-   return null;
+   var cardModule = MO.Console.find(MO.FEaiResourceConsole).cardModule();
+   var cityCode = cardModule.findCityCode(card);
+   return o._citys.get(cityCode);
 }
 
 //==========================================================
@@ -82,7 +69,35 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 // @param entity:FEaiCityEntity 城市实体
 //==========================================================
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
-   this._citys.set(entity.data().code(), entity);
+   var code = entity.data().code();
+   MO.Assert.debugNotEmpty(code);
+   this._citys.set(code, entity);
+}
+
+//==========================================================
+// <T>建立城市实体。</T>
+//
+// @method
+// @param entity:FEaiCityEntity 城市实体
+//==========================================================
+MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
+   var o = this;
+   // 创建城市实体
+   var citys = MO.Console.find(MO.FEaiResourceConsole).cityModule().citys();
+   var cityEntities = o._citys;
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      // 获得城市
+      var city = citys.at(i);
+      var code = city.code();
+      var level = city.level();
+      var cityLocation = city.location();
+      // 创建实体
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setData(city);
+      cityEntity.build(o);
+      cityEntities.set(code, cityEntity);
+   }
 }
 
 //==========================================================

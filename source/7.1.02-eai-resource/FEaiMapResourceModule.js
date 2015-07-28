@@ -5,22 +5,22 @@
 // @author maocy
 // @history 150727
 //==========================================================
-MO.FEaiMapResourceConsole = function FEaiMapResourceConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole);
+MO.FEaiMapResourceModule = function FEaiMapResourceModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
    //..........................................................
    // @attribute
    o._world            = MO.Class.register(o, new MO.AGetter('_world'));
    o._countries        = MO.Class.register(o, new MO.AGetter('_countries'));
    //..........................................................
    // @method
-   o.construct         = MO.FEaiMapResourceConsole_construct;
+   o.construct         = MO.FEaiMapResourceModule_construct;
    // @method
-   o.findCountryByCode = MO.FEaiMapResourceConsole_findCountryByCode;
+   o.findCountryByCode = MO.FEaiMapResourceModule_findCountryByCode;
    // @method
-   o.loadCountry       = MO.FEaiMapResourceConsole_loadCountry;
-   o.loadWorld         = MO.FEaiMapResourceConsole_loadWorld;
+   o.loadCountry       = MO.FEaiMapResourceModule_loadCountry;
+   o.loadWorld         = MO.FEaiMapResourceModule_loadWorld;
    // @method
-   o.dispose           = MO.FEaiMapResourceConsole_dispose;
+   o.dispose           = MO.FEaiMapResourceModule_dispose;
    return o;
 }
 
@@ -29,9 +29,9 @@ MO.FEaiMapResourceConsole = function FEaiMapResourceConsole(o){
 //
 // @method
 //==========================================================
-MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(){
+MO.FEaiMapResourceModule_construct = function FEaiMapResourceModule_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
+   o.__base.FEaiResourceModule.construct.call(o);
    // 创建属性
    o._countries = new MO.TDictionary();
 }
@@ -43,7 +43,7 @@ MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(
 // @param code:String 代码
 // @return FEaiMapCountryResource 国家资源
 //==========================================================
-MO.FEaiMapResourceConsole_findCountryByCode = function FEaiMapResourceConsole_findCountryByCode(code){
+MO.FEaiMapResourceModule_findCountryByCode = function FEaiMapResourceModule_findCountryByCode(code){
    return this._countries.get(code);
 }
 
@@ -53,7 +53,7 @@ MO.FEaiMapResourceConsole_findCountryByCode = function FEaiMapResourceConsole_fi
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCountry(code){
+MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountry(code){
    var o = this;
    var countries = o._countries;
    var country = countries.get(name);
@@ -75,7 +75,7 @@ MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCoun
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiMapResourceConsole_loadWorld = function FEaiMapResourceConsole_loadWorld(){
+MO.FEaiMapResourceModule_loadWorld = function FEaiMapResourceModule_loadWorld(){
    var o = this;
    var world = o._world;
    if(!world){
@@ -91,11 +91,11 @@ MO.FEaiMapResourceConsole_loadWorld = function FEaiMapResourceConsole_loadWorld(
 //
 // @method
 //==========================================================
-MO.FEaiMapResourceConsole_dispose = function FEaiMapResourceConsole_dispose(){
+MO.FEaiMapResourceModule_dispose = function FEaiMapResourceModule_dispose(){
    var o = this;
    // 释放属性
    o._world = MO.Lang.Object.dispose(o._world);
    o._countries = MO.Lang.Object.dispose(o._countries, true);
    // 父处理
-   o.__base.FConsole.dispose.call(o);
+   o.__base.FEaiResourceModule.dispose.call(o);
 }

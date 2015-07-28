@@ -48,20 +48,20 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
    var bakTime = startDate.date.getTime();
    var timeSpan = endDate.date.getTime() - startDate.date.getTime();
    // 取最后一天为最大值
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var investmentTotal = historyConsole.investmentTotal();
-   var dateData = historyConsole.dates().get(endDate.format('YYYYMMDD'));
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var investmentTotal = historyModule.investmentTotal();
+   var dateData = historyModule.dates().get(endDate.format('YYYYMMDD'));
    var maxInves = dateData.investmentTotal();
 
-   var degreeData = historyConsole.dates().get(degreeDate.format('YYYYMMDD'));
+   var degreeData = historyModule.dates().get(degreeDate.format('YYYYMMDD'));
    if (degreeData.investmentTotal() * 3 < investmentTotal) {
       maxInves *= (degreeData.investmentTotal() / investmentTotal) * 3;
    }
          
    var pixPer10k = dataHeight * 10000 / maxInves;
 
-   var rateConsole = MO.Console.find(MO.FEaiResourceConsole).rateConsole();
-   var rateResource = rateConsole.find(MO.EEaiRate.Line);
+   var rateModule = MO.Console.find(MO.FEaiResourceConsole).rateModule();
+   var rateResource = rateModule.find(MO.EEaiRate.Line);
 
    // 画线及多边形
    var ctx = graphic._handle;
@@ -69,14 +69,14 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
    ctx.beginPath();
    ctx.moveTo(lastX, lastY);
    // 取第一天确定起始Y
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    var inves = dateData.investmentTotal();
    var lastX = dataLeft;
    var lastY = dataBottom - inves / 10000 * pixPer10k;
    lastY -= o._startHeight;
    // 计算已经过各天点位置
    while (startDate.isBefore(degreeDate)) {
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
          var degreeSpan = startDate.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -92,7 +92,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
       }
    }
    // 画下一天的一部分
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    if (dateData) {
       var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
       var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -129,7 +129,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
    startDate.date.setTime(bakTime);
    startDate.refresh();
    while (startDate.isBefore(degreeDate)) {
-      var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+      var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
       if (dateData) {
          var degreeSpan = startDate.date.getTime() - bakTime;
          var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)
@@ -159,7 +159,7 @@ MO.FGuiHistoryTimeline_onPaintBegin = function FGuiHistoryTimeline_onPaintBegin(
       }
    }
    // 下一天的圈和字
-   var dateData = historyConsole.dates().get(startDate.format('YYYYMMDD'));
+   var dateData = historyModule.dates().get(startDate.format('YYYYMMDD'));
    if (dateData) {
       var degreeSpan = startDate.date.getTime() - bakTime + o.unitms() * o.progress();
       var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan)

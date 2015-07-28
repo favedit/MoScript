@@ -85,13 +85,12 @@ MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_on
       pop.setData(entity);
       //pop.show();
       // 显示粒子
-      var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityConsole();
-      var cityEntity = o._mapEntity.findCityByCard(entity.card());
-      if(cityEntity){
-         var provinceEntity = cityEntity.provinceEntity();
-         var cityResource = cityEntity.data();
-         o.showParticle(provinceEntity, cityResource);
-      }
+      //var cityEntity = o._mapEntity.findCityByCard(entity.card());
+      //if(cityEntity){
+      //   var provinceEntity = cityEntity.provinceEntity();
+      //   var cityResource = cityEntity.data();
+      //   o.showParticle(provinceEntity, cityResource);
+      //}
    }
 }
 
@@ -188,8 +187,8 @@ MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
       }
       // 计算形状
       var mapEntity = o._mapEntity;
-      o.fixMatrix(mapEntity._countryDisplay.matrix());
-      o.fixMatrix(mapEntity._countryBorderDisplay.matrix());
+      o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
+      o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
    }
    if (o._livePop.visible()) {
       o._livePop.dirty();
@@ -308,9 +307,6 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   //..........................................................
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var milestones = historyConsole.milestones();
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
