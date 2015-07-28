@@ -9,74 +9,29 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity, MO.MListener);
    //..........................................................
    // @attribute
-   o._data          = MO.Class.register(o, new MO.AGetSet('_data'));
-   o._material      = MO.Class.register(o, new MO.AGetter('_material'));
-   o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
+   o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._material         = MO.Class.register(o, new MO.AGetter('_material'));
+   o._countries        = MO.Class.register(o, new MO.AGetter('_countries'));
    // @attribute
-   o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
-   o._faceShape     = MO.Class.register(o, new MO.AGetter('_faceShape'));
-   o._borderShape   = MO.Class.register(o, new MO.AGetter('_borderShape'));
+   o._sphere           = MO.Class.register(o, new MO.AGetter('_sphere'));
+   o._faceShape        = MO.Class.register(o, new MO.AGetter('_faceShape'));
+   o._borderShape      = MO.Class.register(o, new MO.AGetter('_borderShape'));
    // @attribute
-   o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
+   o._statusImageReady = false;
    //..........................................................
    // @event
-   o.onDataLoad     = MO.FEaiWorldEntity_onDataLoad;
-   o.onImageLoad    = MO.FEaiWorldEntity_onImageLoad;
+   o.onImageLoad       = MO.FEaiWorldEntity_onImageLoad;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiWorldEntity_construct;
+   o.construct         = MO.FEaiWorldEntity_construct;
    // @method
-   o.setup          = MO.FEaiWorldEntity_setup;
+   o.setup             = MO.FEaiWorldEntity_setup;
    // @method
-   o.unserialize    = MO.FEaiWorldEntity_unserialize;
-   o.load           = MO.FEaiWorldEntity_load;
-   o.loadData       = MO.FEaiWorldEntity_loadData;
-   o.processLoad    = MO.FEaiWorldEntity_processLoad;
+   o.loadResource      = MO.FEaiWorldEntity_loadResource;
+   o.processLoad       = MO.FEaiWorldEntity_processLoad;
    // @method
-   o.dispose        = MO.FEaiWorldEntity_dispose;
+   o.dispose           = MO.FEaiWorldEntity_dispose;
    return o;
-}
-
-//==========================================================
-// <T>加载数据事件处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiWorldEntity_onDataLoad = function FEaiWorldEntity_onDataLoad(event){
-   var o = this;
-   var data = event.sender;
-   // 加载国家信息
-   var countries = o._countries
-   var countriesData = data.countries();
-   var count = countriesData.count();
-   for(var i = 0; i < count; i++){
-      var countryData = countriesData.at(i);
-      // 创建国家实体
-      var country = MO.Class.create(MO.FEaiCountryEntity);
-      country.linkGraphicContext(o);
-      country.setWorldEntity(o);
-      country.setup();
-      // 加载数据
-      country.loadData(countryData);
-      // 设置材质
-      var faceRenderable = country.boundaryShape().faceRenderable();
-      faceRenderable._material = o._material;
-      faceRenderable._textures = o._material.textures();
-      countries.push(country);
-   }
-   //..........................................................
-   // 创建合并形状
-   var faceShape = o._faceShape;
-   var borderShape = o._borderShape;
-   for(var i = 0; i < count; i++){
-      var countryEntity = countries.at(i);
-      var boundaryShape = countryEntity.boundaryShape();
-      faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
-      borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
-   }
-   faceShape.build();
-   borderShape.build();
 }
 
 //==========================================================
@@ -93,6 +48,7 @@ MO.FEaiWorldEntity_onImageLoad = function FEaiWorldEntity_onImageLoad(event){
    o._texture.upload(image);
    // 释放位图
    image.dispose();
+   o._statusImageReady = true;
 }
 
 //==========================================================
@@ -186,15 +142,16 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
+MO.FEaiWorldEntity_loadResource = function FEaiWorldEntity_loadResource(resource){
    var o = this;
-   o._data = data;
+   var data = resource.data();
+   //..........................................................
+   // 创建国家实体
    var countries = o._countries
    var countriesData = data.countries();
    var count = countriesData.count();
    for(var i = 0; i < count; i++){
       var countryData = countriesData.at(i);
-      // 创建国家实体
       var country = MO.Class.create(MO.FEaiCountryEntity);
       country.linkGraphicContext(o);
       country.setWorldEntity(o);
@@ -211,8 +168,6 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
    faceShape.linkGraphicContext(o);
    var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape.linkGraphicContext(o);
-   //..........................................................
-   // 合并省份处理
    for(var i = 0; i < count; i++){
       var countryEntity = countries.at(i);
       var boundaryShape = countryEntity.boundaryShape();
@@ -228,21 +183,20 @@ MO.FEaiWorldEntity_load = function FEaiWorldEntity_load(data){
 //
 // @method
 //==========================================================
-MO.FEaiWorldEntity_loadData = function FEaiWorldEntity_loadData(){
-   var o = this;
-   // 加载数据
-   var data = o._data = MO.Class.create(MO.FEaiWorldData);
-   data.addLoadListener(o, o.onLoadData);
-   data.load();
-}
-
-//==========================================================
-// <T>加载国家数据。</T>
-//
-// @method
-//==========================================================
 MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
    var o = this;
+   // 检查图片
+   if(!o._statusImageReady){
+      return false;
+   }
+   // 检查资源
+   var resource = o._resource;
+   if(resource.testReady()){
+      o.loadResource(resource);
+      o._statusReady = true;
+      return true;
+   }
+   return false;
 }
 
 //==========================================================

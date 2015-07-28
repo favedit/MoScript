@@ -324,12 +324,15 @@ MO.FScene = function FScene(o){
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
    o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._readyLoader         = MO.Class.register(o, new MO.AGetter('_readyLoader'));
+   o._statusReady         = false;
    o._statusSetup         = false;
    o._statusActive        = false;
    o._eventEnterFrame     = null;
    o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
    o._eventLeaveFrame     = null;
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcessReady       = MO.Method.empty;
    o.onProcessBefore      = MO.Method.empty;
    o.onProcess            = MO.FScene_onProcess;
    o.onProcessAfter       = MO.Method.empty;
@@ -353,6 +356,8 @@ MO.FScene_onProcess = function FScene_onProcess(){
 MO.FScene_construct = function FScene_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   var loader = o._readyLoader = MO.Class.create(MO.FReadyLoader);
+   loader.addChangeListener(o, o.onProcessReady);
    o._eventEnterFrame = new MO.SEvent();
    o._eventLeaveFrame = new MO.SEvent();
 }
@@ -373,6 +378,10 @@ MO.FScene_deactive = function FScene_deactive(){
 }
 MO.FScene_process = function FScene_process(){
    var o = this;
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    if(o._statusActive){
       o.processEnterFrameListener(o._eventEnterFrame);
       o.onProcessBefore();
@@ -390,6 +399,7 @@ MO.FScene_processEvent = function FScene_processEvent(event){
 }
 MO.FScene_dispose = function FScene_dispose(){
    var o = this;
+   o._readyLoader = MO.Lang.Object.dispose(o._readyLoader);
    o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
    o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
    o.__base.MListener.dispose.call(o);

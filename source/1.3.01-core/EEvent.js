@@ -17,6 +17,8 @@ MO.EEvent = new function EEvent(){
    o.Process          = 'Process';
    // @attribute 完成
    o.Complete         = 'Complete';
+   // @attribute 改变
+   o.Change           = 'Change';
    // @attribute 进入帧
    o.EnterFrame       = 'EnterFrame';
    // @attribute 离开帧

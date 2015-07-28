@@ -14,7 +14,9 @@ MO.FScene = function FScene(o){
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
    o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._readyLoader         = MO.Class.register(o, new MO.AGetter('_readyLoader'));
    // @attribute
+   o._statusReady         = false;
    o._statusSetup         = false;
    o._statusActive        = false;
    // @attribute
@@ -24,6 +26,7 @@ MO.FScene = function FScene(o){
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
    //..........................................................
    // @event
+   o.onProcessReady       = MO.Method.empty;
    o.onProcessBefore      = MO.Method.empty;
    o.onProcess            = MO.FScene_onProcess;
    o.onProcessAfter       = MO.Method.empty;
@@ -67,6 +70,9 @@ MO.FScene_onProcess = function FScene_onProcess(){
 MO.FScene_construct = function FScene_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   // 设置变量
+   var loader = o._readyLoader = MO.Class.create(MO.FReadyLoader);
+   loader.addChangeListener(o, o.onProcessReady);
    // 设置变量
    o._eventEnterFrame = new MO.SEvent();
    o._eventLeaveFrame = new MO.SEvent();
@@ -115,6 +121,11 @@ MO.FScene_deactive = function FScene_deactive(){
 //==========================================================
 MO.FScene_process = function FScene_process(){
    var o = this;
+   // 测试状态
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    // 检查激活状态
    if(o._statusActive){
       // 前处理
@@ -153,6 +164,8 @@ MO.FScene_processEvent = function FScene_processEvent(event){
 //==========================================================
 MO.FScene_dispose = function FScene_dispose(){
    var o = this;
+   // 释放变量
+   o._readyLoader = MO.Lang.Object.dispose(o._readyLoader);
    o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
    o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
    // 父处理

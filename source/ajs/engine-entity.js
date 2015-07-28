@@ -1,7 +1,12 @@
 MO.FEntity = function FEntity(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o.processLoad = MO.Method.emptyTrue;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MReady);
+   o._statusReady = false;
+   o.testReady    = MO.FEntity_testReady;
+   o.processLoad  = MO.Method.emptyTrue;
    return o;
+}
+MO.FEntity_testReady = function FEntity_testReady(){
+   return this._statusReady;
 }
 MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

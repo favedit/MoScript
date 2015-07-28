@@ -81,6 +81,11 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          throw new MO.TError('Unknown event type.');
    }
 }
+MO.MReady = function MReady(o){
+   o = MO.Class.inherits(this, o);
+   o.testReady = MO.Method.virtual(o, 'testReady');
+   return o;
+}
 MO.MRenderableLinker = function MRenderableLinker(o){
    o = MO.Class.inherits(this, o);
    o._renderable = MO.RClass.register(o, new MO.AGetter('_renderable'));
@@ -749,6 +754,61 @@ MO.FMainTimeline_dispose = function FMainTimeline_dispose(){
    o._timelines = MO.Lang.Object.dispose(o._timelines);
    o._context = MO.Lang.Object.dispose(o._context);
    o.__base.MTimelineActions.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FReadyLoader = function FReadyLoader(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._items           = MO.Class.register(o, new MO.AGetter('_items'));
+   o._listenersChange = MO.Class.register(o, new MO.AListener('_listenersChange', MO.EEvent.Change));
+   o._statusEvent     = null;
+   o._statusReady     = false;
+   o.construct        = MO.FReadyLoader_construct;
+   o.testReady        = MO.FReadyLoader_testReady;
+   o.push             = MO.FReadyLoader_push;
+   o.clear            = MO.FReadyLoader_clear;
+   o.dispose          = MO.FReadyLoader_dispose;
+   return o;
+}
+MO.FReadyLoader_construct = function FReadyLoader_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._items = new MO.TObjects();
+   o._statusEvent = new MO.SEvent();
+}
+MO.FReadyLoader_testReady = function FReadyLoader_testReady(){
+   var o = this;
+   var ready = o._statusReady;
+   if(!ready){
+      var items = o._items;
+      var count = items.count();
+      for(var i = 0; i < count; i++){
+         var item = items.at(i);
+         if(!item.testReady()){
+            return false;
+         }
+      }
+      var event = o._statusEvent;
+      event.ready = true;
+      o.processChangeListener(event);
+      ready = o._statusReady = true;
+   }
+   return ready;
+}
+MO.FReadyLoader_push = function FReadyLoader_push(item){
+   var o = this;
+   o._items.push(item);
+   o._statusReady = false;
+}
+MO.FReadyLoader_clear = function FReadyLoader_clear(){
+   var o = this;
+   o._items.clear();
+   o._statusReady = true;
+}
+MO.FReadyLoader_dispose = function FReadyLoader_dispose(){
+   var o = this;
+   o._items = MO.Lang.Object.dispose(o._items);
+   o._statusEvent = MO.Lang.Object.dispose(o._statusEvent);
+   o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 MO.FRegion = function FRegion(o){

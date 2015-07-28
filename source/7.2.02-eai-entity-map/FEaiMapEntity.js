@@ -200,7 +200,8 @@ MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(){
 //==========================================================
 MO.FEaiMapEntity_showWorld = function FEaiMapEntity_showWorld(){
    var o = this;
-   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).worldEntity();
+   //var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).worldEntity();
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().worldEntity();
    o._countryDisplay.push(worldEntity.sphere());
    o._countryDisplay.push(worldEntity._sphere2);
    o._countryDisplay.push(worldEntity._sphere3);

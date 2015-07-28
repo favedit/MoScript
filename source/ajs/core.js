@@ -99,6 +99,7 @@ MO.EEvent = new function EEvent(){
    o.Loaded           = 'Loaded';
    o.Process          = 'Process';
    o.Complete         = 'Complete';
+   o.Change           = 'Change';
    o.EnterFrame       = 'EnterFrame';
    o.LeaveFrame       = 'LeaveFrame';
    o.Enter            = 'Enter';

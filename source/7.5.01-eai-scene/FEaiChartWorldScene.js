@@ -45,6 +45,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    // @event
    o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
+   o.onProcessReady          = MO.FEaiChartWorldScene_onProcessReady;
    o.onProcess               = MO.FEaiChartWorldScene_onProcess;
    o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
    o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
@@ -74,7 +75,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
 MO.FEaiChartWorldScene_onLoadWorld = function FEaiChartWorldScene_onLoadWorld(event) {
    var o = this;
    //o._mapEntity.showCountry();
-   o._mapEntity.showWorld();
+   //o._mapEntity.showWorld();
 }
 
 //==========================================================
@@ -105,6 +106,18 @@ MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_on
          o.showParticle(provinceEntity, cityResource);
       }
    }
+}
+
+//==========================================================
+// <T>准备好处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartWorldScene_onProcessReady = function FEaiChartWorldScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   // 显示地图
+   o._mapEntity.showWorld();
 }
 
 //==========================================================
@@ -363,9 +376,10 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
    // 加载世界数据
-   o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
-   MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
-   MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
+   o._readyLoader.push(worldEntity);
+   //MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
+   //MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
 }
 
 //==========================================================

@@ -1318,6 +1318,7 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
+   o.onProcessReady          = MO.FEaiChartWorldScene_onProcessReady;
    o.onProcess               = MO.FEaiChartWorldScene_onProcess;
    o.onOperationDown         = MO.FEaiChartWorldScene_onOperationDown;
    o.onOperationMove         = MO.FEaiChartWorldScene_onOperationMove;
@@ -1336,7 +1337,6 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
 }
 MO.FEaiChartWorldScene_onLoadWorld = function FEaiChartWorldScene_onLoadWorld(event) {
    var o = this;
-   o._mapEntity.showWorld();
 }
 MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -1356,6 +1356,11 @@ MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_on
          o.showParticle(provinceEntity, cityResource);
       }
    }
+}
+MO.FEaiChartWorldScene_onProcessReady = function FEaiChartWorldScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._mapEntity.showWorld();
 }
 MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
    var o = this;
@@ -1511,9 +1516,8 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    projection.update();
    var region = o._activeStage.region();
    region.selectCamera(camera);
-   o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
-   MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
-   MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
+   o._readyLoader.push(worldEntity);
 }
 MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
    var o = this;
